@@ -1,0 +1,124 @@
+.ember-object {
+  display: -webkit-flex;
+  -webkit-flex-direction: column;
+  -webkit-align-items: stretch;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+body {
+  font-family: "Helvetica Neue";
+  color: #333;
+}
+
+#reload-button {
+  display: block;
+  margin-bottom: 30px;
+}
+
+.ember-object h1 {
+  font-family: Menlo, Monaco, monospace;
+  font-size: 15px;
+  color: #639;
+  font-weight: bold;
+  text-shadow: 0px 1px 1px #fff;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.ember-object h2 {
+  padding: 2px;
+  background-color: #ddd;
+  text-shadow: 0px 1px 1px #fff;
+}
+
+.ember-object h2:before {
+  content: "\25B6";
+  color: #555;
+  margin-right: 4px;
+  font-size: 80%;
+}
+
+.ember-object .expanded h2:before {
+  content: "\25BC";
+}
+
+.ember-object > div {
+  border: 1px solid #ccc;
+}
+
+.ember-object > .ember-self {
+
+}
+
+.ember-object > .ember-mixin {
+
+}
+
+.ember-object > .ember-mixin h2 {
+  color: #888;
+}
+
+.ember-object > .ember-mixin h2:before {
+  color: #aaa;
+}
+
+.ember-object > .ember-class {
+
+}
+
+.ember-object ul {
+  margin: 5px;
+  list-style-type: none;
+  padding: 0;
+  font-size: 12px;
+  font-family: Menlo, Monaco, monospace;
+}
+
+.ember-object li {
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ember-object li.overridden span {
+  text-decoration: line-through;
+}
+
+.ember-object li span.by {
+  display: none;
+}
+
+.ember-object li.overridden:hover span.by {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.95);
+  right: 0;
+  display: inline;
+  text-decoration: none;
+}
+
+.ember-object li span:first-of-type {
+  color: #909;
+}
+
+.ember-object li span.type-function {
+  color: #999;
+}
+
+.ember-object li span.type-object {
+  color: #999;
+}
+
+.ember-object .type-null, .ember-object .type-boolean {
+  color: #009;
+}
+
+.ember-object .type-descriptor {
+  color: #900;
+}

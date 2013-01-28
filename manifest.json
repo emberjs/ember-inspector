@@ -1,0 +1,13 @@
+{
+  "manifest_version": 2,
+
+  "name": "One-click Kittens",
+  "description": "This extension demonstrates a browser action with kittens.",
+  "version": "1.0",
+
+  "permissions": [
+    "experimental"
+  ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "devtools_page": "devtools.html"
+}
