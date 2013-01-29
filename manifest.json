@@ -6,8 +6,17 @@
   "version": "1.0",
 
   "permissions": [
-    "experimental"
+    "experimental",
+    "http://*/*",
+    "file://*/*"
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "devtools_page": "devtools.html"
+  "devtools_page": "devtools.html",
+  "content_scripts": [{
+    "matches": ["http://*/*", "file://*/*"],
+    "js": ["content-script.js"]
+  }],
+  "background": {
+    "scripts": ["background-script.js"]
+  }
 }

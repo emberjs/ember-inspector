@@ -1,144 +1,57 @@
 (function() {
-  /*global App:true Ember document location window*/
+  /*global App:true Ember document location window chrome*/
   "use strict";
 
-  var App = window.App = Ember.Application.create();
+  window.activate = function() {
+    var url = chrome.extension.getURL('panes/ember-debug.js');
 
-  App.Utils = Ember.Namespace.create();
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", chrome.extension.getURL('/panes/ember-debug.js'), false);
+    xhr.send();
 
-  App.ApplicationRoute = Ember.Route.extend({
-    setupController: function(controller) {
-      var arrayProxy = Ember.ArrayProxy.create({ content: [ Ember.Object.create(), Ember.Object.create() ] });
+    chrome.devtools.inspectedWindow.eval(xhr.responseText);
 
-      var mixinDetails = App.Utils.mixinsForObject(arrayProxy),
-          arrayController = this.controllerFor('mixinDetails').set('model', mixinDetails);
+    var App = window.App = Ember.Application.create();
 
-      mixinDetails = { name: arrayProxy.toString(), mixins: arrayController };
-      controller.set('mixinDetails', mixinDetails);
-    }
-  });
-
-  App.ApplicationController = Ember.Controller.extend({
-    example: Ember.View.create()
-  });
-
-  App.MixinDetailController = Ember.ObjectController.extend({
-    isExpanded: function() {
-      return this.get('model.name') === 'Own Properties';
-    }.property('model.name')
-  });
-
-  App.MixinDetailsController = Ember.ArrayController.extend({
-    itemController: 'mixinDetail'
-  });
-
-  Ember.$(document).on("click", "#reload-button", function() {
-    location.reload(true);
-  });
-
-  function mixinsForObject(object) {
-    var mixins = Ember.Mixin.mixins(object),
-        mixinDetails = [];
-
-    var ownProps = propertiesForMixin({ mixins: [{ properties: object }] });
-    mixinDetails.push({ name: "Own Properties", properties: ownProps });
-
-    mixins.forEach(function(mixin) {
-      mixin.toString();
-      var name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor || Ember.guidFor(name);
-      mixinDetails.push({ name: name, properties: propertiesForMixin(mixin) });
+    App.ApplicationRoute = Ember.Route.extend({
     });
 
-    applyMixinOverrides(mixinDetails);
+    App.ApplicationController = Ember.Controller.extend({
+      activateMixinDetails: function(name, details) {
+        var arrayController = this.controllerFor('mixinDetails').set('model', details);
 
-    return mixinDetails;
-  }
-
-  App.Utils.mixinsForObject = mixinsForObject;
-
-  function applyMixinOverrides(mixinDetails) {
-    var seen = {};
-
-    mixinDetails.forEach(function(detail) {
-      detail.properties.forEach(function(property) {
-        if (Object.prototype.hasOwnProperty(property.name)) { return; }
-
-        if (seen[property.name]) {
-          property.overridden = seen[property.name];
-        }
-
-        seen[property.name] = detail.name;
-      });
-    });
-  }
-
-  function propertiesForMixin(mixin) {
-    var seen = {}, properties = [];
-
-    mixin.mixins.forEach(function(mixin) {
-      if (mixin.properties) {
-        addProperties(properties, mixin.properties);
+        details = { name: name, mixins: arrayController };
+        this.set('mixinDetails', details);
       }
     });
 
-    return properties;
-  }
+    App.MixinDetailController = Ember.ObjectController.extend({
+      isExpanded: function() {
+        return this.get('model.name') === 'Own Properties';
+      }.property('model.name')
+    });
 
-  function addProperties(properties, hash) {
-    for (var prop in hash) {
-      if (!hash.hasOwnProperty(prop)) { continue; }
-      if (prop.charAt(0) === '_') { continue; }
-      replaceProperty(properties, prop, hash[prop]);
-    }
-  }
+    App.MixinDetailsController = Ember.ArrayController.extend({
+      itemController: 'mixinDetail'
+    });
 
-  function replaceProperty(properties, name, value) {
-    var found, type;
+    Ember.$(document).on("click", "#reload-button", function() {
+      location.reload(true);
+    });
+  };
 
-    for (var i=0, l=properties.length; i<l; i++) {
-      if (properties[i].name === name) {
-        found = i;
-        break;
-      }
-    }
+  window.updateObject = function(options) {
+    var details = options.details,
+        name = options.name;
 
-    if (found) { properties.splice(i, 1); }
+    Ember.NativeArray.apply(details);
+    details.forEach(arrayize);
 
-    if (name) {
-      type = name.PrototypeMixin ? 'ember-class' : 'ember-mixin';
-    }
+    App.__container__.lookup('controller:application').activateMixinDetails(name, details);
+  };
 
-    properties.push({ name: name, value: inspectValue(value) });
-  }
-
-  function inspectValue(value) {
-    var string;
-
-    if (value instanceof Ember.Object) {
-      return { type: "type-ember-object", inspect: value.toString() };
-    } else if (value instanceof Ember.ComputedProperty) {
-      if (!value._dependentKeys) { string = "<computed>"; }
-      else { string = "<computed> \u27a4 " + value._dependentKeys.join(", "); }
-      return { type: "type-descriptor", inspect: string };
-    } else if (value instanceof Ember.Descriptor) {
-      return { type: "type-descriptor", inspect: value.toString() };
-    } else {
-      return { type: "type-" + Ember.typeOf(value), inspect: inspect(value) };
-    }
-  }
-
-  function inspect(value) {
-    if (typeof value === 'function') {
-      return "function() { ... }";
-    } else if (value instanceof Ember.Object) {
-      return value.toString();
-    } else if (Ember.typeOf(value) === 'array') {
-      if (value.length === 0) { return '[]'; }
-      else if (value.length === 1) { return '[ ' + inspect(value[0]) + ' ]'; }
-      else { return '[ ' + inspect(value[0]) + ', ... ]'; }
-    } else {
-      return Ember.inspect(value);
-    }
+  function arrayize(mixin) {
+    Ember.NativeArray.apply(mixin.properties);
   }
 
 })();
