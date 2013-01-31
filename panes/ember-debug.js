@@ -5,7 +5,19 @@ var port;
 var channel = new MessageChannel(), port1 = channel.port1;
 window.postMessage('debugger-client', [channel.port2], '*');
 
-channel.port1.start();
+port1.addEventListener('message', function(event) {
+  var message = event.data;
+
+  if (message.property) {
+    var value = valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
+    port1.postMessage(value);
+  }
+});
+
+port1.start();
+
+var sentObjects = {},
+    sentObjectId = 0;
 
 function mixinsForObject(object) {
   var mixins = Ember.Mixin.mixins(object),
@@ -22,14 +34,28 @@ function mixinsForObject(object) {
 
   applyMixinOverrides(mixinDetails);
 
-  port1.postMessage({ name: object.toString(), details: mixinDetails });
+  sentObjects[++sentObjectId] = object;
+  port1.postMessage({ objectId: sentObjectId, name: object.toString(), details: mixinDetails });
 
   return mixinDetails;
+}
+
+function valueForObjectProperty(objectId, property, mixinIndex) {
+  var object = sentObjects[objectId], value;
+
+  if (object.isDestroying) {
+    value = '<DESTROYED>';
+  } else {
+    value = object.get(property.name);
+  }
+
+  return { objectId: objectId, property: property.name, value: inspect(value), mixinIndex: mixinIndex };
 }
 
 Ember.Debug = Ember.Namespace.create();
 
 Ember.Debug.mixinsForObject = mixinsForObject;
+Ember.Debug.valueForObjectProperty = valueForObjectProperty;
 
 function applyMixinOverrides(mixinDetails) {
   var seen = {};
@@ -40,6 +66,7 @@ function applyMixinOverrides(mixinDetails) {
 
       if (seen[property.name]) {
         property.overridden = seen[property.name];
+        delete property.value.computed;
       }
 
       seen[property.name] = detail.name;
@@ -94,9 +121,9 @@ function inspectValue(value) {
   } else if (value instanceof Ember.ComputedProperty) {
     if (!value._dependentKeys) { string = "<computed>"; }
     else { string = "<computed> \u27a4 " + value._dependentKeys.join(", "); }
-    return { type: "type-descriptor", inspect: string };
+    return { type: "type-descriptor", inspect: string, computed: true };
   } else if (value instanceof Ember.Descriptor) {
-    return { type: "type-descriptor", inspect: value.toString() };
+    return { type: "type-descriptor", inspect: value.toString(), computed: true };
   } else {
     return { type: "type-" + Ember.typeOf(value), inspect: inspect(value) };
   }

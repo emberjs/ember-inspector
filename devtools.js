@@ -11,8 +11,23 @@ var panel = chrome.devtools.panels.create("Ember", "images/hamster.png", "panes/
       var port = chrome.extension.connect();
       port.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
 
+      var objectId;
+
       port.onMessage.addListener(function(message) {
-        panelWindow.updateObject(message);
+        if (message.details) {
+          panelWindow.updateObject(message);
+          objectId = message.objectId;
+        } else if (message.property) {
+          panelWindow.updateProperty(message);
+        }
+      });
+
+      panelWindow.calculate = function(property, mixinIndex) {
+        port.postMessage({ objectId: objectId, property: property, mixinIndex: mixinIndex });
+      };
+
+      chrome.devtools.network.onNavigated.addListener(function() {
+        panelWindow.injectDebugger();
       });
     }
   });

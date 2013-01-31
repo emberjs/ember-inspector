@@ -44,6 +44,10 @@ body {
   font-size: 80%;
 }
 
+.ember-object h2.no-properties:before {
+  opacity: 0;
+}
+
 .ember-object .expanded h2:before {
   content: "\25BC";
 }
@@ -85,6 +89,21 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+  -webkit-align-items: center;
+}
+
+.ember-object li button {
+  border: none;
+  background: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ember-object li button img, .ember-object li span.pad {
+  margin-right: 3px;
+  width: 16px;
 }
 
 .ember-object li.overridden span {
@@ -103,7 +122,7 @@ body {
   text-decoration: none;
 }
 
-.ember-object li span:first-of-type {
+.ember-object li span.property-name {
   color: #909;
 }
 
@@ -112,6 +131,11 @@ body {
 }
 
 .ember-object li span.type-object {
+  color: #999;
+}
+
+.ember-object li span.calculated {
+  margin-left: 10px;
   color: #999;
 }
 

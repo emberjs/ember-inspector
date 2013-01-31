@@ -14,11 +14,25 @@
         <h1>{{mixinDetails.name}}</h1>
         {{#each mixin in mixinDetails.mixins}}
         <div {{bindAttr class="mixin.type mixin.isExpanded:expanded"}}>
-          <h2 class="mixin" {{action toggleProperty 'isExpanded' target=mixin}}>{{mixin.name}}</h2>
+          {{#if mixin.properties.length}}
+            <h2 class="mixin properties" {{action toggleProperty 'isExpanded' target=mixin}}>{{mixin.name}}</h2>
+          {{else}}
+            <h2 class="mixin no-properties">{{mixin.name}}</h2>
+          {{/if}}
           {{#if mixin.isExpanded}}
           <ul>
             {{#each property in mixin.properties}}
-            <li {{bindAttr class="property.overridden:overridden"}}><span>{{property.name}}</span><span>: </span><span {{bindAttr class="property.value.type"}}>{{property.value.inspect}}</span><span class='by'>(Overridden by {{property.overridden}})</span></li>
+            <li {{bindAttr class="property.overridden:overridden"}}>
+              {{#if property.value.computed}}
+                <button {{action "calculate" property}}><img src="/images/calculate.svg"></button>
+              {{else}}
+                <span class='pad'></span>
+              {{/if}}
+              <span class='property-name'>{{property.name}}</span><span class='property-value'>: </span><span {{bindAttr class="property.value.type"}}>{{property.value.inspect}}</span><span class='by'>(Overridden by {{property.overridden}})</span>
+              {{#if property.calculated}}
+                <span class='calculated'>({{property.calculated}})</span>
+              {{/if}}
+            </li>
             {{else}}
             <li>No Properties</li>
             {{/each}}

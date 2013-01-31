@@ -11,13 +11,19 @@ chrome.extension.onMessage.addListener(function(request, sender) {
 var ports = {};
 
 chrome.extension.onConnect.addListener(function(port) {
+  var appId;
+
   port.onMessage.addListener(function(message) {
-    var appId = message.appId;
+    if (message.appId) {
+      appId = message.appId;
 
-    ports[appId] = port;
+      ports[appId] = port;
 
-    port.onDisconnect.addListener(function() {
-      delete ports[appId];
-    });
+      port.onDisconnect.addListener(function() {
+        delete ports[appId];
+      });
+    } else if (message.property) {
+      chrome.tabs.sendMessage(appId, message);
+    }
   });
 });
