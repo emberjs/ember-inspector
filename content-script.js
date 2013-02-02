@@ -2,7 +2,7 @@ window.addEventListener('message', function(event) {
   if (event.data === 'debugger-client') {
     var port = event.ports[0];
     listenToPort(port);
-  } else if (event.data.property) {
+  } else if (event.data.type) {
     chrome.extension.sendMessage(event.data);
   }
 });
@@ -13,7 +13,9 @@ function listenToPort(port) {
   });
 
   chrome.extension.onMessage.addListener(function(message) {
-    port.postMessage(message);
+    if (message.from === 'devtools') {
+      port.postMessage(message);
+    }
   });
 
   port.start();

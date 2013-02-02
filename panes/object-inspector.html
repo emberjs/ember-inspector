@@ -11,36 +11,44 @@
     <button id="reload-button">Reload</button>
     <script type="text/x-handlebars">
       <div class='ember-object'>
-        <h1>{{mixinDetails.name}}</h1>
-        {{#each mixin in mixinDetails.mixins}}
-        <div {{bindAttr class="mixin.type mixin.isExpanded:expanded"}}>
-          {{#if mixin.properties.length}}
-            <h2 class="mixin properties" {{action toggleProperty 'isExpanded' target=mixin}}>{{mixin.name}}</h2>
-          {{else}}
-            <h2 class="mixin no-properties">{{mixin.name}}</h2>
-          {{/if}}
-          {{#if mixin.isExpanded}}
-          <ul>
-            {{#each property in mixin.properties}}
-            <li {{bindAttr class="property.overridden:overridden"}} {{action "digDeeper" property}}>
-              {{#if property.value.computed}}
-                <button {{action "calculate" property}}><img src="/images/calculate.svg"></button>
-              {{else}}
-                <span class='pad'></span>
-              {{/if}}
-              <span class='property-name'>{{property.name}}</span><span class='property-value'>: </span><span {{bindAttr class="property.value.type"}}>{{property.value.inspect}}</span><span class='by'>(Overridden by {{property.overridden}})</span>
-              {{#if property.calculated}}
-                <span class='calculated'>({{property.calculated}})</span>
-              {{/if}}
-            </li>
-            {{else}}
-            <li>No Properties</li>
-            {{/each}}
-          </ul>
-          {{/if}}
-        </div>
-        {{/each}}
+        {{render "mixinStack"}}
       </div>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="mixinStack">
+      <h1>{{firstObject.name}}</h1>
+      {{render "mixinDetails" lastObject}}
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="mixinDetails">
+      {{#each mixin in mixins itemController="mixinDetail"}}
+      <div {{bindAttr class="mixin.type mixin.isExpanded:expanded"}}>
+        {{#if mixin.properties.length}}
+          <h2 class="mixin properties" {{action toggleProperty 'isExpanded' target=mixin}}>{{mixin.name}}</h2>
+        {{else}}
+          <h2 class="mixin no-properties">{{mixin.name}}</h2>
+        {{/if}}
+        {{#if mixin.isExpanded}}
+        <ul>
+          {{#each property in mixin.properties}}
+          <li {{bindAttr class="property.overridden:overridden"}} {{action "digDeeper" property}}>
+            {{#if property.value.computed}}
+              <button {{action "calculate" property bubbles=false}}><img src="/images/calculate.svg"></button>
+            {{else}}
+              <span class='pad'></span>
+            {{/if}}
+            <span class='property-name'>{{property.name}}</span><span class='property-value'>: </span><span {{bindAttr class="property.value.type"}}>{{property.value.inspect}}</span><span class='by'>(Overridden by {{property.overridden}})</span>
+            {{#if property.calculated}}
+              <span class='calculated'>({{property.calculated}})</span>
+            {{/if}}
+          </li>
+          {{else}}
+          <li>No Properties</li>
+          {{/each}}
+        </ul>
+        {{/if}}
+      </div>
+      {{/each}}
     </script>
   </body>
 </html>

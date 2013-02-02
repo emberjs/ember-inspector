@@ -8,7 +8,7 @@ window.postMessage('debugger-client', [channel.port2], '*');
 port1.addEventListener('message', function(event) {
   var message = event.data;
 
-  if (message.property) {
+  if (message.type === 'calculate') {
     var value = valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
     port1.postMessage(value);
   }
@@ -35,7 +35,7 @@ function mixinsForObject(object) {
   applyMixinOverrides(mixinDetails);
 
   sentObjects[++sentObjectId] = object;
-  port1.postMessage({ objectId: sentObjectId, name: object.toString(), details: mixinDetails });
+  port1.postMessage({ from: 'inspectedWindow', objectId: sentObjectId, name: object.toString(), details: mixinDetails });
 
   return mixinDetails;
 }
@@ -46,10 +46,10 @@ function valueForObjectProperty(objectId, property, mixinIndex) {
   if (object.isDestroying) {
     value = '<DESTROYED>';
   } else {
-    value = object.get(property.name);
+    value = object.get(property);
   }
 
-  return { objectId: objectId, property: property.name, value: inspect(value), mixinIndex: mixinIndex };
+  return { from: 'inspectedWindow', objectId: objectId, property: property, value: inspect(value), mixinIndex: mixinIndex };
 }
 
 Ember.Debug = Ember.Namespace.create();

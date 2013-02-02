@@ -5,7 +5,7 @@
   "use strict";
 
   window.resetDebugger = function() {
-    App.__container__.lookup('controller:application').set('mixinDetails', null);
+    App.__container__.lookup('controller:application').set('mixinDetails', []);
   };
 
   window.activate = function() {
@@ -15,15 +15,28 @@
     });
 
     App.ApplicationController = Ember.Controller.extend({
-      needs: ['mixinDetails'],
+      needs: ['mixinStack', 'mixinDetails'],
 
-      activateMixinDetails: function(name, details) {
-        var arrayController = this.get('controllers.mixinDetails');
-        arrayController.set('model', details);
+      pushMixinDetails: function(name, objectId, details) {
+        details = { name: name, objectId: objectId, mixins: details };
+        this.get('controllers.mixinStack').pushObject(details);
+      },
 
-        details = { name: name, mixins: arrayController };
-        this.set('mixinDetails', details);
+      popMixinDetails: function() {
+        this.get('controllers.mixinStack').popObject();
+      },
+
+      activateMixinDetails: function(name, details, objectId) {
+        this.set('controllers.mixinStack.model', []);
+        this.pushMixinDetails(name, objectId, details);
       }
+    });
+
+    App.MixinStackController = Ember.ArrayController.extend({
+
+    });
+
+    App.MixinDetailsController = Ember.ObjectController.extend({
     });
 
     App.MixinDetailController = Ember.ObjectController.extend({
@@ -33,14 +46,15 @@
         return this.get('model.name') === 'Own Properties';
       }.property('model.name'),
 
+      digDeeper: function(property) {
+        var objectId = this.get('controllers.mixinDetails.objectId');
+        window.digDeeper(objectId, property);
+      },
+
       calculate: function(property) {
-        var mixinIndex = this.get('controllers.mixinDetails').indexOf(this);
+        var mixinIndex = this.get('controllers.mixinDetails.mixins').indexOf(this.get('model'));
         window.calculate(property, mixinIndex);
       }
-    });
-
-    App.MixinDetailsController = Ember.ArrayController.extend({
-      itemController: 'mixinDetail'
     });
 
     window.resetDebugger();
@@ -52,17 +66,18 @@
 
   window.updateObject = function(options) {
     var details = options.details,
-        name = options.name;
+        name = options.name,
+        objectId = options.objectId;
 
     Ember.NativeArray.apply(details);
     details.forEach(arrayize);
 
-    App.__container__.lookup('controller:application').activateMixinDetails(name, details);
+    App.__container__.lookup('controller:application').activateMixinDetails(name, details, objectId);
   };
 
   window.updateProperty = function(options) {
-    var detail = App.__container__.lookup('controller:mixinDetails').objectAt(options.mixinIndex);
-    var property = detail.get('properties').findProperty('name', options.property);
+    var detail = App.__container__.lookup('controller:mixinDetails').get('mixins').objectAt(options.mixinIndex);
+    var property = Ember.get(detail, 'properties').findProperty('name', options.property);
     Ember.set(property, 'calculated', options.value);
   };
 

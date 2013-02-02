@@ -13,7 +13,11 @@ chrome.devtools.panels.create("Ember", "images/hamster.png", "panes/object-inspe
       panelWindow.activate();
 
       panelWindow.calculate = function(property, mixinIndex) {
-        port.postMessage({ objectId: objectId, property: property, mixinIndex: mixinIndex });
+        port.postMessage({ from: 'devtools', type: 'calculate', objectId: objectId, property: property.name, mixinIndex: mixinIndex });
+      };
+
+      panelWindow.digDeeper = function(objectId, property) {
+        port.postMessage({ from: 'devtools', type: 'digDeeper', objectId: objectId, property: property.name });
       };
 
       chrome.devtools.network.onNavigated.addListener(function() {
@@ -31,6 +35,7 @@ chrome.devtools.panels.create("Ember", "images/hamster.png", "panes/object-inspe
   });
 
   var port = chrome.extension.connect();
+  console.log("Connected");
   port.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
 
   var objectId;
@@ -45,7 +50,7 @@ chrome.devtools.panels.create("Ember", "images/hamster.png", "panes/object-inspe
       toSend = { name: 'updateProperty', args: [message] };
     }
 
-    if (panelWindow) {
+    if (panelWindow && toSend) {
       panelWindow[toSend.name].apply(panelWindow, toSend.args);
     } else {
       queuedSend = toSend;

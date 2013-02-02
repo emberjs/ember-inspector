@@ -22,7 +22,7 @@ chrome.extension.onConnect.addListener(function(port) {
       port.onDisconnect.addListener(function() {
         delete ports[appId];
       });
-    } else if (message.property) {
+    } else if (message.from === 'devtools') {
       chrome.tabs.sendMessage(appId, message);
     }
   });

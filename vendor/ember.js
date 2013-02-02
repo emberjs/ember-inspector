@@ -150,8 +150,8 @@ Ember.deprecateFunc = function(message, func) {
 
 })();
 
-// Version: v1.0.0-pre.4-124-g90f925b
-// Last commit: 90f925b (2013-01-30 16:41:06 -0800)
+// Version: v1.0.0-pre.4-134-gaafb5eb
+// Last commit: aafb5eb (2013-01-31 17:40:17 -0800)
 
 
 (function() {
@@ -13281,11 +13281,13 @@ Ember.EventDispatcher = Ember.Object.extend(
     rootElement.delegate('[data-ember-action]', event + '.ember', function(evt) {
       return Ember.handleErrors(function() {
         var actionId = Ember.$(evt.currentTarget).attr('data-ember-action'),
-            action   = Ember.Handlebars.ActionHelper.registeredActions[actionId],
-            handler  = action.handler;
+            action   = Ember.Handlebars.ActionHelper.registeredActions[actionId];
 
-        if (action.eventName === eventName) {
-          return handler(evt);
+        // We have to check for action here since in some cases, jQuery will trigger
+        // an event on `removeChild` (i.e. focusout) after we've already torn down the
+        // action handlers for the view.
+        if (action && action.eventName === eventName) {
+          return action.handler(evt);
         }
       }, this);
     });
@@ -20403,7 +20405,7 @@ Ember.TextField = Ember.View.extend(Ember.TextSupport,
 
   classNames: ['ember-text-field'],
   tagName: "input",
-  attributeBindings: ['type', 'value', 'size'],
+  attributeBindings: ['type', 'value', 'size', 'pattern'],
 
   /**
     The `value` attribute of the input element. As the user inputs text, this
@@ -20432,6 +20434,15 @@ Ember.TextField = Ember.View.extend(Ember.TextSupport,
     @default null
   */
   size: null,
+
+  /**
+    The `pattern` the pattern attribute of input element.
+
+    @property pattern
+    @type String
+    @default null
+  */
+  pattern: null,
 
   /**
     The action to be sent when the user presses the return key.
@@ -22609,7 +22620,7 @@ Ember.generateController = function(container, controllerName, context) {
 var Router = requireModule("router");
 var get = Ember.get, set = Ember.set, classify = Ember.String.classify;
 
-var DefaultView = Ember.View.extend(Ember._Metamorph);
+var DefaultView = Ember._MetamorphView;
 function setupLocation(router) {
   var location = get(router, 'location'),
       rootURL = get(router, 'rootURL');
@@ -23272,6 +23283,8 @@ function normalizeOptions(route, name, template, options) {
   options.name = name;
   options.template = template;
 
+  Ember.assert("An outlet ("+options.outlet+") was specified but this view will render at the root level.", options.outlet === 'main' || options.into);
+
   var controller = options.controller, namedController;
 
   if (options.controller) {
@@ -23574,17 +23587,17 @@ Ember.onLoad('Ember.Handlebars', function(Handlebars) {
 var get = Ember.get, set = Ember.set;
 Ember.onLoad('Ember.Handlebars', function(Handlebars) {
 
-  Ember.Handlebars.registerHelper('render', function(name, context, options) {
+  Ember.Handlebars.registerHelper('render', function(name, contextString, options) {
     Ember.assert("You must pass a template to render", arguments.length >= 2);
-    var container, router, controller, view;
+    var container, router, controller, view, context;
 
     if (arguments.length === 2) {
-      options = context;
-      context = undefined;
+      options = contextString;
+      contextString = undefined;
     }
 
-    if (typeof context === 'string') {
-      context = Ember.Handlebars.get(options.contexts[1], context, options);
+    if (typeof contextString === 'string') {
+      context = Ember.Handlebars.get(options.contexts[1], contextString, options);
     }
 
     name = name.replace(/\//g, '.');
@@ -23603,6 +23616,14 @@ Ember.onLoad('Ember.Handlebars', function(Handlebars) {
 
     if (controller && context) {
       controller.set('model', context);
+    }
+
+    var root = options.contexts[1];
+
+    if (root) {
+      view.registerObserver(root, contextString, function() {
+        controller.set('model', Ember.Handlebars.get(root, contextString, options));
+      });
     }
 
     controller.set('target', options.data.keywords.controller);
@@ -23930,13 +23951,12 @@ Ember.Handlebars.registerHelper('control', function(path, modelPath, options) {
 
   var normalizedPath = path.replace(/\//g, '.');
 
-  var childView = subContainer.lookup('view:' + normalizedPath),
+  var childView = subContainer.lookup('view:' + normalizedPath) || container.lookup('view:default'),
       childController = subContainer.lookup('controller:' + normalizedPath),
       childTemplate = subContainer.lookup('template:' + path);
 
   Ember.assert("Could not find controller for path: " + normalizedPath, childController);
   Ember.assert("Could not find view for path: " + normalizedPath, childView);
-  Ember.assert("Could not find template for path: " + path, childTemplate);
 
   set(childController, 'target', controller);
   set(childController, 'model', model);
@@ -26570,8 +26590,8 @@ Ember States
 
 
 })();
-// Version: v1.0.0-pre.4-124-g90f925b
-// Last commit: 90f925b (2013-01-30 16:41:06 -0800)
+// Version: v1.0.0-pre.4-134-gaafb5eb
+// Last commit: aafb5eb (2013-01-31 17:40:17 -0800)
 
 
 (function() {
