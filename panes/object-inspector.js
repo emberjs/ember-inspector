@@ -4,14 +4,7 @@
 
   "use strict";
 
-  window.injectDebugger = function() {
-    var url = chrome.extension.getURL('panes/ember-debug.js');
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", chrome.extension.getURL('/panes/ember-debug.js'), false);
-    xhr.send();
-
-    chrome.devtools.inspectedWindow.eval(xhr.responseText);
+  window.resetDebugger = function() {
     App.__container__.lookup('controller:application').set('mixinDetails', null);
   };
 
@@ -50,7 +43,7 @@
       itemController: 'mixinDetail'
     });
 
-    window.injectDebugger();
+    window.resetDebugger();
 
     Ember.$(document).on("click", "#reload-button", function() {
       location.reload(true);

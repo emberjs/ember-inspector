@@ -37,6 +37,10 @@ body {
   text-shadow: 0px 1px 1px #fff;
 }
 
+.ember-object h2.properties {
+  cursor: pointer;
+}
+
 .ember-object h2:before {
   content: "\25B6";
   color: #555;
@@ -110,6 +114,11 @@ body {
   text-decoration: line-through;
 }
 
+.ember-object li:not(.overridden):hover {
+  cursor: pointer;
+  background-color: #ffe;
+}
+
 .ember-object li span.by {
   display: none;
 }
@@ -124,6 +133,10 @@ body {
 
 .ember-object li span.property-name {
   color: #909;
+}
+
+.ember-object li span.property-value {
+  margin-right: 5px;
 }
 
 .ember-object li span.type-function {

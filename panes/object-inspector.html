@@ -22,7 +22,7 @@
           {{#if mixin.isExpanded}}
           <ul>
             {{#each property in mixin.properties}}
-            <li {{bindAttr class="property.overridden:overridden"}}>
+            <li {{bindAttr class="property.overridden:overridden"}} {{action "digDeeper" property}}>
               {{#if property.value.computed}}
                 <button {{action "calculate" property}}><img src="/images/calculate.svg"></button>
               {{else}}
