@@ -5,7 +5,7 @@
   "use strict";
 
   window.resetDebugger = function() {
-    App.__container__.lookup('controller:application').set('mixinDetails', []);
+    App.__container__.lookup('controller:mixinStack').set('model', []);
   };
 
   window.activate = function() {
