@@ -1,16 +1,21 @@
 (function() {
 
+if (Ember.Debug) { return; }
+
 var port;
 
 var channel = new MessageChannel(), port1 = channel.port1;
 window.postMessage('debugger-client', [channel.port2], '*');
 
 port1.addEventListener('message', function(event) {
-  var message = event.data;
+  var message = event.data, value;
 
   if (message.type === 'calculate') {
-    var value = valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
+    value = valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
     port1.postMessage(value);
+  } else if (message.type === 'digDeeper') {
+    value = digIntoObject(message.objectId, message.property);
+    if (value) { port1.postMessage(value); }
   }
 });
 
@@ -35,9 +40,7 @@ function mixinsForObject(object) {
   applyMixinOverrides(mixinDetails);
 
   sentObjects[++sentObjectId] = object;
-  port1.postMessage({ from: 'inspectedWindow', objectId: sentObjectId, name: object.toString(), details: mixinDetails });
-
-  return mixinDetails;
+  return { objectId: sentObjectId, mixins: mixinDetails };
 }
 
 function valueForObjectProperty(objectId, property, mixinIndex) {
@@ -52,9 +55,25 @@ function valueForObjectProperty(objectId, property, mixinIndex) {
   return { from: 'inspectedWindow', objectId: objectId, property: property, value: inspect(value), mixinIndex: mixinIndex };
 }
 
+function digIntoObject(objectId, property) {
+  var parentObject = sentObjects[objectId],
+      object = Ember.get(parentObject, property);
+
+  if (object instanceof Ember.Object) {
+    var details = mixinsForObject(object);
+    port1.postMessage({ from: 'inspectedWindow', parentObject: objectId, property: property, objectId: details.objectId, name: object.toString(), details: details.mixins });
+  } else {
+    console.log(object);
+  }
+}
+
 Ember.Debug = Ember.Namespace.create();
 
-Ember.Debug.mixinsForObject = mixinsForObject;
+Ember.Debug.mixinsForObject = function(object) {
+  var details = mixinsForObject(object);
+  port1.postMessage({ from: 'inspectedWindow', objectId: details.objectId, name: object.toString(), details: details.mixins });
+};
+
 Ember.Debug.valueForObjectProperty = valueForObjectProperty;
 
 function applyMixinOverrides(mixinDetails) {

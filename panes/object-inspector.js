@@ -17,8 +17,8 @@
     App.ApplicationController = Ember.Controller.extend({
       needs: ['mixinStack', 'mixinDetails'],
 
-      pushMixinDetails: function(name, objectId, details) {
-        details = { name: name, objectId: objectId, mixins: details };
+      pushMixinDetails: function(name, property, objectId, details) {
+        details = { name: name, property: property, objectId: objectId, mixins: details };
         this.get('controllers.mixinStack').pushObject(details);
       },
 
@@ -28,12 +28,26 @@
 
       activateMixinDetails: function(name, details, objectId) {
         this.set('controllers.mixinStack.model', []);
-        this.pushMixinDetails(name, objectId, details);
+        this.pushMixinDetails(name, undefined, objectId, details);
       }
     });
 
     App.MixinStackController = Ember.ArrayController.extend({
+      needs: ['application'],
 
+      trail: function() {
+        var nested = this.slice(1);
+        if (nested.length === 0) { return ""; }
+        return "." + nested.mapProperty('property').join(".");
+      }.property('[]'),
+
+      isNested: function() {
+        return this.get('length') > 1;
+      }.property('[]'),
+
+      popStack: function() {
+        this.get('controllers.application').popMixinDetails();
+      }
     });
 
     App.MixinDetailsController = Ember.ObjectController.extend({
@@ -67,12 +81,19 @@
   window.updateObject = function(options) {
     var details = options.details,
         name = options.name,
+        property = options.property,
         objectId = options.objectId;
 
     Ember.NativeArray.apply(details);
     details.forEach(arrayize);
 
-    App.__container__.lookup('controller:application').activateMixinDetails(name, details, objectId);
+    var controller = App.__container__.lookup('controller:application');
+
+    if (options.parentObject) {
+      controller.pushMixinDetails(name, property, objectId, details);
+    } else {
+      controller.activateMixinDetails(name, details, objectId);
+    }
   };
 
   window.updateProperty = function(options) {

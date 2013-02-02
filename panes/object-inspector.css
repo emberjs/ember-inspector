@@ -21,38 +21,80 @@ body {
   margin-bottom: 30px;
 }
 
-.ember-object h1 {
+.ember-object h1, .ember-object > h2 {
   font-family: Menlo, Monaco, monospace;
   font-size: 15px;
   color: #639;
   font-weight: bold;
   text-shadow: 0px 1px 1px #fff;
   border-radius: 5px;
-  margin-bottom: 5px;
+  margin-bottom: 0;
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+  -webkit-align-items: center;
 }
 
-.ember-object h2 {
+.ember-object h1 button, .ember-object h1 span {
+  font-family: 'Lucida Grande';
+  font-weight: normal;
+  border: none;
+  background: none;
+  font-size: 16px;
+  height: 24px;
+  display: inline;
+  margin: 0 10px 0 0;
+  padding: 0 10px 0 0;
+}
+
+.ember-object h1 button {
+  color: #009;
+  border-right: 1px solid #009;
+  cursor: pointer;
+}
+
+.ember-object h1 button:hover {
+  color: #004;
+}
+
+.ember-object h1 button:active {
+  color: #002;
+}
+
+.ember-object h1 span {
+  color: #999;
+  border-right: 1px solid #999;
+}
+
+.ember-object > h2 {
+  font-size: 12px;
+  font-weight: normal;
+  margin-bottom: 10px;
+  padding-left: 77px;
+  color: #669;
+}
+
+.ember-object h2.mixin {
   padding: 2px;
   background-color: #ddd;
   text-shadow: 0px 1px 1px #fff;
 }
 
-.ember-object h2.properties {
+.ember-object h2.mixin.properties {
   cursor: pointer;
 }
 
-.ember-object h2:before {
+.ember-object h2.mixin:before {
   content: "\25B6";
   color: #555;
   margin-right: 4px;
   font-size: 80%;
 }
 
-.ember-object h2.no-properties:before {
+.ember-object h2.mixin.no-properties:before {
   opacity: 0;
 }
 
-.ember-object .expanded h2:before {
+.ember-object .expanded h2.mixin:before {
   content: "\25BC";
 }
 

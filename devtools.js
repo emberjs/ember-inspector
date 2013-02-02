@@ -1,15 +1,19 @@
 /*global chrome*/
 
-var firstTime = true;
+var injectedPanel = false, injectedPage = false;
 
 chrome.devtools.panels.create("Ember", "images/hamster.png", "panes/object-inspector.html", function(panel) {
   var panelWindow, queuedSend;
 
+  panel.onHidden.addListener(function() {
+    panelWindow = null;
+  });
+
   panel.onShown.addListener(function(win) {
     panelWindow = win;
 
-    if (firstTime) {
-      firstTime = false;
+    if (!injectedPanel) {
+      injectedPanel = false;
       panelWindow.activate();
 
       panelWindow.calculate = function(property, mixinIndex) {
@@ -28,10 +32,6 @@ chrome.devtools.panels.create("Ember", "images/hamster.png", "panes/object-inspe
     if (queuedSend) {
       panelWindow[queuedSend.name].apply(panelWindow, queuedSend.args);
     }
-  });
-
-  panel.onHidden.addListener(function() {
-    panelWindow = null;
   });
 
   var port = chrome.extension.connect();
