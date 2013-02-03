@@ -1,23 +1,53 @@
-window.addEventListener('message', function(event) {
-  if (event.data === 'debugger-client') {
-    var port = event.ports[0];
-    listenToPort(port);
-  } else if (event.data.type) {
-    chrome.extension.sendMessage(event.data);
-  }
-});
-
-function listenToPort(port) {
-  port.addEventListener('message', function(event) {
-    chrome.extension.sendMessage(event.data);
+// check if theres been sufficient time and no ember-application class
+// if so we don't really need to do anything
+if (document.readyState == "complete") {
+  emberCheck()
+} else {
+  window.addEventListener("load", function () {
+    setTimeout(emberCheck, 0);
   });
+}
 
-  chrome.extension.onMessage.addListener(function(message) {
-    if (message.from === 'devtools') {
-      port.postMessage(message);
+// ember-application found? proceed
+function emberCheck() {
+  if (document.getElementsByClassName('ember-application').length > 0) {
+    emberFound();
+  }
+}
+
+function emberFound() {
+  var port = chrome.extension.connect({ name: 'content' });
+
+  port.onMessage.addListener(function (msg) {
+    // msgs that are on their way to 'inspected' arrive here
+    if (msg.dest !== 'inspected') {
+      // messagees sent to content script it self would be handled here
+    } else {
+    window.postMessage(msg, "*");
     }
   });
 
-  port.start();
-}
+  window.addEventListener("message", (function (event) {
+    // when messages come back from the inspected page they arrive here
+    // this is usually going to be with a payload on its way to the panel
+    var data = event.data;
+    console.log("message", event);
+    if (data.dest !== "inspected") {
+      port.postMessage(data);
+    }
+  }), false);
 
+
+
+  // this is our script injection via script tag
+  var s = document.createElement('script');
+
+  s.src = chrome.extension.getURL('panes/ember-debug.js');
+
+  s.onload = function () {
+    s.parentNode.removeChild(s);
+  };
+
+  document.head.appendChild(s);
+
+}
