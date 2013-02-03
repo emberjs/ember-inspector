@@ -1,22 +1,35 @@
 {
+  "name": "Ember Debug Panel",
+
+  "version": "1.0.7",
+
   "manifest_version": 2,
 
-  "name": "One-click Kittens",
-  "description": "This extension demonstrates a browser action with kittens.",
-  "version": "1.0",
+  "description": "Ember DevTools",
+
+  "minimum_chrome_version": "23.0",
 
   "permissions": [
+    "tabs",
     "experimental",
-    "http://*/*",
-    "file://*/*"
+    "<all_urls>"
   ],
+
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "devtools_page": "devtools.html",
-  "content_scripts": [{
-    "matches": ["http://*/*", "file://*/*"],
-    "js": ["content-script.js"]
-  }],
+
   "background": {
-    "scripts": ["background-script.js"]
-  }
+    "scripts": ["background-script.js"],
+    "persistent": true
+  },
+
+"devtools_page": "devtools.html",
+
+"content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content-script.js"],
+    "run_at": "document_end"
+  }],
+
+  "web_accessible_resources": ["panes/ember-debug.js"]
+
 }

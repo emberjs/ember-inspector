@@ -1,88 +1,38 @@
-/*global chrome*/
 
-console.log("Devtools");
-var injectedPanel = false, injectedPage = false, panelVisible = false, savedStack = [];
+chrome.devtools.panels.create("EmberDebug", "images/hamster.png", "panes/object-inspector.html", function (panel) {
 
-chrome.devtools.network.onNavigated.addListener(function() {
-  injectDebugger();
-  savedStack = [];
-});
+  // panelWindow will be the window of the panel, however it doesn't exist until the panel is shown so
+  // any messages sent before panelWindow exists will be queued for delivery in data[]
+  // lastly the port this instance of devtools will use to talk to our inspected page...
+  // by way of its content script... by way of the extensions single background page ...
+  var panelWindow = undefined,
+      data = [],
+      port = chrome.extension.connect({ name: 'devtools' });
 
-if (!injectedPanel) {
-  injectedPanel = true;
-  chrome.devtools.panels.create("Ember", "images/hamster.png", "panes/object-inspector.html", function(panel) {
-    var panelWindow, queuedSend;
+  port.onMessage.addListener(function (msg) {
 
-    panel.onHidden.addListener(function() {
-      panelVisible = false;
-    });
-
-    panel.onShown.addListener(function(win) {
-      panelVisible = true;
-      if (!panelWindow) {
-        panelWindow = win;
-
-        panelWindow.activate();
-
-        panelWindow.calculate = function(property, mixinIndex) {
-          port.postMessage({ from: 'devtools', type: 'calculate', objectId: objectId, property: property.name, mixinIndex: mixinIndex });
-        };
-
-        panelWindow.digDeeper = function(objectId, property) {
-          port.postMessage({ from: 'devtools', type: 'digDeeper', objectId: objectId, property: property.name });
-        };
-
-        chrome.devtools.network.onNavigated.addListener(function() {
-          panelWindow.resetDebugger();
-        });
-      }
-
-      if (queuedSend) {
-        panelWindow[queuedSend.name].apply(panelWindow, queuedSend.args);
-        queuedSend = null;
-      }
-
-      savedStack.forEach(function(item) {
-        panelWindow.updateObject(item);
-      });
-    });
-
-    var port = chrome.extension.connect();
-    port.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
-
-    var objectId;
-
-    port.onMessage.addListener(function(message) {
-      var toSend;
-
-      if (message.details) {
-        toSend = { name: 'updateObject', args: [message] };
-        objectId = message.objectId;
-      } else if (message.property) {
-        toSend = { name: 'updateProperty', args: [message] };
-      }
-
-      console.log(panelWindow, toSend);
-      if (panelWindow && toSend) {
-        panelWindow[toSend.name].apply(panelWindow, toSend.args);
-      } else {
-        queuedSend = toSend;
-      }
-    });
-
-    injectDebugger();
+    if (panelWindow) {
+      this.handleMsg(msg);
+    } else {
+      data.push(msg);
+    }
   });
-}
 
-function injectDebugger() {
-  var url = chrome.extension.getURL('panes/ember-debug.js');
+  // handle any data[]
+  panel.onShown.addListener(function (window) {
+    // only gotta do it once
+    panel.onShown.removeListener(this);
 
-  var xhr = new XMLHttpRequest();
-  xhr.open("GET", chrome.extension.getURL('/panes/ember-debug.js'), false);
-  xhr.send();
+    panelWindow = window;
 
-  setTimeout(function() {
-    chrome.devtools.inspectedWindow.eval(xhr.responseText);
-  }, 100);
-}
+    var msg;
+    while (msg = data.shift()) {
+      this.handleMsg(msg);
+    }
+    panelWindow.respond = function (msg) {
+      port.postMessage(msg);
+    };
 
+  });
+
+});
