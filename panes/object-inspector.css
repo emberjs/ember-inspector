@@ -214,3 +214,31 @@ body > .ember-view {
 .ember-object .type-descriptor {
   color: #900;
 }
+
+div.view-tree {
+  font-family: Menlo, sans-serif;
+  font-size: 12px;
+}
+
+ul.view-tree-node {
+  list-style-type: none;
+  margin: 0;
+  padding: 0 0 0 10px;
+}
+
+ul.view-tree-node li ul {
+  margin-top: 5px;
+}
+
+ul.view-tree-node span.controller {
+  color: #939;
+}
+
+ul.view-tree-node span.template {
+  color: #999;
+}
+
+ul.view-tree-node p {
+  margin: 0;
+  padding: 0;
+}

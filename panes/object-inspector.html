@@ -10,13 +10,31 @@
   <body>
     <script type="text/x-handlebars">
       <div class='main-area'>
-        <h1>Hi</h1>
-        {{outlet}}
+        {{render "viewTree"}}
       </div>
 
       <div class='ember-object'>
         {{render "mixinStack"}}
       </div>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="viewTree">
+      <div class='view-tree'>
+        {{partial "viewTree"}}
+      </div>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="_viewTree">
+      <ul class='view-tree-node'>
+        {{#each node in node.children}}
+        <li><p>
+          <span class='controller'>{{node.value.controller}}</span>,
+          <span class='template'>template:{{node.value.template}}</span>
+        </p>
+        {{partial "viewTree"}}
+        </li>
+        {{/each}}
+      </ul>
     </script>
 
     <script type="text/x-handlebars" data-template-name="mixinStack">

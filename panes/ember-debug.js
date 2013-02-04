@@ -268,10 +268,24 @@ function activateDebugger() {
 
     tagName = tagName || 'div';
 
-    return { viewClass: viewClass, template: templateName, tagName: tagName, controller: view.get('controller').toString() };
+    return { viewClass: viewClass, template: templateName || '(inline)', tagName: tagName, controller: inspectController(view.get('controller')) };
+  }
+
+  function inspectController(controller) {
+    return controller.get('_debugContainerKey') || controller.toString();
   }
 
   Ember.Debug.viewTree = viewTree;
+
+  Ember.Debug.sendViewTree = function() {
+    var tree = viewTree();
+
+    port1.postMessage({
+      from: 'inspectedWindow',
+      type: 'viewTree',
+      tree: tree
+    });
+  };
 }
 
 var div = document.createElement('div');
@@ -333,7 +347,7 @@ Ember.Debug.highlightView = function(element) {
   });
 
   Ember.$(div).html("<p><span>template</span>=<span>" + escapeHTML(templateName || '(inline)') + "</p>" +
-                    "<p><span>controller</span>=<span>" + escapeHTML(controller.toString()) + "</p>");
+                    "<p><span>controller</span>=<span>" + escapeHTML(inspectController(controller)) + "</p>");
 
   Ember.$('p', div).css({ margin: 0, backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: '5px', color: 'rgb(0, 0, 153)' });
   Ember.$('p span:first-child', div).css({ color: 'rgb(153, 153, 0)' });

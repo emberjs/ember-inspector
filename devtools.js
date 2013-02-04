@@ -59,7 +59,9 @@ if (!injectedPanel) {
     port.onMessage.addListener(function(message) {
       var toSend;
 
-      if (message.details) {
+      if (message.type === 'viewTree') {
+        toSend = { name: 'viewTree', args: [message] };
+      } else if (message.details) {
         toSend = { name: 'updateObject', args: [message] };
         objectId = message.objectId;
       } else if (message.property) {

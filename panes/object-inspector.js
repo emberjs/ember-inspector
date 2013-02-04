@@ -76,6 +76,14 @@
       }
     });
 
+    App.ViewTreeController = Ember.Controller.extend({
+
+    });
+
+    App.ViewTreeItemController = Ember.Controller.extend({
+
+    });
+
     window.resetDebugger();
 
     Ember.$(document).on("click", "#reload-button", function() {
@@ -107,8 +115,19 @@
     Ember.set(property, 'calculated', options.value);
   };
 
+  window.viewTree = function(options) {
+    var viewTree = App.__container__.lookup('controller:viewTree');
+    viewTree.set('node', { children: [ arrayizeTree(options.tree) ] });
+  };
+
   function arrayize(mixin) {
     Ember.NativeArray.apply(mixin.properties);
+  }
+
+  function arrayizeTree(tree) {
+    Ember.NativeArray.apply(tree.children);
+    tree.children.forEach(arrayizeTree);
+    return tree;
   }
 
 })();

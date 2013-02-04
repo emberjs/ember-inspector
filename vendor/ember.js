@@ -150,8 +150,8 @@ Ember.deprecateFunc = function(message, func) {
 
 })();
 
-// Version: v1.0.0-pre.4-160-gceec6f2
-// Last commit: ceec6f2 (2013-02-03 16:37:19 -0800)
+// Version: v1.0.0-pre.4-161-g538b7a0
+// Last commit: 538b7a0 (2013-02-03 17:48:00 -0800)
 
 
 (function() {
@@ -6260,6 +6260,7 @@ define("container",
 
         var hash = buildInjections(container, injections);
         hash.container = container;
+        hash._debugContainerKey = fullName;
 
         value = factory.create(hash);
 
@@ -11463,6 +11464,8 @@ Ember.ObjectProxy = Ember.Object.extend(
   }, 'content'),
 
   isTruthy: Ember.computed.bool('content'),
+
+  _debugContainerKey: null,
 
   willWatchProperty: function (key) {
     var contentKey = 'content.' + key;
@@ -26670,8 +26673,8 @@ Ember States
 
 
 })();
-// Version: v1.0.0-pre.4-160-gceec6f2
-// Last commit: ceec6f2 (2013-02-03 16:37:19 -0800)
+// Version: v1.0.0-pre.4-161-g538b7a0
+// Last commit: 538b7a0 (2013-02-03 17:48:00 -0800)
 
 
 (function() {
