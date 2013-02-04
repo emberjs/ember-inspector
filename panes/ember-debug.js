@@ -251,30 +251,6 @@ function activateDebugger() {
     });
   }
 
-  function inspectView(view) {
-    var templateName = view.get('templateName') || view.get('_debugTemplateName'),
-        viewClass = view.constructor.toString(), match;
-
-    if (viewClass.match(/\._/)) {
-      viewClass = "virtual";
-    } else if (match = viewClass.match(/\(subclass of (.*)\)/)) {
-      viewClass = match[1];
-    }
-
-    var tagName = view.get('tagName');
-    if (tagName === '') {
-      tagName = '(virtual)';
-    }
-
-    tagName = tagName || 'div';
-
-    return { viewClass: viewClass, template: templateName || '(inline)', tagName: tagName, controller: inspectController(view.get('controller')) };
-  }
-
-  function inspectController(controller) {
-    return controller.get('_debugContainerKey') || controller.toString();
-  }
-
   Ember.Debug.viewTree = viewTree;
 
   Ember.Debug.sendViewTree = function() {
@@ -287,6 +263,8 @@ function activateDebugger() {
     });
   };
 }
+
+
 
 var div = document.createElement('div');
 div.style.display = 'none';
@@ -325,8 +303,10 @@ Ember.Debug.highlightView = function(element) {
     }
   } else if (element instanceof Ember.View) {
     view = element;
+    rect = view.get('element').getBoundingClientRect();
   } else {
     view = Ember.Views.views[element.id];
+    rect = element.getBoundingClientRect();
   }
 
   var templateName = view.get('templateName') || view.get('_debugTemplateName'),
@@ -362,6 +342,30 @@ function escapeHTML(string) {
   var div = document.createElement('div');
   div.appendChild(document.createTextNode(string));
   return div.innerHTML;
+}
+
+function inspectView(view) {
+  var templateName = view.get('templateName') || view.get('_debugTemplateName'),
+      viewClass = view.constructor.toString(), match;
+
+  if (viewClass.match(/\._/)) {
+    viewClass = "virtual";
+  } else if (match = viewClass.match(/\(subclass of (.*)\)/)) {
+    viewClass = match[1];
+  }
+
+  var tagName = view.get('tagName');
+  if (tagName === '') {
+    tagName = '(virtual)';
+  }
+
+  tagName = tagName || 'div';
+
+  return { viewClass: viewClass, template: templateName || '(inline)', tagName: tagName, controller: inspectController(view.get('controller')) };
+}
+
+function inspectController(controller) {
+  return controller.get('_debugContainerKey') || controller.toString();
 }
 
 })();
