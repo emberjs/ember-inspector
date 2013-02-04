@@ -8,8 +8,12 @@
     <link href="/panes/object-inspector.css" rel="stylesheet">
   </head>
   <body>
-    <button id="reload-button">Reload</button>
     <script type="text/x-handlebars">
+      <div class='main-area'>
+        <h1>Hi</h1>
+        {{outlet}}
+      </div>
+
       <div class='ember-object'>
         {{render "mixinStack"}}
       </div>

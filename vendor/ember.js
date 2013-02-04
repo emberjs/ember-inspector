@@ -150,8 +150,8 @@ Ember.deprecateFunc = function(message, func) {
 
 })();
 
-// Version: v1.0.0-pre.4-159-g0f74043
-// Last commit: 0f74043 (2013-02-02 23:13:34 -0800)
+// Version: v1.0.0-pre.4-160-gceec6f2
+// Last commit: ceec6f2 (2013-02-03 16:37:19 -0800)
 
 
 (function() {
@@ -23402,6 +23402,8 @@ function setupView(view, container, options) {
 
   if (!get(view, 'templateName')) {
     set(view, 'template', options.template);
+
+    set(view, '_debugTemplateName', options.name);
   }
 
   set(view, 'renderedName', options.name);
@@ -26668,8 +26670,8 @@ Ember States
 
 
 })();
-// Version: v1.0.0-pre.4-159-g0f74043
-// Last commit: 0f74043 (2013-02-02 23:13:34 -0800)
+// Version: v1.0.0-pre.4-160-gceec6f2
+// Last commit: ceec6f2 (2013-02-03 16:37:19 -0800)
 
 
 (function() {

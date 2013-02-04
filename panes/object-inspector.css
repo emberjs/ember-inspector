@@ -16,6 +16,19 @@ body {
   color: #333;
 }
 
+body > .ember-view {
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+}
+
+.main-area {
+  -webkit-flex-grow: 1;
+}
+
+.ember-object {
+  width: 500px;
+}
+
 #reload-button {
   display: block;
   margin-bottom: 30px;
