@@ -22,11 +22,32 @@ function activateDebugger() {
     if (message.type === 'calculate') {
       value = valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
       port1.postMessage(value);
+      bindPropertyToDebugger(message);
     } else if (message.type === 'digDeeper') {
       value = digIntoObject(message.objectId, message.property);
       if (value) { port1.postMessage(value); }
     }
   });
+
+  function bindPropertyToDebugger(message) {
+    var objectId = message.objectId,
+        property = message.property,
+        mixinIndex = message.mixinIndex;
+
+    var object = sentObjects[objectId];
+
+    Ember.addObserver(object, property, function() {
+      var value = Ember.get(object, property);
+
+      port1.postMessage({
+        from: 'inspectedWindow',
+        objectId: objectId,
+        property: property,
+        value: inspect(value),
+        mixinIndex: mixinIndex
+      });
+    });
+  }
 
   port1.start();
 
@@ -118,7 +139,16 @@ function activateDebugger() {
     for (var prop in hash) {
       if (!hash.hasOwnProperty(prop)) { continue; }
       if (prop.charAt(0) === '_') { continue; }
+      if (isMandatorySetter(hash, prop)) { continue; }
+
       replaceProperty(properties, prop, hash[prop]);
+    }
+  }
+
+  function isMandatorySetter(object, prop) {
+    var descriptor = Object.getOwnPropertyDescriptor(object, prop);
+    if (descriptor.set && descriptor.set === Ember.MANDATORY_SETTER_FUNCTION) {
+      return true;
     }
   }
 
