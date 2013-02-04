@@ -32,6 +32,10 @@ if (!injectedPanel) {
           port.postMessage({ from: 'devtools', type: 'digDeeper', objectId: objectId, property: property.name });
         };
 
+        panelWindow.dropObject = function(objectId) {
+          port.postMessage({ from: 'devtools', type: 'dropObject', objectId: objectId });
+        };
+
         chrome.devtools.network.onNavigated.addListener(function() {
           panelWindow.resetDebugger();
         });

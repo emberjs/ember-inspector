@@ -23,10 +23,15 @@
       },
 
       popMixinDetails: function() {
-        this.get('controllers.mixinStack').popObject();
+        var item = this.get('controllers.mixinStack').popObject();
+        window.dropObject(item.objectId);
       },
 
       activateMixinDetails: function(name, details, objectId) {
+        var objects = this.get('controllers.mixinStack').forEach(function(item) {
+          window.dropObject(item.objectId);
+        });
+
         this.set('controllers.mixinStack.model', []);
         this.pushMixinDetails(name, undefined, objectId, details);
       }

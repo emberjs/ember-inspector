@@ -26,8 +26,12 @@ function activateDebugger() {
     } else if (message.type === 'digDeeper') {
       value = digIntoObject(message.objectId, message.property);
       if (value) { port1.postMessage(value); }
+    } if (message.type === 'dropObject') {
+      dropObject(message.objectId);
     }
   });
+
+  port1.start();
 
   function bindPropertyToDebugger(message) {
     var objectId = message.objectId,
@@ -36,7 +40,7 @@ function activateDebugger() {
 
     var object = sentObjects[objectId];
 
-    Ember.addObserver(object, property, function() {
+    function handler() {
       var value = Ember.get(object, property);
 
       port1.postMessage({
@@ -46,12 +50,29 @@ function activateDebugger() {
         value: inspect(value),
         mixinIndex: mixinIndex
       });
-    });
+    }
+
+    Ember.addObserver(object, property, handler);
+    boundObservers[objectId] = boundObservers[objectId] || [];
+    boundObservers[objectId].push({ property: property, handler: handler });
   }
 
-  port1.start();
+  function dropObject(objectId) {
+    var observers = boundObservers[objectId],
+        object = sentObjects[objectId];
+
+    if (observers) {
+      observers.forEach(function(observer) {
+        Ember.removeObserver(object, observer.property, observer.handler);
+      });
+    }
+
+    delete boundObservers[objectId];
+    delete sentObjects[objectId];
+  }
 
   var sentObjects = {},
+      boundObservers = {},
       sentObjectId = 0;
 
   function mixinsForObject(object) {
