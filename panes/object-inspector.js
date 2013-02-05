@@ -77,11 +77,30 @@
     });
 
     App.ViewTreeController = Ember.Controller.extend({
+      showLayer: function(node) {
+        window.showLayer(node.value.objectId);
+      },
 
+      hideLayer: function(node) {
+        window.hideLayer(node.value.objectId);
+      }
     });
 
     App.ViewTreeItemController = Ember.Controller.extend({
 
+    });
+
+    App.TreeNodeControllerView = Ember.View.extend({
+      tagName: 'span',
+      classNames: 'controller',
+
+      mouseEnter: function() {
+        this.get('controller').send('showLayer', this.get('node'));
+      },
+
+      mouseLeave: function() {
+        this.get('controller').send('hideLayer', this.get('node'));
+      }
     });
 
     window.resetDebugger();

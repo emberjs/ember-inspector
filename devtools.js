@@ -36,6 +36,14 @@ if (!injectedPanel) {
           port.postMessage({ from: 'devtools', type: 'dropObject', objectId: objectId });
         };
 
+        panelWindow.showLayer = function(objectId) {
+          port.postMessage({ from: 'devtools', type: 'showLayer', objectId: objectId });
+        };
+
+        panelWindow.hideLayer = function(objectId) {
+          port.postMessage({ from: 'devtools', type: 'hideLayer', objectId: objectId });
+        };
+
         chrome.devtools.network.onNavigated.addListener(function() {
           panelWindow.resetDebugger();
         });

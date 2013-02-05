@@ -232,10 +232,16 @@ ul.view-tree-node li ul {
 
 ul.view-tree-node span.controller {
   color: #939;
+  cursor: pointer;
+}
+
+ul.view-tree-node span.controller:hover + span.template {
+  display: inline;
 }
 
 ul.view-tree-node span.template {
   color: #999;
+  display: none;
 }
 
 ul.view-tree-node p {

@@ -11,6 +11,29 @@ if (document.readyState === 'complete') {
   document.addEventListener('DOMContentLoaded', activeDebugger);
 }
 
+var sentObjects = {},
+    boundObservers = {},
+    sentObjectId = 0;
+
+function retainObject(object) {
+  sentObjects[++sentObjectId] = object;
+  return sentObjectId;
+}
+
+function dropObject(objectId) {
+  var observers = boundObservers[objectId],
+      object = sentObjects[objectId];
+
+  if (observers) {
+    observers.forEach(function(observer) {
+      Ember.removeObserver(object, observer.property, observer.handler);
+    });
+  }
+
+  delete boundObservers[objectId];
+  delete sentObjects[objectId];
+}
+
 function activateDebugger() {
   var port;
 
@@ -27,8 +50,12 @@ function activateDebugger() {
     } else if (message.type === 'digDeeper') {
       value = digIntoObject(message.objectId, message.property);
       if (value) { port1.postMessage(value); }
-    } if (message.type === 'dropObject') {
+    } else if (message.type === 'dropObject') {
       dropObject(message.objectId);
+    } else if (message.type === 'showLayer') {
+      showLayer(message.objectId);
+    } else if (message.type === 'hideLayer') {
+      hideLayer();
     }
   });
 
@@ -58,24 +85,6 @@ function activateDebugger() {
     boundObservers[objectId].push({ property: property, handler: handler });
   }
 
-  function dropObject(objectId) {
-    var observers = boundObservers[objectId],
-        object = sentObjects[objectId];
-
-    if (observers) {
-      observers.forEach(function(observer) {
-        Ember.removeObserver(object, observer.property, observer.handler);
-      });
-    }
-
-    delete boundObservers[objectId];
-    delete sentObjects[objectId];
-  }
-
-  var sentObjects = {},
-      boundObservers = {},
-      sentObjectId = 0;
-
   function mixinsForObject(object) {
     var mixins = Ember.Mixin.mixins(object),
         mixinDetails = [];
@@ -91,8 +100,7 @@ function activateDebugger() {
 
     applyMixinOverrides(mixinDetails);
 
-    sentObjects[++sentObjectId] = object;
-    return { objectId: sentObjectId, mixins: mixinDetails };
+    return { objectId: retainObject(object), mixins: mixinDetails };
   }
 
   function valueForObjectProperty(objectId, property, mixinIndex) {
@@ -264,8 +272,6 @@ function activateDebugger() {
   };
 }
 
-
-
 var div = document.createElement('div');
 div.style.display = 'none';
 document.body.appendChild(div);
@@ -288,6 +294,14 @@ function virtualRange(view) {
   range.setEndBefore(Ember.$('#' + endId)[0]);
 
   return range;
+}
+
+function showLayer(objectId) {
+  Ember.Debug.highlightView(sentObjects[objectId]);
+}
+
+function hideLayer() {
+  div.style.display = 'none';
 }
 
 Ember.Debug.highlightView = function(element) {
@@ -346,7 +360,7 @@ function escapeHTML(string) {
 
 function inspectView(view) {
   var templateName = view.get('templateName') || view.get('_debugTemplateName'),
-      viewClass = view.constructor.toString(), match;
+      viewClass = view.constructor.toString(), match, name;
 
   if (viewClass.match(/\._/)) {
     viewClass = "virtual";
@@ -361,7 +375,25 @@ function inspectView(view) {
 
   tagName = tagName || 'div';
 
-  return { viewClass: viewClass, template: templateName || '(inline)', tagName: tagName, controller: inspectController(view.get('controller')) };
+  if (templateName) {
+    name = templateName;
+  } else {
+    var controller = view.get('controller'),
+        key = controller.get('_debugContainerKey'),
+        className = controller.constructor.toString();
+
+    if (key) {
+      name = key.split(':')[1];
+    } else {
+      if (className.charAt(0) === '(') {
+        className = className.match(/^\(subclass of (.*)\)/)[1];
+      }
+      name = className.split('.')[1];
+      name = name.charAt(0).toLowerCase() + name.substr(1);
+    }
+  }
+
+  return { viewClass: viewClass, objectId: retainObject(view), name: name, template: templateName || '(inline)', tagName: tagName, controller: inspectController(view.get('controller')) };
 }
 
 function inspectController(controller) {

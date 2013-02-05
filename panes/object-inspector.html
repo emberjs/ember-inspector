@@ -28,7 +28,7 @@
       <ul class='view-tree-node'>
         {{#each node in node.children}}
         <li><p>
-          <span class='controller'>{{node.value.controller}}</span>,
+          {{#view App.TreeNodeControllerView nodeBinding="node"}}{{node.value.name}}{{/view}}
           <span class='template'>template:{{node.value.template}}</span>
         </p>
         {{partial "viewTree"}}
