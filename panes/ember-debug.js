@@ -12,12 +12,31 @@ if (document.readyState === 'complete') {
 }
 
 var sentObjects = {},
-    boundObservers = {},
-    sentObjectId = 0;
+    boundObservers = {};
 
 function retainObject(object) {
-  sentObjects[++sentObjectId] = object;
-  return sentObjectId;
+  var meta = Ember.meta(object),
+      guid = Ember.guidFor(object);
+
+  meta._debugReferences = meta._debugReferences || 0;
+  meta._debugReferences++;
+
+  sentObjects[guid] = object;
+
+  return guid;
+}
+
+function releaseObject(objectId) {
+  var object = sentObjects[objectId];
+
+  var meta = Ember.meta(object),
+      guid = Ember.guidFor(object);
+
+  meta._debugReferences--;
+
+  if (meta._debugReferences === 0) {
+    dropObject(guid);
+  }
 }
 
 function dropObject(objectId) {
@@ -50,12 +69,15 @@ function activateDebugger() {
     } else if (message.type === 'digDeeper') {
       value = digIntoObject(message.objectId, message.property);
       if (value) { port1.postMessage(value); }
-    } else if (message.type === 'dropObject') {
-      dropObject(message.objectId);
+    } else if (message.type === 'releaseObject') {
+      releaseObject(message.objectId);
     } else if (message.type === 'showLayer') {
       showLayer(message.objectId);
     } else if (message.type === 'hideLayer') {
       hideLayer();
+    } else if (message.type === 'getTree') {
+      console.log('getTree');
+      sendTree();
     }
   });
 
@@ -233,16 +255,19 @@ function activateDebugger() {
 
   function viewTree() {
     var rootView = Ember.View.views[Ember.$('.ember-application > .ember-view').attr('id')];
+    var retained = [];
 
     var children = [];
-    var tree = { value: inspectView(rootView), children: children };
+    var treeId = retainObject(retained);
 
-    appendChildren(rootView, children);
+    var tree = { value: inspectView(rootView, retained), children: children, treeId: treeId };
+
+    appendChildren(rootView, children, retained);
 
     return tree;
   }
 
-  function appendChildren(view, children) {
+  function appendChildren(view, children, retained) {
     var childViews = view.get('_childViews'),
         controller = view.get('controller');
 
@@ -251,17 +276,25 @@ function activateDebugger() {
 
       if (childView.get('controller') !== controller) {
         var grandChildren = [];
-        children.push({ value: inspectView(childView), children: grandChildren });
-        appendChildren(childView, grandChildren);
+        children.push({ value: inspectView(childView, retained), children: grandChildren });
+        appendChildren(childView, grandChildren, retained);
       } else {
-        appendChildren(childView, children);
+        appendChildren(childView, children, retained);
       }
     });
   }
 
+  function dropTree(retainedTree) {
+    retainedTree.forEach(function(id) {
+      dropObject(id);
+    });
+
+    dropObject(retainedTree);
+  }
+
   Ember.Debug.viewTree = viewTree;
 
-  Ember.Debug.sendViewTree = function() {
+  function sendTree() {
     var tree = viewTree();
 
     port1.postMessage({
@@ -269,7 +302,7 @@ function activateDebugger() {
       type: 'viewTree',
       tree: tree
     });
-  };
+  }
 }
 
 var div = document.createElement('div');
@@ -358,7 +391,7 @@ function escapeHTML(string) {
   return div.innerHTML;
 }
 
-function inspectView(view) {
+function inspectView(view, retained) {
   var templateName = view.get('templateName') || view.get('_debugTemplateName'),
       viewClass = view.constructor.toString(), match, name;
 
@@ -393,7 +426,10 @@ function inspectView(view) {
     }
   }
 
-  return { viewClass: viewClass, objectId: retainObject(view), name: name, template: templateName || '(inline)', tagName: tagName, controller: inspectController(view.get('controller')) };
+  var viewId = retainObject(view);
+  retained.push(viewId);
+
+  return { viewClass: viewClass, objectId: viewId, name: name, template: templateName || '(inline)', tagName: tagName, controller: inspectController(view.get('controller')) };
 }
 
 function inspectController(controller) {

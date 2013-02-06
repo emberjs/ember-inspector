@@ -4,6 +4,8 @@
 
   "use strict";
 
+  var get = Ember.get, set = Ember.set;
+
   window.resetDebugger = function() {
     App.__container__.lookup('controller:mixinStack').set('model', []);
   };
@@ -24,12 +26,12 @@
 
       popMixinDetails: function() {
         var item = this.get('controllers.mixinStack').popObject();
-        window.dropObject(item.objectId);
+        window.releaseObject(item.objectId);
       },
 
       activateMixinDetails: function(name, details, objectId) {
         var objects = this.get('controllers.mixinStack').forEach(function(item) {
-          window.dropObject(item.objectId);
+          window.releaseObject(item.objectId);
         });
 
         this.set('controllers.mixinStack.model', []);
@@ -82,7 +84,13 @@
       },
 
       hideLayer: function(node) {
-        window.hideLayer(node.value.objectId);
+        if (!this.set('isPinned')) {
+          window.hideLayer(node.value.objectId);
+        }
+      },
+
+      pinLayer: function() {
+        this.set('isPinned', true);
       }
     });
 
@@ -100,14 +108,14 @@
 
       mouseLeave: function() {
         this.get('controller').send('hideLayer', this.get('node'));
+      },
+
+      click: function() {
+        this.get('controller').pinLayer();
       }
     });
 
     window.resetDebugger();
-
-    Ember.$(document).on("click", "#reload-button", function() {
-      location.reload(true);
-    });
   };
 
   window.updateObject = function(options) {
@@ -148,5 +156,79 @@
     tree.children.forEach(arrayizeTree);
     return tree;
   }
+
+})();
+
+
+(function() {
+
+var port = chrome.extension.connect();
+port.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
+
+port.onMessage.addListener(function(message) {
+  var toSend;
+
+  if (message.type === 'viewTree') {
+    toSend = { name: 'viewTree', args: [message] };
+  } else if (message.details) {
+    toSend = { name: 'updateObject', args: [message] };
+    objectId = message.objectId;
+  } else if (message.property) {
+    toSend = { name: 'updateProperty', args: [message] };
+  }
+
+  window[toSend.name].apply(window, toSend.args);
+});
+
+var queuedSend, panelVisible;
+
+window.activate();
+
+window.calculate = function(property, mixinIndex) {
+  port.postMessage({ from: 'devtools', type: 'calculate', objectId: objectId, property: property.name, mixinIndex: mixinIndex });
+};
+
+window.digDeeper = function(objectId, property) {
+  port.postMessage({ from: 'devtools', type: 'digDeeper', objectId: objectId, property: property.name });
+};
+
+window.releaseObject = function(objectId) {
+  port.postMessage({ from: 'devtools', type: 'releaseObject', objectId: objectId });
+};
+
+window.showLayer = function(objectId) {
+  port.postMessage({ from: 'devtools', type: 'showLayer', objectId: objectId });
+};
+
+window.hideLayer = function(objectId) {
+  port.postMessage({ from: 'devtools', type: 'hideLayer', objectId: objectId });
+};
+
+window.getTree = function() {
+  port.postMessage({ from: 'devtools', type: 'getTree' });
+};
+
+chrome.devtools.network.onNavigated.addListener(function() {
+  location.reload(true);
+});
+
+function injectDebugger() {
+  var url = chrome.extension.getURL('panes/ember-debug.js');
+
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", chrome.extension.getURL('/panes/ember-debug.js'), false);
+  xhr.send();
+
+  setTimeout(function() {
+    chrome.devtools.inspectedWindow.eval(xhr.responseText, function() {
+      console.log("Asking for tree");
+      setTimeout(function() {
+        window.getTree();
+      }, 200);
+    });
+  }, 200);
+}
+
+injectDebugger();
 
 })();
