@@ -81,18 +81,18 @@
 
     App.ViewTreeController = Ember.Controller.extend({
       showLayer: function(node) {
-        this.set('isPinned', false);
+        this.set('pinnedNode', null);
         window.showLayer(node.value.objectId);
       },
 
       hideLayer: function(node) {
-        if (!this.get('isPinned')) {
+        if (!this.get('pinnedNode')) {
           window.hideLayer(node.value.objectId);
         }
       },
 
-      pinLayer: function() {
-        this.set('isPinned', true);
+      pinLayer: function(node) {
+        this.set('pinnedNode', node);
       }
     });
 
@@ -103,6 +103,12 @@
     App.TreeNodeControllerView = Ember.View.extend({
       tagName: 'span',
       classNames: 'controller',
+      classNameBindings: 'isPinned',
+
+      isPinned: function() {
+        console.log(this.get('controller.pinnedNode'));
+        return this.get('node') === this.get('controller.pinnedNode');
+      }.property('node', 'controller.pinnedNode'),
 
       mouseEnter: function() {
         this.get('controller').send('showLayer', this.get('node'));
@@ -113,7 +119,7 @@
       },
 
       click: function() {
-        this.get('controller').pinLayer();
+        this.get('controller').pinLayer(this.get('node'));
       }
     });
 

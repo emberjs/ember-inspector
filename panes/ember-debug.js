@@ -356,7 +356,8 @@ Ember.Debug.highlightView = function(element) {
   }
 
   var templateName = view.get('templateName') || view.get('_debugTemplateName'),
-      controller = view.get('controller');
+      controller = view.get('controller'),
+      model = controller && controller.get('model');
 
   Ember.$(div).css(rect);
   Ember.$(div).css({
@@ -372,10 +373,22 @@ Ember.Debug.highlightView = function(element) {
     zIndex: 10000
   });
 
-  Ember.$(div).html("<span class='close'>✕</span><p><span>template</span>=<span>" + escapeHTML(templateName || '(inline)') + "</p>" +
-                    "<p><span>controller</span>=<span>" + escapeHTML(controllerName(controller)) + "</p>");
+  var output = "<span class='close'>x</span>";
+
+  if (templateName) {
+    output += "<p class='template'><span>template</span>=<span>" + escapeHTML(templateName) + "</span></p>";
+  }
+
+  output += "<p class='controller'><span>controller</span>=<span>" + escapeHTML(controllerName(controller)) + "</span></p>";
+
+  if (model) {
+    output += "<p class='model'><span>model</span>=<span>" + escapeHTML(model.toString()) + "</span></p>";
+  }
+
+  Ember.$(div).html(output);
 
   Ember.$('p', div).css({ float: 'left', margin: 0, backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: '5px', color: 'rgb(0, 0, 153)' });
+  Ember.$('p.model', div).css({ clear: 'left' });
   Ember.$('p span:first-child', div).css({ color: 'rgb(153, 153, 0)' });
   Ember.$('p span:last-child', div).css({ color: 'rgb(153, 0, 153)' });
   Ember.$('span.close', div).css({
@@ -396,8 +409,12 @@ Ember.Debug.highlightView = function(element) {
     hideLayer();
   });
 
-  Ember.$('p:last-child', div).css({ cursor: 'pointer' }).click(function() {
+  Ember.$('p.controller span:last-child', div).css({ cursor: 'pointer' }).click(function() {
     Ember.Debug.mixinsForObject(controller);
+  });
+
+  Ember.$('p.model span:last-child', div).css({ cursor: 'pointer' }).click(function() {
+    Ember.Debug.mixinsForObject(controller.get('model'));
   });
 };
 

@@ -234,6 +234,10 @@ ul.view-tree-node span.controller {
   cursor: pointer;
 }
 
+ul.view-tree-node span.controller.is-pinned, ul.view-tree-node span.controller:hover {
+  color: #606;
+}
+
 ul.view-tree-node span.controller:hover + span.template {
   display: inline;
 }
