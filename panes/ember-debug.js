@@ -373,12 +373,29 @@ Ember.Debug.highlightView = function(element) {
     zIndex: 10000
   });
 
-  Ember.$(div).html("<p><span>template</span>=<span>" + escapeHTML(templateName || '(inline)') + "</p>" +
-                    "<p><span>controller</span>=<span>" + escapeHTML(inspectController(controller)) + "</p>");
+  Ember.$(div).html("<span class='close'>✕</span><p><span>template</span>=<span>" + escapeHTML(templateName || '(inline)') + "</p>" +
+                    "<p><span>controller</span>=<span>" + escapeHTML(controllerName(controller)) + "</p>");
 
-  Ember.$('p', div).css({ margin: 0, backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: '5px', color: 'rgb(0, 0, 153)' });
+  Ember.$('p', div).css({ float: 'left', margin: 0, backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: '5px', color: 'rgb(0, 0, 153)' });
   Ember.$('p span:first-child', div).css({ color: 'rgb(153, 153, 0)' });
   Ember.$('p span:last-child', div).css({ color: 'rgb(153, 0, 153)' });
+  Ember.$('span.close', div).css({
+    float: 'right',
+    margin: '5px',
+    background: '#666',
+    color: '#eee',
+    fontFamily: 'Menlo',
+    fontSize: '12px',
+    width: 13,
+    height: 13,
+    lineHeight: '12px',
+    borderRadius: 12,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    cursor: 'pointer'
+  }).on('click', function() {
+    hideLayer();
+  });
 
   Ember.$('p:last-child', div).css({ cursor: 'pointer' }).click(function() {
     Ember.Debug.mixinsForObject(controller);
@@ -429,11 +446,28 @@ function inspectView(view, retained) {
   var viewId = retainObject(view);
   retained.push(viewId);
 
-  return { viewClass: viewClass, objectId: viewId, name: name, template: templateName || '(inline)', tagName: tagName, controller: inspectController(view.get('controller')) };
+  return { viewClass: viewClass, objectId: viewId, name: name, template: templateName || '(inline)', tagName: tagName, controller: controllerName(view.get('controller')) };
 }
 
 function inspectController(controller) {
   return controller.get('_debugContainerKey') || controller.toString();
+}
+
+function controllerName(controller) {
+  var key = controller.get('_debugContainerKey'),
+      className = controller.constructor.toString();
+
+  if (key) {
+    name = key.split(':')[1];
+  } else {
+    if (className.charAt(0) === '(') {
+      className = className.match(/^\(subclass of (.*)\)/)[1];
+    }
+    name = className.split('.')[1];
+    name = name.charAt(0).toLowerCase() + name.substr(1);
+  }
+
+  return name;
 }
 
 })();

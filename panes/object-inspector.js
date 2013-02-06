@@ -80,11 +80,12 @@
 
     App.ViewTreeController = Ember.Controller.extend({
       showLayer: function(node) {
+        this.set('isPinned', false);
         window.showLayer(node.value.objectId);
       },
 
       hideLayer: function(node) {
-        if (!this.set('isPinned')) {
+        if (!this.get('isPinned')) {
           window.hideLayer(node.value.objectId);
         }
       },
