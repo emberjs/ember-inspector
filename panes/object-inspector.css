@@ -203,7 +203,6 @@ body > .ember-view {
 }
 
 .ember-object li span.calculated {
-  margin-left: 10px;
   color: #999;
 }
 

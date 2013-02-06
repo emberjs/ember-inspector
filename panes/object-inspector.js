@@ -73,8 +73,9 @@
       },
 
       calculate: function(property) {
+        var objectId = this.get('controllers.mixinDetails.objectId');
         var mixinIndex = this.get('controllers.mixinDetails.mixins').indexOf(this.get('model'));
-        window.calculate(property, mixinIndex);
+        window.calculate(objectId, property, mixinIndex);
       }
     });
 
@@ -185,7 +186,7 @@ var queuedSend, panelVisible;
 
 window.activate();
 
-window.calculate = function(property, mixinIndex) {
+window.calculate = function(objectId, property, mixinIndex) {
   port.postMessage({ from: 'devtools', type: 'calculate', objectId: objectId, property: property.name, mixinIndex: mixinIndex });
 };
 

@@ -67,10 +67,13 @@
             {{else}}
               <span class='pad'></span>
             {{/if}}
-            <span class='property-name'>{{property.name}}</span><span class='property-value'>: </span><span {{bindAttr class="property.value.type"}}>{{property.value.inspect}}</span><span class='by'>(Overridden by {{property.overridden}})</span>
+            <span class='property-name'>{{property.name}}</span><span class='property-value'>: </span>
             {{#if property.calculated}}
-              <span class='calculated'>({{property.calculated}})</span>
+              <span class='calculated'>{{property.calculated}}</span>
+            {{else}}
+              <span {{bindAttr class="property.value.type"}}>{{property.value.inspect}}</span>
             {{/if}}
+            <span class='by'>(Overridden by {{property.overridden}})</span>
           </li>
           {{else}}
           <li>No Properties</li>

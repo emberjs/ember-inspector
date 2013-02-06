@@ -229,8 +229,7 @@ function activateDebugger() {
     if (value instanceof Ember.Object) {
       return { type: "type-ember-object", inspect: value.toString() };
     } else if (value instanceof Ember.ComputedProperty) {
-      if (!value._dependentKeys) { string = "<computed>"; }
-      else { string = "<computed> \u27a4 " + value._dependentKeys.join(", "); }
+      string = "<computed>";
       return { type: "type-descriptor", inspect: string, computed: true };
     } else if (value instanceof Ember.Descriptor) {
       return { type: "type-descriptor", inspect: value.toString(), computed: true };
