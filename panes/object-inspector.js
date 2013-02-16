@@ -85,6 +85,22 @@
         window.showLayer(node.value.objectId);
       },
 
+      previewLayer: function(node) {
+        this.set('originalPinnedNode', this.get('pinnedNode'));
+        this.showLayer(node);
+      },
+
+      hidePreview: function(node) {
+        if (!this.isPinned(node)) {
+          this.set('pinnedNode', this.get('originalPinnedNode'));
+          window.showLayer(this.get('pinnedNode.value.objectId'));
+        }
+      },
+
+      isPinned: function(node) {
+        return this.get('pinnedNode') == node;
+      },
+
       hideLayer: function(node) {
         if (!this.get('pinnedNode')) {
           window.hideLayer(node.value.objectId);
@@ -111,11 +127,11 @@
       }.property('node', 'controller.pinnedNode'),
 
       mouseEnter: function() {
-        this.get('controller').send('showLayer', this.get('node'));
+        this.get('controller').send('previewLayer', this.get('node'));
       },
 
       mouseLeave: function() {
-        this.get('controller').send('hideLayer', this.get('node'));
+        this.get('controller').send('hidePreview', this.get('node'));
       },
 
       click: function() {
