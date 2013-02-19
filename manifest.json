@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "One-click Kittens",
-  "description": "This extension demonstrates a browser action with kittens.",
+  "name": "Ember.js Inspector",
+  "description": "This extension adds a pane to the developer tools pane",
   "version": "1.0",
 
   "permissions": [
