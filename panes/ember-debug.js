@@ -302,6 +302,13 @@ function activateDebugger() {
       tree: tree
     });
   }
+
+  Ember.Debug.sendTree = sendTree;
+
+  Ember.View.addMutationListener(function() {
+    sendTree();
+    hideLayer();
+  });
 }
 
 var div = document.createElement('div');

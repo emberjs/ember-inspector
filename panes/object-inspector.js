@@ -22,10 +22,13 @@
       pushMixinDetails: function(name, property, objectId, details) {
         details = { name: name, property: property, objectId: objectId, mixins: details };
         this.get('controllers.mixinStack').pushObject(details);
+        this.set('controllers.mixinDetails.model', details);
       },
 
       popMixinDetails: function() {
-        var item = this.get('controllers.mixinStack').popObject();
+        var mixinStack = this.get('controllers.mixinStack');
+        var item = mixinStack.popObject();
+        this.set('controllers.mixinDetails.model', mixinStack.get('lastObject'));
         window.releaseObject(item.objectId);
       },
 
