@@ -5,14 +5,14 @@ if (Ember.Debug) { return; }
 
 console.debug("Ember Debugger Active");
 
+var sentObjects = {},
+    boundObservers = {};
+
 if (document.readyState === 'complete') {
   activateDebugger();
 } else {
   document.addEventListener('DOMContentLoaded', activeDebugger);
 }
-
-var sentObjects = {},
-    boundObservers = {};
 
 function retainObject(object) {
   var meta = Ember.meta(object),
