@@ -356,7 +356,6 @@ function isRTL() {
 	return false;
 }
 
-
 function showLayer(objectId) {
   Ember.Debug.highlightView(sentObjects[objectId]);
 }
@@ -383,14 +382,10 @@ Ember.Debug.highlightView = function(element) {
     view = Ember.Views.views[element.id];
     rect = element.getBoundingClientRect();
   }
-   
-
-
 
   var templateName = view.get('templateName') || view.get('_debugTemplateName'),
       controller = view.get('controller'),
       model = controller && controller.get('model');
-
 
   Ember.$(div).css(rect);
   if(isRTL()){
@@ -522,7 +517,5 @@ function controllerName(controller) {
 
   return name;
 }
-
-
 
 })();
