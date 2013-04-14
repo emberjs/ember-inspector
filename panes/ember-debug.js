@@ -335,6 +335,27 @@ function virtualRange(view) {
   return range;
 }
 
+function getStyle(el,styleProp){
+	var x = document.getElementById(el) || document.body;
+	if (x.currentStyle)
+		var y = x.currentStyle[styleProp];
+	else if (window.getComputedStyle)
+		var y = document.defaultView.getComputedStyle(x,null).getPropertyValue(styleProp);
+	return y;
+}
+
+function isRTL() {
+	var html = getStyle('html','direction');
+	if (html == "rtl") {
+		return true;
+	}
+	var body = getStyle(null,'direction');
+	if (body == "rtl") {
+		return true;
+	}
+	return false;
+}
+
 function showLayer(objectId) {
   Ember.Debug.highlightView(sentObjects[objectId]);
 }
@@ -367,6 +388,10 @@ Ember.Debug.highlightView = function(element) {
       model = controller && controller.get('model');
 
   Ember.$(div).css(rect);
+  if(isRTL()){
+	Ember.$(div).css({right: rect.left,left: rect.right});
+  }
+  
   Ember.$(div).css({
     display: "block",
     position: "absolute",
