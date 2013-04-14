@@ -346,11 +346,11 @@ function getStyle(el,styleProp){
 
 function isRTL() {
 	var html = getStyle('html','direction');
-	if (html) {
+	if (html == "rtl") {
 		return true;
 	}
 	var body = getStyle(null,'direction');
-	if (body) {
+	if (body == "rtl") {
 		return true;
 	}
 	return false;
