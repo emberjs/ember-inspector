@@ -8,12 +8,13 @@
   "permissions": [
     "experimental",
     "http://*/*",
+    "https://*/*",
     "file://*/*"
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "devtools_page": "devtools.html",
   "content_scripts": [{
-    "matches": ["http://*/*", "file://*/*"],
+    "matches": ["https://*/*", "http://*/*", "file://*/*"],
     "js": ["content-script.js"]
   }],
   "background": {
