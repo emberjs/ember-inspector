@@ -11,7 +11,7 @@ var sentObjects = {},
 if (document.readyState === 'complete') {
   activateDebugger();
 } else {
-  document.addEventListener('DOMContentLoaded', activeDebugger);
+  document.addEventListener('DOMContentLoaded', activateDebugger);
 }
 
 function retainObject(object) {
