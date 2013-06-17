@@ -109,7 +109,6 @@
       classNameBindings: 'isPinned',
 
       isPinned: function() {
-        console.log(this.get('controller.pinnedNode'));
         return this.get('node') === this.get('controller.pinnedNode');
       }.property('node', 'controller.pinnedNode'),
 
@@ -224,20 +223,22 @@ chrome.devtools.network.onNavigated.addListener(function() {
 });
 
 function injectDebugger() {
-  var url = chrome.extension.getURL('panes/ember-debug.js');
 
   var xhr = new XMLHttpRequest();
-  xhr.open("GET", chrome.extension.getURL('/panes/ember-debug.js'), false);
+  xhr.open("GET", chrome.extension.getURL('/assets/ember-debug.js'), false);
   xhr.send();
+  var emberDebug = xhr.responseText;
 
-  setTimeout(function() {
-    chrome.devtools.inspectedWindow.eval(xhr.responseText, function() {
-      console.log("Asking for tree");
-      setTimeout(function() {
-        window.getTree();
-      }, 200);
-    });
-  }, 200);
+  xhr = new XMLHttpRequest();
+  xhr.open("GET", chrome.extension.getURL('/assets/startup_wrapper.js'), false);
+  xhr.send();
+  var startupWrapper = xhr.responseText;
+
+  // make sure ember debug runs
+  // after application has initialized
+  emberDebug = startupWrapper.replace("{{emberDebug}}", emberDebug);
+
+  chrome.devtools.inspectedWindow.eval(emberDebug);
 }
 
 injectDebugger();

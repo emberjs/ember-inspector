@@ -1,18 +1,11 @@
 /*jshint boss:true*/
-(function() {
-
-if (Ember.Debug) { return; }
 
 console.debug("Ember Debugger Active");
 
 var sentObjects = {},
     boundObservers = {};
 
-if (document.readyState === 'complete') {
-  activateDebugger();
-} else {
-  document.addEventListener('DOMContentLoaded', activateDebugger);
-}
+activateDebugger();
 
 function retainObject(object) {
   var meta = Ember.meta(object),
@@ -76,7 +69,6 @@ function activateDebugger() {
     } else if (message.type === 'hideLayer') {
       hideLayer();
     } else if (message.type === 'getTree') {
-      console.log('getTree');
       sendTree();
     }
   });
@@ -145,7 +137,7 @@ function activateDebugger() {
       var details = mixinsForObject(object);
       port1.postMessage({ from: 'inspectedWindow', parentObject: objectId, property: property, objectId: details.objectId, name: object.toString(), details: details.mixins });
     } else {
-      console.log(object);
+      // console.log(object);
     }
   }
 
@@ -263,6 +255,7 @@ function activateDebugger() {
 
     appendChildren(rootView, children, retained);
 
+
     return tree;
   }
 
@@ -295,7 +288,6 @@ function activateDebugger() {
 
   function sendTree() {
     var tree = viewTree();
-
     port1.postMessage({
       from: 'inspectedWindow',
       type: 'viewTree',
@@ -492,5 +484,3 @@ function controllerName(controller) {
 
   return name;
 }
-
-})();
