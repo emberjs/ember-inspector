@@ -1,5 +1,4 @@
 /*global chrome*/
-
 chrome.extension.onMessage.addListener(function(request, sender) {
   var port = ports[sender.tab.id];
 

@@ -13,6 +13,7 @@
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "devtools_page": "devtools.html",
+  "options_page": "panes/object-inspector.html",
   "content_scripts": [{
     "matches": ["https://*/*", "http://*/*", "file://*/*"],
     "js": ["content-script.js"]

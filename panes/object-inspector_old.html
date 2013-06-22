@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="/vendor/jquery.js"></script>
+    <script src="/vendor/handlebars.js"></script>
+    <script src="/vendor/ember.js"></script>
+    <script src="/panes/object-inspector.js"></script>
+    <link href="/panes/object-inspector.css" rel="stylesheet">
+  </head>
+  <body>
+    <script type="text/x-handlebars">
+      <div class='main-area'>
+        {{render "viewTree"}}
+      </div>
+
+      <div class='ember-object'>
+        {{render "mixinStack"}}
+      </div>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="viewTree">
+      <div class='view-tree'>
+        {{partial "viewTree"}}
+      </div>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="_viewTree">
+      <ul class='view-tree-node'>
+        {{#each node in node.children}}
+        <li><p>
+          {{#view App.TreeNodeControllerView nodeBinding="node"}}{{node.value.name}}{{/view}}
+          <span class='template'>template:{{node.value.template}}</span>
+        </p>
+        {{partial "viewTree"}}
+        </li>
+        {{/each}}
+      </ul>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="mixinStack">
+      <h1>
+        {{#if isNested}}
+          <button {{action popStack}}>◀ Back</button>
+        {{else}}
+          <span>◀ Back</span>
+        {{/if}}
+        {{firstObject.name}}
+      </h1>
+      <h2>{{trail}}</h2>
+      {{render "mixinDetails"}}
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="mixinDetails">
+      {{#each mixin in mixins itemController="mixinDetail"}}
+      <div {{bindAttr class="mixin.type mixin.isExpanded:expanded"}}>
+        {{#if mixin.properties.length}}
+          <h2 class="mixin properties" {{action toggleProperty 'isExpanded' target=mixin}}>{{mixin.name}}</h2>
+        {{else}}
+          <h2 class="mixin no-properties">{{mixin.name}}</h2>
+        {{/if}}
+        {{#if mixin.isExpanded}}
+        <ul>
+          {{#each property in mixin.properties}}
+          <li {{bindAttr class="property.overridden:overridden"}} {{action "digDeeper" property}}>
+            {{#if property.value.computed}}
+              <button {{action "calculate" property bubbles=false}}><img src="/images/calculate.svg"></button>
+            {{else}}
+              <span class='pad'></span>
+            {{/if}}
+            <span class='property-name'>{{property.name}}</span><span class='property-value'>: </span>
+            {{#if property.calculated}}
+              <span class='calculated'>{{property.calculated}}</span>
+            {{else}}
+              <span {{bindAttr class="property.value.type"}}>{{property.value.inspect}}</span>
+            {{/if}}
+            <span class='by'>(Overridden by {{property.overridden}})</span>
+          </li>
+          {{else}}
+          <li>No Properties</li>
+          {{/each}}
+        </ul>
+        {{/if}}
+      </div>
+      {{/each}}
+    </script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+<h1>
+  {{#if isNested}}
+    <button {{action popStack}}>◀ Back</button>
+  {{else}}
+    <span>◀ Back</span>
+  {{/if}}
+  {{firstObject.name}}
+</h1>
+<h2>{{trail}}</h2>
+{{render "mixinDetails"}}
