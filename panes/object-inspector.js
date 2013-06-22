@@ -13,8 +13,7 @@
   window.activate = function() {
     var App = window.App = Ember.Application.create();
 
-    App.ApplicationRoute = Ember.Route.extend({
-    });
+    App.ApplicationRoute = Ember.Route.extend();
 
     App.ApplicationController = Ember.Controller.extend({
       needs: ['mixinStack', 'mixinDetails'],
@@ -60,8 +59,7 @@
       }
     });
 
-    App.MixinDetailsController = Ember.ObjectController.extend({
-    });
+    App.MixinDetailsController = Ember.ObjectController.extend();
 
     App.MixinDetailController = Ember.ObjectController.extend({
       needs: ['mixinDetails'],
@@ -99,9 +97,7 @@
       }
     });
 
-    App.ViewTreeItemController = Ember.Controller.extend({
-
-    });
+    App.ViewTreeItemController = Ember.Controller.extend();
 
     App.TreeNodeControllerView = Ember.View.extend({
       tagName: 'span',
