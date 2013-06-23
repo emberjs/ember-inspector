@@ -3,9 +3,12 @@
 console.debug("Ember Debugger Active");
 
 var sentObjects = {},
-    boundObservers = {};
+    boundObservers = {},
+    port;
 
-activateDebugger();
+
+Ember.Debug = Ember.Namespace.create();
+
 
 function retainObject(object) {
   var meta = Ember.meta(object),
@@ -46,262 +49,245 @@ function dropObject(objectId) {
   delete sentObjects[objectId];
 }
 
-function activateDebugger() {
-  var port;
 
-  var channel = new MessageChannel(), port1 = channel.port1;
-  window.postMessage('debugger-client', [channel.port2], '*');
 
-  port1.addEventListener('message', function(event) {
-    var message = event.data, value;
+function bindPropertyToDebugger(message) {
+  var objectId = message.objectId,
+      property = message.property,
+      mixinIndex = message.mixinIndex;
 
-    if (message.type === 'calculate') {
-      value = valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
-      port1.postMessage(value);
-      bindPropertyToDebugger(message);
-    } else if (message.type === 'digDeeper') {
-      value = digIntoObject(message.objectId, message.property);
-      if (value) { port1.postMessage(value); }
-    } else if (message.type === 'releaseObject') {
-      releaseObject(message.objectId);
-    } else if (message.type === 'showLayer') {
-      showLayer(message.objectId);
-    } else if (message.type === 'hideLayer') {
-      hideLayer();
-    } else if (message.type === 'getTree') {
-      sendTree();
-    }
+  var object = sentObjects[objectId];
+
+  function handler() {
+    var value = Ember.get(object, property);
+
+    port.send('updateProperty', {
+      objectId: objectId,
+      property: property,
+      value: inspect(value),
+      mixinIndex: mixinIndex
+    });
+  }
+
+  Ember.addObserver(object, property, handler);
+  boundObservers[objectId] = boundObservers[objectId] || [];
+  boundObservers[objectId].push({ property: property, handler: handler });
+}
+
+function mixinsForObject(object) {
+  var mixins = Ember.Mixin.mixins(object),
+      mixinDetails = [];
+
+  var ownProps = propertiesForMixin({ mixins: [{ properties: object }] });
+  mixinDetails.push({ name: "Own Properties", properties: ownProps });
+
+  mixins.forEach(function(mixin) {
+    mixin.toString();
+    var name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor || Ember.guidFor(name);
+    mixinDetails.push({ name: name.toString(), properties: propertiesForMixin(mixin) });
   });
 
-  port1.start();
+  applyMixinOverrides(mixinDetails);
 
-  function bindPropertyToDebugger(message) {
-    var objectId = message.objectId,
-        property = message.property,
-        mixinIndex = message.mixinIndex;
+  return { objectId: retainObject(object), mixins: mixinDetails };
+}
 
-    var object = sentObjects[objectId];
+function valueForObjectProperty(objectId, property, mixinIndex) {
+  var object = sentObjects[objectId], value;
 
-    function handler() {
-      var value = Ember.get(object, property);
-
-      port1.postMessage({
-        from: 'inspectedWindow',
-        objectId: objectId,
-        property: property,
-        value: inspect(value),
-        mixinIndex: mixinIndex
-      });
-    }
-
-    Ember.addObserver(object, property, handler);
-    boundObservers[objectId] = boundObservers[objectId] || [];
-    boundObservers[objectId].push({ property: property, handler: handler });
+  if (object.isDestroying) {
+    value = '<DESTROYED>';
+  } else {
+    value = object.get(property);
   }
 
-  function mixinsForObject(object) {
-    var mixins = Ember.Mixin.mixins(object),
-        mixinDetails = [];
-
-    var ownProps = propertiesForMixin({ mixins: [{ properties: object }] });
-    mixinDetails.push({ name: "Own Properties", properties: ownProps });
-
-    mixins.forEach(function(mixin) {
-      mixin.toString();
-      var name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor || Ember.guidFor(name);
-      mixinDetails.push({ name: name.toString(), properties: propertiesForMixin(mixin) });
-    });
-
-    applyMixinOverrides(mixinDetails);
-
-    return { objectId: retainObject(object), mixins: mixinDetails };
-  }
-
-  function valueForObjectProperty(objectId, property, mixinIndex) {
-    var object = sentObjects[objectId], value;
-
-    if (object.isDestroying) {
-      value = '<DESTROYED>';
-    } else {
-      value = object.get(property);
-    }
-
-    return { from: 'inspectedWindow', objectId: objectId, property: property, value: inspect(value), mixinIndex: mixinIndex };
-  }
-
-  function digIntoObject(objectId, property) {
-    var parentObject = sentObjects[objectId],
-        object = Ember.get(parentObject, property);
-
-    if (object instanceof Ember.Object) {
-      var details = mixinsForObject(object);
-      port1.postMessage({ from: 'inspectedWindow', parentObject: objectId, property: property, objectId: details.objectId, name: object.toString(), details: details.mixins });
-    } else {
-      // console.log(object);
-    }
-  }
-
-  Ember.Debug = Ember.Namespace.create();
-
-  Ember.Debug.mixinsForObject = function(object) {
-    var details = mixinsForObject(object);
-    port1.postMessage({ from: 'inspectedWindow', objectId: details.objectId, name: object.toString(), details: details.mixins });
+  return { 
+    objectId: objectId, 
+    property: property, 
+    value: inspect(value), 
+    mixinIndex: mixinIndex 
   };
+}
 
-  Ember.Debug.valueForObjectProperty = valueForObjectProperty;
+function digIntoObject(objectId, property) {
+  var parentObject = sentObjects[objectId],
+      object = Ember.get(parentObject, property);
 
-  function applyMixinOverrides(mixinDetails) {
-    var seen = {};
-
-    mixinDetails.forEach(function(detail) {
-      detail.properties.forEach(function(property) {
-        if (Object.prototype.hasOwnProperty(property.name)) { return; }
-
-        if (seen[property.name]) {
-          property.overridden = seen[property.name];
-          delete property.value.computed;
-        }
-
-        seen[property.name] = detail.name;
-      });
+  if (object instanceof Ember.Object) {
+    var details = mixinsForObject(object);
+    port.send('updateObject', { 
+      parentObject: objectId, 
+      property: property, 
+      objectId: details.objectId,
+      name: object.toString(), 
+      details: details.mixins 
     });
   }
+  // TODO: Account for other types of objects
+}
 
-  function propertiesForMixin(mixin) {
-    var seen = {}, properties = [];
 
-    mixin.mixins.forEach(function(mixin) {
-      if (mixin.properties) {
-        addProperties(properties, mixin.properties);
+Ember.Debug.mixinsForObject = function(object) {
+  var details = mixinsForObject(object);
+  port.send('updateObject', {
+    objectId: details.objectId, 
+    name: object.toString(), 
+    details: details.mixins 
+  });
+};
+
+Ember.Debug.valueForObjectProperty = valueForObjectProperty;
+
+function applyMixinOverrides(mixinDetails) {
+  var seen = {};
+
+  mixinDetails.forEach(function(detail) {
+    detail.properties.forEach(function(property) {
+      if (Object.prototype.hasOwnProperty(property.name)) { return; }
+
+      if (seen[property.name]) {
+        property.overridden = seen[property.name];
+        delete property.value.computed;
       }
+
+      seen[property.name] = detail.name;
     });
-
-    return properties;
-  }
-
-  function addProperties(properties, hash) {
-    for (var prop in hash) {
-      if (!hash.hasOwnProperty(prop)) { continue; }
-      if (prop.charAt(0) === '_') { continue; }
-      if (isMandatorySetter(hash, prop)) { continue; }
-
-      replaceProperty(properties, prop, hash[prop]);
-    }
-  }
-
-  function isMandatorySetter(object, prop) {
-    var descriptor = Object.getOwnPropertyDescriptor(object, prop);
-    if (descriptor.set && descriptor.set === Ember.MANDATORY_SETTER_FUNCTION) {
-      return true;
-    }
-  }
-
-  function replaceProperty(properties, name, value) {
-    var found, type;
-
-    for (var i=0, l=properties.length; i<l; i++) {
-      if (properties[i].name === name) {
-        found = i;
-        break;
-      }
-    }
-
-    if (found) { properties.splice(i, 1); }
-
-    if (name) {
-      type = name.PrototypeMixin ? 'ember-class' : 'ember-mixin';
-    }
-
-    properties.push({ name: name, value: inspectValue(value) });
-  }
-
-  function inspectValue(value) {
-    var string;
-
-    if (value instanceof Ember.Object) {
-      return { type: "type-ember-object", inspect: value.toString() };
-    } else if (value instanceof Ember.ComputedProperty) {
-      string = "<computed>";
-      return { type: "type-descriptor", inspect: string, computed: true };
-    } else if (value instanceof Ember.Descriptor) {
-      return { type: "type-descriptor", inspect: value.toString(), computed: true };
-    } else {
-      return { type: "type-" + Ember.typeOf(value), inspect: inspect(value) };
-    }
-  }
-
-  function inspect(value) {
-    if (typeof value === 'function') {
-      return "function() { ... }";
-    } else if (value instanceof Ember.Object) {
-      return value.toString();
-    } else if (Ember.typeOf(value) === 'array') {
-      if (value.length === 0) { return '[]'; }
-      else if (value.length === 1) { return '[ ' + inspect(value[0]) + ' ]'; }
-      else { return '[ ' + inspect(value[0]) + ', ... ]'; }
-    } else {
-      return Ember.inspect(value);
-    }
-  }
-
-  function viewTree() {
-    var rootView = Ember.View.views[Ember.$('.ember-application > .ember-view').attr('id')];
-    var retained = [];
-
-    var children = [];
-    var treeId = retainObject(retained);
-
-    var tree = { value: inspectView(rootView, retained), children: children, treeId: treeId };
-
-    appendChildren(rootView, children, retained);
-
-
-    return tree;
-  }
-
-  function appendChildren(view, children, retained) {
-    var childViews = view.get('_childViews'),
-        controller = view.get('controller');
-
-    childViews.forEach(function(childView) {
-      if (!(childView instanceof Ember.Object)) { return; }
-
-      if (childView.get('controller') !== controller) {
-        var grandChildren = [];
-        children.push({ value: inspectView(childView, retained), children: grandChildren });
-        appendChildren(childView, grandChildren, retained);
-      } else {
-        appendChildren(childView, children, retained);
-      }
-    });
-  }
-
-  function dropTree(retainedTree) {
-    retainedTree.forEach(function(id) {
-      dropObject(id);
-    });
-
-    dropObject(retainedTree);
-  }
-
-  Ember.Debug.viewTree = viewTree;
-
-  function sendTree() {
-    var tree = viewTree();
-    port1.postMessage({
-      from: 'inspectedWindow',
-      type: 'viewTree',
-      tree: tree
-    });
-  }
-
-  Ember.Debug.sendTree = sendTree;
-
-  Ember.View.addMutationListener(function() {
-    sendTree();
-    hideLayer();
   });
 }
+
+function propertiesForMixin(mixin) {
+  var seen = {}, properties = [];
+
+  mixin.mixins.forEach(function(mixin) {
+    if (mixin.properties) {
+      addProperties(properties, mixin.properties);
+    }
+  });
+
+  return properties;
+}
+
+function addProperties(properties, hash) {
+  for (var prop in hash) {
+    if (!hash.hasOwnProperty(prop)) { continue; }
+    if (prop.charAt(0) === '_') { continue; }
+    if (isMandatorySetter(hash, prop)) { continue; }
+
+    replaceProperty(properties, prop, hash[prop]);
+  }
+}
+
+function isMandatorySetter(object, prop) {
+  var descriptor = Object.getOwnPropertyDescriptor(object, prop);
+  if (descriptor.set && descriptor.set === Ember.MANDATORY_SETTER_FUNCTION) {
+    return true;
+  }
+}
+
+function replaceProperty(properties, name, value) {
+  var found, type;
+
+  for (var i=0, l=properties.length; i<l; i++) {
+    if (properties[i].name === name) {
+      found = i;
+      break;
+    }
+  }
+
+  if (found) { properties.splice(i, 1); }
+
+  if (name) {
+    type = name.PrototypeMixin ? 'ember-class' : 'ember-mixin';
+  }
+
+  properties.push({ name: name, value: inspectValue(value) });
+}
+
+function inspectValue(value) {
+  var string;
+
+  if (value instanceof Ember.Object) {
+    return { type: "type-ember-object", inspect: value.toString() };
+  } else if (value instanceof Ember.ComputedProperty) {
+    string = "<computed>";
+    return { type: "type-descriptor", inspect: string, computed: true };
+  } else if (value instanceof Ember.Descriptor) {
+    return { type: "type-descriptor", inspect: value.toString(), computed: true };
+  } else {
+    return { type: "type-" + Ember.typeOf(value), inspect: inspect(value) };
+  }
+}
+
+function inspect(value) {
+  if (typeof value === 'function') {
+    return "function() { ... }";
+  } else if (value instanceof Ember.Object) {
+    return value.toString();
+  } else if (Ember.typeOf(value) === 'array') {
+    if (value.length === 0) { return '[]'; }
+    else if (value.length === 1) { return '[ ' + inspect(value[0]) + ' ]'; }
+    else { return '[ ' + inspect(value[0]) + ', ... ]'; }
+  } else {
+    return Ember.inspect(value);
+  }
+}
+
+function viewTree() {
+  var rootView = Ember.View.views[Ember.$('.ember-application > .ember-view').attr('id')];
+  var retained = [];
+
+  var children = [];
+  var treeId = retainObject(retained);
+
+  var tree = { value: inspectView(rootView, retained), children: children, treeId: treeId };
+
+  appendChildren(rootView, children, retained);
+
+
+  return tree;
+}
+
+function appendChildren(view, children, retained) {
+  var childViews = view.get('_childViews'),
+      controller = view.get('controller');
+
+  childViews.forEach(function(childView) {
+    if (!(childView instanceof Ember.Object)) { return; }
+
+    if (childView.get('controller') !== controller) {
+      var grandChildren = [];
+      children.push({ value: inspectView(childView, retained), children: grandChildren });
+      appendChildren(childView, grandChildren, retained);
+    } else {
+      appendChildren(childView, children, retained);
+    }
+  });
+}
+
+function dropTree(retainedTree) {
+  retainedTree.forEach(function(id) {
+    dropObject(id);
+  });
+
+  dropObject(retainedTree);
+}
+
+Ember.Debug.viewTree = viewTree;
+
+function sendTree() {
+  var tree = viewTree();
+  port.send('viewTree', {
+    tree: tree
+  });
+}
+
+Ember.Debug.sendTree = sendTree;
+
+Ember.View.addMutationListener(function() {
+  sendTree();
+  hideLayer();
+});
+
 
 var div = document.createElement('div');
 div.style.display = 'none';
@@ -484,3 +470,69 @@ function controllerName(controller) {
 
   return name;
 }
+
+
+
+var Port = Ember.Object.extend(Ember.Evented, {
+  init: function() {
+    connect.apply(this);
+  },
+  send: function(messageType, options) {
+    options.type = messageType;
+    options.from = 'inspectedWindow';
+    this.get('chromePort').postMessage(options);
+  },
+  chromePort: null
+});
+
+
+function connect() {
+  var channel = new MessageChannel(), self = this;
+  chromePort = channel.port1;
+  this.set('chromePort', chromePort);
+  window.postMessage('debugger-client', [channel.port2], '*');
+
+  chromePort.addEventListener('message', function(event) {
+    var message = event.data, value;
+
+    self.trigger(message.type, message);
+
+  });
+
+  chromePort.start();
+}
+
+
+
+port = Port.create();
+
+port.on('getTree', function(message) {
+  sendTree();
+});
+
+port.on('hideLayer', function(message) {
+  hideLayer();
+});
+
+port.on('showLayer', function(message) {
+  showLayer(message.objectId);
+});
+
+port.on('releaseObject', function(message) {
+  showLayer(message.objectId);
+});
+
+port.on('digDeeper', function(message) {
+  digIntoObject(message.objectId, message.property);  
+});
+
+port.on('releaseObject', function(message) {
+  releaseObject(message.objectId);
+});
+
+port.on('calculate', function(message) {
+  var value;
+  value = valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
+  port.send('updateProperty', value);
+  bindPropertyToDebugger(message);
+});

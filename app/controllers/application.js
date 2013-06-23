@@ -11,13 +11,13 @@ var ApplicationController = Ember.Controller.extend({
     var mixinStack = this.get('controllers.mixinStack');
     var item = mixinStack.popObject();
     this.set('controllers.mixinDetails.model', mixinStack.get('lastObject'));
-    this.get('port').send('releaseObject', item.objectId);
+    this.get('port').send('releaseObject', { objectId: item.objectId });
   },
 
   activateMixinDetails: function(name, details, objectId) {
     var self = this;
     var objects = this.get('controllers.mixinStack').forEach(function(item) {
-      self.get('port').send('releaseObject', item.objectId);
+      this.get('port').send('releaseObject', { objectId: objectId });
     });
 
     this.set('controllers.mixinStack.model', []);

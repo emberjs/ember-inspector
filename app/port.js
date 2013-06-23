@@ -1,12 +1,38 @@
 var chromePort, subscriptions = {}, actions;
 
+
+/**
+  Possible messages:
+
+  calculate:
+   objectId: objectId, 
+   property: property.name, 
+   mixinIndex: mixinIndex 
+
+  digDeeper:
+    objectId: objectId,
+    property: property.name
+
+  releaseObject:
+    objectId: objectId
+
+  showLayer:
+    objectId: objectId
+
+  hideLayer:
+    objectId: objectId
+
+  getTree:
+*/
+
 var Port = Ember.Object.extend(Ember.Evented, {
   init: function() {
     connect.apply(this);
   },
-  send: function(actionName) {
-    var args = [].slice.call(arguments, 1);
-    actions[actionName].apply(this, args);
+  send: function(messageType, options) {
+    options.from = 'devtools';
+    options.type = messageType;
+    chromePort.postMessage(options);
   }
 });
 
@@ -28,27 +54,6 @@ var connect = function() {
 
     self.trigger(eventName, message);
   });
-};
-
-actions = {
-  calculate: function(objectId, property, mixinIndex) {
-    chromePort.postMessage({ from: 'devtools', type: 'calculate', objectId: objectId, property: property.name, mixinIndex: mixinIndex });
-  },
-  digDeeper: function(objectId, property) {
-    chromePort.postMessage({ from: 'devtools', type: 'digDeeper', objectId: objectId, property: property.name });
-  },
-  releaseObject: function(objectId) {
-    chromePort.postMessage({ from: 'devtools', type: 'releaseObject', objectId: objectId });
-  },
-  showLayer: function(objectId) {
-    chromePort.postMessage({ from: 'devtools', type: 'showLayer', objectId: objectId });
-  },
-  hideLayer: function(objectId) {
-    chromePort.postMessage({ from: 'devtools', type: 'hideLayer', objectId: objectId });
-  },
-  getTree: function() {
-    chromePort.postMessage({ from: 'devtools', type: 'getTree' });
-  }
 };
 
 

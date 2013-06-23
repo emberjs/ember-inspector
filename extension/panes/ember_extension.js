@@ -29,13 +29,13 @@ define("controllers/application",
         var mixinStack = this.get('controllers.mixinStack');
         var item = mixinStack.popObject();
         this.set('controllers.mixinDetails.model', mixinStack.get('lastObject'));
-        this.get('port').send('releaseObject', item.objectId);
+        this.get('port').send('releaseObject', { objectId: item.objectId });
       },
 
       activateMixinDetails: function(name, details, objectId) {
         var self = this;
         var objects = this.get('controllers.mixinStack').forEach(function(item) {
-          self.get('port').send('releaseObject', item.objectId);
+          this.get('port').send('releaseObject', { objectId: objectId });
         });
 
         this.set('controllers.mixinStack.model', []);
@@ -59,13 +59,20 @@ define("controllers/mixin_detail",
 
       digDeeper: function(property) {
         var objectId = this.get('controllers.mixinDetails.objectId');
-        this.get('port').send('digDeeper', objectId, property);
+        this.get('port').send('digDeeper', { 
+          objectId: objectId, 
+          property: property.name 
+        });
       },
 
       calculate: function(property) {
         var objectId = this.get('controllers.mixinDetails.objectId');
         var mixinIndex = this.get('controllers.mixinDetails.mixins').indexOf(this.get('model'));
-        this.get('port').send('calculate', objectId, property, mixinIndex);
+        this.get('port').send('calculate', { 
+          objectId: objectId, 
+          property: property.name, 
+          mixinIndex: mixinIndex 
+        });
       }
     });
 
@@ -113,12 +120,12 @@ define("controllers/view_tree",
     var ViewTreeController = Ember.Controller.extend({
       showLayer: function(node) {
         this.set('pinnedNode', null);
-        this.get('port').send('showLayer', node.value.objectId);
+        this.get('port').send('showLayer', { objectId: node.value.objectId });
       },
 
       hideLayer: function(node) {
         if (!this.get('pinnedNode')) {
-          this.get('port').send('hideLayer', node.value.objectId);
+          this.get('port').send('hideLayer', { objectId: node.value.objectId });
         }
       },
 
@@ -188,13 +195,39 @@ define("port",
     "use strict";
     var chromePort, subscriptions = {}, actions;
 
+
+    /**
+      Possible messages:
+
+      calculate:
+       objectId: objectId, 
+       property: property.name, 
+       mixinIndex: mixinIndex 
+
+      digDeeper:
+        objectId: objectId,
+        property: property.name
+
+      releaseObject:
+        objectId: objectId
+
+      showLayer:
+        objectId: objectId
+
+      hideLayer:
+        objectId: objectId
+
+      getTree:
+    */
+
     var Port = Ember.Object.extend(Ember.Evented, {
       init: function() {
         connect.apply(this);
       },
-      send: function(actionName) {
-        var args = [].slice.call(arguments, 1);
-        actions[actionName].apply(this, args);
+      send: function(messageType, options) {
+        options.from = 'devtools';
+        options.type = messageType;
+        chromePort.postMessage(options);
       }
     });
 
@@ -216,27 +249,6 @@ define("port",
 
         self.trigger(eventName, message);
       });
-    };
-
-    actions = {
-      calculate: function(objectId, property, mixinIndex) {
-        chromePort.postMessage({ from: 'devtools', type: 'calculate', objectId: objectId, property: property.name, mixinIndex: mixinIndex });
-      },
-      digDeeper: function(objectId, property) {
-        chromePort.postMessage({ from: 'devtools', type: 'digDeeper', objectId: objectId, property: property.name });
-      },
-      releaseObject: function(objectId) {
-        chromePort.postMessage({ from: 'devtools', type: 'releaseObject', objectId: objectId });
-      },
-      showLayer: function(objectId) {
-        chromePort.postMessage({ from: 'devtools', type: 'showLayer', objectId: objectId });
-      },
-      hideLayer: function(objectId) {
-        chromePort.postMessage({ from: 'devtools', type: 'hideLayer', objectId: objectId });
-      },
-      getTree: function() {
-        chromePort.postMessage({ from: 'devtools', type: 'getTree' });
-      }
     };
 
 
