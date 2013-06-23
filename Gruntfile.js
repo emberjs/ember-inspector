@@ -47,7 +47,7 @@ module.exports = function(grunt) {
     concat: {
       main: {
         src: ['tmp/public/ember_extension/**/*.js'],
-        dest: 'tmp/public/ember_extension.js'
+        dest: 'extension/panes/ember_extension.js'
       }
     },
     watch: {
