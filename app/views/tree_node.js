@@ -1,5 +1,5 @@
 var TreeNodeView = Ember.View.extend({
-  templateName: 'treeNode'
+  templateName: 'tree_node'
 });
 
 export = TreeNodeView;

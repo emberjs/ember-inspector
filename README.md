@@ -10,4 +10,4 @@ Installation
 - Clone the repository
 - Visit chrome://extensions in chrome
 - Click on 'Load unpacked extension...'
-- Choose the `extension` folder
+- Choose the `extension` folder in the cloned repo

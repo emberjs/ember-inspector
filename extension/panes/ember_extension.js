@@ -1,11 +1,12 @@
 define("application",
-  ["resolver"],
-  function(Resolver) {
+  ["router","resolver"],
+  function(Router, resolver) {
     "use strict";
 
     var App = Ember.Application.extend({
       modulePrefix: '',
-      resolver: Resolver
+      resolver: resolver,
+      Router: Router
     });
 
 
@@ -28,12 +29,13 @@ define("controllers/application",
         var mixinStack = this.get('controllers.mixinStack');
         var item = mixinStack.popObject();
         this.set('controllers.mixinDetails.model', mixinStack.get('lastObject'));
-        window.releaseObject(item.objectId);
+        this.get('port').send('releaseObject', item.objectId);
       },
 
       activateMixinDetails: function(name, details, objectId) {
+        var self = this;
         var objects = this.get('controllers.mixinStack').forEach(function(item) {
-          window.releaseObject(item.objectId);
+          self.get('port').send('releaseObject', item.objectId);
         });
 
         this.set('controllers.mixinStack.model', []);
@@ -57,13 +59,13 @@ define("controllers/mixin_detail",
 
       digDeeper: function(property) {
         var objectId = this.get('controllers.mixinDetails.objectId');
-        window.digDeeper(objectId, property);
+        this.get('port').send('digDeeper', objectId, property);
       },
 
       calculate: function(property) {
         var objectId = this.get('controllers.mixinDetails.objectId');
         var mixinIndex = this.get('controllers.mixinDetails.mixins').indexOf(this.get('model'));
-        window.calculate(objectId, property, mixinIndex);
+        this.get('port').send('calculate', objectId, property, mixinIndex);
       }
     });
 
@@ -111,12 +113,12 @@ define("controllers/view_tree",
     var ViewTreeController = Ember.Controller.extend({
       showLayer: function(node) {
         this.set('pinnedNode', null);
-        window.showLayer(node.value.objectId);
+        this.get('port').send('showLayer', node.value.objectId);
       },
 
       hideLayer: function(node) {
         if (!this.get('pinnedNode')) {
-          window.hideLayer(node.value.objectId);
+          this.get('port').send('hideLayer', node.value.objectId);
         }
       },
 
@@ -138,112 +140,17 @@ define("controllers/view_tree_item",
     return ViewTreeItemController;
   });
 define("main",
-  ["application","views/tree_node","views/tree_node_controller","exports"],
-  function(App, TreeNodeView, TreeNodeControllerView, __exports__) {
+  ["application","views/tree_node","views/tree_node_controller","port","exports"],
+  function(App, TreeNodeView, TreeNodeControllerView, Port, __exports__) {
     "use strict";
 
     var EmberExtension;
 
-    window.resetDebugger = function() {
-      EmberExtension.__container__.lookup('controller:mixinStack').set('model', []);
-    };
+    EmberExtension = App.create();
+    EmberExtension.TreeNodeView = TreeNodeView;
+    EmberExtension.TreeNodeControllerView = TreeNodeControllerView;
+    EmberExtension.Port = Port;
 
-    window.activate = function() {
-      EmberExtension = App.create();
-      EmberExtension.TreeNodeView = TreeNodeView;
-      EmberExtension.TreeNodeControllerView = TreeNodeControllerView;
-      window.resetDebugger();
-    };
-
-    window.updateObject = function(options) {
-      var details = options.details,
-          name = options.name,
-          property = options.property,
-          objectId = options.objectId;
-
-      Ember.NativeArray.apply(details);
-      details.forEach(arrayize);
-
-      var controller = EmberExtension.__container__.lookup('controller:Application');
-
-      if (options.parentObject) {
-        controller.pushMixinDetails(name, property, objectId, details);
-      } else {
-        controller.activateMixinDetails(name, details, objectId);
-      }
-    };
-
-    window.updateProperty = function(options) {
-      var detail = EmberExtension.__container__.lookup('controller:mixinDetails').get('mixins').objectAt(options.mixinIndex);
-      var property = Ember.get(detail, 'properties').findProperty('name', options.property);
-      Ember.set(property, 'calculated', options.value);
-    };
-
-    window.viewTree = function(options) {
-      var viewTree = EmberExtension.__container__.lookup('controller:viewTree');
-      viewTree.set('node', { children: [ arrayizeTree(options.tree) ] });
-    };
-
-    function arrayize(mixin) {
-      Ember.NativeArray.apply(mixin.properties);
-    }
-
-    function arrayizeTree(tree) {
-      Ember.NativeArray.apply(tree.children);
-      tree.children.forEach(arrayizeTree);
-      return tree;
-    }
-
-
-
-
-
-
-
-    var port = chrome.extension.connect();
-    port.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
-
-    port.onMessage.addListener(function(message) {
-      var toSend;
-
-      if (message.type === 'viewTree') {
-        toSend = { name: 'viewTree', args: [message] };
-      } else if (message.details) {
-        toSend = { name: 'updateObject', args: [message] };
-      } else if (message.property) {
-        toSend = { name: 'updateProperty', args: [message] };
-      }
-
-      window[toSend.name].apply(window, toSend.args);
-    });
-
-    var queuedSend, panelVisible;
-
-    window.activate();
-
-    window.calculate = function(objectId, property, mixinIndex) {
-      port.postMessage({ from: 'devtools', type: 'calculate', objectId: objectId, property: property.name, mixinIndex: mixinIndex });
-    };
-
-    window.digDeeper = function(objectId, property) {
-      port.postMessage({ from: 'devtools', type: 'digDeeper', objectId: objectId, property: property.name });
-    };
-
-    window.releaseObject = function(objectId) {
-      port.postMessage({ from: 'devtools', type: 'releaseObject', objectId: objectId });
-    };
-
-    window.showLayer = function(objectId) {
-      port.postMessage({ from: 'devtools', type: 'showLayer', objectId: objectId });
-    };
-
-    window.hideLayer = function(objectId) {
-      port.postMessage({ from: 'devtools', type: 'hideLayer', objectId: objectId });
-    };
-
-    window.getTree = function() {
-      port.postMessage({ from: 'devtools', type: 'getTree' });
-    };
 
     chrome.devtools.network.onNavigated.addListener(function() {
       location.reload(true);
@@ -275,20 +182,193 @@ define("main",
 
     __exports__.EmberExtension = EmberExtension;
   });
+define("port",
+  [],
+  function() {
+    "use strict";
+    var chromePort, subscriptions = {}, actions;
+
+    var Port = Ember.Object.extend(Ember.Evented, {
+      init: function() {
+        connect.apply(this);
+      },
+      send: function(actionName) {
+        var args = [].slice.call(arguments, 1);
+        actions[actionName].apply(this, args);
+      }
+    });
+
+
+    var connect = function() {
+      var self = this;
+      chromePort = chrome.extension.connect();
+      chromePort.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
+
+      chromePort.onMessage.addListener(function(message) {
+        var eventName;
+        if (message.type === 'viewTree') {
+          eventName = 'viewTree';
+        } else if (message.details) {
+          eventName = 'updateObject';
+        } else if (message.property) {
+          eventName = 'updateProperty';
+        }
+
+        self.trigger(eventName, message);
+      });
+    };
+
+    actions = {
+      calculate: function(objectId, property, mixinIndex) {
+        chromePort.postMessage({ from: 'devtools', type: 'calculate', objectId: objectId, property: property.name, mixinIndex: mixinIndex });
+      },
+      digDeeper: function(objectId, property) {
+        chromePort.postMessage({ from: 'devtools', type: 'digDeeper', objectId: objectId, property: property.name });
+      },
+      releaseObject: function(objectId) {
+        chromePort.postMessage({ from: 'devtools', type: 'releaseObject', objectId: objectId });
+      },
+      showLayer: function(objectId) {
+        chromePort.postMessage({ from: 'devtools', type: 'showLayer', objectId: objectId });
+      },
+      hideLayer: function(objectId) {
+        chromePort.postMessage({ from: 'devtools', type: 'hideLayer', objectId: objectId });
+      },
+      getTree: function() {
+        chromePort.postMessage({ from: 'devtools', type: 'getTree' });
+      }
+    };
+
+
+    Ember.Application.initializer({
+      name: "port",
+
+      initialize: function(container, application) {
+        container.register('port', 'main', application.Port);
+        container.lookup('port:main');
+      }
+    });
+
+    Ember.Application.initializer({
+      name: "injectPort",
+
+      initialize: function(container) {
+        container.typeInjection('controller', 'port', 'port:main');
+        container.typeInjection('route', 'port', 'port:main');
+      }
+    });
+
+
+    return Port;
+  });
+define("router",
+  [],
+  function() {
+    "use strict";
+    var Router = Ember.Router.extend();
+    Router.map(function() {
+      this.route('view_tree', { path: '/' });
+    });
+
+
+    return Router;
+  });
+define("routes/application",
+  [],
+  function() {
+    "use strict";
+    var ApplicationRoute = Ember.Route.extend({
+
+      setupController: function(controller, model) {
+        this.controllerFor('mixinStack').set('model', []);
+
+        this.get('port').on('updateObject', this, this.updateObject);
+        this.get('port').on('updateProperty', this, this.updateProperty);
+        this._super(controller, model);
+      },
+
+      deactivate: function() {
+        this.get('port').off('updateObject', this, this.updateObject);
+        this.get('port').off('updateProperty', this, this.updateProperty);
+      },
+
+      updateObject: function(options) {
+        var details = options.details,
+          name = options.name,
+          property = options.property,
+          objectId = options.objectId;
+
+        Ember.NativeArray.apply(details);
+        details.forEach(arrayize);
+
+        var controller = this.get('controller');
+
+        if (options.parentObject) {
+          controller.pushMixinDetails(name, property, objectId, details);
+        } else {
+          controller.activateMixinDetails(name, details, objectId);
+        }
+      },
+
+      updateProperty: function(options) {
+        var detail = this.controllerFor('mixinDetails').get('mixins').objectAt(options.mixinIndex);
+        var property = Ember.get(detail, 'properties').findProperty('name', options.property);
+        Ember.set(property, 'calculated', options.value);
+      }
+
+    });
+
+    function arrayize(mixin) {
+      Ember.NativeArray.apply(mixin.properties);
+    }
+
+
+    return ApplicationRoute;
+  });
+define("routes/view_tree",
+  [],
+  function() {
+    "use strict";
+    var ViewTreeRoute = Ember.Route.extend({
+      setupController: function(controller, model) {
+        this._super(controller, model);
+        this.get('port').on('viewTree', this, this.setViewTree);
+      },
+
+      deactivate: function() {
+        this.get('port').off('viewTree', this, this.setViewTree);
+      },
+
+      setViewTree: function(options) {
+        this.set('controller.node', { children: [ arrayizeTree(options.tree) ] });
+      }
+
+    });
+
+
+    function arrayizeTree(tree) {
+      Ember.NativeArray.apply(tree.children);
+      tree.children.forEach(arrayizeTree);
+      return tree;
+    }
+
+
+
+    return ViewTreeRoute;
+  });
 this["Ember"] = this["Ember"] || {};
 this["Ember"]["TEMPLATES"] = this["Ember"]["TEMPLATES"] || {};
 
 this["Ember"]["TEMPLATES"]["application"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [3,'>= 1.0.0-rc.4'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
-  var buffer = '', stack1, hashTypes, hashContexts, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  var buffer = '', stack1, hashTypes, hashContexts, options, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing;
 
 
   data.buffer.push("<div class='main-area'>\n  ");
   hashTypes = {};
   hashContexts = {};
-  options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
-  data.buffer.push(escapeExpression(((stack1 = helpers.render),stack1 ? stack1.call(depth0, "viewTree", options) : helperMissing.call(depth0, "render", "viewTree", options))));
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "outlet", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push("\n</div>\n\n<div class='ember-object'>\n  ");
   hashTypes = {};
   hashContexts = {};
@@ -299,7 +379,7 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   
 });
 
-this["Ember"]["TEMPLATES"]["mixinDetails"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this["Ember"]["TEMPLATES"]["mixin_details"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [3,'>= 1.0.0-rc.4'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   var buffer = '', stack1, hashContexts, hashTypes, escapeExpression=this.escapeExpression, self=this;
@@ -463,7 +543,7 @@ function program16(depth0,data) {
   
 });
 
-this["Ember"]["TEMPLATES"]["mixinStack"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this["Ember"]["TEMPLATES"]["mixin_stack"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [3,'>= 1.0.0-rc.4'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, options, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
@@ -508,7 +588,7 @@ function program3(depth0,data) {
   
 });
 
-this["Ember"]["TEMPLATES"]["treeNode"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this["Ember"]["TEMPLATES"]["tree_node"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [3,'>= 1.0.0-rc.4'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this;
@@ -552,7 +632,7 @@ function program2(depth0,data) {
   
 });
 
-this["Ember"]["TEMPLATES"]["viewTree"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this["Ember"]["TEMPLATES"]["view_tree"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [3,'>= 1.0.0-rc.4'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   var buffer = '', hashTypes, hashContexts, escapeExpression=this.escapeExpression;
@@ -571,7 +651,7 @@ define("views/tree_node",
   function() {
     "use strict";
     var TreeNodeView = Ember.View.extend({
-      templateName: 'treeNode'
+      templateName: 'tree_node'
     });
 
 

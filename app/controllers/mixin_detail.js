@@ -7,13 +7,13 @@ var MixinDetailController = Ember.ObjectController.extend({
 
   digDeeper: function(property) {
     var objectId = this.get('controllers.mixinDetails.objectId');
-    window.digDeeper(objectId, property);
+    this.get('port').send('digDeeper', objectId, property);
   },
 
   calculate: function(property) {
     var objectId = this.get('controllers.mixinDetails.objectId');
     var mixinIndex = this.get('controllers.mixinDetails.mixins').indexOf(this.get('model'));
-    window.calculate(objectId, property, mixinIndex);
+    this.get('port').send('calculate', objectId, property, mixinIndex);
   }
 });
 

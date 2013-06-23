@@ -36,7 +36,6 @@ module.exports = function(grunt) {
           'Gruntfile.js',
           'tmp/public/**/*.js',
           '!tmp/public/ember_extension.js',
-          '!tmp/public/vendor',
           '!tmp/public/test.js'
         ],
         options: {
@@ -54,14 +53,11 @@ module.exports = function(grunt) {
       scripts: {
         files: ['app/**', 'vendor/**'],
         tasks: ['build']
-        // ,
-        // options: {
-        //   nospawn: true
-        // }
       }
     }
   });
 
-  grunt.registerTask('build', ['clean', 'ember_handlebars', 'transpile', 'jshint', 'concat']);
+  grunt.registerTask('build', ['clean', 'ember_handlebars', 'transpile', 'concat', 'jshint']);
+  grunt.registerTask('default', ['build']);
 
 };

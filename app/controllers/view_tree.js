@@ -1,12 +1,12 @@
 var ViewTreeController = Ember.Controller.extend({
   showLayer: function(node) {
     this.set('pinnedNode', null);
-    window.showLayer(node.value.objectId);
+    this.get('port').send('showLayer', node.value.objectId);
   },
 
   hideLayer: function(node) {
     if (!this.get('pinnedNode')) {
-      window.hideLayer(node.value.objectId);
+      this.get('port').send('hideLayer', node.value.objectId);
     }
   },
 

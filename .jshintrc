@@ -1,6 +1,7 @@
 {
   "predef": [
     "Ember",
+    "EmberExtension",
     "chrome",
     "Conductor",
     "$",
