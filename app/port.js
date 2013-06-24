@@ -1,4 +1,4 @@
-var chromePort, subscriptions = {}, actions;
+var chromePort;
 
 
 /**
@@ -43,16 +43,7 @@ var connect = function() {
   chromePort.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
 
   chromePort.onMessage.addListener(function(message) {
-    var eventName;
-    if (message.type === 'viewTree') {
-      eventName = 'viewTree';
-    } else if (message.details) {
-      eventName = 'updateObject';
-    } else if (message.property) {
-      eventName = 'updateProperty';
-    }
-
-    self.trigger(eventName, message);
+    self.trigger(message.type, message);
   });
 };
 

@@ -35,7 +35,7 @@ define("controllers/application",
       activateMixinDetails: function(name, details, objectId) {
         var self = this;
         var objects = this.get('controllers.mixinStack').forEach(function(item) {
-          this.get('port').send('releaseObject', { objectId: objectId });
+          self.get('port').send('releaseObject', { objectId: item.objectId });
         });
 
         this.set('controllers.mixinStack.model', []);
@@ -166,18 +166,9 @@ define("main",
     function injectDebugger() {
 
       var xhr = new XMLHttpRequest();
-      xhr.open("GET", chrome.extension.getURL('/assets/ember-debug.js'), false);
+      xhr.open("GET", chrome.extension.getURL('/ember_debug/ember_debug.js'), false);
       xhr.send();
-      var emberDebug = xhr.responseText;
-
-      xhr = new XMLHttpRequest();
-      xhr.open("GET", chrome.extension.getURL('/assets/startup_wrapper.js'), false);
-      xhr.send();
-      var startupWrapper = xhr.responseText;
-
-      // make sure ember debug runs
-      // after application has initialized
-      emberDebug = startupWrapper.replace("{{emberDebug}}", emberDebug);
+      var emberDebug = '(function() { ' + xhr.responseText + ' }());';
 
       chrome.devtools.inspectedWindow.eval(emberDebug);
     }
@@ -193,7 +184,7 @@ define("port",
   [],
   function() {
     "use strict";
-    var chromePort, subscriptions = {}, actions;
+    var chromePort;
 
 
     /**
@@ -238,16 +229,7 @@ define("port",
       chromePort.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
 
       chromePort.onMessage.addListener(function(message) {
-        var eventName;
-        if (message.type === 'viewTree') {
-          eventName = 'viewTree';
-        } else if (message.details) {
-          eventName = 'updateObject';
-        } else if (message.property) {
-          eventName = 'updateProperty';
-        }
-
-        self.trigger(eventName, message);
+        self.trigger(message.type, message);
       });
     };
 

@@ -1,4 +1,5 @@
 module.exports = function(grunt) {
+
   require('matchdep')
   .filterDev('grunt-*')
   .filter(function(name){ return name !== 'grunt-cli'; })
@@ -14,6 +15,15 @@ module.exports = function(grunt) {
           cwd: 'app/',
           src: ['**/*.js'],
           dest: 'tmp/public/ember_extension'
+        }]
+      },
+      ember_debug: {
+        type: "amd",
+        files: [{
+          expand: true,
+          cwd: 'ember_debug/',
+          src: ['**/*.js', '!vendor/*.js'],
+          dest: 'tmp/public/ember_debug'
         }]
       }
     },
@@ -47,17 +57,22 @@ module.exports = function(grunt) {
       main: {
         src: ['tmp/public/ember_extension/**/*.js'],
         dest: 'extension/panes/ember_extension.js'
+      },
+      ember_debug: {
+        src: ['ember_debug/vendor/**/*.js', 'tmp/public/ember_debug/**/*.js', ],
+        dest: 'extension/ember_debug/ember_debug.js'
       }
     },
     watch: {
       scripts: {
-        files: ['app/**', 'vendor/**'],
+        files: ['app/**', 'vendor/**', 'ember_debug/**'],
         tasks: ['build']
       }
     }
   });
 
-  grunt.registerTask('build', ['clean', 'ember_handlebars', 'transpile', 'concat', 'jshint']);
+  grunt.registerTask('build', ['clean', 'ember_handlebars', 'transpile', 'concat', 'jshint', 'build_ember_debug']);
+  grunt.registerTask('build_ember_debug', 'transpile:ember_debug', 'concat:ember_debug');
   grunt.registerTask('default', ['build']);
 
 };

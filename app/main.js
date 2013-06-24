@@ -18,18 +18,9 @@ chrome.devtools.network.onNavigated.addListener(function() {
 function injectDebugger() {
 
   var xhr = new XMLHttpRequest();
-  xhr.open("GET", chrome.extension.getURL('/assets/ember-debug.js'), false);
+  xhr.open("GET", chrome.extension.getURL('/ember_debug/ember_debug.js'), false);
   xhr.send();
-  var emberDebug = xhr.responseText;
-
-  xhr = new XMLHttpRequest();
-  xhr.open("GET", chrome.extension.getURL('/assets/startup_wrapper.js'), false);
-  xhr.send();
-  var startupWrapper = xhr.responseText;
-
-  // make sure ember debug runs
-  // after application has initialized
-  emberDebug = startupWrapper.replace("{{emberDebug}}", emberDebug);
+  var emberDebug = '(function() { ' + xhr.responseText + ' }());';
 
   chrome.devtools.inspectedWindow.eval(emberDebug);
 }

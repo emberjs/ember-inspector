@@ -1,13 +1,16 @@
-/*jshint boss:true*/
+import "port" as Port;
 
 console.debug("Ember Debugger Active");
 
 var sentObjects = {},
     boundObservers = {},
-    port;
+    port,
+    layerDiv,
+    highlightedElement,
+    EmberDebug;
 
 
-Ember.Debug = Ember.Namespace.create();
+EmberDebug = Ember.Debug = Ember.Namespace.create();
 
 
 function retainObject(object) {
@@ -127,7 +130,7 @@ function digIntoObject(objectId, property) {
 }
 
 
-Ember.Debug.mixinsForObject = function(object) {
+EmberDebug.mixinsForObject = function(object) {
   var details = mixinsForObject(object);
   port.send('updateObject', {
     objectId: details.objectId, 
@@ -136,7 +139,7 @@ Ember.Debug.mixinsForObject = function(object) {
   });
 };
 
-Ember.Debug.valueForObjectProperty = valueForObjectProperty;
+EmberDebug.valueForObjectProperty = valueForObjectProperty;
 
 function applyMixinOverrides(mixinDetails) {
   var seen = {};
@@ -272,7 +275,7 @@ function dropTree(retainedTree) {
   dropObject(retainedTree);
 }
 
-Ember.Debug.viewTree = viewTree;
+EmberDebug.viewTree = viewTree;
 
 function sendTree() {
   var tree = viewTree();
@@ -281,7 +284,7 @@ function sendTree() {
   });
 }
 
-Ember.Debug.sendTree = sendTree;
+EmberDebug.sendTree = sendTree;
 
 Ember.View.addMutationListener(function() {
   sendTree();
@@ -289,17 +292,6 @@ Ember.View.addMutationListener(function() {
 });
 
 
-var div = document.createElement('div');
-div.style.display = 'none';
-document.body.appendChild(div);
-
-var highlightedElement;
-
-Ember.$(window).resize(function() {
-  if (highlightedElement) {
-    Ember.Debug.highlightView(highlightedElement);
-  }
-});
 
 function virtualRange(view) {
   var morph = view.get('morph'),
@@ -314,14 +306,15 @@ function virtualRange(view) {
 }
 
 function showLayer(objectId) {
-  Ember.Debug.highlightView(sentObjects[objectId]);
+  EmberDebug.highlightView(sentObjects[objectId]);
 }
 
 function hideLayer() {
-  div.style.display = 'none';
+  layerDiv.style.display = 'none';
+  highlightedElement = null;
 }
 
-Ember.Debug.highlightView = function(element) {
+EmberDebug.highlightView = function(element) {
   var range, view, rect;
 
   highlightedElement = element;
@@ -336,7 +329,7 @@ Ember.Debug.highlightView = function(element) {
     view = element;
     rect = view.get('element').getBoundingClientRect();
   } else {
-    view = Ember.Views.views[element.id];
+    view = Ember.View.views[element.id];
     rect = element.getBoundingClientRect();
   }
 
@@ -344,8 +337,8 @@ Ember.Debug.highlightView = function(element) {
       controller = view.get('controller'),
       model = controller && controller.get('model');
 
-  Ember.$(div).css(rect);
-  Ember.$(div).css({
+  Ember.$(layerDiv).css(rect);
+  Ember.$(layerDiv).css({
     display: "block",
     position: "absolute",
     backgroundColor: "rgba(255, 255, 255, 0.7)",
@@ -370,13 +363,13 @@ Ember.Debug.highlightView = function(element) {
     output += "<p class='model'><span>model</span>=<span>" + escapeHTML(model.toString()) + "</span></p>";
   }
 
-  Ember.$(div).html(output);
+  Ember.$(layerDiv).html(output);
 
-  Ember.$('p', div).css({ float: 'left', margin: 0, backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: '5px', color: 'rgb(0, 0, 153)' });
-  Ember.$('p.model', div).css({ clear: 'left' });
-  Ember.$('p span:first-child', div).css({ color: 'rgb(153, 153, 0)' });
-  Ember.$('p span:last-child', div).css({ color: 'rgb(153, 0, 153)' });
-  Ember.$('span.close', div).css({
+  Ember.$('p', layerDiv).css({ float: 'left', margin: 0, backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: '5px', color: 'rgb(0, 0, 153)' });
+  Ember.$('p.model', layerDiv).css({ clear: 'left' });
+  Ember.$('p span:first-child', layerDiv).css({ color: 'rgb(153, 153, 0)' });
+  Ember.$('p span:last-child', layerDiv).css({ color: 'rgb(153, 0, 153)' });
+  Ember.$('span.close', layerDiv).css({
     float: 'right',
     margin: '5px',
     background: '#666',
@@ -394,12 +387,12 @@ Ember.Debug.highlightView = function(element) {
     hideLayer();
   });
 
-  Ember.$('p.controller span:last-child', div).css({ cursor: 'pointer' }).click(function() {
-    Ember.Debug.mixinsForObject(controller);
+  Ember.$('p.controller span:last-child', layerDiv).css({ cursor: 'pointer' }).click(function() {
+    EmberDebug.mixinsForObject(controller);
   });
 
-  Ember.$('p.model span:last-child', div).css({ cursor: 'pointer' }).click(function() {
-    Ember.Debug.mixinsForObject(controller.get('model'));
+  Ember.$('p.model span:last-child', layerDiv).css({ cursor: 'pointer' }).click(function() {
+    EmberDebug.mixinsForObject(controller.get('model'));
   });
 };
 
@@ -456,7 +449,8 @@ function inspectController(controller) {
 
 function controllerName(controller) {
   var key = controller.get('_debugContainerKey'),
-      className = controller.constructor.toString();
+      className = controller.constructor.toString(),
+      name;
 
   if (key) {
     name = key.split(':')[1];
@@ -473,66 +467,50 @@ function controllerName(controller) {
 
 
 
-var Port = Ember.Object.extend(Ember.Evented, {
-  init: function() {
-    connect.apply(this);
-  },
-  send: function(messageType, options) {
-    options.type = messageType;
-    options.from = 'inspectedWindow';
-    this.get('chromePort').postMessage(options);
-  },
-  chromePort: null
-});
+Ember.Debug.start = function() {
 
+  layerDiv = document.createElement('div');
+  layerDiv.style.display = 'none';
+  document.body.appendChild(layerDiv);
 
-function connect() {
-  var channel = new MessageChannel(), self = this;
-  chromePort = channel.port1;
-  this.set('chromePort', chromePort);
-  window.postMessage('debugger-client', [channel.port2], '*');
-
-  chromePort.addEventListener('message', function(event) {
-    var message = event.data, value;
-
-    self.trigger(message.type, message);
-
+  Ember.$(window).resize(function() {
+    if (highlightedElement) {
+      EmberDebug.highlightView(highlightedElement);
+    }
   });
 
-  chromePort.start();
-}
+  port = Port.create();
 
+  port.on('getTree', function(message) {
+    sendTree();
+  });
 
+  port.on('hideLayer', function(message) {
+    hideLayer();
+  });
 
-port = Port.create();
+  port.on('showLayer', function(message) {
+    showLayer(message.objectId);
+  });
 
-port.on('getTree', function(message) {
+  port.on('digDeeper', function(message) {
+    digIntoObject(message.objectId, message.property);  
+  });
+
+  port.on('releaseObject', function(message) {
+    releaseObject(message.objectId);
+  });
+
+  port.on('calculate', function(message) {
+    var value;
+    value = valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
+    port.send('updateProperty', value);
+    bindPropertyToDebugger(message);
+  });
+
   sendTree();
-});
 
-port.on('hideLayer', function(message) {
-  hideLayer();
-});
+};
 
-port.on('showLayer', function(message) {
-  showLayer(message.objectId);
-});
 
-port.on('releaseObject', function(message) {
-  showLayer(message.objectId);
-});
-
-port.on('digDeeper', function(message) {
-  digIntoObject(message.objectId, message.property);  
-});
-
-port.on('releaseObject', function(message) {
-  releaseObject(message.objectId);
-});
-
-port.on('calculate', function(message) {
-  var value;
-  value = valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
-  port.send('updateProperty', value);
-  bindPropertyToDebugger(message);
-});
+export = EmberDebug;

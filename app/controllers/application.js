@@ -17,7 +17,7 @@ var ApplicationController = Ember.Controller.extend({
   activateMixinDetails: function(name, details, objectId) {
     var self = this;
     var objects = this.get('controllers.mixinStack').forEach(function(item) {
-      this.get('port').send('releaseObject', { objectId: objectId });
+      self.get('port').send('releaseObject', { objectId: item.objectId });
     });
 
     this.set('controllers.mixinStack.model', []);

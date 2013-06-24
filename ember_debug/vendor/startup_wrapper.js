@@ -9,15 +9,15 @@
 **/
 (function() {
 
-  function start() {
-    {{emberDebug}}
+  function inject() {
+    requireModule('ember_debug');
   }
 
   onReady(function() {
     if (!Ember.Debug) {
-      start();
+      inject();
     }
-    Ember.Debug.sendTree();
+    Ember.Debug.start();
   });
 
 
