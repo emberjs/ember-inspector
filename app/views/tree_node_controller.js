@@ -8,14 +8,15 @@ var TreeNodeControllerView = Ember.View.extend({
   }.property('node', 'controller.pinnedNode'),
 
   mouseEnter: function() {
-    this.get('controller').send('showLayer', this.get('node'));
+    this.get('controller').send('previewLayer', this.get('node'));
   },
 
   mouseLeave: function() {
-    this.get('controller').send('hideLayer', this.get('node'));
+    this.get('controller').send('hidePreview', this.get('node'));
   },
 
   click: function() {
+    this.get('controller').send('showLayer', this.get('node'));
     this.get('controller').pinLayer(this.get('node'));
   }
 });

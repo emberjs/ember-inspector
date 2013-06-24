@@ -118,6 +118,7 @@ define("controllers/view_tree",
   function() {
     "use strict";
     var ViewTreeController = Ember.Controller.extend({
+  
       showLayer: function(node) {
         this.set('pinnedNode', null);
         this.get('port').send('showLayer', { objectId: node.value.objectId });
@@ -127,6 +128,14 @@ define("controllers/view_tree",
         if (!this.get('pinnedNode')) {
           this.get('port').send('hideLayer', { objectId: node.value.objectId });
         }
+      },
+
+      previewLayer: function(node) {
+        this.get('port').send('previewLayer', { objectId: node.value.objectId });
+      },
+
+      hidePreview: function(node) {
+        this.get('port').send('hidePreview', { objectId: node.value.objectId });
       },
 
       pinLayer: function(node) {
@@ -665,14 +674,15 @@ define("views/tree_node_controller",
       }.property('node', 'controller.pinnedNode'),
 
       mouseEnter: function() {
-        this.get('controller').send('showLayer', this.get('node'));
+        this.get('controller').send('previewLayer', this.get('node'));
       },
 
       mouseLeave: function() {
-        this.get('controller').send('hideLayer', this.get('node'));
+        this.get('controller').send('hidePreview', this.get('node'));
       },
 
       click: function() {
+        this.get('controller').send('showLayer', this.get('node'));
         this.get('controller').pinLayer(this.get('node'));
       }
     });

@@ -6,7 +6,9 @@ var sentObjects = {},
     boundObservers = {},
     port,
     layerDiv,
+    previewDiv,
     highlightedElement,
+    previewedElement,
     EmberDebug;
 
 
@@ -314,10 +316,26 @@ function hideLayer() {
   highlightedElement = null;
 }
 
-EmberDebug.highlightView = function(element) {
-  var range, view, rect;
+function previewLayer(objectId) {
+  EmberDebug.highlightView(sentObjects[objectId], true);
+}
 
-  highlightedElement = element;
+function hidePreview() {
+  previewDiv.style.display = 'none';
+  previewedElement = null;
+}
+
+EmberDebug.highlightView = function(element, preview) {
+  var range, view, rect, div;
+
+  if (preview) {
+    previewedElement = element;
+    div = previewDiv;
+  } else {
+    highlightedElement = element;  
+    div = layerDiv;
+    hidePreview();
+  }
 
   if (element instanceof Ember.View && element.get('isVirtual')) {
     view = element;
@@ -337,8 +355,8 @@ EmberDebug.highlightView = function(element) {
       controller = view.get('controller'),
       model = controller && controller.get('model');
 
-  Ember.$(layerDiv).css(rect);
-  Ember.$(layerDiv).css({
+  Ember.$(div).css(rect);
+  Ember.$(div).css({
     display: "block",
     position: "absolute",
     backgroundColor: "rgba(255, 255, 255, 0.7)",
@@ -351,8 +369,12 @@ EmberDebug.highlightView = function(element) {
     zIndex: 10000
   });
 
-  var output = "<span class='close'>x</span>";
+  var output = "";
 
+  if (!preview) {
+    output = "<span class='close'>x</span>";  
+  }
+  
   if (templateName) {
     output += "<p class='template'><span>template</span>=<span>" + escapeHTML(templateName) + "</span></p>";
   }
@@ -363,35 +385,38 @@ EmberDebug.highlightView = function(element) {
     output += "<p class='model'><span>model</span>=<span>" + escapeHTML(model.toString()) + "</span></p>";
   }
 
-  Ember.$(layerDiv).html(output);
+  Ember.$(div).html(output);
 
-  Ember.$('p', layerDiv).css({ float: 'left', margin: 0, backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: '5px', color: 'rgb(0, 0, 153)' });
-  Ember.$('p.model', layerDiv).css({ clear: 'left' });
-  Ember.$('p span:first-child', layerDiv).css({ color: 'rgb(153, 153, 0)' });
-  Ember.$('p span:last-child', layerDiv).css({ color: 'rgb(153, 0, 153)' });
-  Ember.$('span.close', layerDiv).css({
-    float: 'right',
-    margin: '5px',
-    background: '#666',
-    color: '#eee',
-    fontFamily: 'Menlo',
-    fontSize: '12px',
-    width: 13,
-    height: 13,
-    lineHeight: '12px',
-    borderRadius: 12,
-    textAlign: 'center',
-    fontWeight: 'bold',
-    cursor: 'pointer'
-  }).on('click', function() {
-    hideLayer();
-  });
-
-  Ember.$('p.controller span:last-child', layerDiv).css({ cursor: 'pointer' }).click(function() {
+  Ember.$('p', div).css({ float: 'left', margin: 0, backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: '5px', color: 'rgb(0, 0, 153)' });
+  Ember.$('p.model', div).css({ clear: 'left' });
+  Ember.$('p span:first-child', div).css({ color: 'rgb(153, 153, 0)' });
+  Ember.$('p span:last-child', div).css({ color: 'rgb(153, 0, 153)' });
+  
+  if (!preview) {
+    Ember.$('span.close', div).css({
+      float: 'right',
+      margin: '5px',
+      background: '#666',
+      color: '#eee',
+      fontFamily: 'Menlo',
+      fontSize: '12px',
+      width: 13,
+      height: 13,
+      lineHeight: '12px',
+      borderRadius: 12,
+      textAlign: 'center',
+      fontWeight: 'bold',
+      cursor: 'pointer'
+    }).on('click', function() {
+      hideLayer();
+    });
+  }
+  
+  Ember.$('p.controller span:last-child', div).css({ cursor: 'pointer' }).click(function() {
     EmberDebug.mixinsForObject(controller);
   });
 
-  Ember.$('p.model span:last-child', layerDiv).css({ cursor: 'pointer' }).click(function() {
+  Ember.$('p.model span:last-child', div).css({ cursor: 'pointer' }).click(function() {
     EmberDebug.mixinsForObject(controller.get('model'));
   });
 };
@@ -473,6 +498,10 @@ Ember.Debug.start = function() {
   layerDiv.style.display = 'none';
   document.body.appendChild(layerDiv);
 
+  previewDiv = document.createElement('div');
+  previewDiv.style.display = 'none';
+  document.body.appendChild(previewDiv);
+
   Ember.$(window).resize(function() {
     if (highlightedElement) {
       EmberDebug.highlightView(highlightedElement);
@@ -491,6 +520,14 @@ Ember.Debug.start = function() {
 
   port.on('showLayer', function(message) {
     showLayer(message.objectId);
+  });
+
+  port.on('previewLayer', function(message) {
+    previewLayer(message.objectId);
+  });
+
+  port.on('hidePreview', function(message) {
+    hidePreview(message.objectId);
   });
 
   port.on('digDeeper', function(message) {
