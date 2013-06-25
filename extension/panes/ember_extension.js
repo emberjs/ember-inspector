@@ -156,8 +156,8 @@ define("controllers/view_tree_item",
     return ViewTreeItemController;
   });
 define("main",
-  ["application","views/tree_node","views/tree_node_controller","port","exports"],
-  function(App, TreeNodeView, TreeNodeControllerView, Port, __exports__) {
+  ["application","views/tree_node","views/tree_node_controller","port"],
+  function(App, TreeNodeView, TreeNodeControllerView, Port) {
     "use strict";
 
     var EmberExtension;
@@ -168,9 +168,13 @@ define("main",
     EmberExtension.Port = Port;
 
 
-    chrome.devtools.network.onNavigated.addListener(function() {
-      location.reload(true);
-    });
+    if (chrome.devtools) {
+      chrome.devtools.network.onNavigated.addListener(function() {
+        location.reload(true);
+      });
+
+      injectDebugger();
+    }
 
     function injectDebugger() {
 
@@ -182,12 +186,9 @@ define("main",
       chrome.devtools.inspectedWindow.eval(emberDebug);
     }
 
-    injectDebugger();
 
 
-
-
-    __exports__.EmberExtension = EmberExtension;
+    return EmberExtension;
   });
 define("port",
   [],
@@ -200,9 +201,9 @@ define("port",
       Possible messages:
 
       calculate:
-       objectId: objectId, 
-       property: property.name, 
-       mixinIndex: mixinIndex 
+       objectId: objectId,
+       property: property.name,
+       mixinIndex: mixinIndex
 
       digDeeper:
         objectId: objectId,
@@ -247,7 +248,7 @@ define("port",
       name: "port",
 
       initialize: function(container, application) {
-        container.register('port', 'main', application.Port);
+        container.register('port:main', application.Port);
         container.lookup('port:main');
       }
     });
@@ -268,7 +269,10 @@ define("router",
   [],
   function() {
     "use strict";
-    var Router = Ember.Router.extend();
+    var Router = Ember.Router.extend({
+      location: 'none'
+    });
+
     Router.map(function() {
       this.route('view_tree', { path: '/' });
     });
@@ -599,21 +603,23 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 function program1(depth0,data) {
   
   var buffer = '', stack1, hashContexts, hashTypes;
-  data.buffer.push("\n    <li><p>\n      ");
-  hashContexts = {'nodeBinding': depth0};
-  hashTypes = {'nodeBinding': "STRING"};
+  data.buffer.push("\n    <li data-label=\"tree-view\">\n      <p>\n        ");
+  hashContexts = {'nodeBinding': depth0,'label': depth0};
+  hashTypes = {'nodeBinding': "STRING",'label': "STRING"};
   stack1 = helpers.view.call(depth0, "EmberExtension.TreeNodeControllerView", {hash:{
-    'nodeBinding': ("node")
+    'nodeBinding': ("node"),
+    'label': ("tree-view-controller")
   },inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n      <span class='template'>template:");
+  data.buffer.push("\n        <span class='template' data-label=\"tree-view-template\">template:");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "node.value.template", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</span>\n    </p>\n    ");
+  data.buffer.push("</span>\n      </p>\n      ");
   hashTypes = {};
   hashContexts = {};
-  data.buffer.push(escapeExpression(helpers.view.call(depth0, "EmberExtension.TreeNodeView", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  stack1 = helpers['if'].call(depth0, "node.children.length", {hash:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n    </li>\n  ");
   return buffer;
   }
@@ -625,7 +631,18 @@ function program2(depth0,data) {
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "node.value.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   }
 
-  data.buffer.push("<ul class='view-tree-node'>\n  ");
+function program4(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n        ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "EmberExtension.TreeNodeView", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n      ");
+  return buffer;
+  }
+
+  data.buffer.push("<ul class='view-tree-node' data-label=\"tree-node\">\n  ");
   hashTypes = {};
   hashContexts = {};
   stack1 = helpers.each.call(depth0, "node", "in", "node.children", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});

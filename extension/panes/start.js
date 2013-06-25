@@ -1,1 +1,1 @@
-window.EmberExtension = requireModule('main').EmberExtension;
+window.EmberExtension = requireModule('main');

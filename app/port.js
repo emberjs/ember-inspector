@@ -5,9 +5,9 @@ var chromePort;
   Possible messages:
 
   calculate:
-   objectId: objectId, 
-   property: property.name, 
-   mixinIndex: mixinIndex 
+   objectId: objectId,
+   property: property.name,
+   mixinIndex: mixinIndex
 
   digDeeper:
     objectId: objectId,
@@ -52,7 +52,7 @@ Ember.Application.initializer({
   name: "port",
 
   initialize: function(container, application) {
-    container.register('port', 'main', application.Port);
+    container.register('port:main', application.Port);
     container.lookup('port:main');
   }
 });

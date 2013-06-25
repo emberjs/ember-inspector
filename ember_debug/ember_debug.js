@@ -106,11 +106,11 @@ function valueForObjectProperty(objectId, property, mixinIndex) {
     value = object.get(property);
   }
 
-  return { 
-    objectId: objectId, 
-    property: property, 
-    value: inspect(value), 
-    mixinIndex: mixinIndex 
+  return {
+    objectId: objectId,
+    property: property,
+    value: inspect(value),
+    mixinIndex: mixinIndex
   };
 }
 
@@ -120,12 +120,12 @@ function digIntoObject(objectId, property) {
 
   if (object instanceof Ember.Object) {
     var details = mixinsForObject(object);
-    port.send('updateObject', { 
-      parentObject: objectId, 
-      property: property, 
+    port.send('updateObject', {
+      parentObject: objectId,
+      property: property,
       objectId: details.objectId,
-      name: object.toString(), 
-      details: details.mixins 
+      name: object.toString(),
+      details: details.mixins
     });
   }
   // TODO: Account for other types of objects
@@ -135,9 +135,9 @@ function digIntoObject(objectId, property) {
 EmberDebug.mixinsForObject = function(object) {
   var details = mixinsForObject(object);
   port.send('updateObject', {
-    objectId: details.objectId, 
-    name: object.toString(), 
-    details: details.mixins 
+    objectId: details.objectId,
+    name: object.toString(),
+    details: details.mixins
   });
 };
 
@@ -332,7 +332,7 @@ EmberDebug.highlightView = function(element, preview) {
     previewedElement = element;
     div = previewDiv;
   } else {
-    highlightedElement = element;  
+    highlightedElement = element;
     div = layerDiv;
     hidePreview();
   }
@@ -372,9 +372,9 @@ EmberDebug.highlightView = function(element, preview) {
   var output = "";
 
   if (!preview) {
-    output = "<span class='close'>x</span>";  
+    output = "<span class='close'>x</span>";
   }
-  
+
   if (templateName) {
     output += "<p class='template'><span>template</span>=<span>" + escapeHTML(templateName) + "</span></p>";
   }
@@ -391,7 +391,7 @@ EmberDebug.highlightView = function(element, preview) {
   Ember.$('p.model', div).css({ clear: 'left' });
   Ember.$('p span:first-child', div).css({ color: 'rgb(153, 153, 0)' });
   Ember.$('p span:last-child', div).css({ color: 'rgb(153, 0, 153)' });
-  
+
   if (!preview) {
     Ember.$('span.close', div).css({
       float: 'right',
@@ -411,7 +411,7 @@ EmberDebug.highlightView = function(element, preview) {
       hideLayer();
     });
   }
-  
+
   Ember.$('p.controller span:last-child', div).css({ cursor: 'pointer' }).click(function() {
     EmberDebug.mixinsForObject(controller);
   });
@@ -510,11 +510,11 @@ Ember.Debug.start = function() {
 
   port = Port.create();
 
-  port.on('getTree', function(message) {
+  port.on('getTree', function() {
     sendTree();
   });
 
-  port.on('hideLayer', function(message) {
+  port.on('hideLayer', function() {
     hideLayer();
   });
 
@@ -531,7 +531,7 @@ Ember.Debug.start = function() {
   });
 
   port.on('digDeeper', function(message) {
-    digIntoObject(message.objectId, message.property);  
+    digIntoObject(message.objectId, message.property);
   });
 
   port.on('releaseObject', function(message) {

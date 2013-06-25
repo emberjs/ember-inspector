@@ -1,10 +1,13 @@
-<ul class='view-tree-node'>
+<ul class='view-tree-node' data-label="tree-node">
   {{#each node in node.children}}
-    <li><p>
-      {{#view EmberExtension.TreeNodeControllerView nodeBinding="node"}}{{node.value.name}}{{/view}}
-      <span class='template'>template:{{node.value.template}}</span>
-    </p>
-    {{view EmberExtension.TreeNodeView}}
+    <li data-label="tree-view">
+      <p>
+        {{#view EmberExtension.TreeNodeControllerView nodeBinding="node" label="tree-view-controller"}}{{node.value.name}}{{/view}}
+        <span class='template' data-label="tree-view-template">template:{{node.value.template}}</span>
+      </p>
+      {{#if node.children.length}}
+        {{view EmberExtension.TreeNodeView}}
+      {{/if}}
     </li>
   {{/each}}
 </ul>

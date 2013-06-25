@@ -11,9 +11,13 @@ EmberExtension.TreeNodeControllerView = TreeNodeControllerView;
 EmberExtension.Port = Port;
 
 
-chrome.devtools.network.onNavigated.addListener(function() {
-  location.reload(true);
-});
+if (chrome.devtools) {
+  chrome.devtools.network.onNavigated.addListener(function() {
+    location.reload(true);
+  });
+
+  injectDebugger();
+}
 
 function injectDebugger() {
 
@@ -25,8 +29,5 @@ function injectDebugger() {
   chrome.devtools.inspectedWindow.eval(emberDebug);
 }
 
-injectDebugger();
 
-
-
-export EmberExtension;
+export = EmberExtension;

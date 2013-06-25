@@ -212,11 +212,11 @@ define("ember_debug",
         value = object.get(property);
       }
 
-      return { 
-        objectId: objectId, 
-        property: property, 
-        value: inspect(value), 
-        mixinIndex: mixinIndex 
+      return {
+        objectId: objectId,
+        property: property,
+        value: inspect(value),
+        mixinIndex: mixinIndex
       };
     }
 
@@ -226,12 +226,12 @@ define("ember_debug",
 
       if (object instanceof Ember.Object) {
         var details = mixinsForObject(object);
-        port.send('updateObject', { 
-          parentObject: objectId, 
-          property: property, 
+        port.send('updateObject', {
+          parentObject: objectId,
+          property: property,
           objectId: details.objectId,
-          name: object.toString(), 
-          details: details.mixins 
+          name: object.toString(),
+          details: details.mixins
         });
       }
       // TODO: Account for other types of objects
@@ -241,9 +241,9 @@ define("ember_debug",
     EmberDebug.mixinsForObject = function(object) {
       var details = mixinsForObject(object);
       port.send('updateObject', {
-        objectId: details.objectId, 
-        name: object.toString(), 
-        details: details.mixins 
+        objectId: details.objectId,
+        name: object.toString(),
+        details: details.mixins
       });
     };
 
@@ -438,7 +438,7 @@ define("ember_debug",
         previewedElement = element;
         div = previewDiv;
       } else {
-        highlightedElement = element;  
+        highlightedElement = element;
         div = layerDiv;
         hidePreview();
       }
@@ -478,9 +478,9 @@ define("ember_debug",
       var output = "";
 
       if (!preview) {
-        output = "<span class='close'>x</span>";  
+        output = "<span class='close'>x</span>";
       }
-  
+
       if (templateName) {
         output += "<p class='template'><span>template</span>=<span>" + escapeHTML(templateName) + "</span></p>";
       }
@@ -497,7 +497,7 @@ define("ember_debug",
       Ember.$('p.model', div).css({ clear: 'left' });
       Ember.$('p span:first-child', div).css({ color: 'rgb(153, 153, 0)' });
       Ember.$('p span:last-child', div).css({ color: 'rgb(153, 0, 153)' });
-  
+
       if (!preview) {
         Ember.$('span.close', div).css({
           float: 'right',
@@ -517,7 +517,7 @@ define("ember_debug",
           hideLayer();
         });
       }
-  
+
       Ember.$('p.controller span:last-child', div).css({ cursor: 'pointer' }).click(function() {
         EmberDebug.mixinsForObject(controller);
       });
@@ -616,11 +616,11 @@ define("ember_debug",
 
       port = Port.create();
 
-      port.on('getTree', function(message) {
+      port.on('getTree', function() {
         sendTree();
       });
 
-      port.on('hideLayer', function(message) {
+      port.on('hideLayer', function() {
         hideLayer();
       });
 
@@ -637,7 +637,7 @@ define("ember_debug",
       });
 
       port.on('digDeeper', function(message) {
-        digIntoObject(message.objectId, message.property);  
+        digIntoObject(message.objectId, message.property);
       });
 
       port.on('releaseObject', function(message) {
