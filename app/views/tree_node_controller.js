@@ -17,7 +17,6 @@ var TreeNodeControllerView = Ember.View.extend({
 
   click: function() {
     this.get('controller').send('showLayer', this.get('node'));
-    this.get('controller').pinLayer(this.get('node'));
   }
 });
 
