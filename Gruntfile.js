@@ -57,11 +57,18 @@ module.exports = function(grunt) {
           '!tmp/public/ember_extension.js',
           '!tmp/public/test.js',
           '!tmp/public/ember_debug/vendor/*.js',
-          '!tmp/public/ember_debug.js'
+          '!tmp/public/ember_debug.js',
+          '!tmp/public/vendor/**'
         ],
         options: {
           jshintrc: '.jshintrc'
         }
+      },
+      tests: {
+        src: [
+          'tmp/public/test/**/*.js',
+          '!tmp/public/test/vendor/*.js',
+        ]
       }
     },
     concat: {
@@ -85,13 +92,13 @@ module.exports = function(grunt) {
     watch: {
       scripts: {
         files: ['app/**', 'vendor/**', 'ember_debug/**', 'test/**/*', 'css/**/*'],
-        tasks: ['build', 'test']
+        tasks: ['build_test']
       }
     },
     connect: {
       server: {
         options: {
-          port: 9292,
+          port: 9999,
           hostname: '127.0.0.1',
           base: 'tmp/public'
         }
@@ -141,6 +148,13 @@ module.exports = function(grunt) {
         }
         ]
       }
+    },
+    qunit: {
+      all:  {
+        options: {
+          urls: ['http://localhost:9999/index.html']
+        }
+      }
     }
   });
 
@@ -151,15 +165,16 @@ module.exports = function(grunt) {
     'concat:main',
     'concat:main_css',
     'build_ember_debug',
-    'jshint',
+    'jshint:all',
     'copy:extension'
   ]);
 
   grunt.registerTask('build_ember_debug', ['transpile:ember_debug', 'copy:ember_debug', 'concat:ember_debug']);
-  grunt.registerTask('server', ['test','connect','watch']);
+  grunt.registerTask('server', ['build_test','connect','watch']);
 
-  grunt.registerTask('test', ['build', 'transpile:tests', 'copy:tests', 'concat:tests']);
+  grunt.registerTask('build_test', ['build', 'transpile:tests', 'copy:tests', 'concat:tests', 'jshint:tests']);
 
+  grunt.registerTask('test', ['build_test', 'connect',  'qunit:all']);
 
   grunt.registerTask('default', ['build']);
 

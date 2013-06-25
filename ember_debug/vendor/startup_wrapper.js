@@ -39,7 +39,7 @@
     if (!Ember) {
       return;
     }
-    var body = document.getElementsByTagName('body')[0];
+    var body = document.body;
     var interval = setInterval(function() {
       if (body.dataset.contentScriptLoaded && hasViews()) {
        clearInterval(interval);

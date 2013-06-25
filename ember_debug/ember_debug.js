@@ -139,6 +139,10 @@ EmberDebug.mixinsForObject = function(object) {
     name: object.toString(),
     details: details.mixins
   });
+
+  console.log({objectId: details.objectId,
+    name: object.toString(),
+    details: details.mixins});
 };
 
 EmberDebug.valueForObjectProperty = valueForObjectProperty;
@@ -239,6 +243,10 @@ function inspect(value) {
 
 function viewTree() {
   var rootView = Ember.View.views[Ember.$('.ember-application > .ember-view').attr('id')];
+  // In case of App.reset view is destroyed
+  if (!rootView) {
+    return false;
+  }
   var retained = [];
 
   var children = [];
@@ -281,9 +289,12 @@ EmberDebug.viewTree = viewTree;
 
 function sendTree() {
   var tree = viewTree();
-  port.send('viewTree', {
-    tree: tree
-  });
+  if (tree) {
+    port.send('viewTree', {
+      tree: tree
+    });
+  }
+ 
 }
 
 EmberDebug.sendTree = sendTree;

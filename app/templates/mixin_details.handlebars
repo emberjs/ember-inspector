@@ -1,9 +1,9 @@
 {{#each mixin in mixins itemController="mixinDetail"}}
-<div {{bindAttr class="mixin.type mixin.isExpanded:expanded"}}>
+<div {{bindAttr class="mixin.type mixin.isExpanded:expanded"}} data-label="object-detail">
   {{#if mixin.properties.length}}
-    <h2 class="mixin properties" {{action toggleProperty 'isExpanded' target=mixin}}>{{mixin.name}}</h2>
+    <h2 class="mixin properties" {{action toggleProperty 'isExpanded' target=mixin}} data-label="object-detail-name">{{mixin.name}}</h2>
   {{else}}
-    <h2 class="mixin no-properties">{{mixin.name}}</h2>
+    <h2 class="mixin no-properties" data-label="object-detail-name">{{mixin.name}}</h2>
   {{/if}}
   {{#if mixin.isExpanded}}
   <ul>

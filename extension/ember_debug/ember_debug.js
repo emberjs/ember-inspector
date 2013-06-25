@@ -80,7 +80,7 @@ if (typeof define !== 'function' && typeof requireModule !== 'function') {
     if (!Ember) {
       return;
     }
-    var body = document.getElementsByTagName('body')[0];
+    var body = document.body;
     var interval = setInterval(function() {
       if (body.dataset.contentScriptLoaded && hasViews()) {
        clearInterval(interval);
@@ -245,6 +245,10 @@ define("ember_debug",
         name: object.toString(),
         details: details.mixins
       });
+
+      console.log({objectId: details.objectId,
+        name: object.toString(),
+        details: details.mixins});
     };
 
     EmberDebug.valueForObjectProperty = valueForObjectProperty;
@@ -345,6 +349,10 @@ define("ember_debug",
 
     function viewTree() {
       var rootView = Ember.View.views[Ember.$('.ember-application > .ember-view').attr('id')];
+      // In case of App.reset view is destroyed
+      if (!rootView) {
+        return false;
+      }
       var retained = [];
 
       var children = [];
@@ -387,9 +395,12 @@ define("ember_debug",
 
     function sendTree() {
       var tree = viewTree();
-      port.send('viewTree', {
-        tree: tree
-      });
+      if (tree) {
+        port.send('viewTree', {
+          tree: tree
+        });
+      }
+ 
     }
 
     EmberDebug.sendTree = sendTree;

@@ -11,7 +11,7 @@ EmberExtension.TreeNodeControllerView = TreeNodeControllerView;
 EmberExtension.Port = Port;
 
 
-if (chrome.devtools) {
+if (typeof chrome !== 'undefined' && chrome.devtools) {
   chrome.devtools.network.onNavigated.addListener(function() {
     location.reload(true);
   });

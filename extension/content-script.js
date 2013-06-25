@@ -21,4 +21,4 @@ function listenToPort(port) {
   port.start();
 }
 // let ember-debug know that content script has executed
-document.getElementsByTagName('body')[0].dataset.contentScriptLoaded = 1;
+document.body.dataset.contentScriptLoaded = 1;

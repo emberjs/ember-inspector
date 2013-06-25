@@ -1,6 +1,7 @@
 {
   "predef": [
     "Ember",
+    "Em",
     "EmberExtension",
     "chrome",
     "Conductor",
@@ -26,7 +27,13 @@
     "strictEqual",
     "module",
     "process",
-    "expect"
+    "expect",
+    "visit",
+    "find",
+    "findByLabel",
+    "click",
+    "fillIn",
+    "wait"
   ],
   "node" : false,
   "browser" : true,
