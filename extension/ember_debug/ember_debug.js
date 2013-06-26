@@ -246,9 +246,6 @@ define("ember_debug",
         details: details.mixins
       });
 
-      console.log({objectId: details.objectId,
-        name: object.toString(),
-        details: details.mixins});
     };
 
     EmberDebug.valueForObjectProperty = valueForObjectProperty;
@@ -400,7 +397,7 @@ define("ember_debug",
           tree: tree
         });
       }
- 
+
     }
 
     EmberDebug.sendTree = sendTree;

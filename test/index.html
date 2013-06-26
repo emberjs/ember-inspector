@@ -19,13 +19,11 @@
 
       var EmberExtension = window.EmberExtension = requireModule('main');
       EmberExtension.deferReadiness();
+
+      // Override Port methods
       EmberExtension.Port = EmberExtension.Port.extend({
-        init: function() {
-
-        },
-        send: function() {
-
-        }
+        init: function() {},
+        send: function() {}
       });
 
       Ember.testing = true;
@@ -37,7 +35,6 @@
       Ember.Test.registerHelper('clickByLabel', function(app, label, context) {
         return app.testHelpers.click('[data-label="' + label + '"]', context);
       });
-
 
       Ember.Test.registerHelper('mouseEnterByLabel', function(app, selector, context) {
         app.testHelpers.findByLabel(selector, context).trigger('mouseenter');

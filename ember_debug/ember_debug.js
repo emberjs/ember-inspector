@@ -140,9 +140,6 @@ EmberDebug.mixinsForObject = function(object) {
     details: details.mixins
   });
 
-  console.log({objectId: details.objectId,
-    name: object.toString(),
-    details: details.mixins});
 };
 
 EmberDebug.valueForObjectProperty = valueForObjectProperty;
@@ -294,7 +291,7 @@ function sendTree() {
       tree: tree
     });
   }
- 
+
 }
 
 EmberDebug.sendTree = sendTree;

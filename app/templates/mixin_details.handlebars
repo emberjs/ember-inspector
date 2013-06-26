@@ -8,17 +8,17 @@
   {{#if mixin.isExpanded}}
   <ul>
     {{#each property in mixin.properties}}
-    <li {{bindAttr class="property.overridden:overridden"}} {{action "digDeeper" property}}>
+    <li {{bindAttr class="property.overridden:overridden"}} {{action "digDeeper" property}} data-label="object-property">
       {{#if property.value.computed}}
-        <button {{action "calculate" property bubbles=false}}><img src="/images/calculate.svg"></button>
+        <button {{action "calculate" property bubbles=false}} data-label="calculate"><img src="/images/calculate.svg"></button>
       {{else}}
         <span class='pad'></span>
       {{/if}}
-      <span class='property-name'>{{property.name}}</span><span class='property-value'>: </span>
+      <span class='property-name' data-label="object-property-name">{{property.name}}</span><span class='property-value'>: </span>
       {{#if property.calculated}}
-        <span class='calculated'>{{property.calculated}}</span>
+        <span class='calculated' data-label="object-property-value">{{property.calculated}}</span>
       {{else}}
-        <span {{bindAttr class="property.value.type"}}>{{property.value.inspect}}</span>
+        <span {{bindAttr class="property.value.type"}} data-label="object-property-value">{{property.value.inspect}}</span>
       {{/if}}
       <span class='by'>(Overridden by {{property.overridden}})</span>
     </li>
