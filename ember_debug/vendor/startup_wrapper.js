@@ -14,6 +14,11 @@
   }
 
   onReady(function() {
+    // global to prevent injection
+    if (window.NO_EMBER_DEBUG) {
+      return;
+    }
+    // prevent from injecting twice
     if (!Ember.Debug) {
       inject();
     }

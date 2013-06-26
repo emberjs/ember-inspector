@@ -30,9 +30,14 @@ module.exports = function(grunt) {
         type: "amd",
         files: [{
           expand: true,
-          cwd: 'test/',
-          src: ['**/*.js', '!vendor/**'],
-          dest: 'tmp/public/test'
+          cwd: 'test/ember_extension/',
+          src: ['**/*.js'],
+          dest: 'tmp/public/test/ember_extension'
+        }, {
+          expand: true,
+          cwd: 'test/ember_debug/',
+          src: ['**/*.js'],
+          dest: 'tmp/public/test/ember_debug'
         }]
       }
     },
@@ -84,9 +89,13 @@ module.exports = function(grunt) {
         src: ['tmp/public/ember_debug/vendor/*.js', 'tmp/public/ember_debug/**/*.js'],
         dest: 'tmp/public/ember_debug.js'
       },
-      tests: {
-        src: ['tmp/public/test/**/*.js', '!tmp/public/test/vendor/**'],
-        dest: 'tmp/public/test.js'
+      ember_extension_tests: {
+        src: ['tmp/public/test/ember_extension/**/*.js'],
+        dest: 'tmp/public/ember_extension_test.js'
+      },
+      ember_debug_tests: {
+        src: ['tmp/public/test/ember_debug/**/*.js'],
+        dest: 'tmp/public/ember_debug_test.js'
       }
     },
     watch: {
@@ -98,7 +107,7 @@ module.exports = function(grunt) {
     connect: {
       server: {
         options: {
-          port: 9999,
+          port: 9292,
           hostname: '127.0.0.1',
           base: 'tmp/public'
         }
@@ -138,13 +147,19 @@ module.exports = function(grunt) {
           src: ['vendor/**'],
           dest: 'tmp/public/test'
         }, {
-          src: ['test/index.html'],
-          dest: 'tmp/public/index.html'
+          expand: true,
+          cwd: 'test',
+          src: ['*.html'],
+          dest: 'tmp/public'
         }, {
           expand: true,
           cwd: 'vendor',
           src: ['**'],
           dest: 'tmp/public/vendor'
+        },
+        {
+          src: ['test/test_support.js'],
+          dest: 'tmp/public/test/test_support.js'
         }
         ]
       }
@@ -152,7 +167,7 @@ module.exports = function(grunt) {
     qunit: {
       all:  {
         options: {
-          urls: ['http://localhost:9999/index.html']
+          urls: ['http://localhost:9292/ember_extension.html', 'http://localhost:9292/ember_debug.html']
         }
       }
     }
@@ -172,7 +187,7 @@ module.exports = function(grunt) {
   grunt.registerTask('build_ember_debug', ['transpile:ember_debug', 'copy:ember_debug', 'concat:ember_debug']);
   grunt.registerTask('server', ['build_test','connect','watch']);
 
-  grunt.registerTask('build_test', ['build', 'transpile:tests', 'copy:tests', 'concat:tests', 'jshint:tests']);
+  grunt.registerTask('build_test', ['build', 'transpile:tests', 'copy:tests', 'concat:ember_extension_tests', 'concat:ember_debug_tests', 'jshint:tests']);
 
   grunt.registerTask('test', ['build_test', 'connect',  'qunit:all']);
 

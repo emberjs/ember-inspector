@@ -55,6 +55,11 @@ if (typeof define !== 'function' && typeof requireModule !== 'function') {
   }
 
   onReady(function() {
+    // global to prevent injection
+    if (window.NO_EMBER_DEBUG) {
+      return;
+    }
+    // prevent from injecting twice
     if (!Ember.Debug) {
       inject();
     }
@@ -119,6 +124,7 @@ define("ember_debug",
 
 
     EmberDebug = Ember.Debug = Ember.Namespace.create();
+    EmberDebug.Port = Port;
 
 
     function retainObject(object) {
@@ -403,8 +409,10 @@ define("ember_debug",
     EmberDebug.sendTree = sendTree;
 
     Ember.View.addMutationListener(function() {
-      sendTree();
-      hideLayer();
+      Em.run.schedule('afterRender', function() {
+        sendTree();
+        hideLayer();
+      });
     });
 
 
@@ -606,7 +614,7 @@ define("ember_debug",
 
 
 
-    Ember.Debug.start = function() {
+    EmberDebug.start = function() {
 
       layerDiv = document.createElement('div');
       layerDiv.style.display = 'none';
@@ -622,7 +630,7 @@ define("ember_debug",
         }
       });
 
-      port = Port.create();
+      port = EmberDebug.port = EmberDebug.Port.create();
 
       port.on('getTree', function() {
         sendTree();

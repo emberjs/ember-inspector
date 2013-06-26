@@ -13,6 +13,7 @@ var sentObjects = {},
 
 
 EmberDebug = Ember.Debug = Ember.Namespace.create();
+EmberDebug.Port = Port;
 
 
 function retainObject(object) {
@@ -297,8 +298,10 @@ function sendTree() {
 EmberDebug.sendTree = sendTree;
 
 Ember.View.addMutationListener(function() {
-  sendTree();
-  hideLayer();
+  Em.run.schedule('afterRender', function() {
+    sendTree();
+    hideLayer();
+  });
 });
 
 
@@ -500,7 +503,7 @@ function controllerName(controller) {
 
 
 
-Ember.Debug.start = function() {
+EmberDebug.start = function() {
 
   layerDiv = document.createElement('div');
   layerDiv.style.display = 'none';
@@ -516,7 +519,7 @@ Ember.Debug.start = function() {
     }
   });
 
-  port = Port.create();
+  port = EmberDebug.port = EmberDebug.Port.create();
 
   port.on('getTree', function() {
     sendTree();
