@@ -9,5 +9,16 @@ Installation
 
 - Clone the repository
 - Visit chrome://extensions in chrome
+- Make sure `Developer mode` is checked
 - Click on 'Load unpacked extension...'
-- Choose the `extension` folder in the cloned repo
+- Choose the `extension_dist` folder in the cloned repo
+
+Building and Testing:
+--------------------
+
+Run `npm install` to install the required modules.
+
+- `grunt` to build the files in the `extension_dist` directory
+- `grunt test` To run the testsw in the terminal
+- `grunt server` To start the test server at `localhost:9292`
+- `grunt watch` To watch the files and re-build when anything changes (useful during development).
