@@ -408,13 +408,6 @@ define("ember_debug",
 
     EmberDebug.sendTree = sendTree;
 
-    Ember.View.addMutationListener(function() {
-      Em.run.schedule('afterRender', function() {
-        sendTree();
-        hideLayer();
-      });
-    });
-
 
 
     function virtualRange(view) {
@@ -494,17 +487,17 @@ define("ember_debug",
       var output = "";
 
       if (!preview) {
-        output = "<span class='close'>x</span>";
+        output = "<span class='close' data-label='layer-close'>x</span>";
       }
 
       if (templateName) {
-        output += "<p class='template'><span>template</span>=<span>" + escapeHTML(templateName) + "</span></p>";
+        output += "<p class='template'><span>template</span>=<span data-label='layer-template'>" + escapeHTML(templateName) + "</span></p>";
       }
 
-      output += "<p class='controller'><span>controller</span>=<span>" + escapeHTML(controllerName(controller)) + "</span></p>";
+      output += "<p class='controller'><span>controller</span>=<span data-label='layer-controller'>" + escapeHTML(controllerName(controller)) + "</span></p>";
 
       if (model) {
-        output += "<p class='model'><span>model</span>=<span>" + escapeHTML(model.toString()) + "</span></p>";
+        output += "<p class='model'><span>model</span>=<span data-label='layer-model'>" + escapeHTML(model.toString()) + "</span></p>";
       }
 
       Ember.$(div).html(output);
@@ -613,22 +606,44 @@ define("ember_debug",
     }
 
 
+    var started = false;
 
     EmberDebug.start = function() {
+      if (started) {
+        EmberDebug.reset();
+        return;
+      }
+      started = true;
 
       layerDiv = document.createElement('div');
       layerDiv.style.display = 'none';
       document.body.appendChild(layerDiv);
+      layerDiv.setAttribute('data-label', 'layer-div');
 
       previewDiv = document.createElement('div');
       previewDiv.style.display = 'none';
       document.body.appendChild(previewDiv);
+      previewDiv.setAttribute('data-label', 'preview-div');
 
       Ember.$(window).resize(function() {
         if (highlightedElement) {
           EmberDebug.highlightView(highlightedElement);
         }
       });
+
+
+      Ember.View.addMutationListener(function() {
+        Em.run.schedule('afterRender', function() {
+          sendTree();
+          hideLayer();
+        });
+      });
+
+
+      EmberDebug.reset();
+    };
+
+    EmberDebug.reset = function() {
 
       port = EmberDebug.port = EmberDebug.Port.create();
 

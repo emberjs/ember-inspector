@@ -1,9 +1,10 @@
-var App;
+var App, compile = Ember.Handlebars.compile;
 
 Em.run(function() {
   App = window.App = Em.Application.create();
 
   App.Router.map(function() {
+    this.route('simple');
     this.resource('posts');
   });
 
@@ -12,13 +13,26 @@ Em.run(function() {
   App.injectTestHelpers();
 });
 
-App.IndexRoute = Em.Route.extend({
+App.SimpleView = Em.View.extend({
+  tagName: 'div'
+});
+
+App.SimpleRoute = Em.Route.extend({
   model: function() {
-    return { name: 'Teddy' };
+    return {
+      toString: function() {
+        return 'Simple Model';
+      }
+    };
   }
 });
 
-Ember.TEMPLATES.index = Ember.Handlebars.compile('Home');
-Ember.TEMPLATES.posts = Ember.Handlebars.compile('Posts');
+App.SimpleController = Em.ObjectController.extend();
+
+Ember.TEMPLATES.application = compile('{{outlet}}');
+Ember.TEMPLATES.index = compile('Index');
+Ember.TEMPLATES.simple = compile('Simple');
+Ember.TEMPLATES.posts = compile('Posts');
+
 
 export = App;
