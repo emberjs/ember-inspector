@@ -1,0 +1,22 @@
+{
+  "manifest_version": 2,
+
+  "name": "Ember Inspector",
+  "description": "Tool for debugging Ember applications.",
+  "version": "0.0.1",
+
+  "permissions": [
+    "http://*/*",
+    "https://*/*",
+    "file://*/*"
+  ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "devtools_page": "devtools.html",
+  "content_scripts": [{
+    "matches": ["https://*/*", "http://*/*", "file://*/*"],
+    "js": ["content-script.js"]
+  }],
+  "background": {
+    "scripts": ["background-script.js"]
+  }
+}
