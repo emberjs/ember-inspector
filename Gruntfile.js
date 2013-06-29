@@ -1,26 +1,32 @@
 module.exports = function(grunt) {
 
+  function loadFrom(path, config) {
+    var glob = require('glob'),
+    object = {};
+
+    glob.sync('*', {cwd: path}).forEach(function(option) {
+      var key = option.replace(/\.js$/,'');
+      config[key] = require(path + option);
+    });
+  }
+
+  var config = {
+    pkg: grunt.file.readJSON('package.json'),
+    env: process.env,
+    clean: ['tmp']
+  };
+
+  loadFrom('./tasks/options/', config);
+
+  grunt.initConfig(config);
+
+
   require('matchdep')
   .filterDev('grunt-*')
   .filter(function(name){ return name !== 'grunt-cli'; })
   .forEach(grunt.loadNpmTasks);
 
-  function config(configFileName) {
-    return require('./configurations/' + configFileName);
-  }
-
-  grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
-    transpile: config('transpile'),
-    clean: ['tmp'],
-    ember_handlebars: config('ember_handlebars'),
-    jshint: config('jshint'),
-    concat: config('concat'),
-    watch: config('watch'),
-    connect: config('connect'),
-    copy: config('copy'),
-    qunit: config('qunit')
-  });
+  grunt.loadTasks('tasks');
 
   grunt.registerTask('build', [
     'clean',
