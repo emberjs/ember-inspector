@@ -1,0 +1,10 @@
+<h1>
+  {{#if isNested}}
+    <button {{action popStack}} data-label="object-inspector-back">◀ Back</button>
+  {{else}}
+    <span data-label="object-inspector-back">◀ Back</span>
+  {{/if}}
+  <span data-label="object-name">{{firstObject.name}}</span>
+</h1>
+<h2 data-label="object-trail">{{trail}}</h2>
+{{render "mixinDetails"}}
