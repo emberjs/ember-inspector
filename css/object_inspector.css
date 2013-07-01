@@ -1,0 +1,60 @@
+/**
+ OBJECT-INSPECTOR
+ ================
+ The Object inspector
+ at the far right of the screen
+*/
+
+.object-inspector__header, .object-inspector__trail {
+  font-family: Menlo, Monaco, monospace;
+  font-size: 15px;
+  color: #639;
+  font-weight: bold;
+  text-shadow: 0px 1px 1px #fff;
+  border-radius: 5px;
+  margin-bottom: 0;
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+  -webkit-align-items: center;
+}
+
+
+.object-inspector__trail {
+  font-size: 12px;
+  font-weight: normal;
+  margin-bottom: 10px;
+  padding-left: 77px;
+  color: #669;
+}
+
+.object-inspector__back {
+  font-family: 'Lucida Grande';
+  font-weight: normal;
+  border: none;
+  background: none;
+  font-size: 16px;
+  height: 24px;
+  display: inline;
+  margin: 0 10px 0 0;
+  padding: 0 10px 0 0;
+}
+
+  .object-inspector__back_state_enabled {
+    color: #009;
+    border-right: 1px solid #009;
+    cursor: pointer;
+  }
+
+  .object-inspector__back_state_enabled:hover {
+    color: #004;
+  }
+
+  .object-inspector__back_state_enabled:active {
+    color: #002;
+  }
+
+  .object-inspector__back_state_disabled {
+    color: #999;
+    border-right: 1px solid #999;
+  }
+

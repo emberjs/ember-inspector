@@ -368,11 +368,11 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, options, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing;
 
 
-  data.buffer.push("<div class='main-area'>\n  ");
+  data.buffer.push("<div class=\"app__main\">\n  ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "outlet", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("\n</div>\n\n<div class='ember-object'>\n  ");
+  data.buffer.push("\n</div>\n\n<div class=\"app__right-col\">\n  ");
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
@@ -394,9 +394,9 @@ function program1(depth0,data) {
   hashContexts = {'class': depth0};
   hashTypes = {'class': "STRING"};
   data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
-    'class': ("mixin.type mixin.isExpanded:expanded")
+    'class': (":mixin mixin.type mixin.isExpanded:mixin_state_expanded mixin.properties.length:mixin_props_yes:mixin_props_no")
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(" data-label=\"object-detail\">\n  ");
+  data.buffer.push(" data-label=\"object-detail\" >\n  ");
   hashTypes = {};
   hashContexts = {};
   stack1 = helpers['if'].call(depth0, "mixin.properties.length", {hash:{},inverse:self.program(4, program4, data),fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
@@ -412,7 +412,7 @@ function program1(depth0,data) {
 function program2(depth0,data) {
   
   var buffer = '', hashContexts, hashTypes;
-  data.buffer.push("\n    <h2 class=\"mixin properties\" ");
+  data.buffer.push("\n    <h2 class=\"mixin__name\" ");
   hashContexts = {'target': depth0};
   hashTypes = {'target': "ID"};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "toggleProperty", "isExpanded", {hash:{
@@ -429,7 +429,7 @@ function program2(depth0,data) {
 function program4(depth0,data) {
   
   var buffer = '', hashTypes, hashContexts;
-  data.buffer.push("\n    <h2 class=\"mixin no-properties\" data-label=\"object-detail-name\">");
+  data.buffer.push("\n    <h2 class=\"mixin__name\" data-label=\"object-detail-name\">");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "mixin.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
@@ -440,7 +440,7 @@ function program4(depth0,data) {
 function program6(depth0,data) {
   
   var buffer = '', stack1, hashTypes, hashContexts;
-  data.buffer.push("\n  <ul>\n    ");
+  data.buffer.push("\n  <ul class=\"mixin__properties\">\n    ");
   hashTypes = {};
   hashContexts = {};
   stack1 = helpers.each.call(depth0, "property", "in", "mixin.properties", {hash:{},inverse:self.program(16, program16, data),fn:self.program(7, program7, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
@@ -455,7 +455,7 @@ function program7(depth0,data) {
   hashContexts = {'class': depth0};
   hashTypes = {'class': "STRING"};
   data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
-    'class': ("property.overridden:overridden")
+    'class': ("property.overridden:mixin__property_state_overridden :mixin__property")
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push(" ");
   hashTypes = {};
@@ -466,16 +466,16 @@ function program7(depth0,data) {
   hashContexts = {};
   stack1 = helpers['if'].call(depth0, "property.value.computed", {hash:{},inverse:self.program(10, program10, data),fn:self.program(8, program8, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n      <span class='property-name' data-label=\"object-property-name\">");
+  data.buffer.push("\n      <span class='mixin__property-name' data-label=\"object-property-name\">");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "property.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</span><span class='property-value'>: </span>\n      ");
+  data.buffer.push("</span><span class='mixin__property-value-separator'>: </span>\n      ");
   hashTypes = {};
   hashContexts = {};
   stack1 = helpers['if'].call(depth0, "property.calculated", {hash:{},inverse:self.program(14, program14, data),fn:self.program(12, program12, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n      <span class='by'>(Overridden by ");
+  data.buffer.push("\n      <span class='mixin__property-overridden-by'>(Overridden by ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "property.overridden", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
@@ -504,7 +504,7 @@ function program10(depth0,data) {
 function program12(depth0,data) {
   
   var buffer = '', hashTypes, hashContexts;
-  data.buffer.push("\n        <span class='calculated' data-label=\"object-property-value\">");
+  data.buffer.push("\n        <span class='mixin__property-calculated-value' data-label=\"object-property-value\">");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "property.calculated", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
@@ -532,7 +532,7 @@ function program14(depth0,data) {
 function program16(depth0,data) {
   
   
-  data.buffer.push("\n    <li>No Properties</li>\n    ");
+  data.buffer.push("\n    <li class=\"mixin__property\">No Properties</li>\n    ");
   }
 
   hashContexts = {'itemController': depth0};
@@ -558,35 +558,35 @@ function program1(depth0,data) {
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "popStack", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(" data-label=\"object-inspector-back\">◀ Back</button>\n  ");
+  data.buffer.push(" data-label=\"object-inspector-back\" class=\"object-inspector__back object-inspector__back_state_enabled\">◀ Back</button>\n  ");
   return buffer;
   }
 
 function program3(depth0,data) {
   
   
-  data.buffer.push("\n    <span data-label=\"object-inspector-back\">◀ Back</span>\n  ");
+  data.buffer.push("\n    <span data-label=\"object-inspector-back\" class=\"object-inspector__back object-inspector__back_state_disabled\">◀ Back</span>\n  ");
   }
 
-  data.buffer.push("<h1>\n  ");
+  data.buffer.push("<h1 class=\"object-inspector__header\">\n  ");
   hashTypes = {};
   hashContexts = {};
   stack1 = helpers['if'].call(depth0, "isNested", {hash:{},inverse:self.program(3, program3, data),fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n  <span data-label=\"object-name\">");
+  data.buffer.push("\n  <span data-label=\"object-name\" class=\"object-inspector__name\">");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "firstObject.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</span>\n</h1>\n<h2 data-label=\"object-trail\">");
+  data.buffer.push("</span>\n</h1>\n<h2 class=\"object-inspector__trail\" data-label=\"object-trail\">");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "trail", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</h2>\n");
+  data.buffer.push("</h2>\n<div class=\"object-inspector__mixins\">\n  ");
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
   data.buffer.push(escapeExpression(((stack1 = helpers.render),stack1 ? stack1.call(depth0, "mixinDetails", options) : helperMissing.call(depth0, "render", "mixinDetails", options))));
-  data.buffer.push("\n");
+  data.buffer.push("\n</div>\n");
   return buffer;
   
 });
@@ -599,7 +599,7 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 function program1(depth0,data) {
   
   var buffer = '', stack1, hashContexts, hashTypes;
-  data.buffer.push("\n    <li data-label=\"tree-view\">\n      <p>\n        ");
+  data.buffer.push("\n    <li class=\"view-tree__node-child\" data-label=\"tree-view\">\n      <p class=\"view-tree__node-header\">\n        ");
   hashContexts = {'nodeBinding': depth0,'label': depth0};
   hashTypes = {'nodeBinding': "STRING",'label': "STRING"};
   stack1 = helpers.view.call(depth0, "EmberExtension.TreeNodeControllerView", {hash:{
@@ -607,7 +607,7 @@ function program1(depth0,data) {
     'label': ("tree-view-controller")
   },inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n        <span class='template' data-label=\"tree-view-template\">template:");
+  data.buffer.push("\n        <span class='view-tree__node-template' data-label=\"tree-view-template\">template:");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "node.value.template", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
@@ -638,7 +638,7 @@ function program4(depth0,data) {
   return buffer;
   }
 
-  data.buffer.push("<ul class='view-tree-node' data-label=\"tree-node\">\n  ");
+  data.buffer.push("<ul class=\"view-tree__node\" data-label=\"tree-node\">\n  ");
   hashTypes = {};
   hashContexts = {};
   stack1 = helpers.each.call(depth0, "node", "in", "node.children", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
@@ -654,7 +654,7 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   var buffer = '', hashTypes, hashContexts, escapeExpression=this.escapeExpression;
 
 
-  data.buffer.push("<div class='view-tree'>\n  ");
+  data.buffer.push("<div class=\"view-tree\">\n  ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers.view.call(depth0, "EmberExtension.TreeNodeView", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
@@ -662,6 +662,28 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   return buffer;
   
 });
+define("views/application",
+  [],
+  function() {
+    "use strict";
+    var ApplicationView = Ember.View.extend({
+      classNames: ['app']
+    });
+
+
+    return ApplicationView;
+  });
+define("views/mixin_stack",
+  [],
+  function() {
+    "use strict";
+    var MixinStackView = Ember.View.extend({
+      classNames: ['object-inspector']
+    });
+
+
+    return MixinStackView;
+  });
 define("views/tree_node",
   [],
   function() {
@@ -679,7 +701,7 @@ define("views/tree_node_controller",
     "use strict";
     var TreeNodeControllerView = Ember.View.extend({
       tagName: 'span',
-      classNames: 'controller',
+      classNames: 'view-tree__node-controller',
       classNameBindings: 'isPinned',
 
       isPinned: function() {
