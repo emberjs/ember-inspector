@@ -1,9 +1,23 @@
-/*.ember-object {
-  display: -webkit-flex;
-  -webkit-flex-direction: column;
-  -webkit-align-items: stretch;
-}
+/**
+ APP
+ ===
+ The layout of the entire
+ application.
 */
+
+
+.app {
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+}
+
+.app__main {
+  -webkit-flex-grow: 1;
+}
+
+.app__right-col {
+  width: 500px;
+}
 
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
@@ -17,25 +31,139 @@ body {
   color: #333;
 }
 
-body > .ember-view {
+
+/**
+ MIXIN
+ =====
+ A single mixin inside the object inspector
+ It could be the object's own properties
+ or a mixin the object extends
+*/
+
+.mixin {
+  border: 1px solid #ccc;
+}
+
+.mixin__name {
+  padding: 2px;
+  background-color: #ddd;
+  text-shadow: 0px 1px 1px #fff;
+}
+
+.mixin_props_yes .mixin__name {
+    cursor: pointer;
+}
+
+  .mixin_props_no .mixin__name:before {
+    opacity: 0;
+  }
+
+  .mixin.ember-mixin .mixin__name {
+    color: #888;
+  }
+
+.mixin__name:before {
+  content: "\25B6";
+  color: #555;
+  margin-right: 4px;
+  font-size: 80%;
+}
+
+  .mixin_state_expanded .mixin__name:before {
+    content: "\25BC";
+  }
+
+  .mixin.ember-mixin .mixin__name:before {
+    color: #aaa;
+  }
+
+.mixin__properties {
+  margin: 5px;
+  list-style-type: none;
+  padding: 0;
+  font-size: 12px;
+  font-family: Menlo, Monaco, monospace;
+}
+
+.mixin__property {
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   display: -webkit-flex;
   -webkit-flex-direction: row;
+  -webkit-align-items: center;
 }
 
-.main-area {
-  -webkit-flex-grow: 1;
+.mixin__property button {
+  border: none;
+  background: none;
+  margin: 0;
+  padding: 0;
 }
 
-.ember-object {
-  width: 500px;
+.mixin__property button img, .mixin__property span.pad {
+  margin-right: 3px;
+  width: 16px;
 }
 
-#reload-button {
-  display: block;
-  margin-bottom: 30px;
+.mixin__property_state_overridden {
+  text-decoration: line-through;
 }
 
-.ember-object h1, .ember-object > h2 {
+.mixin__property:not(.mixin__property_state_overridden):hover {
+  cursor: pointer;
+  background-color: #ffe;
+}
+
+.mixin__property-overridden-by {
+  display: none;
+}
+
+.mixin__property_state_overridden:hover .mixin__property-overridden-by {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.95);
+  right: 0;
+  display: inline;
+  text-decoration: none;
+}
+
+.mixin__property-name {
+  color: #909;
+}
+
+.mixin__property-value-separator {
+  margin-right: 5px;
+}
+
+.mixin__property .type-function {
+  color: #999;
+}
+
+.mixin__property .type-object {
+  color: #999;
+}
+
+.mixin__property-calculated-value {
+  color: #999;
+}
+
+.mixin__property .type-null, .mixin__property .type-boolean {
+  color: #009;
+}
+
+.mixin__property .type-descriptor {
+  color: #900;
+}
+
+/**
+ OBJECT-INSPECTOR
+ ================
+ The Object inspector
+ at the far right of the screen
+*/
+
+.object-inspector__header, .object-inspector__trail {
   font-family: Menlo, Monaco, monospace;
   font-size: 15px;
   color: #639;
@@ -48,7 +176,16 @@ body > .ember-view {
   -webkit-align-items: center;
 }
 
-.ember-object h1 button, .ember-object h1 span {
+
+.object-inspector__trail {
+  font-size: 12px;
+  font-weight: normal;
+  margin-bottom: 10px;
+  padding-left: 77px;
+  color: #669;
+}
+
+.object-inspector__back {
   font-family: 'Lucida Grande';
   font-weight: normal;
   border: none;
@@ -60,195 +197,67 @@ body > .ember-view {
   padding: 0 10px 0 0;
 }
 
-.ember-object h1 button {
-  color: #009;
-  border-right: 1px solid #009;
-  cursor: pointer;
-}
+  .object-inspector__back_state_enabled {
+    color: #009;
+    border-right: 1px solid #009;
+    cursor: pointer;
+  }
 
-.ember-object h1 button:hover {
-  color: #004;
-}
+  .object-inspector__back_state_enabled:hover {
+    color: #004;
+  }
 
-.ember-object h1 button:active {
-  color: #002;
-}
+  .object-inspector__back_state_enabled:active {
+    color: #002;
+  }
 
-.ember-object h1 span {
-  color: #999;
-  border-right: 1px solid #999;
-}
+  .object-inspector__back_state_disabled {
+    color: #999;
+    border-right: 1px solid #999;
+  }
 
-.ember-object > h2 {
-  font-size: 12px;
-  font-weight: normal;
-  margin-bottom: 10px;
-  padding-left: 77px;
-  color: #669;
-}
 
-.ember-object h2.mixin {
-  padding: 2px;
-  background-color: #ddd;
-  text-shadow: 0px 1px 1px #fff;
-}
+/**
+ VIEW-TREE
+ =========
+ Displays the view hierarchy in the app
+ being inspected.
+*/
 
-.ember-object h2.mixin.properties {
-  cursor: pointer;
-}
-
-.ember-object h2.mixin:before {
-  content: "\25B6";
-  color: #555;
-  margin-right: 4px;
-  font-size: 80%;
-}
-
-.ember-object h2.mixin.no-properties:before {
-  opacity: 0;
-}
-
-.ember-object .expanded h2.mixin:before {
-  content: "\25BC";
-}
-
-.ember-object > div {
-  border: 1px solid #ccc;
-}
-
-.ember-object > .ember-self {
-
-}
-
-.ember-object > .ember-mixin {
-
-}
-
-.ember-object > .ember-mixin h2 {
-  color: #888;
-}
-
-.ember-object > .ember-mixin h2:before {
-  color: #aaa;
-}
-
-.ember-object > .ember-class {
-
-}
-
-.ember-object ul {
-  margin: 5px;
-  list-style-type: none;
-  padding: 0;
-  font-size: 12px;
-  font-family: Menlo, Monaco, monospace;
-}
-
-.ember-object li {
-  position: relative;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-flex;
-  -webkit-flex-direction: row;
-  -webkit-align-items: center;
-}
-
-.ember-object li button {
-  border: none;
-  background: none;
-  margin: 0;
-  padding: 0;
-}
-
-.ember-object li button img, .ember-object li span.pad {
-  margin-right: 3px;
-  width: 16px;
-}
-
-.ember-object li.overridden span {
-  text-decoration: line-through;
-}
-
-.ember-object li:not(.overridden):hover {
-  cursor: pointer;
-  background-color: #ffe;
-}
-
-.ember-object li span.by {
-  display: none;
-}
-
-.ember-object li.overridden:hover span.by {
-  position: absolute;
-  background-color: rgba(255, 255, 255, 0.95);
-  right: 0;
-  display: inline;
-  text-decoration: none;
-}
-
-.ember-object li span.property-name {
-  color: #909;
-}
-
-.ember-object li span.property-value {
-  margin-right: 5px;
-}
-
-.ember-object li span.type-function {
-  color: #999;
-}
-
-.ember-object li span.type-object {
-  color: #999;
-}
-
-.ember-object li span.calculated {
-  color: #999;
-}
-
-.ember-object .type-null, .ember-object .type-boolean {
-  color: #009;
-}
-
-.ember-object .type-descriptor {
-  color: #900;
-}
-
-div.view-tree {
+.view-tree {
   font-family: Menlo, sans-serif;
   font-size: 12px;
 }
 
-ul.view-tree-node {
+.view-tree__node {
   list-style-type: none;
   margin: 0;
   padding: 0 0 0 10px;
 }
 
-ul.view-tree-node li {
+.view-tree__node-child {
   margin-top: 5px;
 }
 
-ul.view-tree-node span.controller {
+.view-tree__node-controller {
   color: #939;
   cursor: pointer;
 }
 
-ul.view-tree-node span.controller.is-pinned, ul.view-tree-node span.controller:hover {
+.view-tree__node-controller.is-pinned, .view-tree__node-controller:hover {
   color: #606;
 }
 
-ul.view-tree-node span.controller:hover + span.template {
+.view-tree__node-controller:hover + .view-tree__node-template {
   display: inline;
 }
 
-ul.view-tree-node span.template {
+.view-tree__node-template {
   color: #999;
   display: none;
 }
 
-ul.view-tree-node p {
+.view-tree__node-header {
   margin: 0;
   padding: 0;
 }

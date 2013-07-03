@@ -1,0 +1,123 @@
+/**
+ MIXIN
+ =====
+ A single mixin inside the object inspector
+ It could be the object's own properties
+ or a mixin the object extends
+*/
+
+.mixin {
+  border: 1px solid #ccc;
+}
+
+.mixin__name {
+  padding: 2px;
+  background-color: #ddd;
+  text-shadow: 0px 1px 1px #fff;
+}
+
+.mixin_props_yes .mixin__name {
+    cursor: pointer;
+}
+
+  .mixin_props_no .mixin__name:before {
+    opacity: 0;
+  }
+
+  .mixin.ember-mixin .mixin__name {
+    color: #888;
+  }
+
+.mixin__name:before {
+  content: "\25B6";
+  color: #555;
+  margin-right: 4px;
+  font-size: 80%;
+}
+
+  .mixin_state_expanded .mixin__name:before {
+    content: "\25BC";
+  }
+
+  .mixin.ember-mixin .mixin__name:before {
+    color: #aaa;
+  }
+
+.mixin__properties {
+  margin: 5px;
+  list-style-type: none;
+  padding: 0;
+  font-size: 12px;
+  font-family: Menlo, Monaco, monospace;
+}
+
+.mixin__property {
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+  -webkit-align-items: center;
+}
+
+.mixin__property button {
+  border: none;
+  background: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mixin__property button img, .mixin__property span.pad {
+  margin-right: 3px;
+  width: 16px;
+}
+
+.mixin__property_state_overridden {
+  text-decoration: line-through;
+}
+
+.mixin__property:not(.mixin__property_state_overridden):hover {
+  cursor: pointer;
+  background-color: #ffe;
+}
+
+.mixin__property-overridden-by {
+  display: none;
+}
+
+.mixin__property_state_overridden:hover .mixin__property-overridden-by {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.95);
+  right: 0;
+  display: inline;
+  text-decoration: none;
+}
+
+.mixin__property-name {
+  color: #909;
+}
+
+.mixin__property-value-separator {
+  margin-right: 5px;
+}
+
+.mixin__property .type-function {
+  color: #999;
+}
+
+.mixin__property .type-object {
+  color: #999;
+}
+
+.mixin__property-calculated-value {
+  color: #999;
+}
+
+.mixin__property .type-null, .mixin__property .type-boolean {
+  color: #009;
+}
+
+.mixin__property .type-descriptor {
+  color: #900;
+}

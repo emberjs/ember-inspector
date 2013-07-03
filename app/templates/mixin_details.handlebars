@@ -1,29 +1,29 @@
 {{#each mixin in mixins itemController="mixinDetail"}}
-<div {{bindAttr class="mixin.type mixin.isExpanded:expanded"}} data-label="object-detail">
+<div {{bindAttr class=":mixin mixin.type mixin.isExpanded:mixin_state_expanded mixin.properties.length:mixin_props_yes:mixin_props_no"}} data-label="object-detail" >
   {{#if mixin.properties.length}}
-    <h2 class="mixin properties" {{action toggleProperty 'isExpanded' target=mixin}} data-label="object-detail-name">{{mixin.name}}</h2>
+    <h2 class="mixin__name" {{action toggleProperty 'isExpanded' target=mixin}} data-label="object-detail-name">{{mixin.name}}</h2>
   {{else}}
-    <h2 class="mixin no-properties" data-label="object-detail-name">{{mixin.name}}</h2>
+    <h2 class="mixin__name" data-label="object-detail-name">{{mixin.name}}</h2>
   {{/if}}
   {{#if mixin.isExpanded}}
-  <ul>
+  <ul class="mixin__properties">
     {{#each property in mixin.properties}}
-    <li {{bindAttr class="property.overridden:overridden"}} {{action "digDeeper" property}} data-label="object-property">
+    <li {{bindAttr class="property.overridden:mixin__property_state_overridden :mixin__property"}} {{action "digDeeper" property}} data-label="object-property">
       {{#if property.value.computed}}
         <button {{action "calculate" property bubbles=false}} data-label="calculate"><img src="/images/calculate.svg"></button>
       {{else}}
         <span class='pad'></span>
       {{/if}}
-      <span class='property-name' data-label="object-property-name">{{property.name}}</span><span class='property-value'>: </span>
+      <span class='mixin__property-name' data-label="object-property-name">{{property.name}}</span><span class='mixin__property-value-separator'>: </span>
       {{#if property.calculated}}
-        <span class='calculated' data-label="object-property-value">{{property.calculated}}</span>
+        <span class='mixin__property-calculated-value' data-label="object-property-value">{{property.calculated}}</span>
       {{else}}
         <span {{bindAttr class="property.value.type"}} data-label="object-property-value">{{property.value.inspect}}</span>
       {{/if}}
-      <span class='by'>(Overridden by {{property.overridden}})</span>
+      <span class='mixin__property-overridden-by'>(Overridden by {{property.overridden}})</span>
     </li>
     {{else}}
-    <li>No Properties</li>
+    <li class="mixin__property">No Properties</li>
     {{/each}}
   </ul>
   {{/if}}
