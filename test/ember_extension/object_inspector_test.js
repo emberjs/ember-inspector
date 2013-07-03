@@ -76,7 +76,7 @@ test("The object displays correctly", function() {
   .then(function() {
     equal(findByLabel('object-name').text(), 'My Object');
     equal(findByLabel('object-detail-name').filter(':first').text(), 'Own Properties');
-    ok(findByLabel('object-detail').hasClass('expanded'), 'The "Own Properties" detail is expanded by default');
+    ok(findByLabel('object-detail').hasClass('mixin_state_expanded'), 'The "Own Properties" detail is expanded by default');
   });
 });
 
@@ -94,23 +94,23 @@ test("Object details", function() {
     $firstDetail = findByLabel('object-detail').eq(0);
     $secondDetail = findByLabel('object-detail').eq(1);
     equal(findByLabel('object-detail-name', $firstDetail).text(), 'First Detail');
-    ok(!$firstDetail.hasClass('expanded'), 'Detail not expanded by default');
+    ok(!$firstDetail.hasClass('mixin_state_expanded'), 'Detail not expanded by default');
     return clickByLabel('object-detail-name', $firstDetail);
   })
   .then(function() {
-    ok($firstDetail.hasClass('expanded'), 'Detail expands on click.');
-    ok(!$secondDetail.hasClass('expanded'), 'Second detail does not expand.');
+    ok($firstDetail.hasClass('mixin_state_expanded'), 'Detail expands on click.');
+    ok(!$secondDetail.hasClass('mixin_state_expanded'), 'Second detail does not expand.');
     equal(findByLabel('object-property', $firstDetail).length, 1);
     equal(findByLabel('object-property-name', $firstDetail).text(), 'numberProperty');
     equal(findByLabel('object-property-value', $firstDetail).text(), '1');
     return clickByLabel('object-detail-name', $firstDetail);
   })
   .then(function() {
-    ok(!$firstDetail.hasClass('expanded'), 'Expanded detail minimizes on click.');
+    ok(!$firstDetail.hasClass('mixin_state_expanded'), 'Expanded detail minimizes on click.');
     return clickByLabel('object-detail-name', $secondDetail);
   })
   .then(function() {
-    ok($secondDetail.hasClass('expanded'));
+    ok($secondDetail.hasClass('mixin_state_expanded'));
     equal(findByLabel('object-property', $secondDetail).length, 2);
     equal(findByLabel('object-property-name', $secondDetail).eq(0).text(), 'objectProperty');
     equal(findByLabel('object-property-value', $secondDetail).eq(0).text(), 'Ember Object Name');
@@ -173,7 +173,7 @@ test("Digging deeper into objects", function() {
     return clickByLabel('object-detail-name');
   })
   .then(function() {
-    ok(findByLabel('object-detail').hasClass('expanded'));
+    ok(findByLabel('object-detail').hasClass('mixin_state_expanded'));
     equal(findByLabel('object-property-name').text(), 'nestedProp');
     equal(findByLabel('object-property-value').text(), 'Nested Prop');
     return clickByLabel('object-inspector-back');

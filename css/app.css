@@ -1,0 +1,20 @@
+/**
+ APP
+ ===
+ The layout of the entire
+ application.
+*/
+
+
+.app {
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+}
+
+.app__main {
+  -webkit-flex-grow: 1;
+}
+
+.app__right-col {
+  width: 500px;
+}

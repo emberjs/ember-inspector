@@ -1,9 +1,9 @@
-<ul class='view-tree-node' data-label="tree-node">
+<ul class="view-tree__node" data-label="tree-node">
   {{#each node in node.children}}
-    <li data-label="tree-view">
-      <p>
+    <li class="view-tree__node-child" data-label="tree-view">
+      <p class="view-tree__node-header">
         {{#view EmberExtension.TreeNodeControllerView nodeBinding="node" label="tree-view-controller"}}{{node.value.name}}{{/view}}
-        <span class='template' data-label="tree-view-template">template:{{node.value.template}}</span>
+        <span class='view-tree__node-template' data-label="tree-view-template">template:{{node.value.template}}</span>
       </p>
       {{#if node.children.length}}
         {{view EmberExtension.TreeNodeView}}
