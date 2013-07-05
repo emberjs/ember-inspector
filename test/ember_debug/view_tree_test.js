@@ -28,7 +28,7 @@ test("Simple View Tree", function() {
 
   visit('/simple')
   .then(function() {
-    equal(name, 'viewTree');
+    equal(name, 'view:viewTree');
     var tree = message.tree;
     var value = tree.value;
     equal(tree.children.length, 1);
@@ -59,7 +59,7 @@ test("Highlight a view", function() {
   visit('/simple')
   .then(function() {
     var tree = message.tree;
-    port.trigger('showLayer', {
+    port.trigger('view:showLayer', {
       objectId: tree.children[0].value.objectId
     });
     return wait();
@@ -74,14 +74,14 @@ test("Highlight a view", function() {
   })
   .then(function() {
     var controller = App.__container__.lookup('controller:simple');
-    equal(name, 'updateObject');
+    equal(name, 'objectInspector:updateObject');
     equal(controller.toString(), message.name);
     name = null;
     message = null;
     return clickByLabel('layer-model', layerDiv);
   })
   .then(function() {
-    equal(name, 'updateObject');
+    equal(name, 'objectInspector:updateObject');
     equal(message.name, 'Simple Model');
     return clickByLabel('layer-close');
   })

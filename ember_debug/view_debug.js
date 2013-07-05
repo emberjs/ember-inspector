@@ -9,13 +9,9 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
   namespace: null,
 
-  port: Ember.computed(function() {
-    return this.get('namespace.port');
-  }).property('namespace.port'),
+  port: Ember.computed.alias('namespace.port'),
 
-  objectInspector: Ember.computed(function() {
-    return this.get('namespace.objectInspector');
-  }).property('namespace.objectInspector'),
+  objectInspector: Ember.computed.alias('namespace.objectInspector'),
 
   init: function() {
     this._super();
@@ -51,6 +47,8 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     Ember.View.removeMutationListener(this.viewTreeChanged);
   },
 
+  portNamespace: 'view',
+
   messages: {
     getTree: function() {
       this.sendTree();
@@ -72,7 +70,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
   sendTree: function() {
     var tree = this.viewTree();
     if (tree) {
-      this.get('port').send('viewTree', {
+      this.sendMessage('viewTree', {
         tree: tree
       });
     }

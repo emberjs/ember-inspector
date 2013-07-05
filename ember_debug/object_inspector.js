@@ -1,12 +1,9 @@
 import "mixins/port_mixin" as PortMixin;
 
-
 var ObjectInspector = Ember.Object.extend(PortMixin, {
   namespace: null,
 
-  port: Ember.computed(function() {
-    return this.get('namespace.port');
-  }).property('namespace.port'),
+  port: Ember.computed.alias('namespace.port'),
 
   init: function() {
     this._super();
@@ -18,6 +15,8 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
 
   boundObservers: {},
 
+  portNamespace: 'objectInspector',
+
   messages: {
     digDeeper: function(message) {
       this.digIntoObject(message.objectId, message.property);
@@ -28,7 +27,7 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     calculate: function(message) {
       var value;
       value = this.valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
-      this.get('port').send('updateProperty', value);
+      this.sendMessage('updateProperty', value);
       this.bindPropertyToDebugger(message);
     }
   },
@@ -40,7 +39,7 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     if (object instanceof Ember.Object) {
       var details = this.mixinsForObject(object);
 
-      this.get('port').send('updateObject', {
+      this.sendMessage('updateObject', {
         parentObject: objectId,
         property: property,
         objectId: details.objectId,
@@ -52,7 +51,7 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
 
   sendObject: function(object) {
     var details = this.mixinsForObject(object);
-    this.get('port').send('updateObject', {
+    this.sendMessage('updateObject', {
       objectId: details.objectId,
       name: object.toString(),
       details: details.mixins
@@ -145,7 +144,7 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     function handler() {
       var value = Ember.get(object, property);
 
-      self.get('port').send('updateProperty', {
+      self.sendMessage('updateProperty', {
         objectId: objectId,
         property: property,
         value: inspect(value),

@@ -11,8 +11,8 @@ module("viewTree", {
 
 var treeId = 0;
 function viewNodeFactory(props) {
-  if (!props.template) { 
-    props.template = props.name; 
+  if (!props.template) {
+    props.template = props.name;
   }
   var value = props;
   var obj = {
@@ -42,7 +42,7 @@ test("It should correctly diplay the view tree", function() {
   });
 
   Em.run(function() {
-    port.trigger('viewTree', { tree: viewTree } );
+    port.trigger('view:viewTree', { tree: viewTree } );
   });
 
 
@@ -75,7 +75,7 @@ test("It should update the view tree when the port triggers a change", function(
       name: 'application',
       children: [ { name: 'posts' }]
     });
-    port.trigger('viewTree', { tree: viewTree });
+    port.trigger('view:viewTree', { tree: viewTree });
     return wait();
 
   })
@@ -86,7 +86,7 @@ test("It should update the view tree when the port triggers a change", function(
     equal(findByLabel('tree-view-controller').filter(':last').text(), 'posts');
 
     viewTree = viewTreeFactory({ name: 'comments', children: [] });
-    port.trigger('viewTree', { tree: viewTree });
+    port.trigger('view:viewTree', { tree: viewTree });
     return wait();
 
   })
@@ -96,7 +96,7 @@ test("It should update the view tree when the port triggers a change", function(
     equal($treeNodes.length, 1);
     equal(findByLabel('tree-view-controller').text(), 'comments');
   });
-    
+
 });
 
 test("Previewing / showing a view on the client", function() {
@@ -110,20 +110,20 @@ test("Previewing / showing a view on the client", function() {
   visit('/')
   .then(function() {
     var viewTree = viewTreeFactory({ name: 'application', objectId: 1 });
-    port.trigger('viewTree', { tree: viewTree });
+    port.trigger('view:viewTree', { tree: viewTree });
     return wait();
   })
   .mouseEnterByLabel('tree-view-controller')
   .then(function() {
-    deepEqual(messageSent, { name: 'previewLayer', message: { objectId: 1 } } , "Client asked to preview layer");
+    deepEqual(messageSent, { name: 'view:previewLayer', message: { objectId: 1 } } , "Client asked to preview layer");
   })
   .mouseLeaveByLabel('tree-view-controller')
   .then(function() {
-    deepEqual(messageSent, { name: 'hidePreview', message: { objectId: 1 } } , "Client asked to hide preview");
+    deepEqual(messageSent, { name: 'view:hidePreview', message: { objectId: 1 } } , "Client asked to hide preview");
   })
   .clickByLabel('tree-view-controller')
   .then(function() {
-    deepEqual(messageSent, { name: 'showLayer', message: { objectId: 1 } } , "Client asked to pin layer");
+    deepEqual(messageSent, { name: 'view:showLayer', message: { objectId: 1 } } , "Client asked to pin layer");
     ok(findByLabel('tree-view-controller').hasClass('is-pinned'), "View is pinned");
     messageSent = null;
   })

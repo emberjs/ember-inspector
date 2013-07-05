@@ -70,7 +70,7 @@ module("Object Inspector", {
 test("The object displays correctly", function() {
   var obj = objectFactory( { name: 'My Object' });
   visit('/').then(function() {
-    port.trigger('updateObject', obj);
+    port.trigger('objectInspector:updateObject', obj);
     return wait();
   })
   .then(function() {
@@ -86,7 +86,7 @@ test("Object details", function() {
   var $firstDetail, $secondDetail;
 
   visit('/').then(function() {
-    port.trigger('updateObject', objectToInspect());
+    port.trigger('objectInspector:updateObject', objectToInspect());
     return wait();
   })
   .then(function() {
@@ -130,7 +130,7 @@ test("Digging deeper into objects", function() {
 
   visit('/')
   .then(function() {
-    port.trigger('updateObject', objectToInspect());
+    port.trigger('objectInspector:updateObject', objectToInspect());
     return wait();
   })
   .then(function() {
@@ -142,7 +142,7 @@ test("Digging deeper into objects", function() {
     return click($objectProperty);
   })
   .then(function() {
-    equal(name, 'digDeeper');
+    equal(name, 'objectInspector:digDeeper');
     deepEqual(message, { objectId: 'objectId',  property: 'objectProperty' });
   })
   .then(function() {
@@ -163,7 +163,7 @@ test("Digging deeper into objects", function() {
       }]
     };
 
-    port.trigger('updateObject', nestedObject);
+    port.trigger('objectInspector:updateObject', nestedObject);
     return wait();
   })
   .then(function() {
@@ -210,15 +210,15 @@ test("Computed properties", function() {
       }]
     };
 
-    port.trigger('updateObject', obj);
+    port.trigger('objectInspector:updateObject', obj);
     return wait();
   })
   .clickByLabel('object-detail-name')
   .clickByLabel('calculate')
   .then(function() {
-    equal(name, 'calculate');
+    equal(name, 'objectInspector:calculate');
     deepEqual(message, { objectId: 'myObject', property: 'computedProp', mixinIndex: 0 });
-    port.trigger('updateProperty', {
+    port.trigger('objectInspector:updateProperty', {
       objectId: 'myObject',
       property: 'computedProp',
       value: 'Computed value',

@@ -29,13 +29,13 @@ define("controllers/application",
         var mixinStack = this.get('controllers.mixinStack');
         var item = mixinStack.popObject();
         this.set('controllers.mixinDetails.model', mixinStack.get('lastObject'));
-        this.get('port').send('releaseObject', { objectId: item.objectId });
+        this.get('port').send('objectInspector:releaseObject', { objectId: item.objectId });
       },
 
       activateMixinDetails: function(name, details, objectId) {
         var self = this;
         var objects = this.get('controllers.mixinStack').forEach(function(item) {
-          self.get('port').send('releaseObject', { objectId: item.objectId });
+          self.get('port').send('objectInspector:releaseObject', { objectId: item.objectId });
         });
 
         this.set('controllers.mixinStack.model', []);
@@ -57,7 +57,7 @@ define("controllers/mixin_detail",
 
       digDeeper: function(property) {
         var objectId = this.get('controllers.mixinDetails.objectId');
-        this.get('port').send('digDeeper', {
+        this.get('port').send('objectInspector:digDeeper', {
           objectId: objectId,
           property: property.name
         });
@@ -66,7 +66,7 @@ define("controllers/mixin_detail",
       calculate: function(property) {
         var objectId = this.get('controllers.mixinDetails.objectId');
         var mixinIndex = this.get('controllers.mixinDetails.mixins').indexOf(this.get('model'));
-        this.get('port').send('calculate', {
+        this.get('port').send('objectInspector:calculate', {
           objectId: objectId,
           property: property.name,
           mixinIndex: mixinIndex
@@ -120,22 +120,22 @@ define("controllers/view_tree",
 
       showLayer: function(node) {
         this.set('pinnedNode', null);
-        this.get('port').send('showLayer', { objectId: node.value.objectId });
+        this.get('port').send('view:showLayer', { objectId: node.value.objectId });
         this.set('pinnedNode', node);
       },
 
       hideLayer: function(node) {
-        this.get('port').send('hideLayer', { objectId: node.value.objectId });
+        this.get('port').send('view:hideLayer', { objectId: node.value.objectId });
       },
 
       previewLayer: function(node) {
         if (node !== this.get('pinnedNode')) {
-          this.get('port').send('previewLayer', { objectId: node.value.objectId });
+          this.get('port').send('view:previewLayer', { objectId: node.value.objectId });
         }
       },
 
       hidePreview: function(node) {
-        this.get('port').send('hidePreview', { objectId: node.value.objectId });
+        this.get('port').send('view:hidePreview', { objectId: node.value.objectId });
       }
     });
 
@@ -285,14 +285,14 @@ define("routes/application",
       setupController: function(controller, model) {
         this.controllerFor('mixinStack').set('model', []);
 
-        this.get('port').on('updateObject', this, this.updateObject);
-        this.get('port').on('updateProperty', this, this.updateProperty);
+        this.get('port').on('objectInspector:updateObject', this, this.updateObject);
+        this.get('port').on('objectInspector:updateProperty', this, this.updateProperty);
         this._super(controller, model);
       },
 
       deactivate: function() {
-        this.get('port').off('updateObject', this, this.updateObject);
-        this.get('port').off('updateProperty', this, this.updateProperty);
+        this.get('port').off('objectInspector:updateObject', this, this.updateObject);
+        this.get('port').off('objectInspector:updateProperty', this, this.updateProperty);
       },
 
       updateObject: function(options) {
@@ -335,11 +335,11 @@ define("routes/view_tree",
     var ViewTreeRoute = Ember.Route.extend({
       setupController: function(controller, model) {
         this._super(controller, model);
-        this.get('port').on('viewTree', this, this.setViewTree);
+        this.get('port').on('view:viewTree', this, this.setViewTree);
       },
 
       deactivate: function() {
-        this.get('port').off('viewTree', this, this.setViewTree);
+        this.get('port').off('view:viewTree', this, this.setViewTree);
       },
 
       setViewTree: function(options) {

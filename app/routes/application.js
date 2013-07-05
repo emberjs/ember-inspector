@@ -3,14 +3,14 @@ var ApplicationRoute = Ember.Route.extend({
   setupController: function(controller, model) {
     this.controllerFor('mixinStack').set('model', []);
 
-    this.get('port').on('updateObject', this, this.updateObject);
-    this.get('port').on('updateProperty', this, this.updateProperty);
+    this.get('port').on('objectInspector:updateObject', this, this.updateObject);
+    this.get('port').on('objectInspector:updateProperty', this, this.updateProperty);
     this._super(controller, model);
   },
 
   deactivate: function() {
-    this.get('port').off('updateObject', this, this.updateObject);
-    this.get('port').off('updateProperty', this, this.updateProperty);
+    this.get('port').off('objectInspector:updateObject', this, this.updateObject);
+    this.get('port').off('objectInspector:updateProperty', this, this.updateProperty);
   },
 
   updateObject: function(options) {

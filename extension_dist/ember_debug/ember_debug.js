@@ -178,12 +178,18 @@ define("mixins/port_mixin",
       port: null,
       messages: {},
 
+      portNamespace: null,
+
       init: function() {
         this.setupPortListeners();
       },
 
       willDestroy: function() {
         this.removePortListeners();
+      },
+
+      sendMessage: function(name, message) {
+        this.get('port').send(this.messageName(name), message);
       },
 
       setupPortListeners: function() {
@@ -193,7 +199,7 @@ define("mixins/port_mixin",
 
         for (var name in messages) {
           if(messages.hasOwnProperty(name)) {
-            port.on(name, this, messages[name]);
+            port.on(this.messageName(name), this, messages[name]);
           }
         }
       },
@@ -205,10 +211,19 @@ define("mixins/port_mixin",
 
         for (var name in messages) {
           if(messages.hasOwnProperty(name)) {
-            port.off(name, this, messages[name]);
+            port.off(this.messageName(name), this, messages[name]);
           }
         }
+      },
+
+      messageName: function(name) {
+        var messageName = name;
+        if (this.get('portNamespace')) {
+          messageName = this.get('portNamespace') + ':' + messageName;
+        }
+        return messageName;
       }
+
     });
 
 
@@ -219,13 +234,10 @@ define("object_inspector",
   function(PortMixin) {
     "use strict";
 
-
     var ObjectInspector = Ember.Object.extend(PortMixin, {
       namespace: null,
 
-      port: Ember.computed(function() {
-        return this.get('namespace.port');
-      }).property('namespace.port'),
+      port: Ember.computed.alias('namespace.port'),
 
       init: function() {
         this._super();
@@ -237,6 +249,8 @@ define("object_inspector",
 
       boundObservers: {},
 
+      portNamespace: 'objectInspector',
+
       messages: {
         digDeeper: function(message) {
           this.digIntoObject(message.objectId, message.property);
@@ -247,7 +261,7 @@ define("object_inspector",
         calculate: function(message) {
           var value;
           value = this.valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
-          this.get('port').send('updateProperty', value);
+          this.sendMessage('updateProperty', value);
           this.bindPropertyToDebugger(message);
         }
       },
@@ -259,7 +273,7 @@ define("object_inspector",
         if (object instanceof Ember.Object) {
           var details = this.mixinsForObject(object);
 
-          this.get('port').send('updateObject', {
+          this.sendMessage('updateObject', {
             parentObject: objectId,
             property: property,
             objectId: details.objectId,
@@ -271,7 +285,7 @@ define("object_inspector",
 
       sendObject: function(object) {
         var details = this.mixinsForObject(object);
-        this.get('port').send('updateObject', {
+        this.sendMessage('updateObject', {
           objectId: details.objectId,
           name: object.toString(),
           details: details.mixins
@@ -364,7 +378,7 @@ define("object_inspector",
         function handler() {
           var value = Ember.get(object, property);
 
-          self.get('port').send('updateProperty', {
+          self.sendMessage('updateProperty', {
             objectId: objectId,
             property: property,
             value: inspect(value),
@@ -513,9 +527,7 @@ define("port",
 
       chromePort.addEventListener('message', function(event) {
         var message = event.data, value;
-
         self.trigger(message.type, message);
-
       });
 
       chromePort.start();
@@ -538,13 +550,9 @@ define("view_debug",
 
       namespace: null,
 
-      port: Ember.computed(function() {
-        return this.get('namespace.port');
-      }).property('namespace.port'),
+      port: Ember.computed.alias('namespace.port'),
 
-      objectInspector: Ember.computed(function() {
-        return this.get('namespace.objectInspector');
-      }).property('namespace.objectInspector'),
+      objectInspector: Ember.computed.alias('namespace.objectInspector'),
 
       init: function() {
         this._super();
@@ -580,6 +588,8 @@ define("view_debug",
         Ember.View.removeMutationListener(this.viewTreeChanged);
       },
 
+      portNamespace: 'view',
+
       messages: {
         getTree: function() {
           this.sendTree();
@@ -601,7 +611,7 @@ define("view_debug",
       sendTree: function() {
         var tree = this.viewTree();
         if (tree) {
-          this.get('port').send('viewTree', {
+          this.sendMessage('viewTree', {
             tree: tree
           });
         }

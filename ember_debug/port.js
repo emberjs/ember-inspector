@@ -19,9 +19,7 @@ var connect = function() {
 
   chromePort.addEventListener('message', function(event) {
     var message = event.data, value;
-
     self.trigger(message.type, message);
-
   });
 
   chromePort.start();
