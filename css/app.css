@@ -5,10 +5,18 @@
  application.
 */
 
+.app__nav-holder {
+  width: 90px;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  height: 100%;
+}
 
-.app {
+.app__content {
   display: -webkit-flex;
   -webkit-flex-direction: row;
+  margin-left: 90px;
 }
 
 .app__main {

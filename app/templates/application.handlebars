@@ -1,7 +1,20 @@
-<div class="app__main">
-  {{outlet}}
+<div class="app__nav-holder">
+  <nav class="main-nav">
+    <ul class="main-nav__list">
+      <li class="main-nav__item">{{#linkTo "view_tree"}}View Tree{{/linkTo}}</li>
+      <li class="main-nav__item">{{#linkTo "route_tree"}}Routes{{/linkTo}}</li>
+    </ul>
+  </nav>
 </div>
 
-<div class="app__right-col">
-  {{render "mixinStack"}}
+<div class="app__content">
+
+  <div class="app__main">
+    {{outlet}}
+  </div>
+
+  <div class="app__right-col">
+    {{render "mixinStack"}}
+  </div>
+
 </div>
