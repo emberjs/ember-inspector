@@ -107,8 +107,8 @@ if (typeof define !== 'function' && typeof requireModule !== 'function') {
 }());
 
 define("ember_debug",
-  ["port","view_debug","object_inspector"],
-  function(Port, ViewDebug, ObjectInspector) {
+  ["port","view_debug","object_inspector","route_debug"],
+  function(Port, ViewDebug, ObjectInspector, RouteDebug) {
     "use strict";
 
     console.debug("Ember Debugger Active");
@@ -129,9 +129,9 @@ define("ember_debug",
         }
         this.set('started', true);
 
-        this.reset();
-
         this.set('application', getApplication());
+
+        this.reset();
 
       },
 
@@ -143,6 +143,12 @@ define("ember_debug",
           Ember.run(objectInspector, 'destroy');
         }
         this.set('objectInspector', ObjectInspector.create({ namespace: this }));
+
+        var routeDebug = this.get('routeDebug');
+        if (routeDebug) {
+          Ember.run(routeDebug, 'destroy');
+        }
+        this.set('routeDebug', RouteDebug.create({ namespace: this }));
 
         var viewDebug = this.get('viewDebug');
         if (viewDebug) {
@@ -535,6 +541,116 @@ define("port",
 
 
     return Port;
+  });
+define("route_debug",
+  ["mixins/port_mixin"],
+  function(PortMixin) {
+    "use strict";
+
+    var RouteDebug = Ember.Object.extend(PortMixin, {
+      namespace: null,
+      port: Ember.computed.alias('namespace.port'),
+
+      application: Ember.computed.alias('namespace.application'),
+
+      router: Ember.computed(function() {
+        return this.get('application.__container__').lookup('router:main');
+      }).property('application'),
+
+      portNamespace: 'route',
+      messages: {
+        sendTree: function() {
+          this.sendTree();
+        }
+      },
+
+      routeTree: Ember.computed(function() {
+        var routeNames = this.get('router.router.recognizer.names');
+        var routeTree = {};
+
+        for(var routeName in routeNames) {
+          if (!routeNames.hasOwnProperty(routeName)) {
+            continue;
+          }
+          var route = routeNames[routeName];
+          var handlers = Ember.A(route.handlers);
+          buildSubTree(routeTree, route);
+        }
+
+        return arrayizeChildren({  children: routeTree }).children;
+      }).property('router'),
+
+      sendTree: function() {
+        var routeTree = this.get('routeTree');
+        this.sendMessage('routeTree', routeTree);
+      }
+    });
+
+
+    function buildSubTree(routeTree, route) {
+      var handlers = route.handlers;
+      var subTree = routeTree, item;
+      for (var i = 0; i < handlers.length; i++) {
+        item = handlers[i];
+        var handler = item.handler;
+        if (subTree[handler] === undefined) {
+          subTree[handler] = {
+            value: {
+              name: handler
+            }
+          };
+          if (i === handlers.length - 1) {
+            // it is a route, get url
+            subTree[handler].value.path = getURL(route.segments);
+            subTree[handler].value.type = 'route';
+          } else {
+            // it is a resource, set children object
+            subTree[handler].children = {};
+            subTree[handler].value.type = 'resource';
+          }
+        }
+        subTree = subTree[handler].children;
+      }
+    }
+
+    function arrayizeChildren(routeTree) {
+      var obj = { value: routeTree.value };
+
+      if (routeTree.children) {
+        var childrenArray = [];
+        for(var i in routeTree.children) {
+          var route = routeTree.children[i];
+          childrenArray.push(arrayizeChildren(route));
+        }
+        obj.children = childrenArray;
+      }
+
+      return obj;
+    }
+
+    function getURL(segments) {
+      var url = [];
+      for (var i = 0; i < segments.length; i++) {
+        var name = null;
+
+        try {
+          name = segments[i].generate();
+        } catch (e) {
+          // is dynamic
+          name = ':' + segments[i].name;
+        }
+        if (name) {
+          url.push(name);
+        }
+      }
+
+      url = '/' + url.join('/');
+
+      return url;
+    }
+
+
+    return RouteDebug;
   });
 define("view_debug",
   ["mixins/port_mixin"],
