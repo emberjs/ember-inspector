@@ -30,6 +30,7 @@ var Port = Ember.Object.extend(Ember.Evented, {
     connect.apply(this);
   },
   send: function(messageType, options) {
+    options = options || {};
     options.from = 'devtools';
     options.type = messageType;
     chromePort.postMessage(options);

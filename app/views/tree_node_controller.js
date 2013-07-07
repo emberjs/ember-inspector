@@ -1,6 +1,6 @@
 var TreeNodeControllerView = Ember.View.extend({
   tagName: 'span',
-  classNames: 'view-tree__node-controller',
+  classNames: [ 'view-tree__node-controller', 'tree__node-controller'],
   classNameBindings: 'isPinned',
 
   isPinned: function() {

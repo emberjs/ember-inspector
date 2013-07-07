@@ -12,7 +12,7 @@ var RouteDebug = Ember.Object.extend(PortMixin, {
 
   portNamespace: 'route',
   messages: {
-    sendTree: function() {
+    getTree: function() {
       this.sendTree();
     }
   },
@@ -30,12 +30,12 @@ var RouteDebug = Ember.Object.extend(PortMixin, {
       buildSubTree(routeTree, route);
     }
 
-    return arrayizeChildren({  children: routeTree }).children;
+    return arrayizeChildren({  children: routeTree }).children[0];
   }).property('router'),
 
   sendTree: function() {
     var routeTree = this.get('routeTree');
-    this.sendMessage('routeTree', routeTree);
+    this.sendMessage('routeTree', { tree: routeTree });
   }
 });
 
@@ -54,7 +54,7 @@ function buildSubTree(routeTree, route) {
       };
       if (i === handlers.length - 1) {
         // it is a route, get url
-        subTree[handler].value.path = getURL(route.segments);
+        subTree[handler].value.url = getURL(route.segments);
         subTree[handler].value.type = 'route';
       } else {
         // it is a resource, set children object

@@ -1,13 +1,14 @@
-<div class="app__nav-holder">
-  <nav class="main-nav">
-    <ul class="main-nav__list">
-      <li class="main-nav__item">{{#linkTo "view_tree"}}View Tree{{/linkTo}}</li>
-      <li class="main-nav__item">{{#linkTo "route_tree"}}Routes{{/linkTo}}</li>
-    </ul>
-  </nav>
-</div>
+{{#if emberApplication}}
 
-<div class="app__content">
+  <div class="app__nav-holder">
+    <nav class="main-nav">
+      <ul class="main-nav__list">
+        <li class="main-nav__item">{{#linkTo "view_tree"}}View Tree{{/linkTo}}</li>
+        <li class="main-nav__item">{{#linkTo "route_tree"}}Routes{{/linkTo}}</li>
+      </ul>
+    </nav>
+  </div>
+
 
   <div class="app__main">
     {{outlet}}
@@ -17,4 +18,6 @@
     {{render "mixinStack"}}
   </div>
 
-</div>
+{{else}}
+No Ember Application Detected.
+{{/if}}

@@ -5,26 +5,27 @@
  application.
 */
 
-.app__nav-holder {
-  width: 90px;
-  position: fixed;
-  left: 0px;
-  top: 0px;
+.app {
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
   height: 100%;
 }
 
-.app__content {
-  display: -webkit-flex;
-  -webkit-flex-direction: row;
-  margin-left: 90px;
+.app__nav-holder {
+  width: 90px;
 }
 
 .app__main {
   -webkit-flex-grow: 1;
+  height: 100%;
+  overflow: auto;
+  border-left: solid 1px #ccc;
 }
 
 .app__right-col {
   width: 500px;
+  height: 100%;
+  overflow: auto;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -34,11 +35,19 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: normal;
 }
 
+html, body {
+  height: 100%;
+}
+
 body {
   font-family: "Helvetica Neue";
   color: #333;
 }
 
+body, div, nav {
+  margin: 0;
+  padding: 0;
+}
 
 /**
  MAIN-NAV
@@ -255,46 +264,54 @@ body {
 
 
 /**
- VIEW-TREE
- =========
- Displays the view hierarchy in the app
- being inspected.
+ TREE
+ ====
+ Displays a tree.
+ Used for view tree and route tree.
 */
 
-.view-tree {
+.tree {
   font-family: Menlo, sans-serif;
   font-size: 12px;
 }
 
-.view-tree__node {
+.tree__node {
   list-style-type: none;
   margin: 0;
   padding: 0 0 0 10px;
 }
 
-.view-tree__node-child {
+.tree__node-child {
   margin-top: 5px;
 }
 
-.view-tree__node-controller {
+.tree__node-header {
+  margin: 0;
+  padding: 0;
+}
+
+.tree__node-name {
   color: #939;
   cursor: pointer;
 }
 
-.view-tree__node-controller.is-pinned, .view-tree__node-controller:hover {
+.tree__node-controller {
+  color: #939;
+  cursor: pointer;
+}
+
+.tree__node-controller.is-pinned,
+.tree__node-controller:hover,
+.tree__node-name:hover {
   color: #606;
 }
 
-.view-tree__node-controller:hover + .view-tree__node-template {
-  display: inline;
-}
-
-.view-tree__node-template {
+.tree__node-template, .tree__node-detail {
   color: #999;
   display: none;
 }
 
-.view-tree__node-header {
-  margin: 0;
-  padding: 0;
+.tree__node-controller:hover + .tree__node-template,
+.tree__node-header:hover .tree__node-detail {
+  display: inline;
 }

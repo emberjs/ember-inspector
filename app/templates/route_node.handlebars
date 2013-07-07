@@ -1,0 +1,21 @@
+<ul class="tree__node" data-label="tree-node">
+  {{#each node in node.children}}
+    <li class="tree__node-child" data-label="tree-view">
+      <p class="tree__node-header">
+        <span class="tree__node-name" {{action "inspectRoute" node}} >{{node.value.name}}</span>
+
+          <span class="tree__node-detail">
+            {{#if node.value.url}}
+              url: {{node.value.url}}
+            {{else}}
+             (resource)
+            {{/if}}
+          </span>
+
+      </p>
+      {{#if node.children.length}}
+        {{view EmberExtension.RouteNodeView}}
+      {{/if}}
+    </li>
+  {{/each}}
+</ul>

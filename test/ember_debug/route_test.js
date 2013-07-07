@@ -32,11 +32,11 @@ test("Route tree", function() {
     }
   });
 
-  port.trigger('route:sendTree');
+  port.trigger('route:getTree');
 
   equal(name, 'route:routeTree');
 
-  route = message[0];
+  route = message.tree;
   equal(route.value.name, 'application');
   equal(route.value.type, 'resource');
   equal(route.children.length, 4);
@@ -48,7 +48,7 @@ test("Route tree", function() {
   equal(commentsRoute.value.type, 'resource');
 
   deepEqual(getChildrenProperty(commentsRoute, 'name'), ['comments.new', 'comments.edit', 'comments.index']);
-  deepEqual(getChildrenProperty(commentsRoute, 'path'), ['/comments/new', '/comments/edit/:comment_id', '/comments']);
+  deepEqual(getChildrenProperty(commentsRoute, 'url'), ['/comments/new', '/comments/edit/:comment_id', '/comments']);
   deepEqual(getChildrenProperty(commentsRoute, 'type'), ['route', 'route', 'route']);
 
 });

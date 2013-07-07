@@ -245,6 +245,8 @@ define("object_inspector",
 
       port: Ember.computed.alias('namespace.port'),
 
+      application: Ember.computed.alias('namespace.application'),
+
       init: function() {
         this._super();
         this.set('sentObjects', {});
@@ -269,6 +271,10 @@ define("object_inspector",
           value = this.valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
           this.sendMessage('updateProperty', value);
           this.bindPropertyToDebugger(message);
+        },
+        inspectRoute: function(message) {
+          var container = this.get('application.__container__');
+          this.sendObject(container.lookup('router:main').router.getHandler(message.name));
         }
       },
 
@@ -559,7 +565,7 @@ define("route_debug",
 
       portNamespace: 'route',
       messages: {
-        sendTree: function() {
+        getTree: function() {
           this.sendTree();
         }
       },
@@ -577,12 +583,12 @@ define("route_debug",
           buildSubTree(routeTree, route);
         }
 
-        return arrayizeChildren({  children: routeTree }).children;
+        return arrayizeChildren({  children: routeTree }).children[0];
       }).property('router'),
 
       sendTree: function() {
         var routeTree = this.get('routeTree');
-        this.sendMessage('routeTree', routeTree);
+        this.sendMessage('routeTree', { tree: routeTree });
       }
     });
 
@@ -601,7 +607,7 @@ define("route_debug",
           };
           if (i === handlers.length - 1) {
             // it is a route, get url
-            subTree[handler].value.path = getURL(route.segments);
+            subTree[handler].value.url = getURL(route.segments);
             subTree[handler].value.type = 'route';
           } else {
             // it is a resource, set children object
@@ -737,11 +743,14 @@ define("view_debug",
         var self = this;
 
         this.viewTreeChanged = function() {
-          Em.run.schedule('afterRender', function() {
-            self.sendTree();
-            self.hideLayer();
-          });
+          Em.run.scheduleOnce('afterRender', sendTree);
         };
+
+        function sendTree() {
+          self.sendTree();
+          self.hideLayer();
+        }
+
         Ember.View.addMutationListener(this.viewTreeChanged);
       },
 
