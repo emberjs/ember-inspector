@@ -41,7 +41,7 @@
   // to determine when the application starts
   // but this definitely works
   function onApplicationStart(callback) {
-    if (!Ember) {
+    if (typeof Ember === 'undefined') {
       return;
     }
     var body = document.body;
