@@ -82,7 +82,7 @@ if (typeof define !== 'function' && typeof requireModule !== 'function') {
   // to determine when the application starts
   // but this definitely works
   function onApplicationStart(callback) {
-    if (!Ember) {
+    if (typeof Ember === 'undefined') {
       return;
     }
     var body = document.body;
@@ -275,6 +275,10 @@ define("object_inspector",
         inspectRoute: function(message) {
           var container = this.get('application.__container__');
           this.sendObject(container.lookup('router:main').router.getHandler(message.name));
+        },
+        inspectController: function(message) {
+          var container = this.get('application.__container__');
+          this.sendObject(container.lookup('controller:' + message.name));
         }
       },
 
@@ -553,6 +557,8 @@ define("route_debug",
   function(PortMixin) {
     "use strict";
 
+    var classify = Ember.String.classify;
+
     var RouteDebug = Ember.Object.extend(PortMixin, {
       namespace: null,
       port: Ember.computed.alias('namespace.port'),
@@ -567,6 +573,9 @@ define("route_debug",
       messages: {
         getTree: function() {
           this.sendTree();
+        },
+        getRouteDetails: function(message) {
+          this.sendRouteDetails(message.name);
         }
       },
 
@@ -589,6 +598,22 @@ define("route_debug",
       sendTree: function() {
         var routeTree = this.get('routeTree');
         this.sendMessage('routeTree', { tree: routeTree });
+      },
+
+      sendRouteDetails: function(name) {
+        var routeClassName = classify(name.replace('.', '_')) + 'Route';
+        var container = this.get('application.__container__');
+        var routeHandler = container.lookup('router:main').router.getHandler(name);
+        var controllerName = routeHandler.controllerName || routeHandler.routeName;
+        var controllerClassName = classify(controllerName.replace('.', '_')) + 'Controller';
+        var controller = container.lookup('controller:' + controllerName);
+        var templateName = name.replace('.', '/');
+        var message = {
+          routeHandler: { className: routeClassName, name: name },
+          controller: { className: controllerClassName, name: controllerName, exists: controller ? true: false },
+          template: { name: templateName }
+        };
+        this.sendMessage('routeDetails', message);
       }
     });
 

@@ -1,5 +1,7 @@
 import 'mixins/port_mixin' as PortMixin;
 
+var classify = Ember.String.classify;
+
 var RouteDebug = Ember.Object.extend(PortMixin, {
   namespace: null,
   port: Ember.computed.alias('namespace.port'),
@@ -14,6 +16,9 @@ var RouteDebug = Ember.Object.extend(PortMixin, {
   messages: {
     getTree: function() {
       this.sendTree();
+    },
+    getRouteDetails: function(message) {
+      this.sendRouteDetails(message.name);
     }
   },
 
@@ -36,6 +41,22 @@ var RouteDebug = Ember.Object.extend(PortMixin, {
   sendTree: function() {
     var routeTree = this.get('routeTree');
     this.sendMessage('routeTree', { tree: routeTree });
+  },
+
+  sendRouteDetails: function(name) {
+    var routeClassName = classify(name.replace('.', '_')) + 'Route';
+    var container = this.get('application.__container__');
+    var routeHandler = container.lookup('router:main').router.getHandler(name);
+    var controllerName = routeHandler.controllerName || routeHandler.routeName;
+    var controllerClassName = classify(controllerName.replace('.', '_')) + 'Controller';
+    var controller = container.lookup('controller:' + controllerName);
+    var templateName = name.replace('.', '/');
+    var message = {
+      routeHandler: { className: routeClassName, name: name },
+      controller: { className: controllerClassName, name: controllerName, exists: controller ? true: false },
+      template: { name: templateName }
+    };
+    this.sendMessage('routeDetails', message);
   }
 });
 

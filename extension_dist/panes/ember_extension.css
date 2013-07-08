@@ -272,7 +272,7 @@ body, div, nav {
 
 .tree {
   font-family: Menlo, sans-serif;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .tree__node {
@@ -306,12 +306,33 @@ body, div, nav {
   color: #606;
 }
 
-.tree__node-template, .tree__node-detail {
-  color: #999;
+
+.tree__node-template, .tree__node-hint {
+  color: #595455;
   display: none;
 }
 
-.tree__node-controller:hover + .tree__node-template,
-.tree__node-header:hover .tree__node-detail {
+.tree__node-header:hover .tree__node-hint {
   display: inline;
+}
+
+
+.tree__node-details {
+  font-size: 13px;
+  color: #999;
+}
+
+
+
+
+.tree__node-details td {
+  padding: 0px 5px;
+  color: #666;
+}
+
+
+.tree__node-details .clickable {
+  /*color: #4896ab;*/
+  color: rgb(153, 153, 0);
+  cursor: pointer;
 }

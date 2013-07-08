@@ -10,16 +10,27 @@ var RouteTreeRoute = Ember.Route.extend({
   },
 
   setTree: function(options) {
-    this.set('controller.node', { children: [ arrayizeTree(options.tree) ] });
+    this.set('controller.model', { children: [ arrayizeTree(options.tree) ] });
+  },
+
+  model: function() {
+    // To generate an object controller
+    return {};
   },
 
   events: {
-    inspectRoute: function(route) {
-      this.get('port').send('objectInspector:inspectRoute', { name: route.value.name } );
+    inspectRoute: function(name) {
+      this.get('port').send('objectInspector:inspectRoute', { name: name } );
+    },
+
+    inspectController: function(controller) {
+      if (!controller.exists) {
+        return;
+      }
+      this.get('port').send('objectInspector:inspectController', { name: controller.name } );
     }
   }
 });
-
 
 function arrayizeTree(tree) {
   if(tree.children) {
@@ -27,8 +38,6 @@ function arrayizeTree(tree) {
     tree.children.forEach(arrayizeTree);
   }
   return tree;
-
 }
-
 
 export = RouteTreeRoute;
