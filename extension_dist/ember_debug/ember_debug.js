@@ -589,7 +589,7 @@ define("route_debug",
           }
           var route = routeNames[routeName];
           var handlers = Ember.A(route.handlers);
-          buildSubTree(routeTree, route);
+          buildSubTree.call(this, routeTree, route);
         }
 
         return arrayizeChildren({  children: routeTree }).children[0];
@@ -618,16 +618,36 @@ define("route_debug",
     });
 
 
-    function buildSubTree(routeTree, route) {
+    var buildSubTree = function(routeTree, route) {
       var handlers = route.handlers;
-      var subTree = routeTree, item;
+      var subTree = routeTree, item,
+          routeClassName, routeHandler, controllerName,
+          controllerClassName, container, templateName,
+          controller;
       for (var i = 0; i < handlers.length; i++) {
         item = handlers[i];
         var handler = item.handler;
         if (subTree[handler] === undefined) {
+          routeClassName = classify(handler.replace('.', '_')) + 'Route';
+          container = this.get('application.__container__');
+          routeHandler = container.lookup('router:main').router.getHandler(handler);
+          controllerName = routeHandler.controllerName || routeHandler.routeName;
+          controllerClassName = classify(controllerName.replace('.', '_')) + 'Controller';
+          controller = container.lookup('controller:' + controllerName);
+          templateName = handler.replace('.', '/');
           subTree[handler] = {
             value: {
-              name: handler
+              name: handler,
+              routeHandler: {
+                className: routeClassName,
+                name: handler
+              },
+              controller: {
+                className: controllerClassName,
+                name: controllerName,
+                exists: controller ? true : false
+              },
+              templateName: templateName
             }
           };
           if (i === handlers.length - 1) {
@@ -639,10 +659,11 @@ define("route_debug",
             subTree[handler].children = {};
             subTree[handler].value.type = 'resource';
           }
+
         }
         subTree = subTree[handler].children;
       }
-    }
+    };
 
     function arrayizeChildren(routeTree) {
       var obj = { value: routeTree.value };

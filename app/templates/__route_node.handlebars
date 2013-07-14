@@ -1,0 +1,20 @@
+{{#each children itemController="routeNode"}}
+  <tr>
+    <td class="table-tree__main-cell">
+      {{#each numParentsArray}}
+        &nbsp;
+      {{/each}}
+      {{value.name}}
+    </td>
+    <td class="table-tree__clickable" {{action inspectRoute value.routeHandler.name}}>{{value.routeHandler.className}}</td>
+    {{#if value.controller.exists}}
+      <td class="table-tree__clickable" {{action inspectController value.controller}}>{{value.controller.className}}</td>
+    {{else}}
+      <td>{{value.controller.className}}</td>
+    {{/if}}
+    <td>{{value.templateName}}</td>
+    <td class="table-tree__minor">{{value.url}}</td>
+  </tr>
+
+  {{partial "route_node"}}
+{{/each}}

@@ -28,7 +28,23 @@ var RouteNodeController = Ember.ObjectController.extend({
       this.set('withDetails', true);
     });
     this.get('port').send('route:getRouteDetails', { name: get(model, 'value.name') });
-  }
+  },
+
+  numParents: function() {
+    var numParents = this.get('target.target.numParents');
+    if (numParents === undefined) {
+      numParents = -1;
+    }
+    return numParents + 1;
+  }.property("target.target.numParents"),
+
+  numParentsArray: function() {
+    var a = [];
+    for (var i = 0; i < this.get('numParents'); i++) {
+      a.pushObject(null);
+    }
+    return a;
+  }.property('numParents')
 
 
 });

@@ -16,7 +16,7 @@
 }
 
 .app__main {
-  -webkit-flex-grow: 1;
+  -webkit-flex: 1;
   height: 100%;
   overflow: auto;
   border-left: solid 1px #ccc;

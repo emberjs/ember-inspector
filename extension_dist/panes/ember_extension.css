@@ -16,7 +16,7 @@
 }
 
 .app__main {
-  -webkit-flex-grow: 1;
+  -webkit-flex: 1;
   height: 100%;
   overflow: auto;
   border-left: solid 1px #ccc;
@@ -47,6 +47,10 @@ body {
 body, div, nav {
   margin: 0;
   padding: 0;
+}
+
+a {
+  color: inherit;
 }
 
 /**
@@ -178,6 +182,10 @@ body, div, nav {
   color: #909;
 }
 
+.mixin__property-value {
+  -webkit-flex: 1;
+}
+
 .mixin__property-value-separator {
   margin-right: 5px;
 }
@@ -264,10 +272,68 @@ body, div, nav {
 
 
 /**
+ TABLE-TREE
+ ==========
+ Displays a tree in a table.
+ Used for route tree.
+*/
+
+.table-tree {
+  font-size: 13px;
+}
+
+.table-tree table {
+  min-width: 100%;
+}
+
+.table-tree thead {
+  text-align: left;
+}
+
+.table-tree th {
+  font-weight: normal;
+}
+
+.table-tree th, .table-tree td {
+  padding: 5px 0px 5px 5px;
+}
+
+
+.table-tree td {
+  white-space: nowrap;
+  opacity: 0.5;
+}
+
+.table-tree td.table-tree__main-cell {
+  opacity: 1;
+  font-weight: bold;
+}
+
+.table-tree tbody tr:hover {
+  background-color: #e6e6e6;
+}
+
+.table-tree tbody tr:hover td {
+  opacity: 1;
+}
+
+
+.table-tree tbody tr:hover .table-tree__clickable {
+  color: #939;
+  cursor: pointer;
+}
+
+
+
+.table-tree__minor {
+  font-size: 12px;
+}
+
+/**
  TREE
  ====
  Displays a tree.
- Used for view tree and route tree.
+ Used for view tree.
 */
 
 .tree {

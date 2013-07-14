@@ -1,3 +1,16 @@
-<div class="tree">
-  {{view EmberExtension.RouteNodeView}}
+<div class="table-tree">
+  <table cellspacing="0" border-collapse="collapse">
+    <thead>
+      <tr>
+        <th>Route Name</th>
+        <th>Route</th>
+        <th>Controller</th>
+        <th>Template</th>
+        <th>URL</th>
+      <tr>
+    </thead>
+    <tbody>
+      {{partial "route_node"}}
+    </tbody>
+  </table>
 </div>
