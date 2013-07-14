@@ -1,9 +1,6 @@
 {{#each children itemController="routeNode"}}
   <tr>
-    <td class="table-tree__main-cell">
-      {{#each numParentsArray}}
-        &nbsp;
-      {{/each}}
+    <td {{bindAttr class=":table-tree__main-cell isCurrent:table-tree__main-cell_state_current" style="style"}}>
       {{value.name}}
     </td>
     <td class="table-tree__clickable" {{action inspectRoute value.routeHandler.name}}>{{value.routeHandler.className}}</td>
@@ -12,7 +9,7 @@
     {{else}}
       <td>{{value.controller.className}}</td>
     {{/if}}
-    <td>{{value.templateName}}</td>
+    <td>{{value.template.name}}</td>
     <td class="table-tree__minor">{{value.url}}</td>
   </tr>
 

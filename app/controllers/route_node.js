@@ -1,34 +1,35 @@
 var get = Ember.get;
 
 var RouteNodeController = Ember.ObjectController.extend({
+  needs: 'routeTree',
+
   details: null,
 
   withDetails: false,
 
   hasChildren: Ember.computed.gt('children.length', 0),
 
-  controllerExists: Ember.computed.alias('details.controller.exists'),
+  style: function() {
+    return 'padding-left: ' + ((this.get('numParents') * 5) + 5) + 'px';
+  }.property('numParents'),
 
-  controllerName: function() {
-    var controllerName = this.get('details.controller.className');
-    if (!this.get('details.controller.exists')) {
-      controllerName += ' (will be generated)';
+  isCurrent: function() {
+    var currentRoute = this.get('controllers.routeTree.currentRoute');
+    var routes = currentRoute.split('.');
+    var self = this;
+    var length = routes.length;
+    if (length > 1 && routes[length - 2] + '.' + routes[length - 1] === this.get('value.name')) {
+      return true;
     }
-    return controllerName;
-  }.property('details.controller.name'),
-
-  showDetails: function(model) {
-    if (this.get('withDetails')) {
-      this.set('withDetails', false);
-      return;
-    }
-    model = model || this.get('model');
-    this.get('port').one('route:routeDetails', this, function(message) {
-      this.set('details', message);
-      this.set('withDetails', true);
+    var found = false;
+    routes.forEach(function(route) {
+      if (self.get('value.name') === route) {
+        found = true;
+        return false;
+      }
     });
-    this.get('port').send('route:getRouteDetails', { name: get(model, 'value.name') });
-  },
+    return found;
+  }.property('controllers.routeTree.currentRoute', 'value.name'),
 
   numParents: function() {
     var numParents = this.get('target.target.numParents');
@@ -45,7 +46,6 @@ var RouteNodeController = Ember.ObjectController.extend({
     }
     return a;
   }.property('numParents')
-
 
 });
 

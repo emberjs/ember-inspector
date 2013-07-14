@@ -25,7 +25,6 @@
   padding: 5px 0px 5px 5px;
 }
 
-
 .table-tree td {
   white-space: nowrap;
   opacity: 0.5;
@@ -34,6 +33,10 @@
 .table-tree td.table-tree__main-cell {
   opacity: 1;
   font-weight: bold;
+}
+
+.table-tree__main-cell_state_current {
+  color: #999;
 }
 
 .table-tree tbody tr:hover {
@@ -49,8 +52,6 @@
   color: #939;
   cursor: pointer;
 }
-
-
 
 .table-tree__minor {
   font-size: 12px;

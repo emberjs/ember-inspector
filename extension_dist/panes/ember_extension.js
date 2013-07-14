@@ -120,34 +120,35 @@ define("controllers/route_node",
     var get = Ember.get;
 
     var RouteNodeController = Ember.ObjectController.extend({
+      needs: 'routeTree',
+
       details: null,
 
       withDetails: false,
 
       hasChildren: Ember.computed.gt('children.length', 0),
 
-      controllerExists: Ember.computed.alias('details.controller.exists'),
+      style: function() {
+        return 'padding-left: ' + ((this.get('numParents') * 5) + 5) + 'px';
+      }.property('numParents'),
 
-      controllerName: function() {
-        var controllerName = this.get('details.controller.className');
-        if (!this.get('details.controller.exists')) {
-          controllerName += ' (will be generated)';
+      isCurrent: function() {
+        var currentRoute = this.get('controllers.routeTree.currentRoute');
+        var routes = currentRoute.split('.');
+        var self = this;
+        var length = routes.length;
+        if (length > 1 && routes[length - 2] + '.' + routes[length - 1] === this.get('value.name')) {
+          return true;
         }
-        return controllerName;
-      }.property('details.controller.name'),
-
-      showDetails: function(model) {
-        if (this.get('withDetails')) {
-          this.set('withDetails', false);
-          return;
-        }
-        model = model || this.get('model');
-        this.get('port').one('route:routeDetails', this, function(message) {
-          this.set('details', message);
-          this.set('withDetails', true);
+        var found = false;
+        routes.forEach(function(route) {
+          if (self.get('value.name') === route) {
+            found = true;
+            return false;
+          }
         });
-        this.get('port').send('route:getRouteDetails', { name: get(model, 'value.name') });
-      },
+        return found;
+      }.property('controllers.routeTree.currentRoute', 'value.name'),
 
       numParents: function() {
         var numParents = this.get('target.target.numParents');
@@ -165,11 +166,21 @@ define("controllers/route_node",
         return a;
       }.property('numParents')
 
-
     });
 
 
     return RouteNodeController;
+  });
+define("controllers/route_tree",
+  [],
+  function() {
+    "use strict";
+    var RouteTreeController = Ember.ObjectController.extend({
+      currentRoute: null
+    });
+
+
+    return RouteTreeController;
   });
 define("controllers/view_tree",
   [],
@@ -401,21 +412,23 @@ define("routes/route_tree",
     var RouteTreeRoute = Ember.Route.extend({
       setupController: function(controller, model) {
         this._super(controller, model);
+        this.get('port').on('route:currentRoute', this, this.setCurrentRoute);
+        this.get('port').send('route:getCurrentRoute');
         this.get('port').on('route:routeTree', this, this.setTree);
         this.get('port').send('route:getTree');
       },
 
       deactivate: function() {
+        this.get('port').off('route:currentRoute');
         this.get('port').off('route:routeTree', this, this.setViewTree);
+      },
+
+      setCurrentRoute: function(message) {
+        this.get('controller').set('currentRoute', message.name);
       },
 
       setTree: function(options) {
         this.set('controller.model', { children: [ arrayizeTree(options.tree) ] });
-      },
-
-      model: function() {
-        // To generate an object controller
-        return {};
       },
 
       events: {
@@ -484,13 +497,15 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 
 function program1(depth0,data) {
   
-  var buffer = '', stack1, hashTypes, hashContexts, options;
-  data.buffer.push("\n  <tr>\n    <td class=\"table-tree__main-cell\">\n      ");
-  hashTypes = {};
-  hashContexts = {};
-  stack1 = helpers.each.call(depth0, "numParentsArray", {hash:{},inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n      ");
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\n  <tr>\n    <td ");
+  hashContexts = {'class': depth0,'style': depth0};
+  hashTypes = {'class': "STRING",'style': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': (":table-tree__main-cell isCurrent:table-tree__main-cell_state_current"),
+    'style': ("style")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n      ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
@@ -505,12 +520,12 @@ function program1(depth0,data) {
   data.buffer.push("</td>\n    ");
   hashTypes = {};
   hashContexts = {};
-  stack1 = helpers['if'].call(depth0, "value.controller.exists", {hash:{},inverse:self.program(6, program6, data),fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  stack1 = helpers['if'].call(depth0, "value.controller.exists", {hash:{},inverse:self.program(4, program4, data),fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n    <td>");
   hashTypes = {};
   hashContexts = {};
-  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.templateName", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.template.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push("</td>\n    <td class=\"table-tree__minor\">");
   hashTypes = {};
   hashContexts = {};
@@ -525,12 +540,6 @@ function program1(depth0,data) {
   }
 function program2(depth0,data) {
   
-  
-  data.buffer.push("\n        &nbsp;\n      ");
-  }
-
-function program4(depth0,data) {
-  
   var buffer = '', hashTypes, hashContexts;
   data.buffer.push("\n      <td class=\"table-tree__clickable\" ");
   hashTypes = {};
@@ -544,7 +553,7 @@ function program4(depth0,data) {
   return buffer;
   }
 
-function program6(depth0,data) {
+function program4(depth0,data) {
   
   var buffer = '', hashTypes, hashContexts;
   data.buffer.push("\n      <td>");

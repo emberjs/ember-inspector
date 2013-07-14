@@ -569,15 +569,27 @@ define("route_debug",
         return this.get('application.__container__').lookup('router:main');
       }).property('application'),
 
+      applicationController: Ember.computed(function() {
+        var container = this.get('application.__container__');
+        return container.lookup('controller:application');
+      }).property('application'),
+
+      currentPath: Ember.computed.alias('applicationController.currentPath'),
+
       portNamespace: 'route',
+
       messages: {
         getTree: function() {
           this.sendTree();
         },
-        getRouteDetails: function(message) {
-          this.sendRouteDetails(message.name);
+        getCurrentRoute: function() {
+          this.sendCurrentRoute();
         }
       },
+
+      sendCurrentRoute: Ember.observer(function() {
+        this.sendMessage('currentRoute', { name: this.get('currentPath') });
+      }, 'currentPath'),
 
       routeTree: Ember.computed(function() {
         var routeNames = this.get('router.router.recognizer.names');
@@ -598,22 +610,6 @@ define("route_debug",
       sendTree: function() {
         var routeTree = this.get('routeTree');
         this.sendMessage('routeTree', { tree: routeTree });
-      },
-
-      sendRouteDetails: function(name) {
-        var routeClassName = classify(name.replace('.', '_')) + 'Route';
-        var container = this.get('application.__container__');
-        var routeHandler = container.lookup('router:main').router.getHandler(name);
-        var controllerName = routeHandler.controllerName || routeHandler.routeName;
-        var controllerClassName = classify(controllerName.replace('.', '_')) + 'Controller';
-        var controller = container.lookup('controller:' + controllerName);
-        var templateName = name.replace('.', '/');
-        var message = {
-          routeHandler: { className: routeClassName, name: name },
-          controller: { className: controllerClassName, name: controllerName, exists: controller ? true: false },
-          template: { name: templateName }
-        };
-        this.sendMessage('routeDetails', message);
       }
     });
 
@@ -635,6 +631,7 @@ define("route_debug",
           controllerClassName = classify(controllerName.replace('.', '_')) + 'Controller';
           controller = container.lookup('controller:' + controllerName);
           templateName = handler.replace('.', '/');
+
           subTree[handler] = {
             value: {
               name: handler,
@@ -647,9 +644,12 @@ define("route_debug",
                 name: controllerName,
                 exists: controller ? true : false
               },
-              templateName: templateName
+              template: {
+                name: templateName
+              }
             }
           };
+
           if (i === handlers.length - 1) {
             // it is a route, get url
             subTree[handler].value.url = getURL(route.segments);
