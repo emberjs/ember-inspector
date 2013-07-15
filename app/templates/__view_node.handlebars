@@ -6,7 +6,7 @@
         <span class='tree__node-hint' data-label="tree-view-template">template:{{node.value.template}}</span>
       </p>
       {{#if node.children.length}}
-        {{view EmberExtension.ViewNodeView}}
+        {{partial "view_node"}}
       {{/if}}
     </li>
   {{/each}}

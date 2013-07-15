@@ -13,6 +13,15 @@ var RouteNodeController = Ember.ObjectController.extend({
     return 'padding-left: ' + ((this.get('numParents') * 5) + 5) + 'px';
   }.property('numParents'),
 
+
+  numParents: function() {
+    var numParents = this.get('target.target.numParents');
+    if (numParents === undefined) {
+      numParents = -1;
+    }
+    return numParents + 1;
+  }.property("target.target.numParents"),
+
   isCurrent: function() {
     var currentRoute = this.get('controllers.routeTree.currentRoute');
     var routes = currentRoute.split('.');
@@ -29,23 +38,8 @@ var RouteNodeController = Ember.ObjectController.extend({
       }
     });
     return found;
-  }.property('controllers.routeTree.currentRoute', 'value.name'),
+  }.property('controllers.routeTree.currentRoute', 'value.name')
 
-  numParents: function() {
-    var numParents = this.get('target.target.numParents');
-    if (numParents === undefined) {
-      numParents = -1;
-    }
-    return numParents + 1;
-  }.property("target.target.numParents"),
-
-  numParentsArray: function() {
-    var a = [];
-    for (var i = 0; i < this.get('numParents'); i++) {
-      a.pushObject(null);
-    }
-    return a;
-  }.property('numParents')
 
 });
 
