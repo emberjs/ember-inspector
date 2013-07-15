@@ -143,22 +143,15 @@ define("controllers/route_node",
 
       isCurrent: function() {
         var currentRoute = this.get('controllers.routeTree.currentRoute');
-        var routes = currentRoute.split('.');
-        var self = this;
-        var length = routes.length;
-        if (length > 1 && routes[length - 2] + '.' + routes[length - 1] === this.get('value.name')) {
+        if (!currentRoute) {
+          return false;
+        }
+        if (this.get('value.name') === 'application') {
           return true;
         }
-        var found = false;
-        routes.forEach(function(route) {
-          if (self.get('value.name') === route) {
-            found = true;
-            return false;
-          }
-        });
-        return found;
+        var regName = this.get('value.name').replace('.', '\\.');
+        return !!currentRoute.match(new RegExp('(^|\\.)' + regName + '(\\.|$)'));
       }.property('controllers.routeTree.currentRoute', 'value.name')
-
 
     });
 
@@ -491,14 +484,20 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 function program1(depth0,data) {
   
   var buffer = '', stack1, hashContexts, hashTypes, options;
-  data.buffer.push("\n  <tr>\n    <td ");
+  data.buffer.push("\n  <tr data-label=\"route-node\" ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': ("isCurrent")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n    <td ");
   hashContexts = {'class': depth0,'style': depth0};
   hashTypes = {'class': "STRING",'style': "STRING"};
   data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
     'class': (":table-tree__main-cell isCurrent:table-tree__main-cell_state_current"),
     'style': ("style")
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(">\n      ");
+  data.buffer.push(" data-label=\"route-name\">\n      ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
@@ -506,7 +505,7 @@ function program1(depth0,data) {
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "inspectRoute", "value.routeHandler.name", {hash:{},contexts:[depth0,depth0],types:["ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(">");
+  data.buffer.push(" data-label=\"route-handler\">");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.routeHandler.className", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
@@ -515,11 +514,11 @@ function program1(depth0,data) {
   hashContexts = {};
   stack1 = helpers['if'].call(depth0, "value.controller.exists", {hash:{},inverse:self.program(4, program4, data),fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n    <td>");
+  data.buffer.push("\n    <td data-label=\"route-template\">");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.template.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</td>\n    <td class=\"table-tree__minor\">");
+  data.buffer.push("</td>\n    <td class=\"table-tree__minor\" data-label=\"route-url\">");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.url", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
@@ -538,7 +537,7 @@ function program2(depth0,data) {
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "inspectController", "value.controller", {hash:{},contexts:[depth0,depth0],types:["ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(">");
+  data.buffer.push(" data-label=\"route-controller\">");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.controller.className", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
@@ -549,7 +548,7 @@ function program2(depth0,data) {
 function program4(depth0,data) {
   
   var buffer = '', hashTypes, hashContexts;
-  data.buffer.push("\n      <td>");
+  data.buffer.push("\n      <td data-label=\"route-controller\">");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.controller.className", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));

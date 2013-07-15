@@ -24,22 +24,15 @@ var RouteNodeController = Ember.ObjectController.extend({
 
   isCurrent: function() {
     var currentRoute = this.get('controllers.routeTree.currentRoute');
-    var routes = currentRoute.split('.');
-    var self = this;
-    var length = routes.length;
-    if (length > 1 && routes[length - 2] + '.' + routes[length - 1] === this.get('value.name')) {
+    if (!currentRoute) {
+      return false;
+    }
+    if (this.get('value.name') === 'application') {
       return true;
     }
-    var found = false;
-    routes.forEach(function(route) {
-      if (self.get('value.name') === route) {
-        found = true;
-        return false;
-      }
-    });
-    return found;
+    var regName = this.get('value.name').replace('.', '\\.');
+    return !!currentRoute.match(new RegExp('(^|\\.)' + regName + '(\\.|$)'));
   }.property('controllers.routeTree.currentRoute', 'value.name')
-
 
 });
 

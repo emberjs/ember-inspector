@@ -1,16 +1,16 @@
 {{#each children itemController="routeNode"}}
-  <tr>
-    <td {{bindAttr class=":table-tree__main-cell isCurrent:table-tree__main-cell_state_current" style="style"}}>
+  <tr data-label="route-node" {{bindAttr class="isCurrent"}}>
+    <td {{bindAttr class=":table-tree__main-cell isCurrent:table-tree__main-cell_state_current" style="style" }} data-label="route-name">
       {{value.name}}
     </td>
-    <td class="table-tree__clickable" {{action inspectRoute value.routeHandler.name}}>{{value.routeHandler.className}}</td>
+    <td class="table-tree__clickable" {{action inspectRoute value.routeHandler.name}} data-label="route-handler">{{value.routeHandler.className}}</td>
     {{#if value.controller.exists}}
-      <td class="table-tree__clickable" {{action inspectController value.controller}}>{{value.controller.className}}</td>
+      <td class="table-tree__clickable" {{action inspectController value.controller}} data-label="route-controller">{{value.controller.className}}</td>
     {{else}}
-      <td>{{value.controller.className}}</td>
+      <td data-label="route-controller">{{value.controller.className}}</td>
     {{/if}}
-    <td>{{value.template.name}}</td>
-    <td class="table-tree__minor">{{value.url}}</td>
+    <td data-label="route-template">{{value.template.name}}</td>
+    <td class="table-tree__minor" data-label="route-url">{{value.url}}</td>
   </tr>
 
   {{partial "route_node"}}
