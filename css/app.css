@@ -5,16 +5,25 @@
  application.
 */
 
-
 .app {
   display: -webkit-flex;
   -webkit-flex-direction: row;
+  height: 100%;
+}
+
+.app__nav-holder {
+  width: 90px;
 }
 
 .app__main {
-  -webkit-flex-grow: 1;
+  -webkit-flex: 1;
+  height: 100%;
+  overflow: auto;
+  border-left: solid 1px #ccc;
 }
 
 .app__right-col {
   width: 500px;
+  height: 100%;
+  overflow: auto;
 }

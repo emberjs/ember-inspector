@@ -82,7 +82,7 @@ if (typeof define !== 'function' && typeof requireModule !== 'function') {
   // to determine when the application starts
   // but this definitely works
   function onApplicationStart(callback) {
-    if (!Ember) {
+    if (typeof Ember === 'undefined') {
       return;
     }
     var body = document.body;
@@ -107,8 +107,8 @@ if (typeof define !== 'function' && typeof requireModule !== 'function') {
 }());
 
 define("ember_debug",
-  ["port","view_debug","object_inspector"],
-  function(Port, ViewDebug, ObjectInspector) {
+  ["port","view_debug","object_inspector","route_debug"],
+  function(Port, ViewDebug, ObjectInspector, RouteDebug) {
     "use strict";
 
     console.debug("Ember Debugger Active");
@@ -129,9 +129,9 @@ define("ember_debug",
         }
         this.set('started', true);
 
-        this.reset();
-
         this.set('application', getApplication());
+
+        this.reset();
 
       },
 
@@ -143,6 +143,12 @@ define("ember_debug",
           Ember.run(objectInspector, 'destroy');
         }
         this.set('objectInspector', ObjectInspector.create({ namespace: this }));
+
+        var routeDebug = this.get('routeDebug');
+        if (routeDebug) {
+          Ember.run(routeDebug, 'destroy');
+        }
+        this.set('routeDebug', RouteDebug.create({ namespace: this }));
 
         var viewDebug = this.get('viewDebug');
         if (viewDebug) {
@@ -239,6 +245,8 @@ define("object_inspector",
 
       port: Ember.computed.alias('namespace.port'),
 
+      application: Ember.computed.alias('namespace.application'),
+
       init: function() {
         this._super();
         this.set('sentObjects', {});
@@ -263,6 +271,14 @@ define("object_inspector",
           value = this.valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
           this.sendMessage('updateProperty', value);
           this.bindPropertyToDebugger(message);
+        },
+        inspectRoute: function(message) {
+          var container = this.get('application.__container__');
+          this.sendObject(container.lookup('router:main').router.getHandler(message.name));
+        },
+        inspectController: function(message) {
+          var container = this.get('application.__container__');
+          this.sendObject(container.lookup('controller:' + message.name));
         }
       },
 
@@ -536,6 +552,158 @@ define("port",
 
     return Port;
   });
+define("route_debug",
+  ["mixins/port_mixin"],
+  function(PortMixin) {
+    "use strict";
+
+    var classify = Ember.String.classify;
+
+    var RouteDebug = Ember.Object.extend(PortMixin, {
+      namespace: null,
+      port: Ember.computed.alias('namespace.port'),
+
+      application: Ember.computed.alias('namespace.application'),
+
+      router: Ember.computed(function() {
+        return this.get('application.__container__').lookup('router:main');
+      }).property('application'),
+
+      applicationController: Ember.computed(function() {
+        var container = this.get('application.__container__');
+        return container.lookup('controller:application');
+      }).property('application'),
+
+      currentPath: Ember.computed.alias('applicationController.currentPath'),
+
+      portNamespace: 'route',
+
+      messages: {
+        getTree: function() {
+          this.sendTree();
+        },
+        getCurrentRoute: function() {
+          this.sendCurrentRoute();
+        }
+      },
+
+      sendCurrentRoute: Ember.observer(function() {
+        this.sendMessage('currentRoute', { name: this.get('currentPath') });
+      }, 'currentPath'),
+
+      routeTree: Ember.computed(function() {
+        var routeNames = this.get('router.router.recognizer.names');
+        var routeTree = {};
+
+        for(var routeName in routeNames) {
+          if (!routeNames.hasOwnProperty(routeName)) {
+            continue;
+          }
+          var route = routeNames[routeName];
+          var handlers = Ember.A(route.handlers);
+          buildSubTree.call(this, routeTree, route);
+        }
+
+        return arrayizeChildren({  children: routeTree }).children[0];
+      }).property('router'),
+
+      sendTree: function() {
+        var routeTree = this.get('routeTree');
+        this.sendMessage('routeTree', { tree: routeTree });
+      }
+    });
+
+
+    var buildSubTree = function(routeTree, route) {
+      var handlers = route.handlers;
+      var subTree = routeTree, item,
+          routeClassName, routeHandler, controllerName,
+          controllerClassName, container, templateName,
+          controller;
+      for (var i = 0; i < handlers.length; i++) {
+        item = handlers[i];
+        var handler = item.handler;
+        if (subTree[handler] === undefined) {
+          routeClassName = classify(handler.replace('.', '_')) + 'Route';
+          container = this.get('application.__container__');
+          routeHandler = container.lookup('router:main').router.getHandler(handler);
+          controllerName = routeHandler.controllerName || routeHandler.routeName;
+          controllerClassName = classify(controllerName.replace('.', '_')) + 'Controller';
+          controller = container.lookup('controller:' + controllerName);
+          templateName = handler.replace('.', '/');
+
+          subTree[handler] = {
+            value: {
+              name: handler,
+              routeHandler: {
+                className: routeClassName,
+                name: handler
+              },
+              controller: {
+                className: controllerClassName,
+                name: controllerName,
+                exists: controller ? true : false
+              },
+              template: {
+                name: templateName
+              }
+            }
+          };
+
+          if (i === handlers.length - 1) {
+            // it is a route, get url
+            subTree[handler].value.url = getURL(route.segments);
+            subTree[handler].value.type = 'route';
+          } else {
+            // it is a resource, set children object
+            subTree[handler].children = {};
+            subTree[handler].value.type = 'resource';
+          }
+
+        }
+        subTree = subTree[handler].children;
+      }
+    };
+
+    function arrayizeChildren(routeTree) {
+      var obj = { value: routeTree.value };
+
+      if (routeTree.children) {
+        var childrenArray = [];
+        for(var i in routeTree.children) {
+          var route = routeTree.children[i];
+          childrenArray.push(arrayizeChildren(route));
+        }
+        obj.children = childrenArray;
+      }
+
+      return obj;
+    }
+
+    function getURL(segments) {
+      var url = [];
+      for (var i = 0; i < segments.length; i++) {
+        var name = null;
+
+        try {
+          name = segments[i].generate();
+        } catch (e) {
+          // is dynamic
+          name = ':' + segments[i].name;
+        }
+        if (name) {
+          url.push(name);
+        }
+      }
+
+      url = '/' + url.join('/');
+
+      return url;
+    }
+
+
+    return RouteDebug;
+  });
 define("view_debug",
   ["mixins/port_mixin"],
   function(PortMixin) {
@@ -621,11 +789,14 @@ define("view_debug",
         var self = this;
 
         this.viewTreeChanged = function() {
-          Em.run.schedule('afterRender', function() {
-            self.sendTree();
-            self.hideLayer();
-          });
+          Em.run.scheduleOnce('afterRender', sendTree);
         };
+
+        function sendTree() {
+          self.sendTree();
+          self.hideLayer();
+        }
+
         Ember.View.addMutationListener(this.viewTreeChanged);
       },
 

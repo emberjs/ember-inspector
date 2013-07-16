@@ -1,7 +1,7 @@
 var ViewTreeRoute = Ember.Route.extend({
-  setupController: function(controller, model) {
-    this._super(controller, model);
+  setupController: function() {
     this.get('port').on('view:viewTree', this, this.setViewTree);
+    this.get('port').send('view:getTree');
   },
 
   deactivate: function() {

@@ -98,6 +98,10 @@
   color: #909;
 }
 
+.mixin__property-value {
+  -webkit-flex: 1;
+}
+
 .mixin__property-value-separator {
   margin-right: 5px;
 }

@@ -5,6 +5,10 @@ var ApplicationRoute = Ember.Route.extend({
 
     this.get('port').on('objectInspector:updateObject', this, this.updateObject);
     this.get('port').on('objectInspector:updateProperty', this, this.updateProperty);
+
+    this.get('port').one('view:viewTree', this, function() {
+      controller.set('emberApplication', true);
+    });
     this._super(controller, model);
   },
 

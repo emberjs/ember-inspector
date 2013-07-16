@@ -27,10 +27,21 @@
         send: function() {}
       });
 
+
+      Ember.Application.initializer({
+        name: "detectEmberApplication",
+
+        initialize: function(container, application) {
+          container.lookup('controller:application').set('emberApplication', true);
+        }
+      });
+
+
       EmberExtension.deferReadiness();
       EmberExtension.setupForTesting();
       EmberExtension.injectTestHelpers();
       EmberExtension.advanceReadiness();
+
 
       Ember.keys(define.registry).forEach(requireModule);
     </script>

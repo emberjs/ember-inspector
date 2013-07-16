@@ -5,18 +5,27 @@
  application.
 */
 
-
 .app {
   display: -webkit-flex;
   -webkit-flex-direction: row;
+  height: 100%;
+}
+
+.app__nav-holder {
+  width: 90px;
 }
 
 .app__main {
-  -webkit-flex-grow: 1;
+  -webkit-flex: 1;
+  height: 100%;
+  overflow: auto;
+  border-left: solid 1px #ccc;
 }
 
 .app__right-col {
   width: 500px;
+  height: 100%;
+  overflow: auto;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -26,11 +35,52 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: normal;
 }
 
+html, body {
+  height: 100%;
+}
+
 body {
-  font-family: "Helvetica Neue";
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   color: #333;
 }
 
+body, div, nav {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: inherit;
+}
+
+/**
+ MAIN-NAV
+ ========
+ The application's main nav
+*/
+
+
+.main-nav__list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.main-nav__item {
+  display: block;
+}
+
+.main-nav__item > a {
+  text-decoration: none;
+  display: block;
+  padding: 10px 5px;
+  color: #595455;
+  border-left: solid 5px transparent;
+}
+
+.main-nav__item > a.active {
+  border-left-color: #ccc;
+}
 
 /**
  MIXIN
@@ -132,6 +182,10 @@ body {
   color: #909;
 }
 
+.mixin__property-value {
+  -webkit-flex: 1;
+}
+
 .mixin__property-value-separator {
   margin-right: 5px;
 }
@@ -218,46 +272,134 @@ body {
 
 
 /**
- VIEW-TREE
- =========
- Displays the view hierarchy in the app
- being inspected.
+ TABLE-TREE
+ ==========
+ Displays a tree in a table.
+ Used for route tree.
 */
 
-.view-tree {
-  font-family: Menlo, sans-serif;
+.table-tree {
+  font-size: 13px;
+}
+
+.table-tree table {
+  min-width: 100%;
+}
+
+.table-tree thead {
+  text-align: left;
+}
+
+.table-tree th {
+  font-weight: normal;
+}
+
+.table-tree th, .table-tree td {
+  padding: 5px 0px 5px 5px;
+}
+
+.table-tree td {
+  white-space: nowrap;
+  opacity: 0.5;
+}
+
+.table-tree td.table-tree__main-cell {
+  font-weight: bold;
+  opacity: 0.7;
+}
+
+.table-tree td.table-tree__main-cell_state_current {
+  opacity: 1;
+}
+
+.table-tree tbody tr:hover {
+  background-color: #e6e6e6;
+}
+
+.table-tree tbody tr:hover td {
+  opacity: 1;
+}
+
+
+.table-tree tbody tr:hover .table-tree__clickable {
+  color: #939;
+  cursor: pointer;
+}
+
+.table-tree__minor {
   font-size: 12px;
 }
 
-.view-tree__node {
+/**
+ TREE
+ ====
+ Displays a tree.
+ Used for view tree.
+*/
+
+.tree {
+  font-family: Menlo, sans-serif;
+  font-size: 14px;
+}
+
+.tree__node {
   list-style-type: none;
   margin: 0;
   padding: 0 0 0 10px;
 }
 
-.view-tree__node-child {
+.tree__node-child {
   margin-top: 5px;
 }
 
-.view-tree__node-controller {
+.tree__node-header {
+  margin: 0;
+  padding: 0;
+}
+
+.tree__node-name {
   color: #939;
   cursor: pointer;
 }
 
-.view-tree__node-controller.is-pinned, .view-tree__node-controller:hover {
+.tree__node-controller {
+  color: #939;
+  cursor: pointer;
+}
+
+.tree__node-controller.is-pinned,
+.tree__node-controller:hover,
+.tree__node-name:hover {
   color: #606;
 }
 
-.view-tree__node-controller:hover + .view-tree__node-template {
-  display: inline;
-}
 
-.view-tree__node-template {
-  color: #999;
+.tree__node-template, .tree__node-hint {
+  color: #595455;
   display: none;
 }
 
-.view-tree__node-header {
-  margin: 0;
-  padding: 0;
+.tree__node-header:hover .tree__node-hint {
+  display: inline;
+}
+
+
+.tree__node-details {
+  font-size: 13px;
+  color: #999;
+}
+
+
+
+
+.tree__node-details td {
+  padding: 0px 5px;
+  color: #666;
+}
+
+
+.tree__node-details .clickable {
+  /*color: #4896ab;*/
+  color: rgb(153, 153, 0);
+  cursor: pointer;
 }
