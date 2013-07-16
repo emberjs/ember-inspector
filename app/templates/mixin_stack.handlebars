@@ -1,8 +1,12 @@
 <h1 class="object-inspector__header">
-  {{#if isNested}}
-    <button {{action popStack}} data-label="object-inspector-back" class="object-inspector__back object-inspector__back_state_enabled">◀ Back</button>
-  {{else}}
-    <span data-label="object-inspector-back" class="object-inspector__back object-inspector__back_state_disabled">◀ Back</span>
+  {{#if length}}
+
+    {{#if isNested}}
+      <button {{action popStack}} data-label="object-inspector-back" class="object-inspector__back object-inspector__back_state_enabled">◀ Back</button>
+    {{else}}
+      <span data-label="object-inspector-back" class="object-inspector__back object-inspector__back_state_disabled">◀ Back</span>
+    {{/if}}
+
   {{/if}}
   <span data-label="object-name" class="object-inspector__name">{{firstObject.name}}</span>
 </h1>

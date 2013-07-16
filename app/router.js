@@ -4,6 +4,7 @@ var Router = Ember.Router.extend({
 
 Router.map(function() {
   this.route('view_tree', { path: '/' });
+  this.route('route_tree');
 });
 
 export = Router;

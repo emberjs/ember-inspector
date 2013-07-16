@@ -18,7 +18,7 @@
       {{#if property.calculated}}
         <span class='mixin__property-calculated-value' data-label="object-property-value">{{property.calculated}}</span>
       {{else}}
-        <span {{bindAttr class="property.value.type"}} data-label="object-property-value">{{property.value.inspect}}</span>
+        <span {{bindAttr class="property.value.type :mixin__property-value"}} data-label="object-property-value">{{property.value.inspect}}</span>
       {{/if}}
       <span class='mixin__property-overridden-by'>(Overridden by {{property.overridden}})</span>
     </li>

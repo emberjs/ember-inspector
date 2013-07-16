@@ -5,6 +5,8 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
 
   port: Ember.computed.alias('namespace.port'),
 
+  application: Ember.computed.alias('namespace.application'),
+
   init: function() {
     this._super();
     this.set('sentObjects', {});
@@ -29,6 +31,14 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
       value = this.valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
       this.sendMessage('updateProperty', value);
       this.bindPropertyToDebugger(message);
+    },
+    inspectRoute: function(message) {
+      var container = this.get('application.__container__');
+      this.sendObject(container.lookup('router:main').router.getHandler(message.name));
+    },
+    inspectController: function(message) {
+      var container = this.get('application.__container__');
+      this.sendObject(container.lookup('controller:' + message.name));
     }
   },
 

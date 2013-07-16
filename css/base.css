@@ -5,8 +5,20 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: normal;
 }
 
+html, body {
+  height: 100%;
+}
+
 body {
-  font-family: "Helvetica Neue";
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   color: #333;
 }
 
+body, div, nav {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: inherit;
+}

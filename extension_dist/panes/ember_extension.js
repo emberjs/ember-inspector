@@ -19,6 +19,8 @@ define("controllers/application",
     var ApplicationController = Ember.Controller.extend({
       needs: ['mixinStack', 'mixinDetails'],
 
+      emberApplication: false,
+
       pushMixinDetails: function(name, property, objectId, details) {
         details = { name: name, property: property, objectId: objectId, mixins: details };
         this.get('controllers.mixinStack').pushObject(details);
@@ -111,6 +113,62 @@ define("controllers/mixin_stack",
 
     return MixinStackController;
   });
+define("controllers/route_node",
+  [],
+  function() {
+    "use strict";
+    var get = Ember.get;
+
+    var RouteNodeController = Ember.ObjectController.extend({
+      needs: 'routeTree',
+
+      details: null,
+
+      withDetails: false,
+
+      hasChildren: Ember.computed.gt('children.length', 0),
+
+      style: function() {
+        return 'padding-left: ' + ((this.get('numParents') * 5) + 5) + 'px';
+      }.property('numParents'),
+
+
+      numParents: function() {
+        var numParents = this.get('target.target.numParents');
+        if (numParents === undefined) {
+          numParents = -1;
+        }
+        return numParents + 1;
+      }.property("target.target.numParents"),
+
+      isCurrent: function() {
+        var currentRoute = this.get('controllers.routeTree.currentRoute');
+        if (!currentRoute) {
+          return false;
+        }
+        if (this.get('value.name') === 'application') {
+          return true;
+        }
+        var regName = this.get('value.name').replace('.', '\\.');
+        return !!currentRoute.match(new RegExp('(^|\\.)' + regName + '(\\.|$)'));
+      }.property('controllers.routeTree.currentRoute', 'value.name')
+
+    });
+
+
+    return RouteNodeController;
+  });
+define("controllers/route_tree",
+  [],
+  function() {
+    "use strict";
+    var RouteTreeController = Ember.ObjectController.extend({
+      currentRoute: null
+    });
+
+
+    return RouteTreeController;
+  });
 define("controllers/view_tree",
   [],
   function() {
@@ -152,14 +210,13 @@ define("controllers/view_tree_item",
     return ViewTreeItemController;
   });
 define("main",
-  ["application","views/tree_node","views/tree_node_controller","port"],
-  function(App, TreeNodeView, TreeNodeControllerView, Port) {
+  ["application","views/tree_node_controller","port"],
+  function(App, TreeNodeControllerView, Port) {
     "use strict";
 
     var EmberExtension;
 
     EmberExtension = App.create();
-    EmberExtension.TreeNodeView = TreeNodeView;
     EmberExtension.TreeNodeControllerView = TreeNodeControllerView;
     EmberExtension.Port = Port;
 
@@ -222,6 +279,7 @@ define("port",
         connect.apply(this);
       },
       send: function(messageType, options) {
+        options = options || {};
         options.from = 'devtools';
         options.type = messageType;
         chromePort.postMessage(options);
@@ -271,6 +329,7 @@ define("router",
 
     Router.map(function() {
       this.route('view_tree', { path: '/' });
+      this.route('route_tree');
     });
 
 
@@ -287,6 +346,10 @@ define("routes/application",
 
         this.get('port').on('objectInspector:updateObject', this, this.updateObject);
         this.get('port').on('objectInspector:updateProperty', this, this.updateProperty);
+
+        this.get('port').one('view:viewTree', this, function() {
+          controller.set('emberApplication', true);
+        });
         this._super(controller, model);
       },
 
@@ -328,14 +391,65 @@ define("routes/application",
 
     return ApplicationRoute;
   });
+define("routes/route_tree",
+  [],
+  function() {
+    "use strict";
+    var RouteTreeRoute = Ember.Route.extend({
+      setupController: function(controller, model) {
+        this._super(controller, model);
+        this.get('port').on('route:currentRoute', this, this.setCurrentRoute);
+        this.get('port').send('route:getCurrentRoute');
+        this.get('port').on('route:routeTree', this, this.setTree);
+        this.get('port').send('route:getTree');
+      },
+
+      deactivate: function() {
+        this.get('port').off('route:currentRoute');
+        this.get('port').off('route:routeTree', this, this.setViewTree);
+      },
+
+      setCurrentRoute: function(message) {
+        this.get('controller').set('currentRoute', message.name);
+      },
+
+      setTree: function(options) {
+        this.set('controller.model', { children: [ arrayizeTree(options.tree) ] });
+      },
+
+      events: {
+        inspectRoute: function(name) {
+          this.get('port').send('objectInspector:inspectRoute', { name: name } );
+        },
+
+        inspectController: function(controller) {
+          if (!controller.exists) {
+            return;
+          }
+          this.get('port').send('objectInspector:inspectController', { name: controller.name } );
+        }
+      }
+    });
+
+    function arrayizeTree(tree) {
+      if(tree.children) {
+        Ember.NativeArray.apply(tree.children);
+        tree.children.forEach(arrayizeTree);
+      }
+      return tree;
+    }
+
+
+    return RouteTreeRoute;
+  });
 define("routes/view_tree",
   [],
   function() {
     "use strict";
     var ViewTreeRoute = Ember.Route.extend({
-      setupController: function(controller, model) {
-        this._super(controller, model);
+      setupController: function() {
         this.get('port').on('view:viewTree', this, this.setViewTree);
+        this.get('port').send('view:getTree');
       },
 
       deactivate: function() {
@@ -362,22 +476,210 @@ define("routes/view_tree",
 this["Ember"] = this["Ember"] || {};
 this["Ember"]["TEMPLATES"] = this["Ember"]["TEMPLATES"] || {};
 
+this["Ember"]["TEMPLATES"]["_route_node"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashContexts, hashTypes, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\n  <tr data-label=\"route-node\" ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': ("isCurrent")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n    <td ");
+  hashContexts = {'class': depth0,'style': depth0};
+  hashTypes = {'class': "STRING",'style': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': (":table-tree__main-cell isCurrent:table-tree__main-cell_state_current"),
+    'style': ("style")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" data-label=\"route-name\">\n      ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n    </td>\n    <td class=\"table-tree__clickable\" ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "inspectRoute", "value.routeHandler.name", {hash:{},contexts:[depth0,depth0],types:["ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" data-label=\"route-handler\">");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.routeHandler.className", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</td>\n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "value.controller.exists", {hash:{},inverse:self.program(4, program4, data),fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n    <td data-label=\"route-template\">");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.template.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</td>\n    <td class=\"table-tree__minor\" data-label=\"route-url\">");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.url", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</td>\n  </tr>\n\n  ");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "route_node", options) : helperMissing.call(depth0, "partial", "route_node", options))));
+  data.buffer.push("\n");
+  return buffer;
+  }
+function program2(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n      <td class=\"table-tree__clickable\" ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "inspectController", "value.controller", {hash:{},contexts:[depth0,depth0],types:["ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" data-label=\"route-controller\">");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.controller.className", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</td>\n    ");
+  return buffer;
+  }
+
+function program4(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n      <td data-label=\"route-controller\">");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.controller.className", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</td>\n    ");
+  return buffer;
+  }
+
+  hashContexts = {'itemController': depth0};
+  hashTypes = {'itemController': "STRING"};
+  stack1 = helpers.each.call(depth0, "children", {hash:{
+    'itemController': ("routeNode")
+  },inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n");
+  return buffer;
+  
+});
+
+this["Ember"]["TEMPLATES"]["_view_node"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes;
+  data.buffer.push("\n    <li class=\"tree__node-child\" data-label=\"tree-view\">\n      <p class=\"tree__node-header\">\n        ");
+  hashContexts = {'nodeBinding': depth0,'label': depth0};
+  hashTypes = {'nodeBinding': "STRING",'label': "STRING"};
+  stack1 = helpers.view.call(depth0, "EmberExtension.TreeNodeControllerView", {hash:{
+    'nodeBinding': ("node"),
+    'label': ("tree-view-controller")
+  },inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n        <span class='tree__node-hint' data-label=\"tree-view-template\">template:");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "node.value.template", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</span>\n      </p>\n      ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "node.children.length", {hash:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n    </li>\n  ");
+  return buffer;
+  }
+function program2(depth0,data) {
+  
+  var hashTypes, hashContexts;
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "node.value.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  }
+
+function program4(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts, options;
+  data.buffer.push("\n        ");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "view_node", options) : helperMissing.call(depth0, "partial", "view_node", options))));
+  data.buffer.push("\n      ");
+  return buffer;
+  }
+
+  data.buffer.push("<ul class=\"tree__node\" data-label=\"tree-node\">\n  ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "node", "in", "node.children", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n</ul>\n");
+  return buffer;
+  
+});
+
 this["Ember"]["TEMPLATES"]["application"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [3,'>= 1.0.0-rc.4'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
-  var buffer = '', stack1, hashTypes, hashContexts, options, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing;
+  var buffer = '', stack1, hashTypes, hashContexts, self=this, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
 
-
-  data.buffer.push("<div class=\"app__main\">\n  ");
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, stack2, hashTypes, hashContexts, options;
+  data.buffer.push("\n\n  <div class=\"app__nav-holder\">\n    <nav class=\"main-nav\">\n      <ul class=\"main-nav__list\">\n        <li class=\"main-nav__item\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  stack2 = ((stack1 = helpers.linkTo),stack1 ? stack1.call(depth0, "view_tree", options) : helperMissing.call(depth0, "linkTo", "view_tree", options));
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("</li>\n        <li class=\"main-nav__item\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  stack2 = ((stack1 = helpers.linkTo),stack1 ? stack1.call(depth0, "route_tree", options) : helperMissing.call(depth0, "linkTo", "route_tree", options));
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("</li>\n      </ul>\n    </nav>\n  </div>\n\n\n  <div class=\"app__main\">\n    ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "outlet", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("\n</div>\n\n<div class=\"app__right-col\">\n  ");
+  data.buffer.push("\n  </div>\n\n  <div class=\"app__right-col\">\n    ");
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
   data.buffer.push(escapeExpression(((stack1 = helpers.render),stack1 ? stack1.call(depth0, "mixinStack", options) : helperMissing.call(depth0, "render", "mixinStack", options))));
-  data.buffer.push("\n</div>\n");
+  data.buffer.push("\n  </div>\n\n");
+  return buffer;
+  }
+function program2(depth0,data) {
+  
+  
+  data.buffer.push("View Tree");
+  }
+
+function program4(depth0,data) {
+  
+  
+  data.buffer.push("Routes");
+  }
+
+function program6(depth0,data) {
+  
+  
+  data.buffer.push("\n  No Ember Application Detected.\n");
+  }
+
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "emberApplication", {hash:{},inverse:self.program(6, program6, data),fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n");
   return buffer;
   
 });
@@ -519,7 +821,7 @@ function program14(depth0,data) {
   hashContexts = {'class': depth0};
   hashTypes = {'class': "STRING"};
   data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
-    'class': ("property.value.type")
+    'class': ("property.value.type :mixin__property-value")
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push(" data-label=\"object-property-value\">");
   hashTypes = {};
@@ -553,25 +855,36 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 
 function program1(depth0,data) {
   
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n\n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "isNested", {hash:{},inverse:self.program(4, program4, data),fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n\n  ");
+  return buffer;
+  }
+function program2(depth0,data) {
+  
   var buffer = '', hashTypes, hashContexts;
-  data.buffer.push("\n    <button ");
+  data.buffer.push("\n      <button ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "popStack", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(" data-label=\"object-inspector-back\" class=\"object-inspector__back object-inspector__back_state_enabled\">◀ Back</button>\n  ");
+  data.buffer.push(" data-label=\"object-inspector-back\" class=\"object-inspector__back object-inspector__back_state_enabled\">◀ Back</button>\n    ");
   return buffer;
   }
 
-function program3(depth0,data) {
+function program4(depth0,data) {
   
   
-  data.buffer.push("\n    <span data-label=\"object-inspector-back\" class=\"object-inspector__back object-inspector__back_state_disabled\">◀ Back</span>\n  ");
+  data.buffer.push("\n      <span data-label=\"object-inspector-back\" class=\"object-inspector__back object-inspector__back_state_disabled\">◀ Back</span>\n    ");
   }
 
   data.buffer.push("<h1 class=\"object-inspector__header\">\n  ");
   hashTypes = {};
   hashContexts = {};
-  stack1 = helpers['if'].call(depth0, "isNested", {hash:{},inverse:self.program(3, program3, data),fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  stack1 = helpers['if'].call(depth0, "length", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n  <span data-label=\"object-name\" class=\"object-inspector__name\">");
   hashTypes = {};
@@ -591,59 +904,18 @@ function program3(depth0,data) {
   
 });
 
-this["Ember"]["TEMPLATES"]["tree_node"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this["Ember"]["TEMPLATES"]["route_tree"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [3,'>= 1.0.0-rc.4'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
-  var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this;
+  var buffer = '', stack1, hashTypes, hashContexts, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
 
-function program1(depth0,data) {
-  
-  var buffer = '', stack1, hashContexts, hashTypes;
-  data.buffer.push("\n    <li class=\"view-tree__node-child\" data-label=\"tree-view\">\n      <p class=\"view-tree__node-header\">\n        ");
-  hashContexts = {'nodeBinding': depth0,'label': depth0};
-  hashTypes = {'nodeBinding': "STRING",'label': "STRING"};
-  stack1 = helpers.view.call(depth0, "EmberExtension.TreeNodeControllerView", {hash:{
-    'nodeBinding': ("node"),
-    'label': ("tree-view-controller")
-  },inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n        <span class='view-tree__node-template' data-label=\"tree-view-template\">template:");
-  hashTypes = {};
-  hashContexts = {};
-  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "node.value.template", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</span>\n      </p>\n      ");
-  hashTypes = {};
-  hashContexts = {};
-  stack1 = helpers['if'].call(depth0, "node.children.length", {hash:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n    </li>\n  ");
-  return buffer;
-  }
-function program2(depth0,data) {
-  
-  var hashTypes, hashContexts;
-  hashTypes = {};
-  hashContexts = {};
-  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "node.value.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  }
 
-function program4(depth0,data) {
-  
-  var buffer = '', hashTypes, hashContexts;
-  data.buffer.push("\n        ");
+  data.buffer.push("<div class=\"table-tree\">\n  <table cellspacing=\"0\" border-collapse=\"collapse\">\n    <thead>\n      <tr>\n        <th>Route Name</th>\n        <th>Route</th>\n        <th>Controller</th>\n        <th>Template</th>\n        <th>URL</th>\n      <tr>\n    </thead>\n    <tbody>\n      ");
   hashTypes = {};
   hashContexts = {};
-  data.buffer.push(escapeExpression(helpers.view.call(depth0, "EmberExtension.TreeNodeView", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("\n      ");
-  return buffer;
-  }
-
-  data.buffer.push("<ul class=\"view-tree__node\" data-label=\"tree-node\">\n  ");
-  hashTypes = {};
-  hashContexts = {};
-  stack1 = helpers.each.call(depth0, "node", "in", "node.children", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n</ul>\n");
+  options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "route_node", options) : helperMissing.call(depth0, "partial", "route_node", options))));
+  data.buffer.push("\n    </tbody>\n  </table>\n</div>\n");
   return buffer;
   
 });
@@ -651,13 +923,14 @@ function program4(depth0,data) {
 this["Ember"]["TEMPLATES"]["view_tree"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [3,'>= 1.0.0-rc.4'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
-  var buffer = '', hashTypes, hashContexts, escapeExpression=this.escapeExpression;
+  var buffer = '', stack1, hashTypes, hashContexts, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
 
 
-  data.buffer.push("<div class=\"view-tree\">\n  ");
+  data.buffer.push("<div class=\"tree\">\n  ");
   hashTypes = {};
   hashContexts = {};
-  data.buffer.push(escapeExpression(helpers.view.call(depth0, "EmberExtension.TreeNodeView", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "view_node", options) : helperMissing.call(depth0, "partial", "view_node", options))));
   data.buffer.push("\n</div>\n");
   return buffer;
   
@@ -684,24 +957,13 @@ define("views/mixin_stack",
 
     return MixinStackView;
   });
-define("views/tree_node",
-  [],
-  function() {
-    "use strict";
-    var TreeNodeView = Ember.View.extend({
-      templateName: 'tree_node'
-    });
-
-
-    return TreeNodeView;
-  });
 define("views/tree_node_controller",
   [],
   function() {
     "use strict";
     var TreeNodeControllerView = Ember.View.extend({
       tagName: 'span',
-      classNames: 'view-tree__node-controller',
+      classNames: [ 'view-tree__node-controller', 'tree__node-controller'],
       classNameBindings: 'isPinned',
 
       isPinned: function() {

@@ -80,11 +80,14 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     var self = this;
 
     this.viewTreeChanged = function() {
-      Em.run.schedule('afterRender', function() {
-        self.sendTree();
-        self.hideLayer();
-      });
+      Em.run.scheduleOnce('afterRender', sendTree);
     };
+
+    function sendTree() {
+      self.sendTree();
+      self.hideLayer();
+    }
+
     Ember.View.addMutationListener(this.viewTreeChanged);
   },
 

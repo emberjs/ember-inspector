@@ -1,6 +1,8 @@
 var ApplicationController = Ember.Controller.extend({
   needs: ['mixinStack', 'mixinDetails'],
 
+  emberApplication: false,
+
   pushMixinDetails: function(name, property, objectId, details) {
     details = { name: name, property: property, objectId: objectId, mixins: details };
     this.get('controllers.mixinStack').pushObject(details);

@@ -1,12 +1,10 @@
 import "application" as App;
-import "views/tree_node" as TreeNodeView;
 import "views/tree_node_controller" as TreeNodeControllerView;
 import "port" as Port;
 
 var EmberExtension;
 
 EmberExtension = App.create();
-EmberExtension.TreeNodeView = TreeNodeView;
 EmberExtension.TreeNodeControllerView = TreeNodeControllerView;
 EmberExtension.Port = Port;
 
