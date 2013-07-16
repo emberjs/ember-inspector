@@ -40,7 +40,7 @@ html, body {
 }
 
 body {
-  font-family: "Helvetica Neue", "arial";
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   color: #333;
 }
 
@@ -304,12 +304,12 @@ a {
 }
 
 .table-tree td.table-tree__main-cell {
-  opacity: 1;
   font-weight: bold;
+  opacity: 0.7;
 }
 
-.table-tree__main-cell_state_current {
-  color: #999;
+.table-tree td.table-tree__main-cell_state_current {
+  opacity: 1;
 }
 
 .table-tree tbody tr:hover {
