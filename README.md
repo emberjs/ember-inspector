@@ -12,6 +12,7 @@ Installation
 - Make sure `Developer mode` is checked
 - Click on 'Load unpacked extension...'
 - Choose the `extension_dist` folder in the cloned repo
+- Close and re-open developer tools if it's already open
 
 Building and Testing:
 --------------------
