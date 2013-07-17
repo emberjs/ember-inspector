@@ -110,7 +110,8 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
 
   mixinsForObject: function(object) {
     var mixins = Ember.Mixin.mixins(object),
-        mixinDetails = [];
+        mixinDetails = [],
+        self = this;
 
     var ownProps = propertiesForMixin({ mixins: [{ properties: object }] });
     mixinDetails.push({ name: "Own Properties", properties: ownProps });
@@ -122,8 +123,11 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     });
 
     applyMixinOverrides(mixinDetails);
+    calculateCachedCPs(object, mixinDetails);
 
-    return { objectId: this.retainObject(object), mixins: mixinDetails };
+    var objectId = this.retainObject(object);
+
+    return { objectId: objectId, mixins: mixinDetails };
   },
 
   valueForObjectProperty: function(objectId, property, mixinIndex) {
@@ -135,13 +139,17 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
       value = object.get(property);
     }
 
+    value = inspectValue(value);
+    value.computed = true;
+
     return {
       objectId: objectId,
       property: property,
-      value: inspect(value),
+      value: value,
       mixinIndex: mixinIndex
     };
   },
+
 
   bindPropertyToDebugger: function(message) {
     var objectId = message.objectId,
@@ -153,11 +161,13 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
 
     function handler() {
       var value = Ember.get(object, property);
+      value = inspectValue(value);
+      value.computed = true;
 
       self.sendMessage('updateProperty', {
         objectId: objectId,
         property: property,
-        value: inspect(value),
+        value: value,
         mixinIndex: mixinIndex
       });
     }
@@ -243,7 +253,7 @@ function inspectValue(value) {
 
   if (value instanceof Ember.Object) {
     return { type: "type-ember-object", inspect: value.toString() };
-  } else if (value instanceof Ember.ComputedProperty) {
+  } else if (isComputed(value)) {
     string = "<computed>";
     return { type: "type-descriptor", inspect: string, computed: true };
   } else if (value instanceof Ember.Descriptor) {
@@ -267,6 +277,27 @@ function inspect(value) {
   } else {
     return Ember.inspect(value);
   }
+}
+
+function calculateCachedCPs(object, mixinDetails) {
+  mixinDetails.forEach(function(mixin) {
+    mixin.properties.forEach(function(item) {
+      if (item.overriden) {
+        return true;
+      }
+      if (item.value.computed) {
+        var cache = Ember.cacheFor(object, item.name);
+        if (cache !== undefined) {
+          item.value = inspectValue(Ember.get(object, item.name));
+          item.value.computed = true;
+        }
+      }
+    });
+  });
+}
+
+function isComputed(value) {
+  return value instanceof Ember.ComputedProperty;
 }
 
 // Not used

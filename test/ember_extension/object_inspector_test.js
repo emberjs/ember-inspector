@@ -221,7 +221,9 @@ test("Computed properties", function() {
     port.trigger('objectInspector:updateProperty', {
       objectId: 'myObject',
       property: 'computedProp',
-      value: 'Computed value',
+      value: {
+        inspect: 'Computed value'
+      },
       mixinIndex: 0
     });
     return wait();

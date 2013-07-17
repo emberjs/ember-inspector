@@ -138,7 +138,7 @@ a {
 }
 
 .mixin_props_yes .mixin__name {
-    cursor: pointer;
+    cursor: default;
 }
 
   .mixin_props_no .mixin__name:before {
@@ -199,7 +199,6 @@ a {
 }
 
 .mixin__property:not(.mixin__property_state_overridden):hover {
-  cursor: pointer;
   background-color: #ffe;
 }
 
@@ -233,9 +232,19 @@ a {
 
 .mixin__property .type-object {
   color: #999;
+
+}
+
+.mixin__property .type-ember-object {
+  cursor: pointer;
+}
+
+.mixin_calc-btn_calculated {
+  opacity: 0.4;
 }
 
 .mixin__property-calculated-value {
+  -webkit-flex: 1;
   color: #999;
 }
 
