@@ -7,6 +7,13 @@ Ember objects in your application.
 Installation
 ------------
 
+Download a zip file from the [S3 builds page][s3-builds]. The latest version is
+located [here][latest-build].
+
+And follow the steps below after "Clone the repository".
+
+Or you can build yourself....
+
 - Clone the repository
 - Visit chrome://extensions in chrome
 - Make sure `Developer mode` is checked
@@ -23,3 +30,8 @@ Run `npm install` to install the required modules.
 - `grunt test` To run the tests in the terminal
 - `grunt server` To start the test server at `localhost:9292`
 - `grunt watch` To watch the files and re-build when anything changes (useful during development).
+
+
+[s3-builds]: http://ember-extension.s3-website-us-east-1.amazonaws.com/
+[latest-build]: http://ember-extension.s3-website-us-east-1.amazonaws.com/ember-extension-latest.zip
+

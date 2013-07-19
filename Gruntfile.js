@@ -53,6 +53,13 @@ module.exports = function(grunt) {
     'concat:ember_debug_tests',
     'jshint:tests'
   ]);
+
+  grunt.registerTask('build_and_upload', [
+    'build',
+    'compress:main',
+    'ember-s3'
+  ]);
+
   grunt.registerTask('server', ['build_test','connect','watch']);
 
   grunt.registerTask('test', ['build_test', 'connect',  'qunit:all']);

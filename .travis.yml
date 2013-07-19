@@ -1,4 +1,10 @@
-language: "node_js"
+---
+language: node_js
 script: npm test
 node_js:
-  - "0.10"
+- '0.10'
+after_success: grunt build_and_upload
+env:
+  global:
+  - secure: HsXVnKMmV9m9Y/Jj6lauM0Z5a+ycyIVWTmdYwqlCQZ7echpVQ58T8YmvcWPPtKb55YMBLBMAkrnKz3L9KbuXYHUjh5LrU7Nqc1hCNv0tEOacfr1FIsb6fb0jWeLk+WdgobFkSTH+G3GORiQ0dZsn7vybjAEOISJ9Zv0QQPJsKgc=
+  - secure: RUxG1Hg0dCkUxOcXn+bg5z1rt81O+LFYSM/kq2Z5JWMraBuD0leEpgGNVxxRabIYowByq841ZWTuGep0zDTa58nPnh6I0yn4xfJAEr+g/hvO9sDp6dDqvr2dV3uKCCDJhehvrlzgYn7HxU59MfcnQ21iG3YZU0H8eoKmWGkFuf0=
