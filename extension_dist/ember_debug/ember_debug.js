@@ -69,12 +69,17 @@ if (typeof define !== 'function' && typeof requireModule !== 'function') {
 
   function onReady(callback) {
     if (document.readyState === 'complete') {
-      onApplicationStart(callback);
+      setTimeout(completed);
     } else {
-      document.addEventListener( "DOMContentLoaded", function(){
-        document.removeEventListener( "DOMContentLoaded", arguments.callee, false );
-        onApplicationStart(callback);
-      }, false );
+      document.addEventListener( "DOMContentLoaded", completed, false);
+      // For some reason DOMContentLoaded doesn't always work
+      window.addEventListener( "load", completed, false );
+    }
+
+    function completed() {
+      document.removeEventListener( "DOMContentLoaded", completed, false );
+      window.removeEventListener( "load", completed, false );
+      onApplicationStart(callback);
     }
   }
 
