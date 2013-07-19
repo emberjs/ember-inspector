@@ -1,3 +1,4 @@
 node_modules/
 tmp/
 .DS_Store
+extension_dist/ember-extension.zip

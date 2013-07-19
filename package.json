@@ -28,6 +28,8 @@
     "grunt-contrib-qunit": "~0.2.1",
     "grunt-contrib-handlebars": "~0.5.8",
     "matchdep": "~0.1.2",
-    "glob": "~3.2.1"
+    "glob": "~3.2.1",
+    "grunt-contrib-compress": "~0.5.2",
+    "grunt-ember-s3": "~1.0.4"
   }
 }
