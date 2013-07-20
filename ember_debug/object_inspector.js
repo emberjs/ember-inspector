@@ -127,6 +127,8 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
 
     var objectId = this.retainObject(object);
 
+    this.bindProperties(objectId, mixinDetails);
+
     return { objectId: objectId, mixins: mixinDetails };
   },
 
@@ -175,6 +177,24 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     Ember.addObserver(object, property, handler);
     this.boundObservers[objectId] = this.boundObservers[objectId] || [];
     this.boundObservers[objectId].push({ property: property, handler: handler });
+  },
+
+  bindProperties: function(objectId, mixinDetails) {
+    var self = this;
+    mixinDetails.forEach(function(mixin, mixinIndex) {
+      mixin.properties.forEach(function(item) {
+        if (item.overriden) {
+          return true;
+        }
+        if (item.type !== 'type-descriptor') {
+          self.bindPropertyToDebugger({
+            objectId: objectId,
+            property: item.name,
+            mixinIndex: mixinIndex
+          });
+        }
+      });
+    });
   }
 });
 

@@ -16,7 +16,7 @@
       {{/if}}
       <span class='mixin__property-name' data-label="object-property-name">{{name}}</span><span class='mixin__property-value-separator'>: </span>
        <span {{bindAttr class="value.type :mixin__property-value"}} data-label="object-property-value">{{value.inspect}}</span>
-      <span class='mixin__property-overridden-by'>(Overridden by {{overridden}})</span>
+       <span class='mixin__property-overridden-by'>(Overridden by {{overridden}})</span>
     </li>
     {{else}}
     <li class="mixin__property">No Properties</li>
