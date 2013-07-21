@@ -277,6 +277,9 @@ define("object_inspector",
           this.sendMessage('updateProperty', value);
           this.bindPropertyToDebugger(message);
         },
+        saveProperty: function(message) {
+          this.saveProperty(message.objectId, message.mixinIndex, message.property, message.value);
+        },
         sendToConsole: function(message) {
           this.sendToConsole(message.objectId, message.property);
         },
@@ -290,11 +293,16 @@ define("object_inspector",
         }
       },
 
+      saveProperty: function(objectId, mixinIndex, prop, val) {
+        var object = this.sentObjects[objectId];
+        Ember.set(object, prop, val);
+      },
+
       sendToConsole: function(objectId, prop) {
         var object = this.sentObjects[objectId];
         var value = Ember.get(object, prop);
         window.$E = value;
-        console.log('Ember Inspector: ', value);
+        console.log('Ember Inspector ($E): ', value);
       },
 
       digIntoObject: function(objectId, property) {
@@ -407,7 +415,6 @@ define("object_inspector",
         };
       },
 
-
       bindPropertyToDebugger: function(message) {
         var objectId = message.objectId,
             property = message.property,
@@ -438,10 +445,10 @@ define("object_inspector",
         var self = this;
         mixinDetails.forEach(function(mixin, mixinIndex) {
           mixin.properties.forEach(function(item) {
-            if (item.overriden) {
+            if (item.overridden) {
               return true;
             }
-            if (item.type !== 'type-descriptor') {
+            if (item.value.type !== 'type-descriptor' && item.value.type !== 'type-function') {
               self.bindPropertyToDebugger({
                 objectId: objectId,
                 property: item.name,
@@ -471,6 +478,8 @@ define("object_inspector",
         if (!hash.hasOwnProperty(prop)) { continue; }
         if (prop.charAt(0) === '_') { continue; }
         if (isMandatorySetter(hash, prop)) { continue; }
+        // when mandatory setter is removed, an `undefined` value may be set
+        if (hash[prop] === undefined) { continue; }
 
         replaceProperty(properties, prop, hash[prop]);
       }
@@ -557,7 +566,7 @@ define("object_inspector",
     function calculateCachedCPs(object, mixinDetails) {
       mixinDetails.forEach(function(mixin) {
         mixin.properties.forEach(function(item) {
-          if (item.overriden) {
+          if (item.overridden) {
             return true;
           }
           if (item.value.computed) {
@@ -609,7 +618,9 @@ define("port",
 
       chromePort.addEventListener('message', function(event) {
         var message = event.data, value;
-        self.trigger(message.type, message);
+        Ember.run(function() {
+          self.trigger(message.type, message);
+        });
       });
 
       chromePort.start();
@@ -693,7 +704,7 @@ define("route_debug",
           routeClassName = classify(handler.replace('.', '_')) + 'Route';
           container = this.get('application.__container__');
           routeHandler = container.lookup('router:main').router.getHandler(handler);
-          controllerName = routeHandler.controllerName || routeHandler.routeName;
+          controllerName = routeHandler.get('controllerName') || routeHandler.get('routeName');
           controllerClassName = classify(controllerName.replace('.', '_')) + 'Controller';
           controller = container.lookup('controller:' + controllerName);
           templateName = handler.replace('.', '/');

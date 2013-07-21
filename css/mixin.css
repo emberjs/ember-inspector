@@ -81,7 +81,6 @@
   display: none;
 }
 
-
 .mixin__property-name {
   color: #909;
 }
@@ -91,6 +90,13 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.mixin__property-value-txt {
+  -webkit-flex: 1;
+  border: none;
+  box-shadow: none;
+  outline: none;
 }
 
 .mixin__calc-btn_calculated {
@@ -129,6 +135,7 @@
 }
 
 .mixin__property .type-descriptor {
+  cursor: pointer;
   color: #900;
 }
 

@@ -60,8 +60,10 @@ define("controllers/mixin_detail",
 
       isExpanded: Ember.computed.equal('model.name', 'Own Properties'),
 
+      objectId: Ember.computed.alias('controllers.mixinDetails.objectId'),
+
       digDeeper: function(property) {
-        var objectId = this.get('controllers.mixinDetails.objectId');
+        var objectId = this.get('objectId');
         this.get('port').send('objectInspector:digDeeper', {
           objectId: objectId,
           property: property.name
@@ -69,7 +71,7 @@ define("controllers/mixin_detail",
       },
 
       calculate: function(property) {
-        var objectId = this.get('controllers.mixinDetails.objectId');
+        var objectId = this.get('objectId');
         var mixinIndex = this.get('controllers.mixinDetails.mixins').indexOf(this.get('model'));
         this.get('port').send('objectInspector:calculate', {
           objectId: objectId,
@@ -79,10 +81,20 @@ define("controllers/mixin_detail",
       },
 
       sendToConsole: function(property) {
-        var objectId = this.get('controllers.mixinDetails.objectId');
+        var objectId = this.get('objectId');
         this.get('port').send('objectInspector:sendToConsole', {
           objectId: objectId,
           property: property.name
+        });
+      },
+
+      saveProperty: function(prop, val) {
+        var mixinIndex = this.get('controllers.mixinDetails.mixins').indexOf(this.get('model'));
+        this.get('port').send('objectInspector:saveProperty', {
+          objectId: this.get('objectId'),
+          property: prop,
+          value: val,
+          mixinIndex: mixinIndex
         });
       }
     });
@@ -104,9 +116,54 @@ define("controllers/mixin_property",
   function() {
     "use strict";
     var MixinPropertyController = Ember.ObjectController.extend({
+      isEdit: false,
+
+      // Bound to editing textbox
+      txtValue: null,
+
       isCalculated: function() {
         return this.get('value.type') !== 'type-descriptor';
-      }.property('value.type')
+      }.property('value.type'),
+
+      isEmberObject: Ember.computed.equal('value.type', 'type-ember-object'),
+
+      isComputedProperty: Ember.computed.alias('value.computed'),
+
+      valueClick: function() {
+        if (this.get('isEmberObject')) {
+          this.get('target').send('digDeeper', this.get('model'));
+          return;
+        }
+
+        if (this.get('isComputedProperty') && !this.get('isCalculated')) {
+          this.get('target').send('calculate', this.get('model'));
+          return;
+        }
+
+
+        var value = this.get('value.inspect');
+        var type = this.get('value.type');
+        if (type === 'type-string') {
+          value = '"' + value + '"';
+        }
+        this.set('txtValue', value);
+        this.set('isEdit', true);
+
+      },
+
+      saveProperty: function() {
+        var txtValue = this.get('txtValue');
+        var realValue;
+        try {
+          realValue = eval(txtValue);
+        } catch(e) {
+          realValue = txtValue;
+        }
+        this.get('target').send('saveProperty', this.get('name'), realValue);
+      },
+
+
+
     });
 
 
@@ -234,14 +291,15 @@ define("controllers/view_tree_item",
     return ViewTreeItemController;
   });
 define("main",
-  ["application","views/tree_node_controller","port"],
-  function(App, TreeNodeControllerView, Port) {
+  ["application","views/tree_node_controller","views/property_field","port"],
+  function(App, TreeNodeControllerView, PropertyFieldView, Port) {
     "use strict";
 
     var EmberExtension;
 
     EmberExtension = App.create();
     EmberExtension.TreeNodeControllerView = TreeNodeControllerView;
+    EmberExtension.PropertyFieldView = PropertyFieldView;
     EmberExtension.Port = Port;
 
 
@@ -777,7 +835,7 @@ function program6(depth0,data) {
   hashTypes = {'itemController': "STRING"};
   stack1 = helpers.each.call(depth0, "mixin.properties", {hash:{
     'itemController': ("mixinProperty")
-  },inverse:self.program(12, program12, data),fn:self.program(7, program7, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  },inverse:self.program(16, program16, data),fn:self.program(7, program7, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n  </ul>\n  ");
   return buffer;
@@ -789,7 +847,7 @@ function program7(depth0,data) {
   hashContexts = {'class': depth0};
   hashTypes = {'class': "STRING"};
   data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
-    'class': ("property.overridden:mixin__property_state_overridden :mixin__property")
+    'class': ("overridden:mixin__property_state_overridden :mixin__property")
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push(" data-label=\"object-property\">\n      ");
   hashTypes = {};
@@ -800,21 +858,12 @@ function program7(depth0,data) {
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</span><span class='mixin__property-value-separator'>: </span>\n      <span  ");
+  data.buffer.push("</span><span class='mixin__property-value-separator'>: </span>\n      ");
   hashTypes = {};
   hashContexts = {};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "digDeeper", "model", {hash:{},contexts:[depth0,depth0],types:["STRING","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(" ");
-  hashContexts = {'class': depth0};
-  hashTypes = {'class': "STRING"};
-  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
-    'class': ("value.type :mixin__property-value")
-  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(" data-label=\"object-property-value\">");
-  hashTypes = {};
-  hashContexts = {};
-  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.inspect", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</span>\n      <span class='mixin__property-overridden-by'>(Overridden by ");
+  stack1 = helpers.unless.call(depth0, "isEdit", {hash:{},inverse:self.program(14, program14, data),fn:self.program(12, program12, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n      <span class='mixin__property-overridden-by'>(Overridden by ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "overridden", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
@@ -851,6 +900,41 @@ function program10(depth0,data) {
   }
 
 function program12(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n        <span  ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "valueClick", "model", {hash:{},contexts:[depth0,depth0],types:["STRING","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': ("value.type :mixin__property-value")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" data-label=\"object-property-value\">");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.inspect", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</span>\n      ");
+  return buffer;
+  }
+
+function program14(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n        ");
+  hashContexts = {'classNames': depth0,'valueBinding': depth0};
+  hashTypes = {'classNames': "STRING",'valueBinding': "ID"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "EmberExtension.PropertyFieldView", {hash:{
+    'classNames': ("mixin__property-value-txt"),
+    'valueBinding': ("txtValue")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n      ");
+  return buffer;
+  }
+
+function program16(depth0,data) {
   
   
   data.buffer.push("\n    <li class=\"mixin__property\">No Properties</li>\n    ");
@@ -993,6 +1077,34 @@ define("views/mixin_stack",
 
 
     return MixinStackView;
+  });
+define("views/property_field",
+  [],
+  function() {
+    "use strict";
+    var PropertyFieldView = Ember.TextField.extend({
+      didInsertElement: function() {
+        this._super();
+        this.$().select();
+      },
+
+      insertNewline: function() {
+        this.get('controller').send('saveProperty');
+        this.set('controller.isEdit', false);
+      },
+
+      cancel: function() {
+        this.set('controller.isEdit', false);
+      },
+
+      focusOut: function() {
+        this.set('controller.isEdit', false);
+      }
+
+    });
+
+
+    return PropertyFieldView;
   });
 define("views/tree_node_controller",
   [],
