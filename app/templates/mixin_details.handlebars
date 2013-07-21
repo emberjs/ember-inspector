@@ -8,15 +8,16 @@
   {{#if mixin.isExpanded}}
   <ul class="mixin__properties">
     {{#each mixin.properties itemController="mixinProperty"}}
-    <li {{bindAttr class="property.overridden:mixin__property_state_overridden :mixin__property"}} {{action "digDeeper" model}} data-label="object-property">
+    <li {{bindAttr class="property.overridden:mixin__property_state_overridden :mixin__property"}} data-label="object-property">
       {{#if value.computed}}
-        <button {{bindAttr class=":mixin__calc-btn isCalculated:mixin_calc-btn_calculated"}} {{action "calculate" model bubbles=false}} data-label="calculate"><img src="/images/calculate.svg"></button>
+        <button {{bindAttr class=":mixin__calc-btn isCalculated:mixin__calc-btn_calculated"}} {{action "calculate" model bubbles=false}} data-label="calculate"><img src="/images/calculate.svg"></button>
       {{else}}
         <span class='pad'></span>
       {{/if}}
       <span class='mixin__property-name' data-label="object-property-name">{{name}}</span><span class='mixin__property-value-separator'>: </span>
-       <span {{bindAttr class="value.type :mixin__property-value"}} data-label="object-property-value">{{value.inspect}}</span>
-       <span class='mixin__property-overridden-by'>(Overridden by {{overridden}})</span>
+      <span  {{action "digDeeper" model}} {{bindAttr class="value.type :mixin__property-value"}} data-label="object-property-value">{{value.inspect}}</span>
+      <span class='mixin__property-overridden-by'>(Overridden by {{overridden}})</span>
+      <button class="mixin__send-btn" {{action sendToConsole model}}><img src="/images/send.png"></button>
     </li>
     {{else}}
     <li class="mixin__property">No Properties</li>

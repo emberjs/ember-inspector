@@ -19,6 +19,14 @@ var MixinDetailController = Ember.ObjectController.extend({
       property: property.name,
       mixinIndex: mixinIndex
     });
+  },
+
+  sendToConsole: function(property) {
+    var objectId = this.get('controllers.mixinDetails.objectId');
+    this.get('port').send('objectInspector:sendToConsole', {
+      objectId: objectId,
+      property: property.name
+    });
   }
 });
 

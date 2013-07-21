@@ -76,6 +76,14 @@ define("controllers/mixin_detail",
           property: property.name,
           mixinIndex: mixinIndex
         });
+      },
+
+      sendToConsole: function(property) {
+        var objectId = this.get('controllers.mixinDetails.objectId');
+        this.get('port').send('objectInspector:sendToConsole', {
+          objectId: objectId,
+          property: property.name
+        });
       }
     });
 
@@ -783,10 +791,6 @@ function program7(depth0,data) {
   data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
     'class': ("property.overridden:mixin__property_state_overridden :mixin__property")
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(" ");
-  hashTypes = {};
-  hashContexts = {};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "digDeeper", "model", {hash:{},contexts:[depth0,depth0],types:["STRING","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push(" data-label=\"object-property\">\n      ");
   hashTypes = {};
   hashContexts = {};
@@ -796,7 +800,11 @@ function program7(depth0,data) {
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</span><span class='mixin__property-value-separator'>: </span>\n       <span ");
+  data.buffer.push("</span><span class='mixin__property-value-separator'>: </span>\n      <span  ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "digDeeper", "model", {hash:{},contexts:[depth0,depth0],types:["STRING","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" ");
   hashContexts = {'class': depth0};
   hashTypes = {'class': "STRING"};
   data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
@@ -806,11 +814,15 @@ function program7(depth0,data) {
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.inspect", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</span>\n       <span class='mixin__property-overridden-by'>(Overridden by ");
+  data.buffer.push("</span>\n      <span class='mixin__property-overridden-by'>(Overridden by ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "overridden", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(")</span>\n    </li>\n    ");
+  data.buffer.push(")</span>\n      <button class=\"mixin__send-btn\" ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "sendToConsole", "model", {hash:{},contexts:[depth0,depth0],types:["ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("><img src=\"/images/send.png\"></button>\n    </li>\n    ");
   return buffer;
   }
 function program8(depth0,data) {
@@ -820,7 +832,7 @@ function program8(depth0,data) {
   hashContexts = {'class': depth0};
   hashTypes = {'class': "STRING"};
   data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
-    'class': (":mixin__calc-btn isCalculated:mixin_calc-btn_calculated")
+    'class': (":mixin__calc-btn isCalculated:mixin__calc-btn_calculated")
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push(" ");
   hashContexts = {'bubbles': depth0};

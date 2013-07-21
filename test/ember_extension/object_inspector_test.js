@@ -139,6 +139,7 @@ test("Digging deeper into objects", function() {
   })
   .then(function() {
     var $objectProperty = findByLabel('object-property').filter(':first');
+    $objectProperty = findByLabel('object-property-value', $objectProperty);
     return click($objectProperty);
   })
   .then(function() {

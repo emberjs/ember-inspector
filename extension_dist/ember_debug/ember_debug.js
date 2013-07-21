@@ -277,6 +277,9 @@ define("object_inspector",
           this.sendMessage('updateProperty', value);
           this.bindPropertyToDebugger(message);
         },
+        sendToConsole: function(message) {
+          this.sendToConsole(message.objectId, message.property);
+        },
         inspectRoute: function(message) {
           var container = this.get('application.__container__');
           this.sendObject(container.lookup('router:main').router.getHandler(message.name));
@@ -285,6 +288,13 @@ define("object_inspector",
           var container = this.get('application.__container__');
           this.sendObject(container.lookup('controller:' + message.name));
         }
+      },
+
+      sendToConsole: function(objectId, prop) {
+        var object = this.sentObjects[objectId];
+        var value = Ember.get(object, prop);
+        window.$E = value;
+        console.log('Ember Inspector: ', value);
       },
 
       digIntoObject: function(objectId, property) {
