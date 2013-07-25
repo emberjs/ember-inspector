@@ -12,14 +12,15 @@
 }
 
 .app__nav-holder {
-  width: 90px;
+  width: 180px;
+  background: #d6dde5;
 }
 
 .app__main {
   -webkit-flex: 1;
   height: 100%;
   overflow: auto;
-  border-left: solid 1px #ccc;
+  border-left: solid 1px #828282;
 }
 
 .app__right-col {

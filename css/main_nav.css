@@ -16,13 +16,36 @@
 }
 
 .main-nav__item > a {
+  position: relative;
   text-decoration: none;
   display: block;
-  padding: 10px 5px;
-  color: #595455;
-  border-left: solid 5px transparent;
+  height: 33px;
+  padding-left: 40px;
+  color: #333;
+  font-size: 12px;
+  line-height: 33px;
 }
 
 .main-nav__item > a.active {
-  border-left-color: #ccc;
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0,0,0, 0.35);
+  background: linear-gradient(to bottom, #5a91d4, #1654aa);
+  box-shadow: inset 0 1px 0 #4480c8;
+}
+
+.main-nav__item > a polygon,
+.main-nav__item > a path {
+  fill: #222;
+}
+
+.main-nav__item > a.active polygon,
+.main-nav__item > a.active path {
+  fill: #fff;
+}
+
+.main-nav__item svg {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  margin-top: -10px;
 }
