@@ -12,14 +12,15 @@
 }
 
 .app__nav-holder {
-  width: 90px;
+  width: 180px;
+  background: #d6dde5;
 }
 
 .app__main {
   -webkit-flex: 1;
   height: 100%;
   overflow: auto;
-  border-left: solid 1px #ccc;
+  border-left: solid 1px #828282;
 }
 
 .app__right-col {
@@ -40,7 +41,7 @@ html, body {
 }
 
 body {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-family: "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333;
 }
 
@@ -71,15 +72,38 @@ a {
 }
 
 .main-nav__item > a {
+  position: relative;
   text-decoration: none;
   display: block;
-  padding: 10px 5px;
-  color: #595455;
-  border-left: solid 5px transparent;
+  height: 33px;
+  padding-left: 40px;
+  color: #333;
+  font-size: 12px;
+  line-height: 33px;
 }
 
 .main-nav__item > a.active {
-  border-left-color: #ccc;
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0,0,0, 0.35);
+  background: linear-gradient(to bottom, #5a91d4, #1654aa);
+  box-shadow: inset 0 1px 0 #4480c8;
+}
+
+.main-nav__item > a polygon,
+.main-nav__item > a path {
+  fill: #222;
+}
+
+.main-nav__item > a.active polygon,
+.main-nav__item > a.active path {
+  fill: #fff;
+}
+
+.main-nav__item svg {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  margin-top: -10px;
 }
 
 /**
@@ -240,7 +264,6 @@ a {
 }
 
 .object-inspector__back {
-  font-family: 'Lucida Grande';
   font-weight: normal;
   border: none;
   background: none;
@@ -279,7 +302,7 @@ a {
 */
 
 .table-tree {
-  font-size: 13px;
+  font-size: 11px;
 }
 
 .table-tree table {
@@ -290,17 +313,27 @@ a {
   text-align: left;
 }
 
-.table-tree th {
-  font-weight: normal;
+.table-tree th,
+.table-tree td {
+  border-right: 1px solid #b3b3b3;
 }
 
-.table-tree th, .table-tree td {
-  padding: 5px 0px 5px 5px;
+.table-tree th {
+  height: 28px;
+  border-bottom: 1px solid #a3a3a3;
+  padding-left: 5px;
+  font-weight: normal;
+  background: linear-gradient(to bottom, #ebebeb, #dadada);
 }
 
 .table-tree td {
   white-space: nowrap;
   opacity: 0.5;
+  padding: 8px 0px 8px 5px;
+}
+
+.table-tree tr:nth-of-type(2n) td {
+  background: #f3f3f3;
 }
 
 .table-tree td.table-tree__main-cell {
@@ -320,14 +353,9 @@ a {
   opacity: 1;
 }
 
-
 .table-tree tbody tr:hover .table-tree__clickable {
   color: #939;
   cursor: pointer;
-}
-
-.table-tree__minor {
-  font-size: 12px;
 }
 
 /**

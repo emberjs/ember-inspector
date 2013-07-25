@@ -931,7 +931,7 @@ define("view_debug",
         var output = "";
 
         if (!preview) {
-          output = "<span class='close' data-label='layer-close'>x</span>";
+          output = "<span class='close' data-label='layer-close'>&times;</span>";
         }
 
         if (templateName) {
@@ -957,14 +957,13 @@ define("view_debug",
             margin: '5px',
             background: '#666',
             color: '#eee',
-            fontFamily: 'Menlo',
+            fontFamily: 'helvetica, sans-serif',
             fontSize: '12px',
-            width: 13,
-            height: 13,
-            lineHeight: '12px',
-            borderRadius: 12,
+            width: 16,
+            height: 16,
+            lineHeight: '14px',
+            borderRadius: 16,
             textAlign: 'center',
-            fontWeight: 'bold',
             cursor: 'pointer'
           }).on('click', function() {
             self.hideLayer();

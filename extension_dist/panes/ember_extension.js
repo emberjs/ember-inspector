@@ -633,19 +633,19 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 function program1(depth0,data) {
   
   var buffer = '', stack1, stack2, hashTypes, hashContexts, options;
-  data.buffer.push("\n\n  <div class=\"app__nav-holder\">\n    <nav class=\"main-nav\">\n      <ul class=\"main-nav__list\">\n        <li class=\"main-nav__item\">");
+  data.buffer.push("\n\n  <div class=\"app__nav-holder\">\n    <nav class=\"main-nav\">\n      <ul class=\"main-nav__list\">\n        <li class=\"main-nav__item\">\n          ");
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
   stack2 = ((stack1 = helpers.linkTo),stack1 ? stack1.call(depth0, "view_tree", options) : helperMissing.call(depth0, "linkTo", "view_tree", options));
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
-  data.buffer.push("</li>\n        <li class=\"main-nav__item\">");
+  data.buffer.push("\n        </li>\n        <li class=\"main-nav__item\">\n          ");
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
   stack2 = ((stack1 = helpers.linkTo),stack1 ? stack1.call(depth0, "route_tree", options) : helperMissing.call(depth0, "linkTo", "route_tree", options));
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
-  data.buffer.push("</li>\n      </ul>\n    </nav>\n  </div>\n\n\n  <div class=\"app__main\">\n    ");
+  data.buffer.push("\n        </li>\n      </ul>\n    </nav>\n  </div>\n\n\n  <div class=\"app__main\">\n    ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "outlet", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
@@ -660,13 +660,13 @@ function program1(depth0,data) {
 function program2(depth0,data) {
   
   
-  data.buffer.push("View Tree");
+  data.buffer.push("\n            View Tree\n            <svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" width=\"19px\" height=\"19px\" viewBox=\"0 0 19 19\" enable-background=\"new 0 0 19 19\" xml:space=\"preserve\">\n              <path fill=\"#454545\" d=\"M0,0v19h19V0H0z M6.109,17.445h-4.57V5.297h4.57V17.445z M17.461,17.445H6.83V5.297h10.63v12.148H17.461z M17.461,4.543H1.539V1.506h15.922V4.543z\"/>\n            </svg>\n          ");
   }
 
 function program4(depth0,data) {
   
   
-  data.buffer.push("Routes");
+  data.buffer.push("\n            Routes\n            <svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" width=\"19px\" height=\"19px\" viewBox=\"0 0 19 19\" enable-background=\"new 0 0 19 19\" xml:space=\"preserve\">\n              <g>\n                <polygon fill=\"#454545\" points=\"0.591,17.012 2.36,17.012 6.841,2.086 5.07,2.086   \"/>\n                <path fill=\"#454545\" d=\"M18.117,8.495l0.292-1.494h-2.242l0.874-3.507h-1.544l-0.874,3.507h-1.88l0.874-3.507h-1.536l-0.883,3.507 H8.668L8.375,8.495h2.449l-0.616,2.474H7.875l-0.292,1.495h2.252l-0.883,3.515h1.544l0.874-3.515h1.888l-0.883,3.515h1.544 l0.874-3.515h2.53l0.303-1.495h-2.459l0.625-2.474H18.117z M14.249,8.495l-0.617,2.474h-1.888l0.625-2.474H14.249z\"/>\n              </g>\n            </svg>\n          ");
   }
 
 function program6(depth0,data) {
