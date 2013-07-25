@@ -33,6 +33,7 @@
   box-shadow: inset 0 1px 0 #4480c8;
 }
 
+
 .main-nav__item > a polygon,
 .main-nav__item > a path {
   fill: #222;
@@ -48,4 +49,10 @@
   top: 50%;
   left: 14px;
   margin-top: -10px;
+}
+
+/* Modifier: state = inactive */
+.main-nav_state_inactive .main-nav__item > a.active {
+  background: linear-gradient(to bottom, #b3b3b3, #8a8a8a);
+  box-shadow: inset 0 1px 0 #979797;
 }

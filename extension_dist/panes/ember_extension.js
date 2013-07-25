@@ -21,6 +21,9 @@ define("controllers/application",
 
       emberApplication: false,
 
+      // Indicates that the extension window is focused,
+      active: true,
+
       pushMixinDetails: function(name, property, objectId, details) {
         details = { name: name, property: property, objectId: objectId, mixins: details };
         this.get('controllers.mixinStack').pushObject(details);
@@ -628,12 +631,18 @@ function program4(depth0,data) {
 this["Ember"]["TEMPLATES"]["application"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [3,'>= 1.0.0-rc.4'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
-  var buffer = '', stack1, hashTypes, hashContexts, self=this, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
   
-  var buffer = '', stack1, stack2, hashTypes, hashContexts, options;
-  data.buffer.push("\n\n  <div class=\"app__nav-holder\">\n    <nav class=\"main-nav\">\n      <ul class=\"main-nav__list\">\n        <li class=\"main-nav__item\">\n          ");
+  var buffer = '', stack1, stack2, hashContexts, hashTypes, options;
+  data.buffer.push("\n\n  <div class=\"app__nav-holder\">\n    <nav ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': (":main-nav view.inactive:main-nav_state_inactive")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n      <ul class=\"main-nav__list\">\n        <li class=\"main-nav__item\">\n          ");
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
@@ -940,7 +949,25 @@ define("views/application",
   function() {
     "use strict";
     var ApplicationView = Ember.View.extend({
-      classNames: ['app']
+      classNames: ['app'],
+
+      classNameBindings: ['inactive:app_state_inactive'],
+
+      inactive: Ember.computed.not('controller.active'),
+
+      attributeBindings: ['tabindex'],
+      tabindex: 1,
+
+      focusIn: function() {
+        if (!this.get('controller.active')) {
+          this.set('controller.active', true);
+        }
+      },
+      focusOut: function() {
+        if (this.get('controller.active')) {
+          this.set('controller.active', false);
+        }
+      }
     });
 
 

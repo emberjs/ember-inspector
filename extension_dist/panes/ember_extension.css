@@ -16,6 +16,7 @@
   background: #d6dde5;
 }
 
+
 .app__main {
   -webkit-flex: 1;
   height: 100%;
@@ -27,6 +28,11 @@
   width: 500px;
   height: 100%;
   overflow: auto;
+}
+
+/* Modifier: state = inactive */
+.app_state_inactive .app__nav-holder {
+  background: #e8e8e8;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -89,6 +95,7 @@ a {
   box-shadow: inset 0 1px 0 #4480c8;
 }
 
+
 .main-nav__item > a polygon,
 .main-nav__item > a path {
   fill: #222;
@@ -104,6 +111,12 @@ a {
   top: 50%;
   left: 14px;
   margin-top: -10px;
+}
+
+/* Modifier: state = inactive */
+.main-nav_state_inactive .main-nav__item > a.active {
+  background: linear-gradient(to bottom, #b3b3b3, #8a8a8a);
+  box-shadow: inset 0 1px 0 #979797;
 }
 
 /**

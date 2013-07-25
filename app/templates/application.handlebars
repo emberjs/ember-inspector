@@ -1,7 +1,7 @@
 {{#if emberApplication}}
 
   <div class="app__nav-holder">
-    <nav class="main-nav">
+    <nav {{bindAttr class=":main-nav view.inactive:main-nav_state_inactive"}}>
       <ul class="main-nav__list">
         <li class="main-nav__item">
           {{#linkTo "view_tree"}}

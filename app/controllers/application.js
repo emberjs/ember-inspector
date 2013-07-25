@@ -3,6 +3,9 @@ var ApplicationController = Ember.Controller.extend({
 
   emberApplication: false,
 
+  // Indicates that the extension window is focused,
+  active: true,
+
   pushMixinDetails: function(name, property, objectId, details) {
     details = { name: name, property: property, objectId: objectId, mixins: details };
     this.get('controllers.mixinStack').pushObject(details);
