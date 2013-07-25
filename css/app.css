@@ -16,6 +16,10 @@
   background: #d6dde5;
 }
 
+body.inactive .app__nav-holder {
+  background: #e8e8e8;
+}
+
 .app__main {
   -webkit-flex: 1;
   height: 100%;
