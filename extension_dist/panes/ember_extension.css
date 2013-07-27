@@ -58,7 +58,7 @@
 }
 
 
-@media only all and (max-width: 1600px) {
+@media only all and (max-width: 1500px) {
   .app__right-col {
     position: absolute;
     right: 0;
@@ -88,10 +88,12 @@ html, body {
   height: 100%;
 }
 
-body {
+body, input {
   font-family: "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333;
 }
+
+
 
 body, div, nav {
   margin: 0;
@@ -257,8 +259,10 @@ a {
 
 .mixin__property-value-txt {
   -webkit-flex: 1;
-  border: none;
-  box-shadow: none;
+  border: solid 1px #ccc;
+  /*border: none;*/
+  box-shadow: 2px 2px 2px #888;
+  /*box-shadow: none;*/
   outline: none;
 }
 

@@ -20,7 +20,6 @@ module.exports = function(grunt) {
 
   grunt.initConfig(config);
 
-
   require('matchdep')
   .filterDev('grunt-*')
   .filter(function(name){ return name !== 'grunt-cli'; })

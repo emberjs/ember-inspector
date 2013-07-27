@@ -94,8 +94,10 @@
 
 .mixin__property-value-txt {
   -webkit-flex: 1;
-  border: none;
-  box-shadow: none;
+  border: solid 1px #ccc;
+  /*border: none;*/
+  box-shadow: 2px 2px 2px #888;
+  /*box-shadow: none;*/
   outline: none;
 }
 

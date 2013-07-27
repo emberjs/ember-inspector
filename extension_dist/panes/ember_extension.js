@@ -146,7 +146,7 @@ define("controllers/mixin_property",
           return;
         }
 
-        if (this.get('isFunction') || this.get('isArray')) {
+        if (this.get('isFunction') || this.get('isArray') || this.get('overridden')) {
           return;
         }
 
@@ -164,13 +164,12 @@ define("controllers/mixin_property",
         var txtValue = this.get('txtValue');
         var realValue;
         try {
-          realValue = eval(txtValue);
+          realValue = eval('(' + txtValue + ')');
         } catch(e) {
           realValue = txtValue;
         }
         this.get('target').send('saveProperty', this.get('name'), realValue);
-      },
-
+      }
 
 
     });
