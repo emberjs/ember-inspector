@@ -33,12 +33,23 @@ var ApplicationRoute = Ember.Route.extend({
     } else {
       controller.activateMixinDetails(name, details, objectId);
     }
+
+    this.send('expandInspector');
   },
 
   updateProperty: function(options) {
     var detail = this.controllerFor('mixinDetails').get('mixins').objectAt(options.mixinIndex);
     var property = Ember.get(detail, 'properties').findProperty('name', options.property);
     Ember.set(property, 'value', options.value);
+  },
+
+  events: {
+    expandInspector: function() {
+      this.set("controller.inspectorExpanded", true);
+    },
+    toggleInspector: function() {
+      this.toggleProperty("controller.inspectorExpanded");
+    }
   }
 
 });

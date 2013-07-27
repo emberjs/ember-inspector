@@ -21,7 +21,7 @@
         {{view EmberExtension.PropertyFieldView classNames="mixin__property-value-txt" valueBinding=txtValue}}
       {{/unless}}
       <span class='mixin__property-overridden-by'>(Overridden by {{overridden}})</span>
-      <button class="mixin__send-btn" {{action sendToConsole model}}><img src="/images/send.png"></button>
+      <button class="mixin__send-btn" {{action sendToConsole model}}><img src="/images/send.png" title="Send to console"></button>
     </li>
     {{else}}
     <li class="mixin__property">No Properties</li>

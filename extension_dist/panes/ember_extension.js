@@ -24,6 +24,8 @@ define("controllers/application",
       // Indicates that the extension window is focused,
       active: true,
 
+      inspectorExpanded: false,
+
       pushMixinDetails: function(name, property, objectId, details) {
         details = { name: name, property: property, objectId: objectId, mixins: details };
         this.get('controllers.mixinStack').pushObject(details);
@@ -129,6 +131,10 @@ define("controllers/mixin_property",
 
       isComputedProperty: Ember.computed.alias('value.computed'),
 
+      isFunction: Ember.computed.equal('value.type', 'type-function'),
+
+      isArray: Ember.computed.equal('value.type', 'type-array'),
+
       valueClick: function() {
         if (this.get('isEmberObject')) {
           this.get('target').send('digDeeper', this.get('model'));
@@ -140,6 +146,9 @@ define("controllers/mixin_property",
           return;
         }
 
+        if (this.get('isFunction') || this.get('isArray')) {
+          return;
+        }
 
         var value = this.get('value.inspect');
         var type = this.get('value.type');
@@ -456,12 +465,23 @@ define("routes/application",
         } else {
           controller.activateMixinDetails(name, details, objectId);
         }
+
+        this.send('expandInspector');
       },
 
       updateProperty: function(options) {
         var detail = this.controllerFor('mixinDetails').get('mixins').objectAt(options.mixinIndex);
         var property = Ember.get(detail, 'properties').findProperty('name', options.property);
         Ember.set(property, 'value', options.value);
+      },
+
+      events: {
+        expandInspector: function() {
+          this.set("controller.inspectorExpanded", true);
+        },
+        toggleInspector: function() {
+          this.toggleProperty("controller.inspectorExpanded");
+        }
       }
 
     });
@@ -737,12 +757,22 @@ function program1(depth0,data) {
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "outlet", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("\n  </div>\n\n  <div class=\"app__right-col\">\n    ");
+  data.buffer.push("\n  </div>\n\n  ");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers.unless.call(depth0, "inspectorExpanded", {hash:{},inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n\n  <div class=\"app__right-col\">\n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "inspectorExpanded", {hash:{},inverse:self.noop,fn:self.program(8, program8, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n    <div class=\"app__inspector-container\">\n      ");
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
   data.buffer.push(escapeExpression(((stack1 = helpers.render),stack1 ? stack1.call(depth0, "mixinStack", options) : helperMissing.call(depth0, "render", "mixinStack", options))));
-  data.buffer.push("\n  </div>\n\n");
+  data.buffer.push("\n    </div>\n  </div>\n\n\n");
   return buffer;
   }
 function program2(depth0,data) {
@@ -759,13 +789,35 @@ function program4(depth0,data) {
 
 function program6(depth0,data) {
   
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n    <div class=\"app__toggle-inspector-btn\" ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "toggleInspector", {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">&laquo;</div>\n  ");
+  return buffer;
+  }
+
+function program8(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n    <div class=\"app__toggle-inspector-btn\" ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "toggleInspector", {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">&raquo;</div>\n    ");
+  return buffer;
+  }
+
+function program10(depth0,data) {
+  
   
   data.buffer.push("\n  No Ember Application Detected.\n");
   }
 
   hashTypes = {};
   hashContexts = {};
-  stack1 = helpers['if'].call(depth0, "emberApplication", {hash:{},inverse:self.program(6, program6, data),fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  stack1 = helpers['if'].call(depth0, "emberApplication", {hash:{},inverse:self.program(10, program10, data),fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n");
   return buffer;
@@ -871,7 +923,7 @@ function program7(depth0,data) {
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "sendToConsole", "model", {hash:{},contexts:[depth0,depth0],types:["ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("><img src=\"/images/send.png\"></button>\n    </li>\n    ");
+  data.buffer.push("><img src=\"/images/send.png\" title=\"Send to console\"></button>\n    </li>\n    ");
   return buffer;
   }
 function program8(depth0,data) {
@@ -1045,7 +1097,7 @@ define("views/application",
     var ApplicationView = Ember.View.extend({
       classNames: ['app'],
 
-      classNameBindings: ['inactive:app_state_inactive'],
+      classNameBindings: ['inactive:app_state_inactive', 'controller.inspectorExpanded:app_inspector_expanded'],
 
       inactive: Ember.computed.not('controller.active'),
 

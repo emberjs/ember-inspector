@@ -275,6 +275,7 @@ define("object_inspector",
           var value;
           value = this.valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
           this.sendMessage('updateProperty', value);
+          message.computed = true;
           this.bindPropertyToDebugger(message);
         },
         saveProperty: function(message) {
@@ -419,6 +420,7 @@ define("object_inspector",
         var objectId = message.objectId,
             property = message.property,
             mixinIndex = message.mixinIndex,
+            computed = message.computed,
             self = this;
 
         var object = this.sentObjects[objectId];
@@ -426,7 +428,7 @@ define("object_inspector",
         function handler() {
           var value = Ember.get(object, property);
           value = inspectValue(value);
-          value.computed = true;
+          value.computed = computed;
 
           self.sendMessage('updateProperty', {
             objectId: objectId,
@@ -449,10 +451,12 @@ define("object_inspector",
               return true;
             }
             if (item.value.type !== 'type-descriptor' && item.value.type !== 'type-function') {
+              var computed = !!item.value.computed;
               self.bindPropertyToDebugger({
                 objectId: objectId,
                 property: item.name,
-                mixinIndex: mixinIndex
+                mixinIndex: mixinIndex,
+                computed: computed
               });
             }
           });

@@ -20,7 +20,7 @@
   background-color: #ccc;
 }
 
-.mixin_props_yes .mixin__name {
+.mixin__name {
     cursor: default;
 }
 

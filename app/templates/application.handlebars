@@ -31,9 +31,19 @@
     {{outlet}}
   </div>
 
+  {{#unless inspectorExpanded}}
+    <div class="app__toggle-inspector-btn" {{action "toggleInspector"}}>&laquo;</div>
+  {{/unless}}
+
   <div class="app__right-col">
-    {{render "mixinStack"}}
+    {{#if inspectorExpanded}}
+    <div class="app__toggle-inspector-btn" {{action "toggleInspector"}}>&raquo;</div>
+    {{/if}}
+    <div class="app__inspector-container">
+      {{render "mixinStack"}}
+    </div>
   </div>
+
 
 {{else}}
   No Ember Application Detected.

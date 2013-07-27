@@ -12,6 +12,10 @@ var MixinPropertyController = Ember.ObjectController.extend({
 
   isComputedProperty: Ember.computed.alias('value.computed'),
 
+  isFunction: Ember.computed.equal('value.type', 'type-function'),
+
+  isArray: Ember.computed.equal('value.type', 'type-array'),
+
   valueClick: function() {
     if (this.get('isEmberObject')) {
       this.get('target').send('digDeeper', this.get('model'));
@@ -23,6 +27,9 @@ var MixinPropertyController = Ember.ObjectController.extend({
       return;
     }
 
+    if (this.get('isFunction') || this.get('isArray')) {
+      return;
+    }
 
     var value = this.get('value.inspect');
     var type = this.get('value.type');
