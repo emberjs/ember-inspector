@@ -57,12 +57,18 @@ function objectToInspect() {
   });
 }
 
+var name, message;
 
 module("Object Inspector", {
   setup: function() {
     EmberExtension.reset();
     port = EmberExtension.__container__.lookup('port:main');
-
+    port.reopen({
+      send: function(n, m) {
+        name = n;
+        message = m;
+      }
+    });
 
   }
 });
@@ -120,13 +126,7 @@ test("Object details", function() {
 });
 
 test("Digging deeper into objects", function() {
-  var name = null, message = null, $secondDetail;
-  port.reopen({
-    send: function(n, m) {
-      name = n;
-      message = m;
-    }
-  });
+  var $secondDetail;
 
   visit('/')
   .then(function() {
@@ -185,14 +185,6 @@ test("Digging deeper into objects", function() {
 });
 
 test("Computed properties", function() {
-  var name = null, message = null;
-  port.reopen({
-    send: function(n, m) {
-      name = n;
-      message = m;
-    }
-  });
-
   visit('/')
   .then(function() {
     var obj = {
@@ -231,6 +223,104 @@ test("Computed properties", function() {
   })
   .then(function() {
     equal(findByLabel('object-property-value').text(), 'Computed value');
+  });
+
+});
+
+test("Properties are bound to the application properties", function() {
+  visit('/')
+  .then(function() {
+    var obj = {
+      name: 'My Object',
+      objectId: 'object-id',
+      details: [{
+        name: 'Own Properties',
+        properties: [{
+          name: 'boundProp',
+          value: {
+            inspect: 'Teddy',
+            type: 'type-string',
+            computed: false
+          }
+        }]
+
+      }]
+    };
+    port.trigger('objectInspector:updateObject', obj);
+    return wait();
+  })
+  .then(function() {
+    equal(findByLabel('object-property-value').first().text(), 'Teddy');
+    port.trigger('objectInspector:updateProperty', {
+      objectId: 'object-id',
+      mixinIndex: 0,
+      property: 'boundProp',
+      value: {
+        inspect: 'Alex',
+        type: 'type-string',
+        computed: false
+      }
+    });
+    return wait();
+  })
+  .clickByLabel('object-property-value')
+  .then(function() {
+    var txtField = findByLabel('object-property-value-txt');
+    equal(txtField.val(), '"Alex"');
+    return fillIn(txtField, '"Joey"');
+  })
+  .then(function() {
+    var e = Ember.$.Event('keyup', { keyCode: 13 });
+    findByLabel('object-property-value-txt').trigger(e);
+    equal(name, 'objectInspector:saveProperty');
+    equal(message.property, 'boundProp');
+    equal(message.value, 'Joey');
+    equal(message.mixinIndex, 0);
+
+    port.trigger('objectInspector:updateProperty', {
+      objectId: 'object-id',
+      mixinIndex: 0,
+      property: 'boundProp',
+      value: {
+        inspect: 'Joey',
+        type: 'type-string',
+        computed: false
+      }
+    });
+    return wait();
+  })
+  .then(function() {
+    equal(findByLabel('object-property-value').text(), 'Joey');
+  });
+});
+
+test("Send to console", function() {
+  visit('/')
+  .then(function() {
+    var obj = {
+      name: 'My Object',
+      objectId: 'object-id',
+      details: [{
+        name: 'Own Properties',
+        properties: [{
+          name: 'myProp',
+          value: {
+            inspect: 'Teddy',
+            type: 'type-string',
+            computed: false
+          }
+        }]
+
+      }]
+    };
+    port.trigger('objectInspector:updateObject', obj);
+    return wait();
+  })
+  .clickByLabel('send-to-console-btn')
+  .then(function() {
+    equal(name, 'objectInspector:sendToConsole');
+    equal(message.objectId, 'object-id');
+    equal(message.property, 'myProp');
   });
 
 });

@@ -9,6 +9,7 @@
   display: -webkit-flex;
   -webkit-flex-direction: row;
   height: 100%;
+  position: relative;
 }
 
 .app__nav-holder {

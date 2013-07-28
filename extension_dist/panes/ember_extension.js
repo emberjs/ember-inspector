@@ -922,7 +922,7 @@ function program7(depth0,data) {
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "sendToConsole", "model", {hash:{},contexts:[depth0,depth0],types:["ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("><img src=\"/images/send.png\" title=\"Send to console\"></button>\n    </li>\n    ");
+  data.buffer.push(" data-label=\"send-to-console-btn\"><img src=\"/images/send.png\" title=\"Send to console\"></button>\n    </li>\n    ");
   return buffer;
   }
 function program8(depth0,data) {
@@ -975,11 +975,12 @@ function program14(depth0,data) {
   
   var buffer = '', hashContexts, hashTypes;
   data.buffer.push("\n        ");
-  hashContexts = {'classNames': depth0,'valueBinding': depth0};
-  hashTypes = {'classNames': "STRING",'valueBinding': "ID"};
+  hashContexts = {'classNames': depth0,'valueBinding': depth0,'label': depth0};
+  hashTypes = {'classNames': "STRING",'valueBinding': "ID",'label': "STRING"};
   data.buffer.push(escapeExpression(helpers.view.call(depth0, "EmberExtension.PropertyFieldView", {hash:{
     'classNames': ("mixin__property-value-txt"),
-    'valueBinding': ("txtValue")
+    'valueBinding': ("txtValue"),
+    'label': ("object-property-value-txt")
   },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push("\n      ");
   return buffer;
@@ -1134,10 +1135,13 @@ define("views/property_field",
   function() {
     "use strict";
     var PropertyFieldView = Ember.TextField.extend({
+      attributeBindings: ['label:data-label'],
+
       didInsertElement: function() {
         this._super();
         this.$().select();
       },
+
 
       insertNewline: function() {
         this.get('controller').send('saveProperty');

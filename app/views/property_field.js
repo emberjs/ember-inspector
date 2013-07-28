@@ -1,8 +1,11 @@
 var PropertyFieldView = Ember.TextField.extend({
+  attributeBindings: ['label:data-label'],
+
   didInsertElement: function() {
     this._super();
     this.$().select();
   },
+
 
   insertNewline: function() {
     this.get('controller').send('saveProperty');
