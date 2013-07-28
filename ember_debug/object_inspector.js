@@ -30,7 +30,14 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
       var value;
       value = this.valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
       this.sendMessage('updateProperty', value);
+      message.computed = true;
       this.bindPropertyToDebugger(message);
+    },
+    saveProperty: function(message) {
+      this.saveProperty(message.objectId, message.mixinIndex, message.property, message.value);
+    },
+    sendToConsole: function(message) {
+      this.sendToConsole(message.objectId, message.property);
     },
     inspectRoute: function(message) {
       var container = this.get('application.__container__');
@@ -40,6 +47,18 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
       var container = this.get('application.__container__');
       this.sendObject(container.lookup('controller:' + message.name));
     }
+  },
+
+  saveProperty: function(objectId, mixinIndex, prop, val) {
+    var object = this.sentObjects[objectId];
+    Ember.set(object, prop, val);
+  },
+
+  sendToConsole: function(objectId, prop) {
+    var object = this.sentObjects[objectId];
+    var value = Ember.get(object, prop);
+    window.$E = value;
+    console.log('Ember Inspector ($E): ', value);
   },
 
   digIntoObject: function(objectId, property) {
@@ -110,7 +129,8 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
 
   mixinsForObject: function(object) {
     var mixins = Ember.Mixin.mixins(object),
-        mixinDetails = [];
+        mixinDetails = [],
+        self = this;
 
     var ownProps = propertiesForMixin({ mixins: [{ properties: object }] });
     mixinDetails.push({ name: "Own Properties", properties: ownProps });
@@ -122,8 +142,13 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     });
 
     applyMixinOverrides(mixinDetails);
+    calculateCachedCPs(object, mixinDetails);
 
-    return { objectId: this.retainObject(object), mixins: mixinDetails };
+    var objectId = this.retainObject(object);
+
+    this.bindProperties(objectId, mixinDetails);
+
+    return { objectId: objectId, mixins: mixinDetails };
   },
 
   valueForObjectProperty: function(objectId, property, mixinIndex) {
@@ -135,10 +160,13 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
       value = object.get(property);
     }
 
+    value = inspectValue(value);
+    value.computed = true;
+
     return {
       objectId: objectId,
       property: property,
-      value: inspect(value),
+      value: value,
       mixinIndex: mixinIndex
     };
   },
@@ -147,17 +175,20 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     var objectId = message.objectId,
         property = message.property,
         mixinIndex = message.mixinIndex,
+        computed = message.computed,
         self = this;
 
     var object = this.sentObjects[objectId];
 
     function handler() {
       var value = Ember.get(object, property);
+      value = inspectValue(value);
+      value.computed = computed;
 
       self.sendMessage('updateProperty', {
         objectId: objectId,
         property: property,
-        value: inspect(value),
+        value: value,
         mixinIndex: mixinIndex
       });
     }
@@ -165,6 +196,26 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     Ember.addObserver(object, property, handler);
     this.boundObservers[objectId] = this.boundObservers[objectId] || [];
     this.boundObservers[objectId].push({ property: property, handler: handler });
+  },
+
+  bindProperties: function(objectId, mixinDetails) {
+    var self = this;
+    mixinDetails.forEach(function(mixin, mixinIndex) {
+      mixin.properties.forEach(function(item) {
+        if (item.overridden) {
+          return true;
+        }
+        if (item.value.type !== 'type-descriptor' && item.value.type !== 'type-function') {
+          var computed = !!item.value.computed;
+          self.bindPropertyToDebugger({
+            objectId: objectId,
+            property: item.name,
+            mixinIndex: mixinIndex,
+            computed: computed
+          });
+        }
+      });
+    });
   }
 });
 
@@ -186,6 +237,8 @@ function addProperties(properties, hash) {
     if (!hash.hasOwnProperty(prop)) { continue; }
     if (prop.charAt(0) === '_') { continue; }
     if (isMandatorySetter(hash, prop)) { continue; }
+    // when mandatory setter is removed, an `undefined` value may be set
+    if (hash[prop] === undefined) { continue; }
 
     replaceProperty(properties, prop, hash[prop]);
   }
@@ -243,7 +296,7 @@ function inspectValue(value) {
 
   if (value instanceof Ember.Object) {
     return { type: "type-ember-object", inspect: value.toString() };
-  } else if (value instanceof Ember.ComputedProperty) {
+  } else if (isComputed(value)) {
     string = "<computed>";
     return { type: "type-descriptor", inspect: string, computed: true };
   } else if (value instanceof Ember.Descriptor) {
@@ -267,6 +320,27 @@ function inspect(value) {
   } else {
     return Ember.inspect(value);
   }
+}
+
+function calculateCachedCPs(object, mixinDetails) {
+  mixinDetails.forEach(function(mixin) {
+    mixin.properties.forEach(function(item) {
+      if (item.overridden) {
+        return true;
+      }
+      if (item.value.computed) {
+        var cache = Ember.cacheFor(object, item.name);
+        if (cache !== undefined) {
+          item.value = inspectValue(Ember.get(object, item.name));
+          item.value.computed = true;
+        }
+      }
+    });
+  });
+}
+
+function isComputed(value) {
+  return value instanceof Ember.ComputedProperty;
 }
 
 // Not used

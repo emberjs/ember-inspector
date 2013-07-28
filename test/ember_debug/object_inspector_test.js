@@ -1,0 +1,211 @@
+import "ember_debug" as EmberDebug;
+import "test_app" as App;
+
+var name, message;
+
+var port, objectInspector;
+
+module("Object Inspector", {
+  setup: function() {
+
+    EmberDebug.Port = EmberDebug.Port.extend({
+      init: function() {},
+      send: function(n, m) {
+        name = n;
+        message = m;
+      }
+    });
+
+    App.reset();
+    EmberDebug.start();
+    port = EmberDebug.port;
+    objectInspector = EmberDebug.get('objectInspector');
+    name = null;
+    message = null;
+  }
+});
+
+test("An Ember Object is correctly transformed into an inspection hash", function() {
+
+  var Parent = Ember.Object.extend({
+    id: null,
+    name: 'My Object'
+  });
+
+  Parent.reopenClass({
+    toString: function() {
+      return 'Parent Object';
+    }
+  });
+
+  var inspected = Parent.create({
+    id: 1,
+    toString: function() {
+      return 'Object:' + this.get('name');
+    }
+  });
+
+  objectInspector.sendObject(inspected);
+
+  equal(name, 'objectInspector:updateObject');
+
+  equal(message.name, 'Object:My Object');
+
+  var firstDetail = message.details[0];
+  equal(firstDetail.name, 'Own Properties');
+
+  var idProperty = firstDetail.properties[0];
+  equal(idProperty.name, 'id');
+  equal(idProperty.value.type, 'type-number');
+  equal(idProperty.value.inspect, '1');
+
+  var toString = firstDetail.properties[1];
+  equal(toString.name, 'toString');
+  equal(toString.value.type, 'type-function');
+
+  var secondDetail = message.details[1];
+  equal(secondDetail.name, 'Parent Object');
+
+  idProperty = secondDetail.properties[0];
+  equal(idProperty.name, 'id');
+  equal(idProperty.overridden, 'Own Properties');
+
+  var nameProperty = secondDetail.properties[1];
+  equal(nameProperty.name, 'name');
+  equal(nameProperty.value.inspect, 'My Object');
+
+
+});
+
+test("Computed properties are correctly calculated", function() {
+  var inspected = Ember.Object.extend({
+    hi: function() {
+      return 'Hello';
+    }.property()
+  }).create();
+
+  objectInspector.sendObject(inspected);
+
+  var computedProperty = message.details[1].properties[0];
+
+  equal(computedProperty.name, 'hi');
+  ok(computedProperty.value.computed);
+  equal(computedProperty.value.type, 'type-descriptor');
+  equal(computedProperty.value.inspect, '<computed>');
+
+  var id = message.objectId;
+
+  port.trigger('objectInspector:calculate', {
+    objectId: id,
+    property: 'hi',
+    mixinIndex: 1
+  });
+
+  equal(message.objectId, id);
+  equal(message.property, 'hi');
+  equal(message.mixinIndex, 1);
+  equal(message.value.type, 'type-string');
+  equal(message.value.inspect, 'Hello');
+  ok(message.value.computed);
+
+});
+
+test("Cached Computed properties are pre-calculated", function() {
+  var inspected = Ember.Object.extend({
+    hi: function() {
+      return 'Hello';
+    }.property()
+  }).create();
+
+  // pre-calculate CP
+  inspected.get('hi');
+
+  objectInspector.sendObject(inspected);
+
+  var computedProperty = message.details[1].properties[0];
+
+  equal(computedProperty.name, 'hi');
+  ok(computedProperty.value.computed);
+  equal(computedProperty.value.type, 'type-string');
+  equal(computedProperty.value.inspect, 'Hello');
+
+});
+
+test("Properties are correctly bound", function() {
+  var inspected = Ember.Object.extend({
+    name: 'Teddy',
+
+    hi: function(key, val) {
+      if (val !== undefined) {
+        return val;
+      }
+      return 'hello';
+    }.property()
+
+  }).create();
+
+  objectInspector.sendObject(inspected);
+
+  var id = message.objectId;
+
+  inspected.set('name', 'Alex');
+
+  equal(name, 'objectInspector:updateProperty');
+
+  equal(message.objectId, id);
+  equal(message.property, 'name');
+  equal(message.mixinIndex, 1);
+  equal(message.value.computed, false);
+  equal(message.value.inspect, 'Alex');
+  equal(message.value.type, 'type-string');
+
+  // un-cached computed properties are not bound until calculated
+
+  message = null;
+
+  inspected.set('hi', 'Hey');
+
+  equal(message, null, 'Computed properties are not bound as long as they haven\'t been calculated');
+
+  port.trigger('objectInspector:calculate', {
+    objectId: id,
+    property: 'hi',
+    mixinIndex: 1
+  });
+
+  message = null;
+  inspected.set('hi', 'Hello!');
+
+  equal(message.objectId, id);
+  equal(message.property, 'hi');
+  equal(message.mixinIndex, 1);
+  ok(message.value.computed);
+  equal(message.value.inspect, 'Hello!');
+  equal(message.value.type, 'type-string');
+
+});
+
+test("Properties can be updated through a port message", function() {
+  var inspected = Ember.Object.extend({
+    name: 'Teddy'
+  }).create();
+
+  objectInspector.sendObject(inspected);
+
+  var id = message.objectId;
+
+  port.trigger('objectInspector:saveProperty', {
+    objectId: id,
+    mixinIndex: 1,
+    property: 'name',
+    value: 'Alex'
+  });
+
+  equal(inspected.get('name'), 'Alex');
+
+  // A property updated message is published
+  equal(name, 'objectInspector:updateProperty');
+  equal(message.property, 'name');
+  equal(message.value.inspect, 'Alex');
+  equal(message.value.type, 'type-string');
+});

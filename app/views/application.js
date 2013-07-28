@@ -1,7 +1,7 @@
 var ApplicationView = Ember.View.extend({
   classNames: ['app'],
 
-  classNameBindings: ['inactive:app_state_inactive'],
+  classNameBindings: ['inactive:app_state_inactive', 'controller.inspectorExpanded:app_inspector_expanded'],
 
   inactive: Ember.computed.not('controller.active'),
 

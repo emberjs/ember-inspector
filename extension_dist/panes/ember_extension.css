@@ -9,6 +9,7 @@
   display: -webkit-flex;
   -webkit-flex-direction: row;
   height: 100%;
+  position: relative;
 }
 
 .app__nav-holder {
@@ -24,15 +25,57 @@
   border-left: solid 1px #828282;
 }
 
+
+.app__toggle-inspector-btn {
+  cursor: pointer;
+  width: 20px;
+  background: #e8e8e8;
+
+  display:-webkit-box;
+  -webkit-box-pack:center;
+  -webkit-box-align:center;
+}
+
+.app__toggle-inspector-btn:hover {
+  background: #d6dde5;
+}
+
 .app__right-col {
-  width: 500px;
+  position: relative;
+  height: 100%;
+  width: 0px;
+  border-left: solid 1px #ccc;
+  transition: width 50ms;
+
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+}
+
+.app__inspector-container {
+  -webkit-flex: 1;
+  background: white;
   height: 100%;
   overflow: auto;
+}
+
+
+@media only all and (max-width: 1500px) {
+  .app__right-col {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1;
+  }
 }
 
 /* Modifier: state = inactive */
 .app_state_inactive .app__nav-holder {
   background: #e8e8e8;
+}
+
+/* Modifier: inspector = expanded */
+.app_inspector_expanded .app__right-col {
+  width: 500px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -46,10 +89,12 @@ html, body {
   height: 100%;
 }
 
-body {
+body, input {
   font-family: "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333;
 }
+
+
 
 body, div, nav {
   margin: 0;
@@ -137,8 +182,12 @@ a {
   text-shadow: 0px 1px 1px #fff;
 }
 
-.mixin_props_yes .mixin__name {
-    cursor: pointer;
+.mixin__name:active {
+  background-color: #ccc;
+}
+
+.mixin__name {
+    cursor: default;
 }
 
   .mixin_props_no .mixin__name:before {
@@ -194,25 +243,8 @@ a {
   width: 16px;
 }
 
-.mixin__property_state_overridden {
-  text-decoration: line-through;
-}
-
-.mixin__property:not(.mixin__property_state_overridden):hover {
-  cursor: pointer;
-  background-color: #ffe;
-}
-
 .mixin__property-overridden-by {
   display: none;
-}
-
-.mixin__property_state_overridden:hover .mixin__property-overridden-by {
-  position: absolute;
-  background-color: rgba(255, 255, 255, 0.95);
-  right: 0;
-  display: inline;
-  text-decoration: none;
 }
 
 .mixin__property-name {
@@ -221,7 +253,29 @@ a {
 
 .mixin__property-value {
   -webkit-flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
+
+.mixin__property-value-txt {
+  -webkit-flex: 1;
+  border: solid 1px #ccc;
+  /*border: none;*/
+  box-shadow: 2px 2px 2px #888;
+  /*box-shadow: none;*/
+  outline: none;
+}
+
+.mixin__calc-btn_calculated {
+  opacity: 0.4;
+}
+
+.mixin__send-btn {
+  width: 15px;
+  opacity: 0;
+}
+
 
 .mixin__property-value-separator {
   margin-right: 5px;
@@ -235,7 +289,12 @@ a {
   color: #999;
 }
 
+.mixin__property .type-ember-object {
+  cursor: pointer;
+}
+
 .mixin__property-calculated-value {
+  -webkit-flex: 1;
   color: #999;
 }
 
@@ -244,7 +303,36 @@ a {
 }
 
 .mixin__property .type-descriptor {
+  cursor: pointer;
   color: #900;
+}
+
+
+
+.mixin__property_state_overridden {
+  text-decoration: line-through;
+}
+
+
+.mixin__property:not(.mixin__property_state_overridden):hover {
+  background-color: #ffe;
+}
+
+
+.mixin__property_state_overridden:hover .mixin__property-overridden-by {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.95);
+  right: 0;
+  display: inline;
+  text-decoration: none;
+}
+
+.mixin__property:not(.mixin__property_state_overridden):hover .mixin__send-btn {
+    opacity: 1;
+}
+
+.mixin__property:not(.mixin__property_state_overridden):hover .mixin__send-btn:active {
+  opacity: 0.5;
 }
 
 /**
@@ -253,6 +341,10 @@ a {
  The Object inspector
  at the far right of the screen
 */
+
+.object-inspector {
+  background-color: white;
+}
 
 .object-inspector__header, .object-inspector__trail {
   font-family: Menlo, Monaco, monospace;
@@ -265,6 +357,7 @@ a {
   display: -webkit-flex;
   -webkit-flex-direction: row;
   -webkit-align-items: center;
+
 }
 
 
