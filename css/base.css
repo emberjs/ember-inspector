@@ -9,10 +9,12 @@ html, body {
   height: 100%;
 }
 
-body {
+body, input {
   font-family: "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333;
 }
+
+
 
 body, div, nav {
   margin: 0;

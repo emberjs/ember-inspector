@@ -9,6 +9,7 @@
   display: -webkit-flex;
   -webkit-flex-direction: row;
   height: 100%;
+  position: relative;
 }
 
 .app__nav-holder {
@@ -24,13 +25,55 @@
   border-left: solid 1px #828282;
 }
 
+
+.app__toggle-inspector-btn {
+  cursor: pointer;
+  width: 20px;
+  background: #e8e8e8;
+
+  display:-webkit-box;
+  -webkit-box-pack:center;
+  -webkit-box-align:center;
+}
+
+.app__toggle-inspector-btn:hover {
+  background: #d6dde5;
+}
+
 .app__right-col {
-  width: 500px;
+  position: relative;
+  height: 100%;
+  width: 0px;
+  border-left: solid 1px #ccc;
+  transition: width 50ms;
+
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+}
+
+.app__inspector-container {
+  -webkit-flex: 1;
+  background: white;
   height: 100%;
   overflow: auto;
+}
+
+
+@media only all and (max-width: 1500px) {
+  .app__right-col {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1;
+  }
 }
 
 /* Modifier: state = inactive */
 .app_state_inactive .app__nav-holder {
   background: #e8e8e8;
+}
+
+/* Modifier: inspector = expanded */
+.app_inspector_expanded .app__right-col {
+  width: 500px;
 }

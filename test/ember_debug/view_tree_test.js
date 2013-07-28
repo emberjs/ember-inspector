@@ -1,15 +1,18 @@
 import "ember_debug" as EmberDebug;
 import "test_app" as App;
 
-EmberDebug.Port = EmberDebug.Port.extend({
-  init: function() {},
-  send: function() {}
-});
 
 var port;
 
-module("Ember Debug", {
+module("View Debug", {
+
   setup: function() {
+
+    EmberDebug.Port = EmberDebug.Port.extend({
+      init: function() {},
+      send: function() {}
+    });
+
     App.reset();
     EmberDebug.start();
     port = EmberDebug.port;

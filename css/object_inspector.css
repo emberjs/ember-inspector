@@ -5,6 +5,10 @@
  at the far right of the screen
 */
 
+.object-inspector {
+  background-color: white;
+}
+
 .object-inspector__header, .object-inspector__trail {
   font-family: Menlo, Monaco, monospace;
   font-size: 15px;
@@ -16,6 +20,7 @@
   display: -webkit-flex;
   -webkit-flex-direction: row;
   -webkit-align-items: center;
+
 }
 
 

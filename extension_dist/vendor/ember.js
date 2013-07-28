@@ -22394,7 +22394,6 @@ Ember.TextSupport = Ember.Mixin.create({
   interpretKeyEvents: function(event) {
     var map = Ember.TextSupport.KEY_EVENTS;
     var method = map[event.keyCode];
-
     this._elementValueDidChange();
     if (method) { return this[method](event); }
   },

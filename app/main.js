@@ -1,11 +1,13 @@
 import "application" as App;
 import "views/tree_node_controller" as TreeNodeControllerView;
+import "views/property_field" as PropertyFieldView;
 import "port" as Port;
 
 var EmberExtension;
 
 EmberExtension = App.create();
 EmberExtension.TreeNodeControllerView = TreeNodeControllerView;
+EmberExtension.PropertyFieldView = PropertyFieldView;
 EmberExtension.Port = Port;
 
 

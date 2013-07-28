@@ -275,7 +275,14 @@ define("object_inspector",
           var value;
           value = this.valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
           this.sendMessage('updateProperty', value);
+          message.computed = true;
           this.bindPropertyToDebugger(message);
+        },
+        saveProperty: function(message) {
+          this.saveProperty(message.objectId, message.mixinIndex, message.property, message.value);
+        },
+        sendToConsole: function(message) {
+          this.sendToConsole(message.objectId, message.property);
         },
         inspectRoute: function(message) {
           var container = this.get('application.__container__');
@@ -285,6 +292,18 @@ define("object_inspector",
           var container = this.get('application.__container__');
           this.sendObject(container.lookup('controller:' + message.name));
         }
+      },
+
+      saveProperty: function(objectId, mixinIndex, prop, val) {
+        var object = this.sentObjects[objectId];
+        Ember.set(object, prop, val);
+      },
+
+      sendToConsole: function(objectId, prop) {
+        var object = this.sentObjects[objectId];
+        var value = Ember.get(object, prop);
+        window.$E = value;
+        console.log('Ember Inspector ($E): ', value);
       },
 
       digIntoObject: function(objectId, property) {
@@ -355,7 +374,8 @@ define("object_inspector",
 
       mixinsForObject: function(object) {
         var mixins = Ember.Mixin.mixins(object),
-            mixinDetails = [];
+            mixinDetails = [],
+            self = this;
 
         var ownProps = propertiesForMixin({ mixins: [{ properties: object }] });
         mixinDetails.push({ name: "Own Properties", properties: ownProps });
@@ -367,8 +387,13 @@ define("object_inspector",
         });
 
         applyMixinOverrides(mixinDetails);
+        calculateCachedCPs(object, mixinDetails);
 
-        return { objectId: this.retainObject(object), mixins: mixinDetails };
+        var objectId = this.retainObject(object);
+
+        this.bindProperties(objectId, mixinDetails);
+
+        return { objectId: objectId, mixins: mixinDetails };
       },
 
       valueForObjectProperty: function(objectId, property, mixinIndex) {
@@ -380,10 +405,13 @@ define("object_inspector",
           value = object.get(property);
         }
 
+        value = inspectValue(value);
+        value.computed = true;
+
         return {
           objectId: objectId,
           property: property,
-          value: inspect(value),
+          value: value,
           mixinIndex: mixinIndex
         };
       },
@@ -392,17 +420,20 @@ define("object_inspector",
         var objectId = message.objectId,
             property = message.property,
             mixinIndex = message.mixinIndex,
+            computed = message.computed,
             self = this;
 
         var object = this.sentObjects[objectId];
 
         function handler() {
           var value = Ember.get(object, property);
+          value = inspectValue(value);
+          value.computed = computed;
 
           self.sendMessage('updateProperty', {
             objectId: objectId,
             property: property,
-            value: inspect(value),
+            value: value,
             mixinIndex: mixinIndex
           });
         }
@@ -410,6 +441,26 @@ define("object_inspector",
         Ember.addObserver(object, property, handler);
         this.boundObservers[objectId] = this.boundObservers[objectId] || [];
         this.boundObservers[objectId].push({ property: property, handler: handler });
+      },
+
+      bindProperties: function(objectId, mixinDetails) {
+        var self = this;
+        mixinDetails.forEach(function(mixin, mixinIndex) {
+          mixin.properties.forEach(function(item) {
+            if (item.overridden) {
+              return true;
+            }
+            if (item.value.type !== 'type-descriptor' && item.value.type !== 'type-function') {
+              var computed = !!item.value.computed;
+              self.bindPropertyToDebugger({
+                objectId: objectId,
+                property: item.name,
+                mixinIndex: mixinIndex,
+                computed: computed
+              });
+            }
+          });
+        });
       }
     });
 
@@ -431,6 +482,8 @@ define("object_inspector",
         if (!hash.hasOwnProperty(prop)) { continue; }
         if (prop.charAt(0) === '_') { continue; }
         if (isMandatorySetter(hash, prop)) { continue; }
+        // when mandatory setter is removed, an `undefined` value may be set
+        if (hash[prop] === undefined) { continue; }
 
         replaceProperty(properties, prop, hash[prop]);
       }
@@ -488,7 +541,7 @@ define("object_inspector",
 
       if (value instanceof Ember.Object) {
         return { type: "type-ember-object", inspect: value.toString() };
-      } else if (value instanceof Ember.ComputedProperty) {
+      } else if (isComputed(value)) {
         string = "<computed>";
         return { type: "type-descriptor", inspect: string, computed: true };
       } else if (value instanceof Ember.Descriptor) {
@@ -512,6 +565,27 @@ define("object_inspector",
       } else {
         return Ember.inspect(value);
       }
+    }
+
+    function calculateCachedCPs(object, mixinDetails) {
+      mixinDetails.forEach(function(mixin) {
+        mixin.properties.forEach(function(item) {
+          if (item.overridden) {
+            return true;
+          }
+          if (item.value.computed) {
+            var cache = Ember.cacheFor(object, item.name);
+            if (cache !== undefined) {
+              item.value = inspectValue(Ember.get(object, item.name));
+              item.value.computed = true;
+            }
+          }
+        });
+      });
+    }
+
+    function isComputed(value) {
+      return value instanceof Ember.ComputedProperty;
     }
 
     // Not used
@@ -548,7 +622,9 @@ define("port",
 
       chromePort.addEventListener('message', function(event) {
         var message = event.data, value;
-        self.trigger(message.type, message);
+        Ember.run(function() {
+          self.trigger(message.type, message);
+        });
       });
 
       chromePort.start();
@@ -632,7 +708,7 @@ define("route_debug",
           routeClassName = classify(handler.replace('.', '_')) + 'Route';
           container = this.get('application.__container__');
           routeHandler = container.lookup('router:main').router.getHandler(handler);
-          controllerName = routeHandler.controllerName || routeHandler.routeName;
+          controllerName = routeHandler.get('controllerName') || routeHandler.get('routeName');
           controllerClassName = classify(controllerName.replace('.', '_')) + 'Controller';
           controller = container.lookup('controller:' + controllerName);
           templateName = handler.replace('.', '/');
