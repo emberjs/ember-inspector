@@ -12,7 +12,9 @@ var MixinStackController = Ember.ArrayController.extend({
   }.property('[]'),
 
   popStack: function() {
-    this.get('controllers.application').popMixinDetails();
+    if(this.get('isNested')) {
+      this.get('controllers.application').popMixinDetails();
+    }
   }
 });
 
