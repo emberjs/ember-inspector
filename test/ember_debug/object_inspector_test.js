@@ -81,7 +81,14 @@ test("Computed properties are correctly calculated", function() {
   var inspected = Ember.Object.extend({
     hi: function() {
       return 'Hello';
-    }.property()
+    }.property(),
+    _debugInfo: function() {
+      return {
+        propertyInfo: {
+          expensiveProperties: ['hi']
+        }
+      };
+    }
   }).create();
 
   objectInspector.sendObject(inspected);
@@ -140,7 +147,15 @@ test("Properties are correctly bound", function() {
         return val;
       }
       return 'hello';
-    }.property()
+    }.property(),
+
+    _debugInfo: function() {
+      return {
+        propertyInfo: {
+          expensiveProperties: ['hi']
+        }
+      };
+    }
 
   }).create();
 
@@ -208,4 +223,67 @@ test("Properties can be updated through a port message", function() {
   equal(message.property, 'name');
   equal(message.value.inspect, 'Alex');
   equal(message.value.type, 'type-string');
+});
+
+test("Property grouping can be customized using _debugInfo", function() {
+  var mixinToSkip = Ember.Mixin.create({});
+  mixinToSkip[Ember.NAME_KEY] = 'MixinToSkip';
+
+  var Inspected = Ember.Object.extend(mixinToSkip, {
+    name: 'Teddy',
+    gender: 'Male',
+    hasChildren: false,
+    expensiveProperty: function() { return ''; }.property(),
+    _debugInfo: function() {
+      return {
+        propertyInfo: {
+            includeOtherProperties: true,
+            skipProperties: ['propertyToSkip'],
+            skipMixins: ['MixinToSkip'],
+            expensiveProperties: ['expensiveProperty'],
+            groups: [
+              {
+                name: 'Basic Info',
+                properties: ['name', 'gender'],
+                expand: true
+              },
+              {
+                name: 'Family Info',
+                properties: ['maritalStatus']
+              }
+            ]
+          }
+      };
+    }
+  });
+
+  Inspected.toString = function() {
+    return 'TestObject';
+  };
+
+  var inspected = Inspected.create({
+    maritalStatus: 'Single',
+    propertyToSkip: null
+  });
+
+  objectInspector.sendObject(inspected);
+
+  equal(message.details[0].name, 'Basic Info');
+  equal(message.details[0].properties[0].name, 'name');
+  equal(message.details[0].properties[1].name, 'gender');
+  ok(message.details[0].expand);
+
+  equal(message.details[1].name, 'Family Info');
+  equal(message.details[1].properties[0].name, 'maritalStatus');
+
+  equal(message.details[2].name, 'Own Properties');
+  equal(message.details[2].properties.length, 0, "Correctly skips properties");
+
+  equal(message.details[3].name, 'TestObject');
+  equal(message.details[3].properties.length, 2, "Does not duplicate properties");
+  equal(message.details[3].properties[0].name, 'hasChildren');
+  equal(message.details[3].properties[1].value.type, 'type-descriptor', "Does not calculate expensive properties");
+
+  ok(message.details[4].name !== 'MixinToSkip', "Correctly skips properties");
+
 });

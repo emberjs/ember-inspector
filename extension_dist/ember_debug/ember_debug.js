@@ -378,16 +378,26 @@ define("object_inspector",
             self = this;
 
         var ownProps = propertiesForMixin({ mixins: [{ properties: object }] });
-        mixinDetails.push({ name: "Own Properties", properties: ownProps });
+        mixinDetails.push({ name: "Own Properties", properties: ownProps, expand: true });
 
         mixins.forEach(function(mixin) {
-          mixin.toString();
           var name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor || Ember.guidFor(name);
           mixinDetails.push({ name: name.toString(), properties: propertiesForMixin(mixin) });
         });
 
         applyMixinOverrides(mixinDetails);
-        calculateCachedCPs(object, mixinDetails);
+
+        var propertyInfo = null;
+        if (object._debugInfo && typeof object._debugInfo === 'function') {
+          propertyInfo = object._debugInfo().propertyInfo;
+          mixinDetails = customizeProperties(mixinDetails, propertyInfo);
+        }
+
+        var expensiveProperties = null;
+        if (propertyInfo) {
+          expensiveProperties = propertyInfo.expensiveProperties;
+        }
+        calculateCPs(object, mixinDetails, expensiveProperties);
 
         var objectId = this.retainObject(object);
 
@@ -567,7 +577,9 @@ define("object_inspector",
       }
     }
 
-    function calculateCachedCPs(object, mixinDetails) {
+    function calculateCPs(object, mixinDetails, expensiveProperties) {
+      expensiveProperties = expensiveProperties || [];
+
       mixinDetails.forEach(function(mixin) {
         mixin.properties.forEach(function(item) {
           if (item.overridden) {
@@ -575,13 +587,114 @@ define("object_inspector",
           }
           if (item.value.computed) {
             var cache = Ember.cacheFor(object, item.name);
-            if (cache !== undefined) {
+            if (cache !== undefined || expensiveProperties.indexOf(item.name) === -1) {
               item.value = inspectValue(Ember.get(object, item.name));
               item.value.computed = true;
             }
           }
         });
       });
+    }
+
+    /**
+      Customizes an object's properties
+      based on the property `propertyInfo` of
+      the object's `_debugInfo` method.
+
+      Possible options:
+        - `groups` An array of groups that contains the properties for each group
+          For example:
+          ```javascript
+          groups: [
+            { name: 'Attributes', properties: ['firstName', 'lastName'] },
+            { name: 'Belongs To', properties: ['country'] }
+          ]
+          ```
+        - `includeOtherProperties` Boolean,
+          - `true` to include other non-listed properties,
+          - `false` to only include given properties
+        - `skipProperties` Array containing list of properties *not* to include
+        - `skipMixins` Array containing list of mixins *not* to include
+        - `expensiveProperties` An array of computed properties that are too expensive.
+           Adding a property to this array makes sure the CP is not calculated automatically.
+
+      Example:
+      ```javascript
+      {
+        propertyInfo: {
+          includeOtherProperties: true,
+          skipProperties: ['toString', 'send', 'withTransaction'],
+          skipMixins: [ 'Ember.Evented'],
+          calculate: ['firstName', 'lastName'],
+          groups: [
+            {
+              name: 'Attributes',
+              properties: [ 'id', 'firstName', 'lastName' ],
+              expand: true // open by default
+            },
+            {
+              name: 'Belongs To',
+              properties: [ 'maritalStatus', 'avatar' ],
+              expand: true
+            },
+            {
+              name: 'Has Many',
+              properties: [ 'phoneNumbers' ],
+              expand: true
+            },
+            {
+              name: 'Flags',
+              properties: ['isLoaded', 'isLoading', 'isNew', 'isDirty']
+            }
+          ]
+        }
+      }
+      ```
+    */
+    function customizeProperties(mixinDetails, propertyInfo) {
+      var newMixinDetails = [],
+          neededProperties = {},
+          groups = propertyInfo.groups || [],
+          skipProperties = propertyInfo.skipProperties || [],
+          skipMixins = propertyInfo.skipMixins || [];
+
+      if(groups.length) {
+        mixinDetails[0].expand = false;
+      }
+
+      groups.forEach(function(group) {
+        group.properties.forEach(function(prop) {
+          neededProperties[prop] = true;
+        });
+      });
+
+      mixinDetails.forEach(function(mixin) {
+        var newProperties = [];
+        mixin.properties.forEach(function(item) {
+          if (skipProperties.indexOf(item.name) !== -1) {
+            return true;
+          }
+          if (!item.overridden && neededProperties[item.name]) {
+            neededProperties[item.name] = item;
+          } else {
+            newProperties.push(item);
+          }
+        });
+        mixin.properties = newProperties;
+        if (skipMixins.indexOf(mixin.name) === -1) {
+          newMixinDetails.push(mixin);
+        }
+      });
+
+      groups.slice().reverse().forEach(function(group) {
+        var newMixin = { name: group.name, expand: group.expand, properties: [] };
+        group.properties.forEach(function(prop) {
+          newMixin.properties.push(neededProperties[prop]);
+        });
+        newMixinDetails.unshift(newMixin);
+      });
+
+      return newMixinDetails;
     }
 
     function isComputed(value) {
@@ -592,7 +705,6 @@ define("object_inspector",
     function inspectController(controller) {
       return controller.get('_debugContainerKey') || controller.toString();
     }
-
 
 
     return ObjectInspector;

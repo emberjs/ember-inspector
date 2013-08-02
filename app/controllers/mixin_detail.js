@@ -1,7 +1,9 @@
 var MixinDetailController = Ember.ObjectController.extend({
   needs: ['mixinDetails'],
 
-  isExpanded: Ember.computed.equal('model.name', 'Own Properties'),
+  isExpanded: function() {
+    return this.get('model.expand') && this.get('model.properties.length') > 0;
+  }.property('model.expand', 'model.properties.length'),
 
   objectId: Ember.computed.alias('controllers.mixinDetails.objectId'),
 
