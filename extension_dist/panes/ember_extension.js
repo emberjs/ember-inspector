@@ -1065,12 +1065,12 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
 
 
-  data.buffer.push("<div class=\"table-tree\">\n  <table cellspacing=\"0\" border-collapse=\"collapse\">\n    <thead>\n      <tr>\n        <th>Route Name</th>\n        <th>Route</th>\n        <th>Controller</th>\n        <th>Template</th>\n        <th>URL</th>\n      <tr>\n    </thead>\n    <tbody>\n      ");
+  data.buffer.push("<div class=\"table-tree\">\n  <div class=\"table-tree__header-background\"></div>\n  <div class=\"table-tree__table-container\">\n    <table cellspacing=\"0\" border-collapse=\"collapse\">\n      <thead>\n        <tr>\n          <th>\n            <div class=\"table-tree__th-inner\">Route Name</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Route</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Controller</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Template</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">URL</div>\n          </th>\n        </tr>\n      </thead>\n      <tbody>\n        ");
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
   data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "route_node", options) : helperMissing.call(depth0, "partial", "route_node", options))));
-  data.buffer.push("\n    </tbody>\n  </table>\n</div>\n");
+  data.buffer.push("\n      </tbody>\n    </table>\n  </div>\n</div>\n");
   return buffer;
   
 });
