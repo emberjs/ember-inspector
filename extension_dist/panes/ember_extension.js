@@ -195,7 +195,9 @@ define("controllers/mixin_stack",
       }.property('[]'),
 
       popStack: function() {
-        this.get('controllers.application').popMixinDetails();
+        if(this.get('isNested')) {
+          this.get('controllers.application').popMixinDetails();
+        }
       }
     });
 
@@ -1010,46 +1012,47 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 
 function program1(depth0,data) {
   
-  var buffer = '', stack1, hashTypes, hashContexts;
-  data.buffer.push("\n\n    ");
-  hashTypes = {};
-  hashContexts = {};
-  stack1 = helpers['if'].call(depth0, "isNested", {hash:{},inverse:self.program(4, program4, data),fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n\n  ");
-  return buffer;
-  }
-function program2(depth0,data) {
-  
   var buffer = '', hashTypes, hashContexts;
   data.buffer.push("\n      <button ");
   hashTypes = {};
   hashContexts = {};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "popStack", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(" data-label=\"object-inspector-back\" class=\"object-inspector__back object-inspector__back_state_enabled\">◀ Back</button>\n    ");
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "popStack", {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" data-label=\"object-inspector-back\" ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': (":object-inspector__back isNested:object-inspector__back_state_enabled:object-inspector__back_state_disabled")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("></button>\n    ");
   return buffer;
   }
 
-function program4(depth0,data) {
+function program3(depth0,data) {
   
-  
-  data.buffer.push("\n      <span data-label=\"object-inspector-back\" class=\"object-inspector__back object-inspector__back_state_disabled\">◀ Back</span>\n    ");
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n    <h2 class=\"object-inspector__header-trail\" data-label=\"object-trail\">");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "trail", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</h2>\n  ");
+  return buffer;
   }
 
-  data.buffer.push("<h1 class=\"object-inspector__header\">\n  ");
+  data.buffer.push("<div class=\"object-inspector__header\">\n  <h1 class=\"object-inspector__header-main\">\n    ");
   hashTypes = {};
   hashContexts = {};
   stack1 = helpers['if'].call(depth0, "length", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n  <span data-label=\"object-name\" class=\"object-inspector__name\">");
+  data.buffer.push("\n    <span data-label=\"object-name\" class=\"object-inspector__name\">");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "firstObject.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</span>\n</h1>\n<h2 class=\"object-inspector__trail\" data-label=\"object-trail\">");
+  data.buffer.push("</span>\n  </h1>\n  ");
   hashTypes = {};
   hashContexts = {};
-  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "trail", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</h2>\n<div class=\"object-inspector__mixins\">\n  ");
+  stack1 = helpers['if'].call(depth0, "trail", {hash:{},inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n</div>\n\n<div class=\"object-inspector__mixins\">\n  ");
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
