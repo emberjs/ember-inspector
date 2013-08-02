@@ -11,15 +11,11 @@
   font-size: 11px;
   height: 100%;
   box-sizing: border-box;
+  float: left;
+  min-width: 100%;
 }
 
-.table-tree__table-container {
-  overflow-x: hidden;
-  overflow-y: auto;
-  height: 100%;
-}
-
-.table-tree__header-background {
+.table-tree:after {
   position: absolute;
   top: 0;
   left: 0;
@@ -29,6 +25,15 @@
   background: linear-gradient(to bottom, #ebebeb, #dadada);
   border-right: 1px solid #b3b3b3;
   box-sizing: border-box;
+  content: ' ';
+}
+
+.table-tree__table-container {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+  float: left;
+  min-width: 100%;
 }
 
 .table-tree table {
@@ -58,6 +63,7 @@
   border-left: 1px solid #b3b3b3;
   padding-left: 5px;
   margin-left: -1px;
+  z-index: 2;
 }
 
 .table-tree th:first-of-type .table-tree__th-inner {
