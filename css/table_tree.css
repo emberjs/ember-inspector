@@ -6,7 +6,29 @@
 */
 
 .table-tree {
+  position: relative;
+  padding-top: 30px;
   font-size: 11px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.table-tree__table-container {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.table-tree__header-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  border-bottom: 1px solid #a3a3a3;
+  background: linear-gradient(to bottom, #ebebeb, #dadada);
+  border-right: 1px solid #b3b3b3;
+  box-sizing: border-box;
 }
 
 .table-tree table {
@@ -17,23 +39,29 @@
   text-align: left;
 }
 
-.table-tree th,
 .table-tree td {
   border-right: 1px solid #b3b3b3;
-}
-
-.table-tree th {
-  height: 28px;
-  border-bottom: 1px solid #a3a3a3;
-  padding-left: 5px;
-  font-weight: normal;
-  background: linear-gradient(to bottom, #ebebeb, #dadada);
-}
-
-.table-tree td {
   white-space: nowrap;
   opacity: 0.5;
   padding: 8px 0px 8px 5px;
+}
+
+.table-tree th {
+  font-weight: normal;
+  padding: 0;
+}
+
+.table-tree__th-inner {
+  position: absolute;
+  top: 0;
+  line-height: 30px;
+  border-left: 1px solid #b3b3b3;
+  padding-left: 5px;
+  margin-left: -1px;
+}
+
+.table-tree th:first-of-type .table-tree__th-inner {
+  border-left: none;
 }
 
 .table-tree tr:nth-of-type(2n) td {
