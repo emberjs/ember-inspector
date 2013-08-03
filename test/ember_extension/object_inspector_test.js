@@ -8,6 +8,7 @@ var objectAttr = {
   details: [
     {
       name: 'Own Properties',
+      expand: true,
       properties: [{
         name: 'id',
         value: 1
@@ -27,6 +28,7 @@ function objectToInspect() {
     details: [
       {
         name: 'First Detail',
+        expand: false,
         properties: [{
           name: 'numberProperty',
           value: {
@@ -87,7 +89,6 @@ test("The object displays correctly", function() {
 });
 
 test("Object details", function() {
-
 
   var $firstDetail, $secondDetail;
 
@@ -235,6 +236,7 @@ test("Properties are bound to the application properties", function() {
       objectId: 'object-id',
       details: [{
         name: 'Own Properties',
+        expand: true,
         properties: [{
           name: 'boundProp',
           value: {
@@ -302,6 +304,7 @@ test("Send to console", function() {
       objectId: 'object-id',
       details: [{
         name: 'Own Properties',
+        expand: true,
         properties: [{
           name: 'myProp',
           value: {
