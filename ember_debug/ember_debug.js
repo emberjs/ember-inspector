@@ -1,6 +1,6 @@
 import "port" as Port;
-import "view_debug" as ViewDebug;
 import "object_inspector" as ObjectInspector;
+import "view_debug" as ViewDebug;
 import "route_debug" as RouteDebug;
 
 console.debug("Ember Debugger Active");
@@ -27,26 +27,20 @@ EmberDebug = Ember.Namespace.create({
 
   },
 
+  setDebugHandler: function(prop, Handler) {
+    var handler = this.get(prop);
+    if (handler) {
+      Ember.run(handler, 'destroy');
+    }
+    this.set(prop, Handler.create({ namespace: this }));
+  },
+
   reset: function() {
     this.set('port', this.Port.create());
 
-    var objectInspector = this.get('objectInspector');
-    if (objectInspector) {
-      Ember.run(objectInspector, 'destroy');
-    }
-    this.set('objectInspector', ObjectInspector.create({ namespace: this }));
-
-    var routeDebug = this.get('routeDebug');
-    if (routeDebug) {
-      Ember.run(routeDebug, 'destroy');
-    }
-    this.set('routeDebug', RouteDebug.create({ namespace: this }));
-
-    var viewDebug = this.get('viewDebug');
-    if (viewDebug) {
-      Ember.run(viewDebug, 'destroy');
-    }
-    this.set('viewDebug', ViewDebug.create({ namespace: this }));
+    this.setDebugHandler('objectInspector', ObjectInspector);
+    this.setDebugHandler('routeDebug', RouteDebug);
+    this.setDebugHandler('viewDebug', ViewDebug);
 
     this.viewDebug.sendTree();
   }
@@ -54,13 +48,16 @@ EmberDebug = Ember.Namespace.create({
 });
 
 function getApplication() {
-  var views = Ember.View.views;
+  var namespaces = Ember.Namespace.NAMESPACES,
+      application;
 
-  for (var i in views) {
-    if (views.hasOwnProperty(i)) {
-      return views[i].get('controller.namespace');
+  namespaces.forEach(function(namespace) {
+    if(namespace instanceof Ember.Application) {
+      application = namespace;
+      return false;
     }
-  }
+  });
+  return application;
 }
 
 Ember.Debug = EmberDebug;

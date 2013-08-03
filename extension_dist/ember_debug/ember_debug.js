@@ -111,9 +111,52 @@ if (typeof define !== 'function' && typeof requireModule !== 'function') {
 
 }());
 
+define("data_debug",
+  ["mixins/port_mixin"],
+  function(PortMixin) {
+    "use strict";
+
+    var classify = Ember.String.classify;
+
+
+    var DataDebug = Ember.Object.extend(PortMixin, {
+      init: function() {
+        var self = this;
+
+        this._super();
+
+        var namespaces = Ember.Namespace.NAMESPACES;
+
+        namespaces.forEach(function(namespace) {
+          if (namespace === self.get('namespace') || namespace === Ember || namespace === window.DS) {
+            return true;
+          }
+          for (var key in namespace) {
+            var Model = namespace[key];
+            if (window.DS.Model.detect(Model)) {
+              console.log(key);
+            }
+          }
+        });
+      },
+
+      namespace: null,
+
+      port: Ember.computed.alias('namespace.port'),
+
+      application: Ember.computed.alias('namespace.application'),
+
+      portNamespace: 'data',
+
+      messages: {}
+    });
+
+
+    return DataDebug;
+  });
 define("ember_debug",
-  ["port","view_debug","object_inspector","route_debug"],
-  function(Port, ViewDebug, ObjectInspector, RouteDebug) {
+  ["port","object_inspector","view_debug","route_debug"],
+  function(Port, ObjectInspector, ViewDebug, RouteDebug) {
     "use strict";
 
     console.debug("Ember Debugger Active");
@@ -140,26 +183,20 @@ define("ember_debug",
 
       },
 
+      setDebugHandler: function(prop, Handler) {
+        var handler = this.get(prop);
+        if (handler) {
+          Ember.run(handler, 'destroy');
+        }
+        this.set(prop, Handler.create({ namespace: this }));
+      },
+
       reset: function() {
         this.set('port', this.Port.create());
 
-        var objectInspector = this.get('objectInspector');
-        if (objectInspector) {
-          Ember.run(objectInspector, 'destroy');
-        }
-        this.set('objectInspector', ObjectInspector.create({ namespace: this }));
-
-        var routeDebug = this.get('routeDebug');
-        if (routeDebug) {
-          Ember.run(routeDebug, 'destroy');
-        }
-        this.set('routeDebug', RouteDebug.create({ namespace: this }));
-
-        var viewDebug = this.get('viewDebug');
-        if (viewDebug) {
-          Ember.run(viewDebug, 'destroy');
-        }
-        this.set('viewDebug', ViewDebug.create({ namespace: this }));
+        this.setDebugHandler('objectInspector', ObjectInspector);
+        this.setDebugHandler('routeDebug', RouteDebug);
+        this.setDebugHandler('viewDebug', ViewDebug);
 
         this.viewDebug.sendTree();
       }
@@ -167,13 +204,16 @@ define("ember_debug",
     });
 
     function getApplication() {
-      var views = Ember.View.views;
+      var namespaces = Ember.Namespace.NAMESPACES,
+          application;
 
-      for (var i in views) {
-        if (views.hasOwnProperty(i)) {
-          return views[i].get('controller.namespace');
+      namespaces.forEach(function(namespace) {
+        if(namespace instanceof Ember.Application) {
+          application = namespace;
+          return false;
         }
-      }
+      });
+      return application;
     }
 
     Ember.Debug = EmberDebug;
