@@ -30,7 +30,7 @@
 
 .table-tree__table-container {
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: scroll;
   height: 100%;
   float: left;
   min-width: 100%;
@@ -47,7 +47,6 @@
 .table-tree td {
   border-right: 1px solid #b3b3b3;
   white-space: nowrap;
-  opacity: 0.5;
   padding: 8px 0px 8px 5px;
 }
 
@@ -76,7 +75,6 @@
 
 .table-tree td.table-tree__main-cell {
   font-weight: bold;
-  opacity: 0.7;
 }
 
 .table-tree td.table-tree__main-cell_state_current {
@@ -94,4 +92,45 @@
 .table-tree tbody tr:hover .table-tree__clickable {
   color: #939;
   cursor: pointer;
+}
+
+
+.table-tree_color_faded .table-tree__main-cell,
+.table-tree_color_faded td {
+  opacity: 0.7;
+}
+
+
+
+/* MODIFIER: state = collapsed */
+.table-tree_state_collapsed {
+  float: none;
+  overflow: hidden;
+}
+
+.table-tree_state_collapsed .table-tree__table-container {
+  float: none;
+}
+
+.table-tree__row_selected td {
+  color: #939;;
+}
+
+
+/* MODIFIER: type = advanced */
+
+.table-tree_type_advanced {
+  display: -webkit-flex;
+  -webkit-flex-direction: column;
+}
+
+.table-tree_type_advanced  .table-tree__table-container {
+  height: auto;
+  -webkit-flex: 1;
+}
+
+.table-tree_type_advanced  .table-tree__filter {
+  height: 30px;
+  background-color: #d6dde5;
+  border-top: solid 1px gray;
 }

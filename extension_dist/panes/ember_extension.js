@@ -254,6 +254,89 @@ define("controllers/mixin_stack",
 
     return MixinStackController;
   });
+define("controllers/model_type_item",
+  [],
+  function() {
+    "use strict";
+    var ModelTypeItemController = Ember.ObjectController.extend({
+      needs: ['model_types'],
+
+      selected: function() {
+        return this.get('model') === this.get('controllers.model_types.selected');
+      }.property('controllers.model_types.selected'),
+
+      collapsed: Ember.computed.alias('controllers.model_types.collapsed')
+
+    });
+
+
+    return ModelTypeItemController;
+  });
+define("controllers/model_types",
+  [],
+  function() {
+    "use strict";
+    var ModelTypesController = Ember.ArrayController.extend({
+      collapsed: Ember.computed.bool('selected')
+    });
+
+
+    return ModelTypesController;
+  });
+define("controllers/record",
+  [],
+  function() {
+    "use strict";
+    var RecordController = Ember.ObjectController.extend({
+
+      modelTypeColumns: Ember.computed.alias('target.target.columns'),
+
+      columns: function() {
+        var self = this;
+        return this.get('modelTypeColumns').map(function(col) {
+          return { name: col.name, value: self.get('columnValues.' + col.name) };
+        });
+      }.property('modelTypeColumns.@each', 'model.columnValues')
+    });
+
+
+    return RecordController;
+  });
+define("controllers/records",
+  [],
+  function() {
+    "use strict";
+    var RecordsController = Ember.ArrayController.extend({
+      columns: Ember.computed.alias('modelType.columns'),
+
+      search: '',
+
+      modelChanged: function() {
+        this.set('search', '');
+      }.observes('model'),
+
+      recordToString: function(record) {
+        var search = Ember.get(record, 'searchIndex').join(' ');
+        return search.toLowerCase();
+      },
+
+      filtered: function() {
+        var self = this, search = this.get('search');
+        if (Ember.isEmpty(search)) {
+          return this.get('model');
+        }
+        return this.get('model').filter(function(item) {
+          var searchString = self.recordToString(item);
+          return !!searchString.toLowerCase().match(new RegExp('.*' + search + '.*'));
+        });
+      }.property('search', 'model.columnValues')
+
+
+    });
+
+
+    return RecordsController;
+  });
 define("controllers/route_node",
   [],
   function() {
@@ -473,6 +556,15 @@ define("router",
     Router.map(function() {
       this.route('view_tree', { path: '/' });
       this.route('route_tree');
+
+      this.resource('data', function() {
+        this.resource('model_types', function() {
+          this.resource('model_type', { path: '/:type_id'}, function() {
+            this.resource('records');
+          });
+        });
+      });
+
     });
 
 
@@ -544,6 +636,137 @@ define("routes/application",
 
 
     return ApplicationRoute;
+  });
+define("routes/data_index",
+  [],
+  function() {
+    "use strict";
+    var DataIndexRoute = Ember.Route.extend({
+      beforeModel: function() {
+        this.transitionTo('model_types');
+      }
+    });
+
+
+    return DataIndexRoute;
+  });
+define("routes/model_type",
+  [],
+  function() {
+    "use strict";
+    var ModelTypeRoute = Ember.Route.extend({
+      setupController: function(controller, model) {
+        this._super(controller, model);
+        this.controllerFor('model_types').set('selected', model);
+      },
+
+      deactivate: function() {
+        this.controllerFor('model_types').set('selected', null);
+      }
+    });
+
+
+    return ModelTypeRoute;
+  });
+define("routes/model_types",
+  [],
+  function() {
+    "use strict";
+    var Promise = Ember.RSVP.Promise;
+
+    var ModelTypesRoute = Ember.Route.extend({
+      setupController: function(controller, model) {
+        this._super(controller, model);
+        this.get('port').on('data:modelTypesAdded', this, this.addModelTypes);
+        this.get('port').on('data:modelTypesUpdated', this, this.updateModelTypes);
+        this.get('port').send('data:getModelTypes');
+      },
+
+      model: function() {
+        return [];
+      },
+
+      deactivate: function() {
+        this.get('port').off('data:modelTypesUpdated', this, this.updateModelType);
+        this.get('port').off('data:modelTypesAdded', this, this.updateModelType);
+        this.get('port').send('data:releaseModelTypes');
+      },
+
+      addModelTypes: function(message) {
+        this.get('currentModel').pushObjects(message.modelTypes);
+      },
+
+      updateModelTypes: function(message) {
+        var self = this;
+        message.modelTypes.forEach(function(modelType) {
+          var currentType = self.get('currentModel').findProperty('objectId', modelType.objectId);
+          Ember.set(currentType, 'count', modelType.count);
+        });
+      },
+
+      events: {
+        viewRecords: function(type) {
+          this.transitionTo('records', type);
+        }
+      }
+    });
+
+
+    return ModelTypesRoute;
+  });
+define("routes/records",
+  [],
+  function() {
+    "use strict";
+    var Promise = Ember.RSVP.Promise;
+
+    var RecordsRoute = Ember.Route.extend({
+      setupController: function(controller, model) {
+        this._super(controller, model);
+
+        var type = this.modelFor('model_type');
+
+        controller.set('modelType', this.modelFor('model_type'));
+
+        this.get('port').on('data:recordsAdded', this, this.addRecords);
+        this.get('port').on('data:recordUpdated', this, this.updateRecord);
+        this.get('port').on('data:recordsRemoved', this, this.removeRecords);
+        this.get('port').send('data:getRecords', { objectId: type.objectId });
+      },
+
+      model: function() {
+        return [];
+      },
+
+      deactivate: function() {
+        this.get('port').off('data:recordsAdded', this, this.addRecords);
+        this.get('port').off('data:recordUpdated', this, this.updateRecord);
+        this.get('port').off('data:recordsRemoved', this, this.removeRecords);
+        this.get('port').send('data:releaseRecords');
+      },
+
+      updateRecord: function(message) {
+        var currentRecord = this.get('currentModel').findProperty('objectId', message.record.objectId);
+        Ember.set(currentRecord, 'columnValues', message.record.columnValues);
+      },
+
+      addRecords: function(message) {
+        this.get('currentModel').pushObjects(message.records);
+      },
+
+      removeRecords: function(message) {
+        this.get('currentModel').removeAt(message.index, message.count);
+      },
+
+      events: {
+        inspectModel: function(model) {
+          this.get('port').send('data:inspectModel', { objectId: Ember.get(model, 'objectId') });
+        }
+      }
+    });
+
+
+    return RecordsRoute;
   });
 define("routes/route_tree",
   [],
@@ -805,6 +1028,12 @@ function program1(depth0,data) {
   options = {hash:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
   stack2 = ((stack1 = helpers.linkTo),stack1 ? stack1.call(depth0, "route_tree", options) : helperMissing.call(depth0, "linkTo", "route_tree", options));
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n        </li>\n        <li class=\"main-nav__item\">\n          ");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  stack2 = ((stack1 = helpers.linkTo),stack1 ? stack1.call(depth0, "data", options) : helperMissing.call(depth0, "linkTo", "data", options));
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
   data.buffer.push("\n        </li>\n      </ul>\n    </nav>\n  </div>\n\n\n  <div class=\"app__main\">\n    ");
   hashTypes = {};
   hashContexts = {};
@@ -812,7 +1041,7 @@ function program1(depth0,data) {
   data.buffer.push("\n  </div>\n\n  ");
   hashTypes = {};
   hashContexts = {};
-  stack2 = helpers.unless.call(depth0, "inspectorExpanded", {hash:{},inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  stack2 = helpers.unless.call(depth0, "inspectorExpanded", {hash:{},inverse:self.noop,fn:self.program(8, program8, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
   data.buffer.push("\n\n  <div class=\"app__right-col\" ");
   hashContexts = {'style': depth0};
@@ -823,7 +1052,7 @@ function program1(depth0,data) {
   data.buffer.push(">\n\n    ");
   hashTypes = {};
   hashContexts = {};
-  stack2 = helpers['if'].call(depth0, "inspectorExpanded", {hash:{},inverse:self.noop,fn:self.program(8, program8, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  stack2 = helpers['if'].call(depth0, "inspectorExpanded", {hash:{},inverse:self.noop,fn:self.program(10, program10, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
   data.buffer.push("\n\n    <div class=\"app__inspector-container\">\n      ");
   hashTypes = {};
@@ -847,6 +1076,12 @@ function program4(depth0,data) {
 
 function program6(depth0,data) {
   
+  
+  data.buffer.push("\n           Data\n          ");
+  }
+
+function program8(depth0,data) {
+  
   var buffer = '', hashTypes, hashContexts;
   data.buffer.push("\n    <div class=\"app__toggle-inspector-btn\" ");
   hashTypes = {};
@@ -856,7 +1091,7 @@ function program6(depth0,data) {
   return buffer;
   }
 
-function program8(depth0,data) {
+function program10(depth0,data) {
   
   var buffer = '', stack1, hashContexts, hashTypes, options;
   data.buffer.push("\n      <div class=\"app__right-col-drag\">\n        ");
@@ -875,7 +1110,7 @@ function program8(depth0,data) {
   return buffer;
   }
 
-function program10(depth0,data) {
+function program12(depth0,data) {
   
   
   data.buffer.push("\n  No Ember Application Detected.\n");
@@ -883,7 +1118,7 @@ function program10(depth0,data) {
 
   hashTypes = {};
   hashContexts = {};
-  stack1 = helpers['if'].call(depth0, "emberApplication", {hash:{},inverse:self.program(10, program10, data),fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  stack1 = helpers['if'].call(depth0, "emberApplication", {hash:{},inverse:self.program(12, program12, data),fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n");
   return buffer;
@@ -896,6 +1131,20 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   var buffer = '';
 
 
+  return buffer;
+  
+});
+
+this["Ember"]["TEMPLATES"]["data"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', hashTypes, hashContexts, escapeExpression=this.escapeExpression;
+
+
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "outlet", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n");
   return buffer;
   
 });
@@ -1137,13 +1386,168 @@ function program3(depth0,data) {
   
 });
 
+this["Ember"]["TEMPLATES"]["model_type"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', hashTypes, hashContexts, escapeExpression=this.escapeExpression;
+
+
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "outlet", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n");
+  return buffer;
+  
+});
+
+this["Ember"]["TEMPLATES"]["model_types"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashContexts, hashTypes, escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  
+  data.buffer.push("\n            <th><div class=\"table-tree__th-inner\"># Records</div></th>\n            ");
+  }
+
+function program3(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes;
+  data.buffer.push("\n            <tr ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': ("selected:table-tree__row_selected")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" data-label=\"model-type-row\" ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "viewRecords", "", {hash:{},contexts:[depth0,depth0],types:["STRING","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n\n              <td data-label=\"model-type-name\" class=\"table-tree__clickable\" >\n                ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n              </td>\n\n              ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.unless.call(depth0, "collapsed", {hash:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n            </tr>\n          ");
+  return buffer;
+  }
+function program4(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n              <td data-label=\"model-type-name\" class=\"table-tree__clickable\" >\n                ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "count", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n              </td>\n              ");
+  return buffer;
+  }
+
+  data.buffer.push("<div class=\"split__parent\">\n  <div ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': (":table-tree collapsed:table-tree_state_collapsed")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n    <div class=\"table-tree__table-container\">\n      <table cellspacing=\"0\" border-collapse=\"collapse\">\n        <thead>\n          <tr>\n            <th><div class=\"table-tree__th-inner\">Model Type</div></th>\n            ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.unless.call(depth0, "collapsed", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n          </tr>\n        </thead>\n        <tbody>\n          ");
+  hashContexts = {'itemController': depth0};
+  hashTypes = {'itemController': "STRING"};
+  stack1 = helpers.each.call(depth0, {hash:{
+    'itemController': ("modelTypeItem")
+  },inverse:self.noop,fn:self.program(3, program3, data),contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n        </tbody>\n      </table>\n    </div>\n  </div>\n</div>\n<div class=\"split__child\">\n  ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "outlet", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n</div>\n");
+  return buffer;
+  
+});
+
+this["Ember"]["TEMPLATES"]["records"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashTypes, hashContexts, options, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n            <th><div class=\"table-tree__th-inner\">");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</div></th>\n          ");
+  return buffer;
+  }
+
+function program3(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n          <tr data-label=\"model-type-row\" ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "inspectModel", "model", {hash:{},contexts:[depth0,depth0],types:["STRING","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n            ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "columns", {hash:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n          </tr>\n        ");
+  return buffer;
+  }
+function program4(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n            <td data-label=\"model-type-name\" class=\"table-tree__clickable\" >\n              ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n            </td>\n            ");
+  return buffer;
+  }
+
+  data.buffer.push("<div class=\"table-tree table-tree_type_advanced\">\n  <div class=\"table-tree__table-container\">\n    <table cellspacing=\"0\" border-collapse=\"collapse\">\n      <thead>\n        <tr>\n          ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "columns", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n        </tr>\n      </thead>\n      <tbody>\n        ");
+  hashContexts = {'itemController': depth0};
+  hashTypes = {'itemController': "STRING"};
+  stack1 = helpers.each.call(depth0, "filtered", {hash:{
+    'itemController': ("record")
+  },inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n      </tbody>\n    </table>\n  </div>\n\n  <div class=\"table-tree__filter\">\n    ");
+  hashContexts = {'value': depth0,'placeholder': depth0};
+  hashTypes = {'value': "ID",'placeholder': "STRING"};
+  options = {hash:{
+    'value': ("search"),
+    'placeholder': ("Search")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.input),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "input", options))));
+  data.buffer.push("\n  </div>\n\n</div>\n");
+  return buffer;
+  
+});
+
 this["Ember"]["TEMPLATES"]["route_tree"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [3,'>= 1.0.0-rc.4'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
 
 
-  data.buffer.push("<div class=\"table-tree\">\n  <div class=\"table-tree__table-container\">\n    <table cellspacing=\"0\" border-collapse=\"collapse\">\n      <thead>\n        <tr>\n          <th>\n            <div class=\"table-tree__th-inner\">Route Name</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Route</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Controller</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Template</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">URL</div>\n          </th>\n        </tr>\n      </thead>\n      <tbody>\n        ");
+  data.buffer.push("<div class=\"table-tree table-tree_color_faded\">\n  <div class=\"table-tree__table-container\">\n    <table cellspacing=\"0\" border-collapse=\"collapse\">\n      <thead>\n        <tr>\n          <th>\n            <div class=\"table-tree__th-inner\">Route Name</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Route</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Controller</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Template</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">URL</div>\n          </th>\n        </tr>\n      </thead>\n      <tbody>\n        ");
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
@@ -1220,6 +1624,18 @@ define("views/mixin_stack",
 
 
     return MixinStackView;
+  });
+define("views/model_types",
+  [],
+  function() {
+    "use strict";
+    var ModelTypesView = Ember.View.extend({
+      classNames: ['split'],
+      classNameBindings: ['controller.collapsed:split_state_collapsed']
+    });
+
+
+    return ModelTypesView;
   });
 define("views/property_field",
   [],
