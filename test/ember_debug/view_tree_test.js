@@ -1,5 +1,5 @@
-import "ember_debug" as EmberDebug;
-import "test_app" as App;
+import EmberDebug from "ember_debug";
+import App from "test_app";
 
 
 var port;

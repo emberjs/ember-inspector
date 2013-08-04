@@ -36,4 +36,4 @@ var RouteNodeController = Ember.ObjectController.extend({
 
 });
 
-export = RouteNodeController;
+export defaultRouteNodeController;

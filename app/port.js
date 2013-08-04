@@ -67,4 +67,4 @@ Ember.Application.initializer({
   }
 });
 
-export = Port;
+export defaultPort;

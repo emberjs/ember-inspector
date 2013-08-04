@@ -1,3 +1,3 @@
 var ViewTreeItemController = Ember.Controller.extend();
 
-export = ViewTreeItemController;
+export defaultViewTreeItemController;

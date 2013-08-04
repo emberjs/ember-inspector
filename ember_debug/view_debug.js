@@ -1,4 +1,4 @@
-import "mixins/port_mixin" as PortMixin;
+import PortMixin from "mixins/port_mixin";
 
 var layerDiv,
     previewDiv,
@@ -322,4 +322,4 @@ function virtualRange(view) {
 }
 
 
-export = ViewDebug;
+export defaultViewDebug;

@@ -50,4 +50,4 @@ var PortMixin = Ember.Mixin.create({
 
 });
 
-export = PortMixin;
+export defaultPortMixin;

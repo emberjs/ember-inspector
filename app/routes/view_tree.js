@@ -22,4 +22,4 @@ function arrayizeTree(tree) {
 }
 
 
-export = ViewTreeRoute;
+export defaultViewTreeRoute;

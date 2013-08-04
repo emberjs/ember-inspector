@@ -42,4 +42,4 @@ function arrayizeTree(tree) {
   return tree;
 }
 
-export = RouteTreeRoute;
+export defaultRouteTreeRoute;

@@ -18,4 +18,4 @@ var MixinStackController = Ember.ArrayController.extend({
   }
 });
 
-export = MixinStackController;
+export defaultMixinStackController;

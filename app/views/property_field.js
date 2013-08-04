@@ -22,4 +22,4 @@ var PropertyFieldView = Ember.TextField.extend({
 
 });
 
-export = PropertyFieldView;
+export defaultPropertyFieldView;

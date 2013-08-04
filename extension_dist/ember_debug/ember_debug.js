@@ -111,49 +111,6 @@ if (typeof define !== 'function' && typeof requireModule !== 'function') {
 
 }());
 
-define("data_debug",
-  ["mixins/port_mixin"],
-  function(PortMixin) {
-    "use strict";
-
-    var classify = Ember.String.classify;
-
-
-    var DataDebug = Ember.Object.extend(PortMixin, {
-      init: function() {
-        var self = this;
-
-        this._super();
-
-        var namespaces = Ember.Namespace.NAMESPACES;
-
-        namespaces.forEach(function(namespace) {
-          if (namespace === self.get('namespace') || namespace === Ember || namespace === window.DS) {
-            return true;
-          }
-          for (var key in namespace) {
-            var Model = namespace[key];
-            if (window.DS.Model.detect(Model)) {
-              console.log(key);
-            }
-          }
-        });
-      },
-
-      namespace: null,
-
-      port: Ember.computed.alias('namespace.port'),
-
-      application: Ember.computed.alias('namespace.application'),
-
-      portNamespace: 'data',
-
-      messages: {}
-    });
-
-
-    return DataDebug;
-  });
 define("ember_debug",
   ["port","object_inspector","view_debug","route_debug"],
   function(Port, ObjectInspector, ViewDebug, RouteDebug) {

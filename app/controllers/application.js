@@ -32,4 +32,4 @@ var ApplicationController = Ember.Controller.extend({
   }
 });
 
-export = ApplicationController;
+export defaultApplicationController;

@@ -7,4 +7,4 @@ Router.map(function() {
   this.route('route_tree');
 });
 
-export = Router;
+export defaultRouter;

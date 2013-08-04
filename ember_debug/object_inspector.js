@@ -1,4 +1,4 @@
-import "mixins/port_mixin" as PortMixin;
+import PortMixin from "mixins/port_mixin";
 
 var ObjectInspector = Ember.Object.extend(PortMixin, {
   namespace: null,
@@ -461,4 +461,4 @@ function inspectController(controller) {
   return controller.get('_debugContainerKey') || controller.toString();
 }
 
-export = ObjectInspector;
+export defaultObjectInspector;

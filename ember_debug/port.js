@@ -27,4 +27,4 @@ var connect = function() {
   chromePort.start();
 };
 
-export = Port;
+export defaultPort;

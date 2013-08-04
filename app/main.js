@@ -1,7 +1,7 @@
-import "application" as App;
-import "views/tree_node_controller" as TreeNodeControllerView;
-import "views/property_field" as PropertyFieldView;
-import "port" as Port;
+import App from "application";
+import TreeNodeControllerView from "views/tree_node_controller";
+import PropertyFieldView from "views/property_field" ;
+import Port from "port";
 
 var EmberExtension;
 
@@ -30,4 +30,4 @@ function injectDebugger() {
 }
 
 
-export = EmberExtension;
+export defaultEmberExtension;

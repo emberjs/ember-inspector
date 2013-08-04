@@ -1,7 +1,7 @@
-import "port" as Port;
-import "object_inspector" as ObjectInspector;
-import "view_debug" as ViewDebug;
-import "route_debug" as RouteDebug;
+import Port from "port";
+import ObjectInspector from "object_inspector";
+import ViewDebug from "view_debug";
+import RouteDebug from "route_debug";
 
 console.debug("Ember Debugger Active");
 
@@ -62,4 +62,4 @@ function getApplication() {
 
 Ember.Debug = EmberDebug;
 
-export = EmberDebug;
+export default EmberDebug;

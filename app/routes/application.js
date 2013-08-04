@@ -58,4 +58,4 @@ function arrayize(mixin) {
   Ember.NativeArray.apply(mixin.properties);
 }
 
-export = ApplicationRoute;
+export defaultApplicationRoute;

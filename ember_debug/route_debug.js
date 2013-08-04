@@ -1,4 +1,4 @@
-import 'mixins/port_mixin' as PortMixin;
+import PortMixin from 'mixins/port_mixin';
 
 var classify = Ember.String.classify;
 
@@ -144,4 +144,4 @@ function getURL(segments) {
   return url;
 }
 
-export = RouteDebug;
+export defaultRouteDebug;

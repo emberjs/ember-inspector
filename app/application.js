@@ -1,5 +1,5 @@
-import "router" as Router;
-import "resolver" as resolver;
+import Router from "router";
+import resolver from "resolver";
 
 var App = Ember.Application.extend({
   modulePrefix: '',
@@ -7,4 +7,4 @@ var App = Ember.Application.extend({
   Router: Router
 });
 
-export = App;
+export defaultApp;

@@ -1,4 +1,4 @@
-import "main" as EmberExtension;
+import EmberExtension from "main";
 
 var port;
 

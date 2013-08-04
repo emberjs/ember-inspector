@@ -39,4 +39,4 @@ Ember.TEMPLATES.simple = compile('Simple');
 Ember.TEMPLATES.posts = compile('Posts');
 
 
-export = App;
+export defaultApp;
