@@ -12,6 +12,52 @@ define("application",
 
     return App;
   });
+define("components/drag_handle",
+  [],
+  function() {
+    "use strict";
+    var DragHandleComponent = Ember.Component.extend({
+      classNames: ['drag-handle'],
+      isDragging: false,
+      positionLeft: null,
+      positionRight: null,
+
+      startDragging: function() {
+        var self = this,
+            body = Ember.$('body'),
+            namespace = 'drag-' + this.get('elementId');
+
+        this.set('isDragging', true);
+        body.on('mousemove.' + namespace, function(e){
+          self.setProperties({
+            positionRight: body.width() - e.pageX,
+            positionLeft: e.pageX
+          });
+        })
+        .on('mouseup.' + namespace + ' mouseleave.' + namespace, function(){
+          self.stopDragging();
+        });
+      },
+
+      stopDragging: function() {
+        this.set('isDragging', false);
+        Ember.$('body').off('.drag-' + this.get('elementId'));
+      },
+
+      willDestroyElement: function() {
+        this._super();
+        this.stopDragging();
+      },
+
+      mouseDown: function() {
+        this.startDragging();
+        return false;
+      }
+    });
+
+
+    return DragHandleComponent;
+  });
 define("controllers/application",
   [],
   function() {
@@ -20,6 +66,8 @@ define("controllers/application",
       needs: ['mixinStack', 'mixinDetails'],
 
       emberApplication: false,
+      isDragging: false,
+      inspectorWidth: null,
 
       // Indicates that the extension window is focused,
       active: true,
@@ -303,8 +351,8 @@ define("controllers/view_tree_item",
     return ViewTreeItemController;
   });
 define("main",
-  ["application","views/tree_node_controller","views/property_field","port"],
-  function(App, TreeNodeControllerView, PropertyFieldView, Port) {
+  ["application","views/tree_node_controller","views/property_field","components/drag_handle","port"],
+  function(App, TreeNodeControllerView, PropertyFieldView, DragHandleComponent, Port) {
     "use strict";
 
     var EmberExtension;
@@ -312,6 +360,7 @@ define("main",
     EmberExtension = App.create();
     EmberExtension.TreeNodeControllerView = TreeNodeControllerView;
     EmberExtension.PropertyFieldView = PropertyFieldView;
+    EmberExtension.DragHandleComponent = DragHandleComponent;
     EmberExtension.Port = Port;
 
 
@@ -733,7 +782,7 @@ function program4(depth0,data) {
 this["Ember"]["TEMPLATES"]["application"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [3,'>= 1.0.0-rc.4'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
-  var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
+  var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
 
 function program1(depth0,data) {
   
@@ -765,12 +814,18 @@ function program1(depth0,data) {
   hashContexts = {};
   stack2 = helpers.unless.call(depth0, "inspectorExpanded", {hash:{},inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
-  data.buffer.push("\n\n  <div class=\"app__right-col\">\n    ");
+  data.buffer.push("\n\n  <div class=\"app__right-col\" ");
+  hashContexts = {'style': depth0};
+  hashTypes = {'style': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'style': ("view.inspectorStyle")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n\n    ");
   hashTypes = {};
   hashContexts = {};
   stack2 = helpers['if'].call(depth0, "inspectorExpanded", {hash:{},inverse:self.noop,fn:self.program(8, program8, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
-  data.buffer.push("\n    <div class=\"app__inspector-container\">\n      ");
+  data.buffer.push("\n\n    <div class=\"app__inspector-container\">\n      ");
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
@@ -803,8 +858,16 @@ function program6(depth0,data) {
 
 function program8(depth0,data) {
   
-  var buffer = '', hashTypes, hashContexts;
-  data.buffer.push("\n    <div class=\"app__toggle-inspector-btn\" ");
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\n      <div class=\"app__right-col-drag\">\n        ");
+  hashContexts = {'isDragging': depth0,'positionRight': depth0};
+  hashTypes = {'isDragging': "ID",'positionRight': "ID"};
+  options = {hash:{
+    'isDragging': ("isDragging"),
+    'positionRight': ("inspectorWidth")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers['drag-handle']),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "drag-handle", options))));
+  data.buffer.push("\n      </div>\n\n      <div class=\"app__toggle-inspector-btn\" ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "toggleInspector", {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
@@ -823,6 +886,16 @@ function program10(depth0,data) {
   stack1 = helpers['if'].call(depth0, "emberApplication", {hash:{},inverse:self.program(10, program10, data),fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n");
+  return buffer;
+  
+});
+
+this["Ember"]["TEMPLATES"]["components/drag-handle"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '';
+
+
   return buffer;
   
 });
@@ -1102,7 +1175,11 @@ define("views/application",
     var ApplicationView = Ember.View.extend({
       classNames: ['app'],
 
-      classNameBindings: ['inactive:app_state_inactive', 'controller.inspectorExpanded:app_inspector_expanded'],
+      classNameBindings: [
+        'inactive:app_state_inactive',
+        'controller.inspectorExpanded:app_inspector_expanded',
+        'controller.isDragging:app_state_dragging'
+      ],
 
       inactive: Ember.computed.not('controller.active'),
 
@@ -1114,11 +1191,20 @@ define("views/application",
           this.set('controller.active', true);
         }
       },
+
       focusOut: function() {
         if (this.get('controller.active')) {
           this.set('controller.active', false);
         }
-      }
+      },
+
+      inspectorStyle: function() {
+        if (this.get('controller.inspectorExpanded')) {
+          return 'width: ' + this.get('controller.inspectorWidth') + 'px;';
+        } else {
+          return '';
+        }
+      }.property('controller.inspectorWidth', 'controller.inspectorExpanded')
     });
 
 

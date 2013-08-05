@@ -1,0 +1,25 @@
+.split {
+  height: 100%;
+}
+
+.split__parent {
+  height: 100%;
+}
+
+.split__splitter {
+  display: none;
+}
+
+.split_state_collapsed {
+   display: -webkit-flex;
+  -webkit-flex-direction: row;
+}
+
+.split_state_collapsed .split__parent {
+  width: 150px;
+}
+
+.split_state_collapsed .split__child {
+  -webkit-flex: 1;
+  height: 100%;
+}

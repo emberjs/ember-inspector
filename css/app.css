@@ -30,6 +30,7 @@
   cursor: pointer;
   width: 20px;
   background: #e8e8e8;
+  border-left: solid 1px #ccc;
 
   display:-webkit-box;
   -webkit-box-pack:center;
@@ -44,11 +45,19 @@
   position: relative;
   height: 100%;
   width: 0px;
-  border-left: solid 1px #ccc;
   transition: width 50ms;
 
   display: -webkit-flex;
   -webkit-flex-direction: row;
+}
+
+.app__right-col-drag {
+  position: absolute;
+  top: 0;
+  left: -3px;
+  height: 100%;
+  width: 7px;
+  cursor: col-resize;
 }
 
 .app__inspector-container {
@@ -76,4 +85,19 @@
 /* Modifier: inspector = expanded */
 .app_inspector_expanded .app__right-col {
   width: 500px;
+  max-width: 60%;
+  min-width: 200px;
+}
+
+/* Modifier: state = dragging */
+.app_state_dragging {
+  cursor: col-resize;
+}
+
+.app_state_dragging .app__toggle-inspector-btn {
+  cursor: col-resize;
+}
+
+.app_state_dragging .app__right-col {
+  transition: none;
 }

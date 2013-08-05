@@ -30,6 +30,7 @@
   cursor: pointer;
   width: 20px;
   background: #e8e8e8;
+  border-left: solid 1px #ccc;
 
   display:-webkit-box;
   -webkit-box-pack:center;
@@ -44,11 +45,19 @@
   position: relative;
   height: 100%;
   width: 0px;
-  border-left: solid 1px #ccc;
   transition: width 50ms;
 
   display: -webkit-flex;
   -webkit-flex-direction: row;
+}
+
+.app__right-col-drag {
+  position: absolute;
+  top: 0;
+  left: -3px;
+  height: 100%;
+  width: 7px;
+  cursor: col-resize;
 }
 
 .app__inspector-container {
@@ -76,6 +85,21 @@
 /* Modifier: inspector = expanded */
 .app_inspector_expanded .app__right-col {
   width: 500px;
+  max-width: 60%;
+  min-width: 200px;
+}
+
+/* Modifier: state = dragging */
+.app_state_dragging {
+  cursor: col-resize;
+}
+
+.app_state_dragging .app__toggle-inspector-btn {
+  cursor: col-resize;
+}
+
+.app_state_dragging .app__right-col {
+  transition: none;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -103,6 +127,22 @@ body, div, nav {
 
 a {
   color: inherit;
+}
+
+/**
+ DRAG-HANDLE
+ ===========
+ The drag handle used for resizing elements
+ Should be wrapped in the element with the
+ desired handle dimensions
+*/
+
+.drag-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 /**
@@ -397,6 +437,32 @@ a {
 
 .object-inspector__back_state_disabled {
   opacity: 0.4;
+}
+
+.split {
+  height: 100%;
+}
+
+.split__parent {
+  height: 100%;
+}
+
+.split__splitter {
+  display: none;
+}
+
+.split_state_collapsed {
+   display: -webkit-flex;
+  -webkit-flex-direction: row;
+}
+
+.split_state_collapsed .split__parent {
+  width: 150px;
+}
+
+.split_state_collapsed .split__child {
+  -webkit-flex: 1;
+  height: 100%;
 }
 
 /**

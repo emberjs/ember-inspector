@@ -35,10 +35,16 @@
     <div class="app__toggle-inspector-btn" {{action "toggleInspector"}}>&laquo;</div>
   {{/unless}}
 
-  <div class="app__right-col">
+  <div class="app__right-col" {{bindAttr style="view.inspectorStyle"}}>
+
     {{#if inspectorExpanded}}
-    <div class="app__toggle-inspector-btn" {{action "toggleInspector"}}>&raquo;</div>
+      <div class="app__right-col-drag">
+        {{drag-handle isDragging=isDragging positionRight=inspectorWidth}}
+      </div>
+
+      <div class="app__toggle-inspector-btn" {{action "toggleInspector"}}>&raquo;</div>
     {{/if}}
+
     <div class="app__inspector-container">
       {{render "mixinStack"}}
     </div>
