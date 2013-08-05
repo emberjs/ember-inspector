@@ -7,4 +7,4 @@ var App = Ember.Application.extend({
   Router: Router
 });
 
-export defaultApp;
+export default App;

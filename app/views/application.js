@@ -20,4 +20,4 @@ var ApplicationView = Ember.View.extend({
   }
 });
 
-export defaultApplicationView;
+export default ApplicationView;

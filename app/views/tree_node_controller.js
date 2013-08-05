@@ -20,4 +20,4 @@ var TreeNodeControllerView = Ember.View.extend({
   }
 });
 
-export defaultTreeNodeControllerView;
+export default TreeNodeControllerView;

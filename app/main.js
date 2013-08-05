@@ -30,4 +30,4 @@ function injectDebugger() {
 }
 
 
-export defaultEmberExtension;
+export default EmberExtension;

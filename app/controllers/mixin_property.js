@@ -55,4 +55,4 @@ var MixinPropertyController = Ember.ObjectController.extend({
 
 });
 
-export defaultMixinPropertyController;
+export default MixinPropertyController;

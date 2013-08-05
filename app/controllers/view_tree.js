@@ -22,4 +22,4 @@ var ViewTreeController = Ember.Controller.extend({
   }
 });
 
-export defaultViewTreeController;
+export default ViewTreeController;

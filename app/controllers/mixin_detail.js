@@ -44,4 +44,4 @@ var MixinDetailController = Ember.ObjectController.extend({
   }
 });
 
-export defaultMixinDetailController;
+export default MixinDetailController;
