@@ -6,7 +6,7 @@ module.exports = {
       }
     },
     files: {
-      "tmp/public/ember_extension/templates.js": "app/templates/*.handlebars"
+      "tmp/public/ember_extension/templates.js": "app/templates/**/*.handlebars"
     }
   }
 };
