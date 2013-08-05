@@ -1,0 +1,15 @@
+/**
+ DRAG-HANDLE
+ ===========
+ The drag handle used for resizing elements
+ Should be wrapped in the element with the
+ desired handle dimensions
+*/
+
+.drag-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}

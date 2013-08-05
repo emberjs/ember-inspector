@@ -1,6 +1,7 @@
 import "application" as App;
 import "views/tree_node_controller" as TreeNodeControllerView;
 import "views/property_field" as PropertyFieldView;
+import "components/drag_handle" as DragHandleComponent;
 import "port" as Port;
 
 var EmberExtension;
@@ -8,6 +9,7 @@ var EmberExtension;
 EmberExtension = App.create();
 EmberExtension.TreeNodeControllerView = TreeNodeControllerView;
 EmberExtension.PropertyFieldView = PropertyFieldView;
+EmberExtension.DragHandleComponent = DragHandleComponent;
 EmberExtension.Port = Port;
 
 

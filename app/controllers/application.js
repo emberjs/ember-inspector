@@ -2,6 +2,8 @@ var ApplicationController = Ember.Controller.extend({
   needs: ['mixinStack', 'mixinDetails'],
 
   emberApplication: false,
+  isDragging: false,
+  inspectorWidth: null,
 
   // Indicates that the extension window is focused,
   active: true,
