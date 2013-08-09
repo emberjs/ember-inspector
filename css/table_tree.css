@@ -53,6 +53,7 @@
 .table-tree th {
   font-weight: normal;
   padding: 0;
+  min-width: 30px;
 }
 
 .table-tree__th-inner {

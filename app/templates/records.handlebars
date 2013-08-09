@@ -23,7 +23,15 @@
   </div>
 
   <div class="table-tree__filter">
-    {{input value=search placeholder="Search"}}
+    <div class="filter-bar">
+      <div class="filter-bar__search">
+        {{input value=search placeholder="Search"}}
+      </div>
+      {{#each filters itemController="recordFilter"}}
+        <div class="filter-bar__checkbox">{{input type="checkbox" checked=checked}}
+        <label {{bindAttr style="labelStyle"}} {{action "toggleCheck"}}>{{desc}}</label></div>
+      {{/each}}
+    </div>
   </div>
 
 </div>

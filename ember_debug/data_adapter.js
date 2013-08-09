@@ -47,6 +47,24 @@ var DataAdapter = Ember.Object.extend({
     return klass !== DS.Model && DS.Model.detect(klass);
   },
 
+
+  getFilters: function() {
+    return [
+      {
+        name: 'isNew',
+        desc: 'New'
+      },
+      {
+        name: 'isModified',
+        desc: 'Modified'
+      },
+      {
+        name: 'isClean',
+        desc: 'Clean'
+      }
+    ];
+  },
+
   /**
    Get the columns for a given model type.
 
@@ -189,9 +207,8 @@ var DataAdapter = Ember.Object.extend({
     var self = this, releaseMethods = [], records = this.getRecords(type), release;
 
     var recordsToSend = records.map(function(record) {
-      var wrapped = self.wrapRecord(record, recordsUpdated);
-      releaseMethods.push(wrapped.release);
-      return wrapped.record;
+      releaseMethods.push(self.observeRecord(record, recordsUpdated));
+      return self.wrapRecord(record);
     });
 
     recordsAdded(recordsToSend);
@@ -200,8 +217,8 @@ var DataAdapter = Ember.Object.extend({
       for (var i = idx; i < idx + addedCount; i++) {
         var record = array.objectAt(i);
         var wrapped = self.wrapRecord(record, recordsUpdated);
-        releaseMethods.push(wrapped.release);
-        recordsAdded([wrapped.record]);
+        releaseMethods.push(self.observeRecord(record, recordsUpdated));
+        recordsAdded([wrapped]);
       }
 
       if (removedCount) {
@@ -238,32 +255,64 @@ var DataAdapter = Ember.Object.extend({
    Wraps a record and observers changes to it
 
    @param {Object} record The record instance
-   @param {Function} recordsUpdated The callback to call when the record changes
-   @return {Function} Function to call to clear observers
+   @return {Object} the wrapped record. Format:
+    columnValues: {Array}
+    searchIndex: {Array}
   */
-  wrapRecord: function(record, recordsUpdated) {
-    var recordToSend = { object: record }, columnValues = {},
-        releaseMethods = [], searchIndex = [], keysToObserve = [],
-        count = 0, self = this;
+  wrapRecord: function(record) {
+    var recordToSend = { object: record }, columnValues = {}, self = this;
 
-    columnValues.id = get(record, 'id');
-    searchIndex.push(columnValues.id);
-    keysToObserve.push('id');
+    recordToSend.columnValues = this.getRecordColumnValues(record);
+    recordToSend.searchIndex = this.getRecordKeywords(record);
+    recordToSend.filterValues = this.getRecordFilterValues(record);
+
+    return recordToSend;
+  },
+
+  getRecordColumnValues: function(record) {
+    var self = this, count = 0,
+        columnValues = { id: get(record, 'id') };
 
     record.eachAttribute(function(key) {
-      var value = get(record, key);
-      searchIndex.push(value);
-      keysToObserve.push(key);
-      if (count++ <= self.attributeLimit) {
-        columnValues[key] = value;
+      if (count++ > self.attributeLimit) {
+        return false;
       }
+      var value = get(record, key);
+      columnValues[key] = value;
+    });
+    return columnValues;
+  },
+
+  getRecordKeywords: function(record) {
+    var keywords = [], keys = ['id'];
+    record.eachAttribute(function(key) {
+      keys.push(key);
+    });
+    keys.forEach(function(key) {
+      keywords.push(get(record, key));
+    });
+    return keywords;
+  },
+
+  getRecordFilterValues: function(record) {
+    return {
+      isNew: record.get('isNew'),
+      isModified: record.get('isDirty') && !record.get('isNew'),
+      isClean: !record.get('isDirty')
+    };
+  },
+
+  observeRecord: function(record, recordsUpdated) {
+    var releaseMethods = [], self = this,
+        keysToObserve = ['id'];
+
+    record.eachAttribute(function(key) {
+      keysToObserve.push(key);
     });
 
-    // Observe relevant keys
     keysToObserve.forEach(function(key) {
       var handler = function() {
-        recordToSend.columnValues[key] = get(record, key);
-        recordsUpdated([recordToSend]);
+        recordsUpdated([self.wrapRecord(record)]);
       };
       Ember.addObserver(record, key, handler);
       releaseMethods.push(function() {
@@ -271,17 +320,11 @@ var DataAdapter = Ember.Object.extend({
       });
     });
 
-    recordToSend.columnValues = columnValues;
-    recordToSend.searchIndex = searchIndex;
-
     var release = function() {
       releaseMethods.forEach(function(fn) { fn(); } );
     };
 
-    return {
-      record: recordToSend,
-      release: release
-    };
+    return release;
   }
 
 });

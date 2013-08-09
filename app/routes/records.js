@@ -1,4 +1,4 @@
-var Promise = Ember.RSVP.Promise;
+var Promise = Ember.RSVP.Promise, set = Ember.set;
 
 var RecordsRoute = Ember.Route.extend({
   setupController: function(controller, model) {
@@ -11,6 +11,10 @@ var RecordsRoute = Ember.Route.extend({
     this.get('port').on('data:recordsAdded', this, this.addRecords);
     this.get('port').on('data:recordUpdated', this, this.updateRecord);
     this.get('port').on('data:recordsRemoved', this, this.removeRecords);
+    this.get('port').one('data:filters', this, function(message) {
+      this.set('controller.filters', message.filters);
+    });
+    this.get('port').send('data:getFilters');
     this.get('port').send('data:getRecords', { objectId: type.objectId });
   },
 
@@ -27,7 +31,9 @@ var RecordsRoute = Ember.Route.extend({
 
   updateRecord: function(message) {
     var currentRecord = this.get('currentModel').findProperty('objectId', message.record.objectId);
-    Ember.set(currentRecord, 'columnValues', message.record.columnValues);
+    set(currentRecord, 'columnValues', message.record.columnValues);
+    set(currentRecord, 'filterValues', message.record.filterValues);
+    set(currentRecord, 'searchIndex', message.record.searchIndex);
   },
 
   addRecords: function(message) {

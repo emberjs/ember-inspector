@@ -97,6 +97,7 @@ var DataDebug = Ember.Object.extend(PortMixin, {
     return {
       columnValues: record.columnValues,
       searchIndex: record.searchIndex,
+      filterValues: record.filterValues,
       objectId: objectId
     };
   },
@@ -163,6 +164,12 @@ var DataDebug = Ember.Object.extend(PortMixin, {
 
     inspectModel: function(message) {
       this.get('objectInspector').sendObject(this.sentRecords[message.objectId].object);
+    },
+
+    getFilters: function() {
+      this.sendMessage('filters', {
+        filters: this.adapter.getFilters()
+      });
     }
   }
 });

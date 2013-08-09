@@ -1,0 +1,13 @@
+.filter-bar {
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+}
+
+.filter-bar__search {
+  margin-right: 50px;
+  margin-left: 10px;
+}
+
+.filter-bar__checkbox {
+  padding: 5px 15px 0px;
+}
