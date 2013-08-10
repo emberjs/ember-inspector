@@ -66,7 +66,7 @@ var DataAdapter = Ember.Object.extend({
   */
   watchModelTypes: function(typesAdded, typesUpdated) {
     var modelTypes = this.getModelTypes(),
-        self = this, typesToSend, releaseMethods = [];
+        self = this, typesToSend, releaseMethods = Ember.A();
 
     typesToSend = modelTypes.map(function(type) {
       var wrapped = self.wrapModelType(type);
@@ -108,7 +108,7 @@ var DataAdapter = Ember.Object.extend({
     @return {Function} Method to call to remove all observers
   */
   watchRecords: function(type, recordsAdded, recordsUpdated, recordsRemoved) {
-    var self = this, releaseMethods = [], records = this.getRecords(type), release;
+    var self = this, releaseMethods = Ember.A(), records = this.getRecords(type), release;
 
     var recordsToSend = records.map(function(record) {
       releaseMethods.push(self.observeRecord(record, recordsUpdated));
@@ -183,7 +183,7 @@ var DataAdapter = Ember.Object.extend({
   */
   columnsForType: function(type) {
     var columns = [{ name: 'id' }], count = 0, self = this;
-    get(type, 'attributes').forEach(function(name, meta) {
+    Ember.A(get(type, 'attributes')).forEach(function(name, meta) {
         if (count++ > self.attributeLimit) { return false; }
         columns.push({ name: name });
     });
@@ -268,7 +268,7 @@ var DataAdapter = Ember.Object.extend({
     @return {Array} Array of model types
   */
   getModelTypes: function() {
-    var namespaces = Ember.Namespace.NAMESPACES, types = [], self = this;
+    var namespaces = Ember.A(Ember.Namespace.NAMESPACES), types = Ember.A(), self = this;
 
     namespaces.forEach(function(namespace) {
       for (var key in namespace) {
@@ -351,7 +351,7 @@ var DataAdapter = Ember.Object.extend({
     @return {Array} Relevant keywords for search.
   */
   getRecordKeywords: function(record) {
-    var keywords = [], keys = ['id'];
+    var keywords = [], keys = Ember.A(['id']);
     record.eachAttribute(function(key) {
       keys.push(key);
     });
@@ -386,13 +386,14 @@ var DataAdapter = Ember.Object.extend({
     @method getRecordColor
     @param {Object} The record instance
     @return {String} The record's color
+      Possible options: black, red, blue
   */
   getRecordColor: function(record) {
-    var color = '#4896ab';
+    var color = 'black';
     if (record.get('isNew')) {
-      color = '#768573';
+      color = 'blue';
     } else if (record.get('isDirty')) {
-      color = '#939';
+      color = 'red';
     }
     return color;
   },
@@ -409,8 +410,8 @@ var DataAdapter = Ember.Object.extend({
     @return {Function} The function to call to remove all observers.
   */
   observeRecord: function(record, recordsUpdated) {
-    var releaseMethods = [], self = this,
-        keysToObserve = ['id', 'isNew', 'isDirty'];
+    var releaseMethods = Ember.A(), self = this,
+        keysToObserve = Ember.A(['id', 'isNew', 'isDirty']);
 
     record.eachAttribute(function(key) {
       keysToObserve.push(key);

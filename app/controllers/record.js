@@ -2,8 +2,19 @@ var RecordController = Ember.ObjectController.extend({
 
   modelTypeColumns: Ember.computed.alias('target.target.columns'),
 
+  colorMap: {
+    red: '#ff2717',
+    blue: '#174fff'
+  },
+
   // TODO: Color record based on `color` property.
   style: function() {
+    if (!Ember.isEmpty(this.get('color'))) {
+      var color = this.colorMap[this.get('color')];
+      if (color) {
+        return 'color:' + color + ';';
+      }
+    }
     return '';
   }.property('color'),
 
