@@ -65,7 +65,6 @@ module("Data", {
     EmberExtension.reset();
 
     port = EmberExtension.__container__.lookup('port:main');
-
   }
 });
 
@@ -98,6 +97,11 @@ test("Records are successfully listed and bound", function() {
     return click(findByLabel('model-type-row').first());
   })
   .then(function() {
+    var columns = findByLabel('column-title');
+    equal(columns.eq(0).text().trim(), 'Id');
+    equal(columns.eq(1).text().trim(), 'Title');
+    equal(columns.eq(2).text().trim(), 'Body');
+
     var recordRows = findByLabel('record-row');
     equal(recordRows.length, 2);
 
