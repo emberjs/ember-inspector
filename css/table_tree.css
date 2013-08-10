@@ -130,8 +130,4 @@
   -webkit-flex: 1;
 }
 
-.table-tree_type_advanced  .table-tree__filter {
-  height: 30px;
-  background-color: #d6dde5;
-  border-top: solid 1px gray;
-}
+.table-tree_type_advanced  .table-tree__filter {}

@@ -308,13 +308,13 @@ var DataAdapter = Ember.Object.extend({
     @param {Object} record The record instance
     @return {Object} the wrapped record. Format:
     columnValues: {Array}
-    searchIndex: {Array}
+    searchKeywords: {Array}
   */
   wrapRecord: function(record) {
     var recordToSend = { object: record }, columnValues = {}, self = this;
 
     recordToSend.columnValues = this.getRecordColumnValues(record);
-    recordToSend.searchIndex = this.getRecordKeywords(record);
+    recordToSend.searchKeywords = this.getRecordKeywords(record);
     recordToSend.filterValues = this.getRecordFilterValues(record);
     recordToSend.color = this.getRecordColor(record);
 

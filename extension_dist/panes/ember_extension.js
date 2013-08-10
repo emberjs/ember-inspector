@@ -323,29 +323,12 @@ define("controllers/record_filter",
   function() {
     "use strict";
     var RecordFilterController = Ember.ObjectController.extend({
-      init: function() {
-        this._super();
-        this.valueChanged();
-      },
 
       needs: ['records'],
 
-      checked: true,
-
-      labelStyle: function() {
-        if (!this.get('checked')) { return 'text-decoration: line-through;'; }
-        return '';
-      }.property('checked'),
-
-      toggleCheck: function() {
-        this.toggleProperty('checked');
-      },
-
-      valueChanged: function() {
-        if (!this.get('name')) { return; }
-        this.set('controllers.records.filterValues.' + this.get('name'), this.get('checked'));
-        this.get('controllers.records').notifyPropertyChange('filterValues');
-      }.observes('checked', 'name')
+      checked: function() {
+        return this.get('controllers.records.filterValue') === this.get('name');
+      }.property('controllers.records.filterValue')
     });
 
 
@@ -366,35 +349,45 @@ define("controllers/records",
 
       filters: [],
 
-      filterValues: {},
+      filterValue: null,
+
+      noFilterValue: Ember.computed.none('filterValue'),
 
       search: '',
 
+      setFilter: function(val) {
+        val = val || null;
+        this.set('filterValue', val);
+      },
+
       modelChanged: function() {
-        this.set('search', '');
+        this.setProperties({
+          filterValue: null,
+          search: ''
+        });
       }.observes('model'),
 
       recordToString: function(record) {
-        var search = Ember.get(record, 'searchIndex').join(' ');
+        var search = Ember.get(record, 'searchKeywords').join(' ');
         return search.toLowerCase();
       },
 
       filtered: function() {
-        var self = this, search = this.get('search');
+        var self = this, search = this.get('search'), filter = this.get('filterValue');
         return this.get('model').filter(function(item) {
-          var filters = self.get('filterValues');
-          for(var key in filters) {
-            if (!filters[key] && Ember.get(item, 'filterValues.' + key)) {
-              return false;
-            }
+          // check filters
+          if (filter && !Ember.get(item, 'filterValues.' + filter)) {
+            return false;
           }
+
+          // check search
           if (!Ember.isEmpty(search)) {
             var searchString = self.recordToString(item);
             return !!searchString.toLowerCase().match(new RegExp('.*' + search + '.*'));
           }
           return true;
         });
-      }.property('search', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValues')
+      }.property('search', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValue')
 
     });
 
@@ -1599,30 +1592,22 @@ function program4(depth0,data) {
 
 function program6(depth0,data) {
   
-  var buffer = '', stack1, hashContexts, hashTypes, options;
-  data.buffer.push("\n        <div class=\"filter-bar__checkbox\">");
-  hashContexts = {'type': depth0,'checked': depth0};
-  hashTypes = {'type': "STRING",'checked': "ID"};
-  options = {hash:{
-    'type': ("checkbox"),
-    'checked': ("checked")
-  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
-  data.buffer.push(escapeExpression(((stack1 = helpers.input),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "input", options))));
-  data.buffer.push("\n        <label ");
-  hashContexts = {'style': depth0};
-  hashTypes = {'style': "STRING"};
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n        <div ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
   data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
-    'style': ("labelStyle")
+    'class': ("checked:filter-bar__radio_selected :filter-bar__radio")
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push(" ");
   hashTypes = {};
   hashContexts = {};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "toggleCheck", {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(">");
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "setFilter", "name", {hash:{},contexts:[depth0,depth0],types:["STRING","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" >");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "desc", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</label></div>\n      ");
+  data.buffer.push("</div>\n      ");
   return buffer;
   }
 
@@ -1639,14 +1624,25 @@ function program6(depth0,data) {
   },inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n      </tbody>\n    </table>\n  </div>\n\n  <div class=\"table-tree__filter\">\n    <div class=\"filter-bar\">\n      <div class=\"filter-bar__search\">\n        ");
-  hashContexts = {'value': depth0,'placeholder': depth0};
-  hashTypes = {'value': "ID",'placeholder': "STRING"};
+  hashContexts = {'type': depth0,'value': depth0,'placeholder': depth0};
+  hashTypes = {'type': "STRING",'value': "ID",'placeholder': "STRING"};
   options = {hash:{
+    'type': ("search"),
     'value': ("search"),
     'placeholder': ("Search")
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
   data.buffer.push(escapeExpression(((stack1 = helpers.input),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "input", options))));
-  data.buffer.push("\n      </div>\n      ");
+  data.buffer.push("\n      </div>\n      <div ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': ("noFilterValue:filter-bar__radio_selected :filter-bar__radio :filter-bar__radio_separate")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n          ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "setFilter", {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" >\n        All\n      </div>\n      ");
   hashContexts = {'itemController': depth0};
   hashTypes = {'itemController': "STRING"};
   stack2 = helpers.each.call(depth0, "filters", {hash:{

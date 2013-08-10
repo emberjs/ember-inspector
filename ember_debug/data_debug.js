@@ -95,7 +95,7 @@ var DataDebug = Ember.Object.extend(PortMixin, {
     this.sentRecords[objectId] = record;
     return {
       columnValues: record.columnValues,
-      searchIndex: record.searchIndex,
+      searchKeywords: record.searchKeywords,
       filterValues: record.filterValues,
       color: record.color,
       objectId: objectId

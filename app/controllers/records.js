@@ -9,35 +9,45 @@ var RecordsController = Ember.ArrayController.extend({
 
   filters: [],
 
-  filterValues: {},
+  filterValue: null,
+
+  noFilterValue: Ember.computed.none('filterValue'),
 
   search: '',
 
+  setFilter: function(val) {
+    val = val || null;
+    this.set('filterValue', val);
+  },
+
   modelChanged: function() {
-    this.set('search', '');
+    this.setProperties({
+      filterValue: null,
+      search: ''
+    });
   }.observes('model'),
 
   recordToString: function(record) {
-    var search = Ember.get(record, 'searchIndex').join(' ');
+    var search = Ember.get(record, 'searchKeywords').join(' ');
     return search.toLowerCase();
   },
 
   filtered: function() {
-    var self = this, search = this.get('search');
+    var self = this, search = this.get('search'), filter = this.get('filterValue');
     return this.get('model').filter(function(item) {
-      var filters = self.get('filterValues');
-      for(var key in filters) {
-        if (!filters[key] && Ember.get(item, 'filterValues.' + key)) {
-          return false;
-        }
+      // check filters
+      if (filter && !Ember.get(item, 'filterValues.' + filter)) {
+        return false;
       }
+
+      // check search
       if (!Ember.isEmpty(search)) {
         var searchString = self.recordToString(item);
         return !!searchString.toLowerCase().match(new RegExp('.*' + search + '.*'));
       }
       return true;
     });
-  }.property('search', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValues')
+  }.property('search', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValue')
 
 });
 
