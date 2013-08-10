@@ -1019,6 +1019,7 @@ define("object_inspector",
           mixinDetails.push({ name: name.toString(), properties: propertiesForMixin(mixin) });
         });
 
+        fixMandatorySetters(mixinDetails);
         applyMixinOverrides(mixinDetails);
 
         var propertyInfo = null;
@@ -1125,17 +1126,45 @@ define("object_inspector",
       for (var prop in hash) {
         if (!hash.hasOwnProperty(prop)) { continue; }
         if (prop.charAt(0) === '_') { continue; }
-        if (isMandatorySetter(hash, prop)) { continue; }
+        // if (isMandatorySetter(hash, prop)) { continue; }
         // when mandatory setter is removed, an `undefined` value may be set
         if (hash[prop] === undefined) { continue; }
-
-        replaceProperty(properties, prop, hash[prop]);
+        replaceProperty(properties, prop, hash[prop], isMandatorySetter(hash, prop));
       }
     }
 
+
+    function fixMandatorySetters(mixinDetails) {
+      var seen = {};
+      var propertiesToRemove = [];
+
+      mixinDetails.forEach(function(detail, detailIdx) {
+        detail.properties.forEach(function(property, propertyIdx) {
+          if(property.isMandatorySetter) {
+            seen[property.name] = {
+              name: property.name,
+              value: property.value.inspect,
+              detailIdx: detailIdx,
+              property: property
+            };
+          } else if(seen.hasOwnProperty(property.name) && seen[property.name] === property.value.inspect) {
+            propertiesToRemove.push(seen[property.name]);
+            delete seen[property.name];
+          }
+        });
+      });
+
+      propertiesToRemove.forEach(function(prop) {
+        var detail = mixinDetails[prop.detailIdx];
+        var index = detail.properties.indexOf(prop.property);
+        if (index !== -1) {
+          detail.properties.splice(index, 1);
+        }
+      });
+
+    }
     function applyMixinOverrides(mixinDetails) {
       var seen = {};
-
       mixinDetails.forEach(function(detail) {
         detail.properties.forEach(function(property) {
           if (Object.prototype.hasOwnProperty(property.name)) { return; }
@@ -1146,6 +1175,7 @@ define("object_inspector",
           }
 
           seen[property.name] = detail.name;
+
         });
       });
     }
@@ -1156,10 +1186,11 @@ define("object_inspector",
       if (descriptor.set && descriptor.set === Ember.MANDATORY_SETTER_FUNCTION) {
         return true;
       }
+      return false;
     }
 
 
-    function replaceProperty(properties, name, value) {
+    function replaceProperty(properties, name, value, mandatorySetter) {
       var found, type;
 
       for (var i=0, l=properties.length; i<l; i++) {
@@ -1174,8 +1205,9 @@ define("object_inspector",
       if (name) {
         type = name.PrototypeMixin ? 'ember-class' : 'ember-mixin';
       }
-
-      properties.push({ name: name, value: inspectValue(value) });
+      var prop = { name: name, value: inspectValue(value) };
+      prop.isMandatorySetter = mandatorySetter;
+      properties.push(prop);
     }
 
 
