@@ -115,7 +115,7 @@ define("data_adapter",
   [],
   function() {
     "use strict";
-    var get = Ember.get, DS = window.DS;
+    var get = Ember.get, capitalize = Ember.String.capitalize, underscore = Ember.String.underscore, DS = window.DS ;
 
     var DataAdapter = Ember.Object.extend({
       init: function() {
@@ -297,12 +297,14 @@ define("data_adapter",
         @param {Class} type The model type
         @return {Array} An array of columns of the following format:
          name: {String} name of the column
+         desc: {String} Humanized description (what would show in a table column name)
       */
       columnsForType: function(type) {
-        var columns = [{ name: 'id' }], count = 0, self = this;
+        var columns = [{ name: 'id', desc: 'Id' }], count = 0, self = this;
         Ember.A(get(type, 'attributes')).forEach(function(name, meta) {
             if (count++ > self.attributeLimit) { return false; }
-            columns.push({ name: name });
+            var desc = capitalize(underscore(name).replace('_', ' '));
+            columns.push({ name: name, desc: desc });
         });
         return columns;
       },

@@ -16,12 +16,12 @@ function modelTypes() {
     modelTypeFactory({
       name: 'App.Post',
       count: 2,
-      columns: [ { name: 'id'}, { name: 'title' }, { name: 'body' } ]
+      columns: [ { name: 'id', desc: 'Id' }, { name: 'title', desc: 'Title' }, { name: 'body', desc: 'Body' } ]
     }),
     modelTypeFactory({
       name: 'App.Comment',
       count: 1,
-      columns: [ { name: 'id'}, { name: 'title' }, { name: 'body' }]
+      columns: [ { name: 'id', desc: 'Id'}, { name: 'title', desc: 'Title' }, { name: 'body', desc: 'Body' }]
     })
   ];
 }
