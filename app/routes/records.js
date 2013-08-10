@@ -9,7 +9,7 @@ var RecordsRoute = Ember.Route.extend({
     controller.set('modelType', this.modelFor('model_type'));
 
     this.get('port').on('data:recordsAdded', this, this.addRecords);
-    this.get('port').on('data:recordUpdated', this, this.updateRecord);
+    this.get('port').on('data:recordsUpdated', this, this.updateRecords);
     this.get('port').on('data:recordsRemoved', this, this.removeRecords);
     this.get('port').one('data:filters', this, function(message) {
       this.set('controller.filters', message.filters);
@@ -29,12 +29,16 @@ var RecordsRoute = Ember.Route.extend({
     this.get('port').send('data:releaseRecords');
   },
 
-  updateRecord: function(message) {
-    var currentRecord = this.get('currentModel').findProperty('objectId', message.record.objectId);
-    set(currentRecord, 'columnValues', message.record.columnValues);
-    set(currentRecord, 'filterValues', message.record.filterValues);
-    set(currentRecord, 'searchIndex', message.record.searchIndex);
-    set(currentRecord, 'color', message.record.color);
+  updateRecords: function(message) {
+    var self = this;
+    message.records.forEach(function(record) {
+      var currentRecord = self.get('currentModel').findProperty('objectId', record.objectId);
+      set(currentRecord, 'columnValues', record.columnValues);
+      set(currentRecord, 'filterValues', record.filterValues);
+      set(currentRecord, 'searchIndex', record.searchIndex);
+      set(currentRecord, 'color', record.color);
+    });
+
   },
 
   addRecords: function(message) {

@@ -782,7 +782,7 @@ define("routes/records",
         controller.set('modelType', this.modelFor('model_type'));
 
         this.get('port').on('data:recordsAdded', this, this.addRecords);
-        this.get('port').on('data:recordUpdated', this, this.updateRecord);
+        this.get('port').on('data:recordsUpdated', this, this.updateRecords);
         this.get('port').on('data:recordsRemoved', this, this.removeRecords);
         this.get('port').one('data:filters', this, function(message) {
           this.set('controller.filters', message.filters);
@@ -802,12 +802,16 @@ define("routes/records",
         this.get('port').send('data:releaseRecords');
       },
 
-      updateRecord: function(message) {
-        var currentRecord = this.get('currentModel').findProperty('objectId', message.record.objectId);
-        set(currentRecord, 'columnValues', message.record.columnValues);
-        set(currentRecord, 'filterValues', message.record.filterValues);
-        set(currentRecord, 'searchIndex', message.record.searchIndex);
-        set(currentRecord, 'color', message.record.color);
+      updateRecords: function(message) {
+        var self = this;
+        message.records.forEach(function(record) {
+          var currentRecord = self.get('currentModel').findProperty('objectId', record.objectId);
+          set(currentRecord, 'columnValues', record.columnValues);
+          set(currentRecord, 'filterValues', record.filterValues);
+          set(currentRecord, 'searchIndex', record.searchIndex);
+          set(currentRecord, 'color', record.color);
+        });
+
       },
 
       addRecords: function(message) {
@@ -1499,7 +1503,7 @@ function program3(depth0,data) {
 function program4(depth0,data) {
   
   var buffer = '', hashTypes, hashContexts;
-  data.buffer.push("\n              <td data-label=\"model-type-name\" class=\"table-tree__clickable\" >\n                ");
+  data.buffer.push("\n              <td data-label=\"model-type-count\" class=\"table-tree__clickable\" >\n                ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "count", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
@@ -1568,7 +1572,7 @@ function program3(depth0,data) {
 function program4(depth0,data) {
   
   var buffer = '', hashContexts, hashTypes;
-  data.buffer.push("\n            <td data-label=\"record-name\" class=\"table-tree__clickable\" ");
+  data.buffer.push("\n            <td data-label=\"record-column\" class=\"table-tree__clickable\" ");
   hashContexts = {'style': depth0};
   hashTypes = {'style': "STRING"};
   data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{

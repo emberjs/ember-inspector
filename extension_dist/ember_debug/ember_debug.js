@@ -115,7 +115,7 @@ define("data_adapter",
   [],
   function() {
     "use strict";
-    var get = Ember.get, RSVP = Ember.RSVP, DS = window.DS;
+    var get = Ember.get, DS = window.DS;
 
     var DataAdapter = Ember.Object.extend({
       init: function() {
@@ -148,35 +148,6 @@ define("data_adapter",
       releaseMethods: [],
 
       /**
-        @private
-
-        Clear all observers before destruction
-      */
-      willDestroy: function() {
-        this._super();
-        this.releaseMethods.forEach(function(fn) {
-          fn();
-        });
-      },
-
-      /**
-        @private
-
-        Detect whether a class is a model.
-
-        Test that against the model class
-        of your persistence library
-
-        @method detect
-        @param {Class} The class to test
-        @return boolean Whether the class is a model class or not
-      */
-      detect: function(klass) {
-        return klass !== DS.Model && DS.Model.detect(klass);
-      },
-
-
-      /**
         @public
 
         Specifies how records can be filtered.
@@ -189,40 +160,11 @@ define("data_adapter",
       */
       getFilters: function() {
         return [
-          {
-            name: 'isNew',
-            desc: 'New'
-          },
-          {
-            name: 'isModified',
-            desc: 'Modified'
-          },
-          {
-            name: 'isClean',
-            desc: 'Clean'
-          }
+          { name: 'isNew', desc: 'New' },
+          { name: 'isModified', desc: 'Modified' },
+          { name: 'isClean', desc: 'Clean' }
         ];
       },
-
-      /**
-        @private
-
-        Get the columns for a given model type.
-
-        @method columnsForType
-        @param {Class} type The model type
-        @return {Array} An array of columns of the following format:
-         name: {String} name of the column
-      */
-      columnsForType: function(type) {
-        var columns = [{ name: 'id' }], count = 0, self = this;
-        get(type, 'attributes').forEach(function(name, meta) {
-            if (count++ > self.attributeLimit) { return false; }
-            columns.push({ name: name });
-        });
-        return columns;
-      },
-
 
       /**
         @public
@@ -257,6 +199,112 @@ define("data_adapter",
         };
         this.releaseMethods.pushObject(release);
         return release;
+      },
+
+      /**
+        @public
+
+        Fetch the records of a given type and observe them for changes.
+
+        @method watchRecords
+
+        @param {Function} recordsAdded Callback to call to add records.
+        Takes an array of objects containing wrapped records.
+        The object should have the following properties:
+          columnValues: {Object} key and value of a table cell
+          object: {Object} the actual record object
+
+        @param {Function} recordsUpdated Callback to call when a record has changed.
+        Takes an array of objects containing wrapped records.
+
+        @param {Function} recordsRemoved Callback to call when a record has removed.
+        Takes the following parameters:
+          index: the array index where the records were removed
+          count: the number of records removed
+
+        @return {Function} Method to call to remove all observers
+      */
+      watchRecords: function(type, recordsAdded, recordsUpdated, recordsRemoved) {
+        var self = this, releaseMethods = [], records = this.getRecords(type), release;
+
+        var recordsToSend = records.map(function(record) {
+          releaseMethods.push(self.observeRecord(record, recordsUpdated));
+          return self.wrapRecord(record);
+        });
+
+        recordsAdded(recordsToSend);
+
+        var contentDidChange = function(array, idx, removedCount, addedCount) {
+          for (var i = idx; i < idx + addedCount; i++) {
+            var record = array.objectAt(i);
+            var wrapped = self.wrapRecord(record, recordsUpdated);
+            releaseMethods.push(self.observeRecord(record, recordsUpdated));
+            recordsAdded([wrapped]);
+          }
+
+          if (removedCount) {
+            recordsRemoved(idx, removedCount);
+          }
+        };
+
+        var observer = { didChange: contentDidChange, willChange: Ember.K };
+        records.addArrayObserver(self, observer);
+
+        release = function() {
+          releaseMethods.forEach(function(fn) { fn(); });
+          records.removeArrayObserver(self, observer);
+          self.releaseMethods.removeObject(release);
+        };
+
+        this.releaseMethods.pushObject(release);
+        return release;
+      },
+
+      /**
+        @private
+
+        Clear all observers before destruction
+      */
+      willDestroy: function() {
+        this._super();
+        this.releaseMethods.forEach(function(fn) {
+          fn();
+        });
+      },
+
+      /**
+        @private
+
+        Detect whether a class is a model.
+
+        Test that against the model class
+        of your persistence library
+
+        @method detect
+        @param {Class} The class to test
+        @return boolean Whether the class is a model class or not
+      */
+      detect: function(klass) {
+        return klass !== DS.Model && DS.Model.detect(klass);
+      },
+
+      /**
+        @private
+
+        Get the columns for a given model type.
+
+        @method columnsForType
+        @param {Class} type The model type
+        @return {Array} An array of columns of the following format:
+         name: {String} name of the column
+      */
+      columnsForType: function(type) {
+        var columns = [{ name: 'id' }], count = 0, self = this;
+        get(type, 'attributes').forEach(function(name, meta) {
+            if (count++ > self.attributeLimit) { return false; }
+            columns.push({ name: name });
+        });
+        return columns;
       },
 
       /**
@@ -349,65 +397,6 @@ define("data_adapter",
           }
         });
         return types;
-      },
-
-      /**
-        @public
-
-        Fetch the records of a given type and observe them for changes.
-
-        @method watchRecords
-
-        @param {Function} recordsAdded Callback to call to add records.
-        Takes an array of objects containing wrapped records.
-        The object should have the following properties:
-          columnValues: {Object} key and value of a table cell
-          object: {Object} the actual record object
-
-        @param {Function} recordsUpdated Callback to call when a record has changed.
-        Takes an array of objects containing wrapped records.
-
-        @param {Function} recordsRemoved Callback to call when a record has removed.
-        Takes the following parameters:
-          index: the array index where the records were removed
-          count: the number of records removed
-
-        @return {Function} Method to call to remove all observers
-      */
-      watchRecords: function(type, recordsAdded, recordsUpdated, recordsRemoved) {
-        var self = this, releaseMethods = [], records = this.getRecords(type), release;
-
-        var recordsToSend = records.map(function(record) {
-          releaseMethods.push(self.observeRecord(record, recordsUpdated));
-          return self.wrapRecord(record);
-        });
-
-        recordsAdded(recordsToSend);
-
-        var contentDidChange = function(array, idx, removedCount, addedCount) {
-          for (var i = idx; i < idx + addedCount; i++) {
-            var record = array.objectAt(i);
-            var wrapped = self.wrapRecord(record, recordsUpdated);
-            releaseMethods.push(self.observeRecord(record, recordsUpdated));
-            recordsAdded([wrapped]);
-          }
-
-          if (removedCount) {
-            recordsRemoved(idx, removedCount);
-          }
-        };
-
-        var observer = { didChange: contentDidChange, willChange: Ember.K };
-        records.addArrayObserver(self, observer);
-
-        release = function() {
-          releaseMethods.forEach(function(fn) { fn(); });
-          records.removeArrayObserver(self, observer);
-          self.releaseMethods.removeObject(release);
-        };
-
-        this.releaseMethods.pushObject(release);
-        return release;
       },
 
       /**
@@ -528,7 +517,7 @@ define("data_adapter",
       /**
         @private
 
-        Observes all relevant keywords and re-sends the wrapped record
+        Observes all relevant properties and re-sends the wrapped record
         when a change occurs.
 
         @method observerRecord
@@ -643,13 +632,13 @@ define("data_debug",
         });
       },
 
-      recordsUpdated: function(records) {
+      recordsUpdated: function(recordsReceived) {
         var self = this;
-        records.forEach(function(record) {
-          var objectId = Ember.guidFor(record);
-          self.sendMessage('recordUpdated', {
-            record: self.wrapRecord(record)
-          });
+        var records = recordsReceived.map(function(record) {
+          return self.wrapRecord(record);
+        });
+        self.sendMessage('recordsUpdated', {
+          records: records
         });
       },
 

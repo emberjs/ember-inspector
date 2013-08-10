@@ -20,7 +20,7 @@ function modelTypes() {
     }),
     modelTypeFactory({
       name: 'App.Comment',
-      count: 2,
+      count: 1,
       columns: [ { name: 'id'}, { name: 'title' }, { name: 'body' }]
     })
   ];
@@ -30,7 +30,7 @@ function recordFactory(attr) {
   var object = Ember.Object.create();
   return {
     columnValues: attr,
-    objectId: Ember.guidFor(object)
+    objectId: attr.objectId || Ember.guidFor(object)
   };
 }
 
@@ -42,7 +42,6 @@ function records(type) {
     ];
   } else if(type === 'App.Comment') {
     return [
-      recordFactory({ id: 1, title: 'My Comment', body: 'This is my comment' }),
       recordFactory({ id: 2, title: 'I am confused', body: 'I have no idea what im doing' })
     ];
   }
@@ -55,31 +54,97 @@ module("Data", {
       send: function(n, m) {
         name = n;
         message = m;
+        if (name === 'data:getModelTypes') {
+          this.trigger('data:modelTypesAdded', { modelTypes: modelTypes() });
+        }
+        if (name === 'data:getRecords') {
+          this.trigger('data:recordsAdded', { records: records(m.objectId) });
+        }
       }
     });
     EmberExtension.reset();
 
     port = EmberExtension.__container__.lookup('port:main');
+
   }
 });
 
-test("Model types are successfully listed", function() {
-  port.reopen({
-    send: function(n, m) {
-      name = n;
-      message = m;
-      if (name === 'data:getModelTypes') {
-        this.trigger('data:modelTypesAdded', { modelTypes: modelTypes() });
-      }
-      if (name === 'data:getRecords') {
-        this.trigger('data:recordsAdded', { records: records(message.objectId) });
-      }
-    }
+test("Model types are successfully listed and bound", function() {
+  visit('model_types.index')
+  .then(function() {
+    equal(findByLabel('model-type-row').length, 2);
+    equal(findByLabel('model-type-name').eq(0).text().trim(), 'App.Post');
+    equal(findByLabel('model-type-name').eq(1).text().trim(), 'App.Comment');
+
+    equal(findByLabel('model-type-count').eq(0).text().trim(), 2);
+    equal(findByLabel('model-type-count').eq(1).text().trim(), 1);
+  })
+  .then(function() {
+    port.trigger('data:modelTypesUpdated', {
+      modelTypes: [
+        modelTypeFactory({name: 'App.Post', count: 3} )]
+    });
+    return wait();
+  })
+  .then(function() {
+    equal(findByLabel('model-type-count').eq(0).text().trim(), 3);
   });
+});
+
+
+test("Records are successfully listed and bound", function() {
   visit('model_types.index')
   .then(function() {
     return click(findByLabel('model-type-row').first());
-  });
+  })
+  .then(function() {
+    var recordRows = findByLabel('record-row');
+    equal(recordRows.length, 2);
 
-  ok(true);
+    var firstRow = recordRows.eq(0);
+    equal(findByLabel('record-column', firstRow).eq(0).text().trim(), 1);
+    equal(findByLabel('record-column', firstRow).eq(1).text().trim(), 'My Post');
+    equal(findByLabel('record-column', firstRow).eq(2).text().trim(), 'This is my first post');
+
+    var secondRow = recordRows.eq(1);
+    equal(findByLabel('record-column', secondRow).eq(0).text().trim(), 2);
+    equal(findByLabel('record-column', secondRow).eq(1).text().trim(), 'Hello');
+    equal(findByLabel('record-column', secondRow).eq(2).text().trim(), '');
+  })
+  .then(function() {
+    port.trigger('data:recordsAdded', {
+      records: [recordFactory({objectId: 'new-post', id: 3, title: 'Added Post', body: 'I am new here'})]
+    });
+    return wait();
+  })
+  .then(function() {
+    var row = findByLabel('record-row').eq(2);
+    equal(findByLabel('record-column', row).eq(0).text().trim(), 3);
+    equal(findByLabel('record-column', row).eq(1).text().trim(), 'Added Post');
+    equal(findByLabel('record-column', row).eq(2).text().trim(), 'I am new here');
+  })
+  .then(function() {
+    port.trigger('data:recordsUpdated', {
+      records: [ recordFactory({objectId: 'new-post', id:3, title: 'Modified Post', body: 'I am no longer new'}) ]
+    });
+    return wait();
+  })
+  .then(function() {
+    var row = findByLabel('record-row').last();
+    equal(findByLabel('record-column', row).eq(0).text().trim(), 3);
+    equal(findByLabel('record-column', row).eq(1).text().trim(), 'Modified Post');
+    equal(findByLabel('record-column', row).eq(2).text().trim(), 'I am no longer new');
+  })
+  .then(function() {
+    port.trigger('data:recordsRemoved', {
+      index: 2,
+      count: 1
+    });
+    return wait();
+  })
+  .then(function() {
+    equal(findByLabel('record-row').length, 2);
+    var lastRow = findByLabel('record-row').last();
+    equal(findByLabel('record-column', lastRow).eq(0).text().trim(), 2, "Records successfully removed.");
+  });
 });

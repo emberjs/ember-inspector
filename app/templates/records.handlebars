@@ -12,7 +12,7 @@
         {{#each filtered itemController="record"}}
           <tr data-label="record-row" {{action "inspectModel" model}}>
             {{#each columns}}
-            <td data-label="record-name" class="table-tree__clickable" {{bindAttr style="controller.style"}}  >
+            <td data-label="record-column" class="table-tree__clickable" {{bindAttr style="controller.style"}}  >
               {{value}}
             </td>
             {{/each}}

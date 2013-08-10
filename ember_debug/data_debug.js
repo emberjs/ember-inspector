@@ -73,13 +73,13 @@ var DataDebug = Ember.Object.extend(PortMixin, {
     });
   },
 
-  recordsUpdated: function(records) {
+  recordsUpdated: function(recordsReceived) {
     var self = this;
-    records.forEach(function(record) {
-      var objectId = Ember.guidFor(record);
-      self.sendMessage('recordUpdated', {
-        record: self.wrapRecord(record)
-      });
+    var records = recordsReceived.map(function(record) {
+      return self.wrapRecord(record);
+    });
+    self.sendMessage('recordsUpdated', {
+      records: records
     });
   },
 
