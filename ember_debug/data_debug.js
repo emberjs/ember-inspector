@@ -31,9 +31,8 @@ var DataDebug = Ember.Object.extend(PortMixin, {
   portNamespace: 'data',
 
   modelTypesAdded: function(types) {
-    var self = this, objectId, typesToSend;
+    var self = this, typesToSend;
     typesToSend = types.map(function(type) {
-      objectId = Ember.guidFor(type);
       return self.wrapType(type);
     });
     this.sendMessage('modelTypesAdded', {
@@ -52,7 +51,7 @@ var DataDebug = Ember.Object.extend(PortMixin, {
   },
 
   wrapType: function(type) {
-    var objectId = Ember.guidFor(type);
+    var objectId = Ember.guidFor(type.object);
     this.sentTypes[objectId] = type;
 
     return {
@@ -98,6 +97,7 @@ var DataDebug = Ember.Object.extend(PortMixin, {
       columnValues: record.columnValues,
       searchIndex: record.searchIndex,
       filterValues: record.filterValues,
+      color: record.color,
       objectId: objectId
     };
   },

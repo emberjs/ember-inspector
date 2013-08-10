@@ -34,6 +34,7 @@ var RecordsRoute = Ember.Route.extend({
     set(currentRecord, 'columnValues', message.record.columnValues);
     set(currentRecord, 'filterValues', message.record.filterValues);
     set(currentRecord, 'searchIndex', message.record.searchIndex);
+    set(currentRecord, 'color', message.record.color);
   },
 
   addRecords: function(message) {

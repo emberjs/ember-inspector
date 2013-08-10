@@ -124,26 +124,34 @@ define("data_adapter",
       },
 
       /**
-       The application being debugged.
-       This property will be injected
-       on creation.
+        The application being debugged.
+        This property will be injected
+        on creation.
       */
       application: null,
 
       /**
-       Number of attributes to send
-       as columns. (Enough to make the record
-       identifiable).
+        @private
+
+        Number of attributes to send
+        as columns. (Enough to make the record
+        identifiable).
       */
       attributeLimit: 3,
 
       /**
-       Stores all methods that clear observers.
-       These methods will be called on destruction.
+        @private
+
+        Stores all methods that clear observers.
+        These methods will be called on destruction.
       */
       releaseMethods: [],
 
+      /**
+        @private
 
+        Clear all observers before destruction
+      */
       willDestroy: function() {
         this._super();
         this.releaseMethods.forEach(function(fn) {
@@ -152,19 +160,33 @@ define("data_adapter",
       },
 
       /**
-       Detect whether a class is a model.
+        @private
 
-       Test that against the model class
-       of your persistence library
+        Detect whether a class is a model.
 
-       @param {Class} The class to test
-       @return boolean Whether the class is a model class or not
+        Test that against the model class
+        of your persistence library
+
+        @method detect
+        @param {Class} The class to test
+        @return boolean Whether the class is a model class or not
       */
       detect: function(klass) {
         return klass !== DS.Model && DS.Model.detect(klass);
       },
 
 
+      /**
+        @public
+
+        Specifies how records can be filtered.
+        Records returned will need to have a `filterValues`
+        property with a key for every name in the returned array.
+
+        @method getFilters
+        @return {Array} List of objects defining filters.
+         The object should have a `name` and `desc` property.
+      */
       getFilters: function() {
         return [
           {
@@ -183,10 +205,13 @@ define("data_adapter",
       },
 
       /**
-       Get the columns for a given model type.
+        @private
 
-       @param {Class} type The model type
-       @return {Array} An array of columns of the following format:
+        Get the columns for a given model type.
+
+        @method columnsForType
+        @param {Class} type The model type
+        @return {Array} An array of columns of the following format:
          name: {String} name of the column
       */
       columnsForType: function(type) {
@@ -200,25 +225,28 @@ define("data_adapter",
 
 
       /**
-       Fetch the model types and observe them for changes.
+        @public
 
-       @param {Function} typesAdded Callback to call to add types.
+        Fetch the model types and observe them for changes.
+
+        @method watchModelTypes
+
+        @param {Function} typesAdded Callback to call to add types.
         Takes an array of objects containing wrapped types (returned from `wrapModelType`).
 
-
-       @param {Function} typesUpdated Callback to call when a type has changed.
+        @param {Function} typesUpdated Callback to call when a type has changed.
         Takes an array of objects containing wrapped types.
 
-       @return {Function} Method to call to remove all observers
+        @return {Function} Method to call to remove all observers
       */
       watchModelTypes: function(typesAdded, typesUpdated) {
         var modelTypes = this.getModelTypes(),
             self = this, typesToSend, releaseMethods = [];
 
         typesToSend = modelTypes.map(function(type) {
-          var wrapped = self.wrapModelType(type, typesUpdated);
-          releaseMethods.push(wrapped.release);
-          return wrapped.type;
+          var wrapped = self.wrapModelType(type);
+          releaseMethods.push(self.observeModelType(type, typesUpdated));
+          return wrapped;
         });
 
         typesAdded(typesToSend);
@@ -232,11 +260,48 @@ define("data_adapter",
       },
 
       /**
-       Wraps a given model type and observes changes to it.
+        @private
 
-       @param {Class} A model type
-       @param {Function} typesUpdated callback to call when the type changes
-       @return {Object} contains the wrapped type and the function to remove observers
+        Adds observers to a model type class.
+
+        @method observeModelType
+        @param {Class} type The model type class
+        @param {Function} typesUpdated Called when a type is modified.
+        @return {Function} The function to call to remove observers
+      */
+
+      observeModelType: function(type, typesUpdated) {
+        var self = this, records = this.getRecords(type);
+
+        var onChange = function() {
+          typesUpdated([self.wrapModelType(type)]);
+        };
+        var observer = {
+          didChange: function() {
+            Ember.run.scheduleOnce('actions', this, onChange);
+          },
+          willChange: Ember.K
+        };
+
+        records.addArrayObserver(this, observer);
+
+        var release = function() {
+          records.removeArrayObserver(self, observer);
+        };
+
+        return release;
+      },
+
+
+      /**
+        @private
+
+        Wraps a given model type and observes changes to it.
+
+        @method wrapModelType
+        @param {Class} A model type
+        @param {Function} typesUpdated callback to call when the type changes
+        @return {Object} contains the wrapped type and the function to remove observers
         Format:
           type: {Object} the wrapped type
             The wrapped type has the following format:
@@ -257,34 +322,19 @@ define("data_adapter",
           object: type
         };
 
-        var onChange = function() {
-          typeToSend.count = get(records, 'length');
-          typesUpdated([typeToSend]);
-        };
-        var observer = {
-          didChange: function() {
-            Ember.run.scheduleOnce('actions', this, onChange);
-          },
-          willChange: Ember.K
-        };
 
-        records.addArrayObserver(this, observer);
-        release = function() {
-          records.removeArrayObserver(self, observer);
-        };
-
-        return {
-          type: typeToSend,
-          release: release
-        };
+        return typeToSend;
       },
 
 
       /**
-       Fetches all models defined in the application.
-       TODO: Use the resolver instead of looping over namespaces.
+        @private
 
-       @return {Array} Array of model types
+        Fetches all models defined in the application.
+        TODO: Use the resolver instead of looping over namespaces.
+
+        @method getModelTypes
+        @return {Array} Array of model types
       */
       getModelTypes: function() {
         var namespaces = Ember.Namespace.NAMESPACES, types = [], self = this;
@@ -302,23 +352,27 @@ define("data_adapter",
       },
 
       /**
-       Fetch the records of a given type and observe them for changes.
+        @public
 
-       @param {Function} recordsAdded Callback to call to add records.
+        Fetch the records of a given type and observe them for changes.
+
+        @method watchRecords
+
+        @param {Function} recordsAdded Callback to call to add records.
         Takes an array of objects containing wrapped records.
         The object should have the following properties:
           columnValues: {Object} key and value of a table cell
           object: {Object} the actual record object
 
-       @param {Function} recordsUpdated Callback to call when a record has changed.
+        @param {Function} recordsUpdated Callback to call when a record has changed.
         Takes an array of objects containing wrapped records.
 
-       @param {Function} recordsRemoved Callback to call when a record has removed.
+        @param {Function} recordsRemoved Callback to call when a record has removed.
         Takes the following parameters:
           index: the array index where the records were removed
           count: the number of records removed
 
-       @return {Function} Method to call to remove all observers
+        @return {Function} Method to call to remove all observers
       */
       watchRecords: function(type, recordsAdded, recordsUpdated, recordsRemoved) {
         var self = this, releaseMethods = [], records = this.getRecords(type), release;
@@ -357,9 +411,12 @@ define("data_adapter",
       },
 
       /**
-       Fetches all loaded records for a given type.
+        @private
 
-       @return {Array} array of records.
+        Fetches all loaded records for a given type.
+
+        @method getRecords
+        @return {Array} array of records.
          This array will be observed for changes,
          so it should update when new records are added/removed.
       */
@@ -369,10 +426,13 @@ define("data_adapter",
       },
 
       /**
-       Wraps a record and observers changes to it
+        @private
 
-       @param {Object} record The record instance
-       @return {Object} the wrapped record. Format:
+        Wraps a record and observers changes to it
+
+        @method wrapRecord
+        @param {Object} record The record instance
+        @return {Object} the wrapped record. Format:
         columnValues: {Array}
         searchIndex: {Array}
       */
@@ -382,10 +442,20 @@ define("data_adapter",
         recordToSend.columnValues = this.getRecordColumnValues(record);
         recordToSend.searchIndex = this.getRecordKeywords(record);
         recordToSend.filterValues = this.getRecordFilterValues(record);
+        recordToSend.color = this.getRecordColor(record);
 
         return recordToSend;
       },
 
+      /**
+        @private
+
+        Gets the values for each column.
+
+        @method getRecordColumnValues
+        @return {Object} Keys should match column names defined
+        by the model type.
+      */
       getRecordColumnValues: function(record) {
         var self = this, count = 0,
             columnValues = { id: get(record, 'id') };
@@ -400,6 +470,14 @@ define("data_adapter",
         return columnValues;
       },
 
+      /**
+        @private
+
+        Returns keywords to match when searching records.
+
+        @method getRecordKeywords
+        @return {Array} Relevant keywords for search.
+      */
       getRecordKeywords: function(record) {
         var keywords = [], keys = ['id'];
         record.eachAttribute(function(key) {
@@ -411,6 +489,15 @@ define("data_adapter",
         return keywords;
       },
 
+      /**
+        @private
+
+        Returns the values of filters defined by `getFilters`.
+
+        @method getRecordFilterValues
+        @param {Object} The record instance
+        @return {Object} The filter values
+      */
       getRecordFilterValues: function(record) {
         return {
           isNew: record.get('isNew'),
@@ -419,9 +506,39 @@ define("data_adapter",
         };
       },
 
+      /**
+        @private
+
+        Each record can have a color that represents its state.
+
+        @method getRecordColor
+        @param {Object} The record instance
+        @return {String} The record's color
+      */
+      getRecordColor: function(record) {
+        var color = '#4896ab';
+        if (record.get('isNew')) {
+          color = '#768573';
+        } else if (record.get('isDirty')) {
+          color = '#939';
+        }
+        return color;
+      },
+
+      /**
+        @private
+
+        Observes all relevant keywords and re-sends the wrapped record
+        when a change occurs.
+
+        @method observerRecord
+        @param {Object} The record instance
+        @param {Function} The callback to call when a record is updated.
+        @return {Function} The function to call to remove all observers.
+      */
       observeRecord: function(record, recordsUpdated) {
         var releaseMethods = [], self = this,
-            keysToObserve = ['id'];
+            keysToObserve = ['id', 'isNew', 'isDirty'];
 
         record.eachAttribute(function(key) {
           keysToObserve.push(key);
@@ -484,9 +601,8 @@ define("data_debug",
       portNamespace: 'data',
 
       modelTypesAdded: function(types) {
-        var self = this, objectId, typesToSend;
+        var self = this, typesToSend;
         typesToSend = types.map(function(type) {
-          objectId = Ember.guidFor(type);
           return self.wrapType(type);
         });
         this.sendMessage('modelTypesAdded', {
@@ -505,7 +621,7 @@ define("data_debug",
       },
 
       wrapType: function(type) {
-        var objectId = Ember.guidFor(type);
+        var objectId = Ember.guidFor(type.object);
         this.sentTypes[objectId] = type;
 
         return {
@@ -551,6 +667,7 @@ define("data_debug",
           columnValues: record.columnValues,
           searchIndex: record.searchIndex,
           filterValues: record.filterValues,
+          color: record.color,
           objectId: objectId
         };
       },

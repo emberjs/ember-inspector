@@ -291,6 +291,11 @@ define("controllers/record",
 
       modelTypeColumns: Ember.computed.alias('target.target.columns'),
 
+      // TODO: Color record based on `color` property.
+      style: function() {
+        return '';
+      }.property('color'),
+
       columns: function() {
         var self = this;
         return this.get('modelTypeColumns').map(function(col) {
@@ -340,6 +345,12 @@ define("controllers/records",
   function() {
     "use strict";
     var RecordsController = Ember.ArrayController.extend({
+      init: function() {
+        this._super();
+        this.set('filters', []);
+        this.set('filterValues', {});
+      },
+
       columns: Ember.computed.alias('modelType.columns'),
 
       filters: [],
@@ -358,21 +369,17 @@ define("controllers/records",
       },
 
       filtered: function() {
-        var self = this, search = this.get('search'), filtered;
-        if (Ember.isEmpty(search)) {
-          filtered = this.get('model');
-        } else {
-          filtered = this.get('model').filter(function(item) {
-            var searchString = self.recordToString(item);
-            return !!searchString.toLowerCase().match(new RegExp('.*' + search + '.*'));
-          });
-        }
-        return filtered.filter(function(item) {
+        var self = this, search = this.get('search');
+        return this.get('model').filter(function(item) {
           var filters = self.get('filterValues');
           for(var key in filters) {
             if (!filters[key] && Ember.get(item, 'filterValues.' + key)) {
               return false;
             }
+          }
+          if (!Ember.isEmpty(search)) {
+            var searchString = self.recordToString(item);
+            return !!searchString.toLowerCase().match(new RegExp('.*' + search + '.*'));
           }
           return true;
         });
@@ -800,6 +807,7 @@ define("routes/records",
         set(currentRecord, 'columnValues', message.record.columnValues);
         set(currentRecord, 'filterValues', message.record.filterValues);
         set(currentRecord, 'searchIndex', message.record.searchIndex);
+        set(currentRecord, 'color', message.record.color);
       },
 
       addRecords: function(message) {
@@ -1545,7 +1553,7 @@ function program1(depth0,data) {
 function program3(depth0,data) {
   
   var buffer = '', stack1, hashTypes, hashContexts;
-  data.buffer.push("\n          <tr data-label=\"model-type-row\" ");
+  data.buffer.push("\n          <tr data-label=\"record-row\" ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "inspectModel", "model", {hash:{},contexts:[depth0,depth0],types:["STRING","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
@@ -1559,8 +1567,14 @@ function program3(depth0,data) {
   }
 function program4(depth0,data) {
   
-  var buffer = '', hashTypes, hashContexts;
-  data.buffer.push("\n            <td data-label=\"model-type-name\" class=\"table-tree__clickable\" >\n              ");
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n            <td data-label=\"record-name\" class=\"table-tree__clickable\" ");
+  hashContexts = {'style': depth0};
+  hashTypes = {'style': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'style': ("controller.style")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("  >\n              ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));

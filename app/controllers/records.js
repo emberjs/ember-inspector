@@ -1,4 +1,10 @@
 var RecordsController = Ember.ArrayController.extend({
+  init: function() {
+    this._super();
+    this.set('filters', []);
+    this.set('filterValues', {});
+  },
+
   columns: Ember.computed.alias('modelType.columns'),
 
   filters: [],
@@ -17,21 +23,17 @@ var RecordsController = Ember.ArrayController.extend({
   },
 
   filtered: function() {
-    var self = this, search = this.get('search'), filtered;
-    if (Ember.isEmpty(search)) {
-      filtered = this.get('model');
-    } else {
-      filtered = this.get('model').filter(function(item) {
-        var searchString = self.recordToString(item);
-        return !!searchString.toLowerCase().match(new RegExp('.*' + search + '.*'));
-      });
-    }
-    return filtered.filter(function(item) {
+    var self = this, search = this.get('search');
+    return this.get('model').filter(function(item) {
       var filters = self.get('filterValues');
       for(var key in filters) {
         if (!filters[key] && Ember.get(item, 'filterValues.' + key)) {
           return false;
         }
+      }
+      if (!Ember.isEmpty(search)) {
+        var searchString = self.recordToString(item);
+        return !!searchString.toLowerCase().match(new RegExp('.*' + search + '.*'));
       }
       return true;
     });
