@@ -1,0 +1,35 @@
+<div class="split__parent">
+  <div {{bindAttr class=":table-tree collapsed:table-tree_state_collapsed"}}>
+    <div class="table-tree__table-container">
+      <table cellspacing="0" border-collapse="collapse">
+        <thead>
+          <tr>
+            <th><div class="table-tree__th-inner">Model Type</div></th>
+            {{#unless collapsed}}
+            <th><div class="table-tree__th-inner"># Records</div></th>
+            {{/unless}}
+          </tr>
+        </thead>
+        <tbody>
+          {{#each itemController="modelTypeItem"}}
+            <tr {{bindAttr class="selected:table-tree__row_selected"}} data-label="model-type-row" {{action "viewRecords" this}}>
+
+              <td data-label="model-type-name" class="table-tree__clickable" >
+                {{name}}
+              </td>
+
+              {{#unless collapsed}}
+              <td data-label="model-type-count" class="table-tree__clickable" >
+                {{count}}
+              </td>
+              {{/unless}}
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="split__child">
+  {{outlet}}
+</div>
