@@ -2,6 +2,7 @@ import Port from "port";
 import ObjectInspector from "object_inspector";
 import ViewDebug from "view_debug";
 import RouteDebug from "route_debug";
+import DataDebug from "data_debug";
 
 console.debug("Ember Debugger Active");
 
@@ -41,6 +42,7 @@ EmberDebug = Ember.Namespace.create({
     this.setDebugHandler('objectInspector', ObjectInspector);
     this.setDebugHandler('routeDebug', RouteDebug);
     this.setDebugHandler('viewDebug', ViewDebug);
+    this.setDebugHandler('dataDebug', DataDebug);
 
     this.viewDebug.sendTree();
   }

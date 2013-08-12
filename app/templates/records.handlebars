@@ -1,0 +1,40 @@
+<div class="table-tree table-tree_type_advanced">
+  <div class="table-tree__table-container">
+    <table cellspacing="0" border-collapse="collapse">
+      <thead>
+        <tr>
+          {{#each columns}}
+            <th><div class="table-tree__th-inner" data-label="column-title">{{desc}}</div></th>
+          {{/each}}
+        </tr>
+      </thead>
+      <tbody>
+        {{#each filtered itemController="record"}}
+          <tr data-label="record-row" {{action "inspectModel" model}}>
+            {{#each columns}}
+            <td data-label="record-column" class="table-tree__clickable" {{bindAttr style="controller.style"}}  >
+              {{value}}
+            </td>
+            {{/each}}
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-tree__filter">
+    <div class="filter-bar">
+      <div class="filter-bar__search">
+        {{input type="search" value=search placeholder="Search"}}
+      </div>
+      <div data-label="filter" {{bindAttr class="noFilterValue:filter-bar__radio_selected :filter-bar__radio :filter-bar__radio_separate"}}
+          {{action "setFilter"}} >
+        All
+      </div>
+      {{#each filters itemController="recordFilter"}}
+        <div data-label="filter" {{bindAttr class="checked:filter-bar__radio_selected :filter-bar__radio"}} {{action "setFilter" name}} >{{desc}}</div>
+      {{/each}}
+    </div>
+  </div>
+
+</div>

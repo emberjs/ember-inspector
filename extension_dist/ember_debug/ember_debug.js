@@ -111,9 +111,190 @@ if (typeof define !== 'function' && typeof requireModule !== 'function') {
 
 }());
 
+define("data_debug",
+  ["mixins/port_mixin"],
+  function(PortMixin) {
+    "use strict";
+
+    var DataDebug = Ember.Object.extend(PortMixin, {
+      init: function() {
+        this._super();
+        this.sentTypes = {};
+        this.sentRecords = {};
+      },
+
+      sentTypes: {},
+      sentRecords: {},
+
+      releaseTypesMethod: null,
+      releaseRecordsMethod: null,
+
+      adapter: Ember.computed(function() {
+        return this.get('application').__container__.lookup('dataAdapter:main');
+      }).property('application'),
+
+      namespace: null,
+
+      port: Ember.computed.alias('namespace.port'),
+      application: Ember.computed.alias('namespace.application'),
+      objectInspector: Ember.computed.alias('namespace.objectInspector'),
+
+      portNamespace: 'data',
+
+      modelTypesAdded: function(types) {
+        var self = this, typesToSend;
+        typesToSend = types.map(function(type) {
+          return self.wrapType(type);
+        });
+        this.sendMessage('modelTypesAdded', {
+          modelTypes: typesToSend
+        });
+      },
+
+      modelTypesUpdated: function(types) {
+        var self = this;
+        var typesToSend = types.map(function(type) {
+          return self.wrapType(type);
+        });
+        self.sendMessage('modelTypesUpdated', {
+          modelTypes: typesToSend
+        });
+      },
+
+      wrapType: function(type) {
+        var objectId = Ember.guidFor(type.object);
+        this.sentTypes[objectId] = type;
+
+        return {
+          columns: type.columns,
+          count: type.count,
+          name: type.name,
+          objectId: objectId
+        };
+      },
+
+
+      recordsAdded: function(recordsReceived) {
+        var self = this, records;
+        records = recordsReceived.map(function(record) {
+          return self.wrapRecord(record);
+        });
+        self.sendMessage('recordsAdded', {
+          records: records
+        });
+      },
+
+      recordsUpdated: function(recordsReceived) {
+        var self = this;
+        var records = recordsReceived.map(function(record) {
+          return self.wrapRecord(record);
+        });
+        self.sendMessage('recordsUpdated', {
+          records: records
+        });
+      },
+
+      recordsRemoved: function(idx, count) {
+        this.sendMessage('recordsRemoved', {
+          index: idx,
+          count: count
+        });
+      },
+
+      wrapRecord: function(record) {
+        var objectId = Ember.guidFor(record.object);
+        this.sentRecords[objectId] = record;
+        return {
+          columnValues: record.columnValues,
+          searchKeywords: record.searchKeywords,
+          filterValues: record.filterValues,
+          color: record.color,
+          objectId: objectId
+        };
+      },
+
+      releaseTypes: function() {
+        if(this.releaseTypesMethod) {
+          this.releaseTypesMethod();
+          this.releaseTypesMethod = null;
+          this.sentTypes = {};
+        }
+      },
+
+      releaseRecords: function(typeObjectId) {
+        if (this.releaseRecordsMethod) {
+          this.releaseRecordsMethod();
+          this.releaseRecordsMethod = null;
+          this.sentRecords = {};
+        }
+      },
+
+      willDestroy: function() {
+        this._super();
+        this.releaseRecords();
+        this.releaseTypes();
+      },
+
+      messages: {
+        checkAdapter: function() {
+          this.sendMessage('hasAdapter', { hasAdapter: !!this.get('adapter') });
+        },
+
+        getModelTypes: function() {
+          var self = this;
+          this.releaseTypes();
+          this.releaseTypesMethod = this.get('adapter').watchModelTypes(
+            function(types) {
+              self.modelTypesAdded(types);
+            }, function(types) {
+            self.modelTypesUpdated(types);
+          });
+        },
+
+        releaseModelTypes: function() {
+          this.releaseTypes();
+        },
+
+        getRecords: function(message) {
+          var type = this.sentTypes[message.objectId], self = this;
+          this.releaseRecords();
+
+          var releaseMethod = this.get('adapter').watchRecords(type.object,
+            function(recordsReceived) {
+              self.recordsAdded(recordsReceived);
+            },
+            function(recordsUpdated) {
+              self.recordsUpdated(recordsUpdated);
+            },
+            function() {
+              self.recordsRemoved.apply(self, arguments);
+            }
+          );
+          this.releaseRecordsMethod = releaseMethod;
+        },
+
+        releaseRecords: function() {
+          this.releaseRecords();
+        },
+
+        inspectModel: function(message) {
+          this.get('objectInspector').sendObject(this.sentRecords[message.objectId].object);
+        },
+
+        getFilters: function() {
+          this.sendMessage('filters', {
+            filters: this.get('adapter').getFilters()
+          });
+        }
+      }
+    });
+
+
+    return DataDebug;
+  });
 define("ember_debug",
-  ["port","object_inspector","view_debug","route_debug"],
-  function(Port, ObjectInspector, ViewDebug, RouteDebug) {
+  ["port","object_inspector","view_debug","route_debug","data_debug"],
+  function(Port, ObjectInspector, ViewDebug, RouteDebug, DataDebug) {
     "use strict";
 
     console.debug("Ember Debugger Active");
@@ -154,6 +335,7 @@ define("ember_debug",
         this.setDebugHandler('objectInspector', ObjectInspector);
         this.setDebugHandler('routeDebug', RouteDebug);
         this.setDebugHandler('viewDebug', ViewDebug);
+        this.setDebugHandler('dataDebug', DataDebug);
 
         this.viewDebug.sendTree();
       }
@@ -382,6 +564,7 @@ define("object_inspector",
           mixinDetails.push({ name: name.toString(), properties: propertiesForMixin(mixin) });
         });
 
+        fixMandatorySetters(mixinDetails);
         applyMixinOverrides(mixinDetails);
 
         var propertyInfo = null;
@@ -488,17 +671,45 @@ define("object_inspector",
       for (var prop in hash) {
         if (!hash.hasOwnProperty(prop)) { continue; }
         if (prop.charAt(0) === '_') { continue; }
-        if (isMandatorySetter(hash, prop)) { continue; }
+        // if (isMandatorySetter(hash, prop)) { continue; }
         // when mandatory setter is removed, an `undefined` value may be set
         if (hash[prop] === undefined) { continue; }
-
-        replaceProperty(properties, prop, hash[prop]);
+        replaceProperty(properties, prop, hash[prop], isMandatorySetter(hash, prop));
       }
     }
 
+
+    function fixMandatorySetters(mixinDetails) {
+      var seen = {};
+      var propertiesToRemove = [];
+
+      mixinDetails.forEach(function(detail, detailIdx) {
+        detail.properties.forEach(function(property, propertyIdx) {
+          if(property.isMandatorySetter) {
+            seen[property.name] = {
+              name: property.name,
+              value: property.value.inspect,
+              detailIdx: detailIdx,
+              property: property
+            };
+          } else if(seen.hasOwnProperty(property.name) && seen[property.name] === property.value.inspect) {
+            propertiesToRemove.push(seen[property.name]);
+            delete seen[property.name];
+          }
+        });
+      });
+
+      propertiesToRemove.forEach(function(prop) {
+        var detail = mixinDetails[prop.detailIdx];
+        var index = detail.properties.indexOf(prop.property);
+        if (index !== -1) {
+          detail.properties.splice(index, 1);
+        }
+      });
+
+    }
     function applyMixinOverrides(mixinDetails) {
       var seen = {};
-
       mixinDetails.forEach(function(detail) {
         detail.properties.forEach(function(property) {
           if (Object.prototype.hasOwnProperty(property.name)) { return; }
@@ -509,6 +720,7 @@ define("object_inspector",
           }
 
           seen[property.name] = detail.name;
+
         });
       });
     }
@@ -519,10 +731,11 @@ define("object_inspector",
       if (descriptor.set && descriptor.set === Ember.MANDATORY_SETTER_FUNCTION) {
         return true;
       }
+      return false;
     }
 
 
-    function replaceProperty(properties, name, value) {
+    function replaceProperty(properties, name, value, mandatorySetter) {
       var found, type;
 
       for (var i=0, l=properties.length; i<l; i++) {
@@ -537,8 +750,9 @@ define("object_inspector",
       if (name) {
         type = name.PrototypeMixin ? 'ember-class' : 'ember-mixin';
       }
-
-      properties.push({ name: name, value: inspectValue(value) });
+      var prop = { name: name, value: inspectValue(value) };
+      prop.isMandatorySetter = mandatorySetter;
+      properties.push(prop);
     }
 
 
