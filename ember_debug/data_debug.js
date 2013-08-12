@@ -1,17 +1,10 @@
 import PortMixin from 'mixins/port_mixin';
-import DataAdapter from "data_adapter";
-
-var classify = Ember.String.classify, get = Ember.get;
-
 
 var DataDebug = Ember.Object.extend(PortMixin, {
   init: function() {
     this._super();
     this.sentTypes = {};
     this.sentRecords = {};
-    if(window.DS) {
-      this.adapter = DataAdapter.create({ application: this.get('application') });
-    }
   },
 
   sentTypes: {},
@@ -20,7 +13,9 @@ var DataDebug = Ember.Object.extend(PortMixin, {
   releaseTypesMethod: null,
   releaseRecordsMethod: null,
 
-  adapter: null,
+  adapter: Ember.computed(function() {
+    return this.get('application').__container__.lookup('dataAdapter:main');
+  }).property('application'),
 
   namespace: null,
 
@@ -125,10 +120,14 @@ var DataDebug = Ember.Object.extend(PortMixin, {
   },
 
   messages: {
+    checkAdapter: function() {
+      this.sendMessage('hasAdapter', { hasAdapter: !!this.get('adapter') });
+    },
+
     getModelTypes: function() {
       var self = this;
       this.releaseTypes();
-      this.releaseTypesMethod = this.adapter.watchModelTypes(
+      this.releaseTypesMethod = this.get('adapter').watchModelTypes(
         function(types) {
           self.modelTypesAdded(types);
         }, function(types) {
@@ -144,7 +143,7 @@ var DataDebug = Ember.Object.extend(PortMixin, {
       var type = this.sentTypes[message.objectId], self = this;
       this.releaseRecords();
 
-      var releaseMethod = this.adapter.watchRecords(type.object,
+      var releaseMethod = this.get('adapter').watchRecords(type.object,
         function(recordsReceived) {
           self.recordsAdded(recordsReceived);
         },
@@ -168,7 +167,7 @@ var DataDebug = Ember.Object.extend(PortMixin, {
 
     getFilters: function() {
       this.sendMessage('filters', {
-        filters: this.adapter.getFilters()
+        filters: this.get('adapter').getFilters()
       });
     }
   }

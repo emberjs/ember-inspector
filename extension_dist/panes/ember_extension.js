@@ -287,19 +287,20 @@ define("controllers/record",
   [],
   function() {
     "use strict";
+    var COLOR_MAP = {
+      red: '#ff2717',
+      blue: '#174fff',
+      green: '#006400'
+    };
+
     var RecordController = Ember.ObjectController.extend({
 
       modelTypeColumns: Ember.computed.alias('target.target.columns'),
 
-      colorMap: {
-        red: '#ff2717',
-        blue: '#174fff'
-      },
-
       // TODO: Color record based on `color` property.
       style: function() {
         if (!Ember.isEmpty(this.get('color'))) {
-          var color = this.colorMap[this.get('color')];
+          var color = COLOR_MAP[this.get('color')];
           if (color) {
             return 'color:' + color + ';';
           }
@@ -698,9 +699,21 @@ define("routes/data_index",
   [],
   function() {
     "use strict";
+    var Promise = Ember.RSVP.Promise;
     var DataIndexRoute = Ember.Route.extend({
-      beforeModel: function() {
-        this.transitionTo('model_types');
+      model: function() {
+        var self = this;
+        return new Promise(function(resolve) {
+          self.get('port').one('data:hasAdapter', function(message) {
+            resolve(message.hasAdapter);
+          });
+          self.get('port').send('data:checkAdapter');
+        });
+      },
+      afterModel: function(model) {
+        if (model) {
+          this.transitionTo('model_types');
+        }
       }
     });
 
@@ -1214,6 +1227,16 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "outlet", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push("\n");
   return buffer;
+  
+});
+
+this["Ember"]["TEMPLATES"]["data/index"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  
+
+
+  data.buffer.push("No Data Adapter Detected.\n");
   
 });
 

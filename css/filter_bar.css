@@ -2,7 +2,6 @@
   display: -webkit-flex;
   -webkit-flex-direction: row;
   height: 22px;
-  /*background: linear-gradient(to bottom, #ebebeb, #dadada);*/
   background-color: #efefef;
   border-top: solid 1px #cacaca;
   align-items: center;
