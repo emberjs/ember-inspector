@@ -369,7 +369,11 @@ define("controllers/records",
       }.observes('model'),
 
       recordToString: function(record) {
-        var search = Ember.get(record, 'searchKeywords').join(' ');
+        var search = '';
+        var searchKeywords = Ember.get(record, 'searchKeywords');
+        if (searchKeywords) {
+          search = Ember.get(record, 'searchKeywords').join(' ');
+        }
         return search.toLowerCase();
       },
 
@@ -384,13 +388,17 @@ define("controllers/records",
           // check search
           if (!Ember.isEmpty(search)) {
             var searchString = self.recordToString(item);
-            return !!searchString.toLowerCase().match(new RegExp('.*' + search + '.*'));
+            return !!searchString.match(new RegExp('.*' + escapeRegExp(search.toLowerCase()) + '.*'));
           }
           return true;
         });
       }.property('search', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValue')
 
     });
+
+    function escapeRegExp(str) {
+      return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    }
 
 
     return RecordsController;
@@ -1616,7 +1624,7 @@ function program4(depth0,data) {
 function program6(depth0,data) {
   
   var buffer = '', hashContexts, hashTypes;
-  data.buffer.push("\n        <div ");
+  data.buffer.push("\n        <div data-label=\"filter\" ");
   hashContexts = {'class': depth0};
   hashTypes = {'class': "STRING"};
   data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
@@ -1655,7 +1663,7 @@ function program6(depth0,data) {
     'placeholder': ("Search")
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
   data.buffer.push(escapeExpression(((stack1 = helpers.input),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "input", options))));
-  data.buffer.push("\n      </div>\n      <div ");
+  data.buffer.push("\n      </div>\n      <div data-label=\"filter\" ");
   hashContexts = {'class': depth0};
   hashTypes = {'class': "STRING"};
   data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{

@@ -11,6 +11,10 @@ function modelTypeFactory(options) {
   };
 }
 
+function getFilters() {
+  return [{ name: 'isNew', desc: 'New'}];
+}
+
 function modelTypes() {
   return [
     modelTypeFactory({
@@ -26,11 +30,18 @@ function modelTypes() {
   ];
 }
 
-function recordFactory(attr) {
+function recordFactory(attr, filterValues) {
+  filterValues = filterValues || {isNew : false};
+  var searchKeywords = [];
+  for(var i in attr) {
+    searchKeywords.push(attr[i]);
+  }
   var object = Ember.Object.create();
   return {
     columnValues: attr,
-    objectId: attr.objectId || Ember.guidFor(object)
+    objectId: attr.objectId || Ember.guidFor(object),
+    filterValues: filterValues,
+    searchKeywords: searchKeywords
   };
 }
 
@@ -38,7 +49,7 @@ function records(type) {
   if (type === 'App.Post') {
     return [
       recordFactory({ id: 1, title: 'My Post', body: 'This is my first post' }),
-      recordFactory({ id: 2, title: 'Hello', body: '' })
+      recordFactory({ id: 2, title: 'Hello', body: '' }, { isNew: true})
     ];
   } else if(type === 'App.Comment') {
     return [
@@ -59,6 +70,9 @@ module("Data", {
         }
         if (name === 'data:getRecords') {
           this.trigger('data:recordsAdded', { records: records(m.objectId) });
+        }
+        if (name === 'data:getFilters') {
+          this.trigger('data:filters', { filters: getFilters() });
         }
       }
     });
@@ -150,5 +164,57 @@ test("Records are successfully listed and bound", function() {
     equal(findByLabel('record-row').length, 2);
     var lastRow = findByLabel('record-row').last();
     equal(findByLabel('record-column', lastRow).eq(0).text().trim(), 2, "Records successfully removed.");
+  });
+});
+
+test("Filtering records", function() {
+  visit('model_types.index')
+  .then(function() {
+    return click(findByLabel('model-type-row').first());
+  })
+  .then(function() {
+    var rows = findByLabel('record-row');
+    equal(rows.length, 2);
+    var filters = findByLabel('filter');
+    equal(filters.length, 2);
+    var newFilter = filters.filter(':contains(New)');
+    return click(newFilter);
+  })
+  .then(function() {
+    var rows = findByLabel('record-row');
+    equal(rows.length, 1);
+    equal(findByLabel('record-column', rows[0]).first().text().trim(), '2');
+  });
+});
+
+
+test("Searching records", function() {
+  visit('model_types.index')
+  .then(function() {
+    return click(findByLabel('model-type-row').first());
+  })
+  .then(function() {
+    var rows = findByLabel('record-row');
+    equal(rows.length, 2);
+
+    return fillIn('input[type=search]', 'Hello');
+  })
+  .then(function() {
+    var rows = findByLabel('record-row');
+    equal(rows.length, 1);
+    equal(findByLabel('record-column', rows[0]).first().text().trim(), '2');
+
+    return fillIn('input[type=search]', 'my first post');
+  })
+  .then(function() {
+    var rows = findByLabel('record-row');
+    equal(rows.length, 1);
+    equal(findByLabel('record-column', rows[0]).first().text().trim(), '1');
+
+    return fillIn('input[type=search]', '');
+  })
+  .then(function() {
+    var rows = findByLabel('record-row');
+    equal(rows.length, 2);
   });
 });

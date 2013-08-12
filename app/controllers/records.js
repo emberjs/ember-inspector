@@ -28,7 +28,11 @@ var RecordsController = Ember.ArrayController.extend({
   }.observes('model'),
 
   recordToString: function(record) {
-    var search = Ember.get(record, 'searchKeywords').join(' ');
+    var search = '';
+    var searchKeywords = Ember.get(record, 'searchKeywords');
+    if (searchKeywords) {
+      search = Ember.get(record, 'searchKeywords').join(' ');
+    }
     return search.toLowerCase();
   },
 
@@ -43,12 +47,16 @@ var RecordsController = Ember.ArrayController.extend({
       // check search
       if (!Ember.isEmpty(search)) {
         var searchString = self.recordToString(item);
-        return !!searchString.toLowerCase().match(new RegExp('.*' + search + '.*'));
+        return !!searchString.match(new RegExp('.*' + escapeRegExp(search.toLowerCase()) + '.*'));
       }
       return true;
     });
   }.property('search', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValue')
 
 });
+
+function escapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
 
 export default RecordsController;
