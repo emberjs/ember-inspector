@@ -604,6 +604,13 @@ a {
   min-width: 30px;
 }
 
+.table-tree__cell {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .table-tree__th-inner {
   position: absolute;
   top: 0;
@@ -612,6 +619,9 @@ a {
   padding-left: 5px;
   margin-left: -1px;
   z-index: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .table-tree th:first-of-type .table-tree__th-inner {

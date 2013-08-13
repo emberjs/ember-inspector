@@ -1613,11 +1613,11 @@ function program4(depth0,data) {
   data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
     'style': ("controller.style")
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("  >\n              ");
+  data.buffer.push("  >\n              <div class=\"table-tree__cell\">");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("\n            </td>\n            ");
+  data.buffer.push("</div>\n            </td>\n            ");
   return buffer;
   }
 
