@@ -5,6 +5,9 @@
   "description": "Tool for debugging Ember applications.",
   "version": "0.0.1",
 
+  "icons": {
+    "128": "images/tomster.png"
+  },
   "permissions": [
     "http://*/*",
     "https://*/*",
