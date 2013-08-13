@@ -196,7 +196,7 @@ define("controllers/mixin_property",
           return;
         }
 
-        if (this.get('isFunction') || this.get('isArray') || this.get('overridden')) {
+        if (this.get('isFunction') || this.get('isArray') || this.get('overridden') || this.get('readOnly')) {
           return;
         }
 

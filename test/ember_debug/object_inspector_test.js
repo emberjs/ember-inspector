@@ -287,3 +287,17 @@ test("Property grouping can be customized using _debugInfo", function() {
   ok(message.details[4].name !== 'MixinToSkip', "Correctly skips properties");
 
 });
+
+test("Read Only Computed properties mush have a readOnly property", function() {
+  var inspected = Ember.Object.extend({
+    readCP: function() {}.property().readOnly(),
+    writeCP: function() {}.property()
+  }).create();
+
+  objectInspector.sendObject(inspected);
+
+  var properties = message.details[1].properties;
+
+  ok(properties[0].readOnly);
+  ok(!properties[1].readOnly);
+});

@@ -327,3 +327,46 @@ test("Send to console", function() {
   });
 
 });
+
+test("Read only CPs cannot be edited", function() {
+  visit('/')
+  .then(function() {
+    var obj = {
+      name: 'My Object',
+      objectId: 'object-id',
+      details: [{
+        name: 'Own Properties',
+        expand: true,
+        properties: [{
+          name: 'readCP',
+          readOnly: true,
+          value: {
+            computed: true,
+            inspect: 'Read',
+            type: 'type-string'
+          }
+        }, {
+          name: 'readCP',
+          readOnly: false,
+          value: {
+            computed: true,
+            inspect: 'Write',
+            type: 'type-string'
+          }
+        }]
+      }]
+    };
+    port.trigger('objectInspector:updateObject', obj);
+    return wait();
+  })
+  .then(function() {
+    return click(findByLabel('object-property-value').first());
+  })
+  .then(function() {
+    equal(findByLabel('object-property-value-txt').length, 0);
+    return click(findByLabel('object-property-value').last());
+  })
+  .then(function() {
+    equal(findByLabel('object-property-value-txt').length, 1);
+  });
+});

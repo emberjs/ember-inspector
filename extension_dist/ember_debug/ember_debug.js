@@ -671,13 +671,36 @@ define("object_inspector",
       for (var prop in hash) {
         if (!hash.hasOwnProperty(prop)) { continue; }
         if (prop.charAt(0) === '_') { continue; }
-        // if (isMandatorySetter(hash, prop)) { continue; }
         // when mandatory setter is removed, an `undefined` value may be set
         if (hash[prop] === undefined) { continue; }
-        replaceProperty(properties, prop, hash[prop], isMandatorySetter(hash, prop));
+        var options = { isMandatorySetter: isMandatorySetter(hash, prop) };
+        if (isComputed(hash[prop])) {
+          options.readOnly = hash[prop]._readOnly;
+        }
+        replaceProperty(properties, prop, hash[prop], options);
       }
     }
 
+    function replaceProperty(properties, name, value, options) {
+      var found, type;
+
+      for (var i=0, l=properties.length; i<l; i++) {
+        if (properties[i].name === name) {
+          found = i;
+          break;
+        }
+      }
+
+      if (found) { properties.splice(i, 1); }
+
+      if (name) {
+        type = name.PrototypeMixin ? 'ember-class' : 'ember-mixin';
+      }
+      var prop = { name: name, value: inspectValue(value) };
+      prop.isMandatorySetter = options.isMandatorySetter;
+      prop.readOnly = options.readOnly;
+      properties.push(prop);
+    }
 
     function fixMandatorySetters(mixinDetails) {
       var seen = {};
@@ -708,6 +731,7 @@ define("object_inspector",
       });
 
     }
+
     function applyMixinOverrides(mixinDetails) {
       var seen = {};
       mixinDetails.forEach(function(detail) {
@@ -725,7 +749,6 @@ define("object_inspector",
       });
     }
 
-
     function isMandatorySetter(object, prop) {
       var descriptor = Object.getOwnPropertyDescriptor(object, prop);
       if (descriptor.set && descriptor.set === Ember.MANDATORY_SETTER_FUNCTION) {
@@ -733,29 +756,6 @@ define("object_inspector",
       }
       return false;
     }
-
-
-    function replaceProperty(properties, name, value, mandatorySetter) {
-      var found, type;
-
-      for (var i=0, l=properties.length; i<l; i++) {
-        if (properties[i].name === name) {
-          found = i;
-          break;
-        }
-      }
-
-      if (found) { properties.splice(i, 1); }
-
-      if (name) {
-        type = name.PrototypeMixin ? 'ember-class' : 'ember-mixin';
-      }
-      var prop = { name: name, value: inspectValue(value) };
-      prop.isMandatorySetter = mandatorySetter;
-      properties.push(prop);
-    }
-
-
 
     function inspectValue(value) {
       var string;
