@@ -1,30 +1,5 @@
 var chromePort;
 
-
-/**
-  Possible messages:
-
-  calculate:
-   objectId: objectId,
-   property: property.name,
-   mixinIndex: mixinIndex
-
-  digDeeper:
-    objectId: objectId,
-    property: property.name
-
-  releaseObject:
-    objectId: objectId
-
-  showLayer:
-    objectId: objectId
-
-  hideLayer:
-    objectId: objectId
-
-  getTree:
-*/
-
 var Port = Ember.Object.extend(Ember.Evented, {
   init: function() {
     connect.apply(this);
