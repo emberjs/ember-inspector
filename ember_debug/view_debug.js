@@ -322,4 +322,4 @@ function virtualRange(view) {
 }
 
 
-export defaultViewDebug;
+export default ViewDebug;

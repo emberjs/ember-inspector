@@ -144,4 +144,4 @@ function getURL(segments) {
   return url;
 }
 
-export defaultRouteDebug;
+export default RouteDebug;

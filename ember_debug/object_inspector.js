@@ -493,4 +493,4 @@ function inspectController(controller) {
   return controller.get('_debugContainerKey') || controller.toString();
 }
 
-export defaultObjectInspector;
+export default ObjectInspector;
