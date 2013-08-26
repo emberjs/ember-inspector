@@ -24,9 +24,7 @@
   font-weight: bold;
   margin-bottom: 0;
   width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: -webkit-flex;
 }
 
 .object-inspector__header-trail {
@@ -60,4 +58,27 @@
 
 .object-inspector__back_state_disabled {
   opacity: 0.4;
+}
+
+.object-inspector__name {
+  -webkit-flex-basis: 0px;
+  -webkit-flex-grow: 1;
+  -webkit-flex-shrink: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.object-inspector__send-object-btn {
+  border: none;
+  background: none;
+  margin: 0;
+  padding: 0;
+  width: 15px;
+  opacity: 1;
+}
+
+.object-inspector__send-object-btn img {
+  margin-right: 3px;
+  width: 16px;
 }

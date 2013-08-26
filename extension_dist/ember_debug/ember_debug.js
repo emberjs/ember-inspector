@@ -480,7 +480,14 @@ define("object_inspector",
 
       sendToConsole: function(objectId, prop) {
         var object = this.sentObjects[objectId];
-        var value = Ember.get(object, prop);
+        var value;
+
+        if (Ember.isNone(prop)) {
+          value = this.sentObjects[objectId];
+        } else {
+          value =  Ember.get(object, prop);
+        }
+    
         window.$E = value;
         console.log('Ember Inspector ($E): ', value);
       },

@@ -324,6 +324,12 @@ test("Send to console", function() {
     equal(name, 'objectInspector:sendToConsole');
     equal(message.objectId, 'object-id');
     equal(message.property, 'myProp');
+  })
+  .clickByLabel('send-object-to-console-btn')
+  .then(function() {
+    equal(name, 'objectInspector:sendToConsole');
+    equal(message.objectId, 'object-id');
+    equal(message.property, undefined);
   });
 
 });
