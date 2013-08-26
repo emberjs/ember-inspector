@@ -3,20 +3,20 @@
 
   "name": "Ember Inspector",
   "description": "Tool for debugging Ember applications.",
-  "version": "0.0.1",
+  "version": "0.0.3",
 
   "icons": {
-    "128": "images/tomster.png"
+    "16":  "images/icon16.png",
+    "48":  "images/icon48.png",
+    "128": "images/icon128.png"
   },
   "permissions": [
-    "http://*/*",
-    "https://*/*",
-    "file://*/*"
+    "<all_urls>"
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "devtools_page": "devtools.html",
   "content_scripts": [{
-    "matches": ["https://*/*", "http://*/*", "file://*/*"],
+    "matches": ["<all_urls>"],
     "js": ["content-script.js"]
   }],
   "background": {
