@@ -15,6 +15,13 @@ var MixinStackController = Ember.ArrayController.extend({
     if(this.get('isNested')) {
       this.get('controllers.application').popMixinDetails();
     }
+  },
+
+  sendObjectToConsole: function(obj) {
+    var objectId = Ember.get(obj, 'objectId');
+    this.get('port').send('objectInspector:sendToConsole', {
+      objectId: objectId
+    });
   }
 });
 

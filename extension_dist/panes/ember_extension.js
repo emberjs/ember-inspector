@@ -248,6 +248,13 @@ define("controllers/mixin_stack",
         if(this.get('isNested')) {
           this.get('controllers.application').popMixinDetails();
         }
+      },
+
+      sendObjectToConsole: function(obj) {
+        var objectId = Ember.get(obj, 'objectId');
+        this.get('port').send('objectInspector:sendToConsole', {
+          objectId: objectId
+        });
       }
     });
 
@@ -1445,7 +1452,11 @@ function program3(depth0,data) {
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "firstObject.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</span>\n  </h1>\n  ");
+  data.buffer.push("</span>\n    <button class=\"object-inspector__send-object-btn\" ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "sendObjectToConsole", "firstObject", {hash:{},contexts:[depth0,depth0],types:["ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" data-label=\"send-object-to-console-btn\"><img src=\"/images/send.png\" title=\"Send object to console\"></button>\n  </h1>\n  ");
   hashTypes = {};
   hashContexts = {};
   stack1 = helpers['if'].call(depth0, "trail", {hash:{},inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
