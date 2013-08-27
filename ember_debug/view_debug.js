@@ -196,6 +196,12 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       rect = element.getBoundingClientRect();
     }
 
+    // take into account the scrolling position as mentioned in docs
+    // https://developer.mozilla.org/en-US/docs/Web/API/element.getBoundingClientRect
+    rect = Ember.$().extend({}, rect);
+    rect.top = rect.top + window.scrollY;
+    rect.left = rect.left + window.scrollX;
+
     var templateName = view.get('templateName') || view.get('_debugTemplateName'),
         controller = view.get('controller'),
         model = controller && controller.get('model');
