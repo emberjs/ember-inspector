@@ -214,7 +214,7 @@ define("controllers/mixin_property",
         var txtValue = this.get('txtValue');
         var realValue;
         try {
-          realValue = eval('(' + txtValue + ')');
+          realValue = JSON.parse(txtValue);
         } catch(e) {
           realValue = txtValue;
         }
