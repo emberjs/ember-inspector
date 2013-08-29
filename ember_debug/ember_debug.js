@@ -1,5 +1,6 @@
 import Port from "port";
 import ObjectInspector from "object_inspector";
+import GeneralDebug from "general_debug";
 import ViewDebug from "view_debug";
 import RouteDebug from "route_debug";
 import DataDebug from "data_debug";
@@ -28,7 +29,7 @@ EmberDebug = Ember.Namespace.create({
 
   },
 
-  setDebugHandler: function(prop, Handler) {
+  destroyAndCreate: function(prop, Handler) {
     var handler = this.get(prop);
     if (handler) {
       Ember.run(handler, 'destroy');
@@ -37,13 +38,15 @@ EmberDebug = Ember.Namespace.create({
   },
 
   reset: function() {
-    this.set('port', this.Port.create());
+    this.destroyAndCreate('port', this.Port);
 
-    this.setDebugHandler('objectInspector', ObjectInspector);
-    this.setDebugHandler('routeDebug', RouteDebug);
-    this.setDebugHandler('viewDebug', ViewDebug);
-    this.setDebugHandler('dataDebug', DataDebug);
+    this.destroyAndCreate('generalDebug', GeneralDebug);
+    this.destroyAndCreate('objectInspector', ObjectInspector);
+    this.destroyAndCreate('routeDebug', RouteDebug);
+    this.destroyAndCreate('viewDebug', ViewDebug);
+    this.destroyAndCreate('dataDebug', DataDebug);
 
+    this.generalDebug.sendBooted();
     this.viewDebug.sendTree();
   }
 

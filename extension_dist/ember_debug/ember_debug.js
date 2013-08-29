@@ -92,21 +92,11 @@ if (typeof define !== 'function' && typeof requireModule !== 'function') {
     }
     var body = document.body;
     var interval = setInterval(function() {
-      if (body.dataset.contentScriptLoaded && hasViews()) {
+      if (body.dataset.contentScriptLoaded && Ember.BOOTED) {
        clearInterval(interval);
        callback();
       }
     }, 10);
-  }
-
-  function hasViews() {
-    var views = Ember.View.views;
-    for(var i in views) {
-      if (views.hasOwnProperty(i)) {
-        return true;
-      }
-    }
-    return false;
   }
 
 }());
@@ -293,8 +283,8 @@ define("data_debug",
     return DataDebug;
   });
 define("ember_debug",
-  ["port","object_inspector","view_debug","route_debug","data_debug"],
-  function(Port, ObjectInspector, ViewDebug, RouteDebug, DataDebug) {
+  ["port","object_inspector","general_debug","view_debug","route_debug","data_debug"],
+  function(Port, ObjectInspector, GeneralDebug, ViewDebug, RouteDebug, DataDebug) {
     "use strict";
 
     console.debug("Ember Debugger Active");
@@ -321,7 +311,7 @@ define("ember_debug",
 
       },
 
-      setDebugHandler: function(prop, Handler) {
+      destroyAndCreate: function(prop, Handler) {
         var handler = this.get(prop);
         if (handler) {
           Ember.run(handler, 'destroy');
@@ -330,13 +320,15 @@ define("ember_debug",
       },
 
       reset: function() {
-        this.set('port', this.Port.create());
+        this.destroyAndCreate('port', this.Port);
 
-        this.setDebugHandler('objectInspector', ObjectInspector);
-        this.setDebugHandler('routeDebug', RouteDebug);
-        this.setDebugHandler('viewDebug', ViewDebug);
-        this.setDebugHandler('dataDebug', DataDebug);
+        this.destroyAndCreate('generalDebug', GeneralDebug);
+        this.destroyAndCreate('objectInspector', ObjectInspector);
+        this.destroyAndCreate('routeDebug', RouteDebug);
+        this.destroyAndCreate('viewDebug', ViewDebug);
+        this.destroyAndCreate('dataDebug', DataDebug);
 
+        this.generalDebug.sendBooted();
         this.viewDebug.sendTree();
       }
 
@@ -359,6 +351,36 @@ define("ember_debug",
 
 
     return EmberDebug;
+  });
+define("general_debug",
+  ["mixins/port_mixin"],
+  function(PortMixin) {
+    "use strict";
+
+    var GeneralDebug = Ember.Object.extend(PortMixin, {
+      namespace: null,
+
+      port: Ember.computed.alias('namespace.port'),
+
+      application: Ember.computed.alias('namespace.application'),
+
+      portNamespace: 'general',
+
+      sendBooted: function() {
+        this.sendMessage('applicationBooted', {
+          booted: Ember.BOOTED
+        });
+      },
+
+      messages: {
+        applicationBooted: function() {
+          this.sendBooted();
+        }
+      }
+    });
+
+
+    return GeneralDebug;
   });
 define("mixins/port_mixin",
   [],

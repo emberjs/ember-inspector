@@ -51,21 +51,11 @@
     }
     var body = document.body;
     var interval = setInterval(function() {
-      if (body.dataset.contentScriptLoaded && hasViews()) {
+      if (body.dataset.contentScriptLoaded && Ember.BOOTED) {
        clearInterval(interval);
        callback();
       }
     }, 10);
-  }
-
-  function hasViews() {
-    var views = Ember.View.views;
-    for(var i in views) {
-      if (views.hasOwnProperty(i)) {
-        return true;
-      }
-    }
-    return false;
   }
 
 }());

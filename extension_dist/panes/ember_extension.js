@@ -630,9 +630,10 @@ define("routes/application",
         this.get('port').on('objectInspector:updateObject', this, this.updateObject);
         this.get('port').on('objectInspector:updateProperty', this, this.updateProperty);
 
-        this.get('port').one('view:viewTree', this, function() {
-          controller.set('emberApplication', true);
+        this.get('port').one('general:applicationBooted', this, function(message) {
+          controller.set('emberApplication', message.booted);
         });
+        this.get('port').send('general:applicationBooted');
         this._super(controller, model);
       },
 
