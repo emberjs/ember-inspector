@@ -7,12 +7,9 @@ Ember objects in your application.
 Installation
 ------------
 
-Download a zip file from the [S3 builds page][s3-builds]. The latest version is
-located [here][latest-build].
+Install the extension from the [Chrome Web Store](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi).
 
-And follow the steps below after "Clone the repository".
-
-Or you can build yourself....
+OR:
 
 - Clone the repository
 - Visit chrome://extensions in chrome
