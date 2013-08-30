@@ -16,40 +16,42 @@ var MixinPropertyController = Ember.ObjectController.extend({
 
   isArray: Ember.computed.equal('value.type', 'type-array'),
 
-  valueClick: function() {
-    if (this.get('isEmberObject')) {
-      this.get('target').send('digDeeper', this.get('model'));
-      return;
-    }
+  actions: {
+    valueClick: function() {
+      if (this.get('isEmberObject')) {
+        this.get('target').send('digDeeper', this.get('model'));
+        return;
+      }
 
-    if (this.get('isComputedProperty') && !this.get('isCalculated')) {
-      this.get('target').send('calculate', this.get('model'));
-      return;
-    }
+      if (this.get('isComputedProperty') && !this.get('isCalculated')) {
+        this.get('target').send('calculate', this.get('model'));
+        return;
+      }
 
-    if (this.get('isFunction') || this.get('isArray') || this.get('overridden') || this.get('readOnly')) {
-      return;
-    }
+      if (this.get('isFunction') || this.get('isArray') || this.get('overridden') || this.get('readOnly')) {
+        return;
+      }
 
-    var value = this.get('value.inspect');
-    var type = this.get('value.type');
-    if (type === 'type-string') {
-      value = '"' + value + '"';
-    }
-    this.set('txtValue', value);
-    this.set('isEdit', true);
+      var value = this.get('value.inspect');
+      var type = this.get('value.type');
+      if (type === 'type-string') {
+        value = '"' + value + '"';
+      }
+      this.set('txtValue', value);
+      this.set('isEdit', true);
 
-  },
+    },
 
-  saveProperty: function() {
-    var txtValue = this.get('txtValue');
-    var realValue;
-    try {
-      realValue = JSON.parse(txtValue);
-    } catch(e) {
-      realValue = txtValue;
+    saveProperty: function() {
+      var txtValue = this.get('txtValue');
+      var realValue;
+      try {
+        realValue = JSON.parse(txtValue);
+      } catch(e) {
+        realValue = txtValue;
+      }
+      this.get('target').send('saveProperty', this.get('name'), realValue);
     }
-    this.get('target').send('saveProperty', this.get('name'), realValue);
   }
 
 

@@ -11,17 +11,20 @@ var MixinStackController = Ember.ArrayController.extend({
     return this.get('length') > 1;
   }.property('[]'),
 
-  popStack: function() {
-    if(this.get('isNested')) {
-      this.get('controllers.application').popMixinDetails();
-    }
-  },
 
-  sendObjectToConsole: function(obj) {
-    var objectId = Ember.get(obj, 'objectId');
-    this.get('port').send('objectInspector:sendToConsole', {
-      objectId: objectId
-    });
+  actions: {
+    popStack: function() {
+      if(this.get('isNested')) {
+        this.get('controllers.application').popMixinDetails();
+      }
+    },
+
+    sendObjectToConsole: function(obj) {
+      var objectId = Ember.get(obj, 'objectId');
+      this.get('port').send('objectInspector:sendToConsole', {
+        objectId: objectId
+      });
+    }
   }
 });
 

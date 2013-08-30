@@ -1,7 +1,7 @@
 {{#each mixin in mixins itemController="mixinDetail"}}
 <div {{bindAttr class=":mixin mixin.type mixin.isExpanded:mixin_state_expanded mixin.properties.length:mixin_props_yes:mixin_props_no"}} data-label="object-detail" >
   {{#if mixin.properties.length}}
-    <h2 class="mixin__name" {{action toggleProperty 'isExpanded' target=mixin}} data-label="object-detail-name">{{mixin.name}}</h2>
+    <h2 class="mixin__name" {{action "toggleExpanded" target="mixin"}} data-label="object-detail-name">{{mixin.name}}</h2>
   {{else}}
     <h2 class="mixin__name" data-label="object-detail-name">{{mixin.name}}</h2>
   {{/if}}
@@ -21,7 +21,7 @@
         {{view EmberExtension.PropertyFieldView classNames="mixin__property-value-txt" valueBinding=txtValue label="object-property-value-txt"}}
       {{/unless}}
       <span class='mixin__property-overridden-by'>(Overridden by {{overridden}})</span>
-      <button class="mixin__send-btn" {{action sendToConsole model}} data-label="send-to-console-btn"><img src="/images/send.png" title="Send to console"></button>
+      <button class="mixin__send-btn" {{action "sendToConsole" model}} data-label="send-to-console-btn"><img src="/images/send.png" title="Send to console"></button>
     </li>
     {{else}}
     <li class="mixin__property">No Properties</li>

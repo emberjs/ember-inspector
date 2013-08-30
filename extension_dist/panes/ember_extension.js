@@ -1,11 +1,11 @@
 define("application",
   ["router","resolver"],
-  function(Router, resolver) {
+  function(Router, Resolver) {
     "use strict";
 
     var App = Ember.Application.extend({
       modulePrefix: '',
-      resolver: resolver,
+      Resolver: Resolver,
       Router: Router
     });
 
@@ -114,40 +114,46 @@ define("controllers/mixin_detail",
 
       objectId: Ember.computed.alias('controllers.mixinDetails.objectId'),
 
-      digDeeper: function(property) {
-        var objectId = this.get('objectId');
-        this.get('port').send('objectInspector:digDeeper', {
-          objectId: objectId,
-          property: property.name
-        });
-      },
+      actions: {
+        calculate: function(property) {
+          var objectId = this.get('objectId');
+          var mixinIndex = this.get('controllers.mixinDetails.mixins').indexOf(this.get('model'));
+          this.get('port').send('objectInspector:calculate', {
+            objectId: objectId,
+            property: property.name,
+            mixinIndex: mixinIndex
+          });
+        },
 
-      calculate: function(property) {
-        var objectId = this.get('objectId');
-        var mixinIndex = this.get('controllers.mixinDetails.mixins').indexOf(this.get('model'));
-        this.get('port').send('objectInspector:calculate', {
-          objectId: objectId,
-          property: property.name,
-          mixinIndex: mixinIndex
-        });
-      },
+        sendToConsole: function(property) {
+          var objectId = this.get('objectId');
+          this.get('port').send('objectInspector:sendToConsole', {
+            objectId: objectId,
+            property: property.name
+          });
+        },
 
-      sendToConsole: function(property) {
-        var objectId = this.get('objectId');
-        this.get('port').send('objectInspector:sendToConsole', {
-          objectId: objectId,
-          property: property.name
-        });
-      },
+        toggleExpanded: function() {
+          this.toggleProperty('isExpanded');
+        },
 
-      saveProperty: function(prop, val) {
-        var mixinIndex = this.get('controllers.mixinDetails.mixins').indexOf(this.get('model'));
-        this.get('port').send('objectInspector:saveProperty', {
-          objectId: this.get('objectId'),
-          property: prop,
-          value: val,
-          mixinIndex: mixinIndex
-        });
+        digDeeper: function(property) {
+          var objectId = this.get('objectId');
+          this.get('port').send('objectInspector:digDeeper', {
+            objectId: objectId,
+            property: property.name
+          });
+        },
+
+        saveProperty: function(prop, val) {
+          var mixinIndex = this.get('controllers.mixinDetails.mixins').indexOf(this.get('model'));
+          this.get('port').send('objectInspector:saveProperty', {
+            objectId: this.get('objectId'),
+            property: prop,
+            value: val,
+            mixinIndex: mixinIndex
+          });
+        }
       }
     });
 
@@ -185,40 +191,42 @@ define("controllers/mixin_property",
 
       isArray: Ember.computed.equal('value.type', 'type-array'),
 
-      valueClick: function() {
-        if (this.get('isEmberObject')) {
-          this.get('target').send('digDeeper', this.get('model'));
-          return;
-        }
+      actions: {
+        valueClick: function() {
+          if (this.get('isEmberObject')) {
+            this.get('target').send('digDeeper', this.get('model'));
+            return;
+          }
 
-        if (this.get('isComputedProperty') && !this.get('isCalculated')) {
-          this.get('target').send('calculate', this.get('model'));
-          return;
-        }
+          if (this.get('isComputedProperty') && !this.get('isCalculated')) {
+            this.get('target').send('calculate', this.get('model'));
+            return;
+          }
 
-        if (this.get('isFunction') || this.get('isArray') || this.get('overridden') || this.get('readOnly')) {
-          return;
-        }
+          if (this.get('isFunction') || this.get('isArray') || this.get('overridden') || this.get('readOnly')) {
+            return;
+          }
 
-        var value = this.get('value.inspect');
-        var type = this.get('value.type');
-        if (type === 'type-string') {
-          value = '"' + value + '"';
-        }
-        this.set('txtValue', value);
-        this.set('isEdit', true);
+          var value = this.get('value.inspect');
+          var type = this.get('value.type');
+          if (type === 'type-string') {
+            value = '"' + value + '"';
+          }
+          this.set('txtValue', value);
+          this.set('isEdit', true);
 
-      },
+        },
 
-      saveProperty: function() {
-        var txtValue = this.get('txtValue');
-        var realValue;
-        try {
-          realValue = JSON.parse(txtValue);
-        } catch(e) {
-          realValue = txtValue;
+        saveProperty: function() {
+          var txtValue = this.get('txtValue');
+          var realValue;
+          try {
+            realValue = JSON.parse(txtValue);
+          } catch(e) {
+            realValue = txtValue;
+          }
+          this.get('target').send('saveProperty', this.get('name'), realValue);
         }
-        this.get('target').send('saveProperty', this.get('name'), realValue);
       }
 
 
@@ -244,17 +252,20 @@ define("controllers/mixin_stack",
         return this.get('length') > 1;
       }.property('[]'),
 
-      popStack: function() {
-        if(this.get('isNested')) {
-          this.get('controllers.application').popMixinDetails();
-        }
-      },
 
-      sendObjectToConsole: function(obj) {
-        var objectId = Ember.get(obj, 'objectId');
-        this.get('port').send('objectInspector:sendToConsole', {
-          objectId: objectId
-        });
+      actions: {
+        popStack: function() {
+          if(this.get('isNested')) {
+            this.get('controllers.application').popMixinDetails();
+          }
+        },
+
+        sendObjectToConsole: function(obj) {
+          var objectId = Ember.get(obj, 'objectId');
+          this.get('port').send('objectInspector:sendToConsole', {
+            objectId: objectId
+          });
+        }
       }
     });
 
@@ -363,9 +374,11 @@ define("controllers/records",
 
       search: '',
 
-      setFilter: function(val) {
-        val = val || null;
-        this.set('filterValue', val);
+      actions: {
+        setFilter: function(val) {
+          val = val || null;
+          this.set('filterValue', val);
+        }
       },
 
       modelChanged: function() {
@@ -473,24 +486,24 @@ define("controllers/view_tree",
     var ViewTreeController = Ember.Controller.extend({
       pinnedNode: null,
 
-      showLayer: function(node) {
-        this.set('pinnedNode', null);
-        this.get('port').send('view:showLayer', { objectId: node.value.objectId });
-        this.set('pinnedNode', node);
-      },
-
       hideLayer: function(node) {
         this.get('port').send('view:hideLayer', { objectId: node.value.objectId });
       },
 
-      previewLayer: function(node) {
-        if (node !== this.get('pinnedNode')) {
-          this.get('port').send('view:previewLayer', { objectId: node.value.objectId });
+      actions: {
+        showLayer: function(node) {
+          this.set('pinnedNode', null);
+          this.get('port').send('view:showLayer', { objectId: node.value.objectId });
+          this.set('pinnedNode', node);
+        },
+        previewLayer: function(node) {
+          if (node !== this.get('pinnedNode')) {
+            this.get('port').send('view:previewLayer', { objectId: node.value.objectId });
+          }
+        },
+        hidePreview: function(node) {
+          this.get('port').send('view:hidePreview', { objectId: node.value.objectId });
         }
-      },
-
-      hidePreview: function(node) {
-        this.get('port').send('view:hidePreview', { objectId: node.value.objectId });
       }
     });
 
@@ -668,7 +681,7 @@ define("routes/application",
         Ember.set(property, 'value', options.value);
       },
 
-      events: {
+      actions: {
         expandInspector: function() {
           this.set("controller.inspectorExpanded", true);
         },
@@ -765,7 +778,7 @@ define("routes/model_types",
         });
       },
 
-      events: {
+      actions: {
         viewRecords: function(type) {
           this.transitionTo('records', type);
         }
@@ -830,7 +843,7 @@ define("routes/records",
         this.get('currentModel').removeAt(message.index, message.count);
       },
 
-      events: {
+      actions: {
         inspectModel: function(model) {
           this.get('port').send('data:inspectModel', { objectId: Ember.get(model, 'objectId') });
         }
@@ -866,7 +879,7 @@ define("routes/route_tree",
         this.set('controller.model', { children: [ arrayizeTree(options.tree) ] });
       },
 
-      events: {
+      actions: {
         inspectRoute: function(name) {
           this.get('port').send('objectInspector:inspectRoute', { name: name } );
         },
@@ -926,8 +939,8 @@ this["Ember"] = this["Ember"] || {};
 this["Ember"]["TEMPLATES"] = this["Ember"]["TEMPLATES"] || {};
 
 this["Ember"]["TEMPLATES"]["_route_node"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [3,'>= 1.0.0-rc.4'];
-helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashContexts, hashTypes, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
@@ -975,7 +988,7 @@ function program1(depth0,data) {
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
-  data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "route_node", options) : helperMissing.call(depth0, "partial", "route_node", options))));
+  data.buffer.push(escapeExpression(((stack1 = helpers.partial || depth0.partial),stack1 ? stack1.call(depth0, "route_node", options) : helperMissing.call(depth0, "partial", "route_node", options))));
   data.buffer.push("\n");
   return buffer;
   }
@@ -1017,8 +1030,8 @@ function program4(depth0,data) {
 });
 
 this["Ember"]["TEMPLATES"]["_view_node"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [3,'>= 1.0.0-rc.4'];
-helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
 
 function program1(depth0,data) {
@@ -1059,7 +1072,7 @@ function program4(depth0,data) {
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
-  data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "view_node", options) : helperMissing.call(depth0, "partial", "view_node", options))));
+  data.buffer.push(escapeExpression(((stack1 = helpers.partial || depth0.partial),stack1 ? stack1.call(depth0, "view_node", options) : helperMissing.call(depth0, "partial", "view_node", options))));
   data.buffer.push("\n      ");
   return buffer;
   }
@@ -1075,8 +1088,8 @@ function program4(depth0,data) {
 });
 
 this["Ember"]["TEMPLATES"]["application"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [3,'>= 1.0.0-rc.4'];
-helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
 
 function program1(depth0,data) {
@@ -1092,19 +1105,19 @@ function program1(depth0,data) {
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
-  stack2 = ((stack1 = helpers.linkTo),stack1 ? stack1.call(depth0, "view_tree", options) : helperMissing.call(depth0, "linkTo", "view_tree", options));
+  stack2 = ((stack1 = helpers['link-to'] || depth0['link-to']),stack1 ? stack1.call(depth0, "view_tree", options) : helperMissing.call(depth0, "link-to", "view_tree", options));
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
   data.buffer.push("\n        </li>\n        <li class=\"main-nav__item\">\n          ");
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
-  stack2 = ((stack1 = helpers.linkTo),stack1 ? stack1.call(depth0, "route_tree", options) : helperMissing.call(depth0, "linkTo", "route_tree", options));
+  stack2 = ((stack1 = helpers['link-to'] || depth0['link-to']),stack1 ? stack1.call(depth0, "route_tree", options) : helperMissing.call(depth0, "link-to", "route_tree", options));
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
   data.buffer.push("\n        </li>\n        <li class=\"main-nav__item\">\n          ");
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
-  stack2 = ((stack1 = helpers.linkTo),stack1 ? stack1.call(depth0, "data", options) : helperMissing.call(depth0, "linkTo", "data", options));
+  stack2 = ((stack1 = helpers['link-to'] || depth0['link-to']),stack1 ? stack1.call(depth0, "data", options) : helperMissing.call(depth0, "link-to", "data", options));
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
   data.buffer.push("\n        </li>\n      </ul>\n    </nav>\n  </div>\n\n\n  <div class=\"app__main\">\n    ");
   hashTypes = {};
@@ -1130,7 +1143,7 @@ function program1(depth0,data) {
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
-  data.buffer.push(escapeExpression(((stack1 = helpers.render),stack1 ? stack1.call(depth0, "mixinStack", options) : helperMissing.call(depth0, "render", "mixinStack", options))));
+  data.buffer.push(escapeExpression(((stack1 = helpers.render || depth0.render),stack1 ? stack1.call(depth0, "mixinStack", options) : helperMissing.call(depth0, "render", "mixinStack", options))));
   data.buffer.push("\n    </div>\n  </div>\n\n\n");
   return buffer;
   }
@@ -1173,7 +1186,7 @@ function program10(depth0,data) {
     'isDragging': ("isDragging"),
     'positionRight': ("inspectorWidth")
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
-  data.buffer.push(escapeExpression(((stack1 = helpers['drag-handle']),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "drag-handle", options))));
+  data.buffer.push(escapeExpression(((stack1 = helpers['drag-handle'] || depth0['drag-handle']),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "drag-handle", options))));
   data.buffer.push("\n      </div>\n\n      <div class=\"app__toggle-inspector-btn\" ");
   hashTypes = {};
   hashContexts = {};
@@ -1198,8 +1211,8 @@ function program12(depth0,data) {
 });
 
 this["Ember"]["TEMPLATES"]["components/drag-handle"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [3,'>= 1.0.0-rc.4'];
-helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '';
 
 
@@ -1208,8 +1221,8 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 });
 
 this["Ember"]["TEMPLATES"]["data"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [3,'>= 1.0.0-rc.4'];
-helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', hashTypes, hashContexts, escapeExpression=this.escapeExpression;
 
 
@@ -1222,8 +1235,8 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 });
 
 this["Ember"]["TEMPLATES"]["data/index"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [3,'>= 1.0.0-rc.4'];
-helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   
 
 
@@ -1232,8 +1245,8 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 });
 
 this["Ember"]["TEMPLATES"]["mixin_details"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [3,'>= 1.0.0-rc.4'];
-helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashContexts, hashTypes, escapeExpression=this.escapeExpression, self=this;
 
 function program1(depth0,data) {
@@ -1263,10 +1276,10 @@ function program2(depth0,data) {
   var buffer = '', hashContexts, hashTypes;
   data.buffer.push("\n    <h2 class=\"mixin__name\" ");
   hashContexts = {'target': depth0};
-  hashTypes = {'target': "ID"};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "toggleProperty", "isExpanded", {hash:{
+  hashTypes = {'target': "STRING"};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "toggleExpanded", {hash:{
     'target': ("mixin")
-  },contexts:[depth0,depth0],types:["ID","STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  },contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push(" data-label=\"object-detail-name\">");
   hashTypes = {};
   hashContexts = {};
@@ -1329,7 +1342,7 @@ function program7(depth0,data) {
   data.buffer.push(")</span>\n      <button class=\"mixin__send-btn\" ");
   hashTypes = {};
   hashContexts = {};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "sendToConsole", "model", {hash:{},contexts:[depth0,depth0],types:["ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "sendToConsole", "model", {hash:{},contexts:[depth0,depth0],types:["STRING","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push(" data-label=\"send-to-console-btn\"><img src=\"/images/send.png\" title=\"Send to console\"></button>\n    </li>\n    ");
   return buffer;
   }
@@ -1412,8 +1425,8 @@ function program16(depth0,data) {
 });
 
 this["Ember"]["TEMPLATES"]["mixin_stack"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [3,'>= 1.0.0-rc.4'];
-helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, options, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
@@ -1456,7 +1469,7 @@ function program3(depth0,data) {
   data.buffer.push("</span>\n    <button class=\"object-inspector__send-object-btn\" ");
   hashTypes = {};
   hashContexts = {};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "sendObjectToConsole", "firstObject", {hash:{},contexts:[depth0,depth0],types:["ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "sendObjectToConsole", "firstObject", {hash:{},contexts:[depth0,depth0],types:["STRING","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push(" data-label=\"send-object-to-console-btn\"><img src=\"/images/send.png\" title=\"Send object to console\"></button>\n  </h1>\n  ");
   hashTypes = {};
   hashContexts = {};
@@ -1466,15 +1479,15 @@ function program3(depth0,data) {
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
-  data.buffer.push(escapeExpression(((stack1 = helpers.render),stack1 ? stack1.call(depth0, "mixinDetails", options) : helperMissing.call(depth0, "render", "mixinDetails", options))));
+  data.buffer.push(escapeExpression(((stack1 = helpers.render || depth0.render),stack1 ? stack1.call(depth0, "mixinDetails", options) : helperMissing.call(depth0, "render", "mixinDetails", options))));
   data.buffer.push("\n</div>\n");
   return buffer;
   
 });
 
 this["Ember"]["TEMPLATES"]["model_type"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [3,'>= 1.0.0-rc.4'];
-helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', hashTypes, hashContexts, escapeExpression=this.escapeExpression;
 
 
@@ -1487,8 +1500,8 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 });
 
 this["Ember"]["TEMPLATES"]["model_types"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [3,'>= 1.0.0-rc.4'];
-helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashContexts, hashTypes, escapeExpression=this.escapeExpression, self=this;
 
 function program1(depth0,data) {
@@ -1561,8 +1574,8 @@ function program4(depth0,data) {
 });
 
 this["Ember"]["TEMPLATES"]["records"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [3,'>= 1.0.0-rc.4'];
-helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, stack2, hashTypes, hashContexts, options, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
@@ -1649,7 +1662,7 @@ function program6(depth0,data) {
     'value': ("search"),
     'placeholder': ("Search")
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
-  data.buffer.push(escapeExpression(((stack1 = helpers.input),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "input", options))));
+  data.buffer.push(escapeExpression(((stack1 = helpers.input || depth0.input),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "input", options))));
   data.buffer.push("\n      </div>\n      <div data-label=\"filter\" ");
   hashContexts = {'class': depth0};
   hashTypes = {'class': "STRING"};
@@ -1673,8 +1686,8 @@ function program6(depth0,data) {
 });
 
 this["Ember"]["TEMPLATES"]["route_tree"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [3,'>= 1.0.0-rc.4'];
-helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
 
 
@@ -1682,15 +1695,15 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
-  data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "route_node", options) : helperMissing.call(depth0, "partial", "route_node", options))));
+  data.buffer.push(escapeExpression(((stack1 = helpers.partial || depth0.partial),stack1 ? stack1.call(depth0, "route_node", options) : helperMissing.call(depth0, "partial", "route_node", options))));
   data.buffer.push("\n      </tbody>\n    </table>\n  </div>\n</div>\n");
   return buffer;
   
 });
 
 this["Ember"]["TEMPLATES"]["view_tree"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [3,'>= 1.0.0-rc.4'];
-helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
 
 
@@ -1698,7 +1711,7 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
-  data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "view_node", options) : helperMissing.call(depth0, "partial", "view_node", options))));
+  data.buffer.push(escapeExpression(((stack1 = helpers.partial || depth0.partial),stack1 ? stack1.call(depth0, "view_node", options) : helperMissing.call(depth0, "partial", "view_node", options))));
   data.buffer.push("\n</div>\n");
   return buffer;
   

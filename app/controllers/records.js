@@ -15,9 +15,11 @@ var RecordsController = Ember.ArrayController.extend({
 
   search: '',
 
-  setFilter: function(val) {
-    val = val || null;
-    this.set('filterValue', val);
+  actions: {
+    setFilter: function(val) {
+      val = val || null;
+      this.set('filterValue', val);
+    }
   },
 
   modelChanged: function() {

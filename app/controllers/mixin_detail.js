@@ -7,40 +7,46 @@ var MixinDetailController = Ember.ObjectController.extend({
 
   objectId: Ember.computed.alias('controllers.mixinDetails.objectId'),
 
-  digDeeper: function(property) {
-    var objectId = this.get('objectId');
-    this.get('port').send('objectInspector:digDeeper', {
-      objectId: objectId,
-      property: property.name
-    });
-  },
+  actions: {
+    calculate: function(property) {
+      var objectId = this.get('objectId');
+      var mixinIndex = this.get('controllers.mixinDetails.mixins').indexOf(this.get('model'));
+      this.get('port').send('objectInspector:calculate', {
+        objectId: objectId,
+        property: property.name,
+        mixinIndex: mixinIndex
+      });
+    },
 
-  calculate: function(property) {
-    var objectId = this.get('objectId');
-    var mixinIndex = this.get('controllers.mixinDetails.mixins').indexOf(this.get('model'));
-    this.get('port').send('objectInspector:calculate', {
-      objectId: objectId,
-      property: property.name,
-      mixinIndex: mixinIndex
-    });
-  },
+    sendToConsole: function(property) {
+      var objectId = this.get('objectId');
+      this.get('port').send('objectInspector:sendToConsole', {
+        objectId: objectId,
+        property: property.name
+      });
+    },
 
-  sendToConsole: function(property) {
-    var objectId = this.get('objectId');
-    this.get('port').send('objectInspector:sendToConsole', {
-      objectId: objectId,
-      property: property.name
-    });
-  },
+    toggleExpanded: function() {
+      this.toggleProperty('isExpanded');
+    },
 
-  saveProperty: function(prop, val) {
-    var mixinIndex = this.get('controllers.mixinDetails.mixins').indexOf(this.get('model'));
-    this.get('port').send('objectInspector:saveProperty', {
-      objectId: this.get('objectId'),
-      property: prop,
-      value: val,
-      mixinIndex: mixinIndex
-    });
+    digDeeper: function(property) {
+      var objectId = this.get('objectId');
+      this.get('port').send('objectInspector:digDeeper', {
+        objectId: objectId,
+        property: property.name
+      });
+    },
+
+    saveProperty: function(prop, val) {
+      var mixinIndex = this.get('controllers.mixinDetails.mixins').indexOf(this.get('model'));
+      this.get('port').send('objectInspector:saveProperty', {
+        objectId: this.get('objectId'),
+        property: prop,
+        value: val,
+        mixinIndex: mixinIndex
+      });
+    }
   }
 });
 

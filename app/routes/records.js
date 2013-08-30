@@ -49,7 +49,7 @@ var RecordsRoute = Ember.Route.extend({
     this.get('currentModel').removeAt(message.index, message.count);
   },
 
-  events: {
+  actions: {
     inspectModel: function(model) {
       this.get('port').send('data:inspectModel', { objectId: Ember.get(model, 'objectId') });
     }

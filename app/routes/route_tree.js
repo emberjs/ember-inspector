@@ -20,7 +20,7 @@ var RouteTreeRoute = Ember.Route.extend({
     this.set('controller.model', { children: [ arrayizeTree(options.tree) ] });
   },
 
-  events: {
+  actions: {
     inspectRoute: function(name) {
       this.get('port').send('objectInspector:inspectRoute', { name: name } );
     },

@@ -44,7 +44,7 @@ var ApplicationRoute = Ember.Route.extend({
     Ember.set(property, 'value', options.value);
   },
 
-  events: {
+  actions: {
     expandInspector: function() {
       this.set("controller.inspectorExpanded", true);
     },

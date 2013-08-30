@@ -30,7 +30,7 @@ var ModelTypesRoute = Ember.Route.extend({
     });
   },
 
-  events: {
+  actions: {
     viewRecords: function(type) {
       this.transitionTo('records', type);
     }
