@@ -92,7 +92,7 @@ if (typeof define !== 'function' && typeof requireModule !== 'function') {
     }
     var body = document.body;
     var interval = setInterval(function() {
-      if (body.dataset.contentScriptLoaded && Ember.BOOTED) {
+      if (body.dataset.emberExtension && Ember.BOOTED) {
        clearInterval(interval);
        callback();
       }
