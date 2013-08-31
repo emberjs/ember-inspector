@@ -938,6 +938,16 @@ define("routes/view_tree",
 this["Ember"] = this["Ember"] || {};
 this["Ember"]["TEMPLATES"] = this["Ember"]["TEMPLATES"] || {};
 
+this["Ember"]["TEMPLATES"]["_not_detected"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
+  
+
+
+  data.buffer.push("<div class=\"error-page\">\n\n  <div class=\"error-page__content\">\n\n    <div class=\"error-page__header\">\n      <div class=\"error-page__title\">Ember application not detected!</div>\n    </div>\n\n    <div class=\"error-page__reasons\">\n\n      <div class=\"error-page__reasons-title\">Here are some common reasons this happens:</div>\n\n      <ul class=\"error-page__list\">\n        <li>This is not an Ember application.</li>\n        <li>Your application is inside an iframe.</li>\n        <li>You are using an old version of Ember (&lt; rc5).</li>\n        <li>You are using the file:// protocol (instead of http://), in which case:\n          <ul>\n            <li>Visit the URL: chrome://extensions.</li>\n            <li>Find the Ember Inspector.</li>\n            <li>Make sure \"Allow access to file URLs\" is checked.</li>\n          </ul>\n        </li>\n      </ul>\n\n      If you're still having trouble, please file an issue on the Ember Inspector's\n      <a href=\"https://github.com/tildeio/ember-extension\" target=\"_blank\">GitHub page.</a>\n    </div>\n\n  </div>\n\n</div>\n");
+  
+});
+
 this["Ember"]["TEMPLATES"]["_route_node"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
@@ -1197,8 +1207,14 @@ function program10(depth0,data) {
 
 function program12(depth0,data) {
   
-  
-  data.buffer.push("\n  No Ember Application Detected.\n");
+  var buffer = '', stack1, hashTypes, hashContexts, options;
+  data.buffer.push("\n  ");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.partial || depth0.partial),stack1 ? stack1.call(depth0, "not_detected", options) : helperMissing.call(depth0, "partial", "not_detected", options))));
+  data.buffer.push("\n");
+  return buffer;
   }
 
   hashTypes = {};
