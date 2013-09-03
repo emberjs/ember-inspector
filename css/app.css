@@ -7,7 +7,9 @@
 
 .app {
   display: -webkit-flex;
+  display: flex;
   -webkit-flex-direction: row;
+  flex-direction: row;
   height: 100%;
   position: relative;
 }
@@ -20,6 +22,7 @@
 
 .app__main {
   -webkit-flex: 1;
+  flex: 1;
   height: 100%;
   overflow: auto;
   border-left: solid 1px #828282;
@@ -33,8 +36,11 @@
   border-left: solid 1px #ccc;
 
   display:-webkit-box;
+  display: box;
   -webkit-box-pack:center;
   -webkit-box-align:center;
+  box-pack:center;
+  box-align:center;
 }
 
 .app__toggle-inspector-btn:hover {
@@ -48,7 +54,9 @@
   transition: width 50ms;
 
   display: -webkit-flex;
+  display: flex;
   -webkit-flex-direction: row;
+  flex-direction: row;
 }
 
 .app__right-col-drag {
@@ -62,6 +70,7 @@
 
 .app__inspector-container {
   -webkit-flex: 1;
+  flex: 1;
   background: white;
   height: 100%;
   overflow: auto;

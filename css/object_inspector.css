@@ -25,6 +25,7 @@
   margin-bottom: 0;
   width: 100%;
   display: -webkit-flex;
+  display: flex;
 }
 
 .object-inspector__header-trail {
@@ -64,6 +65,9 @@
   -webkit-flex-basis: 0px;
   -webkit-flex-grow: 1;
   -webkit-flex-shrink: 1;
+  flex-basis: 0px;
+  flex-grow: 1;
+  flex-shrink: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

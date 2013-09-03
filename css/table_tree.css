@@ -132,12 +132,15 @@
 
 .table-tree_type_advanced {
   display: -webkit-flex;
+  display: flex;
   -webkit-flex-direction: column;
+  flex-direction: column;
 }
 
 .table-tree_type_advanced  .table-tree__table-container {
   height: auto;
   -webkit-flex: 1;
+  flex: 1;
 }
 
 .table-tree_type_advanced  .table-tree__filter {}

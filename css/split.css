@@ -11,8 +11,10 @@
 }
 
 .split_state_collapsed {
-   display: -webkit-flex;
+  display: -webkit-flex;
+  display: flex;
   -webkit-flex-direction: row;
+  flex-direction: row;
 }
 
 .split_state_collapsed .split__parent {
@@ -21,5 +23,6 @@
 
 .split_state_collapsed .split__child {
   -webkit-flex: 1;
+  flex: 1;
   height: 100%;
 }
