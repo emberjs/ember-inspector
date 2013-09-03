@@ -7,6 +7,12 @@
   is not detected.
 */
 
+.data-error-page-container {
+  position: relative;
+  min-height: 100%;
+  padding: 10px;
+}
+
 .error-page {
   padding: 10px;
   background: #ededed;
@@ -38,7 +44,8 @@
 .error-page__header {
   font-weight: bold;
   font-size: 19px;
-  padding-bottom: 10px;
+  padding-top: 15px;
+  padding-bottom: 30px;
   margin-bottom: 10px;
   border-bottom: solid 1px #d1d1d1;
   position: relative;
@@ -55,7 +62,7 @@
 }
 
 .error-page__title {
-  width: 185px;
+  width: 345px;
 }
 
 .error-page__reasons {
