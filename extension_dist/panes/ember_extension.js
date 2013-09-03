@@ -522,19 +522,10 @@ define("controllers/view_tree",
   [],
   function() {
     "use strict";
-    var ViewTreeController = Ember.Controller.extend({
+    var ViewTreeController = Ember.ObjectController.extend({
       pinnedNode: null,
 
-      hideLayer: function(node) {
-        this.get('port').send('view:hideLayer', { objectId: node.value.objectId });
-      },
-
       actions: {
-        showLayer: function(node) {
-          this.set('pinnedNode', null);
-          this.get('port').send('view:showLayer', { objectId: node.value.objectId });
-          this.set('pinnedNode', node);
-        },
         previewLayer: function(node) {
           if (node !== this.get('pinnedNode')) {
             this.get('port').send('view:previewLayer', { objectId: node.value.objectId });
@@ -553,20 +544,44 @@ define("controllers/view_tree_item",
   [],
   function() {
     "use strict";
-    var ViewTreeItemController = Ember.Controller.extend();
+    var ViewTreeItemController = Ember.ObjectController.extend({
+      hasView: function() {
+        return this.get('model.value.viewClass') !== 'virtual';
+      }.property('model.value.viewClass'),
+
+      hasController: function() {
+        return !!this.get('model.value.controller');
+      }.property('model.value.controller'),
+
+      hasModel: function() {
+        return !!this.get('model.value.model');
+      }.property('model.value.model'),
+
+      style: function() {
+        return 'padding-left: ' + ((this.get('numParents') * 5) + 5) + 'px';
+      }.property('numParents'),
+
+      numParents: function() {
+        var numParents = this.get('target.target.numParents');
+        if (numParents === undefined) {
+          numParents = -1;
+        }
+        return numParents + 1;
+      }.property("target.target.numParents")
+
+    });
 
 
     return ViewTreeItemController;
   });
 define("main",
-  ["application","views/tree_node_controller","components/property_field","components/drag_handle","port"],
-  function(App, TreeNodeControllerView, PropertyFieldComponent, DragHandleComponent, Port) {
+  ["application","components/drag_handle","components/property_field","port"],
+  function(App, DragHandleComponent, PropertyFieldComponent, Port) {
     "use strict";
 
     var EmberExtension;
 
     EmberExtension = App.create();
-    EmberExtension.TreeNodeControllerView = TreeNodeControllerView;
     EmberExtension.DragHandleComponent = DragHandleComponent;
     EmberExtension.PropertyFieldComponent = PropertyFieldComponent;
     EmberExtension.Port = Port;
@@ -958,7 +973,15 @@ define("routes/view_tree",
       },
 
       setViewTree: function(options) {
-        this.set('controller.node', { children: [ arrayizeTree(options.tree) ] });
+        this.set('controller.model', { children: [ arrayizeTree(options.tree) ] });
+      },
+
+      actions: {
+        inspect: function(objectId) {
+          if (objectId) {
+            this.get('port').send('objectInspector:inspectById', { objectId: objectId });
+          }
+        }
       }
 
     });
@@ -993,7 +1016,7 @@ function program1(depth0,data) {
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push(">\n    <td ");
   hashContexts = {'class': depth0,'style': depth0};
-  hashTypes = {'class': "STRING",'style': "STRING"};
+  hashTypes = {'class': "STRING",'style': "ID"};
   data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
     'class': (":table-tree__main-cell isCurrent:table-tree__main-cell_state_current"),
     'style': ("style")
@@ -1071,57 +1094,93 @@ function program4(depth0,data) {
 this["Ember"]["TEMPLATES"]["_view_node"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
-  var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
+  var buffer = '', stack1, hashContexts, hashTypes, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
   
-  var buffer = '', stack1, hashContexts, hashTypes;
-  data.buffer.push("\n    <li class=\"tree__node-child\" data-label=\"tree-view\">\n      <p class=\"tree__node-header\">\n        ");
-  hashContexts = {'nodeBinding': depth0,'label': depth0};
-  hashTypes = {'nodeBinding': "STRING",'label': "STRING"};
-  stack1 = helpers.view.call(depth0, "EmberExtension.TreeNodeControllerView", {hash:{
-    'nodeBinding': ("node"),
-    'label': ("tree-view-controller")
-  },inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\n  ");
+  hashContexts = {'nodeBinding': depth0};
+  hashTypes = {'nodeBinding': "ID"};
+  stack1 = helpers.view.call(depth0, "treeNodeItem", {hash:{
+    'nodeBinding': ("model")
+  },inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n        <span class='tree__node-hint' data-label=\"tree-view-template\">template:");
-  hashTypes = {};
-  hashContexts = {};
-  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "node.value.template", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</span>\n      </p>\n      ");
-  hashTypes = {};
-  hashContexts = {};
-  stack1 = helpers['if'].call(depth0, "node.children.length", {hash:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n    </li>\n  ");
-  return buffer;
-  }
-function program2(depth0,data) {
-  
-  var hashTypes, hashContexts;
-  hashTypes = {};
-  hashContexts = {};
-  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "node.value.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  }
-
-function program4(depth0,data) {
-  
-  var buffer = '', stack1, hashTypes, hashContexts, options;
-  data.buffer.push("\n        ");
+  data.buffer.push("\n\n  ");
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
   data.buffer.push(escapeExpression(((stack1 = helpers.partial || depth0.partial),stack1 ? stack1.call(depth0, "view_node", options) : helperMissing.call(depth0, "partial", "view_node", options))));
-  data.buffer.push("\n      ");
+  data.buffer.push("\n");
+  return buffer;
+  }
+function program2(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n    <td ");
+  hashContexts = {'class': depth0,'style': depth0};
+  hashTypes = {'class': "STRING",'style': "ID"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': (":table-tree__main-cell"),
+    'style': ("style")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" >\n      ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n    </td>\n     <td ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "inspect", "value.objectId", {hash:{},contexts:[depth0,depth0],types:["STRING","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': ("hasView:table-tree__clickable")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n      ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.viewClass", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n    </td>\n    <td ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "inspect", "value.controller.objectId", {hash:{},contexts:[depth0,depth0],types:["STRING","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': ("hasController:table-tree__clickable")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" >\n      ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.controller.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n    </td>\n    <td ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "inspect", "value.model.objectId", {hash:{},contexts:[depth0,depth0],types:["STRING","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': ("hasModel:table-tree__clickable")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n      ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.model.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n    </td>\n\n  ");
   return buffer;
   }
 
-  data.buffer.push("<ul class=\"tree__node\" data-label=\"tree-node\">\n  ");
-  hashTypes = {};
-  hashContexts = {};
-  stack1 = helpers.each.call(depth0, "node", "in", "node.children", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  hashContexts = {'itemController': depth0};
+  hashTypes = {'itemController': "STRING"};
+  stack1 = helpers.each.call(depth0, "children", {hash:{
+    'itemController': ("viewTreeItem")
+  },inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n</ul>\n");
+  data.buffer.push("\n");
   return buffer;
   
 });
@@ -1804,12 +1863,12 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
 
 
-  data.buffer.push("<div class=\"tree\">\n  ");
+  data.buffer.push("<div class=\"table-tree table-tree_color_faded\">\n  <div class=\"table-tree__table-container\">\n    <table cellspacing=\"0\" border-collapse=\"collapse\">\n      <thead>\n        <tr>\n          <th>\n            <div class=\"table-tree__th-inner\">Name</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">View</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Controller</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Model</div>\n          </th>\n        </tr>\n      </thead>\n      <tbody>\n        ");
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
   data.buffer.push(escapeExpression(((stack1 = helpers.partial || depth0.partial),stack1 ? stack1.call(depth0, "view_node", options) : helperMissing.call(depth0, "partial", "view_node", options))));
-  data.buffer.push("\n</div>\n");
+  data.buffer.push("\n      </tbody>\n    </table>\n  </div>\n</div>\n");
   return buffer;
   
 });
@@ -1878,29 +1937,26 @@ define("views/model_types",
 
     return ModelTypesView;
   });
-define("views/tree_node_controller",
+define("views/tree_node_item",
   [],
   function() {
     "use strict";
     var TreeNodeControllerView = Ember.View.extend({
-      tagName: 'span',
-      classNames: [ 'view-tree__node-controller', 'tree__node-controller'],
+      tagName: 'tr',
       classNameBindings: 'isPinned',
 
       isPinned: function() {
         return this.get('node') === this.get('controller.pinnedNode');
       }.property('node', 'controller.pinnedNode'),
 
-      mouseEnter: function() {
+      mouseEnter: function(e) {
         this.get('controller').send('previewLayer', this.get('node'));
+        e.stopPropagation();
       },
 
-      mouseLeave: function() {
+      mouseLeave: function(e) {
         this.get('controller').send('hidePreview', this.get('node'));
-      },
-
-      click: function() {
-        this.get('controller').send('showLayer', this.get('node'));
+        e.stopPropagation();
       }
     });
 

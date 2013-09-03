@@ -13,11 +13,14 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
   objectInspector: Ember.computed.alias('namespace.objectInspector'),
 
+  retainedObjects: [],
+
   init: function() {
     this._super();
     var self = this;
 
     this.viewListener();
+    this.retainedObjects = [];
 
     layerDiv = Ember.$('<div>').appendTo('body').get(0);
     layerDiv.style.display = 'none';
@@ -35,6 +38,19 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
   },
 
+  retainObject: function(object) {
+    this.retainedObjects.push(object);
+    return this.get('objectInspector').retainObject(object);
+  },
+
+  releaseCurrentObjects: function() {
+    var self = this;
+    this.retainedObjects.forEach(function(item) {
+      self.get('objectInspector').releaseObject(Ember.guidFor(item));
+    });
+    this.retainedObjects = [];
+  },
+
   eventNamespace: Ember.computed(function() {
     return 'view_debug_' + Ember.guidFor(this);
   }),
@@ -45,6 +61,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     Ember.$(layerDiv).remove();
     Ember.$(previewDiv).remove();
     Ember.View.removeMutationListener(this.viewTreeChanged);
+    this.releaseCurrentObjects();
   },
 
   portNamespace: 'view',
@@ -68,25 +85,32 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
   },
 
   sendTree: function() {
-    var tree = this.viewTree();
-    if (tree) {
-      this.sendMessage('viewTree', {
-        tree: tree
-      });
-    }
+    Ember.run.scheduleOnce('afterRender', this, this.scheduledSendTree);
+  },
+
+  scheduledSendTree: function() {
+    var self = this;
+    // some initial page loads
+    // don't trigger mutation listeners
+    // TODO: Look into that in Ember core
+    Ember.run.next(function() {
+      self.releaseCurrentObjects();
+      var tree = self.viewTree();
+      if (tree) {
+        self.sendMessage('viewTree', {
+          tree: tree
+        });
+      }
+    });
   },
 
   viewListener: function() {
     var self = this;
 
     this.viewTreeChanged = function() {
-      Em.run.scheduleOnce('afterRender', sendTree);
-    };
-
-    function sendTree() {
       self.sendTree();
       self.hideLayer();
-    }
+    };
 
     Ember.View.addMutationListener(this.viewTreeChanged);
   },
@@ -100,7 +124,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       var retained = [];
 
       var children = [];
-      var treeId = this.get('objectInspector').retainObject(retained);
+      var treeId = this.retainObject(retained);
 
       var tree = { value: this.inspectView(rootView, retained), children: children, treeId: treeId };
 
@@ -127,11 +151,12 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
     tagName = tagName || 'div';
 
+    var controller = view.get('controller');
+
     if (templateName) {
       name = templateName;
     } else {
-      var controller = view.get('controller'),
-          key = controller.get('_debugContainerKey'),
+          var key = controller.get('_debugContainerKey'),
           className = controller.constructor.toString();
 
       if (key) {
@@ -145,10 +170,29 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       }
     }
 
-    var viewId = this.get('objectInspector').retainObject(view);
+    var viewId = this.retainObject(view);
     retained.push(viewId);
 
-    return { viewClass: viewClass, objectId: viewId, name: name, template: templateName || '(inline)', tagName: tagName, controller: controllerName(view.get('controller')) };
+    var value = {
+      viewClass: viewClass,
+      objectId: viewId,
+      name: name,
+      template: templateName || '(inline)',
+      tagName: tagName,
+      controller: {
+        name: controllerName(controller),
+        objectId: this.retainObject(controller)
+      }
+    };
+    var model = controller.get('model');
+    if (model) {
+      value.model = {
+        name: modelName(model),
+        objectId: this.retainObject(model)
+      };
+    }
+
+    return value;
   },
 
   appendChildren: function(view, children, retained) {
@@ -293,6 +337,17 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 });
 
 
+function modelName(model) {
+  var name = '<Unkown model>';
+  if (model.toString) {
+    name = model.toString();
+  }
+  if (name.length > 50) {
+    name = name.substr(0, 50) + '...';
+  }
+  return name;
+}
+
 function controllerName(controller) {
   var key = controller.get('_debugContainerKey'),
       className = controller.constructor.toString(),
@@ -307,7 +362,6 @@ function controllerName(controller) {
     name = className.split('.')[1];
     name = name.charAt(0).toLowerCase() + name.substr(1);
   }
-
   return name;
 }
 

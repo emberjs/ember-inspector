@@ -1,13 +1,19 @@
-<ul class="tree__node" data-label="tree-node">
-  {{#each node in node.children}}
-    <li class="tree__node-child" data-label="tree-view">
-      <p class="tree__node-header">
-        {{#view EmberExtension.TreeNodeControllerView nodeBinding="node" label="tree-view-controller"}}{{node.value.name}}{{/view}}
-        <span class='tree__node-hint' data-label="tree-view-template">template:{{node.value.template}}</span>
-      </p>
-      {{#if node.children.length}}
-        {{partial "view_node"}}
-      {{/if}}
-    </li>
-  {{/each}}
-</ul>
+{{#each children itemController="viewTreeItem"}}
+  {{#view "treeNodeItem" nodeBinding=model}}
+    <td {{bindAttr class=":table-tree__main-cell" style=style }} >
+      {{value.name}}
+    </td>
+     <td {{action "inspect" value.objectId}} {{bindAttr class="hasView:table-tree__clickable"}}>
+      {{value.viewClass}}
+    </td>
+    <td {{action "inspect" value.controller.objectId}} {{bindAttr class="hasController:table-tree__clickable"}} >
+      {{value.controller.name}}
+    </td>
+    <td {{action "inspect" value.model.objectId}} {{bindAttr class="hasModel:table-tree__clickable"}}>
+      {{value.model.name}}
+    </td>
+
+  {{/view}}
+
+  {{partial "view_node"}}
+{{/each}}

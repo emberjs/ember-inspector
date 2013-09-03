@@ -46,6 +46,10 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     inspectController: function(message) {
       var container = this.get('application.__container__');
       this.sendObject(container.lookup('controller:' + message.name));
+    },
+    inspectById: function(message) {
+      var obj = this.sentObjects[message.objectId];
+      this.sendObject(obj);
     }
   },
 
@@ -63,7 +67,7 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     } else {
       value =  Ember.get(object, prop);
     }
-    
+
     window.$E = value;
     console.log('Ember Inspector ($E): ', value);
   },

@@ -9,7 +9,15 @@ var ViewTreeRoute = Ember.Route.extend({
   },
 
   setViewTree: function(options) {
-    this.set('controller.node', { children: [ arrayizeTree(options.tree) ] });
+    this.set('controller.model', { children: [ arrayizeTree(options.tree) ] });
+  },
+
+  actions: {
+    inspect: function(objectId) {
+      if (objectId) {
+        this.get('port').send('objectInspector:inspectById', { objectId: objectId });
+      }
+    }
   }
 
 });
