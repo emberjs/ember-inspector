@@ -29,6 +29,28 @@ module.exports = {
       dest: 'dist_chrome/images'
     }]
   },
+  ff_extension: {
+    files: [{
+      src: ['tmp/public/ember_debug.js'],
+      dest: 'ff_extension_dist/data/ember_debug/ember_debug.js'
+    }, {
+      src: ['tmp/public/ember_extension.js'],
+      dest: 'ff_extension_dist/data/panes/ember_extension.js'
+    }, {
+      expand: true,
+      cwd: 'vendor',
+      src: ['**'],
+      dest: 'ff_extension_dist/data/vendor/'
+    }, {
+      expand: true,
+      cwd: 'extension_dist/images',
+      src: ['**'],
+      dest: 'ff_extension_dist/data/images/'
+    } ,{
+      src: ['tmp/public/ember_extension.css'],
+      dest: 'ff_extension_dist/data/panes/ember_extension.css'
+    }]
+  },
   tests: {
     files: [
     {

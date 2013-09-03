@@ -35,7 +35,8 @@ module.exports = function(grunt) {
     'concat:main_css',
     'build_ember_debug',
     'jshint:all',
-    'copy:extension'
+    'copy:extension',
+    'copy:ff_extension'
   ]);
 
   grunt.registerTask('build_ember_debug', [
