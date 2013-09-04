@@ -64,5 +64,16 @@
 
 
 {{else}}
-  {{partial "not_detected"}}
+  {{#not-detected description="Ember application"}}
+  <li>This is not an Ember application.</li>
+  <li>Your application is inside an iframe.</li>
+  <li>You are using an old version of Ember (&lt; rc5).</li>
+  <li>You are using the file:// protocol (instead of http://), in which case:
+    <ul>
+      <li>Visit the URL: chrome://extensions.</li>
+      <li>Find the Ember Inspector.</li>
+      <li>Make sure "Allow access to file URLs" is checked.</li>
+    </ul>
+  </li>
+  {{/not-detected}}
 {{/if}}
