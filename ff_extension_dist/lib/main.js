@@ -19,7 +19,7 @@ let devtoolTabDefinition = {
 //  key: "E",
   ordinal: 7,
   modifiers: osString == "Darwin" ? "accel,alt" : "accel,shift",
-  icon: self.data.url("images/ember-icon-final.png"),
+  icon: self.data.url("images/icon16.png"),
   url: "chrome://ember-inspector/content/ember-inspector.xul",
   label: "Ember",
   tooltip: "Ember Inspector",
