@@ -524,6 +524,7 @@ define("controllers/view_tree",
     "use strict";
     var ViewTreeController = Ember.ObjectController.extend({
       pinnedNode: null,
+      inspectingViews: false,
 
       actions: {
         previewLayer: function(node) {
@@ -531,8 +532,13 @@ define("controllers/view_tree",
             this.get('port').send('view:previewLayer', { objectId: node.value.objectId });
           }
         },
+
         hidePreview: function(node) {
           this.get('port').send('view:hidePreview', { objectId: node.value.objectId });
+        },
+
+        toggleViewInspection: function() {
+          this.get('port').send('view:inspectViews', { inspect: !this.get('inspectingViews') });
         }
       }
     });
@@ -965,15 +971,27 @@ define("routes/view_tree",
     var ViewTreeRoute = Ember.Route.extend({
       setupController: function() {
         this.get('port').on('view:viewTree', this, this.setViewTree);
+        this.get('port').on('view:stopInspecting', this, this.stopInspecting);
+        this.get('port').on('view:startInspecting', this, this.startInspecting);
         this.get('port').send('view:getTree');
       },
 
       deactivate: function() {
         this.get('port').off('view:viewTree', this, this.setViewTree);
+        this.get('port').off('view:stopInspecting', this, this.stopInspecting);
+        this.get('port').off('view:startInspecting', this, this.startInspecting);
       },
 
       setViewTree: function(options) {
         this.set('controller.model', { children: [ arrayizeTree(options.tree) ] });
+      },
+
+      startInspecting: function() {
+        this.set('controller.inspectingViews', true);
+      },
+
+      stopInspecting: function() {
+        this.set('controller.inspectingViews', false);
       },
 
       actions: {
@@ -1863,12 +1881,22 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
 
 
-  data.buffer.push("<div class=\"table-tree table-tree_color_faded\">\n  <div class=\"table-tree__table-container\">\n    <table cellspacing=\"0\" border-collapse=\"collapse\">\n      <thead>\n        <tr>\n          <th>\n            <div class=\"table-tree__th-inner\">Name</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">View</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Controller</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Model</div>\n          </th>\n        </tr>\n      </thead>\n      <tbody>\n        ");
+  data.buffer.push("<div class=\"table-tree table-tree_color_faded table-tree_type_advanced\">\n  <div class=\"table-tree__table-container\">\n    <table cellspacing=\"0\" border-collapse=\"collapse\">\n      <thead>\n        <tr>\n          <th>\n            <div class=\"table-tree__th-inner\">Name</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">View</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Controller</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Model</div>\n          </th>\n        </tr>\n      </thead>\n      <tbody>\n        ");
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
   data.buffer.push(escapeExpression(((stack1 = helpers.partial || depth0.partial),stack1 ? stack1.call(depth0, "view_node", options) : helperMissing.call(depth0, "partial", "view_node", options))));
-  data.buffer.push("\n      </tbody>\n    </table>\n  </div>\n</div>\n");
+  data.buffer.push("\n      </tbody>\n    </table>\n  </div>\n\n\n  <div class=\"table-tree__filter\">\n    <div class=\"filter-bar\">\n      <button class=\"filter-bar__button filter-bar__button_type_inspect\" ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': ("inspectingViews:filter-bar__button_state_active")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "toggleViewInspection", {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("></button>\n    </div>\n  </div>\n\n</div>\n\n");
   return buffer;
   
 });

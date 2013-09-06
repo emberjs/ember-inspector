@@ -3,7 +3,8 @@ import PortMixin from "mixins/port_mixin";
 var layerDiv,
     previewDiv,
     highlightedElement,
-    previewedElement;
+    previewedElement,
+    $ = Ember.$;
 
 var ViewDebug = Ember.Object.extend(PortMixin, {
 
@@ -22,20 +23,19 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     this.viewListener();
     this.retainedObjects = [];
 
-    layerDiv = Ember.$('<div>').appendTo('body').get(0);
+    layerDiv = $('<div>').appendTo('body').get(0);
     layerDiv.style.display = 'none';
     layerDiv.setAttribute('data-label', 'layer-div');
 
-    previewDiv = Ember.$('<div>').appendTo('body').get(0);
+    previewDiv = $('<div>').appendTo('body').css('pointer-events', 'none').get(0);
     previewDiv.style.display = 'none';
     previewDiv.setAttribute('data-label', 'preview-div');
 
-    Ember.$(window).on('resize.' + this.get('eventNamespace'), function() {
+    $(window).on('resize.' + this.get('eventNamespace'), function() {
       if (highlightedElement) {
         self.highlightView(highlightedElement);
       }
     });
-
   },
 
   retainObject: function(object) {
@@ -57,11 +57,12 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
   willDestroy: function() {
     this._super();
-    Ember.$(window).off(this.get('eventNamespace'));
-    Ember.$(layerDiv).remove();
-    Ember.$(previewDiv).remove();
+    $(window).off(this.get('eventNamespace'));
+    $(layerDiv).remove();
+    $(previewDiv).remove();
     Ember.View.removeMutationListener(this.viewTreeChanged);
     this.releaseCurrentObjects();
+    this.stopInspecting();
   },
 
   portNamespace: 'view',
@@ -81,6 +82,13 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     },
     hidePreview: function(message) {
       this.hidePreview(message.objectId);
+    },
+    inspectViews: function(message) {
+      if (message.inspect) {
+        this.startInspecting();
+      } else {
+        this.stopInspecting();
+      }
     }
   },
 
@@ -88,8 +96,59 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     Ember.run.scheduleOnce('afterRender', this, this.scheduledSendTree);
   },
 
+  startInspecting: function() {
+    var self = this, viewElem = null;
+    this.sendMessage('startInspecting', {});
+
+    // we don't want the preview div to intercept the mousemove event
+    $(previewDiv).css('pointer-events', 'none');
+
+    $('body').on('mousemove.inspect-' + this.get('eventNamespace'), function(e) {
+      var originalTarget = $(e.originalEvent.target), oldViewElem = viewElem;
+      viewElem = self.findNearestView(originalTarget);
+      if (viewElem) {
+        self.highlightView(viewElem, true);
+      }
+    })
+    .on('mousedown.inspect-' + this.get('eventNamespace'), function() {
+      // prevent app-defined clicks from being fired
+      $(previewDiv).css('pointer-events', '')
+      .one('mouseup', function() {
+        if (viewElem) {
+          self.highlightView(viewElem);
+        }
+        self.stopInspecting();
+        return false;
+      });
+    })
+    .css('cursor', '-webkit-zoom-in');
+  },
+
+  findNearestView: function(elem) {
+    var viewElem;
+    if (!elem || elem.length === 0) { return null; }
+    if (elem.hasClass('ember-view')) {
+      viewElem = elem.get(0);
+      if (this.get('objectInspector').sentObjects[viewElem.id]) {
+        return viewElem;
+      }
+    }
+    return this.findNearestView($(elem).parents('.ember-view:first'));
+  },
+
+  stopInspecting: function() {
+    $('body')
+    .off('mousemove.inspect-' + this.get('eventNamespace'))
+    .off('mousedown.inspect-' + this.get('eventNamespace'))
+    .off('click.inspect-' + this.get('eventNamespace'))
+    .css('cursor', '');
+
+    this.sendMessage('stopInspecting', {});
+  },
+
   scheduledSendTree: function() {
     var self = this;
+    // Use next run loop because
     // some initial page loads
     // don't trigger mutation listeners
     // TODO: Look into that in Ember core
@@ -116,7 +175,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
   },
 
   viewTree: function() {
-     var rootView = Ember.View.views[Ember.$('.ember-application > .ember-view').attr('id')];
+     var rootView = Ember.View.views[$('.ember-application > .ember-view').attr('id')];
       // In case of App.reset view is destroyed
       if (!rootView) {
         return false;
@@ -216,6 +275,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
   highlightView: function(element, preview) {
     var self = this;
     var range, view, rect, div;
+    if (!element) { return; }
 
     if (preview) {
       previewedElement = element;
@@ -242,7 +302,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
     // take into account the scrolling position as mentioned in docs
     // https://developer.mozilla.org/en-US/docs/Web/API/element.getBoundingClientRect
-    rect = Ember.$().extend({}, rect);
+    rect = $().extend({}, rect);
     rect.top = rect.top + window.scrollY;
     rect.left = rect.left + window.scrollX;
 
@@ -250,8 +310,8 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
         controller = view.get('controller'),
         model = controller && controller.get('model');
 
-    Ember.$(div).css(rect);
-    Ember.$(div).css({
+    $(div).css(rect);
+    $(div).css({
       display: "block",
       position: "absolute",
       backgroundColor: "rgba(255, 255, 255, 0.7)",
@@ -282,15 +342,15 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       output += "<p class='model'><span>model</span>=<span data-label='layer-model'>" + escapeHTML(model.toString()) + "</span></p>";
     }
 
-    Ember.$(div).html(output);
+    $(div).html(output);
 
-    Ember.$('p', div).css({ float: 'left', margin: 0, backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: '5px', color: 'rgb(0, 0, 153)' });
-    Ember.$('p.model', div).css({ clear: 'left' });
-    Ember.$('p span:first-child', div).css({ color: 'rgb(153, 153, 0)' });
-    Ember.$('p span:last-child', div).css({ color: 'rgb(153, 0, 153)' });
+    $('p', div).css({ float: 'left', margin: 0, backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: '5px', color: 'rgb(0, 0, 153)' });
+    $('p.model', div).css({ clear: 'left' });
+    $('p span:first-child', div).css({ color: 'rgb(153, 153, 0)' });
+    $('p span:last-child', div).css({ color: 'rgb(153, 0, 153)' });
 
     if (!preview) {
-      Ember.$('span.close', div).css({
+      $('span.close', div).css({
         float: 'right',
         margin: '5px',
         background: '#666',
@@ -308,11 +368,11 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       });
     }
 
-    Ember.$('p.controller span:last-child', div).css({ cursor: 'pointer' }).click(function() {
+    $('p.controller span:last-child', div).css({ cursor: 'pointer' }).click(function() {
       self.get('objectInspector').sendObject(controller);
     });
 
-    Ember.$('p.model span:last-child', div).css({ cursor: 'pointer' }).click(function() {
+    $('p.model span:last-child', div).css({ cursor: 'pointer' }).click(function() {
       self.get('objectInspector').sendObject(controller.get('model'));
     });
   },
@@ -377,8 +437,8 @@ function virtualRange(view) {
       endId = morph.end;
 
   var range = document.createRange();
-  range.setStartAfter(Ember.$('#' + startId)[0]);
-  range.setEndBefore(Ember.$('#' + endId)[0]);
+  range.setStartAfter($('#' + startId)[0]);
+  range.setEndBefore($('#' + endId)[0]);
 
   return range;
 }

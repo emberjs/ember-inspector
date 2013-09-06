@@ -1,4 +1,4 @@
-<div class="table-tree table-tree_color_faded">
+<div class="table-tree table-tree_color_faded table-tree_type_advanced">
   <div class="table-tree__table-container">
     <table cellspacing="0" border-collapse="collapse">
       <thead>
@@ -22,4 +22,13 @@
       </tbody>
     </table>
   </div>
+
+
+  <div class="table-tree__filter">
+    <div class="filter-bar">
+      <button class="filter-bar__button filter-bar__button_type_inspect" {{bindAttr class="inspectingViews:filter-bar__button_state_active"}} {{action "toggleViewInspection"}}></button>
+    </div>
+  </div>
+
 </div>
+

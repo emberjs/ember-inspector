@@ -319,6 +319,28 @@ a {
   display: inline-block;
 }
 
+.filter-bar__button {
+  width: 32px;
+  height: 100%;
+  box-sizing: border-box;
+  border: none;
+  box-shadow: none;
+  border-right: solid 1px #8f8f8f;
+}
+
+.filter-bar__button_type_inspect {
+  background: url("/images/magnifying_glass.png") center center no-repeat;
+  background-size: 15px 15px;
+}
+
+.filter-bar__button:active {
+  border-color: black;
+}
+
+.filter-bar__button_state_active {
+  background-color: white;
+}
+
 /**
  MAIN-NAV
  ========
