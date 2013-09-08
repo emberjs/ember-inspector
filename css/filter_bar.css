@@ -100,3 +100,10 @@
 .filter-bar__button_state_active {
   background-color: white;
 }
+
+.filter-bar__checkbox {
+  padding: 0px 10px;
+  display: flex;
+  flex-direction: row;
+  line-height: 20px;
+}

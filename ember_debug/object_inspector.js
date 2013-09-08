@@ -125,6 +125,11 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
   },
 
   dropObject: function(objectId) {
+    this.removeObservers(objectId);
+    delete this.sentObjects[objectId];
+  },
+
+  removeObservers: function(objectId) {
     var observers = this.boundObservers[objectId],
         object = this.sentObjects[objectId];
 
@@ -135,7 +140,6 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     }
 
     delete this.boundObservers[objectId];
-    delete this.sentObjects[objectId];
   },
 
   mixinsForObject: function(object) {
@@ -215,9 +219,14 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
       });
     }
 
-    Ember.addObserver(object, property, handler);
-    this.boundObservers[objectId] = this.boundObservers[objectId] || [];
-    this.boundObservers[objectId].push({ property: property, handler: handler });
+    // Make views unobservable
+    // TODO: Fix mandatory setter issue to make views observable
+    if (!(object instanceof Ember.View)) {
+      Ember.addObserver(object, property, handler);
+      this.boundObservers[objectId] = this.boundObservers[objectId] || [];
+      this.boundObservers[objectId].push({ property: property, handler: handler });
+    }
+
   },
 
   bindProperties: function(objectId, mixinDetails) {

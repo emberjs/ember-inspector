@@ -1,7 +1,12 @@
 var ViewTreeItemController = Ember.ObjectController.extend({
-  hasView: function() {
-    return this.get('model.value.viewClass') !== 'virtual';
-  }.property('model.value.viewClass'),
+  needs: ['viewTree'],
+
+  hasView: Ember.computed.not('model.value.isVirtual'),
+  hasElement: Ember.computed.not('model.value.isVirtual'),
+
+  isCurrent: function() {
+    return this.get('controllers.viewTree.pinnedObjectId') === this.get('model.value.objectId');
+  }.property('controllers.viewTree.pinnedObjectId', 'model.value.objectId'),
 
   hasController: function() {
     return !!this.get('model.value.controller');
@@ -12,7 +17,7 @@ var ViewTreeItemController = Ember.ObjectController.extend({
   }.property('model.value.model'),
 
   style: function() {
-    return 'padding-left: ' + ((this.get('numParents') * 5) + 5) + 'px';
+    return 'padding-left: ' + ((this.get('numParents') * 10) + 5) + 'px';
   }.property('numParents'),
 
   numParents: function() {
@@ -21,7 +26,24 @@ var ViewTreeItemController = Ember.ObjectController.extend({
       numParents = -1;
     }
     return numParents + 1;
-  }.property("target.target.numParents")
+  }.property("target.target.numParents"),
+
+  actions: {
+    inspectView: function() {
+      if (this.get('hasView')) {
+        this.get('target').send('inspect', this.get('value.objectId'));
+      }
+    },
+    inspectElement: function(objectId) {
+      if (!objectId && this.get('hasElement')) {
+        objectId = this.get('value.objectId');
+      }
+
+      if (objectId) {
+        this.get('target').send('inspectElement', objectId);
+      }
+    }
+  }
 
 });
 

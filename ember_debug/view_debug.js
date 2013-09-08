@@ -93,11 +93,18 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       }
     },
     inspectElement: function(message) {
-      inspect($('#' + message.objectId).get(0));
+      this.inspectElement(message.objectId);
     },
     setOptions: function(message) {
       this.set('options', message.options);
       this.sendTree();
+    }
+  },
+
+  inspectElement: function(objectId) {
+    var view = this.get('objectInspector').sentObjects[objectId];
+    if (view && view.get('element')) {
+      inspect(view.get('element'));
     }
   },
 
@@ -125,6 +132,10 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       .one('mouseup', function() {
         if (viewElem) {
           self.highlightView(viewElem);
+          var view = self.get('objectInspector').sentObjects[viewElem.id];
+          if (view instanceof Ember.Component) {
+            self.get('objectInspector').sendObject(view);
+          }
         }
         self.stopInspecting();
         return false;
@@ -204,13 +215,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
   inspectView: function(view, retained) {
     var templateName = view.get('templateName') || view.get('_debugTemplateName'),
-        viewClass = view.constructor.toString(), match, name;
-
-    if (viewClass.match(/\._/)) {
-      viewClass = "inline";
-    } else if (match = viewClass.match(/\(subclass of (.*)\)/)) {
-      viewClass = match[1];
-    }
+        viewClass = viewName(view), name;
 
     var tagName = view.get('tagName');
     if (tagName === '') {
@@ -247,19 +252,23 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       name: name,
       template: templateName || '(inline)',
       tagName: tagName,
-      controller: {
-        name: controllerName(controller),
-        objectId: this.retainObject(controller)
-      },
+      isVirtual: view.get('isVirtual'),
       isComponent: (view instanceof Ember.Component)
     };
 
-    var model = controller.get('model');
-    if (model) {
-      value.model = {
-        name: modelName(model),
-        objectId: this.retainObject(model)
+    if (!(view instanceof Ember.Component)) {
+      value.controller = {
+        name: controllerName(controller),
+        objectId: this.retainObject(controller)
       };
+
+      var model = controller.get('model');
+      if (model) {
+        value.model = {
+          name: modelName(model),
+          objectId: this.retainObject(model)
+        };
+      }
     }
 
     return value;
@@ -283,19 +292,22 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     });
 
     function shouldShow(view) {
-      return (self.options.allViews || view.get('controller') !== controller) && (self.options.components || !(view instanceof Ember.Component));
+      return (self.options.allViews || view.get('controller') !== controller) &&
+        (self.options.components || !(view instanceof Ember.Component));
     }
   },
 
   highlightView: function(element, preview) {
     var self = this;
     var range, view, rect, div;
+
     if (!element) { return; }
 
     if (preview) {
       previewedElement = element;
       div = previewDiv;
     } else {
+      this.hideLayer();
       highlightedElement = element;
       div = layerDiv;
       this.hidePreview();
@@ -351,7 +363,12 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       output += "<p class='template'><span>template</span>=<span data-label='layer-template'>" + escapeHTML(templateName) + "</span></p>";
     }
 
-    output += "<p class='controller'><span>controller</span>=<span data-label='layer-controller'>" + escapeHTML(controllerName(controller)) + "</span></p>";
+    if (!(view instanceof Ember.Component)) {
+      output += "<p class='controller'><span>controller</span>=<span data-label='layer-controller'>" + escapeHTML(controllerName(controller)) + "</span></p>";
+      output += "<p class='view'><span>view</span>=<span data-label='layer-view'>" + escapeHTML(viewName(view)) + "</span></p>";
+    } else {
+      output += "<p class='component'><span>component</span>=<span data-label='layer-component'>" + escapeHTML(viewName(view)) + "</span></p>";
+    }
 
     if (model) {
       output += "<p class='model'><span>model</span>=<span data-label='layer-model'>" + escapeHTML(model.toString()) + "</span></p>";
@@ -383,13 +400,29 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       });
     }
 
+    $('p.view span:last-child', div).css({ cursor: 'pointer' }).click(function() {
+      self.get('objectInspector').sendObject(view);
+    });
+
     $('p.controller span:last-child', div).css({ cursor: 'pointer' }).click(function() {
       self.get('objectInspector').sendObject(controller);
+    });
+
+    $('p.component span:last-child', div).css({ cursor: 'pointer' }).click(function() {
+      self.get('objectInspector').sendObject(view);
+    });
+
+    $('p.template span:last-child', div).css({ cursor: 'pointer' }).click(function() {
+      self.inspectElement(Ember.guidFor(view));
     });
 
     $('p.model span:last-child', div).css({ cursor: 'pointer' }).click(function() {
       self.get('objectInspector').sendObject(controller.get('model'));
     });
+
+    if (!preview) {
+      this.sendMessage('pinView', { objectId: Ember.guidFor(view) });
+    }
   },
 
   showLayer: function(objectId) {
@@ -401,6 +434,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
   },
 
   hideLayer: function() {
+    this.sendMessage('unpinView', {});
     layerDiv.style.display = 'none';
     highlightedElement = null;
   },
@@ -411,6 +445,15 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
   }
 });
 
+function viewName(view) {
+  var name = view.constructor.toString(), match;
+  if (name.match(/\._/)) {
+    name = "inline";
+  } else if (match = name.match(/\(subclass of (.*)\)/)) {
+    name = match[1];
+  }
+  return name;
+}
 
 function modelName(model) {
   var name = '<Unkown model>';
@@ -428,16 +471,10 @@ function controllerName(controller) {
       className = controller.constructor.toString(),
       name;
 
-  if (key) {
-    name = key.split(':')[1];
-  } else {
-    if (className.charAt(0) === '(') {
-      className = className.match(/^\(subclass of (.*)\)/)[1];
-    }
-    name = className.split('.')[1];
-    name = name.charAt(0).toLowerCase() + name.substr(1);
+  if (className.charAt(0) === '(') {
+    className = className.match(/^\(subclass of (.*)\)/)[1];
   }
-  return name;
+  return className;
 }
 
 function escapeHTML(string) {
@@ -457,6 +494,5 @@ function virtualRange(view) {
 
   return range;
 }
-
 
 export default ViewDebug;

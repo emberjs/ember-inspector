@@ -1,5 +1,5 @@
 var ViewTreeController = Ember.ObjectController.extend({
-  pinnedNode: null,
+  pinnedObjectId: null,
   inspectingViews: false,
 
   options: {

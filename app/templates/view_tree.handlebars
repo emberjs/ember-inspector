@@ -23,15 +23,17 @@
     </table>
   </div>
 
-
   <div class="table-tree__filter">
     <div class="filter-bar">
-      <button class="filter-bar__button filter-bar__button_type_inspect" {{bindAttr class="inspectingViews:filter-bar__button_state_active"}} {{action "toggleViewInspection"}}></button>
+      <div class="filter-bar__button filter-bar__button_type_inspect" {{bindAttr class="inspectingViews:filter-bar__button_state_active"}} {{action "toggleViewInspection"}}></div>
 
+      <div class="filter-bar__checkbox">
       {{input type="checkbox" checked=options.components id="options-components"}} <label for="options-components">Components</label>
+      </div>
 
-
-      {{input type="checkbox" checked=options.allViews id="options-allViews"}} <label for="options-allViews">All Views</label>
+      <div class="filter-bar__checkbox">
+        {{input type="checkbox" checked=options.allViews id="options-allViews"}} <label for="options-allViews">All Views</label>
+      </div>
     </div>
   </div>
 
