@@ -13,7 +13,7 @@
   position: relative;
   font-family: Menlo, Monaco, monospace;
   text-shadow: 0px 1px 1px #fff;
-  padding: 10px 5px 10px 50px;
+  padding: 10px 5px 10px 35px;
   box-sizing: border-box;
   min-height: 40px;
 }
@@ -38,7 +38,7 @@
   width: 22px;
   height: 22px;
   top: 8px;
-  left: 15px;
+  left: 7px;
   border-radius: 11px;
   background: #ccc url('/images/back_arrow.png') 5px center no-repeat;
   border: none;
@@ -74,11 +74,11 @@
   background: none;
   margin: 0;
   padding: 0;
-  width: 15px;
+  width: 20px;
   opacity: 1;
 }
 
 .object-inspector__send-object-btn img {
   margin-right: 3px;
-  width: 16px;
+  width: 20px;
 }
