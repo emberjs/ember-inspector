@@ -4,16 +4,16 @@
       <thead>
         <tr>
           <th>
-            <div class="table-tree__th-inner">Name</div>
+            <div class="table-tree__th-inner">Template</div>
           </th>
           <th>
             <div class="table-tree__th-inner">View</div>
           </th>
           <th>
-            <div class="table-tree__th-inner">Controller</div>
+            <div class="table-tree__th-inner">Model</div>
           </th>
           <th>
-            <div class="table-tree__th-inner">Model</div>
+            <div class="table-tree__th-inner">Controller</div>
           </th>
         </tr>
       </thead>
@@ -27,6 +27,11 @@
   <div class="table-tree__filter">
     <div class="filter-bar">
       <button class="filter-bar__button filter-bar__button_type_inspect" {{bindAttr class="inspectingViews:filter-bar__button_state_active"}} {{action "toggleViewInspection"}}></button>
+
+      {{input type="checkbox" checked=options.components id="options-components"}} <label for="options-components">Components</label>
+
+
+      {{input type="checkbox" checked=options.allViews id="options-allViews"}} <label for="options-allViews">All Views</label>
     </div>
   </div>
 

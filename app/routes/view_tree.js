@@ -29,6 +29,9 @@ var ViewTreeRoute = Ember.Route.extend({
       if (objectId) {
         this.get('port').send('objectInspector:inspectById', { objectId: objectId });
       }
+    },
+    inspectElement: function(objectId) {
+      this.get('port').send('view:inspectElement', { objectId: objectId });
     }
   }
 

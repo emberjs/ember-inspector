@@ -6,6 +6,7 @@
     "chrome",
     "$",
     "define",
+    "inspect",
     "console",
     "alert",
     "require",

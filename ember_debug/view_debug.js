@@ -65,6 +65,8 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     this.stopInspecting();
   },
 
+  options: {},
+
   portNamespace: 'view',
 
   messages: {
@@ -89,6 +91,13 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       } else {
         this.stopInspecting();
       }
+    },
+    inspectElement: function(message) {
+      inspect($('#' + message.objectId).get(0));
+    },
+    setOptions: function(message) {
+      this.set('options', message.options);
+      this.sendTree();
     }
   },
 
@@ -198,14 +207,14 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
         viewClass = view.constructor.toString(), match, name;
 
     if (viewClass.match(/\._/)) {
-      viewClass = "virtual";
+      viewClass = "inline";
     } else if (match = viewClass.match(/\(subclass of (.*)\)/)) {
       viewClass = match[1];
     }
 
     var tagName = view.get('tagName');
     if (tagName === '') {
-      tagName = '(virtual)';
+      tagName = '(inline)';
     }
 
     tagName = tagName || 'div';
@@ -241,8 +250,10 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       controller: {
         name: controllerName(controller),
         objectId: this.retainObject(controller)
-      }
+      },
+      isComponent: (view instanceof Ember.Component)
     };
+
     var model = controller.get('model');
     if (model) {
       value.model = {
@@ -262,7 +273,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     childViews.forEach(function(childView) {
       if (!(childView instanceof Ember.Object)) { return; }
 
-      if (childView.get('controller') !== controller) {
+      if (shouldShow(childView)) {
         var grandChildren = [];
         children.push({ value: self.inspectView(childView, retained), children: grandChildren });
         self.appendChildren(childView, grandChildren, retained);
@@ -270,6 +281,10 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
         self.appendChildren(childView, children, retained);
       }
     });
+
+    function shouldShow(view) {
+      return (self.options.allViews || view.get('controller') !== controller) && (self.options.components || !(view instanceof Ember.Component));
+    }
   },
 
   highlightView: function(element, preview) {

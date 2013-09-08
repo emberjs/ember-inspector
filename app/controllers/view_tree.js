@@ -2,6 +2,15 @@ var ViewTreeController = Ember.ObjectController.extend({
   pinnedNode: null,
   inspectingViews: false,
 
+  options: {
+    components: false,
+    allViews: false
+  },
+
+  optionsChanged: function() {
+    this.port.send('view:setOptions', { options: this.get('options') });
+  }.observes('options.components', 'options.allViews').on('init'),
+
   actions: {
     previewLayer: function(node) {
       if (node !== this.get('pinnedNode')) {

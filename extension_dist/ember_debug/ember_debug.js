@@ -1211,6 +1211,8 @@ define("view_debug",
         this.stopInspecting();
       },
 
+      options: {},
+
       portNamespace: 'view',
 
       messages: {
@@ -1235,6 +1237,13 @@ define("view_debug",
           } else {
             this.stopInspecting();
           }
+        },
+        inspectElement: function(message) {
+          inspect($('#' + message.objectId).get(0));
+        },
+        setOptions: function(message) {
+          this.set('options', message.options);
+          this.sendTree();
         }
       },
 
@@ -1344,14 +1353,14 @@ define("view_debug",
             viewClass = view.constructor.toString(), match, name;
 
         if (viewClass.match(/\._/)) {
-          viewClass = "virtual";
+          viewClass = "inline";
         } else if (match = viewClass.match(/\(subclass of (.*)\)/)) {
           viewClass = match[1];
         }
 
         var tagName = view.get('tagName');
         if (tagName === '') {
-          tagName = '(virtual)';
+          tagName = '(inline)';
         }
 
         tagName = tagName || 'div';
@@ -1387,8 +1396,10 @@ define("view_debug",
           controller: {
             name: controllerName(controller),
             objectId: this.retainObject(controller)
-          }
+          },
+          isComponent: (view instanceof Ember.Component)
         };
+
         var model = controller.get('model');
         if (model) {
           value.model = {
@@ -1408,7 +1419,7 @@ define("view_debug",
         childViews.forEach(function(childView) {
           if (!(childView instanceof Ember.Object)) { return; }
 
-          if (childView.get('controller') !== controller) {
+          if (shouldShow(childView)) {
             var grandChildren = [];
             children.push({ value: self.inspectView(childView, retained), children: grandChildren });
             self.appendChildren(childView, grandChildren, retained);
@@ -1416,6 +1427,10 @@ define("view_debug",
             self.appendChildren(childView, children, retained);
           }
         });
+
+        function shouldShow(view) {
+          return (self.options.allViews || view.get('controller') !== controller) && (self.options.components || !(view instanceof Ember.Component));
+        }
       },
 
       highlightView: function(element, preview) {

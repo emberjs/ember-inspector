@@ -526,6 +526,15 @@ define("controllers/view_tree",
       pinnedNode: null,
       inspectingViews: false,
 
+      options: {
+        components: false,
+        allViews: false
+      },
+
+      optionsChanged: function() {
+        this.port.send('view:setOptions', { options: this.get('options') });
+      }.observes('options.components', 'options.allViews').on('init'),
+
       actions: {
         previewLayer: function(node) {
           if (node !== this.get('pinnedNode')) {
@@ -999,6 +1008,9 @@ define("routes/view_tree",
           if (objectId) {
             this.get('port').send('objectInspector:inspectById', { objectId: objectId });
           }
+        },
+        inspectElement: function(objectId) {
+          this.get('port').send('view:inspectElement', { objectId: objectId });
         }
       }
 
@@ -1134,18 +1146,22 @@ function program1(depth0,data) {
   }
 function program2(depth0,data) {
   
-  var buffer = '', hashContexts, hashTypes;
+  var buffer = '', stack1, hashContexts, hashTypes;
   data.buffer.push("\n    <td ");
   hashContexts = {'class': depth0,'style': depth0};
   hashTypes = {'class': "STRING",'style': "ID"};
   data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
-    'class': (":table-tree__main-cell"),
+    'class': (":table-tree__main-cell :table-tree__clickable"),
     'style': ("style")
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(" >\n      ");
+  data.buffer.push(" ");
   hashTypes = {};
   hashContexts = {};
-  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "inspectElement", "value.objectId", {hash:{},contexts:[depth0,depth0],types:["STRING","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n      ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.template", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push("\n    </td>\n     <td ");
   hashTypes = {};
   hashContexts = {};
@@ -1160,20 +1176,11 @@ function program2(depth0,data) {
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.viewClass", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("\n    </td>\n    <td ");
+  data.buffer.push("\n      ");
   hashTypes = {};
   hashContexts = {};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "inspect", "value.controller.objectId", {hash:{},contexts:[depth0,depth0],types:["STRING","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(" ");
-  hashContexts = {'class': depth0};
-  hashTypes = {'class': "STRING"};
-  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
-    'class': ("hasController:table-tree__clickable")
-  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(" >\n      ");
-  hashTypes = {};
-  hashContexts = {};
-  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.controller.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  stack1 = helpers['if'].call(depth0, "value.isComponent", {hash:{},inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n    </td>\n    <td ");
   hashTypes = {};
   hashContexts = {};
@@ -1188,8 +1195,27 @@ function program2(depth0,data) {
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.model.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n    </td>\n    <td ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "inspect", "value.controller.objectId", {hash:{},contexts:[depth0,depth0],types:["STRING","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': ("hasController:table-tree__clickable")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" >\n      ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "value.controller.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push("\n    </td>\n\n  ");
   return buffer;
+  }
+function program3(depth0,data) {
+  
+  
+  data.buffer.push("\n        (component)\n      ");
   }
 
   hashContexts = {'itemController': depth0};
@@ -1881,7 +1907,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
 
 
-  data.buffer.push("<div class=\"table-tree table-tree_color_faded table-tree_type_advanced\">\n  <div class=\"table-tree__table-container\">\n    <table cellspacing=\"0\" border-collapse=\"collapse\">\n      <thead>\n        <tr>\n          <th>\n            <div class=\"table-tree__th-inner\">Name</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">View</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Controller</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Model</div>\n          </th>\n        </tr>\n      </thead>\n      <tbody>\n        ");
+  data.buffer.push("<div class=\"table-tree table-tree_color_faded table-tree_type_advanced\">\n  <div class=\"table-tree__table-container\">\n    <table cellspacing=\"0\" border-collapse=\"collapse\">\n      <thead>\n        <tr>\n          <th>\n            <div class=\"table-tree__th-inner\">Template</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">View</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Model</div>\n          </th>\n          <th>\n            <div class=\"table-tree__th-inner\">Controller</div>\n          </th>\n        </tr>\n      </thead>\n      <tbody>\n        ");
   hashTypes = {};
   hashContexts = {};
   options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
@@ -1896,7 +1922,25 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "toggleViewInspection", {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("></button>\n    </div>\n  </div>\n\n</div>\n\n");
+  data.buffer.push("></button>\n\n      ");
+  hashContexts = {'type': depth0,'checked': depth0,'id': depth0};
+  hashTypes = {'type': "STRING",'checked': "ID",'id': "STRING"};
+  options = {hash:{
+    'type': ("checkbox"),
+    'checked': ("options.components"),
+    'id': ("options-components")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.input || depth0.input),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "input", options))));
+  data.buffer.push(" <label for=\"options-components\">Components</label>\n\n\n      ");
+  hashContexts = {'type': depth0,'checked': depth0,'id': depth0};
+  hashTypes = {'type': "STRING",'checked': "ID",'id': "STRING"};
+  options = {hash:{
+    'type': ("checkbox"),
+    'checked': ("options.allViews"),
+    'id': ("options-allViews")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.input || depth0.input),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "input", options))));
+  data.buffer.push(" <label for=\"options-allViews\">All Views</label>\n    </div>\n  </div>\n\n</div>\n\n");
   return buffer;
   
 });
