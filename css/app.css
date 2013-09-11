@@ -83,6 +83,10 @@
 }
 
 /* Modifier: inspector = expanded */
+.app_inspector_expanded .app__inspector-container {
+  border-left: 1px solid #bdbdbd;
+}
+
 .app_inspector_expanded .app__right-col {
   width: 500px;
   max-width: 60%;
