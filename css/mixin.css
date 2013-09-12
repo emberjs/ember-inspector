@@ -7,21 +7,18 @@
 */
 
 .mixin {
-  border: 1px solid #ccc;
+  border-top: 1px solid #bdbdbd;
 }
 
 .mixin__name {
-  padding: 2px;
-  background-color: #ddd;
+  padding: 2px 2px 2px 5px;
+  background-color: #e6e6e6;
   text-shadow: 0px 1px 1px #fff;
+  cursor: default;
 }
 
 .mixin__name:active {
   background-color: #ccc;
-}
-
-.mixin__name {
-    cursor: default;
 }
 
   .mixin_props_no .mixin__name:before {
@@ -34,10 +31,14 @@
 
 .mixin__name:before {
   content: "\25B6";
-  color: #555;
+  color: #737373;
   margin-right: 4px;
-  font-size: 80%;
+  font-size: 75%;
 }
+
+  .mixin_state_expanded .mixin__name {
+    border-bottom: 1px solid #bdbdbd;
+  }
 
   .mixin_state_expanded .mixin__name:before {
     content: "\25BC";
@@ -74,7 +75,7 @@
 
 .mixin__property button img, .mixin__property span.pad {
   margin-right: 3px;
-  width: 16px;
+  width: 20px;
 }
 
 .mixin__property-overridden-by {
@@ -106,7 +107,7 @@
 }
 
 .mixin__send-btn {
-  width: 15px;
+  width: 20px;
   opacity: 0;
 }
 
