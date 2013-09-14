@@ -54,6 +54,11 @@ module.exports = function(grunt) {
     'jshint:tests'
   ]);
 
+  grunt.registerTask('build_xpi', [
+    'mozilla-addon-sdk:download',
+    'mozilla-addon-sdk:xpi'
+  ]);
+
   grunt.registerTask('build_and_upload', [
     'build',
     'compress:main',
