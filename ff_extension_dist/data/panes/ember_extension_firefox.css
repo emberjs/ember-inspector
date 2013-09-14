@@ -1,0 +1,7 @@
+.error-page__header:after {
+  background: url("../images/fishy_tomster.png") left center no-repeat;
+}
+
+.object-inspector__back {
+  background: #ccc url('../images/back_arrow.png') 5px center no-repeat;
+}
