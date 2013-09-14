@@ -7,3 +7,7 @@ dist_chrome/ember_debug/
 dist_chrome/vendor/
 dist_chrome/panes/ember_extension.css
 dist_chrome/panes/ember_extension.js
+
+*.xpi
+ff_extension_dist/data/vendor
+ff_extension_dist/data/images
