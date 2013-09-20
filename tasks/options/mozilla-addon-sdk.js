@@ -1,7 +1,7 @@
 module.exports = {
   download: {
     options: {
-      revision: "release"
+      revision: "firefox26"
     }
   },
   xpi: {
