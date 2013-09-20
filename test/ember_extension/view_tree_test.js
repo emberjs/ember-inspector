@@ -35,11 +35,56 @@ function viewTreeFactory(tree) {
   return viewNode;
 }
 
-test("It should correctly diplay the view tree", function() {
-  var viewTree = viewTreeFactory({
+function defaultViewTree() {
+  return viewTreeFactory({
     name: 'application',
-    children: [ { name: 'posts' }, { name: 'comments' } ]
+    isVirtual: false,
+    isComponent: false,
+    objectId: 'applicationView',
+    viewClass: 'App.ApplicationView',
+    controller: {
+      name: 'App.ApplicationController',
+      objectId: 'applicationController'
+    },
+    children: [
+      {
+        name: 'posts',
+        isVirtual: false,
+        isComponent: false,
+        viewClass: 'App.PostsView',
+        objectId: 'postsView',
+        model: {
+          name: 'PostsArray',
+          objectId: 'postsArray'
+        },
+        controller: {
+          name: 'App.PostsController',
+          objectId: 'postsController'
+        },
+        children: []
+      },
+      {
+        name: 'comments',
+        isVirtual: false,
+        isComponent: false,
+        viewClass: 'App.CommentsView',
+        objectId: 'commentsView',
+        model: {
+          name: 'CommentsArray',
+          objectId: 'commentsArray'
+        },
+        controller: {
+          name: 'App.CommentsController',
+          objectId: 'commentsController'
+        },
+        children: []
+      }
+    ]
   });
+}
+
+test("It should correctly diplay the view tree", function() {
+  var viewTree = defaultViewTree();
 
   Em.run(function() {
     port.trigger('view:viewTree', { tree: viewTree } );
@@ -49,32 +94,47 @@ test("It should correctly diplay the view tree", function() {
   visit('/')
   .then(function() {
     var $treeNodes = findByLabel('tree-node');
-    equal($treeNodes.length, 2);
-    var $treeViews = findByLabel('tree-view');
-    equal($treeViews.length, 3);
-    var $treeView = $treeViews.filter(':first');
-    var controllerNames = [];
-    var templateNames = [];
-    $treeViews.each(function() {
-      controllerNames.push(findByLabel('tree-view-controller', this).filter(':first').text());
-      templateNames.push(findByLabel('tree-view-template', this).filter(':first').text());
+    equal($treeNodes.length, 3);
+    var $treeView = $treeNodes.filter(':first');
+    var controllerNames = [],
+        templateNames = [],
+        modelNames = [],
+        viewClassNames = [];
+
+    $treeNodes.each(function() {
+      templateNames.push(findByLabel('view-template', this).filter(':first').text().trim());
+      controllerNames.push(findByLabel('view-controller', this).filter(':first').text().trim());
+      viewClassNames.push(findByLabel('view-class', this).filter(':first').text().trim());
+      modelNames.push(findByLabel('view-model', this).filter(':first').text().trim());
     });
-    deepEqual(controllerNames, ['application', 'posts', 'comments']);
-    deepEqual(templateNames, ['template:application', 'template:posts', 'template:comments']);
+    deepEqual(controllerNames, ['App.ApplicationController', 'App.PostsController', 'App.CommentsController']);
+    deepEqual(templateNames, ['application', 'posts', 'comments']);
+    deepEqual(modelNames, ['', 'PostsArray', 'CommentsArray']);
+    deepEqual(viewClassNames, ['App.ApplicationView', 'App.PostsView', 'App.CommentsView']);
   });
 
 });
 
 test("It should update the view tree when the port triggers a change", function() {
   expect(4);
-  var $treeNodes, viewTree;
+  var $treeNodes, viewTree = defaultViewTree();
 
   visit('/')
   .then(function() {
-    viewTree = viewTreeFactory({
-      name: 'application',
-      children: [ { name: 'posts' }]
-    });
+    port.trigger('view:viewTree', { tree: viewTree });
+    return wait();
+
+  })
+  .then(function() {
+
+    $treeNodes = findByLabel('tree-node');
+    equal($treeNodes.length, 3);
+    equal(findByLabel('view-controller').filter(':last').text().trim(), 'App.CommentsController');
+
+    viewTree = defaultViewTree();
+    viewTree.children.splice(0, 1);
+    viewTree.children[0].value.controller.name = 'App.SomeController';
+
     port.trigger('view:viewTree', { tree: viewTree });
     return wait();
 
@@ -83,18 +143,7 @@ test("It should update the view tree when the port triggers a change", function(
 
     $treeNodes = findByLabel('tree-node');
     equal($treeNodes.length, 2);
-    equal(findByLabel('tree-view-controller').filter(':last').text(), 'posts');
-
-    viewTree = viewTreeFactory({ name: 'comments', children: [] });
-    port.trigger('view:viewTree', { tree: viewTree });
-    return wait();
-
-  })
-  .then(function() {
-
-    $treeNodes = findByLabel('tree-node');
-    equal($treeNodes.length, 1);
-    equal(findByLabel('tree-view-controller').text(), 'comments');
+    equal(findByLabel('view-controller').filter(':last').text().trim(), 'App.SomeController');
   });
 
 });
@@ -109,26 +158,73 @@ test("Previewing / showing a view on the client", function() {
 
   visit('/')
   .then(function() {
-    var viewTree = viewTreeFactory({ name: 'application', objectId: 1 });
+    var viewTree = defaultViewTree();
+    viewTree.children = [];
     port.trigger('view:viewTree', { tree: viewTree });
     return wait();
   })
-  .mouseEnterByLabel('tree-view-controller')
+  .mouseEnterByLabel('tree-node')
   .then(function() {
-    deepEqual(messageSent, { name: 'view:previewLayer', message: { objectId: 1 } } , "Client asked to preview layer");
+    deepEqual(messageSent, { name: 'view:previewLayer', message: { objectId: 'applicationView' } } , "Client asked to preview layer");
   })
-  .mouseLeaveByLabel('tree-view-controller')
+  .mouseLeaveByLabel('tree-node')
   .then(function() {
-    deepEqual(messageSent, { name: 'view:hidePreview', message: { objectId: 1 } } , "Client asked to hide preview");
+    deepEqual(messageSent, { name: 'view:hidePreview', message: { objectId: 'applicationView' } } , "Client asked to hide preview");
+  });
+});
+
+test("Inspecting views on hover", function() {
+  var messageSent = null;
+  port.reopen({
+    send: function(name, message) {
+      messageSent = { name: name, message: message };
+    }
+  });
+
+  visit('/')
+  .clickByLabel('inspect-views')
+  .then(function() {
+    equal(messageSent.name, 'view:inspectViews');
+    deepEqual(messageSent.message, { inspect: true });
+    port.trigger('view:startInspecting');
+    return wait();
   })
-  .clickByLabel('tree-view-controller')
+  .clickByLabel('inspect-views')
   .then(function() {
-    deepEqual(messageSent, { name: 'view:showLayer', message: { objectId: 1 } } , "Client asked to pin layer");
-    ok(findByLabel('tree-view-controller').hasClass('is-pinned'), "View is pinned");
-    messageSent = null;
+    equal(messageSent.name, 'view:inspectViews');
+    deepEqual(messageSent.message, { inspect: false });
+  });
+});
+
+test("Configuring which views to show", function() {
+  var messageSent = null;
+  port.reopen({
+    send: function(name, message) {
+      messageSent = { name: name, message: message };
+    }
+  });
+
+  visit('/')
+  .then(function() {
+    var checkbox = findByLabel('filter-components').find('input');
+    checkbox.prop('checked', true);
+    checkbox.trigger('change');
+    return wait();
   })
-  .mouseEnterByLabel('tree-view-controller')
   .then(function() {
-    equal(messageSent, null, "Client not asked to preview when view already pinned");
+    equal(messageSent.name, 'view:setOptions');
+    deepEqual(messageSent.message.options, { components: true, allViews: false });
+    return wait();
+  })
+  .then(function() {
+    var checkbox = findByLabel('filter-all-views').find('input');
+    checkbox.prop('checked', true);
+    checkbox.trigger('change');
+    return wait();
+  })
+  .then(function() {
+    equal(messageSent.name, 'view:setOptions');
+    deepEqual(messageSent.message.options, { components: true, allViews: true });
+    return wait();
   });
 });

@@ -301,3 +301,22 @@ test("Read Only Computed properties mush have a readOnly property", function() {
   ok(properties[0].readOnly);
   ok(!properties[1].readOnly);
 });
+
+test("Views are correctly handled when destroyed during transitions", function() {
+  var objectId = null;
+
+  visit('/simple')
+  .then(function() {
+    objectId = find('.simple-view').get(0).id;
+    var view = Ember.View.views[objectId];
+    objectInspector.sendObject(view);
+    return wait();
+  })
+  .then(function() {
+    ok(objectInspector.sentObjects[objectId], "Object successfully retained.");
+  })
+  .visit('/')
+  .then (function() {
+    ok(true, "No exceptions thrown");
+  });
+});

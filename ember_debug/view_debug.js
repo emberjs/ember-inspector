@@ -16,12 +16,49 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
   retainedObjects: [],
 
+  options: {},
+
+  portNamespace: 'view',
+
+  messages: {
+    getTree: function() {
+      this.sendTree();
+    },
+    hideLayer: function() {
+      this.hideLayer();
+    },
+    showLayer: function(message) {
+      this.showLayer(message.objectId);
+    },
+    previewLayer: function(message) {
+      this.previewLayer(message.objectId);
+    },
+    hidePreview: function(message) {
+      this.hidePreview(message.objectId);
+    },
+    inspectViews: function(message) {
+      if (message.inspect) {
+        this.startInspecting();
+      } else {
+        this.stopInspecting();
+      }
+    },
+    inspectElement: function(message) {
+      this.inspectElement(message.objectId);
+    },
+    setOptions: function(message) {
+      this.set('options', message.options);
+      this.sendTree();
+    }
+  },
+
   init: function() {
     this._super();
     var self = this;
 
     this.viewListener();
     this.retainedObjects = [];
+    this.options = {};
 
     layerDiv = $('<div>').appendTo('body').get(0);
     layerDiv.style.display = 'none';
@@ -65,42 +102,6 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     this.stopInspecting();
   },
 
-  options: {},
-
-  portNamespace: 'view',
-
-  messages: {
-    getTree: function() {
-      this.sendTree();
-    },
-    hideLayer: function() {
-      this.hideLayer();
-    },
-    showLayer: function(message) {
-      this.showLayer(message.objectId);
-    },
-    previewLayer: function(message) {
-      this.previewLayer(message.objectId);
-    },
-    hidePreview: function(message) {
-      this.hidePreview(message.objectId);
-    },
-    inspectViews: function(message) {
-      if (message.inspect) {
-        this.startInspecting();
-      } else {
-        this.stopInspecting();
-      }
-    },
-    inspectElement: function(message) {
-      this.inspectElement(message.objectId);
-    },
-    setOptions: function(message) {
-      this.set('options', message.options);
-      this.sendTree();
-    }
-  },
-
   inspectElement: function(objectId) {
     var view = this.get('objectInspector').sentObjects[objectId];
     if (view && view.get('element')) {
@@ -120,7 +121,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     $(previewDiv).css('pointer-events', 'none');
 
     $('body').on('mousemove.inspect-' + this.get('eventNamespace'), function(e) {
-      var originalTarget = $(e.originalEvent.target), oldViewElem = viewElem;
+      var originalTarget = $(e.target), oldViewElem = viewElem;
       viewElem = self.findNearestView(originalTarget);
       if (viewElem) {
         self.highlightView(viewElem, true);
@@ -173,6 +174,9 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     // don't trigger mutation listeners
     // TODO: Look into that in Ember core
     Ember.run.next(function() {
+      if (self.isDestroying) {
+        return;
+      }
       self.releaseCurrentObjects();
       var tree = self.viewTree();
       if (tree) {

@@ -1,9 +1,9 @@
 {{#each children itemController="viewTreeItem"}}
   {{#view "treeNodeItem" nodeBinding=model}}
-    <td {{bindAttr class=":table-tree__main-cell hasElement:table-tree__clickable isCurrent:table-tree__main-cell_state_current" style=style }} {{action "inspectElement"}}>
+    <td {{bindAttr class=":table-tree__main-cell hasElement:table-tree__clickable isCurrent:table-tree__main-cell_state_current" style=style }} {{action "inspectElement"}} data-label="view-template">
       {{value.template}}
     </td>
-     <td {{action "inspectView"}} {{bindAttr class="hasView:table-tree__clickable"}}>
+     <td {{action "inspectView"}} {{bindAttr class="hasView:table-tree__clickable"}} data-label="view-class">
       {{#unless value.isVirtual}}
         {{value.viewClass}}
       {{else}}
@@ -11,10 +11,10 @@
       {{/unless}}
       {{#if value.isComponent}}(component) {{/if}}
     </td>
-    <td {{action "inspect" value.model.objectId}} {{bindAttr class="hasModel:table-tree__clickable"}}>
+    <td {{action "inspect" value.model.objectId}} {{bindAttr class="hasModel:table-tree__clickable"}} data-label="view-model">
       {{value.model.name}}
     </td>
-    <td {{action "inspect" value.controller.objectId}} {{bindAttr class="hasController:table-tree__clickable"}} >
+    <td {{action "inspect" value.controller.objectId}} {{bindAttr class="hasController:table-tree__clickable"}} data-label="view-controller" >
       {{value.controller.name}}
     </td>
 

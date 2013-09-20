@@ -311,25 +311,37 @@ define("ember_debug",
 
       },
 
-      destroyAndCreate: function(prop, Handler) {
-        var handler = this.get(prop);
-        if (handler) {
-          Ember.run(handler, 'destroy');
-        }
-        this.set(prop, Handler.create({ namespace: this }));
+      destroyContainer: function() {
+        var self = this;
+        ['dataDebug', 'viewDebug', 'routeDebug', 'objectInspector', 'generalDebug'].forEach(function(prop) {
+          var handler = self.get(prop);
+          if (handler) {
+            Ember.run(handler, 'destroy');
+            self.set(prop, null);
+          }
+        });
+      },
+
+      startModule: function(prop, Module) {
+        this.set(prop, Module.create({ namespace: this }));
       },
 
       reset: function() {
-        this.destroyAndCreate('port', this.Port);
+        this.destroyContainer();
+        Ember.run(this, function() {
 
-        this.destroyAndCreate('generalDebug', GeneralDebug);
-        this.destroyAndCreate('objectInspector', ObjectInspector);
-        this.destroyAndCreate('routeDebug', RouteDebug);
-        this.destroyAndCreate('viewDebug', ViewDebug);
-        this.destroyAndCreate('dataDebug', DataDebug);
+          this.startModule('port', this.Port);
 
-        this.generalDebug.sendBooted();
-        this.viewDebug.sendTree();
+          this.startModule('generalDebug', GeneralDebug);
+          this.startModule('objectInspector', ObjectInspector);
+          this.startModule('routeDebug', RouteDebug);
+          this.startModule('viewDebug', ViewDebug);
+          this.startModule('dataDebug', DataDebug);
+
+          this.generalDebug.sendBooted();
+          this.viewDebug.sendTree();
+
+        });
       }
 
     });
@@ -457,6 +469,16 @@ define("object_inspector",
         this._super();
         this.set('sentObjects', {});
         this.set('boundObservers', {});
+      },
+
+      willDestroy: function() {
+        this._super();
+        for (var objectId in this.sentObjects) {
+          if (!this.sentObjects.hasOwnProperty(objectId)) {
+            continue;
+          }
+          this.removeObservers(objectId);
+        }
       },
 
       sentObjects: {},
@@ -605,8 +627,9 @@ define("object_inspector",
         applyMixinOverrides(mixinDetails);
 
         var propertyInfo = null;
-        if (object._debugInfo && typeof object._debugInfo === 'function') {
-          propertyInfo = object._debugInfo().propertyInfo;
+        var debugInfo = getDebugInfo(object);
+        if (debugInfo) {
+          propertyInfo = getDebugInfo(object).propertyInfo;
           mixinDetails = customizeProperties(mixinDetails, propertyInfo);
         }
 
@@ -665,13 +688,9 @@ define("object_inspector",
           });
         }
 
-        // Make views unobservable
-        // TODO: Fix mandatory setter issue to make views observable
-        if (!(object instanceof Ember.View)) {
-          Ember.addObserver(object, property, handler);
-          this.boundObservers[objectId] = this.boundObservers[objectId] || [];
-          this.boundObservers[objectId].push({ property: property, handler: handler });
-        }
+        Ember.addObserver(object, property, handler);
+        this.boundObservers[objectId] = this.boundObservers[objectId] || [];
+        this.boundObservers[objectId].push({ property: property, handler: handler });
 
       },
 
@@ -950,6 +969,23 @@ define("object_inspector",
       return newMixinDetails;
     }
 
+
+    function getDebugInfo(object) {
+      var debugInfo = null;
+      if (object._debugInfo && typeof object._debugInfo === 'function') {
+        debugInfo = object._debugInfo();
+      }
+      // Views have un-observable private properties.
+      // These should be excluded
+      if (object instanceof Ember.View) {
+        debugInfo = debugInfo || {};
+        var propertyInfo = debugInfo.propertyInfo || (debugInfo.propertyInfo = {});
+        var skipProperties = propertyInfo.skipProperties = propertyInfo.skipProperties || (propertyInfo.skipProperties = []);
+        skipProperties.push('currentState', 'state', 'isDestroying', 'isDestroyed');
+      }
+      return debugInfo;
+    }
+
     function isComputed(value) {
       return value instanceof Ember.ComputedProperty;
     }
@@ -1171,12 +1207,49 @@ define("view_debug",
 
       retainedObjects: [],
 
+      options: {},
+
+      portNamespace: 'view',
+
+      messages: {
+        getTree: function() {
+          this.sendTree();
+        },
+        hideLayer: function() {
+          this.hideLayer();
+        },
+        showLayer: function(message) {
+          this.showLayer(message.objectId);
+        },
+        previewLayer: function(message) {
+          this.previewLayer(message.objectId);
+        },
+        hidePreview: function(message) {
+          this.hidePreview(message.objectId);
+        },
+        inspectViews: function(message) {
+          if (message.inspect) {
+            this.startInspecting();
+          } else {
+            this.stopInspecting();
+          }
+        },
+        inspectElement: function(message) {
+          this.inspectElement(message.objectId);
+        },
+        setOptions: function(message) {
+          this.set('options', message.options);
+          this.sendTree();
+        }
+      },
+
       init: function() {
         this._super();
         var self = this;
 
         this.viewListener();
         this.retainedObjects = [];
+        this.options = {};
 
         layerDiv = $('<div>').appendTo('body').get(0);
         layerDiv.style.display = 'none';
@@ -1220,42 +1293,6 @@ define("view_debug",
         this.stopInspecting();
       },
 
-      options: {},
-
-      portNamespace: 'view',
-
-      messages: {
-        getTree: function() {
-          this.sendTree();
-        },
-        hideLayer: function() {
-          this.hideLayer();
-        },
-        showLayer: function(message) {
-          this.showLayer(message.objectId);
-        },
-        previewLayer: function(message) {
-          this.previewLayer(message.objectId);
-        },
-        hidePreview: function(message) {
-          this.hidePreview(message.objectId);
-        },
-        inspectViews: function(message) {
-          if (message.inspect) {
-            this.startInspecting();
-          } else {
-            this.stopInspecting();
-          }
-        },
-        inspectElement: function(message) {
-          this.inspectElement(message.objectId);
-        },
-        setOptions: function(message) {
-          this.set('options', message.options);
-          this.sendTree();
-        }
-      },
-
       inspectElement: function(objectId) {
         var view = this.get('objectInspector').sentObjects[objectId];
         if (view && view.get('element')) {
@@ -1275,7 +1312,7 @@ define("view_debug",
         $(previewDiv).css('pointer-events', 'none');
 
         $('body').on('mousemove.inspect-' + this.get('eventNamespace'), function(e) {
-          var originalTarget = $(e.originalEvent.target), oldViewElem = viewElem;
+          var originalTarget = $(e.target), oldViewElem = viewElem;
           viewElem = self.findNearestView(originalTarget);
           if (viewElem) {
             self.highlightView(viewElem, true);
@@ -1328,6 +1365,9 @@ define("view_debug",
         // don't trigger mutation listeners
         // TODO: Look into that in Ember core
         Ember.run.next(function() {
+          if (self.isDestroying) {
+            return;
+          }
           self.releaseCurrentObjects();
           var tree = self.viewTree();
           if (tree) {

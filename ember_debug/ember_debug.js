@@ -29,25 +29,37 @@ EmberDebug = Ember.Namespace.create({
 
   },
 
-  destroyAndCreate: function(prop, Handler) {
-    var handler = this.get(prop);
-    if (handler) {
-      Ember.run(handler, 'destroy');
-    }
-    this.set(prop, Handler.create({ namespace: this }));
+  destroyContainer: function() {
+    var self = this;
+    ['dataDebug', 'viewDebug', 'routeDebug', 'objectInspector', 'generalDebug'].forEach(function(prop) {
+      var handler = self.get(prop);
+      if (handler) {
+        Ember.run(handler, 'destroy');
+        self.set(prop, null);
+      }
+    });
+  },
+
+  startModule: function(prop, Module) {
+    this.set(prop, Module.create({ namespace: this }));
   },
 
   reset: function() {
-    this.destroyAndCreate('port', this.Port);
+    this.destroyContainer();
+    Ember.run(this, function() {
 
-    this.destroyAndCreate('generalDebug', GeneralDebug);
-    this.destroyAndCreate('objectInspector', ObjectInspector);
-    this.destroyAndCreate('routeDebug', RouteDebug);
-    this.destroyAndCreate('viewDebug', ViewDebug);
-    this.destroyAndCreate('dataDebug', DataDebug);
+      this.startModule('port', this.Port);
 
-    this.generalDebug.sendBooted();
-    this.viewDebug.sendTree();
+      this.startModule('generalDebug', GeneralDebug);
+      this.startModule('objectInspector', ObjectInspector);
+      this.startModule('routeDebug', RouteDebug);
+      this.startModule('viewDebug', ViewDebug);
+      this.startModule('dataDebug', DataDebug);
+
+      this.generalDebug.sendBooted();
+      this.viewDebug.sendTree();
+
+    });
   }
 
 });

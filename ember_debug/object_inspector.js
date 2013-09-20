@@ -13,6 +13,16 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     this.set('boundObservers', {});
   },
 
+  willDestroy: function() {
+    this._super();
+    for (var objectId in this.sentObjects) {
+      if (!this.sentObjects.hasOwnProperty(objectId)) {
+        continue;
+      }
+      this.removeObservers(objectId);
+    }
+  },
+
   sentObjects: {},
 
   boundObservers: {},
@@ -159,8 +169,9 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     applyMixinOverrides(mixinDetails);
 
     var propertyInfo = null;
-    if (object._debugInfo && typeof object._debugInfo === 'function') {
-      propertyInfo = object._debugInfo().propertyInfo;
+    var debugInfo = getDebugInfo(object);
+    if (debugInfo) {
+      propertyInfo = getDebugInfo(object).propertyInfo;
       mixinDetails = customizeProperties(mixinDetails, propertyInfo);
     }
 
@@ -219,13 +230,9 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
       });
     }
 
-    // Make views unobservable
-    // TODO: Fix mandatory setter issue to make views observable
-    if (!(object instanceof Ember.View)) {
-      Ember.addObserver(object, property, handler);
-      this.boundObservers[objectId] = this.boundObservers[objectId] || [];
-      this.boundObservers[objectId].push({ property: property, handler: handler });
-    }
+    Ember.addObserver(object, property, handler);
+    this.boundObservers[objectId] = this.boundObservers[objectId] || [];
+    this.boundObservers[objectId].push({ property: property, handler: handler });
 
   },
 
@@ -502,6 +509,23 @@ function customizeProperties(mixinDetails, propertyInfo) {
   });
 
   return newMixinDetails;
+}
+
+
+function getDebugInfo(object) {
+  var debugInfo = null;
+  if (object._debugInfo && typeof object._debugInfo === 'function') {
+    debugInfo = object._debugInfo();
+  }
+  // Views have un-observable private properties.
+  // These should be excluded
+  if (object instanceof Ember.View) {
+    debugInfo = debugInfo || {};
+    var propertyInfo = debugInfo.propertyInfo || (debugInfo.propertyInfo = {});
+    var skipProperties = propertyInfo.skipProperties = propertyInfo.skipProperties || (propertyInfo.skipProperties = []);
+    skipProperties.push('currentState', 'state', 'isDestroying', 'isDestroyed');
+  }
+  return debugInfo;
 }
 
 function isComputed(value) {

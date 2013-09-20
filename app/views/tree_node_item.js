@@ -2,6 +2,10 @@ var TreeNodeControllerView = Ember.View.extend({
   tagName: 'tr',
   classNameBindings: 'isPinned',
 
+  // for testing
+  attributeBindings: ['data-label:label'],
+  label: 'tree-node',
+
   isPinned: function() {
     return this.get('node') === this.get('controller.pinnedNode');
   }.property('node', 'controller.pinnedNode'),
