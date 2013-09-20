@@ -213,6 +213,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       backgroundColor: "rgba(255, 255, 255, 0.7)",
       border: "2px solid rgb(102, 102, 102)",
       padding: "0",
+      right: "auto",
       boxSizing: "border-box",
       color: "rgb(51, 51, 255)",
       fontFamily: "Menlo, sans-serif",
