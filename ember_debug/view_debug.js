@@ -164,6 +164,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     .off('click.inspect-' + this.get('eventNamespace'))
     .css('cursor', '');
 
+    this.hidePreview();
     this.sendMessage('stopInspecting', {});
   },
 

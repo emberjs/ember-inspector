@@ -31,6 +31,27 @@ var ApplicationController = Ember.Controller.extend({
 
     this.set('controllers.mixinStack.model', []);
     this.pushMixinDetails(name, undefined, objectId, details);
+  },
+
+  droppedObject: function(objectId) {
+    var mixinStack = this.get('controllers.mixinStack.model');
+    var obj = mixinStack.findProperty('objectId', objectId);
+    if (obj) {
+      var index = mixinStack.indexOf(obj);
+      var objectsToRemove = [];
+      for(var i = index; i >= 0; i--) {
+        objectsToRemove.pushObject(mixinStack.objectAt(i));
+      }
+      objectsToRemove.forEach(function(item) {
+        mixinStack.removeObject(item);
+      });
+    }
+    if (mixinStack.get('length') > 0) {
+      this.set('controllers.mixinDetails.model', mixinStack.get('lastObject'));
+    } else {
+      this.set('controllers.mixinDetails.model', null);
+    }
+
   }
 });
 

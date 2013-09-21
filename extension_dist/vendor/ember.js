@@ -3372,7 +3372,7 @@ Ember.defineProperty = function(obj, keyName, desc, data, meta) {
         objectDefineProperty(obj, keyName, {
           configurable: true,
           enumerable: true,
-          set: MANDATORY_SETTER_FUNCTION,
+          set: function() { console.error(keyName); },
           get: DEFAULT_GETTER_FUNCTION(keyName)
         });
       } else {
@@ -3503,7 +3503,7 @@ Ember.watchKey = function(obj, keyName) {
       o_defineProperty(obj, keyName, {
         configurable: true,
         enumerable: true,
-        set: Ember.MANDATORY_SETTER_FUNCTION,
+        set: function() { console.error(keyName); },
         get: Ember.DEFAULT_GETTER_FUNCTION(keyName)
       });
     }

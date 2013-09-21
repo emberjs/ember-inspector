@@ -182,6 +182,15 @@ test("Highlighting Views on hover", function() {
   .then(function() {
     var previewDiv = findByLabel('preview-div');
     equal(findByLabel('layer-view', previewDiv).text(), 'Ember.View', "Views without controllers can be configured to be highlighted.");
-
+    port.trigger('view:inspectViews', { inspect: false });
+    return wait();
+  })
+  .then(function() {
+    find('.simple-view').trigger('mousemove');
+    return wait();
+  })
+  .then(function() {
+    var previewDiv = findByLabel('preview-div');
+    ok(!previewDiv.is(':visible'));
   });
 });

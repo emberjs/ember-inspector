@@ -130,6 +130,27 @@ define("controllers/application",
 
         this.set('controllers.mixinStack.model', []);
         this.pushMixinDetails(name, undefined, objectId, details);
+      },
+
+      droppedObject: function(objectId) {
+        var mixinStack = this.get('controllers.mixinStack.model');
+        var obj = mixinStack.findProperty('objectId', objectId);
+        if (obj) {
+          var index = mixinStack.indexOf(obj);
+          var objectsToRemove = [];
+          for(var i = index; i >= 0; i--) {
+            objectsToRemove.pushObject(mixinStack.objectAt(i));
+          }
+          objectsToRemove.forEach(function(item) {
+            mixinStack.removeObject(item);
+          });
+        }
+        if (mixinStack.get('length') > 0) {
+          this.set('controllers.mixinDetails.model', mixinStack.get('lastObject'));
+        } else {
+          this.set('controllers.mixinDetails.model', null);
+        }
+
       }
     });
 
@@ -733,6 +754,7 @@ define("routes/application",
 
         this.get('port').on('objectInspector:updateObject', this, this.updateObject);
         this.get('port').on('objectInspector:updateProperty', this, this.updateProperty);
+        this.get('port').on('objectInspector:droppedObject', this, this.droppedObject);
 
         this.get('port').one('general:applicationBooted', this, function(message) {
           controller.set('emberApplication', message.booted);
@@ -744,6 +766,8 @@ define("routes/application",
       deactivate: function() {
         this.get('port').off('objectInspector:updateObject', this, this.updateObject);
         this.get('port').off('objectInspector:updateProperty', this, this.updateProperty);
+        this.get('port').off('objectInspector:droppedObject', this, this.droppedObject);
+
       },
 
       updateObject: function(options) {
@@ -770,6 +794,11 @@ define("routes/application",
         var detail = this.controllerFor('mixinDetails').get('mixins').objectAt(options.mixinIndex);
         var property = Ember.get(detail, 'properties').findProperty('name', options.property);
         Ember.set(property, 'value', options.value);
+      },
+
+      droppedObject: function(message) {
+        var controller = this.get('controller');
+        controller.droppedObject(message.objectId);
       },
 
       actions: {
