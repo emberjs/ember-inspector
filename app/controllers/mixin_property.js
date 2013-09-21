@@ -51,6 +51,10 @@ var MixinPropertyController = Ember.ObjectController.extend({
         realValue = txtValue;
       }
       this.get('target').send('saveProperty', this.get('name'), realValue);
+    },
+
+    finishedEditing: function() {
+      this.set('isEdit', false);
     }
   }
 

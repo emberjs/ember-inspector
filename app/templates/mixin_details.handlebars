@@ -18,7 +18,7 @@
       {{#unless isEdit}}
         <span  {{action "valueClick" model}} {{bindAttr class="value.type :mixin__property-value"}} data-label="object-property-value">{{value.inspect}}</span>
       {{else}}
-        {{view EmberExtension.PropertyFieldView classNames="mixin__property-value-txt" valueBinding=txtValue label="object-property-value-txt"}}
+        {{property-field class="mixin__property-value-txt" value=txtValue label="object-property-value-txt"}}
       {{/unless}}
       <span class='mixin__property-overridden-by'>(Overridden by {{overridden}})</span>
       <button class="mixin__send-btn" {{action "sendToConsole" model}} data-label="send-to-console-btn"><img src="/images/send.png" title="Send to console"></button>

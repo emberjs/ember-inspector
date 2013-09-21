@@ -83,6 +83,10 @@
 }
 
 /* Modifier: inspector = expanded */
+.app_inspector_expanded .app__inspector-container {
+  border-left: 1px solid #bdbdbd;
+}
+
 .app_inspector_expanded .app__right-col {
   width: 500px;
   max-width: 60%;
@@ -154,6 +158,12 @@ a {
   is not detected.
 */
 
+.data-error-page-container {
+  position: relative;
+  min-height: 100%;
+  padding: 10px;
+}
+
 .error-page {
   padding: 10px;
   background: #ededed;
@@ -185,7 +195,8 @@ a {
 .error-page__header {
   font-weight: bold;
   font-size: 19px;
-  padding-bottom: 10px;
+  padding-top: 15px;
+  padding-bottom: 30px;
   margin-bottom: 10px;
   border-bottom: solid 1px #d1d1d1;
   position: relative;
@@ -202,7 +213,7 @@ a {
 }
 
 .error-page__title {
-  width: 185px;
+  width: 345px;
 }
 
 .error-page__reasons {
@@ -376,21 +387,18 @@ a {
 */
 
 .mixin {
-  border: 1px solid #ccc;
+  border-top: 1px solid #bdbdbd;
 }
 
 .mixin__name {
-  padding: 2px;
-  background-color: #ddd;
+  padding: 2px 2px 2px 5px;
+  background-color: #e6e6e6;
   text-shadow: 0px 1px 1px #fff;
+  cursor: default;
 }
 
 .mixin__name:active {
   background-color: #ccc;
-}
-
-.mixin__name {
-    cursor: default;
 }
 
   .mixin_props_no .mixin__name:before {
@@ -403,10 +411,14 @@ a {
 
 .mixin__name:before {
   content: "\25B6";
-  color: #555;
+  color: #737373;
   margin-right: 4px;
-  font-size: 80%;
+  font-size: 75%;
 }
+
+  .mixin_state_expanded .mixin__name {
+    border-bottom: 1px solid #bdbdbd;
+  }
 
   .mixin_state_expanded .mixin__name:before {
     content: "\25BC";
@@ -443,7 +455,7 @@ a {
 
 .mixin__property button img, .mixin__property span.pad {
   margin-right: 3px;
-  width: 16px;
+  width: 20px;
 }
 
 .mixin__property-overridden-by {
@@ -475,7 +487,7 @@ a {
 }
 
 .mixin__send-btn {
-  width: 15px;
+  width: 20px;
   opacity: 0;
 }
 
@@ -553,7 +565,7 @@ a {
   position: relative;
   font-family: Menlo, Monaco, monospace;
   text-shadow: 0px 1px 1px #fff;
-  padding: 10px 5px 10px 50px;
+  padding: 10px 5px 10px 35px;
   box-sizing: border-box;
   min-height: 40px;
 }
@@ -578,7 +590,7 @@ a {
   width: 22px;
   height: 22px;
   top: 8px;
-  left: 15px;
+  left: 7px;
   border-radius: 11px;
   background: #ccc url('/images/back_arrow.png') 5px center no-repeat;
   border: none;
@@ -614,14 +626,15 @@ a {
   background: none;
   margin: 0;
   padding: 0;
-  width: 15px;
+  width: 20px;
   opacity: 1;
 }
 
 .object-inspector__send-object-btn img {
   margin-right: 3px;
-  width: 16px;
+  width: 20px;
 }
+
 .split {
   height: 100%;
 }

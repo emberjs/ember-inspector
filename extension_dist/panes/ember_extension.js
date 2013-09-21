@@ -58,6 +58,41 @@ define("components/drag_handle",
 
     return DragHandleComponent;
   });
+define("components/property_field",
+  [],
+  function() {
+    "use strict";
+    var PropertyFieldComponent = Ember.TextField.extend({
+      attributeBindings: ['label:data-label'],
+
+      saveProperty: 'saveProperty',
+      finishedEditing: 'finishedEditing',
+
+      didInsertElement: function() {
+        this._super();
+        this.$().select();
+      },
+
+      insertNewline: function() {
+        this.sendAction('saveProperty');
+        this.sendAction('finishedEditing');
+      },
+
+      cancel: function() {
+        this.sendAction('finishedEditing');
+      },
+
+      focusOut: function() {
+        this.sendAction('finishedEditing');
+      }
+
+    });
+
+
+
+
+    return PropertyFieldComponent;
+  });
 define("controllers/application",
   [],
   function() {
@@ -226,6 +261,10 @@ define("controllers/mixin_property",
             realValue = txtValue;
           }
           this.get('target').send('saveProperty', this.get('name'), realValue);
+        },
+
+        finishedEditing: function() {
+          this.set('isEdit', false);
         }
       }
 
@@ -520,16 +559,16 @@ define("controllers/view_tree_item",
     return ViewTreeItemController;
   });
 define("main",
-  ["application","views/tree_node_controller","views/property_field","components/drag_handle","port"],
-  function(App, TreeNodeControllerView, PropertyFieldView, DragHandleComponent, Port) {
+  ["application","views/tree_node_controller","components/property_field","components/drag_handle","port"],
+  function(App, TreeNodeControllerView, PropertyFieldComponent, DragHandleComponent, Port) {
     "use strict";
 
     var EmberExtension;
 
     EmberExtension = App.create();
     EmberExtension.TreeNodeControllerView = TreeNodeControllerView;
-    EmberExtension.PropertyFieldView = PropertyFieldView;
     EmberExtension.DragHandleComponent = DragHandleComponent;
+    EmberExtension.PropertyFieldComponent = PropertyFieldComponent;
     EmberExtension.Port = Port;
 
 
@@ -938,16 +977,6 @@ define("routes/view_tree",
 this["Ember"] = this["Ember"] || {};
 this["Ember"]["TEMPLATES"] = this["Ember"]["TEMPLATES"] || {};
 
-this["Ember"]["TEMPLATES"]["_not_detected"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
-  
-
-
-  data.buffer.push("<div class=\"error-page\">\n\n  <div class=\"error-page__content\">\n\n    <div class=\"error-page__header\">\n      <div class=\"error-page__title\">Ember application not detected!</div>\n    </div>\n\n    <div class=\"error-page__reasons\">\n\n      <div class=\"error-page__reasons-title\">Here are some common reasons this happens:</div>\n\n      <ul class=\"error-page__list\">\n        <li>This is not an Ember application.</li>\n        <li>Your application is inside an iframe.</li>\n        <li>You are using an old version of Ember (&lt; rc5).</li>\n        <li>You are using the file:// protocol (instead of http://), in which case:\n          <ul>\n            <li>Visit the URL: chrome://extensions.</li>\n            <li>Find the Ember Inspector.</li>\n            <li>Make sure \"Allow access to file URLs\" is checked.</li>\n          </ul>\n        </li>\n      </ul>\n\n      If you're still having trouble, please file an issue on the Ember Inspector's\n      <a href=\"https://github.com/tildeio/ember-extension\" target=\"_blank\">GitHub page.</a>\n    </div>\n\n  </div>\n\n</div>\n");
-  
-});
-
 this["Ember"]["TEMPLATES"]["_route_node"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
@@ -1207,14 +1236,22 @@ function program10(depth0,data) {
 
 function program12(depth0,data) {
   
-  var buffer = '', stack1, hashTypes, hashContexts, options;
+  var buffer = '', stack1, stack2, hashContexts, hashTypes, options;
   data.buffer.push("\n  ");
-  hashTypes = {};
-  hashContexts = {};
-  options = {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
-  data.buffer.push(escapeExpression(((stack1 = helpers.partial || depth0.partial),stack1 ? stack1.call(depth0, "not_detected", options) : helperMissing.call(depth0, "partial", "not_detected", options))));
+  hashContexts = {'description': depth0};
+  hashTypes = {'description': "STRING"};
+  options = {hash:{
+    'description': ("Ember application")
+  },inverse:self.noop,fn:self.program(13, program13, data),contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  stack2 = ((stack1 = helpers['not-detected'] || depth0['not-detected']),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "not-detected", options));
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
   data.buffer.push("\n");
   return buffer;
+  }
+function program13(depth0,data) {
+  
+  
+  data.buffer.push("\n  <li>This is not an Ember application.</li>\n  <li>Your application is inside an iframe.</li>\n  <li>You are using an old version of Ember (&lt; rc5).</li>\n  <li>You are using the file:// protocol (instead of http://), in which case:\n    <ul>\n      <li>Visit the URL: chrome://extensions.</li>\n      <li>Find the Ember Inspector.</li>\n      <li>Make sure \"Allow access to file URLs\" is checked.</li>\n    </ul>\n  </li>\n  ");
   }
 
   hashTypes = {};
@@ -1227,6 +1264,35 @@ function program12(depth0,data) {
 });
 
 this["Ember"]["TEMPLATES"]["components/drag-handle"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
+  var buffer = '';
+
+
+  return buffer;
+  
+});
+
+this["Ember"]["TEMPLATES"]["components/not-detected"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
+  var buffer = '', hashTypes, hashContexts, escapeExpression=this.escapeExpression;
+
+
+  data.buffer.push("<div class=\"error-page\">\n\n  <div class=\"error-page__content\">\n\n    <div class=\"error-page__header\">\n      <div class=\"error-page__title\">");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "description", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" not detected!</div>\n    </div>\n\n    <div class=\"error-page__reasons\">\n\n      <div class=\"error-page__reasons-title\">Here are some common reasons this happens:</div>\n\n      <ul class=\"error-page__list\">\n        ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n      </ul>\n\n      If you're still having trouble, please file an issue on the Ember Inspector's\n      <a href=\"https://github.com/tildeio/ember-extension\" target=\"_blank\">GitHub page.</a>\n    </div>\n\n  </div>\n\n</div>\n");
+  return buffer;
+  
+});
+
+this["Ember"]["TEMPLATES"]["components/property-field"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '';
@@ -1253,17 +1319,31 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
 this["Ember"]["TEMPLATES"]["data/index"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
+  var buffer = '', stack1, stack2, hashContexts, hashTypes, options, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
   
+  
+  data.buffer.push("\n  <li>You are using an old version of Ember (&lt; rc7).</li>\n  <li>You are using an old version of Ember Data (&lt; 0.14).</li>\n  <li>You are using another persistence library, in which case:\n    <ul>\n      <li>Make sure the library has a data adapter.</li>\n    </ul>\n  </li>\n  ");
+  }
 
-
-  data.buffer.push("No Data Adapter Detected.\n");
+  data.buffer.push("<div class=\"data-error-page-container\">\n  ");
+  hashContexts = {'description': depth0};
+  hashTypes = {'description': "STRING"};
+  options = {hash:{
+    'description': ("Data adapter")
+  },inverse:self.noop,fn:self.program(1, program1, data),contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  stack2 = ((stack1 = helpers['not-detected'] || depth0['not-detected']),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "not-detected", options));
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n</div>\n");
+  return buffer;
   
 });
 
 this["Ember"]["TEMPLATES"]["mixin_details"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
-  var buffer = '', stack1, hashContexts, hashTypes, escapeExpression=this.escapeExpression, self=this;
+  var buffer = '', stack1, hashContexts, hashTypes, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
 
 function program1(depth0,data) {
   
@@ -1410,15 +1490,16 @@ function program12(depth0,data) {
 
 function program14(depth0,data) {
   
-  var buffer = '', hashContexts, hashTypes;
+  var buffer = '', stack1, hashContexts, hashTypes, options;
   data.buffer.push("\n        ");
-  hashContexts = {'classNames': depth0,'valueBinding': depth0,'label': depth0};
-  hashTypes = {'classNames': "STRING",'valueBinding': "ID",'label': "STRING"};
-  data.buffer.push(escapeExpression(helpers.view.call(depth0, "EmberExtension.PropertyFieldView", {hash:{
-    'classNames': ("mixin__property-value-txt"),
-    'valueBinding': ("txtValue"),
+  hashContexts = {'class': depth0,'value': depth0,'label': depth0};
+  hashTypes = {'class': "STRING",'value': "ID",'label': "STRING"};
+  options = {hash:{
+    'class': ("mixin__property-value-txt"),
+    'value': ("txtValue"),
     'label': ("object-property-value-txt")
-  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers['property-field'] || depth0['property-field']),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "property-field", options))));
   data.buffer.push("\n      ");
   return buffer;
   }
@@ -1796,37 +1877,6 @@ define("views/model_types",
 
 
     return ModelTypesView;
-  });
-define("views/property_field",
-  [],
-  function() {
-    "use strict";
-    var PropertyFieldView = Ember.TextField.extend({
-      attributeBindings: ['label:data-label'],
-
-      didInsertElement: function() {
-        this._super();
-        this.$().select();
-      },
-
-
-      insertNewline: function() {
-        this.get('controller').send('saveProperty');
-        this.set('controller.isEdit', false);
-      },
-
-      cancel: function() {
-        this.set('controller.isEdit', false);
-      },
-
-      focusOut: function() {
-        this.set('controller.isEdit', false);
-      }
-
-    });
-
-
-    return PropertyFieldView;
   });
 define("views/tree_node_controller",
   [],
