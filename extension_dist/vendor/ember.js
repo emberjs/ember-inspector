@@ -2235,7 +2235,7 @@ function suspendListener(obj, eventName, target, method, callback) {
 
   Suspends multiple listeners during a callback.
 
-
+  
   @method suspendListeners
   @for Ember
   @param obj
@@ -2301,7 +2301,7 @@ function watchedEvents(obj) {
   is skipped, and once listeners are removed. A listener without
   a target is executed on the passed object. If an array of actions
   is not passed, the actions stored on the passed object are invoked.
-
+  
   @method sendEvent
   @for Ember
   @param obj
@@ -3074,14 +3074,14 @@ Map.create = function() {
 Map.prototype = {
   /**
     This property will change as the number of objects in the map changes.
-
+   
     @property length
     @type number
     @default 0
   */
   length: 0,
-
-
+    
+    
   /**
     Retrieve the value associated with a given key.
 
@@ -3372,7 +3372,7 @@ Ember.defineProperty = function(obj, keyName, desc, data, meta) {
         objectDefineProperty(obj, keyName, {
           configurable: true,
           enumerable: true,
-          set: function() { console.error(keyName); },
+          set: MANDATORY_SETTER_FUNCTION,
           get: DEFAULT_GETTER_FUNCTION(keyName)
         });
       } else {
@@ -3503,7 +3503,7 @@ Ember.watchKey = function(obj, keyName) {
       o_defineProperty(obj, keyName, {
         configurable: true,
         enumerable: true,
-        set: function() { console.error(keyName); },
+        set: Ember.MANDATORY_SETTER_FUNCTION,
         get: Ember.DEFAULT_GETTER_FUNCTION(keyName)
       });
     }
@@ -12436,7 +12436,7 @@ Ember.computed.sort = function (itemsKey, sortDefinition) {
 (function() {
 /**
   Expose RSVP implementation
-
+  
   Documentation can be found here: https://github.com/tildeio/rsvp.js/blob/master/README.md
 
   @class RSVP
@@ -14674,7 +14674,7 @@ function installPromise(proxy, promise) {
   controller.get('lastName')  //=> 'Penner'
   ```
 
-  If the controller is backing a template, the attributes are
+  If the controller is backing a template, the attributes are 
   bindable from within that template
   ```handlebars
   {{#if isPending}}
@@ -15679,10 +15679,10 @@ var ClassMixin = Mixin.create({
   },
 
   /**
-
+    
     Augments a constructor's prototype with additional
     properties and functions:
-
+    
     ```javascript
     MyObject = Ember.Object.extend({
       name: 'an object'
@@ -15702,7 +15702,7 @@ var ClassMixin = Mixin.create({
 
     o.say("goodbye"); // logs "goodbye"
     ```
-
+    
     To add functions and properties to the constructor itself,
     see `reopenClass`
 
@@ -15716,7 +15716,7 @@ var ClassMixin = Mixin.create({
 
   /**
     Augments a constructor's own properties and functions:
-
+    
     ```javascript
     MyObject = Ember.Object.extend({
       name: 'an object'
@@ -15726,17 +15726,17 @@ var ClassMixin = Mixin.create({
     MyObject.reopenClass({
       canBuild: false
     });
-
+    
     MyObject.canBuild; // false
     o = MyObject.create();
     ```
-
+    
     To add functions and properties to instances of
     a constructor by extending the constructor's prototype
     see `reopen`
-
+    
     @method reopenClass
-  */
+  */  
   reopenClass: function() {
     reopen.apply(this.ClassMixin, arguments);
     applyMixin(this, arguments, false);
@@ -16016,7 +16016,7 @@ function classToString() {
   if (this[NAME_KEY]) {
     ret = this[NAME_KEY];
   } else if (this._toString) {
-    ret = this._toString;
+    ret = this._toString; 
   } else {
     var str = superClassString(this);
     if (str) {
@@ -17613,8 +17613,8 @@ var get = Ember.get, set = Ember.set, forEach = Ember.EnumerableUtils.forEach;
    ```javascript
   songsController.get('content').get('firstObject'); // Returns the unsorted original content
   songsController.get('firstObject'); // Returns the sorted content.
-  ```
-
+  ``` 
+  
   Although the sorted content can also be accessed through the arrangedContent property,
   it is preferable to use the proxied class and not the arrangedContent array directly.
 
@@ -17703,7 +17703,7 @@ Ember.SortableMixin = Ember.Mixin.create(Ember.MutableEnumerable, {
   /**
     Overrides the default arrangedContent from arrayProxy in order to sort by sortFunction.
     Also sets up observers for each sortProperty on each item in the content Array.
-
+    
     @property arrangedContent
   */
 
@@ -23858,7 +23858,7 @@ if (Handlebars.compile) {
 
     var template = Ember.Handlebars.template(templateSpec);
     template.isMethod = false; //Make sure we don't wrap templates with ._super
-
+      
     return template;
   };
 }
@@ -27559,7 +27559,7 @@ Ember.SelectOptgroup = Ember.CollectionView.extend({
   ```
 
   Interacting with the rendered element by selecting the first option
-  ('Yehuda') will update the `selectedPerson` to match the object of
+  ('Yehuda') will update the `selectedPerson` to match the object of 
   the newly selected `<option>`. In this case it is the first object
   in the `programmers`
 
@@ -27643,7 +27643,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this;
 
 function program1(depth0,data) {
-
+  
   var buffer = '', hashTypes, hashContexts;
   data.buffer.push("<option value=\"\">");
   hashTypes = {};
@@ -27654,7 +27654,7 @@ function program1(depth0,data) {
   }
 
 function program3(depth0,data) {
-
+  
   var stack1, hashTypes, hashContexts;
   hashTypes = {};
   hashContexts = {};
@@ -27663,7 +27663,7 @@ function program3(depth0,data) {
   else { data.buffer.push(''); }
   }
 function program4(depth0,data) {
-
+  
   var hashContexts, hashTypes;
   hashContexts = {'contentBinding': depth0,'labelBinding': depth0};
   hashTypes = {'contentBinding': "ID",'labelBinding': "ID"};
@@ -27674,7 +27674,7 @@ function program4(depth0,data) {
   }
 
 function program6(depth0,data) {
-
+  
   var stack1, hashTypes, hashContexts;
   hashTypes = {};
   hashContexts = {};
@@ -27683,7 +27683,7 @@ function program6(depth0,data) {
   else { data.buffer.push(''); }
   }
 function program7(depth0,data) {
-
+  
   var hashContexts, hashTypes;
   hashContexts = {'contentBinding': depth0};
   hashTypes = {'contentBinding': "STRING"};
@@ -27701,7 +27701,7 @@ function program7(depth0,data) {
   stack1 = helpers['if'].call(depth0, "view.optionGroupPath", {hash:{},inverse:self.program(6, program6, data),fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   return buffer;
-
+  
 }),
   attributeBindings: ['multiple', 'disabled', 'tabindex', 'name'],
 
@@ -30155,7 +30155,7 @@ var get = Ember.get;
 */
 
 /**
-
+  
   Finds a controller instance.
 
   @for Ember
@@ -30171,7 +30171,7 @@ Ember.controllerFor = function(container, controllerName, lookupOptions) {
   The type of generated controller depends on the context.
   You can customize your generated controllers by defining
   `App.ObjectController` and `App.ArrayController`
-
+  
   @for Ember
   @method generateController
   @private
@@ -32546,13 +32546,13 @@ var get = Ember.get, set = Ember.set;
 Ember.onLoad('Ember.Handlebars', function(Handlebars) {
 
   /**
-    Calling ``{{render}}`` from within a template will insert another
+    Calling ``{{render}}`` from within a template will insert another 
     template that matches the provided name. The inserted template will
     access its properties on its own controller (rather than the controller
     of the parent template).
 
     If a view class with the same name exists, the view class also will be used.
-
+    
     Note: A given controller may only be used *once* in your app in this manner.
     A singleton instance of the controller will be created for you.
 
@@ -32574,7 +32574,7 @@ Ember.onLoad('Ember.Handlebars', function(Handlebars) {
     <h1>My great app</h1>
     {{render navigaton}}
     ```
-
+    
     ```html
     <h1>My great app</h1>
     <div class='ember-view'>
@@ -33355,7 +33355,7 @@ Ember.View.reopen({
 
 // Add a new named queue after the 'actions' queue (where RSVP promises
 // resolve), which is used in router transitions to prevent unnecessary
-// loading state entry if all context promises resolve on the
+// loading state entry if all context promises resolve on the 
 // 'actions' queue first.
 
 var queues = Ember.run.queues,
@@ -34691,7 +34691,7 @@ var Application = Ember.Application = Ember.Namespace.extend(Ember.DeferredMixin
     Call `advanceReadiness` after any asynchronous setup logic has completed.
     Each call to `deferReadiness` must be matched by a call to `advanceReadiness`
     or the application will never become ready and routing will not begin.
-
+    
     @method advanceReadiness
     @see {Ember.Application#deferReadiness}
   */
@@ -35729,7 +35729,7 @@ var slice = [].slice,
   * Register/Unregister additional test helpers.
   * Setup callbacks to be fired when the test helpers are injected into
     your application.
-
+  
   @class Test
   @namespace Ember
 */

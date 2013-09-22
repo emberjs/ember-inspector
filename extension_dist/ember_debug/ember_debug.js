@@ -1361,11 +1361,12 @@ define("view_debug",
       },
 
       findNearestView: function(elem) {
-        var viewElem;
+        var viewElem, view;
         if (!elem || elem.length === 0) { return null; }
         if (elem.hasClass('ember-view')) {
           viewElem = elem.get(0);
-          if (this.get('objectInspector').sentObjects[viewElem.id]) {
+          view = this.get('objectInspector').sentObjects[viewElem.id];
+          if (view && this.shouldShowView(view)) {
             return viewElem;
           }
         }
@@ -1502,7 +1503,7 @@ define("view_debug",
         childViews.forEach(function(childView) {
           if (!(childView instanceof Ember.Object)) { return; }
 
-          if (shouldShow(childView)) {
+          if (self.shouldShowView(childView)) {
             var grandChildren = [];
             children.push({ value: self.inspectView(childView, retained), children: grandChildren });
             self.appendChildren(childView, grandChildren, retained);
@@ -1510,11 +1511,11 @@ define("view_debug",
             self.appendChildren(childView, children, retained);
           }
         });
+      },
 
-        function shouldShow(view) {
-          return (self.options.allViews || view.get('controller') !== controller) &&
-            (self.options.components || !(view instanceof Ember.Component));
-        }
+      shouldShowView: function(view) {
+        return (this.options.allViews || view.get('controller') !== view.get('_parentView.controller')) &&
+            (this.options.components || !(view instanceof Ember.Component));
       },
 
       highlightView: function(element, preview) {
@@ -1564,6 +1565,8 @@ define("view_debug",
           backgroundColor: "rgba(255, 255, 255, 0.7)",
           border: "2px solid rgb(102, 102, 102)",
           padding: "0",
+          right: "auto",
+          direction: "ltr",
           boxSizing: "border-box",
           color: "rgb(51, 51, 255)",
           fontFamily: "Menlo, sans-serif",
