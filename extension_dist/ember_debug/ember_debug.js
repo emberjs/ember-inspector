@@ -1542,7 +1542,9 @@ define("view_debug",
           }
         } else if (element instanceof Ember.View) {
           view = element;
-          rect = view.get('element').getBoundingClientRect();
+          element = view.get('element');
+          if (!element) { return; }
+          rect = element.getBoundingClientRect();
         } else {
           view = Ember.View.views[element.id];
           rect = element.getBoundingClientRect();

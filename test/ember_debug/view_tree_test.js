@@ -194,3 +194,24 @@ test("Highlighting Views on hover", function() {
     ok(!previewDiv.is(':visible'));
   });
 });
+
+test("Highlighting a view without an element should not throw an error", function() {
+  var name = null, message = null;
+  port.reopen({
+    send: function(n, m) {
+      name = n;
+      message = m;
+    }
+  });
+
+  visit('/posts')
+  .then(function() {
+    var tree = message.tree;
+    var postsView = tree.children[0];
+    port.trigger('view:previewLayer', { objectId: postsView.value.objectId });
+    return wait();
+  })
+  .then(function() {
+    ok(true, "Does not throw an error.");
+  });
+});

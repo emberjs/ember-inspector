@@ -32,6 +32,10 @@ App.SimpleRoute = Em.Route.extend({
   }
 });
 
+App.PostsView = Em.View.extend({
+  tagName: ''
+});
+
 App.SimpleController = Em.ObjectController.extend();
 
 Ember.TEMPLATES.application = compile('{{outlet}}');
