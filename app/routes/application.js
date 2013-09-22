@@ -5,6 +5,7 @@ var ApplicationRoute = Ember.Route.extend({
 
     this.get('port').on('objectInspector:updateObject', this, this.updateObject);
     this.get('port').on('objectInspector:updateProperty', this, this.updateProperty);
+    this.get('port').on('objectInspector:droppedObject', this, this.droppedObject);
 
     this.get('port').one('general:applicationBooted', this, function(message) {
       controller.set('emberApplication', message.booted);
@@ -16,6 +17,8 @@ var ApplicationRoute = Ember.Route.extend({
   deactivate: function() {
     this.get('port').off('objectInspector:updateObject', this, this.updateObject);
     this.get('port').off('objectInspector:updateProperty', this, this.updateProperty);
+    this.get('port').off('objectInspector:droppedObject', this, this.droppedObject);
+
   },
 
   updateObject: function(options) {
@@ -42,6 +45,11 @@ var ApplicationRoute = Ember.Route.extend({
     var detail = this.controllerFor('mixinDetails').get('mixins').objectAt(options.mixinIndex);
     var property = Ember.get(detail, 'properties').findProperty('name', options.property);
     Ember.set(property, 'value', options.value);
+  },
+
+  droppedObject: function(message) {
+    var controller = this.get('controller');
+    controller.droppedObject(message.objectId);
   },
 
   actions: {

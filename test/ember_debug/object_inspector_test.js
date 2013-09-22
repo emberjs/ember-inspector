@@ -74,7 +74,6 @@ test("An Ember Object is correctly transformed into an inspection hash", functio
   equal(nameProperty.name, 'name');
   equal(nameProperty.value.inspect, 'My Object');
 
-
 });
 
 test("Computed properties are correctly calculated", function() {
@@ -300,4 +299,51 @@ test("Read Only Computed properties mush have a readOnly property", function() {
 
   ok(properties[0].readOnly);
   ok(!properties[1].readOnly);
+});
+
+test("Views are correctly handled when destroyed during transitions", function() {
+  var objectId = null;
+
+  visit('/simple')
+  .then(function() {
+    objectId = find('.simple-view').get(0).id;
+    var view = Ember.View.views[objectId];
+    objectInspector.sendObject(view);
+    return wait();
+  })
+  .then(function() {
+    ok(objectInspector.sentObjects[objectId], "Object successfully retained.");
+  })
+  .visit('/')
+  .then (function() {
+    ok(true, "No exceptions thrown");
+  });
+});
+
+test("Objects are dropped on destruction", function() {
+  var didDestroy = false;
+  var object = Ember.Object.create({
+    willDestroy: function() {
+      didDestroy = true;
+    }
+  });
+  var objectId = Ember.guidFor(object);
+
+  wait()
+  .then(function() {
+    objectInspector.sendObject(object);
+    return wait();
+  })
+  .then(function() {
+    ok(!!objectInspector.sentObjects[objectId]);
+    object.destroy();
+    return wait();
+  })
+  .then(function() {
+    ok(didDestroy, 'Original willDestroy is preserved.');
+    ok(!objectInspector.sentObjects[objectId], 'Object is dropped');
+    equal(name, 'objectInspector:droppedObject');
+    deepEqual(message, { objectId: objectId });
+  });
+
 });
