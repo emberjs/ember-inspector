@@ -4,16 +4,24 @@
       <thead>
         <tr>
           <th>
-            <div class="table-tree__th-inner">Template</div>
+            <div class="table-tree__th-inner">Name</div>
           </th>
           <th>
-            <div class="table-tree__th-inner">View</div>
+            <div class="table-tree__th-inner">Template</div>
           </th>
           <th>
             <div class="table-tree__th-inner">Model</div>
           </th>
           <th>
             <div class="table-tree__th-inner">Controller</div>
+          </th>
+          <th>
+            <div class="table-tree__th-inner">
+              View
+              {{#if options.components}}
+              / Component
+              {{/if}}
+            </div>
           </th>
         </tr>
       </thead>

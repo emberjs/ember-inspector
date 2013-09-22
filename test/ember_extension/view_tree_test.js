@@ -109,7 +109,7 @@ test("It should correctly diplay the view tree", function() {
     });
     deepEqual(controllerNames, ['App.ApplicationController', 'App.PostsController', 'App.CommentsController']);
     deepEqual(templateNames, ['application', 'posts', 'comments']);
-    deepEqual(modelNames, ['', 'PostsArray', 'CommentsArray']);
+    deepEqual(modelNames, ['--', 'PostsArray', 'CommentsArray']);
     deepEqual(viewClassNames, ['App.ApplicationView', 'App.PostsView', 'App.CommentsView']);
   });
 

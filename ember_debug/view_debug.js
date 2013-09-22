@@ -225,29 +225,15 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
     var tagName = view.get('tagName');
     if (tagName === '') {
-      tagName = '(inline)';
+      tagName = '(virtual)';
     }
 
     tagName = tagName || 'div';
 
     var controller = view.get('controller');
 
-    if (templateName) {
-      name = templateName;
-    } else {
-          var key = controller.get('_debugContainerKey'),
-          className = controller.constructor.toString();
+    name = viewDescription(view);
 
-      if (key) {
-        name = key.split(':')[1];
-      } else {
-        if (className.charAt(0) === '(') {
-          className = className.match(/^\(subclass of (.*)\)/)[1];
-        }
-        name = className.split('.')[1];
-        name = name.charAt(0).toLowerCase() + name.substr(1);
-      }
-    }
 
     var viewId = this.retainObject(view);
     retained.push(viewId);
@@ -300,7 +286,8 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
   shouldShowView: function(view) {
     return (this.options.allViews || view.get('controller') !== view.get('_parentView.controller')) &&
-        (this.options.components || !(view instanceof Ember.Component));
+        (this.options.components || !(view instanceof Ember.Component)) &&
+        (!view.get('isVirtual') || view.get('controller') !== view.get('_parentView.controller'));
   },
 
   highlightView: function(element, preview) {
@@ -456,7 +443,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 function viewName(view) {
   var name = view.constructor.toString(), match;
   if (name.match(/\._/)) {
-    name = "inline";
+    name = "virtual";
   } else if (match = name.match(/\(subclass of (.*)\)/)) {
     name = match[1];
   }
@@ -501,6 +488,59 @@ function virtualRange(view) {
   range.setEndBefore($('#' + endId)[0]);
 
   return range;
+}
+
+function viewDescription(view) {
+  var templateName = view.get('templateName') || view.get('_debugTemplateName'),
+      name, viewClass = viewName(view), controller = view.get('controller');
+
+  if (templateName) {
+      name = templateName;
+    } else if (view instanceof Ember.LinkView) {
+      name = 'link';
+    } else if (view.get('_parentView.controller') === controller || view instanceof Ember.Component) {
+        var viewClassName = view.get('_debugContainerKey');
+        if (viewClassName) {
+          viewClassName = viewClassName.match(/\:(.*)/);
+          if (viewClassName) {
+            viewClassName = viewClassName[1];
+          }
+        }
+        if (!viewClassName && viewClass) {
+          viewClassName = viewClass.match(/\.(.*)/);
+          if (viewClassName) {
+            viewClassName = viewClassName[1];
+          } else {
+            viewClassName = viewClass;
+          }
+
+          var shortName = viewClassName.match(/(.*)(View|Component)$/);
+          if (shortName) {
+            viewClassName = shortName[1];
+          }
+        }
+        if (viewClassName) {
+          name = Ember.String.camelize(viewClassName);
+        }
+    } else if (view.get('_parentView.controller') !== controller) {
+      var key = controller.get('_debugContainerKey'),
+      className = controller.constructor.toString();
+
+      if (key) {
+        name = key.split(':')[1];
+      }  else {
+        if (className.charAt(0) === '(') {
+          className = className.match(/^\(subclass of (.*)\)/)[1];
+        }
+        name = className.split('.')[1];
+        name = name.charAt(0).toLowerCase() + name.substr(1);
+      }
+    }
+
+    if (!name) {
+      name = '(inline view)';
+    }
+    return name;
 }
 
 export default ViewDebug;
