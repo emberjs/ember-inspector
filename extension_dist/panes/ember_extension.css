@@ -68,7 +68,7 @@
 }
 
 
-@media only all and (max-width: 1500px) {
+@media only all and (max-width: 1200px) {
   .app__right-col {
     position: absolute;
     right: 0;
