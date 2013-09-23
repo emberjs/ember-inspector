@@ -1,3 +1,49 @@
-<div class="tree">
-  {{partial "view_node"}}
+<div class="table-tree table-tree_color_faded table-tree_type_advanced">
+  <div class="table-tree__table-container">
+    <table cellspacing="0" border-collapse="collapse">
+      <thead>
+        <tr>
+          <th>
+            <div class="table-tree__th-inner">Name</div>
+          </th>
+          <th>
+            <div class="table-tree__th-inner">Template</div>
+          </th>
+          <th>
+            <div class="table-tree__th-inner">Model</div>
+          </th>
+          <th>
+            <div class="table-tree__th-inner">Controller</div>
+          </th>
+          <th>
+            <div class="table-tree__th-inner">
+              View
+              {{#if options.components}}
+              / Component
+              {{/if}}
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {{partial "view_node"}}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-tree__filter">
+    <div class="filter-bar">
+      <div class="filter-bar__button filter-bar__button_type_inspect" data-label="inspect-views" {{bindAttr class="inspectingViews:filter-bar__button_state_active"}} {{action "toggleViewInspection"}}></div>
+
+      <div class="filter-bar__checkbox" data-label="filter-components">
+      {{input type="checkbox" checked=options.components id="options-components"}} <label for="options-components">Components</label>
+      </div>
+
+      <div class="filter-bar__checkbox" data-label="filter-all-views">
+        {{input type="checkbox" checked=options.allViews id="options-allViews"}} <label for="options-allViews">All Views</label>
+      </div>
+    </div>
+  </div>
+
 </div>
+

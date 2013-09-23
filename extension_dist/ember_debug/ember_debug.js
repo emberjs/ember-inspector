@@ -311,25 +311,37 @@ define("ember_debug",
 
       },
 
-      destroyAndCreate: function(prop, Handler) {
-        var handler = this.get(prop);
-        if (handler) {
-          Ember.run(handler, 'destroy');
-        }
-        this.set(prop, Handler.create({ namespace: this }));
+      destroyContainer: function() {
+        var self = this;
+        ['dataDebug', 'viewDebug', 'routeDebug', 'objectInspector', 'generalDebug'].forEach(function(prop) {
+          var handler = self.get(prop);
+          if (handler) {
+            Ember.run(handler, 'destroy');
+            self.set(prop, null);
+          }
+        });
+      },
+
+      startModule: function(prop, Module) {
+        this.set(prop, Module.create({ namespace: this }));
       },
 
       reset: function() {
-        this.destroyAndCreate('port', this.Port);
+        this.destroyContainer();
+        Ember.run(this, function() {
 
-        this.destroyAndCreate('generalDebug', GeneralDebug);
-        this.destroyAndCreate('objectInspector', ObjectInspector);
-        this.destroyAndCreate('routeDebug', RouteDebug);
-        this.destroyAndCreate('viewDebug', ViewDebug);
-        this.destroyAndCreate('dataDebug', DataDebug);
+          this.startModule('port', this.Port);
 
-        this.generalDebug.sendBooted();
-        this.viewDebug.sendTree();
+          this.startModule('generalDebug', GeneralDebug);
+          this.startModule('objectInspector', ObjectInspector);
+          this.startModule('routeDebug', RouteDebug);
+          this.startModule('viewDebug', ViewDebug);
+          this.startModule('dataDebug', DataDebug);
+
+          this.generalDebug.sendBooted();
+          this.viewDebug.sendTree();
+
+        });
       }
 
     });
@@ -459,6 +471,13 @@ define("object_inspector",
         this.set('boundObservers', {});
       },
 
+      willDestroy: function() {
+        this._super();
+        for (var objectId in this.sentObjects) {
+          this.releaseObject(objectId);
+        }
+      },
+
       sentObjects: {},
 
       boundObservers: {},
@@ -492,6 +511,10 @@ define("object_inspector",
         inspectController: function(message) {
           var container = this.get('application.__container__');
           this.sendObject(container.lookup('controller:' + message.name));
+        },
+        inspectById: function(message) {
+          var obj = this.sentObjects[message.objectId];
+          this.sendObject(obj);
         }
       },
 
@@ -509,7 +532,7 @@ define("object_inspector",
         } else {
           value =  Ember.get(object, prop);
         }
-    
+
         window.$E = value;
         console.log('Ember Inspector ($E): ', value);
       },
@@ -538,24 +561,39 @@ define("object_inspector",
           name: object.toString(),
           details: details.mixins
         });
+
       },
 
 
       retainObject: function(object) {
         var meta = Ember.meta(object),
-            guid = Ember.guidFor(object);
+            guid = Ember.guidFor(object),
+            self = this;
 
         meta._debugReferences = meta._debugReferences || 0;
         meta._debugReferences++;
 
         this.sentObjects[guid] = object;
 
+        if (meta._debugReferences === 1 && object.reopen) {
+          // drop object on destruction
+          var _oldWillDestroy = object._oldWillDestroy = object.willDestroy;
+          object.reopen({
+            willDestroy: function() {
+              self.dropObject(guid);
+              return _oldWillDestroy.apply(this, arguments);
+            }
+          });
+        }
+
         return guid;
       },
 
       releaseObject: function(objectId) {
         var object = this.sentObjects[objectId];
-
+        if(!object) {
+          return;
+        }
         var meta = Ember.meta(object),
             guid = Ember.guidFor(object);
 
@@ -564,9 +602,24 @@ define("object_inspector",
         if (meta._debugReferences === 0) {
           this.dropObject(guid);
         }
+
       },
 
       dropObject: function(objectId) {
+        var object = this.sentObjects[objectId];
+
+        if (object.reopen) {
+          object.reopen({ willDestroy: object._oldWillDestroy });
+          delete object._oldWillDestroy;
+        }
+
+        this.removeObservers(objectId);
+        delete this.sentObjects[objectId];
+
+        this.sendMessage('droppedObject', { objectId: objectId });
+      },
+
+      removeObservers: function(objectId) {
         var observers = this.boundObservers[objectId],
             object = this.sentObjects[objectId];
 
@@ -577,7 +630,6 @@ define("object_inspector",
         }
 
         delete this.boundObservers[objectId];
-        delete this.sentObjects[objectId];
       },
 
       mixinsForObject: function(object) {
@@ -597,8 +649,9 @@ define("object_inspector",
         applyMixinOverrides(mixinDetails);
 
         var propertyInfo = null;
-        if (object._debugInfo && typeof object._debugInfo === 'function') {
-          propertyInfo = object._debugInfo().propertyInfo;
+        var debugInfo = getDebugInfo(object);
+        if (debugInfo) {
+          propertyInfo = getDebugInfo(object).propertyInfo;
           mixinDetails = customizeProperties(mixinDetails, propertyInfo);
         }
 
@@ -660,6 +713,7 @@ define("object_inspector",
         Ember.addObserver(object, property, handler);
         this.boundObservers[objectId] = this.boundObservers[objectId] || [];
         this.boundObservers[objectId].push({ property: property, handler: handler });
+
       },
 
       bindProperties: function(objectId, mixinDetails) {
@@ -914,7 +968,7 @@ define("object_inspector",
           if (skipProperties.indexOf(item.name) !== -1) {
             return true;
           }
-          if (!item.overridden && neededProperties[item.name]) {
+          if (!item.overridden && neededProperties.hasOwnProperty(item.name) && neededProperties[item.name]) {
             neededProperties[item.name] = item;
           } else {
             newProperties.push(item);
@@ -935,6 +989,25 @@ define("object_inspector",
       });
 
       return newMixinDetails;
+    }
+
+
+    function getDebugInfo(object) {
+      var debugInfo = null;
+      if (object._debugInfo && typeof object._debugInfo === 'function') {
+        debugInfo = object._debugInfo();
+      }
+      debugInfo = debugInfo || {};
+      var propertyInfo = debugInfo.propertyInfo || (debugInfo.propertyInfo = {});
+      var skipProperties = propertyInfo.skipProperties = propertyInfo.skipProperties || (propertyInfo.skipProperties = []);
+      skipProperties.push('isDestroyed', 'isDestroying');
+      // Views have un-observable private properties.
+      // These should be excluded
+      if (object instanceof Ember.View) {
+        skipProperties.push('currentState', 'state');
+      }
+
+      return debugInfo;
     }
 
     function isComputed(value) {
@@ -1145,7 +1218,8 @@ define("view_debug",
     var layerDiv,
         previewDiv,
         highlightedElement,
-        previewedElement;
+        previewedElement,
+        $ = Ember.$;
 
     var ViewDebug = Ember.Object.extend(PortMixin, {
 
@@ -1155,39 +1229,9 @@ define("view_debug",
 
       objectInspector: Ember.computed.alias('namespace.objectInspector'),
 
-      init: function() {
-        this._super();
-        var self = this;
+      retainedObjects: [],
 
-        this.viewListener();
-
-        layerDiv = Ember.$('<div>').appendTo('body').get(0);
-        layerDiv.style.display = 'none';
-        layerDiv.setAttribute('data-label', 'layer-div');
-
-        previewDiv = Ember.$('<div>').appendTo('body').get(0);
-        previewDiv.style.display = 'none';
-        previewDiv.setAttribute('data-label', 'preview-div');
-
-        Ember.$(window).on('resize.' + this.get('eventNamespace'), function() {
-          if (highlightedElement) {
-            self.highlightView(highlightedElement);
-          }
-        });
-
-      },
-
-      eventNamespace: Ember.computed(function() {
-        return 'view_debug_' + Ember.guidFor(this);
-      }),
-
-      willDestroy: function() {
-        this._super();
-        Ember.$(window).off(this.get('eventNamespace'));
-        Ember.$(layerDiv).remove();
-        Ember.$(previewDiv).remove();
-        Ember.View.removeMutationListener(this.viewTreeChanged);
-      },
+      options: {},
 
       portNamespace: 'view',
 
@@ -1206,35 +1250,173 @@ define("view_debug",
         },
         hidePreview: function(message) {
           this.hidePreview(message.objectId);
+        },
+        inspectViews: function(message) {
+          if (message.inspect) {
+            this.startInspecting();
+          } else {
+            this.stopInspecting();
+          }
+        },
+        inspectElement: function(message) {
+          this.inspectElement(message.objectId);
+        },
+        setOptions: function(message) {
+          this.set('options', message.options);
+          this.sendTree();
+        }
+      },
+
+      init: function() {
+        this._super();
+        var self = this;
+
+        this.viewListener();
+        this.retainedObjects = [];
+        this.options = {};
+
+        layerDiv = $('<div>').appendTo('body').get(0);
+        layerDiv.style.display = 'none';
+        layerDiv.setAttribute('data-label', 'layer-div');
+
+        previewDiv = $('<div>').appendTo('body').css('pointer-events', 'none').get(0);
+        previewDiv.style.display = 'none';
+        previewDiv.setAttribute('data-label', 'preview-div');
+
+        $(window).on('resize.' + this.get('eventNamespace'), function() {
+          if (highlightedElement) {
+            self.highlightView(highlightedElement);
+          }
+        });
+      },
+
+      retainObject: function(object) {
+        this.retainedObjects.push(object);
+        return this.get('objectInspector').retainObject(object);
+      },
+
+      releaseCurrentObjects: function() {
+        var self = this;
+        this.retainedObjects.forEach(function(item) {
+          self.get('objectInspector').releaseObject(Ember.guidFor(item));
+        });
+        this.retainedObjects = [];
+      },
+
+      eventNamespace: Ember.computed(function() {
+        return 'view_debug_' + Ember.guidFor(this);
+      }),
+
+      willDestroy: function() {
+        this._super();
+        $(window).off(this.get('eventNamespace'));
+        $(layerDiv).remove();
+        $(previewDiv).remove();
+        Ember.View.removeMutationListener(this.viewTreeChanged);
+        this.releaseCurrentObjects();
+        this.stopInspecting();
+      },
+
+      inspectElement: function(objectId) {
+        var view = this.get('objectInspector').sentObjects[objectId];
+        if (view && view.get('element')) {
+          inspect(view.get('element'));
         }
       },
 
       sendTree: function() {
-        var tree = this.viewTree();
-        if (tree) {
-          this.sendMessage('viewTree', {
-            tree: tree
+        Ember.run.scheduleOnce('afterRender', this, this.scheduledSendTree);
+      },
+
+      startInspecting: function() {
+        var self = this, viewElem = null;
+        this.sendMessage('startInspecting', {});
+
+        // we don't want the preview div to intercept the mousemove event
+        $(previewDiv).css('pointer-events', 'none');
+
+        $('body').on('mousemove.inspect-' + this.get('eventNamespace'), function(e) {
+          var originalTarget = $(e.target), oldViewElem = viewElem;
+          viewElem = self.findNearestView(originalTarget);
+          if (viewElem) {
+            self.highlightView(viewElem, true);
+          }
+        })
+        .on('mousedown.inspect-' + this.get('eventNamespace'), function() {
+          // prevent app-defined clicks from being fired
+          $(previewDiv).css('pointer-events', '')
+          .one('mouseup', function() {
+            if (viewElem) {
+              self.highlightView(viewElem);
+              var view = self.get('objectInspector').sentObjects[viewElem.id];
+              if (view instanceof Ember.Component) {
+                self.get('objectInspector').sendObject(view);
+              }
+            }
+            self.stopInspecting();
+            return false;
           });
+        })
+        .css('cursor', '-webkit-zoom-in');
+      },
+
+      findNearestView: function(elem) {
+        var viewElem, view;
+        if (!elem || elem.length === 0) { return null; }
+        if (elem.hasClass('ember-view')) {
+          viewElem = elem.get(0);
+          view = this.get('objectInspector').sentObjects[viewElem.id];
+          if (view && this.shouldShowView(view)) {
+            return viewElem;
+          }
         }
+        return this.findNearestView($(elem).parents('.ember-view:first'));
+      },
+
+      stopInspecting: function() {
+        $('body')
+        .off('mousemove.inspect-' + this.get('eventNamespace'))
+        .off('mousedown.inspect-' + this.get('eventNamespace'))
+        .off('click.inspect-' + this.get('eventNamespace'))
+        .css('cursor', '');
+
+        this.hidePreview();
+        this.sendMessage('stopInspecting', {});
+      },
+
+      scheduledSendTree: function() {
+        var self = this;
+        // Use next run loop because
+        // some initial page loads
+        // don't trigger mutation listeners
+        // TODO: Look into that in Ember core
+        Ember.run.next(function() {
+          if (self.isDestroying) {
+            return;
+          }
+          self.releaseCurrentObjects();
+          var tree = self.viewTree();
+          if (tree) {
+            self.sendMessage('viewTree', {
+              tree: tree
+            });
+          }
+        });
       },
 
       viewListener: function() {
         var self = this;
 
         this.viewTreeChanged = function() {
-          Em.run.scheduleOnce('afterRender', sendTree);
-        };
-
-        function sendTree() {
           self.sendTree();
           self.hideLayer();
-        }
+        };
 
         Ember.View.addMutationListener(this.viewTreeChanged);
       },
 
       viewTree: function() {
-         var rootView = Ember.View.views[Ember.$('.ember-application > .ember-view').attr('id')];
+         var rootView = Ember.View.views[$('.ember-application > .ember-view').attr('id')];
           // In case of App.reset view is destroyed
           if (!rootView) {
             return false;
@@ -1242,7 +1424,7 @@ define("view_debug",
           var retained = [];
 
           var children = [];
-          var treeId = this.get('objectInspector').retainObject(retained);
+          var treeId = this.retainObject(retained);
 
           var tree = { value: this.inspectView(rootView, retained), children: children, treeId: treeId };
 
@@ -1254,13 +1436,7 @@ define("view_debug",
 
       inspectView: function(view, retained) {
         var templateName = view.get('templateName') || view.get('_debugTemplateName'),
-            viewClass = view.constructor.toString(), match, name;
-
-        if (viewClass.match(/\._/)) {
-          viewClass = "virtual";
-        } else if (match = viewClass.match(/\(subclass of (.*)\)/)) {
-          viewClass = match[1];
-        }
+            viewClass = viewName(view), name;
 
         var tagName = view.get('tagName');
         if (tagName === '') {
@@ -1269,28 +1445,40 @@ define("view_debug",
 
         tagName = tagName || 'div';
 
-        if (templateName) {
-          name = templateName;
-        } else {
-          var controller = view.get('controller'),
-              key = controller.get('_debugContainerKey'),
-              className = controller.constructor.toString();
+        var controller = view.get('controller');
 
-          if (key) {
-            name = key.split(':')[1];
-          } else {
-            if (className.charAt(0) === '(') {
-              className = className.match(/^\(subclass of (.*)\)/)[1];
-            }
-            name = className.split('.')[1];
-            name = name.charAt(0).toLowerCase() + name.substr(1);
+        name = viewDescription(view);
+
+
+        var viewId = this.retainObject(view);
+        retained.push(viewId);
+
+        var value = {
+          viewClass: viewClass,
+          objectId: viewId,
+          name: name,
+          template: templateName || '(inline)',
+          tagName: tagName,
+          isVirtual: view.get('isVirtual'),
+          isComponent: (view instanceof Ember.Component)
+        };
+
+        if (!(view instanceof Ember.Component)) {
+          value.controller = {
+            name: controllerName(controller),
+            objectId: this.retainObject(controller)
+          };
+
+          var model = controller.get('model');
+          if (model) {
+            value.model = {
+              name: modelName(model),
+              objectId: this.retainObject(model)
+            };
           }
         }
 
-        var viewId = this.get('objectInspector').retainObject(view);
-        retained.push(viewId);
-
-        return { viewClass: viewClass, objectId: viewId, name: name, template: templateName || '(inline)', tagName: tagName, controller: controllerName(view.get('controller')) };
+        return value;
       },
 
       appendChildren: function(view, children, retained) {
@@ -1301,7 +1489,7 @@ define("view_debug",
         childViews.forEach(function(childView) {
           if (!(childView instanceof Ember.Object)) { return; }
 
-          if (childView.get('controller') !== controller) {
+          if (self.shouldShowView(childView)) {
             var grandChildren = [];
             children.push({ value: self.inspectView(childView, retained), children: grandChildren });
             self.appendChildren(childView, grandChildren, retained);
@@ -1311,14 +1499,23 @@ define("view_debug",
         });
       },
 
+      shouldShowView: function(view) {
+        return (this.options.allViews || view.get('controller') !== view.get('_parentView.controller')) &&
+            (this.options.components || !(view instanceof Ember.Component)) &&
+            (!view.get('isVirtual') || view.get('controller') !== view.get('_parentView.controller'));
+      },
+
       highlightView: function(element, preview) {
         var self = this;
         var range, view, rect, div;
+
+        if (!element) { return; }
 
         if (preview) {
           previewedElement = element;
           div = previewDiv;
         } else {
+          this.hideLayer();
           highlightedElement = element;
           div = layerDiv;
           this.hidePreview();
@@ -1332,7 +1529,9 @@ define("view_debug",
           }
         } else if (element instanceof Ember.View) {
           view = element;
-          rect = view.get('element').getBoundingClientRect();
+          element = view.get('element');
+          if (!element) { return; }
+          rect = element.getBoundingClientRect();
         } else {
           view = Ember.View.views[element.id];
           rect = element.getBoundingClientRect();
@@ -1340,7 +1539,7 @@ define("view_debug",
 
         // take into account the scrolling position as mentioned in docs
         // https://developer.mozilla.org/en-US/docs/Web/API/element.getBoundingClientRect
-        rect = Ember.$().extend({}, rect);
+        rect = $().extend({}, rect);
         rect.top = rect.top + window.scrollY;
         rect.left = rect.left + window.scrollX;
 
@@ -1348,13 +1547,15 @@ define("view_debug",
             controller = view.get('controller'),
             model = controller && controller.get('model');
 
-        Ember.$(div).css(rect);
-        Ember.$(div).css({
+        $(div).css(rect);
+        $(div).css({
           display: "block",
           position: "absolute",
           backgroundColor: "rgba(255, 255, 255, 0.7)",
           border: "2px solid rgb(102, 102, 102)",
           padding: "0",
+          right: "auto",
+          direction: "ltr",
           boxSizing: "border-box",
           color: "rgb(51, 51, 255)",
           fontFamily: "Menlo, sans-serif",
@@ -1372,21 +1573,26 @@ define("view_debug",
           output += "<p class='template'><span>template</span>=<span data-label='layer-template'>" + escapeHTML(templateName) + "</span></p>";
         }
 
-        output += "<p class='controller'><span>controller</span>=<span data-label='layer-controller'>" + escapeHTML(controllerName(controller)) + "</span></p>";
+        if (!(view instanceof Ember.Component)) {
+          output += "<p class='controller'><span>controller</span>=<span data-label='layer-controller'>" + escapeHTML(controllerName(controller)) + "</span></p>";
+          output += "<p class='view'><span>view</span>=<span data-label='layer-view'>" + escapeHTML(viewName(view)) + "</span></p>";
+        } else {
+          output += "<p class='component'><span>component</span>=<span data-label='layer-component'>" + escapeHTML(viewName(view)) + "</span></p>";
+        }
 
         if (model) {
           output += "<p class='model'><span>model</span>=<span data-label='layer-model'>" + escapeHTML(model.toString()) + "</span></p>";
         }
 
-        Ember.$(div).html(output);
+        $(div).html(output);
 
-        Ember.$('p', div).css({ float: 'left', margin: 0, backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: '5px', color: 'rgb(0, 0, 153)' });
-        Ember.$('p.model', div).css({ clear: 'left' });
-        Ember.$('p span:first-child', div).css({ color: 'rgb(153, 153, 0)' });
-        Ember.$('p span:last-child', div).css({ color: 'rgb(153, 0, 153)' });
+        $('p', div).css({ float: 'left', margin: 0, backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: '5px', color: 'rgb(0, 0, 153)' });
+        $('p.model', div).css({ clear: 'left' });
+        $('p span:first-child', div).css({ color: 'rgb(153, 153, 0)' });
+        $('p span:last-child', div).css({ color: 'rgb(153, 0, 153)' });
 
         if (!preview) {
-          Ember.$('span.close', div).css({
+          $('span.close', div).css({
             float: 'right',
             margin: '5px',
             background: '#666',
@@ -1404,13 +1610,29 @@ define("view_debug",
           });
         }
 
-        Ember.$('p.controller span:last-child', div).css({ cursor: 'pointer' }).click(function() {
+        $('p.view span:last-child', div).css({ cursor: 'pointer' }).click(function() {
+          self.get('objectInspector').sendObject(view);
+        });
+
+        $('p.controller span:last-child', div).css({ cursor: 'pointer' }).click(function() {
           self.get('objectInspector').sendObject(controller);
         });
 
-        Ember.$('p.model span:last-child', div).css({ cursor: 'pointer' }).click(function() {
+        $('p.component span:last-child', div).css({ cursor: 'pointer' }).click(function() {
+          self.get('objectInspector').sendObject(view);
+        });
+
+        $('p.template span:last-child', div).css({ cursor: 'pointer' }).click(function() {
+          self.inspectElement(Ember.guidFor(view));
+        });
+
+        $('p.model span:last-child', div).css({ cursor: 'pointer' }).click(function() {
           self.get('objectInspector').sendObject(controller.get('model'));
         });
+
+        if (!preview) {
+          this.sendMessage('pinView', { objectId: Ember.guidFor(view) });
+        }
       },
 
       showLayer: function(objectId) {
@@ -1422,6 +1644,7 @@ define("view_debug",
       },
 
       hideLayer: function() {
+        this.sendMessage('unpinView', {});
         layerDiv.style.display = 'none';
         highlightedElement = null;
       },
@@ -1432,23 +1655,36 @@ define("view_debug",
       }
     });
 
+    function viewName(view) {
+      var name = view.constructor.toString(), match;
+      if (name.match(/\._/)) {
+        name = "virtual";
+      } else if (match = name.match(/\(subclass of (.*)\)/)) {
+        name = match[1];
+      }
+      return name;
+    }
+
+    function modelName(model) {
+      var name = '<Unkown model>';
+      if (model.toString) {
+        name = model.toString();
+      }
+      if (name.length > 50) {
+        name = name.substr(0, 50) + '...';
+      }
+      return name;
+    }
 
     function controllerName(controller) {
       var key = controller.get('_debugContainerKey'),
           className = controller.constructor.toString(),
           name;
 
-      if (key) {
-        name = key.split(':')[1];
-      } else {
-        if (className.charAt(0) === '(') {
-          className = className.match(/^\(subclass of (.*)\)/)[1];
-        }
-        name = className.split('.')[1];
-        name = name.charAt(0).toLowerCase() + name.substr(1);
+      if (className.charAt(0) === '(') {
+        className = className.match(/^\(subclass of (.*)\)/)[1];
       }
-
-      return name;
+      return className;
     }
 
     function escapeHTML(string) {
@@ -1463,12 +1699,64 @@ define("view_debug",
           endId = morph.end;
 
       var range = document.createRange();
-      range.setStartAfter(Ember.$('#' + startId)[0]);
-      range.setEndBefore(Ember.$('#' + endId)[0]);
+      range.setStartAfter($('#' + startId)[0]);
+      range.setEndBefore($('#' + endId)[0]);
 
       return range;
     }
 
+    function viewDescription(view) {
+      var templateName = view.get('templateName') || view.get('_debugTemplateName'),
+          name, viewClass = viewName(view), controller = view.get('controller');
+
+      if (templateName) {
+          name = templateName;
+        } else if (view instanceof Ember.LinkView) {
+          name = 'link';
+        } else if (view.get('_parentView.controller') === controller || view instanceof Ember.Component) {
+            var viewClassName = view.get('_debugContainerKey');
+            if (viewClassName) {
+              viewClassName = viewClassName.match(/\:(.*)/);
+              if (viewClassName) {
+                viewClassName = viewClassName[1];
+              }
+            }
+            if (!viewClassName && viewClass) {
+              viewClassName = viewClass.match(/\.(.*)/);
+              if (viewClassName) {
+                viewClassName = viewClassName[1];
+              } else {
+                viewClassName = viewClass;
+              }
+
+              var shortName = viewClassName.match(/(.*)(View|Component)$/);
+              if (shortName) {
+                viewClassName = shortName[1];
+              }
+            }
+            if (viewClassName) {
+              name = Ember.String.camelize(viewClassName);
+            }
+        } else if (view.get('_parentView.controller') !== controller) {
+          var key = controller.get('_debugContainerKey'),
+          className = controller.constructor.toString();
+
+          if (key) {
+            name = key.split(':')[1];
+          }  else {
+            if (className.charAt(0) === '(') {
+              className = className.match(/^\(subclass of (.*)\)/)[1];
+            }
+            name = className.split('.')[1];
+            name = name.charAt(0).toLowerCase() + name.substr(1);
+          }
+        }
+
+        if (!name) {
+          name = '(inline view)';
+        }
+        return name;
+    }
 
 
     return ViewDebug;

@@ -13,6 +13,13 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     this.set('boundObservers', {});
   },
 
+  willDestroy: function() {
+    this._super();
+    for (var objectId in this.sentObjects) {
+      this.releaseObject(objectId);
+    }
+  },
+
   sentObjects: {},
 
   boundObservers: {},
@@ -46,6 +53,10 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     inspectController: function(message) {
       var container = this.get('application.__container__');
       this.sendObject(container.lookup('controller:' + message.name));
+    },
+    inspectById: function(message) {
+      var obj = this.sentObjects[message.objectId];
+      this.sendObject(obj);
     }
   },
 
@@ -63,7 +74,7 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     } else {
       value =  Ember.get(object, prop);
     }
-    
+
     window.$E = value;
     console.log('Ember Inspector ($E): ', value);
   },
@@ -92,24 +103,39 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
       name: object.toString(),
       details: details.mixins
     });
+
   },
 
 
   retainObject: function(object) {
     var meta = Ember.meta(object),
-        guid = Ember.guidFor(object);
+        guid = Ember.guidFor(object),
+        self = this;
 
     meta._debugReferences = meta._debugReferences || 0;
     meta._debugReferences++;
 
     this.sentObjects[guid] = object;
 
+    if (meta._debugReferences === 1 && object.reopen) {
+      // drop object on destruction
+      var _oldWillDestroy = object._oldWillDestroy = object.willDestroy;
+      object.reopen({
+        willDestroy: function() {
+          self.dropObject(guid);
+          return _oldWillDestroy.apply(this, arguments);
+        }
+      });
+    }
+
     return guid;
   },
 
   releaseObject: function(objectId) {
     var object = this.sentObjects[objectId];
-
+    if(!object) {
+      return;
+    }
     var meta = Ember.meta(object),
         guid = Ember.guidFor(object);
 
@@ -118,9 +144,24 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     if (meta._debugReferences === 0) {
       this.dropObject(guid);
     }
+
   },
 
   dropObject: function(objectId) {
+    var object = this.sentObjects[objectId];
+
+    if (object.reopen) {
+      object.reopen({ willDestroy: object._oldWillDestroy });
+      delete object._oldWillDestroy;
+    }
+
+    this.removeObservers(objectId);
+    delete this.sentObjects[objectId];
+
+    this.sendMessage('droppedObject', { objectId: objectId });
+  },
+
+  removeObservers: function(objectId) {
     var observers = this.boundObservers[objectId],
         object = this.sentObjects[objectId];
 
@@ -131,7 +172,6 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     }
 
     delete this.boundObservers[objectId];
-    delete this.sentObjects[objectId];
   },
 
   mixinsForObject: function(object) {
@@ -151,8 +191,9 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     applyMixinOverrides(mixinDetails);
 
     var propertyInfo = null;
-    if (object._debugInfo && typeof object._debugInfo === 'function') {
-      propertyInfo = object._debugInfo().propertyInfo;
+    var debugInfo = getDebugInfo(object);
+    if (debugInfo) {
+      propertyInfo = getDebugInfo(object).propertyInfo;
       mixinDetails = customizeProperties(mixinDetails, propertyInfo);
     }
 
@@ -214,6 +255,7 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     Ember.addObserver(object, property, handler);
     this.boundObservers[objectId] = this.boundObservers[objectId] || [];
     this.boundObservers[objectId].push({ property: property, handler: handler });
+
   },
 
   bindProperties: function(objectId, mixinDetails) {
@@ -468,7 +510,7 @@ function customizeProperties(mixinDetails, propertyInfo) {
       if (skipProperties.indexOf(item.name) !== -1) {
         return true;
       }
-      if (!item.overridden && neededProperties[item.name]) {
+      if (!item.overridden && neededProperties.hasOwnProperty(item.name) && neededProperties[item.name]) {
         neededProperties[item.name] = item;
       } else {
         newProperties.push(item);
@@ -489,6 +531,25 @@ function customizeProperties(mixinDetails, propertyInfo) {
   });
 
   return newMixinDetails;
+}
+
+
+function getDebugInfo(object) {
+  var debugInfo = null;
+  if (object._debugInfo && typeof object._debugInfo === 'function') {
+    debugInfo = object._debugInfo();
+  }
+  debugInfo = debugInfo || {};
+  var propertyInfo = debugInfo.propertyInfo || (debugInfo.propertyInfo = {});
+  var skipProperties = propertyInfo.skipProperties = propertyInfo.skipProperties || (propertyInfo.skipProperties = []);
+  skipProperties.push('isDestroyed', 'isDestroying');
+  // Views have un-observable private properties.
+  // These should be excluded
+  if (object instanceof Ember.View) {
+    skipProperties.push('currentState', 'state');
+  }
+
+  return debugInfo;
 }
 
 function isComputed(value) {

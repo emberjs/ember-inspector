@@ -376,3 +376,28 @@ test("Read only CPs cannot be edited", function() {
     equal(findByLabel('object-property-value-txt').length, 1);
   });
 });
+
+test("Dropping an object due to destruction", function() {
+  visit('/')
+  .then(function() {
+    var obj = {
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [{
+        name: 'Detail',
+        properties: []
+      }]
+    };
+
+    port.trigger('objectInspector:updateObject', obj);
+    return wait();
+  })
+  .then(function() {
+    equal(findByLabel('object-name').text().trim(), 'My Object');
+    port.trigger('objectInspector:droppedObject', { objectId: 'myObject'} );
+    return wait();
+  })
+  .then(function() {
+    equal(findByLabel('object-name').text().trim(), '');
+  });
+});

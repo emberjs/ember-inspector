@@ -18,7 +18,8 @@ Em.run(function() {
 });
 
 App.SimpleView = Em.View.extend({
-  tagName: 'div'
+  tagName: 'div',
+  classNames: ['my-simple-view']
 });
 
 App.SimpleRoute = Em.Route.extend({
@@ -31,11 +32,15 @@ App.SimpleRoute = Em.Route.extend({
   }
 });
 
+App.PostsView = Em.View.extend({
+  tagName: ''
+});
+
 App.SimpleController = Em.ObjectController.extend();
 
 Ember.TEMPLATES.application = compile('{{outlet}}');
 Ember.TEMPLATES.index = compile('Index');
-Ember.TEMPLATES.simple = compile('Simple');
+Ember.TEMPLATES.simple = compile('Simple {{input class="simple-input"}} {{view Ember.View classNames="simple-view"}}');
 Ember.TEMPLATES.posts = compile('Posts');
 
 
