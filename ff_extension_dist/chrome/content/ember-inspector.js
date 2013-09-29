@@ -18,16 +18,14 @@ let EmberInspector = {
 
       this._iframe = document.getElementById("ember-inspector-iframe");
 
-      this._iframe.addEventListener("load",
-                                    this._onEmberIspectorIframeLoaded.bind(this),
-                                    true);
       document.addEventListener("ember-inspector-message",
                                 this._onEmberInspectorMessageEvent.bind(this),
                                 false, true);
 
       this._iframe.setAttribute("src", embedIframeSrc);
       console.debug("INIT EMBER INSPECTOR DONE\n");
-      this._doInjectEmberDebug();
+
+      this._tabs.activeTab.on("load", this._emberDebugTabAttach.bind(this));
       this._tabs.activeTab.reload();
     } catch(e) {
       console.error("EXCEPTION initializing EmberInspector", e);
@@ -50,20 +48,9 @@ let EmberInspector = {
     }
   },
 
-  _onEmberIspectorIframeLoaded: function () {
-    console.debug("ember inspector iframe loaded");
-    //this._sendToEmberInspector({ emberInspectorPanel: true });
-  },
-
   _onEmberInspectorMessageEvent: function(evt) {
     console.debug("devtool iframe -> devtool panel", evt.detail);
     this._sendToEmberDebug(evt.detail);
-  },
-
-  _doInjectEmberDebug: function() {
-    var activeTab = this._tabs.activeTab;
-
-    activeTab.on("load", this._emberDebugTabAttach.bind(this));
   },
 
   _emberDebugTabAttach: function (tab) {
