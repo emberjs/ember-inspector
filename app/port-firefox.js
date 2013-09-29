@@ -25,11 +25,7 @@ var connect = function() {
     var message = evt.data;
     console.debug("ember inspector port receive", message);
 
-    if (message.emberInspectorPanel && message.emberInspectorPanel === true) {
-      self.send("injectEmberDebug");
-    } else {
-      self.trigger(message.type, message);
-    }
+    self.trigger(message.type, message);
   }, false);
 };
 
