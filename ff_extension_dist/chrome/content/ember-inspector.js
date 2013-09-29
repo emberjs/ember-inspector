@@ -4,6 +4,8 @@ const Cu = Components.utils;
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
+XPCOMUtils.defineLazyModuleGetter(this, "gDevTools",
+                                  "resource:///modules/devtools/gDevTools.jsm");
 var console;
 
 let EmberInspector = {
@@ -68,13 +70,31 @@ let EmberInspector = {
     this._iframe.contentWindow.location.reload();
   },
 
+  _doInspectDOMElement: function(selector) {
+    console.debug("activating inspector devtool panel...");
+    let target = this._toolbox._target;
+    return gDevTools.showToolbox(target, "inspector").then(function(toolbox) {
+      console.debug("inspector devtool panel activated");
+      let sel = toolbox.getCurrentPanel().selection;
+      console.debug("selecting ", selector);
+      sel.setNode(sel.document.querySelector(selector), "ember-inspector");
+    }.bind(this));
+  },
+
   _onEmberDebugMessage: function (message) {
     console.debug("ember debug -> devtool iframe", message);
     if (message.ready) {
       let emberDebugUrl = this._resources.url("ember_debug/ember_debug.js");
       this._sendToEmberDebug({ emberDebugUrl: emberDebugUrl });
     } else {
-      this._sendToEmberInspector(message);
+      switch(message.type) {
+      case "view:devtools:inspectDOMElement":
+        // handle dom inspection requests
+        this._doInspectDOMElement(message.elementSelector);
+        break;
+      default:
+        this._sendToEmberInspector(message);
+      }
     }
   },
 
