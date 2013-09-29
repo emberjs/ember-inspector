@@ -41,7 +41,7 @@
   top: 8px;
   left: 7px;
   border-radius: 11px;
-  background: #ccc url('/images/back_arrow.png') 5px center no-repeat;
+  background: #ccc url('../images/back_arrow.png') 5px center no-repeat;
   border: none;
 }
 

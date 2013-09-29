@@ -55,7 +55,7 @@
   content: ' ';
   width: 128px;
   height: 89px;
-  background: url("/images/fishy_tomster.png") left center no-repeat;
+  background: url("../images/fishy_tomster.png") left center no-repeat;
   position: absolute;
   right: 0px;
   bottom: 0px;
