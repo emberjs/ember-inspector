@@ -26,10 +26,13 @@ function handleEmberDebugUrl(message) {
       console.log("EMBER DEBUG LOADED");
       script.onload = null;
     };
-    document.querySelector("head").appendChild( script );
-    script.src = message.emberDebugUrl;
+    var head = document.querySelector("head");
+    if (head) {
+      head.appendChild( script );
+      script.src = message.emberDebugUrl;
 
-    return true;
+      return true;
+    }
   }
 
   return false;
@@ -42,6 +45,8 @@ function routeToEmberDebug(message) {
 }
 
 // let ember-debug know that content script has executed
-document.body.dataset.emberExtension = 1;
+if (document.body) {
+  document.body.dataset.emberExtension = 1;
+}
 
 self.port.emit("message", { ready: true });

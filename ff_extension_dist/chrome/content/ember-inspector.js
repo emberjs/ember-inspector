@@ -56,18 +56,23 @@ let EmberInspector = {
   },
 
   _emberDebugTabAttach: function (tab) {
+    var worker;
+
     if (this._emberDebugWorker) {
       this._emberDebugWorker.destroy();
-    };
+    }
 
-    var worker = tab.attach({
+    worker = tab.attach({
       contentScriptFile: this._resources.url("content-script.js")
     });
 
     this._emberDebugWorker = worker;
     worker.port.on("message", this._onEmberDebugMessage.bind(this));
 
-    this._iframe.contentWindow.location.reload();
+    // prevents exception on trying to reload a reloading devtool panel
+    if (this._iframe.contentWindow) {
+      this._iframe.contentWindow.location.reload();
+    }
   },
 
   _doInspectDOMElement: function(selector) {
