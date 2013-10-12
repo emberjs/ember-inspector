@@ -23,25 +23,6 @@ var connect = function() {
   });
 };
 
-
-Ember.Application.initializer({
-  name: "port",
-
-  initialize: function(container, application) {
-    container.register('port:main', application.Port);
-    container.lookup('port:main');
-  }
-});
-
-Ember.Application.initializer({
-  name: "injectPort",
-
-  initialize: function(container) {
-    container.typeInjection('controller', 'port', 'port:main');
-    container.typeInjection('route', 'port', 'port:main');
-  }
-});
-
 if (typeof chrome !== 'undefined' && chrome.devtools) {
   chrome.devtools.network.onNavigated.addListener(function() {
     location.reload(true);

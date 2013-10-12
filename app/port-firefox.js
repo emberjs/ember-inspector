@@ -29,25 +29,6 @@ var connect = function() {
   }, false);
 };
 
-
-Ember.Application.initializer({
-  name: "port",
-
-  initialize: function(container, application) {
-    container.register('port:main', application.Port);
-    container.lookup('port:main');
-  }
-});
-
-Ember.Application.initializer({
-  name: "injectPort",
-
-  initialize: function(container) {
-    container.typeInjection('controller', 'port', 'port:main');
-    container.typeInjection('route', 'port', 'port:main');
-  }
-});
-
 var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
 
 if (!is_chrome) {
