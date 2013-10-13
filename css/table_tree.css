@@ -144,3 +144,12 @@
 }
 
 .table-tree_type_advanced  .table-tree__filter {}
+
+/* Firefox Tweaks */
+.table-tree__table-container {
+    flex: 1;
+}
+
+.table-tree__filter {
+    flex: 0 1 24px;
+}

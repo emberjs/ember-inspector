@@ -91,7 +91,7 @@
 }
 
 .filter-bar__button_type_inspect {
-  background: url("/images/magnifying_glass.png") center center no-repeat;
+  background: url("../images/magnifying_glass.png") center center no-repeat;
   background-size: 15px 15px;
 }
 
