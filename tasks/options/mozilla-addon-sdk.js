@@ -1,13 +1,7 @@
 module.exports = {
-  download: {
+  "1_14": {
     options: {
-      revision: "firefox26"
-    }
-  },
-  xpi: {
-    options: {
-      extension_dir: "ff_extension_dist",
-      dist_dir: "tmp/xpi"
+      revision: "1.14"
     }
   }
 };

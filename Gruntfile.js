@@ -55,8 +55,8 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build_xpi', [
-    'mozilla-addon-sdk:download',
-    'mozilla-addon-sdk:xpi'
+    'mozilla-addon-sdk',
+    'mozilla-cfx-xpi'
   ]);
 
   grunt.registerTask('build_and_upload', [
