@@ -1,18 +1,11 @@
-let contentWindow = document.defaultView;
-
-console.debug("EXECUTING EMBER DEBUG BRIDGE on: ", contentWindow.location.toString());
-
-document.addEventListener("ember-debug-send", onEmberDebugEvent, false);
-self.port.on("message", onEmberInspectorMessage);
-
 function onEmberInspectorMessage(message) {
-  console.debug("content script -> ember debug", message);
+  console.debug("content-script: ember debug receive", message);
 
   handleEmberDebugUrl(message) || routeToEmberDebug(message);
 }
 
 function onEmberDebugEvent(event) {
-  console.debug("ember debug -> content script", event.detail);
+  console.debug("content-script: ember debug send", event.detail);
 
   self.port.emit("message", event.detail);
 }
@@ -44,9 +37,15 @@ function routeToEmberDebug(message) {
   document.documentElement.dispatchEvent(event);
 }
 
+self.port.on("message", onEmberInspectorMessage);
+
+let contentWindow = document.defaultView;
+
+console.log("EXECUTING EMBER DEBUG BRIDGE on: ", contentWindow.location.toString());
+
+document.addEventListener("ember-debug-send", onEmberDebugEvent, false);
+
 // let ember-debug know that content script has executed
 if (document.body) {
   document.body.dataset.emberExtension = 1;
 }
-
-self.port.emit("message", { ready: true });
