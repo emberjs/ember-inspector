@@ -66,6 +66,7 @@ module.exports = function(grunt) {
   grunt.registerTask('build_and_upload', [
     'build',
     'compress:main',
+    'build_xpi',
     'ember-s3'
   ]);
 
