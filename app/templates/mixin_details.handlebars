@@ -10,7 +10,7 @@
     {{#each mixin.properties itemController="mixinProperty"}}
     <li {{bindAttr class="overridden:mixin__property_state_overridden :mixin__property"}} data-label="object-property">
       {{#if value.computed}}
-        <button {{bindAttr class=":mixin__calc-btn isCalculated:mixin__calc-btn_calculated"}} {{action "calculate" model bubbles=false}} data-label="calculate"><img src="/images/calculate.svg"></button>
+        <button {{bindAttr class=":mixin__calc-btn isCalculated:mixin__calc-btn_calculated"}} {{action "calculate" model bubbles=false}} data-label="calculate"><img src="../images/calculate.svg"></button>
       {{else}}
         <span class='pad'></span>
       {{/if}}
