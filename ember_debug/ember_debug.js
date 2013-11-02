@@ -1,3 +1,4 @@
+import BasicAdapter from "adapters/basic";
 import Port from "port";
 import ObjectInspector from "object_inspector";
 import GeneralDebug from "general_debug";
@@ -15,6 +16,7 @@ EmberDebug = Ember.Namespace.create({
   started: false,
 
   Port: Port,
+  Adapter: BasicAdapter,
 
   start: function() {
     if (this.get('started')) {
@@ -48,6 +50,7 @@ EmberDebug = Ember.Namespace.create({
     this.destroyContainer();
     Ember.run(this, function() {
 
+      this.startModule('adapter', this.Adapter);
       this.startModule('port', this.Port);
 
       this.startModule('generalDebug', GeneralDebug);

@@ -1,30 +1,17 @@
 var Port = Ember.Object.extend(Ember.Evented, {
+  adapter: Ember.computed.alias('namespace.adapter'),
+
   init: function() {
-    connect.apply(this);
+    var self = this;
+    this.get('adapter').onMessageReceived(function(message) {
+      self.trigger(message.type, message);
+    });
   },
   send: function(messageType, options) {
     options.type = messageType;
     options.from = 'inspectedWindow';
-    this.get('chromePort').postMessage(options);
-  },
-  chromePort: null
+    this.get('adapter').sendMessage(options);
+  }
 });
-
-
-var connect = function() {
-  var channel = new MessageChannel(), self = this;
-  var chromePort = channel.port1;
-  this.set('chromePort', chromePort);
-  window.postMessage('debugger-client', [channel.port2], '*');
-
-  chromePort.addEventListener('message', function(event) {
-    var message = event.data, value;
-    Ember.run(function() {
-      self.trigger(message.type, message);
-    });
-  });
-
-  chromePort.start();
-};
 
 export default Port;

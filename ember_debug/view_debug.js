@@ -10,8 +10,9 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
   namespace: null,
 
-  port: Ember.computed.alias('namespace.port'),
 
+  adapter: Ember.computed.alias('namespace.adapter'),
+  port: Ember.computed.alias('namespace.port'),
   objectInspector: Ember.computed.alias('namespace.objectInspector'),
 
   retainedObjects: [],
@@ -105,7 +106,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
   inspectElement: function(objectId) {
     var view = this.get('objectInspector').sentObjects[objectId];
     if (view && view.get('element')) {
-      inspect(view.get('element'));
+      this.get('adapter').inspectElement(view.get('element'));
     }
   },
 

@@ -1,5 +1,3 @@
-import EmberExtension from "main";
-
 var port, message, name;
 
 function modelTypeFactory(options) {

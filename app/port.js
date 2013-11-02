@@ -1,45 +1,17 @@
-var chromePort;
-
 var Port = Ember.Object.extend(Ember.Evented, {
   init: function() {
-    connect.apply(this);
+    var self = this;
+    this.get('adapter').onMessageReceived(function(message) {
+      self.trigger(message.type, message);
+    });
   },
-  send: function(messageType, options) {
-    options = options || {};
-    options.from = 'devtools';
-    options.type = messageType;
-    chromePort.postMessage(options);
+  send: function(type, message) {
+    message = message || {};
+    message.type = type;
+    message.from = 'devtools';
+    this.get('adapter').sendMessage(message);
   }
 });
 
-
-var connect = function() {
-  var self = this;
-  chromePort = chrome.extension.connect();
-  chromePort.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
-
-  chromePort.onMessage.addListener(function(message) {
-    self.trigger(message.type, message);
-  });
-};
-
-
-Ember.Application.initializer({
-  name: "port",
-
-  initialize: function(container, application) {
-    container.register('port:main', application.Port);
-    container.lookup('port:main');
-  }
-});
-
-Ember.Application.initializer({
-  name: "injectPort",
-
-  initialize: function(container) {
-    container.typeInjection('controller', 'port', 'port:main');
-    container.typeInjection('route', 'port', 'port:main');
-  }
-});
 
 export default Port;

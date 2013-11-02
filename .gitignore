@@ -1,4 +1,9 @@
 node_modules/
 tmp/
 .DS_Store
-extension_dist/ember-extension.zip
+dist_chrome/ember-extension.zip
+dist_chrome/images/
+dist_chrome/ember_debug/
+dist_chrome/vendor/
+dist_chrome/panes/ember_extension.css
+dist_chrome/panes/ember_extension.js

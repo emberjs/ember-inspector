@@ -7,7 +7,13 @@
 
   Also responsible for sending the first tree.
 **/
-(function() {
+
+var currentAdapter = 'basic';
+if (typeof adapter !== 'undefined') {
+  currentAdapter = adapter;
+}
+
+(function(adapter) {
 
   function inject() {
     requireModule('ember_debug');
@@ -22,6 +28,7 @@
     if (!Ember.Debug) {
       inject();
     }
+    Ember.Debug.Adapter = requireModule('adapters/' + adapter)
     Ember.Debug.start();
   });
 
@@ -58,4 +65,4 @@
     }, 10);
   }
 
-}());
+}(currentAdapter));
