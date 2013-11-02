@@ -9,5 +9,8 @@ dist_chrome/panes/ember_extension.css
 dist_chrome/panes/ember_extension.js
 
 *.xpi
-ff_extension_dist/data/vendor
-ff_extension_dist/data/images
+dist_firefox/data/images/
+dist_firefox/data/ember_debug/
+dist_firefox/data/vendor/
+dist_firefox/data/panes/ember_extension.css
+dist_firefox/data/panes/ember_extension.js
