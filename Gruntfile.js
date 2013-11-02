@@ -61,6 +61,8 @@ module.exports = function(grunt) {
     'mozilla-cfx-xpi'
   ]);
 
+  grunt.registerTask('run_xpi', ['build', 'build_xpi', 'mozilla-cfx:run']);
+
   grunt.registerTask('build_and_upload', [
     'build',
     'compress:main',
