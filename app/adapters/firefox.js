@@ -12,7 +12,9 @@ var FirefoxAdapter = BasicAdapter.extend({
   _connect: function() {
     var self = this;
     window.addEventListener("ember-extension-receive", function(evt) {
-      self._messageReceived(evt.detail);
+      // We clone the object so that Ember prototype extensions
+      // are applied.
+      self._messageReceived(Ember.$.extend(true, {}, evt.detail));
     }, false);
   }.on('init')
 });
