@@ -10,6 +10,7 @@
   padding-top: 30px;
   font-size: 11px;
   height: 100%;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   float: left;
   min-width: 100%;
@@ -24,6 +25,7 @@
   border-bottom: 1px solid #a3a3a3;
   background: linear-gradient(to bottom, #ebebeb, #dadada);
   border-right: 1px solid #b3b3b3;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   content: ' ';
 }
