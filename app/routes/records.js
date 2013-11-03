@@ -24,7 +24,7 @@ var RecordsRoute = Ember.Route.extend({
 
   deactivate: function() {
     this.get('port').off('data:recordsAdded', this, this.addRecords);
-    this.get('port').off('data:recordUpdated', this, this.updateRecord);
+    this.get('port').off('data:recordsUpdated', this, this.updateRecords);
     this.get('port').off('data:recordsRemoved', this, this.removeRecords);
     this.get('port').send('data:releaseRecords');
   },

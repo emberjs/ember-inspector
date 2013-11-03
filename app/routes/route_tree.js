@@ -9,7 +9,7 @@ var RouteTreeRoute = Ember.Route.extend({
 
   deactivate: function() {
     this.get('port').off('route:currentRoute');
-    this.get('port').off('route:routeTree', this, this.setViewTree);
+    this.get('port').off('route:routeTree', this, this.setTree);
   },
 
   setCurrentRoute: function(message) {

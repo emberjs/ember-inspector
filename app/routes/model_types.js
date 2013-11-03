@@ -13,8 +13,8 @@ var ModelTypesRoute = Ember.Route.extend({
   },
 
   deactivate: function() {
-    this.get('port').off('data:modelTypesUpdated', this, this.updateModelType);
-    this.get('port').off('data:modelTypesAdded', this, this.updateModelType);
+    this.get('port').off('data:modelTypesAdded', this, this.addModelTypes);
+    this.get('port').off('data:modelTypesUpdated', this, this.updateModelTypes);
     this.get('port').send('data:releaseModelTypes');
   },
 
