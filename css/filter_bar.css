@@ -26,6 +26,7 @@
 }
 
 .filter-bar__search input {
+  border-width: 1px;
   height: 100%;
 }
 
