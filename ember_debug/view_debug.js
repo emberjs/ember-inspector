@@ -286,9 +286,14 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
   },
 
   shouldShowView: function(view) {
-    return (this.options.allViews || view.get('controller') !== view.get('_parentView.controller')) &&
+    return (this.options.allViews || this.hasSameControllerAsParent(view)) &&
         (this.options.components || !(view instanceof Ember.Component)) &&
-        (!view.get('isVirtual') || view.get('controller') !== view.get('_parentView.controller'));
+        (!view.get('isVirtual') || this.hasSameControllerAsParent(view));
+  },
+
+  hasSameControllerAsParent: function(view) {
+    return view.get('controller') !== view.get('_parentView.controller') &&
+    ((view instanceof Ember.Component) || !(view.get('_parentView.controller') instanceof Ember.Component));
   },
 
   highlightView: function(element, preview) {
