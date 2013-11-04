@@ -42,8 +42,6 @@ exports.devtoolTabDefinition = {
   }
 };
 
-let trackTabWorkers = new WeakMap();
-
 let EmberInspector = {
   initialize: function (iframeWindow, toolbox) {
     console.debug("initialize");
