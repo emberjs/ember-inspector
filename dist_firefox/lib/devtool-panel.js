@@ -47,16 +47,19 @@ let EmberInspector = {
     console.debug("initialize");
     this.workers = {};
     this.iframeWindow = iframeWindow.document.querySelector("iframe");
-    this.iframeWindow.setAttribute("src", self.data.url("panes/index.html"));
     this.toolbox = toolbox;
 
     this._onDevtoolPanelLoad = this._attachDevtoolPanel.bind(this);
     this.iframeWindow.addEventListener("load", this._onDevtoolPanelLoad, true);
 
-    this._onTargetTabLoad = this._attachTargetTab.bind(this);
+    this._onTargetTabLoad = (function() {
+      this._attachTargetTab();
+      this.iframeWindow.contentWindow.location.reload(true);
+    }).bind(this);
     tabs.activeTab.on("load", this._onTargetTabLoad);
 
-    tabs.activeTab.reload();
+    this.iframeWindow.setAttribute("src", self.data.url("panes/index.html"));
+    this._attachTargetTab();
   },
 
   destroy: function () {
@@ -134,7 +137,6 @@ let EmberInspector = {
     this.workers.targetTab = worker;
 
     this._detachDevtoolPanel();
-    this.iframeWindow.contentWindow.location.reload(true);
 
     return this.workers.targetTab;
   },
