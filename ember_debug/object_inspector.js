@@ -1,6 +1,21 @@
 import PortMixin from "mixins/port_mixin";
 
 
+function inspectValue(value) {
+  var string;
+
+  if (value instanceof Ember.Object) {
+    return { type: "type-ember-object", inspect: value.toString() };
+  } else if (isComputed(value)) {
+    string = "<computed>";
+    return { type: "type-descriptor", inspect: string, computed: true };
+  } else if (value instanceof Ember.Descriptor) {
+    return { type: "type-descriptor", inspect: value.toString(), computed: true };
+  } else {
+    return { type: "type-" + Ember.typeOf(value), inspect: inspect(value) };
+  }
+}
+
 function inspect(value) {
   if (typeof value === 'function') {
     return "function() { ... }";
@@ -402,20 +417,9 @@ function isMandatorySetter(object, prop) {
   return false;
 }
 
-function inspectValue(value) {
-  var string;
 
-  if (value instanceof Ember.Object) {
-    return { type: "type-ember-object", inspect: value.toString() };
-  } else if (isComputed(value)) {
-    string = "<computed>";
-    return { type: "type-descriptor", inspect: string, computed: true };
-  } else if (value instanceof Ember.Descriptor) {
-    return { type: "type-descriptor", inspect: value.toString(), computed: true };
-  } else {
-    return { type: "type-" + Ember.typeOf(value), inspect: inspect(value) };
-  }
-}
+
+
 
 
 function calculateCPs(object, mixinDetails, expensiveProperties) {

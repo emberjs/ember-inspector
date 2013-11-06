@@ -1,0 +1,8 @@
+{{#each children itemController="promise_node"}}
+  <tr {{bind-attr style="style"}}>
+    <td {{bind-attr style="labelStyle"}}>{{label}}</td>
+    <td>{{state}}</td>
+    <td>{{settledValue}}</td>
+  </tr>
+  {{partial "promise_node"}}
+{{/each}}
