@@ -10,7 +10,7 @@
     {{#each mixin.properties itemController="mixinProperty"}}
     <li {{bindAttr class="overridden:mixin__property_state_overridden :mixin__property"}} data-label="object-property">
       {{#if value.computed}}
-        <button {{bindAttr class=":mixin__calc-btn isCalculated:mixin__calc-btn_calculated"}} {{action "calculate" model bubbles=false}} data-label="calculate"><img src="/images/calculate.svg"></button>
+        <button {{bindAttr class=":mixin__calc-btn isCalculated:mixin__calc-btn_calculated"}} {{action "calculate" model bubbles=false}} data-label="calculate"><img src="../images/calculate.svg"></button>
       {{else}}
         <span class='pad'></span>
       {{/if}}
@@ -21,7 +21,7 @@
         {{property-field class="mixin__property-value-txt" value=txtValue label="object-property-value-txt"}}
       {{/unless}}
       <span class='mixin__property-overridden-by'>(Overridden by {{overridden}})</span>
-      <button class="mixin__send-btn" {{action "sendToConsole" model}} data-label="send-to-console-btn"><img src="/images/send.png" title="Send to console"></button>
+      <button class="mixin__send-btn" {{action "sendToConsole" model}} data-label="send-to-console-btn"><img src="../images/send.png" title="Send to console"></button>
     </li>
     {{else}}
     <li class="mixin__property">No Properties</li>

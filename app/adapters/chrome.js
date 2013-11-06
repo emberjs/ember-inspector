@@ -31,7 +31,7 @@ var ChromeAdapter = BasicAdapter.extend({
     var xhr = new XMLHttpRequest();
     xhr.open("GET", chrome.extension.getURL('/ember_debug/ember_debug.js'), false);
     xhr.send();
-    var emberDebug = '(function(adapter) { ' + xhr.responseText + ' }("chrome"));';
+    var emberDebug = xhr.responseText;
     chrome.devtools.inspectedWindow.eval(emberDebug);
   }.on('init')
 });

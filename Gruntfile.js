@@ -35,7 +35,10 @@ module.exports = function(grunt) {
     'concat:main_css',
     'build_ember_debug',
     'jshint:all',
-    'copy:extension'
+    'copy:chrome_extension',
+    'wrap:chrome_ember_debug',
+    'copy:firefox_extension',
+    'wrap:firefox_ember_debug'
   ]);
 
   grunt.registerTask('build_ember_debug', [
@@ -53,9 +56,17 @@ module.exports = function(grunt) {
     'jshint:tests'
   ]);
 
+  grunt.registerTask('build_xpi', [
+    'mozilla-addon-sdk',
+    'mozilla-cfx-xpi'
+  ]);
+
+  grunt.registerTask('run_xpi', ['build', 'build_xpi', 'mozilla-cfx:run']);
+
   grunt.registerTask('build_and_upload', [
     'build',
     'compress:main',
+    'build_xpi',
     'ember-s3'
   ]);
 

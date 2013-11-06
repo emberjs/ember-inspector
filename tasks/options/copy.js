@@ -7,11 +7,8 @@ module.exports = {
       dest: 'tmp/public/ember_debug/vendor'
     }]
   },
-  extension: {
+  chrome_extension: {
     files: [{
-      src: ['tmp/public/ember_debug.js'],
-      dest: 'dist_chrome/ember_debug/ember_debug.js'
-    }, {
       src: ['tmp/public/ember_extension.js'],
       dest: 'dist_chrome/panes/ember_extension.js'
     }, {
@@ -27,6 +24,25 @@ module.exports = {
       cwd: 'images',
       src: ['**'],
       dest: 'dist_chrome/images'
+    }]
+  },
+  firefox_extension: {
+    files: [{
+      src: ['tmp/public/ember_extension.js'],
+      dest: 'dist_firefox/data/panes/ember_extension.js'
+    }, {
+      expand: true,
+      cwd: 'vendor',
+      src: ['**'],
+      dest: 'dist_firefox/data/vendor/'
+    }, {
+      expand: true,
+      cwd: 'images',
+      src: ['**'],
+      dest: 'dist_firefox/data/images/'
+    } ,{
+      src: ['tmp/public/ember_extension.css'],
+      dest: 'dist_firefox/data/panes/ember_extension.css'
     }]
   },
   tests: {

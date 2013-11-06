@@ -1,6 +1,8 @@
 .filter-bar {
   display: -webkit-flex;
+  display: flex;
   -webkit-flex-direction: row;
+  flex-direction: row;
   height: 22px;
   background-color: #efefef;
   border-top: solid 1px #cacaca;
@@ -24,6 +26,7 @@
 }
 
 .filter-bar__search input {
+  border-width: 1px;
   height: 100%;
 }
 
@@ -82,6 +85,7 @@
 .filter-bar__button {
   width: 32px;
   height: 100%;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   border: none;
   box-shadow: none;
@@ -89,7 +93,7 @@
 }
 
 .filter-bar__button_type_inspect {
-  background: url("/images/magnifying_glass.png") center center no-repeat;
+  background: url("../images/magnifying_glass.png") center center no-repeat;
   background-size: 15px 15px;
 }
 

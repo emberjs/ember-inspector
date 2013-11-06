@@ -10,6 +10,7 @@
   padding-top: 30px;
   font-size: 11px;
   height: 100%;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   float: left;
   min-width: 100%;
@@ -24,6 +25,7 @@
   border-bottom: 1px solid #a3a3a3;
   background: linear-gradient(to bottom, #ebebeb, #dadada);
   border-right: 1px solid #b3b3b3;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   content: ' ';
 }
@@ -132,12 +134,24 @@
 
 .table-tree_type_advanced {
   display: -webkit-flex;
+  display: flex;
   -webkit-flex-direction: column;
+  flex-direction: column;
 }
 
 .table-tree_type_advanced  .table-tree__table-container {
   height: auto;
   -webkit-flex: 1;
+  flex: 1;
 }
 
 .table-tree_type_advanced  .table-tree__filter {}
+
+/* Firefox Tweaks */
+.table-tree__table-container {
+    flex: 1;
+}
+
+.table-tree__filter {
+    flex: 0 1 24px;
+}

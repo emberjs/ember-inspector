@@ -1,0 +1,8 @@
+{
+    "preferences": [],
+    "name": "ember-inspector",
+    "version": "0.0.3",
+    "fullName": "Ember Inspector",
+    "id": "ember-inspector@emberjs.com",
+    "description": "Tool for debugging Ember applications."
+}

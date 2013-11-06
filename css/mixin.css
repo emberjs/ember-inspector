@@ -61,9 +61,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: -webkit-flex;
-  -webkit-flex-direction: row;
+  display: flex;
+  flex-direction: row;
   -webkit-align-items: center;
+  align-items: center;
 }
 
 .mixin__property button {
@@ -87,14 +88,14 @@
 }
 
 .mixin__property-value {
-  -webkit-flex: 1;
+  flex: 1;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 .mixin__property-value-txt {
-  -webkit-flex: 1;
+  flex: 1;
   border: solid 1px #ccc;
   /*border: none;*/
   box-shadow: 2px 2px 2px #888;
@@ -129,7 +130,7 @@
 }
 
 .mixin__property-calculated-value {
-  -webkit-flex: 1;
+  flex: 1;
   color: #999;
 }
 

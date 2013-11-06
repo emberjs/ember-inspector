@@ -14,6 +14,7 @@
   font-family: Menlo, Monaco, monospace;
   text-shadow: 0px 1px 1px #fff;
   padding: 10px 5px 10px 35px;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   min-height: 40px;
 }
@@ -25,6 +26,7 @@
   margin-bottom: 0;
   width: 100%;
   display: -webkit-flex;
+  display: flex;
 }
 
 .object-inspector__header-trail {
@@ -40,7 +42,7 @@
   top: 8px;
   left: 7px;
   border-radius: 11px;
-  background: #ccc url('/images/back_arrow.png') 5px center no-repeat;
+  background: #ccc url('../images/back_arrow.png') 5px center no-repeat;
   border: none;
 }
 
@@ -64,6 +66,9 @@
   -webkit-flex-basis: 0px;
   -webkit-flex-grow: 1;
   -webkit-flex-shrink: 1;
+  flex-basis: 0px;
+  flex-grow: 1;
+  flex-shrink: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -74,7 +79,7 @@
   background: none;
   margin: 0;
   padding: 0;
-  width: 20px;
+  width: 23px;
   opacity: 1;
 }
 

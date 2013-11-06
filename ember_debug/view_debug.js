@@ -132,18 +132,27 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       // prevent app-defined clicks from being fired
       $(previewDiv).css('pointer-events', '')
       .one('mouseup', function() {
-        if (viewElem) {
-          self.highlightView(viewElem);
-          var view = self.get('objectInspector').sentObjects[viewElem.id];
-          if (view instanceof Ember.Component) {
-            self.get('objectInspector').sendObject(view);
-          }
-        }
-        self.stopInspecting();
-        return false;
+        // chrome
+        return pinView();
       });
     })
+    .on('mouseup.inspect-' + this.get('eventNamespace'), function() {
+      // firefox
+      return pinView();
+    })
     .css('cursor', '-webkit-zoom-in');
+
+    function pinView() {
+      if (viewElem) {
+        self.highlightView(viewElem);
+        var view = self.get('objectInspector').sentObjects[viewElem.id];
+        if (view instanceof Ember.Component) {
+          self.get('objectInspector').sendObject(view);
+        }
+      }
+      self.stopInspecting();
+      return false;
+    }
   },
 
   findNearestView: function(elem) {
@@ -163,6 +172,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     $('body')
     .off('mousemove.inspect-' + this.get('eventNamespace'))
     .off('mousedown.inspect-' + this.get('eventNamespace'))
+    .off('mouseup.inspect-' + this.get('eventNamespace'))
     .off('click.inspect-' + this.get('eventNamespace'))
     .css('cursor', '');
 
@@ -398,6 +408,10 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
         cursor: 'pointer'
       }).on('click', function() {
         self.hideLayer();
+        return false;
+      }).on('mouseup mousedown', function() {
+        // prevent re-pinning
+        return false;
       });
     }
 
