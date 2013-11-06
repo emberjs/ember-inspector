@@ -1,6 +1,7 @@
 import Router from "router";
 import Resolver from "resolver";
 import Port from "port";
+import PromiseModel from "models/promise";
 
 var App = Ember.Application.extend({
   modulePrefix: '',

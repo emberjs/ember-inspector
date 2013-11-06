@@ -1,0 +1,39 @@
+<div class="table-tree table-tree_color_faded table-tree_type_advanced">
+  <div class="table-tree__table-container">
+    <table cellspacing="0" border-collapse="collapse">
+      <thead>
+        <tr>
+          <th>
+            <div class="table-tree__th-inner">Label</div>
+          </th>
+          <th>
+            <div class="table-tree__th-inner">State</div>
+          </th>
+          <th>
+            <div class="table-tree__th-inner">Fullfillment / Rejection Value</div>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {{partial "promise_node"}}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-tree__filter">
+    <div class="filter-bar">
+      <div class="filter-bar__search">
+        {{input type="search" value=search placeholder="Search"}}
+      </div>
+      <div data-label="filter" {{bindAttr class=":filter-bar__radio_selected :filter-bar__radio :filter-bar__radio_separate"}}>
+        All
+      </div>
+      <div data-label="filter" {{bindAttr class="checked:filter-bar__radio_selected :filter-bar__radio"}} >Rejected</div>
+      <div data-label="filter" {{bindAttr class="checked:filter-bar__radio_selected :filter-bar__radio"}} >Pending</div>
+      <div data-label="filter" {{bindAttr class="checked:filter-bar__radio_selected :filter-bar__radio"}} >Fulfilled</div>
+    </div>
+  </div>
+
+</div>
+

@@ -5,6 +5,7 @@ import GeneralDebug from "general_debug";
 import ViewDebug from "view_debug";
 import RouteDebug from "route_debug";
 import DataDebug from "data_debug";
+import PromiseDebug from "promise_debug";
 
 var EmberDebug;
 
@@ -57,6 +58,7 @@ EmberDebug = Ember.Namespace.create({
       this.startModule('routeDebug', RouteDebug);
       this.startModule('viewDebug', ViewDebug);
       this.startModule('dataDebug', DataDebug);
+      this.startModule('promiseDebug', PromiseDebug);
 
       this.generalDebug.sendBooted();
       this.viewDebug.sendTree();
@@ -78,7 +80,5 @@ function getApplication() {
   });
   return application;
 }
-
-Ember.Debug = EmberDebug;
 
 export default EmberDebug;

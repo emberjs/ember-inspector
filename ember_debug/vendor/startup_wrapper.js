@@ -16,7 +16,7 @@ if (typeof adapter !== 'undefined') {
 (function(adapter) {
 
   function inject() {
-    requireModule('ember_debug');
+    Ember.Debug = requireModule('ember_debug');
   }
 
   onReady(function() {
@@ -27,11 +27,15 @@ if (typeof adapter !== 'undefined') {
     // prevent from injecting twice
     if (!Ember.Debug) {
       inject();
+      Ember.Debug.promiseAssembler = requireModule('lib/promise_assembler').create();
+      Ember.Debug.promiseAssembler.start();
     }
-    Ember.Debug.Adapter = requireModule('adapters/' + adapter)
-    Ember.Debug.start();
-  });
+    Ember.Debug.Adapter = requireModule('adapters/' + adapter);
 
+    onApplicationStart(function() {
+      Ember.Debug.start();
+    });
+  });
 
   function onReady(callback) {
     if (document.readyState === 'complete') {
@@ -45,7 +49,8 @@ if (typeof adapter !== 'undefined') {
     function completed() {
       document.removeEventListener( "DOMContentLoaded", completed, false );
       window.removeEventListener( "load", completed, false );
-      onApplicationStart(callback);
+      console.log('completed');
+      callback();
     }
   }
 
@@ -62,7 +67,7 @@ if (typeof adapter !== 'undefined') {
        clearInterval(interval);
        callback();
       }
-    }, 10);
+    }, 1);
   }
 
 }(currentAdapter));

@@ -14,6 +14,8 @@ Router.map(function() {
     });
   });
 
+  this.route('promise_tree');
+
 });
 
 export default Router;
