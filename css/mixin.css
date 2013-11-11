@@ -15,6 +15,9 @@
   background-color: #e6e6e6;
   text-shadow: 0px 1px 1px #fff;
   cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
 }
 
 .mixin__name:active {

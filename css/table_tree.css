@@ -44,6 +44,9 @@
 
 .table-tree thead {
   text-align: left;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
 }
 
 .table-tree td {
@@ -126,7 +129,7 @@
 }
 
 .table-tree__row_selected td {
-  color: #939;;
+  color: #939;
 }
 
 
