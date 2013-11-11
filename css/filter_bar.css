@@ -95,17 +95,26 @@
   border-right: solid 1px #8f8f8f;
 }
 
-.filter-bar__button_type_inspect {
-  background: url("../images/magnifying_glass.png") center center no-repeat;
-  background-size: 15px 15px;
-}
-
 .filter-bar__button:active {
   border-color: black;
 }
 
 .filter-bar__button_state_active {
   background-color: white;
+}
+
+.filter-bar__button_type_inspect { position: relative; }
+
+.filter-bar__button_type_inspect svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -6px 0 0 -7px;
+  fill: #3d3d3d;
+}
+
+.filter-bar__button_type_inspect.filter-bar__button_state_active svg {
+  fill: #4281eb;
 }
 
 .filter-bar__checkbox {
