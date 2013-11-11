@@ -68,6 +68,7 @@
 .table-tree__th-inner {
   position: absolute;
   top: 0;
+  width: 100%;
   line-height: 30px;
   border-left: 1px solid #b3b3b3;
   padding-left: 5px;
