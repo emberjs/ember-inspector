@@ -484,10 +484,10 @@ function modelName(model) {
 function controllerName(controller) {
   var key = controller.get('_debugContainerKey'),
       className = controller.constructor.toString(),
-      name;
+      name, match;
 
-  if (className.charAt(0) === '(') {
-    className = className.match(/^\(subclass of (.*)\)/)[1];
+  if (match = className.match(/^\(subclass of (.*)\)/)) {
+    className = match[1];
   }
   return className;
 }
@@ -512,7 +512,8 @@ function virtualRange(view) {
 
 function viewDescription(view) {
   var templateName = view.get('templateName') || view.get('_debugTemplateName'),
-      name, viewClass = viewName(view), controller = view.get('controller');
+      name, viewClass = viewName(view), controller = view.get('controller'),
+      parentClassName;
 
   if (templateName) {
       name = templateName;
@@ -549,8 +550,8 @@ function viewDescription(view) {
       if (key) {
         name = key.split(':')[1];
       }  else {
-        if (className.charAt(0) === '(') {
-          className = className.match(/^\(subclass of (.*)\)/)[1];
+        if (parentClassName = className.match(/^\(subclass of (.*)\)/)) {
+          className = parentClassName[1];
         }
         name = className.split('.')[1];
         name = name.charAt(0).toLowerCase() + name.substr(1);
