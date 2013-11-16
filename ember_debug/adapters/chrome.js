@@ -1,6 +1,10 @@
 import BasicAdapter from "adapters/basic";
 
 var ChromeAdapter = BasicAdapter.extend({
+  init: function() {
+    this._super();
+    this._connect();
+  },
 
   sendMessage: function(options) {
     options = options || {};
@@ -35,7 +39,7 @@ var ChromeAdapter = BasicAdapter.extend({
 
     chromePort.start();
 
-  }.on('init')
+  }
 });
 
 export default ChromeAdapter;
