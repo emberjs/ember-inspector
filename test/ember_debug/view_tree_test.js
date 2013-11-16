@@ -215,3 +215,20 @@ test("Highlighting a view without an element should not throw an error", functio
     ok(true, "Does not throw an error.");
   });
 });
+
+test("Supports a view with a string as model", function() {
+  var name = null, message = null;
+  port.reopen({
+    send: function(n, m) {
+      name = n;
+      message = m;
+    }
+  });
+
+  visit('/posts')
+  .then(function() {
+    equal(message.tree.children[0].value.model.name, 'String as model');
+    equal(message.tree.children[0].value.model.type, 'type-string');
+  });
+
+});

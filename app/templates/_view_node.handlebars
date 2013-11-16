@@ -6,7 +6,7 @@
     <td {{bindAttr class="hasElement:table-tree__clickable isCurrent:table-tree__main-cell_state_current" style=style }} {{action "inspectElement"}} data-label="view-template">
       {{value.template}}
     </td>
-    <td {{action "inspect" value.model.objectId}} {{bindAttr class="hasModel:table-tree__clickable"}} data-label="view-model">
+    <td {{action "inspectModel" value.model.objectId}} {{bindAttr class="modelInspectable:table-tree__clickable"}} data-label="view-model">
       {{#if hasModel}}
         {{value.model.name}}
       {{else}}

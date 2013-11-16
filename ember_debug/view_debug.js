@@ -267,10 +267,18 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
       var model = controller.get('model');
       if (model) {
-        value.model = {
-          name: modelName(model),
-          objectId: this.retainObject(model)
-        };
+        if(Ember.Object.detectInstance(model) || Ember.typeOf(model) === 'array') {
+          value.model = {
+            name: modelName(model),
+            objectId: this.retainObject(model),
+            type: 'type-ember-object'
+          };
+        } else {
+          value.model = {
+            name: this.get('objectInspector').inspect(model),
+            type: 'type-' + Ember.typeOf(model)
+          };
+        }
       }
     }
 
@@ -382,7 +390,8 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     }
 
     if (model) {
-      output += "<p class='model'><span>model</span>=<span data-label='layer-model'>" + escapeHTML(model.toString()) + "</span></p>";
+      var modelName = this.get('objectInspector').inspect(model);
+      output += "<p class='model'><span>model</span>=<span data-label='layer-model'>" + escapeHTML(modelName) + "</span></p>";
     }
 
     $(div).html(output);
@@ -431,9 +440,11 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       self.inspectElement(Ember.guidFor(view));
     });
 
-    $('p.model span:last-child', div).css({ cursor: 'pointer' }).click(function() {
-      self.get('objectInspector').sendObject(controller.get('model'));
-    });
+    if (model && ((model instanceof Ember.Object) || Ember.typeOf(model) === 'array')) {
+      $('p.model span:last-child', div).css({ cursor: 'pointer' }).click(function() {
+        self.get('objectInspector').sendObject(controller.get('model'));
+      });
+    }
 
     if (!preview) {
       this.sendMessage('pinView', { objectId: Ember.guidFor(view) });

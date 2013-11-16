@@ -24,16 +24,18 @@ App.SimpleView = Em.View.extend({
 
 App.SimpleRoute = Em.Route.extend({
   model: function() {
-    return {
+    return Ember.Object.create({
       toString: function() {
         return 'Simple Model';
       }
-    };
+    });
   }
 });
 
-App.PostsView = Em.View.extend({
-  tagName: ''
+App.PostsRoute = Em.Route.extend({
+  model: function() {
+    return 'String as model';
+  }
 });
 
 App.SimpleController = Em.ObjectController.extend();

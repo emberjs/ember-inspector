@@ -1,5 +1,20 @@
 import PortMixin from "mixins/port_mixin";
 
+
+function inspect(value) {
+  if (typeof value === 'function') {
+    return "function() { ... }";
+  } else if (value instanceof Ember.Object) {
+    return value.toString();
+  } else if (Ember.typeOf(value) === 'array') {
+    if (value.length === 0) { return '[]'; }
+    else if (value.length === 1) { return '[ ' + inspect(value[0]) + ' ]'; }
+    else { return '[ ' + inspect(value[0]) + ', ... ]'; }
+  } else {
+    return Ember.inspect(value);
+  }
+}
+
 var ObjectInspector = Ember.Object.extend(PortMixin, {
   namespace: null,
 
@@ -276,7 +291,9 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
         }
       });
     });
-  }
+  },
+
+  inspect: inspect
 });
 
 
@@ -397,21 +414,6 @@ function inspectValue(value) {
   }
 }
 
-
-
-function inspect(value) {
-  if (typeof value === 'function') {
-    return "function() { ... }";
-  } else if (value instanceof Ember.Object) {
-    return value.toString();
-  } else if (Ember.typeOf(value) === 'array') {
-    if (value.length === 0) { return '[]'; }
-    else if (value.length === 1) { return '[ ' + inspect(value[0]) + ' ]'; }
-    else { return '[ ' + inspect(value[0]) + ', ... ]'; }
-  } else {
-    return Ember.inspect(value);
-  }
-}
 
 function calculateCPs(object, mixinDetails, expensiveProperties) {
   expensiveProperties = expensiveProperties || [];

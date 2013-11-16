@@ -16,6 +16,10 @@ var ViewTreeItemController = Ember.ObjectController.extend({
     return !!this.get('model.value.model');
   }.property('model.value.model'),
 
+  modelInspectable: function() {
+    return this.get('hasModel') && this.get('value.model.type') === 'type-ember-object';
+  }.property('hasModel', 'value.model.type'),
+
   style: function() {
     return 'padding-left: ' + ((this.get('numParents') * 10) + 5) + 'px';
   }.property('numParents'),
@@ -41,6 +45,11 @@ var ViewTreeItemController = Ember.ObjectController.extend({
 
       if (objectId) {
         this.get('target').send('inspectElement', objectId);
+      }
+    },
+    inspectModel: function(objectId) {
+      if (this.get('modelInspectable')) {
+        this.get('target').send('inspect', objectId);
       }
     }
   }
