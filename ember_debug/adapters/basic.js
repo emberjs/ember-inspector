@@ -29,7 +29,7 @@ var BasicAdapter = Ember.Object.extend({
   */
   inspectElement: function(elem) {},
 
-  _messageCallbacks: function() { return []; }.property(),
+  _messageCallbacks: Ember.computed(function() { return Ember.A(); }).property(),
 
   _messageReceived: function(message) {
     this.get('_messageCallbacks').forEach(function(callback) {

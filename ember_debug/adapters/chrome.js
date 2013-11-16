@@ -15,13 +15,13 @@ var ChromeAdapter = BasicAdapter.extend({
     inspect(elem);
   },
 
-  _channel: function() {
+  _channel: Ember.computed(function() {
     return new MessageChannel();
-  }.property(),
+  }).property(),
 
-  _chromePort: function() {
+  _chromePort: Ember.computed(function() {
     return this.get('_channel.port1');
-  }.property(),
+  }).property(),
 
   _connect: function() {
     var channel = this.get('_channel'),
