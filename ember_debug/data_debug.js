@@ -14,7 +14,10 @@ var DataDebug = Ember.Object.extend(PortMixin, {
   releaseRecordsMethod: null,
 
   adapter: Ember.computed(function() {
-    return this.get('application').__container__.lookup('dataAdapter:main');
+    var container = this.get('application').__container__;
+    // dataAdapter:main is deprecated
+    return (container.resolve('data-adapter:main') && container.lookup('data-adapter:main')) ||
+    (container.resolve('dataAdapter:main') && container.lookup('dataAdapter:main'));
   }).property('application'),
 
   namespace: null,
