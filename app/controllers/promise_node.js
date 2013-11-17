@@ -5,6 +5,10 @@ var COLOR_MAP = {
 };
 
 var PromiseNodeController = Ember.ObjectController.extend({
+  needs: 'promiseTree',
+
+  filter: Ember.computed.alias('controllers.promiseTree.filter'),
+
   style: function() {
     var color = '';
     if (this.get('isFulfilled')) {
@@ -16,6 +20,19 @@ var PromiseNodeController = Ember.ObjectController.extend({
     }
     return 'background-color:' + COLOR_MAP[color] + ';color:white;';
   }.property('model.state'),
+
+  // children: Ember.computed.filter('model.children', function(item) {
+  //   switch (this.get('filter')) {
+  //     case 'all':
+  //       return true;
+  //     case 'pending':
+  //       return !item.get('isSettled');
+  //     case 'fullfilled':
+  //       return !item.get('isFulfilled');
+  //     case 'rejected':
+  //       return !item.get('isRejected');
+  //   }
+  // }),
 
   labelStyle: function() {
     return 'padding-left: ' + ((+this.get('level') * 20) + 5) + "px";

@@ -25,7 +25,26 @@ var Promise = Ember.Object.extend({
 
   isRejected: function() {
     return this.get('state') === 'rejected';
-  }.property('state')
+  }.property('state'),
+
+  children: function() {
+    return [];
+  }.property(),
+
+  pendingBranch: function() {
+    // if (!this.get('isSettled')) {
+    //   return true;
+    // }
+    // if (this.get('children')) {
+    //   for (var i = 0; i < this.get('children.length'); i++) {
+    //     if (this.get('children').objectAt(i).get('pendingBranch')) {
+    //       return true;
+    //     }
+    //   }
+    // }
+    return true;
+  }.property('isSettled', 'children.@each.pendingBranch')
+
 
 });
 
