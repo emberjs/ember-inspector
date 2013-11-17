@@ -1,7 +1,7 @@
 {{#each children itemController="promise_node"}}
-  <tr {{bind-attr style="style"}}>
+  <tr>
     <td {{bind-attr style="labelStyle"}}>{{label}}</td>
-    <td>{{state}}</td>
+    <td><div class="pill pill_text_clear" {{bind-attr style="style"}}>{{state}}</div></td>
     <td>{{settledValue}}</td>
   </tr>
   {{partial "promise_node"}}
