@@ -3,16 +3,33 @@ import Promise from "models/promise";
 var get = Ember.get;
 
 var PromiseTreeRoute = Ember.Route.extend({
+
   promises: function() { return []; }.property(),
 
+  setupController: function(controller, model) {
+    this._super.apply(this, arguments);
+    this.set('promises', []);
+    this.get('port').on('promise:promisesAdded', this, this.addPromises);
+    this.get('port').on('promise:promisesUpdated', this, this.updatePromises);
+    this.get('port').send('promise:getAndObservePromises');
+  },
+
   model: function() {
-    var self = this;
-    return Ember.RSVP.Promise(function(resolve) {
-      self.get('port').one('promise:promises', function(message) {
-        resolve(self.rebuildPromises(message.promises));
-      });
-      self.get('port').send('promise:getPromises');
-    });
+    return [];
+  },
+
+  deactivate: function() {
+    this.get('port').off('promise:promiseAdded', this, this.addPromises);
+    this.get('port').off('promise:promiseUpdated', this, this.updatePromises);
+    this.get('port').send('promise:releasePromises');
+  },
+
+  addPromises: function(message) {
+    this.get('currentModel').pushObjects(this.rebuildPromises(message.promises));
+  },
+
+  updatePromises: function(message) {
+    this.rebuildPromises(message.promises);
   },
 
   rebuildPromises: function(promises) {
