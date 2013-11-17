@@ -14,7 +14,7 @@ var PromiseNodeController = Ember.ObjectController.extend({
     } else {
       color = 'blue';
     }
-    return 'color:' + COLOR_MAP[color];
+    return 'background-color:' + COLOR_MAP[color] + ';color:white;';
   }.property('model.state'),
 
   labelStyle: function() {
