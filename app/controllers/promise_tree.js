@@ -1,7 +1,12 @@
 var PromiseTreeController = Ember.ArrayController.extend({
 
+  createdAfter: null,
+
   children: Ember.computed.filter('model.@each.pendingBranch', function(item) {
     if (!!item.get('parent')) { return false; } // this could be in separate filter but causing errors on re-render :/
+    if (this.get('createdAfter') && item.get('createdAt') < this.get('createdAfter')) {
+      return false;
+    }
     var include = true;
     if (this.get('filter') === 'pending') {
       include = item.get('pendingBranch');
@@ -37,7 +42,6 @@ var PromiseTreeController = Ember.ArrayController.extend({
 
   searchChanged: function() {
     Ember.run.debounce(this, this.notifyChange, 500);
-
   }.observes('search'),
 
   notifyChange: function() {
@@ -55,6 +59,10 @@ var PromiseTreeController = Ember.ArrayController.extend({
       Ember.run.next(function() {
         self.notifyPropertyChange('children');
       });
+    },
+    clear: function() {
+      this.set('createdAfter', new Date());
+      Ember.run.once(this, this.notifyChange);
     }
   }
 });

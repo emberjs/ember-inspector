@@ -33,6 +33,19 @@
   height: 100%;
 }
 
+
+.filter-bar__clear {
+  width: 40px;
+  text-shadow: none;
+  text-align: center;
+  color: white;
+}
+
+.filter-bar__pills {
+  -webkit-flex: 1;
+  flex: 1;
+}
+
 .filter-bar__radio {
   font-size: 12;
   position: relative;
