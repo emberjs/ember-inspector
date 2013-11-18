@@ -8,6 +8,26 @@ var PromiseNodeController = Ember.ObjectController.extend({
   needs: 'promiseTree',
 
   filter: Ember.computed.alias('controllers.promiseTree.filter'),
+  effectiveSearch: Ember.computed.alias('controllers.promiseTree.effectiveSearch'),
+
+  // children: Ember.computed.filter('model.children.@each.pendingBranch', function(item) {
+  //   var include = true;
+  //   if (this.get('filter') === 'pending') {
+  //     include = item.get('pendingBranch');
+  //   } else if (this.get('filter') === 'rejected') {
+  //     include = item.get('rejectedBranch');
+  //   } else if (this.get('filter') === 'fulfilled') {
+  //     include = item.get('fulfilledBranch');
+  //   }
+  //   if (!include) {
+  //     return false;
+  //   }
+  //   var search = this.get('effectiveSearch');
+  //   if (!Ember.isEmpty(search)) {
+  //     return item.matches(search);
+  //   }
+  //   return true;
+  // }),
 
   style: function() {
     var color = '';
@@ -20,6 +40,30 @@ var PromiseNodeController = Ember.ObjectController.extend({
     }
     return 'background-color:' + COLOR_MAP[color] + ';color:white;';
   }.property('model.state'),
+
+
+  nodeStyle: function() {
+    var relevant;
+    switch(this.get('filter')) {
+      case 'pending':
+        relevant = this.get('isPending');
+        break;
+      case 'rejected':
+        relevant = this.get('isRejected');
+        break;
+      case 'fulfilled':
+        relevant = this.get('isFulfilled');
+        break;
+      default:
+        relevant = true;
+    }
+    if (relevant && !Ember.isEmpty(this.get('effectiveSearch'))) {
+      relevant = this.get('model').matchesExactly(this.get('effectiveSearch'));
+    }
+    if (!relevant) {
+      return 'opacity: 0.3';
+    }
+  }.property("state", "filter", "effectiveSearch"),
 
   labelStyle: function() {
     return 'padding-left: ' + ((+this.get('level') * 20) + 5) + "px";
