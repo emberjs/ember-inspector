@@ -58,6 +58,11 @@ var ApplicationRoute = Ember.Route.extend({
     },
     toggleInspector: function() {
       this.toggleProperty("controller.inspectorExpanded");
+    },
+    inspectObject: function(objectId) {
+      if (objectId) {
+        this.get('port').send('objectInspector:inspectById', { objectId: objectId });
+      }
     }
   }
 

@@ -162,3 +162,8 @@
 .table-tree__filter {
     flex: 0 1 24px;
 }
+
+.table-tree__right-helper {
+  float: right;
+  margin-right: 5px;
+}

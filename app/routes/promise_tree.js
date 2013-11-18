@@ -63,6 +63,12 @@ var PromiseTreeRoute = Ember.Route.extend({
     }
     promise.setProperties(props);
     return promise;
+  },
+
+  actions: {
+    sendValueToConsole: function(promise) {
+      this.get('port').send('promise:sendValueToConsole', { promiseId: promise.get('guid') });
+    }
   }
 });
 

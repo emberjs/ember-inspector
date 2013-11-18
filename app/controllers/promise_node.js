@@ -21,19 +21,6 @@ var PromiseNodeController = Ember.ObjectController.extend({
     return 'background-color:' + COLOR_MAP[color] + ';color:white;';
   }.property('model.state'),
 
-  // children: Ember.computed.filter('model.children', function(item) {
-  //   switch (this.get('filter')) {
-  //     case 'all':
-  //       return true;
-  //     case 'pending':
-  //       return !item.get('isSettled');
-  //     case 'fullfilled':
-  //       return !item.get('isFulfilled');
-  //     case 'rejected':
-  //       return !item.get('isRejected');
-  //   }
-  // }),
-
   labelStyle: function() {
     return 'padding-left: ' + ((+this.get('level') * 20) + 5) + "px";
   }.property('level'),
@@ -48,6 +35,14 @@ var PromiseNodeController = Ember.ObjectController.extend({
     }
 
   }.property('value'),
+
+  isValueInspectable: function() {
+    return !!this.get('settledValue.objectId');
+  }.property('settledValue'),
+
+  hasValue: function() {
+    return this.get('settledValue.type') !== 'type-undefined';
+  }.property('settledValue'),
 
   label: function() {
     return this.get('model.label') || '<Unknown Promise>';
@@ -65,8 +60,15 @@ var PromiseNodeController = Ember.ObjectController.extend({
       return 'Pending';
     }
 
-  }.property('model.state')
+  }.property('model.state'),
 
+  actions: {
+    inspectValue: function() {
+      if (this.get('isValueInspectable')) {
+        this.get('target').send('inspectObject', this.get('settledValue.objectId'));
+      }
+    }
+  }
 });
 
 export default PromiseNodeController;
