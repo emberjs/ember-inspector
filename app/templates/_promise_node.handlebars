@@ -1,8 +1,8 @@
 {{#each children itemController="promise_node"}}
-  <tr>
-    <td {{bind-attr style="labelStyle"}}>{{label}}</td>
+  <tr {{bind-attr style="nodeStyle"}}>
+    <td {{bind-attr style="labelStyle"}} class="table-tree__main-cell">{{label}}</td>
     <td><div class="pill pill_text_clear" {{bind-attr style="style"}}>{{state}}</div></td>
-    <td >
+    <td>
       {{#if hasValue}}
         {{#if isValueInspectable}}
           <span class="table-tree__clickable" {{action "inspectValue"}}>{{settledValue.inspect}}</span>
@@ -11,8 +11,8 @@
         {{/if}}
         <div class="table-tree__right-helper">
           <button class="send-to-console" {{action "sendValueToConsole" model}} data-label="send-to-console-btn">
-          <img src="../images/send.png" title="Send to console">
-        </button>
+            <img src="../images/send.png" title="Send to console">
+          </button>
         </div>
 
       {{else}}

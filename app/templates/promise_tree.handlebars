@@ -26,12 +26,12 @@
       <div class="filter-bar__search">
         {{input type="search" value=search placeholder="Search"}}
       </div>
-      <div data-label="filter" {{bindAttr class=":filter-bar__radio_selected :filter-bar__radio :filter-bar__radio_separate"}}>
+      <div data-label="filter" {{bindAttr class="noFilter:filter-bar__radio_selected :filter-bar__radio :filter-bar__radio_separate"}} {{action "setFilter" "all"}}>
         All
       </div>
-      <div data-label="filter" {{bindAttr class="checked:filter-bar__radio_selected :filter-bar__radio"}} >Rejected</div>
-      <div data-label="filter" {{bindAttr class="checked:filter-bar__radio_selected :filter-bar__radio"}} >Pending</div>
-      <div data-label="filter" {{bindAttr class="checked:filter-bar__radio_selected :filter-bar__radio"}} >Fulfilled</div>
+      <div data-label="filter" {{bindAttr class="isRejectedFilter:filter-bar__radio_selected :filter-bar__radio"}} {{action "setFilter" "rejected"}} >Rejected</div>
+      <div data-label="filter" {{bindAttr class="isPendingFilter:filter-bar__radio_selected :filter-bar__radio"}} {{action "setFilter" "pending"}} >Pending</div>
+      <div data-label="filter" {{bindAttr class="isFulfilledFilter:filter-bar__radio_selected :filter-bar__radio"}} {{action "setFilter" "fulfilled"}} >Fulfilled</div>
     </div>
   </div>
 
