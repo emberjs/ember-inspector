@@ -49,7 +49,6 @@ if (typeof adapter !== 'undefined') {
     function completed() {
       document.removeEventListener( "DOMContentLoaded", completed, false );
       window.removeEventListener( "load", completed, false );
-      console.log('completed');
       callback();
     }
   }

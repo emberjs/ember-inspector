@@ -4,7 +4,9 @@
       <button {{action "popStack"}} data-label="object-inspector-back" {{bindAttr class=":object-inspector__back isNested:object-inspector__back_state_enabled:object-inspector__back_state_disabled"}}></button>
     {{/if}}
     <span data-label="object-name" class="object-inspector__name">{{firstObject.name}}</span>
-    <button class="object-inspector__send-object-btn" {{action "sendObjectToConsole" firstObject}} data-label="send-object-to-console-btn"><img src="../images/send.png" title="Send object to console"></button>
+    <button class="object-inspector__send-object-btn" {{action "sendObjectToConsole" firstObject}} data-label="send-object-to-console-btn">
+      <img src="../images/send.png" title="Send object to console">
+    </button>
   </h1>
   {{#if trail}}
     <h2 class="object-inspector__header-trail" data-label="object-trail">{{trail}}</h2>

@@ -11,6 +11,11 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
 
   releaseMethods: Ember.computed(function() { return Ember.A(); }).property(),
 
+  willDestroy: function() {
+    this.releaseAll();
+    this._super();
+  },
+
   messages: {
     getAndObservePromises: function() {
       this.getAndObservePromises();
@@ -18,6 +23,16 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
 
     releasePromises: function() {
       this.releaseAll();
+    },
+
+    sendValueToConsole: function(message) {
+      var promiseId = message.promiseId;
+      var promise = this.get('promiseAssembler').find(promiseId);
+      var value = promise.get('value');
+      if (value === undefined) {
+        value = promise.get('reason');
+      }
+      this.get('objectInspector').sendValueToConsole(value);
     }
   },
 
@@ -151,8 +166,8 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
       serialized.children = this.promiseIds(promise.get('children'));
     }
     serialized.parent = promise.get('parent.guid');
-    serialized.value = this.get('objectInspector').inspect(promise.get('value'));
-    serialized.reason = this.get('objectInspector').inspect(promise.get('reason'));
+    serialized.value = this.inspectValue(promise.get('value'));
+    serialized.reason = this.inspectValue(promise.get('reason'));
     return serialized;
   },
 
@@ -160,6 +175,19 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
     return promises.map(function(promise) {
       return promise.get('guid');
     });
+  },
+
+  inspectValue: function(value) {
+    var objectInspector = this.get('objectInspector'),
+        inspected = objectInspector.inspectValue(value);
+
+    if (inspected.type === 'type-ember-object' || inspected.type === "type-array") {
+      inspected.objectId = objectInspector.retainObject(value);
+      this.get('releaseMethods').pushObject(function() {
+        objectInspector.releaseObject(inspected.objectId);
+      });
+    }
+    return inspected;
   }
 
 });
