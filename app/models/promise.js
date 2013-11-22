@@ -74,7 +74,7 @@ var Promise = Ember.Object.extend({
   },
 
   matchesExactly: function(val) {
-    return !!this.get('label').toLowerCase().match(new RegExp('.*' + escapeRegExp(val.toLowerCase()) + '.*'));
+    return !!((this.get('label') || '').toLowerCase().match(new RegExp('.*' + escapeRegExp(val.toLowerCase()) + '.*')));
   }
 
 
