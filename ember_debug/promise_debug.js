@@ -168,6 +168,7 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
     serialized.parent = promise.get('parent.guid');
     serialized.value = this.inspectValue(promise.get('value'));
     serialized.reason = this.inspectValue(promise.get('reason'));
+    serialized.createdAt = promise.get('createdAt').toString();
     return serialized;
   },
 
