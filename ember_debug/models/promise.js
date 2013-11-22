@@ -1,6 +1,6 @@
 var Promise = Ember.Object.extend({
   init: function() {
-    this.get('createdAt', new Date());
+    this.set('createdAt', new Date());
   },
 
   createdAt: null,

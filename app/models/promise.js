@@ -1,9 +1,11 @@
 var Promise = Ember.Object.extend({
-  init: function() {
-    this.set('createdAt', new Date());
-  },
-
-  createdAt: null,
+  createdAt: function(key, val) {
+    var date = null;
+    if (val !== undefined) {
+      date = typeof val === 'string' ? new Date(val) : val;
+    }
+    return date;
+  }.property(),
 
   parent: null,
 
