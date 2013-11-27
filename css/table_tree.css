@@ -125,8 +125,15 @@
   float: none;
 }
 
-.table-tree__row_selected td {
-  color: #939;
+.table-tree.table-tree_state_collapsed tr td {
+  color: #666;
+  background: #fff;
+}
+
+.table-tree.table-tree_state_collapsed .table-tree__row_selected td {
+  color: #333;
+  font-weight: bold;
+  background: #e0e0e0;
 }
 
 
