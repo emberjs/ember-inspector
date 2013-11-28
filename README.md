@@ -26,7 +26,7 @@ OR:
 
 ### Firefox
 
-Install the extension from the [last XPI build](http://ember-extension.s3.amazonaws.com/xpi-latest.xpi)
+Install the [Firefox addon](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/).
 
 OR:
 
