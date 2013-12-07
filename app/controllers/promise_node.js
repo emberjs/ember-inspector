@@ -10,25 +10,6 @@ var PromiseNodeController = Ember.ObjectController.extend({
   filter: Ember.computed.alias('controllers.promiseTree.filter'),
   effectiveSearch: Ember.computed.alias('controllers.promiseTree.effectiveSearch'),
 
-  // children: Ember.computed.filter('model.children.@each.pendingBranch', function(item) {
-  //   var include = true;
-  //   if (this.get('filter') === 'pending') {
-  //     include = item.get('pendingBranch');
-  //   } else if (this.get('filter') === 'rejected') {
-  //     include = item.get('rejectedBranch');
-  //   } else if (this.get('filter') === 'fulfilled') {
-  //     include = item.get('fulfilledBranch');
-  //   }
-  //   if (!include) {
-  //     return false;
-  //   }
-  //   var search = this.get('effectiveSearch');
-  //   if (!Ember.isEmpty(search)) {
-  //     return item.matches(search);
-  //   }
-  //   return true;
-  // }),
-
   style: function() {
     var color = '';
     if (this.get('isFulfilled')) {
