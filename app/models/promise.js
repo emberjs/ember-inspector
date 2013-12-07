@@ -26,23 +26,17 @@ var Promise = Ember.Object.extend({
     return parent.get('level') + 1;
   }.property('parent.level'),
 
-  isSettled: function() {
-    return this.get('isFulfilled') || this.get('isRejected');
-  }.property('state'),
+  isSettled: Ember.computed.or('isFulfilled', 'isRejected'),
 
-  isFulfilled: function() {
-    return this.get('state') === 'fulfilled';
-  }.property('state'),
+  isFulfilled: Ember.computed.equal('state', 'fulfilled'),
 
-  isRejected: function() {
-    return this.get('state') === 'rejected';
-  }.property('state'),
+  isRejected: Ember.computed.equal('state', 'rejected'),
+
+  isPending: Ember.computed.not('isSettled'),
 
   children: function() {
     return [];
   }.property(),
-
-  isPending: Ember.computed.not('isSettled'),
 
   pendingBranch: function() {
     return this.recursiveState('isPending', 'pendingBranch');
@@ -60,22 +54,40 @@ var Promise = Ember.Object.extend({
     if (this.get(prop)) {
       return true;
     }
-    if (this.get('children')) {
-      for (var i = 0; i < this.get('children.length'); i++) {
-        if (this.get('children').objectAt(i).get(cp)) {
-          return true;
-        }
+    for (var i = 0; i < this.get('children.length'); i++) {
+      if (this.get('children').objectAt(i).get(cp)) {
+        return true;
       }
     }
     return false;
   },
 
+  // Need this observer because CP dependent keys do not support nested arrays
+  // TODO: This can be so much better
+  stateChanged: function() {
+    if (!this.get('parent')) {
+      return;
+    }
+    if (this.get('pendingBranch') && !this.get('parent.pendingBranch')) {
+      this.get('parent').notifyPropertyChange('fulfilledBranch');
+      this.get('parent').notifyPropertyChange('rejectedBranch');
+      this.get('parent').notifyPropertyChange('pendingBranch');
+    } else if (this.get('fulfilledBranch') && !this.get('parent.fulfilledBranch')) {
+      this.get('parent').notifyPropertyChange('fulfilledBranch');
+      this.get('parent').notifyPropertyChange('rejectedBranch');
+      this.get('parent').notifyPropertyChange('pendingBranch');
+    } else if (this.get('rejectedBranch') && !this.get('parent.rejectedBranch')) {
+      this.get('parent').notifyPropertyChange('fulfilledBranch');
+      this.get('parent').notifyPropertyChange('rejectedBranch');
+      this.get('parent').notifyPropertyChange('pendingBranch');
+    }
+
+  }.observes('pendingBranch', 'fulfilledBranch', 'rejectedBranch'),
+
   searchIndex: function() {
     var label = this.get('label') || '';
-    if (this.get('children')) {
-      for (var i = 0; i < this.get('children.length'); i++) {
-        label += ' ' + this.get('children').objectAt(i).get('searchIndex');
-      }
+    for (var i = 0; i < this.get('children.length'); i++) {
+      label += ' ' + this.get('children').objectAt(i).get('searchIndex');
     }
     return label;
   }.property('label', 'children.@each.label'),
