@@ -20,6 +20,9 @@ if (typeof adapter !== 'undefined') {
   }
 
   onReady(function() {
+    if (!window.Ember) {
+      return;
+    }
     // global to prevent injection
     if (window.NO_EMBER_DEBUG) {
       return;

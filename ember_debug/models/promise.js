@@ -1,33 +1,49 @@
-var Promise = Ember.Object.extend({
-  init: function() {
-    this.set('createdAt', new Date());
-  },
+var dateComputed = function() {
+  return Ember.computed(
+    function(key, date) {
+      if (date !== undefined) {
+        if (typeof date === 'date') {
+          return date;
+        } else if (typeof date === 'number' || typeof date === 'string') {
+          return new Date(date);
+        }
+      }
+      return null;
+  }).property();
+};
 
-  createdAt: null,
+var Promise = Ember.Object.extend({
+
+  createdAt: dateComputed(),
+  settledAt: dateComputed(),
+  chainedAt: dateComputed(),
 
   parent: null,
 
-  level: function() {
+  children: Ember.computed(function() {
+    return Ember.A();
+  }).property(),
+
+  level: Ember.computed(function() {
     var parent = this.get('parent');
     if (!parent) {
       return 0;
     }
     return parent.get('level') + 1;
-  }.property('parent.level'),
+  }).property('parent.level'),
 
-  isSettled: function() {
+  isSettled: Ember.computed(function() {
     return this.get('isFulfilled') || this.get('isRejected');
-  }.property('state'),
+  }).property('state'),
 
-  isFulfilled: function() {
+  isFulfilled: Ember.computed(function() {
     return this.get('state') === 'fulfilled';
-  }.property('state'),
+  }).property('state'),
 
-  isRejected: function() {
+  isRejected: Ember.computed(function() {
     return this.get('state') === 'rejected';
-  }.property('state')
+  }).property('state')
 
 });
-
 
 export default Promise;
