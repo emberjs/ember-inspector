@@ -167,3 +167,9 @@
   float: right;
   margin-right: 5px;
 }
+
+.table-tree__numeric {
+  min-width: 40px;
+  text-align: right;
+  padding-right: 10px;
+}
