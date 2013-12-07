@@ -6,15 +6,15 @@ var PromiseAssembler = Ember.Object.extend({
   // RSVP lib to debug
   RSVP: Ember.RSVP,
 
-  all: function() { return []; }.property(),
+  all: Ember.computed(function() { return []; }).property(),
 
   start: function() {
-    var InstrumentedPromise = this.RSVP.Promise;
+    this.RSVP.configure('instrument', true);
     // listen for stuff
-    InstrumentedPromise.on('chained',   chain.bind(this));
-    InstrumentedPromise.on('rejected',  resolve.bind(this));
-    InstrumentedPromise.on('fulfilled', resolve.bind(this));
-    InstrumentedPromise.on('created',   create.bind(this));
+    this.RSVP.on('chained',   chain.bind(this));
+    this.RSVP.on('rejected',  reject.bind(this));
+    this.RSVP.on('fulfilled', fulfill.bind(this));
+    this.RSVP.on('created',   create.bind(this));
   },
 
   createPromise: function(props) {
@@ -51,43 +51,52 @@ var PromiseAssembler = Ember.Object.extend({
   }
 });
 
-var resolve = function(event) {
-  var guid = event.guid || event.parent;
-  var promise = this.updateOrCreate(guid, event);
-
-  var state = promise.get('state');
-  promise.set('state', event.eventName);
+var fulfill = function(event) {
+  var guid = event.guid;
+  var promise = this.updateOrCreate(guid, {
+    label: event.label,
+    settledAt: event.timeStamp,
+    state: 'fulfilled',
+    value: event.detail
+  });
 };
 
-var chain = function(originalEvent) {
-  var event = Ember.$.extend({}, originalEvent);
 
-  var guid = event.guid || event.parent;
+var reject = function(event) {
+  var guid = event.guid;
+  var promise = this.updateOrCreate(guid, {
+    label: event.label,
+    settledAt: event.timeStamp,
+    state: 'rejected',
+    reason: event.detail
+  });
+};
 
-  delete event.parent;
-
-  var promise = this.updateOrCreate(guid, event);
-
-  var children = promise.get('children') || Ember.A();
-  var child = this.findOrCreate(event.child);
+var chain = function(event) {
+  var guid = event.guid,
+      promise = this.updateOrCreate(guid, {
+        label: event.label,
+        chainedAt: event.timeStamp
+      }),
+      children = promise.get('children'),
+      child = this.findOrCreate(event.childGuid);
 
   child.set('parent', promise);
   children.pushObject(child);
-  promise.set('children', children);
 };
 
 var create = function(event) {
-  var self = this;
-  Ember.run.join(function(){
-    var guid = event.guid;
+  var guid = event.guid;
 
-    var promise = self.updateOrCreate(guid, event);
-
-    // todo fix ordering
-    if (Ember.isNone(promise.get('state'))) {
-      promise.set('state', 'created');
-    }
+  var promise = this.updateOrCreate(guid, {
+    label: event.label,
+    createdAt: event.timeStamp
   });
+
+  // todo fix ordering
+  if (Ember.isNone(promise.get('state'))) {
+    promise.set('state', 'created');
+  }
 };
 
 

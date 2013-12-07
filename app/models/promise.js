@@ -1,11 +1,20 @@
+var dateComputed = function() {
+  return Ember.computed(
+    function(key, date) {
+      if (date !== undefined) {
+        if (typeof date === 'date') {
+          return date;
+        } else if (typeof date === 'number' || typeof date === 'string') {
+          return new Date(date);
+        }
+      }
+      return null;
+  }).property();
+};
+
 var Promise = Ember.Object.extend({
-  createdAt: function(key, val) {
-    var date = null;
-    if (val !== undefined) {
-      date = typeof val === 'string' ? new Date(val) : val;
-    }
-    return date;
-  }.property(),
+  createdAt: dateComputed(),
+  settledAt: dateComputed(),
 
   parent: null,
 
