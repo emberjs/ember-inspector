@@ -66,8 +66,8 @@ var PromiseNodeController = Ember.ObjectController.extend({
   }.property('settledValue'),
 
   hasValue: function() {
-    return this.get('settledValue.type') !== 'type-undefined';
-  }.property('settledValue'),
+    return this.get('isSettled') && this.get('settledValue.type') !== 'type-undefined';
+  }.property('settledValue', 'isSettled'),
 
   label: function() {
     return this.get('model.label') || '<Unknown Promise>';
