@@ -54,6 +54,11 @@ if (typeof adapter !== 'undefined') {
   // but this definitely works
   function onApplicationStart(callback) {
     if (typeof Ember === 'undefined') {
+      if (window.define.amd) {
+        require(["Ember"], function (Ember) {
+          onApplicationStart(callback);
+        });
+      }
       return;
     }
     var body = document.body;
