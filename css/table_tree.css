@@ -169,7 +169,15 @@
 }
 
 .table-tree__numeric {
-  min-width: 40px;
+  min-width: 65px;
   text-align: right;
   padding-right: 10px;
+}
+
+.table-tree__limited {
+  max-width: 150px;
+  overflow: hidden;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
