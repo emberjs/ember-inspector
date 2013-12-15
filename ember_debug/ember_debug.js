@@ -58,7 +58,9 @@ EmberDebug = Ember.Namespace.create({
       this.startModule('routeDebug', RouteDebug);
       this.startModule('viewDebug', ViewDebug);
       this.startModule('dataDebug', DataDebug);
-      this.startModule('promiseDebug', PromiseDebug);
+      if (this.get('promiseAssembler')) {
+        this.startModule('promiseDebug', PromiseDebug);
+      }
 
       this.generalDebug.sendBooted();
       this.viewDebug.sendTree();

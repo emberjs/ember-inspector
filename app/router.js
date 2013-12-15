@@ -14,7 +14,11 @@ Router.map(function() {
     });
   });
 
-  this.route('promise_tree');
+  this.resource('promises', function() {
+    this.resource('promise_tree');
+  });
+
+
 
 });
 
