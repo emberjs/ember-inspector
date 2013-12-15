@@ -18,7 +18,6 @@ module("Route Debug", {
 
 
     App.reset();
-
     EmberDebug.start();
     port = EmberDebug.port;
   }
