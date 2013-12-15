@@ -51,6 +51,12 @@ var PromiseAssembler = Ember.Object.extend({
   }
 });
 
+PromiseAssembler.reopenClass({
+  supported: function() {
+    return !!Ember.RSVP.on;
+  }
+});
+
 var fulfill = function(event) {
   var guid = event.guid;
   var promise = this.updateOrCreate(guid, {

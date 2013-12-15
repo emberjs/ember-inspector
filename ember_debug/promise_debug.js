@@ -1,5 +1,4 @@
 import PortMixin from 'mixins/port_mixin';
-import PromiseAssembler from 'lib/promise_assembler';
 
 var PromiseDebug = Ember.Object.extend(PortMixin, {
   namespace: null,
