@@ -1,4 +1,10 @@
 var BasicAdapter = Ember.Object.extend({
+  debug: function() {
+    console.debug.apply(console, arguments);
+  },
+  log: function() {
+    console.log.apply(console, arguments);
+  },
   /**
     Used to send messages to EmberExtension
 
