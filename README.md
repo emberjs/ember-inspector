@@ -1,7 +1,7 @@
 Ember Extension [![Build Status](https://secure.travis-ci.org/tildeio/ember-extension.png?branch=master)](http://travis-ci.org/tildeio/ember-extension)
 ===============
 
-Adds an Ember tab to chrome dev tools that allows you to inspect
+Adds an Ember tab to Chrome or Firefox Developer Tools that allows you to inspect
 Ember objects in your application.
 
 Installation
