@@ -6,9 +6,9 @@ var PromiseAssembler = Ember.Object.extend({
   // RSVP lib to debug
   RSVP: Ember.RSVP,
 
-  promiseIndex: Ember.computed(function() { return {}; }).property(),
-
   all: Ember.computed(function() { return []; }).property(),
+
+  promiseIndex: Ember.computed(function() { return {}; }).property(),
 
   start: function() {
     this.RSVP.configure('instrument', true);

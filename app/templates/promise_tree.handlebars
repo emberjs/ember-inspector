@@ -19,7 +19,9 @@
       </thead>
 
       <tbody>
-        {{partial "promise_node"}}
+        {{#each children itemController="promise_node"}}
+          {{partial "promise_node"}}
+        {{/each}}
       </tbody>
     </table>
   </div>
