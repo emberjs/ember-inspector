@@ -70,7 +70,7 @@ var PromiseNodeController = Ember.ObjectController.extend({
   }.property('settledValue', 'isSettled'),
 
   label: function() {
-    return this.get('model.label') || '<Unknown Promise>';
+    return this.get('model.label') || (!!this.get('model.parent') && 'Then') || '<Unknown Promise>';
   }.property('model.label'),
 
   state: function() {
