@@ -6,6 +6,8 @@ var PromiseAssembler = Ember.Object.extend({
   // RSVP lib to debug
   RSVP: Ember.RSVP,
 
+  promiseIndex: Ember.computed(function() { return {}; }).property(),
+
   all: Ember.computed(function() { return []; }).property(),
 
   start: function() {
@@ -18,14 +20,20 @@ var PromiseAssembler = Ember.Object.extend({
   },
 
   createPromise: function(props) {
-    var promise = Promise.create(props);
+    var promise = Promise.create(props),
+        index = this.get('all.length');
+
     this.get('all').pushObject(promise);
+    this.get('promiseIndex')[promise.get('guid')] = index;
     return promise;
   },
 
   find: function(guid){
     if (guid) {
-      return this.get('all').findProperty('guid', guid);
+      var index = this.get('promiseIndex')[guid];
+      if (index !== undefined) {
+        return this.get('all').objectAt(index);
+      }
     } else {
       return this.get('all');
     }
@@ -39,13 +47,13 @@ var PromiseAssembler = Ember.Object.extend({
 
   updateOrCreate: function(guid, properties){
     var entry = this.find(guid);
-
     if (entry) {
       entry.setProperties(properties);
     } else {
+      properties = Ember.copy(properties);
+      properties.guid = guid;
       entry = this.createPromise(properties);
     }
-    entry.set('guid', guid);
 
     return entry;
   }
