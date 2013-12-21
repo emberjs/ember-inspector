@@ -44,13 +44,9 @@ var PromiseTreeController = Ember.ArrayController.extend({
   // TODO: This filter can be futher optimized
   children: filterComputed(
       'model.@each.createdAt',
-      'model.@each.parent',
       'model.@each.fulfilledBranch',
       'model.@each.rejectedBranch',
       'model.@each.pendingBranch', function(item) {
-
-   // only top level promises are allowed:/
-    if (!!item.get('parent')) { return false; }
 
     // exclude cleared promises
     if (this.get('createdAfter') && item.get('createdAt') < this.get('createdAfter')) {
