@@ -132,6 +132,9 @@ var PromiseAssembler = Ember.Object.extend({
 
 
   findOrCreate: function(guid) {
+    if (!guid) {
+      Ember.assert('You have tried to findOrCreate without a guid');
+    }
     return this.find(guid) || this.createPromise({
       guid: guid
     });

@@ -8,7 +8,7 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
 
   promiseAssembler: Ember.computed.alias('namespace.promiseAssembler'),
 
-  releaseMethods: Ember.computed(function() { return Ember.A(); }).property(),
+  releaseMethods: Ember.computed(function() { return Ember.A(); }),
 
   willDestroy: function() {
     this.releaseAll();
@@ -36,129 +36,74 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
   },
 
   releaseAll: function() {
-    this.get('releaseMethods').forEach(function(release) {
-      release();
+    this.get('releaseMethods').forEach(function(fn) {
+      fn();
     });
+    this.set('releaseMethods', Ember.A());
   },
 
   getAndObservePromises: function() {
+    this.get('promiseAssembler').on('created', this, this.promiseAdded);
+    this.get('promiseAssembler').on('fulfilled', this, this.promiseUpdated);
+    this.get('promiseAssembler').on('rejected', this, this.promiseUpdated);
+    this.get('promiseAssembler').on('chained', this, this.promiseChained);
 
-    var self = this, releaseMethods = Ember.A(),
-        promises = this.get('promiseAssembler').find(), release,
-        promisesToAdd = promises, promisesToUpdate = Ember.A();
+    this.get('releaseMethods').pushObject(function() {
 
-    var promisesAdded = function() {
-      self.sendMessage('promisesAdded', {
-        promises: promisesToAdd.map(function(promise) {
-          releaseMethods.push(self.observePromise(promise, promiseUpdated));
-          return self.serialize(promise);
-        })
-      });
-      promisesToAdd = Ember.A();
-    };
+      this.get('promiseAssembler').off('created', this, this.promiseAdded);
+      this.get('promiseAssembler').off('fulfilled', this, this.promiseUpdated);
+      this.get('promiseAssembler').off('rejected', this, this.promiseUpdated);
+      this.get('promiseAssembler').off('fulfilled', this, this.promiseChained);
 
-    var promiseUpdated = function(promise) {
-      promisesToUpdate.push(promise);
-      Ember.run.once(null, promisesUpdated);
-    };
+    }.bind(this));
 
-    var promisesUpdated = function() {
-      self.sendMessage('promisesUpdated', {
-        promises: promisesToUpdate.map(self.serialize.bind(self))
-      });
-      promisesToUpdate = Ember.A();
-    };
-
-    var contentDidChange = function(array, idx, removedCount, addedCount) {
-      for (var i = idx; i < idx + addedCount; i++) {
-        var promise = array.objectAt(i);
-        promisesToAdd.push(promise);
-      }
-      Ember.run.once(null, promisesAdded);
-    };
-
-    var observer = { didChange: contentDidChange, willChange: Ember.K };
-    promises.addArrayObserver(self, observer);
-
-    release = function() {
-      promisesToAdd = Ember.A();
-      promisesToUpdate = Ember.A();
-      releaseMethods.forEach(function(fn) { fn(); });
-      promises.removeArrayObserver(self, observer);
-      self.get('releaseMethods').removeObject(release);
-    };
-
-    promisesAdded();
-
-    this.get('releaseMethods').pushObject(release);
-
-    return release;
+    this.get('addedPromises').pushObjects(this.get('promiseAssembler').find());
+    this.promisesAdded();
   },
 
-  observePromise: function(promise, callback) {
-    var releaseMethods = Ember.A(), self = this,
-        keysToObserve = Ember.A(['state', 'label', 'value', 'reason', 'children', 'parent']),
-        children = promise.get('children');
+  addedPromises: Ember.computed(function() { return Ember.A(); }),
 
-    keysToObserve.forEach(function(key) {
-      var handler = function() {
-        callback(promise);
-      };
-      Ember.addObserver(promise, key, handler);
-      releaseMethods.push(function() {
-        Ember.removeObserver(promise, key, handler);
-      });
+  promisesAdded: function() {
+    this.sendMessage('promisesAdded', {
+      promises: this.serializeArray(this.get('addedPromises'))
     });
-
-
-    if (children) {
-      var onChange = function() {
-        callback(promise);
-      };
-
-      var observer = {
-        didChange: function() {
-          Ember.run.scheduleOnce('actions', this, onChange);
-        },
-        willChange: Ember.K
-      };
-
-      children.addArrayObserver(this, observer);
-
-      releaseMethods.push(function() {
-        children.removeArrayObserver(self, observer);
-      });
-    }
-
-    var release = function() {
-      releaseMethods.forEach(function(fn) { fn(); } );
-    };
-
-    return release;
+    this.set('addedPromises', Ember.A());
   },
 
-  serializedPromises: function() { return {}; }.property(),
+  promiseAdded: function(event) {
+    this.get('addedPromises').pushObject(event.promise);
+    Ember.run.debounce(this, 'promisesAdded', 100);
+  },
 
+  updatedPromises: Ember.computed(function() { return Ember.A(); }),
 
-  serialized: function(promise) {
-    var obj = this.get('serializedPromises')[promise.get('guid')];
-    if (!obj) {
-      obj = { guid: promise.get('guid') };
-      this.get('serializedPromises')[promise.get('guid')] = obj;
-    }
-    return obj;
+  promisesUpdated: function() {
+    this.sendMessage('promisesUpdated', {
+      promises: this.serializeArray(this.get('updatedPromises'))
+    });
+    this.set('updatedPromises', Ember.A());
+  },
+
+  promiseUpdated: function(event) {
+    this.get('updatedPromises').pushObject(event.promise);
+    Ember.run.debounce(this, 'promisesUpdated', 100);
+  },
+
+  promiseChained: function(event) {
+    this.get('updatedPromises').pushObject(event.promise);
+    this.get('updatedPromises').pushObject(event.child);
+    Ember.run.debounce(this, 'promisesUpdated', 100);
   },
 
   serializeArray: function(promises) {
-    var a = [], self = this;
-    promises.forEach(function(item) {
-      a.pushObject(self.serialize(item));
-    });
-    return a;
+    return promises.map(function(item) {
+      return this.serialize(item);
+    }.bind(this));
   },
 
   serialize: function(promise) {
-    var serialized = this.serialized(promise);
+    var serialized = {};
+    serialized.guid = promise.get('guid');
     serialized.state = promise.get('state');
     serialized.label = promise.get('label');
     if (promise.get('children')) {
@@ -173,7 +118,6 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
     if (promise.get('settledAt')) {
       serialized.settledAt = promise.get('settledAt').getTime();
     }
-
     return serialized;
   },
 
