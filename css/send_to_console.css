@@ -12,6 +12,7 @@
   padding: 0;
   width: 23px;
   opacity: 1;
+  cursor: pointer;
 }
 
 .send-to-console img {

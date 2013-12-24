@@ -38,11 +38,21 @@ var filterComputed = function() {
 };
 
 var PromiseTreeController = Ember.ArrayController.extend({
+  needs: ['application'],
 
   createdAfter: null,
 
+  promiseNodeController: function() {
+    return this.container.lookupFactory('controller:promiseNode');
+  }.property(),
+
+  // TODO: Remove this, serious memory leak + ugly code
+  items: Ember.computed.map('filtered', function(item) {
+    return this.get('promiseNodeController').extend({model: Ember.computed.alias('content')}).create({content: item});
+  }),
+
   // TODO: This filter can be futher optimized
-  children: filterComputed(
+  filtered: filterComputed(
       'model.@each.createdAt',
       'model.@each.fulfilledBranch',
       'model.@each.rejectedBranch',
@@ -97,7 +107,7 @@ var PromiseTreeController = Ember.ArrayController.extend({
     var self = this;
     this.set('effectiveSearch', this.get('search'));
     Ember.run.next(function() {
-      self.notifyPropertyChange('children');
+      self.notifyPropertyChange('filtered');
     });
   },
 
@@ -106,7 +116,7 @@ var PromiseTreeController = Ember.ArrayController.extend({
       var self = this;
       this.set('filter', filter);
       Ember.run.next(function() {
-        self.notifyPropertyChange('children');
+        self.notifyPropertyChange('filtered');
       });
     },
     clear: function() {

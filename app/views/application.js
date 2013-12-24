@@ -12,6 +12,26 @@ var ApplicationView = Ember.View.extend({
   attributeBindings: ['tabindex'],
   tabindex: 1,
 
+  height: Ember.computed.alias('controller.height'),
+
+  didInsertElement: function() {
+    this._super.apply();
+
+    Em.$(window).on('resize.application-view', function() {
+      Ember.run.debounce(this, 'updateHeight', 200);
+    }.bind(this));
+
+    this.updateHeight();
+  },
+
+  updateHeight: function() {
+    this.set('height', this.$().height());
+  },
+
+  willDestroyElement: function() {
+    Em.$(window).off('.application-view');
+  },
+
   focusIn: function() {
     if (!this.get('controller.active')) {
       this.set('controller.active', true);
