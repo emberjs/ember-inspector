@@ -2,7 +2,7 @@ import Promise from 'models/promise';
 
 var get = Ember.get;
 
-var PromiseAssembler = Ember.Object.extend({
+var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
   // RSVP lib to debug
   RSVP: Ember.RSVP,
 
@@ -73,6 +73,9 @@ var fulfill = function(event) {
     state: 'fulfilled',
     value: event.detail
   });
+  this.trigger('fulfilled', {
+    promise: promise
+  });
 };
 
 
@@ -83,6 +86,9 @@ var reject = function(event) {
     settledAt: event.timeStamp,
     state: 'rejected',
     reason: event.detail
+  });
+  this.trigger('rejected', {
+    promise: promise
   });
 };
 
@@ -97,6 +103,11 @@ var chain = function(event) {
 
   child.set('parent', promise);
   children.pushObject(child);
+
+  this.trigger('chained', {
+    promise: promise,
+    child: child
+  });
 };
 
 var create = function(event) {
@@ -111,6 +122,9 @@ var create = function(event) {
   if (Ember.isNone(promise.get('state'))) {
     promise.set('state', 'created');
   }
+  this.trigger('created', {
+    promise: promise
+  });
 };
 
 
