@@ -1,0 +1,26 @@
+<div class="list-tree__item row" {{bind-attr style="nodeStyle"}}>
+  <div class="list-tree__cell cell_type_main cell" {{bind-attr style="labelStyle"}}>{{label}}</div>
+  <div class="list-tree__cell cell cell_size_medium">
+    <div class="pill pill_text_clear" {{bindAttr style="style"}}>{{state}}</div>
+  </div>
+  <div class="list-tree__cell cell cell_size_large">
+    {{#if hasValue}}
+        <div class="list-tree__limited">
+          {{#if isValueInspectable}}
+
+            <span class="cell_clickable" {{action "inspectObject" settledValue.objectId}}>{{settledValue.inspect}}</span>
+          {{else}}
+            {{settledValue.inspect}}
+          {{/if}}
+        </div>
+        <div class="list-tree__right-helper">
+          <button class="send-to-console" {{action "sendValueToConsole" model}} data-label="send-to-console-btn">
+            <img src="../images/send.png" title="Send to console">
+          </button>
+        </div>
+    {{else}}
+    --
+    {{/if}}
+  </div>
+  <div class="list-tree__cell cell cell_size_medium cell_value_numeric">{{timeToSettle}}</div>
+</div>

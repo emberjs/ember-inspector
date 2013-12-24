@@ -4,11 +4,14 @@ var COLOR_MAP = {
   green: '#006400'
 };
 
-var PromiseNodeController = Ember.ObjectController.extend({
-  needs: 'promiseTree',
+var PromiseNodeController = Ember.ObjectProxy.extend({
 
-  filter: Ember.computed.alias('controllers.promiseTree.filter'),
-  effectiveSearch: Ember.computed.alias('controllers.promiseTree.effectiveSearch'),
+  promiseTreeController: function() {
+    return this.container.lookup('controller:promiseTree');
+  }.property(),
+
+  filter: Ember.computed.alias('promiseTreeController.filter'),
+  effectiveSearch: Ember.computed.alias('promiseTreeController.effectiveSearch'),
 
   style: function() {
     var color = '';
@@ -61,9 +64,7 @@ var PromiseNodeController = Ember.ObjectController.extend({
 
   }.property('value'),
 
-  isValueInspectable: function() {
-    return !!this.get('settledValue.objectId');
-  }.property('settledValue'),
+  isValueInspectable: Ember.computed.notEmpty('settledValue.objectId'),
 
   hasValue: function() {
     return this.get('isSettled') && this.get('settledValue.type') !== 'type-undefined';
@@ -109,15 +110,9 @@ var PromiseNodeController = Ember.ObjectController.extend({
       val += ms + 'ms';
     }
     return val;
-  }.property('createdAt', 'settledAt', 'parent.settledAt'),
+  }.property('createdAt', 'settledAt', 'parent.settledAt')
 
-  actions: {
-    inspectValue: function() {
-      if (this.get('isValueInspectable')) {
-        this.get('target').send('inspectObject', this.get('settledValue.objectId'));
-      }
-    }
-  }
+
 });
 
 export default PromiseNodeController;

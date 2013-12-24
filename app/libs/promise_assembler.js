@@ -52,6 +52,7 @@ var PromiseAssembler = Ember.Object.extend({
       if (childrenIds) {
         childrenIds.forEach(function(childId){
           var child = this.updateOrCreate({ guid: childId, parent: promise });
+          promise.get('children').pushObject(child);
         }.bind(this));
       }
     }.bind(this));

@@ -1,0 +1,25 @@
+.list-tree__item-wrapper {
+  width: 100%;
+}
+
+.list-tree__item-wrapper:nth-of-type(2n) .list-tree__cell {
+  background: #f3f3f3;
+}
+
+.list-tree__item:hover .list-tree__cell {
+  opacity: 1;
+}
+
+
+.list-tree__right-helper {
+  float: right;
+  margin-right: 5px;
+}
+
+.list-tree__limited {
+  max-width: 150px;
+  overflow: hidden;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
