@@ -17,19 +17,21 @@ var ApplicationView = Ember.View.extend({
   didInsertElement: function() {
     this._super.apply();
 
-    Em.$(window).on('resize.application-view', function() {
+    Ember.$(window).on('resize.application-view-' + this.get('elementId'), function() {
       Ember.run.debounce(this, 'updateHeight', 200);
     }.bind(this));
-
     this.updateHeight();
   },
 
   updateHeight: function() {
-    this.set('height', this.$().height());
+    // could be destroyed but with debounce pending
+    if (this.$()) {
+      this.set('height', this.$().height());
+    }
   },
 
   willDestroyElement: function() {
-    Em.$(window).off('.application-view');
+    Ember.$(window).off('.application-view-' + this.get('elementId'));
   },
 
   focusIn: function() {
