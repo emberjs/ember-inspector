@@ -37,19 +37,41 @@ var filterComputed = function() {
   return Ember.arrayComputed.apply(this, args);
 };
 
+// Manual implementation of item controlelrs
+var itemProxyComputed = function(dependentKey, itemProxy) {
+  var options = {
+    addedItem: function(array, item, changeMeta, instanceMeta) {
+      var proxy = itemProxy.create({ content: item });
+      array.insertAt(changeMeta.index, proxy);
+      return array;
+    },
+    removedItem: function(array, item, changeMeta, instanceMeta) {
+      var proxy = array.objectAt(changeMeta.index);
+      array.removeAt(changeMeta.index, 1);
+      proxy.destroy();
+      return array;
+    }
+  };
+
+  return Ember.arrayComputed(dependentKey, options);
+};
+
 var PromiseTreeController = Ember.ArrayController.extend({
   needs: ['application'],
 
   createdAfter: null,
 
+  init: function() {
+    // List-view does not support item controllers
+    this.reopen({
+      items: itemProxyComputed('filtered', this.get('promiseNodeController'))
+    });
+  },
+
+
   promiseNodeController: function() {
     return this.container.lookupFactory('controller:promiseNode');
   }.property(),
-
-  // TODO: Remove this, serious memory leak + ugly code
-  items: Ember.computed.map('filtered', function(item) {
-    return this.get('promiseNodeController').extend({model: Ember.computed.alias('content')}).create({content: item});
-  }),
 
   // TODO: This filter can be futher optimized
   filtered: filterComputed(

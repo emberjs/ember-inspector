@@ -30,7 +30,7 @@ if (typeof adapter !== 'undefined') {
     // prevent from injecting twice
     if (!Ember.Debug) {
       inject();
-      var PromiseAssembler = requireModule('lib/promise_assembler');
+      var PromiseAssembler = requireModule('libs/promise_assembler');
       if (PromiseAssembler.supported()) {
         Ember.Debug.promiseAssembler = PromiseAssembler.create();
         Ember.Debug.promiseAssembler.start();

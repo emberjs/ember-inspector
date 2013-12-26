@@ -13,6 +13,8 @@ var PromiseNodeController = Ember.ObjectProxy.extend({
   filter: Ember.computed.alias('promiseTreeController.filter'),
   effectiveSearch: Ember.computed.alias('promiseTreeController.effectiveSearch'),
 
+  model: Ember.computed.alias('content'),
+
   style: function() {
     var color = '';
     if (this.get('isFulfilled')) {
