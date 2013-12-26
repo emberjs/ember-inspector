@@ -4,7 +4,7 @@ var COLOR_MAP = {
   green: '#006400'
 };
 
-var PromiseNodeController = Ember.ObjectProxy.extend({
+var PromiseItemController = Ember.ObjectProxy.extend({
 
   promiseTreeController: function() {
     return this.container.lookup('controller:promiseTree');
@@ -117,4 +117,4 @@ var PromiseNodeController = Ember.ObjectProxy.extend({
 
 });
 
-export default PromiseNodeController;
+export default PromiseItemController;
