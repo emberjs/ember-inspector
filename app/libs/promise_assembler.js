@@ -11,30 +11,27 @@ var PromiseAssembler = Ember.Object.extend({
   topSortMeta: function() { return {}; },
 
   start: function() {
-    this.get('port').on('promise:promisesAdded', this, this.addPromises);
-    this.get('port').on('promise:promisesUpdated', this, this.updatePromises);
+    this.get('port').on('promise:promisesUpdated', this, this.addOrUpdatePromises);
     this.get('port').send('promise:getAndObservePromises');
   },
 
   stop: function() {
-    this.get('port').off('promise:promiseAdded', this, this.addPromises);
-    this.get('port').off('promise:promiseUpdated', this, this.updatePromises);
+    this.get('port').off('promise:promiseUpdated', this, this.addOrUpdatePromises);
     this.get('port').send('promise:releasePromises');
     this.reset();
   },
 
   reset: function() {
     this.set('topSortMeta', {});
-    this.set('topSort', []);
+    this.get('topSort').clear();
     this.set('promiseIndex', {});
+    this.get('all').forEach(function(item) {
+      item.destroy();
+    });
     this.set('all', []);
   },
 
-  addPromises: function(message) {
-    this.rebuildPromises(message.promises);
-  },
-
-  updatePromises: function(message) {
+  addOrUpdatePromises: function(message) {
     this.rebuildPromises(message.promises);
   },
 

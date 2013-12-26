@@ -43,43 +43,36 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
   },
 
   getAndObservePromises: function() {
-    this.get('promiseAssembler').on('created', this, this.promiseAdded);
+    this.get('promiseAssembler').on('created', this, this.promiseUpdated);
     this.get('promiseAssembler').on('fulfilled', this, this.promiseUpdated);
     this.get('promiseAssembler').on('rejected', this, this.promiseUpdated);
     this.get('promiseAssembler').on('chained', this, this.promiseChained);
 
     this.get('releaseMethods').pushObject(function() {
 
-      this.get('promiseAssembler').off('created', this, this.promiseAdded);
+      this.get('promiseAssembler').off('created', this, this.promiseUpdated);
       this.get('promiseAssembler').off('fulfilled', this, this.promiseUpdated);
       this.get('promiseAssembler').off('rejected', this, this.promiseUpdated);
       this.get('promiseAssembler').off('fulfilled', this, this.promiseChained);
 
     }.bind(this));
 
-    this.get('addedPromises').pushObjects(this.get('promiseAssembler').find());
-    this.promisesAdded();
-  },
-
-  addedPromises: Ember.computed(function() { return Ember.A(); }),
-
-  promisesAdded: function() {
-    this.sendMessage('promisesAdded', {
-      promises: this.serializeArray(this.get('addedPromises'))
-    });
-    this.set('addedPromises', Ember.A());
-  },
-
-  promiseAdded: function(event) {
-    this.get('addedPromises').pushObject(event.promise);
-    Ember.run.debounce(this, 'promisesAdded', 100);
+    this.get('updatedPromises').pushObjects(this.get('promiseAssembler').find());
+    this.promisesUpdated();
   },
 
   updatedPromises: Ember.computed(function() { return Ember.A(); }),
 
   promisesUpdated: function() {
+    var updatedPromises = this.get('updatedPromises');
+    var uniquePromises = Ember.A();
+    updatedPromises.forEach(function(promise) {
+      if (uniquePromises.indexOf(promise) === -1) {
+        uniquePromises.pushObject(promise);
+      }
+    });
     this.sendMessage('promisesUpdated', {
-      promises: this.serializeArray(this.get('updatedPromises'))
+      promises: this.serializeArray(uniquePromises)
     });
     this.set('updatedPromises', Ember.A());
   },
