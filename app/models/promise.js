@@ -84,16 +84,30 @@ var Promise = Ember.Object.extend({
 
   }.observes('pendingBranch', 'fulfilledBranch', 'rejectedBranch'),
 
-  searchIndex: function() {
-    var label = this.get('label') || '';
-    for (var i = 0; i < this.get('children.length'); i++) {
-      label += ' ' + this.get('children').objectAt(i).get('searchIndex');
+  updateParentLabel: function() {
+    this.addBranchLabel(this.get('label'), true);
+  }.observes('label', 'parent'),
+
+  addBranchLabel: function(label, replace) {
+    if (Ember.isEmpty(label)) {
+      return;
     }
-    return label;
-  }.property('label', 'children.@each.label'),
+    if (replace) {
+      this.set('branchLabel', label);
+    } else {
+      this.set('branchLabel', this.get('branchLabel') + ' ' + label);
+    }
+
+    var parent = this.get('parent');
+    if (parent) {
+      parent.addBranchLabel(label);
+    }
+  },
+
+  branchLabel: '',
 
   matches: function(val) {
-    return !!this.get('searchIndex').toLowerCase().match(new RegExp('.*' + escapeRegExp(val.toLowerCase()) + '.*'));
+    return !!this.get('branchLabel').toLowerCase().match(new RegExp('.*' + escapeRegExp(val.toLowerCase()) + '.*'));
   },
 
   matchesExactly: function(val) {

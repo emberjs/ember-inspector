@@ -40,9 +40,9 @@ function inspect(value) {
         ret.push(key + ": " + v);
       }
     }
-    var suffix = '}';
+    var suffix = ' }';
     if (broken) {
-      suffix = '...}';
+      suffix = ' ...}';
     }
     return '{ ' + ret.join(', ') + suffix;
   } else {
