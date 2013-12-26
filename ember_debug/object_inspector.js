@@ -3,7 +3,6 @@ import PortMixin from "mixins/port_mixin";
 
 function inspectValue(value) {
   var string;
-
   if (value instanceof Ember.Object) {
     return { type: "type-ember-object", inspect: value.toString() };
   } else if (isComputed(value)) {
@@ -25,6 +24,27 @@ function inspect(value) {
     if (value.length === 0) { return '[]'; }
     else if (value.length === 1) { return '[ ' + inspect(value[0]) + ' ]'; }
     else { return '[ ' + inspect(value[0]) + ', ... ]'; }
+  } else if (typeof value === 'object') {
+    // `Ember.inspect` is able to handle this use case,
+    // but it is very slow, so summarize to just to props
+    var ret = [], v, count = 0, broken = false;
+    for (var key in value) {
+      if (value.hasOwnProperty(key)) {
+        if (count++ > 1) {
+          broken = true;
+          break;
+        }
+        v = value[key];
+        if (v === 'toString') { continue; } // ignore useless items
+        if (Ember.typeOf(v) === 'function') { v = "function() { ... }"; }
+        ret.push(key + ": " + v);
+      }
+    }
+    var suffix = '}';
+    if (broken) {
+      suffix = '...}';
+    }
+    return '{ ' + ret.join(', ') + suffix;
   } else {
     return Ember.inspect(value);
   }

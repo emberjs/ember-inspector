@@ -57,22 +57,23 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
 
     }.bind(this));
 
-    this.get('updatedPromises').pushObjects(this.get('promiseAssembler').find());
-    this.promisesUpdated();
+    this.promisesUpdated(this.get('promiseAssembler').find());
   },
 
   updatedPromises: Ember.computed(function() { return Ember.A(); }),
 
-  promisesUpdated: function() {
-    var updatedPromises = this.get('updatedPromises');
-    var uniquePromises = Ember.A();
-    updatedPromises.forEach(function(promise) {
-      if (uniquePromises.indexOf(promise) === -1) {
-        uniquePromises.pushObject(promise);
-      }
-    });
+  promisesUpdated: function(uniquePromises) {
+    if (!uniquePromises) {
+      uniquePromises = Ember.A();
+      this.get('updatedPromises').forEach(function(promise) {
+        if (uniquePromises.indexOf(promise) === -1) {
+          uniquePromises.pushObject(promise);
+        }
+      });
+    }
+    var serialized = this.serializeArray(uniquePromises);
     this.sendMessage('promisesUpdated', {
-      promises: this.serializeArray(uniquePromises)
+      promises: serialized
     });
     this.set('updatedPromises', Ember.A());
   },

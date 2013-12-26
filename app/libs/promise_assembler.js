@@ -16,19 +16,29 @@ var PromiseAssembler = Ember.Object.extend({
   },
 
   stop: function() {
-    this.get('port').off('promise:promiseUpdated', this, this.addOrUpdatePromises);
+    this.get('port').off('promise:promisesUpdated', this, this.addOrUpdatePromises);
     this.get('port').send('promise:releasePromises');
     this.reset();
   },
 
   reset: function() {
     this.set('topSortMeta', {});
-    this.get('topSort').clear();
     this.set('promiseIndex', {});
-    this.get('all').forEach(function(item) {
+    this.get('topSort').clear();
+    var all = this.get('all');
+    // Lazily destroy promises
+    // Allows for a smooth transition on deactive
+    // Therefore providing the illusion of better perf
+    Ember.run.later(this, function() {
+     this.destroyPromises(all);
+    }, 500);
+    this.set('all', []);
+  },
+
+  destroyPromises: function(promises) {
+    promises.forEach(function(item) {
       item.destroy();
     });
-    this.set('all', []);
   },
 
   addOrUpdatePromises: function(message) {

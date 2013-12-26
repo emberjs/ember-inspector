@@ -64,13 +64,13 @@ var PromiseTreeController = Ember.ArrayController.extend({
   init: function() {
     // List-view does not support item controllers
     this.reopen({
-      items: itemProxyComputed('filtered', this.get('promiseNodeController'))
+      items: itemProxyComputed('filtered', this.get('promiseItemController'))
     });
   },
 
 
-  promiseNodeController: function() {
-    return this.container.lookupFactory('controller:promiseNode');
+  promiseItemController: function() {
+    return this.container.lookupFactory('controller:promiseItem');
   }.property(),
 
   // TODO: This filter can be futher optimized
