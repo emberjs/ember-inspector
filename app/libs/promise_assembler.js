@@ -27,8 +27,8 @@ var PromiseAssembler = Ember.Object.extend({
     this.get('topSort').clear();
     var all = this.get('all');
     // Lazily destroy promises
-    // Allows for a smooth transition on deactive
-    // Therefore providing the illusion of better perf
+    // Allows for a smooth transition on deactivate,
+    // and thus providing the illusion of better perf
     Ember.run.later(this, function() {
      this.destroyPromises(all);
     }, 500);
@@ -66,14 +66,14 @@ var PromiseAssembler = Ember.Object.extend({
   },
 
   updateTopSort: function(promise) {
-    var topSortMeta = this.get('topSortMeta');
-    var guid = promise.get('guid');
-    var meta = topSortMeta[guid];
-    var isNew = !meta;
-    var hadParent = false;
-    var hasParent = !!promise.get('parent');
-    var topSort = this.get('topSort');
-    var parentChanged = isNew;
+    var topSortMeta = this.get('topSortMeta'),
+        guid = promise.get('guid'),
+        meta = topSortMeta[guid],
+        isNew = !meta,
+        hadParent = false,
+        hasParent = !!promise.get('parent'),
+        topSort = this.get('topSort'),
+        parentChanged = isNew;
 
     if (isNew) {
       meta = topSortMeta[guid] = {};
@@ -113,6 +113,7 @@ var PromiseAssembler = Ember.Object.extend({
     promise.setProperties(props);
 
     this.updateTopSort(promise);
+
     return promise;
 
   },
