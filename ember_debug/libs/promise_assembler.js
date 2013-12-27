@@ -115,7 +115,8 @@ var create = function(event) {
 
   var promise = this.updateOrCreate(guid, {
     label: event.label,
-    createdAt: event.timeStamp
+    createdAt: event.timeStamp,
+    stack: event.stack
   });
 
   // todo fix ordering

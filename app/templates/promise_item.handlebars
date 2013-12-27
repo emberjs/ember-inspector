@@ -1,9 +1,18 @@
 <div class="list-tree__item row" {{bind-attr style="nodeStyle"}}>
-  <div class="list-tree__cell cell_type_main cell" {{bind-attr style="labelStyle"}}>{{label}}</div>
-  <div class="list-tree__cell cell cell_size_medium">
+  <div class="cell_type_main cell " {{bind-attr style="labelStyle"}}>
+    <div class="list-tree__limited list-tree__limited_helper_large">
+      {{label}}
+    </div>
+    <div class="list-tree__right-helper">
+      <button {{action "tracePromise" model}}>
+        Trace
+      </button>
+    </div>
+  </div>
+  <div class="cell cell_size_medium">
     <div class="pill pill_text_clear" {{bindAttr style="style"}}>{{state}}</div>
   </div>
-  <div class="list-tree__cell cell cell_size_large">
+  <div class="cell cell_size_large">
     {{#if hasValue}}
         <div class="list-tree__limited">
           {{#if isValueInspectable}}
@@ -22,5 +31,5 @@
     --
     {{/if}}
   </div>
-  <div class="list-tree__cell cell cell_size_medium cell_value_numeric">{{timeToSettle}}</div>
+  <div class="cell cell_size_medium cell_value_numeric">{{timeToSettle}}</div>
 </div>
