@@ -1,12 +1,12 @@
 <div class="list-tree__item row" {{bind-attr style="nodeStyle"}}>
   <div class="cell_type_main cell " {{bind-attr style="labelStyle"}}>
     <div class="list-tree__limited list-tree__limited_helper_large">
-      {{label}}
+      <span {{bindAttr title="label"}}>{{label}}</span>
     </div>
     <div class="list-tree__right-helper">
-      <button {{action "tracePromise" model}}>
+      <div class="send-trace-to-console" {{action "tracePromise" model}} title="Trace promise in console">
         Trace
-      </button>
+      </div>
     </div>
   </div>
   <div class="cell cell_size_medium">
@@ -14,7 +14,7 @@
   </div>
   <div class="cell cell_size_large">
     {{#if hasValue}}
-        <div class="list-tree__limited">
+        <div class="list-tree__limited" {{bindAttr title="settledValue.inspect"}}>
           {{#if isValueInspectable}}
 
             <span class="cell_clickable" {{action "inspectObject" settledValue.objectId}}>{{settledValue.inspect}}</span>
