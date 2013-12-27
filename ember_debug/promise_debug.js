@@ -4,6 +4,7 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
   namespace: null,
   port: Ember.computed.alias('namespace.port'),
   objectInspector: Ember.computed.alias('namespace.objectInspector'),
+  adapter: Ember.computed.alias('namespace.adapter'),
   portNamespace: 'promise',
 
   promiseAssembler: Ember.computed.alias('namespace.promiseAssembler'),
@@ -32,6 +33,18 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
         value = promise.get('reason');
       }
       this.get('objectInspector').sendValueToConsole(value);
+    },
+
+    tracePromise: function(message) {
+      var id = message.promiseId;
+      var promise = this.get('promiseAssembler').find(id);
+      // Remove first two lines and add label
+      var stack = promise.get('stack');
+      if (stack) {
+        stack = stack.split("\n");
+        stack.splice(0, 2, ['Ember Inspector (Promise Trace): ' + (promise.get('label') || '')]);
+        this.get("adapter").log(stack.join("\n"));
+      }
     }
   },
 

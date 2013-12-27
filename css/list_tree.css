@@ -1,14 +1,3 @@
-.list-tree__item-wrapper {
-  width: 100%;
-}
-
-.list-tree__item-wrapper:nth-of-type(2n) .list-tree__cell {
-  background: #f3f3f3;
-}
-
-.list-tree__item:hover .list-tree__cell {
-  opacity: 1;
-}
 
 
 .list-tree__right-helper {
@@ -17,9 +6,14 @@
 }
 
 .list-tree__limited {
-  max-width: 150px;
+  max-width: calc(100% - 40px);
   overflow: hidden;
   display: inline-block;
   text-overflow: ellipsis;
   white-space: nowrap;
+  float: left;
+}
+
+.list-tree__limited_helper_large {
+  max-width: calc(100% - 70px);
 }

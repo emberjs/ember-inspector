@@ -144,6 +144,9 @@ var PromiseTreeController = Ember.ArrayController.extend({
     clear: function() {
       this.set('createdAfter', new Date());
       Ember.run.once(this, this.notifyChange);
+    },
+    tracePromise: function(promise) {
+      this.get('port').send('promise:tracePromise', { promiseId: promise.get('guid') });
     }
   }
 });
