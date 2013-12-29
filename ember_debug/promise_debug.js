@@ -11,6 +11,8 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
 
   releaseMethods: Ember.computed(function() { return Ember.A(); }),
 
+  delay: 100,
+
   willDestroy: function() {
     this.releaseAll();
     this._super();
@@ -93,13 +95,13 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
 
   promiseUpdated: function(event) {
     this.get('updatedPromises').pushObject(event.promise);
-    Ember.run.debounce(this, 'promisesUpdated', 100);
+    Ember.run.debounce(this, 'promisesUpdated', this.delay);
   },
 
   promiseChained: function(event) {
     this.get('updatedPromises').pushObject(event.promise);
     this.get('updatedPromises').pushObject(event.child);
-    Ember.run.debounce(this, 'promisesUpdated', 100);
+    Ember.run.debounce(this, 'promisesUpdated', this.delay);
   },
 
   serializeArray: function(promises) {

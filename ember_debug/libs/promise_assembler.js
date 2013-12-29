@@ -6,17 +6,56 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
   // RSVP lib to debug
   RSVP: Ember.RSVP,
 
-  all: Ember.computed(function() { return []; }).property(),
+  all: Ember.computed(function() { return Ember.A(); }).property(),
 
   promiseIndex: Ember.computed(function() { return {}; }).property(),
 
   start: function() {
     this.RSVP.configure('instrument', true);
-    // listen for stuff
-    this.RSVP.on('chained',   chain.bind(this));
-    this.RSVP.on('rejected',  reject.bind(this));
-    this.RSVP.on('fulfilled', fulfill.bind(this));
-    this.RSVP.on('created',   create.bind(this));
+    var self = this;
+
+    this.promiseChained = function(e) {
+      chain.call(self, e);
+    };
+    this.promiseRejected = function(e) {
+      reject.call(self, e);
+    };
+    this.promiseFulfilled = function(e) {
+      fulfill.call(self, e);
+    };
+    this.promiseCreated = function(e) {
+      create.bind(self)(e);
+    };
+
+    this.RSVP.on('chained', this.promiseChained);
+    this.RSVP.on('rejected', this.promiseRejected);
+    this.RSVP.on('fulfilled', this.promiseFulfilled);
+    this.RSVP.on('created',  this.promiseCreated);
+
+  },
+
+  stop: function() {
+    this.RSVP.configure('instrument', false);
+    this.RSVP.off('chained', this.promiseChained);
+    this.RSVP.off('rejected', this.promiseRejected);
+    this.RSVP.off('fulfilled', this.promiseFulfilled);
+    this.RSVP.off('created',  this.promiseCreated);
+
+    this.get('all').forEach(function(item) {
+      item.destroy();
+    });
+    this.set('all', Ember.A());
+    this.set('promiseIndex', {});
+
+    this.promiseChained = null;
+    this.promiseRejected = null;
+    this.promiseFulfilled = null;
+    this.promiseCreated = null;
+  },
+
+  willDestroy: function() {
+    this.stop();
+    this._super();
   },
 
   createPromise: function(props) {

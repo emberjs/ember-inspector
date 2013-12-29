@@ -33,7 +33,13 @@ EmberDebug = Ember.Namespace.create({
 
   destroyContainer: function() {
     var self = this;
-    ['dataDebug', 'viewDebug', 'routeDebug', 'objectInspector', 'generalDebug'].forEach(function(prop) {
+    ['dataDebug',
+    'viewDebug',
+    'routeDebug',
+    'objectInspector',
+    'generalDebug',
+    'promiseDebug'
+    ].forEach(function(prop) {
       var handler = self.get(prop);
       if (handler) {
         Ember.run(handler, 'destroy');
