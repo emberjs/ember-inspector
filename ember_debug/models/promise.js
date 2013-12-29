@@ -2,7 +2,7 @@ var dateComputed = function() {
   return Ember.computed(
     function(key, date) {
       if (date !== undefined) {
-        if (typeof date === 'date') {
+        if (date instanceof Date) {
           return date;
         } else if (typeof date === 'number' || typeof date === 'string') {
           return new Date(date);
