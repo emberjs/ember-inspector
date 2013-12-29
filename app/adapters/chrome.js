@@ -1,5 +1,7 @@
 import BasicAdapter from "adapters/basic";
 
+var emberDebug = null;
+
 var ChromeAdapter = BasicAdapter.extend({
 
   sendMessage: function(options) {
@@ -22,16 +24,20 @@ var ChromeAdapter = BasicAdapter.extend({
   }.on('init'),
 
   _handleReload: function() {
+    var self = this;
     chrome.devtools.network.onNavigated.addListener(function() {
+      self._injectDebugger();
       location.reload(true);
     });
   }.on('init'),
 
   _injectDebugger: function() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", chrome.extension.getURL('/ember_debug/ember_debug.js'), false);
-    xhr.send();
-    var emberDebug = xhr.responseText;
+    if (!emberDebug) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", chrome.extension.getURL('/ember_debug/ember_debug.js'), false);
+      xhr.send();
+      emberDebug = xhr.responseText;
+    }
     chrome.devtools.inspectedWindow.eval(emberDebug);
   }.on('init')
 });

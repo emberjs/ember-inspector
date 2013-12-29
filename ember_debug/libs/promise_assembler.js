@@ -12,6 +12,7 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
 
   start: function() {
     this.RSVP.configure('instrument', true);
+    this.RSVP.configure('queueEvents', false);
     var self = this;
 
     this.promiseChained = function(e) {
@@ -31,6 +32,8 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
     this.RSVP.on('rejected', this.promiseRejected);
     this.RSVP.on('fulfilled', this.promiseFulfilled);
     this.RSVP.on('created',  this.promiseCreated);
+
+    this.RSVP.flushEvents();
 
   },
 

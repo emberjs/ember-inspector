@@ -15,6 +15,10 @@ if (typeof adapter !== 'undefined') {
 
 (function(adapter) {
 
+  // RSVP promise inspection
+  // First thing because of
+  window.__PROMISE_INSPECTION__ = true;
+
   function inject() {
     Ember.Debug = requireModule('ember_debug');
   }
@@ -35,12 +39,12 @@ if (typeof adapter !== 'undefined') {
         Ember.Debug.promiseAssembler = PromiseAssembler.create();
         Ember.Debug.promiseAssembler.start();
       }
-    }
-    Ember.Debug.Adapter = requireModule('adapters/' + adapter);
+      Ember.Debug.Adapter = requireModule('adapters/' + adapter);
 
-    onApplicationStart(function() {
-      Ember.Debug.start();
-    });
+      onApplicationStart(function() {
+        Ember.Debug.start();
+      });
+    }
   });
 
   function onReady(callback) {
