@@ -24,9 +24,12 @@ function inspect(value) {
     if (value.length === 0) { return '[]'; }
     else if (value.length === 1) { return '[ ' + inspect(value[0]) + ' ]'; }
     else { return '[ ' + inspect(value[0]) + ', ... ]'; }
+  } else if (value instanceof Error) {
+    return 'Error: ' + value.message;
   } else if (typeof value === 'object') {
     // `Ember.inspect` is able to handle this use case,
-    // but it is very slow, so summarize to just to props
+    // but it is very slow as it loops over all props,
+    // so summarize to just first 2 props
     var ret = [], v, count = 0, broken = false;
     for (var key in value) {
       if (value.hasOwnProperty(key)) {
@@ -132,7 +135,9 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
 
   sendValueToConsole: function(value) {
     window.$E = value;
-
+    if (value instanceof Error) {
+      value = value.stack;
+    }
     this.get("adapter").log('Ember Inspector ($E): ', value);
   },
 
