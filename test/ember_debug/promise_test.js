@@ -92,7 +92,7 @@ test("Updates are published when they happen", function() {
       equal(child.label, 'Child1');
       var parent = message.promises[1];
       equal(parent.guid, promise.guid);
-    }, 50);
+    }, 100);
 
-  }, 50);
+  }, 100);
 });

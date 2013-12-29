@@ -84,12 +84,11 @@ function defaultViewTree() {
 test("It should correctly diplay the view tree", function() {
   var viewTree = defaultViewTree();
 
-  Em.run(function() {
-    port.trigger('view:viewTree', { tree: viewTree } );
-  });
-
-
   visit('/')
+  .then(function() {
+    port.trigger('view:viewTree', { tree: viewTree } );
+    return wait();
+  })
   .then(function() {
     var $treeNodes = findByLabel('tree-node');
     equal($treeNodes.length, 3);
