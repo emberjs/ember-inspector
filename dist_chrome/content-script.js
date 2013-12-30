@@ -20,7 +20,6 @@ function listenToPort(port) {
 
   port.start();
 }
+
 // let ember-debug know that content script has executed
-if (document.body) {
-  document.body.dataset.emberExtension = 1;
-}
+document.documentElement.dataset.emberExtension = 1;

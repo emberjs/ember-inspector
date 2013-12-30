@@ -86,9 +86,9 @@ if (typeof adapter !== 'undefined') {
     if (typeof Ember === 'undefined') {
       return;
     }
-    var body = document.body;
+    var documentElement = document.documentElement;
     var interval = setInterval(function() {
-      if (body.dataset.emberExtension && Ember.BOOTED) {
+      if (documentElement.dataset.emberExtension && Ember.BOOTED) {
        clearInterval(interval);
        callback();
       }
