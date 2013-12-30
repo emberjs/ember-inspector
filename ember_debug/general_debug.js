@@ -20,11 +20,6 @@ var GeneralDebug = Ember.Object.extend(PortMixin, {
   messages: {
     applicationBooted: function() {
       this.sendBooted();
-    },
-    promiseSupported: function() {
-      this.sendMessage('promiseSupported', {
-        supported: !!this.get('promiseDebug')
-      });
     }
   }
 });

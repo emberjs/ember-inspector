@@ -33,15 +33,15 @@ module("PromiseAssembler", {
   }
 });
 
-test("Configures RSVP for instrumentation", function() {
-  expect(2);
-  fakeRSVP.configure = function(name, val) {
-    equal(name, 'instrument');
-    ok(val);
-  };
-  startAssembler();
-  fakeRSVP.configure = Ember.K;
-});
+// test("Configures RSVP for instrumentation", function() {
+//   expect(2);
+//   fakeRSVP.configure = function(name, val) {
+//     equal(name, 'instrument');
+//     ok(val);
+//   };
+//   startAssembler();
+//   fakeRSVP.configure = Ember.K;
+// });
 
 test("Creates promises correctly", function() {
   startAssembler();
