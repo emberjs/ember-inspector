@@ -33,8 +33,9 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
     this.RSVP.on('fulfilled', this.promiseFulfilled);
     this.RSVP.on('created',  this.promiseCreated);
 
-    this.RSVP.flushEvents();
-
+    if (this.RSVP.flushEvents) {
+      this.RSVP.flushEvents();
+    }
   },
 
   stop: function() {

@@ -1,4 +1,5 @@
 import PortMixin from 'mixins/port_mixin';
+import PromiseAssembler from 'libs/promise_assembler';
 
 var PromiseDebug = Ember.Object.extend(PortMixin, {
   namespace: null,
@@ -7,20 +8,37 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
   adapter: Ember.computed.alias('namespace.adapter'),
   portNamespace: 'promise',
 
-  promiseAssembler: Ember.computed.alias('namespace.promiseAssembler'),
+  // created on init
+  promiseAssembler: null,
 
   releaseMethods: Ember.computed(function() { return Ember.A(); }),
+
+  init: function() {
+    this._super();
+    if (PromiseAssembler.supported()) {
+      this.set('promiseAssembler', PromiseAssembler.create());
+      this.get('promiseAssembler').start();
+    }
+  },
 
   delay: 100,
 
   willDestroy: function() {
     this.releaseAll();
+    this.get('promiseAssembler').destroy();
+    this.set('promiseAssembler', null);
     this._super();
   },
 
   messages: {
     getAndObservePromises: function() {
       this.getAndObservePromises();
+    },
+
+    supported: function() {
+      this.sendMessage('supported', {
+        supported: PromiseAssembler.supported()
+      });
     },
 
     releasePromises: function() {
