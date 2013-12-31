@@ -8,6 +8,10 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
   adapter: Ember.computed.alias('namespace.adapter'),
   portNamespace: 'promise',
 
+
+  existingEvents: Ember.computed.alias('namespace.existingEvents'),
+  existingCallbacks: Ember.computed.alias('namespace.existingCallbacks'),
+
   // created on init
   promiseAssembler: null,
 
@@ -17,6 +21,7 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
     this._super();
     if (PromiseAssembler.supported()) {
       this.set('promiseAssembler', PromiseAssembler.create());
+      this.get('promiseAssembler').set('promiseDebug', this);
       this.get('promiseAssembler').start();
     }
   },
