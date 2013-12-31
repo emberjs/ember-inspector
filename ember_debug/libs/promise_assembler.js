@@ -18,7 +18,6 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
 
   start: function() {
     this.RSVP.configure('instrument', true);
-    this.RSVP.configure('queueEvents', false);
     var self = this;
 
     this.promiseChained = function(e) {
