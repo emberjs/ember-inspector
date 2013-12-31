@@ -1,7 +1,7 @@
 {{#if emberApplication}}
 
   <div class="app__nav-holder">
-    <nav {{bindAttr class=":main-nav view.inactive:main-nav_state_inactive"}}>
+    <nav {{bind-attr class=":main-nav view.inactive:main-nav_state_inactive"}}>
       <ul class="main-nav__list">
         <li class="main-nav__item">
           {{#link-to "view_tree"}}
@@ -47,7 +47,7 @@
     <div class="app__toggle-inspector-btn" {{action "toggleInspector"}}>&laquo;</div>
   {{/unless}}
 
-  <div class="app__right-col" {{bindAttr style="view.inspectorStyle"}}>
+  <div class="app__right-col" {{bind-attr style="view.inspectorStyle"}}>
 
     {{#if inspectorExpanded}}
       <div class="app__right-col-drag">

@@ -79,7 +79,7 @@ var PromiseItemController = Ember.ObjectProxy.extend({
   state: function() {
     var state = this.get('model.state');
     if (this.get('isFulfilled')) {
-      return 'Fullfilled';
+      return 'Fulfilled';
     } else if (this.get('isRejected')) {
       return 'Rejected';
     } else if (this.get('parent') && !this.get('parent.isSettled')) {

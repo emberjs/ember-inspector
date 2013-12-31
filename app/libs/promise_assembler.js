@@ -8,7 +8,7 @@ var PromiseAssembler = Ember.Object.extend({
 
   topSort: function() { return []; }.property(),
 
-  topSortMeta: function() { return {}; },
+  topSortMeta: function() { return {}; }.property(),
 
   start: function() {
     this.get('port').on('promise:promisesUpdated', this, this.addOrUpdatePromises);
