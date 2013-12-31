@@ -49,15 +49,42 @@ if (typeof adapter !== 'undefined') {
     }
   }
 
+  function hijackDefine(callback) {
+    window.define = (function (define) {
+      return function (id, deps, factory) {
+        if (typeof id !== 'string') {
+          factory = deps;
+          deps = id;
+          id = null;
+        }
+        if (!deps instanceof Array || typeof deps.push !== "function") {
+          factory = deps;
+          deps = [];
+        }
+        factory = (function (factory) {
+          return function () {
+            if (typeof factory === "function") {
+              factory = factory.apply(this, arguments);
+            }
+            if (typeof window.Ember !== 'undefined') {
+              onApplicationStart(callback);
+              window.define = define;
+            }
+            return factory;
+          }
+        })(factory);
+        define.apply(this, id ? [id, deps, factory] : [deps, factory]);
+      }
+    })(window.define);
+  }
+
   // There's probably a better way
   // to determine when the application starts
   // but this definitely works
   function onApplicationStart(callback) {
     if (typeof Ember === 'undefined') {
       if (window.define.amd) {
-        require(["Ember"], function (Ember) {
-          onApplicationStart(callback);
-        });
+        hijackDefine(callback);
       }
       return;
     }
