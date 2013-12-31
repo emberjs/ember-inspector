@@ -6,6 +6,25 @@ var FirefoxAdapter = BasicAdapter.extend({
     this._connect();
   },
 
+  debug: function() {
+    // WORKAROUND: temporarily workaround issues with firebug console object:
+    // - https://github.com/tildeio/ember-extension/issues/94
+    // - https://github.com/firebug/firebug/pull/109
+    // - https://code.google.com/p/fbug/issues/detail?id=7045
+    try {
+      this._super.apply(this, arguments);
+    } catch(e) { }
+  },
+  log: function() {
+    // WORKAROUND: temporarily workaround issues with firebug console object:
+    // - https://github.com/tildeio/ember-extension/issues/94
+    // - https://github.com/firebug/firebug/pull/109
+    // - https://code.google.com/p/fbug/issues/detail?id=7045
+    try {
+      this._super.apply(this, arguments);
+    } catch(e) { }
+  },
+
   sendMessage: function(options) {
     options = options || {};
     var event = document.createEvent("CustomEvent");

@@ -90,10 +90,21 @@ var DataDebug = Ember.Object.extend(PortMixin, {
 
   wrapRecord: function(record) {
     var objectId = Ember.guidFor(record.object);
+    var self = this;
+    var columnValues = {};
+    var searchKeywords = [];
     this.sentRecords[objectId] = record;
+    // make objects clonable
+    for (var i in record.columnValues) {
+      columnValues[i] = this.get('objectInspector').inspect(record.columnValues[i]);
+    }
+    // make sure keywords can be searched and clonable
+    searchKeywords = Ember.A(record.searchKeywords).filter(function(keyword) {
+      return (typeof keyword === 'string' || typeof keyword === 'number');
+    });
     return {
-      columnValues: record.columnValues,
-      searchKeywords: record.searchKeywords,
+      columnValues: columnValues,
+      searchKeywords: searchKeywords,
       filterValues: record.filterValues,
       color: record.color,
       objectId: objectId

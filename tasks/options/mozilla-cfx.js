@@ -1,7 +1,7 @@
 module.exports = {
   "run": {
     options: {
-      "mozilla-addon-sdk": "1_14",
+      "mozilla-addon-sdk": "1_15",
       extension_dir: "dist_firefox",
       command: "run"
     }

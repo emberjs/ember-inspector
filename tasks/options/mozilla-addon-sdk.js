@@ -1,7 +1,7 @@
 module.exports = {
-  "1_14": {
+  "1_15": {
     options: {
-      revision: "1.14"
+      revision: "1.15"
     }
   }
 };

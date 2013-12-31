@@ -18,6 +18,8 @@ function inspect(value) {
 var ObjectInspector = Ember.Object.extend(PortMixin, {
   namespace: null,
 
+  adapter: Ember.computed.alias('namespace.adapter'),
+
   port: Ember.computed.alias('namespace.port'),
 
   application: Ember.computed.alias('namespace.application'),
@@ -91,7 +93,8 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     }
 
     window.$E = value;
-    console.log('Ember Inspector ($E): ', value);
+
+    this.get("adapter").log('Ember Inspector ($E): ', value);
   },
 
   digIntoObject: function(objectId, property) {

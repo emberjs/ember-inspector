@@ -6,8 +6,6 @@ import ViewDebug from "view_debug";
 import RouteDebug from "route_debug";
 import DataDebug from "data_debug";
 
-console.debug("Ember Debugger Active");
-
 var EmberDebug;
 
 EmberDebug = Ember.Namespace.create({
@@ -29,6 +27,7 @@ EmberDebug = Ember.Namespace.create({
 
     this.reset();
 
+    this.get("adapter").debug("Ember Debugger Active");
   },
 
   destroyContainer: function() {
