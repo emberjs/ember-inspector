@@ -14,10 +14,6 @@ module("Promise Debug", {
       }
     });
 
-    Ember.run(function() {
-      EmberDebug.promiseAssembler = PromiseAssembler.create();
-    });
-    Ember.run(EmberDebug.promiseAssembler, 'start');
     App.reset();
     Ember.run(EmberDebug, 'start');
     EmberDebug.get('promiseDebug').reopen({
@@ -26,12 +22,9 @@ module("Promise Debug", {
     port = EmberDebug.port;
   },
   teardown: function() {
-    Ember.run(EmberDebug.get('promiseDebug'), 'destroy');
-    Ember.promiseDebug = null;
-    Ember.run(EmberDebug.get('promiseAssembler'), 'destroy');
-    EmberDebug.promiseAssembler = null;
     name = null;
     message = null;
+    EmberDebug.destroyContainer();
   }
 });
 

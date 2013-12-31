@@ -9,13 +9,21 @@ import PromiseDebug from "promise_debug";
 
 var EmberDebug;
 
-EmberDebug = Ember.Namespace.create({
+EmberDebug = Ember.Namespace.extend({
 
   application: null,
   started: false,
 
   Port: Port,
   Adapter: BasicAdapter,
+
+
+  // These two are used to make RSVP start instrumentation
+  // even before this object is created
+  // all events triggered before creation are injected
+  // to this object as `existingEvents`
+  existingEvents: Ember.computed(function() { return []; }).property(),
+  existingCallbacks: Ember.computed(function() { return {}; }).property(),
 
   start: function() {
     if (this.get('started')) {
@@ -72,7 +80,7 @@ EmberDebug = Ember.Namespace.create({
     });
   }
 
-});
+}).create();
 
 function getApplication() {
   var namespaces = Ember.Namespace.NAMESPACES,

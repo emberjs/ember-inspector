@@ -17,7 +17,24 @@ if (typeof adapter !== 'undefined') {
 
   // RSVP promise inspection
   // First thing because of
-  window.__PROMISE_INSPECTION__ = true;
+  var events = [], callbacks = {};
+  if (!window.__PROMISE_INSTRUMENTATION__) {
+    callbacks = window.__PROMISE_INSTRUMENTATION__ = {};
+    var eventNames = ['created', 'fulfilled', 'rejected', 'chained'];
+
+    for (var i = 0; i < eventNames.length; i++) {
+      (function(eventName) {
+        callbacks[eventName] = function(options) {
+          events.push({
+            eventName: eventName,
+            options: options
+          });
+        }
+      }(eventNames[i]));
+
+    }
+  }
+
 
   function inject() {
     Ember.Debug = requireModule('ember_debug');
@@ -37,6 +54,10 @@ if (typeof adapter !== 'undefined') {
       Ember.Debug.Adapter = requireModule('adapters/' + adapter);
 
       onApplicationStart(function() {
+        Ember.Debug.setProperties({
+          existingEvents: events,
+          existingCallbacks: callbacks
+        });
         Ember.Debug.start();
       });
     }
