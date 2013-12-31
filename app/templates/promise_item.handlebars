@@ -1,23 +1,23 @@
-<div class="list-tree__item row" {{bind-attr style="nodeStyle"}}>
+<div class="list-tree__item row" {{bind-attr style="nodeStyle"}} data-label="promise-item">
   <div class="cell_type_main cell " {{bind-attr style="labelStyle"}}>
     <div class="list-tree__limited list-tree__limited_helper_large">
-      <span {{bindAttr title="label"}}>{{label}}</span>
+      <span {{bind-attr title="label"}} data-label="promise-label">{{label}}</span>
     </div>
     <div class="list-tree__right-helper">
-      <div class="send-trace-to-console" {{action "tracePromise" model}} title="Trace promise in console">
+      <div class="send-trace-to-console" {{action "tracePromise" model}} title="Trace promise in console" data-label="trace-promise-btn">
         Trace
       </div>
     </div>
   </div>
   <div class="cell cell_size_medium">
-    <div class="pill pill_text_clear" {{bindAttr style="style"}}>{{state}}</div>
+    <div class="pill pill_text_clear" {{bind-attr style="style"}} data-label="promise-state">{{state}}</div>
   </div>
-  <div class="cell cell_size_large">
+  <div class="cell cell_size_large" data-label="promise-value">
     {{#if hasValue}}
-        <div class="list-tree__limited" {{bindAttr title="settledValue.inspect"}}>
+        <div class="list-tree__limited" {{bind-attr title="settledValue.inspect"}}>
           {{#if isValueInspectable}}
 
-            <span class="cell_clickable" {{action "inspectObject" settledValue.objectId}}>{{settledValue.inspect}}</span>
+            <span class="cell_clickable" {{action "inspectObject" settledValue.objectId}} data-label="promise-object-value">{{settledValue.inspect}}</span>
           {{else}}
             {{settledValue.inspect}}
           {{/if}}
@@ -31,5 +31,5 @@
     --
     {{/if}}
   </div>
-  <div class="cell cell_size_medium cell_value_numeric">{{timeToSettle}}</div>
+  <div class="cell cell_size_medium cell_value_numeric" data-label="promise-time">{{timeToSettle}}</div>
 </div>
