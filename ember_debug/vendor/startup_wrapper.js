@@ -57,13 +57,13 @@ if (typeof adapter !== 'undefined') {
           deps = id;
           id = null;
         }
-        if (!deps instanceof Array || typeof deps.push !== "function") {
+        if (!deps instanceof Array || typeof deps.push !== 'function') {
           factory = deps;
           deps = [];
         }
         factory = (function (factory) {
           return function () {
-            if (typeof factory === "function") {
+            if (typeof factory === 'function') {
               factory = factory.apply(this, arguments);
             }
             if (typeof window.Ember !== 'undefined') {
@@ -83,7 +83,7 @@ if (typeof adapter !== 'undefined') {
   // but this definitely works
   function onApplicationStart(callback) {
     if (typeof Ember === 'undefined') {
-      if (window.define.amd) {
+      if (typeof window.define === 'function' && window.define.amd) {
         hijackDefine(callback);
       }
       return;
