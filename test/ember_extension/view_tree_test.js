@@ -84,31 +84,54 @@ function defaultViewTree() {
 test("It should correctly diplay the view tree", function() {
   var viewTree = defaultViewTree();
 
-  Em.run(function() {
-    port.trigger('view:viewTree', { tree: viewTree } );
-  });
-
-
   visit('/')
   .then(function() {
+    Em.run(function() {
+      port.trigger('view:viewTree', { tree: viewTree } );
+    });
+
     var $treeNodes = findByLabel('tree-node');
-    equal($treeNodes.length, 3);
+    equal($treeNodes.length, 3, 'expected some tree nodes');
     var $treeView = $treeNodes.filter(':first');
     var controllerNames = [],
         templateNames = [],
         modelNames = [],
         viewClassNames = [];
 
+    function label(theLabel, context) {
+      return findByLabel(theLabel, context).filter(':first').text().trim();
+    }
+
     $treeNodes.each(function() {
-      templateNames.push(findByLabel('view-template', this).filter(':first').text().trim());
-      controllerNames.push(findByLabel('view-controller', this).filter(':first').text().trim());
-      viewClassNames.push(findByLabel('view-class', this).filter(':first').text().trim());
-      modelNames.push(findByLabel('view-model', this).filter(':first').text().trim());
+      templateNames.push(label('view-template', this));
+      controllerNames.push(label('view-controller', this));
+      viewClassNames.push(label('view-class', this));
+      modelNames.push(label('view-model', this));
     });
-    deepEqual(controllerNames, ['App.ApplicationController', 'App.PostsController', 'App.CommentsController']);
-    deepEqual(templateNames, ['application', 'posts', 'comments']);
-    deepEqual(modelNames, ['--', 'PostsArray', 'CommentsArray']);
-    deepEqual(viewClassNames, ['App.ApplicationView', 'App.PostsView', 'App.CommentsView']);
+
+    deepEqual(controllerNames, [
+      'App.ApplicationController',
+      'App.PostsController',
+      'App.CommentsController'
+    ], 'expected controller names');
+
+    deepEqual(templateNames, [
+      'application',
+      'posts',
+      'comments'
+    ], 'expected template names');
+
+    deepEqual(modelNames, [
+      '--',
+      'PostsArray',
+      'CommentsArray'
+    ], 'expected model names');
+
+    deepEqual(viewClassNames, [
+      'App.ApplicationView',
+      'App.PostsView',
+      'App.CommentsView'
+    ], 'expected view class names');
   });
 
 });
