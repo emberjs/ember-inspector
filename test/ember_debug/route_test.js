@@ -18,6 +18,7 @@ module("Route Debug", {
 
 
     App.reset();
+
     EmberDebug.start();
     port = EmberDebug.port;
   }
@@ -45,22 +46,26 @@ test("Route tree", function() {
   equal(route.value.routeHandler.name, 'application');
   equal(route.value.routeHandler.className, 'ApplicationRoute');
   equal(route.value.template.name, 'application');
-  equal(route.children.length, 4);
+  equal(route.children.length, 6);
 
-  deepEqual(getChildrenProperty(route, 'name'), ['simple', 'posts', 'comments', 'index'] );
+  deepEqual(getChildrenProperty(route, 'name'), ['loading', 'error', 'simple', 'posts', 'comments', 'index'] );
 
-  var commentsRoute = route.children[2];
-  equal(commentsRoute.children.length, 3);
+  var commentsRoute = route.children.filter(function(child) {
+    return child.value.name === 'comments';
+  })[0];
+
+  ok(commentsRoute, 'expected comment steps');
+
+  equal(commentsRoute.children.length, 5);
   equal(commentsRoute.value.type, 'resource');
   equal(commentsRoute.value.controller.className, 'CommentsController');
   equal(commentsRoute.value.routeHandler.className, 'CommentsRoute');
 
-  deepEqual(getChildrenProperty(commentsRoute, 'name'), ['comments.new', 'comments.edit', 'comments.index']);
-  deepEqual(getChildrenProperty(commentsRoute, 'url'), ['/comments/new', '/comments/edit/:comment_id', '/comments']);
-  deepEqual(getChildrenProperty(commentsRoute, 'type'), ['route', 'route', 'route']);
-  deepEqual(getChildrenProperty(commentsRoute, 'controller.className'), ['CommentsNewController', 'CommentsEditController', 'CommentsIndexController']);
-  deepEqual(getChildrenProperty(commentsRoute, 'routeHandler.className'), ['CommentsNewRoute', 'CommentsEditRoute', 'CommentsIndexRoute']);
-  deepEqual(getChildrenProperty(commentsRoute, 'template.name'), ['comments/new', 'comments/edit', 'comments/index']);
+  deepEqual(getChildrenProperty(commentsRoute, 'name'), ['comments.loading', 'comments.error', 'comments.new', 'comments.edit', 'comments.index']);
 
-
+  deepEqual(getChildrenProperty(commentsRoute, 'url'), ['/comments/loading', '/comments/_unused_dummy_error_path_route_comments/:error', '/comments/new', '/comments/edit/:comment_id', '/comments']);
+  deepEqual(getChildrenProperty(commentsRoute, 'type'), ['route', 'route', 'route', 'route', 'route']);
+  deepEqual(getChildrenProperty(commentsRoute, 'controller.className'), ['CommentsLoadingController', 'CommentsErrorController', 'CommentsNewController', 'CommentsEditController', 'CommentsIndexController']);
+  deepEqual(getChildrenProperty(commentsRoute, 'routeHandler.className'), ['CommentsLoadingRoute', 'CommentsErrorRoute', 'CommentsNewRoute', 'CommentsEditRoute', 'CommentsIndexRoute']);
+  deepEqual(getChildrenProperty(commentsRoute, 'template.name'), ['comments/loading', 'comments/error', 'comments/new', 'comments/edit', 'comments/index']);
 });

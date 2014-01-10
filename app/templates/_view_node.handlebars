@@ -1,22 +1,22 @@
 {{#each children itemController="viewTreeItem"}}
   {{#view "treeNodeItem" nodeBinding=model}}
-    <td {{bindAttr class=":table-tree__main-cell isCurrent:table-tree__main-cell_state_current" style=style }} data-label="view-name">
+    <td {{bind-attr class=":table-tree__main-cell isCurrent:table-tree__main-cell_state_current" style=style }} data-label="view-name">
       {{value.name}}
     </td>
-    <td {{bindAttr class="hasElement:table-tree__clickable isCurrent:table-tree__main-cell_state_current" style=style }} {{action "inspectElement"}} data-label="view-template">
+    <td {{bind-attr class="hasElement:table-tree__clickable isCurrent:table-tree__main-cell_state_current" style=style }} {{action "inspectElement"}} data-label="view-template">
       {{value.template}}
     </td>
-    <td {{action "inspectModel" value.model.objectId}} {{bindAttr class="modelInspectable:table-tree__clickable"}} data-label="view-model">
+    <td {{action "inspectModel" value.model.objectId}} {{bind-attr class="modelInspectable:table-tree__clickable"}} data-label="view-model">
       {{#if hasModel}}
         {{value.model.name}}
       {{else}}
         --
       {{/if}}
     </td>
-    <td {{action "inspect" value.controller.objectId}} {{bindAttr class="hasController:table-tree__clickable"}} data-label="view-controller" >
+    <td {{action "inspect" value.controller.objectId}} {{bind-attr class="hasController:table-tree__clickable"}} data-label="view-controller" >
       {{value.controller.name}}
     </td>
-    <td {{action "inspectView"}} {{bindAttr class="hasView:table-tree__clickable"}} data-label="view-class">
+    <td {{action "inspectView"}} {{bind-attr class="hasView:table-tree__clickable"}} data-label="view-class">
       {{#if hasView}}
        {{value.viewClass}}
       {{else}}
