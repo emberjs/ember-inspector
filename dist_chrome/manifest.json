@@ -22,5 +22,15 @@
   }],
   "background": {
     "scripts": ["background-script.js"]
-  }
+  },
+  "page_action": {
+    "default_icon": {
+      "19": "images/icon19.png",
+      "38": "images/icon38.png"
+    },
+    "default_title": "This webpage is running Ember.js"
+  },
+  "web_accessible_resources": [
+    "in-page-script.js"
+  ]
 }

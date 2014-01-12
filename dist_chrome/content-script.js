@@ -1,3 +1,5 @@
+"use strict";
+
 window.addEventListener('message', function(event) {
   if (event.data === 'debugger-client') {
     var port = event.ports[0];
@@ -28,3 +30,12 @@ document.documentElement.dataset.emberExtension = 1;
 if (document.body) {
   document.body.dataset.emberExtension = 1;
 }
+
+// clear a possible previous Ember icon
+chrome.extension.sendMessage({ type: 'resetEmberIcon' });
+
+// inject JS into the page to check for an app on domready
+var script = document.createElement('script');
+script.type = "text/javascript";
+script.src = chrome.extension.getURL("in-page-script.js");
+if (document.body) document.body.appendChild(script);
