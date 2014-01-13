@@ -95,7 +95,7 @@ var buildSubTree = function(routeTree, route) {
 
       if (i === handlers.length - 1) {
         // it is a route, get url
-        subTree[handler].value.url = getURL(route.segments);
+        subTree[handler].value.url = getURL(container, route.segments);
         subTree[handler].value.type = 'route';
       } else {
         // it is a resource, set children object
@@ -123,7 +123,8 @@ function arrayizeChildren(routeTree) {
   return obj;
 }
 
-function getURL(segments) {
+function getURL(container, segments) {
+  var locationImplementation = container.lookup('router:main').location;
   var url = [];
   for (var i = 0; i < segments.length; i++) {
     var name = null;
@@ -140,7 +141,7 @@ function getURL(segments) {
   }
 
   url = '/' + url.join('/');
-
+  url = locationImplementation.formatURL(url);
   return url;
 }
 
