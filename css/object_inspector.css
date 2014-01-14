@@ -79,11 +79,13 @@
   background: none;
   margin: 0;
   padding: 0;
-  width: 23px;
+  width: 30px;
   opacity: 1;
 }
 
-.object-inspector__send-object-btn img {
-  margin-right: 3px;
-  width: 20px;
+.object-inspector__send-object-btn:hover span{
+  border-bottom: 1px solid blue;
+  cursor: pointer;
 }
+
+
