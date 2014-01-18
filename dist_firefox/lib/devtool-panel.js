@@ -1,5 +1,5 @@
 const self = require("sdk/self");
-const observers = require('sdk/deprecated/observer-service');
+const systemEvents = require('sdk/system/events');
 
 var Tab = require("sdk/tabs/tab-firefox").Tab;
 var workers = require("sdk/content/worker");
@@ -70,7 +70,8 @@ let EmberInspector = {
     this.iframeWindow.addEventListener("load", this._onDevtoolPanelLoad, true);
 
     // attach target tab before any script is executed
-    this._onDocumentElementInserted = (document) => {
+    this._onDocumentElementInserted = (event) => {
+      var document = event.subject;
       // skip if the document is not related to the target tab
       if (toolbox && document.defaultView &&
           document.defaultView === toolbox._target.window) {
@@ -79,13 +80,13 @@ let EmberInspector = {
       }
     };
 
-    observers.add('document-element-inserted', this._onDocumentElementInserted);
+    systemEvents.on('document-element-inserted', this._onDocumentElementInserted, true);
     this._attachTargetTab();
   },
 
   destroy: function () {
     log("destroy");
-    observers.remove('document-element-inserted', this._onDocumentElementInserted);
+    systemEvents.off('document-element-inserted', this._onDocumentElementInserted);
     this.iframeWindow.removeEventListener("load", this._onDevtoolPanelLoad, true);
     this._cleanupWorkers();
   },
