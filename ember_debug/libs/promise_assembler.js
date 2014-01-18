@@ -1,3 +1,10 @@
+/**
+  Original implementation and the idea behind the `PromiseAssembler`,
+  `Promise` model, and other work related to promise inspection was done
+  by Stefan Penner (@stefanpenner) thanks to McGraw Hill Education (@mhelabs)
+  and Yapp Labs (@yapplabs).
+ */
+
 import Promise from 'models/promise';
 
 var get = Ember.get;
