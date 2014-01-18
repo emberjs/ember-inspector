@@ -23,3 +23,8 @@ function listenToPort(port) {
 
 // let ember-debug know that content script has executed
 document.documentElement.dataset.emberExtension = 1;
+
+// Allow older versions of Ember (< 1.4) to detect the extension.
+if (document.body) {
+  document.body.dataset.emberExtension = 1;
+}
