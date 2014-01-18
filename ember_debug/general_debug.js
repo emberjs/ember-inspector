@@ -7,6 +7,8 @@ var GeneralDebug = Ember.Object.extend(PortMixin, {
 
   application: Ember.computed.alias('namespace.application'),
 
+  promiseDebug: Ember.computed.alias('namespace.promiseDebug'),
+
   portNamespace: 'general',
 
   sendBooted: function() {

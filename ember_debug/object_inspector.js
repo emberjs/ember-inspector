@@ -1,6 +1,20 @@
 import PortMixin from "mixins/port_mixin";
 
 
+function inspectValue(value) {
+  var string;
+  if (value instanceof Ember.Object) {
+    return { type: "type-ember-object", inspect: value.toString() };
+  } else if (isComputed(value)) {
+    string = "<computed>";
+    return { type: "type-descriptor", inspect: string, computed: true };
+  } else if (value instanceof Ember.Descriptor) {
+    return { type: "type-descriptor", inspect: value.toString(), computed: true };
+  } else {
+    return { type: "type-" + Ember.typeOf(value), inspect: inspect(value) };
+  }
+}
+
 function inspect(value) {
   if (typeof value === 'function') {
     return "function() { ... }";
@@ -10,6 +24,30 @@ function inspect(value) {
     if (value.length === 0) { return '[]'; }
     else if (value.length === 1) { return '[ ' + inspect(value[0]) + ' ]'; }
     else { return '[ ' + inspect(value[0]) + ', ... ]'; }
+  } else if (value instanceof Error) {
+    return 'Error: ' + value.message;
+  } else if (typeof value === 'object') {
+    // `Ember.inspect` is able to handle this use case,
+    // but it is very slow as it loops over all props,
+    // so summarize to just first 2 props
+    var ret = [], v, count = 0, broken = false;
+    for (var key in value) {
+      if (value.hasOwnProperty(key)) {
+        if (count++ > 1) {
+          broken = true;
+          break;
+        }
+        v = value[key];
+        if (v === 'toString') { continue; } // ignore useless items
+        if (Ember.typeOf(v) === 'function') { v = "function() { ... }"; }
+        ret.push(key + ": " + v);
+      }
+    }
+    var suffix = ' }';
+    if (broken) {
+      suffix = ' ...}';
+    }
+    return '{ ' + ret.join(', ') + suffix;
   } else {
     return Ember.inspect(value);
   }
@@ -92,8 +130,14 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
       value =  Ember.get(object, prop);
     }
 
-    window.$E = value;
+    this.sendValueToConsole(value);
+  },
 
+  sendValueToConsole: function(value) {
+    window.$E = value;
+    if (value instanceof Error) {
+      value = value.stack;
+    }
     this.get("adapter").log('Ember Inspector ($E): ', value);
   },
 
@@ -296,7 +340,8 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     });
   },
 
-  inspect: inspect
+  inspect: inspect,
+  inspectValue: inspectValue
 });
 
 
@@ -402,20 +447,9 @@ function isMandatorySetter(object, prop) {
   return false;
 }
 
-function inspectValue(value) {
-  var string;
 
-  if (value instanceof Ember.Object) {
-    return { type: "type-ember-object", inspect: value.toString() };
-  } else if (isComputed(value)) {
-    string = "<computed>";
-    return { type: "type-descriptor", inspect: string, computed: true };
-  } else if (value instanceof Ember.Descriptor) {
-    return { type: "type-descriptor", inspect: value.toString(), computed: true };
-  } else {
-    return { type: "type-" + Ember.typeOf(value), inspect: inspect(value) };
-  }
-}
+
+
 
 
 function calculateCPs(object, mixinDetails, expensiveProperties) {

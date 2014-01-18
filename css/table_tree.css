@@ -162,3 +162,22 @@
 .table-tree__filter {
     flex: 0 1 24px;
 }
+
+.table-tree__right-helper {
+  float: right;
+  margin-right: 5px;
+}
+
+.table-tree__numeric {
+  min-width: 65px;
+  text-align: right;
+  padding-right: 10px;
+}
+
+.table-tree__limited {
+  max-width: 150px;
+  overflow: hidden;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

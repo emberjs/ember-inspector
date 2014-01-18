@@ -1,0 +1,19 @@
+
+
+.list-tree__right-helper {
+  float: right;
+  margin-right: 5px;
+}
+
+.list-tree__limited {
+  max-width: calc(100% - 40px);
+  overflow: hidden;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  float: left;
+}
+
+.list-tree__limited_helper_large {
+  max-width: calc(100% - 70px);
+}

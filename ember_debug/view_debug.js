@@ -91,7 +91,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
   eventNamespace: Ember.computed(function() {
     return 'view_debug_' + Ember.guidFor(this);
-  }),
+  }).property(),
 
   willDestroy: function() {
     this._super();

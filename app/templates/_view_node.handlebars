@@ -1,5 +1,5 @@
 {{#each children itemController="viewTreeItem"}}
-  {{#view "treeNodeItem" nodeBinding=model}}
+  {{#view "treeNodeItem" node=model}}
     <td {{bind-attr class=":table-tree__main-cell isCurrent:table-tree__main-cell_state_current" style=style }} data-label="view-name">
       {{value.name}}
     </td>

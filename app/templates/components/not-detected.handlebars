@@ -1,14 +1,20 @@
-<div class="error-page">
+<div class="error-page" data-label="error-page">
 
   <div class="error-page__content">
 
     <div class="error-page__header">
-      <div class="error-page__title">{{description}} not detected!</div>
+      <div class="error-page__title" data-label="error-page-title">{{description}} not detected!</div>
     </div>
 
     <div class="error-page__reasons">
 
-      <div class="error-page__reasons-title">Here are some common reasons this happens:</div>
+      <div class="error-page__reasons-title">
+        {{#if reasonsTitle}}
+          {{reasonsTitle}}
+        {{else}}
+          Here are some common reasons this happens:
+        {{/if}}
+      </div>
 
       <ul class="error-page__list">
         {{yield}}

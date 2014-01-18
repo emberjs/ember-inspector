@@ -15,11 +15,35 @@ if (typeof adapter !== 'undefined') {
 
 (function(adapter) {
 
+  // RSVP promise inspection
+  // First thing because of
+  var events = [], callbacks = {};
+  if (!window.__PROMISE_INSTRUMENTATION__) {
+    callbacks = window.__PROMISE_INSTRUMENTATION__ = {};
+    var eventNames = ['created', 'fulfilled', 'rejected', 'chained'];
+
+    for (var i = 0; i < eventNames.length; i++) {
+      (function(eventName) {
+        callbacks[eventName] = function(options) {
+          events.push({
+            eventName: eventName,
+            options: options
+          });
+        }
+      }(eventNames[i]));
+
+    }
+  }
+
+
   function inject() {
-    requireModule('ember_debug');
+    Ember.Debug = requireModule('ember_debug');
   }
 
   onReady(function() {
+    if (!window.Ember) {
+      return;
+    }
     // global to prevent injection
     if (window.NO_EMBER_DEBUG) {
       return;
@@ -27,11 +51,17 @@ if (typeof adapter !== 'undefined') {
     // prevent from injecting twice
     if (!Ember.Debug) {
       inject();
-    }
-    Ember.Debug.Adapter = requireModule('adapters/' + adapter)
-    Ember.Debug.start();
-  });
+      Ember.Debug.Adapter = requireModule('adapters/' + adapter);
 
+      onApplicationStart(function() {
+        Ember.Debug.setProperties({
+          existingEvents: events,
+          existingCallbacks: callbacks
+        });
+        Ember.Debug.start();
+      });
+    }
+  });
 
   function onReady(callback) {
     if (document.readyState === 'complete') {
@@ -45,7 +75,7 @@ if (typeof adapter !== 'undefined') {
     function completed() {
       document.removeEventListener( "DOMContentLoaded", completed, false );
       window.removeEventListener( "load", completed, false );
-      onApplicationStart(callback);
+      callback();
     }
   }
 
@@ -56,13 +86,13 @@ if (typeof adapter !== 'undefined') {
     if (typeof Ember === 'undefined') {
       return;
     }
-    var body = document.body;
+    var documentElement = document.documentElement;
     var interval = setInterval(function() {
-      if (body.dataset.emberExtension && Ember.BOOTED) {
+      if (documentElement.dataset.emberExtension && Ember.BOOTED) {
        clearInterval(interval);
        callback();
       }
-    }, 10);
+    }, 1);
   }
 
 }(currentAdapter));

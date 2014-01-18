@@ -24,3 +24,11 @@ body, div, nav {
 a {
   color: inherit;
 }
+
+.ember-list-view {
+  overflow: auto;
+  position: relative;
+}
+.ember-list-item-view {
+  position: absolute;
+}

@@ -1,0 +1,43 @@
+<div class="list-view">
+  <div class="list-view__header row">
+    <div class="cell cell_type_header">
+      Label
+    </div>
+    <div class="cell cell_size_medium cell_type_header">
+      State
+    </div>
+    <div class="cell cell_size_large cell_type_header">
+      Fulfillment / Rejection value
+    </div>
+    <div class="cell cell_size_medium cell_value_numeric cell_type_header">
+      Time to settle
+    </div>
+    <!-- Account for scrollbar width :'(  -->
+    <div class="cell cell_type_header spacer"></div>
+  </div>
+
+
+  <div class="list-view__list-container">
+    {{view "promiseList" content=items}}
+  </div>
+
+  <div class="list-view__filter">
+    <div class="filter-bar">
+      <div class="filter-bar__search">
+        {{input type="search" value=search placeholder="Search"}}
+      </div>
+      <div class="filter-bar__pills">
+        <div data-label="filter" {{bind-attr class="noFilter:filter-bar__radio_selected :filter-bar__radio :filter-bar__radio_separate"}} {{action "setFilter" "all"}}>
+          All
+        </div>
+        <div data-label="filter" {{bind-attr class="isRejectedFilter:filter-bar__radio_selected :filter-bar__radio"}} {{action "setFilter" "rejected"}} >Rejected</div>
+        <div data-label="filter" {{bind-attr class="isPendingFilter:filter-bar__radio_selected :filter-bar__radio"}} {{action "setFilter" "pending"}} >Pending</div>
+        <div data-label="filter" {{bind-attr class="isFulfilledFilter:filter-bar__radio_selected :filter-bar__radio"}} {{action "setFilter" "fulfilled"}} >Fulfilled</div>
+      </div>
+
+      <div {{action "clear"}} class="filter-bar__clear pill">CLEAR</div>
+    </div>
+  </div>
+
+</div>
+

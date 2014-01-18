@@ -1,5 +1,7 @@
 const self = require("sdk/self");
-var tabs = require("sdk/tabs");
+const observers = require('sdk/deprecated/observer-service');
+
+var Tab = require("sdk/tabs/tab-firefox").Tab;
 var workers = require("sdk/content/worker");
 
 var { Cu, Cc, Ci } = require("chrome");
@@ -17,6 +19,19 @@ XPCOMUtils.defineLazyGetter(this, "osString",
                             function() Cc["@mozilla.org/xre/app-info;1"].getService(Ci.nsIXULRuntime).OS);
 
 var Promise = require("sdk/core/promise");
+
+
+// http://ejohn.org/blog/partial-functions-in-javascript/
+Function.prototype.partial = function(){
+  var fn = this, args = Array.prototype.slice.call(arguments);
+  return function(){
+    var arg = 0;
+    for ( var i = 0; i < args.length && arg < arguments.length; i++ )
+      if ( args[i] === undefined )
+        args[i] = arguments[arg++];
+    return fn.apply(this, args);
+  };
+};
 
 function log() {
   var args = Array.prototype.slice.call(arguments, 0);
@@ -44,30 +59,77 @@ exports.devtoolTabDefinition = {
 
 let EmberInspector = {
   initialize: function (iframeWindow, toolbox) {
-    console.debug("initialize");
+    log("initialize");
     this.workers = {};
     this.iframeWindow = iframeWindow.document.querySelector("iframe");
     this.toolbox = toolbox;
 
+    log("EMBER EXTENSION TARGET", toolbox._target);
+
     this._onDevtoolPanelLoad = this._attachDevtoolPanel.bind(this);
     this.iframeWindow.addEventListener("load", this._onDevtoolPanelLoad, true);
 
-    this._onTargetTabLoad = (function() {
-      this._attachTargetTab();
-      this.iframeWindow.contentWindow.location.reload(true);
-    }).bind(this);
-    tabs.activeTab.on("load", this._onTargetTabLoad);
+    // attach target tab before any script is executed
+    this._onDocumentElementInserted = (document) => {
+      // skip if the document is not related to the target tab
+      if (toolbox && document.defaultView &&
+          document.defaultView === toolbox._target.window) {
+        log("ATTACH WINDOW: ", toolbox._target.window.location);
+        this._attachTargetTab();
+      }
+    };
 
-    this.iframeWindow.setAttribute("src", self.data.url("panes/index.html"));
+    observers.add('document-element-inserted', this._onDocumentElementInserted);
     this._attachTargetTab();
   },
 
   destroy: function () {
     log("destroy");
-    tabs.activeTab.removeListener("load", this._onTargetTabLoad);
+    observers.remove('document-element-inserted', this._onDocumentElementInserted);
     this.iframeWindow.removeEventListener("load", this._onDevtoolPanelLoad, true);
     this._cleanupWorkers();
-    this.iframeWindow.setAttribute("src", "about:blank");
+  },
+
+  _injectEmberDebug: function() {
+    var deferred = Promise.defer();
+
+    // get the ember_debug source
+    this.emberDebugSource = this.emberDebugSource || self.data.load("ember_debug/ember_debug.js");
+
+    // evaluate ember_debug source in the target tab (and resolve/reject accordingly)
+    this._consoleFor(this.toolbox._target).then(({webconsoleClient, debuggerClient}) => {
+      webconsoleClient.evaluateJS(this.emberDebugSource, (res) => {
+        if (res.error || res.exception) {
+          deferred.reject(res.error, res.exception);
+        } else {
+          deferred.resolve(res);
+        }
+      }, { url: self.data.url("ember_debug/ember_debug.js") });
+
+    }, deferred.reject);
+
+    return deferred.promise;
+  },
+
+  _consoleFor: function(target) {
+    let consoleActor = target.form.consoleActor;
+    let client = target.client;
+
+    let deferred = Promise.defer();
+
+    client.attachConsole(consoleActor, [], (res, webconsoleClient) => {
+      if (res.error) {
+        log("attachConsole error", res.error);
+        deferred.reject(res.error);
+      } else {
+        deferred.resolve({
+          webconsoleClient: webconsoleClient,
+          debuggerClient: client
+        });
+      }
+    });
+
+    return deferred.promise;
   },
 
   _cleanupWorkers: function () {
@@ -102,10 +164,12 @@ let EmberInspector = {
 
     worker.port.on("message", this._handleDevtoolPanelMessage.bind(this));
 
-    // request ember_debug inject into the target tab
-    this._sendToTargetTab({ emberDebugUrl: self.data.url("ember_debug/ember_debug.js") });
+    this.workers.devtoolPanel = worker;
 
-    return this.workers.devtoolPanel = worker;
+    // send any message in the queue to the attached devtool panel
+    this._sendToDevtoolPanel();
+
+    return worker;
   },
 
   _detachDevtoolPanel: function() {
@@ -127,8 +191,8 @@ let EmberInspector = {
       worker.destroy();
     }
 
-    worker = tabs.activeTab.attach({
-      window: tabs.activeTab._contentWindow,
+    worker = Tab({tab: this.toolbox._target.tab}).attach({
+      window: this.toolbox._target.window,
       contentScriptFile: self.data.url("content-script.js")
     });
 
@@ -136,7 +200,16 @@ let EmberInspector = {
 
     this.workers.targetTab = worker;
 
-    this._detachDevtoolPanel();
+    // inject ember_debug.js in the target tag
+    // and reload the devtool panel
+    this._injectEmberDebug().then(
+      log.partial("ember debug injected"),
+      log.partial("error injecting ember debug")
+    ).then(() => {
+      log("reloading devtool panel");
+      this._detachDevtoolPanel();
+      this.iframeWindow.contentWindow.location.reload(true);
+    });
 
     return this.workers.targetTab;
   },
@@ -161,9 +234,21 @@ let EmberInspector = {
 
   _sendToDevtoolPanel: function(msg) {
     log("_sendToDevtoolPanel", JSON.stringify(msg));
+
+    // define message queue if it's not defined
+    this.mqDevtool = this.mqDevtool || [];
+
+    if (msg) {
+      // push message in the queue if any
+      this.mqDevtool.push(msg);
+    }
+
     if (this.workers.devtoolPanel) {
-      // route to devtool panel
-      this.workers.devtoolPanel.port.emit("message", msg);
+      // drain message queue
+      let nextMsg;
+      while ((nextMsg = this.mqDevtool.shift())) {
+        this.workers.devtoolPanel.port.emit("message", nextMsg);
+      }
     }
   },
 

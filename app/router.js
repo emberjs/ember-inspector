@@ -14,6 +14,12 @@ Router.map(function() {
     });
   });
 
+  this.resource('promises', function() {
+    this.resource('promise_tree');
+  });
+
+
+
 });
 
 export default Router;

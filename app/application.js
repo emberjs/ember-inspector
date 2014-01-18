@@ -1,6 +1,7 @@
 import Router from "router";
 import Resolver from "resolver";
 import Port from "port";
+import PromiseAssembler from "libs/promise_assembler";
 
 var App = Ember.Application.extend({
   modulePrefix: '',
@@ -28,6 +29,11 @@ App.initializer({
     container.register('port:main', app.Port || Port);
     container.typeInjection('controller', 'port', 'port:main');
     container.typeInjection('route', 'port', 'port:main');
+    container.typeInjection('promise-assembler', 'port', 'port:main');
+
+    // register and inject promise assembler
+    container.register('promise-assembler:main', PromiseAssembler);
+    container.injection('route:promiseTree', 'assembler', 'promise-assembler:main');
   }
 });
 

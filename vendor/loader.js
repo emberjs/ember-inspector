@@ -62,7 +62,8 @@ define("resolver",
     service: 'services',
     controller: 'controllers',
     component: 'components',
-    adapter: 'adapters'
+    adapter: 'adapters',
+    model: 'models'
   };
 
   function classFactory(klass) {
