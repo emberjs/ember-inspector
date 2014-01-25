@@ -40,6 +40,8 @@ function inspect(value) {
         v = value[key];
         if (v === 'toString') { continue; } // ignore useless items
         if (Ember.typeOf(v) === 'function') { v = "function() { ... }"; }
+        if (Ember.typeOf(v) === 'array') { v = '[Array : ' + v.length + ']'; }
+        if (Ember.typeOf(v) === 'object') { v = '[Object]'; }
         ret.push(key + ": " + v);
       }
     }
