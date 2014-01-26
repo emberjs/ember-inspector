@@ -1,4 +1,4 @@
-var ViewTreeItemController = Ember.ObjectController.extend({
+var ViewItemController = Ember.ObjectController.extend({
   needs: ['viewTree'],
 
   hasView: Ember.computed.not('model.value.isVirtual'),
@@ -20,17 +20,9 @@ var ViewTreeItemController = Ember.ObjectController.extend({
     return this.get('hasModel') && this.get('value.model.type') === 'type-ember-object';
   }.property('hasModel', 'value.model.type'),
 
-  style: function() {
-    return 'padding-left: ' + ((this.get('numParents') * 10) + 5) + 'px';
-  }.property('numParents'),
-
-  numParents: function() {
-    var numParents = this.get('target.target.numParents');
-    if (numParents === undefined) {
-      numParents = -1;
-    }
-    return numParents + 1;
-  }.property("target.target.numParents"),
+  labelStyle: function() {
+    return 'padding-left: ' + ((+this.get('model.parentCount') * 20) + 5) + "px";
+  }.property('model.parentCount'),
 
   actions: {
     inspectView: function() {
@@ -56,4 +48,4 @@ var ViewTreeItemController = Ember.ObjectController.extend({
 
 });
 
-export default ViewTreeItemController;
+export default ViewItemController;

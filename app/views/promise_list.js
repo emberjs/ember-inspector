@@ -1,19 +1,11 @@
-import PromiseItemView from "views/promise_item";
+import ListView from "views/list";
+import ListItemView from "views/list_item";
 
-var PromiseListView = Ember.ListView.extend({
-  classNames: ["list-tree"],
+var PromiseListView = ListView.extend({
+  itemViewClass:  ListItemView.extend({
+    templateName: "promise_item"
+  })
 
-  appHeight: Ember.computed.alias('controller.controllers.application.height'),
-
-  height: function() {
-    var filterHeight = 22,
-        headerHeight = 30,
-        appHeight = this.get('appHeight');
-
-    return appHeight - filterHeight - headerHeight;
-  }.property('appHeight'),
-  rowHeight: 30,
-  itemViewClass: PromiseItemView
 });
 
 export default PromiseListView;

@@ -1,6 +1,7 @@
-var PromiseItemView = Ember.ListItemView.extend({
+import ListItemView from "views/list_item";
+
+var PromiseItemView = ListItemView.extend({
   templateName: "promise_item",
-  classNames: ["list-tree__item-wrapper", "row-wrapper"]
 });
 
 export default PromiseItemView;

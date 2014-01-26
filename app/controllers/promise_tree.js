@@ -37,7 +37,7 @@ var filterComputed = function() {
   return Ember.arrayComputed.apply(this, args);
 };
 
-// Manual implementation of item controlelrs
+// Manual implementation of item controllers
 var itemProxyComputed = function(dependentKey, itemProxy) {
   var options = {
     addedItem: function(array, item, changeMeta, instanceMeta) {
@@ -73,7 +73,7 @@ var PromiseTreeController = Ember.ArrayController.extend({
     return this.container.lookupFactory('controller:promiseItem');
   }.property(),
 
-  // TODO: This filter can be futher optimized
+  // TODO: This filter can be further optimized
   filtered: filterComputed(
       'model.@each.createdAt',
       'model.@each.fulfilledBranch',

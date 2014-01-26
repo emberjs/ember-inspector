@@ -17,7 +17,9 @@ var ViewTreeRoute = Ember.Route.extend({
   },
 
   setViewTree: function(options) {
-    this.set('controller.model', { children: [ arrayizeTree(options.tree) ] });
+    //this.set('controller.model', { children: [ arrayizeTree(options.tree) ] });
+    var viewArray = topSort(options.tree);
+    this.set('controller.model', viewArray);
   },
 
   startInspecting: function() {
@@ -49,6 +51,18 @@ var ViewTreeRoute = Ember.Route.extend({
 
 });
 
+function topSort(tree, list) {
+  list = list || [];
+  var view = $.extend({}, tree);
+  view.parentCount = view.parentCount || 0;
+  delete view.children;
+  list.push(view);
+  tree.children.forEach(function(child) {
+    child.parentCount = view.parentCount + 1;
+    topSort(child, list);
+  });
+  return list;
+}
 
 function arrayizeTree(tree) {
   Ember.NativeArray.apply(tree.children);

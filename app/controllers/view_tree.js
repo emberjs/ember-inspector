@@ -1,7 +1,8 @@
-var ViewTreeController = Ember.ObjectController.extend({
+var ViewTreeController = Ember.ArrayController.extend({
+  needs: ['application'],
+  itemController: 'viewItem',
   pinnedObjectId: null,
   inspectingViews: false,
-
   options: {
     components: false,
     allViews: false

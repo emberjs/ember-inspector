@@ -1,34 +1,26 @@
-<div class="table-tree table-tree_color_faded table-tree_type_advanced">
-  <div class="table-tree__table-container">
-    <table cellspacing="0" border-collapse="collapse">
-      <thead>
-        <tr>
-          <th>
-            <div class="table-tree__th-inner">Name</div>
-          </th>
-          <th>
-            <div class="table-tree__th-inner">Template</div>
-          </th>
-          <th>
-            <div class="table-tree__th-inner">Model</div>
-          </th>
-          <th>
-            <div class="table-tree__th-inner">Controller</div>
-          </th>
-          <th>
-            <div class="table-tree__th-inner">
-              View
-              {{#if options.components}}
-              / Component
-              {{/if}}
-            </div>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {{partial "view_node"}}
-      </tbody>
-    </table>
+<div class="list-view">
+  <div class="list-view__header row">
+    <div class="cell cell_type_header">
+      Name 
+    </div>
+    <div class="cell cell_type_header">
+      Template
+    </div>
+    <div class="cell cell_type_header">
+      Model
+    </div>
+    <div class="cell cell_type_header">
+      Controller
+    </div>
+    <div class="cell cell_type_header">
+      View / Component
+    </div>
+    <!-- Account for scrollbar width :'(  -->
+    <div class="cell cell_type_header spacer"></div>
+  </div>
+
+  <div class="list-view__list-container">
+    {{view "viewList" content=this}}
   </div>
 
   <div class="table-tree__filter">
@@ -48,6 +40,7 @@
       </div>
     </div>
   </div>
+
 
 </div>
 
