@@ -1,5 +1,3 @@
-var MixinStackView = Ember.View.extend({
+export default Ember.View.extend({
   classNames: ['object-inspector']
 });
-
-export default MixinStackView;

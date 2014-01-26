@@ -1,4 +1,4 @@
-var ViewTreeController = Ember.ArrayController.extend({
+export default Ember.ArrayController.extend({
   needs: ['application'],
   itemController: 'viewItem',
   pinnedObjectId: null,
@@ -37,5 +37,3 @@ var ViewTreeController = Ember.ArrayController.extend({
     }
   }
 });
-
-export default ViewTreeController;

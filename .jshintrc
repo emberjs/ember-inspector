@@ -35,6 +35,7 @@
     "fillIn",
     "wait"
   ],
+  "esnext": true,
   "node" : false,
   "browser" : true,
   "boss" : true,

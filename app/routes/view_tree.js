@@ -1,4 +1,4 @@
-var ViewTreeRoute = Ember.Route.extend({
+export default Ember.Route.extend({
   setupController: function() {
     this.get('port').on('view:viewTree', this, this.setViewTree);
     this.get('port').on('view:stopInspecting', this, this.stopInspecting);
@@ -17,7 +17,6 @@ var ViewTreeRoute = Ember.Route.extend({
   },
 
   setViewTree: function(options) {
-    //this.set('controller.model', { children: [ arrayizeTree(options.tree) ] });
     var viewArray = topSort(options.tree);
     this.set('controller.model', viewArray);
   },
@@ -69,6 +68,3 @@ function arrayizeTree(tree) {
   tree.children.forEach(arrayizeTree);
   return tree;
 }
-
-
-export default ViewTreeRoute;

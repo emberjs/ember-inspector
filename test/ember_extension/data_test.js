@@ -74,14 +74,13 @@ module("Data", {
         }
       }
     });
-    EmberExtension.reset();
 
     port = EmberExtension.__container__.lookup('port:main');
   }
 });
 
 test("Model types are successfully listed and bound", function() {
-  visit('/data/model_types')
+  visit('/data/model-types')
   .then(function() {
     equal(findByLabel('model-type-row').length, 2);
     equal(findByLabel('model-type-name').eq(0).text().trim(), 'App.Post');
@@ -104,7 +103,7 @@ test("Model types are successfully listed and bound", function() {
 
 
 test("Records are successfully listed and bound", function() {
-  visit('/data/model_types')
+  visit('/data/model-types')
   .then(function() {
     return click(findByLabel('model-type-row').first());
   })
@@ -166,8 +165,9 @@ test("Records are successfully listed and bound", function() {
 });
 
 test("Filtering records", function() {
-  visit('/data/model_types')
+  visit('/data/model-types')
   .then(function() {
+    debugger;
     return click(findByLabel('model-type-row').first());
   })
   .then(function() {
@@ -187,7 +187,7 @@ test("Filtering records", function() {
 
 
 test("Searching records", function() {
-  visit('/data/model_types')
+  visit('/data/model-types')
   .then(function() {
     return click(findByLabel('model-type-row').first());
   })

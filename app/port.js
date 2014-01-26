@@ -1,4 +1,4 @@
-var Port = Ember.Object.extend(Ember.Evented, {
+export default Ember.Object.extend(Ember.Evented, {
   init: function() {
     var self = this;
     this.get('adapter').onMessageReceived(function(message) {
@@ -12,6 +12,3 @@ var Port = Ember.Object.extend(Ember.Evented, {
     this.get('adapter').sendMessage(message);
   }
 });
-
-
-export default Port;

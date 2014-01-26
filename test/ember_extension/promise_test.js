@@ -50,6 +50,7 @@ test("Backwards compatibility - no promise support", function() {
       }
     }
   });
+
   visit('/promises').
   then(function() {
     equal(findByLabel('error-page').length, 1, 'The error page should show up');

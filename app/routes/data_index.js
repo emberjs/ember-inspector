@@ -1,12 +1,13 @@
 var Promise = Ember.RSVP.Promise;
-var DataIndexRoute = Ember.Route.extend({
+
+export default Ember.Route.extend({
   model: function() {
-    var self = this;
+    var route = this;
     return new Promise(function(resolve) {
-      self.get('port').one('data:hasAdapter', function(message) {
+      route.get('port').one('data:hasAdapter', function(message) {
         resolve(message.hasAdapter);
       });
-      self.get('port').send('data:checkAdapter');
+      route.get('port').send('data:checkAdapter');
     });
   },
   afterModel: function(model) {
@@ -15,5 +16,3 @@ var DataIndexRoute = Ember.Route.extend({
     }
   }
 });
-
-export default DataIndexRoute;

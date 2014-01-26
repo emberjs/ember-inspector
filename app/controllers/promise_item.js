@@ -4,16 +4,18 @@ var COLOR_MAP = {
   green: '#006400'
 };
 
-var PromiseItemController = Ember.ObjectProxy.extend({
+var alias = Ember.computed.alias;
+var notEmpty = Ember.computed.notEmpty;
 
+export default  Ember.ObjectProxy.extend({
   promiseTreeController: function() {
     return this.container.lookup('controller:promiseTree');
   }.property(),
 
-  filter: Ember.computed.alias('promiseTreeController.filter'),
-  effectiveSearch: Ember.computed.alias('promiseTreeController.effectiveSearch'),
+  filter: alias('promiseTreeController.filter'),
+  effectiveSearch: alias('promiseTreeController.effectiveSearch'),
 
-  model: Ember.computed.alias('content'),
+  model: alias('content'),
 
   style: function() {
     var color = '';
@@ -49,7 +51,7 @@ var PromiseItemController = Ember.ObjectProxy.extend({
     if (!relevant) {
       return 'opacity: 0.3';
     }
-  }.property("state", "filter", "effectiveSearch"),
+  }.property('state', 'filter', 'effectiveSearch'),
 
   labelStyle: function() {
     return 'padding-left: ' + ((+this.get('level') * 20) + 5) + "px";
@@ -63,10 +65,9 @@ var PromiseItemController = Ember.ObjectProxy.extend({
     } else {
       return '--';
     }
-
   }.property('value'),
 
-  isValueInspectable: Ember.computed.notEmpty('settledValue.objectId'),
+  isValueInspectable: notEmpty('settledValue.objectId'),
 
   hasValue: function() {
     return this.get('isSettled') && this.get('settledValue.type') !== 'type-undefined';
@@ -113,8 +114,4 @@ var PromiseItemController = Ember.ObjectProxy.extend({
     }
     return val;
   }.property('createdAt', 'settledAt', 'parent.settledAt')
-
-
 });
-
-export default PromiseItemController;

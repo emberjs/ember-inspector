@@ -1,4 +1,7 @@
-var MixinPropertyController = Ember.ObjectController.extend({
+var equal = Ember.computed.equal;
+var alias = Ember.computed.alias;
+
+export default Ember.ObjectController.extend({
   isEdit: false,
 
   // Bound to editing textbox
@@ -8,13 +11,13 @@ var MixinPropertyController = Ember.ObjectController.extend({
     return this.get('value.type') !== 'type-descriptor';
   }.property('value.type'),
 
-  isEmberObject: Ember.computed.equal('value.type', 'type-ember-object'),
+  isEmberObject: equal('value.type', 'type-ember-object'),
 
-  isComputedProperty: Ember.computed.alias('value.computed'),
+  isComputedProperty: alias('value.computed'),
 
-  isFunction: Ember.computed.equal('value.type', 'type-function'),
+  isFunction: equal('value.type', 'type-function'),
 
-  isArray: Ember.computed.equal('value.type', 'type-array'),
+  isArray: equal('value.type', 'type-array'),
 
   actions: {
     valueClick: function() {
@@ -57,8 +60,4 @@ var MixinPropertyController = Ember.ObjectController.extend({
       this.set('isEdit', false);
     }
   }
-
-
 });
-
-export default MixinPropertyController;

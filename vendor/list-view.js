@@ -1,4 +1,4 @@
-// Last commit: 8b15fe0 (2013-12-12 20:50:55 -0500)
+// Last commit: f8ef0d2 (2014-01-23 19:49:27 -0500)
 
 
 (function() {
@@ -13,7 +13,7 @@ function positionElement() {
 
   Ember.instrument('view.updateContext.positionElement', this, function() {
     element = get(this, 'element');
-    position = get(this, 'position');
+    position = this.position;
     _position = this._position;
 
     if (!position || !element) { return; }
@@ -34,7 +34,10 @@ Ember.ListItemViewMixin = Ember.Mixin.create({
   },
   classNames: ['ember-list-item-view'],
   _position: null,
-  _positionDidChange: Ember.observer(positionElement, 'position'),
+  updatePosition: function(position) {
+    this.position = position;
+    this._positionElement();
+  },
   _positionElement: positionElement
 });
 
@@ -325,7 +328,7 @@ function enableProfilingOutput() {
   @namespace Ember
 */
 Ember.ListViewMixin = Ember.Mixin.create({
-  itemViewClass: Ember.ListItemView,
+  itemViewClass: Ember.ReusableListItemView,
   emptyViewClass: Ember.View,
   classNames: ['ember-list-view'],
   attributeBindings: ['style'],
@@ -450,6 +453,10 @@ Ember.ListViewMixin = Ember.Mixin.create({
       return;
     }
 
+    // allow a visual overscroll, but don't scroll the content. As we are doing needless
+    // recycyling, and adding unexpected nodes to the DOM.
+    scrollTop = Math.min(scrollTop, (get(this, 'totalHeight') - get(this, 'height')));
+
     Ember.instrument('view._scrollContentTo', {
       scrollTop: scrollTop,
       content: get(this, 'content'),
@@ -473,10 +480,12 @@ Ember.ListViewMixin = Ember.Mixin.create({
         return;
       }
 
-      this._reuseChildren();
+      Ember.run(this, function(){
+        this._reuseChildren();
 
-      this._lastStartingIndex = startingIndex;
-      this._lastEndingIndex = endingIndex;
+        this._lastStartingIndex = startingIndex;
+        this._lastEndingIndex = endingIndex;
+      });
     }, this);
   },
 
@@ -517,7 +526,7 @@ Ember.ListViewMixin = Ember.Mixin.create({
     content = get(this, 'content');
     enableProfiling = get(this, 'enableProfiling');
     position = this.positionForIndex(contentIndex);
-    set(childView, 'position', position);
+    childView.updatePosition(position);
 
     set(childView, 'contentIndex', contentIndex);
 
@@ -889,13 +898,17 @@ var get = Ember.get, set = Ember.set;
   Example:
 
   ```javascript
-  App.contributors = [{ name: 'Stefan Penner' }, { name: 'Alex Navasardyan' }, { name: 'Rey Cohen'}];
+  App.ContributorsRoute = Ember.Route.extend({
+    model: function() {
+      return [{ name: 'Stefan Penner' }, { name: 'Alex Navasardyan' }, { name: 'Ray Cohen'}];
+    }
+  });
   ```
 
   ```handlebars
-  {{#collection Ember.ListView contentBinding="App.contributors" height=500 rowHeight=50}}
+  {{#ember-list items=contributors height=500 rowHeight=50}}
     {{name}}
-  {{/collection}}
+  {{/ember-list}}
   ```
 
   Would result in the following HTML:
@@ -923,18 +936,18 @@ var get = Ember.get, set = Ember.set;
   Note, that `height` and `rowHeight` are required parameters.
 
   ```handlebars
-  {{#collection Ember.ListView contentBinding="App.contributors" height=500 rowHeight=50}}
+  {{#ember-list items=this height=500 rowHeight=50}}
     {{name}}
-  {{/collection}}
+  {{/ember-list}}
   ```
 
   If you would like to have multiple columns in your view layout, you can
   set `width` and `elementWidth` parameters respectively.
 
   ```handlebars
-  {{#collection Ember.ListView contentBinding="App.contributors" height=500 rowHeight=50 width=500 elementWidth=80}}
+  {{#ember-list items=this height=500 rowHeight=50 width=500 elementWidth=80}}
     {{name}}
-  {{/collection}}
+  {{/ember-list}}
   ```
 
   ### extending `Ember.ListView`
@@ -980,10 +993,8 @@ Ember.ListView = Ember.ContainerView.extend(Ember.ListViewMixin, {
   },
 
   didInsertElement: function() {
-    var that, element;
-
-    that = this,
-    element = get(this, 'element');
+    var that = this,
+        element = get(this, 'element');
 
     this._updateScrollableHeight();
 
@@ -1001,7 +1012,7 @@ Ember.ListView = Ember.ContainerView.extend(Ember.ListViewMixin, {
   },
 
   scroll: function(e) {
-    Ember.run(this, this.scrollTo, e.target.scrollTop);
+    this.scrollTo(e.target.scrollTop);
   },
 
   scrollTo: function(y){
@@ -1217,9 +1228,9 @@ Ember.VirtualListView = Ember.ContainerView.extend(Ember.ListViewMixin, Ember.Vi
       if (view.state !== 'inDOM') { return; }
 
       if (view.listContainerElement) {
-        view.applyTransform(view.listContainerElement, 0, -top);
         view._scrollerTop = top;
         view._scrollContentTo(top);
+        view.applyTransform(view.listContainerElement, 0, -top);
       }
     }, {
       scrollingX: false,
@@ -1241,7 +1252,9 @@ Ember.VirtualListView = Ember.ContainerView.extend(Ember.ListViewMixin, Ember.Vi
     this.insertAt(0, this.pullToRefreshView);
     var view = this;
     this.pullToRefreshView.on('didInsertElement', function(){
-      view.applyTransform(this.get('element'), 0, -1 * view.pullToRefreshViewHeight);
+      Ember.run.schedule('afterRender', this, function(){
+        view.applyTransform(this.get('element'), 0, -1 * view.pullToRefreshViewHeight);
+      });
     });
   },
   _activateScrollerPullToRefresh: function(){
@@ -1346,6 +1359,40 @@ Ember.VirtualListView = Ember.ContainerView.extend(Ember.ListViewMixin, Ember.Vi
     return false;
   }
 });
+
+})();
+
+
+
+(function() {
+Ember.Handlebars.registerHelper('ember-list', function emberList(options) {
+  var hash = options.hash;
+  var types = options.hashTypes;
+
+  hash.content = hash.items;
+  delete hash.items;
+
+  types.content = types.items;
+  delete types.items;
+
+  if (!hash.content) {
+    hash.content = "this";
+    types.content = "ID";
+  }
+
+  for (var prop in hash) {
+    if (/-/.test(prop)) {
+      var camelized = Ember.String.camelize(prop);
+      hash[camelized] = hash[prop];
+      types[camelized] = types[prop];
+      delete hash[prop];
+      delete types[prop];
+    }
+  }
+
+  return Ember.Handlebars.helpers.collection.call(this, 'Ember.ListView', options);
+});
+
 
 })();
 

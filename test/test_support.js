@@ -1,7 +1,14 @@
 Ember.testing = true;
 
 Ember.Test.registerHelper('findByLabel', function(app, label, context) {
-  return app.testHelpers.find('[data-label="' + label + '"]', context);
+  var selector = '[data-label="' + label + '"]';
+  var result = app.testHelpers.find(selector, context);
+
+  if (!result.length) {
+    throw new Error("label not found `" + selector + "`");
+  }
+
+  return result;
 });
 
 Ember.Test.registerAsyncHelper('clickByLabel', function(app, label, context) {

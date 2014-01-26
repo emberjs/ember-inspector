@@ -1,14 +1,18 @@
 import Promise from "models/promise";
 
-var PromiseAssembler = Ember.Object.extend({
+var arrayComputed = Ember.computed(function(){
+  return [];
+});
 
-  all: function() { return []; }.property(),
+var objectComputed = Ember.computed(function(){
+  return [];
+});
 
-  promiseIndex: function() { return {}; }.property(),
-
-  topSort: function() { return []; }.property(),
-
-  topSortMeta: function() { return {}; }.property(),
+export default Ember.Object.extend({
+  all: arrayComputed,
+  topSort: arrayComputed,
+  topSortMeta: objectComputed,
+  promiseIndex: objectComputed,
 
   start: function() {
     this.get('port').on('promise:promisesUpdated', this, this.addOrUpdatePromises);
@@ -115,7 +119,6 @@ var PromiseAssembler = Ember.Object.extend({
     this.updateTopSort(promise);
 
     return promise;
-
   },
 
   createPromise: function(props) {
@@ -138,7 +141,6 @@ var PromiseAssembler = Ember.Object.extend({
     }
   },
 
-
   findOrCreate: function(guid) {
     if (!guid) {
       Ember.assert('You have tried to findOrCreate without a guid');
@@ -147,9 +149,4 @@ var PromiseAssembler = Ember.Object.extend({
       guid: guid
     });
   }
-
-
-
 });
-
-export default PromiseAssembler;

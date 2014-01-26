@@ -86,6 +86,5 @@ test("Updates are published when they happen", function() {
       var parent = message.promises[1];
       equal(parent.guid, promise.guid);
     }, 200);
-
   }, 200);
 });

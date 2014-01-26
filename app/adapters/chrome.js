@@ -2,7 +2,7 @@ import BasicAdapter from "adapters/basic";
 
 var emberDebug = null;
 
-var ChromeAdapter = BasicAdapter.extend({
+export default  BasicAdapter.extend({
 
   sendMessage: function(options) {
     options = options || {};
@@ -41,5 +41,3 @@ var ChromeAdapter = BasicAdapter.extend({
     chrome.devtools.inspectedWindow.eval(emberDebug);
   }.on('init')
 });
-
-export default ChromeAdapter;

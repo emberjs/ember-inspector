@@ -1,4 +1,4 @@
-var DragHandleComponent = Ember.Component.extend({
+export default Ember.Component.extend({
   classNames: ['drag-handle'],
   isDragging: false,
   positionLeft: null,
@@ -36,5 +36,3 @@ var DragHandleComponent = Ember.Component.extend({
     return false;
   }
 });
-
-export default DragHandleComponent;

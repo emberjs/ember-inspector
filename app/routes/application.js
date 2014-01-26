@@ -1,5 +1,4 @@
-var ApplicationRoute = Ember.Route.extend({
-
+export default Ember.Route.extend({
   setupController: function(controller, model) {
     this.controllerFor('mixinStack').set('model', []);
 
@@ -65,11 +64,8 @@ var ApplicationRoute = Ember.Route.extend({
       }
     }
   }
-
 });
 
 function arrayize(mixin) {
   Ember.NativeArray.apply(mixin.properties);
 }
-
-export default ApplicationRoute;

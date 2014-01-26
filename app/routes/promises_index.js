@@ -1,16 +1,17 @@
 var Promise = Ember.RSVP.Promise;
-var PromisesIndex = Ember.Route.extend({
+
+export default Ember.Route.extend({
   beforeModel: function() {
-    var self = this;
+    var route = this;
     return new Promise(function(resolve) {
-      self.get('port').one('promise:supported', this, function(message) {
+      route.get('port').one('promise:supported', this, function(message) {
         if (message.supported) {
-          self.transitionTo('promise_tree');
+          route.transitionTo('promise-tree');
         } else {
           resolve();
         }
       });
-      self.get('port').send('promise:supported');
+      route.get('port').send('promise:supported');
     });
   },
 
@@ -18,5 +19,3 @@ var PromisesIndex = Ember.Route.extend({
     this.render('promises.error');
   }
 });
-
-export default PromisesIndex;

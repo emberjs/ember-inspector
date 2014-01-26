@@ -12,8 +12,7 @@ var dateComputed = function() {
   }).property();
 };
 
-var Promise = Ember.Object.extend({
-
+export default Ember.Object.extend({
   createdAt: dateComputed(),
   settledAt: dateComputed(),
   chainedAt: dateComputed(),
@@ -45,5 +44,3 @@ var Promise = Ember.Object.extend({
   }).property('state')
 
 });
-
-export default Promise;

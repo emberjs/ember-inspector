@@ -14,7 +14,7 @@
   })
   ```
 **/
-var BasicAdapter = Ember.Object.extend({
+export default Ember.Object.extend({
   /**
     Used to send messages to EmberDebug
 
@@ -38,5 +38,3 @@ var BasicAdapter = Ember.Object.extend({
     });
   }
 });
-
-export default BasicAdapter;

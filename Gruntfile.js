@@ -29,7 +29,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', [
     'clean',
-    'ember_handlebars',
+    'emberTemplates:dist',
     'transpile:main',
     'concat:main',
     'concat:main_css',

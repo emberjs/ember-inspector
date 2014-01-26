@@ -1,4 +1,4 @@
-var MixinStackController = Ember.ArrayController.extend({
+export default Ember.ArrayController.extend({
   needs: ['application'],
 
   trail: function() {
@@ -27,5 +27,3 @@ var MixinStackController = Ember.ArrayController.extend({
     }
   }
 });
-
-export default MixinStackController;

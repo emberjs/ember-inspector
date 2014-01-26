@@ -1,6 +1,6 @@
 var Promise = Ember.RSVP.Promise, set = Ember.set;
 
-var RecordsRoute = Ember.Route.extend({
+export default Ember.Route.extend({
   setupController: function(controller, model) {
     this._super(controller, model);
 
@@ -30,9 +30,9 @@ var RecordsRoute = Ember.Route.extend({
   },
 
   updateRecords: function(message) {
-    var self = this;
+    var route = this;
     message.records.forEach(function(record) {
-      var currentRecord = self.get('currentModel').findProperty('objectId', record.objectId);
+      var currentRecord = route.get('currentModel').findProperty('objectId', record.objectId);
       if (currentRecord) {
         set(currentRecord, 'columnValues', record.columnValues);
         set(currentRecord, 'filterValues', record.filterValues);
@@ -58,4 +58,3 @@ var RecordsRoute = Ember.Route.extend({
   }
 });
 
-export default RecordsRoute;

@@ -1,3 +1,1 @@
-var MixinDetailsController = Ember.ObjectController.extend();
-
-export default MixinDetailsController;
+export default Ember.ObjectController.extend();

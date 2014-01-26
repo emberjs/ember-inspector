@@ -46,4 +46,4 @@ Ember.TEMPLATES.simple = compile('Simple {{input class="simple-input"}} {{view E
 Ember.TEMPLATES.posts = compile('Posts');
 
 
-export defaultApp;
+export default App;

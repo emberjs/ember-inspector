@@ -7,6 +7,7 @@
     <link href="/ember_extension.css" rel="stylesheet">
 
     <script src="/vendor/loader.js"></script>
+    <script src="/vendor/resolver.js"></script>
     <script src="/vendor/jquery.js"></script>
     <script src="/vendor/handlebars.js"></script>
     <script src="/vendor/ember.js"></script>
@@ -17,11 +18,11 @@
     <script src="ember_extension_test.js"></script>
 
     <script>
-      var EmberExtension = window.EmberExtension = requireModule('application').create({
+      var EmberExtension = window.EmberExtension = requireModule('app').default.create({
         adapter: 'basic'
       });
 
-      EmberExtension.Port = requireModule('port');
+      EmberExtension.Port = requireModule('port').default;
 
       Ember.Application.initializer({
         name: "detectEmberApplication",
@@ -31,13 +32,11 @@
         }
       });
 
-      EmberExtension.deferReadiness();
       EmberExtension.setupForTesting();
       EmberExtension.injectTestHelpers();
-      EmberExtension.advanceReadiness();
-
-
-      Ember.keys(define.registry).forEach(requireModule);
+      Ember.keys(define.registry).filter(function(path) {
+        return /_test/.test(path);
+      }).forEach(requireModule);
     </script>
   </head>
   <body>

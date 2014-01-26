@@ -1,4 +1,4 @@
-var RouteTreeRoute = Ember.Route.extend({
+export default Ember.Route.extend({
   setupController: function(controller, model) {
     this._super(controller, model);
     this.get('port').on('route:currentRoute', this, this.setCurrentRoute);
@@ -57,6 +57,3 @@ function topSort(tree, list) {
   });
   return list;
 }
-
-
-export default RouteTreeRoute;

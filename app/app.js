@@ -1,4 +1,3 @@
-import Router from "router";
 import Resolver from "resolver";
 import Port from "port";
 import PromiseAssembler from "libs/promise_assembler";
@@ -6,7 +5,6 @@ import PromiseAssembler from "libs/promise_assembler";
 var App = Ember.Application.extend({
   modulePrefix: '',
   Resolver: Resolver,
-  Router: Router,
   adapter: 'basic'
 });
 

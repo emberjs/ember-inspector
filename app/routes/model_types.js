@@ -1,6 +1,6 @@
 var Promise = Ember.RSVP.Promise;
 
-var ModelTypesRoute = Ember.Route.extend({
+export default Ember.Route.extend({
   setupController: function(controller, model) {
     this._super(controller, model);
     this.get('port').on('data:modelTypesAdded', this, this.addModelTypes);
@@ -23,9 +23,9 @@ var ModelTypesRoute = Ember.Route.extend({
   },
 
   updateModelTypes: function(message) {
-    var self = this;
+    var route = this;
     message.modelTypes.forEach(function(modelType) {
-      var currentType = self.get('currentModel').findProperty('objectId', modelType.objectId);
+      var currentType = route.get('currentModel').findProperty('objectId', modelType.objectId);
       Ember.set(currentType, 'count', modelType.count);
     });
   },
@@ -36,5 +36,3 @@ var ModelTypesRoute = Ember.Route.extend({
     }
   }
 });
-
-export default ModelTypesRoute;

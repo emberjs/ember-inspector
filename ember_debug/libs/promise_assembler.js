@@ -8,6 +8,7 @@
 import Promise from 'models/promise';
 
 var get = Ember.get;
+var alias = Ember.computed.alias;
 
 var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
   // RSVP lib to debug
@@ -20,8 +21,8 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
   // injected on creation
   promiseDebug: null,
 
-  existingEvents: Ember.computed.alias('promiseDebug.existingEvents'),
-  existingCallbacks: Ember.computed.alias('promiseDebug.existingCallbacks'),
+  existingEvents: alias('promiseDebug.existingEvents'),
+  existingCallbacks: alias('promiseDebug.existingCallbacks'),
 
   start: function() {
     this.RSVP.configure('instrument', true);
@@ -122,6 +123,8 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
   }
 });
 
+export default PromiseAssembler;
+
 PromiseAssembler.reopenClass({
   supported: function() {
     return !!Ember.RSVP.on;
@@ -155,7 +158,8 @@ var reject = function(event) {
   });
 };
 
-var chain = function(event) {
+function chain(event) {
+  /*jshint validthis:true */
   var guid = event.guid,
       promise = this.updateOrCreate(guid, {
         label: event.label,
@@ -171,9 +175,10 @@ var chain = function(event) {
     promise: promise,
     child: child
   });
-};
+}
 
-var create = function(event) {
+function create(event) {
+  /*jshint validthis:true */
   var guid = event.guid;
 
   var promise = this.updateOrCreate(guid, {
@@ -189,7 +194,4 @@ var create = function(event) {
   this.trigger('created', {
     promise: promise
   });
-};
-
-
-export default PromiseAssembler;
+}

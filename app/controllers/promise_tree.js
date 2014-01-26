@@ -1,4 +1,4 @@
-var filterComputed = function() {
+function filterComputed() {
   var dependentKeys, callback;
 
   if (arguments.length > 1) {
@@ -34,11 +34,13 @@ var filterComputed = function() {
   };
   var args = dependentKeys;
   args.push(options);
+
+  /*jshint validthis:true */
   return Ember.arrayComputed.apply(this, args);
-};
+}
 
 // Manual implementation of item controllers
-var itemProxyComputed = function(dependentKey, itemProxy) {
+function itemProxyComputed(dependentKey, itemProxy) {
   var options = {
     addedItem: function(array, item, changeMeta, instanceMeta) {
       var proxy = itemProxy.create({ content: item });
@@ -54,9 +56,11 @@ var itemProxyComputed = function(dependentKey, itemProxy) {
   };
 
   return Ember.arrayComputed(dependentKey, options);
-};
+}
 
-var PromiseTreeController = Ember.ArrayController.extend({
+var equal = Ember.computed.equal;
+
+export default Ember.ArrayController.extend({
   needs: ['application'],
 
   createdAfter: null,
@@ -64,13 +68,13 @@ var PromiseTreeController = Ember.ArrayController.extend({
   init: function() {
     // List-view does not support item controllers
     this.reopen({
-      items: itemProxyComputed('filtered', this.get('promiseItemController'))
+      items: itemProxyComputed('filtered', this.get('promise-item-controller'))
     });
   },
 
 
   promiseItemController: function() {
-    return this.container.lookupFactory('controller:promiseItem');
+    return this.container.lookupFactory('controller:promise-item');
   }.property(),
 
   // TODO: This filter can be further optimized
@@ -113,10 +117,10 @@ var PromiseTreeController = Ember.ArrayController.extend({
 
   filter: 'all',
 
-  noFilter: Ember.computed.equal('filter', 'all'),
-  isRejectedFilter: Ember.computed.equal('filter', 'rejected'),
-  isPendingFilter: Ember.computed.equal('filter', 'pending'),
-  isFulfilledFilter: Ember.computed.equal('filter', 'fulfilled'),
+  noFilter: equal('filter', 'all'),
+  isRejectedFilter: equal('filter', 'rejected'),
+  isPendingFilter: equal('filter', 'pending'),
+  isFulfilledFilter: equal('filter', 'fulfilled'),
 
   search: null,
   effectiveSearch: null,
@@ -150,6 +154,3 @@ var PromiseTreeController = Ember.ArrayController.extend({
     }
   }
 });
-
-
-export default PromiseTreeController;

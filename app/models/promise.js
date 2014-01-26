@@ -12,7 +12,7 @@ var dateComputed = function() {
   }).property();
 };
 
-var Promise = Ember.Object.extend({
+export default Ember.Object.extend({
   createdAt: dateComputed(),
   settledAt: dateComputed(),
 
@@ -113,13 +113,8 @@ var Promise = Ember.Object.extend({
   matchesExactly: function(val) {
     return !!((this.get('label') || '').toLowerCase().match(new RegExp('.*' + escapeRegExp(val.toLowerCase()) + '.*')));
   }
-
-
 });
 
 function escapeRegExp(str) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }
-
-
-export default Promise;

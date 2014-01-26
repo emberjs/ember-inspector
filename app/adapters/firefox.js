@@ -1,6 +1,6 @@
 import BasicAdapter from "adapters/basic";
 
-var FirefoxAdapter = BasicAdapter.extend({
+export default BasicAdapter.extend({
 
   sendMessage: function(options) {
     options = options || {};
@@ -23,5 +23,3 @@ var FirefoxAdapter = BasicAdapter.extend({
     }, false);
   }.on('init')
 });
-
-export default FirefoxAdapter;

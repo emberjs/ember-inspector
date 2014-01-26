@@ -1,5 +1,4 @@
-var PromiseTreeRoute = Ember.Route.extend({
-
+export default Ember.Route.extend({
   model: function() {
     return this.get('assembler.topSort');
   },
@@ -18,5 +17,3 @@ var PromiseTreeRoute = Ember.Route.extend({
     }
   }
 });
-
-export default PromiseTreeRoute;

@@ -1,4 +1,4 @@
-var PropertyFieldComponent = Ember.TextField.extend({
+export default Ember.TextField.extend({
   attributeBindings: ['label:data-label'],
 
   saveProperty: 'saveProperty',
@@ -21,9 +21,4 @@ var PropertyFieldComponent = Ember.TextField.extend({
   focusOut: function() {
     this.sendAction('finishedEditing');
   }
-
 });
-
-
-
-export default PropertyFieldComponent;

@@ -50,7 +50,7 @@ test("Route tree is successfully displayed", function() {
     }
   });
 
-  visit('route_tree')
+  visit('route-tree')
   .then(function() {
 
     var routeNodes = findByLabel('route-node');
@@ -95,7 +95,7 @@ test("Clicking on route handlers and controller sends an inspection message", fu
     }
   });
 
-  visit('route_tree')
+  visit('route-tree')
   .then(function() {
     name = null;
     message = null;
@@ -138,7 +138,7 @@ test("Current Route is highlighted", function() {
 
   var routeNodes;
 
-  visit('route_tree')
+  visit('route-tree')
   .then(function() {
     routeNodes = findByLabel('route-node');
     var isCurrent = routeNodes.get().map(function(item) {

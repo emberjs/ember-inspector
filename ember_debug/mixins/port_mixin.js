@@ -1,4 +1,4 @@
-var PortMixin = Ember.Mixin.create({
+export default Ember.Mixin.create({
   port: null,
   messages: {},
 
@@ -47,7 +47,4 @@ var PortMixin = Ember.Mixin.create({
     }
     return messageName;
   }
-
 });
-
-export defaultPortMixin;

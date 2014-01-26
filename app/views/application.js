@@ -1,4 +1,4 @@
-var ApplicationView = Ember.View.extend({
+export default Ember.View.extend({
   classNames: ['app'],
 
   classNameBindings: [
@@ -54,5 +54,3 @@ var ApplicationView = Ember.View.extend({
     }
   }.property('controller.inspectorWidth', 'controller.inspectorExpanded')
 });
-
-export default ApplicationView;
