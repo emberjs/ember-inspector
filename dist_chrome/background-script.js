@@ -10,11 +10,14 @@ function generateVersionsTooltip(versions) {
 }
 
 function setActionTitle(tabId, versions){
-  chrome.pageAction.setTitle({
-    tabId: tabId,
-    title: generateVersionsTooltip(versions)
+  chrome.storage.sync.get("options", function(data) {
+    if (!data.options.showTomster) { return; }
+    chrome.pageAction.setTitle({
+      tabId: tabId,
+      title: generateVersionsTooltip(versions)
+    });
+    activeTabs[tabId] = versions;
   });
-  activeTabs[tabId] = versions;
 }
 
 function updateTabAction(tabId){

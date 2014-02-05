@@ -11,7 +11,8 @@
     "128": "images/icon128.png"
   },
   "permissions": [
-    "<all_urls>"
+    "<all_urls>",
+    "storage"
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "devtools_page": "devtools.html",
@@ -32,5 +33,6 @@
   },
   "web_accessible_resources": [
     "in-page-script.js"
-  ]
+  ],
+  "options_page": "options.html"
 }
