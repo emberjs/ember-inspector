@@ -1,7 +1,8 @@
-{{!#view "viewTreeItem" node=model}}
 <div {{bind-attr class=":list-tree__item :row isCurrent:row_highlight"}} >
-  <div class="cell_type_main cell " {{bind-attr style="labelStyle"}}>
-    <span {{bind-attr title="value.name"}} data-label="view-name">{{unbound value.name}}</span>
+  <div class="cell_type_main cell " >
+    <div {{bind-attr style="labelStyle"}}>
+      <span {{bind-attr title="value.name"}} data-label="view-name">{{unbound value.name}}</span>
+    </div>
   </div>
   <div {{bind-attr class=":cell hasElement:cell_clickable"}} {{action "inspectElement"}} data-label="view-template">{{unbound value.template}}</div>
   <div {{action "inspectModel" value.model.objectId}} {{bind-attr class=":cell modelInspectable:cell_clickable"}} data-label="view-model">
@@ -22,5 +23,3 @@
     {{/if}}
   </div>
 </div>
-{{!/view}}
-
