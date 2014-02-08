@@ -1,6 +1,6 @@
 import ListItemView from "views/list_item";
 
-var ListView = Ember.VirtualListView.extend({
+var ListView = Ember.ListView.extend({
   classNames: ["list-tree"],
 
   appHeight: Ember.computed.alias('controller.controllers.application.height'),
