@@ -23,9 +23,7 @@
           {{/if}}
         </div>
         <div class="list-tree__right-helper">
-          <button class="send-to-console" {{action "sendValueToConsole" model}} data-label="send-to-console-btn">
-            <img src="../images/send.png" title="Send to console">
-          </button>
+          {{send-to-console action="sendValueToConsole" param=model}}
         </div>
     {{else}}
     --

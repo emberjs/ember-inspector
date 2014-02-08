@@ -11,9 +11,7 @@
         {{unbound value.model.name}}
       </div>
       <div class="list-tree__right-helper">
-        <button class="send-to-console" {{action "sendModelToConsole" value.objectId}} data-label="send-to-console-btn">
-          <img src="../images/send.png" title="Send to console">
-        </button>
+        {{send-to-console action="sendModelToConsole" param=value.objectId}}
       </div>
     {{else}}
       --
@@ -25,9 +23,7 @@
         {{unbound value.controller.name}}
       </div>
       <div class="list-tree__right-helper">
-        <button class="send-to-console" {{action "sendObjectToConsole" value.controller.objectId}} data-label="send-to-console-btn">
-          <img src="../images/send.png" title="Send to console">
-        </button>
+        {{send-to-console action="sendObjectToConsole" param=value.controller.objectId}}
       </div>
     {{/if}}
   </div>
@@ -37,9 +33,7 @@
         {{unbound value.viewClass}}
       </div>
       <div class="list-tree__right-helper">
-        <button class="send-to-console" {{action "sendObjectToConsole" value.objectId}} data-label="send-to-console-btn">
-          <img src="../images/send.png" title="Send to console">
-        </button>
+        {{send-to-console action="sendObjectToConsole" param=value.objectId}}
       </div>
     {{else}}
       --
