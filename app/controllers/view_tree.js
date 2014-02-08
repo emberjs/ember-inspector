@@ -25,6 +25,15 @@ var ViewTreeController = Ember.ArrayController.extend({
 
     toggleViewInspection: function() {
       this.get('port').send('view:inspectViews', { inspect: !this.get('inspectingViews') });
+    },
+
+    sendModelToConsole: function(viewId) {
+      // do not use `sendObjectToConsole` because models don't have to be ember objects
+      this.get('port').send('view:sendModelToConsole', { viewId: viewId });
+    },
+
+    sendObjectToConsole: function(objectId) {
+      this.get('port').send('objectInspector:sendToConsole', { objectId: objectId });
     }
   }
 });

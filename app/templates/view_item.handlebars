@@ -5,19 +5,42 @@
     </div>
   </div>
   <div {{bind-attr class=":cell hasElement:cell_clickable"}} {{action "inspectElement"}} data-label="view-template">{{unbound value.template}}</div>
-  <div {{action "inspectModel" value.model.objectId}} {{bind-attr class=":cell modelInspectable:cell_clickable"}} data-label="view-model">
+  <div {{bind-attr class=":cell modelInspectable:cell_clickable"}} data-label="view-model">
     {{#if hasModel}}
-      {{unbound value.model.name}}
+      <div class="list-tree__limited" {{action "inspectModel" value.model.objectId}}>
+        {{unbound value.model.name}}
+      </div>
+      <div class="list-tree__right-helper">
+        <button class="send-to-console" {{action "sendModelToConsole" value.objectId}} data-label="send-to-console-btn">
+          <img src="../images/send.png" title="Send to console">
+        </button>
+      </div>
     {{else}}
       --
     {{/if}}
   </div>
-  <div {{action "inspect" value.controller.objectId}} {{bind-attr class=":cell hasController:cell_clickable"}} data-label="view-controller">
-    {{unbound value.controller.name}}
+  <div {{bind-attr class=":cell hasController:cell_clickable"}} data-label="view-controller">
+    {{#if hasController}}
+      <div class="list-tree__limited" {{action "inspect" value.controller.objectId}} >
+        {{unbound value.controller.name}}
+      </div>
+      <div class="list-tree__right-helper">
+        <button class="send-to-console" {{action "sendObjectToConsole" value.controller.objectId}} data-label="send-to-console-btn">
+          <img src="../images/send.png" title="Send to console">
+        </button>
+      </div>
+    {{/if}}
   </div>
-  <div {{action "inspectView"}} {{bind-attr class=":cell hasView:cell_clickable"}} data-label="view-class">
+  <div {{bind-attr class=":cell hasView:cell_clickable"}} data-label="view-class">
     {{#if hasView}}
-      {{unbound value.viewClass}}
+      <div class="list-tree__limited"{{action "inspectView"}} >
+        {{unbound value.viewClass}}
+      </div>
+      <div class="list-tree__right-helper">
+        <button class="send-to-console" {{action "sendObjectToConsole" value.objectId}} data-label="send-to-console-btn">
+          <img src="../images/send.png" title="Send to console">
+        </button>
+      </div>
     {{else}}
       --
     {{/if}}

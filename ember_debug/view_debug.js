@@ -50,6 +50,14 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     setOptions: function(message) {
       this.set('options', message.options);
       this.sendTree();
+    },
+    sendModelToConsole: function(message) {
+      var view = this.get('objectInspector').sentObjects[message.viewId];
+      var controller = view.get('controller');
+      if (controller) {
+        this.get('objectInspector').sendValueToConsole(controller.get('model'));
+      }
+
     }
   },
 
