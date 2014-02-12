@@ -1,0 +1,30 @@
+<div {{bind-attr class=":list-tree__item :row isCurrent:row_highlight"}} >
+  <div class="cell_type_main cell" data-label="route-name" >
+    <div {{bind-attr style="labelStyle"}}>
+      <span {{bind-attr title="value.name"}} data-label="view-name">{{unbound value.name}}</span>
+    </div>
+  </div>
+  <div class="cell cell_clickable" {{action "inspectRoute" value.routeHandler.name}} data-label="view-template">
+    {{value.routeHandler.className}}
+  </div>
+  <div class="cell"  data-label="route-controller">
+    {{#if value.controller.exists}}
+      <div class="list-tree__limited cell_clickable" {{action "inspectController" value.controller}}>
+        {{value.controller.className}}
+      </div>
+      <div class="list-tree__right-helper">
+        {{send-to-console action="sendControllerToConsole" param=value.controller.name}}
+      </div>
+
+    {{else}}
+      <div data-label="route-controller">{{value.controller.className}}</div>
+    {{/if}}
+  </div>
+  <div class="cell" data-label="route-template">
+    {{value.template.name}}
+  </div>
+  <div class="cell cell_size_large" data-label="route-url" {{bind-attr title="value.url"}}>
+    {{value.url}}
+  </div>
+
+</div>

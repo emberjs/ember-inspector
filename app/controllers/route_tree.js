@@ -1,4 +1,6 @@
-var RouteTreeController = Ember.ObjectController.extend({
+var RouteTreeController = Ember.ArrayController.extend({
+  needs: ['application'],
+  itemController: 'routeItem',
   currentRoute: null
 });
 

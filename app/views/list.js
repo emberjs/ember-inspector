@@ -3,20 +3,22 @@ import ListItemView from "views/list_item";
 var ListView = Ember.ListView.extend({
   classNames: ["list-tree"],
 
-  appHeight: Ember.computed.alias('controller.controllers.application.height'),
+  contentHeight: Ember.computed.alias('controller.controllers.application.contentHeight'),
+
+  filterHeight: 22,
 
   height: function() {
-    var filterHeight = 22,
+    var filterHeight = this.get('filterHeight'),
         headerHeight = 30,
-        appHeight = this.get('appHeight');
+        contentHeight = this.get('contentHeight');
 
-    // In testing list-view is created before `appHeight` is set
+    // In testing list-view is created before `contentHeight` is set
     // which will trigger an exception
-    if (!appHeight) {
+    if (!contentHeight) {
       return 1;
     }
-    return appHeight - filterHeight - headerHeight;
-  }.property('appHeight'),
+    return contentHeight - filterHeight - headerHeight;
+  }.property('contentHeight'),
   rowHeight: 30,
   itemViewClass: ListItemView
 });

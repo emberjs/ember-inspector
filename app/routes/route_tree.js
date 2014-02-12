@@ -17,7 +17,8 @@ var RouteTreeRoute = Ember.Route.extend({
   },
 
   setTree: function(options) {
-    this.set('controller.model', { children: [ arrayizeTree(options.tree) ] });
+    var routeArray = topSort(options.tree);
+    this.set('controller.model', routeArray);
   },
 
   actions: {
@@ -30,16 +31,28 @@ var RouteTreeRoute = Ember.Route.extend({
         return;
       }
       this.get('port').send('objectInspector:inspectController', { name: controller.name } );
+    },
+
+    sendControllerToConsole: function(controllerName) {
+      this.get('port').send('objectInspector:sendControllerToConsole', { name: controllerName });
     }
   }
 });
 
-function arrayizeTree(tree) {
-  if(tree.children) {
-    Ember.NativeArray.apply(tree.children);
-    tree.children.forEach(arrayizeTree);
-  }
-  return tree;
+
+function topSort(tree, list) {
+  list = list || [];
+  var view = $.extend({}, tree);
+  view.parentCount = view.parentCount || 0;
+  delete view.children;
+  list.push(view);
+  tree.children = tree.children || [];
+  tree.children.forEach(function(child) {
+    child.parentCount = view.parentCount + 1;
+    topSort(child, list);
+  });
+  return list;
 }
+
 
 export default RouteTreeRoute;

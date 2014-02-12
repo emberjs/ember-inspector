@@ -43,7 +43,9 @@
 
 
   <div class="app__main">
-    {{outlet}}
+    {{#view "mainContent"}}
+      {{outlet}}
+    {{/view}}
   </div>
 
   {{#unless inspectorExpanded}}

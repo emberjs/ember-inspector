@@ -21,13 +21,16 @@
 
 
 .app__main {
-  -webkit-flex: 1;
   flex: 1;
   height: 100%;
   overflow: auto;
+  overflow-x: scroll !important;
   border-left: solid 1px #828282;
 }
 
+.app__main-content {
+  height: 100%;
+}
 
 .app__toggle-inspector-btn {
   cursor: pointer;

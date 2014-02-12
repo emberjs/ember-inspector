@@ -15,7 +15,7 @@ var ApplicationView = Ember.View.extend({
   height: Ember.computed.alias('controller.height'),
 
   didInsertElement: function() {
-    this._super.apply();
+    this._super();
 
     Ember.$(window).on('resize.application-view-' + this.get('elementId'), function() {
       Ember.run.debounce(this, 'updateHeight', 200);

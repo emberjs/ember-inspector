@@ -32,13 +32,20 @@
   opacity: 1;
 }
 
+
 .row-wrapper {
   width: 100%;
 }
 
-.row-wrapper:nth-of-type(2n) .cell{
+.row-wrapper:nth-of-type(2n) .cell {
   background: #f3f3f3;
 }
+
+
+.row.row_highlight .cell {
+  opacity: 1;
+}
+
 
 .cell.cell_size_small {
   flex: none;
