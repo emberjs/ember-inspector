@@ -1,15 +1,15 @@
-<div {{bind-attr class=":list-tree__item :row isCurrent:row_highlight"}} >
+<div {{bind-attr class=":list-tree__item :row isCurrent:row_highlight"}} data-label="route-node">
   <div class="cell_type_main cell" data-label="route-name" >
     <div {{bind-attr style="labelStyle"}}>
       <span {{bind-attr title="value.name"}} data-label="view-name">{{unbound value.name}}</span>
     </div>
   </div>
-  <div class="cell cell_clickable" {{action "inspectRoute" value.routeHandler.name}} data-label="view-template">
+  <div class="cell cell_clickable" {{action "inspectRoute" value.routeHandler.name}} data-label="route-handler">
     {{value.routeHandler.className}}
   </div>
-  <div class="cell"  data-label="route-controller">
+  <div class="cell"  >
     {{#if value.controller.exists}}
-      <div class="list-tree__limited cell_clickable" {{action "inspectController" value.controller}}>
+      <div class="list-tree__limited cell_clickable" {{action "inspectController" value.controller}} data-label="route-controller">
         {{value.controller.className}}
       </div>
       <div class="list-tree__right-helper">

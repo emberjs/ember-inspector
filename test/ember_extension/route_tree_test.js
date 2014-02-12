@@ -142,7 +142,7 @@ test("Current Route is highlighted", function() {
   .then(function() {
     routeNodes = findByLabel('route-node');
     var isCurrent = routeNodes.get().map(function(item) {
-      return Ember.$(item).hasClass('is-current');
+      return Ember.$(item).hasClass('row_highlight');
     });
     deepEqual(isCurrent, [true, true, false, true]);
 
@@ -152,7 +152,7 @@ test("Current Route is highlighted", function() {
   .then(function() {
     routeNodes = findByLabel('route-node');
     var isCurrent = routeNodes.get().map(function(item) {
-      return Ember.$(item).hasClass('is-current');
+      return Ember.$(item).hasClass('row_highlight');
     });
     deepEqual(isCurrent, [true, true, true, false]);
   });
