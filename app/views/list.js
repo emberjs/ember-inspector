@@ -10,6 +10,11 @@ var ListView = Ember.ListView.extend({
         headerHeight = 30,
         appHeight = this.get('appHeight');
 
+    // In testing list-view is created before `appHeight` is set
+    // which will trigger an exception
+    if (!appHeight) {
+      return 1;
+    }
     return appHeight - filterHeight - headerHeight;
   }.property('appHeight'),
   rowHeight: 30,
