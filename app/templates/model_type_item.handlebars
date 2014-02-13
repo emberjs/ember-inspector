@@ -1,4 +1,4 @@
-<div {{bind-attr class=":list-tree__item :row isCurrent:row_highlight"}} data-label="model-type-row" {{action "viewRecords" this}}>
+<div {{bind-attr class=":list-tree__item :row selected:row_highlight"}} data-label="model-type-row" {{action "viewRecords" this}}>
   <div class="cell_type_main cell cell_clickable" data-label="model-type-name">
     {{name}}
     {{#if collapsed}}
