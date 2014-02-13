@@ -33,10 +33,12 @@ var RecordsRoute = Ember.Route.extend({
     var self = this;
     message.records.forEach(function(record) {
       var currentRecord = self.get('currentModel').findProperty('objectId', record.objectId);
-      set(currentRecord, 'columnValues', record.columnValues);
-      set(currentRecord, 'filterValues', record.filterValues);
-      set(currentRecord, 'searchIndex', record.searchIndex);
-      set(currentRecord, 'color', record.color);
+      if (currentRecord) {
+        set(currentRecord, 'columnValues', record.columnValues);
+        set(currentRecord, 'filterValues', record.filterValues);
+        set(currentRecord, 'searchIndex', record.searchIndex);
+        set(currentRecord, 'color', record.color);
+      }
     });
 
   },
