@@ -5,8 +5,8 @@
   height: 100%;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  min-width: 100%;
   min-width: 700px;
+  background: white
 }
 
 .list-view__header {
@@ -15,4 +15,9 @@
   -moz-user-select: none;
   user-select: none;
   border-bottom: 1px solid #b3b3b3;
+}
+
+
+.list-view.list-view_compact {
+  min-width: 0;
 }

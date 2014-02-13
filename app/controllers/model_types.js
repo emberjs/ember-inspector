@@ -1,5 +1,7 @@
 var ModelTypesController = Ember.ArrayController.extend({
-  collapsed: Ember.computed.bool('selected')
+  needs: ['application'],
+  collapsed: Ember.computed.bool('selected'),
+  itemController: 'modelTypeItem'
 });
 
 export default ModelTypesController;

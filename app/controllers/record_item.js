@@ -4,9 +4,10 @@ var COLOR_MAP = {
   green: '#006400'
 };
 
-var RecordController = Ember.ObjectController.extend({
+var RecordItemController = Ember.ObjectController.extend({
+  needs: ['records'],
 
-  modelTypeColumns: Ember.computed.alias('target.target.columns'),
+  modelTypeColumns: Ember.computed.alias('controllers.records.columns'),
 
   // TODO: Color record based on `color` property.
   style: function() {
@@ -27,4 +28,4 @@ var RecordController = Ember.ObjectController.extend({
   }.property('modelTypeColumns.@each', 'model.columnValues')
 });
 
-export default RecordController;
+export default RecordItemController;

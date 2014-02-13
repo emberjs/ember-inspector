@@ -5,6 +5,8 @@ var RecordsController = Ember.ArrayController.extend({
     this.set('filterValues', {});
   },
 
+  needs: ['application'],
+
   columns: Ember.computed.alias('modelType.columns'),
 
   filters: [],
@@ -40,7 +42,7 @@ var RecordsController = Ember.ArrayController.extend({
 
   filtered: function() {
     var self = this, search = this.get('search'), filter = this.get('filterValue');
-    return this.get('model').filter(function(item) {
+    var content = this.get('model').filter(function(item) {
       // check filters
       if (filter && !Ember.get(item, 'filterValues.' + filter)) {
         return false;
@@ -53,6 +55,10 @@ var RecordsController = Ember.ArrayController.extend({
       }
       return true;
     });
+
+    var Controller = this.container.lookupFactory('controller:array', { singleton: false});
+    var controller = Controller.create({model: content, itemController: 'recordItem'});
+    return controller;
   }.property('search', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValue')
 
 });

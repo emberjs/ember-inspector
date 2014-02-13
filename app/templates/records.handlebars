@@ -1,28 +1,19 @@
-<div class="table-tree table-tree_type_advanced">
-  <div class="table-tree__table-container">
-    <table cellspacing="0" border-collapse="collapse">
-      <thead>
-        <tr>
-          {{#each columns}}
-            <th><div class="table-tree__th-inner" data-label="column-title">{{desc}}</div></th>
-          {{/each}}
-        </tr>
-      </thead>
-      <tbody>
-        {{#each filtered itemController="record"}}
-          <tr data-label="record-row" {{action "inspectModel" model}}>
-            {{#each columns}}
-            <td data-label="record-column" class="table-tree__clickable" {{bind-attr style="controller.style"}}  >
-              <div class="table-tree__cell">{{value}}</div>
-            </td>
-            {{/each}}
-          </tr>
-        {{/each}}
-      </tbody>
-    </table>
+<div class="list-view">
+  <div class="list-view__header row">
+    {{#each columns}}
+      <div class="cell cell_type_header" data-label="column-title">{{desc}}</div>
+    {{/each}}
+
+    <!-- Account for scrollbar width :'(  -->
+    <div class="cell cell_type_header spacer"></div>
   </div>
 
-  <div class="table-tree__filter">
+  <div class="list-view__list-container">
+    {{view "recordList" content=filtered}}
+  </div>
+
+
+  <div class="list-view__filter">
     <div class="filter-bar">
       <div class="filter-bar__search">
         {{input type="search" value=search placeholder="Search"}}
