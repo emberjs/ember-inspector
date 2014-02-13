@@ -35,6 +35,10 @@ var RouteTreeRoute = Ember.Route.extend({
 
     sendControllerToConsole: function(controllerName) {
       this.get('port').send('objectInspector:sendControllerToConsole', { name: controllerName });
+    },
+
+    sendRouteHandlerToConsole: function(routeName) {
+      this.get('port').send('objectInspector:sendRouteHandlerToConsole', { name: routeName });
     }
   }
 });

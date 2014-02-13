@@ -107,6 +107,10 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
       var container = this.get('application.__container__');
       this.sendValueToConsole(container.lookup('controller:' + message.name));
     },
+    sendRouteHandlerToConsole: function(message) {
+      var container = this.get('application.__container__');
+      this.sendValueToConsole(container.lookup('route:' + message.name));
+    },
     inspectRoute: function(message) {
       var container = this.get('application.__container__');
       this.sendObject(container.lookup('router:main').router.getHandler(message.name));

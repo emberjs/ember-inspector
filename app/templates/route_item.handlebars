@@ -4,10 +4,15 @@
       <span {{bind-attr title="value.name"}} data-label="view-name">{{unbound value.name}}</span>
     </div>
   </div>
-  <div class="cell cell_clickable" {{action "inspectRoute" value.routeHandler.name}} data-label="route-handler">
+  <div class="cell">
+    <div class="list-tree__limited cell_clickable" {{action "inspectRoute" value.routeHandler.name}} data-label="route-handler">
     {{value.routeHandler.className}}
+    </div>
+    <div class="list-tree__right-helper">
+      {{send-to-console action="sendRouteHandlerToConsole" param=value.routeHandler.name}}
+    </div>
   </div>
-  <div class="cell"  >
+  <div class="cell" >
     {{#if value.controller.exists}}
       <div class="list-tree__limited cell_clickable" {{action "inspectController" value.controller}} data-label="route-controller">
         {{value.controller.className}}
