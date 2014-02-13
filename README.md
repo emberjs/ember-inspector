@@ -37,6 +37,19 @@ OR:
 - run `grunt build build_xpi` to build the `dist_firefox` directory, download Firefox Addon SDK and build Firefox Addon XPI to 'tmp/xpi/ember-inspector.xpi'
   or `grunt run_xpi` to run the Firefox Addon in a temporary profile (or use `FIREFOX_BIN` and `FIREFOX_PROFILE` to customize Firefox profile directory and Firefox binary used to run the extension)
 
+### Opera
+
+- Clone the repository
+- cd into the repo directory
+- run `npm install`
+- run `npm install -g grunt-cli`
+- run `grunt` to build the `dist_chrome` directory
+- Visit opera://extensions in Opera
+- Click `Developer Mode`
+- Click on 'Load Unpacked Extension...'
+- Choose the `dist_chrome` folder in the cloned repo
+- Close and re-open developer tools if it's already open
+
 Building and Testing:
 --------------------
 
