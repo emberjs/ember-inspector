@@ -179,7 +179,7 @@ test("Digging deeper into objects", function() {
     return clickByLabel('object-inspector-back');
   })
   .then(function() {
-    equal(findByLabel('object-trail').text(), '');
+    equal(findByLabel('object-trail').length, 0);
   });
 });
 

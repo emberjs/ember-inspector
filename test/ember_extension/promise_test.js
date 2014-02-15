@@ -18,7 +18,11 @@ function generatePromise(props) {
 
 module("Promise", {
   setup: function() {
-    EmberExtension.Port = EmberExtension.Port.extend({
+    EmberExtension.reset();
+
+    port = EmberExtension.__container__.lookup('port:main');
+
+    port.reopen({
       send: function(n, m) {
         name = n;
         message = m;
@@ -29,9 +33,6 @@ module("Promise", {
         }
       }
     });
-    EmberExtension.reset();
-
-    port = EmberExtension.__container__.lookup('port:main');
   },
   teardown: function() {
     name = null;

@@ -58,7 +58,9 @@ function records(type) {
 
 module("Data", {
   setup: function() {
-    EmberExtension.Port = EmberExtension.Port.extend({
+    EmberExtension.reset();
+    port = EmberExtension.__container__.lookup('port:main');
+    port.reopen({
       init: function() {},
       send: function(n, m) {
         name = n;
@@ -74,10 +76,6 @@ module("Data", {
         }
       }
     });
-
-    EmberExtension.reset();
-
-    port = EmberExtension.__container__.lookup('port:main');
   }
 });
 
