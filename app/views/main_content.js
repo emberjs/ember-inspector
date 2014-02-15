@@ -1,5 +1,5 @@
 // Currently used to determine the height of list-views
-var MainContentView = Ember.View.extend({
+export default Ember.View.extend({
   classNames: ['app__main-content'],
   height: Ember.computed.alias('controller.contentHeight'),
 
@@ -23,5 +23,3 @@ var MainContentView = Ember.View.extend({
     Ember.$(window).off('.view-' + this.get('elementId'));
   },
 });
-
-export default MainContentView;

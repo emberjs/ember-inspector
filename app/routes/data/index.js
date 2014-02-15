@@ -12,7 +12,7 @@ export default Ember.Route.extend({
   },
   afterModel: function(model) {
     if (model) {
-      this.transitionTo('model_types');
+      this.transitionTo('model-types');
     }
   }
 });

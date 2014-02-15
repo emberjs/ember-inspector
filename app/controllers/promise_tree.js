@@ -68,7 +68,7 @@ export default Ember.ArrayController.extend({
   init: function() {
     // List-view does not support item controllers
     this.reopen({
-      items: itemProxyComputed('filtered', this.get('promise-item-controller'))
+      items: itemProxyComputed('filtered', this.get('promiseItemController'))
     });
   },
 

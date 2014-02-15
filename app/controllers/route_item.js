@@ -1,6 +1,6 @@
 var get = Ember.get;
 
-var RouteItemController = Ember.ObjectController.extend({
+export default Ember.ObjectController.extend({
   needs: 'routeTree',
 
   details: null,
@@ -30,5 +30,3 @@ var RouteItemController = Ember.ObjectController.extend({
   }.property('currentRoute', 'value.name')
 
 });
-
-export default RouteItemController;

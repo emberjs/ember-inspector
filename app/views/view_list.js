@@ -1,7 +1,7 @@
 import ListView from "views/list";
 import ListItemView from "views/list_item";
 
-var ViewListView = ListView.extend({
+export default ListView.extend({
   itemViewClass: ListItemView.extend({
     templateName: "view_item",
     classNameBindings: 'isPinned',
@@ -25,5 +25,3 @@ var ViewListView = ListView.extend({
     }
   })
 });
-
-export default ViewListView;

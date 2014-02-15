@@ -11,7 +11,7 @@ export default Ember.ObjectController.extend({
 
   isCurrent: function() {
     return this.get('viewTree.pinnedObjectId') === this.get('model.value.objectId');
-  }.property('controllers.viewTree.pinnedObjectId', 'model.value.objectId'),
+  }.property('viewTree.pinnedObjectId', 'model.value.objectId'),
 
   hasController: bool('model.value.controller'),
 

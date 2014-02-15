@@ -1,6 +1,6 @@
 export default Ember.ArrayController.extend({
   needs: ['application'],
-  itemController: 'viewItem',
+  itemController: 'view-item',
   pinnedObjectId: null,
   inspectingViews: false,
   options: {

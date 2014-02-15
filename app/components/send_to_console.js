@@ -1,4 +1,4 @@
-var SendToConsoleComponent = Ember.Component.extend({
+export default Ember.Component.extend({
   tagName: 'button',
   classNames: ['send-to-console'],
   attributeBindings: ['dataLabel:data-label'],
@@ -8,5 +8,3 @@ var SendToConsoleComponent = Ember.Component.extend({
     this.sendAction('action', this.get('param'));
   }
 });
-
-export default SendToConsoleComponent;

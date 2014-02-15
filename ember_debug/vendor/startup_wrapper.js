@@ -37,7 +37,7 @@ if (typeof adapter !== 'undefined') {
 
 
   function inject() {
-    Ember.Debug = requireModule('ember_debug');
+    Ember.Debug = requireModule('ember_debug')['default'];
   }
 
   onReady(function() {
@@ -51,7 +51,7 @@ if (typeof adapter !== 'undefined') {
     // prevent from injecting twice
     if (!Ember.Debug) {
       inject();
-      Ember.Debug.Adapter = requireModule('adapters/' + adapter);
+      Ember.Debug.Adapter = requireModule('adapters/' + adapter)['default'];
 
       onApplicationStart(function() {
         Ember.Debug.setProperties({

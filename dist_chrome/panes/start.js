@@ -1,3 +1,3 @@
-window.EmberExtension = requireModule('application')['default'].create({
+window.EmberExtension = requireModule('app')['default'].create({
   adapter: 'chrome'
 });
