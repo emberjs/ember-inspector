@@ -60,14 +60,16 @@ exports.devtoolTabDefinition = {
 let EmberInspector = {
   initialize: function (iframeWindow, toolbox) {
     log("initialize");
-    this.workers = {};
+    this.targetTabWorker = null;
+    this.iframeParent = iframeWindow;
     this.iframeWindow = iframeWindow.document.querySelector("iframe");
     this.toolbox = toolbox;
 
     log("EMBER EXTENSION TARGET", toolbox._target);
 
-    this._onDevtoolPanelLoad = this._attachDevtoolPanel.bind(this);
-    this.iframeWindow.addEventListener("load", this._onDevtoolPanelLoad, true);
+    // attach devtool panel messages
+    this._onDevtoolPanelMessage = this._handleDevtoolPanelMessage.bind(this);
+    this.iframeParent.addEventListener("message", this._onDevtoolPanelMessage, false);
 
     // attach target tab before any script is executed
     this._onDocumentElementInserted = (event) => {
@@ -76,19 +78,20 @@ let EmberInspector = {
       if (toolbox && document.defaultView &&
           document.defaultView === toolbox._target.window) {
         log("ATTACH WINDOW: ", toolbox._target.window.location);
-        this._attachTargetTab();
+        this._attachTargetTabWorker();
       }
     };
 
     systemEvents.on('document-element-inserted', this._onDocumentElementInserted, true);
-    this._attachTargetTab();
+    return this._attachTargetTabWorker();
   },
 
   destroy: function () {
     log("destroy");
     systemEvents.off('document-element-inserted', this._onDocumentElementInserted);
     this.iframeWindow.removeEventListener("load", this._onDevtoolPanelLoad, true);
-    this._cleanupWorkers();
+    this.iframeParent.removeEventListener("message", this._onDevtoolPanelMessage, false);
+    this._cleanupTargetTabWorker();
   },
 
   _injectEmberDebug: function() {
@@ -133,96 +136,52 @@ let EmberInspector = {
     return deferred.promise;
   },
 
-  _cleanupWorkers: function () {
-    if (this.workers.devtoolPanel) {
-      this.workers.devtoolPanel.port.removeListener("message", this._handleDevtoolPanelMessage);
-      this.workers.devtoolPanel.destroy();
-      this.workers.devtoolPanel = null;
-      log("destroy devtoolPanel worker");
-    }
-
-    if (this.workers.targetTab) {
-      this.workers.targetTab.port.removeListener("message", this._handleTargetTabMessage);
-      this.workers.targetTab.destroy();
-      this.workers.targetTab = null;
+  _cleanupTargetTabWorker: function () {
+    if (this.targetTabWorker) {
+      this.targetTabWorker.port.removeListener("message", this._handleTargetTabMessage);
+      this.targetTabWorker.destroy();
+      this.targetTabWorker = null;
       log("destroy targetTab worker");
     }
   },
 
-  _attachDevtoolPanel: function() {
-    log("_attachDevtoolPanel");
-    var worker = this.workers.devtoolPanel;
+  _attachTargetTabWorker: function() {
+    log("_attachTargetTabWorker");
 
-    if (worker) {
-      worker.port.removeListener("message", this._handleDevtoolPanelMessage);
-      worker.destroy();
-    }
+    this._cleanupTargetTabWorker();
 
-    worker = workers.Worker({
-      window: this.iframeWindow.contentWindow,
-      contentScriptFile: self.data.url("devtool-content-script.js")
-    });
-
-    worker.port.on("message", this._handleDevtoolPanelMessage.bind(this));
-
-    this.workers.devtoolPanel = worker;
-
-    // send any message in the queue to the attached devtool panel
-    this._sendToDevtoolPanel();
-
-    return worker;
-  },
-
-  _detachDevtoolPanel: function() {
-    log("_detachDevtoolPanel");
-    var worker = this.workers.devtoolPanel;
-    this.workers.devtoolPanel = null;
-    if (worker) {
-      worker.port.removeListener("message", this._handleDevtoolPanelMessage);
-      worker.destroy();
-    }
-  },
-
-  _attachTargetTab: function() {
-    log("_attachTargetTab");
-    var worker = this.workers.targetTab;
-
-    if (worker) {
-      worker.port.removeListener("message", this._handleTargetTabMessage);
-      worker.destroy();
-    }
-
-    worker = Tab({tab: this.toolbox._target.tab}).attach({
+    var worker = Tab({tab: this.toolbox._target.tab}).attach({
       window: this.toolbox._target.window,
       contentScriptFile: self.data.url("content-script.js")
     });
 
+    this.targetTabWorker = worker;
     worker.port.on("message", this._handleTargetTabMessage.bind(this));
-
-    this.workers.targetTab = worker;
 
     // inject ember_debug.js in the target tag
     // and reload the devtool panel
-    this._injectEmberDebug().then(
+    return this._injectEmberDebug().then(
       log.partial("ember debug injected"),
       log.partial("error injecting ember debug")
     ).then(() => {
       log("reloading devtool panel");
-      this._detachDevtoolPanel();
       this.iframeWindow.contentWindow.location.reload(true);
-    });
 
-    return this.workers.targetTab;
+      return worker;
+    });
   },
 
   _handleDevtoolPanelMessage: function(msg) {
-    log("_handleDevtoolPanelMessage", JSON.stringify(msg));
-
-    this._sendToTargetTab(msg);
+    log("_handleDevtoolPanelMessage", msg);
+    if (msg.origin === "resource://ember-inspector-at-emberjs-dot-com") {
+      this._sendToTargetTab(msg.data);
+    } else {
+      log("_handleDevtoolPanelMessage INVALID ORIGIN", msg);
+    }
   },
 
   _handleTargetTabMessage: function(msg) {
-    log("_handleTargetTabMessage", JSON.stringify(msg));
+    log("_handleTargetTabMessage", msg);
 
     if (msg.type === "view:devtools:inspectDOMElement") {
       // polyfill missing inspect function in content-script
@@ -234,30 +193,28 @@ let EmberInspector = {
   },
 
   _sendToDevtoolPanel: function(msg) {
-    log("_sendToDevtoolPanel", JSON.stringify(msg));
+    log("_sendToDevtoolPanel", msg);
 
-    // define message queue if it's not defined
-    this.mqDevtool = this.mqDevtool || [];
-
-    if (msg) {
-      // push message in the queue if any
-      this.mqDevtool.push(msg);
-    }
-
-    if (this.workers.devtoolPanel) {
-      // drain message queue
-      let nextMsg;
-      while ((nextMsg = this.mqDevtool.shift())) {
-        this.workers.devtoolPanel.port.emit("message", nextMsg);
-      }
-    }
+    this.iframeWindow.contentWindow.postMessage(msg, "*");
   },
 
   _sendToTargetTab: function(msg) {
-    log("_sendToTargetTab", JSON.stringify(msg));
-    if (this.workers.targetTab) {
-      // route to ember debug
-      this.workers.targetTab.port.emit("message", msg);
+    log("_sendToTargetTab", msg);
+
+    // define message queue if it's not defined
+    this.mqTargetTab = this.mqTargetTab || [];
+
+    if (msg) {
+      // push message in the queue if any
+      this.mqTargetTab.push(msg);
+    }
+
+    if (this.targetTabWorker) {
+      // drain message queue
+      let nextMsg;
+      while ((nextMsg = this.mqTargetTab.shift())) {
+        this.targetTabWorker.port.emit("message", nextMsg);
+      }
     }
   },
 
