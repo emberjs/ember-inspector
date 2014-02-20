@@ -1,4 +1,11 @@
-// Last commit: f8ef0d2 (2014-01-23 19:49:27 -0500)
+// Last commit: adcb1c8 (2014-02-20 11:33:26 -0500)
+
+
+// ==========================================================================
+// Project:   Ember ListView
+// Copyright: ©2012-2013 Erik Bryn, Yapp Inc., and contributors.
+// License:   Licensed under MIT license
+// ==========================================================================
 
 
 (function() {
@@ -21,8 +28,7 @@ function positionElement() {
     // TODO: avoid needing this by avoiding unnecessary
     // calls to this method in the first place
     if (samePosition(position, _position)) { return; }
-    this._parentView.applyTransform(element, position.x, position.y);
-
+    Ember.run.schedule('render', this, this._parentView.applyTransform, element, position.x, position.y);
     this._position = position;
   }, this);
 }
@@ -149,9 +155,9 @@ Ember.ListItemView = Ember.View.extend(Ember.ListItemViewMixin, {
     var context = get(this, 'context');
     Ember.instrument('view.updateContext.render', this, function() {
       if (context !== newContext) {
-        this.set('context', newContext);
-        if (newContext instanceof Ember.ObjectController) {
-          this.set('controller', newContext);
+        set(this, 'context', newContext);
+        if (newContext && newContext.isController) {
+          set(this, 'controller', newContext);
         }
       }
     }, this);
@@ -170,18 +176,25 @@ var get = Ember.get, set = Ember.set;
 Ember.ReusableListItemView = Ember.View.extend(Ember.ListItemViewMixin, {
   init: function(){
     this._super();
-    this.set('context', Ember.ObjectProxy.create());
+    var context = Ember.ObjectProxy.create();
+    this.set('context', context);
+    this._proxyContext = context;
   },
   isVisible: Ember.computed('context.content', function(){
     return !!this.get('context.content');
   }),
   updateContext: function(newContext){
-    var context = get(this, 'context.content');
+    var context = get(this._proxyContext, 'content');
     if (context !== newContext) {
       if (this.state === 'inDOM') {
         this.prepareForReuse(newContext);
       }
-      set(this, 'context.content', newContext);
+
+      set(this._proxyContext, 'content', newContext);
+
+      if (newContext && newContext.isController) {
+        set(this, 'controller', newContext);
+      }
     }
   },
   prepareForReuse: Ember.K
@@ -445,26 +458,30 @@ Ember.ListViewMixin = Ember.Mixin.create({
   _scrollContentTo: function(y) {
     var startingIndex, endingIndex,
         contentIndex, visibleEndingIndex, maxContentIndex,
-        contentIndexEnd, contentLength, scrollTop;
+        contentIndexEnd, contentLength, scrollTop, content;
 
     scrollTop = max(0, y);
 
-    if (get(this, 'scrollTop') === scrollTop) {
+    if (this.scrollTop === scrollTop) {
       return;
     }
 
     // allow a visual overscroll, but don't scroll the content. As we are doing needless
     // recycyling, and adding unexpected nodes to the DOM.
-    scrollTop = Math.min(scrollTop, (get(this, 'totalHeight') - get(this, 'height')));
+    var maxScrollTop = max(0, get(this, 'totalHeight') - get(this, 'height'));
+    scrollTop = min(scrollTop, maxScrollTop);
+
+    content = get(this, 'content');
+    contentLength = get(content, 'length');
+    startingIndex = this._startingIndex(contentLength);
 
     Ember.instrument('view._scrollContentTo', {
       scrollTop: scrollTop,
-      content: get(this, 'content'),
-      startingIndex: this._startingIndex(),
-      endingIndex: min(max(get(this, 'content.length') - 1, 0), this._startingIndex() + this._numChildViewsForViewport())
+      content: content,
+      startingIndex: startingIndex,
+      endingIndex: min(max(contentLength - 1, 0), startingIndex + this._numChildViewsForViewport())
     }, function () {
-      contentLength = get(this, 'content.length');
-      set(this, 'scrollTop', scrollTop);
+      this.scrollTop = scrollTop;
 
       maxContentIndex = max(contentLength - 1, 0);
 
@@ -473,20 +490,23 @@ Ember.ListViewMixin = Ember.Mixin.create({
 
       endingIndex = min(maxContentIndex, visibleEndingIndex);
 
-      this.trigger('scrollYChanged', y);
-
       if (startingIndex === this._lastStartingIndex &&
           endingIndex === this._lastEndingIndex) {
+
+        this.trigger('scrollYChanged', y);
         return;
+      } else {
+
+        Ember.run(this, function(){
+          this._reuseChildren();
+
+          this._lastStartingIndex = startingIndex;
+          this._lastEndingIndex = endingIndex;
+          this.trigger('scrollYChanged', y);
+        });
       }
-
-      Ember.run(this, function(){
-        this._reuseChildren();
-
-        this._lastStartingIndex = startingIndex;
-        this._lastEndingIndex = endingIndex;
-      });
     }, this);
+
   },
 
   /**
@@ -613,7 +633,7 @@ Ember.ListViewMixin = Ember.Mixin.create({
 
     lastColumnCount = this._lastColumnCount;
 
-    currentScrollTop = get(this, 'scrollTop');
+    currentScrollTop = this.scrollTop;
     newColumnCount = get(this, 'columnCount');
     maxScrollTop = get(this, 'maxScrollTop');
     element = get(this, 'element');
@@ -626,7 +646,7 @@ Ember.ListViewMixin = Ember.Mixin.create({
       scrollTop = min(maxScrollTop, proposedScrollTop);
 
       this._scrollTo(scrollTop);
-      set(this, 'scrollTop', scrollTop);
+      this.scrollTop = scrollTop;
     }
 
     if (arguments.length > 0) {
@@ -682,12 +702,17 @@ Ember.ListViewMixin = Ember.Mixin.create({
 
     @method _startingIndex
   */
-  _startingIndex: function() {
+  _startingIndex: function(_contentLength) {
     var scrollTop, rowHeight, columnCount, calculatedStartingIndex,
         contentLength, largestStartingIndex;
 
-    contentLength = get(this, 'content.length');
-    scrollTop = get(this, 'scrollTop');
+    if (_contentLength === undefined) {
+      contentLength = get(this, 'content.length');
+    } else {
+      contentLength = _contentLength;
+    }
+
+    scrollTop = this.scrollTop;
     rowHeight = get(this, 'rowHeight');
     columnCount = get(this, 'columnCount');
 
@@ -807,7 +832,7 @@ Ember.ListViewMixin = Ember.Mixin.create({
         contentIndex, visibleEndingIndex, maxContentIndex,
         contentIndexEnd, scrollTop;
 
-    scrollTop = get(this, 'scrollTop');
+    scrollTop = this.scrollTop;
     contentLength = get(this, 'content.length');
     maxContentIndex = max(contentLength - 1, 0);
     childViews = this.getReusableChildViews();
@@ -1268,15 +1293,17 @@ Ember.VirtualListView = Ember.ContainerView.extend(Ember.ListViewMixin, Ember.Vi
       view.trigger('deactivatePullToRefresh');
     }
     function startPullToRefresh() {
-      view.pullToRefreshView.set('refreshing', true);
+      Ember.run(function(){
+        view.pullToRefreshView.set('refreshing', true);
 
-      function finishRefresh(){
-        if (view && !view.get('isDestroyed') && !view.get('isDestroying')) {
-          view.scroller.finishPullToRefresh();
-          view.pullToRefreshView.set('refreshing', false);
+        function finishRefresh(){
+          if (view && !view.get('isDestroyed') && !view.get('isDestroying')) {
+            view.scroller.finishPullToRefresh();
+            view.pullToRefreshView.set('refreshing', false);
+          }
         }
-      }
-      view.startRefresh(finishRefresh);
+        view.startRefresh(finishRefresh);
+      });
     }
     this.scroller.activatePullToRefresh(
       this.pullToRefreshViewHeight,
@@ -1402,3 +1429,9 @@ Ember.Handlebars.registerHelper('ember-list', function emberList(options) {
 
 })();
 
+
+
+if (typeof location !== 'undefined' && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+  Ember.Logger.warn("You are running a production build of Ember on localhost and won't receive detailed error messages. "+
+               "If you want full error messages please use the non-minified build provided on the Ember website.");
+}
