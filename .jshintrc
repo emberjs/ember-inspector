@@ -33,7 +33,8 @@
     "findByLabel",
     "click",
     "fillIn",
-    "wait"
+    "wait",
+    "andThen"
   ],
   "esnext": true,
   "node" : false,

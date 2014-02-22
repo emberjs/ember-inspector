@@ -3,8 +3,8 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.route('view-tree', { path: '/' });
-  this.route('route-tree');
+  this.resource('view-tree', { path: '/' });
+  this.resource('route-tree');
 
   this.resource('data', function() {
     this.resource('model-types', function() {
@@ -17,6 +17,8 @@ Router.map(function() {
   this.resource('promises', function() {
     this.resource('promise-tree');
   });
+
+  this.resource('info');
 });
 
 export default Router;

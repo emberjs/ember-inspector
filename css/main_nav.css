@@ -38,12 +38,16 @@
 
 
 .main-nav__item > a polygon,
-.main-nav__item > a path {
+.main-nav__item > a path,
+.main-nav__item > a rect,
+.main-nav__item > a circle {
   fill: #222;
 }
 
 .main-nav__item > a.active polygon,
-.main-nav__item > a.active path {
+.main-nav__item > a.active path,
+.main-nav__item > a.active rect,
+.main-nav__item > a.active circle {
   fill: #fff;
 }
 

@@ -20,8 +20,18 @@ var GeneralDebug = Ember.Object.extend(PortMixin, {
   messages: {
     applicationBooted: function() {
       this.sendBooted();
+    },
+    getLibraries: function() {
+      var libraries = arrayize(Ember.libraries);
+      this.sendMessage('libraries', { libraries: libraries });
     }
   }
 });
+
+function arrayize(enumerable) {
+  return Ember.A(enumerable).map(function(item) {
+    return item;
+  });
+}
 
 export default GeneralDebug;
