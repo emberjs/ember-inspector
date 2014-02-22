@@ -15,6 +15,7 @@
   ```
 **/
 export default Ember.Object.extend({
+  name: 'basic',
   /**
     Used to send messages to EmberDebug
 

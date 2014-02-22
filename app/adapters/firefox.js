@@ -1,6 +1,7 @@
 import BasicAdapter from "adapters/basic";
 
 export default BasicAdapter.extend({
+  name: 'firefox',
 
   sendMessage: function(options) {
     options = options || {};

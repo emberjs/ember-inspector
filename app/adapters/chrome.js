@@ -3,6 +3,7 @@ import BasicAdapter from "adapters/basic";
 var emberDebug = null;
 
 export default  BasicAdapter.extend({
+  name: 'chrome',
 
   sendMessage: function(options) {
     options = options || {};
