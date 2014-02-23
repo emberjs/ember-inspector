@@ -108,6 +108,17 @@
   min-width: 200px;
 }
 
+.app__dropdown {
+  padding-top: 10px;
+}
+
+.app__dropdown select {
+  width: calc(100% - 10px);
+  display: block;
+  margin: auto;
+
+}
+
 /* Modifier: state = dragging */
 .app_state_dragging {
   cursor: col-resize;

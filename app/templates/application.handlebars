@@ -1,7 +1,11 @@
 {{#if emberApplication}}
 
-  {{partial "nav"}}
-
+  <div class="app__nav-holder">
+    {{partial "nav"}}
+    <div class="app__dropdown">
+      {{render "iframes"}}
+    </div>
+  </div>
 
   <div class="app__main">
     {{#view "mainContent"}}
