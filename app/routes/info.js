@@ -1,13 +1,21 @@
 var Promise = Ember.RSVP.Promise;
+var oneWay = Ember.computed.oneWay;
 
 export default Ember.Route.extend({
+  version: oneWay('config.VERSION').readOnly(),
+
   model: function() {
-    var route = this;
+    var version = this.get('version');
+    var port = this.get('port');
     return new Promise(function(resolve) {
-      route.get('port').one('general:libraries', function(message) {
+      port.one('general:libraries', function(message) {
+        message.libraries.insertAt(0, {
+          name: 'Ember Inspector',
+          version: version
+        });
         resolve(message.libraries);
       });
-      route.get('port').send('general:getLibraries');
+      port.send('general:getLibraries');
     });
   }
 });

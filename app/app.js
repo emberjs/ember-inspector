@@ -2,11 +2,17 @@ import Resolver from "resolver";
 import Port from "port";
 import PromiseAssembler from "libs/promise_assembler";
 
+var version = '1.1.0';
+
 var App = Ember.Application.extend({
   modulePrefix: '',
   Resolver: Resolver,
   adapter: 'basic'
 });
+
+var config = {
+  VERSION: version
+};
 
 // Inject adapter
 App.initializer({
@@ -22,6 +28,10 @@ App.initializer({
     }
     container.register('adapter:main', Adapter);
     container.typeInjection('port', 'adapter', 'adapter:main');
+
+    // register config
+    container.register('config:main', config, { instantiate: false });
+    container.typeInjection('route', 'config', 'config:main');
 
     // inject port
     container.register('port:main', app.Port || Port);
