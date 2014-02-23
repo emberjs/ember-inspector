@@ -40,6 +40,11 @@ export default  BasicAdapter.extend({
       emberDebug = xhr.responseText;
     }
     chrome.devtools.inspectedWindow.eval(emberDebug);
+    chrome.devtools.inspectedWindow.onResourceAdded.addListener(function(opts) {
+      if (opts.type === 'document') {
+        chrome.devtools.inspectedWindow.eval(emberDebug, { frameURL: opts.url });
+      }
+    });
   }.on('init'),
 
   willReload: function() {
