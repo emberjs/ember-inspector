@@ -29,7 +29,7 @@ if (typeof adapter !== 'undefined') {
             eventName: eventName,
             options: options
           });
-        }
+        };
       }(eventNames[i]));
 
     }
@@ -40,7 +40,7 @@ if (typeof adapter !== 'undefined') {
     Ember.Debug = requireModule('ember_debug')['default'];
   }
 
-  onReady(function() {
+  onEmberReady(function() {
     if (!window.Ember) {
       return;
     }
@@ -62,6 +62,16 @@ if (typeof adapter !== 'undefined') {
       });
     }
   });
+
+  function onEmberReady(callback) {
+    onReady(function() {
+      if (window.Ember) {
+        callback();
+      } else {
+        window.addEventListener('Ember.Application', callback, false);
+      }
+    });
+  }
 
   function onReady(callback) {
     if (document.readyState === 'complete') {
