@@ -1,30 +1,45 @@
-window.addEventListener('message', function(event) {
-  if (event.data === 'debugger-client') {
-    var port = event.ports[0];
-    listenToPort(port);
-  } else if (event.data.type) {
-    chrome.extension.sendMessage(event.data);
-  }
-});
+(function() {
 
-function listenToPort(port) {
-  port.addEventListener('message', function(event) {
-    chrome.extension.sendMessage(event.data);
-  });
+  "use strict";
 
-  chrome.extension.onMessage.addListener(function(message) {
-    if (message.from === 'devtools') {
-      port.postMessage(message);
+  window.addEventListener('message', function(event) {
+    if (event.data === 'debugger-client') {
+      var port = event.ports[0];
+      listenToPort(port);
+    } else if (event.data.type) {
+      chrome.extension.sendMessage(event.data);
     }
   });
 
-  port.start();
-}
+  function listenToPort(port) {
+    port.addEventListener('message', function(event) {
+      chrome.extension.sendMessage(event.data);
+    });
 
-// let ember-debug know that content script has executed
-document.documentElement.dataset.emberExtension = 1;
+    chrome.extension.onMessage.addListener(function(message) {
+      if (message.from === 'devtools') {
+        port.postMessage(message);
+      }
+    });
 
-// Allow older versions of Ember (< 1.4) to detect the extension.
-if (document.body) {
-  document.body.dataset.emberExtension = 1;
-}
+    port.start();
+  }
+
+  // let ember-debug know that content script has executed
+  document.documentElement.dataset.emberExtension = 1;
+
+  // Allow older versions of Ember (< 1.4) to detect the extension.
+  if (document.body) {
+    document.body.dataset.emberExtension = 1;
+  }
+
+  // clear a possible previous Ember icon
+  chrome.extension.sendMessage({ type: 'resetEmberIcon' });
+
+  // inject JS into the page to check for an app on domready
+  var script = document.createElement('script');
+  script.type = "text/javascript";
+  script.src = chrome.extension.getURL("in-page-script.js");
+  if (document.body) document.body.appendChild(script);
+
+}());
