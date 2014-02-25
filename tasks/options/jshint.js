@@ -2,6 +2,7 @@ module.exports = {
   all: {
     src: [
       'Gruntfile.js',
+      'dist_chrome/*.js',
       'tmp/public/**/*.js',
       '!tmp/public/ember_extension.js',
       '!tmp/public/test.js',
