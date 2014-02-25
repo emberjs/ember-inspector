@@ -12,8 +12,7 @@ module.exports = function(grunt) {
 
   var config = {
     pkg: grunt.file.readJSON('package.json'),
-    env: process.env,
-    clean: ['tmp']
+    env: process.env
   };
 
   loadFrom('./tasks/options/', config);
