@@ -9,19 +9,19 @@ function generateVersionsTooltip(versions) {
   }).join("\n");
 }
 
-function setActionTitle(tabId, versions){
-  chrome.storage.sync.get("options", function(data) {
-    if (!data.options.showTomster) { return; }
-    chrome.pageAction.setTitle({
-      tabId: tabId,
-      title: generateVersionsTooltip(versions)
-    });
-    activeTabs[tabId] = versions;
+function setActionTitle(tabId){
+  chrome.pageAction.setTitle({
+    tabId: tabId,
+    title: generateVersionsTooltip(activeTabs[tabId])
   });
 }
 
 function updateTabAction(tabId){
-  if (activeTabs[tabId]) { chrome.pageAction.show(tabId); }
+  chrome.storage.sync.get("options", function(data) {
+    if (!data.options.showTomster) { return; }
+    chrome.pageAction.show(tabId);
+    setActionTitle(tabId);
+  });
 }
 
 function hideAction(tabId){
@@ -33,7 +33,7 @@ chrome.extension.onMessage.addListener(function(request, sender) {
   if (!sender.tab) {
     // noop
   } else if (request && request.type === 'emberVersion') {
-    setActionTitle(sender.tab.id, request.versions);
+    activeTabs[sender.tab.id] = request.versions;
     updateTabAction(sender.tab.id);
   } else if (request && request.type === 'resetEmberIcon') {
     hideAction(sender.tab.id);
@@ -63,5 +63,8 @@ chrome.extension.onConnect.addListener(function(port) {
 
 chrome.tabs.onUpdated.addListener(function(tabId){
   // Re-render the Tomster when a tab changes.
-  updateTabAction(tabId);
+  if (activeTabs[tabId]) {
+    updateTabAction(tabId);
+  }
+
 });
