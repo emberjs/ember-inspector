@@ -59,6 +59,58 @@ test("Backwards compatibility - no promise support", function() {
   });
 });
 
+test("Shows page refresh hint if no promises", function() {
+  visit('/promises');
+
+  andThen(function() {
+    port.trigger('promise:promisesUpdated', {
+      promises: []
+    });
+    wait();
+  });
+
+  andThen(function() {
+    equal(findByLabel('promise-tree').length, 0, "no promise list");
+    equal(findByLabel('page-refresh').length, 1, "page refresh hint seen");
+  });
+
+  clickByLabel('page-refresh-btn');
+
+  andThen(function() {
+    equal(name, 'general:refresh');
+  });
+
+  andThen(function() {
+    port.trigger('promise:promisesUpdated', {
+      promises: [
+        generatePromise({
+          guid: 1,
+          label: 'Promise 1',
+          state: 'created'
+        })
+      ]
+    });
+    wait();
+  });
+
+  andThen(function() {
+    equal(findByLabel('promise-tree').length, 1, 'promise tree is seen after being populated');
+    equal(findByLabel('promise-item').length, 1, '1 promise item can be seen');
+    equal(findByLabel('page-refresh').length, 0, 'page refresh hint hidden');
+  });
+
+  // make sure clearing does not show the refresh hint
+  clickByLabel('clear-promises-btn');
+
+  andThen(function() {
+    equal(findByLabel('promise-tree').length, 1, 'promise-tree can be seen');
+    equal(findByLabel('promise-item').length, 0, 'promise items cleared');
+    equal(findByLabel('page-refresh').length, 0, 'page refresh hint hidden');
+  });
+
+
+});
+
 test("Pending promise", function() {
   visit('/promises');
 

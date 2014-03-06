@@ -59,11 +59,20 @@ function itemProxyComputed(dependentKey, itemProxy) {
 }
 
 var equal = Ember.computed.equal;
+var bool = Ember.computed.bool;
+var and = Ember.computed.and;
+var not = Ember.computed.not;
 
 export default Ember.ArrayController.extend({
   needs: ['application'],
 
   createdAfter: null,
+
+  // below used to show the "refresh" message
+  isEmpty: equal('model.length', 0),
+  wasCleared: bool('createdAfter'),
+  neverCleared: not('wasCleared'),
+  shouldRefresh: and('isEmpty', 'neverCleared'),
 
   init: function() {
     // List-view does not support item controllers
@@ -71,7 +80,6 @@ export default Ember.ArrayController.extend({
       items: itemProxyComputed('filtered', this.get('promiseItemController'))
     });
   },
-
 
   promiseItemController: function() {
     return this.container.lookupFactory('controller:promise-item');

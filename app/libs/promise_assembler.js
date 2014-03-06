@@ -1,18 +1,25 @@
 import Promise from "models/promise";
 
+var EventedMixin = Ember.Evented;
+
 var arrayComputed = Ember.computed(function(){
   return [];
 });
 
 var objectComputed = Ember.computed(function(){
-  return [];
+  return {};
 });
 
-export default Ember.Object.extend({
+export default Ember.Object.extend(EventedMixin, {
   all: arrayComputed,
   topSort: arrayComputed,
   topSortMeta: objectComputed,
   promiseIndex: objectComputed,
+
+  // Used to track whether current message received
+  // is the first in the request
+  // Mainly helps in triggering 'firstMessageReceived' event
+  firstMessageReceived: false,
 
   start: function() {
     this.get('port').on('promise:promisesUpdated', this, this.addOrUpdatePromises);
@@ -29,6 +36,8 @@ export default Ember.Object.extend({
     this.set('topSortMeta', {});
     this.set('promiseIndex', {});
     this.get('topSort').clear();
+
+    this.set('firstMessageReceived', false);
     var all = this.get('all');
     // Lazily destroy promises
     // Allows for a smooth transition on deactivate,
@@ -47,6 +56,11 @@ export default Ember.Object.extend({
 
   addOrUpdatePromises: function(message) {
     this.rebuildPromises(message.promises);
+
+    if (!this.get('firstMessageReceived')) {
+      this.set('firstMessageReceived', true);
+      this.trigger('firstMessageReceived');
+    }
   },
 
   rebuildPromises: function(promises) {

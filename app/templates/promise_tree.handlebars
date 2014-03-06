@@ -1,4 +1,7 @@
-<div class="list-view">
+{{#if shouldRefresh}}
+  {{partial "page_refresh"}}
+{{else}}
+<div class="list-view" data-label="promise-tree">
   <div class="list-view__header row">
     <div class="cell cell_type_header">
       Label
@@ -35,9 +38,9 @@
         <div data-label="filter" {{bind-attr class="isFulfilledFilter:filter-bar__radio_selected :filter-bar__radio"}} {{action "setFilter" "fulfilled"}} >Fulfilled</div>
       </div>
 
-      <div {{action "clear"}} class="filter-bar__clear pill">CLEAR</div>
+      <div {{action "clear"}} class="filter-bar__clear pill" data-label="clear-promises-btn">CLEAR</div>
     </div>
   </div>
 
 </div>
-
+{{/if}}

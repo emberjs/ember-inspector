@@ -62,6 +62,9 @@ export default Ember.Route.extend({
       if (objectId) {
         this.get('port').send('objectInspector:inspectById', { objectId: objectId });
       }
+    },
+    refreshPage: function() {
+      this.get('port').send('general:refresh');
     }
   }
 });

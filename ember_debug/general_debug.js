@@ -24,6 +24,9 @@ var GeneralDebug = Ember.Object.extend(PortMixin, {
     getLibraries: function() {
       var libraries = arrayize(Ember.libraries);
       this.sendMessage('libraries', { libraries: libraries });
+    },
+    refresh: function() {
+      window.location.reload();
     }
   }
 });

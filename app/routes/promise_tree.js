@@ -1,10 +1,17 @@
+var Promise = Ember.RSVP.Promise;
+
 export default Ember.Route.extend({
   model: function() {
-    return this.get('assembler.topSort');
-  },
+    // block rendering until first batch arrives
+    // Helps prevent flashing of "please refresh the page"
+    var route = this;
+    return new Promise(function(resolve) {
+      route.get('assembler').one('firstMessageReceived', function() {
+        resolve(route.get('assembler.topSort'));
+      });
+      route.get('assembler').start();
+    });
 
-  activate: function() {
-    this.get('assembler').start();
   },
 
   deactivate: function() {
