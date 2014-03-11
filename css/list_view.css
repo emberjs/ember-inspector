@@ -21,3 +21,7 @@
 .list-view.list-view_compact {
   min-width: 0;
 }
+
+.no-results {
+  padding: 5px 10px;
+}
