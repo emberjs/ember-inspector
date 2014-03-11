@@ -1,0 +1,15 @@
+{{#if node.children}}
+<a href='#' {{action "expand"}} class='title'>
+  <span class='expander'>{{#if expanded}}-{{else}}+{{/if}}</span>
+  {{unbound node.name}} <span class='duration'>{{unbound node.duration}}</span></a>
+{{else}}
+  <div class='title'>{{unbound node.name}} <span class='duration'>{{unbound node.duration}}</span></div>
+{{/if}}
+
+{{#if expanded}}
+  <div class='indent'>
+    {{#each node.children}}
+      {{expandable-render node=this}}
+    {{/each}}
+  </div>
+{{/if}}

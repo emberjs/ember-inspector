@@ -1,6 +1,7 @@
 node_modules/
 tmp/
 .DS_Store
+*.swp
 dist_chrome/ember-extension.zip
 dist_chrome/images/
 dist_chrome/ember_debug/

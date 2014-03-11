@@ -1,0 +1,65 @@
+.render-tree {
+  padding: 5px;
+  overflow-y: scroll;
+  height: 100%;
+}
+
+.render-tree .title {
+  font-weight: bold;
+  background-color: #ddd;
+  padding: 5px 8px;
+  font-size: 90%;
+  margin: 1px 0 0 0;
+  font-style: normal;
+  display: block;
+}
+
+.render-tree a.title:hover {
+  background-color: #eee;
+}
+
+.render-tree a.title:hover .expander {
+  border-color: #ccc;
+  background-color: #fff;
+}
+
+.render-tree a {
+  text-decoration: none;
+}
+
+.render-tree .expander {
+  background-color: #f9f9f9;
+  border: 1px solid #bbb;
+  border-radius: 2px;
+  padding: 0px 3px;
+  width: 10px;
+  text-align: center;
+  margin-right: 10px;
+  display: inline-block;
+  color: #999;
+}
+
+.render-tree .title .duration {
+  font-weight: normal;
+  background-color: #fff;
+  margin-left: 10px;
+  font-size: 80%;
+  padding: 1px 3px;
+  border-radius: 5px;
+}
+
+.render-tree .indent {
+  margin-left: 20px;
+}
+
+.render-tree a.expand {
+  margin-top: 5px;
+  margin-right: 5px;
+  float: right;
+  color: #eee;
+  font-size: 80%;
+}
+
+button.clear {
+  margin-top: 15px;
+}
