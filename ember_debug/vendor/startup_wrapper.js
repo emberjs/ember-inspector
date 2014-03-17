@@ -67,8 +67,22 @@ if (typeof adapter !== 'undefined') {
     onReady(function() {
       if (window.Ember) {
         callback();
-      } else {
-        window.addEventListener('Ember.Application', callback, false);
+        return;
+      }
+
+      // If here, there is either no Ember, or Ember is being loaded
+      // asynchronously. Give it half a second, and then clean up.
+      var asyncEmberTimeout = setTimeout(function() {
+        removeData(document.documentElement, 'emberExtension');
+        removeData(document.body, 'emberExtension');
+        window.removeListener('Ember.Application', invokeCallback, false);
+      }, 500);
+
+      window.addEventListener('Ember.Application', invokeCallback, false);
+
+      function invokeCallback() {
+        clearTimeout(asyncEmberTimeout);
+        callback();
       }
     });
   }
@@ -103,6 +117,12 @@ if (typeof adapter !== 'undefined') {
        callback();
       }
     }, 1);
+  }
+
+  function removeData(el, name) {
+    if (el && el.dataset.hasOwnProperty(name)) {
+      delete el.dataset[name]
+    }
   }
 
 }(currentAdapter));
