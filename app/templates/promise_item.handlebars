@@ -17,7 +17,7 @@
   </div>
   <div class="cell cell_size_large" data-label="promise-value">
     {{#if hasValue}}
-        <div class="list-tree__limited" {{bind-attr title="settledValue.inspect"}}>
+        <div class="list-tree__limited  list-tree__limited_helper_very-large" {{bind-attr title="settledValue.inspect"}}>
           {{#if isValueInspectable}}
 
             <span class="cell_clickable" {{action "inspectObject" settledValue.objectId}} data-label="promise-object-value">{{settledValue.inspect}}</span>
@@ -26,7 +26,14 @@
           {{/if}}
         </div>
         <div class="list-tree__right-helper">
-          {{send-to-console action="sendValueToConsole" param=model}}
+          {{#if isError}}
+          <div class="send-trace-to-console" {{action "sendValueToConsole" model}} data-label="send-to-console-btn" title="Send stack trace to the console">
+            Stack trace
+          </div>
+          {{else}}
+            {{send-to-console action="sendValueToConsole" param=model}}
+          {{/if}}
+
         </div>
     {{else}}
     --

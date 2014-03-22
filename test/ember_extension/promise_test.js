@@ -261,6 +261,37 @@ test("Trace", function() {
 
 });
 
+
+test("Logging error stack trace in the console", function() {
+  visit('/promises');
+
+  andThen(function() {
+    port.trigger('promise:promisesUpdated', {
+      promises: [generatePromise({
+        guid: 1,
+        state: 'rejected',
+        reason: {
+          inspect: 'some error',
+          type: 'type-error'
+        }
+      })]
+    });
+    wait();
+  });
+
+  andThen(function() {
+    var row = findByLabel('promise-item').first();
+    equal(findByLabel('send-to-console-btn').text().trim(), 'Stack trace');
+    return clickByLabel('send-to-console-btn', row);
+  });
+
+  andThen(function() {
+    equal(name, 'promise:sendValueToConsole');
+    deepEqual(message, { promiseId: 1 });
+  });
+});
+
+
 test("Send fulfillment value to console", function() {
   visit('/promises');
 

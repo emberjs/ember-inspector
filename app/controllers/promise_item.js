@@ -8,6 +8,8 @@ var alias = Ember.computed.alias;
 var notEmpty = Ember.computed.notEmpty;
 var gt = Ember.computed.gt;
 var empty = Ember.computed.empty;
+var and = Ember.computed.and;
+var computedEqual = Ember.computed.equal;
 
 export default  Ember.ObjectProxy.extend({
   promiseTreeController: function() {
@@ -18,6 +20,8 @@ export default  Ember.ObjectProxy.extend({
   effectiveSearch: alias('promiseTreeController.effectiveSearch'),
 
   model: alias('content'),
+
+  isError: computedEqual('reason.type', 'type-error'),
 
   style: function() {
     var color = '';

@@ -17,3 +17,7 @@
 .list-tree__limited_helper_large {
   max-width: calc(100% - 70px);
 }
+
+.list-tree__limited_helper_very-large {
+  max-width: calc(100% - 80px);
+}
