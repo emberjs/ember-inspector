@@ -6,6 +6,8 @@ var COLOR_MAP = {
 
 var alias = Ember.computed.alias;
 var notEmpty = Ember.computed.notEmpty;
+var gt = Ember.computed.gt;
+var empty = Ember.computed.empty;
 
 export default  Ember.ObjectProxy.extend({
   promiseTreeController: function() {
@@ -56,6 +58,20 @@ export default  Ember.ObjectProxy.extend({
   labelStyle: function() {
     return 'padding-left: ' + ((+this.get('level') * 20) + 5) + "px";
   }.property('level'),
+
+  expandedClass: function() {
+    if (!this.get('hasChildren')) { return; }
+
+    if (this.get('isExpanded')) {
+      return 'row_arrow_expanded';
+    } else {
+      return 'row_arrow_collapsed';
+    }
+  }.property('hasChildren', 'isExpanded'),
+
+  hasChildren: gt('children.length', 0),
+
+  isTopNode: empty('parent'),
 
   settledValue: function() {
     if (this.get('isFulfilled')) {

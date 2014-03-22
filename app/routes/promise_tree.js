@@ -21,6 +21,23 @@ export default Ember.Route.extend({
   actions: {
     sendValueToConsole: function(promise) {
       this.get('port').send('promise:sendValueToConsole', { promiseId: promise.get('guid') });
+    },
+
+    toggleExpand: function(promise) {
+      var isExpanded = !promise.get('isExpanded');
+      promise.set('isManuallyExpanded', isExpanded);
+      promise.recalculateExpanded();
+      var children = promise._allChildren();
+      if (isExpanded) {
+        children.forEach(function(child) {
+          var isManuallyExpanded = child.get('isManuallyExpanded');
+          if (isManuallyExpanded === undefined) {
+            child.set('isManuallyExpanded', isExpanded);
+            child.recalculateExpanded();
+          }
+        });
+      }
+
     }
   }
 });

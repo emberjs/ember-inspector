@@ -33,6 +33,38 @@
   opacity: 1;
 }
 
+/* ARROW FOR COLLAPSING AND EXPANDING */
+
+.cell__arrow {
+  cursor: pointer;
+  display: block;
+  float: left;
+  width: 15px;
+  height: 30px;
+  position: relative;
+}
+
+.cell__arrow:before {
+  position: absolute;
+  right: 5px;
+  top: 0px;
+  font-size: 75%;
+  color: #737373;
+}
+
+.row_arrow_collapsed .cell__arrow:before {
+  content: "\25B6";
+}
+
+.row_arrow_expanded .cell__arrow:before {
+    content: "\25BC";
+}
+
+.row_arrow_collapsed .cell_type_main, .row_arrow_expanded .cell_type_main {
+  cursor: pointer;
+}
+ /* -------------------------------- */
+
 
 .row-wrapper {
   width: 100%;

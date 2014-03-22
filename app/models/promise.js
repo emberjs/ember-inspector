@@ -112,6 +112,85 @@ export default Ember.Object.extend({
 
   matchesExactly: function(val) {
     return !!((this.get('label') || '').toLowerCase().match(new RegExp('.*' + escapeRegExp(val.toLowerCase()) + '.*')));
+  },
+
+
+
+  // EXPANDED / COLLAPSED PROMISES
+
+  isExpanded: false,
+
+  isManuallyExpanded: undefined,
+
+  stateOrParentChanged: function() {
+    var parent = this.get('parent');
+    if (parent) {
+      Ember.run.once(parent, 'recalculateExpanded');
+    }
+  }.observes('isPending', 'isFulfilled', 'isRejected', 'parent'),
+
+  _findTopParent: function() {
+    var parent = this.get('parent');
+    if(!parent) {
+      return this;
+    } else {
+      return parent._findTopParent();
+    }
+  },
+
+  recalculateExpanded: function() {
+    var isExpanded = false;
+    if (this.get('isManuallyExpanded') !== undefined) {
+      isExpanded = this.get('isManuallyExpanded');
+    } else {
+      var children  = this._allChildren();
+      for (var i = 0, l = children.length; i < l; i++) {
+        var child = children[i];
+        if (child.get('isRejected')) {
+          isExpanded = true;
+        }
+        if (child.get('isPending') && !child.get('parent.isPending')) {
+          isExpanded = true;
+        }
+        if (isExpanded) {
+          break;
+        }
+      }
+      var parents = this._allParents();
+      if (isExpanded) {
+        parents.forEach(function(parent) {
+          parent.set('isExpanded', true);
+        });
+      } else if(this.get('parent.isExpanded')) {
+        this.get('parent').recalculateExpanded();
+      }
+    }
+    this.set('isExpanded', isExpanded);
+    return isExpanded;
+  },
+
+  isVisible: function() {
+    if (this.get('parent')) {
+      return this.get('parent.isExpanded') && this.get('parent.isVisible');
+    }
+    return true;
+  }.property('parent.isExpanded', 'parent', 'parent.isVisible'),
+
+  _allChildren: function() {
+    var children = Ember.$.extend([], this.get('children'));
+    children.forEach(function(item) {
+      children = Ember.$.merge(children, item._allChildren());
+    });
+    return children;
+  },
+
+  _allParents: function() {
+    var parent = this.get('parent');
+    if (parent) {
+      return Ember.$.merge([parent], parent._allParents());
+    } else {
+      return [];
+    }
   }
 });
 

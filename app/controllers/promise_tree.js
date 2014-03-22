@@ -90,10 +90,15 @@ export default Ember.ArrayController.extend({
       'model.@each.createdAt',
       'model.@each.fulfilledBranch',
       'model.@each.rejectedBranch',
-      'model.@each.pendingBranch', function(item) {
+      'model.@each.pendingBranch',
+      'model.@each.isVisible', function(item) {
 
     // exclude cleared promises
     if (this.get('createdAfter') && item.get('createdAt') < this.get('createdAfter')) {
+      return false;
+    }
+
+    if (!item.get('isVisible')) {
       return false;
     }
 
