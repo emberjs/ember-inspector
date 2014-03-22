@@ -230,8 +230,14 @@ test("Chained promises", function() {
 
   andThen(function() {
     var rows = findByLabel('promise-item');
-    equal(rows.length, 2);
+    equal(rows.length, 1, 'Collpased by default');
     equal(findByLabel('promise-label', rows.eq(0)).text().trim(), 'Parent');
+    return clickByLabel('promise-label', rows.eq(0));
+  });
+
+  andThen(function() {
+    var rows = findByLabel('promise-item');
+    equal(rows.length, 2, 'Chain now expanded');
     equal(findByLabel('promise-label', rows.eq(1)).text().trim(), 'Child');
   });
 });
