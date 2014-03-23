@@ -2,7 +2,7 @@ import Resolver from "resolver";
 import Port from "port";
 import PromiseAssembler from "libs/promise_assembler";
 
-var version = '1.1.0';
+var version = '1.2.0';
 
 var App = Ember.Application.extend({
   modulePrefix: '',
