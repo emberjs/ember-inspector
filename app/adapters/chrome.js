@@ -40,5 +40,9 @@ export default  BasicAdapter.extend({
       emberDebug = xhr.responseText;
     }
     chrome.devtools.inspectedWindow.eval(emberDebug);
-  }.on('init')
+  }.on('init'),
+
+  willReload: function() {
+    this._injectDebugger();
+  }
 });

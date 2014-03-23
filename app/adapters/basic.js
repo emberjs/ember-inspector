@@ -14,6 +14,7 @@
   })
   ```
 **/
+var K = Ember.K;
 export default Ember.Object.extend({
   name: 'basic',
   /**
@@ -37,5 +38,8 @@ export default Ember.Object.extend({
     this.get('_messageCallbacks').forEach(function(callback) {
       callback.call(null, message);
     });
-  }
+  },
+
+  // Called when the "Reload" is clicked by the user
+  willReload: K
 });

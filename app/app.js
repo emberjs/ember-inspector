@@ -28,6 +28,7 @@ App.initializer({
     }
     container.register('adapter:main', Adapter);
     container.typeInjection('port', 'adapter', 'adapter:main');
+    container.injection('route:application', 'adapter', 'adapter:main');
 
     // register config
     container.register('config:main', config, { instantiate: false });

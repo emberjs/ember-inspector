@@ -65,6 +65,9 @@ export default Ember.Route.extend({
     },
     refreshPage: function() {
       this.get('port').send('general:refresh');
+      // inject ember_debug as quickly as possible in chrome
+      // so that promises created on dom ready are caught
+      this.get('adapter').willReload();
     }
   }
 });
