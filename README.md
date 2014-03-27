@@ -1,4 +1,4 @@
-Ember Inspector [![Build Status](https://secure.travis-ci.org/tildeio/ember-extension.png?branch=master)](http://travis-ci.org/tildeio/ember-extension)
+Ember Inspector [![Build Status](https://secure.travis-ci.org/emberjs/ember-inspector.png?branch=master)](http://travis-ci.org/emberjs/ember-inspector)
 ===============
 
 Adds an Ember tab to Chrome or Firefox Developer Tools that allows you to inspect
