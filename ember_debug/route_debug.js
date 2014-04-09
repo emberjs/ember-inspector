@@ -140,8 +140,15 @@ function getURL(container, segments) {
     }
   }
 
-  url = '/' + url.join('/');
-  url = locationImplementation.formatURL(url);
+  url = url.join('/');
+
+  if (url.match(/_unused_dummy_/)) {
+    url = '';
+  } else {
+    url = '/' + url;
+    url = locationImplementation.formatURL(url);
+  }
+
   return url;
 }
 
