@@ -5,11 +5,3 @@
 {{else}}
   <div class='title'>{{unbound node.name}} <span class='duration'>{{unbound node.duration}}</span></div>
 {{/if}}
-
-{{#if expanded}}
-  <div class='indent'>
-    {{#each node.children}}
-      {{expandable-render node=this}}
-    {{/each}}
-  </div>
-{{/if}}

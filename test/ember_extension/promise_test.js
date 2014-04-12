@@ -23,16 +23,21 @@ module("Promise", {
     port = EmberExtension.__container__.lookup('port:main');
 
     port.reopen({
-      send: function(n, m) {
-        name = n;
-        message = m;
-        if (n === 'promise:supported') {
-          this.trigger('promise:supported', {
-            supported: true
-          });
-        }
+    send: function(n, m) {
+      if (n === 'promise:getAndObservePromises') {
+        port.trigger('promise:promisesUpdated', {
+          promises: []
+        });
       }
-    });
+     if (n === 'promise:supported') {
+        this.trigger('promise:supported', {
+          supported: true
+        });
+      }
+      name = n;
+      message = m;
+    }
+  });
   },
   teardown: function() {
     name = null;
@@ -66,7 +71,7 @@ test("Shows page refresh hint if no promises", function() {
     port.trigger('promise:promisesUpdated', {
       promises: []
     });
-    wait();
+    return wait();
   });
 
   andThen(function() {
@@ -112,6 +117,7 @@ test("Shows page refresh hint if no promises", function() {
 });
 
 test("Pending promise", function() {
+
   visit('/promises');
 
   andThen(function() {

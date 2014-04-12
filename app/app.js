@@ -1,6 +1,7 @@
 import Resolver from "resolver";
 import Port from "port";
 import PromiseAssembler from "libs/promise_assembler";
+import msToTime from "helpers/ms_to_time";
 
 var version = '1.2.0';
 
@@ -13,6 +14,9 @@ var App = Ember.Application.extend({
 var config = {
   VERSION: version
 };
+
+// Register Helpers
+Ember.Handlebars.helper('ms-to-time', msToTime);
 
 // Inject adapter
 App.initializer({

@@ -1,16 +1,36 @@
-<div class="render-tree">
-  {{#if model}}
-      {{#each model}}
-        {{expandable-render node=this}}
-      {{/each}}
-
-    <button class='clear' {{action clearProfiles}}>Clear Render Timings</button>
-
-  {{else}}
-    <div class='no-results'>
-      <p>No rendering metrics have been collected. Try navigating around your Ember Application!</p>
-
-      <p><strong>Note:</strong> Very fast rendering times (&lt; 1ms) are excluded.</p>
+{{#if length}}
+<div class="list-view" data-label="render-tree">
+  <div class="list-view__header row">
+    <div class="cell cell_type_header">
+      Name
     </div>
-  {{/if}}
+    <div class="cell cell_type_header cell_value_numeric">
+      Timestamp
+    </div>
+    <!-- Account for scrollbar width :'(  -->
+    <div class="cell cell_type_header spacer"></div>
+  </div>
+
+  <div class="ember-list-container">
+    {{#view "render_list"}}
+      {{#each}}
+        {{render "render_item" this}}
+      {{/each}}
+    {{/view}}
+  </div>
+
+  <div class="list-view__filter">
+    <div class="filter-bar">
+      <div class="filter-bar__pills"></div>
+      <div {{action "clearProfiles"}} class="filter-bar__clear pill" data-label="clear-render-profiles-btn">CLEAR</div>
+    </div>
+  </div>
+
 </div>
+{{else}}
+  <div data-label="render-tree-empty">
+    <p>No rendering metrics have been collected. Try navigating around your Ember Application!</p>
+
+    <p><strong>Note:</strong> Very fast rendering times (&lt; 1ms) are excluded.</p>
+  </div>
+{{/if}}

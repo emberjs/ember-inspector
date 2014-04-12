@@ -5,6 +5,7 @@
 **/
 var ProfileNode = function(start, payload, parent) {
   this.start = start;
+  this.timestamp = Date.now();
 
   if (payload) {
     if (payload.template) { this.name = payload.template; }
@@ -31,7 +32,7 @@ ProfileNode.prototype = {
   },
 
   calcDuration: function() {
-    this.duration = (Math.round(this.time * 100) / 100).toString() + "ms";
+    this.duration = Math.round(this.time * 100) / 100;
   }
 };
 

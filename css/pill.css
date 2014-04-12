@@ -22,3 +22,7 @@
   text-shadow: none;
   font-weight: bold;
 }
+
+.pill_not-clickable {
+  cursor: inherit;
+}

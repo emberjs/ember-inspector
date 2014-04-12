@@ -1,4 +1,6 @@
-
+.list-tree_scrollable {
+  overflow-y: scroll;
+}
 
 .list-tree__right-helper {
   float: right;

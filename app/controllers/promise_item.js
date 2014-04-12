@@ -111,27 +111,13 @@ export default  Ember.ObjectProxy.extend({
 
   }.property('model.state'),
 
+
   timeToSettle: function() {
-    if (!this.get('createdAt') || !this.get('settledAt')) {
-      return ' -- ';
-    }
+  if (!this.get('createdAt') || !this.get('settledAt')) {
+        return ' -- ';
+      }
     var startedAt = this.get('parent.settledAt') || this.get('createdAt');
     var remaining = this.get('settledAt').getTime() - startedAt.getTime();
-    var min = Math.floor(remaining / (1000 * 60));
-    remaining -= min * 1000 * 60;
-    var sec = Math.floor(remaining / 1000);
-    remaining -= sec * 1000;
-    var ms = remaining;
-    var val = '';
-    if (min > 0) {
-      val += min + 'min ';
-    }
-    if (sec > 0) {
-      val += sec + 's ';
-    }
-    if (ms > 0 || Ember.isEmpty(val)) {
-      val += ms + 'ms';
-    }
-    return val;
+    return remaining;
   }.property('createdAt', 'settledAt', 'parent.settledAt')
 });
