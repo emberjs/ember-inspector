@@ -1,6 +1,11 @@
 import PortMixin from "mixins/port_mixin";
 import ProfileManager from 'models/profile_manager';
 
+var K = Ember.K;
+var addArrayObserver = Ember.addArrayObserver;
+var computed = Ember.computed;
+var oneWay = computed.oneWay;
+
 var profileManager = new ProfileManager();
 
 Ember.subscribe("render", {
@@ -15,28 +20,34 @@ Ember.subscribe("render", {
 
 export default Ember.Object.extend(PortMixin, {
   namespace: null,
-  port: Ember.computed.alias('namespace.port'),
-  application: Ember.computed.alias('namespace.application'),
-  promiseDebug: Ember.computed.alias('namespace.promiseDebug'),
+  port: oneWay('namespace.port').readOnly(),
+  application: oneWay('namespace.application').readOnly(),
   portNamespace: 'render',
 
-  init: function() {
+  profileManager: profileManager,
+
+  willDestroy: function() {
     this._super();
-    this.set('profiles', profileManager.profiles);
+    this.profileManager.offProfilesAdded(this, this.sendAdded);
   },
 
-  _profilesChanged: function() {
-    this.sendMessage('profilesUpdated', {profiles: this.get('profiles')});
-  }.observes('profiles.@each'),
+  sendAdded: function(profiles) {
+    this.sendMessage('profilesAdded', { profiles: profiles });
+  },
 
   messages: {
-    getProfiles: function() {
-      this.sendMessage('profilesUpdated', {profiles: this.get('profiles')});
+    watchProfiles: function() {
+      this.sendMessage('profilesAdded', { profiles: this.profileManager.profiles });
+      this.profileManager.onProfilesAdded(this, this.sendAdded);
+    },
+
+    releaseProfiles: function() {
+      this.profileManager.offProfilesAdded(this, this.sendAdded);
     },
 
     clear: function() {
-      this.get('profiles').clear();
-      this.sendMessage('profilesUpdated', {profiles: this.get('profiles')});
+      this.profileManager.profiles.clear();
+      this.sendMessage('profilesUpdated', {profiles: []});
     }
   }
 });

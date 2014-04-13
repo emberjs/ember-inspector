@@ -7,6 +7,7 @@ var ProfileManager = function() {
   this.profiles = Em.A();
   this.current = null;
   this.currentSet = [];
+  this._profilesAddedCallbacks = [];
 };
 
 ProfileManager.prototype = {
@@ -41,7 +42,36 @@ ProfileManager.prototype = {
     parentNode.calcDuration();
 
     this.profiles.pushObject(parentNode);
+    this._triggerProfilesAdded([parentNode]);
     this.currentSet = [];
+  },
+
+  _profilesAddedCallbacks: undefined, // set to array on init
+
+  onProfilesAdded: function(context, callback) {
+    this._profilesAddedCallbacks.push({
+      context: context,
+      callback: callback
+    });
+  },
+
+  offProfilesAdded: function(context, callback) {
+    var index = -1, item;
+    for (var i = 0, l = this._profilesAddedCallbacks.length; i < l; i++) {
+      item = this._profilesAddedCallbacks[i];
+      if (item.context === context && item.callback === callback) {
+        index = i;
+      }
+    }
+    if (index > -1) {
+      this._profilesAddedCallbacks.splice(index, 1);
+    }
+  },
+
+  _triggerProfilesAdded: function(profiles) {
+    this._profilesAddedCallbacks.forEach(function(item) {
+      item.callback.call(item.context, profiles);
+    });
   }
 };
 

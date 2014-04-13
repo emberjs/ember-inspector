@@ -17,18 +17,19 @@ module("Render Debug", {
     App.reset();
     EmberDebug.start();
     port = EmberDebug.port;
-}
+  }
 });
 
 test("Simple Render", function() {
-  var profiles = null;
+  var profiles = [];
   port.reopen({
     send: function(n, m) {
-      if (n === "render:profilesUpdated") {
-        profiles = m.profiles;
+      if (n === "render:profilesAdded") {
+        profiles.pushObjects(m.profiles);
       }
     }
   });
+  port.trigger('render:watchProfiles');
 
   visit('/simple')
   .then(function() {
