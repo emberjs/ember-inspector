@@ -45,6 +45,18 @@ var FirefoxAdapter = BasicAdapter.extend({
     window.addEventListener('ember-debug-receive', function(event) {
       var message = event.detail;
       Ember.run(function() {
+        // FIX: needed to fix permission denied exception on Firefox >= 30
+        // - https://github.com/emberjs/ember-inspector/issues/147
+        // - https://blog.mozilla.org/addons/2014/04/10/changes-to-unsafewindow-for-the-add-on-sdk/
+        switch (typeof message) {
+        case "string":
+          message = JSON.parse(message);
+          break;
+        case "object":
+          break;
+        default:
+          throw new Error("ember-debug-receive: string or object expected");
+        }
         self._messageReceived(message);
       });
     });
