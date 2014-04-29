@@ -294,6 +294,49 @@ test("Properties are bound to the application properties", function() {
   });
 });
 
+test("Stringified json should not get double parsed", function() {
+  visit('/');
+
+  andThen(function() {
+    var obj = {
+      name: 'My Object',
+      objectId: 'object-id',
+      details: [{
+        name: 'Own Properties',
+        expand: true,
+        properties: [{
+          name: 'boundProp',
+          value: {
+            inspect: '{"name":"teddy"}',
+            type: 'type-string',
+            computed: false
+          }
+        }]
+
+      }]
+    };
+    port.trigger('objectInspector:updateObject', obj);
+    return wait();
+  });
+
+  clickByLabel('object-property-value');
+
+  andThen(function() {
+    var txtField = findByLabel('object-property-value-txt');
+    equal(txtField.val(), '"{"name":"teddy"}"');
+    return fillIn(txtField, '"{"name":"joey"}"');
+  });
+
+  andThen(function() {
+    var e = Ember.$.Event('keyup', { keyCode: 13 });
+    findByLabel('object-property-value-txt').trigger(e);
+    equal(name, 'objectInspector:saveProperty');
+    equal(message.property, 'boundProp');
+    equal(message.value, '{"name":"joey"}');
+    equal(message.mixinIndex, 0);
+  });
+});
+
 test("Send to console", function() {
   visit('/')
   .then(function() {

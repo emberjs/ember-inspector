@@ -51,7 +51,13 @@ export default Ember.ObjectController.extend({
       try {
         realValue = JSON.parse(txtValue);
       } catch(e) {
-        realValue = txtValue;
+        // if surrounded by quotes, remove quotes
+        var match = txtValue.match(/^"(.*)"$/);
+        if (match && match.length > 1) {
+          realValue = match[1];
+        } else {
+          realValue = txtValue;
+        }
       }
       this.get('target').send('saveProperty', this.get('name'), realValue);
     },
