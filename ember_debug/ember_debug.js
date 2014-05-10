@@ -2,6 +2,7 @@ import BasicAdapter from "adapters/basic";
 import Port from "port";
 import ObjectInspector from "object_inspector";
 import GeneralDebug from "general_debug";
+import RenderDebug from "render_debug";
 import ViewDebug from "view_debug";
 import RouteDebug from "route_debug";
 import DataDebug from "data_debug";
@@ -46,6 +47,7 @@ EmberDebug = Ember.Namespace.extend({
     'routeDebug',
     'objectInspector',
     'generalDebug',
+    'renderDebug',
     'promiseDebug'
     ].forEach(function(prop) {
       var handler = self.get(prop);
@@ -68,6 +70,7 @@ EmberDebug = Ember.Namespace.extend({
       this.startModule('port', this.Port);
 
       this.startModule('generalDebug', GeneralDebug);
+      this.startModule('renderDebug', RenderDebug);
       this.startModule('objectInspector', ObjectInspector);
       this.startModule('routeDebug', RouteDebug);
       this.startModule('viewDebug', ViewDebug);
@@ -76,7 +79,6 @@ EmberDebug = Ember.Namespace.extend({
 
       this.generalDebug.sendBooted();
       this.viewDebug.sendTree();
-
     });
   }
 

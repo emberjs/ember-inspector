@@ -1,0 +1,16 @@
+<div class="render-tree">
+  {{#if model}}
+      {{#each model}}
+        {{expandable-render node=this}}
+      {{/each}}
+
+    <button class='clear' {{action clearProfiles}}>Clear Render Timings</button>
+
+  {{else}}
+    <div class='no-results'>
+      <p>No rendering metrics have been collected. Try navigating around your Ember Application!</p>
+
+      <p><strong>Note:</strong> Very fast rendering times (&lt; 1ms) are excluded.</p>
+    </div>
+  {{/if}}
+</div>
