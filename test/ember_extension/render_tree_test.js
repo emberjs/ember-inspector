@@ -84,7 +84,7 @@ test("Renders the list correctly", function() {
     equal(findByLabel('render-profile-timestamp', rows[0]).text().trim(), "13:16:22:715");
 
     equal(findByLabel('render-profile-name', rows[1]).text().trim(), "Second View Rendering");
-    equal(findByLabel('render-profile-duration', rows[1]).text().trim(), "10ms");
+    equal(findByLabel('render-profile-duration', rows[1]).text().trim(), "10.00ms");
     equal(findByLabel('render-profile-timestamp', rows[1]).text().trim(), "13:16:22:759");
 
     return clickByLabel('render-main-cell', rows[0]);

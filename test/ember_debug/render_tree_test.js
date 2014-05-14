@@ -36,4 +36,3 @@ test("Simple Render", function() {
     ok(profiles.length > 0, "it has created profiles");
   });
 });
-

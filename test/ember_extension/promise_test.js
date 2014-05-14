@@ -173,7 +173,7 @@ test("Fulfilled promise", function() {
     equal(findByLabel('promise-label', row).text().trim(), 'Promise 1');
     equal(findByLabel('promise-state', row).text().trim(), 'Fulfilled');
     equal(findByLabel('promise-value', row).text().trim(), 'value');
-    equal(findByLabel('promise-time', row).text().trim(), '10ms');
+    equal(findByLabel('promise-time', row).text().trim(), '10.00ms');
   });
 });
 
@@ -208,7 +208,7 @@ test("Rejected promise", function() {
     equal(findByLabel('promise-label', row).text().trim(), 'Promise 1');
     equal(findByLabel('promise-state', row).text().trim(), 'Rejected');
     equal(findByLabel('promise-value', row).text().trim(), 'reason');
-    equal(findByLabel('promise-time', row).text().trim(), '20ms');
+    equal(findByLabel('promise-time', row).text().trim(), '20.00ms');
   });
 
 });

@@ -40,6 +40,7 @@ function defaultViewTree() {
     isComponent: false,
     objectId: 'applicationView',
     viewClass: 'App.ApplicationView',
+    duration: 10,
     controller: {
       name: 'App.ApplicationController',
       objectId: 'applicationController'
@@ -50,6 +51,7 @@ function defaultViewTree() {
         isVirtual: false,
         isComponent: false,
         viewClass: 'App.PostsView',
+        duration: 1,
         objectId: 'postsView',
         model: {
           name: 'PostsArray',
@@ -66,6 +68,7 @@ function defaultViewTree() {
         isVirtual: false,
         isComponent: false,
         viewClass: 'App.CommentsView',
+        duration: 2.5,
         objectId: 'commentsView',
         model: {
           name: 'CommentsArray',
@@ -96,7 +99,8 @@ test("It should correctly diplay the view tree", function() {
     var controllerNames = [],
         templateNames = [],
         modelNames = [],
-        viewClassNames = [];
+        viewClassNames = [],
+        durations = [];
 
     function label(theLabel, context) {
       return findByLabel(theLabel, context).filter(':first').text().trim();
@@ -107,6 +111,7 @@ test("It should correctly diplay the view tree", function() {
       controllerNames.push(label('view-controller', this));
       viewClassNames.push(label('view-class', this));
       modelNames.push(label('view-model', this));
+      durations.push(label('view-duration', this));
     });
 
     deepEqual(controllerNames, [
@@ -132,6 +137,12 @@ test("It should correctly diplay the view tree", function() {
       'App.PostsView',
       'App.CommentsView'
     ], 'expected view class names');
+
+    deepEqual(durations, [
+      '10.00ms',
+      '1.00ms',
+      '2.50ms'
+    ], 'expected render durations');
   });
 
 });

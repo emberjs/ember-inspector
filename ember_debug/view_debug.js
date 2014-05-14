@@ -17,6 +17,8 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
   retainedObjects: [],
 
+  _durations: {},
+
   options: {},
 
   portNamespace: 'view',
@@ -82,6 +84,16 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
         self.highlightView(highlightedElement);
       }
     });
+  },
+
+
+  updateDurations: function(durations) {
+    for (var guid in durations) {
+      if (!durations.hasOwnProperty(guid)) {
+        continue;
+      }
+      this._durations[guid] = durations[guid];
+    }
   },
 
   retainObject: function(object) {
@@ -220,22 +232,21 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
   },
 
   viewTree: function() {
-     var rootView = Ember.View.views[$('.ember-application > .ember-view').attr('id')];
-      // In case of App.reset view is destroyed
-      if (!rootView) {
-        return false;
-      }
-      var retained = [];
+    var rootView = Ember.View.views[$('.ember-application > .ember-view').attr('id')];
+    // In case of App.reset view is destroyed
+    if (!rootView) {
+      return false;
+    }
+    var retained = [];
 
-      var children = [];
-      var treeId = this.retainObject(retained);
+    var children = [];
+    var treeId = this.retainObject(retained);
 
-      var tree = { value: this.inspectView(rootView, retained), children: children, treeId: treeId };
+    var tree = { value: this.inspectView(rootView, retained), children: children, treeId: treeId };
 
-      this.appendChildren(rootView, children, retained);
+    this.appendChildren(rootView, children, retained);
 
-
-      return tree;
+    return tree;
   },
 
   inspectView: function(view, retained) {
@@ -257,9 +268,13 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     var viewId = this.retainObject(view);
     retained.push(viewId);
 
+    var timeToRender = this._durations[viewId];
+    
+
     var value = {
       viewClass: viewClass,
       objectId: viewId,
+      duration: timeToRender,
       name: name,
       template: templateName || '(inline)',
       tagName: tagName,

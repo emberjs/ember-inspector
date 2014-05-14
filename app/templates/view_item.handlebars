@@ -1,9 +1,10 @@
 <div {{bind-attr class=":list-tree__item :row isCurrent:row_highlight"}} >
-  <div class="cell_type_main cell " >
+  <div class="cell_type_main cell" >
     <div {{bind-attr style="labelStyle"}}>
       <span {{bind-attr title="value.name"}} data-label="view-name">{{unbound value.name}}</span>
     </div>
   </div>
+
   <div {{bind-attr class=":cell hasElement:cell_clickable"}} {{action "inspectElement"}} data-label="view-template">{{unbound value.template}}</div>
   <div {{bind-attr class=":cell"}} data-label="view-model">
     {{#if hasModel}}
@@ -38,5 +39,9 @@
     {{else}}
       --
     {{/if}}
+  </div>
+
+  <div class="cell cell_size_small cell_value_numeric" >
+    <span class="pill pill_not-clickable pill_size_small" data-label="view-duration">{{ms-to-time value.duration}}</span>
   </div>
 </div>

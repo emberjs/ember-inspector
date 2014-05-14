@@ -26,3 +26,10 @@
 .pill_not-clickable {
   cursor: inherit;
 }
+
+/** MODIFIER: SIZE = SMALL **/
+.pill_size_small {
+  font-size: 10px;
+
+  padding: 2px 4px;
+}

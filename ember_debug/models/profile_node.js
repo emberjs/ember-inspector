@@ -6,10 +6,15 @@
 var ProfileNode = function(start, payload, parent) {
   this.start = start;
   this.timestamp = Date.now();
-
   if (payload) {
     if (payload.template) { this.name = payload.template; }
-    if (payload.object) { this.name = payload.object.toString(); }
+    if (payload.object) {
+      this.name = payload.object.toString();
+      var match = this.name.match(/:(ember\d+)>$/);
+      if (match && match.length > 1) {
+        this.viewGuid = match[1];
+      }
+    }
   } else {
     this.name = "unknown view";
   }
