@@ -9,8 +9,9 @@ var ProfileNode = function(start, payload, parent) {
   if (payload) {
     if (payload.template) { this.name = payload.template; }
     if (payload.object) {
-      this.name = payload.object.toString();
-      var match = this.name.match(/:(ember\d+)>$/);
+      var name = payload.object.toString();
+      var match = name.match(/:(ember\d+)>$/);
+      this.name =  name.replace(/:?:ember\d+>$/, '').replace(/^</, '');
       if (match && match.length > 1) {
         this.viewGuid = match[1];
       }
