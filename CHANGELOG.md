@@ -1,5 +1,14 @@
 # Ember Inspector Changelog
 
+
+## Ember Inspector 1.3.0
+
+* [FEATURE] Added new "Render Performance" tab
+* [FEATURE] Added new column "Duration" to the view tree
+* [BUGFIX] Fixed bug with editing json strings in the object inspector
+* [BUGFIX] Fixed permission denied exception on Firefox >= 30
+* Removed dummy URLs created by Ember for error and loading routes
+
 ## Ember Inspector 1.2.0
 
 * [FEATURE] Add info tab that shows a list of libraries used and their versions
