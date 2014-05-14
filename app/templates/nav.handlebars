@@ -1,0 +1,72 @@
+<div class="app__nav-holder">
+  <nav {{bind-attr class=":main-nav view.inactive:main-nav_state_inactive"}}>
+    <ul class="main-nav__list">
+      <li class="main-nav__item">
+        {{#link-to "view-tree"}}
+          View Tree
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="19px" height="19px" viewBox="0 0 19 19" enable-background="new 0 0 19 19" xml:space="preserve">
+            <path fill="#454545" d="M0,0v19h19V0H0z M6.109,17.445h-4.57V5.297h4.57V17.445z M17.461,17.445H6.83V5.297h10.63v12.148H17.461z M17.461,4.543H1.539V1.506h15.922V4.543z"/>
+          </svg>
+        {{/link-to}}
+      </li>
+      <li class="main-nav__item">
+        {{#link-to "route-tree"}}
+          Routes
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="19px" height="19px" viewBox="0 0 19 19" enable-background="new 0 0 19 19" xml:space="preserve">
+            <polygon fill="#454545" points="0.591,17.012 2.36,17.012 6.841,2.086 5.07,2.086"/>
+            <path fill="#454545" d="M18.117,8.495l0.292-1.494h-2.242l0.874-3.507h-1.544l-0.874,3.507h-1.88l0.874-3.507h-1.536l-0.883,3.507 H8.668L8.375,8.495h2.449l-0.616,2.474H7.875l-0.292,1.495h2.252l-0.883,3.515h1.544l0.874-3.515h1.888l-0.883,3.515h1.544 l0.874-3.515h2.53l0.303-1.495h-2.459l0.625-2.474H18.117z M14.249,8.495l-0.617,2.474h-1.888l0.625-2.474H14.249z"/>
+          </svg>
+        {{/link-to}}
+      </li>
+      <li class="main-nav__item">
+        {{#link-to "data"}}
+          Data
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="19px" height="19px" viewBox="0 0 19 19" enable-background="new 0 0 19 19" xml:space="preserve">
+            <path d="M9.5,0.001C3.907,0.001,0,1.507,0,3.663v11.675C0,17.494,3.907,19,9.5,19c5.594,0,9.5-1.506,9.5-3.662V3.663 C19,1.507,15.094,0.001,9.5,0.001z M9.5,5.669c-4.768,0-7.81-1.318-7.81-2.007c0-0.689,3.042-2.008,7.81-2.008 c4.769,0,7.81,1.318,7.81,2.008C17.31,4.352,14.269,5.669,9.5,5.669z M17.31,15.338c0,0.689-3.041,2.007-7.81,2.007 c-4.768,0-7.81-1.317-7.81-2.007V5.852C3.39,6.77,6.282,7.324,9.5,7.324c3.217,0,6.108-0.554,7.81-1.472V15.338z"/>
+          </svg>
+        {{/link-to}}
+      </li>
+      <li class="main-nav__item">
+        {{#link-to "promises"}}
+         Promises
+         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="23px" height="23px" viewBox="0 0 23 23" enable-background="new 0 0 23 23" xml:space="preserve">
+          <path d="M19,0 L19,19 L-0,19 L-0,0 z M1.539,1.506 L1.539,17.445 L17.46,17.445 L17.461,2.832 L6.807,12.912 L5.12,12.923 L5.12,1.506 z M7.12,1.506 L7.12,9.863 L15.953,1.506 z" />
+          <path d="M6.066,13.643 C4.488,13.643 3.208,12.363 3.208,10.784 C3.208,9.206 4.488,7.926 6.066,7.926 C7.645,7.926 8.925,9.206 8.925,10.784 C8.925,12.363 7.645,13.643 6.066,13.643 z" />
+        </svg>
+        {{/link-to}}
+      </li>
+       <li class="main-nav__item">
+        {{#link-to "render-tree"}}
+        Render Performance
+        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+   width="18.979px" height="18.979px" viewBox="0.021 -0.018 18.979 18.979" enable-background="new 0.021 -0.018 18.979 18.979"
+   xml:space="preserve">
+        <g>
+          <path d="M8.358,11.589c0.291,0.299,0.674,0.45,1.053,0.45c0.347,0,0.69-0.126,0.955-0.384c0.553-0.535,5.625-7.474,5.625-7.474
+            s-7.089,4.864-7.641,5.4C7.798,10.12,7.803,11.017,8.358,11.589z"/>
+          <g>
+            <path d="M16.057,2.615c-1.702-1.627-4.005-2.633-6.546-2.633c-5.237,0-9.482,4.246-9.482,9.482c0,2.816,1.233,5.336,3.182,7.073
+              c-1.22-1.439-1.959-3.299-1.959-5.333c0-4.561,3.698-8.259,8.26-8.259c1.577,0,3.045,0.45,4.298,1.216
+              c0.561-0.386,1.067-0.734,1.472-1.011L16.057,2.615z"/>
+            <path d="M17.005,4.923c-0.26,0.354-0.582,0.794-0.936,1.275c1.062,1.39,1.7,3.121,1.7,5.005c0,2.037-0.741,3.898-1.963,5.338
+              c1.951-1.736,3.187-4.259,3.187-7.078c0-1.905-0.568-3.676-1.535-5.162L17.005,4.923z"/>
+          </g>
+        </g>
+        </svg>
+
+
+        {{/link-to}}
+      </li>
+      <li class="main-nav__item">
+        {{#link-to "info"}}
+        Info
+        <svg width="19" height="19" xmlns="http://www.w3.org/2000/svg">
+          <rect id="svg_3" height="6.815" width="3.33" fill="#454545" y="7.8805" x="7.737"/>
+          <circle id="svg_4" r="1.753" cy="5.3775" cx="9.451" fill="#454545"/>
+          <path id="svg_6" d="m9.5,19c-5.238,0 -9.5,-4.262 -9.5,-9.5c0,-5.238 4.262,-9.5 9.5,-9.5s9.5,4.262 9.5,9.5c0,5.238 -4.262,9.5 -9.5,9.5zm0,-17.434c-4.375,0 -7.933,3.559 -7.933,7.933c0,4.374 3.559,7.932 7.933,7.932c4.374,0 7.933,-3.559 7.933,-7.932c0,-4.374 -3.559,-7.933 -7.933,-7.933z" fill="#454545"/>
+        </svg>
+
+        {{/link-to}}
+    </ul>
+  </nav>
+</div>
