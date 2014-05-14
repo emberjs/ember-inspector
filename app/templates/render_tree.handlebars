@@ -28,9 +28,15 @@
 
 </div>
 {{else}}
-  <div data-label="render-tree-empty">
-    <p>No rendering metrics have been collected. Try navigating around your Ember Application!</p>
+  <div class="notice notice_width_wide" data-label="render-tree-empty">
 
-    <p><strong>Note:</strong> Very fast rendering times (&lt; 1ms) are excluded.</p>
+    <div class="notice__content">
+
+      <div class="notice__title" data-label="page-refresh-title">
+        No rendering metrics have been collected. Try navigating around your application.
+        <p><strong>Note:</strong> Very fast rendering times (&lt; 1ms) are excluded.</p>
+      </div>
+    </div>
   </div>
+
 {{/if}}

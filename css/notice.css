@@ -1,9 +1,9 @@
 /**
-  PAGE-REFRESH
+  NOTICE
   ===========
 */
 
-.page-refresh {
+.notice {
   padding: 20px;
   background: #ededed;
   min-height: 100%;
@@ -12,7 +12,7 @@
   box-sizing: border-box;
 }
 
-.page-refresh__content {
+.notice__content {
   font-weight: bold;
   font-size: 15px;
   padding-top: 15px;
@@ -23,12 +23,12 @@
   overflow: hidden;
 }
 
-.page-refresh__title {
+.notice__title {
   width: 360px;
   float: left;
 }
 
-.page-refresh__btn {
+.notice__btn {
   margin-left: 20px;
   color: #505050;
   float: left;
@@ -47,7 +47,7 @@
   background-image: gradient(linear, left top, left bottom, from(rgb(250, 250, 250)), to(rgb(235, 235, 235)));
 }
 
-.page-refresh__btn:active {
+.notice__btn:active {
 
   background-image: -moz-gradient(linear, left top, left bottom, from(rgb(235, 235, 235)), to(rgb(250, 250, 250)));
   background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(235, 235, 235)), to(rgb(250, 250, 250)));
@@ -55,4 +55,7 @@
   background-image: gradient(linear, left top, left bottom, from(rgb(235, 235, 235)), to(rgb(250, 250, 250)));
 }
 
-
+/** MODIFIER: width: wide **/
+.notice_width_wide .notice__title {
+  width: auto;
+}
