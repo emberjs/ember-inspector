@@ -54,14 +54,12 @@ test("An Ember Object is correctly transformed into an inspection hash", functio
   var firstDetail = message.details[0];
   equal(firstDetail.name, 'Own Properties');
 
+  equal(firstDetail.properties.length, 1, 'methods are not included');
+
   var idProperty = firstDetail.properties[0];
   equal(idProperty.name, 'id');
   equal(idProperty.value.type, 'type-number');
   equal(idProperty.value.inspect, '1');
-
-  var toString = firstDetail.properties[1];
-  equal(toString.name, 'toString');
-  equal(toString.value.type, 'type-function');
 
   var secondDetail = message.details[1];
   equal(secondDetail.name, 'Parent Object');
