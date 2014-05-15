@@ -255,7 +255,10 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     mixinDetails.push({ name: "Own Properties", properties: ownProps, expand: true });
 
     mixins.forEach(function(mixin) {
-      var name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor || Ember.guidFor(name);
+      var name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor;
+      if (!name) {
+        name = 'Unkown mixin';
+      }
       mixinDetails.push({ name: name.toString(), properties: propertiesForMixin(mixin) });
     });
 
@@ -598,6 +601,12 @@ function getDebugInfo(object) {
     skipProperties.push('currentState', 'state');
   }
 
+  // remove methods
+  for (var prop in object) {
+    if (typeof object[prop] === 'function') {
+      skipProperties.push(prop);
+    }
+  }
   return debugInfo;
 }
 

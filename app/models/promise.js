@@ -1,8 +1,10 @@
+var typeOf = Ember.typeOf;
+
 var dateComputed = function() {
   return Ember.computed(
     function(key, date) {
       if (date !== undefined) {
-        if (typeof date === 'date') {
+        if (typeOf(date) === 'date') {
           return date;
         } else if (typeof date === 'number' || typeof date === 'string') {
           return new Date(date);
