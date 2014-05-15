@@ -94,6 +94,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       }
       this._durations[guid] = durations[guid];
     }
+    this.sendTree();
   },
 
   retainObject: function(object) {
@@ -269,7 +270,6 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     retained.push(viewId);
 
     var timeToRender = this._durations[viewId];
-    
 
     var value = {
       viewClass: viewClass,
