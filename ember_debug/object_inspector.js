@@ -594,11 +594,24 @@ function getDebugInfo(object) {
   debugInfo = debugInfo || {};
   var propertyInfo = debugInfo.propertyInfo || (debugInfo.propertyInfo = {});
   var skipProperties = propertyInfo.skipProperties = propertyInfo.skipProperties || (propertyInfo.skipProperties = []);
-  skipProperties.push('isDestroyed', 'isDestroying');
-  // Views have un-observable private properties.
-  // These should be excluded
+
+  skipProperties.push('isDestroyed', 'isDestroying', 'container');
+  // 'currentState' and 'state' are un-observable private properties.
+  // The rest are skipped to reduce noise in the inspector.
   if (object instanceof Ember.View) {
-    skipProperties.push('currentState', 'state');
+    skipProperties.push(
+      'currentState',
+      'state',
+      'buffer',
+      'outletSource',
+      'lengthBeforeRender',
+      'lengthAfterRender',
+      'template',
+      'layout',
+      'templateData',
+      'domManager',
+      'states'
+    );
   }
 
 
