@@ -70,7 +70,7 @@
   width: 100%;
 }
 
-.row-wrapper:nth-of-type(2n) .cell {
+.row-wrapper:nth-of-type(2n) {
   background: #f3f3f3;
 }
 
