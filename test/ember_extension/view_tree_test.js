@@ -114,6 +114,10 @@ test("It should correctly diplay the view tree", function() {
       durations.push(label('view-duration', this));
     });
 
+    var titleTips = find('span[title]:not([data-label])').map(function (i, node) {
+      return node.getAttribute('title');
+    }).toArray().sort();
+
     deepEqual(controllerNames, [
       'App.ApplicationController',
       'App.PostsController',
@@ -143,6 +147,20 @@ test("It should correctly diplay the view tree", function() {
       '1.00ms',
       '2.50ms'
     ], 'expected render durations');
+
+    deepEqual(titleTips, [
+      'App.ApplicationController',
+      'App.ApplicationView',
+      'App.CommentsController',
+      'App.CommentsView',
+      'App.PostsController',
+      'App.PostsView',
+      'CommentsArray',
+      'PostsArray',
+      'application',
+      'comments',
+      'posts'
+    ], 'expected title tips');
   });
 
 });
