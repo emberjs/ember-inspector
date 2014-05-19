@@ -601,11 +601,17 @@ function getDebugInfo(object) {
     skipProperties.push('currentState', 'state');
   }
 
-  // remove methods
+
   for (var prop in object) {
+    // remove methods
     if (typeof object[prop] === 'function') {
       skipProperties.push(prop);
     }
+    // remove `fooBinding` type props
+    if (prop.match(/Binding$/)) {
+      skipProperties.push(prop);
+    }
+
   }
   return debugInfo;
 }

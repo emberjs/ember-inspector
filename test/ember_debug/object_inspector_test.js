@@ -345,3 +345,24 @@ test("Objects are dropped on destruction", function() {
   });
 
 });
+
+test("Properties ending with `Binding` are skipped", function() {
+  var object = Ember.Object.create({
+    bar: 'test',
+    fooBinding: 'bar'
+  });
+
+  wait();
+
+  andThen(function() {
+    objectInspector.sendObject(object);
+    return wait();
+  });
+
+  andThen(function() {
+    var props = message.details[0].properties;
+    equal(props.length, 2, "Props should be foo and bar without fooBinding");
+    equal(props[0].name, 'bar');
+    equal(props[1].name, 'foo');
+  });
+});
