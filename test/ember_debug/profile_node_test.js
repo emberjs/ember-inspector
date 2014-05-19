@@ -1,5 +1,7 @@
 import ProfileNode from 'models/profile_node';
 
+module("ProfileNode");
+
 test("It can create a ProfileNode", function() {
   var p = new ProfileNode(1001, {template: 'application'});
 
@@ -12,7 +14,7 @@ test("It can create a ProfileNode", function() {
 
 test("with no payload it has an unknown name", function() {
   var p = new ProfileNode(1234);
-  equal(p.name, "unknown view");
+  equal(p.name, "Unknown view");
 });
 
 test("It can extract the name from an object payload", function() {
@@ -56,4 +58,14 @@ test("Can be serialized as JSON", function() {
   p1.finish(1004);
 
   ok(JSON.stringify(p1), "it can serialize due to no cycles in the object");
+});
+
+test("Name takes the following priority: display, containerKey, object", function() {
+  var p;
+  p = new ProfileNode(1000, {view: { instrumentDisplay: 'donuts', _debugContainerKey: 'candy'}, object: 'coffee'});
+  equal(p.name, 'donuts');
+  p = new ProfileNode(1000, {view: {_debugContainerKey: 'candy'}, object:' coffee'});
+  equal(p.name, 'candy');
+  p = new ProfileNode(1000, {object:'coffee'});
+  equal(p.name, 'coffee');
 });
