@@ -8,6 +8,7 @@
 * [BUGFIX] Fixed bug with editing json strings in the object inspector
 * [BUGFIX] Fixed permission denied exception on Firefox >= 30
 * Removed dummy URLs created by Ember for error and loading routes
+* Removed methods from the object inspector
 
 ## Ember Inspector 1.2.0
 
