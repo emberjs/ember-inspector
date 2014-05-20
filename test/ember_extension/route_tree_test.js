@@ -77,8 +77,35 @@ test("Route tree is successfully displayed", function() {
     });
 
     deepEqual(templates, ['application', 'post', 'post/new', 'post/edit']);
-  });
 
+    var titleTips = find('span[title]', routeNodes).map(function (i, node) {
+      return node.getAttribute('title');
+    }).toArray().sort();
+
+
+    deepEqual(titleTips, [
+      "",
+      "",
+      "ApplicationController",
+      "ApplicationRoute",
+      "PostController",
+      "PostEditController",
+      "PostEditRoute",
+      "PostNewController",
+      "PostNewRoute",
+      "PostRoute",
+      "application",
+      "application",
+      "post",
+      "post",
+      "post.edit",
+      "post.new",
+      "post/edit",
+      "post/edit",
+      "post/new",
+      "post/new"
+    ], 'expected title tips');
+  });
 });
 
 test("Clicking on route handlers and controller sends an inspection message", function() {
