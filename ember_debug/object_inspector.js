@@ -374,6 +374,10 @@ function addProperties(properties, hash) {
   for (var prop in hash) {
     if (!hash.hasOwnProperty(prop)) { continue; }
     if (prop.charAt(0) === '_') { continue; }
+
+    // remove `fooBinding` type props
+    if (prop.match(/Binding$/)) { continue; }
+
     // when mandatory setter is removed, an `undefined` value may be set
     if (hash[prop] === undefined) { continue; }
     var options = { isMandatorySetter: isMandatorySetter(hash, prop) };
@@ -577,7 +581,10 @@ function customizeProperties(mixinDetails, propertyInfo) {
   groups.slice().reverse().forEach(function(group) {
     var newMixin = { name: group.name, expand: group.expand, properties: [] };
     group.properties.forEach(function(prop) {
-      newMixin.properties.push(neededProperties[prop]);
+      // make sure it's not `true` which means property wasn't found
+      if (neededProperties[prop] !== true) {
+        newMixin.properties.push(neededProperties[prop]);
+      }
     });
     newMixinDetails.unshift(newMixin);
   });
@@ -618,10 +625,6 @@ function getDebugInfo(object) {
   for (var prop in object) {
     // remove methods
     if (typeof object[prop] === 'function') {
-      skipProperties.push(prop);
-    }
-    // remove `fooBinding` type props
-    if (prop.match(/Binding$/)) {
       skipProperties.push(prop);
     }
 

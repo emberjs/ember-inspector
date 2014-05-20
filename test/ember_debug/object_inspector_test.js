@@ -366,3 +366,32 @@ test("Properties ending with `Binding` are skipped", function() {
     equal(props[1].name, 'foo');
   });
 });
+
+test("Properties listed in _debugInfo but don't exist should be skipped silently", function() {
+  var object = Ember.Object.create({
+    foo: 'test',
+    _debugInfo: function() {
+      return {
+        propertyInfo: {
+          groups: [{
+            name: 'Attributes', properties: ['foo', 'bar']
+          }]
+        }
+      };
+    }
+
+  });
+
+  wait();
+
+  andThen(function() {
+    objectInspector.sendObject(object);
+    return wait();
+  });
+
+  andThen(function() {
+    var props = message.details[0].properties;
+    equal(props.length, 1, "bar should be silently skipped");
+    equal(props[0].name, 'foo');
+  });
+});
