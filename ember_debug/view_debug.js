@@ -505,7 +505,7 @@ function viewName(view) {
 }
 
 function modelName(model) {
-  var name = '<Unkown model>';
+  var name = '<Unknown model>';
   if (model.toString) {
     name = model.toString();
   }

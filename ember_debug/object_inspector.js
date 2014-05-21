@@ -257,7 +257,7 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     mixins.forEach(function(mixin) {
       var name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor;
       if (!name) {
-        name = 'Unkown mixin';
+        name = 'Unknown mixin';
       }
       mixinDetails.push({ name: name.toString(), properties: propertiesForMixin(mixin) });
     });
