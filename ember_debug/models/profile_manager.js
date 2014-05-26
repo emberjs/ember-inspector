@@ -21,8 +21,8 @@ ProfileManager.prototype = {
   ended: function(timestamp, payload, profileNode) {
     if (payload.exception) { throw payload.exception; }
 
-    profileNode.finish(timestamp);
     this.current = profileNode.parent;
+    profileNode.finish(timestamp);
 
     // Are we done profiling an entire tree?
     if (!this.current) {
