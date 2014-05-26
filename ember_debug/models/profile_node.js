@@ -17,6 +17,9 @@ var ProfileNode = function(start, payload, parent) {
     } else if (payload.view) {
       var view = payload.view;
       name = get(view, 'instrumentDisplay') || get(view, '_debugContainerKey');
+      if (name) {
+        name = name.replace(/^view:/, '');
+      }
       this.viewGuid = guidFor(view);
     }
 
