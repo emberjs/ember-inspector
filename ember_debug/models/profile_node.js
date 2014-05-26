@@ -3,22 +3,35 @@
 
   @class ProfileNode
 **/
+var get = Ember.get;
+var guidFor = Ember.guidFor;
+
 var ProfileNode = function(start, payload, parent) {
+  var name;
   this.start = start;
   this.timestamp = Date.now();
+
   if (payload) {
-    if (payload.template) { this.name = payload.template; }
-    if (payload.object) {
-      var name = payload.object.toString();
-      var match = name.match(/:(ember\d+)>$/);
-      this.name =  name.replace(/:?:ember\d+>$/, '').replace(/^</, '');
-      if (match && match.length > 1) {
-        this.viewGuid = match[1];
+    if (payload.template) {
+      name = payload.template;
+    } else if (payload.view) {
+      var view = payload.view;
+      name = get(view, 'instrumentDisplay') || get(view, '_debugContainerKey');
+      this.viewGuid = guidFor(view);
+    }
+
+    if (!name && payload.object) {
+      name = payload.object.toString().replace(/:?:ember\d+>$/, '').replace(/^</, '');
+      if (!this.viewGuid) {
+        var match = name.match(/:(ember\d+)>$/);
+        if (match && match.length > 1) {
+          this.viewGuid = match[1];
+        }
       }
     }
-  } else {
-    this.name = "unknown view";
   }
+
+  this.name = name || 'Unknown view';
 
   if (parent) { this.parent = parent; }
   this.children = [];

@@ -1,10 +1,12 @@
 import ProfileNode from 'models/profile_node';
+var scheduleOnce = Ember.run.scheduleOnce;
+var emberA = Ember.A;
 
 /**
  * A class for keeping track of active rendering profiles as a list.
  */
 var ProfileManager = function() {
-  this.profiles = Em.A();
+  this.profiles = emberA();
   this.current = null;
   this.currentSet = [];
   this._profilesAddedCallbacks = [];
@@ -26,7 +28,7 @@ ProfileManager.prototype = {
     if (!this.current) {
       this.currentSet.push(profileNode);
       // If so, schedule an update of the profile list
-      Em.run.scheduleOnce('afterRender', this, this._profilesFinished);
+      scheduleOnce('afterRender', this, this._profilesFinished);
     }
   },
 
