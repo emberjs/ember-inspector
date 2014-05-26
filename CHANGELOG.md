@@ -1,6 +1,15 @@
 # Ember Inspector Changelog
 
 
+## Ember Inspector 1.3.1
+
+* [IMPROVEMENT] Better view names in the render performance tab
+* [IMPROVEMENT] Object inspector now skips properties ending with `Binding`
+* [IMPROVEMENT] Removed several `Ember.View` private props from the Object Inspector
+* [BUGFIX] Fixed hierarchy issue in render perf tree causing duplication of views
+* [BUGFIX] Fixed scrollbar in render performance tab on OS X
+* [BUGFIX] Object inspector should not assume all `_debugInfo` props exist
+
 ## Ember Inspector 1.3.0
 
 * [FEATURE] Added new "Render Performance" tab
