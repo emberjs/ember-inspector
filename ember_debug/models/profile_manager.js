@@ -1,12 +1,11 @@
 import ProfileNode from 'models/profile_node';
 var scheduleOnce = Ember.run.scheduleOnce;
-var emberA = Ember.A;
 
 /**
  * A class for keeping track of active rendering profiles as a list.
  */
 var ProfileManager = function() {
-  this.profiles = emberA();
+  this.profiles = [];
   this.current = null;
   this.currentSet = [];
   this._profilesAddedCallbacks = [];
@@ -43,7 +42,7 @@ ProfileManager.prototype = {
     });
     parentNode.calcDuration();
 
-    this.profiles.pushObject(parentNode);
+    this.profiles.push(parentNode);
     this._triggerProfilesAdded([parentNode]);
     this.currentSet = [];
   },
