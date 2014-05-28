@@ -11,8 +11,11 @@ export default Ember.Route.extend({
     });
   },
 
-  setupController: function(controller) {
+  setupController: function(controller, model) {
     this._super.apply(this, arguments);
+    if (model.length === 0) {
+      controller.set('initialEmpty', true);
+    }
     var port = this.get('port');
     port.on('render:profilesUpdated', this, this.profilesUpdated);
     port.on('render:profilesAdded', this, this.profilesAdded);

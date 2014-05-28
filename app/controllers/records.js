@@ -1,3 +1,4 @@
+import escapeRegExp from "utils/escape_reg_exp";
 var alias = Ember.computed.alias;
 var none = Ember.computed.none;
 
@@ -61,7 +62,3 @@ export default Ember.ArrayController.extend({
     return controller;
   }.property('search', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValue')
 });
-
-function escapeRegExp(str) {
-  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-}

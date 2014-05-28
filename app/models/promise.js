@@ -1,3 +1,4 @@
+import escapeRegExp from "utils/escape_reg_exp";
 var typeOf = Ember.typeOf;
 
 var dateComputed = function() {
@@ -195,7 +196,3 @@ export default Ember.Object.extend({
     }
   }
 });
-
-function escapeRegExp(str) {
-  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-}

@@ -107,3 +107,59 @@ test("Renders the list correctly", function() {
   });
 
 });
+
+test("Searching the profiles", function() {
+  port.reopen({
+    send: function(n, m) {
+      if (n === 'render:watchProfiles') {
+        this.trigger('render:profilesAdded', {
+          profiles: generateProfiles()
+        });
+      }
+    }
+  });
+
+  visit('/render-tree');
+
+  andThen(function() {
+    var rows = findByLabel('render-profile-row');
+    equal(rows.length, 2, "Two rows are rendered initially");
+
+    equal(findByLabel('render-profile-name', rows[0]).text().trim(), "First View Rendering");
+    equal(findByLabel('render-profile-name', rows[1]).text().trim(), "Second View Rendering");
+  });
+
+  andThen(function() {
+    return fillIn('input', findByLabel('render-profiles-search'), 'first');
+  });
+
+  andThen(function() {
+    var rows = findByLabel('render-profile-row');
+    equal(rows.length, 2, "The first parent is rendered with the child");
+    equal(findByLabel('render-profile-name', rows[0]).text().trim(), "First View Rendering");
+    equal(findByLabel('render-profile-name', rows[1]).text().trim(), "Child view");
+  });
+
+  andThen(function() {
+    return fillIn('input', findByLabel('render-profiles-search'), '');
+  });
+
+  andThen(function() {
+    var rows = findByLabel('render-profile-row');
+    equal(rows.length, 2, "filter is reset");
+
+    equal(findByLabel('render-profile-name', rows[0]).text().trim(), "First View Rendering");
+    equal(findByLabel('render-profile-name', rows[1]).text().trim(), "Second View Rendering");
+  });
+
+  andThen(function() {
+    return fillIn('input', findByLabel('render-profiles-search'), 'Second');
+  });
+
+  andThen(function() {
+    var rows = findByLabel('render-profile-row');
+    equal(rows.length, 1, "The second row is the only one showing");
+    equal(findByLabel('render-profile-name', rows[0]).text().trim(), "Second View Rendering");
+  });
+
+});

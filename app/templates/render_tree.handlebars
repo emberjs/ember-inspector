@@ -1,4 +1,4 @@
-{{#if length}}
+{{#unless showEmpty}}
 <div class="list-view" data-label="render-tree">
   <div class="list-view__header row">
     <div class="cell cell_type_header">
@@ -21,6 +21,9 @@
 
   <div class="list-view__filter">
     <div class="filter-bar">
+      <div class="filter-bar__search" data-label="render-profiles-search">
+        {{input type="search" value=searchField placeholder="Search"}}
+      </div>
       <div class="filter-bar__pills"></div>
       <div {{action "clearProfiles"}} class="filter-bar__clear pill" data-label="clear-render-profiles-btn">CLEAR</div>
     </div>
@@ -39,4 +42,4 @@
     </div>
   </div>
 
-{{/if}}
+{{/unless}}

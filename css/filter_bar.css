@@ -16,6 +16,7 @@
   position: relative;
   margin-right: 10px;
   height: 20px;
+  padding: 1px 0px;
 }
 
 .filter-bar__search:after {
@@ -29,8 +30,15 @@
 }
 
 .filter-bar__search input {
-  border-width: 1px;
-  height: 100%;
+  border: solid 1px #ccc;
+  height: calc(100% - 2px);
+  box-sizing: border-box;
+  width: 120px;
+  outline: none;
+}
+
+.filter-bar__search input:focus {
+  border-width: 2px;
 }
 
 
