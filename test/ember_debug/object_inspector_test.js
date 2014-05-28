@@ -1,6 +1,8 @@
 import EmberDebug from "ember_debug";
 import App from "test_app";
 
+var computed = Ember.computed;
+
 var name, message;
 
 var port, objectInspector;
@@ -76,9 +78,9 @@ test("An Ember Object is correctly transformed into an inspection hash", functio
 
 test("Computed properties are correctly calculated", function() {
   var inspected = Ember.Object.extend({
-    hi: function() {
+    hi: computed(function() {
       return 'Hello';
-    }.property(),
+    }).property(),
     _debugInfo: function() {
       return {
         propertyInfo: {
@@ -116,9 +118,9 @@ test("Computed properties are correctly calculated", function() {
 
 test("Cached Computed properties are pre-calculated", function() {
   var inspected = Ember.Object.extend({
-    hi: function() {
+    hi: computed(function() {
       return 'Hello';
-    }.property()
+    }).property()
   }).create();
 
   // pre-calculate CP
@@ -139,12 +141,12 @@ test("Properties are correctly bound", function() {
   var inspected = Ember.Object.extend({
     name: 'Teddy',
 
-    hi: function(key, val) {
+    hi: computed(function(key, val) {
       if (val !== undefined) {
         return val;
       }
       return 'hello';
-    }.property(),
+    }).property(),
 
     _debugInfo: function() {
       return {
@@ -230,7 +232,7 @@ test("Property grouping can be customized using _debugInfo", function() {
     name: 'Teddy',
     gender: 'Male',
     hasChildren: false,
-    expensiveProperty: function() { return ''; }.property(),
+    expensiveProperty: computed(function() { return ''; }).property(),
     _debugInfo: function() {
       return {
         propertyInfo: {
@@ -287,8 +289,8 @@ test("Property grouping can be customized using _debugInfo", function() {
 
 test("Read Only Computed properties mush have a readOnly property", function() {
   var inspected = Ember.Object.extend({
-    readCP: function() {}.property().readOnly(),
-    writeCP: function() {}.property()
+    readCP: computed(function() {}).property().readOnly(),
+    writeCP: computed(function() {}).property()
   }).create();
 
   objectInspector.sendObject(inspected);

@@ -31,6 +31,10 @@ ProfileManager.prototype = {
     }
   },
 
+  clearProfiles: function() {
+    this.profiles.length = 0;
+  },
+
   _profilesFinished: function() {
     var firstNode = this.currentSet[0],
         parentNode = new ProfileNode(firstNode.start, {template: 'View Rendering'});

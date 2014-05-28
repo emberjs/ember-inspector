@@ -17,6 +17,7 @@ module("Render Debug", {
     App.reset();
     EmberDebug.start();
     port = EmberDebug.port;
+
   }
 });
 
@@ -25,7 +26,7 @@ test("Simple Render", function() {
   port.reopen({
     send: function(n, m) {
       if (n === "render:profilesAdded") {
-        profiles.pushObjects(m.profiles);
+        profiles = profiles.concat(m.profiles);
       }
     }
   });
@@ -35,4 +36,34 @@ test("Simple Render", function() {
   .then(function() {
     ok(profiles.length > 0, "it has created profiles");
   });
+});
+
+test("Clears correctly", function() {
+  var profiles = [];
+
+  port.reopen({
+    send: function(n, m) {
+      if (n === "render:profilesAdded") {
+        profiles.push(m.profiles);
+      }
+      if (n === "render:profilesUpdated") {
+        profiles = m.profiles;
+      }
+    }
+  });
+
+  port.trigger('render:watchProfiles');
+
+  visit('/simple');
+
+  andThen(function() {
+    ok(profiles.length > 0, "it has created profiles");
+    port.trigger('render:clear');
+    return wait();
+  });
+
+  andThen(function() {
+    ok(profiles.length === 0, "it has cleared the profiles");
+  });
+
 });

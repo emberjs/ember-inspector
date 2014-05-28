@@ -77,7 +77,7 @@ export default Ember.Object.extend(PortMixin, {
     },
 
     clear: function() {
-      this.profileManager.profiles.clear();
+      this.profileManager.clearProfiles();
       this.sendMessage('profilesUpdated', {profiles: []});
     }
   }
