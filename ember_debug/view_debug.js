@@ -587,8 +587,8 @@ function viewDescription(view) {
         if (parentClassName = className.match(/^\(subclass of (.*)\)/)) {
           className = parentClassName[1];
         }
-        name = className.split('.')[1];
-        name = name.charAt(0).toLowerCase() + name.substr(1);
+        name = className.split('.').pop();
+        name = Ember.String.camelize(name);
       }
     }
 
