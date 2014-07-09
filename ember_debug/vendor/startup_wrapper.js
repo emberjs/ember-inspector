@@ -7,6 +7,7 @@
 
   Also responsible for sending the first tree.
 **/
+
 var currentAdapter = 'basic';
 if (typeof adapter !== 'undefined') {
   currentAdapter = adapter;

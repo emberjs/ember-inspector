@@ -42,4 +42,16 @@
   script.src = chrome.extension.getURL("in-page-script.js");
   if (document.body) document.body.appendChild(script);
 
+  var iframes = document.getElementsByTagName('iframe');
+  var urls = [];
+  for (var i = 0, l = iframes.length; i < l; i ++) {
+    urls.push(iframes[i].src);
+  }
+
+  // FIXME
+  setTimeout(function() {
+    chrome.extension.sendMessage({type: 'iframes', urls: urls});
+  }, 500);
+
+
 }());

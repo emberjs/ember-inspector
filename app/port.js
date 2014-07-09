@@ -8,6 +8,9 @@ export default Ember.Object.extend(Ember.Evented, {
   init: function() {
     var detectedApplications = this.get('detectedApplications');
     this.get('adapter').onMessageReceived(function(message) {
+      if (!message.applicationId) {
+        return;
+      }
       if (!this.get('applicationId')) {
         this.set('applicationId', message.applicationId);
       }

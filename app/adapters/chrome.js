@@ -20,6 +20,9 @@ export default  BasicAdapter.extend({
     chromePort.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
 
     chromePort.onMessage.addListener(function(message) {
+      if (typeof message.type === 'string' && message.type === 'iframes') {
+        sendIframes(message.urls);
+      }
       self._messageReceived(message);
     });
   }.on('init'),
@@ -33,16 +36,12 @@ export default  BasicAdapter.extend({
   }.on('init'),
 
   _injectDebugger: function() {
-    if (!emberDebug) {
-      var xhr = new XMLHttpRequest();
-      xhr.open("GET", chrome.extension.getURL('/ember_debug/ember_debug.js'), false);
-      xhr.send();
-      emberDebug = xhr.responseText;
-    }
+    loadEmberDebug();
     chrome.devtools.inspectedWindow.eval(emberDebug);
+    var urls = [];
     chrome.devtools.inspectedWindow.onResourceAdded.addListener(function(opts) {
       if (opts.type === 'document') {
-        chrome.devtools.inspectedWindow.eval(emberDebug, { frameURL: opts.url });
+        sendIframes([opts.url]);
       }
     });
   }.on('init'),
@@ -51,3 +50,20 @@ export default  BasicAdapter.extend({
     this._injectDebugger();
   }
 });
+
+function sendIframes(urls) {
+  loadEmberDebug();
+  urls.forEach(function(url) {
+    chrome.devtools.inspectedWindow.eval(emberDebug, { frameURL: url });
+  });
+}
+
+function loadEmberDebug() {
+  var xhr;
+  if (!emberDebug) {
+    xhr = new XMLHttpRequest();
+    xhr.open("GET", chrome.extension.getURL('/ember_debug/ember_debug.js'), false);
+    xhr.send();
+    emberDebug = xhr.responseText;
+  }
+}
