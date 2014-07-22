@@ -1,1 +1,4 @@
-{{view Ember.Select content=model value=selectedApp optionValuePath="content.val" optionLabelPath="content.name"}}
+<div class="dropdown">
+  {{view Ember.Select content=model value=selectedApp optionValuePath="content.val" optionLabelPath="content.name" class="dropdown__select"}}
+  <div class="dropdown__arrow"></div>
+</div>

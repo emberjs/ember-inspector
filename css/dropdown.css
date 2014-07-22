@@ -1,0 +1,40 @@
+/**
+ DROP-DOWN
+ ===========
+ Taken from chrome dev tools select
+*/
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown__select {
+  color: rgb(48, 48, 48);
+  text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
+  -webkit-appearance: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0 15px 0 5px;
+  margin-right: -10px;
+  position: relative;
+  line-height: 22px;
+  display: inline-block;
+  height: 22px;
+  margin-left: -1px;
+  background-color: transparent;
+  vertical-align: top;
+  flex: none;
+}
+
+.dropdown__arrow {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  background-image: url(../images/arrow_down.svg);
+  background-size: 100%;
+  opacity: 0.7;
+  width: 7px;
+  height: 7px;
+  display: inline-block;
+  pointer-events: none;
+}
