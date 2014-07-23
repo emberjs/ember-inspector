@@ -55,6 +55,12 @@ module.exports = function(grunt) {
     'jshint:tests'
   ]);
 
+  grunt.registerTask('build_dev', [
+    'build',
+    'copy:development',
+    'wrap:development_ember_debug'
+  ]);
+
   grunt.registerTask('build_xpi', [
     'mozilla-addon-sdk',
     'mozilla-cfx-xpi'
@@ -70,6 +76,12 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('server', ['build_test','connect','watch']);
+
+  grunt.registerTask('development', [
+    'build_dev',
+    'connect',
+    'watch:development'
+  ]);
 
   grunt.registerTask('test', ['build_test', 'connect',  'qunit:all']);
 

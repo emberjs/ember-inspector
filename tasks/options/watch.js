@@ -5,5 +5,13 @@ module.exports = {
     options: {
       nospawn: true
     }
+  },
+
+  development: {
+    files: ['app/**/*', 'vendor/**/*', 'ember_debug/**/*', 'templates/**/*', 'css/**/*'],
+    tasks: ['lock', 'build_dev', 'unlock'],
+    options: {
+      nospawn: true
+    }
   }
 };

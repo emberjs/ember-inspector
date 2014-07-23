@@ -68,5 +68,23 @@ module.exports = {
       dest: 'tmp/public/test/test_support.js'
     }
     ]
+  },
+  development: {
+    files: [{
+      expand: true,
+      cwd: 'templates',
+      src: ['**'],
+      dest: 'tmp/public/'
+    },{
+      expand: true,
+      cwd: 'vendor',
+      src: ['**'],
+      dest: 'tmp/public/vendor'
+    },{
+      expand: true,
+      cwd: 'images',
+      src: ['**'],
+      dest: 'tmp/public/images'
+    }]
   }
 };

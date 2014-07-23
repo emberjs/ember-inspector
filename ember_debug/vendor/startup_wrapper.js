@@ -13,7 +13,12 @@ if (typeof adapter !== 'undefined') {
   currentAdapter = adapter;
 }
 
-(function(adapter) {
+var currentInstanceName = 'Ember.Debug';
+if (typeof instanceName !== 'undefined') {
+  currentInstanceName = instanceName;
+}
+
+(function(instanceName, adapter) {
 
   // RSVP promise inspection
   // First thing because of
@@ -37,7 +42,7 @@ if (typeof adapter !== 'undefined') {
 
 
   function inject() {
-    Ember.Debug = requireModule('ember_debug')['default'];
+    Ember[instanceName] = requireModule('ember_debug')['default'];
   }
 
   onEmberReady(function() {
@@ -49,16 +54,16 @@ if (typeof adapter !== 'undefined') {
       return;
     }
     // prevent from injecting twice
-    if (!Ember.Debug) {
+    if (!Ember[instanceName]) {
       inject();
-      Ember.Debug.Adapter = requireModule('adapters/' + adapter)['default'];
+      Ember[instanceName].Adapter = requireModule('adapters/' + adapter)['default'];
 
       onApplicationStart(function() {
-        Ember.Debug.setProperties({
+        Ember[instanceName].setProperties({
           existingEvents: events,
           existingCallbacks: callbacks
         });
-        Ember.Debug.start();
+        Ember[instanceName].start();
       });
     }
   });
@@ -105,4 +110,4 @@ if (typeof adapter !== 'undefined') {
     }, 1);
   }
 
-}(currentAdapter));
+}(currentInstanceName, currentAdapter));
