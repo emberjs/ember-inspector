@@ -62,7 +62,7 @@ var buildSubTree = function(routeTree, route) {
   var subTree = routeTree, item,
       routeClassName, routeHandler, controllerName,
       controllerClassName, container, templateName,
-      controller;
+      controllerFactory;
   for (var i = 0; i < handlers.length; i++) {
     item = handlers[i];
     var handler = item.handler;
@@ -72,7 +72,7 @@ var buildSubTree = function(routeTree, route) {
       routeHandler = container.lookup('router:main').router.getHandler(handler);
       controllerName = routeHandler.get('controllerName') || routeHandler.get('routeName');
       controllerClassName = classify(controllerName.replace('.', '_')) + 'Controller';
-      controller = container.lookup('controller:' + controllerName);
+      controllerFactory = container.lookupFactory('controller:' + controllerName);
       templateName = handler.replace('.', '/');
 
       subTree[handler] = {
@@ -85,7 +85,7 @@ var buildSubTree = function(routeTree, route) {
           controller: {
             className: controllerClassName,
             name: controllerName,
-            exists: controller ? true : false
+            exists: controllerFactory ? true : false
           },
           template: {
             name: templateName
