@@ -6,7 +6,7 @@ var DevAdapter = BasicAdapter.extend({
     this.get('port').postMessage(options);
   },
 
-  _connect: function() {
+  _connect: Ember.on('init', function() {
     var adapter = window.EmberExtension.__container__.lookup('adapter:main'),
         port = adapter.get('debugPort'),
         self = this;
@@ -18,7 +18,7 @@ var DevAdapter = BasicAdapter.extend({
     this.set('port', port);
 
     port.start();
-  }.on('init')
+  })
 });
 
 export default DevAdapter;
