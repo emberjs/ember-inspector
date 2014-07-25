@@ -1,12 +1,14 @@
 export default function(currentRouteName, routeName) {
-  var regName, val;
+  var regName, match;
 
   if (routeName === 'application') {
     return true;
   }
 
   regName = routeName.replace('.', '\\.');
-  val = !!currentRouteName.match(new RegExp('(^|\\.)' + regName + '(\\.|$)'));
-
-  return val;
+  match = currentRouteName.match(new RegExp('(^|\\.)' + regName + '(\\.|$)'));
+  if (match && match[0].match(/^\.[^.]+$/)) {
+    match = false;
+  }
+  return !!match;
 };
