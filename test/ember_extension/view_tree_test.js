@@ -84,7 +84,7 @@ function defaultViewTree() {
   });
 }
 
-test("It should correctly diplay the view tree", function() {
+test("It should correctly display the view tree", function() {
   var viewTree = defaultViewTree();
 
   visit('/')

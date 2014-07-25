@@ -23,4 +23,11 @@
     {{view "routeList" content=this}}
   </div>
 
+  <div class="list-view__filter">
+    <div class="filter-bar">
+      <div class="filter-bar__checkbox" data-label="filter-hide-routes">
+        {{input type="checkbox" checked=options.hideRoutes id="options-hideRoutes"}} <label for="options-hideRoutes">Current Route only</label>
+      </div>
+    </div>
+  </div>
 </div>

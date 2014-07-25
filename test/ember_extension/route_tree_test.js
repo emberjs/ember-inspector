@@ -184,3 +184,31 @@ test("Current Route is highlighted", function() {
     deepEqual(isCurrent, [true, true, true, false]);
   });
 });
+
+test("Hiding non current route", function() {
+  port.reopen({
+    send: function(name, message) {
+      if (name === 'route:getTree') {
+        this.trigger('route:routeTree', { tree: routeTree });
+      } else if (name === 'route:getCurrentRoute') {
+        this.trigger('route:currentRoute', { name: 'post.edit' });
+      }
+    }
+  });
+
+  visit('route-tree');
+  andThen( function() {
+    var routeNodes = findByLabel('route-node');
+    equal(routeNodes.length, 4);
+  });
+  andThen( function() {
+    var checkbox = findByLabel('filter-hide-routes').find('input');
+    checkbox.prop('checked', true);
+    checkbox.trigger('change');
+    return wait();
+  });
+  andThen( function() {
+    var routeNodes = findByLabel('route-node');
+    equal(routeNodes.length, 3);
+  });
+});

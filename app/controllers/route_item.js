@@ -1,3 +1,5 @@
+import checkCurrentRoute from 'utils/check_current_route';
+
 var get = Ember.get;
 
 export default Ember.ObjectController.extend({
@@ -20,13 +22,7 @@ export default Ember.ObjectController.extend({
     if (!currentRoute) {
       return false;
     }
-    if (this.get('value.name') === 'application') {
-      return true;
-    }
 
-    var regName = this.get('value.name').replace('.', '\\.');
-    var val = !!currentRoute.match(new RegExp('(^|\\.)' + regName + '(\\.|$)'));
-    return val;
+    return checkCurrentRoute( currentRoute, this.get('value.name') );
   }.property('currentRoute', 'value.name')
-
 });
