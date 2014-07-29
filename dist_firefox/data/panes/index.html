@@ -16,6 +16,26 @@
       body {
         background: white;
       }
+
+
+      /* FIX: fix select unstyling issues on Firefox
+         https://bugzilla.mozilla.org/show_bug.cgi?id=649849 */
+
+      .dropdown__select {
+        -moz-appearance: checkbox-label;
+      }
+
+      .dropdown__select:hover {
+        -moz-appearance: checkbox-label;
+      }
+
+
+      .dropdown__select:-moz-focusring, .dropdown__select:-moz-focusring:focus {
+        color: transparent;
+        text-shadow: 0 0 0 #000;
+        outline: 0;
+        border: 0;
+      }
     </style>
   </head>
   <body>
