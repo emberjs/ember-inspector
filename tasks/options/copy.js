@@ -21,9 +21,12 @@ module.exports = {
       dest: 'dist_chrome/panes/ember_extension.css'
     }, {
       expand: true,
-      cwd: 'images',
+      cwd: 'dist_common/images',
       src: ['**'],
       dest: 'dist_chrome/images'
+    }, {
+      src: ['dist_common/in-page-script.js'],
+      dest: 'dist_chrome/in-page-script.js'
     }]
   },
   firefox_extension: {
@@ -37,12 +40,15 @@ module.exports = {
       dest: 'dist_firefox/data/vendor/'
     }, {
       expand: true,
-      cwd: 'images',
+      cwd: 'dist_common/images',
       src: ['**'],
       dest: 'dist_firefox/data/images/'
-    } ,{
+    }, {
       src: ['tmp/public/ember_extension.css'],
       dest: 'dist_firefox/data/panes/ember_extension.css'
+    }, {
+      src: ['dist_common/in-page-script.js'],
+      dest: 'dist_firefox/data/in-page-script.js'
     }]
   },
   tests: {
