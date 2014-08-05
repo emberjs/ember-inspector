@@ -8,6 +8,7 @@ dist_chrome/ember_debug/
 dist_chrome/vendor/
 dist_chrome/panes/ember_extension.css
 dist_chrome/panes/ember_extension.js
+dist_chrome/in-page-script.js
 
 *.xpi
 dist_firefox/data/images/
@@ -15,3 +16,6 @@ dist_firefox/data/ember_debug/
 dist_firefox/data/vendor/
 dist_firefox/data/panes/ember_extension.css
 dist_firefox/data/panes/ember_extension.js
+dist_firefox/data/in-page-script.js
+
+.mozilla-addon-sdk
