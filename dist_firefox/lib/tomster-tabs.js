@@ -79,6 +79,7 @@ module.exports = tomsterTabs;
 // ember debug messages when needed
 let pageMod = PageMod({
   include: "*",
+  include: ["*", "file://*"],
   attachTo: ["top", "frame", "existing"],
   contentScriptFile: data.url('content-script.js'),
   contentScriptOptions: {
