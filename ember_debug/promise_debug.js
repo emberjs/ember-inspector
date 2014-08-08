@@ -104,9 +104,7 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
     if (!uniquePromises) {
       uniquePromises = Ember.A();
       this.get('updatedPromises').forEach(function(promise) {
-        if (uniquePromises.indexOf(promise) === -1) {
-          uniquePromises.pushObject(promise);
-        }
+        uniquePromises.addObject(promise);
       });
     }
     var serialized = this.serializeArray(uniquePromises);
