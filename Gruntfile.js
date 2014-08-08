@@ -37,7 +37,9 @@ module.exports = function(grunt) {
     'copy:chrome_extension',
     'wrap:chrome_ember_debug',
     'copy:firefox_extension',
-    'wrap:firefox_ember_debug'
+    'wrap:firefox_ember_debug',
+    'copy:bookmarklet_extension',
+    'wrap:bookmarklet_ember_debug'
   ]);
 
   grunt.registerTask('build_ember_debug', [
@@ -69,7 +71,8 @@ module.exports = function(grunt) {
     'ember-s3'
   ]);
 
-  grunt.registerTask('server', ['build_test','connect','watch']);
+  grunt.registerTask('server', ['build_test','connect:server','watch']);
+  grunt.registerTask('bookmarklet_server', ['build', 'connect:bookmarklet','watch']);
 
   grunt.registerTask('test', ['build_test', 'connect',  'qunit:all']);
 

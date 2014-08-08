@@ -50,6 +50,18 @@ OR:
 - Choose the `dist_chrome` folder in the cloned repo
 - Close and re-open developer tools if it's already open
 
+
+### Bookmarklet (All Browsers)
+
+For development:
+
+- run `grunt bookmarklet_server`
+- create a bookmark (make sure you unblock the popup when you run the bookmarklet):
+
+```javascript
+javascript: (function() { var s = document.createElement('script'); s.src = 'http://localhost:9191/load_inspector.js'; document.body.appendChild(s); }());
+```
+
 Building and Testing:
 --------------------
 

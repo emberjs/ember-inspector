@@ -51,6 +51,25 @@ module.exports = {
       dest: 'dist_firefox/data/in-page-script.js'
     }]
   },
+  bookmarklet_extension: {
+    files: [{
+      src: ['tmp/public/ember_extension.js'],
+      dest: 'dist_bookmarklet/ember_extension.js'
+    }, {
+      expand: true,
+      cwd: 'vendor',
+      src: ['**'],
+      dest: 'dist_bookmarklet/vendor/'
+    }, {
+      expand: true,
+      cwd: 'dist_common/images',
+      src: ['**'],
+      dest: 'dist_bookmarklet/images/'
+    }, {
+      src: ['tmp/public/ember_extension.css'],
+      dest: 'dist_bookmarklet/ember_extension.css'
+    }]
+  },
   tests: {
     files: [
     {
