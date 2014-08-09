@@ -501,6 +501,8 @@ function viewName(view) {
   } else if (match = name.match(/\(subclass of (.*)\)/)) {
     name = match[1];
   }
+  // jj-abrams-resolver adds `app@view:` and `app@component:`
+  name = name.replace(/.+(view|component):/, '').replace(/:$/, '');
   return name;
 }
 
@@ -509,6 +511,10 @@ function modelName(model) {
   if (model.toString) {
     name = model.toString();
   }
+
+  // jj-abrams-resolver adds `app@model:`
+  name = name.replace(/<[^>]+@model:/g, '<');
+
   if (name.length > 50) {
     name = name.substr(0, 50) + '...';
   }
@@ -523,6 +529,8 @@ function controllerName(controller) {
   if (match = className.match(/^\(subclass of (.*)\)/)) {
     className = match[1];
   }
+  // jj-abrams-resolver adds `app@controller:` at the begining and `:` at the end
+  className = className.replace(/^.+@controller:/, '').replace(/:$/, '');
   return className;
 }
 
