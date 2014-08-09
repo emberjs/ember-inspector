@@ -1,4 +1,5 @@
 import BasicAdapter from "adapters/basic";
+var $ = Ember.$;
 
 export default BasicAdapter.extend({
   init: function() {
@@ -18,6 +19,13 @@ export default BasicAdapter.extend({
       if (message.from === 'devtools') {
         self._messageReceived(message);
       }
+    });
+
+
+    $(window).on('unload', function() {
+        self.sendMessage({
+          unloading: true
+        });
     });
   }
 });

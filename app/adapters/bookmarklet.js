@@ -10,12 +10,15 @@ export default  BasicAdapter.extend({
     window.opener.postMessage(options, '*');
   },
 
-
   _connect: function() {
     var self = this;
 
     window.addEventListener('message', function(e) {
       var message = e.data;
+      // close inspector if inspected window is unloading
+      if (message && message.unloading) {
+        window.close();
+      }
       if (message.from === 'inspectedWindow') {
         self._messageReceived(message);
       }
