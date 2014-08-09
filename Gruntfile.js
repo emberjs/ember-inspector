@@ -68,7 +68,8 @@ module.exports = function(grunt) {
     'build',
     'compress:main',
     'build_xpi',
-    'ember-s3'
+    'ember-s3',
+    's3:bookmarklet'
   ]);
 
   grunt.registerTask('server', ['build_test','connect:server','watch']);

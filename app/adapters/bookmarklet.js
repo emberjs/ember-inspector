@@ -5,13 +5,17 @@ var emberDebug = null;
 export default  BasicAdapter.extend({
   name: 'bookmarklet',
 
+  inspectedWindow: function() {
+    return window.opener || window.parent;
+  }.property(),
+
   inspectedWindowURL: function() {
     return loadPageVar('inspectedWindowURL');
   }.property(),
 
   sendMessage: function(options) {
     options = options || {};
-    window.opener.postMessage(options, this.get('inspectedWindowURL'));
+    this.get('inspectedWindow').postMessage(options, this.get('inspectedWindowURL'));
   },
 
   _connect: function() {

@@ -54,7 +54,7 @@ module.exports = {
   bookmarklet_extension: {
     files: [{
       src: ['tmp/public/ember_extension.js'],
-      dest: 'dist_bookmarklet/ember_extension.js'
+      dest: 'dist_bookmarklet/panes/ember_extension.js'
     }, {
       expand: true,
       cwd: 'vendor',
@@ -67,7 +67,7 @@ module.exports = {
       dest: 'dist_bookmarklet/images/'
     }, {
       src: ['tmp/public/ember_extension.css'],
-      dest: 'dist_bookmarklet/ember_extension.css'
+      dest: 'dist_bookmarklet/panes/ember_extension.css'
     }]
   },
   tests: {

@@ -1,7 +1,6 @@
 (function() {
 	"use strict";
 
-
 	function getScriptURL() {
     var scripts = document.getElementsByTagName('script');
 		if (scripts && scripts.length) {
@@ -15,11 +14,33 @@
 	}
 
 	var url = getScriptURL();
+	var windowUrl = url + '/panes/index.html' + '?inspectedWindowURL=' + locationOrigin();
+	var inspectorWindow;
+
+	var pathArray = url.split( '/' );
+	var base = pathArray[0] + '//' + pathArray[2];
+
+  if (!supportsPopup()) {
+		var iframe = document.createElement('iframe');
+		iframe.width = '100%';
+		iframe.height = '300';
+		iframe.style.backgroundColor = 'white';
+		iframe.style.position = 'absolute';
+		iframe.style.bottom = '0';
+		iframe.style.right = '0';
+		iframe.style.zIndex = 100000;
+		iframe.src = windowUrl;
+		document.body.appendChild(iframe);
+		inspectorWindow = iframe.contentWindow;
+	} else {
+		inspectorWindow = window.open(encodeURI(windowUrl), 'ember-inspector');
+	}
 
 	window.emberInspector = {
-		w: window.open(encodeURI(url + '?inspectedWindowURL=' + window.location.origin), 'ember-inspector'),
-		url: url
+		w: inspectorWindow,
+		url: base
 	};
+
 
 	if (!window.emberInspector) {
 		alert('Unable to open the inspector in a popup.  Please enable popups and retry.');
@@ -32,4 +53,19 @@
 	document.body.appendChild(script);
 
 
+	function locationOrigin() {
+		var origin = window.location.origin;
+		if (!origin) {
+			origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+		}
+		return origin;
+	}
+
+	function supportsPopup() {
+		return !isIE();
+	}
+
+	function isIE() {
+		return ((navigator.appName == 'Microsoft Internet Explorer') || ((navigator.appName == 'Netscape') && (new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null)));
+	}
 }());
