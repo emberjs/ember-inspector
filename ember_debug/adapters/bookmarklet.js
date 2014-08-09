@@ -9,18 +9,20 @@ export default BasicAdapter.extend({
 
   sendMessage: function(options) {
     options = options || {};
-    window.emberInspector.postMessage(options, '*');
+    window.emberInspector.w.postMessage(options, window.emberInspector.url);
   },
 
   _connect: function() {
     var self = this;
     window.addEventListener('message', function(e) {
+      if (e.origin !== window.emberInspector.url) {
+        return;
+      }
       var message = e.data;
       if (message.from === 'devtools') {
         self._messageReceived(message);
       }
     });
-
 
     $(window).on('unload', function() {
         self.sendMessage({
