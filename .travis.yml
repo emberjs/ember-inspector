@@ -6,5 +6,5 @@ node_js:
 after_success: grunt build_and_upload
 env:
   global:
-  - secure: HsXVnKMmV9m9Y/Jj6lauM0Z5a+ycyIVWTmdYwqlCQZ7echpVQ58T8YmvcWPPtKb55YMBLBMAkrnKz3L9KbuXYHUjh5LrU7Nqc1hCNv0tEOacfr1FIsb6fb0jWeLk+WdgobFkSTH+G3GORiQ0dZsn7vybjAEOISJ9Zv0QQPJsKgc=
-  - secure: RUxG1Hg0dCkUxOcXn+bg5z1rt81O+LFYSM/kq2Z5JWMraBuD0leEpgGNVxxRabIYowByq841ZWTuGep0zDTa58nPnh6I0yn4xfJAEr+g/hvO9sDp6dDqvr2dV3uKCCDJhehvrlzgYn7HxU59MfcnQ21iG3YZU0H8eoKmWGkFuf0=
+  - secure: EYaa9XxKkfJbQENuQPNFAIIieMWBiSknGCO9he8MH8ZHbqJODTjFixJnD5ZYLZCXH67SmjorBneznQHp8Xaf0aIuHbRhRY/MOUzqEWw12MmexW1kJF5wX+oxEnvzoiVAUJLNTIQi+g5WN43YBleASKMjUPa2i/3GBIcTlsVdf3U=
+  - secure: g+Qh9jUTpK1yFpcZi9O8rsybfqv3TFE2hTFvG8XZ+QaQYBLLZ52JfhsJhdI0cvRRp7qWOhzE784iadkPWgvhj8c0/N/af5ZrSP3ceiv6RKqSUG2/iQyzX/qUh3vqrZ7a4xTsELTwswQtR+sA+I+DQVVlnqcCqYTAW2SFR/D4H8o=
