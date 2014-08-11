@@ -252,7 +252,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
   inspectView: function(view, retained) {
     var templateName = view.get('templateName') || view.get('_debugTemplateName'),
-        viewClass = viewName(view), name;
+        viewClass = shortViewName(view), name;
 
     var tagName = view.get('tagName');
     if (tagName === '') {
@@ -273,6 +273,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
     var value = {
       viewClass: viewClass,
+      completeViewClass: viewName(view),
       objectId: viewId,
       duration: timeToRender,
       name: name,
@@ -284,7 +285,8 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
     if (!(view instanceof Ember.Component)) {
       value.controller = {
-        name: controllerName(controller),
+        name: shortControllerName(controller),
+        completeName: controllerName(controller),
         objectId: this.retainObject(controller)
       };
 
@@ -292,7 +294,8 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       if (model) {
         if(Ember.Object.detectInstance(model) || Ember.typeOf(model) === 'array') {
           value.model = {
-            name: modelName(model),
+            name: shortModelName(model),
+            completeName: modelName(model),
             objectId: this.retainObject(model),
             type: 'type-ember-object'
           };
@@ -501,9 +504,13 @@ function viewName(view) {
   } else if (match = name.match(/\(subclass of (.*)\)/)) {
     name = match[1];
   }
-  // jj-abrams-resolver adds `app@view:` and `app@component:`
-  name = name.replace(/.+(view|component):/, '').replace(/:$/, '');
   return name;
+}
+
+function shortViewName(view) {
+  var name = viewName(view);
+  // jj-abrams-resolver adds `app@view:` and `app@component:`
+  return name.replace(/.+(view|component):/, '').replace(/:$/, '');
 }
 
 function modelName(model) {
@@ -512,13 +519,17 @@ function modelName(model) {
     name = model.toString();
   }
 
-  // jj-abrams-resolver adds `app@model:`
-  name = name.replace(/<[^>]+@model:/g, '<');
 
   if (name.length > 50) {
     name = name.substr(0, 50) + '...';
   }
   return name;
+}
+
+function shortModelName(model) {
+  var name = modelName(model);
+  // jj-abrams-resolver adds `app@model:`
+  return name.replace(/<[^>]+@model:/g, '<');
 }
 
 function controllerName(controller) {
@@ -529,9 +540,14 @@ function controllerName(controller) {
   if (match = className.match(/^\(subclass of (.*)\)/)) {
     className = match[1];
   }
-  // jj-abrams-resolver adds `app@controller:` at the begining and `:` at the end
-  className = className.replace(/^.+@controller:/, '').replace(/:$/, '');
+
   return className;
+}
+
+function shortControllerName(controller) {
+  var name = controllerName(controller);
+  // jj-abrams-resolver adds `app@controller:` at the begining and `:` at the end
+  return name.replace(/^.+@controller:/, '').replace(/:$/, '');
 }
 
 function escapeHTML(string) {
@@ -554,7 +570,7 @@ function virtualRange(view) {
 
 function viewDescription(view) {
   var templateName = view.get('templateName') || view.get('_debugTemplateName'),
-      name, viewClass = viewName(view), controller = view.get('controller'),
+      name, viewClass = shortViewName(view), controller = view.get('controller'),
       parentClassName;
 
   if (templateName) {

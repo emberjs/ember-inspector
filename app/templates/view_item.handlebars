@@ -11,7 +11,7 @@
   <div {{bind-attr class=":cell"}} data-label="view-model">
     {{#if hasModel}}
       <div {{bind-attr class=":list-tree__limited modelInspectable:cell_clickable"}} {{action "inspectModel" value.model.objectId}}>
-        <span title="{{unbound value.model.name}}">{{unbound value.model.name}}</span>
+        <span title="{{unbound value.model.completeName}}">{{unbound value.model.name}}</span>
       </div>
       <div class="list-tree__right-helper">
         {{send-to-console action="sendModelToConsole" param=value.objectId}}
@@ -23,7 +23,7 @@
   <div {{bind-attr class=":cell"}} data-label="view-controller">
     {{#if hasController}}
       <div {{bind-attr class=":list-tree__limited hasController:cell_clickable"}} {{action "inspect" value.controller.objectId}} >
-        <span title="{{unbound value.controller.name}}">{{unbound value.controller.name}}</span>
+        <span title="{{unbound value.controller.completeName}}">{{unbound value.controller.name}}</span>
       </div>
       <div class="list-tree__right-helper">
         {{send-to-console action="sendObjectToConsole" param=value.controller.objectId}}
@@ -33,7 +33,7 @@
   <div {{bind-attr class=":cell"}} data-label="view-class">
     {{#if hasView}}
       <div {{bind-attr class=":list-tree__limited hasView:cell_clickable"}} {{action "inspectView"}} >
-        <span title="{{unbound value.viewClass}}">{{unbound value.viewClass}}</span>
+        <span title="{{unbound value.completeViewClass}}">{{unbound value.viewClass}}</span>
       </div>
       <div class="list-tree__right-helper">
         {{send-to-console action="sendObjectToConsole" param=value.objectId}}

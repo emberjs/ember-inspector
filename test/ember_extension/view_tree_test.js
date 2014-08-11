@@ -40,9 +40,11 @@ function defaultViewTree() {
     isComponent: false,
     objectId: 'applicationView',
     viewClass: 'App.ApplicationView',
+    completeViewClass: 'App.ApplicationView',
     duration: 10,
     controller: {
       name: 'App.ApplicationController',
+      completeName: 'App.ApplicationController',
       objectId: 'applicationController'
     },
     children: [
@@ -51,14 +53,17 @@ function defaultViewTree() {
         isVirtual: false,
         isComponent: false,
         viewClass: 'App.PostsView',
+        completeViewClass: 'App.PostsView',
         duration: 1,
         objectId: 'postsView',
         model: {
           name: 'PostsArray',
+          completeName: 'PostsArray',
           objectId: 'postsArray'
         },
         controller: {
           name: 'App.PostsController',
+          completeName: 'App.PostsController',
           objectId: 'postsController'
         },
         children: []
@@ -68,14 +73,17 @@ function defaultViewTree() {
         isVirtual: false,
         isComponent: false,
         viewClass: 'App.CommentsView',
+        completeViewClass: 'App.CommentsView',
         duration: 2.5,
         objectId: 'commentsView',
         model: {
           name: 'CommentsArray',
+          completeName: 'CommentsArray',
           objectId: 'commentsArray'
         },
         controller: {
           name: 'App.CommentsController',
+          completeName: 'App.CommentsController',
           objectId: 'commentsController'
         },
         children: []
