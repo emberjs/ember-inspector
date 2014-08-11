@@ -6,6 +6,15 @@ module.exports = {
       base: 'tmp/public',
       middleware: middleware
     }
+  },
+
+  bookmarklet: {
+    options: {
+      port: 9191,
+      hostname: '127.0.0.1',
+      base: 'dist_bookmarklet',
+      middleware: middleware
+    }
   }
 };
 

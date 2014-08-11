@@ -3,7 +3,8 @@ language: node_js
 script: npm test
 node_js:
 - '0.10'
-after_success: grunt build_and_upload
+after_success:
+  - test $TRAVIS_BRANCH == "stable" && grunt build_and_upload
 env:
   global:
   - secure: EYaa9XxKkfJbQENuQPNFAIIieMWBiSknGCO9he8MH8ZHbqJODTjFixJnD5ZYLZCXH67SmjorBneznQHp8Xaf0aIuHbRhRY/MOUzqEWw12MmexW1kJF5wX+oxEnvzoiVAUJLNTIQi+g5WN43YBleASKMjUPa2i/3GBIcTlsVdf3U=

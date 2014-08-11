@@ -18,4 +18,12 @@ dist_firefox/data/panes/ember_extension.css
 dist_firefox/data/panes/ember_extension.js
 dist_firefox/data/in-page-script.js
 
+dist_bookmarklet/images/
+dist_bookmarklet/ember_debug/
+dist_bookmarklet/vendor/
+dist_bookmarklet/panes/ember_extension.css
+dist_bookmarklet/panes/ember_extension.js
+
 .mozilla-addon-sdk
+
+aws.json

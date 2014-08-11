@@ -21,6 +21,7 @@
 
 
 .app__main {
+  -webkit-flex: 1;
   flex: 1;
   height: 100%;
   overflow: auto;
@@ -134,14 +135,17 @@
 
 /* Firefox Tweaks */
 .app__main {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .app__toggle-inspector-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+  display: -webkit-flex;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
