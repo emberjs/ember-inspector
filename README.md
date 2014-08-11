@@ -55,7 +55,7 @@ OR:
 
 
 ```javascript
-javascript: (function() { var s = document.createElement('script'); s.src = 'http://ember-extension.s3-website-us-east-1.amazonaws.com/dist_bookmarklet/load_inspector.js'; document.body.appendChild(s); }());
+javascript: (function() { var s = document.createElement('script'); s.src = '//ember-extension.s3.amazonaws.com/dist_bookmarklet/load_inspector.js'; document.body.appendChild(s); }());
 ```
 
 Internet explorer will open an iframe instead of a popup due to the lack of support for cross-origin messaging.
