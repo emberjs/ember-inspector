@@ -1,5 +1,18 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 1.4.0
+
+* [FEATURE] Added bookmark option to support all browsers
+* [FEATURE] Added support for multiple iframes
+* [FEATURE] Added optional Tomster to Firefox
+* [FEATURE] Added "display current route" option to the routes tab
+* [IMPROVEMENT] Removed redundant prefixes from class names in the view tree
+* [IMPROVEMENT] Added search field to the render performance tab
+* [BUGFIX] Fixed current route match when resource same as route name
+* [BUGFIX] Fixed bug where a maximum of one namespace was assumed
+* [BUGFIX] Fixed render perf tab for apps with prototype extensions disabled
+* [BUGFIX] Routes tab no longer instantiates controllers
+* `data-ember-extension` is now only added to the HTML tag (instead of the body).
 
 ## Ember Inspector 1.3.1
 

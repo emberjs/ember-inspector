@@ -3,7 +3,7 @@ import Port from "port";
 import PromiseAssembler from "libs/promise_assembler";
 import msToTime from "helpers/ms_to_time";
 
-var version = '1.3.1';
+var version = '1.4.0';
 
 var App = Ember.Application.extend({
   modulePrefix: '',
