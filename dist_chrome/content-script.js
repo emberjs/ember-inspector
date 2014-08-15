@@ -36,7 +36,12 @@
   var script = document.createElement('script');
   script.type = "text/javascript";
   script.src = chrome.extension.getURL("in-page-script.js");
-  if (document.body) document.body.appendChild(script);
+  if (document.body) {
+    document.body.appendChild(script);
+    script.onload = function() {
+      document.body.removeChild(script);
+    }
+  }
 
   var iframes = document.getElementsByTagName('iframe');
   var urls = [];
