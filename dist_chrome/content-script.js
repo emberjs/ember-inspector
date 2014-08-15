@@ -40,7 +40,7 @@
     document.body.appendChild(script);
     script.onload = function() {
       document.body.removeChild(script);
-    }
+    };
   }
 
   var iframes = document.getElementsByTagName('iframe');
