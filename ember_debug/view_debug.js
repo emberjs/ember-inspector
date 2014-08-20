@@ -557,13 +557,22 @@ function escapeHTML(string) {
 }
 
 function virtualRange(view) {
-  var morph = view.get('morph'),
-      startId = morph.start,
-      endId = morph.end;
+  var start, end;
+  var morph = view.get('morph');
+
+  if (morph) {
+    start = $('#' + morph.start)[0];
+    end = $('#' + morph.end)[0];
+  } else {
+    // Support for metal-views
+    morph = view.get('_morph');
+    start = morph.start;
+    end = morph.end;
+  }
 
   var range = document.createRange();
-  range.setStartAfter($('#' + startId)[0]);
-  range.setEndBefore($('#' + endId)[0]);
+  range.setStartAfter(start);
+  range.setEndBefore(end);
 
   return range;
 }
