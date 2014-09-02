@@ -1,37 +1,20 @@
 {{#if emberApplication}}
 
-  <div class="app__nav-holder">
-    {{partial "nav"}}
-    <div class="app__dropdown">
-      {{render "iframes"}}
+  <div class="split-view split-view--v">
+    <div class="split-view__panel">
+      {{partial 'main'}}
     </div>
-  </div>
-
-  <div class="app__main">
-    {{#view "mainContent"}}
-      {{outlet}}
-    {{/view}}
-  </div>
-
-  {{#unless inspectorExpanded}}
-    <div class="app__toggle-inspector-btn" {{action "toggleInspector"}}>&laquo;</div>
-  {{/unless}}
-
-  <div class="app__right-col" {{bind-attr style="view.inspectorStyle"}}>
 
     {{#if inspectorExpanded}}
-      <div class="app__right-col-drag">
-        {{drag-handle isDragging=isDragging positionRight=inspectorWidth}}
-      </div>
+      {{drag-handle isDragging=isDragging positionRight=inspectorWidth}}
 
-      <div class="app__toggle-inspector-btn" {{action "toggleInspector"}}>&raquo;</div>
+      {{#resizable-column width=inspectorWidth classNames="split-view__panel"}}
+        <div class="split-view__panel__bd">
+          {{render "mixinStack"}}
+        </div>
+      {{/resizable-column}}
     {{/if}}
-
-    <div class="app__inspector-container">
-      {{render "mixinStack"}}
-    </div>
   </div>
-
 
 {{else}}
   {{#not-detected description="Ember application"}}

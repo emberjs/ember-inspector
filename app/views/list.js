@@ -5,11 +5,8 @@ export default Ember.ListView.extend({
 
   contentHeight: Ember.computed.alias('controller.controllers.application.contentHeight'),
 
-  filterHeight: 22,
-
   height: function() {
-    var filterHeight = this.get('filterHeight'),
-        headerHeight = 30,
+    var headerHeight = 31,
         contentHeight = this.get('contentHeight');
 
     // In testing list-view is created before `contentHeight` is set
@@ -17,7 +14,7 @@ export default Ember.ListView.extend({
     if (!contentHeight) {
       return 1;
     }
-    return contentHeight - filterHeight - headerHeight;
+    return contentHeight  - headerHeight;
   }.property('contentHeight'),
   rowHeight: 30,
   itemViewClass: ListItemView
