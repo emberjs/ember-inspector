@@ -61,10 +61,11 @@
 
 .row-wrapper {
   width: 100%;
+  background: #f3f3f3;
 }
 
 .row-wrapper:nth-of-type(2n) {
-  background: #f3f3f3;
+  background: #fff;
 }
 
 
@@ -111,10 +112,12 @@
 
 
   font-weight: normal;
-  border-left: 1px solid #b3b3b3;
-  background: linear-gradient(to bottom, #ebebeb, #dadada);
+  border-left: 1px solid #cacaca;
 }
 
+.cell.cell_type_header:first-of-type {
+  border-left: none;
+}
 
 .cell_clickable {
   cursor: pointer;

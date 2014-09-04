@@ -3,9 +3,6 @@
   display: flex;
   -webkit-flex-direction: row;
   flex-direction: row;
-  height: 22px;
-  background-color: #efefef;
-  border-top: solid 1px #cacaca;
   align-items: center;
   -webkit-user-select: none;
   -moz-user-select: none;

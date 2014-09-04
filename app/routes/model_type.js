@@ -6,5 +6,9 @@ export default Ember.Route.extend({
 
   deactivate: function() {
     this.controllerFor('model-types').set('selected', null);
+  },
+
+  serialize: function (model) {
+    return { type_id: Ember.get(model, 'name') };
   }
 });

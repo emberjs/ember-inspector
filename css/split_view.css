@@ -3,8 +3,12 @@
   display: flex;
   -webkit-flex: auto;
   flex: auto;
-  position: relative;
   overflow: hidden;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .split-view--v {
@@ -31,13 +35,19 @@
   border-right: 1px solid #a3a3a3;
 }
 
+.split-view__panel__hd,
+.split-view__panel__bd,
+.split-view__panel__ft {
+  position: relative;
+}
+
 .split-view__panel__hd {
   border-bottom: 1px solid;
   background: #fff;
 }
 .split-view__panel__ft {
   border-top: 1px solid;
-  background: #ececec;
+  background: #e8e8e8;
   line-height: 16px;
 }
 
@@ -60,5 +70,5 @@
 .split-view__panel__ft {
   -webkit-flex: none;
   flex: none;
-  border-color: #b3b3b3;
+  border-color: #cacaca;
 }

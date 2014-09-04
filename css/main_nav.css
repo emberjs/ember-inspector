@@ -16,6 +16,7 @@
 
 .main-nav__item {
   display: block;
+  margin-top: 2px;
 }
 
 .main-nav__item > a {
@@ -27,13 +28,17 @@
   color: #333;
   font-size: 12px;
   line-height: 33px;
+  cursor: default;
+}
+
+.main-nav__item > a:focus {
+  outline: none;
 }
 
 .main-nav__item > a.active {
   color: #fff;
   text-shadow: 0 1px 0 rgba(0,0,0, 0.35);
-  background: linear-gradient(to bottom, #5a91d4, #1654aa);
-  box-shadow: inset 0 1px 0 #4480c8;
+  background: #3879D9;
 }
 
 
@@ -60,6 +65,45 @@
 
 /* Modifier: state = inactive */
 .main-nav_state_inactive .main-nav__item > a.active {
-  background: linear-gradient(to bottom, #b3b3b3, #8a8a8a);
-  box-shadow: inset 0 1px 0 #979797;
+  background: #b4b4b4;
+}
+
+.nav h3 {
+  margin: 0;
+  padding: 3px 5px;
+  flex: 0 0 19px;
+  color: #6e6e6e;
+  text-transform: uppercase;
+  text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
+}
+
+.nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav a {
+  display: block;
+  height: 18px;
+  line-height: 15px;
+  margin-top: 1px;
+  padding: 2px 5px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.nav a:focus {
+  outline: none;
+}
+
+.nav a.active {
+  background-color: #3879D9;
+  color: #FFF;
+}
+
+.app_state_inactive .nav a.active {
+  background: #b4b4b4;
 }

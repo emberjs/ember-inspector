@@ -82,7 +82,7 @@ module("Data", {
 test("Model types are successfully listed and bound", function() {
   visit('/data/model-types')
   .then(function() {
-    equal(findByLabel('model-type-row').length, 2);
+    equal(findByLabel('model-type').length, 2);
     equal(findByLabel('model-type-name').eq(0).text().trim(), 'App.Post');
     equal(findByLabel('model-type-name').eq(1).text().trim(), 'App.Comment');
 
@@ -105,7 +105,7 @@ test("Model types are successfully listed and bound", function() {
 test("Records are successfully listed and bound", function() {
   visit('/data/model-types')
   .then(function() {
-    return click(findByLabel('model-type-row').first());
+    return click(findByLabel('model-type').find('a').first());
   })
   .then(function() {
     var columns = findByLabel('column-title');
@@ -167,7 +167,7 @@ test("Records are successfully listed and bound", function() {
 test("Filtering records", function() {
   visit('/data/model-types')
   .then(function() {
-    return click(findByLabel('model-type-row').first());
+    return click(findByLabel('model-type').find('a').first());
   })
   .then(function() {
     var rows = findByLabel('record-row');
@@ -188,7 +188,7 @@ test("Filtering records", function() {
 test("Searching records", function() {
   visit('/data/model-types')
   .then(function() {
-    return click(findByLabel('model-type-row').first());
+    return click(findByLabel('model-type').find('a').first());
   })
   .then(function() {
     var rows = findByLabel('record-row');

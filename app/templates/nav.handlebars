@@ -1,14 +1,14 @@
-<nav {{bind-attr class=":main-nav view.inactive:main-nav_state_inactive"}}>
-  <ul class="main-nav__list">
-    <li class="main-nav__item">
+<nav class="nav nav--main">
+  <ul>
+    <li>
       {{#link-to "view-tree"}}
         View Tree
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="19px" height="19px" viewBox="0 0 19 19" enable-background="new 0 0 19 19" xml:space="preserve">
-          <path fill="#454545" d="M0,0v19h19V0H0z M6.109,17.445h-4.57V5.297h4.57V17.445z M17.461,17.445H6.83V5.297h10.63v12.148H17.461z M17.461,4.543H1.539V1.506h15.922V4.543z"/>
+          <path fill="#454545" d="M0,0v19h19V0H0z M6,17h-4V5h4V17z M17,17H7V5h10v12H17z M17,4H2V2h15V1z"/>
         </svg>
       {{/link-to}}
     </li>
-    <li class="main-nav__item">
+    <li>
       {{#link-to "route-tree"}}
         Routes
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="19px" height="19px" viewBox="0 0 19 19" enable-background="new 0 0 19 19" xml:space="preserve">
@@ -17,7 +17,7 @@
         </svg>
       {{/link-to}}
     </li>
-    <li class="main-nav__item">
+    <li>
       {{#link-to "data"}}
         Data
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="19px" height="19px" viewBox="0 0 19 19" enable-background="new 0 0 19 19" xml:space="preserve">
@@ -25,16 +25,16 @@
         </svg>
       {{/link-to}}
     </li>
-    <li class="main-nav__item">
+    <li>
       {{#link-to "promises"}}
-       Promises
-       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="23px" height="23px" viewBox="0 0 23 23" enable-background="new 0 0 23 23" xml:space="preserve">
-        <path d="M19,0 L19,19 L-0,19 L-0,0 z M1.539,1.506 L1.539,17.445 L17.46,17.445 L17.461,2.832 L6.807,12.912 L5.12,12.923 L5.12,1.506 z M7.12,1.506 L7.12,9.863 L15.953,1.506 z" />
-        <path d="M6.066,13.643 C4.488,13.643 3.208,12.363 3.208,10.784 C3.208,9.206 4.488,7.926 6.066,7.926 C7.645,7.926 8.925,9.206 8.925,10.784 C8.925,12.363 7.645,13.643 6.066,13.643 z" />
-      </svg>
+        Promises
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="23px" height="23px" viewBox="0 0 23 23" enable-background="new 0 0 23 23" xml:space="preserve">
+          <path d="M19,0 L19,19 L-0,19 L-0,0 z M2,2 L2,17 L17,17 L17,2.832 L6.807,12.912 L5.12,12.923 L5.12,2 z M7,2 L7.12,9.863 L15.953,2 z" />
+          <path d="M6.066,13.643 C4.488,13.643 3.208,12.363 3.208,10.784 C3.208,9.206 4.488,7.926 6.066,7.926 C7.645,7.926 8.925,9.206 8.925,10.784 C8.925,12.363 7.645,13.643 6.066,13.643 z" />
+        </svg>
       {{/link-to}}
     </li>
-     <li class="main-nav__item">
+    <li>
       {{#link-to "render-tree"}}
       Render Performance
       <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -52,11 +52,9 @@
         </g>
       </g>
       </svg>
-
-
       {{/link-to}}
     </li>
-    <li class="main-nav__item">
+    <li>
       {{#link-to "info"}}
       Info
       <svg width="19" height="19" xmlns="http://www.w3.org/2000/svg">
@@ -64,7 +62,7 @@
         <circle id="svg_4" r="1.753" cy="5.3775" cx="9.451" fill="#454545"/>
         <path id="svg_6" d="m9.5,19c-5.238,0 -9.5,-4.262 -9.5,-9.5c0,-5.238 4.262,-9.5 9.5,-9.5s9.5,4.262 9.5,9.5c0,5.238 -4.262,9.5 -9.5,9.5zm0,-17.434c-4.375,0 -7.933,3.559 -7.933,7.933c0,4.374 3.559,7.932 7.933,7.932c4.374,0 7.933,-3.559 7.933,-7.932c0,-4.374 -3.559,-7.933 -7.933,-7.933z" fill="#454545"/>
       </svg>
-
       {{/link-to}}
+    </li>
   </ul>
 </nav>

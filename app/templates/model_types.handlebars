@@ -1,21 +1,22 @@
-<div class="split__parent">
-  <div class="list-view list-view_compact">
-    <div class="list-view__header row">
-      <div class="cell cell_type_header">
-        Model Type
-      </div>
-      {{#unless collapsed}}
-      <div class="cell cell_type_header">
-        # Records
-      </div>
-      {{/unless}}
-      <!-- Account for scrollbar width :'(  -->
-      <div class="cell cell_type_header spacer"></div>
+<div class="split-view split-view--v">
+  <div class="split-view__panel split-view__panel--nav nav">
+    <div class="split-view__panel__bd">
+      <h3>Model Types</h3>
+      <ul>
+        {{#each}}
+          <li data-label="model-type">
+            {{#link-to "records" this}}
+              <span data-label="model-type-name">{{name}}</span>
+              (<span data-label="model-type-count">{{count}}</span>)
+            {{/link-to}}
+          </li>
+        {{/each}}
+      </ul>
     </div>
-
-    <div class="list-view__list-container">
-      {{view "modelTypeList" content=this}}
+  </div>
+  <div class="split-view__panel">
+    <div class="split-view__panel__bd">
+      {{outlet}}
     </div>
   </div>
 </div>
-<div class="split__child">{{outlet}}</div>

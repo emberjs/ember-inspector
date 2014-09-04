@@ -1,0 +1,22 @@
+<div class="split-view split-view--v">
+  <div class="split-view__panel split-view__panel--nav">
+    <div class="split-view__panel__hd">
+      {{render "iframes"}}
+    </div>
+    <div class="split-view__panel__bd">
+      {{partial "nav"}}
+    </div>
+  </div>
+
+  <div class="split-view__panel">
+    <div class="split-view__panel__hd">
+      {{outlet "toolbar"}}
+      {{sidebar-toggle action="toggleInspector" side="right"
+        isExpanded=inspectorExpanded classNames="toolbar-item"}}
+    </div>
+
+    {{#view "mainContent" classNames="split-view__panel__bd"}}
+      {{outlet}}
+    {{/view}}
+  </div>
+</div>
