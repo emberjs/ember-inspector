@@ -2,14 +2,22 @@
  DRAG-HANDLE
  ===========
  The drag handle used for resizing elements
- Should be wrapped in the element with the
- desired handle dimensions
 */
 
 .drag-handle {
   position: absolute;
   top: 0;
-  left: 0;
-  width: 100%;
+  bottom: 0;
+  width: 6px;
+  margin-right: -3px;
+  z-index: 500;
+  cursor: col-resize;
+}
+
+.drag-handle__border {
   height: 100%;
+  margin-left: 3px;
+  width: 1px;
+  border-left: 1px solid #A3A3A3;
+  pointer-events: none;
 }
