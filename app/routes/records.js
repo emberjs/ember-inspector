@@ -1,6 +1,8 @@
+import TabRoute from 'routes/tab';
+
 var Promise = Ember.RSVP.Promise, set = Ember.set;
 
-export default Ember.Route.extend({
+export default TabRoute.extend({
   setupController: function(controller, model) {
     this._super(controller, model);
 

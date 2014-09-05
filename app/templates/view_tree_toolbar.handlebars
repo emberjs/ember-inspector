@@ -1,0 +1,15 @@
+<div class="filter-bar">
+  <div class="filter-bar__button filter-bar__button_type_inspect" data-label="inspect-views" {{bind-attr class="inspectingViews:filter-bar__button_state_active"}} {{action "toggleViewInspection"}}>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="14px" height="14px" viewBox="0 0 14 14" enable-background="new 0 0 14 14" xml:space="preserve">
+      <path d="M14.012,12.435L9.546,7.864c0.379-0.709,0.545-1.943,0.545-2.804c0-2.79-2.262-5.052-5.052-5.052S-0.012,2.27-0.012,5.06 c0,2.79,2.262,5.051,5.052,5.051c0.849,0,2.202-0.275,2.904-0.645l4.48,4.525L14.012,12.435z M1.672,5.06 c0-1.856,1.51-3.367,3.367-3.367c1.857,0,3.367,1.51,3.367,3.367c0,1.857-1.51,3.367-3.367,3.367 C3.183,8.427,1.672,6.917,1.672,5.06z"/>
+    </svg>
+  </div>
+
+  <div class="filter-bar__checkbox" data-label="filter-components">
+    {{input type="checkbox" checked=options.components id="options-components"}} <label for="options-components">Components</label>
+  </div>
+
+  <div class="filter-bar__checkbox" data-label="filter-all-views">
+    {{input type="checkbox" checked=options.allViews id="options-allViews"}} <label for="options-allViews">All Views</label>
+  </div>
+</div>

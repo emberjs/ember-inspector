@@ -1,6 +1,8 @@
+import TabRoute from 'routes/tab';
+
 var Promise = Ember.RSVP.Promise;
 
-export default Ember.Route.extend({
+export default TabRoute.extend({
   model: function() {
     var route = this, port = this.get('port');
     return new Promise(function(resolve) {

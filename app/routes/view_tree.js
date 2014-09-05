@@ -1,4 +1,6 @@
-export default Ember.Route.extend({
+import TabRoute from 'routes/tab';
+
+export default TabRoute.extend({
   setupController: function() {
     this.get('port').on('view:viewTree', this, this.setViewTree);
     this.get('port').on('view:stopInspecting', this, this.stopInspecting);

@@ -1,6 +1,8 @@
+import TabRoute from 'routes/tab';
+
 var Promise = Ember.RSVP.Promise;
 
-export default Ember.Route.extend({
+export default TabRoute.extend({
   model: function() {
     // block rendering until first batch arrives
     // Helps prevent flashing of "please refresh the page"
