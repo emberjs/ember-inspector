@@ -194,21 +194,21 @@ test("Searching records", function() {
     var rows = findByLabel('record-row');
     equal(rows.length, 2);
 
-    return fillIn('input[type=search]', 'Hello');
+    return fillIn('[data-label=records-search] input', 'Hello');
   })
   .then(function() {
     var rows = findByLabel('record-row');
     equal(rows.length, 1);
     equal(findByLabel('record-column', rows[0]).first().text().trim(), '2');
 
-    return fillIn('input[type=search]', 'my first post');
+    return fillIn('[data-label=records-search] input', 'my first post');
   })
   .then(function() {
     var rows = findByLabel('record-row');
     equal(rows.length, 1);
     equal(findByLabel('record-column', rows[0]).first().text().trim(), '1');
 
-    return fillIn('input[type=search]', '');
+    return fillIn('[data-label=records-search] input', '');
   })
   .then(function() {
     var rows = findByLabel('record-row');

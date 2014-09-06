@@ -42,6 +42,8 @@
 }
 
 .split-view__panel__hd {
+  -webkit-flex-direction: row;
+  flex-direction: row;
   border-bottom: 1px solid;
   background: #fff;
 }
@@ -59,9 +61,14 @@
 
 .split-view__panel__hd,
 .split-view__panel__ft {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex: 0 0 23px;
+  flex: 0 0 23px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  position: relative;
   padding: 2px;
   height: 23px;
 }

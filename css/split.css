@@ -1,28 +1,111 @@
+/**
+ SPLIT
+ =====
+ Vertically split panels
+*/
+
+/* .split: The container for one or more panels */
+
 .split {
-  height: 100%;
-}
-
-.split__parent {
-  height: 100%;
-}
-
-.split__splitter {
-  display: none;
-}
-
-.split_state_collapsed {
   display: -webkit-flex;
   display: flex;
+  -webkit-flex: auto;
+  flex: auto;
   -webkit-flex-direction: row;
   flex-direction: row;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
-.split_state_collapsed .split__parent {
-  width: 150px;
+/* .split__panel: Contains a body, and optional header and footer elements */
+
+.split__panel {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: auto;
+  flex: auto;
+  position: relative;
 }
 
-.split_state_collapsed .split__child {
-  -webkit-flex: 1;
-  flex: 1;
+.split__panel__hd,
+.split__panel__bd,
+.split__panel__ft {
+  position: relative;
+}
+
+.split__panel__hd,
+.split__panel__ft {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex: none;
+  flex: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 1px 2px;
+  min-height: 23px;
+  line-height: 20px;
+  border-color: #cacaca;
+}
+
+.split__panel__hd {
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  background: #fff;
+}
+
+.split__panel__bd {
+  -webkit-flex: auto;
+  flex: auto;
+  overflow: auto;
+}
+
+.split__panel__ft {
+  border-top-width: 1px;
+  border-top-style: solid;
+  background: #e8e8e8;
+}
+
+/* Fix visibility issue with phantomjs test runner
+   https://github.com/emberjs/ember-inspector/pull/206#issuecomment-55292354 */
+
+.split__panel,
+.split__panel__bd {
+  z-index: 1; /* Fixes bug where empty list-view appears over the top */
   height: 100%;
+}
+
+/* Custom panels */
+
+.split__panel--sidebar-1,
+.split__panel--sidebar-2 {
+  -webkit-flex: none;
+  flex: none;
+  width: 180px;
+  border-right: 1px solid #a3a3a3;
+}
+
+.split__panel--sidebar-1 .split__panel__bd {
+  background: #e8e8e8;
+}
+
+.split__panel--sidebar-2 .split__panel__bd {
+  background: #f0f0f0;
+}
+
+/* Fix main list-view scrolling */
+.split--main > .split__panel > .split__panel__bd {
+  overflow-y: hidden;
+}
+
+.split--main .split__panel__hd .toolbar {
+  min-width: 700px;
 }

@@ -1,7 +1,7 @@
-<div class="filter-bar">
-  <div class="filter-bar__search" data-label="render-profiles-search">
-    {{input type="search" value=searchField placeholder="Search"}}
+<div class="toolbar">
+  {{clear-button action="clearProfiles" classNames="toolbar__icon-button"}}
+  <div class="toolbar__search" data-label="render-profiles-search">
+    {{input value=searchField placeholder="Search"}}
   </div>
   <div class="filter-bar__pills"></div>
-  <div {{action "clearProfiles"}} class="filter-bar__clear pill" data-label="clear-render-profiles-btn">CLEAR</div>
 </div>
