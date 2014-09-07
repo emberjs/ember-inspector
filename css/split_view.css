@@ -31,8 +31,10 @@
   -webkit-flex: none;
   flex: none;
   width: 180px;
-  background: #e8e8e8;
   border-right: 1px solid #a3a3a3;
+}
+.split-view__panel--nav .split-view__panel__bd {
+  background: #e8e8e8;
 }
 
 .split-view__panel__hd,

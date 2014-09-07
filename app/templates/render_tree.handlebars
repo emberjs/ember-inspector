@@ -20,15 +20,8 @@
   </div>
 </div>
 {{else}}
-  <div class="notice notice_width_wide" data-label="render-tree-empty">
-
-    <div class="notice__content">
-
-      <div class="notice__title" data-label="page-refresh-title">
-        No rendering metrics have been collected. Try navigating around your application.
-        <p><strong>Note:</strong> Very fast rendering times (&lt; 1ms) are excluded.</p>
-      </div>
-    </div>
+  <div class="notice" data-label="render-tree-empty">
+    <p>No rendering metrics have been collected. Try navigating around your application.</p>
+    <p><strong>Note:</strong> Very fast rendering times (&lt;1ms) are excluded.</p>
   </div>
-
 {{/unless}}
