@@ -3,13 +3,6 @@
   display: flex;
   -webkit-flex-direction: row;
   flex-direction: row;
-
-  /*
-     Fixes chrome repaint issue when scrolling quickly in list-view.
-     See http://stackoverflow.com/a/16474152/1765925
-  */
-  -webkit-transform: translate3d(0, 0, 0);
-
 }
 
 .cell {
