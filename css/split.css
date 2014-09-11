@@ -98,14 +98,10 @@
 }
 
 .split__panel--sidebar-2 .split__panel__bd {
-  background: #f0f0f0;
+  background: #f3f3f3;
 }
 
 /* Fix main list-view scrolling */
 .split--main > .split__panel > .split__panel__bd {
   overflow-y: hidden;
-}
-
-.split--main .split__panel__hd .toolbar {
-  min-width: 700px;
 }

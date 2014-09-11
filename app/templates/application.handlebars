@@ -1,15 +1,15 @@
 {{#if emberApplication}}
 
-  <div class="split-view split-view--v">
-    <div class="split-view__panel">
+  <div class="split">
+    <div class="split__panel">
       {{partial 'main'}}
     </div>
 
     {{#if inspectorExpanded}}
       {{drag-handle isDragging=isDragging positionRight=inspectorWidth}}
 
-      {{#resizable-column width=inspectorWidth classNames="split-view__panel"}}
-        <div class="split-view__panel__bd">
+      {{#resizable-column width=inspectorWidth classNames="split__panel"}}
+        <div class="split__panel__bd">
           {{render "mixinStack"}}
         </div>
       {{/resizable-column}}
