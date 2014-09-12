@@ -1,18 +1,29 @@
-<div class="object-inspector__header">
-  <h1 class="object-inspector__header-main">
-    {{#if length}}
-      <button {{action "popStack"}} data-label="object-inspector-back" {{bind-attr class=":object-inspector__back isNested:object-inspector__back_state_enabled:object-inspector__back_state_disabled"}}></button>
-    {{/if}}
-    <span data-label="object-name" class="object-inspector__name">{{firstObject.name}}</span>
-    <button class="object-inspector__send-object-btn" {{action "sendObjectToConsole" firstObject}} data-label="send-object-to-console-btn">
+{{#if length}}
+<div class="split__panel__hd">
+  <div class="toolbar">
+    <button {{action "popStack"}} data-label="object-inspector-back" {{bind-attr class=":toolbar__icon-button isNested:enabled:disabled"}}>
+      <svg width="9px" height="9px" viewBox="0 0 9 9" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          <polygon class="svg-fill" fill="#000000" transform="translate(4.500000, 4.500000) rotate(-90.000000) translate(-4.500000, -4.500000) " points="4.5 0 9 9 0 9 "></polygon>
+        </g>
+      </svg>
+    </button>
+
+    <div class="divider"></div>
+
+    <code data-label="object-name" class="toolbar__title">{{firstObject.name}}</code>
+
+    <button class="send-to-console" {{action "sendObjectToConsole" firstObject}} data-label="send-object-to-console-btn">
       <img src="../images/send.png" title="Send object to console">
     </button>
-  </h1>
+  </div>
+
   {{#if trail}}
-    <h2 class="object-inspector__header-trail" data-label="object-trail">{{trail}}</h2>
+    <code class="object-trail" data-label="object-trail">{{trail}}</code>
   {{/if}}
 </div>
+{{/if}}
 
-<div class="object-inspector__mixins">
+<div class="split__panel__bd">
   {{render "mixinDetails"}}
 </div>

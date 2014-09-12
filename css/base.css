@@ -14,8 +14,6 @@ body, input {
   color: #333;
 }
 
-
-
 body, div, nav {
   margin: 0;
   padding: 0;
@@ -23,6 +21,10 @@ body, div, nav {
 
 a {
   color: inherit;
+}
+
+code {
+  font-family: Menlo, Monaco, monospace;
 }
 
 .ember-list-view {

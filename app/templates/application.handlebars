@@ -9,9 +9,7 @@
       {{drag-handle isDragging=isDragging positionRight=inspectorWidth}}
 
       {{#resizable-column width=inspectorWidth classNames="split__panel"}}
-        <div class="split__panel__bd">
-          {{render "mixinStack"}}
-        </div>
+        {{render "mixinStack"}}
       {{/resizable-column}}
     {{/if}}
   </div>
