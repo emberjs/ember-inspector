@@ -4,16 +4,18 @@ var layerDiv,
     previewDiv,
     highlightedElement,
     previewedElement,
-    $ = Ember.$;
+    $ = Ember.$,
+    later = Ember.run.later,
+    computed = Ember.computed,
+    oneWay = computed.oneWay;
 
 var ViewDebug = Ember.Object.extend(PortMixin, {
 
   namespace: null,
 
-
-  adapter: Ember.computed.alias('namespace.adapter'),
-  port: Ember.computed.alias('namespace.port'),
-  objectInspector: Ember.computed.alias('namespace.objectInspector'),
+  adapter: oneWay('namespace.adapter').readOnly(),
+  port: oneWay('namespace.port').readOnly(),
+  objectInspector: oneWay('namespace.objectInspector').readOnly(),
 
   retainedObjects: [],
 
@@ -203,11 +205,8 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
   scheduledSendTree: function() {
     var self = this;
-    // Use next run loop because
-    // some initial page loads
-    // don't trigger mutation listeners
-    // TODO: Look into that in Ember core
-    Ember.run.next(function() {
+    // Send out of band
+    later(function() {
       if (self.isDestroying) {
         return;
       }
@@ -218,7 +217,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
           tree: tree
         });
       }
-    });
+    }, 50);
   },
 
   viewListener: function() {

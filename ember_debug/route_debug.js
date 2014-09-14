@@ -1,23 +1,27 @@
 import PortMixin from 'mixins/port_mixin';
 
 var classify = Ember.String.classify;
+var computed = Ember.computed;
+var oneWay = computed.oneWay;
+var observer = Ember.observer;
+var later = Ember.run.later;
 
 var RouteDebug = Ember.Object.extend(PortMixin, {
   namespace: null,
-  port: Ember.computed.alias('namespace.port'),
+  port: oneWay('namespace.port').readOnly(),
 
-  application: Ember.computed.alias('namespace.application'),
+  application: oneWay('namespace.application').readOnly(),
 
-  router: Ember.computed(function() {
+  router: computed(function() {
     return this.get('application.__container__').lookup('router:main');
   }).property('application'),
 
-  applicationController: Ember.computed(function() {
+  applicationController: computed(function() {
     var container = this.get('application.__container__');
     return container.lookup('controller:application');
   }).property('application'),
 
-  currentPath: Ember.computed.alias('applicationController.currentPath'),
+  currentPath: oneWay('applicationController.currentPath').readOnly(),
 
   portNamespace: 'route',
 
@@ -30,11 +34,14 @@ var RouteDebug = Ember.Object.extend(PortMixin, {
     }
   },
 
-  sendCurrentRoute: Ember.observer(function() {
-    this.sendMessage('currentRoute', { name: this.get('currentPath') });
+  sendCurrentRoute: observer(function() {
+    var self = this;
+    later(function() {
+      self.sendMessage('currentRoute', { name: self.get('currentPath') });
+    }, 50);
   }, 'currentPath'),
 
-  routeTree: Ember.computed(function() {
+  routeTree: computed(function() {
     var routeNames = this.get('router.router.recognizer.names');
     var routeTree = {};
 
@@ -55,7 +62,6 @@ var RouteDebug = Ember.Object.extend(PortMixin, {
     this.sendMessage('routeTree', { tree: routeTree });
   }
 });
-
 
 var buildSubTree = function(routeTree, route) {
   var handlers = route.handlers;
