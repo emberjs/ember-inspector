@@ -70,12 +70,16 @@ export default Ember.Object.extend(EventedMixin, {
       var parentId = props.parent;
       delete props.children;
       delete props.parent;
-      if (parentId) {
+      if (parentId && parentId !== props.guid) {
         props.parent = this.updateOrCreate({ guid: parentId });
       }
       var promise = this.updateOrCreate(props);
       if (childrenIds) {
         childrenIds.forEach(function(childId){
+          // avoid infinite recursion
+          if (childId === props.guid) {
+            return;
+          }
           var child = this.updateOrCreate({ guid: childId, parent: promise });
           promise.get('children').pushObject(child);
         }.bind(this));
