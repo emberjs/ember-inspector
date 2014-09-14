@@ -12,8 +12,8 @@ var ProfileManager = function() {
 };
 
 ProfileManager.prototype = {
-  began: function(timestamp, payload) {
-    this.current = new ProfileNode(timestamp, payload, this.current);
+  began: function(timestamp, payload, now) {
+    this.current = new ProfileNode(timestamp, payload, this.current, now);
     return this.current;
   },
 

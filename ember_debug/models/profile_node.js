@@ -6,10 +6,10 @@
 var get = Ember.get;
 var guidFor = Ember.guidFor;
 
-var ProfileNode = function(start, payload, parent) {
+var ProfileNode = function(start, payload, parent, now) {
   var name;
   this.start = start;
-  this.timestamp = Date.now();
+  this.timestamp = now || Date.now();
 
   if (payload) {
     if (payload.template) {
