@@ -8,144 +8,20 @@
 .app {
   display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: row;
-  flex-direction: row;
-  height: 100%;
-  position: relative;
-}
-
-.app__nav-holder {
-  width: 180px;
-  background: #d6dde5;
-}
-
-
-.app__main {
-  -webkit-flex: 1;
-  flex: 1;
-  height: 100%;
-  overflow: auto;
-  overflow-x: scroll !important;
-  border-left: solid 1px #828282;
-}
-
-.app__main-content {
-  height: 100%;
-}
-
-.app__toggle-inspector-btn {
-  cursor: pointer;
-  width: 20px;
-  background: #e8e8e8;
-  border-left: solid 1px #ccc;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-
-  display:-webkit-box;
-  display: box;
-  -webkit-box-pack:center;
-  -webkit-box-align:center;
-  box-pack:center;
-  box-align:center;
-}
-
-.app__toggle-inspector-btn:hover {
-  background: #d6dde5;
-}
-
-.app__right-col {
-  position: relative;
-  height: 100%;
-  width: 0px;
-  transition: width 50ms;
-
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: row;
-  flex-direction: row;
-}
-
-.app__right-col-drag {
-  position: absolute;
-  top: 0;
-  left: -3px;
-  height: 100%;
-  width: 7px;
-  cursor: col-resize;
-}
-
-.app__inspector-container {
-  -webkit-flex: 1;
-  flex: 1;
-  background: white;
-  height: 100%;
-  overflow: auto;
-}
-
-
-@media only all and (max-width: 1200px) {
-  .app__right-col {
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 3;
-  }
-}
-
-/* Modifier: state = inactive */
-.app_state_inactive .app__nav-holder {
-  background: #e8e8e8;
-}
-
-/* Modifier: inspector = expanded */
-.app_inspector_expanded .app__inspector-container {
-  border-left: 1px solid #bdbdbd;
-}
-
-.app_inspector_expanded .app__right-col {
-  width: 500px;
-  max-width: 60%;
-  min-width: 200px;
-}
-
-.app__dropdown {
-  padding-top: 10px;
-}
-
-.app__dropdown select {
-  width: calc(100% - 10px);
-  display: block;
-  margin: auto;
-
-}
-
-/* Modifier: state = dragging */
-.app_state_dragging {
-  cursor: col-resize;
-}
-
-.app_state_dragging .app__toggle-inspector-btn {
-  cursor: col-resize;
-}
-
-.app_state_dragging .app__right-col {
-  transition: none;
-}
-
-/* Firefox Tweaks */
-.app__main {
-  display: -webkit-flex;
-  display: flex;
   -webkit-flex-direction: column;
   flex-direction: column;
+  -webkit-flex: auto;
+  flex: auto;
   overflow: hidden;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  font-size: 12px;
 }
 
-.app__toggle-inspector-btn {
-  display: -webkit-flex;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+.app.is-dragging {
+  cursor: col-resize;
 }

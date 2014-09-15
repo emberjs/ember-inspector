@@ -1,5 +1,6 @@
 export default Ember.Component.extend({
   classNames: ['drag-handle'],
+  attributeBindings: ['style'],
   isDragging: false,
   positionLeft: null,
   positionRight: null,
@@ -34,5 +35,9 @@ export default Ember.Component.extend({
   mouseDown: function() {
     this.startDragging();
     return false;
-  }
+  },
+
+  style: function () {
+    return 'right:' + this.get('positionRight') + 'px';
+  }.property('positionRight')
 });

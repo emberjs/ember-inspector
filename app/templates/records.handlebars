@@ -11,21 +11,4 @@
   <div class="list-view__list-container">
     {{view "recordList" content=filtered}}
   </div>
-
-
-  <div class="list-view__filter">
-    <div class="filter-bar">
-      <div class="filter-bar__search">
-        {{input type="search" value=search placeholder="Search"}}
-      </div>
-      <div data-label="filter" {{bind-attr class="noFilterValue:filter-bar__radio_selected :filter-bar__radio :filter-bar__radio_separate"}}
-          {{action "setFilter"}} >
-        All
-      </div>
-      {{#each filters itemController="recordFilter"}}
-        <div data-label="filter" {{bind-attr class="checked:filter-bar__radio_selected :filter-bar__radio"}} {{action "setFilter" name}} >{{desc}}</div>
-      {{/each}}
-    </div>
-  </div>
-
 </div>

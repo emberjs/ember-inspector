@@ -1,0 +1,15 @@
+<div class="toolbar">
+  <div class="toolbar__search" data-label="records-search">
+    {{input value=search placeholder="Search"}}
+  </div>
+
+  <button data-label="filter" {{bind-attr class="noFilterValue:active :toolbar__radio"}} {{action "setFilter"}}>
+    All
+  </button>
+
+  <div class="divider"></div>
+
+  {{#each filters itemController="recordFilter"}}
+    <button data-label="filter" {{bind-attr class="checked:active :toolbar__radio"}} {{action "setFilter" name}} >{{desc}}</button>
+  {{/each}}
+</div>

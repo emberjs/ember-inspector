@@ -6,14 +6,12 @@
  or a mixin the object extends
 */
 
-.mixin {
-  border-top: 1px solid #bdbdbd;
-}
-
 .mixin__name {
+  margin-top: -1px;
   padding: 2px 2px 2px 5px;
-  background-color: #e6e6e6;
-  text-shadow: 0px 1px 1px #fff;
+  border-top: 1px solid #bdbdbd;
+  border-bottom: 1px solid #bdbdbd;
+  background-color: #f0f0f0;
   cursor: default;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -22,6 +20,8 @@
 
 .mixin__name:active {
   background-color: #ccc;
+  border-top: 1px solid #b2b2b2;
+  border-bottom: 1px solid #b2b2b2;
 }
 
   .mixin_props_no .mixin__name:before {
@@ -36,6 +36,8 @@
   content: "\25B6";
   color: #737373;
   margin-right: 4px;
+  position: relative;
+  top: -1px;
   font-size: 75%;
 }
 

@@ -1,6 +1,5 @@
 // Currently used to determine the height of list-views
 export default Ember.View.extend({
-  classNames: ['app__main-content'],
   height: Ember.computed.alias('controller.contentHeight'),
 
   didInsertElement: function() {

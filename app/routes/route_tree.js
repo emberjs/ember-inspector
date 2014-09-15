@@ -1,4 +1,6 @@
-export default Ember.Route.extend({
+import TabRoute from 'routes/tab';
+
+export default TabRoute.extend({
   setupController: function(controller, model) {
     this._super(controller, model);
     this.get('port').on('route:currentRoute', this, this.setCurrentRoute);
