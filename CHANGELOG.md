@@ -1,5 +1,14 @@
 # Ember Inspector Changelog
 
+
+## Ember Inspector 1.5.0
+
+* [IMPROVEMENT] Redesigned the UI to be more consistent with Chrome dev tools
+* [IMPROVEMENT] Improved "appeared" performance by instrumenting out of band
+* [BUGFIX] Fixed compatibility issue between promise inspection and Ember >= 1.7
+* [BUGFIX] Fixed view highlighting after metal-views upgrade
+* [BUGFIX] Fixed conflict between injecting Tomster script and file upload libraries
+
 ## Ember Inspector 1.4.0
 
 * [FEATURE] Added bookmark option to support all browsers
