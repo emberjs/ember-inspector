@@ -63,6 +63,9 @@ export default Ember.Route.extend({
         this.get('port').send('objectInspector:inspectById', { objectId: objectId });
       }
     },
+    setIsDragging: function (isDragging) {
+      this.set('controller.isDragging', isDragging);
+    },
     refreshPage: function() {
       this.get('port').send('general:refresh');
       // inject ember_debug as quickly as possible in chrome

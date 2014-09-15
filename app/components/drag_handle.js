@@ -1,21 +1,30 @@
 export default Ember.Component.extend({
   classNames: ['drag-handle'],
+  classNameBindings: ['isLeft:drag-handle--left', 'isRight:drag-handle--right'],
   attributeBindings: ['style'],
-  isDragging: false,
-  positionLeft: null,
-  positionRight: null,
+  position: 0,
+  side: '',
+  isRight: Ember.computed.equal('side', 'right'),
+  isLeft: Ember.computed.equal('side', 'left'),
+  minWidth: 60,
 
   startDragging: function() {
     var self = this,
-        body = Ember.$('body'),
+        $container = this.$().parent(),
+        $containerOffsetLeft = $container.offset().left,
+        $containerOffsetRight = $containerOffsetLeft + $container.width(),
         namespace = 'drag-' + this.get('elementId');
 
-    this.set('isDragging', true);
-    body.on('mousemove.' + namespace, function(e){
-      self.setProperties({
-        positionRight: body.width() - e.pageX,
-        positionLeft: e.pageX
-      });
+    this.sendAction('action', true);
+
+    Ember.$('body').on('mousemove.' + namespace, function(e){
+      var position = self.get('isLeft') ?
+                       e.pageX - $containerOffsetLeft :
+                       $containerOffsetRight - e.pageX;
+
+      if (position >= self.get('minWidth')) {
+        self.set('position', position);
+      }
     })
     .on('mouseup.' + namespace + ' mouseleave.' + namespace, function(){
       self.stopDragging();
@@ -23,7 +32,7 @@ export default Ember.Component.extend({
   },
 
   stopDragging: function() {
-    this.set('isDragging', false);
+    this.sendAction('action', false);
     Ember.$('body').off('.drag-' + this.get('elementId'));
   },
 
@@ -38,6 +47,11 @@ export default Ember.Component.extend({
   },
 
   style: function () {
-    return 'right:' + this.get('positionRight') + 'px';
-  }.property('positionRight')
+    if (this.get('side')) {
+      return this.get('side') + ':' + this.get('position') + 'px';
+    }
+    else {
+      return '';
+    }
+  }.property('side', 'position')
 });
