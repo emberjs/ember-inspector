@@ -45,6 +45,8 @@
   display: flex;
   -webkit-flex: none;
   flex: none;
+  -webkit-flex-direction: column;
+  flex-direction: column;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -55,8 +57,6 @@
 }
 
 .split__panel__hd {
-  -webkit-flex-direction: column;
-  flex-direction: column;
   border-bottom-width: 1px;
   border-bottom-style: solid;
   background: #fff;
@@ -87,6 +87,10 @@
 
 .split__panel--sidebar-1 .split__panel__bd {
   background: #e8e8e8;
+}
+
+.split__panel--sidebar-1 > .split__panel__ft {
+  text-align: center;
 }
 
 .split__panel--sidebar-2 .split__panel__bd {
