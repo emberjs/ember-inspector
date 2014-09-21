@@ -9,9 +9,16 @@
   top: 0;
   bottom: 0;
   width: 6px;
-  margin-right: -3px;
   z-index: 500;
   cursor: col-resize;
+}
+
+.drag-handle--right {
+  margin-right: -3px;
+}
+
+.drag-handle--left {
+  margin-left: -3px;
 }
 
 .drag-handle__border {

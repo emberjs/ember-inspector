@@ -28,11 +28,5 @@ export default Ember.Route.extend({
       var currentType = route.get('currentModel').findProperty('objectId', modelType.objectId);
       Ember.set(currentType, 'count', modelType.count);
     });
-  },
-
-  actions: {
-    viewRecords: function(type) {
-      this.transitionTo('records', type);
-    }
   }
 });

@@ -1,5 +1,7 @@
 <div class="split">
-  <div class="split__panel split__panel--sidebar-2 nav">
+  {{#draggable-column
+          width=navWidth
+          classNames="split__panel split__panel--sidebar-2 nav"}}
     <div class="split__panel__bd">
       <h3>Model Types</h3>
       <ul>
@@ -13,7 +15,8 @@
         {{/each}}
       </ul>
     </div>
-  </div>
+  {{/draggable-column}}
+
   <div class="split__panel">
     <div class="split__panel__bd">
       {{outlet}}

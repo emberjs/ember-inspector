@@ -154,10 +154,6 @@
   margin-right: 6px;
 }
 
-.toolbar__search:first-child {
-  margin-left: -1px;
-}
-
 .toolbar__search input {
   -moz-box-sizing: border-box;
   box-sizing: border-box;

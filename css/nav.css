@@ -4,9 +4,14 @@
  Navigation lists and links
 */
 
-.nav__heading {
+.nav h3 {
   margin: 0;
   padding: 3px 5px;
+  -webkit-flex: 0 0 19px;
+  flex: 0 0 19px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   color: #6e6e6e;
   text-transform: uppercase;
   text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
@@ -48,6 +53,10 @@
   overflow: hidden;
   text-decoration: none;
   cursor: default;
+}
+
+.app.is-dragging .nav li > a {
+  cursor: col-resize;
 }
 
 .nav li > a polygon,

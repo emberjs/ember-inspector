@@ -5,6 +5,7 @@ export default Ember.Controller.extend({
   needs: ['mixin-stack', 'mixin-details'],
 
   emberApplication: false,
+  navWidth: 180,
   inspectorWidth: 360,
   mixinStack: oneWay('controllers.mixin-stack').readOnly(),
   mixinDetails: oneWay('controllers.mixin-details').readOnly(),

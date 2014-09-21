@@ -1,12 +1,14 @@
 <div class="split split--main">
-  <div class="split__panel split__panel--sidebar-1">
+  {{#draggable-column
+          width=navWidth
+          classNames="split__panel split__panel--sidebar-1"}}
     <div class="split__panel__hd">
       {{render "iframes"}}
     </div>
     <div class="split__panel__bd">
       {{partial "nav"}}
     </div>
-  </div>
+  {{/draggable-column}}
 
   <div class="split__panel">
     <div class="split__panel__hd">
