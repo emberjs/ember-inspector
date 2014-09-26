@@ -6,6 +6,11 @@
   align-items: center;
 }
 
+.toolbar > * {
+  -webkit-flex: none;
+  flex: none;
+}
+
 /**
  Toolbar Title
  =============
@@ -98,8 +103,9 @@
 .toolbar__checkbox {
   margin: auto 6px auto 0;
   height: auto;
-  display: flex;
   line-height: 20px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 /**
