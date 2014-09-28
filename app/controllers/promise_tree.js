@@ -35,6 +35,14 @@ export default Ember.ArrayController.extend({
   neverCleared: not('wasCleared'),
   shouldRefresh: and('isEmpty', 'neverCleared'),
 
+  // Keep track of promise stack traces.
+  // It is opt-in due to performance reasons.
+  instrumentWithStack: false,
+
+  stackChanged: function() {
+    this.port.send('promise:setInstrumentWithStack', { instrumentWithStack: this.get('instrumentWithStack') });
+  }.observes('instrumentWithStack').on('init'),
+
   init: function() {
     // List-view does not support item controllers
     this.reopen({

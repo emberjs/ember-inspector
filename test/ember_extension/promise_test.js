@@ -11,7 +11,8 @@ function generatePromise(props) {
     state: 'created',
     value: null,
     reason: null,
-    createdAt: Date.now()
+    createdAt: Date.now(),
+    hasStack: false
   }, props);
 }
 
@@ -248,12 +249,12 @@ test("Chained promises", function() {
   });
 });
 
-test("Trace", function() {
+test("Can trace promise when there is a stack", function() {
   visit('/promises');
 
   andThen(function() {
     port.trigger('promise:promisesUpdated', {
-      promises: [generatePromise({ guid: 1 })]
+      promises: [generatePromise({ guid: 1, hasStack: true })]
     });
     wait();
   });
@@ -267,6 +268,40 @@ test("Trace", function() {
 
 });
 
+
+test("Trace button hidden if promise has no stack", function() {
+  visit('/promises');
+
+  andThen(function() {
+    port.trigger('promise:promisesUpdated', {
+      promises: [generatePromise({ guid: 1, hasStack: false })]
+    });
+    wait();
+  });
+
+  andThen(function() {
+    equal(findByLabel('trace-promise-btn').length, 0);
+  });
+
+});
+
+test("Toggling promise trace option", function() {
+  expect(3);
+
+  visit('/promises');
+
+  andThen(function() {
+    var input = findByLabel('with-stack').find('input');
+    ok(!input.prop('checked'), 'should not be checked by default');
+    return click(input);
+  });
+
+  andThen(function() {
+    equal(name, 'promise:setInstrumentWithStack');
+    equal(message.instrumentWithStack, true);
+  });
+
+});
 
 test("Logging error stack trace in the console", function() {
   visit('/promises');

@@ -7,9 +7,11 @@
       </span>
     </div>
     <div class="list-tree__right-helper">
-      <div class="send-trace-to-console" {{action "tracePromise" model}} title="Trace promise in console" data-label="trace-promise-btn">
-        Trace
-      </div>
+      {{#if hasStack}}
+        <div class="send-trace-to-console" {{action "tracePromise" model}} title="Trace promise in console" data-label="trace-promise-btn">
+          Trace
+        </div>
+      {{/if}}
     </div>
   </div>
   <div class="cell cell_size_medium">

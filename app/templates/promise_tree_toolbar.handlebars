@@ -14,4 +14,9 @@
   <button data-label="filter" {{bind-attr class="isRejectedFilter:active :toolbar__radio"}} {{action "setFilter" "rejected"}} >Rejected</button>
   <button data-label="filter" {{bind-attr class="isPendingFilter:active :toolbar__radio"}} {{action "setFilter" "pending"}} >Pending</button>
   <button data-label="filter" {{bind-attr class="isFulfilledFilter:active :toolbar__radio"}} {{action "setFilter" "fulfilled"}} >Fulfilled</button>
+
+
+  <div class="toolbar__checkbox" data-label="with-stack">
+    {{input type="checkbox" checked=instrumentWithStack id="instrument-with-stack"}} <label for="instrument-with-stack">Trace promises</label>
+  </div>
 </div>

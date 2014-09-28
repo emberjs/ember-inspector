@@ -70,6 +70,10 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
         stack.splice(0, 2, ['Ember Inspector (Promise Trace): ' + (promise.get('label') || '')]);
         this.get("adapter").log(stack.join("\n"));
       }
+    },
+
+    setInstrumentWithStack: function(message) {
+      Ember.RSVP.configure('instrument-with-stack', message.instrumentWithStack);
     }
   },
 
@@ -148,6 +152,7 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
     if (promise.get('settledAt')) {
       serialized.settledAt = promise.get('settledAt').getTime();
     }
+    serialized.hasStack = !!promise.get('stack');
     return serialized;
   },
 
