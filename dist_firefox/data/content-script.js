@@ -27,7 +27,6 @@ function init() {
 }
 
 function onCleanupListeners() {
-  console.debug("DETACHING CONTENT SCRIPT", window.location && window.location.href);
   try {
     window.removeEventListener("message", onEmberVersion, true);
   } catch(e) {}
@@ -51,17 +50,20 @@ function onEmberVersion(message) {
 
 function onInjectEmberDebug() {
   //console.debug("ON INJECT EMBER DEBUG ON:", window.location.href);
-  // NOTE: evalInWindow needs Firefox >= 30.0
-  evalInWindow(self.options.emberDebugScript, unsafeWindow);
+  try {
+    evalInWindow(self.options.emberDebugScript, unsafeWindow);
+  } catch(e) {
+    console.error("evalInWindow is not supported on this Firefox version", e);
+  }
 }
 
 function injectInPageScript() {
   if (window.document.readyState == "complete") {
-    // inject JS into the page to check for an app on domready
-    var script = document.createElement('script');
-    script.type = "text/javascript";
-    script.src = self.options.inPageScriptURL;
-    if (document.body) document.body.appendChild(script);
+    try {
+      evalInWindow(self.options.emberInPageScript, unsafeWindow);
+    } catch(e) {
+      console.error("evalInWindow is not supported on this Firefox version", e);
+    }
   } else {
     setTimeout(injectInPageScript, 100);
   }
