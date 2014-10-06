@@ -1,5 +1,9 @@
 import escapeRegExp from "utils/escape_reg_exp";
 var typeOf = Ember.typeOf;
+var computed = Ember.computed;
+var or = computed.or;
+var equal = computed.equal;
+var not = computed.not;
 
 var dateComputed = function() {
   return Ember.computed(
@@ -29,13 +33,13 @@ export default Ember.Object.extend({
     return parent.get('level') + 1;
   }.property('parent.level'),
 
-  isSettled: Ember.computed.or('isFulfilled', 'isRejected'),
+  isSettled: or('isFulfilled', 'isRejected'),
 
-  isFulfilled: Ember.computed.equal('state', 'fulfilled'),
+  isFulfilled: equal('state', 'fulfilled'),
 
-  isRejected: Ember.computed.equal('state', 'rejected'),
+  isRejected: equal('state', 'rejected'),
 
-  isPending: Ember.computed.not('isSettled'),
+  isPending: not('isSettled'),
 
   children: function() {
     return [];
