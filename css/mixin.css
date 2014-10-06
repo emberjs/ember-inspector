@@ -130,7 +130,8 @@
   color: #999;
 }
 
-.mixin__property .type-ember-object {
+.mixin__property .type-ember-object,
+.mixin__property .type-array {
   cursor: pointer;
 }
 

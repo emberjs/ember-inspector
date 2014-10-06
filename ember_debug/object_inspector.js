@@ -170,7 +170,7 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
     var parentObject = this.sentObjects[objectId],
       object = get(parentObject, property);
 
-    if (object instanceof EmberObject) {
+    if (this.canSend(object)) {
       var details = this.mixinsForObject(object);
 
       this.sendMessage('updateObject', {

@@ -21,7 +21,7 @@ export default Ember.ObjectController.extend({
 
   actions: {
     valueClick: function() {
-      if (this.get('isEmberObject')) {
+      if (this.get('isEmberObject') || this.get('isArray')) {
         this.get('target').send('digDeeper', this.get('model'));
         return;
       }
@@ -31,7 +31,7 @@ export default Ember.ObjectController.extend({
         return;
       }
 
-      if (this.get('isFunction') || this.get('isArray') || this.get('overridden') || this.get('readOnly')) {
+      if (this.get('isFunction') || this.get('overridden') || this.get('readOnly')) {
         return;
       }
 
