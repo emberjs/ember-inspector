@@ -37,7 +37,7 @@ EmberDebug = Ember.Namespace.extend({
 
     this.reset();
 
-    this.get("adapter").debug("Ember Debugger Active");
+    this.get("adapter").debug("Ember Inspector Active");
   },
 
   destroyContainer: function() {
@@ -80,6 +80,12 @@ EmberDebug = Ember.Namespace.extend({
       this.generalDebug.sendBooted();
       this.viewDebug.sendTree();
     });
+  },
+
+  inspect: function(obj) {
+    this.get('objectInspector').sendObject(obj);
+    this.get('adapter').log('Sent to the Object Inspector');
+    return obj;
   }
 
 }).create();

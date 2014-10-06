@@ -1,26 +1,37 @@
 import PortMixin from "mixins/port_mixin";
-
+var EmberObject = Ember.Object;
+var typeOf = Ember.typeOf;
+var Descriptor = Ember.Descriptor;
+var emberInspect = Ember.inspect;
+var computed = Ember.computed;
+var oneWay = computed.oneWay;
+var ComputedProperty = Ember.ComputedProperty;
+var get = Ember.get;
+var set = Ember.set;
+var guidFor = Ember.guidFor;
+var emberMeta = Ember.meta;
+var isNone = Ember.isNone;
 
 function inspectValue(value) {
   var string;
-  if (value instanceof Ember.Object) {
+  if (value instanceof EmberObject) {
     return { type: "type-ember-object", inspect: value.toString() };
   } else if (isComputed(value)) {
     string = "<computed>";
     return { type: "type-descriptor", inspect: string, computed: true };
-  } else if (value instanceof Ember.Descriptor) {
+  } else if (value instanceof Descriptor) {
     return { type: "type-descriptor", inspect: value.toString(), computed: true };
   } else {
-    return { type: "type-" + Ember.typeOf(value), inspect: inspect(value) };
+    return { type: "type-" + typeOf(value), inspect: inspect(value) };
   }
 }
 
 function inspect(value) {
   if (typeof value === 'function') {
     return "function() { ... }";
-  } else if (value instanceof Ember.Object) {
+  } else if (value instanceof EmberObject) {
     return value.toString();
-  } else if (Ember.typeOf(value) === 'array') {
+  } else if (typeOf(value) === 'array') {
     if (value.length === 0) { return '[]'; }
     else if (value.length === 1) { return '[ ' + inspect(value[0]) + ' ]'; }
     else { return '[ ' + inspect(value[0]) + ', ... ]'; }
@@ -39,9 +50,9 @@ function inspect(value) {
         }
         v = value[key];
         if (v === 'toString') { continue; } // ignore useless items
-        if (Ember.typeOf(v) === 'function') { v = "function() { ... }"; }
-        if (Ember.typeOf(v) === 'array') { v = '[Array : ' + v.length + ']'; }
-        if (Ember.typeOf(v) === 'object') { v = '[Object]'; }
+        if (typeOf(v) === 'function') { v = "function() { ... }"; }
+        if (typeOf(v) === 'array') { v = '[Array : ' + v.length + ']'; }
+        if (typeOf(v) === 'object') { v = '[Object]'; }
         ret.push(key + ": " + v);
       }
     }
@@ -51,18 +62,18 @@ function inspect(value) {
     }
     return '{ ' + ret.join(', ') + suffix;
   } else {
-    return Ember.inspect(value);
+    return emberInspect(value);
   }
 }
 
-var ObjectInspector = Ember.Object.extend(PortMixin, {
+var ObjectInspector = EmberObject.extend(PortMixin, {
   namespace: null,
 
-  adapter: Ember.computed.alias('namespace.adapter'),
+  adapter: oneWay('namespace.adapter'),
 
-  port: Ember.computed.alias('namespace.port'),
+  port: oneWay('namespace.port'),
 
-  application: Ember.computed.alias('namespace.application'),
+  application: oneWay('namespace.application'),
 
   init: function() {
     this._super();
@@ -125,19 +136,23 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     }
   },
 
+  canSend: function(val) {
+    return (val instanceof EmberObject) || typeOf(val) === 'array';
+  },
+
   saveProperty: function(objectId, mixinIndex, prop, val) {
     var object = this.sentObjects[objectId];
-    Ember.set(object, prop, val);
+    set(object, prop, val);
   },
 
   sendToConsole: function(objectId, prop) {
     var object = this.sentObjects[objectId];
     var value;
 
-    if (Ember.isNone(prop)) {
+    if (isNone(prop)) {
       value = this.sentObjects[objectId];
     } else {
-      value =  Ember.get(object, prop);
+      value =  get(object, prop);
     }
 
     this.sendValueToConsole(value);
@@ -153,9 +168,9 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
 
   digIntoObject: function(objectId, property) {
     var parentObject = this.sentObjects[objectId],
-      object = Ember.get(parentObject, property);
+      object = get(parentObject, property);
 
-    if (object instanceof Ember.Object) {
+    if (object instanceof EmberObject) {
       var details = this.mixinsForObject(object);
 
       this.sendMessage('updateObject', {
@@ -169,6 +184,9 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
   },
 
   sendObject: function(object) {
+    if (!this.canSend(object)) {
+      throw new Error("Can't inspect " + object + ". Only Ember objects and arrays are supported.");
+    }
     var details = this.mixinsForObject(object);
     this.sendMessage('updateObject', {
       objectId: details.objectId,
@@ -180,8 +198,8 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
 
 
   retainObject: function(object) {
-    var meta = Ember.meta(object),
-        guid = Ember.guidFor(object),
+    var meta = emberMeta(object),
+        guid = guidFor(object),
         self = this;
 
     meta._debugReferences = meta._debugReferences || 0;
@@ -208,8 +226,8 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     if(!object) {
       return;
     }
-    var meta = Ember.meta(object),
-        guid = Ember.guidFor(object);
+    var meta = emberMeta(object),
+        guid = guidFor(object);
 
     meta._debugReferences--;
 
@@ -315,7 +333,7 @@ var ObjectInspector = Ember.Object.extend(PortMixin, {
     var object = this.sentObjects[objectId];
 
     function handler() {
-      var value = Ember.get(object, property);
+      var value = get(object, property);
       value = inspectValue(value);
       value.computed = computed;
 
@@ -480,7 +498,7 @@ function calculateCPs(object, mixinDetails, expensiveProperties) {
       if (item.value.computed) {
         var cache = Ember.cacheFor(object, item.name);
         if (cache !== undefined || expensiveProperties.indexOf(item.name) === -1) {
-          item.value = inspectValue(Ember.get(object, item.name));
+          item.value = inspectValue(get(object, item.name));
           item.value.computed = true;
         }
       }
@@ -633,7 +651,7 @@ function getDebugInfo(object) {
 }
 
 function isComputed(value) {
-  return value instanceof Ember.ComputedProperty;
+  return value instanceof ComputedProperty;
 }
 
 // Not used

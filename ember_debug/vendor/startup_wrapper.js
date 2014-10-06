@@ -37,7 +37,7 @@ if (typeof adapter !== 'undefined') {
 
 
   function inject() {
-    Ember.Debug = requireModule('ember_debug')['default'];
+    window.EmberInspector = Ember.Debug = requireModule('ember_debug')['default'];
   }
 
   onEmberReady(function() {
