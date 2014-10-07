@@ -38,12 +38,20 @@ App.PostsRoute = Em.Route.extend({
   }
 });
 
+
+App.CommentsIndexRoute = Em.Route.extend({
+  model: function() {
+    return Ember.A(['first comment', 'second comment', 'third comment']);
+  }
+});
+
 App.SimpleController = Em.ObjectController.extend();
 
 Ember.TEMPLATES.application = compile('{{outlet}}');
 Ember.TEMPLATES.index = compile('Index');
 Ember.TEMPLATES.simple = compile('Simple {{input class="simple-input"}} {{view Ember.View classNames="simple-view"}}');
 Ember.TEMPLATES.posts = compile('Posts');
+Ember.TEMPLATES["comments/index"] = compile('{{#each}}{{this}}{{/each}}');
 
 
 export default App;

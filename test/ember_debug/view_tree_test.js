@@ -53,6 +53,28 @@ test("Simple View Tree", function() {
 });
 
 
+test("Views created by {{each}} helper are shown", function() {
+  var name = null, message = null;
+  port.reopen({
+    send: function(n, m) {
+      name = n;
+      message = m;
+    }
+  });
+
+  visit('/comments');
+
+  andThen(function() {
+    var tree = message.tree;
+    var comments = tree.children[0].children;
+    equal(comments.length, 3, "There should be 3 views");
+    equal(comments[0].value.model.name, 'first comment');
+    equal(comments[1].value.model.name, 'second comment');
+    equal(comments[2].value.model.name, 'third comment');
+  });
+});
+
+
 test("Highlight a view", function() {
   var name, message, layerDiv;
   port.reopen({
@@ -230,5 +252,4 @@ test("Supports a view with a string as model", function() {
     equal(message.tree.children[0].value.model.name, 'String as model');
     equal(message.tree.children[0].value.model.type, 'type-string');
   });
-
 });

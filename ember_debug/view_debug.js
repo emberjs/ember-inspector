@@ -57,11 +57,10 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     },
     sendModelToConsole: function(message) {
       var view = this.get('objectInspector').sentObjects[message.viewId];
-      var controller = view.get('controller');
-      if (controller) {
-        this.get('objectInspector').sendValueToConsole(controller.get('model'));
+      var model = this.modelForView(view);
+      if (model) {
+        this.get('objectInspector').sendValueToConsole(model);
       }
-
     }
   },
 
@@ -249,6 +248,15 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     return tree;
   },
 
+  modelForView: function(view) {
+    var controller = view.get('controller');
+    var model = controller.get('model');
+    if (view.get('context') !== controller) {
+      model = view.get('context');
+    }
+    return model;
+  },
+
   inspectView: function(view, retained) {
     var templateName = view.get('templateName') || view.get('_debugTemplateName'),
         viewClass = shortViewName(view), name;
@@ -289,7 +297,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
         objectId: this.retainObject(controller)
       };
 
-      var model = controller.get('model');
+      var model = this.modelForView(view);
       if (model) {
         if(Ember.Object.detectInstance(model) || Ember.typeOf(model) === 'array') {
           value.model = {
@@ -329,14 +337,18 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
   },
 
   shouldShowView: function(view) {
-    return (this.options.allViews || this.hasOwnController(view)) &&
+    return (this.options.allViews || this.hasOwnController(view) || this.hasOwnContext(view)) &&
         (this.options.components || !(view instanceof Ember.Component)) &&
-        (!view.get('isVirtual') || this.hasOwnController(view));
+        (!view.get('isVirtual') || this.hasOwnController(view) || this.hasOwnContext(view));
   },
 
   hasOwnController: function(view) {
     return view.get('controller') !== view.get('_parentView.controller') &&
     ((view instanceof Ember.Component) || !(view.get('_parentView.controller') instanceof Ember.Component));
+  },
+
+  hasOwnContext: function(view) {
+    return view.get('context') !== view.get('_parentView.context') && !(view.get('_parentView') instanceof Ember.Component);
   },
 
   highlightView: function(element, preview) {
