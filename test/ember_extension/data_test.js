@@ -83,11 +83,12 @@ test("Model types are successfully listed and bound", function() {
   visit('/data/model-types')
   .then(function() {
     equal(findByLabel('model-type').length, 2);
-    equal(findByLabel('model-type-name').eq(0).text().trim(), 'App.Post');
-    equal(findByLabel('model-type-name').eq(1).text().trim(), 'App.Comment');
+    // they should be sorted alphabetically
+    equal(findByLabel('model-type-name').eq(0).text().trim(), 'App.Comment');
+    equal(findByLabel('model-type-name').eq(1).text().trim(), 'App.Post');
 
-    equal(findByLabel('model-type-count').eq(0).text().trim(), 2);
-    equal(findByLabel('model-type-count').eq(1).text().trim(), 1);
+    equal(findByLabel('model-type-count').eq(0).text().trim(), 1);
+    equal(findByLabel('model-type-count').eq(1).text().trim(), 2);
   })
   .then(function() {
     port.trigger('data:modelTypesUpdated', {
@@ -97,7 +98,7 @@ test("Model types are successfully listed and bound", function() {
     return wait();
   })
   .then(function() {
-    equal(findByLabel('model-type-count').eq(0).text().trim(), 3);
+    equal(findByLabel('model-type-count').eq(1).text().trim(), 3);
   });
 });
 
@@ -105,7 +106,7 @@ test("Model types are successfully listed and bound", function() {
 test("Records are successfully listed and bound", function() {
   visit('/data/model-types')
   .then(function() {
-    return click(findByLabel('model-type').find('a').first());
+    return click(findByLabel('model-type').find('a').eq(1));
   })
   .then(function() {
     var columns = findByLabel('column-title');
@@ -167,7 +168,7 @@ test("Records are successfully listed and bound", function() {
 test("Filtering records", function() {
   visit('/data/model-types')
   .then(function() {
-    return click(findByLabel('model-type').find('a').first());
+    return click(findByLabel('model-type').find('a').eq(1));
   })
   .then(function() {
     var rows = findByLabel('record-row');
@@ -188,7 +189,7 @@ test("Filtering records", function() {
 test("Searching records", function() {
   visit('/data/model-types')
   .then(function() {
-    return click(findByLabel('model-type').find('a').first());
+    return click(findByLabel('model-type').find('a').eq(1));
   })
   .then(function() {
     var rows = findByLabel('record-row');
