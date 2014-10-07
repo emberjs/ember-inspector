@@ -97,6 +97,7 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  min-height: 14px;
 }
 
 .mixin__property-value-txt {
