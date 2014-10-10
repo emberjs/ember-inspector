@@ -253,3 +253,29 @@ test("Supports a view with a string as model", function() {
     equal(message.tree.children[0].value.model.type, 'type-string');
   });
 });
+
+test("Supports applications that don't have the ember-application CSS class", function() {
+  var name = null, message = null,
+      $rootElement = $('body');
+
+  visit('/simple')
+  .then(function() {
+    ok($rootElement.hasClass('ember-application'), "The rootElement has the .ember-application CSS class");
+    $rootElement.removeClass('ember-application');
+
+    // Restart the inspector
+    EmberDebug.start();
+    port = EmberDebug.port;
+
+    port.reopen({
+      send: function(n, m) {
+        name = n;
+        message = m;
+      }
+    });
+  });
+  visit('/simple')
+  .then(function() {
+    equal(name, 'view:viewTree');
+  });
+});

@@ -13,6 +13,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
 
   namespace: null,
 
+  application: oneWay('namespace.application').readOnly(),
   adapter: oneWay('namespace.adapter').readOnly(),
   port: oneWay('namespace.port').readOnly(),
   objectInspector: oneWay('namespace.objectInspector').readOnly(),
@@ -231,7 +232,13 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
   },
 
   viewTree: function() {
-    var rootView = Ember.View.views[$('.ember-application > .ember-view').attr('id')];
+    var emberApp = this.get('application');
+    if (!emberApp) {
+      return false;
+    }
+
+    var applicationViewId = $(emberApp.rootElement).find('> .ember-view').attr('id');
+    var rootView = Ember.View.views[applicationViewId];
     // In case of App.reset view is destroyed
     if (!rootView) {
       return false;
