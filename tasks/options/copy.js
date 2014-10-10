@@ -87,11 +87,14 @@ module.exports = {
       cwd: 'vendor',
       src: ['**'],
       dest: 'tmp/public/vendor'
-    },
-    {
+    }, {
+      expand: true,
+      cwd: 'dist_common/images',
+      src: ['**'],
+      dest: 'tmp/public/images'
+    }, {
       src: ['test/test_support.js'],
       dest: 'tmp/public/test/test_support.js'
-    }
-    ]
+    }]
   }
 };
