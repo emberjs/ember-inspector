@@ -7,7 +7,7 @@ export default Ember.Object.extend(Ember.Evented, {
   application: oneWay('namespace.application').readOnly(),
 
   uniqueId: Ember.computed(function() {
-    return guidFor(this.get('application')) + '__' + window.location.href + '__' + Date.now();
+    return guidFor(this.get('application')) + '__' + window.location.href + ' on ' + navigator.userAgent + '__' + Date.now();
   }).property(),
 
   init: function() {
