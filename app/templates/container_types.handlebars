@@ -1,15 +1,19 @@
 <div class="split">
   {{#draggable-column
-          width=navWidth
+          width=180
           classNames="split__panel split__panel--sidebar-2 nav"}}
+
     <div class="split__panel__bd">
-      <div class="nav__title"><h3>Model Types</h3></div>
+      <div class="nav__title">
+        <h3>Types</h3>
+      </div>
+
       <ul>
         {{#each}}
-          <li data-label="model-type">
-            {{#link-to "records" this}}
-              <span data-label="model-type-name">{{name}}</span>
-              (<span data-label="model-type-count">{{count}}</span>)
+          <li data-label="container-type">
+            {{#link-to "container-type" name}}
+              <span data-label="container-type-name">{{name}}</span>
+              (<span data-label="container-type-count">{{count}}</span>)
             {{/link-to}}
           </li>
         {{/each}}

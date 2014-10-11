@@ -137,6 +137,10 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
     inspectById: function(message) {
       var obj = this.sentObjects[message.objectId];
       this.sendObject(obj);
+    },
+    inspectByContainerLookup: function(message) {
+      var container = this.get('application.__container__');
+      this.sendObject(container.lookup(message.name));
     }
   },
 
