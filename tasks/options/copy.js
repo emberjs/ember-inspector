@@ -70,6 +70,25 @@ module.exports = {
       dest: 'dist_bookmarklet/panes/ember_extension.css'
     }]
   },
+  websocket_extension: {
+    files: [{
+      src: ['tmp/public/ember_extension.js'],
+      dest: 'dist_websocket/panes/ember_extension.js'
+    }, {
+      expand: true,
+      cwd: 'vendor',
+      src: ['**'],
+      dest: 'dist_websocket/vendor/'
+    }, {
+      expand: true,
+      cwd: 'dist_common/images',
+      src: ['**'],
+      dest: 'dist_websocket/images/'
+    }, {
+      src: ['tmp/public/ember_extension.css'],
+      dest: 'dist_websocket/panes/ember_extension.css'
+    }]
+  },  
   tests: {
     files: [
     {

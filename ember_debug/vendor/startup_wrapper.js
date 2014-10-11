@@ -98,7 +98,7 @@ if (typeof adapter !== 'undefined') {
     }
     var documentElement = document.documentElement;
     var interval = setInterval(function() {
-      if (documentElement.dataset.emberExtension && Ember.BOOTED) {
+      if ((documentElement.dataset.emberExtension || (EMBER_INSPECTOR_CONFIG && EMBER_INSPECTOR_CONFIG.remoteDebugSocket)) && Ember.BOOTED) {
        clearInterval(interval);
        callback();
       }

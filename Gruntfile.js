@@ -39,7 +39,9 @@ module.exports = function(grunt) {
     'copy:firefox_extension',
     'wrap:firefox_ember_debug',
     'copy:bookmarklet_extension',
-    'wrap:bookmarklet_ember_debug'
+    'wrap:bookmarklet_ember_debug',
+    'copy:websocket_extension',
+    'wrap:websocket_ember_debug'
   ]);
 
   grunt.registerTask('build_ember_debug', [
