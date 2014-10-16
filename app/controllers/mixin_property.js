@@ -19,6 +19,8 @@ export default Ember.ObjectController.extend({
 
   isArray: equal('value.type', 'type-array'),
 
+  isDate: equal('value.type', 'type-date'),
+
   actions: {
     valueClick: function() {
       if (this.get('isEmberObject') || this.get('isArray')) {
@@ -31,7 +33,7 @@ export default Ember.ObjectController.extend({
         return;
       }
 
-      if (this.get('isFunction') || this.get('overridden') || this.get('readOnly')) {
+      if (this.get('isFunction') || this.get('overridden') || this.get('isDate') || this.get('readOnly')) {
         return;
       }
 

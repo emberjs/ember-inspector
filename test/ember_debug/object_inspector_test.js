@@ -28,6 +28,7 @@ module("Object Inspector", {
 });
 
 test("An Ember Object is correctly transformed into an inspection hash", function() {
+  var date = new Date();
 
   var Parent = Ember.Object.extend({
     id: null,
@@ -45,7 +46,8 @@ test("An Ember Object is correctly transformed into an inspection hash", functio
     toString: function() {
       return 'Object:' + this.get('name');
     },
-    nullVal: null
+    nullVal: null,
+    dateVal: date
   });
 
   objectInspector.sendObject(inspected);
@@ -57,7 +59,7 @@ test("An Ember Object is correctly transformed into an inspection hash", functio
   var firstDetail = message.details[0];
   equal(firstDetail.name, 'Own Properties');
 
-  equal(firstDetail.properties.length, 2, 'methods are not included');
+  equal(firstDetail.properties.length, 3, 'methods are not included');
 
   var idProperty = firstDetail.properties[0];
   equal(idProperty.name, 'id');
@@ -68,6 +70,11 @@ test("An Ember Object is correctly transformed into an inspection hash", functio
   equal(nullProperty.name, 'nullVal');
   equal(nullProperty.value.type, 'type-null');
   equal(nullProperty.value.inspect, 'null');
+
+  var prop = firstDetail.properties[2];
+  equal(prop.name, 'dateVal');
+  equal(prop.value.type, 'type-date');
+  equal(prop.value.inspect, date.toString());
 
   var secondDetail = message.details[1];
   equal(secondDetail.name, 'Parent Object');

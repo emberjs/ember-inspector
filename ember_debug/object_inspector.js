@@ -39,6 +39,8 @@ function inspect(value) {
     return 'Error: ' + value.message;
   } else if (value === null) {
     return 'null';
+  } else if(typeOf(value) === 'date') {
+    return value.toString();
   } else if (typeof value === 'object') {
     // `Ember.inspect` is able to handle this use case,
     // but it is very slow as it loops over all props,
