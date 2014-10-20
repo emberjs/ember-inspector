@@ -13,12 +13,12 @@
 * [IMPROVEMENT] Model types are now sorted alphabetically
 * [IMPROVEMENT] Separated regular tabs from advanced tabs
 * [IMPROVEMENT] Detecting the application view no longer depends on `ember-application` class
-* [BUGIFX] `null` values now show up as "null" in the object inspector
-* [BUGIFX] Empty values in the object inspector should be editable
-* [BUGIFX] Support views without a controller
-* [BUGIFX] Firefox Tomster script no longer conflicts with WYSIWYGs
-* [BUGIFX] Fixed issue with toolbar and expanding the object inspector
-* [BUGIFX] Removed 404 image errors from tests
+* [BUGFIX] `null` values now show up as "null" in the object inspector
+* [BUGFIX] Empty values in the object inspector should be editable
+* [BUGFIX] Support views without a controller
+* [BUGFIX] Firefox Tomster script no longer conflicts with WYSIWYGs
+* [BUGFIX] Fixed issue with toolbar and expanding the object inspector
+* [BUGFIX] Removed 404 image errors from tests
 
 ## Ember Inspector 1.5.0
 
