@@ -180,6 +180,10 @@
   outline: none;
 }
 
+.toolbar__search--small input {
+  width: 150px;
+}
+
 /**
  Toolbar Divider
  ===============

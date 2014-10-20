@@ -1,0 +1,12 @@
+<div class="list-view">
+  <div class="list-view__header row">
+    <div class="cell cell_type_header" data-label="column-title">Name</div>
+
+    <!-- Account for scrollbar width :'(  -->
+    <div class="cell cell_type_header spacer"></div>
+  </div>
+
+  <div class="list-view__list-container">
+    {{view "instanceList" content=this}}
+  </div>
+</div>

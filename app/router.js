@@ -20,6 +20,9 @@ Router.map(function() {
 
   this.resource('info');
   this.resource('render-tree');
+  this.resource('container-types', function() {
+    this.resource('container-type', { path: '/:type_id' });
+  });
 });
 
 export default Router;

@@ -7,6 +7,7 @@ import ViewDebug from "view_debug";
 import RouteDebug from "route_debug";
 import DataDebug from "data_debug";
 import PromiseDebug from "promise_debug";
+import ContainerDebug from "container_debug";
 
 var EmberDebug;
 
@@ -48,7 +49,8 @@ EmberDebug = Ember.Namespace.extend({
     'objectInspector',
     'generalDebug',
     'renderDebug',
-    'promiseDebug'
+    'promiseDebug',
+    'containerDebug',
     ].forEach(function(prop) {
       var handler = self.get(prop);
       if (handler) {
@@ -76,6 +78,7 @@ EmberDebug = Ember.Namespace.extend({
       this.startModule('viewDebug', ViewDebug);
       this.startModule('dataDebug', DataDebug);
       this.startModule('promiseDebug', PromiseDebug);
+      this.startModule('containerDebug', ContainerDebug);
 
       this.generalDebug.sendBooted();
       this.viewDebug.sendTree();

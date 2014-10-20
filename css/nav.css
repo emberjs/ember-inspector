@@ -3,23 +3,29 @@
  ===
  Navigation lists and links
 */
-
-.nav h3 {
-  margin: 0;
+.nav__title {
   padding: 3px 5px;
-  -webkit-flex: 0 0 19px;
-  flex: 0 0 19px;
+  line-height: 11px;
+  height: 15px;
+}
+
+.nav__title h3 {
   white-space: nowrap;
+  display: inline-block;
   text-overflow: ellipsis;
   overflow: hidden;
   color: #6e6e6e;
   text-transform: uppercase;
   text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
+  float: left;
+  padding: 0;
+  margin: 0;
 }
 
 /* List */
 
 .nav ul {
+  clear: both;
   list-style-type: none;
   padding: 0;
   margin: 0;
@@ -95,4 +101,14 @@
   padding-left: 40px;
   color: #333;
   line-height: 33px;
+}
+
+.nav.nav--main .nav__title {
+  padding-left: 15px;
+}
+
+/* Custom nav title */
+
+.nav__title--middle {
+  line-height: 21px;
 }
