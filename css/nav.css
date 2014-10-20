@@ -102,3 +102,13 @@
   color: #333;
   line-height: 33px;
 }
+
+.nav.nav--main .nav__title {
+  padding-left: 15px;
+}
+
+/* Custom nav title */
+
+.nav__title--middle {
+  line-height: 21px;
+}
