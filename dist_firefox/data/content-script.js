@@ -50,20 +50,12 @@ function onEmberVersion(message) {
 
 function onInjectEmberDebug() {
   //console.debug("ON INJECT EMBER DEBUG ON:", window.location.href);
-  try {
-    evalInWindow(self.options.emberDebugScript, unsafeWindow);
-  } catch(e) {
-    console.error("evalInWindow is not supported on this Firefox version", e);
-  }
+  document.defaultView.eval(self.options.emberDebugScript);
 }
 
 function injectInPageScript() {
   if (window.document.readyState == "complete") {
-    try {
-      evalInWindow(self.options.emberInPageScript, unsafeWindow);
-    } catch(e) {
-      console.error("evalInWindow is not supported on this Firefox version", e);
-    }
+    document.defaultView.eval(self.options.emberInPageScript);
   } else {
     setTimeout(injectInPageScript, 100);
   }
