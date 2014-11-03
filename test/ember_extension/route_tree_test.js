@@ -12,15 +12,15 @@ function routeValue(name, props) {
     name: name,
     controller: {
       name: name,
-      className: name.replace('.', '_').classify() + 'Controller',
+      className: name.replace(/\./g, '_').classify() + 'Controller',
       exists: true
     },
     routeHandler: {
       name: name,
-      className: name.replace('.', '_').classify() + 'Route'
+      className: name.replace(/\./g, '_').classify() + 'Route'
     },
     template: {
-      name: name.replace('.', '/')
+      name: name.replace(/\./g, '/')
     }
   };
   props = props || {};

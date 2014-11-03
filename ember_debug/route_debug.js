@@ -73,13 +73,13 @@ var buildSubTree = function(routeTree, route) {
     item = handlers[i];
     var handler = item.handler;
     if (subTree[handler] === undefined) {
-      routeClassName = classify(handler.replace('.', '_')) + 'Route';
+      routeClassName = classify(handler.replace(/\./g, '_')) + 'Route';
       container = this.get('application.__container__');
       routeHandler = container.lookup('router:main').router.getHandler(handler);
       controllerName = routeHandler.get('controllerName') || routeHandler.get('routeName');
-      controllerClassName = classify(controllerName.replace('.', '_')) + 'Controller';
+      controllerClassName = classify(controllerName.replace(/\./g, '_')) + 'Controller';
       controllerFactory = container.lookupFactory('controller:' + controllerName);
-      templateName = handler.replace('.', '/');
+      templateName = handler.replace(/\./g, '/');
 
       subTree[handler] = {
         value: {
