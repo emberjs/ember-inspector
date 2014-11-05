@@ -24,6 +24,12 @@ dist_bookmarklet/vendor/
 dist_bookmarklet/panes/ember_extension.css
 dist_bookmarklet/panes/ember_extension.js
 
+dist_websocket/images/
+dist_websocket/ember_debug/
+dist_websocket/vendor/
+dist_websocket/panes/ember_extension.css
+dist_websocket/panes/ember_extension.js
+
 .mozilla-addon-sdk
 
 aws.json
