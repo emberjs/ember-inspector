@@ -1,5 +1,5 @@
 {
-  "name": "ember-extension",
+  "name": "ember-inspector",
   "version": "1.6.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tildeio/ember-extension"
+    "url": "https://github.com/emberjs/ember-inspector"
   },
   "author": "Tilde, Inc.",
   "license": "MIT",
