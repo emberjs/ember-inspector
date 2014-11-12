@@ -1,5 +1,12 @@
 # Ember Inspector Changelog
 
+
+## Ember Inspector 1.6.1
+
+* [BUGFIX] Used general dot replacement in regex expressions to support nested routes
+* Used `document.defaultView.eval` to support FF >= 34
+* Added npm `prepublish` hook
+
 ## Ember Inspector 1.6.0
 
 * [FEATURE] Added new "Container" tab
