@@ -1,0 +1,12 @@
+node_modules/
+tmp/
+.DS_Store
+*.swp
+
+dist_chrome/ember-extension.zip
+
+*.xpi
+
+.mozilla-addon-sdk
+
+aws.json
