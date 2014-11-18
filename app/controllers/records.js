@@ -1,4 +1,5 @@
-import escapeRegExp from "utils/escape_reg_exp";
+import Ember from "ember";
+import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
 var alias = Ember.computed.alias;
 var none = Ember.computed.none;
 
@@ -58,7 +59,7 @@ export default Ember.ArrayController.extend({
     });
 
     var Controller = this.container.lookupFactory('controller:array', { singleton: false});
-    var controller = Controller.create({model: content, itemController: 'recordItem'});
+    var controller = Controller.create({model: content, itemController: 'record-item'});
     return controller;
   }.property('search', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValue')
 });

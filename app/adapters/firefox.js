@@ -1,4 +1,5 @@
-import BasicAdapter from "adapters/basic";
+import Ember from "ember";
+import BasicAdapter from "./basic";
 
 export default BasicAdapter.extend({
   name: 'firefox',

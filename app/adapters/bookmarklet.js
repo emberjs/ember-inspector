@@ -1,6 +1,4 @@
-import BasicAdapter from "adapters/basic";
-
-var emberDebug = null;
+import BasicAdapter from "./basic";
 
 export default  BasicAdapter.extend({
   name: 'bookmarklet',

@@ -6,9 +6,9 @@
   "version": "1.6.2",
 
   "icons": {
-    "16":  "images/icon16.png",
-    "48":  "images/icon48.png",
-    "128": "images/icon128.png"
+    "16":  "panes/assets/images/icon16.png",
+    "48":  "panes/assets/images/icon48.png",
+    "128": "panes/assets/images/icon128.png"
   },
   "permissions": [
     "<all_urls>",
@@ -27,13 +27,13 @@
   },
   "page_action": {
     "default_icon": {
-      "19": "images/icon19.png",
-      "38": "images/icon38.png"
+      "19": "panes/assets/images/icon19.png",
+      "38": "panes/assets/images/icon38.png"
     },
     "default_title": "This webpage is running Ember.js"
   },
   "web_accessible_resources": [
-    "in-page-script.js"
+    "panes/in-page-script.js"
   ],
   "options_page": "options.html"
 }

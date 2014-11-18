@@ -1,6 +1,7 @@
-import TabRoute from 'routes/tab';
+import Ember from "ember";
+import TabRoute from "ember-inspector/routes/tab";
 
-var Promise = Ember.RSVP.Promise, set = Ember.set;
+var set = Ember.set;
 
 export default TabRoute.extend({
   setupController: function(controller, model) {
@@ -59,4 +60,3 @@ export default TabRoute.extend({
     }
   }
 });
-

@@ -1,0 +1,27 @@
+{{#unless showEmpty}}
+<div class="list-view" data-label="render-tree">
+  <div class="list-view__header row">
+    <div class="cell cell_type_header">
+      Name
+    </div>
+    <div class="cell cell_type_header cell_value_numeric">
+      Timestamp
+    </div>
+    <!-- Account for scrollbar width :'(  -->
+    <div class="cell cell_type_header spacer"></div>
+  </div>
+
+  <div class="ember-list-container">
+    {{#view "render-list"}}
+      {{#each}}
+        {{render "render-item" this}}
+      {{/each}}
+    {{/view}}
+  </div>
+</div>
+{{else}}
+  <div class="notice" data-label="render-tree-empty">
+    <p>No rendering metrics have been collected. Try navigating around your application.</p>
+    <p><strong>Note:</strong> Very fast rendering times (&lt;1ms) are excluded.</p>
+  </div>
+{{/unless}}
