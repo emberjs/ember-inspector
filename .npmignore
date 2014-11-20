@@ -3,7 +3,8 @@ tmp/
 .DS_Store
 *.swp
 
-dist_chrome/ember-extension.zip
+dist_chrome/ember-inspector.zip
+dist/
 
 *.xpi
 

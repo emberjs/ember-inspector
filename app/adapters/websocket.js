@@ -1,4 +1,5 @@
-import BasicAdapter from "adapters/basic";
+import Ember from "ember";
+import BasicAdapter from "./basic";
 
 var computed = Ember.computed;
 
@@ -25,7 +26,7 @@ var WebsocketAdapter = BasicAdapter.extend({
       });
     });
   },
-  
+
   _disconnect: function() {
     this.get('socket').removeAllListeners("emberInspectorMessage");
   },

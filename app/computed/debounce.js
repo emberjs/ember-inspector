@@ -1,3 +1,4 @@
+import Ember from "ember";
 var debounce = Ember.run.debounce;
 
 // Use this if you want a property to debounce
@@ -22,4 +23,4 @@ export default function(prop, delay, callback) {
     }
   }.property();
 
-};
+}

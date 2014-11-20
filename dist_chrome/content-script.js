@@ -35,7 +35,7 @@
   // inject JS into the page to check for an app on domready
   var script = document.createElement('script');
   script.type = "text/javascript";
-  script.src = chrome.extension.getURL("in-page-script.js");
+  script.src = chrome.extension.getURL("panes/in-page-script.js");
   if (document.body) {
     document.body.appendChild(script);
     script.onload = function() {

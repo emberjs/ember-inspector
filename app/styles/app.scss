@@ -1,0 +1,46 @@
+/**
+ APP
+ ===
+ The layout of the entire
+ application.
+*/
+
+.app {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: auto;
+  flex: auto;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  font-size: 12px;
+}
+
+.app.is-dragging {
+  cursor: col-resize;
+}
+
+@import "base";
+@import "drag_handle";
+@import "dropdown";
+@import "error_page";
+@import "fake_table";
+@import "list_tree";
+@import "list_view";
+@import "mixin";
+@import "nav";
+@import "notice";
+@import "object_inspector";
+@import "pill";
+@import "send_to_console";
+@import "sidebar_toggle";
+@import "split";
+@import "table_tree";
+@import "toolbar";
+@import "tree";

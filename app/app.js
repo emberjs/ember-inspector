@@ -1,19 +1,25 @@
-import Resolver from "resolver";
-import Port from "port";
-import PromiseAssembler from "libs/promise_assembler";
-import msToTime from "helpers/ms_to_time";
+import Ember from 'ember';
+import Resolver from 'ember/resolver';
+import loadInitializers from 'ember/load-initializers';
+import config from './config/environment';
+
+
+import Port from "./port";
+import PromiseAssembler from "ember-inspector/libs/promise-assembler";
+import msToTime from "ember-inspector/helpers/ms-to-time";
+
+Ember.MODEL_FACTORY_INJECTIONS = true;
 
 var version = '1.6.2';
 
 var App = Ember.Application.extend({
-  modulePrefix: '',
-  Resolver: Resolver,
-  adapter: 'basic'
+  modulePrefix: config.modulePrefix,
+  podModulePrefix: config.podModulePrefix,
+  Resolver: Resolver
 });
 
-var config = {
-  VERSION: version
-};
+
+config.VERSION = version;
 
 // Register Helpers
 Ember.Handlebars.helper('ms-to-time', msToTime);
@@ -49,5 +55,9 @@ App.initializer({
     container.injection('route:promiseTree', 'assembler', 'promise-assembler:main');
   }
 });
+
+
+loadInitializers(App, config.modulePrefix);
+
 
 export default App;

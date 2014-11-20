@@ -1,10 +1,23 @@
 ---
 language: node_js
-script: npm test
-node_js:
-- '0.10'
+
+sudo: false
+
+cache:
+  directories:
+    - node_modules
+
+install:
+  - npm install -g bower
+  - npm install
+  - bower install
+
+script:
+  - npm test
+
 after_success:
-  - test $TRAVIS_BRANCH == "stable" && grunt build_and_upload
+  - test $TRAVIS_BRANCH == "stable" && npm run upload
+
 env:
   global:
   - secure: EYaa9XxKkfJbQENuQPNFAIIieMWBiSknGCO9he8MH8ZHbqJODTjFixJnD5ZYLZCXH67SmjorBneznQHp8Xaf0aIuHbRhRY/MOUzqEWw12MmexW1kJF5wX+oxEnvzoiVAUJLNTIQi+g5WN43YBleASKMjUPa2i/3GBIcTlsVdf3U=

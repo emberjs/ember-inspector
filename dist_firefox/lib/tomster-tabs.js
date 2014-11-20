@@ -83,8 +83,8 @@ let pageMod = PageMod({
   attachTo: ["top", "frame", "existing"],
   contentScriptFile: data.url('content-script.js'),
   contentScriptOptions: {
-    emberDebugScript: data.load("ember_debug/ember_debug.js"),
-    emberInPageScript: data.load("in-page-script.js")
+    emberDebugScript: data.load("panes/ember_debug.js"),
+    emberInPageScript: data.load("panes/in-page-script.js")
   },
   contentScriptWhen: "start",
   onAttach: (worker) => {

@@ -1,3 +1,5 @@
+var Ember = window.Ember;
+
 var dateComputed = function() {
   return Ember.computed(
     function(key, date) {

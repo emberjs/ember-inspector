@@ -1,8 +1,9 @@
+import Ember from "ember";
 export default Ember.Route.extend({
   renderTemplate: function () {
     this.render();
     try {
-      this.render(this.get('routeName').replace(/\./g, '/') + '_toolbar', {
+      this.render(this.get('routeName').replace(/\./g, '/') + '-toolbar', {
         into: 'application',
         outlet: 'toolbar'
       });

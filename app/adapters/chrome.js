@@ -1,4 +1,5 @@
-import BasicAdapter from "adapters/basic";
+/* globals chrome */
+import BasicAdapter from "./basic";
 
 var emberDebug = null;
 
@@ -38,7 +39,6 @@ export default  BasicAdapter.extend({
   _injectDebugger: function() {
     loadEmberDebug();
     chrome.devtools.inspectedWindow.eval(emberDebug);
-    var urls = [];
     chrome.devtools.inspectedWindow.onResourceAdded.addListener(function(opts) {
       if (opts.type === 'document') {
         sendIframes([opts.url]);
@@ -62,7 +62,7 @@ function loadEmberDebug() {
   var xhr;
   if (!emberDebug) {
     xhr = new XMLHttpRequest();
-    xhr.open("GET", chrome.extension.getURL('/ember_debug/ember_debug.js'), false);
+    xhr.open("GET", chrome.extension.getURL('/panes/ember_debug.js'), false);
     xhr.send();
     emberDebug = xhr.responseText;
   }

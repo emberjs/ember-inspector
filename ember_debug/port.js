@@ -1,3 +1,4 @@
+var Ember = window.Ember;
 var oneWay = Ember.computed.oneWay;
 var guidFor = Ember.guidFor;
 

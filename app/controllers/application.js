@@ -1,3 +1,5 @@
+import Ember from "ember";
+
 var oneWay = Ember.computed.oneWay,
     equal = Ember.computed.equal;
 
@@ -37,7 +39,7 @@ export default Ember.Controller.extend({
 
   activateMixinDetails: function(name, details, objectId) {
     var self = this;
-    var objects = this.get('mixinStack').forEach(function(item) {
+    this.get('mixinStack').forEach(function(item) {
       self.get('port').send('objectInspector:releaseObject', { objectId: item.objectId });
     });
 

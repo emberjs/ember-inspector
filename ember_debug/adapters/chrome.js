@@ -1,4 +1,5 @@
-import BasicAdapter from "adapters/basic";
+import BasicAdapter from "./basic";
+var Ember = window.Ember;
 
 var ChromeAdapter = BasicAdapter.extend({
   init: function() {
@@ -12,6 +13,7 @@ var ChromeAdapter = BasicAdapter.extend({
   },
 
   inspectElement: function(elem) {
+    /* globals inspect */
     inspect(elem);
   },
 

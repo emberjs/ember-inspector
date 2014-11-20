@@ -1,3 +1,4 @@
+var Ember = window.Ember;
 var BasicAdapter = Ember.Object.extend({
   debug: function() {
     console.debug.apply(console, arguments);
@@ -10,7 +11,7 @@ var BasicAdapter = Ember.Object.extend({
 
     @param {Object} type the message to the send
   */
-  sendMessage: function(options) {},
+  sendMessage: function(/* options */) {},
 
   /**
     Register functions to be called
@@ -33,7 +34,7 @@ var BasicAdapter = Ember.Object.extend({
 
     @param {DOM Element} elem
   */
-  inspectElement: function(elem) {},
+  inspectElement: function(/* elem */) {},
 
   _messageCallbacks: Ember.computed(function() { return Ember.A(); }).property(),
 

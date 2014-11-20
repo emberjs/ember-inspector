@@ -1,4 +1,5 @@
-import BasicAdapter from "adapters/basic";
+import BasicAdapter from "./basic";
+var Ember = window.Ember;
 var $ = Ember.$;
 
 export default BasicAdapter.extend({
