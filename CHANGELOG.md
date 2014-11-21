@@ -1,5 +1,12 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 1.6.3
+
+* Use the new `Ember.libraries` api for newer Ember versions
+
+## Ember Inspector 1.6.2
+
+* Add dist directories to npm
 
 ## Ember Inspector 1.6.1
 
