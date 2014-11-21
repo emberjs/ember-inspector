@@ -69,6 +69,7 @@ For development:
 javascript: (function() { var s = document.createElement('script'); s.src = 'http://localhost:9191/load_inspector.js'; document.body.appendChild(s); }());
 ```
 
+
 Building and Testing:
 --------------------
 
@@ -93,3 +94,8 @@ Deploy new version:
 - 'git checkout stable && git merge master' and push the `stable` branch (to update the bookmarklet)
 - `npm publish ./`
 - `git tag` the new version
+
+
+### Window Messages
+
+The Ember Inspector uses window messages, so if you are using window messages in your application code, make sure you [verify the sender](https://developer.mozilla.org/en-US/docs/Web/API/window.postMessage#Security_concerns) and add checks to your event listener so as not to conflict with the inspector's messages.
