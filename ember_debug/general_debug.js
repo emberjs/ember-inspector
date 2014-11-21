@@ -22,8 +22,16 @@ var GeneralDebug = Ember.Object.extend(PortMixin, {
       this.sendBooted();
     },
     getLibraries: function() {
-      var libraries = arrayize(Ember.libraries);
-      this.sendMessage('libraries', { libraries: libraries });
+      var libraries = Ember.libraries;
+      
+      // Ember has changed where the array of libraries is located.
+      // In older versions, `Ember.libraries` was the array itself,
+      // but now it's found under _registry.
+      if (libraries._registry) {
+        libraries = libraries._registry;
+      }
+
+      this.sendMessage('libraries', { libraries: arrayize(libraries) });
     },
     refresh: function() {
       window.location.reload();
