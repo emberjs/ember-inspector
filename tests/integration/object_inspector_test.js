@@ -451,3 +451,83 @@ test("Dropping an object due to destruction", function() {
     equal(findByLabel('object-name').text().trim(), '');
   });
 });
+
+test("Date fields are editable", function() {
+  visit('/');
+
+  var date = new Date();
+
+  andThen(function() {
+    var obj = {
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [
+      {
+        name: 'First Detail',
+        expand: false,
+        properties: [{
+          name: 'dateProperty',
+          value: {
+            inspect: date.toString(),
+            type: 'type-date'
+          }
+        }]
+      }]
+    };
+    port.trigger('objectInspector:updateObject', obj);
+    return wait();
+  });
+
+  andThen(function() {
+    return clickByLabel('object-detail-name');
+  });
+
+  andThen(function() {
+    return click(findByLabel('object-property-value').first());
+  });
+
+  andThen(function() {
+    var field = findByLabel('object-property-value-date');
+    equal(field.length, 1);
+    return fillIn(field, '2015-01-01');
+  });
+
+  andThen(function() {
+    var field = findByLabel('object-property-value-date');
+    // pickaday.js needs this
+    triggerEvent(field, 'change');
+    return wait();
+  });
+
+  andThen(function() {
+    var e = Ember.$.Event('keyup', { keyCode: 13 });
+    findByLabel('object-property-value-date').trigger(e);
+    return wait();
+  });
+
+  andThen(function() {
+    equal(name, 'objectInspector:saveProperty');
+    equal(message.property, 'dateProperty');
+    equal(message.dataType, 'date');
+
+    var newDate = new Date(message.value);
+    equal(newDate.getMonth(), 0);
+    equal(newDate.getDate(), 1);
+    equal(newDate.getFullYear(), 2015);
+
+  });
+});
+
+
+function triggerEvent(elem, name) {
+  /*global Event */
+  var event;
+  try {
+    event = new Event(name);
+  } catch (e) {
+    //phatomjs < 2.0
+    event = document.createEvent('change');
+  }
+
+  $(elem)[0].dispatchEvent(event);
+}

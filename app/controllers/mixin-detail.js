@@ -45,14 +45,15 @@ export default Ember.ObjectController.extend({
       });
     },
 
-    saveProperty: function(prop, val) {
+    saveProperty: function(prop, val, type) {
       var mixinIndex = this.get('mixinDetails.mixins').indexOf(this.get('model'));
 
       this.get('port').send('objectInspector:saveProperty', {
         objectId: this.get('objectId'),
         property: prop,
         value: val,
-        mixinIndex: mixinIndex
+        mixinIndex: mixinIndex,
+        dataType: type
       });
     }
   }
