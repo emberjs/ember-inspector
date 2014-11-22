@@ -114,7 +114,11 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
       this.bindPropertyToDebugger(message);
     },
     saveProperty: function(message) {
-      this.saveProperty(message.objectId, message.mixinIndex, message.property, message.value);
+      var value = message.value;
+      if (message.dataType && message.dataType === 'date') {
+        value = new Date(value);
+      }
+      this.saveProperty(message.objectId, message.mixinIndex, message.property, value);
     },
     sendToConsole: function(message) {
       this.sendToConsole(message.objectId, message.property);

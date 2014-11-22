@@ -7,6 +7,7 @@ export default Ember.ObjectController.extend({
 
   // Bound to editing textbox
   txtValue: null,
+  dateValue: null,
 
   isCalculated: function() {
     return this.get('value.type') !== 'type-descriptor';
@@ -22,6 +23,22 @@ export default Ember.ObjectController.extend({
 
   isDate: equal('value.type', 'type-date'),
 
+  _parseTextValue: function(value) {
+    var parsedValue;
+    try {
+      parsedValue = JSON.parse(value);
+    } catch(e) {
+      // if surrounded by quotes, remove quotes
+      var match = value.match(/^"(.*)"$/);
+      if (match && match.length > 1) {
+        parsedValue = match[1];
+      } else {
+        parsedValue = value;
+      }
+    }
+    return parsedValue;
+  },
+
   actions: {
     valueClick: function() {
       if (this.get('isEmberObject') || this.get('isArray')) {
@@ -34,7 +51,7 @@ export default Ember.ObjectController.extend({
         return;
       }
 
-      if (this.get('isFunction') || this.get('overridden') || this.get('isDate') || this.get('readOnly')) {
+      if (this.get('isFunction') || this.get('overridden') || this.get('readOnly')) {
         return;
       }
 
@@ -43,26 +60,24 @@ export default Ember.ObjectController.extend({
       if (type === 'type-string') {
         value = '"' + value + '"';
       }
-      this.set('txtValue', value);
+      if (!this.get('isDate')) {
+        this.set('txtValue', value);
+      } else {
+        this.set('dateValue', new Date(value));
+      }
       this.set('isEdit', true);
 
     },
-
+    
     saveProperty: function() {
-      var txtValue = this.get('txtValue');
-      var realValue;
-      try {
-        realValue = JSON.parse(txtValue);
-      } catch(e) {
-        // if surrounded by quotes, remove quotes
-        var match = txtValue.match(/^"(.*)"$/);
-        if (match && match.length > 1) {
-          realValue = match[1];
-        } else {
-          realValue = txtValue;
-        }
+      var realValue, dataType;
+      if (!this.get('isDate')) {
+        realValue = this._parseTextValue(this.get('txtValue'));
+      } else {
+        realValue = this.get('dateValue').getTime();
+        dataType = 'date';
       }
-      this.get('target').send('saveProperty', this.get('name'), realValue);
+      this.get('target').send('saveProperty', this.get('name'), realValue, dataType);
     },
 
     finishedEditing: function() {

@@ -257,6 +257,30 @@ test("Properties can be updated through a port message", function() {
   equal(message.value.type, 'type-string');
 });
 
+test("Date properties are converted to dates before being updated", function() {
+  var newDate = new Date('2015-01-01');
+
+  var inspected = Ember.Object.extend({
+    date: null
+  }).create();
+
+  objectInspector.sendObject(inspected);
+
+  var id = message.objectId;
+
+  port.trigger('objectInspector:saveProperty', {
+    objectId: id,
+    mixinIndex: 1,
+    property: 'date',
+    value: newDate.getTime(),
+    dataType: 'date'
+  });
+
+  equal(inspected.get('date').getFullYear(), 2015);
+  equal(inspected.get('date').getMonth(), 0);
+  equal(inspected.get('date').getDate(), 1);
+});
+
 test("Property grouping can be customized using _debugInfo", function() {
   var mixinToSkip = Ember.Mixin.create({});
   mixinToSkip[Ember.NAME_KEY] = 'MixinToSkip';
