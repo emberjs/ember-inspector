@@ -6,7 +6,7 @@
     if (event.data === 'debugger-client') {
       var port = event.ports[0];
       listenToPort(port);
-    } else if (event.data.type) {
+    } else if (event.data && event.data.type) {
       chrome.extension.sendMessage(event.data);
     }
   });
