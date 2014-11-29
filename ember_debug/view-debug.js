@@ -375,20 +375,26 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       this.hidePreview();
     }
 
-    if (element instanceof Ember.View && element.get('isVirtual')) {
+    if (element instanceof Ember.View) {
       view = element;
+    } else {
+      view = Ember.View.views[element.id];
+    }
+
+    var getViewBoundingClientRect = Ember.ViewUtils.getViewBoundingClientRect;
+    if (getViewBoundingClientRect) {
+      // Ember >= 1.9 support `getViewBoundingClientRect`
+      rect = getViewBoundingClientRect(view);
+    } else {
+      // Support old Ember versions
       if (view.get('isVirtual')) {
         range = virtualRange(view);
         rect = range.getBoundingClientRect();
+      } else {
+        element = view.get('element');
+        if (!element) { return; }
+        rect = element.getBoundingClientRect();
       }
-    } else if (element instanceof Ember.View) {
-      view = element;
-      element = view.get('element');
-      if (!element) { return; }
-      rect = element.getBoundingClientRect();
-    } else {
-      view = Ember.View.views[element.id];
-      rect = element.getBoundingClientRect();
     }
 
     // take into account the scrolling position as mentioned in docs
