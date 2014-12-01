@@ -3,16 +3,20 @@ export default Ember.Route.extend({
 
   setupController: function() {
     this.controllerFor('mixinStack').set('model', []);
-    this.get('port').on('objectInspector:updateObject', this, this.updateObject);
-    this.get('port').on('objectInspector:updateProperty', this, this.updateProperty);
-    this.get('port').on('objectInspector:droppedObject', this, this.droppedObject);
+    var port = this.get('port');
+    port.on('objectInspector:updateObject', this, this.updateObject);
+    port.on('objectInspector:updateProperty', this, this.updateProperty);
+    port.on('objectInspector:droppedObject', this, this.droppedObject);
+    port.on('deprecation:count', this, this.setDeprecationCount);
+    port.send('deprecation:getCount');
   },
 
   deactivate: function() {
-    this.get('port').off('objectInspector:updateObject', this, this.updateObject);
-    this.get('port').off('objectInspector:updateProperty', this, this.updateProperty);
-    this.get('port').off('objectInspector:droppedObject', this, this.droppedObject);
-
+    var port = this.get('port');
+    port.off('objectInspector:updateObject', this, this.updateObject);
+    port.off('objectInspector:updateProperty', this, this.updateProperty);
+    port.off('objectInspector:droppedObject', this, this.droppedObject);
+    port.off('deprecation:count', this, this.setDeprecationCount);
   },
 
   updateObject: function(options) {
@@ -33,6 +37,10 @@ export default Ember.Route.extend({
     }
 
     this.send('expandInspector');
+  },
+
+  setDeprecationCount: function(message) {
+    this.controller.set('deprecationCount', message.count);
   },
 
   updateProperty: function(options) {

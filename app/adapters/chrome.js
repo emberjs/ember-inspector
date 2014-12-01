@@ -57,7 +57,16 @@ export default  BasicAdapter.extend({
     chrome.devtools.inspectedWindow.reload({
       injectedScript: loadEmberDebug()
     });
+  },
+
+  canOpenResource: true,
+
+  openResource: function(file, line) {
+    /*global chrome */
+    // For some reason it opens the line after the one specified
+    chrome.devtools.panels.openResource(file, line - 1);
   }
+
 });
 
 function sendIframes(urls) {

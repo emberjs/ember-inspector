@@ -13,6 +13,8 @@ export default Ember.Controller.extend({
   mixinDetails: oneWay('controllers.mixin-details').readOnly(),
   isChrome: equal('port.adapter.name', 'chrome'),
 
+  deprecationCount: 0,
+
   // Indicates that the extension window is focused,
   active: true,
 

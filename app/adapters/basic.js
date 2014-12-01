@@ -42,5 +42,9 @@ export default Ember.Object.extend({
   },
 
   // Called when the "Reload" is clicked by the user
-  willReload: K
+  willReload: K,
+
+  canOpenResource: false,
+  openResource: function(/* file, line */) {}
+
 });

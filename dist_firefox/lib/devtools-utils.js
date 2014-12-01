@@ -28,11 +28,41 @@ exports.openDevTool = function(toolId) {
 };
 
 exports.inspectDOMElement = function(target, selector, toolId) {
-  return gDevTools.showToolbox(target, "inspector").then(function(toolbox) {
+  return gDevTools.showToolbox(target, "inspector").then(toolbox => {
     let sel = toolbox.getCurrentPanel().selection;
     sel.setNode(sel.document.querySelector(selector), toolId);
-  }.bind(this));
+  });
 };
+
+exports.openSource = function(target, url, line) {
+   return gDevTools.showToolbox(target, "jsdebugger").then(toolbox => {
+    let dbg = toolbox.getCurrentPanel().panelWin;
+
+    return onSourcesLoaded(dbg).then(() => {
+      let { DebuggerView } = dbg;
+      let { Sources } = DebuggerView;
+      let item = Sources.getItemForAttachment(a => a.source.url === url);
+      if (item) {
+        let options = { noDebug: true };
+        return DebuggerView.setEditorLocation(item.attachment.source.actor, line, options).then(null, () => {
+          // For some reason it currently works if you pass a URL.
+          return DebuggerView.setEditorLocation(url, line, options);
+        });
+       }
+       return Promise.reject("Couldn't find the specified source in the debugger.");
+    });
+  });
+};
+
+function onSourcesLoaded(dbg) {
+  let { resolve, promise } = Promise.defer();
+  let { DebuggerView: { Sources } } = dbg;
+  if (Sources.items.length > 0) {
+    resolve();
+  }
+  resolve(dbg.once(dbg.EVENTS.SOURCES_ADDED));
+  return promise;
+}
 
 exports.evaluateFileOnTargetWindow = function(target, fileUrl) {
   let { resolve, reject, promise } = Promise.defer();

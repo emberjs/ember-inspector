@@ -8,6 +8,7 @@ import RouteDebug from "ember-debug/route-debug";
 import DataDebug from "ember-debug/data-debug";
 import PromiseDebug from "ember-debug/promise-debug";
 import ContainerDebug from "ember-debug/container-debug";
+import DeprecationDebug from "ember-debug/deprecation-debug";
 
 var EmberDebug;
 var Ember = window.Ember;
@@ -45,6 +46,7 @@ EmberDebug = Ember.Object.extend({
     'renderDebug',
     'promiseDebug',
     'containerDebug',
+    'deprecationDebug',
     ].forEach(function(prop) {
       var handler = self.get(prop);
       if (handler) {
@@ -73,6 +75,7 @@ EmberDebug = Ember.Object.extend({
       this.startModule('dataDebug', DataDebug);
       this.startModule('promiseDebug', PromiseDebug);
       this.startModule('containerDebug', ContainerDebug);
+      this.startModule('deprecationDebug', DeprecationDebug);
 
       this.generalDebug.sendBooted();
       this.viewDebug.sendTree();

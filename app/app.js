@@ -39,6 +39,8 @@ App.initializer({
     container.register('adapter:main', Adapter);
     container.typeInjection('port', 'adapter', 'adapter:main');
     container.injection('route:application', 'adapter', 'adapter:main');
+    container.injection('route:deprecations', 'adapter', 'adapter:main');
+    container.injection('controller:deprecations', 'adapter', 'adapter:main');
 
     // register config
     container.register('config:main', config, { instantiate: false });

@@ -43,5 +43,16 @@ export default BasicAdapter.extend({
      urls.forEach(function(url) {
        self.sendMessage({ type: "injectEmberDebug", frameURL: url });
      });
+  },
+
+  canOpenResource: true,
+
+  openResource: function(file, line) {
+    this.sendMessage({
+      type: 'devtools:openSource',
+      url: file,
+      line: line
+    });
   }
+
 });
