@@ -98,9 +98,9 @@ if (typeof adapter !== 'undefined') {
     }
     var documentElement = document.documentElement;
     var interval = setInterval(function() {
-      if ((documentElement.dataset.emberExtension || (EMBER_INSPECTOR_CONFIG && EMBER_INSPECTOR_CONFIG.remoteDebugSocket)) && Ember.BOOTED) {
-       clearInterval(interval);
-       callback();
+      if ((documentElement.dataset.emberExtension || (typeof EMBER_INSPECTOR_CONFIG === 'object' && EMBER_INSPECTOR_CONFIG.remoteDebugSocket)) && Ember.BOOTED) {
+        clearInterval(interval);
+        callback();
       }
     }, 1);
   }
