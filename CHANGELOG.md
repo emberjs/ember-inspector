@@ -1,5 +1,9 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 1.6.4
+
+* [BUGFIX] Check type of EMBER_INSPECTOR_CONFIG
+
 ## Ember Inspector 1.6.3
 
 * Use the new `Ember.libraries` api for newer Ember versions
