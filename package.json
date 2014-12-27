@@ -32,7 +32,8 @@
   "license": "MIT",
   "repository": "https://github.com/emberjs/ember-inspector",
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">= 0.10.0",
+    "npm" : ">= 2.0.0"
   },
   "devDependencies": {
     "body-parser": "^1.2.0",
