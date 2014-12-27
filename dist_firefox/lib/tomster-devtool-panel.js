@@ -27,11 +27,10 @@ exports.openEmberInspector = function () {
 exports.devtoolTabDefinition = {
   id: "ember-inspector",
   ordinal: 7,
-  icon: self.data.url("images/icon19.png"),
+  icon: self.data.url("panes/assets/images/icon19.png"),
   url: self.data.url("devtool-panel.html"),
   label: "Ember",
   tooltip: "Ember Inspector",
-
   isTargetSupported: function(target) {
     return target.isLocalTab;
   },
