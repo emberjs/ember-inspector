@@ -6,24 +6,24 @@ module.exports = function(grunt) {
     "mozilla-cfx-xpi": {
       "stable": {
         options: {
-          "mozilla-addon-sdk": "1_15",
+          "mozilla-addon-sdk": "latest",
           extension_dir: "dist_firefox",
           dist_dir: "tmp/xpi"
         }
       }
     },
     "mozilla-addon-sdk": {
-      "1_15": {
+      "latest": {
         options: {
-          revision: "1.15",
-          dest_dir: ".mozilla-addon-sdk"
+          revision: "latest",
+          dest_dir: "tmp/mozilla-addon-sdk"
         }
       }
     },
     "mozilla-cfx": {
       "run": {
         options: {
-          "mozilla-addon-sdk": "1_15",
+          "mozilla-addon-sdk": "latest",
           extension_dir: "dist_firefox",
           command: "run"
         }
@@ -82,4 +82,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('run-xpi', ['build-xpi', 'mozilla-cfx:run']);
 
+  grunt.registerTask('clean-tmp', function() {
+    grunt.file.delete('./tmp');
+  });
 };

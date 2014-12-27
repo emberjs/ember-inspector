@@ -26,13 +26,14 @@
     "upload": "npm run build:bookmarklet:production && grunt s3:bookmarklet",
     "run-xpi": "npm run build:firefox && grunt run-xpi",
     "build:xpi": "npm run build:firefox && grunt build-xpi",
-    "build:xpi:production": "npm run build:firefox:production && grunt build-xpi"
+    "build:xpi:production": "npm run build:firefox:production && grunt clean-tmp build-xpi"
   },
   "author": "Tilde, Inc.",
   "license": "MIT",
   "repository": "https://github.com/emberjs/ember-inspector",
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">= 0.10.0",
+    "npm" : ">= 2.0.0"
   },
   "devDependencies": {
     "body-parser": "^1.2.0",
@@ -56,7 +57,7 @@
     "glob": "^4.0.5",
     "grunt": "^0.4.5",
     "grunt-contrib-compress": "^0.12.0",
-    "grunt-mozilla-addon-sdk": "~0.3.2",
+    "grunt-mozilla-addon-sdk": "~0.4.0",
     "grunt-s3": "^0.2.0-alpha.3",
     "grunt-version": "^0.3.0"
   },
