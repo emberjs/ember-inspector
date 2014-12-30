@@ -4,4 +4,10 @@
     {{input value=searchField placeholder="Search"}}
   </div>
   <div class="filter-bar__pills"></div>
+
+  {{#unless showEmpty}}
+    <div class="divider"></div>
+    <button data-label="toolbar-page-refresh-btn" {{action "refreshPage"}}>Reload</button>
+  {{/unless}}
+
 </div>

@@ -13,7 +13,7 @@ var GeneralDebug = Ember.Object.extend(PortMixin, {
 
   sendBooted: function() {
     this.sendMessage('applicationBooted', {
-      booted: Ember.BOOTED
+      booted: Ember.BOOTED || this.get('application.booted')
     });
   },
 
@@ -23,7 +23,7 @@ var GeneralDebug = Ember.Object.extend(PortMixin, {
     },
     getLibraries: function() {
       var libraries = Ember.libraries;
-      
+
       // Ember has changed where the array of libraries is located.
       // In older versions, `Ember.libraries` was the array itself,
       // but now it's found under _registry.

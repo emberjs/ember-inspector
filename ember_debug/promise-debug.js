@@ -1,17 +1,14 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import PromiseAssembler from 'ember-debug/libs/promise-assembler';
 var Ember = window.Ember;
+var readOnly = Ember.computed.readOnly;
 
 var PromiseDebug = Ember.Object.extend(PortMixin, {
   namespace: null,
-  port: Ember.computed.alias('namespace.port'),
-  objectInspector: Ember.computed.alias('namespace.objectInspector'),
-  adapter: Ember.computed.alias('namespace.adapter'),
+  port: readOnly('namespace.port'),
+  objectInspector: readOnly('namespace.objectInspector'),
+  adapter: readOnly('namespace.adapter'),
   portNamespace: 'promise',
-
-
-  existingEvents: Ember.computed.alias('namespace.existingEvents'),
-  existingCallbacks: Ember.computed.alias('namespace.existingCallbacks'),
 
   // created on init
   promiseAssembler: null,
@@ -112,6 +109,10 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
         uniquePromises.addObject(promise);
       });
     }
+    // Remove inspector-created promises
+    uniquePromises = uniquePromises.filter(function(promise) {
+      return promise.get('label') !== 'ember-inspector';
+    });
     var serialized = this.serializeArray(uniquePromises);
     this.sendMessage('promisesUpdated', {
       promises: serialized
