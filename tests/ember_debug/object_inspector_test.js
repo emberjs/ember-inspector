@@ -20,7 +20,7 @@ function setupApp(){
   Ember.TEMPLATES.simple = compile('Simple {{input class="simple-input"}} {{view Ember.View classNames="simple-view"}}');
 }
 
-module("Object Inspector", {
+module("Ember Debug - Object Inspector", {
   setup: function() {
     /* globals require */
     EmberDebug = require('ember-debug/main')["default"];
@@ -371,7 +371,7 @@ test("Views are correctly handled when destroyed during transitions", function()
   });
 
   andThen(function() {
-    ok(objectInspector.sentObjects[objectId], "Object successfully retained.");
+    ok(!!objectInspector.sentObjects[objectId], "Object successfully retained.");
   });
 
   visit('/');

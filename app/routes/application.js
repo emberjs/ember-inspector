@@ -1,17 +1,11 @@
 import Ember from "ember";
 export default Ember.Route.extend({
-  setupController: function(controller, model) {
-    this.controllerFor('mixinStack').set('model', []);
 
+  setupController: function() {
+    this.controllerFor('mixinStack').set('model', []);
     this.get('port').on('objectInspector:updateObject', this, this.updateObject);
     this.get('port').on('objectInspector:updateProperty', this, this.updateProperty);
     this.get('port').on('objectInspector:droppedObject', this, this.droppedObject);
-
-    this.get('port').one('general:applicationBooted', this, function(message) {
-      controller.set('emberApplication', message.booted);
-    });
-    this.get('port').send('general:applicationBooted');
-    this._super(controller, model);
   },
 
   deactivate: function() {

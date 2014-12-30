@@ -7,7 +7,7 @@ var run = Ember.run;
 
 var port;
 
-module('View Tree Tab', {
+module('Route Tree Tab', {
   setup: function() {
     App = startApp({
       adapter: 'basic'
@@ -62,8 +62,9 @@ test("Route tree is successfully displayed", function() {
     }
   });
 
-  visit('route-tree')
-  .then(function() {
+  visit('route-tree');
+
+  andThen(function() {
 
     var routeNodes = findByLabel('route-node');
     equal(routeNodes.length, 4);

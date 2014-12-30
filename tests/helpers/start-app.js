@@ -23,7 +23,9 @@ export default function startApp(attrs) {
   App.initializer({
     name: guidFor(App) + "-detectEmberApplication",
     initialize: function(container, application) {
-      container.lookup('controller:application').set('emberApplication', true);
+      container.lookup('route:application-detected').reopen({
+        model: Ember.K,
+      });
     }
   });
 
