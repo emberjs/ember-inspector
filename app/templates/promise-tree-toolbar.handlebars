@@ -15,8 +15,17 @@
   <button data-label="filter" {{bind-attr class="isPendingFilter:active :toolbar__radio"}} {{action "setFilter" "pending"}} >Pending</button>
   <button data-label="filter" {{bind-attr class="isFulfilledFilter:active :toolbar__radio"}} {{action "setFilter" "fulfilled"}} >Fulfilled</button>
 
+  <div class="divider"></div>
 
   <div class="toolbar__checkbox" data-label="with-stack">
     {{input type="checkbox" checked=instrumentWithStack id="instrument-with-stack"}} <label for="instrument-with-stack">Trace promises</label>
   </div>
+
+
+  {{! if should refresh the refresh button will be in the middle of the of the tab }}
+  {{#unless shouldRefresh}}
+    <div class="divider"></div>
+    <button data-label="toolbar-page-refresh-btn" {{action "refreshPage"}}>Reload</button>
+  {{/unless}}
+
 </div>

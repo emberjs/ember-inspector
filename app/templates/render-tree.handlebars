@@ -21,7 +21,9 @@
 </div>
 {{else}}
   <div class="notice" data-label="render-tree-empty">
-    <p>No rendering metrics have been collected. Try navigating around your application.</p>
+    <p>No rendering metrics have been collected. Try reloading or navigating around your application.</p>
     <p><strong>Note:</strong> Very fast rendering times (&lt;1ms) are excluded.</p>
+    <button data-label="toolbar-page-refresh-btn" {{action "refreshPage"}}>Reload</button>
+
   </div>
 {{/unless}}

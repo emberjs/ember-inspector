@@ -7,7 +7,6 @@
 
 import Promise from '/ember-debug/models/promise';
 var Ember = window.Ember;
-var alias = Ember.computed.alias;
 
 var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
   // RSVP lib to debug
@@ -19,9 +18,6 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
 
   // injected on creation
   promiseDebug: null,
-
-  existingEvents: alias('promiseDebug.existingEvents'),
-  existingCallbacks: alias('promiseDebug.existingCallbacks'),
 
   start: function() {
     this.RSVP.configure('instrument', true);
@@ -40,22 +36,11 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
       create.bind(self)(e);
     };
 
-
     this.RSVP.on('chained', this.promiseChained);
     this.RSVP.on('rejected', this.promiseRejected);
     this.RSVP.on('fulfilled', this.promiseFulfilled);
     this.RSVP.on('created',  this.promiseCreated);
 
-    if (this.get('existingEvents')) {
-      var callbacks = this.get('existingCallbacks');
-      for (var eventName in callbacks) {
-        this.RSVP.off(eventName, callbacks[eventName]);
-      }
-      var events = Ember.A(this.get('existingEvents'));
-      events.forEach(function(e) {
-        self['promise' + Ember.String.capitalize(e.eventName)].call(self, e.options);
-      });
-    }
   },
 
   stop: function() {

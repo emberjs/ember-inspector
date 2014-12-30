@@ -4,7 +4,7 @@ var Ember = window.Ember;
 var FirefoxAdapter = BasicAdapter.extend({
   init: function() {
     this._super();
-    this._connect();
+    this._listen();
   },
 
   debug: function() {
@@ -40,7 +40,7 @@ var FirefoxAdapter = BasicAdapter.extend({
     });
   },
 
-  _connect: function() {
+  _listen: function() {
     var self = this;
 
     window.addEventListener('ember-debug-receive', function(event) {

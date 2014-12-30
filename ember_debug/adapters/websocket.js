@@ -1,12 +1,10 @@
 import BasicAdapter from "./basic";
 var Ember = window.Ember;
 var computed = Ember.computed;
+var Promise = Ember.RSVP.Promise;
+var $ = Ember.$;
 
 var WebsocketAdapter = BasicAdapter.extend({
-  init: function() {
-    this._super();
-    this._connect();
-  },
 
   sendMessage: function(options) {
     options = options || {};
@@ -17,7 +15,7 @@ var WebsocketAdapter = BasicAdapter.extend({
     return window.EMBER_INSPECTOR_CONFIG.remoteDebugSocket;
   }).property(),
 
-  _connect: function() {
+  _listen: function() {
     var self = this;
     this.get('socket').on('emberInspectorMessage', function(message) {
       Ember.run(function() {
@@ -28,6 +26,21 @@ var WebsocketAdapter = BasicAdapter.extend({
 
   _disconnect: function() {
     this.get('socket').removeAllListeners("emberInspectorMessage");
+  },
+
+  connect: function() {
+    var self = this;
+    return new Promise(function(resolve, reject) {
+      $(function() {
+        if (self.isDestroyed) { reject(); }
+        var EMBER_INSPECTOR_CONFIG = window.EMBER_INSPECTOR_CONFIG;
+        if (typeof EMBER_INSPECTOR_CONFIG === 'object' && EMBER_INSPECTOR_CONFIG.remoteDebugSocket) {
+          resolve();
+        }
+      });
+    }).then(function() {
+      self._listen();
+    });
   },
 
   willDestroy: function() {
