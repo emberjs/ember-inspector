@@ -1,15 +1,21 @@
 import Ember from "ember";
+var Promise = Ember.RSVP.Promise;
 
 export default Ember.Route.extend({
   setupController: function(controller, model) {
     this._super(controller, model);
     this.get('port').on('data:modelTypesAdded', this, this.addModelTypes);
     this.get('port').on('data:modelTypesUpdated', this, this.updateModelTypes);
-    this.get('port').send('data:getModelTypes');
   },
 
   model: function() {
-    return [];
+    var port = this.get('port');
+    return new Promise(function(resolve) {
+      port.one('data:modelTypesAdded', this, function(message) {
+        resolve(message.modelTypes);
+      });
+      port.send('data:getModelTypes');
+    });
   },
 
   deactivate: function() {

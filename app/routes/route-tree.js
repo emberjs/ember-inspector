@@ -3,8 +3,7 @@ import TabRoute from "ember-inspector/routes/tab";
 var $ = Ember.$;
 
 export default TabRoute.extend({
-  setupController: function(controller, model) {
-    this._super(controller, model);
+  setupController: function() {
     this.get('port').on('route:currentRoute', this, this.setCurrentRoute);
     this.get('port').send('route:getCurrentRoute');
     this.get('port').on('route:routeTree', this, this.setTree);
