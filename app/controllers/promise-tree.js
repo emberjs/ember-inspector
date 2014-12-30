@@ -28,6 +28,8 @@ var not = Ember.computed.not;
 export default Ember.ArrayController.extend({
   needs: ['application'],
 
+  queryParams: ['filter', 'instrumentWithStack'],
+
   createdAfter: null,
 
   // below used to show the "refresh" message

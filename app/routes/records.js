@@ -9,7 +9,7 @@ export default TabRoute.extend({
 
     var type = this.modelFor('model_type');
 
-    controller.set('modelType', this.modelFor('model_type'));
+    controller.set('modelType', type);
 
     this.get('port').on('data:recordsAdded', this, this.addRecords);
     this.get('port').on('data:recordsUpdated', this, this.updateRecords);

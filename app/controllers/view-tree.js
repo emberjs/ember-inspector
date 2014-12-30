@@ -1,9 +1,14 @@
 import Ember from "ember";
+var alias = Ember.computed.alias;
+
 export default Ember.ArrayController.extend({
   needs: ['application'],
   itemController: 'view-item',
   pinnedObjectId: null,
   inspectingViews: false,
+  queryParams: ['components', 'allViews'],
+  components: alias('options.components'),
+  allViews: alias('options.allViews'),
   options: {
     components: false,
     allViews: false
