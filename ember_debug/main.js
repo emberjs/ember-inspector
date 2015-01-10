@@ -11,7 +11,7 @@ import ContainerDebug from "ember-debug/container-debug";
 
 var EmberDebug;
 var Ember = window.Ember;
-EmberDebug = Ember.Namespace.extend({
+EmberDebug = Ember.Object.extend({
 
   application: null,
   started: false,
