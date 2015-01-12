@@ -356,7 +356,10 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
   },
 
   hasOwnContext: function(view) {
-    return view.get('context') !== view.get('_parentView.context') && !(view.get('_parentView') instanceof Ember.Component);
+    // Context switching is deprecated, we will need to find a better way for {{#each}} helpers.
+    return view.get('context') !== view.get('_parentView.context') &&
+      // make sure not a view inside a component, like `{{yield}}` for example.
+      !(view.get('_parentView.context') instanceof Ember.Component);
   },
 
   highlightView: function(element, preview) {

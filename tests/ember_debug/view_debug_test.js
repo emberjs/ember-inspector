@@ -359,3 +359,23 @@ test("Supports applications that don't have the ember-application CSS class", fu
     equal(name, 'view:viewTree');
   });
 });
+
+test("Does not list nested {{yield}} views", function() {
+  var message = null;
+  port.reopen({
+    send: function(n, m) {
+      message = m;
+    }
+  });
+
+  setTemplate('posts', '{{#x-first}}Foo{{/x-first}}');
+  setTemplate('components/x-first', '{{#x-second}}{{yield}}{{/x-second}}');
+  setTemplate('components/x-second', '{{yield}}');
+
+  visit('/posts');
+
+  andThen(function() {
+    equal(message.tree.children.length, 1, 'Only the posts view should render');
+    equal(message.tree.children[0].children.length, 0, 'posts view should have no children');
+  });
+});
