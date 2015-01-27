@@ -44,12 +44,15 @@ exports.openSource = function(target, url, line) {
       let item = Sources.getItemForAttachment(a => a.source.url === url);
       if (item) {
         let options = { noDebug: true };
-        return DebuggerView.setEditorLocation(item.attachment.source.actor, line, options).then(null, () => {
-          // For some reason it currently works if you pass a URL.
+        let actor = item.attachment.source.actor;
+        // Firefox >= 36
+        return DebuggerView.setEditorLocation(actor, line, options).then(null, () => {
+          // Firefox <= 35
           return DebuggerView.setEditorLocation(url, line, options);
         });
-       }
-       return Promise.reject("Couldn't find the specified source in the debugger.");
+      } else {
+        return Promise.reject("Couldn't find the specified source in the debugger.");
+      }
     });
   });
 };
@@ -57,10 +60,12 @@ exports.openSource = function(target, url, line) {
 function onSourcesLoaded(dbg) {
   let { resolve, promise } = Promise.defer();
   let { DebuggerView: { Sources } } = dbg;
+
   if (Sources.items.length > 0) {
     resolve();
+  } else {
+    resolve(dbg.once(dbg.EVENTS.SOURCES_ADDED));
   }
-  resolve(dbg.once(dbg.EVENTS.SOURCES_ADDED));
   return promise;
 }
 

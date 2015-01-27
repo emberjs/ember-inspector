@@ -99,10 +99,12 @@ let EmberInspector = Class({
 
   _handleDevtoolPanelMessage: function(msg) {
     log("_handleDevtoolPanelMessage", msg);
-    if (msg.data && msg.data.type === 'devtools:openSource') {
-      openSource(this.toolbox._target, msg.data.url, msg.data.line);
-    } else if (msg.origin === "resource://ember-inspector-at-emberjs-dot-com") {
-      this._sendToTargetTab(msg.data);
+    if (msg.origin === "resource://ember-inspector-at-emberjs-dot-com") {
+      if (msg.data && msg.data.type === 'devtools:openSource') {
+        openSource(this.toolbox._target, msg.data.url, msg.data.line);
+      } else {
+        this._sendToTargetTab(msg.data);
+      }
     } else {
       logError("_handleDevtoolPanelMessage INVALID ORIGIN", msg);
     }
