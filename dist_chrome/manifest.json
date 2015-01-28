@@ -35,5 +35,9 @@
   "web_accessible_resources": [
     "panes/in-page-script.js"
   ],
-  "options_page": "options.html"
+  "options_page": "options.html",
+  "options_ui": {
+    "page": "options-dialog.html",
+    "chrome_style": true
+  }
 }
