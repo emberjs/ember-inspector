@@ -23,7 +23,10 @@ function flush() {
   for (i = 0; i < queue.length; i++) {
     entry = queue[i];
     if (entry.type === 'began') {
-      queue[entry.endedIndex].profileNode = profileManager.began(entry.timestamp, entry.payload, entry.now);
+      // If there was an error during rendering `entry.endedIndex` never gets set.
+      if (entry.endedIndex) {
+        queue[entry.endedIndex].profileNode = profileManager.began(entry.timestamp, entry.payload, entry.now);
+      }
     } else {
       profileManager.ended(entry.timestamp, entry.payload, entry.profileNode);
     }
