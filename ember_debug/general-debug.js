@@ -13,7 +13,13 @@ var GeneralDebug = Ember.Object.extend(PortMixin, {
 
   sendBooted: function() {
     this.sendMessage('applicationBooted', {
-      booted: Ember.BOOTED || this.get('application.booted')
+      booted: this.get('application.__inspector__booted')
+    });
+  },
+
+  sendReset: function() {
+    this.sendMessage('reset', {
+      reset: true
     });
   },
 

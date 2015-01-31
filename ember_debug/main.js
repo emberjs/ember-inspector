@@ -20,9 +20,9 @@ EmberDebug = Ember.Object.extend({
   Port: Port,
   Adapter: BasicAdapter,
 
-  start: function() {
+  start: function($keepAdapter) {
     if (this.get('started')) {
-      this.reset();
+      this.reset($keepAdapter);
       return;
     }
     this.set('started', true);
@@ -37,6 +37,9 @@ EmberDebug = Ember.Object.extend({
   },
 
   destroyContainer: function() {
+    if (this.get('generalDebug')) {
+      this.get('generalDebug').sendReset();
+    }
     var self = this;
     ['dataDebug',
     'viewDebug',
@@ -60,12 +63,23 @@ EmberDebug = Ember.Object.extend({
     this.set(prop, Module.create({ namespace: this }));
   },
 
-  reset: function() {
+  willDestroy: function() {
+    this.destroyContainer();
+    this._super.apply(this, arguments);
+  },
+
+  reset: function($keepAdapter) {
     this.destroyContainer();
     Ember.run(this, function() {
-
-      this.startModule('adapter', this.Adapter);
-      this.startModule('port', this.Port);
+      // Adapters don't have state depending on the application itself.
+      // They also maintain connections with the inspector which we will
+      // lose if we destroy.
+      if (!this.get('adapter') || !$keepAdapter) {
+        this.startModule('adapter', this.Adapter);
+      }
+      if (!this.get('port') || !$keepAdapter) {
+        this.startModule('port', this.Port);
+      }
 
       this.startModule('generalDebug', GeneralDebug);
       this.startModule('renderDebug', RenderDebug);
