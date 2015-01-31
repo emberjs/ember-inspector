@@ -84,30 +84,30 @@ var UNKNOWN_FUNCTION = "<unknown>";
 
 // Taken from https://github.com/errorception/browser-stack-parser/
 function fromStackProperty(stackString) {
-	var chrome = /^\s*at (?:((?:\[object object\])?\S+(?: \[as \S+\])?) )?\(?((?:file|http|https):.*?):(\d+)(?::(\d+))?\)?\s*$/i,
-		gecko = /^\s*(\S*)(?:\((.*?)\))?@((?:file|http|https).*?):(\d+)(?::(\d+))?\s*$/i,
-		lines = stackString.split('\n'),
-		stack = [],
-		parts;
+  var chrome = /^\s*at (?:((?:\[object object\])?\S+(?: \[as \S+\])?) )?\(?((?:file|http|https):.*?):(\d+)(?::(\d+))?\)?\s*$/i,
+      gecko = /^\s*(\S*)(?:\((.*?)\))?@((?:file|http|https).*?):(\d+)(?::(\d+))?\s*$/i,
+      lines = stackString.split('\n'),
+      stack = [],
+      parts;
 
-	for (var i = 0, j = lines.length; i < j; ++i) {
-		if ((parts = gecko.exec(lines[i]))) {
-			stack.push({
-				url: parts[3],
-				func: parts[1] || UNKNOWN_FUNCTION,
-				args: parts[2] ? parts[2].split(',') : '',
-				line: +parts[4],
-				column: parts[5] ? +parts[5] : null
-			});
-		} else if ((parts = chrome.exec(lines[i]))) {
-			stack.push({
-				url: parts[2],
-				func: parts[1] || UNKNOWN_FUNCTION,
-				line: +parts[3],
-				column: parts[4] ? +parts[4] : null
-			});
-		}
-	}
+  for (var i = 0, j = lines.length; i < j; ++i) {
+    if ((parts = gecko.exec(lines[i]))) {
+      stack.push({
+        url: parts[3],
+        func: parts[1] || UNKNOWN_FUNCTION,
+        args: parts[2] ? parts[2].split(',') : '',
+        line: +parts[4],
+        column: parts[5] ? +parts[5] : null
+      });
+    } else if ((parts = chrome.exec(lines[i]))) {
+      stack.push({
+        url: parts[2],
+        func: parts[1] || UNKNOWN_FUNCTION,
+        line: +parts[3],
+        column: parts[4] ? +parts[4] : null
+      });
+    }
+  }
 
-	return stack.length ? stack:null;
+  return stack.length ? stack:null;
 }
