@@ -28,11 +28,46 @@ exports.openDevTool = function(toolId) {
 };
 
 exports.inspectDOMElement = function(target, selector, toolId) {
-  return gDevTools.showToolbox(target, "inspector").then(function(toolbox) {
+  return gDevTools.showToolbox(target, "inspector").then(toolbox => {
     let sel = toolbox.getCurrentPanel().selection;
     sel.setNode(sel.document.querySelector(selector), toolId);
-  }.bind(this));
+  });
 };
+
+exports.openSource = function(target, url, line) {
+   return gDevTools.showToolbox(target, "jsdebugger").then(toolbox => {
+    let dbg = toolbox.getCurrentPanel().panelWin;
+
+    return onSourcesLoaded(dbg).then(() => {
+      let { DebuggerView } = dbg;
+      let { Sources } = DebuggerView;
+      let item = Sources.getItemForAttachment(a => a.source.url === url);
+      if (item) {
+        let options = { noDebug: true };
+        let actor = item.attachment.source.actor;
+        // Firefox >= 36
+        return DebuggerView.setEditorLocation(actor, line, options).then(null, () => {
+          // Firefox <= 35
+          return DebuggerView.setEditorLocation(url, line, options);
+        });
+      } else {
+        return Promise.reject("Couldn't find the specified source in the debugger.");
+      }
+    });
+  });
+};
+
+function onSourcesLoaded(dbg) {
+  let { resolve, promise } = Promise.defer();
+  let { DebuggerView: { Sources } } = dbg;
+
+  if (Sources.items.length > 0) {
+    resolve();
+  } else {
+    resolve(dbg.once(dbg.EVENTS.SOURCES_ADDED));
+  }
+  return promise;
+}
 
 exports.evaluateFileOnTargetWindow = function(target, fileUrl) {
   let { resolve, reject, promise } = Promise.defer();

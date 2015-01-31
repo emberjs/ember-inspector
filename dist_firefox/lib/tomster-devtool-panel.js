@@ -15,7 +15,7 @@ const logError = curry(function log(msg, e) {
   console.error("ember-extensions: " + msg, e);
 });
 
-const { openDevTool, inspectDOMElement,
+const { openDevTool, inspectDOMElement, openSource,
         evaluateFileOnTargetWindow }  = require("./devtools-utils");
 
 var Promise = require("sdk/core/promise.js");
@@ -100,7 +100,11 @@ let EmberInspector = Class({
   _handleDevtoolPanelMessage: function(msg) {
     log("_handleDevtoolPanelMessage", msg);
     if (msg.origin === "resource://ember-inspector-at-emberjs-dot-com") {
-      this._sendToTargetTab(msg.data);
+      if (msg.data && msg.data.type === 'devtools:openSource') {
+        openSource(this.toolbox._target, msg.data.url, msg.data.line);
+      } else {
+        this._sendToTargetTab(msg.data);
+      }
     } else {
       logError("_handleDevtoolPanelMessage INVALID ORIGIN", msg);
     }

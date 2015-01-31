@@ -28,7 +28,9 @@ Router.map(function() {
       this.resource('container-type', { path: '/:type_id' });
     });
 
+    this.resource('deprecations');
   });
+
 });
 
 export default Router;

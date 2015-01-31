@@ -53,8 +53,9 @@
     content: "\25BC";
 }
 
-.row_arrow_collapsed .cell_type_main, .row_arrow_expanded .cell_type_main {
+.row_arrow_collapsed, .row_arrow_expanded {
   cursor: pointer;
+  position: relative;
 }
  /* -------------------------------- */
 
@@ -89,6 +90,10 @@
   width: 250px;
 }
 
+.cell.cell_size_larger {
+  flex: none;
+  width: 350px;
+}
 .cell.cell_size_huge {
   flex: none;
   width: 450px;

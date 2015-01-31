@@ -7,6 +7,7 @@ var wrapFiles = require('broccoli-wrap');
 var pickFiles = require('broccoli-static-compiler');
 var concatFiles = require('broccoli-concat');
 var jshintTrees = require('broccoli-jshint');
+var removeFile = require('broccoli-file-remover');
 
 var app = new EmberApp({
   fingerprint: {
@@ -30,7 +31,11 @@ emberDebug = pickFiles(emberDebug, {
   destDir: '/ember-debug'
 });
 
-if (env !== 'production') {
+emberDebug = removeFile(emberDebug, {
+  files: ['ember-debug/vendor/source-map.js']
+});
+
+if (env === 'test') {
   var jshintedEmberDebug = jshintTrees(emberDebug, {
     description: 'JSHint - Ember Debug'
   });
@@ -41,7 +46,6 @@ if (env !== 'production') {
   emberDebug = mergeTrees([emberDebug, jshintedEmberDebug]);
 }
 
-
 emberDebug = compileES6(emberDebug, {
   inputFiles: ['ember-debug/**/*.js'],
   loaderFile: 'ember-debug/vendor/loader.js',
@@ -49,7 +53,7 @@ emberDebug = compileES6(emberDebug, {
   wrapInEval: false,
   ignoredModules: [
     'ember-debug/vendor/loader',
-    'ember-debug/vendor/startup-wrapper'
+    'ember-debug/vendor/startup-wrapper',
   ]
 });
 
@@ -59,7 +63,19 @@ var startupWrapper = pickFiles('ember_debug', {
   destDir: '/'
 });
 
+
+var sourceMap = pickFiles('ember_debug', {
+  srcDir: '/vendor',
+  files: ['source-map.js'],
+  destDir: '/'
+});
+
+sourceMap = wrapFiles(sourceMap, {
+  wrapper: ["(function() {\n", "\n}());"]
+});
+
 emberDebug = mergeTrees([startupWrapper, emberDebug]);
+emberDebug = mergeTrees([sourceMap, emberDebug]);
 
 emberDebug = concatFiles(emberDebug, {
   inputFiles: ['**/*.js'],
