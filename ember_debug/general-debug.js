@@ -1,15 +1,37 @@
 import PortMixin from "ember-debug/mixins/port-mixin";
 var Ember = window.Ember;
+var computed = Ember.computed;
+var readOnly = computed.readOnly;
+
 var GeneralDebug = Ember.Object.extend(PortMixin, {
   namespace: null,
 
-  port: Ember.computed.alias('namespace.port'),
+  port: readOnly('namespace.port'),
 
-  application: Ember.computed.alias('namespace.application'),
+  application: readOnly('namespace.application'),
 
-  promiseDebug: Ember.computed.alias('namespace.promiseDebug'),
+  promiseDebug: readOnly('namespace.promiseDebug'),
 
   portNamespace: 'general',
+
+  // Keep an eye on https://github.com/ember-cli/ember-cli/issues/3045
+  emberCliConfig: computed(function() {
+    var config;
+    var $ = Ember.$;
+    $('meta[name]').each(function() {
+      var meta = $(this);
+      var match = meta.attr('name').match(/environment$/);
+      if (match) {
+        try {
+          /* global unescape */
+          config = JSON.parse(unescape(meta.attr('content')));
+          return false;
+        } catch (e) {}
+      }
+    });
+    return config;
+  }).property(),
+
 
   sendBooted: function() {
     this.sendMessage('applicationBooted', {

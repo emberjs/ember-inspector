@@ -7,6 +7,7 @@ var App, run = Ember.run;
 
 function setupApp(){
   App = Ember.Application.create();
+  App.toString = function() { return 'App'; };
   App.setupForTesting();
   App.injectTestHelpers();
 
@@ -35,6 +36,9 @@ module("Route Tree Debug", {
       EmberDebug.set('application', App);
     });
     run(EmberDebug, 'start');
+    EmberDebug.get('generalDebug').reopen({
+      emberCliConfig: null
+    });
     port = EmberDebug.port;
   },
   teardown: function() {

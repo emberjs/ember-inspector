@@ -2,16 +2,17 @@ import PortMixin from 'ember-debug/mixins/port-mixin';
 
 var Ember = window.Ember;
 var classify = Ember.String.classify;
+var dasherize = Ember.String.dasherize;
 var computed = Ember.computed;
-var oneWay = computed.oneWay;
+var readOnly = computed.readOnly;
 var observer = Ember.observer;
 var later = Ember.run.later;
 
-var RouteDebug = Ember.Object.extend(PortMixin, {
+export default Ember.Object.extend(PortMixin, {
   namespace: null,
-  port: oneWay('namespace.port').readOnly(),
+  port: readOnly('namespace.port'),
 
-  application: oneWay('namespace.application').readOnly(),
+  application: readOnly('namespace.application'),
 
   router: computed(function() {
     return this.get('application.__container__').lookup('router:main');
@@ -22,9 +23,11 @@ var RouteDebug = Ember.Object.extend(PortMixin, {
     return container.lookup('controller:application');
   }).property('application'),
 
-  currentPath: oneWay('applicationController.currentPath').readOnly(),
+  currentPath: readOnly('applicationController.currentPath'),
 
   portNamespace: 'route',
+
+  emberCliConfig: readOnly('namespace.generalDebug.emberCliConfig'),
 
   messages: {
     getTree: function() {
@@ -59,26 +62,69 @@ var RouteDebug = Ember.Object.extend(PortMixin, {
   sendTree: function() {
     var routeTree = this.get('routeTree');
     this.sendMessage('routeTree', { tree: routeTree });
+  },
+
+  getClassName: function(name, type) {
+    var container = this.get('application.__container__');
+    var resolver = container.resolver;
+    var prefix = this.get('emberCliConfig.modulePrefix');
+    var podPrefix = this.get('emberCliConfig.podModulePrefix');
+    var usePodsByDefault = this.get('emberCliConfig.usePodsByDefault');
+    var className;
+    if (prefix || podPrefix) {
+      // Uses modules
+      name = dasherize(name);
+      className = resolver.describe(type + ':' + name);
+      if (className) {
+        // Module exists and found
+        className = className.replace(new RegExp('^/?(' + prefix +'|' + podPrefix + ')/' + type + 's/'), '');
+      } else {
+        // Module does not exist
+        if (usePodsByDefault) {
+          // we don't include the prefix since it's redundant
+          // and not part of the file path.
+          // (podPrefix - prefix) is part of the file path.
+          var currentPrefix = '';
+          if (podPrefix) {
+            currentPrefix = podPrefix.replace(new RegExp('^/?' + prefix + '/?'), '');
+          }
+          className = currentPrefix + '/' + name  + '/' + type;
+        } else {
+          className = name.replace(/\./g, '/');
+        }
+      }
+      className = className.replace(/\./g, '/');
+    } else {
+      // No modules
+      if (type !== 'template') {
+        className = classify(name.replace(/\./g, '_') + '_' + type);
+      } else {
+        className = name.replace(/\./g, '/');
+      }
+    }
+    return className;
   }
+
 });
 
 var buildSubTree = function(routeTree, route) {
   var handlers = route.handlers;
+  var container = this.get('application.__container__');
   var subTree = routeTree, item,
       routeClassName, routeHandler, controllerName,
-      controllerClassName, container, templateName,
+      controllerClassName, templateName,
       controllerFactory;
   for (var i = 0; i < handlers.length; i++) {
     item = handlers[i];
     var handler = item.handler;
     if (subTree[handler] === undefined) {
-      routeClassName = classify(handler.replace(/\./g, '_')) + 'Route';
-      container = this.get('application.__container__');
+      routeClassName = this.getClassName(handler, 'route');
+
       routeHandler = container.lookup('router:main').router.getHandler(handler);
       controllerName = routeHandler.get('controllerName') || routeHandler.get('routeName');
-      controllerClassName = classify(controllerName.replace(/\./g, '_')) + 'Controller';
       controllerFactory = container.lookupFactory('controller:' + controllerName);
-      templateName = handler.replace(/\./g, '/');
+      controllerClassName = this.getClassName(controllerName, 'controller');
+      templateName = this.getClassName(handler, 'template');
 
       subTree[handler] = {
         value: {
@@ -156,5 +202,3 @@ function getURL(container, segments) {
 
   return url;
 }
-
-export default RouteDebug;
