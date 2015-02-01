@@ -5,7 +5,6 @@ var EmberObject = Ember.Object;
 var computed = Ember.computed;
 var readOnly = computed.readOnly;
 var run = Ember.run;
-var $ = Ember.$;
 var guidFor = Ember.guidFor;
 
 export default EmberObject.extend(PortMixin, {
@@ -31,22 +30,7 @@ export default EmberObject.extend(PortMixin, {
     return SourceMap.create();
   }).property(),
 
-  // Keep an eye on https://github.com/ember-cli/ember-cli/issues/3045
-  emberCliConfig: computed(function() {
-    var config;
-    $('meta[name]').each(function() {
-      var meta = $(this);
-      var match = meta.attr('name').match(/environment$/);
-      if (match) {
-        try {
-          /* global unescape */
-          config = JSON.parse(unescape(meta.attr('content')));
-          return false;
-        } catch (e) {}
-      }
-    });
-    return config;
-  }).property(),
+  emberCliConfig: readOnly('namespace.generalDebug.emberCliConfig'),
 
   init: function() {
     this._super();
