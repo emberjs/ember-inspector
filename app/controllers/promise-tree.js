@@ -28,7 +28,7 @@ var not = Ember.computed.not;
 export default Ember.ArrayController.extend({
   needs: ['application'],
 
-  queryParams: ['filter', 'instrumentWithStack'],
+  queryParams: ['filter'],
 
   createdAfter: null,
 
@@ -41,10 +41,6 @@ export default Ember.ArrayController.extend({
   // Keep track of promise stack traces.
   // It is opt-in due to performance reasons.
   instrumentWithStack: false,
-
-  stackChanged: function() {
-    this.port.send('promise:setInstrumentWithStack', { instrumentWithStack: this.get('instrumentWithStack') });
-  }.observes('instrumentWithStack').on('init'),
 
   init: function() {
     this._super.apply(this, arguments);
@@ -137,6 +133,9 @@ export default Ember.ArrayController.extend({
     },
     tracePromise: function(promise) {
       this.get('port').send('promise:tracePromise', { promiseId: promise.get('guid') });
+    },
+    updateInstrumentWithStack: function(bool) {
+      this.port.send('promise:setInstrumentWithStack', { instrumentWithStack: bool});
     }
   }
 });
