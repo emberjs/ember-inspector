@@ -1,15 +1,15 @@
 var Ember = window.Ember;
-var oneWay = Ember.computed.oneWay;
+var readOnly = Ember.computed.readOnly;
 var guidFor = Ember.guidFor;
 
 export default Ember.Object.extend(Ember.Evented, {
-  adapter: oneWay('namespace.adapter').readOnly(),
+  adapter: readOnly('namespace.adapter'),
 
-  application: oneWay('namespace.application').readOnly(),
+  application: readOnly('namespace.application'),
 
   uniqueId: Ember.computed(function() {
     return guidFor(this.get('application')) + '__' + window.location.href + '__' + Date.now();
-  }).property(),
+  }).property('application'),
 
   init: function() {
     var self = this;

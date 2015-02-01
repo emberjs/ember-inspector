@@ -17,10 +17,6 @@ if (typeof adapter !== 'undefined') {
 
 (function(adapter) {
 
-  function inject() {
-    window.EmberInspector = Ember.Debug = requireModule('ember-debug/main')['default'];
-  }
-
   onEmberReady(function() {
     if (!window.Ember) {
       return;
@@ -31,11 +27,25 @@ if (typeof adapter !== 'undefined') {
     }
     // prevent from injecting twice
     if (!Ember.Debug) {
-      inject();
+      window.EmberInspector = Ember.Debug = requireModule('ember-debug/main')['default'];
       Ember.Debug.Adapter = requireModule('ember-debug/adapters/' + adapter)['default'];
 
-      onApplicationStart(function() {
-        Ember.Debug.start();
+      onApplicationStart(function appStarted(app) {
+        app.__inspector__booted = true;
+        Ember.Debug.set('application', app);
+        Ember.Debug.start(true);
+        // Watch for app reset
+        app.reopen({
+          reset: function() {
+            this.__inspector__booted = false;
+            this._super.apply(this, arguments);
+          },
+          willDestroy: function() {
+            Ember.Debug.destroyContainer();
+            Ember.Debug.set('application', null);
+            this._super.apply(this, arguments);
+          }
+        });
       });
     }
   });
@@ -78,17 +88,30 @@ if (typeof adapter !== 'undefined') {
     if (typeof Ember === 'undefined') {
       return;
     }
-    if (!Ember.BOOTED) {
-      Ember.Application.initializer({
-        name: 'ember-inspector-booted',
-        initialize: function(container, application) {
-          application.booted = true;
-          callback();
-        }
-      });
-    } else {
-      callback();
+    var apps = getApplications();
+    var app;
+    for (var i = 0, l = apps.length; i < l; i++) {
+      app = apps[i];
+      if (app._readinessDeferrals === 0) {
+        // App started
+        callback(app);
+        break;
+      }
     }
+    Ember.Application.initializer({
+      name: 'ember-inspector-booted',
+      initialize: function(container, app) {
+        callback(app);
+      }
+    });
+  }
+
+  function getApplications() {
+    var namespaces = Ember.A(Ember.Namespace.NAMESPACES);
+
+    return namespaces.filter(function(namespace) {
+      return namespace instanceof Ember.Application;
+    });
   }
 
 }(currentAdapter));

@@ -18,5 +18,15 @@ export default Route.extend({
 
   setupController: function() {
     this.controllerFor('application').set('emberApplication', true);
+    this.get('port').one('general:reset', this, this.reset);
+  },
+
+  reset: function() {
+    this.container.lookup('application:main').reset();
+  },
+
+  deactivate: function() {
+    this.get('port').off('general:applicationBooted');
+    this.get('port').off('general:reset', this, this.reset);
   }
 });
