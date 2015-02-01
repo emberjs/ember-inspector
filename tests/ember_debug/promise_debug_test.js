@@ -30,7 +30,12 @@ module("Promise Debug", {
     });
     Ember.run(EmberDebug, 'start');
     EmberDebug.get('promiseDebug').reopen({
-      delay: 5
+      delay: 5,
+      session: {
+        getItem: Ember.K,
+        setItem: Ember.K,
+        removeItem: Ember.K
+      }
     });
     port = EmberDebug.port;
   },
@@ -111,4 +116,51 @@ test("Updates are published when they happen", function() {
       equal(parent.guid, promise.guid);
     }, 200);
   }, 200);
+});
+
+
+test("Instrumentation with stack is persisted to session storage", function() {
+  var withStack = false;
+  var persisted = false;
+  EmberDebug.get('promiseDebug').reopen({
+    session: {
+      getItem: function(key) {
+        return withStack;
+      },
+      setItem: function(key, val) {
+        withStack = val;
+      }
+    }
+  });
+
+  andThen(function() {
+    port.trigger('promise:getInstrumentWithStack');
+    return wait();
+  });
+
+  andThen(function() {
+    equal(name, 'promise:instrumentWithStack');
+    equal(message.instrumentWithStack, false);
+    port.trigger('promise:setInstrumentWithStack', {
+      instrumentWithStack: true
+    });
+    return wait();
+  });
+
+  andThen(function() {
+    equal(name, 'promise:instrumentWithStack');
+    equal(message.instrumentWithStack, true);
+    equal(withStack, true, 'persisted');
+    port.trigger('promise:setInstrumentWithStack', {
+      instrumentWithStack: false
+    });
+    return wait();
+  });
+
+  andThen(function() {
+    equal(name, 'promise:instrumentWithStack');
+    equal(message.instrumentWithStack, false);
+    equal(withStack, false, 'persisted');
+  });
+
 });

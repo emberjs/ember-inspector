@@ -1,25 +1,31 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import PromiseAssembler from 'ember-debug/libs/promise-assembler';
 var Ember = window.Ember;
-var readOnly = Ember.computed.readOnly;
+var computed = Ember.computed;
+var readOnly = computed.readOnly;
+var EmberObject = Ember.Object;
+var RSVP = Ember.RSVP;
 
-var PromiseDebug = Ember.Object.extend(PortMixin, {
+export default EmberObject.extend(PortMixin, {
   namespace: null,
   port: readOnly('namespace.port'),
   objectInspector: readOnly('namespace.objectInspector'),
   adapter: readOnly('namespace.adapter'),
   portNamespace: 'promise',
+  session: readOnly('namespace.session'),
 
   // created on init
   promiseAssembler: null,
 
-  releaseMethods: Ember.computed(function() { return Ember.A(); }),
+  releaseMethods: computed(function() { return Ember.A(); }),
 
   init: function() {
     this._super();
     if (PromiseAssembler.supported()) {
       this.set('promiseAssembler', PromiseAssembler.create());
       this.get('promiseAssembler').set('promiseDebug', this);
+      this.setInstrumentWithStack();
+      this.sendInstrumentWithStack();
       this.get('promiseAssembler').start();
     }
   },
@@ -71,8 +77,33 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
     },
 
     setInstrumentWithStack: function(message) {
-      Ember.RSVP.configure('instrument-with-stack', message.instrumentWithStack);
+      var bool = message.instrumentWithStack;
+      this.set('instrumentWithStack', bool);
+      this.setInstrumentWithStack();
+    },
+
+    getInstrumentWithStack: function() {
+      this.sendInstrumentWithStack();
     }
+  },
+
+  instrumentWithStack: computed(function(key, val) {
+    if (arguments.length > 1) {
+      this.get('session').setItem('promise:stack', val);
+      return val;
+    }
+    return !!this.get('session').getItem('promise:stack');
+  }).property(),
+
+  sendInstrumentWithStack: function() {
+    this.sendMessage('instrumentWithStack', {
+      instrumentWithStack: this.get('instrumentWithStack')
+    });
+  },
+
+  setInstrumentWithStack: function() {
+    RSVP.configure('instrument-with-stack', this.get('instrumentWithStack'));
+    this.sendInstrumentWithStack();
   },
 
   releaseAll: function() {
@@ -100,7 +131,7 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
     this.promisesUpdated(this.get('promiseAssembler').find());
   },
 
-  updatedPromises: Ember.computed(function() { return Ember.A(); }),
+  updatedPromises: computed(function() { return Ember.A(); }),
 
   promisesUpdated: function(uniquePromises) {
     if (!uniquePromises) {
@@ -178,5 +209,3 @@ var PromiseDebug = Ember.Object.extend(PortMixin, {
   }
 
 });
-
-export default PromiseDebug;

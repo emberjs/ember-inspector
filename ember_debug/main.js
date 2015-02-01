@@ -9,6 +9,7 @@ import DataDebug from "ember-debug/data-debug";
 import PromiseDebug from "ember-debug/promise-debug";
 import ContainerDebug from "ember-debug/container-debug";
 import DeprecationDebug from "ember-debug/deprecation-debug";
+import Session from "ember-debug/services/session";
 
 var EmberDebug;
 var Ember = window.Ember;
@@ -50,6 +51,7 @@ EmberDebug = Ember.Object.extend({
     'promiseDebug',
     'containerDebug',
     'deprecationDebug',
+    'session',
     ].forEach(function(prop) {
       var handler = self.get(prop);
       if (handler) {
@@ -81,6 +83,7 @@ EmberDebug = Ember.Object.extend({
         this.startModule('port', this.Port);
       }
 
+      this.startModule('session', Session);
       this.startModule('generalDebug', GeneralDebug);
       this.startModule('renderDebug', RenderDebug);
       this.startModule('objectInspector', ObjectInspector);

@@ -14,11 +14,21 @@ export default TabRoute.extend({
       });
       route.get('assembler').start();
     });
+  },
 
+  setupController: function() {
+    this._super.apply(this, arguments);
+    this.get('port').on('promise:instrumentWithStack', this, this.setInstrumentWithStack);
+    this.get('port').send('promise:getInstrumentWithStack');
+  },
+
+  setInstrumentWithStack: function(message) {
+    this.set('controller.instrumentWithStack', message.instrumentWithStack);
   },
 
   deactivate: function() {
     this.get('assembler').stop();
+    this.get('port').off('promse:getInstrumentWithStack', this, this.setInstrumentWithStack);
   },
 
   actions: {
@@ -40,7 +50,6 @@ export default TabRoute.extend({
           }
         });
       }
-
     }
   }
 });
