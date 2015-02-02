@@ -2,7 +2,7 @@ import Ember from "ember";
 
 export default Ember.Component.extend({
   classNames: ['drag-handle'],
-  classNameBindings: ['isLeft:drag-handle--left', 'isRight:drag-handle--right'],
+  classNameBindings: ['isLeft:drag-handle--left', 'isRight:drag-handle--right', 'class'],
   attributeBindings: ['style'],
   position: 0,
   side: '',

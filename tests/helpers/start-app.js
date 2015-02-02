@@ -2,7 +2,7 @@ import Ember from 'ember';
 import Application from '../../app';
 import Router from '../../router';
 import config from '../../config/environment';
-var guidFor = Ember.guidFor;
+let { generateGuid } = Ember;
 
 export default function startApp(attrs) {
   var App;
@@ -10,8 +10,13 @@ export default function startApp(attrs) {
   var attributes = Ember.merge({}, config.APP);
   attributes = Ember.merge(attributes, attrs); // use defaults, but you can override;
 
-  Router.reopen({
-    location: 'none'
+  Application.initializer({
+    name: generateGuid() + "-detectEmberApplication",
+    initialize: function(container, application) {
+      container.lookup('route:app-detected').reopen({
+        model: Ember.K,
+      });
+    }
   });
 
   Ember.run(function() {
@@ -20,16 +25,6 @@ export default function startApp(attrs) {
     App.injectTestHelpers();
   });
 
-  App.initializer({
-    name: guidFor(App) + "-detectEmberApplication",
-    initialize: function(container, application) {
-      container.lookup('route:application-detected').reopen({
-        model: Ember.K,
-      });
-    }
-  });
-
-  App.reset(); // this shouldn't be needed, i want to be able to "start an app at a specific URL"
 
   return App;
 }

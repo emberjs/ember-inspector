@@ -75,7 +75,7 @@ function setupApp(){
   });
 
   setTemplate('application', '{{outlet}}');
-  setTemplate('simple', 'Simple {{input class="simple-input"}} {{view Ember.View classNames="simple-view"}}');
+  setTemplate('simple', 'Simple {{input class="simple-input"}} {{view "select" classNames="simple-view"}}');
   setTemplate('comments/index', '{{#each}}{{this}}{{/each}}');
   setTemplate('posts', 'Posts');
 }
@@ -283,7 +283,7 @@ test("Highlighting Views on hover", function() {
   })
   .then(function() {
     var previewDiv = findByLabel('preview-div');
-    equal(findByLabel('layer-view', previewDiv).text(), 'Ember.View', "Views without controllers can be configured to be highlighted.");
+    equal(findByLabel('layer-view', previewDiv).text(), 'Ember.Select', "Views without controllers can be configured to be highlighted.");
     port.trigger('view:inspectViews', { inspect: false });
     return wait();
   })

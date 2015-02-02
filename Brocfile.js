@@ -1,7 +1,7 @@
 /* global require, module */
 
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
-var compileES6  = require('ember-cli/node_modules/broccoli-es6-concatenator');
+var compileES6  = require('broccoli-es6-concatenator');
 var mergeTrees  = require('broccoli-merge-trees');
 var wrapFiles = require('broccoli-wrap');
 var pickFiles = require('broccoli-static-compiler');
