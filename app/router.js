@@ -6,7 +6,7 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.resource('application-detected', { path: '/' }, function() {
+  this.resource('app-detected', { path: '/' }, function() {
     this.resource('view-tree', { path: '/' });
     this.resource('route-tree');
 
