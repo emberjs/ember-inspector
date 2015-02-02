@@ -1,4 +1,5 @@
-import TabRoute from 'routes/tab';
+import Ember from "ember";
+import TabRoute from "ember-inspector/routes/tab";
 
 var Promise = Ember.RSVP.Promise;
 var oneWay = Ember.computed.oneWay;

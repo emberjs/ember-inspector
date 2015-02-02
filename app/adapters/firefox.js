@@ -1,4 +1,5 @@
-import BasicAdapter from "adapters/basic";
+import Ember from "ember";
+import BasicAdapter from "./basic";
 
 export default BasicAdapter.extend({
   name: 'firefox',
@@ -42,5 +43,16 @@ export default BasicAdapter.extend({
      urls.forEach(function(url) {
        self.sendMessage({ type: "injectEmberDebug", frameURL: url });
      });
+  },
+
+  canOpenResource: true,
+
+  openResource: function(file, line) {
+    this.sendMessage({
+      type: 'devtools:openSource',
+      url: file,
+      line: line
+    });
   }
+
 });

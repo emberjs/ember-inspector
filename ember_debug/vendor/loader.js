@@ -1,5 +1,5 @@
+var define = window.define, requireModule = window.requireModule;
 if (typeof define !== 'function' && typeof requireModule !== 'function') {
-  var define, requireModule;
 
   (function() {
     var registry = {}, seen = {};
@@ -38,4 +38,6 @@ if (typeof define !== 'function' && typeof requireModule !== 'function') {
     define.registry = registry;
     define.seen = seen;
   })();
+} else {
+
 }

@@ -14,6 +14,7 @@
   })
   ```
 **/
+import Ember from "ember";
 var K = Ember.K;
 export default Ember.Object.extend({
   name: 'basic',
@@ -22,7 +23,7 @@ export default Ember.Object.extend({
 
     @param type {Object} the message to the send
   **/
-  sendMessage: function(options) {},
+  sendMessage: function() {},
 
   /**
     Register functions to be called
@@ -41,5 +42,9 @@ export default Ember.Object.extend({
   },
 
   // Called when the "Reload" is clicked by the user
-  willReload: K
+  willReload: K,
+
+  canOpenResource: false,
+  openResource: function(/* file, line */) {}
+
 });

@@ -1,84 +1,88 @@
 module.exports = function(grunt) {
 
-  function loadFrom(path, config) {
-    var glob = require('glob'),
-    object = {};
-
-    glob.sync('*', {cwd: path}).forEach(function(option) {
-      var key = option.replace(/\.js$/,'');
-      config[key] = require(path + option);
-    });
-  }
-
   var config = {
     pkg: grunt.file.readJSON('package.json'),
-    env: process.env
+    env: process.env,
+    "mozilla-cfx-xpi": {
+      "stable": {
+        options: {
+          "mozilla-addon-sdk": "latest",
+          extension_dir: "dist_firefox",
+          dist_dir: "tmp/xpi"
+        }
+      }
+    },
+    "mozilla-addon-sdk": {
+      "latest": {
+        options: {
+          revision: "latest",
+          dest_dir: "tmp/mozilla-addon-sdk"
+        }
+      }
+    },
+    "mozilla-cfx": {
+      "run": {
+        options: {
+          "mozilla-addon-sdk": "latest",
+          extension_dir: "dist_firefox",
+          command: "run"
+        }
+      }
+    },
+    "version": {
+      app: {
+        src: ['app/app.js']
+      },
+      dist: {
+        prefix: '^"?version"?:\s*[\'"]?',
+        src: ['dist_chrome/manifest.json', 'dist_firefox/package.json']
+      }
+    },
+    "s3": {
+      options: {
+        bucket: 'ember-extension',
+        access: 'public-read',
+        headers: {
+          // One day cache policy (1000 * 60 * 60 * 24)
+          "Cache-Control": "max-age=86400000, public"
+        }
+      },
+      bookmarklet: {
+        sync: [{
+          src: 'dist_bookmarklet/**/*.*',
+          dest: 'dist_bookmarklet/',
+          rel: 'dist_bookmarklet',
+          options: { verify: true }
+        }]
+      }
+    },
+    "compress": {
+      main: {
+        options: {
+          archive: 'dist_chrome/ember-inspector.zip'
+        },
+        expand: true,
+        pretty: true,
+        src: 'dist_chrome/**/*'
+      }
+    }
   };
-
-  loadFrom('./tasks/options/', config);
 
   grunt.initConfig(config);
 
-  require('matchdep')
-  .filterDev('grunt-*')
-  .filter(function(name){ return name !== 'grunt-cli'; })
-  .forEach(grunt.loadNpmTasks);
+  grunt.loadNpmTasks('grunt-mozilla-addon-sdk');
+  grunt.loadNpmTasks('grunt-version');
+  grunt.loadNpmTasks('grunt-s3');
+  grunt.loadNpmTasks('grunt-contrib-compress');
 
-  grunt.loadTasks('tasks');
-
-  grunt.registerTask('build', [
-    'clean',
-    'emberTemplates:dist',
-    'transpile:main',
-    'concat:main',
-    'concat:main_css',
-    'build_ember_debug',
-    'jshint:all',
-    'copy:chrome_extension',
-    'wrap:chrome_ember_debug',
-    'copy:firefox_extension',
-    'wrap:firefox_ember_debug',
-    'copy:bookmarklet_extension',
-    'wrap:bookmarklet_ember_debug',
-    'copy:websocket_extension',
-    'wrap:websocket_ember_debug'
-  ]);
-
-  grunt.registerTask('build_ember_debug', [
-    'transpile:ember_debug',
-    'copy:ember_debug',
-    'concat:ember_debug'
-  ]);
-
-  grunt.registerTask('build_test', [
-    'build',
-    'transpile:tests',
-    'copy:tests',
-    'concat:ember_extension_tests',
-    'concat:ember_debug_tests',
-    'jshint:tests'
-  ]);
-
-  grunt.registerTask('build_xpi', [
+  grunt.registerTask('build-xpi', [
     'mozilla-addon-sdk',
     'mozilla-cfx-xpi'
   ]);
 
-  grunt.registerTask('run_xpi', ['build', 'build_xpi', 'mozilla-cfx:run']);
+  grunt.registerTask('run-xpi', ['build-xpi', 'mozilla-cfx:run']);
 
-  grunt.registerTask('build_and_upload', [
-    'build',
-    'compress:main',
-    'build_xpi',
-    'ember-s3',
-    's3:bookmarklet'
-  ]);
-
-  grunt.registerTask('server', ['build_test','connect:server','watch']);
-  grunt.registerTask('bookmarklet_server', ['build', 'connect:bookmarklet','watch']);
-
-  grunt.registerTask('test', ['build_test', 'connect',  'qunit:all']);
-
-  grunt.registerTask('default', ['build']);
-
+  grunt.registerTask('clean-tmp', function() {
+    grunt.file.delete('./tmp');
+  });
 };

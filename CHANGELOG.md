@@ -1,5 +1,26 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 1.7.0
+
+* [FEATURE] Added a new deprecations tab
+* [FEATURE] The inspector now works in tests
+* [FEATURE] Inspector state is now preserved across reloads
+* [IMPROVEMENT] Fixed object naming to account for module based names
+* [IMPROVEMENT] Moved the project to ember-cli
+* [IMPROVEMENT] Added a date picker to the object inspector
+* [IMPROVEMENT] Migrated to the new chrome extension options dialog
+* [BUGFIX] The data tab now detects models using pod structure
+* [BUGFIX] Prevent duplicate model types in the data tab
+* [BUGFIX] Improved startup so the inspector launches before the app
+* [BUGFIX] We now store `instrumentWithStack` in session storage for reloads
+* [BUGFIX] Ember.Debug as a namespace was changing inspected object names
+* [BUGFIX] The render performance tab now fails silently on render errors
+* [BUGFIX] Nested components no longer cause wrong views to be listed
+* [BUGFIX] Guarded against `event.data`in window messages being null
+* Use Ember's `ViewUtils` to get the `BoundingClientRect`
+* Ensured last Firefox addon-sdk is used
+* Added warning to the README about the use of window messages
+
 ## Ember Inspector 1.6.4
 
 * [BUGFIX] Check type of EMBER_INSPECTOR_CONFIG

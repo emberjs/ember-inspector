@@ -1,3 +1,5 @@
+import Ember from "ember";
+
 var oneWay = Ember.computed.oneWay,
     equal = Ember.computed.equal;
 
@@ -10,6 +12,8 @@ export default Ember.Controller.extend({
   mixinStack: oneWay('controllers.mixin-stack').readOnly(),
   mixinDetails: oneWay('controllers.mixin-details').readOnly(),
   isChrome: equal('port.adapter.name', 'chrome'),
+
+  deprecationCount: 0,
 
   // Indicates that the extension window is focused,
   active: true,
@@ -37,7 +41,7 @@ export default Ember.Controller.extend({
 
   activateMixinDetails: function(name, details, objectId) {
     var self = this;
-    var objects = this.get('mixinStack').forEach(function(item) {
+    this.get('mixinStack').forEach(function(item) {
       self.get('port').send('objectInspector:releaseObject', { objectId: item.objectId });
     });
 

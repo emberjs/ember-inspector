@@ -1,20 +1,18 @@
-import escapeRegExp from "utils/escape_reg_exp";
+import Ember from "ember";
+import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
 var alias = Ember.computed.alias;
 var none = Ember.computed.none;
 
 export default Ember.ArrayController.extend({
-  init: function() {
-    this._super();
-    this.set('filters', []);
-    this.set('filterValues', {});
-  },
   needs: ['application'],
+
+  queryParams: ['filterValue', 'search'],
 
   columns: alias('modelType.columns'),
 
   search: '',
-  filters: undefined,
-  filterValue: undefined,
+  filters: function() { return []; }.property(),
+  filterValue: null,
 
   noFilterValue: none('filterValue'),
 
@@ -25,9 +23,9 @@ export default Ember.ArrayController.extend({
     }
   },
 
+
   modelChanged: function() {
     this.setProperties({
-      filterValue: null,
       search: ''
     });
   }.observes('model'),
@@ -58,7 +56,7 @@ export default Ember.ArrayController.extend({
     });
 
     var Controller = this.container.lookupFactory('controller:array', { singleton: false});
-    var controller = Controller.create({model: content, itemController: 'recordItem'});
+    var controller = Controller.create({model: content, itemController: 'record-item'});
     return controller;
   }.property('search', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValue')
 });

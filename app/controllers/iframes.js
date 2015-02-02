@@ -1,3 +1,4 @@
+import Ember from "ember";
 var ArrayController = Ember.ArrayController;
 var alias = Ember.computed.alias;
 var mapComputed = Ember.computed.map;

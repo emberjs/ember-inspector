@@ -1,23 +1,22 @@
+import Ember from "ember";
 export default Ember.Route.extend({
-  setupController: function(controller, model) {
+
+  setupController: function() {
     this.controllerFor('mixinStack').set('model', []);
-
-    this.get('port').on('objectInspector:updateObject', this, this.updateObject);
-    this.get('port').on('objectInspector:updateProperty', this, this.updateProperty);
-    this.get('port').on('objectInspector:droppedObject', this, this.droppedObject);
-
-    this.get('port').one('general:applicationBooted', this, function(message) {
-      controller.set('emberApplication', message.booted);
-    });
-    this.get('port').send('general:applicationBooted');
-    this._super(controller, model);
+    var port = this.get('port');
+    port.on('objectInspector:updateObject', this, this.updateObject);
+    port.on('objectInspector:updateProperty', this, this.updateProperty);
+    port.on('objectInspector:droppedObject', this, this.droppedObject);
+    port.on('deprecation:count', this, this.setDeprecationCount);
+    port.send('deprecation:getCount');
   },
 
   deactivate: function() {
-    this.get('port').off('objectInspector:updateObject', this, this.updateObject);
-    this.get('port').off('objectInspector:updateProperty', this, this.updateProperty);
-    this.get('port').off('objectInspector:droppedObject', this, this.droppedObject);
-
+    var port = this.get('port');
+    port.off('objectInspector:updateObject', this, this.updateObject);
+    port.off('objectInspector:updateProperty', this, this.updateProperty);
+    port.off('objectInspector:droppedObject', this, this.droppedObject);
+    port.off('deprecation:count', this, this.setDeprecationCount);
   },
 
   updateObject: function(options) {
@@ -38,6 +37,10 @@ export default Ember.Route.extend({
     }
 
     this.send('expandInspector');
+  },
+
+  setDeprecationCount: function(message) {
+    this.controller.set('deprecationCount', message.count);
   },
 
   updateProperty: function(options) {
@@ -67,10 +70,16 @@ export default Ember.Route.extend({
       this.set('controller.isDragging', isDragging);
     },
     refreshPage: function() {
-      this.get('port').send('general:refresh');
-      // inject ember_debug as quickly as possible in chrome
-      // so that promises created on dom ready are caught
-      this.get('adapter').willReload();
+      // If the adapter defined a `reloadTab` method, it means
+      // they prefer to handle the reload themselves
+      if (typeof this.get('adapter').reloadTab === 'function') {
+        this.get('adapter').reloadTab();
+      } else {
+        // inject ember_debug as quickly as possible in chrome
+        // so that promises created on dom ready are caught
+        this.get('port').send('general:refresh');
+        this.get('adapter').willReload();
+      }
     }
   }
 });

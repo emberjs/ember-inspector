@@ -1,4 +1,5 @@
-import BasicAdapter from "adapters/basic";
+/* globals chrome */
+import BasicAdapter from "./basic";
 
 var emberDebug = null;
 
@@ -36,9 +37,7 @@ export default  BasicAdapter.extend({
   }.on('init'),
 
   _injectDebugger: function() {
-    loadEmberDebug();
-    chrome.devtools.inspectedWindow.eval(emberDebug);
-    var urls = [];
+    chrome.devtools.inspectedWindow.eval(loadEmberDebug());
     chrome.devtools.inspectedWindow.onResourceAdded.addListener(function(opts) {
       if (opts.type === 'document') {
         sendIframes([opts.url]);
@@ -48,13 +47,31 @@ export default  BasicAdapter.extend({
 
   willReload: function() {
     this._injectDebugger();
+  },
+
+  /**
+    We handle the reload here so we can inject
+    scripts as soon as possible into the new page.
+  */
+  reloadTab: function() {
+    chrome.devtools.inspectedWindow.reload({
+      injectedScript: loadEmberDebug()
+    });
+  },
+
+  canOpenResource: true,
+
+  openResource: function(file, line) {
+    /*global chrome */
+    // For some reason it opens the line after the one specified
+    chrome.devtools.panels.openResource(file, line - 1);
   }
+
 });
 
 function sendIframes(urls) {
-  loadEmberDebug();
   urls.forEach(function(url) {
-    chrome.devtools.inspectedWindow.eval(emberDebug, { frameURL: url });
+    chrome.devtools.inspectedWindow.eval(loadEmberDebug(), { frameURL: url });
   });
 }
 
@@ -62,8 +79,9 @@ function loadEmberDebug() {
   var xhr;
   if (!emberDebug) {
     xhr = new XMLHttpRequest();
-    xhr.open("GET", chrome.extension.getURL('/ember_debug/ember_debug.js'), false);
+    xhr.open("GET", chrome.extension.getURL('/panes/ember_debug.js'), false);
     xhr.send();
     emberDebug = xhr.responseText;
   }
+  return emberDebug;
 }

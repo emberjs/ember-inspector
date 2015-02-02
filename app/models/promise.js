@@ -1,4 +1,5 @@
-import escapeRegExp from "utils/escape_reg_exp";
+import Ember from "ember";
+import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
 var typeOf = Ember.typeOf;
 var computed = Ember.computed;
 var or = computed.or;

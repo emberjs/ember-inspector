@@ -1,10 +1,11 @@
-import BasicAdapter from "adapters/basic";
+import BasicAdapter from "./basic";
+var Ember = window.Ember;
 var $ = Ember.$;
 
 export default BasicAdapter.extend({
   init: function() {
     this._super();
-    this._connect();
+    this._listen();
   },
 
   sendMessage: function(options) {
@@ -12,7 +13,7 @@ export default BasicAdapter.extend({
     window.emberInspector.w.postMessage(options, window.emberInspector.url);
   },
 
-  _connect: function() {
+  _listen: function() {
     var self = this;
     window.addEventListener('message', function(e) {
       if (e.origin !== window.emberInspector.url) {

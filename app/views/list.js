@@ -1,4 +1,5 @@
-import ListItemView from "views/list_item";
+import Ember from "ember";
+import ListItemView from "ember-inspector/views/list-item";
 
 export default Ember.ListView.extend({
   classNames: ["list-tree"],

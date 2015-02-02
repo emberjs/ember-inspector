@@ -1,35 +1,36 @@
-node_modules/
-tmp/
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/dist
+/tmp
+
 .DS_Store
-*.swp
-dist_chrome/ember-extension.zip
-dist_chrome/images/
-dist_chrome/ember_debug/
-dist_chrome/vendor/
-dist_chrome/panes/ember_extension.css
-dist_chrome/panes/ember_extension.js
-dist_chrome/in-page-script.js
 
-*.xpi
-dist_firefox/data/images/
-dist_firefox/data/ember_debug/
-dist_firefox/data/vendor/
-dist_firefox/data/panes/ember_extension.css
-dist_firefox/data/panes/ember_extension.js
-dist_firefox/data/in-page-script.js
+# dependencies
+/node_modules
+/bower_components
 
-dist_bookmarklet/images/
-dist_bookmarklet/ember_debug/
-dist_bookmarklet/vendor/
-dist_bookmarklet/panes/ember_extension.css
-dist_bookmarklet/panes/ember_extension.js
+# misc
+/.sass-cache
+/connect.lock
+/coverage/*
+/libpeerconnection.log
+npm-debug.log
+testem.log
 
-dist_websocket/images/
-dist_websocket/ember_debug/
-dist_websocket/vendor/
-dist_websocket/panes/ember_extension.css
-dist_websocket/panes/ember_extension.js
+# dists
 
-.mozilla-addon-sdk
+/dist_chrome/panes
+/dist_chrome/ember_debug
+/dist_chrome/in-page-script.js
+/dist_chrome/ember-inspector.zip
 
-aws.json
+/dist_firefox/data/panes
+/dist_firefox/data/ember_debug
+/dist_firefox/data/in-page-script.js
+
+/dist_websocket
+
+/dist_bookmarklet
+
+/.mozilla-addon-sdk
