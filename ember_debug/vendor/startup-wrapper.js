@@ -16,7 +16,6 @@ if (typeof adapter !== 'undefined') {
 }
 
 (function(adapter) {
-
   onEmberReady(function() {
     // global to prevent injection
     if (window.NO_EMBER_DEBUG) {

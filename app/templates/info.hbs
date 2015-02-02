@@ -9,23 +9,22 @@
     <!-- Account for scrollbar width :'(  -->
     <div class="cell cell_type_header spacer"></div>
   </div>
-
   <div class="list-view__list-container">
     <div class="list-tree">
       <div class="ember-list-container">
-      {{#each}}
-        <div data-label="library-row" class="list-tree__item-wrapper row-wrapper">
-          <div class="list-tree__item row">
-            <div class="cell_type_main cell cell_size_large">
+        {{#each}}
+          <div data-label="library-row" class="list-tree__item-wrapper row-wrapper">
+            <div class="list-tree__item row">
+              <div class="cell_type_main cell cell_size_large">
                 <span data-label="lib-name">{{unbound name}}</span>
-            </div>
-            <div class="cell">
+              </div>
+              <div class="cell">
                 <span data-label="lib-version">{{unbound version}}</span>
+              </div>
             </div>
           </div>
-        </div>
-      {{/each}}
+        {{/each}}
+      </div>
     </div>
   </div>
-
 </div>

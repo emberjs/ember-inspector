@@ -71,7 +71,8 @@ function defaultViewTree() {
         model: {
           name: 'PostsArray',
           completeName: 'PostsArray',
-          objectId: 'postsArray'
+          objectId: 'postsArray',
+          type: 'type-ember-object'
         },
         controller: {
           name: 'App.PostsController',
@@ -91,7 +92,8 @@ function defaultViewTree() {
         model: {
           name: 'CommentsArray',
           completeName: 'CommentsArray',
-          objectId: 'commentsArray'
+          objectId: 'commentsArray',
+          type: 'type-ember-object'
         },
         controller: {
           name: 'App.CommentsController',
@@ -113,6 +115,10 @@ test("It should correctly display the view tree", function() {
     run(function() {
       port.trigger('view:viewTree', { tree: viewTree } );
     });
+    return wait();
+  });
+
+  andThen(() => {
 
     var $treeNodes = findByLabel('tree-node');
     equal($treeNodes.length, 3, 'expected some tree nodes');
@@ -298,4 +304,33 @@ test("Configuring which views to show", function() {
     deepEqual(messageSent.message.options, { components: true, allViews: true });
     return wait();
   });
+});
+
+test("Inspecting a model", function() {
+  let messageSent = null;
+  port.reopen({
+    send: function(name, message) {
+      messageSent = { name: name, message: message };
+    }
+  });
+
+  visit('/');
+  andThen(() => {
+    let tree = defaultViewTree();
+    run(() => {
+      port.trigger('view:viewTree', { tree } );
+    });
+    return wait();
+  });
+
+  andThen(() => {
+    let model = findByLabel('view-model-clickable').eq(0);
+    return click(model);
+  });
+
+  andThen(() => {
+    equal(messageSent.name, 'objectInspector:inspectById');
+    equal(messageSent.message.objectId, 'postsArray');
+  });
+
 });

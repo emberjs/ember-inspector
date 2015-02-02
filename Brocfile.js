@@ -15,6 +15,9 @@ var dist = process.env.EMBER_DIST;
 var options = {
   fingerprint: {
     enabled: false
+  },
+   vendorFiles: {
+     'handlebars.js': false
   }
 };
 
@@ -24,9 +27,12 @@ if (dist === 'firefox') {
 }
 var app = new EmberApp(options);
 
-app.import('vendor/list-view/list-view.js');
-
 var env = process.env.EMBER_ENV;
+
+if (env !== 'production') {
+  // To be able to compile htmlbars templates in tests
+  app.import('bower_components/ember/ember-template-compiler.js');
+}
 
 // Ember Debug
 

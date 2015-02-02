@@ -1,7 +1,8 @@
 import Ember from "ember";
 import ListItemView from "ember-inspector/views/list-item";
+import ListView from "list-view/list-view";
 
-export default Ember.ListView.extend({
+export default ListView.extend({
   classNames: ["list-tree"],
 
   contentHeight: Ember.computed.alias('controller.controllers.application.contentHeight'),

@@ -1,7 +1,7 @@
 import Ember from "ember";
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
-var alias = Ember.computed.alias;
-var none = Ember.computed.none;
+const { computed } = Ember;
+const { none, alias } = computed;
 
 export default Ember.ArrayController.extend({
   needs: ['application'],
@@ -23,11 +23,8 @@ export default Ember.ArrayController.extend({
     }
   },
 
-
   modelChanged: function() {
-    this.setProperties({
-      search: ''
-    });
+    this.set('search', '');
   }.observes('model'),
 
   recordToString: function(record) {
@@ -40,8 +37,8 @@ export default Ember.ArrayController.extend({
   },
 
   filtered: function() {
-    var self = this, search = this.get('search'), filter = this.get('filterValue');
-    var content = this.get('model').filter(function(item) {
+    let search = this.get('search'), filter = this.get('filterValue');
+    return this.get('model').filter(item => {
       // check filters
       if (filter && !Ember.get(item, 'filterValues.' + filter)) {
         return false;
@@ -49,14 +46,10 @@ export default Ember.ArrayController.extend({
 
       // check search
       if (!Ember.isEmpty(search)) {
-        var searchString = self.recordToString(item);
+        let searchString = this.recordToString(item);
         return !!searchString.match(new RegExp('.*' + escapeRegExp(search.toLowerCase()) + '.*'));
       }
       return true;
     });
-
-    var Controller = this.container.lookupFactory('controller:array', { singleton: false});
-    var controller = Controller.create({model: content, itemController: 'record-item'});
-    return controller;
   }.property('search', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValue')
 });
