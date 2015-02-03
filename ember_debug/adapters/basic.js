@@ -1,12 +1,13 @@
 var Ember = window.Ember;
 var computed = Ember.computed;
 var $ = Ember.$;
-var Promise = Ember.RSVP.Promise;
+var RSVP = Ember.RSVP;
+var Promise = RSVP.Promise;
 
 export default Ember.Object.extend({
   init: function() {
     var self = this;
-    Promise.resolve(this.connect(), 'ember-inspector').then(function() {
+    RSVP.resolve(this.connect(), 'ember-inspector').then(function() {
       self.onConnectionReady();
     }, null, 'ember-inspector');
   },
@@ -111,4 +112,3 @@ export default Ember.Object.extend({
   }
 
 });
-
