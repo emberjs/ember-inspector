@@ -1,5 +1,9 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 1.7.1
+
+* [BUGFIX] Fix the inspector for Ember < 1.4
+
 ## Ember Inspector 1.7.0
 
 * [FEATURE] Added a new deprecations tab
