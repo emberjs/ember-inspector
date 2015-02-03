@@ -9,16 +9,23 @@ var concatFiles = require('broccoli-concat');
 var jshintTrees = require('broccoli-jshint');
 var removeFile = require('broccoli-file-remover');
 
-var app = new EmberApp({
+/*global process */
+var dist = process.env.EMBER_DIST;
+
+var options = {
   fingerprint: {
     enabled: false
   }
-});
+};
+
+if (dist === 'firefox') {
+  options.minifyJS = { enabled: false };
+  options.minifyCSS = { enabled: false };
+}
+var app = new EmberApp(options);
 
 app.import('vendor/list-view/list-view.js');
 
-// /*global process */
-var dist = process.env.EMBER_DIST;
 var env = process.env.EMBER_ENV;
 
 // Ember Debug
