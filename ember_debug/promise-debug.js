@@ -2,17 +2,17 @@ import PortMixin from 'ember-debug/mixins/port-mixin';
 import PromiseAssembler from 'ember-debug/libs/promise-assembler';
 var Ember = window.Ember;
 var computed = Ember.computed;
-var readOnly = computed.readOnly;
+var oneWay = computed.oneWay;
 var EmberObject = Ember.Object;
 var RSVP = Ember.RSVP;
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,
-  port: readOnly('namespace.port'),
-  objectInspector: readOnly('namespace.objectInspector'),
-  adapter: readOnly('namespace.adapter'),
+  port: oneWay('namespace.port').readOnly(),
+  objectInspector: oneWay('namespace.objectInspector').readOnly(),
+  adapter: oneWay('namespace.adapter').readOnly(),
   portNamespace: 'promise',
-  session: readOnly('namespace.session'),
+  session: oneWay('namespace.session').readOnly(),
 
   // created on init
   promiseAssembler: null,
