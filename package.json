@@ -61,6 +61,7 @@
     "express": "^4.8.5",
     "glob": "^4.0.5",
     "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
     "grunt-contrib-compress": "^0.12.0",
     "grunt-mozilla-addon-sdk": "~0.4.0",
     "grunt-s3": "^0.2.0-alpha.3",
