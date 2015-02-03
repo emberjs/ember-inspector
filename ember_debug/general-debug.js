@@ -1,16 +1,16 @@
 import PortMixin from "ember-debug/mixins/port-mixin";
 var Ember = window.Ember;
 var computed = Ember.computed;
-var readOnly = computed.readOnly;
+var oneWay = computed.oneWay;
 
 var GeneralDebug = Ember.Object.extend(PortMixin, {
   namespace: null,
 
-  port: readOnly('namespace.port'),
+  port: oneWay('namespace.port').readOnly(),
 
-  application: readOnly('namespace.application'),
+  application: oneWay('namespace.application').readOnly(),
 
-  promiseDebug: readOnly('namespace.promiseDebug'),
+  promiseDebug: oneWay('namespace.promiseDebug').readOnly(),
 
   portNamespace: 'general',
 

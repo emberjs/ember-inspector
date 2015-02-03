@@ -4,15 +4,15 @@ var Ember = window.Ember;
 var classify = Ember.String.classify;
 var dasherize = Ember.String.dasherize;
 var computed = Ember.computed;
-var readOnly = computed.readOnly;
+var oneWay = computed.oneWay;
 var observer = Ember.observer;
 var later = Ember.run.later;
 
 export default Ember.Object.extend(PortMixin, {
   namespace: null,
-  port: readOnly('namespace.port'),
+  port: oneWay('namespace.port').readOnly(),
 
-  application: readOnly('namespace.application'),
+  application: oneWay('namespace.application').readOnly(),
 
   router: computed(function() {
     return this.get('application.__container__').lookup('router:main');
@@ -23,11 +23,11 @@ export default Ember.Object.extend(PortMixin, {
     return container.lookup('controller:application');
   }).property('application'),
 
-  currentPath: readOnly('applicationController.currentPath'),
+  currentPath: oneWay('applicationController.currentPath').readOnly(),
 
   portNamespace: 'route',
 
-  emberCliConfig: readOnly('namespace.generalDebug.emberCliConfig'),
+  emberCliConfig: oneWay('namespace.generalDebug.emberCliConfig').readOnly(),
 
   messages: {
     getTree: function() {

@@ -3,16 +3,16 @@ import SourceMap from "ember-debug/libs/source-map";
 var Ember = window.Ember;
 var EmberObject = Ember.Object;
 var computed = Ember.computed;
-var readOnly = computed.readOnly;
+var oneWay = computed.oneWay;
 var run = Ember.run;
 var guidFor = Ember.guidFor;
 
 export default EmberObject.extend(PortMixin, {
   portNamespace: 'deprecation',
 
-  port: readOnly('namespace.port'),
+  port: oneWay('namespace.port').readOnly(),
 
-  adapter: readOnly('port.adapter'),
+  adapter: oneWay('port.adapter').readOnly(),
 
   deprecations: computed(function(){
     return Ember.A();
@@ -30,7 +30,7 @@ export default EmberObject.extend(PortMixin, {
     return SourceMap.create();
   }).property(),
 
-  emberCliConfig: readOnly('namespace.generalDebug.emberCliConfig'),
+  emberCliConfig: oneWay('namespace.generalDebug.emberCliConfig').readOnly(),
 
   init: function() {
     this._super();
@@ -217,4 +217,3 @@ export default EmberObject.extend(PortMixin, {
   }
 
 });
-
