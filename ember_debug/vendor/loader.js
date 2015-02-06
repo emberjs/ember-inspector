@@ -1,5 +1,5 @@
 var define = window.define, requireModule = window.requireModule;
-if (typeof define !== 'function' && typeof requireModule !== 'function') {
+if (typeof define !== 'function' || typeof requireModule !== 'function') {
 
   (function() {
     var registry = {}, seen = {};
