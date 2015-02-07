@@ -18,9 +18,6 @@ if (typeof adapter !== 'undefined') {
 (function(adapter) {
 
   onEmberReady(function() {
-    if (!window.Ember) {
-      return;
-    }
     // global to prevent injection
     if (window.NO_EMBER_DEBUG) {
       return;
@@ -54,15 +51,19 @@ if (typeof adapter !== 'undefined') {
     var triggered = false;
     var triggerOnce = function() {
       if (triggered) { return; }
+      if (!window.Ember) { return; }
+      // `Ember.Application` load hook triggers before all of Ember is ready.
+      // In this case we ignore and wait for the `Ember` load hook.
+      if (!window.Ember.RSVP) { return; }
       triggered = true;
       callback();
     };
+    // Newest Ember versions >= 1.10
+    window.addEventListener('Ember', triggerOnce, false);
+    // Old Ember versions
     window.addEventListener('Ember.Application', triggerOnce, false);
-    onReady(function() {
-      if (window.Ember) {
-        triggerOnce();
-      }
-    });
+    // Oldest Ember versions or if this was injected after Ember has loaded.
+    onReady(triggerOnce);
   }
 
   function onReady(callback) {
