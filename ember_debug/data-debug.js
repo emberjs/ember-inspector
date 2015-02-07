@@ -15,10 +15,24 @@ var DataDebug = Ember.Object.extend(PortMixin, {
 
   adapter: Ember.computed(function() {
     var container = this.get('application').__container__;
+
     // dataAdapter:main is deprecated
-    return (container.resolve('data-adapter:main') && container.lookup('data-adapter:main')) ||
-    (container.resolve('dataAdapter:main') && container.lookup('dataAdapter:main'));
+    return (this._resolve('data-adapter:main') && container.lookup('data-adapter:main')) ||
+    (this._resolve('dataAdapter:main') && container.lookup('dataAdapter:main'));
   }).property('application'),
+
+  _resolve: function(name) {
+    var container = this.get('application').__container__;
+    var registry = this.get('application.registry');
+    if (registry) {
+      // Ember >= 1.11
+      return registry.resolve(name);
+    } else {
+      // Ember < 1.11
+      return container.resolve(name);
+    }
+
+  },
 
   namespace: null,
 
