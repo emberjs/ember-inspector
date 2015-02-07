@@ -1,5 +1,17 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 1.7.2
+
+* [BUGFIX] Fixed error when `define` is defined but `requireModule` is not
+* [BUGFIX] Fixed Ember 1.11 resolver bug that broke the routes tab
+* [BUGFIX] Only destroy the promise assembler if it exists
+* [BUGFIX] Use the new Ember load hook if available
+* [BUGFIX] Fixed issue with deferred apps getting mistakenly detected
+* [BUGFIX] ObjectInspector is not destroyed last on app reset
+* [BUGFIX] Use registry.resolve for latest Ember
+* Add grunt-cli to package.json
+* Do not minify code for FF addon
+
 ## Ember Inspector 1.7.1
 
 * [BUGFIX] Fix the inspector for Ember < 1.4
