@@ -102,7 +102,12 @@ if (typeof adapter !== 'undefined') {
     Ember.Application.initializer({
       name: 'ember-inspector-booted',
       initialize: function(container, app) {
-        callback(app);
+        app.reopen({
+          didBecomeReady: function() {
+            callback(app);
+            return this._super.apply(this, arguments);
+          }
+        });
       }
     });
   }
