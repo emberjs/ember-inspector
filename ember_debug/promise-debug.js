@@ -34,7 +34,9 @@ export default EmberObject.extend(PortMixin, {
 
   willDestroy: function() {
     this.releaseAll();
-    this.get('promiseAssembler').destroy();
+    if (this.get('promiseAssembler')) {
+      this.get('promiseAssembler').destroy();
+    }
     this.set('promiseAssembler', null);
     this._super();
   },
