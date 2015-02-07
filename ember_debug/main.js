@@ -45,12 +45,12 @@ EmberDebug = Ember.Object.extend({
     ['dataDebug',
     'viewDebug',
     'routeDebug',
-    'objectInspector',
     'generalDebug',
     'renderDebug',
     'promiseDebug',
     'containerDebug',
     'deprecationDebug',
+    'objectInspector',
     'session',
     ].forEach(function(prop) {
       var handler = self.get(prop);
