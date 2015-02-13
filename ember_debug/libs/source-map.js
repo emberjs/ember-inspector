@@ -5,6 +5,7 @@
  */
 var Ember = window.Ember;
 var EmberObject = Ember.Object;
+var computed = Ember.computed;
 export default EmberObject.extend({
 
   map: function(stack) {
@@ -21,9 +22,9 @@ export default EmberObject.extend({
     });
   },
 
-  sourceMapCache: function() {
+  sourceMapCache: computed(function() {
     return {};
-  }.property(),
+  }),
 
   getSourceMap: function(url) {
     var sourceMaps = this.get('sourceMapCache');
