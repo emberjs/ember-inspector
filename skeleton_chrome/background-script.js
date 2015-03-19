@@ -3,7 +3,8 @@
   "use strict";
 
   var activeTabs = {},
-      ports = {};
+      ports = {},
+      externalExtensions = [];
 
   function generateVersionsTooltip(versions) {
     return versions.map(function(lib) {
@@ -31,7 +32,11 @@
     chrome.pageAction.hide(tabId);
   }
 
-  chrome.extension.onMessage.addListener(function(request, sender) {
+  function registerExtension(ext) {
+    externalExtensions.push(ext);
+  }
+
+  function messageListener(request, sender) {
     if (!sender.tab) {
       // noop
     } else if (request && request.type === 'emberVersion') {
@@ -39,13 +44,18 @@
       updateTabAction(sender.tab.id);
     } else if (request && request.type === 'resetEmberIcon') {
       hideAction(sender.tab.id);
+    } else if (request && request.type === 'registerExtension') {
+      registerExtension(request.extension);
     } else {
       var port = ports[sender.tab.id];
       if (port) { port.postMessage(request); }
     }
-  });
+  }
 
-  chrome.extension.onConnect.addListener(function(port) {
+  chrome.extension.onMessageExternal.addListener(messageListener);
+  chrome.extension.onMessage.addListener(messageListener);
+
+  function onConnect(port) {
     var appId;
 
     port.onMessage.addListener(function(message) {
@@ -58,10 +68,19 @@
           delete ports[appId];
         });
       } else if (message.from === 'devtools') {
-        chrome.tabs.sendMessage(appId, message);
+        if(!externalExtensions.length) {
+          chrome.tabs.sendMessage(appId, message);
+        } else {
+          externalExtensions.forEach(function(ext) {
+            chrome.extension.sendMessage(ext.id, message);
+          });
+        }
       }
     });
-  });
+  }
+
+  chrome.extension.onConnectExternal.addListener(onConnect);
+  chrome.extension.onConnect.addListener(onConnect);
 
   chrome.tabs.onUpdated.addListener(function(tabId){
     // Re-render the Tomster when a tab changes.
