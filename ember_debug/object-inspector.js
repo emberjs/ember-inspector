@@ -20,11 +20,20 @@ function inspectValue(value) {
   } else if (isComputed(value)) {
     string = "<computed>";
     return { type: "type-descriptor", inspect: string, computed: true };
-  } else if (value instanceof Descriptor) {
+  } else if (isDescriptor(value)) {
     return { type: "type-descriptor", inspect: value.toString(), computed: true };
   } else {
     return { type: "type-" + typeOf(value), inspect: inspect(value) };
   }
+}
+
+function isDescriptor(value) {
+  // Ember < 1.11
+  if (Descriptor !== undefined) {
+    return value instanceof Descriptor;
+  }
+  // Ember >= 1.11
+  return value && typeof value === 'object' && value.isDescriptor;
 }
 
 function inspect(value) {
