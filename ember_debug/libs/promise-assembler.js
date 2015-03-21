@@ -5,7 +5,7 @@
   and Yapp Labs (@yapplabs).
  */
 
-import Promise from '/ember-debug/models/promise';
+import Promise from 'ember-debug/models/promise';
 var Ember = window.Ember;
 
 var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
