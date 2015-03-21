@@ -1,7 +1,7 @@
 /* global require, module */
 
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
-var compileES6  = require('broccoli-es6-concatenator');
+var ES6Modules = require('broccoli-es6modules');
 var mergeTrees  = require('broccoli-merge-trees');
 var wrapFiles = require('broccoli-wrap');
 var pickFiles = require('broccoli-static-compiler');
@@ -39,7 +39,9 @@ emberDebug = pickFiles(emberDebug, {
 });
 
 emberDebug = removeFile(emberDebug, {
-  files: ['ember-debug/vendor/source-map.js']
+  files: [
+    'ember-debug/vendor/source-map.js',
+  ]
 });
 
 if (env === 'test') {
@@ -53,15 +55,18 @@ if (env === 'test') {
   emberDebug = mergeTrees([emberDebug, jshintedEmberDebug]);
 }
 
-emberDebug = compileES6(emberDebug, {
-  inputFiles: ['ember-debug/**/*.js'],
-  loaderFile: 'ember-debug/vendor/loader.js',
-  outputFile: '/ember_debug.js',
-  wrapInEval: false,
-  ignoredModules: [
-    'ember-debug/vendor/loader',
-    'ember-debug/vendor/startup-wrapper',
+emberDebug = removeFile(emberDebug, {
+  files: [
+    'ember-debug/vendor/startup-wrapper.js',
+    'ember-debug/vendor/loader.js'
   ]
+});
+
+emberDebug = new ES6Modules(emberDebug, {
+  esperantoOptions: {
+    absolutePaths: true,
+    strict: true
+  }
 });
 
 var startupWrapper = pickFiles('ember_debug', {
@@ -70,10 +75,15 @@ var startupWrapper = pickFiles('ember_debug', {
   destDir: '/'
 });
 
-
 var sourceMap = pickFiles('ember_debug', {
   srcDir: '/vendor',
   files: ['source-map.js'],
+  destDir: '/'
+});
+
+var loader = pickFiles('ember_debug', {
+  srcDir: '/vendor',
+  files: ['loader.js'],
   destDir: '/'
 });
 
@@ -81,11 +91,10 @@ sourceMap = wrapFiles(sourceMap, {
   wrapper: ["(function() {\n", "\n}());"]
 });
 
-emberDebug = mergeTrees([startupWrapper, emberDebug]);
-emberDebug = mergeTrees([sourceMap, emberDebug]);
+emberDebug = mergeTrees([loader, startupWrapper, sourceMap, emberDebug]);
 
 emberDebug = concatFiles(emberDebug, {
-  inputFiles: ['**/*.js'],
+  inputFiles: ['loader.js', '**/*.js'],
   outputFile: '/ember_debug.js',
   wrapInFunction: false
 });

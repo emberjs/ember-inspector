@@ -5,6 +5,10 @@ if (typeof define !== 'function' || typeof requireModule !== 'function') {
     var registry = {}, seen = {};
 
     define = function(name, deps, callback) {
+      if (arguments.length < 3) {
+        callback = deps;
+        deps = [];
+      }
       registry[name] = { deps: deps, callback: callback };
     };
 
