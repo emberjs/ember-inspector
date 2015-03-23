@@ -1,12 +1,13 @@
 /*globals findByLabel, clickByLabel */
 import Ember from "ember";
 import { test } from 'ember-qunit';
+import { module } from 'qunit';
 import startApp from '../helpers/start-app';
 var App;
 var port, message, name;
 
 module('Object Inspector', {
-  setup: function() {
+  beforeEach() {
     App = startApp({
       adapter: 'basic'
     });
@@ -18,7 +19,7 @@ module('Object Inspector', {
       }
     });
   },
-  teardown: function() {
+  afterEach() {
     name = null;
     message = null;
     Ember.run(App, App.destroy);
@@ -82,20 +83,20 @@ function objectToInspect() {
   });
 }
 
-test("The object displays correctly", function() {
+test("The object displays correctly", function(assert) {
   var obj = objectFactory( { name: 'My Object' });
   visit('/').then(function() {
     port.trigger('objectInspector:updateObject', obj);
     return wait();
   })
   .then(function() {
-    equal(findByLabel('object-name').text(), 'My Object');
-    equal(findByLabel('object-detail-name').filter(':first').text(), 'Own Properties');
-    ok(findByLabel('object-detail').hasClass('mixin_state_expanded'), 'The "Own Properties" detail is expanded by default');
+    assert.equal(findByLabel('object-name').text(), 'My Object');
+    assert.equal(findByLabel('object-detail-name').filter(':first').text(), 'Own Properties');
+    assert.ok(findByLabel('object-detail').hasClass('mixin_state_expanded'), 'The "Own Properties" detail is expanded by default');
   });
 });
 
-test("Object details", function() {
+test("Object details", function(assert) {
 
   var $firstDetail, $secondDetail;
 
@@ -104,36 +105,36 @@ test("Object details", function() {
     return wait();
   })
   .then(function() {
-    equal(findByLabel('object-name').text(), 'My Object');
+    assert.equal(findByLabel('object-name').text(), 'My Object');
     $firstDetail = findByLabel('object-detail').eq(0);
     $secondDetail = findByLabel('object-detail').eq(1);
-    equal(findByLabel('object-detail-name', $firstDetail).text(), 'First Detail');
-    ok(!$firstDetail.hasClass('mixin_state_expanded'), 'Detail not expanded by default');
+    assert.equal(findByLabel('object-detail-name', $firstDetail).text(), 'First Detail');
+    assert.ok(!$firstDetail.hasClass('mixin_state_expanded'), 'Detail not expanded by default');
     return clickByLabel('object-detail-name', $firstDetail);
   })
   .then(function() {
-    ok($firstDetail.hasClass('mixin_state_expanded'), 'Detail expands on click.');
-    ok(!$secondDetail.hasClass('mixin_state_expanded'), 'Second detail does not expand.');
-    equal(findByLabel('object-property', $firstDetail).length, 1);
-    equal(findByLabel('object-property-name', $firstDetail).text(), 'numberProperty');
-    equal(findByLabel('object-property-value', $firstDetail).text(), '1');
+    assert.ok($firstDetail.hasClass('mixin_state_expanded'), 'Detail expands on click.');
+    assert.ok(!$secondDetail.hasClass('mixin_state_expanded'), 'Second detail does not expand.');
+    assert.equal(findByLabel('object-property', $firstDetail).length, 1);
+    assert.equal(findByLabel('object-property-name', $firstDetail).text(), 'numberProperty');
+    assert.equal(findByLabel('object-property-value', $firstDetail).text(), '1');
     return clickByLabel('object-detail-name', $firstDetail);
   })
   .then(function() {
-    ok(!$firstDetail.hasClass('mixin_state_expanded'), 'Expanded detail minimizes on click.');
+    assert.ok(!$firstDetail.hasClass('mixin_state_expanded'), 'Expanded detail minimizes on click.');
     return clickByLabel('object-detail-name', $secondDetail);
   })
   .then(function() {
-    ok($secondDetail.hasClass('mixin_state_expanded'));
-    equal(findByLabel('object-property', $secondDetail).length, 2);
-    equal(findByLabel('object-property-name', $secondDetail).eq(0).text(), 'objectProperty');
-    equal(findByLabel('object-property-value', $secondDetail).eq(0).text(), 'Ember Object Name');
-    equal(findByLabel('object-property-name', $secondDetail).eq(1).text(), 'stringProperty');
-    equal(findByLabel('object-property-value', $secondDetail).eq(1).text(), 'String Value');
+    assert.ok($secondDetail.hasClass('mixin_state_expanded'));
+    assert.equal(findByLabel('object-property', $secondDetail).length, 2);
+    assert.equal(findByLabel('object-property-name', $secondDetail).eq(0).text(), 'objectProperty');
+    assert.equal(findByLabel('object-property-value', $secondDetail).eq(0).text(), 'Ember Object Name');
+    assert.equal(findByLabel('object-property-name', $secondDetail).eq(1).text(), 'stringProperty');
+    assert.equal(findByLabel('object-property-value', $secondDetail).eq(1).text(), 'String Value');
   });
 });
 
-test("Digging deeper into objects", function() {
+test("Digging deeper into objects", function(assert) {
   var $secondDetail;
 
   visit('/')
@@ -151,8 +152,8 @@ test("Digging deeper into objects", function() {
     return click($objectProperty);
   })
   .then(function() {
-    equal(name, 'objectInspector:digDeeper');
-    deepEqual(message, { objectId: 'objectId',  property: 'objectProperty' });
+    assert.equal(name, 'objectInspector:digDeeper');
+    assert.deepEqual(message, { objectId: 'objectId',  property: 'objectProperty' });
   })
   .then(function() {
     var nestedObject = {
@@ -176,23 +177,23 @@ test("Digging deeper into objects", function() {
     return wait();
   })
   .then(function() {
-    equal(findByLabel('object-name').text(), 'My Object', 'Title stays as the initial object.');
-    equal(findByLabel('object-trail').text(), '.objectProperty', 'Nested property shows below title');
-    equal(findByLabel('object-detail-name').text(), 'Nested Detail');
+    assert.equal(findByLabel('object-name').text(), 'My Object', 'Title stays as the initial object.');
+    assert.equal(findByLabel('object-trail').text(), '.objectProperty', 'Nested property shows below title');
+    assert.equal(findByLabel('object-detail-name').text(), 'Nested Detail');
     return clickByLabel('object-detail-name');
   })
   .then(function() {
-    ok(findByLabel('object-detail').hasClass('mixin_state_expanded'));
-    equal(findByLabel('object-property-name').text(), 'nestedProp');
-    equal(findByLabel('object-property-value').text(), 'Nested Prop');
+    assert.ok(findByLabel('object-detail').hasClass('mixin_state_expanded'));
+    assert.equal(findByLabel('object-property-name').text(), 'nestedProp');
+    assert.equal(findByLabel('object-property-value').text(), 'Nested Prop');
     return clickByLabel('object-inspector-back');
   })
   .then(function() {
-    equal(findByLabel('object-trail').length, 0);
+    assert.equal(findByLabel('object-trail').length, 0);
   });
 });
 
-test("Computed properties", function() {
+test("Computed properties", function(assert) {
   visit('/')
   .then(function() {
     var obj = {
@@ -217,8 +218,8 @@ test("Computed properties", function() {
   .clickByLabel('object-detail-name')
   .clickByLabel('calculate')
   .then(function() {
-    equal(name, 'objectInspector:calculate');
-    deepEqual(message, { objectId: 'myObject', property: 'computedProp', mixinIndex: 0 });
+    assert.equal(name, 'objectInspector:calculate');
+    assert.deepEqual(message, { objectId: 'myObject', property: 'computedProp', mixinIndex: 0 });
     port.trigger('objectInspector:updateProperty', {
       objectId: 'myObject',
       property: 'computedProp',
@@ -230,12 +231,12 @@ test("Computed properties", function() {
     return wait();
   })
   .then(function() {
-    equal(findByLabel('object-property-value').text(), 'Computed value');
+    assert.equal(findByLabel('object-property-value').text(), 'Computed value');
   });
 
 });
 
-test("Properties are bound to the application properties", function() {
+test("Properties are bound to the application properties", function(assert) {
   visit('/')
   .then(function() {
     var obj = {
@@ -259,7 +260,7 @@ test("Properties are bound to the application properties", function() {
     return wait();
   })
   .then(function() {
-    equal(findByLabel('object-property-value').first().text(), 'Teddy');
+    assert.equal(findByLabel('object-property-value').first().text(), 'Teddy');
     port.trigger('objectInspector:updateProperty', {
       objectId: 'object-id',
       mixinIndex: 0,
@@ -275,16 +276,16 @@ test("Properties are bound to the application properties", function() {
   .clickByLabel('object-property-value')
   .then(function() {
     var txtField = findByLabel('object-property-value-txt');
-    equal(txtField.val(), '"Alex"');
+    assert.equal(txtField.val(), '"Alex"');
     return fillIn(txtField, '"Joey"');
   })
   .then(function() {
     var e = Ember.$.Event('keyup', { keyCode: 13 });
     findByLabel('object-property-value-txt').trigger(e);
-    equal(name, 'objectInspector:saveProperty');
-    equal(message.property, 'boundProp');
-    equal(message.value, 'Joey');
-    equal(message.mixinIndex, 0);
+    assert.equal(name, 'objectInspector:saveProperty');
+    assert.equal(message.property, 'boundProp');
+    assert.equal(message.value, 'Joey');
+    assert.equal(message.mixinIndex, 0);
 
     port.trigger('objectInspector:updateProperty', {
       objectId: 'object-id',
@@ -299,11 +300,11 @@ test("Properties are bound to the application properties", function() {
     return wait();
   })
   .then(function() {
-    equal(findByLabel('object-property-value').text(), 'Joey');
+    assert.equal(findByLabel('object-property-value').text(), 'Joey');
   });
 });
 
-test("Stringified json should not get double parsed", function() {
+test("Stringified json should not get double parsed", function(assert) {
   visit('/');
 
   andThen(function() {
@@ -332,21 +333,21 @@ test("Stringified json should not get double parsed", function() {
 
   andThen(function() {
     var txtField = findByLabel('object-property-value-txt');
-    equal(txtField.val(), '"{"name":"teddy"}"');
+    assert.equal(txtField.val(), '"{"name":"teddy"}"');
     return fillIn(txtField, '"{"name":"joey"}"');
   });
 
   andThen(function() {
     var e = Ember.$.Event('keyup', { keyCode: 13 });
     findByLabel('object-property-value-txt').trigger(e);
-    equal(name, 'objectInspector:saveProperty');
-    equal(message.property, 'boundProp');
-    equal(message.value, '{"name":"joey"}');
-    equal(message.mixinIndex, 0);
+    assert.equal(name, 'objectInspector:saveProperty');
+    assert.equal(message.property, 'boundProp');
+    assert.equal(message.value, '{"name":"joey"}');
+    assert.equal(message.mixinIndex, 0);
   });
 });
 
-test("Send to console", function() {
+test("Send to console", function(assert) {
   visit('/')
   .then(function() {
     var obj = {
@@ -371,20 +372,20 @@ test("Send to console", function() {
   })
   .clickByLabel('send-to-console-btn')
   .then(function() {
-    equal(name, 'objectInspector:sendToConsole');
-    equal(message.objectId, 'object-id');
-    equal(message.property, 'myProp');
+    assert.equal(name, 'objectInspector:sendToConsole');
+    assert.equal(message.objectId, 'object-id');
+    assert.equal(message.property, 'myProp');
   })
   .clickByLabel('send-object-to-console-btn')
   .then(function() {
-    equal(name, 'objectInspector:sendToConsole');
-    equal(message.objectId, 'object-id');
-    equal(message.property, undefined);
+    assert.equal(name, 'objectInspector:sendToConsole');
+    assert.equal(message.objectId, 'object-id');
+    assert.equal(message.property, undefined);
   });
 
 });
 
-test("Read only CPs cannot be edited", function() {
+test("Read only CPs cannot be edited", function(assert) {
   visit('/')
   .then(function() {
     var obj = {
@@ -419,15 +420,15 @@ test("Read only CPs cannot be edited", function() {
     return click(findByLabel('object-property-value').first());
   })
   .then(function() {
-    equal(findByLabel('object-property-value-txt').length, 0);
+    assert.equal(findByLabel('object-property-value-txt').length, 0);
     return click(findByLabel('object-property-value').last());
   })
   .then(function() {
-    equal(findByLabel('object-property-value-txt').length, 1);
+    assert.equal(findByLabel('object-property-value-txt').length, 1);
   });
 });
 
-test("Dropping an object due to destruction", function() {
+test("Dropping an object due to destruction", function(assert) {
   visit('/')
   .then(function() {
     var obj = {
@@ -443,16 +444,16 @@ test("Dropping an object due to destruction", function() {
     return wait();
   })
   .then(function() {
-    equal(findByLabel('object-name').text().trim(), 'My Object');
+    assert.equal(findByLabel('object-name').text().trim(), 'My Object');
     port.trigger('objectInspector:droppedObject', { objectId: 'myObject'} );
     return wait();
   })
   .then(function() {
-    equal(findByLabel('object-name').text().trim(), '');
+    assert.equal(findByLabel('object-name').text().trim(), '');
   });
 });
 
-test("Date fields are editable", function() {
+test("Date fields are editable", function(assert) {
   visit('/');
 
   var date = new Date();
@@ -488,7 +489,7 @@ test("Date fields are editable", function() {
 
   andThen(function() {
     var field = findByLabel('object-property-value-date');
-    equal(field.length, 1);
+    assert.equal(field.length, 1);
     return fillIn(field, '2015-01-01');
   });
 
@@ -506,14 +507,14 @@ test("Date fields are editable", function() {
   });
 
   andThen(function() {
-    equal(name, 'objectInspector:saveProperty');
-    equal(message.property, 'dateProperty');
-    equal(message.dataType, 'date');
+    assert.equal(name, 'objectInspector:saveProperty');
+    assert.equal(message.property, 'dateProperty');
+    assert.equal(message.dataType, 'date');
 
     var newDate = new Date(message.value);
-    equal(newDate.getMonth(), 0);
-    equal(newDate.getDate(), 1);
-    equal(newDate.getFullYear(), 2015);
+    assert.equal(newDate.getMonth(), 0);
+    assert.equal(newDate.getDate(), 1);
+    assert.equal(newDate.getFullYear(), 2015);
   });
 });
 

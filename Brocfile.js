@@ -15,9 +15,6 @@ var dist = process.env.EMBER_DIST;
 var options = {
   fingerprint: {
     enabled: false
-  },
-   vendorFiles: {
-     'handlebars.js': false
   }
 };
 

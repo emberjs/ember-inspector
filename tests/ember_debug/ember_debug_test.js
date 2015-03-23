@@ -1,4 +1,5 @@
 import Ember from "ember";
+import { module, test } from 'qunit';
 
 var EmberDebug;
 var port, name, message;
@@ -11,7 +12,7 @@ function setupApp(){
 }
 
 module("Ember Debug", {
-  setup: function() {
+  beforeEach() {
     /* globals require */
     EmberDebug = require('ember-debug/main')["default"];
     EmberDebug.Port = EmberDebug.Port.extend({
@@ -30,7 +31,7 @@ module("Ember Debug", {
     EmberInspector = EmberDebug;
     port = EmberDebug.port;
   },
-  teardown: function() {
+  afterEach() {
     name = null;
     message = null;
     EmberDebug.destroyContainer();
@@ -39,23 +40,23 @@ module("Ember Debug", {
 });
 
 
-function cantSend(obj) {
+function cantSend(obj, assert) {
   try {
     EmberInspector.inspect(obj);
-    ok(false);
+    assert.ok(false);
   } catch (e) {}
 }
 
-test("EmberInspector#inspect sends inspectable objects", function() {
+test("EmberInspector#inspect sends inspectable objects", function(assert) {
   var obj = Ember.Object.create();
   EmberInspector.inspect(obj);
-  equal(name, "objectInspector:updateObject");
+  assert.equal(name, "objectInspector:updateObject");
   name = null;
   obj = [];
   EmberInspector.inspect(obj);
-  equal(name, "objectInspector:updateObject");
-  cantSend(1);
-  cantSend({});
-  cantSend("a");
-  cantSend(null);
+  assert.equal(name, "objectInspector:updateObject");
+  cantSend(1, assert);
+  cantSend({}, assert);
+  cantSend("a", assert);
+  cantSend(null, assert);
 });

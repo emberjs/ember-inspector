@@ -1,4 +1,5 @@
 import Ember from "ember";
+import { module, test } from 'qunit';
 
 /* globals require, findByLabel, clickByLabel */
 var EmberDebug = require('ember-debug/main')["default"];
@@ -81,7 +82,7 @@ function setupApp(){
 }
 
 module("View Debug", {
-  setup: function() {
+  beforeEach() {
     EmberDebug.Port = EmberDebug.Port.extend({
       init: function() {},
       send: function() {}
@@ -93,14 +94,14 @@ module("View Debug", {
     run(EmberDebug, 'start');
     port = EmberDebug.port;
   },
-  teardown: function() {
+  afterEach() {
     EmberDebug.destroyContainer();
     run(App, 'destroy');
     destroyTemplates();
   }
 });
 
-test("Simple View Tree", function() {
+test("Simple View Tree", function(assert) {
   var name = null, message = null;
   port.reopen({
     send: function(n, m) {
@@ -112,28 +113,28 @@ test("Simple View Tree", function() {
   visit('/simple');
 
   andThen(function() {
-    equal(name, 'view:viewTree');
+    assert.equal(name, 'view:viewTree');
     var tree = message.tree;
     var value = tree.value;
-    equal(tree.children.length, 1);
-    equal(value.controller.name, 'Ember.Controller');
-    equal(value.viewClass, 'Ember.View');
-    equal(value.name, 'application');
-    equal(value.tagName, 'div');
-    equal(value.template, 'application');
+    assert.equal(tree.children.length, 1);
+    assert.equal(value.controller.name, 'Ember.Controller');
+    assert.equal(value.viewClass, 'Ember.View');
+    assert.equal(value.name, 'application');
+    assert.equal(value.tagName, 'div');
+    assert.equal(value.template, 'application');
 
     var child = tree.children[0];
     var childValue = child.value;
-    equal(childValue.controller.name, 'App.SimpleController');
-    equal(childValue.viewClass, 'App.SimpleView');
-    equal(childValue.name, 'simple');
-    equal(childValue.tagName, 'div');
-    equal(childValue.template, 'simple');
+    assert.equal(childValue.controller.name, 'App.SimpleController');
+    assert.equal(childValue.viewClass, 'App.SimpleView');
+    assert.equal(childValue.name, 'simple');
+    assert.equal(childValue.tagName, 'div');
+    assert.equal(childValue.template, 'simple');
   });
 });
 
 
-test("Views created by {{each}} helper are shown", function() {
+test("Views created by {{each}} helper are shown", function(assert) {
   var name = null, message = null;
   port.reopen({
     send: function(n, m) {
@@ -147,15 +148,15 @@ test("Views created by {{each}} helper are shown", function() {
   andThen(function() {
     var tree = message.tree;
     var comments = tree.children[0].children;
-    equal(comments.length, 3, "There should be 3 views");
-    equal(comments[0].value.model.name, 'first comment');
-    equal(comments[1].value.model.name, 'second comment');
-    equal(comments[2].value.model.name, 'third comment');
+    assert.equal(comments.length, 3, "There should be 3 views");
+    assert.equal(comments[0].value.model.name, 'first comment');
+    assert.equal(comments[1].value.model.name, 'second comment');
+    assert.equal(comments[2].value.model.name, 'third comment');
   });
 });
 
 
-test("Highlight a view", function() {
+test("Highlight a view", function(assert) {
   var name, message, layerDiv;
   port.reopen({
     send: function(n, m) {
@@ -174,32 +175,32 @@ test("Highlight a view", function() {
   })
   .then(function() {
     layerDiv = findByLabel('layer-div');
-    ok(layerDiv.is(':visible'));
-    equal(findByLabel('layer-template', layerDiv).text(), 'simple');
-    equal(findByLabel('layer-controller', layerDiv).text(), 'App.SimpleController');
-    equal(findByLabel('layer-model', layerDiv).text(), 'Simple Model');
-    equal(findByLabel('layer-view', layerDiv).text(), 'App.SimpleView');
+    assert.ok(layerDiv.is(':visible'));
+    assert.equal(findByLabel('layer-template', layerDiv).text(), 'simple');
+    assert.equal(findByLabel('layer-controller', layerDiv).text(), 'App.SimpleController');
+    assert.equal(findByLabel('layer-model', layerDiv).text(), 'Simple Model');
+    assert.equal(findByLabel('layer-view', layerDiv).text(), 'App.SimpleView');
     return clickByLabel('layer-controller', layerDiv);
   })
   .then(function() {
     var controller = App.__container__.lookup('controller:simple');
-    equal(name, 'objectInspector:updateObject');
-    equal(controller.toString(), message.name);
+    assert.equal(name, 'objectInspector:updateObject');
+    assert.equal(controller.toString(), message.name);
     name = null;
     message = null;
     return clickByLabel('layer-model', layerDiv);
   })
   .then(function() {
-    equal(name, 'objectInspector:updateObject');
-    equal(message.name, 'Simple Model');
+    assert.equal(name, 'objectInspector:updateObject');
+    assert.equal(message.name, 'Simple Model');
     return clickByLabel('layer-close');
   })
   .then(function() {
-    ok(!layerDiv.is(':visible'));
+    assert.ok(!layerDiv.is(':visible'));
   });
 });
 
-test("Components in view tree", function() {
+test("Components in view tree", function(assert) {
   var name, message;
   port.reopen({
     send: function(n, m) {
@@ -212,21 +213,21 @@ test("Components in view tree", function() {
   .then(function() {
     var tree = message.tree;
     var simple = tree.children[0];
-    equal(simple.children.length, 0, "Components are not listed by default.");
+    assert.equal(simple.children.length, 0, "Components are not listed by default.");
     port.trigger('view:setOptions', { options: { components: true }});
     return wait();
   })
   .then(function() {
     var tree = message.tree;
     var simple = tree.children[0];
-    equal(simple.children.length, 1, "Components can be configured to show.");
+    assert.equal(simple.children.length, 1, "Components can be configured to show.");
     var component = simple.children[0];
-    equal(component.value.viewClass, 'Ember.TextField');
+    assert.equal(component.value.viewClass, 'Ember.TextField');
   });
 
 });
 
-test("Highlighting Views on hover", function() {
+test("Highlighting Views on hover", function(assert) {
   var name, message, layerDiv;
   port.reopen({
     send: function(n, m) {
@@ -247,12 +248,12 @@ test("Highlighting Views on hover", function() {
   })
   .then(function() {
     var previewDiv = findByLabel('preview-div');
-    ok(previewDiv.is(':visible'));
-    equal(findByLabel('layer-component').length, 0, "Components are not Highlighted by default");
-    equal(findByLabel('layer-controller', previewDiv).text(), 'App.SimpleController');
-    equal(findByLabel('layer-model', previewDiv).text(), 'Simple Model');
-    equal(findByLabel('layer-template', previewDiv).text(), 'simple');
-    equal(findByLabel('layer-view', previewDiv).text(), 'App.SimpleView');
+    assert.ok(previewDiv.is(':visible'));
+    assert.equal(findByLabel('layer-component').length, 0, "Components are not Highlighted by default");
+    assert.equal(findByLabel('layer-controller', previewDiv).text(), 'App.SimpleController');
+    assert.equal(findByLabel('layer-model', previewDiv).text(), 'Simple Model');
+    assert.equal(findByLabel('layer-template', previewDiv).text(), 'simple');
+    assert.equal(findByLabel('layer-view', previewDiv).text(), 'App.SimpleView');
     port.trigger('view:setOptions', { options: { components: true }});
     return wait();
   })
@@ -262,10 +263,10 @@ test("Highlighting Views on hover", function() {
   })
   .then(function() {
     var previewDiv = findByLabel('preview-div');
-    ok(previewDiv.is(':visible'));
-    equal(findByLabel('layer-component').text().trim(), "Ember.TextField");
-    equal(findByLabel('layer-controller', previewDiv).length, 0);
-    equal(findByLabel('layer-model', previewDiv).length, 0);
+    assert.ok(previewDiv.is(':visible'));
+    assert.equal(findByLabel('layer-component').text().trim(), "Ember.TextField");
+    assert.equal(findByLabel('layer-controller', previewDiv).length, 0);
+    assert.equal(findByLabel('layer-model', previewDiv).length, 0);
   })
   .then(function() {
     find('.simple-view').trigger('mousemove');
@@ -273,7 +274,7 @@ test("Highlighting Views on hover", function() {
   })
   .then(function() {
     var previewDiv = findByLabel('preview-div');
-    equal(findByLabel('layer-view', previewDiv).text(), 'App.SimpleView', "Views without a controller are not highlighted by default.");
+    assert.equal(findByLabel('layer-view', previewDiv).text(), 'App.SimpleView', "Views without a controller are not highlighted by default.");
     port.trigger('view:setOptions', { options: { allViews: true }});
     return wait();
   })
@@ -283,7 +284,7 @@ test("Highlighting Views on hover", function() {
   })
   .then(function() {
     var previewDiv = findByLabel('preview-div');
-    equal(findByLabel('layer-view', previewDiv).text(), 'Ember.Select', "Views without controllers can be configured to be highlighted.");
+    assert.equal(findByLabel('layer-view', previewDiv).text(), 'Ember.Select', "Views without controllers can be configured to be highlighted.");
     port.trigger('view:inspectViews', { inspect: false });
     return wait();
   })
@@ -293,11 +294,11 @@ test("Highlighting Views on hover", function() {
   })
   .then(function() {
     var previewDiv = findByLabel('preview-div');
-    ok(!previewDiv.is(':visible'));
+    assert.ok(!previewDiv.is(':visible'));
   });
 });
 
-test("Highlighting a view without an element should not throw an error", function() {
+test("Highlighting a view without an element should not throw an error", function(assert) {
   var name = null, message = null;
   port.reopen({
     send: function(n, m) {
@@ -314,11 +315,11 @@ test("Highlighting a view without an element should not throw an error", functio
     return wait();
   })
   .then(function() {
-    ok(true, "Does not throw an error.");
+    assert.ok(true, "Does not throw an error.");
   });
 });
 
-test("Supports a view with a string as model", function() {
+test("Supports a view with a string as model", function(assert) {
   var name = null, message = null;
   port.reopen({
     send: function(n, m) {
@@ -329,18 +330,18 @@ test("Supports a view with a string as model", function() {
 
   visit('/posts')
   .then(function() {
-    equal(message.tree.children[0].value.model.name, 'String as model');
-    equal(message.tree.children[0].value.model.type, 'type-string');
+    assert.equal(message.tree.children[0].value.model.name, 'String as model');
+    assert.equal(message.tree.children[0].value.model.type, 'type-string');
   });
 });
 
-test("Supports applications that don't have the ember-application CSS class", function() {
+test("Supports applications that don't have the ember-application CSS class", function(assert) {
   var name = null, message = null,
       $rootElement = $('body');
 
   visit('/simple')
   .then(function() {
-    ok($rootElement.hasClass('ember-application'), "The rootElement has the .ember-application CSS class");
+    assert.ok($rootElement.hasClass('ember-application'), "The rootElement has the .ember-application CSS class");
     $rootElement.removeClass('ember-application');
 
     // Restart the inspector
@@ -356,11 +357,11 @@ test("Supports applications that don't have the ember-application CSS class", fu
   });
   visit('/simple')
   .then(function() {
-    equal(name, 'view:viewTree');
+    assert.equal(name, 'view:viewTree');
   });
 });
 
-test("Does not list nested {{yield}} views", function() {
+test("Does not list nested {{yield}} views", function(assert) {
   var message = null;
   port.reopen({
     send: function(n, m) {
@@ -375,7 +376,7 @@ test("Does not list nested {{yield}} views", function() {
   visit('/posts');
 
   andThen(function() {
-    equal(message.tree.children.length, 1, 'Only the posts view should render');
-    equal(message.tree.children[0].children.length, 0, 'posts view should have no children');
+    assert.equal(message.tree.children.length, 1, 'Only the posts view should render');
+    assert.equal(message.tree.children[0].children.length, 0, 'posts view should have no children');
   });
 });

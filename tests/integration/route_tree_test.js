@@ -1,6 +1,7 @@
 /*globals findByLabel, clickByLabel */
 import Ember from "ember";
 import { test } from 'ember-qunit';
+import { module } from 'qunit';
 import startApp from '../helpers/start-app';
 var App;
 var run = Ember.run;
@@ -8,13 +9,13 @@ var run = Ember.run;
 var port;
 
 module('Route Tree Tab', {
-  setup: function() {
+  beforeEach() {
     App = startApp({
       adapter: 'basic'
     });
     port = App.__container__.lookup('port:main');
   },
-  teardown: function() {
+  afterEach() {
     Ember.run(App, App.destroy);
   }
 });
@@ -53,7 +54,7 @@ var routeTree = {
   }]
 };
 
-test("Route tree is successfully displayed", function() {
+test("Route tree is successfully displayed", function(assert) {
   port.reopen({
     send: function(name, message) {
       if (name === 'route:getTree') {
@@ -67,36 +68,36 @@ test("Route tree is successfully displayed", function() {
   andThen(function() {
 
     var routeNodes = findByLabel('route-node');
-    equal(routeNodes.length, 4);
+    assert.equal(routeNodes.length, 4);
 
     var routeNames = findByLabel('route-name').get().map(function(item) {
       return Ember.$(item).text().trim();
     });
-    deepEqual(routeNames, ['application', 'post', 'post.new', 'post.edit']);
+    assert.deepEqual(routeNames, ['application', 'post', 'post.new', 'post.edit']);
 
     var routeHandlers = findByLabel('route-handler').get().map(function(item) {
       return Ember.$(item).text().trim();
     });
-    deepEqual(routeHandlers, ['ApplicationRoute', 'PostRoute', 'PostNewRoute', 'PostEditRoute']);
+    assert.deepEqual(routeHandlers, ['ApplicationRoute', 'PostRoute', 'PostNewRoute', 'PostEditRoute']);
 
     var controllers = findByLabel('route-controller').get().map(function(item) {
       return Ember.$(item).text().trim();
     });
 
-    deepEqual(controllers, ['ApplicationController', 'PostController', 'PostNewController', 'PostEditController']);
+    assert.deepEqual(controllers, ['ApplicationController', 'PostController', 'PostNewController', 'PostEditController']);
 
     var templates = findByLabel('route-template').get().map(function(item) {
       return Ember.$(item).text().trim();
     });
 
-    deepEqual(templates, ['application', 'post', 'post/new', 'post/edit']);
+    assert.deepEqual(templates, ['application', 'post', 'post/new', 'post/edit']);
 
     var titleTips = find('span[title]', routeNodes).map(function (i, node) {
       return node.getAttribute('title');
     }).toArray().sort();
 
 
-    deepEqual(titleTips, [
+    assert.deepEqual(titleTips, [
       "",
       "",
       "ApplicationController",
@@ -121,7 +122,7 @@ test("Route tree is successfully displayed", function() {
   });
 });
 
-test("Clicking on route handlers and controller sends an inspection message", function() {
+test("Clicking on route handlers and controller sends an inspection message", function(assert) {
   var name, message, applicationRow;
 
   port.reopen({
@@ -143,28 +144,28 @@ test("Clicking on route handlers and controller sends an inspection message", fu
     return clickByLabel('route-handler', applicationRow);
    })
   .then(function() {
-    equal(name, 'objectInspector:inspectRoute');
-    equal(message.name, 'application');
+    assert.equal(name, 'objectInspector:inspectRoute');
+    assert.equal(message.name, 'application');
 
     name = null;
     message = null;
     return clickByLabel('route-controller', applicationRow);
   })
   .then(function() {
-    equal(name, 'objectInspector:inspectController');
-    equal(message.name, 'application');
+    assert.equal(name, 'objectInspector:inspectController');
+    assert.equal(message.name, 'application');
 
     name = null;
     message = null;
     var postRow = findByLabel('route-node').eq(1);
     return clickByLabel('route-controller', postRow);
   }).then(function() {
-    equal(name, null, "If controller does not exist, clicking should have no effect.");
-    equal(message, null);
+    assert.equal(name, null, "If controller does not exist, clicking should have no effect.");
+    assert.equal(message, null);
   });
 });
 
-test("Current Route is highlighted", function() {
+test("Current Route is highlighted", function(assert) {
   port.reopen({
     send: function(name, message) {
       if (name === 'route:getTree') {
@@ -184,7 +185,7 @@ test("Current Route is highlighted", function() {
     var isCurrent = routeNodes.get().map(function(item) {
       return Ember.$(item).hasClass('row_highlight');
     });
-    deepEqual(isCurrent, [true, true, false, true]);
+    assert.deepEqual(isCurrent, [true, true, false, true]);
 
     port.trigger('route:currentRoute', { name: 'post.new' });
     return wait();
@@ -194,11 +195,11 @@ test("Current Route is highlighted", function() {
     var isCurrent = routeNodes.get().map(function(item) {
       return Ember.$(item).hasClass('row_highlight');
     });
-    deepEqual(isCurrent, [true, true, true, false], 'Current route is bound');
+    assert.deepEqual(isCurrent, [true, true, true, false], 'Current route is bound');
   });
 });
 
-test("Hiding non current route", function() {
+test("Hiding non current route", function(assert) {
   port.reopen({
     send: function(name, message) {
       if (name === 'route:getTree') {
@@ -212,7 +213,7 @@ test("Hiding non current route", function() {
   visit('route-tree');
   andThen( function() {
     var routeNodes = findByLabel('route-node');
-    equal(routeNodes.length, 4);
+    assert.equal(routeNodes.length, 4);
   });
   andThen( function() {
     var checkbox = findByLabel('filter-hide-routes').find('input');
@@ -222,6 +223,6 @@ test("Hiding non current route", function() {
   });
   andThen( function() {
     var routeNodes = findByLabel('route-node');
-    equal(routeNodes.length, 3);
+    assert.equal(routeNodes.length, 3);
   });
 });

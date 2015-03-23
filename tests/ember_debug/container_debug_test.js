@@ -1,3 +1,4 @@
+import { module, test } from 'qunit';
 import Ember from "ember";
 var emberA = Ember.A;
 
@@ -17,7 +18,7 @@ function setupApp(){
 }
 
 module("Container Debug", {
-  setup: function() {
+  beforeEach() {
     /* globals require */
     EmberDebug = require('ember-debug/main')["default"];
     EmberDebug.Port = EmberDebug.Port.extend({
@@ -34,7 +35,7 @@ module("Container Debug", {
     run(EmberDebug, 'start');
     port = EmberDebug.port;
   },
-  teardown: function() {
+  afterEach() {
     name = null;
     message = null;
     EmberDebug.destroyContainer();
@@ -42,8 +43,7 @@ module("Container Debug", {
   }
 });
 
-test("#getTypes", function() {
-
+test("#getTypes", function(assert) {
   visit('/simple');
 
   andThen(function() {
@@ -52,17 +52,17 @@ test("#getTypes", function() {
   });
 
   andThen(function() {
-    equal(name, 'container:types');
+    assert.equal(name, 'container:types');
     var types = emberA(message.types);
     var application = types.findBy('name', 'application');
-    ok(application);
-    equal(application.count, 1);
-    ok(types.findBy('name', 'controller'));
-    ok(types.findBy('name', 'route'));
+    assert.ok(application);
+    assert.equal(application.count, 1);
+    assert.ok(types.findBy('name', 'controller'));
+    assert.ok(types.findBy('name', 'route'));
   });
 });
 
-test("#getInstances", function() {
+test("#getInstances", function(assert) {
   visit('/simple');
 
   andThen(function() {
@@ -71,8 +71,8 @@ test("#getInstances", function() {
   });
 
   andThen(function() {
-    equal(name, 'container:instances');
+    assert.equal(name, 'container:instances');
     var instances = emberA(message.instances);
-    ok(instances.findBy('name', 'simple'));
+    assert.ok(instances.findBy('name', 'simple'));
   });
 });

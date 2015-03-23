@@ -1,13 +1,14 @@
 /*globals findByLabel, clickByLabel */
 import Ember from "ember";
 import { test } from 'ember-qunit';
+import { module } from 'qunit';
 import startApp from '../helpers/start-app';
 var App;
 
 var port, message, name;
 
 module('Promise Tab', {
-  setup: function() {
+  beforeEach() {
     App = startApp({
       adapter: 'basic'
     });
@@ -29,7 +30,7 @@ module('Promise Tab', {
       }
     });
   },
-  teardown: function() {
+  afterEach() {
     name = null;
     message = null;
     Ember.run(App, App.destroy);
@@ -51,7 +52,7 @@ function generatePromise(props) {
   }, props);
 }
 
-test("Backwards compatibility - no promise support", function() {
+test("Backwards compatibility - no promise support", function(assert) {
   port.reopen({
     send: function(n, m) {
       if (n === 'promise:supported') {
@@ -64,12 +65,12 @@ test("Backwards compatibility - no promise support", function() {
 
   visit('/promises').
   then(function() {
-    equal(findByLabel('error-page').length, 1, 'The error page should show up');
-    equal(findByLabel('error-page-title').text().trim(), 'Promises not detected!');
+    assert.equal(findByLabel('error-page').length, 1, 'The error page should show up');
+    assert.equal(findByLabel('error-page-title').text().trim(), 'Promises not detected!');
   });
 });
 
-test("Shows page refresh hint if no promises", function() {
+test("Shows page refresh hint if no promises", function(assert) {
   visit('/promises');
 
   andThen(function() {
@@ -80,14 +81,14 @@ test("Shows page refresh hint if no promises", function() {
   });
 
   andThen(function() {
-    equal(findByLabel('promise-tree').length, 0, "no promise list");
-    equal(findByLabel('page-refresh').length, 1, "page refresh hint seen");
+    assert.equal(findByLabel('promise-tree').length, 0, "no promise list");
+    assert.equal(findByLabel('page-refresh').length, 1, "page refresh hint seen");
   });
 
   clickByLabel('page-refresh-btn');
 
   andThen(function() {
-    equal(name, 'general:refresh');
+    assert.equal(name, 'general:refresh');
   });
 
   andThen(function() {
@@ -104,24 +105,24 @@ test("Shows page refresh hint if no promises", function() {
   });
 
   andThen(function() {
-    equal(findByLabel('promise-tree').length, 1, 'promise tree is seen after being populated');
-    equal(findByLabel('promise-item').length, 1, '1 promise item can be seen');
-    equal(findByLabel('page-refresh').length, 0, 'page refresh hint hidden');
+    assert.equal(findByLabel('promise-tree').length, 1, 'promise tree is seen after being populated');
+    assert.equal(findByLabel('promise-item').length, 1, '1 promise item can be seen');
+    assert.equal(findByLabel('page-refresh').length, 0, 'page refresh hint hidden');
   });
 
   // make sure clearing does not show the refresh hint
   clickByLabel('clear-promises-btn');
 
   andThen(function() {
-    equal(findByLabel('promise-tree').length, 1, 'promise-tree can be seen');
-    equal(findByLabel('promise-item').length, 0, 'promise items cleared');
-    equal(findByLabel('page-refresh').length, 0, 'page refresh hint hidden');
+    assert.equal(findByLabel('promise-tree').length, 1, 'promise-tree can be seen');
+    assert.equal(findByLabel('promise-item').length, 0, 'promise items cleared');
+    assert.equal(findByLabel('page-refresh').length, 0, 'page refresh hint hidden');
   });
 
 
 });
 
-test("Pending promise", function() {
+test("Pending promise", function(assert) {
 
   visit('/promises');
 
@@ -139,16 +140,16 @@ test("Pending promise", function() {
   });
 
   andThen(function() {
-    equal(findByLabel('promise-item').length, 1);
+    assert.equal(findByLabel('promise-item').length, 1);
     var row = findByLabel('promise-item').first();
-    equal(findByLabel('promise-label', row).text().trim(), 'Promise 1');
-    equal(findByLabel('promise-state', row).text().trim(), 'Pending');
+    assert.equal(findByLabel('promise-label', row).text().trim(), 'Promise 1');
+    assert.equal(findByLabel('promise-state', row).text().trim(), 'Pending');
   });
 
 });
 
 
-test("Fulfilled promise", function() {
+test("Fulfilled promise", function(assert) {
   visit('/promises');
 
   var now = Date.now();
@@ -173,17 +174,17 @@ test("Fulfilled promise", function() {
   });
 
   andThen(function() {
-    equal(findByLabel('promise-item').length, 1);
+    assert.equal(findByLabel('promise-item').length, 1);
     var row = findByLabel('promise-item').first();
-    equal(findByLabel('promise-label', row).text().trim(), 'Promise 1');
-    equal(findByLabel('promise-state', row).text().trim(), 'Fulfilled');
-    equal(findByLabel('promise-value', row).text().trim(), 'value');
-    equal(findByLabel('promise-time', row).text().trim(), '10.00ms');
+    assert.equal(findByLabel('promise-label', row).text().trim(), 'Promise 1');
+    assert.equal(findByLabel('promise-state', row).text().trim(), 'Fulfilled');
+    assert.equal(findByLabel('promise-value', row).text().trim(), 'value');
+    assert.equal(findByLabel('promise-time', row).text().trim(), '10.00ms');
   });
 });
 
 
-test("Rejected promise", function() {
+test("Rejected promise", function(assert) {
   visit('/promises');
 
   var now = Date.now();
@@ -208,17 +209,17 @@ test("Rejected promise", function() {
   });
 
   andThen(function() {
-    equal(findByLabel('promise-item').length, 1);
+    assert.equal(findByLabel('promise-item').length, 1);
     var row = findByLabel('promise-item').first();
-    equal(findByLabel('promise-label', row).text().trim(), 'Promise 1');
-    equal(findByLabel('promise-state', row).text().trim(), 'Rejected');
-    equal(findByLabel('promise-value', row).text().trim(), 'reason');
-    equal(findByLabel('promise-time', row).text().trim(), '20.00ms');
+    assert.equal(findByLabel('promise-label', row).text().trim(), 'Promise 1');
+    assert.equal(findByLabel('promise-state', row).text().trim(), 'Rejected');
+    assert.equal(findByLabel('promise-value', row).text().trim(), 'reason');
+    assert.equal(findByLabel('promise-time', row).text().trim(), '20.00ms');
   });
 
 });
 
-test("Chained promises", function() {
+test("Chained promises", function(assert) {
   visit('/promises');
 
   andThen(function() {
@@ -241,19 +242,19 @@ test("Chained promises", function() {
 
   andThen(function() {
     var rows = findByLabel('promise-item');
-    equal(rows.length, 1, 'Collpased by default');
-    equal(findByLabel('promise-label', rows.eq(0)).text().trim(), 'Parent');
+    assert.equal(rows.length, 1, 'Collpased by default');
+    assert.equal(findByLabel('promise-label', rows.eq(0)).text().trim(), 'Parent');
     return clickByLabel('promise-label', rows.eq(0));
   });
 
   andThen(function() {
     var rows = findByLabel('promise-item');
-    equal(rows.length, 2, 'Chain now expanded');
-    equal(findByLabel('promise-label', rows.eq(1)).text().trim(), 'Child');
+    assert.equal(rows.length, 2, 'Chain now expanded');
+    assert.equal(findByLabel('promise-label', rows.eq(1)).text().trim(), 'Child');
   });
 });
 
-test("Can trace promise when there is a stack", function() {
+test("Can trace promise when there is a stack", function(assert) {
   visit('/promises');
 
   andThen(function() {
@@ -266,14 +267,14 @@ test("Can trace promise when there is a stack", function() {
   clickByLabel('trace-promise-btn');
 
   andThen(function() {
-    equal(name, 'promise:tracePromise');
-    deepEqual(message, { promiseId: 1 });
+    assert.equal(name, 'promise:tracePromise');
+    assert.deepEqual(message, { promiseId: 1 });
   });
 
 });
 
 
-test("Trace button hidden if promise has no stack", function() {
+test("Trace button hidden if promise has no stack", function(assert) {
   visit('/promises');
 
   andThen(function() {
@@ -284,30 +285,30 @@ test("Trace button hidden if promise has no stack", function() {
   });
 
   andThen(function() {
-    equal(findByLabel('trace-promise-btn').length, 0);
+    assert.equal(findByLabel('trace-promise-btn').length, 0);
   });
 
 });
 
-test("Toggling promise trace option", function() {
-  expect(3);
+test("Toggling promise trace option", function(assert) {
+  assert.expect(3);
 
   visit('/promises');
 
   andThen(function() {
     var input = findByLabel('with-stack').find('input');
-    ok(!input.prop('checked'), 'should not be checked by default');
+    assert.ok(!input.prop('checked'), 'should not be checked by default');
     return click(input);
   });
 
   andThen(function() {
-    equal(name, 'promise:setInstrumentWithStack');
-    equal(message.instrumentWithStack, true);
+    assert.equal(name, 'promise:setInstrumentWithStack');
+    assert.equal(message.instrumentWithStack, true);
   });
 
 });
 
-test("Logging error stack trace in the console", function() {
+test("Logging error stack trace in the console", function(assert) {
   visit('/promises');
 
   andThen(function() {
@@ -326,18 +327,18 @@ test("Logging error stack trace in the console", function() {
 
   andThen(function() {
     var row = findByLabel('promise-item').first();
-    equal(findByLabel('send-to-console-btn').text().trim(), 'Stack trace');
+    assert.equal(findByLabel('send-to-console-btn').text().trim(), 'Stack trace');
     return clickByLabel('send-to-console-btn', row);
   });
 
   andThen(function() {
-    equal(name, 'promise:sendValueToConsole');
-    deepEqual(message, { promiseId: 1 });
+    assert.equal(name, 'promise:sendValueToConsole');
+    assert.deepEqual(message, { promiseId: 1 });
   });
 });
 
 
-test("Send fulfillment value to console", function() {
+test("Send fulfillment value to console", function(assert) {
   visit('/promises');
 
   andThen(function() {
@@ -360,12 +361,12 @@ test("Send fulfillment value to console", function() {
   });
 
   andThen(function() {
-    equal(name, 'promise:sendValueToConsole');
-    deepEqual(message, { promiseId: 1 });
+    assert.equal(name, 'promise:sendValueToConsole');
+    assert.deepEqual(message, { promiseId: 1 });
   });
 });
 
-test("Sending objects to the object inspector", function() {
+test("Sending objects to the object inspector", function(assert) {
   visit('/promises');
 
   andThen(function() {
@@ -389,7 +390,7 @@ test("Sending objects to the object inspector", function() {
   });
 
   andThen(function() {
-    equal(name, 'objectInspector:inspectById');
-    deepEqual(message, { objectId: 100 });
+    assert.equal(name, 'objectInspector:inspectById');
+    assert.deepEqual(message, { objectId: 100 });
   });
 });
