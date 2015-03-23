@@ -1,4 +1,5 @@
 import Ember from "ember";
+import { module, test } from 'qunit';
 /*globals require */
 var EmberDebug = require("ember-debug/main")["default"];
 
@@ -14,7 +15,7 @@ function setupApp(){
 }
 
 module("Deprecation Debug", {
-  setup: function() {
+  beforeEach() {
     EmberDebug.Port = EmberDebug.Port.extend({
       init: function() {},
       send: function(n, m) {
@@ -33,7 +34,7 @@ module("Deprecation Debug", {
       emberCliConfig: null
     });
   },
-  teardown: function() {
+  afterEach() {
     name = null;
     message = null;
     EmberDebug.destroyContainer();
@@ -41,7 +42,7 @@ module("Deprecation Debug", {
   }
 });
 
-test("deprecations are caught and sent", function() {
+test("deprecations are caught and sent", function(assert) {
   var messages = [];
   port.reopen({
     send: function(name, message) {
@@ -63,20 +64,19 @@ test("deprecations are caught and sent", function() {
   visit('/');
   andThen(function() {
     var deprecations = messages.findBy('name', 'deprecation:deprecationsAdded').message.deprecations;
-    equal(deprecations.length, 2);
+    assert.equal(deprecations.length, 2);
     var deprecation = deprecations[0];
-    equal(deprecation.count, 2, 'Correctly combined');
-    equal(deprecation.message, 'Deprecation 1');
-    equal(deprecation.sources.length, 2, 'Correctly separated by source');
+    assert.equal(deprecation.count, 2, 'Correctly combined');
+    assert.equal(deprecation.message, 'Deprecation 1');
+    assert.equal(deprecation.sources.length, 2, 'Correctly separated by source');
     deprecation = deprecations[1];
-    equal(deprecation.count, 1);
-    equal(deprecation.message, 'Deprecation 2');
-    equal(deprecation.sources.length, 1);
-    equal(deprecation.url, 'http://www.emberjs.com');
+    assert.equal(deprecation.count, 1);
+    assert.equal(deprecation.message, 'Deprecation 2');
+    assert.equal(deprecation.sources.length, 1);
+    assert.equal(deprecation.url, 'http://www.emberjs.com');
 
     var count = messages.findBy('name', 'deprecation:count').message.count;
-    equal(count, 3, 'count correctly sent');
+    assert.equal(count, 3, 'count correctly sent');
   });
 
 });
-

@@ -1,4 +1,5 @@
 import Ember from "ember";
+import { module, test } from 'qunit';
 
 /* globals require */
 var EmberDebug = require('ember-debug/main')["default"];
@@ -18,7 +19,7 @@ function setupApp(){
 }
 
 module("Render Debug", {
-  setup: function() {
+  beforeEach() {
     EmberDebug.Port = EmberDebug.Port.extend({
       init: function() {},
       send: function() {}
@@ -30,13 +31,13 @@ module("Render Debug", {
     run(EmberDebug, 'start');
     port = EmberDebug.port;
   },
-  teardown: function() {
+  afterEach() {
     EmberDebug.destroyContainer();
     run(App, 'destroy');
   }
 });
 
-test("Simple Render", function() {
+test("Simple Render", function(assert) {
   var profiles = [];
   port.reopen({
     send: function(n, m) {
@@ -49,11 +50,11 @@ test("Simple Render", function() {
 
   visit('/simple')
   .then(function() {
-    ok(profiles.length > 0, "it has created profiles");
+    assert.ok(profiles.length > 0, "it has created profiles");
   });
 });
 
-test("Clears correctly", function() {
+test("Clears correctly", function(assert) {
   var profiles = [];
 
   port.reopen({
@@ -72,13 +73,13 @@ test("Clears correctly", function() {
   visit('/simple');
 
   andThen(function() {
-    ok(profiles.length > 0, "it has created profiles");
+    assert.ok(profiles.length > 0, "it has created profiles");
     port.trigger('render:clear');
     return wait();
   });
 
   andThen(function() {
-    ok(profiles.length === 0, "it has cleared the profiles");
+    assert.ok(profiles.length === 0, "it has cleared the profiles");
   });
 
 });

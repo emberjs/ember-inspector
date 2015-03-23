@@ -1,5 +1,6 @@
 /*globals findByLabel, clickByLabel */
 import Ember from "ember";
+import { module } from 'qunit';
 import { test } from 'ember-qunit';
 import startApp from '../helpers/start-app';
 var App;
@@ -7,13 +8,13 @@ var App;
 var port, message, name;
 
 module('Container Tab', {
-  setup: function() {
+  beforeEach() {
     App = startApp({
       adapter: 'basic'
     });
     port = App.__container__.lookup('port:main');
   },
-  teardown: function() {
+  afterEach() {
     name = null;
     message = null;
     Ember.run(App, App.destroy);
@@ -47,7 +48,7 @@ function getInstances() {
   ];
 }
 
-test("Container types are successfully listed", function() {
+test("Container types are successfully listed", function(assert) {
   port.reopen({
     send: function(name, message) {
       if (name === 'container:getTypes') {
@@ -60,16 +61,16 @@ test("Container types are successfully listed", function() {
 
   andThen(function() {
     var rows = findByLabel('container-type');
-    equal(rows.length, 2);
-    equal(findByLabel('container-type-name', rows[0]).text().trim(), 'controller');
-    equal(findByLabel('container-type-count', rows[0]).text().trim(), '2');
-    equal(findByLabel('container-type-name', rows[1]).text().trim(), 'route');
-    equal(findByLabel('container-type-count', rows[1]).text().trim(), '5');
+    assert.equal(rows.length, 2);
+    assert.equal(findByLabel('container-type-name', rows[0]).text().trim(), 'controller');
+    assert.equal(findByLabel('container-type-count', rows[0]).text().trim(), '2');
+    assert.equal(findByLabel('container-type-name', rows[1]).text().trim(), 'route');
+    assert.equal(findByLabel('container-type-count', rows[1]).text().trim(), '5');
   });
 });
 
 
-test("Container instances are successfully listed", function() {
+test("Container instances are successfully listed", function(assert) {
   var types = [{name: 'controller', count: 2}];
 
   var instances = getInstances();
@@ -94,20 +95,20 @@ test("Container instances are successfully listed", function() {
   andThen(function() {
     rows = findByLabel('instance-row');
     findByLabel(rows.length, 2);
-    equal(rows.eq(0).text().trim(), 'first');
-    equal(rows.eq(1).text().trim(), 'second');
+    assert.equal(rows.eq(0).text().trim(), 'first');
+    assert.equal(rows.eq(1).text().trim(), 'second');
     name = null;
     message = null;
     return click(rows[0]);
   });
 
   andThen(function() {
-    equal(name, null);
+    assert.equal(name, null);
     return click(rows[1]);
   });
 
   andThen(function() {
-    equal(name, 'objectInspector:inspectByContainerLookup');
+    assert.equal(name, 'objectInspector:inspectByContainerLookup');
   });
 
   andThen(function() {
@@ -116,13 +117,13 @@ test("Container instances are successfully listed", function() {
 
   andThen(function() {
     rows = findByLabel('instance-row');
-    equal(rows.length, 1);
-    equal(rows.eq(0).text().trim(), 'first');
+    assert.equal(rows.length, 1);
+    assert.equal(rows.eq(0).text().trim(), 'first');
   });
 
 });
 
-test("Reload", function() {
+test("Reload", function(assert) {
   var types = [], instances = [];
 
   port.reopen({
@@ -139,8 +140,8 @@ test("Reload", function() {
   visit('/container-types/controller');
 
   andThen(function() {
-    equal(findByLabel('container-type').length, 0);
-    equal(findByLabel('instance-row').length, 0);
+    assert.equal(findByLabel('container-type').length, 0);
+    assert.equal(findByLabel('instance-row').length, 0);
     types = getTypes();
     instances = getInstances();
   });
@@ -148,7 +149,7 @@ test("Reload", function() {
   clickByLabel('reload-container-btn');
 
   andThen(function() {
-    equal(findByLabel('container-type').length,2);
-    equal(findByLabel('instance-row').length,2);
+    assert.equal(findByLabel('container-type').length,2);
+    assert.equal(findByLabel('instance-row').length,2);
   });
 });
