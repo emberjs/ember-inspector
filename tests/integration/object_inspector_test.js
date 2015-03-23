@@ -514,7 +514,6 @@ test("Date fields are editable", function() {
     equal(newDate.getMonth(), 0);
     equal(newDate.getDate(), 1);
     equal(newDate.getFullYear(), 2015);
-
   });
 });
 
@@ -526,7 +525,8 @@ function triggerEvent(elem, name) {
     event = new Event(name);
   } catch (e) {
     //phatomjs < 2.0
-    event = document.createEvent('change');
+    event = document.createEvent('Event');
+    event.initEvent('change');
   }
 
   $(elem)[0].dispatchEvent(event);

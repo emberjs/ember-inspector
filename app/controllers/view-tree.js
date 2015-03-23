@@ -1,9 +1,9 @@
 import Ember from "ember";
-var alias = Ember.computed.alias;
+const { computed, Controller } = Ember;
+const { alias } = computed;
 
-export default Ember.ArrayController.extend({
+export default Controller.extend({
   needs: ['application'],
-  itemController: 'view-item',
   pinnedObjectId: null,
   inspectingViews: false,
   queryParams: ['components', 'allViews'],
@@ -20,9 +20,7 @@ export default Ember.ArrayController.extend({
 
   actions: {
     previewLayer: function(node) {
-      if (node !== this.get('pinnedNode')) {
-        this.get('port').send('view:previewLayer', { objectId: node.value.objectId });
-      }
+      this.get('port').send('view:previewLayer', { objectId: node.value.objectId });
     },
 
     hidePreview: function(node) {

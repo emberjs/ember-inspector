@@ -4,9 +4,8 @@ var EmberDebug = require("ember-debug/main")["default"];
 
 var port, name, message, RSVP = Ember.RSVP;
 var EmberDebug;
-var run = Ember.run;
 var App;
-var emberA = Ember.A;
+let { run, K, A: emberA } = Ember;
 
 function setupApp(){
   App = Ember.Application.create();
@@ -54,7 +53,8 @@ test("Existing promises sent when requested", function() {
     var p = RSVP.resolve('value', "Promise1")
     .then(function(){}, null, "Child1");
 
-    RSVP.reject('reason', "Promise2");
+    // catch so we don't get a promise failure
+    RSVP.reject('reason', "Promise2").catch(K);
   });
 
   // RSVP instrumentation is out of band (50 ms delay)
@@ -98,9 +98,9 @@ test("Updates are published when they happen", function() {
     p = new RSVP.Promise(function(){}, "Promise1");
   });
 
-  equal(name, 'promise:promisesUpdated');
   stop();
   Ember.run.later(function() {
+    equal(name, 'promise:promisesUpdated');
     var promises = emberA(message.promises);
     var promise = promises.findBy('label', 'Promise1');
     equal(promise.label, 'Promise1');

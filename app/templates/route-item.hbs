@@ -1,6 +1,6 @@
-<div {{bind-attr class=":list-tree__item :row isCurrent:row_highlight"}} data-label="route-node">
+{{#route-item model=this currentRoute=view.currentRoute as |item|}}
   <div class="cell_type_main cell" data-label="route-name">
-    <div {{bind-attr style="labelStyle"}}>
+    <div {{bind-attr style="item.labelStyle"}}>
       <span title="{{unbound value.name}}" data-label="view-name">{{value.name}}</span>
     </div>
   </div>
@@ -33,5 +33,4 @@
   <div class="cell cell_size_large" data-label="route-url">
     <span title="{{unbound value.url}}">{{value.url}}</span>
   </div>
-
-</div>
+{{/route-item}}

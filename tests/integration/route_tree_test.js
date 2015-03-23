@@ -194,7 +194,7 @@ test("Current Route is highlighted", function() {
     var isCurrent = routeNodes.get().map(function(item) {
       return Ember.$(item).hasClass('row_highlight');
     });
-    deepEqual(isCurrent, [true, true, true, false]);
+    deepEqual(isCurrent, [true, true, true, false], 'Current route is bound');
   });
 });
 
