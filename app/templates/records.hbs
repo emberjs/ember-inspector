@@ -1,7 +1,7 @@
 <div class="list-view">
   <div class="list-view__header row">
-    {{#each columns}}
-      <div class="cell cell_type_header" data-label="column-title">{{desc}}</div>
+    {{#each columns as |column|}}
+      <div class="cell cell_type_header" data-label="column-title">{{column.desc}}</div>
     {{/each}}
 
     <!-- Account for scrollbar width :'(  -->

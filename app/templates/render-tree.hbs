@@ -13,8 +13,8 @@
 
   <div class="ember-list-container">
     {{#view "render-list"}}
-      {{#each}}
-        {{render "render-item" this}}
+      {{#each filtered as |item|}}
+        {{render "render-item" item}}
       {{/each}}
     {{/view}}
   </div>

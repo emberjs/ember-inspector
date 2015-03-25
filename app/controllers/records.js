@@ -1,9 +1,9 @@
 import Ember from "ember";
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
-const { computed } = Ember;
+const { Controller, computed } = Ember;
 const { none, alias } = computed;
 
-export default Ember.ArrayController.extend({
+export default Controller.extend({
   needs: ['application'],
 
   queryParams: ['filterValue', 'search'],

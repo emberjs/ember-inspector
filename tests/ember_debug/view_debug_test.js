@@ -134,8 +134,8 @@ test("Simple View Tree", function(assert) {
 });
 
 
-test("Views created by {{each}} helper are shown", function(assert) {
-  var name = null, message = null;
+test("Views created by context switching {{each}} helper are shown", function(assert) {
+  let name = null, message = null;
   port.reopen({
     send: function(n, m) {
       name = n;
@@ -143,9 +143,13 @@ test("Views created by {{each}} helper are shown", function(assert) {
     }
   });
 
+  // Disable deprecation warning of context switching each helper
+  const originalDeprecate = Ember.deprecate;
+  Ember.deprecate = Ember.K;
   visit('/comments');
 
   andThen(function() {
+    Ember.deprecate = originalDeprecate;
     var tree = message.tree;
     var comments = tree.children[0].children;
     assert.equal(comments.length, 3, "There should be 3 views");

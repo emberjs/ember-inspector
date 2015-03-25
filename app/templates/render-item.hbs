@@ -14,7 +14,7 @@
   </div>
 </div>
 {{#if isExpanded}}
-  {{#each children}}
-    {{render "render_item" this}}
+  {{#each children as |child|}}
+    {{render "render_item" child}}
   {{/each}}
 {{/if}}

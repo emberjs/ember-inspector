@@ -5,11 +5,11 @@
     <div class="split__panel__bd">
       <div class="nav__title"><h3>Model Types</h3></div>
       <ul>
-        {{#each}}
+        {{#each sorted as |modelType|}}
           <li data-label="model-type">
-            {{#link-to "records" name}}
-              <span data-label="model-type-name">{{name}}</span>
-              (<span data-label="model-type-count">{{count}}</span>)
+            {{#link-to "records" modelType.name}}
+              <span data-label="model-type-name">{{modelType.name}}</span>
+              (<span data-label="model-type-count">{{modelType.count}}</span>)
             {{/link-to}}
           </li>
         {{/each}}

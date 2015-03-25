@@ -1,13 +1,11 @@
 import Ember from "ember";
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
 import debounceComputed from "ember-inspector/computed/debounce";
-var get = Ember.get;
-var isEmpty = Ember.isEmpty;
-var and = Ember.computed.and;
-var equal = Ember.computed.equal;
-var filter = Ember.computed.filter;
 
-export default Ember.ArrayController.extend({
+const { get, isEmpty, computed, Controller } = Ember;
+const { and, equal, filter } = computed;
+
+export default Controller.extend({
   needs: ['application'],
 
   initialEmpty: false,
@@ -25,7 +23,7 @@ export default Ember.ArrayController.extend({
     return escapeRegExp(this.get('search').toLowerCase());
   }.property('search'),
 
-  arrangedContent: filter('model', function(item) {
+  filtered: filter('model', function(item) {
     var search = this.get('escapedSearch');
     if (isEmpty(search)) {
       return true;
