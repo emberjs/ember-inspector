@@ -9,7 +9,9 @@
 
   <div class="divider"></div>
 
-  {{#each filters itemController="recordFilter"}}
-    <button data-label="filter" {{bind-attr class="checked:active :toolbar__radio"}} {{action "setFilter" name}} >{{desc}}</button>
+  {{#each filters itemController="recordFilter" as |filter|}}
+    <button data-label="filter" {{bind-attr class="filter.checked:active :toolbar__radio"}} {{action "setFilter" filter.name}} >
+      {{filter.desc}}
+    </button>
   {{/each}}
 </div>

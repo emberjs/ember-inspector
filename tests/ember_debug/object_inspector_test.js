@@ -18,7 +18,9 @@ function setupApp(){
     this.route('simple');
   });
 
-  Ember.TEMPLATES.simple = compile('Simple {{input class="simple-input"}} {{view Ember.View classNames="simple-view"}}');
+  App.SimpleView = Ember.View;
+
+  Ember.TEMPLATES.simple = compile('Simple {{input class="simple-input"}} {{view "simple" classNames="simple-view"}}');
 }
 
 module("Ember Debug - Object Inspector", {
