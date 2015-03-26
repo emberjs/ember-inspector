@@ -38,7 +38,7 @@ export default  Ember.ObjectProxy.extend({
 
   nodeStyle: function() {
     var relevant;
-    switch(this.get('filter')) {
+    switch (this.get('filter')) {
       case 'pending':
         relevant = this.get('isPending');
         break;
@@ -112,9 +112,9 @@ export default  Ember.ObjectProxy.extend({
 
 
   timeToSettle: function() {
-  if (!this.get('createdAt') || !this.get('settledAt')) {
-        return ' -- ';
-      }
+    if (!this.get('createdAt') || !this.get('settledAt')) {
+      return ' -- ';
+    }
     var startedAt = this.get('parent.settledAt') || this.get('createdAt');
     var remaining = this.get('settledAt').getTime() - startedAt.getTime();
     return remaining;

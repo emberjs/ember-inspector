@@ -4,7 +4,7 @@ var Promise = Ember.RSVP.Promise;
 
 export default Route.extend({
   model: function() {
-   var port = this.get('port');
+    var port = this.get('port');
     return new Promise(function(resolve) {
       port.on('general:applicationBooted', this, function(message) {
         if (message.booted) {

@@ -3,11 +3,11 @@ import Promise from "ember-inspector/models/promise";
 
 var EventedMixin = Ember.Evented;
 
-var arrayComputed = Ember.computed(function(){
+var arrayComputed = Ember.computed(function() {
   return [];
 });
 
-var objectComputed = Ember.computed(function(){
+var objectComputed = Ember.computed(function() {
   return {};
 });
 
@@ -44,7 +44,7 @@ export default Ember.Object.extend(EventedMixin, {
     // Allows for a smooth transition on deactivate,
     // and thus providing the illusion of better perf
     Ember.run.later(this, function() {
-     this.destroyPromises(all);
+      this.destroyPromises(all);
     }, 500);
     this.set('all', []);
   },
@@ -76,7 +76,7 @@ export default Ember.Object.extend(EventedMixin, {
       }
       var promise = this.updateOrCreate(props);
       if (childrenIds) {
-        childrenIds.forEach(function(childId){
+        childrenIds.forEach(function(childId) {
           // avoid infinite recursion
           if (childId === props.guid) {
             return;

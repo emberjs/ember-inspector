@@ -131,7 +131,7 @@ test("With source map, source found, can't open resource", function(assert) {
       assert.equal(message.deprecation.message, 'Deprecation 1');
       assert.equal(message.deprecation.sources.length, 1);
     });
- });
+  });
 
 });
 

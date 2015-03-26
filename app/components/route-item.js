@@ -23,6 +23,6 @@ export default Component.extend({
     }
 
     return checkCurrentRoute( currentRoute, this.get('model.value.name') );
-  }.property('currentRoute', 'model.value.name'),
+  }.property('currentRoute', 'model.value.name')
 });
 

@@ -68,7 +68,7 @@ export default Ember.ObjectController.extend({
       this.set('isEdit', true);
 
     },
-    
+
     saveProperty: function() {
       var realValue, dataType;
       if (!this.get('isDate')) {

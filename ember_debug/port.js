@@ -14,7 +14,7 @@ export default Ember.Object.extend(Ember.Evented, {
   init: function() {
     var self = this;
     this.get('adapter').onMessageReceived(function(message) {
-      if(self.get('uniqueId') === message.applicationId || !message.applicationId) {
+      if (self.get('uniqueId') === message.applicationId || !message.applicationId) {
         self.trigger(message.type, message);
       }
     });

@@ -48,7 +48,7 @@ function modelTypeFactory(options) {
 }
 
 function getFilters() {
-  return [{ name: 'isNew', desc: 'New'}];
+  return [{ name: 'isNew', desc: 'New' }];
 }
 
 function modelTypes() {
@@ -56,20 +56,20 @@ function modelTypes() {
     modelTypeFactory({
       name: 'App.Post',
       count: 2,
-      columns: [ { name: 'id', desc: 'Id' }, { name: 'title', desc: 'Title' }, { name: 'body', desc: 'Body' } ]
+      columns: [{ name: 'id', desc: 'Id' }, { name: 'title', desc: 'Title' }, { name: 'body', desc: 'Body' }]
     }),
     modelTypeFactory({
       name: 'App.Comment',
       count: 1,
-      columns: [ { name: 'id', desc: 'Id'}, { name: 'title', desc: 'Title' }, { name: 'body', desc: 'Body' }]
+      columns: [{ name: 'id', desc: 'Id' }, { name: 'title', desc: 'Title' }, { name: 'body', desc: 'Body' }]
     })
   ];
 }
 
 function recordFactory(attr, filterValues) {
-  filterValues = filterValues || {isNew : false};
+  filterValues = filterValues || { isNew : false };
   var searchKeywords = [];
-  for(var i in attr) {
+  for (var i in attr) {
     searchKeywords.push(attr[i]);
   }
   var object = Ember.Object.create();
@@ -85,9 +85,9 @@ function records(type) {
   if (type === 'App.Post') {
     return [
       recordFactory({ id: 1, title: 'My Post', body: 'This is my first post' }),
-      recordFactory({ id: 2, title: 'Hello', body: '' }, { isNew: true})
+      recordFactory({ id: 2, title: 'Hello', body: '' }, { isNew: true })
     ];
-  } else if(type === 'App.Comment') {
+  } else if (type === 'App.Comment') {
     return [
       recordFactory({ id: 2, title: 'I am confused', body: 'I have no idea what im doing' })
     ];
@@ -108,7 +108,8 @@ test("Model types are successfully listed and bound", function(assert) {
   .then(function() {
     port.trigger('data:modelTypesUpdated', {
       modelTypes: [
-        modelTypeFactory({name: 'App.Post', count: 3} )]
+        modelTypeFactory({ name: 'App.Post', count: 3 })
+      ]
     });
     return wait();
   })
@@ -144,7 +145,7 @@ test("Records are successfully listed and bound", function(assert) {
   })
   .then(function() {
     port.trigger('data:recordsAdded', {
-      records: [recordFactory({objectId: 'new-post', id: 3, title: 'Added Post', body: 'I am new here'})]
+      records: [recordFactory({ objectId: 'new-post', id: 3, title: 'Added Post', body: 'I am new here' })]
     });
     return wait();
   })
@@ -156,7 +157,7 @@ test("Records are successfully listed and bound", function(assert) {
   })
   .then(function() {
     port.trigger('data:recordsUpdated', {
-      records: [ recordFactory({objectId: 'new-post', id:3, title: 'Modified Post', body: 'I am no longer new'}) ]
+      records: [recordFactory({ objectId: 'new-post', id: 3, title: 'Modified Post', body: 'I am no longer new' })]
     });
     return wait();
   })

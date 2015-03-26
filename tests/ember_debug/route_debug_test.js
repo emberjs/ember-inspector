@@ -6,7 +6,7 @@ var EmberDebug = require('ember-debug/main')["default"];
 var port;
 var App, run = Ember.run;
 
-function setupApp(){
+function setupApp() {
   App = Ember.Application.create();
   App.toString = function() { return 'App'; };
   App.setupForTesting();

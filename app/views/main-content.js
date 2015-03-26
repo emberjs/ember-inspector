@@ -21,5 +21,5 @@ export default Ember.View.extend({
 
   willDestroyElement: function() {
     Ember.$(window).off('.view-' + this.get('elementId'));
-  },
+  }
 });

@@ -8,7 +8,7 @@ var EmberDebug;
 var run = Ember.run;
 var App;
 
-function setupApp(){
+function setupApp() {
   App = Ember.Application.create();
   App.injectTestHelpers();
   App.setupForTesting();

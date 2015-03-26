@@ -32,7 +32,7 @@ export default  BasicAdapter.extend({
         self._messageReceived(message);
       }
     });
-  }.on('init'),
+  }.on('init')
 });
 
 function loadPageVar (sVar) {

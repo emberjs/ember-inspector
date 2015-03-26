@@ -20,7 +20,7 @@ module('Promise Tab', {
             promises: []
           });
         }
-       if (n === 'promise:supported') {
+        if (n === 'promise:supported') {
           this.trigger('promise:supported', {
             supported: true
           });

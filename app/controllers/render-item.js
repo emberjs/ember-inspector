@@ -36,7 +36,7 @@ export default  ObjectController.extend({
 
   nodeStyle: function() {
     if (!this.get('searchMatch')) {
-        return 'opacity: 0.5';
+      return 'opacity: 0.5';
     }
   }.property('searchMatch'),
 

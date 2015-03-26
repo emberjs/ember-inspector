@@ -110,5 +110,5 @@ function fromStackProperty(stackString) {
     }
   }
 
-  return stack.length ? stack:null;
+  return stack.length ? stack : null;
 }

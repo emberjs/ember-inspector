@@ -7,7 +7,7 @@ var port, name, message;
 var run = Ember.run;
 var App;
 
-function setupApp(){
+function setupApp() {
   App = Ember.Application.create();
   App.setupForTesting();
   App.injectTestHelpers();
@@ -66,7 +66,7 @@ test("#getInstances", function(assert) {
   visit('/simple');
 
   andThen(function() {
-    port.trigger('container:getInstances', { containerType: 'controller'});
+    port.trigger('container:getInstances', { containerType: 'controller' });
     return wait();
   });
 

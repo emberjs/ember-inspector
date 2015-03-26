@@ -24,7 +24,7 @@ function destroyTemplates() {
   OLD_TEMPLATES = {};
 }
 
-function setupApp(){
+function setupApp() {
   App = Ember.Application.create();
   App.setupForTesting();
   App.injectTestHelpers();
@@ -218,7 +218,7 @@ test("Components in view tree", function(assert) {
     var tree = message.tree;
     var simple = tree.children[0];
     assert.equal(simple.children.length, 0, "Components are not listed by default.");
-    port.trigger('view:setOptions', { options: { components: true }});
+    port.trigger('view:setOptions', { options: { components: true } });
     return wait();
   })
   .then(function() {
@@ -258,7 +258,7 @@ test("Highlighting Views on hover", function(assert) {
     assert.equal(findByLabel('layer-model', previewDiv).text(), 'Simple Model');
     assert.equal(findByLabel('layer-template', previewDiv).text(), 'simple');
     assert.equal(findByLabel('layer-view', previewDiv).text(), 'App.SimpleView');
-    port.trigger('view:setOptions', { options: { components: true }});
+    port.trigger('view:setOptions', { options: { components: true } });
     return wait();
   })
   .then(function() {
@@ -279,7 +279,7 @@ test("Highlighting Views on hover", function(assert) {
   .then(function() {
     var previewDiv = findByLabel('preview-div');
     assert.equal(findByLabel('layer-view', previewDiv).text(), 'App.SimpleView', "Views without a controller are not highlighted by default.");
-    port.trigger('view:setOptions', { options: { allViews: true }});
+    port.trigger('view:setOptions', { options: { allViews: true } });
     return wait();
   })
   .then(function() {

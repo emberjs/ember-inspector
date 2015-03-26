@@ -125,7 +125,7 @@ var DataDebug = Ember.Object.extend(PortMixin, {
   },
 
   releaseTypes: function() {
-    if(this.releaseTypesMethod) {
+    if (this.releaseTypesMethod) {
       this.releaseTypesMethod();
       this.releaseTypesMethod = null;
       this.sentTypes = {};

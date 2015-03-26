@@ -42,6 +42,4 @@ if (typeof define !== 'function' || typeof requireModule !== 'function') {
     define.registry = registry;
     define.seen = seen;
   })();
-} else {
-
 }

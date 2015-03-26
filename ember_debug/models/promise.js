@@ -11,7 +11,8 @@ var dateComputed = function() {
         }
       }
       return null;
-  }).property();
+    }
+  ).property();
 };
 
 export default Ember.Object.extend({
