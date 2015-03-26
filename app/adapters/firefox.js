@@ -39,10 +39,10 @@ export default BasicAdapter.extend({
   },
 
   _sendIframes: function (urls) {
-     var self = this;
-     urls.forEach(function(url) {
-       self.sendMessage({ type: "injectEmberDebug", frameURL: url });
-     });
+    var self = this;
+    urls.forEach(function(url) {
+      self.sendMessage({ type: "injectEmberDebug", frameURL: url });
+    });
   },
 
   canOpenResource: true,

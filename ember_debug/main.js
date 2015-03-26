@@ -51,7 +51,7 @@ EmberDebug = Ember.Object.extend({
     'containerDebug',
     'deprecationDebug',
     'objectInspector',
-    'session',
+    'session'
     ].forEach(function(prop) {
       var handler = self.get(prop);
       if (handler) {
@@ -112,7 +112,7 @@ function getApplication() {
       application;
 
   namespaces.forEach(function(namespace) {
-    if(namespace instanceof Ember.Application) {
+    if (namespace instanceof Ember.Application) {
       application = namespace;
       return false;
     }

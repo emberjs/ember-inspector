@@ -8,11 +8,11 @@ export default Component.extend({
 
   checked: false,
 
-  change: function(){
+  change() {
     this._updateElementValue();
   },
 
-  _updateElementValue: function() {
+  _updateElementValue() {
     this.set('checked', this.$().prop('checked'));
     this.sendAction('on-update', this.get('checked'));
   }

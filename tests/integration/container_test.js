@@ -71,7 +71,7 @@ test("Container types are successfully listed", function(assert) {
 
 
 test("Container instances are successfully listed", function(assert) {
-  var types = [{name: 'controller', count: 2}];
+  var types = [{ name: 'controller', count: 2 }];
 
   var instances = getInstances();
 
@@ -80,7 +80,7 @@ test("Container instances are successfully listed", function(assert) {
       name = n;
       message = m;
       if (name === 'container:getTypes') {
-        this.trigger('container:types', {types: getTypes()});
+        this.trigger('container:types', { types: getTypes() });
       }
 
       if (name === 'container:getInstances' && message.containerType === 'controller') {
@@ -129,10 +129,10 @@ test("Reload", function(assert) {
   port.reopen({
     send: function(n, m) {
       if (n === 'container:getTypes') {
-        this.trigger('container:types', { types: types});
+        this.trigger('container:types', { types: types });
       }
       if (n === 'container:getInstances' && m.containerType === 'controller') {
-        this.trigger('container:instances', { instances: instances});
+        this.trigger('container:instances', { instances: instances });
       }
     }
   });
@@ -149,7 +149,7 @@ test("Reload", function(assert) {
   clickByLabel('reload-container-btn');
 
   andThen(function() {
-    assert.equal(findByLabel('container-type').length,2);
-    assert.equal(findByLabel('instance-row').length,2);
+    assert.equal(findByLabel('container-type').length, 2);
+    assert.equal(findByLabel('instance-row').length, 2);
   });
 });

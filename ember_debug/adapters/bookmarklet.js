@@ -26,9 +26,9 @@ export default BasicAdapter.extend({
     });
 
     $(window).on('unload', function() {
-        self.sendMessage({
-          unloading: true
-        });
+      self.sendMessage({
+        unloading: true
+      });
     });
   }
 });

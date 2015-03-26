@@ -7,7 +7,7 @@ var run = Ember.run;
 var App;
 var EmberInspector;
 
-function setupApp(){
+function setupApp() {
   App = Ember.Application.create();
 }
 

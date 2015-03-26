@@ -14,7 +14,7 @@ export default EmberObject.extend(PortMixin, {
 
   adapter: oneWay('port.adapter').readOnly(),
 
-  deprecations: computed(function(){
+  deprecations: computed(function() {
     return Ember.A();
   }).property(),
 

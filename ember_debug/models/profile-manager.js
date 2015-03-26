@@ -38,7 +38,7 @@ ProfileManager.prototype = {
 
   _profilesFinished: function() {
     var firstNode = this.currentSet[0],
-        parentNode = new ProfileNode(firstNode.start, {template: 'View Rendering'});
+        parentNode = new ProfileNode(firstNode.start, { template: 'View Rendering' });
 
     parentNode.time = 0;
     this.currentSet.forEach(function(n) {

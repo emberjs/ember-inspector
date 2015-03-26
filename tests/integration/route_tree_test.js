@@ -142,7 +142,7 @@ test("Clicking on route handlers and controller sends an inspection message", fu
     message = null;
     applicationRow = findByLabel('route-node').first();
     return clickByLabel('route-handler', applicationRow);
-   })
+  })
   .then(function() {
     assert.equal(name, 'objectInspector:inspectRoute');
     assert.equal(message.name, 'application');

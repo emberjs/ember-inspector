@@ -42,14 +42,18 @@ function inspect(value) {
   } else if (value instanceof EmberObject) {
     return value.toString();
   } else if (typeOf(value) === 'array') {
-    if (value.length === 0) { return '[]'; }
-    else if (value.length === 1) { return '[ ' + inspect(value[0]) + ' ]'; }
-    else { return '[ ' + inspect(value[0]) + ', ... ]'; }
+    if (value.length === 0) {
+      return '[]';
+    } else if (value.length === 1) {
+      return '[ ' + inspect(value[0]) + ' ]';
+    } else {
+      return '[ ' + inspect(value[0]) + ', ... ]';
+    }
   } else if (value instanceof Error) {
     return 'Error: ' + value.message;
   } else if (value === null) {
     return 'null';
-  } else if(typeOf(value) === 'date') {
+  } else if (typeOf(value) === 'date') {
     return value.toString();
   } else if (typeof value === 'object') {
     // `Ember.inspect` is able to handle this use case,
@@ -245,7 +249,7 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
 
   releaseObject: function(objectId) {
     var object = this.sentObjects[objectId];
-    if(!object) {
+    if (!object) {
       return;
     }
     var meta = emberMeta(object),
@@ -454,14 +458,14 @@ function fixMandatorySetters(mixinDetails) {
 
   mixinDetails.forEach(function(detail, detailIdx) {
     detail.properties.forEach(function(property) {
-      if(property.isMandatorySetter) {
+      if (property.isMandatorySetter) {
         seen[property.name] = {
           name: property.name,
           value: property.value.inspect,
           detailIdx: detailIdx,
           property: property
         };
-      } else if(seen.hasOwnProperty(property.name) && seen[property.name] === property.value.inspect) {
+      } else if (seen.hasOwnProperty(property.name) && seen[property.name] === property.value.inspect) {
         propertiesToRemove.push(seen[property.name]);
         delete seen[property.name];
       }
@@ -589,7 +593,7 @@ function customizeProperties(mixinDetails, propertyInfo) {
       skipProperties = propertyInfo.skipProperties || [],
       skipMixins = propertyInfo.skipMixins || [];
 
-  if(groups.length) {
+  if (groups.length) {
     mixinDetails[0].expand = false;
   }
 

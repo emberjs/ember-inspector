@@ -9,7 +9,7 @@ var objectInspector;
 var computed = Ember.computed;
 var compile = Ember.Handlebars.compile;
 
-function setupApp(){
+function setupApp() {
   App = Ember.Application.create();
   App.setupForTesting();
   App.injectTestHelpers();
@@ -379,7 +379,7 @@ test("Views are correctly handled when destroyed during transitions", function(a
 
   visit('/');
 
-  andThen (function() {
+  andThen(function() {
     assert.ok(true, "No exceptions thrown");
   });
 });

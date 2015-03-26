@@ -23,7 +23,7 @@ export default Mixin.create({
         messages = this.get('messages');
 
     for (var name in messages) {
-      if(messages.hasOwnProperty(name)) {
+      if (messages.hasOwnProperty(name)) {
         port.on(this.messageName(name), this, messages[name]);
       }
     }
@@ -34,7 +34,7 @@ export default Mixin.create({
         messages = this.get('messages');
 
     for (var name in messages) {
-      if(messages.hasOwnProperty(name)) {
+      if (messages.hasOwnProperty(name)) {
         port.off(this.messageName(name), this, messages[name]);
       }
     }

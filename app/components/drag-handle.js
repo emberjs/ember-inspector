@@ -19,7 +19,7 @@ export default Ember.Component.extend({
 
     this.sendAction('action', true);
 
-    Ember.$('body').on('mousemove.' + namespace, function(e){
+    Ember.$('body').on('mousemove.' + namespace, function(e) {
       var position = self.get('isLeft') ?
                        e.pageX - $containerOffsetLeft :
                        $containerOffsetRight - e.pageX;
@@ -28,7 +28,7 @@ export default Ember.Component.extend({
         self.set('position', position);
       }
     })
-    .on('mouseup.' + namespace + ' mouseleave.' + namespace, function(){
+    .on('mouseup.' + namespace + ' mouseleave.' + namespace, function() {
       self.stopDragging();
     });
   },
@@ -51,8 +51,7 @@ export default Ember.Component.extend({
   style: function () {
     if (this.get('side')) {
       return this.get('side') + ':' + this.get('position') + 'px';
-    }
-    else {
+    } else {
       return '';
     }
   }.property('side', 'position')

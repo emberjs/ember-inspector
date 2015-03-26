@@ -7,6 +7,7 @@ var wrapFiles = require('broccoli-wrap');
 var pickFiles = require('broccoli-static-compiler');
 var concatFiles = require('broccoli-concat');
 var jshintTrees = require('broccoli-jshint');
+var jscsTrees = require('broccoli-jscs');
 var removeFile = require('broccoli-file-remover');
 
 /*global process */
@@ -51,6 +52,9 @@ if (env === 'test') {
   var jshintedEmberDebug = jshintTrees(emberDebug, {
     description: 'JSHint - Ember Debug'
   });
+  var jscsEmberDebug = jscsTrees(emberDebug);
+
+  jshintedEmberDebug = mergeTrees([jshintedEmberDebug, jscsEmberDebug]);
   jshintedEmberDebug = pickFiles(jshintedEmberDebug, {
     srcDir: '/',
     destDir: 'ember-debug/tests'

@@ -8,7 +8,7 @@ var EmberDebug;
 var App;
 let { run, K, A: emberA } = Ember;
 
-function setupApp(){
+function setupApp() {
   App = Ember.Application.create();
   App.injectTestHelpers();
   App.setupForTesting();
@@ -52,7 +52,7 @@ test("Existing promises sent when requested", function(assert) {
 
   run(function() {
     var p = RSVP.resolve('value', "Promise1")
-    .then(function(){}, null, "Child1");
+    .then(function() {}, null, "Child1");
 
     // catch so we don't get a promise failure
     RSVP.reject('reason', "Promise2").catch(K);
@@ -96,7 +96,7 @@ test("Updates are published when they happen", function(assert) {
   var p;
 
   run(function() {
-    p = new RSVP.Promise(function(){}, "Promise1");
+    p = new RSVP.Promise(function() {}, "Promise1");
   });
 
   let done = assert.async();
@@ -105,7 +105,7 @@ test("Updates are published when they happen", function(assert) {
     var promises = emberA(message.promises);
     var promise = promises.findBy('label', 'Promise1');
     assert.equal(promise.label, 'Promise1');
-    p.then(function(){}, null, "Child1");
+    p.then(function() {}, null, "Child1");
     Ember.run.later(function() {
       assert.equal(name, 'promise:promisesUpdated');
       assert.equal(message.promises.length, 2);

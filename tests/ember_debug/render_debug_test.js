@@ -7,7 +7,7 @@ var port;
 var App, run = Ember.run;
 var compile = Ember.Handlebars.compile;
 
-function setupApp(){
+function setupApp() {
   App = Ember.Application.create();
   App.setupForTesting();
   App.injectTestHelpers();

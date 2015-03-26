@@ -1,19 +1,16 @@
 /**
-  The adapter stores logic specific to
-  each environment.
-  Extend this object with env specific
-  code (such as chrome/firefox/test), then
-  set the `adapter` property to the name
-  of this adapter.
-
-  example:
-
-  ```javascript
-  var EmberExtension = App.create({
-    adapter: 'chrome'
-  })
-  ```
-**/
+ * The adapter stores logic specific to each environment.
+ * Extend this object with env specific code (such as chrome/firefox/test),
+ * then set the application's `adapter` property to the name of this adapter.
+ *
+ * example:
+ *
+ * ```javascript
+ * const EmberInspector = App.Create({
+ *   adapter: 'chrome'
+ * });
+ * ```
+ */
 import Ember from "ember";
 var K = Ember.K;
 export default Ember.Object.extend({

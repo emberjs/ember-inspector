@@ -445,7 +445,7 @@ test("Dropping an object due to destruction", function(assert) {
   })
   .then(function() {
     assert.equal(findByLabel('object-name').text().trim(), 'My Object');
-    port.trigger('objectInspector:droppedObject', { objectId: 'myObject'} );
+    port.trigger('objectInspector:droppedObject', { objectId: 'myObject' } );
     return wait();
   })
   .then(function() {

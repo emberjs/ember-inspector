@@ -17,7 +17,8 @@ var dateComputed = function() {
         }
       }
       return null;
-  }).property();
+    }
+  ).property();
 };
 
 export default Ember.Object.extend({
@@ -139,7 +140,7 @@ export default Ember.Object.extend({
 
   _findTopParent: function() {
     var parent = this.get('parent');
-    if(!parent) {
+    if (!parent) {
       return this;
     } else {
       return parent._findTopParent();
@@ -169,7 +170,7 @@ export default Ember.Object.extend({
         parents.forEach(function(parent) {
           parent.set('isExpanded', true);
         });
-      } else if(this.get('parent.isExpanded')) {
+      } else if (this.get('parent.isExpanded')) {
         this.get('parent').recalculateExpanded();
       }
     }

@@ -14,7 +14,7 @@ export default function startApp(attrs) {
     name: generateGuid() + "-detectEmberApplication",
     initialize: function(container, application) {
       container.lookup('route:app-detected').reopen({
-        model: Ember.K,
+        model: Ember.K
       });
     }
   });

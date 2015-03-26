@@ -2,8 +2,9 @@ import Ember from "ember";
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
 import debounceComputed from "ember-inspector/computed/debounce";
 
-const { get, isEmpty, computed, Controller } = Ember;
+const { computed, isEmpty, Controller } = Ember;
 const { and, equal, filter } = computed;
+const get = Ember.get;
 
 export default Controller.extend({
   needs: ['application'],

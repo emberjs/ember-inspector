@@ -55,7 +55,7 @@ export default Ember.Controller.extend({
     if (obj) {
       var index = mixinStack.indexOf(obj);
       var objectsToRemove = [];
-      for(var i = index; i >= 0; i--) {
+      for (var i = index; i >= 0; i--) {
         objectsToRemove.pushObject(mixinStack.objectAt(i));
       }
       objectsToRemove.forEach(function(item) {

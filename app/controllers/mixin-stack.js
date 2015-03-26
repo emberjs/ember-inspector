@@ -15,7 +15,7 @@ export default Ember.ArrayController.extend({
 
   actions: {
     popStack: function() {
-      if(this.get('isNested')) {
+      if (this.get('isNested')) {
         this.get('controllers.application').popMixinDetails();
       }
     },

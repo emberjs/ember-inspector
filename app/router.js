@@ -12,7 +12,7 @@ Router.map(function() {
 
     this.resource('data', function() {
       this.resource('model-types', function() {
-        this.resource('model-type', { path: '/:type_id'}, function() {
+        this.resource('model-type', { path: '/:type_id' }, function() {
           this.resource('records');
         });
       });
