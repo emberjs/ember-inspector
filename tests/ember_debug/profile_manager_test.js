@@ -1,3 +1,4 @@
+/* jshint ignore:start */
 /* globals require */
 import { module, test } from 'qunit';
 var ProfileManager = require('ember-debug/models/profile-manager')["default"];

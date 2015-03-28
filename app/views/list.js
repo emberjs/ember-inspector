@@ -16,7 +16,7 @@ export default ListView.extend({
     if (!contentHeight) {
       return 1;
     }
-    return contentHeight  - headerHeight;
+    return contentHeight - headerHeight;
   }.property('contentHeight'),
   rowHeight: 30,
   itemViewClass: ListItemView

@@ -1,6 +1,6 @@
 import BasicAdapter from "./basic";
 
-export default  BasicAdapter.extend({
+export default BasicAdapter.extend({
   name: 'bookmarklet',
 
   inspectedWindow: function() {

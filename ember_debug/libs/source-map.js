@@ -39,7 +39,7 @@ export default EmberObject.extend({
 
 function retrieveSourceMap(source) {
   var sourceMappingURL = retrieveSourceMapURL(source);
-  if (!sourceMappingURL) { return null;}
+  if (!sourceMappingURL) { return null; }
 
   // Read the contents of the source map
   var sourceMapData;

@@ -1,11 +1,11 @@
-/*globals findByLabel, clickByLabel */
+/* jshint ignore:start */
 import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
-var App;
+let App;
 
-var port, message, name;
+let port, message, name;
 
 module('Render Tree Tab', {
   beforeEach() {
@@ -50,9 +50,9 @@ function generateProfiles() {
 }
 
 
-test("No profiles collected", function(assert) {
+test("No profiles collected", async function t(assert) {
   port.reopen({
-    send: function(n, m) {
+    send(n, m) {
       if (n === 'render:watchProfiles') {
         this.trigger('render:profilesAdded', {
           profiles: []
@@ -61,17 +61,15 @@ test("No profiles collected", function(assert) {
     }
   });
 
-  visit('/render-tree');
+  await visit('/render-tree');
 
-  andThen(function() {
-    assert.equal(findByLabel('render-tree').length, 0, "no render tree");
-    assert.equal(findByLabel('render-tree-empty').length, 1, "Message about empty render tree shown");
-  });
+  assert.equal(findByLabel('render-tree').length, 0, "no render tree");
+  assert.equal(findByLabel('render-tree-empty').length, 1, "Message about empty render tree shown");
 });
 
-test("Renders the list correctly", function(assert) {
+test("Renders the list correctly", async function t(assert) {
   port.reopen({
-    send: function(n, m) {
+    send(n, m) {
       if (n === 'render:watchProfiles') {
         this.trigger('render:profilesAdded', {
           profiles: generateProfiles()
@@ -80,46 +78,39 @@ test("Renders the list correctly", function(assert) {
     }
   });
 
-  visit('/render-tree');
+  await visit('/render-tree');
 
-  andThen(function() {
-    assert.equal(findByLabel('render-tree').length, 1);
+  assert.equal(findByLabel('render-tree').length, 1);
 
-    var rows = findByLabel('render-profile-row');
-    assert.equal(rows.length, 2, "Two rows are rendered initially");
+  let rows = findByLabel('render-profile-row');
+  assert.equal(rows.length, 2, "Two rows are rendered initially");
 
-    assert.equal(findByLabel('render-profile-name', rows[0]).text().trim(), "First View Rendering");
-    assert.equal(findByLabel('render-profile-duration', rows[0]).text().trim(), "476.87ms");
-    assert.equal(findByLabel('render-profile-timestamp', rows[0]).text().trim(), "13:16:22:715");
+  assert.equal(findByLabel('render-profile-name', rows[0]).text().trim(), "First View Rendering");
+  assert.equal(findByLabel('render-profile-duration', rows[0]).text().trim(), "476.87ms");
+  assert.equal(findByLabel('render-profile-timestamp', rows[0]).text().trim(), "13:16:22:715");
 
-    assert.equal(findByLabel('render-profile-name', rows[1]).text().trim(), "Second View Rendering");
-    assert.equal(findByLabel('render-profile-duration', rows[1]).text().trim(), "10.00ms");
-    assert.equal(findByLabel('render-profile-timestamp', rows[1]).text().trim(), "13:16:22:759");
+  assert.equal(findByLabel('render-profile-name', rows[1]).text().trim(), "Second View Rendering");
+  assert.equal(findByLabel('render-profile-duration', rows[1]).text().trim(), "10.00ms");
+  assert.equal(findByLabel('render-profile-timestamp', rows[1]).text().trim(), "13:16:22:759");
 
-    return clickByLabel('render-main-cell', rows[0]);
-  });
+  await clickByLabel('render-main-cell', rows[0]);
 
-  andThen(function() {
-    var rows = findByLabel('render-profile-row');
-    assert.equal(rows.length, 3, "Child is shown below the parent");
+  rows = findByLabel('render-profile-row');
+  assert.equal(rows.length, 3, "Child is shown below the parent");
 
-    assert.equal(findByLabel('render-profile-name', rows[1]).text().trim(), "Child view");
-    assert.equal(findByLabel('render-profile-duration', rows[1]).text().trim(), "0.36ms");
-    assert.equal(findByLabel('render-profile-timestamp', rows[1]).text().trim(), "13:16:22:581");
+  assert.equal(findByLabel('render-profile-name', rows[1]).text().trim(), "Child view");
+  assert.equal(findByLabel('render-profile-duration', rows[1]).text().trim(), "0.36ms");
+  assert.equal(findByLabel('render-profile-timestamp', rows[1]).text().trim(), "13:16:22:581");
 
-    return clickByLabel('render-main-cell', rows[0]);
-  });
+  await clickByLabel('render-main-cell', rows[0]);
 
-  andThen(function() {
-    var rows = findByLabel('render-profile-row');
-    assert.equal(rows.length, 2, "Child is hidden when parent collapses");
-  });
-
+  rows = findByLabel('render-profile-row');
+  assert.equal(rows.length, 2, "Child is hidden when parent collapses");
 });
 
-test("Searching the profiles", function(assert) {
+test("Searching the profiles", async function t(assert) {
   port.reopen({
-    send: function(n, m) {
+    send(n, m) {
       if (n === 'render:watchProfiles') {
         this.trigger('render:profilesAdded', {
           profiles: generateProfiles()
@@ -128,47 +119,32 @@ test("Searching the profiles", function(assert) {
     }
   });
 
-  visit('/render-tree');
+  await visit('/render-tree');
 
-  andThen(function() {
-    var rows = findByLabel('render-profile-row');
-    assert.equal(rows.length, 2, "Two rows are rendered initially");
+  let rows = findByLabel('render-profile-row');
+  assert.equal(rows.length, 2, "Two rows are rendered initially");
 
-    assert.equal(findByLabel('render-profile-name', rows[0]).text().trim(), "First View Rendering");
-    assert.equal(findByLabel('render-profile-name', rows[1]).text().trim(), "Second View Rendering");
-  });
+  assert.equal(findByLabel('render-profile-name', rows[0]).text().trim(), "First View Rendering");
+  assert.equal(findByLabel('render-profile-name', rows[1]).text().trim(), "Second View Rendering");
 
-  andThen(function() {
-    return fillIn('input', findByLabel('render-profiles-search'), 'first');
-  });
+  await fillIn('input', findByLabel('render-profiles-search'), 'first');
 
-  andThen(function() {
-    var rows = findByLabel('render-profile-row');
-    assert.equal(rows.length, 2, "The first parent is rendered with the child");
-    assert.equal(findByLabel('render-profile-name', rows[0]).text().trim(), "First View Rendering");
-    assert.equal(findByLabel('render-profile-name', rows[1]).text().trim(), "Child view");
-  });
+  rows = findByLabel('render-profile-row');
+  assert.equal(rows.length, 2, "The first parent is rendered with the child");
+  assert.equal(findByLabel('render-profile-name', rows[0]).text().trim(), "First View Rendering");
+  assert.equal(findByLabel('render-profile-name', rows[1]).text().trim(), "Child view");
 
-  andThen(function() {
-    return fillIn('input', findByLabel('render-profiles-search'), '');
-  });
+  await fillIn('input', findByLabel('render-profiles-search'), '');
 
-  andThen(function() {
-    var rows = findByLabel('render-profile-row');
-    assert.equal(rows.length, 2, "filter is reset");
+  rows = findByLabel('render-profile-row');
+  assert.equal(rows.length, 2, "filter is reset");
 
-    assert.equal(findByLabel('render-profile-name', rows[0]).text().trim(), "First View Rendering");
-    assert.equal(findByLabel('render-profile-name', rows[1]).text().trim(), "Second View Rendering");
-  });
+  assert.equal(findByLabel('render-profile-name', rows[0]).text().trim(), "First View Rendering");
+  assert.equal(findByLabel('render-profile-name', rows[1]).text().trim(), "Second View Rendering");
 
-  andThen(function() {
-    return fillIn('input', findByLabel('render-profiles-search'), 'Second');
-  });
+  await fillIn('input', findByLabel('render-profiles-search'), 'Second');
 
-  andThen(function() {
-    var rows = findByLabel('render-profile-row');
-    assert.equal(rows.length, 1, "The second row is the only one showing");
-    assert.equal(findByLabel('render-profile-name', rows[0]).text().trim(), "Second View Rendering");
-  });
-
+  rows = findByLabel('render-profile-row');
+  assert.equal(rows.length, 1, "The second row is the only one showing");
+  assert.equal(findByLabel('render-profile-name', rows[0]).text().trim(), "Second View Rendering");
 });

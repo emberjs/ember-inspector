@@ -1,4 +1,4 @@
-/*globals findByLabel, clickByLabel */
+/* jshint ignore:start */
 import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';

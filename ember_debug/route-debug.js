@@ -91,7 +91,7 @@ export default Ember.Object.extend(PortMixin, {
           if (podPrefix) {
             currentPrefix = podPrefix.replace(new RegExp('^/?' + prefix + '/?'), '');
           }
-          className = currentPrefix + '/' + name  + '/' + type;
+          className = currentPrefix + '/' + name + '/' + type;
         } else {
           className = name.replace(/\./g, '/');
         }

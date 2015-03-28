@@ -1,11 +1,11 @@
-/*globals findByLabel, clickByLabel */
+/* jshint ignore:start */
 import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
-var App;
+let App;
 
-var port, message, name;
+let port, message, name;
 
 module('Info Tab', {
   beforeEach() {
@@ -14,7 +14,7 @@ module('Info Tab', {
     });
     port = App.__container__.lookup('port:main');
     port.reopen({
-      send: function(name) {
+      send(name) {
         if (name === 'general:getLibraries') {
           this.trigger('general:libraries', {
             libraries: [
@@ -33,22 +33,20 @@ module('Info Tab', {
   }
 });
 
-test("Libraries are displayed correctly", function(assert) {
-  var infoRoute = App.__container__.lookup('route:info');
+test("Libraries are displayed correctly", async function t(assert) {
+  const infoRoute = App.__container__.lookup('route:info');
   infoRoute.reopen({
     version: '9.9.9'
   });
 
-  visit('/info');
+  await visit('/info');
 
-  andThen(function() {
-    var libraries = findByLabel('library-row');
-    assert.equal(libraries.length, 3, "The correct number of libraries is displayed");
-    assert.equal(findByLabel('lib-name', libraries[0]).text().trim(), 'Ember Inspector', 'Ember Inspector is added automatically');
-    assert.equal(findByLabel('lib-version', libraries[0]).text().trim(), '9.9.9');
-    assert.equal(findByLabel('lib-name', libraries[1]).text().trim(), 'Ember');
-    assert.equal(findByLabel('lib-version', libraries[1]).text().trim(), '1.0');
-    assert.equal(findByLabel('lib-name', libraries[2]).text().trim(), 'Handlebars');
-    assert.equal(findByLabel('lib-version', libraries[2]).text().trim(), '2.1');
-  });
+  let libraries = findByLabel('library-row');
+  assert.equal(libraries.length, 3, "The correct number of libraries is displayed");
+  assert.equal(findByLabel('lib-name', libraries[0]).text().trim(), 'Ember Inspector', 'Ember Inspector is added automatically');
+  assert.equal(findByLabel('lib-version', libraries[0]).text().trim(), '9.9.9');
+  assert.equal(findByLabel('lib-name', libraries[1]).text().trim(), 'Ember');
+  assert.equal(findByLabel('lib-version', libraries[1]).text().trim(), '1.0');
+  assert.equal(findByLabel('lib-name', libraries[2]).text().trim(), 'Handlebars');
+  assert.equal(findByLabel('lib-version', libraries[2]).text().trim(), '2.1');
 });

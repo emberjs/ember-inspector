@@ -1,3 +1,4 @@
+/* jshint ignore:start */
 import Ember from "ember";
 import { module, test } from 'qunit';
 /*globals require*/

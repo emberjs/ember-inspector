@@ -6,9 +6,10 @@ var mergeTrees  = require('broccoli-merge-trees');
 var wrapFiles = require('broccoli-wrap');
 var pickFiles = require('broccoli-static-compiler');
 var concatFiles = require('broccoli-concat');
-var jshintTrees = require('broccoli-jshint');
-var jscsTrees = require('broccoli-jscs');
 var removeFile = require('broccoli-file-remover');
+var path = require('path');
+var jsStringEscape = require('js-string-escape');
+var eslint = require('broccoli-lint-eslint');
 
 /*global process */
 var dist = process.env.EMBER_DIST;
@@ -16,8 +17,33 @@ var dist = process.env.EMBER_DIST;
 var options = {
   fingerprint: {
     enabled: false
+  },
+  babel: {
+    // async/await
+    optional: ['es7.asyncFunctions']
+  },
+  eslint: {
+    testGenerator: eslintTestGenerator
   }
 };
+
+function renderErrors(errors) {
+  if (!errors) { return ''; };
+  return errors.map(function(error) {
+    return error.line + ':' + error.column + ' ' +
+      ' - ' + error.message + ' (' + error.ruleId +')';
+  }).join('\n');
+}
+
+function eslintTestGenerator(relativePath, errors) {
+  var pass = !errors || errors.length === 0;
+  return "import { module, test } from 'qunit';\n" +
+    "module('ESLINT - " + path.dirname(relativePath) + "');\n" +
+    "test('" + relativePath + " should pass eslint', function(assert) {\n" +
+    "  assert.ok(" + pass + ", '" + relativePath + " should pass eslint." +
+    jsStringEscape("\n" + renderErrors(errors)) + "');\n" +
+   "});\n";
+}
 
 if (dist === 'firefox') {
   options.minifyJS = { enabled: false };
@@ -31,6 +57,8 @@ if (env !== 'production') {
   // To be able to compile htmlbars templates in tests
   app.import('bower_components/ember/ember-template-compiler.js');
 }
+
+app.import('vendor/babel-polyfill.js', { prepend: true });
 
 // Ember Debug
 
@@ -49,17 +77,12 @@ emberDebug = removeFile(emberDebug, {
 });
 
 if (env === 'test') {
-  var jshintedEmberDebug = jshintTrees(emberDebug, {
-    description: 'JSHint - Ember Debug'
+  var linted = eslint(emberDebug, {
+    testGenerator: eslintTestGenerator,
+    config: './eslint.json',
+    rulesdir: './'
   });
-  var jscsEmberDebug = jscsTrees(emberDebug);
-
-  jshintedEmberDebug = mergeTrees([jshintedEmberDebug, jscsEmberDebug]);
-  jshintedEmberDebug = pickFiles(jshintedEmberDebug, {
-    srcDir: '/',
-    destDir: 'ember-debug/tests'
-  });
-  emberDebug = mergeTrees([emberDebug, jshintedEmberDebug]);
+  emberDebug = mergeTrees([emberDebug, linted]);
 }
 
 emberDebug = removeFile(emberDebug, {

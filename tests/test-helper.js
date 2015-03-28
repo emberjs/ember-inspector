@@ -9,7 +9,6 @@ window.NO_EMBER_DEBUG = true;
 
 
 // Pollyfill PhantomJS bind
-
 if (!Function.prototype.bind) {
   Function.prototype.bind = function (oThis) {
     if (typeof this !== "function") {

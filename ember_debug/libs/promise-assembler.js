@@ -39,8 +39,7 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
     this.RSVP.on('chained', this.promiseChained);
     this.RSVP.on('rejected', this.promiseRejected);
     this.RSVP.on('fulfilled', this.promiseFulfilled);
-    this.RSVP.on('created',  this.promiseCreated);
-
+    this.RSVP.on('created', this.promiseCreated);
   },
 
   stop: function() {
@@ -48,7 +47,7 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
     this.RSVP.off('chained', this.promiseChained);
     this.RSVP.off('rejected', this.promiseRejected);
     this.RSVP.off('fulfilled', this.promiseFulfilled);
-    this.RSVP.off('created',  this.promiseCreated);
+    this.RSVP.off('created', this.promiseCreated);
 
     this.get('all').forEach(function(item) {
       item.destroy();

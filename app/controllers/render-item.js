@@ -6,7 +6,7 @@ var oneWay = Ember.computed.oneWay;
 var isEmpty = Ember.isEmpty;
 var runOnce = Ember.run.once;
 
-export default  ObjectController.extend({
+export default ObjectController.extend({
   needs: ['render-tree'],
 
   search: oneWay('controllers.render-tree.search').readOnly(),

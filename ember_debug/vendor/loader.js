@@ -27,7 +27,7 @@ if (typeof define !== 'function' || typeof requireModule !== 'function') {
           reified = [],
           exports;
 
-      for (var i=0, l=deps.length; i<l; i++) {
+      for (var i = 0, l = deps.length; i < l; i++) {
         if (deps[i] === 'exports') {
           reified.push(exports = {});
         } else {
@@ -36,7 +36,8 @@ if (typeof define !== 'function' || typeof requireModule !== 'function') {
       }
 
       var value = callback.apply(this, reified);
-      return seen[name] = exports || value;
+      seen[name] = exports || value;
+      return seen[name];
     };
 
     define.registry = registry;

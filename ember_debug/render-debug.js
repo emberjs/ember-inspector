@@ -12,7 +12,7 @@ var queue = [];
 
 function push(info) {
   var index = queue.push(info);
-  if (1 === index) {
+  if (index === 1) {
     later(flush, 50);
   }
   return index - 1;
