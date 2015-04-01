@@ -70,5 +70,8 @@
     "paths": [
       "lib/websocket-dist"
     ]
+  },
+  "dependencies": {
+    "ember-new-computed": "^1.0.0"
   }
 }

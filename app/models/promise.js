@@ -1,24 +1,25 @@
 import Ember from "ember";
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
+import computed from 'ember-new-computed';
 var typeOf = Ember.typeOf;
-var computed = Ember.computed;
-var or = computed.or;
-var equal = computed.equal;
-var not = computed.not;
+var or = Ember.computed.or;
+var equal = Ember.computed.equal;
+var not = Ember.computed.not;
 
 var dateComputed = function() {
-  return Ember.computed(
-    function(key, date) {
-      if (date !== undefined) {
-        if (typeOf(date) === 'date') {
-          return date;
-        } else if (typeof date === 'number' || typeof date === 'string') {
-          return new Date(date);
-        }
+  return computed({
+    get: function() {
+      return null;
+    },
+    set: function(key, date) {
+      if (typeOf(date) === 'date') {
+        return date;
+      } else if (typeof date === 'number' || typeof date === 'string') {
+        return new Date(date);
       }
       return null;
     }
-  ).property();
+  });
 };
 
 export default Ember.Object.extend({
