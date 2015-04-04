@@ -84,7 +84,7 @@ test("Container instances are successfully listed", function(assert) {
       }
 
       if (name === 'container:getInstances' && message.containerType === 'controller') {
-        this.trigger('container:instances', { instances: instances });
+        this.trigger('container:instances', { instances, status: 200 });
       }
     }
   });
@@ -123,6 +123,30 @@ test("Container instances are successfully listed", function(assert) {
 
 });
 
+test("Successfully redirects if the container type is not found", function(assert) {
+
+  port.reopen({
+    send(n, m) {
+      name = n;
+      message = m;
+      if (name === 'container:getTypes') {
+        this.trigger('container:types', { types: getTypes() });
+      }
+
+      if (name === 'container:getInstances' && message.containerType === 'random-type') {
+        this.trigger('container:instances', { status: 404 });
+      }
+    }
+  });
+
+  visit('/container-types/random-type');
+
+  andThen(function() {
+    assert.equal(currentURL(), '/container-types');
+  });
+
+});
+
 test("Reload", function(assert) {
   var types = [], instances = [];
 
@@ -132,7 +156,7 @@ test("Reload", function(assert) {
         this.trigger('container:types', { types: types });
       }
       if (n === 'container:getInstances' && m.containerType === 'controller') {
-        this.trigger('container:instances', { instances: instances });
+        this.trigger('container:instances', { instances, status: 200 });
       }
     }
   });
