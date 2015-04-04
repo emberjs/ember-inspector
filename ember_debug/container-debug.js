@@ -69,8 +69,11 @@ export default EmberObject.extend(PortMixin, {
   },
 
   getInstances: function(type) {
-    var instancesByType = this.instancesByType();
-    return instancesByType[type].map(function(item) {
+    var instances = this.instancesByType()[type];
+    if (!instances) {
+      return null;
+    }
+    return instances.map(function(item) {
       return {
         name: this.nameFromKey(item.fullName),
         fullName: item.fullName,
@@ -86,9 +89,17 @@ export default EmberObject.extend(PortMixin, {
       });
     },
     getInstances: function(message) {
-      this.sendMessage('instances', {
-        instances: this.getInstances(message.containerType)
-      });
+      var instances = this.getInstances(message.containerType);
+      if (instances) {
+        this.sendMessage('instances', {
+          instances: instances,
+          status: 200
+        });
+      } else {
+        this.sendMessage('instances', {
+          status: 404
+        });
+      }
     },
     sendInstanceToConsole: function(message) {
       var instance = this.get('container').lookup(message.name);

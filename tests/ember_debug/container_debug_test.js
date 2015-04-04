@@ -74,5 +74,20 @@ test("#getInstances", function(assert) {
     assert.equal(name, 'container:instances');
     var instances = emberA(message.instances);
     assert.ok(instances.findBy('name', 'simple'));
+    assert.equal(message.status, 200);
+  });
+});
+
+test("#getInstances on a non existing type", function(assert) {
+  visit('/simple');
+
+  andThen(function() {
+    port.trigger('container:getInstances', { containerType: 'not-here' });
+    return wait();
+  });
+
+  andThen(function() {
+    assert.equal(name, 'container:instances');
+    assert.equal(message.status, 404);
   });
 });
