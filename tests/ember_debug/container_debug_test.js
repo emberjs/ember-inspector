@@ -76,3 +76,19 @@ test("#getInstances", function() {
     ok(instances.findBy('name', 'simple'));
   });
 });
+
+
+test("#getInstances on a non existing type", function() {
+  visit('/simple');
+
+  andThen(function() {
+    port.trigger('container:getInstances', { containerType: 'not-here' });
+    return wait();
+  });
+
+  andThen(function() {
+    equal(name, 'container:instances');
+    equal(message.status, 404);
+  });
+});
+
