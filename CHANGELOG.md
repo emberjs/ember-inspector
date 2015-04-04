@@ -1,5 +1,11 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 1.7.3
+
+* [BUGFIX] Don't assume prototype extensions are enabled
+* [BUGFIX] Descriptor is no longer exposed on the Ember global
+* [BUGFIX] Handle case where container type no longer exists after reload
+
 ## Ember Inspector 1.7.2
 
 * [BUGFIX] Fixed error when `define` is defined but `requireModule` is not
