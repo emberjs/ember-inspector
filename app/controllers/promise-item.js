@@ -11,7 +11,7 @@ var gt = Ember.computed.gt;
 var empty = Ember.computed.empty;
 var computedEqual = Ember.computed.equal;
 
-export default  Ember.ObjectProxy.extend({
+export default Ember.ObjectProxy.extend({
   promiseTreeController: function() {
     return this.container.lookup('controller:promiseTree');
   }.property(),

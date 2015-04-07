@@ -1,8 +1,11 @@
+/* jshint ignore:start */
+/* eslint no-empty:0 */
 import Ember from "ember";
 import { module, test } from 'qunit';
 
 var EmberDebug;
 var port, name, message;
+/* jshint ignore:start */
 var run = Ember.run;
 var App;
 var EmberInspector;

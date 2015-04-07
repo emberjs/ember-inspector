@@ -178,7 +178,7 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
     if (isNone(prop)) {
       value = this.sentObjects[objectId];
     } else {
-      value =  get(object, prop);
+      value = get(object, prop);
     }
 
     this.sendValueToConsole(value);
@@ -434,7 +434,7 @@ function addProperties(properties, hash) {
 function replaceProperty(properties, name, value, options) {
   var found, type;
 
-  for (var i=0, l=properties.length; i<l; i++) {
+  for (var i = 0, l = properties.length; i < l; i++) {
     if (properties[i].name === name) {
       found = i;
       break;

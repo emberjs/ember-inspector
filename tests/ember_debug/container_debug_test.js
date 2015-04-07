@@ -1,3 +1,4 @@
+/* jshint ignore:start */
 import { module, test } from 'qunit';
 import Ember from "ember";
 var emberA = Ember.A;
@@ -43,51 +44,38 @@ module("Container Debug", {
   }
 });
 
-test("#getTypes", function(assert) {
-  visit('/simple');
+test("#getTypes", async function t(assert) {
+  await visit('/simple');
 
-  andThen(function() {
-    port.trigger('container:getTypes');
-    return wait();
-  });
+  port.trigger('container:getTypes');
+  await wait();
 
-  andThen(function() {
-    assert.equal(name, 'container:types');
-    var types = emberA(message.types);
-    var application = types.findBy('name', 'application');
-    assert.ok(application);
-    assert.equal(application.count, 1);
-    assert.ok(types.findBy('name', 'controller'));
-    assert.ok(types.findBy('name', 'route'));
-  });
+  assert.equal(name, 'container:types');
+  let types = emberA(message.types);
+  let application = types.findBy('name', 'application');
+  assert.ok(application);
+  assert.equal(application.count, 1);
+  assert.ok(types.findBy('name', 'controller'));
+  assert.ok(types.findBy('name', 'route'));
 });
 
-test("#getInstances", function(assert) {
-  visit('/simple');
+test("#getInstances", async function t(assert) {
+  await visit('/simple');
 
-  andThen(function() {
-    port.trigger('container:getInstances', { containerType: 'controller' });
-    return wait();
-  });
+  port.trigger('container:getInstances', { containerType: 'controller' });
+  await wait();
 
-  andThen(function() {
-    assert.equal(name, 'container:instances');
-    var instances = emberA(message.instances);
-    assert.ok(instances.findBy('name', 'simple'));
-    assert.equal(message.status, 200);
-  });
+  assert.equal(name, 'container:instances');
+  let instances = emberA(message.instances);
+  assert.ok(instances.findBy('name', 'simple'));
 });
 
-test("#getInstances on a non existing type", function(assert) {
-  visit('/simple');
+test("#getInstances on a non existing type", async function t(assert) {
+  await visit('/simple');
 
-  andThen(function() {
-    port.trigger('container:getInstances', { containerType: 'not-here' });
-    return wait();
-  });
+  port.trigger('container:getInstances', { containerType: 'not-here' });
+  await wait();
 
-  andThen(function() {
-    assert.equal(name, 'container:instances');
-    assert.equal(message.status, 404);
-  });
+  assert.equal(name, 'container:instances');
+  assert.equal(message.status, 404);
 });

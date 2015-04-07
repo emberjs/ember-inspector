@@ -1,3 +1,4 @@
+/* eslint camelcase:0 */
 /**
   This is a wrapper for `ember-debug.js`
   Wraps the script in a function,

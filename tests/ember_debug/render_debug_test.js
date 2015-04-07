@@ -1,3 +1,4 @@
+/* jshint ignore:start */
 import Ember from "ember";
 import { module, test } from 'qunit';
 
@@ -37,10 +38,10 @@ module("Render Debug", {
   }
 });
 
-test("Simple Render", function(assert) {
-  var profiles = [];
+test("Simple Render", async function t(assert) {
+  let profiles = [];
   port.reopen({
-    send: function(n, m) {
+    send(n, m) {
       if (n === "render:profilesAdded") {
         profiles = profiles.concat(m.profiles);
       }
@@ -48,17 +49,16 @@ test("Simple Render", function(assert) {
   });
   port.trigger('render:watchProfiles');
 
-  visit('/simple')
-  .then(function() {
-    assert.ok(profiles.length > 0, "it has created profiles");
-  });
+  await visit('/simple');
+
+  assert.ok(profiles.length > 0, "it has created profiles");
 });
 
-test("Clears correctly", function(assert) {
-  var profiles = [];
+test("Clears correctly", async function t(assert) {
+  let profiles = [];
 
   port.reopen({
-    send: function(n, m) {
+    send(n, m) {
       if (n === "render:profilesAdded") {
         profiles.push(m.profiles);
       }
@@ -70,16 +70,12 @@ test("Clears correctly", function(assert) {
 
   port.trigger('render:watchProfiles');
 
-  visit('/simple');
+  await visit('/simple');
 
-  andThen(function() {
-    assert.ok(profiles.length > 0, "it has created profiles");
-    port.trigger('render:clear');
-    return wait();
-  });
+  assert.ok(profiles.length > 0, "it has created profiles");
+  port.trigger('render:clear');
+  await wait();
 
-  andThen(function() {
-    assert.ok(profiles.length === 0, "it has cleared the profiles");
-  });
+  assert.ok(profiles.length === 0, "it has cleared the profiles");
 
 });

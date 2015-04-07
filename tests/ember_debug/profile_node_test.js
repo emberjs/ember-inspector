@@ -13,7 +13,7 @@ test("It can create a ProfileNode", function(assert) {
   assert.equal(p.children.length, 0, "it has no children by default");
   assert.ok(!p.time, "It has no time because it's unfinished");
 });
-
+/* jshint ignore:start */
 test("with no payload it has an unknown name", function(assert) {
   var p = new ProfileNode(1234);
   assert.equal(p.name, "Unknown view");

@@ -1,3 +1,4 @@
+/* jshint ignore:start */
 import Ember from "ember";
 import { module, test, stop, start } from 'qunit';
 /*globals require */
@@ -47,11 +48,11 @@ module("Promise Debug", {
   }
 });
 
-test("Existing promises sent when requested", function(assert) {
-  var promise1, child1, promise2;
+test("Existing promises sent when requested", async function t(assert) {
+  let promise1, child1, promise2;
 
   run(function() {
-    var p = RSVP.resolve('value', "Promise1")
+    let p = RSVP.resolve('value', "Promise1")
     .then(function() {}, null, "Child1");
 
     // catch so we don't get a promise failure
@@ -61,32 +62,30 @@ test("Existing promises sent when requested", function(assert) {
   // RSVP instrumentation is out of band (50 ms delay)
   Ember.run.later(function() {}, 100);
 
-  wait();
+  await wait();
 
-  andThen(function() {
-    port.trigger('promise:getAndObservePromises');
+  port.trigger('promise:getAndObservePromises');
 
-    assert.equal(name, 'promise:promisesUpdated');
+  assert.equal(name, 'promise:promisesUpdated');
 
-    var promises = emberA(message.promises);
+  let promises = emberA(message.promises);
 
-    promise1 = promises.findBy('label', 'Promise1');
-    child1 = promises.findBy('label', 'Child1');
-    promise2 = promises.findBy('label', 'Promise2');
+  promise1 = promises.findBy('label', 'Promise1');
+  child1 = promises.findBy('label', 'Child1');
+  promise2 = promises.findBy('label', 'Promise2');
 
-    assert.equal(promise1.label, 'Promise1');
-    assert.equal(promise1.state, 'fulfilled');
-    assert.equal(promise1.children.length, 1);
-    assert.equal(promise1.children[0], child1.guid);
+  assert.equal(promise1.label, 'Promise1');
+  assert.equal(promise1.state, 'fulfilled');
+  assert.equal(promise1.children.length, 1);
+  assert.equal(promise1.children[0], child1.guid);
 
-    assert.equal(child1.label, 'Child1');
-    assert.equal(child1.state, 'fulfilled');
-    assert.equal(child1.parent, promise1.guid);
+  assert.equal(child1.label, 'Child1');
+  assert.equal(child1.state, 'fulfilled');
+  assert.equal(child1.parent, promise1.guid);
 
-    assert.equal(promise2.label, 'Promise2');
-    assert.equal(promise2.state, 'rejected');
+  assert.equal(promise2.label, 'Promise2');
+  assert.equal(promise2.state, 'rejected');
 
-  });
 
 });
 

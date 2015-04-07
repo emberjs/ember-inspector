@@ -153,7 +153,7 @@ export default Ember.Object.extend({
     if (this.get('isManuallyExpanded') !== undefined) {
       isExpanded = this.get('isManuallyExpanded');
     } else {
-      var children  = this._allChildren();
+      var children = this._allChildren();
       for (var i = 0, l = children.length; i < l; i++) {
         var child = children[i];
         if (child.get('isRejected')) {

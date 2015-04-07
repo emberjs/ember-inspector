@@ -1,3 +1,4 @@
+/* jshint ignore:start */
 import Ember from "ember";
 import { module, test } from 'qunit';
 
@@ -361,76 +362,63 @@ test("Read Only Computed properties mush have a readOnly property", function(ass
   assert.ok(!properties[1].readOnly);
 });
 
-test("Views are correctly handled when destroyed during transitions", function(assert) {
-  var objectId = null;
+test("Views are correctly handled when destroyed during transitions", async function t(assert) {
+  let objectId = null;
 
-  visit('/simple');
+  await visit('/simple');
 
-  andThen(function() {
-    objectId = find('.simple-view').get(0).id;
-    var view = Ember.View.views[objectId];
-    objectInspector.sendObject(view);
-    return wait();
-  });
+  objectId = find('.simple-view').get(0).id;
+  let view = Ember.View.views[objectId];
+  objectInspector.sendObject(view);
+  await wait();
 
-  andThen(function() {
-    assert.ok(!!objectInspector.sentObjects[objectId], "Object successfully retained.");
-  });
+  assert.ok(!!objectInspector.sentObjects[objectId], "Object successfully retained.");
 
-  visit('/');
+  await visit('/');
 
-  andThen(function() {
-    assert.ok(true, "No exceptions thrown");
-  });
+  assert.ok(true, "No exceptions thrown");
 });
 
-test("Objects are dropped on destruction", function(assert) {
-  var didDestroy = false;
-  var object = Ember.Object.create({
+test("Objects are dropped on destruction", async function t(assert) {
+  let didDestroy = false;
+  let object = Ember.Object.create({
     willDestroy: function() {
       didDestroy = true;
     }
   });
-  var objectId = Ember.guidFor(object);
+  let objectId = Ember.guidFor(object);
 
-  wait()
-  .then(function() {
-    objectInspector.sendObject(object);
-    return wait();
-  })
-  .then(function() {
-    assert.ok(!!objectInspector.sentObjects[objectId]);
-    object.destroy();
-    return wait();
-  })
-  .then(function() {
-    assert.ok(didDestroy, 'Original willDestroy is preserved.');
-    assert.ok(!objectInspector.sentObjects[objectId], 'Object is dropped');
-    assert.equal(name, 'objectInspector:droppedObject');
-    assert.deepEqual(message, { objectId: objectId });
-  });
+  await wait();
+
+  objectInspector.sendObject(object);
+  await wait();
+
+  assert.ok(!!objectInspector.sentObjects[objectId]);
+  Ember.run(object, 'destroy');
+  await wait();
+
+  assert.ok(didDestroy, 'Original willDestroy is preserved.');
+  assert.ok(!objectInspector.sentObjects[objectId], 'Object is dropped');
+  assert.equal(name, 'objectInspector:droppedObject');
+  assert.deepEqual(message, { objectId: objectId });
 
 });
 
-test("Properties ending with `Binding` are skipped", function(assert) {
-  var object = Ember.Object.create({
+test("Properties ending with `Binding` are skipped", async function t(assert) {
+  let object = Ember.Object.create({
     bar: 'test',
     fooBinding: 'bar'
   });
 
-  wait();
+  await wait();
 
-  andThen(function() {
-    objectInspector.sendObject(object);
-    return wait();
-  });
+  objectInspector.sendObject(object);
+  await wait();
 
-  andThen(function() {
-    var props = message.details[0].properties;
-    assert.equal(props.length, 2, "Props should be foo and bar without fooBinding");
-    assert.equal(props[0].name, 'bar');
-    assert.equal(props[1].name, 'foo');
-  });
+  let props = message.details[0].properties;
+  assert.equal(props.length, 2, "Props should be foo and bar without fooBinding");
+  assert.equal(props[0].name, 'bar');
+  assert.equal(props[1].name, 'foo');
 });
 
 test("Properties listed in _debugInfo but don't exist should be skipped silently", function(assert) {

@@ -5,7 +5,7 @@ const { computed } = Ember;
 const { readOnly } = computed;
 
 export default ListView.extend({
-  itemViewClass:  ListItemView.extend({
+  itemViewClass: ListItemView.extend({
     templateName: "route_item",
 
     // TODO: Need a better way to pass this

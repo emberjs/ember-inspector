@@ -6,7 +6,7 @@ const { computed } = Ember;
 const { readOnly } = computed;
 
 export default ListView.extend({
-  itemViewClass:  ListItemView.extend({
+  itemViewClass: ListItemView.extend({
     templateName: "record_item",
 
     // TODO: Look for a better way

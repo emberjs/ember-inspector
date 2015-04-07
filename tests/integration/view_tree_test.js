@@ -1,4 +1,4 @@
-/*globals findByLabel */
+/* jshint ignore:start */
 import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
@@ -243,11 +243,11 @@ test("Previewing / showing a view on the client", function(assert) {
   })
   .mouseEnterByLabel('tree-node')
   .then(function() {
-    assert.deepEqual(messageSent, { name: 'view:previewLayer', message: { objectId: 'applicationView' } } , "Client asked to preview layer");
+    assert.deepEqual(messageSent, { name: 'view:previewLayer', message: { objectId: 'applicationView' } }, "Client asked to preview layer");
   })
   .mouseLeaveByLabel('tree-node')
   .then(function() {
-    assert.deepEqual(messageSent, { name: 'view:hidePreview', message: { objectId: 'applicationView' } } , "Client asked to hide preview");
+    assert.deepEqual(messageSent, { name: 'view:hidePreview', message: { objectId: 'applicationView' } }, "Client asked to hide preview");
   });
 });
 

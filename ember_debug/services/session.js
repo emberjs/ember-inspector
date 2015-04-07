@@ -13,7 +13,7 @@ if (typeof sessionStorage !== 'undefined') {
     sessionStorage: sessionStorage,
     prefix: '__ember__inspector__',
     makeKey: function(key) {
-      return this.prefix + key ;
+      return this.prefix + key;
     },
     setItem: function(key, val) {
       return this.sessionStorage.setItem(this.makeKey(key), val);

@@ -1,3 +1,4 @@
+/* eslint no-empty:0 */
 import PortMixin from "ember-debug/mixins/port-mixin";
 var Ember = window.Ember;
 var computed = Ember.computed;
