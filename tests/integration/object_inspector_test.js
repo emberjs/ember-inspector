@@ -31,6 +31,7 @@ module('Object Inspector', {
 const objectAttr = {
   name: 'Object Name',
   objectId: 1,
+  errors: [],
   details: [
     {
       name: 'Own Properties',
@@ -51,6 +52,7 @@ function objectToInspect() {
   return objectFactory( {
     name: 'My Object',
     objectId: 'objectId',
+    errors: [],
     details: [
       {
         name: 'First Detail',
@@ -86,7 +88,7 @@ function objectToInspect() {
 }
 
 test("The object displays correctly", async function t(assert) {
-  var obj = objectFactory( { name: 'My Object' });
+  let obj = objectFactory( { name: 'My Object' });
   await visit('/');
 
   await triggerPort('objectInspector:updateObject', obj);
@@ -461,6 +463,45 @@ test("Date fields are editable", async function t(assert) {
   assert.equal(newDate.getDate(), 1);
   assert.equal(newDate.getFullYear(), 2015);
 });
+
+test("Errors are correctly displayed", async function t(assert) {
+  let obj = objectFactory( {
+    name: 'My Object',
+    objectId: '1',
+    errors: [
+      { property: 'foo' },
+      { property: 'bar' }
+    ]
+  });
+  await visit('/');
+  await triggerPort('objectInspector:updateObject', obj);
+
+  assert.equal(findByLabel('object-name').text(), 'My Object');
+  assert.equal(findByLabel('object-inspector-errors').length, 1);
+  assert.equal(findByLabel('object-inspector-error').length, 2);
+
+  clickByLabel('send-errors-to-console');
+
+  assert.equal(name, 'objectInspector:traceErrors');
+  assert.equal(message.objectId, '1');
+
+  await triggerPort('objectInspector:updateErrors', {
+    objectId: '1',
+    errors: [
+      { property: 'foo' }
+    ]
+  });
+
+  assert.equal(findByLabel('object-inspector-error').length, 1);
+
+  await triggerPort('objectInspector:updateErrors', {
+    objectId: '1',
+    errors: []
+  });
+
+  assert.equal(findByLabel('object-inspector-errors').length, 0);
+});
+
 
 
 function triggerEvent(elem, name) {
