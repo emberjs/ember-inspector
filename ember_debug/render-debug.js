@@ -68,12 +68,21 @@ export default Ember.Object.extend(PortMixin, {
   profileManager: profileManager,
 
   init: function() {
+    var self = this;
     this._super();
+    this.profileManager.wrapForErrors = function(context, callback) {
+      return self.get('port').wrap(function() {
+        return callback.call(context);
+      });
+    };
     this._subscribeForViewTrees();
   },
 
   willDestroy: function() {
     this._super();
+    this.profileManager.wrapForErrors = function(context, callback) {
+      return callback.call(context);
+    };
     this.profileManager.offProfilesAdded(this, this.sendAdded);
     this.profileManager.offProfilesAdded(this, this._updateViewTree);
   },

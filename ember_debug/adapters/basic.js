@@ -1,3 +1,4 @@
+/* globals requireModule */
 var Ember = window.Ember;
 var computed = Ember.computed;
 var $ = Ember.$;
@@ -12,12 +13,32 @@ export default Ember.Object.extend({
     }, null, 'ember-inspector');
   },
 
+  /**
+   * Uses the current build's config module to determine
+   * the environment.
+   *
+   * @property environment
+   * @type {String}
+   */
+  environment: computed(function() {
+    return requireModule('ember-debug/config')['default'].environment;
+  }),
+
   debug: function() {
-    console.debug.apply(console, arguments);
+    return console.debug.apply(console, arguments);
   },
 
   log: function() {
-    console.log.apply(console, arguments);
+    return console.log.apply(console, arguments);
+  },
+
+  /**
+   * A wrapper for `console.warn`.
+   *
+   * @method warn
+   */
+  warn: function() {
+    return console.warn.apply(console, arguments);
   },
 
   /**
@@ -56,6 +77,34 @@ export default Ember.Object.extend({
     this.get('_messageCallbacks').forEach(function(callback) {
       callback.call(null, message);
     });
+  },
+
+  /**
+   * Handle an error caused by EmberDebug.
+   *
+   * This function rethrows in development and test envs,
+   * but warns instead in production.
+   *
+   * The idea is to control errors triggered by the inspector
+   * and make sure that users don't get mislead by inspector-caused
+   * bugs.
+   *
+   * @method handleError
+   * @param {Error} error
+   */
+  handleError: function(error) {
+    if (this.get('environment') === 'production') {
+      if (error && error instanceof Error) {
+        error = 'Error message: ' + error.message + '\nStack trace: ' + error.stack;
+      }
+      this.warn('Ember Inspector has errored.\n' +
+        'This is likely a bug in the inspector itself.\n' +
+        'You can report bugs at https://github.com/emberjs/ember-inspector.\n' +
+        error);
+    } else {
+      this.warn('EmberDebug has errored:');
+      throw error;
+    }
   },
 
   /**
@@ -110,5 +159,4 @@ export default Ember.Object.extend({
     messages.clear();
     this._isReady = true;
   }
-
 });

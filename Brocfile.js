@@ -130,7 +130,7 @@ emberDebug = concatFiles(emberDebug, {
 });
 
 emberDebug = wrapFiles(emberDebug, {
-  wrapper: ["(function(adapter) {\n", "\n}('" + (dist || 'basic') + "'));"]
+  wrapper: ["(function(adapter, env) {\n", "\n}('" + (dist || 'basic') + "', '" + env + "'));"]
 });
 
 var tree = app.toTree();
