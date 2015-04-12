@@ -146,12 +146,10 @@ export default EmberObject.extend(PortMixin, {
     uniquePromises = uniquePromises.filter(function(promise) {
       return promise.get('label') !== 'ember-inspector';
     });
-    if (uniquePromises.get('length') > 0) {
-      var serialized = this.serializeArray(uniquePromises);
-      this.sendMessage('promisesUpdated', {
-        promises: serialized
-      });
-    }
+    var serialized = this.serializeArray(uniquePromises);
+    this.sendMessage('promisesUpdated', {
+      promises: serialized
+    });
     this.set('updatedPromises', Ember.A());
   },
 
