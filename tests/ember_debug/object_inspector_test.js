@@ -4,11 +4,11 @@ import { module, test } from 'qunit';
 
 var EmberDebug;
 var port, name, message;
-var run = Ember.run;
 var App;
 var objectInspector;
-var computed = Ember.computed;
-var compile = Ember.Handlebars.compile;
+
+const { run, guidFor, Object: EmberObject, computed } = Ember;
+const { Handlebars: { compile } } = Ember;
 
 function setupApp() {
   App = Ember.Application.create();
@@ -24,18 +24,23 @@ function setupApp() {
   Ember.TEMPLATES.simple = compile('Simple {{input class="simple-input"}} {{view "simple" classNames="simple-view"}}');
 }
 
+let ignoreErrors = true;
+
 module("Ember Debug - Object Inspector", {
   beforeEach() {
     /* globals require */
     EmberDebug = require('ember-debug/main')["default"];
     EmberDebug.Port = EmberDebug.Port.extend({
-      init: function() {},
-      send: function(n, m) {
+      init() {},
+      send(n, m) {
+        if (ignoreErrors && n.match(/[Ee]rror/)) {
+          return;
+        }
         name = n;
         message = m;
       }
     });
-    run(function() {
+    run(() => {
       setupApp();
       EmberDebug.set('application', App);
     });
@@ -144,6 +149,7 @@ test("Computed properties are correctly calculated", function(assert) {
     mixinIndex: 1
   });
 
+  assert.equal(name, 'objectInspector:updateProperty');
   assert.equal(message.objectId, id);
   assert.equal(message.property, 'hi');
   assert.equal(message.mixinIndex, 1);
@@ -386,7 +392,7 @@ test("Objects are dropped on destruction", async function t(assert) {
       didDestroy = true;
     }
   });
-  let objectId = Ember.guidFor(object);
+  let objectId = guidFor(object);
 
   await wait();
 
@@ -421,10 +427,10 @@ test("Properties ending with `Binding` are skipped", async function t(assert) {
   assert.equal(props[1].name, 'foo');
 });
 
-test("Properties listed in _debugInfo but don't exist should be skipped silently", function(assert) {
-  var object = Ember.Object.create({
+test("Properties listed in _debugInfo but don't exist should be skipped silently", async function t(assert) {
+  let object = Ember.Object.create({
     foo: 'test',
-    _debugInfo: function() {
+    _debugInfo() {
       return {
         propertyInfo: {
           groups: [{
@@ -436,16 +442,67 @@ test("Properties listed in _debugInfo but don't exist should be skipped silently
 
   });
 
-  wait();
+  await wait();
 
-  andThen(function() {
-    objectInspector.sendObject(object);
-    return wait();
+  run(objectInspector, 'sendObject', object);
+  await wait();
+
+  let props = message.details[0].properties;
+  assert.equal(props.length, 1, "bar should be silently skipped");
+  assert.equal(props[0].name, 'foo');
+});
+
+test("Errors while computing CPs are handled", async function t(assert) {
+  // catch error port messages (ignored by default)
+  ignoreErrors = false;
+
+  let count = 0;
+  let object;
+  run(() => {
+    object = EmberObject.extend({
+     foo: computed(() => {
+       if (count++ < 2) {
+         throw new Error('CP Calculation');
+       }
+       return 'bar';
+     })
+    }).create();
   });
 
-  andThen(function() {
-    var props = message.details[0].properties;
-    assert.equal(props.length, 1, "bar should be silently skipped");
-    assert.equal(props[0].name, 'foo');
+  run(objectInspector, 'sendObject', object);
+  await wait();
+
+  let errors = message.errors;
+  assert.equal(errors.length, 1);
+  assert.equal(errors[0].property, 'foo');
+  ignoreErrors = false;
+
+  // Calculate CP a second time
+  run(() => {
+    port.trigger('objectInspector:calculate', {
+      objectId: guidFor(object),
+      property: 'foo',
+      mixinIndex: 1
+    });
   });
+  await wait();
+  ignoreErrors = true;
+  assert.equal(name, 'objectInspector:updateErrors');
+  assert.equal(errors.length, 1);
+  assert.equal(errors[0].property, 'foo');
+
+  // Calculate CP a third time (no error this time)
+  run(() => {
+    port.trigger('objectInspector:calculate', {
+      objectId: guidFor(object),
+      property: 'foo',
+      mixinIndex: 1
+    });
+  });
+  await wait();
+  assert.equal(name, 'objectInspector:updateProperty');
+  assert.equal(message.value.inspect, 'bar');
+
+  // teardown
+  ignoreErrors = true;
 });

@@ -1,20 +1,25 @@
 import Ember from "ember";
-export default Ember.Route.extend({
+const { Route } = Ember;
+const set = Ember.set;
 
-  setupController: function() {
+export default Route.extend({
+
+  setupController() {
     this.controllerFor('mixinStack').set('model', []);
     var port = this.get('port');
     port.on('objectInspector:updateObject', this, this.updateObject);
     port.on('objectInspector:updateProperty', this, this.updateProperty);
+    port.on('objectInspector:updateErrors', this, this.updateErrors);
     port.on('objectInspector:droppedObject', this, this.droppedObject);
     port.on('deprecation:count', this, this.setDeprecationCount);
     port.send('deprecation:getCount');
   },
 
-  deactivate: function() {
+  deactivate() {
     var port = this.get('port');
     port.off('objectInspector:updateObject', this, this.updateObject);
     port.off('objectInspector:updateProperty', this, this.updateProperty);
+    port.off('objectInspector:updateErrors', this, this.updateErrors);
     port.off('objectInspector:droppedObject', this, this.droppedObject);
     port.off('deprecation:count', this, this.setDeprecationCount);
   },
@@ -23,7 +28,8 @@ export default Ember.Route.extend({
     var details = options.details,
       name = options.name,
       property = options.property,
-      objectId = options.objectId;
+      objectId = options.objectId,
+      errors = options.errors;
 
     Ember.NativeArray.apply(details);
     details.forEach(arrayize);
@@ -33,7 +39,7 @@ export default Ember.Route.extend({
     if (options.parentObject) {
       controller.pushMixinDetails(name, property, objectId, details);
     } else {
-      controller.activateMixinDetails(name, details, objectId);
+      controller.activateMixinDetails(name, objectId, details, errors);
     }
 
     this.send('expandInspector');
@@ -43,10 +49,17 @@ export default Ember.Route.extend({
     this.controller.set('deprecationCount', message.count);
   },
 
-  updateProperty: function(options) {
-    var detail = this.controllerFor('mixinDetails').get('mixins').objectAt(options.mixinIndex);
-    var property = Ember.get(detail, 'properties').findProperty('name', options.property);
-    Ember.set(property, 'value', options.value);
+  updateProperty(options) {
+    const detail = this.controllerFor('mixinDetails').get('model.mixins').objectAt(options.mixinIndex);
+    const property = Ember.get(detail, 'properties').findProperty('name', options.property);
+    set(property, 'value', options.value);
+  },
+
+  updateErrors(options) {
+    const mixinDetails = this.controllerFor('mixinDetails');
+    if (mixinDetails.get('model.objectId') === options.objectId) {
+      mixinDetails.set('model.errors', options.errors);
+    }
   },
 
   droppedObject: function(message) {

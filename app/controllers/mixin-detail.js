@@ -5,7 +5,7 @@ export default Ember.ObjectController.extend({
   needs: ['mixin-details'],
 
   mixinDetails: oneWay('controllers.mixin-details').readOnly(),
-  objectId: oneWay('mixinDetails.objectId').readOnly(),
+  objectId: oneWay('mixinDetails.model.objectId').readOnly(),
 
   isExpanded: function() {
     return this.get('model.expand') && this.get('model.properties.length') > 0;
@@ -14,7 +14,7 @@ export default Ember.ObjectController.extend({
   actions: {
     calculate: function(property) {
       var objectId = this.get('objectId');
-      var mixinIndex = this.get('mixinDetails.mixins').indexOf(this.get('model'));
+      var mixinIndex = this.get('mixinDetails.model.mixins').indexOf(this.get('model'));
 
       this.get('port').send('objectInspector:calculate', {
         objectId: objectId,
@@ -46,7 +46,7 @@ export default Ember.ObjectController.extend({
     },
 
     saveProperty: function(prop, val, type) {
-      var mixinIndex = this.get('mixinDetails.mixins').indexOf(this.get('model'));
+      var mixinIndex = this.get('mixinDetails.model.mixins').indexOf(this.get('model'));
 
       this.get('port').send('objectInspector:saveProperty', {
         objectId: this.get('objectId'),
