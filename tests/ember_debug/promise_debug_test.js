@@ -15,6 +15,12 @@ function setupApp() {
   App.setupForTesting();
 }
 
+// RSVP instrumentation is out of band (50 ms delay)
+async function rsvpDelay() {
+  Ember.run.later(function() {}, 100);
+  await wait();
+}
+
 module("Promise Debug", {
   beforeEach() {
 
@@ -59,10 +65,7 @@ test("Existing promises sent when requested", async function t(assert) {
     RSVP.reject('reason', "Promise2").catch(K);
   });
 
-  // RSVP instrumentation is out of band (50 ms delay)
-  Ember.run.later(function() {}, 100);
-
-  await wait();
+  await rsvpDelay();
 
   port.trigger('promise:getAndObservePromises');
 
@@ -163,4 +166,11 @@ test("Instrumentation with stack is persisted to session storage", function(asse
     assert.equal(withStack, false, 'persisted');
   });
 
+});
+
+test("Responds even if no promises detected", async function t(assert) {
+  port.trigger('promise:getAndObservePromises');
+
+  assert.equal(name, 'promise:promisesUpdated');
+  assert.equal(message.promises.length, 0);
 });
