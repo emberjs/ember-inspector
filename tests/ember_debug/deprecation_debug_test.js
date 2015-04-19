@@ -79,3 +79,21 @@ test("deprecations are caught and sent", async function t(assert) {
   assert.equal(count, 3, 'count correctly sent');
 
 });
+
+test('Warns once about deprecations', async function t(assert) {
+  assert.expect(2);
+  let count = 0;
+  port.get('adapter').reopen({
+    debug(message) {
+      assert.equal(message, 'Deprecations were detected, see the Ember Inspector deprecations tab for more details.');
+      assert.equal(++count, 1, 'Warns once');
+    }
+  });
+  App.ApplicationRoute = Ember.Route.extend({
+    setupController() {
+      Ember.deprecate('Deprecation 1');
+      Ember.deprecate('Deprecation 2');
+    }
+  });
+  await visit('/');
+});

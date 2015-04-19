@@ -210,8 +210,9 @@ export default EmberObject.extend(PortMixin, {
 
       self.get('deprecationsToSend').pushObject(deprecation);
       self.debounce = run.debounce(self, 'sendPending', 100);
-      if (originalDeprecate) {
-        return originalDeprecate.apply(null, arguments);
+      if (!self._warned) {
+        self.get("adapter").debug("Deprecations were detected, see the Ember Inspector deprecations tab for more details.");
+        self._warned = true;
       }
     };
   }
