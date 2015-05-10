@@ -5,7 +5,7 @@ import { module } from 'qunit';
 import startApp from '../helpers/start-app';
 let App;
 
-let port, message, name;
+let port;
 
 module('Render Tree Tab', {
   beforeEach() {
@@ -14,16 +14,11 @@ module('Render Tree Tab', {
     });
     port = App.__container__.lookup('port:main');
     port.reopen({
-      send: function(n, m) {
-        name = n;
-        message = m;
-      }
+      send: function(/*n, m*/) {}
     });
   },
   afterEach() {
     Ember.run(App, App.destroy);
-    name = null;
-    message = null;
   }
 });
 
@@ -52,7 +47,7 @@ function generateProfiles() {
 
 test("No profiles collected", async function t(assert) {
   port.reopen({
-    send(n, m) {
+    send(n/*, m*/) {
       if (n === 'render:watchProfiles') {
         this.trigger('render:profilesAdded', {
           profiles: []
@@ -69,7 +64,7 @@ test("No profiles collected", async function t(assert) {
 
 test("Renders the list correctly", async function t(assert) {
   port.reopen({
-    send(n, m) {
+    send(n/*, m*/) {
       if (n === 'render:watchProfiles') {
         this.trigger('render:profilesAdded', {
           profiles: generateProfiles()
@@ -110,7 +105,7 @@ test("Renders the list correctly", async function t(assert) {
 
 test("Searching the profiles", async function t(assert) {
   port.reopen({
-    send(n, m) {
+    send(n/*, m*/) {
       if (n === 'render:watchProfiles') {
         this.trigger('render:profilesAdded', {
           profiles: generateProfiles()

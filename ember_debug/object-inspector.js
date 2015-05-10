@@ -464,7 +464,7 @@ function addProperties(properties, hash) {
 }
 
 function replaceProperty(properties, name, value, options) {
-  var found, type;
+  var found;
 
   for (var i = 0, l = properties.length; i < l; i++) {
     if (properties[i].name === name) {
@@ -475,9 +475,6 @@ function replaceProperty(properties, name, value, options) {
 
   if (found) { properties.splice(i, 1); }
 
-  if (name) {
-    type = name.PrototypeMixin ? 'ember-class' : 'ember-mixin';
-  }
   var prop = { name: name, value: inspectValue(value) };
   prop.isMandatorySetter = options.isMandatorySetter;
   prop.readOnly = options.readOnly;

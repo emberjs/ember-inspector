@@ -3,7 +3,7 @@ import { module, test } from 'qunit';
 /*globals require */
 var EmberDebug = require("ember-debug/main")["default"];
 
-var port, name, message;
+var port;
 /* jshint ignore:start */
 var EmberDebug;
 var run = Ember.run;
@@ -19,10 +19,7 @@ module("Deprecation Debug", {
   beforeEach() {
     EmberDebug.Port = EmberDebug.Port.extend({
       init: function() {},
-      send: function(n, m) {
-        name = n;
-        message = m;
-      }
+      send: function(/*n, m*/) {}
     });
     run(function() {
       setupApp();
@@ -36,8 +33,6 @@ module("Deprecation Debug", {
     });
   },
   afterEach() {
-    name = null;
-    message = null;
     EmberDebug.destroyContainer();
     Ember.run(App, 'destroy');
   }

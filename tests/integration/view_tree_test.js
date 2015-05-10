@@ -25,7 +25,6 @@ function viewNodeFactory(props) {
   if (!props.template) {
     props.template = props.name;
   }
-  var value = props;
   var obj = {
     value: props,
     children: [],
@@ -123,7 +122,6 @@ test("It should correctly display the view tree", function(assert) {
 
     var $treeNodes = findByLabel('tree-node');
     assert.equal($treeNodes.length, 3, 'expected some tree nodes');
-    var $treeView = $treeNodes.filter(':first');
     var controllerNames = [],
         templateNames = [],
         modelNames = [],
@@ -243,11 +241,12 @@ test("Previewing / showing a view on the client", function(assert) {
   })
   .mouseEnterByLabel('tree-node')
   .then(function() {
-    assert.deepEqual(messageSent, { name: 'view:previewLayer', message: { objectId: 'applicationView' } }, "Client asked to preview layer");
+    assert.equal(messageSent.name, 'view:previewLayer', "Client asked to preview layer");
+    assert.equal(messageSent.message.objectId, 'applicationView', "Client sent correct id to preview layer");
   })
   .mouseLeaveByLabel('tree-node')
   .then(function() {
-    assert.deepEqual(messageSent, { name: 'view:hidePreview', message: { objectId: 'applicationView' } }, "Client asked to hide preview");
+    assert.equal(messageSent.name, 'view:hidePreview', "Client asked to hide preview");
   });
 });
 

@@ -16,7 +16,7 @@ var OLD_TEMPLATES = {};
 
 function setTemplate(name, template) {
   OLD_TEMPLATES = Ember.TEMPLATES[name];
-  Ember.TEMPLATES[name] = compile(template);
+  Ember.TEMPLATES[name] = compile(template, { moduleName: name });
 }
 
 function destroyTemplates() {
@@ -135,10 +135,9 @@ test("Simple View Tree", async function t(assert) {
 
 
 test("Views created by context switching {{each}} helper are shown", async function t(assert) {
-  let name = null, message = null;
+  let message = null;
   port.reopen({
     send(n, m) {
-      name = n;
       message = m;
     }
   });
@@ -173,7 +172,6 @@ test("Highlight a view", async function t(assert) {
     objectId: tree.children[0].value.objectId
   });
   await wait();
-
   layerDiv = findByLabel('layer-div');
   assert.ok(layerDiv.is(':visible'));
   assert.equal(findByLabel('layer-template', layerDiv).text(), 'simple');
@@ -200,10 +198,9 @@ test("Highlight a view", async function t(assert) {
 });
 
 test("Components in view tree", async function t(assert) {
-  let name, message;
+  let message;
   port.reopen({
     send(n, m) {
-      name = n;
       message = m;
     }
   });
@@ -228,17 +225,12 @@ test("Components in view tree", async function t(assert) {
 });
 
 test("Highlighting Views on hover", async function t(assert) {
-  let name, message, layerDiv;
   port.reopen({
-    send(n, m) {
-      name = n;
-      message = m;
-    }
+    send(/*n, m*/) {}
   });
 
   await visit('/simple');
 
-  let tree = message.tree;
   run(() => port.trigger('view:inspectViews', { inspect: true }));
   await wait();
 
@@ -288,10 +280,9 @@ test("Highlighting Views on hover", async function t(assert) {
 });
 
 test("Highlighting a view without an element should not throw an error", async function t(assert) {
-  let name = null, message = null;
+  let message = null;
   port.reopen({
     send(n, m) {
-      name = n;
       message = m;
     }
   });
@@ -307,10 +298,9 @@ test("Highlighting a view without an element should not throw an error", async f
 });
 
 test("Supports a view with a string as model", async function t(assert) {
-  let name = null, message = null;
+  let message = null;
   port.reopen({
     send(n, m) {
-      name = n;
       message = m;
     }
   });
@@ -322,7 +312,7 @@ test("Supports a view with a string as model", async function t(assert) {
 });
 
 test("Supports applications that don't have the ember-application CSS class", async function t(assert) {
-  let name = null, message = null,
+  let name = null,
       $rootElement = $('body');
 
   await visit('/simple');
@@ -335,9 +325,8 @@ test("Supports applications that don't have the ember-application CSS class", as
   port = EmberDebug.port;
 
   port.reopen({
-    send(n, m) {
+    send(n/*, m*/) {
       name = n;
-      message = m;
     }
   });
 

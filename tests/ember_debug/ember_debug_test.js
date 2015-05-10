@@ -4,7 +4,7 @@ import Ember from "ember";
 import { module, test } from 'qunit';
 
 var EmberDebug;
-var port, name, message;
+var name;
 /* jshint ignore:start */
 var run = Ember.run;
 var App;
@@ -20,9 +20,8 @@ module("Ember Debug", {
     EmberDebug = require('ember-debug/main')["default"];
     EmberDebug.Port = EmberDebug.Port.extend({
       init: function() {},
-      send: function(n, m) {
+      send: function(n/*, m*/) {
         name = n;
-        message = m;
       }
     });
     run(function() {
@@ -32,11 +31,9 @@ module("Ember Debug", {
     run(EmberDebug, 'start');
     EmberDebug.start();
     EmberInspector = EmberDebug;
-    port = EmberDebug.port;
   },
   afterEach() {
     name = null;
-    message = null;
     EmberDebug.destroyContainer();
     run(App, 'destroy');
   }

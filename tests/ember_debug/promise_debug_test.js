@@ -58,7 +58,7 @@ test("Existing promises sent when requested", async function t(assert) {
   let promise1, child1, promise2;
 
   run(function() {
-    let p = RSVP.resolve('value', "Promise1")
+    RSVP.resolve('value', "Promise1")
     .then(function() {}, null, "Child1");
 
     // catch so we don't get a promise failure
@@ -124,10 +124,9 @@ test("Updates are published when they happen", function(assert) {
 
 test("Instrumentation with stack is persisted to session storage", function(assert) {
   var withStack = false;
-  var persisted = false;
   EmberDebug.get('promiseDebug').reopen({
     session: {
-      getItem: function(key) {
+      getItem: function(/*key*/) {
         return withStack;
       },
       setItem: function(key, val) {

@@ -6,7 +6,7 @@ import startApp from '../helpers/start-app';
 const { run } = Ember;
 let App;
 
-let port, message, name;
+let port, name;
 
 module('Data Tab', {
   beforeEach() {
@@ -18,7 +18,6 @@ module('Data Tab', {
       init() {},
       send(n, m) {
         name = n;
-        message = m;
         if (name === 'data:getModelTypes') {
           this.trigger('data:modelTypesAdded', { modelTypes: modelTypes() });
         }
@@ -33,8 +32,7 @@ module('Data Tab', {
   },
   afterEach() {
     name = null;
-    message = null;
-    Ember.run(App, App.destroy);
+    run(App, App.destroy);
   }
 });
 
