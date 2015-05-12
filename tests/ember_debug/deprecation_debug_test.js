@@ -1,12 +1,12 @@
 import Ember from "ember";
 import { module, test } from 'qunit';
+const { RSVP, run } = Ember;
 /*globals require */
 var EmberDebug = require("ember-debug/main")["default"];
 
 var port;
 /* jshint ignore:start */
 var EmberDebug;
-var run = Ember.run;
 var App;
 
 function setupApp() {
@@ -28,7 +28,7 @@ module("Deprecation Debug", {
     run(EmberDebug, 'start');
     port = EmberDebug.port;
     EmberDebug.deprecationDebug.reopen({
-      fetchSourceMap: function() {},
+      fetchSourceMap: function() { return RSVP.resolve(null); },
       emberCliConfig: null
     });
   },
@@ -57,8 +57,9 @@ test("deprecations are caught and sent", async function t(assert) {
     }
   });
 
+  run(port, 'trigger', 'deprecation:watch');
   await visit('/');
-  var deprecations = messages.findBy('name', 'deprecation:deprecationsAdded').message.deprecations;
+  var deprecations = messages.filterBy('name', 'deprecation:deprecationsAdded').get('lastObject').message.deprecations;
   assert.equal(deprecations.length, 2);
   var deprecation = deprecations[0];
   assert.equal(deprecation.count, 2, 'Correctly combined');
@@ -70,7 +71,7 @@ test("deprecations are caught and sent", async function t(assert) {
   assert.equal(deprecation.sources.length, 1);
   assert.equal(deprecation.url, 'http://www.emberjs.com');
 
-  var count = messages.findBy('name', 'deprecation:count').message.count;
+  var count = messages.filterBy('name', 'deprecation:count').get('lastObject').message.count;
   assert.equal(count, 3, 'count correctly sent');
 
 });
@@ -78,8 +79,9 @@ test("deprecations are caught and sent", async function t(assert) {
 test('Warns once about deprecations', async function t(assert) {
   assert.expect(2);
   let count = 0;
+  run(port, 'trigger', 'deprecation:watch');
   port.get('adapter').reopen({
-    debug(message) {
+    warn(message) {
       assert.equal(message, 'Deprecations were detected, see the Ember Inspector deprecations tab for more details.');
       assert.equal(++count, 1, 'Warns once');
     }
