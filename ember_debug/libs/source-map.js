@@ -14,7 +14,7 @@ var notFoundError = new Error('Source map url not found');
 export default EmberObject.extend({
 
   _lastPromise: computed(function() {
-    return resolve();
+    return resolve(undefined, 'ember-inspector');
   }),
 
   /**
@@ -32,7 +32,7 @@ export default EmberObject.extend({
     parsed.forEach(function(item) {
       lastPromise = self.get('_lastPromise').then(function() {
         return self.getSourceMap(item.url);
-      }).then(function(smc) {
+      }, null, 'ember-inspector').then(function(smc) {
         if (smc) {
           var source = smc.originalPositionFor({
             line: item.line,
@@ -42,15 +42,15 @@ export default EmberObject.extend({
           array.push(source);
           return array;
         }
-      });
+      }, null, 'ember-inspector');
       self.set('_lastPromise', lastPromise);
     });
-    return resolve(lastPromise).catch(function(e) {
+    return resolve(lastPromise, 'ember-inspector').catch(function(e) {
       if (e === notFoundError) {
         return null;
       }
       throw e;
-    });
+    }, 'ember-inspector');
   },
 
   sourceMapCache: computed(function() {
@@ -59,7 +59,7 @@ export default EmberObject.extend({
 
   getSourceMap: function(url) {
     var sourceMaps = this.get('sourceMapCache');
-    if (sourceMaps[url] !== undefined) { return resolve(sourceMaps[url]); }
+    if (sourceMaps[url] !== undefined) { return resolve(sourceMaps[url], 'ember-inspector'); }
     return retrieveSourceMap(url).then(function(response) {
       if (response) {
         var map = JSON.parse(response.map);
@@ -109,11 +109,11 @@ function retrieveFile(source) {
   return new RSVP.Promise(function(resolve) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function() {
-      resolve(this.responseText);
+      resolve(this.responseText, 'ember-inspector');
     };
     xhr.open('GET', source, true);
     xhr.send();
-  });
+  }, 'ember-inspector');
 }
 
 function retrieveSourceMapURL(source) {
