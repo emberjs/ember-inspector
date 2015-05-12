@@ -1,30 +1,24 @@
 import Ember from "ember";
 import checkCurrentRoute from "ember-inspector/utils/check-current-route";
 
-var filter = Ember.computed.filter;
+const { Controller, computed } = Ember;
+const { filter } = computed;
 
-export default Ember.ArrayController.extend({
+export default Controller.extend({
   needs: ['application'],
-  itemController: 'routeItem',
   currentRoute: null,
   options: {
     hideRoutes: false
   },
 
-  arrangedContent: filter('content', function(routeItem) {
-    var currentRoute = this.get('currentRoute'),
+  filtered: filter('content', function(routeItem) {
+    let currentRoute = this.get('currentRoute'),
         hideRoutes = this.get('options.hideRoutes');
 
-    if( hideRoutes && currentRoute ) {
+    if (hideRoutes && currentRoute) {
       return checkCurrentRoute( currentRoute, routeItem.value.name );
     } else {
       return true;
     }
-  }).property('content', 'options.hideRoutes'),
-
-  currentRouteChanged: function() {
-    if (this.get('options.hideRoutes')) {
-      this.propertyDidChange('content');
-    }
-  }.observes('currentRoute')
+  }).property('content', 'options.hideRoutes', 'currentRoute')
 });

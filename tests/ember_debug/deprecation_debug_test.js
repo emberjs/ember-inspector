@@ -1,26 +1,25 @@
 import Ember from "ember";
+import { module, test } from 'qunit';
+const { RSVP, run } = Ember;
 /*globals require */
 var EmberDebug = require("ember-debug/main")["default"];
 
-var port, name, message;
+var port;
+/* jshint ignore:start */
 var EmberDebug;
-var run = Ember.run;
 var App;
 
-function setupApp(){
+function setupApp() {
   App = Ember.Application.create();
   App.injectTestHelpers();
   App.setupForTesting();
 }
 
 module("Deprecation Debug", {
-  setup: function() {
+  beforeEach() {
     EmberDebug.Port = EmberDebug.Port.extend({
       init: function() {},
-      send: function(n, m) {
-        name = n;
-        message = m;
-      }
+      send: function(/*n, m*/) {}
     });
     run(function() {
       setupApp();
@@ -29,19 +28,17 @@ module("Deprecation Debug", {
     run(EmberDebug, 'start');
     port = EmberDebug.port;
     EmberDebug.deprecationDebug.reopen({
-      fetchSourceMap: function() {},
+      fetchSourceMap: function() { return RSVP.resolve(null); },
       emberCliConfig: null
     });
   },
-  teardown: function() {
-    name = null;
-    message = null;
+  afterEach() {
     EmberDebug.destroyContainer();
     Ember.run(App, 'destroy');
   }
 });
 
-test("deprecations are caught and sent", function() {
+test("deprecations are caught and sent", async function t(assert) {
   var messages = [];
   port.reopen({
     send: function(name, message) {
@@ -55,28 +52,45 @@ test("deprecations are caught and sent", function() {
   App.ApplicationRoute = Ember.Route.extend({
     setupController: function() {
       Ember.deprecate('Deprecation 1');
-      Ember.deprecate('Deprecation 2', false, { url: 'http://www.emberjs.com' }) ;
+      Ember.deprecate('Deprecation 2', false, { url: 'http://www.emberjs.com' });
       Ember.deprecate('Deprecation 1');
     }
   });
 
-  visit('/');
-  andThen(function() {
-    var deprecations = messages.findBy('name', 'deprecation:deprecationsAdded').message.deprecations;
-    equal(deprecations.length, 2);
-    var deprecation = deprecations[0];
-    equal(deprecation.count, 2, 'Correctly combined');
-    equal(deprecation.message, 'Deprecation 1');
-    equal(deprecation.sources.length, 2, 'Correctly separated by source');
-    deprecation = deprecations[1];
-    equal(deprecation.count, 1);
-    equal(deprecation.message, 'Deprecation 2');
-    equal(deprecation.sources.length, 1);
-    equal(deprecation.url, 'http://www.emberjs.com');
+  run(port, 'trigger', 'deprecation:watch');
+  await visit('/');
+  var deprecations = messages.filterBy('name', 'deprecation:deprecationsAdded').get('lastObject').message.deprecations;
+  assert.equal(deprecations.length, 2);
+  var deprecation = deprecations[0];
+  assert.equal(deprecation.count, 2, 'Correctly combined');
+  assert.equal(deprecation.message, 'Deprecation 1');
+  assert.equal(deprecation.sources.length, 2, 'Correctly separated by source');
+  deprecation = deprecations[1];
+  assert.equal(deprecation.count, 1);
+  assert.equal(deprecation.message, 'Deprecation 2');
+  assert.equal(deprecation.sources.length, 1);
+  assert.equal(deprecation.url, 'http://www.emberjs.com');
 
-    var count = messages.findBy('name', 'deprecation:count').message.count;
-    equal(count, 3, 'count correctly sent');
-  });
+  var count = messages.filterBy('name', 'deprecation:count').get('lastObject').message.count;
+  assert.equal(count, 3, 'count correctly sent');
 
 });
 
+test('Warns once about deprecations', async function t(assert) {
+  assert.expect(2);
+  let count = 0;
+  run(port, 'trigger', 'deprecation:watch');
+  port.get('adapter').reopen({
+    warn(message) {
+      assert.equal(message, 'Deprecations were detected, see the Ember Inspector deprecations tab for more details.');
+      assert.equal(++count, 1, 'Warns once');
+    }
+  });
+  App.ApplicationRoute = Ember.Route.extend({
+    setupController() {
+      Ember.deprecate('Deprecation 1');
+      Ember.deprecate('Deprecation 2');
+    }
+  });
+  await visit('/');
+});

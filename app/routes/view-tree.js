@@ -3,7 +3,12 @@ import TabRoute from "ember-inspector/routes/tab";
 var $ = Ember.$;
 
 export default TabRoute.extend({
+  model() {
+    return [];
+  },
+
   setupController: function() {
+    this._super(...arguments);
     this.get('port').on('view:viewTree', this, this.setViewTree);
     this.get('port').on('view:stopInspecting', this, this.stopInspecting);
     this.get('port').on('view:startInspecting', this, this.startInspecting);

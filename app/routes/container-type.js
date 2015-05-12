@@ -14,8 +14,8 @@ export default TabRoute.extend({
   model: function(params) {
     var type = params.type_id;
     var port = this.get('port');
-    return new Promise(function(resolve, reject) {
-      port.one('container:instances', function(message) {
+    return new Promise((resolve, reject) => {
+      port.one('container:instances', message => {
         if (message.status === 200) {
           resolve(message.instances);
         } else {
@@ -28,7 +28,7 @@ export default TabRoute.extend({
 
 
   actions: {
-    error: function(err) {
+    error(err) {
       if (err && err.status === 404) {
         this.transitionTo('container-types.index');
       }

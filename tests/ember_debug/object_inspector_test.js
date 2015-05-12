@@ -1,14 +1,16 @@
+/* jshint ignore:start */
 import Ember from "ember";
+import { module, test } from 'qunit';
 
 var EmberDebug;
 var port, name, message;
-var run = Ember.run;
 var App;
 var objectInspector;
-var computed = Ember.computed;
-var compile = Ember.Handlebars.compile;
 
-function setupApp(){
+const { run, guidFor, Object: EmberObject, computed } = Ember;
+const { Handlebars: { compile } } = Ember;
+
+function setupApp() {
   App = Ember.Application.create();
   App.setupForTesting();
   App.injectTestHelpers();
@@ -17,21 +19,28 @@ function setupApp(){
     this.route('simple');
   });
 
-  Ember.TEMPLATES.simple = compile('Simple {{input class="simple-input"}} {{view Ember.View classNames="simple-view"}}');
+  App.SimpleView = Ember.View;
+
+  Ember.TEMPLATES.simple = compile('Simple {{input class="simple-input"}} {{view "simple" classNames="simple-view"}}');
 }
 
+let ignoreErrors = true;
+
 module("Ember Debug - Object Inspector", {
-  setup: function() {
+  beforeEach() {
     /* globals require */
     EmberDebug = require('ember-debug/main')["default"];
     EmberDebug.Port = EmberDebug.Port.extend({
-      init: function() {},
-      send: function(n, m) {
+      init() {},
+      send(n, m) {
+        if (ignoreErrors && n.match(/[Ee]rror/)) {
+          return;
+        }
         name = n;
         message = m;
       }
     });
-    run(function() {
+    run(() => {
       setupApp();
       EmberDebug.set('application', App);
     });
@@ -39,7 +48,7 @@ module("Ember Debug - Object Inspector", {
     objectInspector = EmberDebug.get('objectInspector');
     port = EmberDebug.port;
   },
-  teardown: function() {
+  afterEach() {
     name = null;
     message = null;
     EmberDebug.destroyContainer();
@@ -47,7 +56,7 @@ module("Ember Debug - Object Inspector", {
   }
 });
 
-test("An Ember Object is correctly transformed into an inspection hash", function() {
+test("An Ember Object is correctly transformed into an inspection hash", function(assert) {
   var date = new Date();
 
   var Parent = Ember.Object.extend({
@@ -72,44 +81,44 @@ test("An Ember Object is correctly transformed into an inspection hash", functio
 
   objectInspector.sendObject(inspected);
 
-  equal(name, 'objectInspector:updateObject');
+  assert.equal(name, 'objectInspector:updateObject');
 
-  equal(message.name, 'Object:My Object');
+  assert.equal(message.name, 'Object:My Object');
 
   var firstDetail = message.details[0];
-  equal(firstDetail.name, 'Own Properties');
+  assert.equal(firstDetail.name, 'Own Properties');
 
-  equal(firstDetail.properties.length, 3, 'methods are not included');
+  assert.equal(firstDetail.properties.length, 3, 'methods are not included');
 
   var idProperty = firstDetail.properties[0];
-  equal(idProperty.name, 'id');
-  equal(idProperty.value.type, 'type-number');
-  equal(idProperty.value.inspect, '1');
+  assert.equal(idProperty.name, 'id');
+  assert.equal(idProperty.value.type, 'type-number');
+  assert.equal(idProperty.value.inspect, '1');
 
   var nullProperty = firstDetail.properties[1];
-  equal(nullProperty.name, 'nullVal');
-  equal(nullProperty.value.type, 'type-null');
-  equal(nullProperty.value.inspect, 'null');
+  assert.equal(nullProperty.name, 'nullVal');
+  assert.equal(nullProperty.value.type, 'type-null');
+  assert.equal(nullProperty.value.inspect, 'null');
 
   var prop = firstDetail.properties[2];
-  equal(prop.name, 'dateVal');
-  equal(prop.value.type, 'type-date');
-  equal(prop.value.inspect, date.toString());
+  assert.equal(prop.name, 'dateVal');
+  assert.equal(prop.value.type, 'type-date');
+  assert.equal(prop.value.inspect, date.toString());
 
   var secondDetail = message.details[1];
-  equal(secondDetail.name, 'Parent Object');
+  assert.equal(secondDetail.name, 'Parent Object');
 
   idProperty = secondDetail.properties[0];
-  equal(idProperty.name, 'id');
-  equal(idProperty.overridden, 'Own Properties');
+  assert.equal(idProperty.name, 'id');
+  assert.equal(idProperty.overridden, 'Own Properties');
 
   var nameProperty = secondDetail.properties[1];
-  equal(nameProperty.name, 'name');
-  equal(nameProperty.value.inspect, 'My Object');
+  assert.equal(nameProperty.name, 'name');
+  assert.equal(nameProperty.value.inspect, 'My Object');
 
 });
 
-test("Computed properties are correctly calculated", function() {
+test("Computed properties are correctly calculated", function(assert) {
   var inspected = Ember.Object.extend({
     hi: computed(function() {
       return 'Hello';
@@ -127,10 +136,10 @@ test("Computed properties are correctly calculated", function() {
 
   var computedProperty = message.details[1].properties[0];
 
-  equal(computedProperty.name, 'hi');
-  ok(computedProperty.value.computed);
-  equal(computedProperty.value.type, 'type-descriptor');
-  equal(computedProperty.value.inspect, '<computed>');
+  assert.equal(computedProperty.name, 'hi');
+  assert.ok(computedProperty.value.computed);
+  assert.equal(computedProperty.value.type, 'type-descriptor');
+  assert.equal(computedProperty.value.inspect, '<computed>');
 
   var id = message.objectId;
 
@@ -140,16 +149,17 @@ test("Computed properties are correctly calculated", function() {
     mixinIndex: 1
   });
 
-  equal(message.objectId, id);
-  equal(message.property, 'hi');
-  equal(message.mixinIndex, 1);
-  equal(message.value.type, 'type-string');
-  equal(message.value.inspect, 'Hello');
-  ok(message.value.computed);
+  assert.equal(name, 'objectInspector:updateProperty');
+  assert.equal(message.objectId, id);
+  assert.equal(message.property, 'hi');
+  assert.equal(message.mixinIndex, 1);
+  assert.equal(message.value.type, 'type-string');
+  assert.equal(message.value.inspect, 'Hello');
+  assert.ok(message.value.computed);
 
 });
 
-test("Cached Computed properties are pre-calculated", function() {
+test("Cached Computed properties are pre-calculated", function(assert) {
   var inspected = Ember.Object.extend({
     hi: computed(function() {
       return 'Hello';
@@ -163,14 +173,14 @@ test("Cached Computed properties are pre-calculated", function() {
 
   var computedProperty = message.details[1].properties[0];
 
-  equal(computedProperty.name, 'hi');
-  ok(computedProperty.value.computed);
-  equal(computedProperty.value.type, 'type-string');
-  equal(computedProperty.value.inspect, 'Hello');
+  assert.equal(computedProperty.name, 'hi');
+  assert.ok(computedProperty.value.computed);
+  assert.equal(computedProperty.value.type, 'type-string');
+  assert.equal(computedProperty.value.inspect, 'Hello');
 
 });
 
-test("Properties are correctly bound", function() {
+test("Properties are correctly bound", function(assert) {
   var inspected = Ember.Object.extend({
     name: 'Teddy',
 
@@ -197,14 +207,14 @@ test("Properties are correctly bound", function() {
 
   inspected.set('name', 'Alex');
 
-  equal(name, 'objectInspector:updateProperty');
+  assert.equal(name, 'objectInspector:updateProperty');
 
-  equal(message.objectId, id);
-  equal(message.property, 'name');
-  equal(message.mixinIndex, 1);
-  equal(message.value.computed, false);
-  equal(message.value.inspect, 'Alex');
-  equal(message.value.type, 'type-string');
+  assert.equal(message.objectId, id);
+  assert.equal(message.property, 'name');
+  assert.equal(message.mixinIndex, 1);
+  assert.equal(message.value.computed, false);
+  assert.equal(message.value.inspect, 'Alex');
+  assert.equal(message.value.type, 'type-string');
 
   // un-cached computed properties are not bound until calculated
 
@@ -212,7 +222,7 @@ test("Properties are correctly bound", function() {
 
   inspected.set('hi', 'Hey');
 
-  equal(message, null, 'Computed properties are not bound as long as they haven\'t been calculated');
+  assert.equal(message, null, 'Computed properties are not bound as long as they haven\'t been calculated');
 
   port.trigger('objectInspector:calculate', {
     objectId: id,
@@ -223,16 +233,16 @@ test("Properties are correctly bound", function() {
   message = null;
   inspected.set('hi', 'Hello!');
 
-  equal(message.objectId, id);
-  equal(message.property, 'hi');
-  equal(message.mixinIndex, 1);
-  ok(message.value.computed);
-  equal(message.value.inspect, 'Hello!');
-  equal(message.value.type, 'type-string');
+  assert.equal(message.objectId, id);
+  assert.equal(message.property, 'hi');
+  assert.equal(message.mixinIndex, 1);
+  assert.ok(message.value.computed);
+  assert.equal(message.value.inspect, 'Hello!');
+  assert.equal(message.value.type, 'type-string');
 
 });
 
-test("Properties can be updated through a port message", function() {
+test("Properties can be updated through a port message", function(assert) {
   var inspected = Ember.Object.extend({
     name: 'Teddy'
   }).create();
@@ -248,16 +258,16 @@ test("Properties can be updated through a port message", function() {
     value: 'Alex'
   });
 
-  equal(inspected.get('name'), 'Alex');
+  assert.equal(inspected.get('name'), 'Alex');
 
   // A property updated message is published
-  equal(name, 'objectInspector:updateProperty');
-  equal(message.property, 'name');
-  equal(message.value.inspect, 'Alex');
-  equal(message.value.type, 'type-string');
+  assert.equal(name, 'objectInspector:updateProperty');
+  assert.equal(message.property, 'name');
+  assert.equal(message.value.inspect, 'Alex');
+  assert.equal(message.value.type, 'type-string');
 });
 
-test("Date properties are converted to dates before being updated", function() {
+test("Date properties are converted to dates before being updated", function(assert) {
   var newDate = new Date('2015-01-01');
 
   var inspected = Ember.Object.extend({
@@ -276,12 +286,12 @@ test("Date properties are converted to dates before being updated", function() {
     dataType: 'date'
   });
 
-  equal(inspected.get('date').getFullYear(), 2015);
-  equal(inspected.get('date').getMonth(), 0);
-  equal(inspected.get('date').getDate(), 1);
+  assert.equal(inspected.get('date').getFullYear(), 2015);
+  assert.equal(inspected.get('date').getMonth(), 0);
+  assert.equal(inspected.get('date').getDate(), 1);
 });
 
-test("Property grouping can be customized using _debugInfo", function() {
+test("Property grouping can be customized using _debugInfo", function(assert) {
   var mixinToSkip = Ember.Mixin.create({});
   mixinToSkip[Ember.NAME_KEY] = 'MixinToSkip';
 
@@ -324,27 +334,27 @@ test("Property grouping can be customized using _debugInfo", function() {
 
   objectInspector.sendObject(inspected);
 
-  equal(message.details[0].name, 'Basic Info');
-  equal(message.details[0].properties[0].name, 'name');
-  equal(message.details[0].properties[1].name, 'gender');
-  ok(message.details[0].expand);
+  assert.equal(message.details[0].name, 'Basic Info');
+  assert.equal(message.details[0].properties[0].name, 'name');
+  assert.equal(message.details[0].properties[1].name, 'gender');
+  assert.ok(message.details[0].expand);
 
-  equal(message.details[1].name, 'Family Info');
-  equal(message.details[1].properties[0].name, 'maritalStatus');
+  assert.equal(message.details[1].name, 'Family Info');
+  assert.equal(message.details[1].properties[0].name, 'maritalStatus');
 
-  equal(message.details[2].name, 'Own Properties');
-  equal(message.details[2].properties.length, 0, "Correctly skips properties");
+  assert.equal(message.details[2].name, 'Own Properties');
+  assert.equal(message.details[2].properties.length, 0, "Correctly skips properties");
 
-  equal(message.details[3].name, 'TestObject');
-  equal(message.details[3].properties.length, 2, "Does not duplicate properties");
-  equal(message.details[3].properties[0].name, 'hasChildren');
-  equal(message.details[3].properties[1].value.type, 'type-descriptor', "Does not calculate expensive properties");
+  assert.equal(message.details[3].name, 'TestObject');
+  assert.equal(message.details[3].properties.length, 2, "Does not duplicate properties");
+  assert.equal(message.details[3].properties[0].name, 'hasChildren');
+  assert.equal(message.details[3].properties[1].value.type, 'type-descriptor', "Does not calculate expensive properties");
 
-  ok(message.details[4].name !== 'MixinToSkip', "Correctly skips properties");
+  assert.ok(message.details[4].name !== 'MixinToSkip', "Correctly skips properties");
 
 });
 
-test("Read Only Computed properties mush have a readOnly property", function() {
+test("Read Only Computed properties mush have a readOnly property", function(assert) {
   var inspected = Ember.Object.extend({
     readCP: computed(function() {}).property().readOnly(),
     writeCP: computed(function() {}).property()
@@ -354,86 +364,73 @@ test("Read Only Computed properties mush have a readOnly property", function() {
 
   var properties = message.details[1].properties;
 
-  ok(properties[0].readOnly);
-  ok(!properties[1].readOnly);
+  assert.ok(properties[0].readOnly);
+  assert.ok(!properties[1].readOnly);
 });
 
-test("Views are correctly handled when destroyed during transitions", function() {
-  var objectId = null;
+test("Views are correctly handled when destroyed during transitions", async function t(assert) {
+  let objectId = null;
 
-  visit('/simple');
+  await visit('/simple');
 
-  andThen(function() {
-    objectId = find('.simple-view').get(0).id;
-    var view = Ember.View.views[objectId];
-    objectInspector.sendObject(view);
-    return wait();
-  });
+  objectId = find('.simple-view').get(0).id;
+  let view = Ember.View.views[objectId];
+  objectInspector.sendObject(view);
+  await wait();
 
-  andThen(function() {
-    ok(!!objectInspector.sentObjects[objectId], "Object successfully retained.");
-  });
+  assert.ok(!!objectInspector.sentObjects[objectId], "Object successfully retained.");
 
-  visit('/');
+  await visit('/');
 
-  andThen (function() {
-    ok(true, "No exceptions thrown");
-  });
+  assert.ok(true, "No exceptions thrown");
 });
 
-test("Objects are dropped on destruction", function() {
-  var didDestroy = false;
-  var object = Ember.Object.create({
+test("Objects are dropped on destruction", async function t(assert) {
+  let didDestroy = false;
+  let object = Ember.Object.create({
     willDestroy: function() {
       didDestroy = true;
     }
   });
-  var objectId = Ember.guidFor(object);
+  let objectId = guidFor(object);
 
-  wait()
-  .then(function() {
-    objectInspector.sendObject(object);
-    return wait();
-  })
-  .then(function() {
-    ok(!!objectInspector.sentObjects[objectId]);
-    object.destroy();
-    return wait();
-  })
-  .then(function() {
-    ok(didDestroy, 'Original willDestroy is preserved.');
-    ok(!objectInspector.sentObjects[objectId], 'Object is dropped');
-    equal(name, 'objectInspector:droppedObject');
-    deepEqual(message, { objectId: objectId });
-  });
+  await wait();
+
+  objectInspector.sendObject(object);
+  await wait();
+
+  assert.ok(!!objectInspector.sentObjects[objectId]);
+  Ember.run(object, 'destroy');
+  await wait();
+
+  assert.ok(didDestroy, 'Original willDestroy is preserved.');
+  assert.ok(!objectInspector.sentObjects[objectId], 'Object is dropped');
+  assert.equal(name, 'objectInspector:droppedObject');
+  assert.deepEqual(message, { objectId: objectId });
 
 });
 
-test("Properties ending with `Binding` are skipped", function() {
-  var object = Ember.Object.create({
+test("Properties ending with `Binding` are skipped", async function t(assert) {
+  let object = Ember.Object.create({
     bar: 'test',
     fooBinding: 'bar'
   });
 
-  wait();
+  await wait();
 
-  andThen(function() {
-    objectInspector.sendObject(object);
-    return wait();
-  });
+  objectInspector.sendObject(object);
+  await wait();
 
-  andThen(function() {
-    var props = message.details[0].properties;
-    equal(props.length, 2, "Props should be foo and bar without fooBinding");
-    equal(props[0].name, 'bar');
-    equal(props[1].name, 'foo');
-  });
+  let props = message.details[0].properties;
+  assert.equal(props.length, 2, "Props should be foo and bar without fooBinding");
+  assert.equal(props[0].name, 'bar');
+  assert.equal(props[1].name, 'foo');
 });
 
-test("Properties listed in _debugInfo but don't exist should be skipped silently", function() {
-  var object = Ember.Object.create({
+test("Properties listed in _debugInfo but don't exist should be skipped silently", async function t(assert) {
+  let object = Ember.Object.create({
     foo: 'test',
-    _debugInfo: function() {
+    _debugInfo() {
       return {
         propertyInfo: {
           groups: [{
@@ -445,16 +442,67 @@ test("Properties listed in _debugInfo but don't exist should be skipped silently
 
   });
 
-  wait();
+  await wait();
 
-  andThen(function() {
-    objectInspector.sendObject(object);
-    return wait();
+  run(objectInspector, 'sendObject', object);
+  await wait();
+
+  let props = message.details[0].properties;
+  assert.equal(props.length, 1, "bar should be silently skipped");
+  assert.equal(props[0].name, 'foo');
+});
+
+test("Errors while computing CPs are handled", async function t(assert) {
+  // catch error port messages (ignored by default)
+  ignoreErrors = false;
+
+  let count = 0;
+  let object;
+  run(() => {
+    object = EmberObject.extend({
+     foo: computed(() => {
+       if (count++ < 2) {
+         throw new Error('CP Calculation');
+       }
+       return 'bar';
+     })
+    }).create();
   });
 
-  andThen(function() {
-    var props = message.details[0].properties;
-    equal(props.length, 1, "bar should be silently skipped");
-    equal(props[0].name, 'foo');
+  run(objectInspector, 'sendObject', object);
+  await wait();
+
+  let errors = message.errors;
+  assert.equal(errors.length, 1);
+  assert.equal(errors[0].property, 'foo');
+  ignoreErrors = false;
+
+  // Calculate CP a second time
+  run(() => {
+    port.trigger('objectInspector:calculate', {
+      objectId: guidFor(object),
+      property: 'foo',
+      mixinIndex: 1
+    });
   });
+  await wait();
+  ignoreErrors = true;
+  assert.equal(name, 'objectInspector:updateErrors');
+  assert.equal(errors.length, 1);
+  assert.equal(errors[0].property, 'foo');
+
+  // Calculate CP a third time (no error this time)
+  run(() => {
+    port.trigger('objectInspector:calculate', {
+      objectId: guidFor(object),
+      property: 'foo',
+      mixinIndex: 1
+    });
+  });
+  await wait();
+  assert.equal(name, 'objectInspector:updateProperty');
+  assert.equal(message.value.inspect, 'bar');
+
+  // teardown
+  ignoreErrors = true;
 });

@@ -12,6 +12,7 @@ var set = Ember.set;
 var guidFor = Ember.guidFor;
 var emberMeta = Ember.meta;
 var isNone = Ember.isNone;
+var keys = Ember.keys;
 
 function inspectValue(value) {
   var string;
@@ -42,14 +43,18 @@ function inspect(value) {
   } else if (value instanceof EmberObject) {
     return value.toString();
   } else if (typeOf(value) === 'array') {
-    if (value.length === 0) { return '[]'; }
-    else if (value.length === 1) { return '[ ' + inspect(value[0]) + ' ]'; }
-    else { return '[ ' + inspect(value[0]) + ', ... ]'; }
+    if (value.length === 0) {
+      return '[]';
+    } else if (value.length === 1) {
+      return '[ ' + inspect(value[0]) + ' ]';
+    } else {
+      return '[ ' + inspect(value[0]) + ', ... ]';
+    }
   } else if (value instanceof Error) {
     return 'Error: ' + value.message;
   } else if (value === null) {
     return 'null';
-  } else if(typeOf(value) === 'date') {
+  } else if (typeOf(value) === 'date') {
     return value.toString();
   } else if (typeof value === 'object') {
     // `Ember.inspect` is able to handle this use case,
@@ -106,6 +111,8 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
 
   boundObservers: {},
 
+  _errorsFor: computed(function() { return {}; }),
+
   portNamespace: 'objectInspector',
 
   messages: {
@@ -118,9 +125,15 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
     calculate: function(message) {
       var value;
       value = this.valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
-      this.sendMessage('updateProperty', value);
-      message.computed = true;
-      this.bindPropertyToDebugger(message);
+      if (value) {
+        this.sendMessage('updateProperty', value);
+        message.computed = true;
+        this.bindPropertyToDebugger(message);
+      }
+      this.sendMessage('updateErrors', {
+        objectId: message.objectId,
+        errors: errorsToSend(this.get('_errorsFor')[message.objectId])
+      });
     },
     saveProperty: function(message) {
       var value = message.value;
@@ -155,6 +168,19 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
     inspectByContainerLookup: function(message) {
       var container = this.get('application.__container__');
       this.sendObject(container.lookup(message.name));
+    },
+    traceErrors: function(message) {
+      var errors = this.get('_errorsFor')[message.objectId];
+      var self = this;
+      toArray(errors).forEach(function(error) {
+        var stack = error.error;
+        if (stack && stack.stack) {
+          stack = stack.stack;
+        } else {
+          stack = error;
+        }
+        self.get('adapter').log('Object Inspector error for ' + error.property, stack);
+      });
     }
   },
 
@@ -174,7 +200,7 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
     if (isNone(prop)) {
       value = this.sentObjects[objectId];
     } else {
-      value =  get(object, prop);
+      value = get(object, prop);
     }
 
     this.sendValueToConsole(value);
@@ -200,7 +226,8 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
         property: property,
         objectId: details.objectId,
         name: object.toString(),
-        details: details.mixins
+        details: details.mixins,
+        errors: details.errors
       });
     }
   },
@@ -213,7 +240,8 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
     this.sendMessage('updateObject', {
       objectId: details.objectId,
       name: object.toString(),
-      details: details.mixins
+      details: details.mixins,
+      errors: details.errors
     });
 
   },
@@ -245,7 +273,7 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
 
   releaseObject: function(objectId) {
     var object = this.sentObjects[objectId];
-    if(!object) {
+    if (!object) {
       return;
     }
     var meta = emberMeta(object),
@@ -269,6 +297,8 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
 
     this.removeObservers(objectId);
     delete this.sentObjects[objectId];
+
+    delete this.get('_errorsFor')[objectId];
 
     this.sendMessage('droppedObject', { objectId: objectId });
   },
@@ -315,13 +345,16 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
     if (propertyInfo) {
       expensiveProperties = propertyInfo.expensiveProperties;
     }
-    calculateCPs(object, mixinDetails, expensiveProperties);
 
     var objectId = this.retainObject(object);
 
+    var errorsForObject = this.get('_errorsFor')[objectId] = {};
+    calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties);
+
     this.bindProperties(objectId, mixinDetails);
 
-    return { objectId: objectId, mixins: mixinDetails };
+    var errors = errorsToSend(errorsForObject);
+    return { objectId: objectId, mixins: mixinDetails, errors: errors };
   },
 
   valueForObjectProperty: function(objectId, property, mixinIndex) {
@@ -330,18 +363,21 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
     if (object.isDestroying) {
       value = '<DESTROYED>';
     } else {
-      value = object.get(property);
+      value = calculateCP(object, property, this.get('_errorsFor')[objectId]);
     }
 
-    value = inspectValue(value);
-    value.computed = true;
+    if (!value || !(value instanceof CalculateCPError)) {
+      value = inspectValue(value);
+      value.computed = true;
 
-    return {
-      objectId: objectId,
-      property: property,
-      value: value,
-      mixinIndex: mixinIndex
-    };
+
+      return {
+        objectId: objectId,
+        property: property,
+        value: value,
+        mixinIndex: mixinIndex
+      };
+    }
   },
 
   bindPropertyToDebugger: function(message) {
@@ -428,9 +464,9 @@ function addProperties(properties, hash) {
 }
 
 function replaceProperty(properties, name, value, options) {
-  var found, type;
+  var found;
 
-  for (var i=0, l=properties.length; i<l; i++) {
+  for (var i = 0, l = properties.length; i < l; i++) {
     if (properties[i].name === name) {
       found = i;
       break;
@@ -439,9 +475,6 @@ function replaceProperty(properties, name, value, options) {
 
   if (found) { properties.splice(i, 1); }
 
-  if (name) {
-    type = name.PrototypeMixin ? 'ember-class' : 'ember-mixin';
-  }
   var prop = { name: name, value: inspectValue(value) };
   prop.isMandatorySetter = options.isMandatorySetter;
   prop.readOnly = options.readOnly;
@@ -454,14 +487,14 @@ function fixMandatorySetters(mixinDetails) {
 
   mixinDetails.forEach(function(detail, detailIdx) {
     detail.properties.forEach(function(property) {
-      if(property.isMandatorySetter) {
+      if (property.isMandatorySetter) {
         seen[property.name] = {
           name: property.name,
           value: property.value.inspect,
           detailIdx: detailIdx,
           property: property
         };
-      } else if(seen.hasOwnProperty(property.name) && seen[property.name] === property.value.inspect) {
+      } else if (seen.hasOwnProperty(property.name) && seen[property.name] === property.value.inspect) {
         propertiesToRemove.push(seen[property.name]);
         delete seen[property.name];
       }
@@ -503,12 +536,7 @@ function isMandatorySetter(object, prop) {
   return false;
 }
 
-
-
-
-
-
-function calculateCPs(object, mixinDetails, expensiveProperties) {
+function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties) {
   expensiveProperties = expensiveProperties || [];
 
   mixinDetails.forEach(function(mixin) {
@@ -519,8 +547,11 @@ function calculateCPs(object, mixinDetails, expensiveProperties) {
       if (item.value.computed) {
         var cache = Ember.cacheFor(object, item.name);
         if (cache !== undefined || expensiveProperties.indexOf(item.name) === -1) {
-          item.value = inspectValue(get(object, item.name));
-          item.value.computed = true;
+          var value = calculateCP(object, item.name, errorsForObject);
+          if (!value || !(value instanceof CalculateCPError)) {
+            item.value = inspectValue(value);
+            item.value.computed = true;
+          }
         }
       }
     });
@@ -589,7 +620,7 @@ function customizeProperties(mixinDetails, propertyInfo) {
       skipProperties = propertyInfo.skipProperties || [],
       skipMixins = propertyInfo.skipMixins || [];
 
-  if(groups.length) {
+  if (groups.length) {
     mixinDetails[0].expand = false;
   }
 
@@ -673,6 +704,33 @@ function getDebugInfo(object) {
 
 function isComputed(value) {
   return value instanceof ComputedProperty;
+}
+
+function toArray(errors) {
+  return keys(errors).map(function(key) {
+    return errors[key];
+  });
+}
+
+function calculateCP(object, property, errorsForObject) {
+  delete errorsForObject[property];
+  try {
+   return get(object, property);
+  } catch (e) {
+    errorsForObject[property] = {
+      property: property,
+      error: e
+    };
+    return new CalculateCPError();
+  }
+}
+
+function CalculateCPError() {}
+
+function errorsToSend(errors) {
+  return toArray(errors).map(function(error) {
+    return { property: error.property };
+  });
 }
 
 export default ObjectInspector;

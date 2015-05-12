@@ -1,28 +1,25 @@
 <div class="list-view">
   <div class="list-view__header row">
     <div class="cell cell_type_header">
-      Name
+      Route Name
     </div>
     <div class="cell cell_type_header">
-      Template
-    </div>
-    <div class="cell cell_type_header">
-      Model
+      Route
     </div>
     <div class="cell cell_type_header">
       Controller
     </div>
     <div class="cell cell_type_header">
-      View / Component
+      Template
     </div>
-    <div class="cell cell_size_small cell_value_numeric cell_type_header">
-      Duration
+    <div class="cell cell_type_header cell_size_large">
+      URL
     </div>
     <!-- Account for scrollbar width :'(  -->
     <div class="cell cell_type_header spacer"></div>
   </div>
 
   <div class="list-view__list-container">
-    {{view "view-list" content=this}}
+    {{view "routeList" content=filtered currentRoute=currentRoute}}
   </div>
 </div>

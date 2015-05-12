@@ -6,13 +6,13 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.resource('application-detected', { path: '/' }, function() {
+  this.resource('app-detected', { path: '/' }, function() {
     this.resource('view-tree', { path: '/' });
     this.resource('route-tree');
 
     this.resource('data', function() {
       this.resource('model-types', function() {
-        this.resource('model-type', { path: '/:type_id'}, function() {
+        this.resource('model-type', { path: '/:type_id' }, function() {
           this.resource('records');
         });
       });

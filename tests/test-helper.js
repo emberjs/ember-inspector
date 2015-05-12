@@ -5,17 +5,10 @@ import {
 
 setResolver(resolver);
 
-document.write('<div id="ember-testing-container"><div id="ember-testing"></div></div>');
-
-QUnit.config.urlConfig.push({ id: 'nocontainer', label: 'Hide container'});
-var containerVisibility = QUnit.urlParams.nocontainer ? 'hidden' : 'visible';
-document.getElementById('ember-testing-container').style.visibility = containerVisibility;
-
 window.NO_EMBER_DEBUG = true;
 
 
 // Pollyfill PhantomJS bind
-
 if (!Function.prototype.bind) {
   Function.prototype.bind = function (oThis) {
     if (typeof this !== "function") {

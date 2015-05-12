@@ -1,3 +1,4 @@
+/* eslint camelcase:0 */
 /**
   This is a wrapper for `ember-debug.js`
   Wraps the script in a function,
@@ -8,15 +9,18 @@
   Also responsible for sending the first tree.
 **/
 
-/* globals Ember, adapter, requireModule */
+/* globals Ember, adapter, env, requireModule */
 
 var currentAdapter = 'basic';
 if (typeof adapter !== 'undefined') {
   currentAdapter = adapter;
 }
+var currentEnv = 'production';
+if (typeof env !== 'undefined') {
+  currentEnv = env;
+}
 
 (function(adapter) {
-
   onEmberReady(function() {
     // global to prevent injection
     if (window.NO_EMBER_DEBUG) {
@@ -24,6 +28,13 @@ if (typeof adapter !== 'undefined') {
     }
     // prevent from injecting twice
     if (!Ember.Debug) {
+      define('ember-debug/config', function() {
+        return {
+          default: {
+            environment: currentEnv
+          }
+        };
+      });
       window.EmberInspector = Ember.Debug = requireModule('ember-debug/main')['default'];
       Ember.Debug.Adapter = requireModule('ember-debug/adapters/' + adapter)['default'];
 

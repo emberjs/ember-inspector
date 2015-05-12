@@ -1,7 +1,0 @@
-<div {{bind-attr class=":list-tree__item :row isCurrent:row_highlight"}} data-label="record-row" {{action "inspectModel" model}}>
-  {{#each columns}}
-    <div class="cell cell_clickable" data-label="record-column" {{bind-attr style="controller.style"}}>
-      {{value}}
-    </div>
-  {{/each}}
-</div>

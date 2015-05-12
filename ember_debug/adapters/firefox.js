@@ -1,3 +1,4 @@
+/* eslint no-empty:0 */
 import BasicAdapter from "./basic";
 var Ember = window.Ember;
 

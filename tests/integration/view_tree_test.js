@@ -1,6 +1,7 @@
-/*globals findByLabel */
+/* jshint ignore:start */
 import Ember from "ember";
 import { test } from 'ember-qunit';
+import { module } from 'qunit';
 import startApp from '../helpers/start-app';
 var App;
 var run = Ember.run;
@@ -8,13 +9,13 @@ var run = Ember.run;
 var port;
 
 module('View Tree Tab', {
-  setup: function() {
+  beforeEach() {
     App = startApp({
       adapter: 'basic'
     });
     port = App.__container__.lookup('port:main');
   },
-  teardown: function() {
+  afterEach() {
     Ember.run(App, App.destroy);
   }
 });
@@ -24,7 +25,6 @@ function viewNodeFactory(props) {
   if (!props.template) {
     props.template = props.name;
   }
-  var value = props;
   var obj = {
     value: props,
     children: [],
@@ -71,7 +71,8 @@ function defaultViewTree() {
         model: {
           name: 'PostsArray',
           completeName: 'PostsArray',
-          objectId: 'postsArray'
+          objectId: 'postsArray',
+          type: 'type-ember-object'
         },
         controller: {
           name: 'App.PostsController',
@@ -91,7 +92,8 @@ function defaultViewTree() {
         model: {
           name: 'CommentsArray',
           completeName: 'CommentsArray',
-          objectId: 'commentsArray'
+          objectId: 'commentsArray',
+          type: 'type-ember-object'
         },
         controller: {
           name: 'App.CommentsController',
@@ -104,7 +106,7 @@ function defaultViewTree() {
   });
 }
 
-test("It should correctly display the view tree", function() {
+test("It should correctly display the view tree", function(assert) {
   var viewTree = defaultViewTree();
 
   visit('/');
@@ -113,10 +115,13 @@ test("It should correctly display the view tree", function() {
     run(function() {
       port.trigger('view:viewTree', { tree: viewTree } );
     });
+    return wait();
+  });
+
+  andThen(() => {
 
     var $treeNodes = findByLabel('tree-node');
-    equal($treeNodes.length, 3, 'expected some tree nodes');
-    var $treeView = $treeNodes.filter(':first');
+    assert.equal($treeNodes.length, 3, 'expected some tree nodes');
     var controllerNames = [],
         templateNames = [],
         modelNames = [],
@@ -139,37 +144,37 @@ test("It should correctly display the view tree", function() {
       return node.getAttribute('title');
     }).toArray().sort();
 
-    deepEqual(controllerNames, [
+    assert.deepEqual(controllerNames, [
       'App.ApplicationController',
       'App.PostsController',
       'App.CommentsController'
     ], 'expected controller names');
 
-    deepEqual(templateNames, [
+    assert.deepEqual(templateNames, [
       'application',
       'posts',
       'comments'
     ], 'expected template names');
 
-    deepEqual(modelNames, [
+    assert.deepEqual(modelNames, [
       '--',
       'PostsArray',
       'CommentsArray'
     ], 'expected model names');
 
-    deepEqual(viewClassNames, [
+    assert.deepEqual(viewClassNames, [
       'App.ApplicationView',
       'App.PostsView',
       'App.CommentsView'
     ], 'expected view class names');
 
-    deepEqual(durations, [
+    assert.deepEqual(durations, [
       '10.00ms',
       '1.00ms',
       '2.50ms'
     ], 'expected render durations');
 
-    deepEqual(titleTips, [
+    assert.deepEqual(titleTips, [
       'App.ApplicationController',
       'App.ApplicationView',
       'App.CommentsController',
@@ -186,8 +191,8 @@ test("It should correctly display the view tree", function() {
 
 });
 
-test("It should update the view tree when the port triggers a change", function() {
-  expect(4);
+test("It should update the view tree when the port triggers a change", function(assert) {
+  assert.expect(4);
   var $treeNodes, viewTree = defaultViewTree();
 
   visit('/')
@@ -199,8 +204,8 @@ test("It should update the view tree when the port triggers a change", function(
   .then(function() {
 
     $treeNodes = findByLabel('tree-node');
-    equal($treeNodes.length, 3);
-    equal(findByLabel('view-controller').filter(':last').text().trim(), 'App.CommentsController');
+    assert.equal($treeNodes.length, 3);
+    assert.equal(findByLabel('view-controller').filter(':last').text().trim(), 'App.CommentsController');
 
     viewTree = defaultViewTree();
     viewTree.children.splice(0, 1);
@@ -213,13 +218,13 @@ test("It should update the view tree when the port triggers a change", function(
   .then(function() {
 
     $treeNodes = findByLabel('tree-node');
-    equal($treeNodes.length, 2);
-    equal(findByLabel('view-controller').filter(':last').text().trim(), 'App.SomeController');
+    assert.equal($treeNodes.length, 2);
+    assert.equal(findByLabel('view-controller').filter(':last').text().trim(), 'App.SomeController');
   });
 
 });
 
-test("Previewing / showing a view on the client", function() {
+test("Previewing / showing a view on the client", function(assert) {
   var messageSent = null;
   port.reopen({
     send: function(name, message) {
@@ -236,15 +241,16 @@ test("Previewing / showing a view on the client", function() {
   })
   .mouseEnterByLabel('tree-node')
   .then(function() {
-    deepEqual(messageSent, { name: 'view:previewLayer', message: { objectId: 'applicationView' } } , "Client asked to preview layer");
+    assert.equal(messageSent.name, 'view:previewLayer', "Client asked to preview layer");
+    assert.equal(messageSent.message.objectId, 'applicationView', "Client sent correct id to preview layer");
   })
   .mouseLeaveByLabel('tree-node')
   .then(function() {
-    deepEqual(messageSent, { name: 'view:hidePreview', message: { objectId: 'applicationView' } } , "Client asked to hide preview");
+    assert.equal(messageSent.name, 'view:hidePreview', "Client asked to hide preview");
   });
 });
 
-test("Inspecting views on hover", function() {
+test("Inspecting views on hover", function(assert) {
   var messageSent = null;
   port.reopen({
     send: function(name, message) {
@@ -255,19 +261,19 @@ test("Inspecting views on hover", function() {
   visit('/')
   .clickByLabel('inspect-views')
   .then(function() {
-    equal(messageSent.name, 'view:inspectViews');
-    deepEqual(messageSent.message, { inspect: true });
+    assert.equal(messageSent.name, 'view:inspectViews');
+    assert.deepEqual(messageSent.message, { inspect: true });
     port.trigger('view:startInspecting');
     return wait();
   })
   .clickByLabel('inspect-views')
   .then(function() {
-    equal(messageSent.name, 'view:inspectViews');
-    deepEqual(messageSent.message, { inspect: false });
+    assert.equal(messageSent.name, 'view:inspectViews');
+    assert.deepEqual(messageSent.message, { inspect: false });
   });
 });
 
-test("Configuring which views to show", function() {
+test("Configuring which views to show", function(assert) {
   var messageSent = null;
   port.reopen({
     send: function(name, message) {
@@ -283,8 +289,8 @@ test("Configuring which views to show", function() {
     return wait();
   })
   .then(function() {
-    equal(messageSent.name, 'view:setOptions');
-    deepEqual(messageSent.message.options, { components: true, allViews: false });
+    assert.equal(messageSent.name, 'view:setOptions');
+    assert.deepEqual(messageSent.message.options, { components: true, allViews: false });
     return wait();
   })
   .then(function() {
@@ -294,8 +300,37 @@ test("Configuring which views to show", function() {
     return wait();
   })
   .then(function() {
-    equal(messageSent.name, 'view:setOptions');
-    deepEqual(messageSent.message.options, { components: true, allViews: true });
+    assert.equal(messageSent.name, 'view:setOptions');
+    assert.deepEqual(messageSent.message.options, { components: true, allViews: true });
     return wait();
   });
+});
+
+test("Inspecting a model", function(assert) {
+  let messageSent = null;
+  port.reopen({
+    send: function(name, message) {
+      messageSent = { name: name, message: message };
+    }
+  });
+
+  visit('/');
+  andThen(() => {
+    let tree = defaultViewTree();
+    run(() => {
+      port.trigger('view:viewTree', { tree } );
+    });
+    return wait();
+  });
+
+  andThen(() => {
+    let model = findByLabel('view-model-clickable').eq(0);
+    return click(model);
+  });
+
+  andThen(() => {
+    assert.equal(messageSent.name, 'objectInspector:inspectById');
+    assert.equal(messageSent.message.objectId, 'postsArray');
+  });
+
 });

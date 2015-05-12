@@ -47,7 +47,7 @@ export default EmberObject.extend(PortMixin, {
     }
     for (key in cache) {
       var type = this.typeFromKey(key);
-      if (this.shouldHide(type) ){ continue; }
+      if (this.shouldHide(type)) { continue; }
       if (instancesByType[type] === undefined) {
         instancesByType[type] = [];
       }

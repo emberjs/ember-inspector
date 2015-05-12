@@ -1,0 +1,30 @@
+<div class="split">
+
+  {{#draggable-column
+          width=180
+          classNames="split__panel split__panel--sidebar-2 nav"}}
+
+    <div class="split__panel__bd">
+      <div class="nav__title">
+        <h3>Types</h3>
+      </div>
+
+      <ul>
+        {{#each sorted as |containerType|}}
+          <li data-label="container-type">
+            {{#link-to "container-type" containerType.name}}
+              <span data-label="container-type-name">{{containerType.name}}</span>
+              (<span data-label="container-type-count">{{containerType.count}}</span>)
+            {{/link-to}}
+          </li>
+        {{/each}}
+      </ul>
+    </div>
+  {{/draggable-column}}
+
+  <div class="split__panel">
+    <div class="split__panel__bd">
+      {{outlet}}
+    </div>
+  </div>
+</div>

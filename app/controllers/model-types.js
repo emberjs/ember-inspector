@@ -1,5 +1,9 @@
 import Ember from "ember";
-export default Ember.ArrayController.extend({
+const { Controller, computed: { sort } } = Ember;
+
+export default Controller.extend({
   navWidth: 180,
-  sortProperties: ['name']
+  sortProperties: ['name'],
+
+  sorted: sort('model', 'sortProperties')
 });

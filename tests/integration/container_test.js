@@ -1,5 +1,6 @@
-/*globals findByLabel, clickByLabel */
+/* jshint ignore:start */
 import Ember from "ember";
+import { module } from 'qunit';
 import { test } from 'ember-qunit';
 import startApp from '../helpers/start-app';
 var App;
@@ -7,13 +8,13 @@ var App;
 var port, message, name;
 
 module('Container Tab', {
-  setup: function() {
+  beforeEach() {
     App = startApp({
       adapter: 'basic'
     });
     port = App.__container__.lookup('port:main');
   },
-  teardown: function() {
+  afterEach() {
     name = null;
     message = null;
     Ember.run(App, App.destroy);
@@ -47,84 +48,72 @@ function getInstances() {
   ];
 }
 
-test("Container types are successfully listed", function() {
+test("Container types are successfully listed", async function t(assert) {
   port.reopen({
-    send: function(name, message) {
+    send: function(name) {
       if (name === 'container:getTypes') {
         this.trigger('container:types', { types: getTypes() });
       }
     }
   });
 
-  visit('/container-types');
+  await visit('/container-types');
 
-  andThen(function() {
-    var rows = findByLabel('container-type');
-    equal(rows.length, 2);
-    equal(findByLabel('container-type-name', rows[0]).text().trim(), 'controller');
-    equal(findByLabel('container-type-count', rows[0]).text().trim(), '2');
-    equal(findByLabel('container-type-name', rows[1]).text().trim(), 'route');
-    equal(findByLabel('container-type-count', rows[1]).text().trim(), '5');
-  });
+  let rows = findByLabel('container-type');
+  assert.equal(rows.length, 2);
+  assert.equal(findByLabel('container-type-name', rows[0]).text().trim(), 'controller');
+  assert.equal(findByLabel('container-type-count', rows[0]).text().trim(), '2');
+  assert.equal(findByLabel('container-type-name', rows[1]).text().trim(), 'route');
+  assert.equal(findByLabel('container-type-count', rows[1]).text().trim(), '5');
 });
 
-test("Container instances are successfully listed", function() {
-  var types = [{name: 'controller', count: 2}];
 
-  var instances = getInstances();
+test("Container instances are successfully listed", async function t(assert) {
+  let instances = getInstances();
 
   port.reopen({
-    send: function(n, m) {
+    send(n, m) {
       name = n;
       message = m;
       if (name === 'container:getTypes') {
-        this.trigger('container:types', {types: getTypes()});
+        this.trigger('container:types', { types: getTypes() });
       }
 
       if (name === 'container:getInstances' && message.containerType === 'controller') {
-        this.trigger('container:instances', { instances: instances, status: 200 });
+        this.trigger('container:instances', { instances, status: 200 });
       }
     }
   });
 
-  visit('/container-types/controller');
-  var rows;
+  await visit('/container-types/controller');
+  let rows;
 
-  andThen(function() {
-    rows = findByLabel('instance-row');
-    findByLabel(rows.length, 2);
-    equal(rows.eq(0).text().trim(), 'first');
-    equal(rows.eq(1).text().trim(), 'second');
-    name = null;
-    message = null;
-    return click(rows[0]);
-  });
+  rows = findByLabel('instance-row');
+  findByLabel(rows.length, 2);
+  assert.equal(rows.eq(0).text().trim(), 'first');
+  assert.equal(rows.eq(1).text().trim(), 'second');
+  name = null;
+  message = null;
 
-  andThen(function() {
-    equal(name, null);
-    return click(rows[1]);
-  });
+  await click(rows[0]);
 
-  andThen(function() {
-    equal(name, 'objectInspector:inspectByContainerLookup');
-  });
+  assert.equal(name, null);
+  await click(rows[1]);
 
-  andThen(function() {
-    return fillIn(findByLabel('container-instance-search').find('input'), 'first');
-  });
+  assert.equal(name, 'objectInspector:inspectByContainerLookup');
 
-  andThen(function() {
-    rows = findByLabel('instance-row');
-    equal(rows.length, 1);
-    equal(rows.eq(0).text().trim(), 'first');
-  });
+  await fillIn(findByLabel('container-instance-search').find('input'), 'first');
+
+  rows = findByLabel('instance-row');
+  assert.equal(rows.length, 1);
+  assert.equal(rows.eq(0).text().trim(), 'first');
 
 });
 
-test("Successfully redirects if the container type is not found", function() {
+test("Successfully redirects if the container type is not found", async function t(assert) {
 
   port.reopen({
-    send: function(n, m) {
+    send(n, m) {
       name = n;
       message = m;
       if (name === 'container:getTypes') {
@@ -137,41 +126,33 @@ test("Successfully redirects if the container type is not found", function() {
     }
   });
 
-  visit('/container-types/random-type');
-
-  andThen(function() {
-    equal(currentURL(), '/container-types');
-  });
-
+  await visit('/container-types/random-type');
+  assert.equal(currentURL(), '/container-types');
 });
 
-test("Reload", function() {
-  var types = [], instances = [];
+test("Reload", async function t(assert) {
+  let types = [], instances = [];
 
   port.reopen({
-    send: function(n, m) {
+    send(n, m) {
       if (n === 'container:getTypes') {
-        this.trigger('container:types', { types: types});
+        this.trigger('container:types', { types });
       }
       if (n === 'container:getInstances' && m.containerType === 'controller') {
-        this.trigger('container:instances', { instances: instances, status: 200});
+        this.trigger('container:instances', { instances, status: 200 });
       }
     }
   });
 
-  visit('/container-types/controller');
+  await visit('/container-types/controller');
 
-  andThen(function() {
-    equal(findByLabel('container-type').length, 0);
-    equal(findByLabel('instance-row').length, 0);
-    types = getTypes();
-    instances = getInstances();
-  });
+  assert.equal(findByLabel('container-type').length, 0);
+  assert.equal(findByLabel('instance-row').length, 0);
+  types = getTypes();
+  instances = getInstances();
 
-  clickByLabel('reload-container-btn');
+  await clickByLabel('reload-container-btn');
 
-  andThen(function() {
-    equal(findByLabel('container-type').length,2);
-    equal(findByLabel('instance-row').length,2);
-  });
+  assert.equal(findByLabel('container-type').length, 2);
+  assert.equal(findByLabel('instance-row').length, 2);
 });

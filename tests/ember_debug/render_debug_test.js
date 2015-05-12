@@ -1,4 +1,6 @@
+/* jshint ignore:start */
 import Ember from "ember";
+import { module, test } from 'qunit';
 
 /* globals require */
 var EmberDebug = require('ember-debug/main')["default"];
@@ -6,7 +8,7 @@ var port;
 var App, run = Ember.run;
 var compile = Ember.Handlebars.compile;
 
-function setupApp(){
+function setupApp() {
   App = Ember.Application.create();
   App.setupForTesting();
   App.injectTestHelpers();
@@ -18,7 +20,7 @@ function setupApp(){
 }
 
 module("Render Debug", {
-  setup: function() {
+  beforeEach() {
     EmberDebug.Port = EmberDebug.Port.extend({
       init: function() {},
       send: function() {}
@@ -30,16 +32,16 @@ module("Render Debug", {
     run(EmberDebug, 'start');
     port = EmberDebug.port;
   },
-  teardown: function() {
+  afterEach() {
     EmberDebug.destroyContainer();
     run(App, 'destroy');
   }
 });
 
-test("Simple Render", function() {
-  var profiles = [];
+test("Simple Render", async function t(assert) {
+  let profiles = [];
   port.reopen({
-    send: function(n, m) {
+    send(n, m) {
       if (n === "render:profilesAdded") {
         profiles = profiles.concat(m.profiles);
       }
@@ -47,17 +49,16 @@ test("Simple Render", function() {
   });
   port.trigger('render:watchProfiles');
 
-  visit('/simple')
-  .then(function() {
-    ok(profiles.length > 0, "it has created profiles");
-  });
+  await visit('/simple');
+
+  assert.ok(profiles.length > 0, "it has created profiles");
 });
 
-test("Clears correctly", function() {
-  var profiles = [];
+test("Clears correctly", async function t(assert) {
+  let profiles = [];
 
   port.reopen({
-    send: function(n, m) {
+    send(n, m) {
       if (n === "render:profilesAdded") {
         profiles.push(m.profiles);
       }
@@ -69,16 +70,12 @@ test("Clears correctly", function() {
 
   port.trigger('render:watchProfiles');
 
-  visit('/simple');
+  await visit('/simple');
 
-  andThen(function() {
-    ok(profiles.length > 0, "it has created profiles");
-    port.trigger('render:clear');
-    return wait();
-  });
+  assert.ok(profiles.length > 0, "it has created profiles");
+  port.trigger('render:clear');
+  await wait();
 
-  andThen(function() {
-    ok(profiles.length === 0, "it has cleared the profiles");
-  });
+  assert.ok(profiles.length === 0, "it has cleared the profiles");
 
 });

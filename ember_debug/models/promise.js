@@ -1,17 +1,20 @@
+import computedPolyfill from '../addons/ember-new-computed/index';
 var Ember = window.Ember;
 
 var dateComputed = function() {
-  return Ember.computed(
-    function(key, date) {
-      if (date !== undefined) {
-        if (date instanceof Date) {
-          return date;
-        } else if (typeof date === 'number' || typeof date === 'string') {
-          return new Date(date);
-        }
+  return computedPolyfill({
+    get: function() {
+      return null;
+    },
+    set: function(key, date) {
+      if (Ember.typeOf(date) === 'date') {
+        return date;
+      } else if (typeof date === 'number' || typeof date === 'string') {
+        return new Date(date);
       }
       return null;
-  }).property();
+    }
+  });
 };
 
 export default Ember.Object.extend({

@@ -53,6 +53,15 @@
     color: #aaa;
   }
 
+.mixin__name_errors {
+  background-color: #fff;
+
+  &:active{
+    background-color: #fff;
+  }
+}
+
+
 .mixin__properties {
   margin: 5px;
   list-style-type: none;
@@ -70,6 +79,12 @@
   flex-direction: row;
   -webkit-align-items: center;
   align-items: center;
+}
+
+.mixin__error {
+  margin-right: 3px;
+  padding: 0px 20px;
+  color: red;
 }
 
 .mixin__property button {

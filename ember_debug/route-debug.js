@@ -49,14 +49,14 @@ export default Ember.Object.extend(PortMixin, {
     var routeNames = this.get('router.router.recognizer.names');
     var routeTree = {};
 
-    for(var routeName in routeNames) {
+    for (var routeName in routeNames) {
       if (!routeNames.hasOwnProperty(routeName)) {
         continue;
       }
       var route = routeNames[routeName];
       buildSubTree.call(this, routeTree, route);
     }
-    return arrayizeChildren({  children: routeTree }).children[0];
+    return arrayizeChildren({ children: routeTree }).children[0];
   }).property('router'),
 
   sendTree: function() {
@@ -91,7 +91,7 @@ export default Ember.Object.extend(PortMixin, {
           if (podPrefix) {
             currentPrefix = podPrefix.replace(new RegExp('^/?' + prefix + '/?'), '');
           }
-          className = currentPrefix + '/' + name  + '/' + type;
+          className = currentPrefix + '/' + name + '/' + type;
         } else {
           className = name.replace(/\./g, '/');
         }
@@ -167,7 +167,7 @@ function arrayizeChildren(routeTree) {
 
   if (routeTree.children) {
     var childrenArray = [];
-    for(var i in routeTree.children) {
+    for (var i in routeTree.children) {
       var route = routeTree.children[i];
       childrenArray.push(arrayizeChildren(route));
     }

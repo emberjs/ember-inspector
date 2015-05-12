@@ -1,6 +1,6 @@
 import BasicAdapter from "./basic";
 
-export default  BasicAdapter.extend({
+export default BasicAdapter.extend({
   name: 'bookmarklet',
 
   inspectedWindow: function() {
@@ -32,7 +32,7 @@ export default  BasicAdapter.extend({
         self._messageReceived(message);
       }
     });
-  }.on('init'),
+  }.on('init')
 });
 
 function loadPageVar (sVar) {

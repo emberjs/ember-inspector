@@ -1,6 +1,6 @@
 import Ember from "ember";
 var Promise = Ember.RSVP.Promise;
-
+/*eslint camelcase: 0 */
 export default Ember.Route.extend({
   setupController: function(controller, model) {
     this._super(controller, model);

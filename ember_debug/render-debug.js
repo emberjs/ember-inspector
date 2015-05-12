@@ -12,7 +12,7 @@ var queue = [];
 
 function push(info) {
   var index = queue.push(info);
-  if (1 === index) {
+  if (index === 1) {
     later(flush, 50);
   }
   return index - 1;
@@ -68,12 +68,21 @@ export default Ember.Object.extend(PortMixin, {
   profileManager: profileManager,
 
   init: function() {
+    var self = this;
     this._super();
+    this.profileManager.wrapForErrors = function(context, callback) {
+      return self.get('port').wrap(function() {
+        return callback.call(context);
+      });
+    };
     this._subscribeForViewTrees();
   },
 
   willDestroy: function() {
     this._super();
+    this.profileManager.wrapForErrors = function(context, callback) {
+      return callback.call(context);
+    };
     this.profileManager.offProfilesAdded(this, this.sendAdded);
     this.profileManager.offProfilesAdded(this, this._updateViewTree);
   },
@@ -118,7 +127,7 @@ export default Ember.Object.extend(PortMixin, {
 
     clear: function() {
       this.profileManager.clearProfiles();
-      this.sendMessage('profilesUpdated', {profiles: []});
+      this.sendMessage('profilesUpdated', { profiles: [] });
     }
   }
 });

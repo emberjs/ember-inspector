@@ -5,7 +5,7 @@
   and Yapp Labs (@yapplabs).
  */
 
-import Promise from '/ember-debug/models/promise';
+import Promise from 'ember-debug/models/promise';
 var Ember = window.Ember;
 
 var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
@@ -39,8 +39,7 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
     this.RSVP.on('chained', this.promiseChained);
     this.RSVP.on('rejected', this.promiseRejected);
     this.RSVP.on('fulfilled', this.promiseFulfilled);
-    this.RSVP.on('created',  this.promiseCreated);
-
+    this.RSVP.on('created', this.promiseCreated);
   },
 
   stop: function() {
@@ -48,7 +47,7 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
     this.RSVP.off('chained', this.promiseChained);
     this.RSVP.off('rejected', this.promiseRejected);
     this.RSVP.off('fulfilled', this.promiseFulfilled);
-    this.RSVP.off('created',  this.promiseCreated);
+    this.RSVP.off('created', this.promiseCreated);
 
     this.get('all').forEach(function(item) {
       item.destroy();
@@ -76,7 +75,7 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
     return promise;
   },
 
-  find: function(guid){
+  find: function(guid) {
     if (guid) {
       var index = this.get('promiseIndex')[guid];
       if (index !== undefined) {
@@ -93,7 +92,7 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
     });
   },
 
-  updateOrCreate: function(guid, properties){
+  updateOrCreate: function(guid, properties) {
     var entry = this.find(guid);
     if (entry) {
       entry.setProperties(properties);

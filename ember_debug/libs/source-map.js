@@ -6,19 +6,50 @@
 var Ember = window.Ember;
 var EmberObject = Ember.Object;
 var computed = Ember.computed;
+var RSVP = Ember.RSVP;
+var resolve = RSVP.resolve;
+
+var notFoundError = new Error('Source map url not found');
+
 export default EmberObject.extend({
 
+  _lastPromise: computed(function() {
+    return resolve();
+  }),
+
+  /**
+   * Returns a promise that resolves to an array
+   * of mapped sourcew.
+   *
+   * @param  {String} stack The stack trace
+   * @return {RSVP.Promise}
+   */
   map: function(stack) {
     var self = this;
-    var parsed = fromStackProperty(stack);
-    return Ember.A(parsed).map(function(item) {
-      var smc = self.getSourceMap(item.url);
-      var source = smc.originalPositionFor({
-        line: item.line,
-        column: item.column
+    var parsed = Ember.A(fromStackProperty(stack));
+    var array = Ember.A();
+    var lastPromise = null;
+    parsed.forEach(function(item) {
+      lastPromise = self.get('_lastPromise').then(function() {
+        return self.getSourceMap(item.url);
+      }).then(function(smc) {
+        if (smc) {
+          var source = smc.originalPositionFor({
+            line: item.line,
+            column: item.column
+          });
+          source.fullSource = relativeToAbsolute(item.url, source.source);
+          array.push(source);
+          return array;
+        }
       });
-      source.fullSource = relativeToAbsolute(item.url, source.source);
-      return source;
+      self.set('_lastPromise', lastPromise);
+    });
+    return resolve(lastPromise).catch(function(e) {
+      if (e === notFoundError) {
+        return null;
+      }
+      throw e;
     });
   },
 
@@ -28,33 +59,42 @@ export default EmberObject.extend({
 
   getSourceMap: function(url) {
     var sourceMaps = this.get('sourceMapCache');
-    if (sourceMaps[url]) { return sourceMaps[url]; }
-    var map = JSON.parse(retrieveSourceMap(url).map);
-    var sm = new window.sourceMap.SourceMapConsumer(map);
-    sourceMaps[url] = sm;
-    return sm;
+    if (sourceMaps[url] !== undefined) { return resolve(sourceMaps[url]); }
+    return retrieveSourceMap(url).then(function(response) {
+      if (response) {
+        var map = JSON.parse(response.map);
+        var sm = new window.sourceMap.SourceMapConsumer(map);
+        sourceMaps[url] = sm;
+        return sm;
+      }
+    }, function() {
+      sourceMaps[url] = null;
+    });
   }
 });
 
 
 function retrieveSourceMap(source) {
-  var sourceMappingURL = retrieveSourceMapURL(source);
-  if (!sourceMappingURL) { return null;}
+  var mapURL;
+  return retrieveSourceMapURL(source).then(function(sourceMappingURL) {
+    if (!sourceMappingURL) {
+      throw notFoundError;
+    }
 
-  // Read the contents of the source map
-  var sourceMapData;
-  // Support source map URLs relative to the source URL
-  sourceMappingURL = relativeToAbsolute(source, sourceMappingURL);
-  sourceMapData = retrieveFile(sourceMappingURL, 'utf8');
-
-  if (!sourceMapData) {
-    return null;
-  }
-
-  return {
-    url: sourceMappingURL,
-    map: sourceMapData
-  };
+    // Support source map URLs relative to the source URL
+    mapURL = relativeToAbsolute(source, sourceMappingURL);
+    return mapURL;
+  })
+  .then(retrieveFile)
+  .then(function(sourceMapData) {
+    if (!sourceMapData) {
+      return null;
+    }
+    return {
+      url: mapURL,
+      map: sourceMapData
+    };
+  });
 }
 
 function relativeToAbsolute(file, url) {
@@ -66,18 +106,22 @@ function relativeToAbsolute(file, url) {
 }
 
 function retrieveFile(source) {
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', source, false);
-  xhr.send(null);
-  return xhr.readyState === 4 ? xhr.responseText : null;
+  return new RSVP.Promise(function(resolve) {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+      resolve(this.responseText);
+    };
+    xhr.open('GET', source, true);
+    xhr.send();
+  });
 }
 
 function retrieveSourceMapURL(source) {
-  var fileData = retrieveFile(source);
-
-  var match = /\/\/[#@]\s*sourceMappingURL=(.*)\s*$/m.exec(fileData);
-  if (!match) { return null; }
-  return match[1];
+  return retrieveFile(source).then(function(fileData) {
+    var match = /\/\/[#@]\s*sourceMappingURL=(.*)\s*$/m.exec(fileData);
+    if (!match) { return null; }
+    return match[1];
+  });
 }
 
 
@@ -110,5 +154,5 @@ function fromStackProperty(stackString) {
     }
   }
 
-  return stack.length ? stack:null;
+  return stack.length ? stack : null;
 }

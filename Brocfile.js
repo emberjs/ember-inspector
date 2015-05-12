@@ -1,13 +1,15 @@
 /* global require, module */
 
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
-var compileES6  = require('ember-cli/node_modules/broccoli-es6-concatenator');
+var ES6Modules = require('broccoli-es6modules');
 var mergeTrees  = require('broccoli-merge-trees');
 var wrapFiles = require('broccoli-wrap');
 var pickFiles = require('broccoli-static-compiler');
 var concatFiles = require('broccoli-concat');
-var jshintTrees = require('broccoli-jshint');
 var removeFile = require('broccoli-file-remover');
+var path = require('path');
+var jsStringEscape = require('js-string-escape');
+var eslint = require('broccoli-lint-eslint');
 
 /*global process */
 var dist = process.env.EMBER_DIST;
@@ -15,8 +17,33 @@ var dist = process.env.EMBER_DIST;
 var options = {
   fingerprint: {
     enabled: false
+  },
+  babel: {
+    // async/await
+    optional: ['es7.asyncFunctions']
+  },
+  eslint: {
+    testGenerator: eslintTestGenerator
   }
 };
+
+function renderErrors(errors) {
+  if (!errors) { return ''; };
+  return errors.map(function(error) {
+    return error.line + ':' + error.column + ' ' +
+      ' - ' + error.message + ' (' + error.ruleId +')';
+  }).join('\n');
+}
+
+function eslintTestGenerator(relativePath, errors) {
+  var pass = !errors || errors.length === 0;
+  return "import { module, test } from 'qunit';\n" +
+    "module('ESLINT - " + path.dirname(relativePath) + "');\n" +
+    "test('" + relativePath + " should pass eslint', function(assert) {\n" +
+    "  assert.ok(" + pass + ", '" + relativePath + " should pass eslint." +
+    jsStringEscape("\n" + renderErrors(errors)) + "');\n" +
+   "});\n";
+}
 
 if (dist === 'firefox') {
   options.minifyJS = { enabled: false };
@@ -24,9 +51,14 @@ if (dist === 'firefox') {
 }
 var app = new EmberApp(options);
 
-app.import('vendor/list-view/list-view.js');
-
 var env = process.env.EMBER_ENV;
+
+if (env !== 'production') {
+  // To be able to compile htmlbars templates in tests
+  app.import('bower_components/ember/ember-template-compiler.js');
+}
+
+app.import('vendor/babel-polyfill.js', { prepend: true });
 
 // Ember Debug
 
@@ -39,29 +71,32 @@ emberDebug = pickFiles(emberDebug, {
 });
 
 emberDebug = removeFile(emberDebug, {
-  files: ['ember-debug/vendor/source-map.js']
+  files: [
+    'ember-debug/vendor/source-map.js',
+  ]
 });
 
 if (env === 'test') {
-  var jshintedEmberDebug = jshintTrees(emberDebug, {
-    description: 'JSHint - Ember Debug'
+  var linted = eslint(emberDebug, {
+    testGenerator: eslintTestGenerator,
+    config: './eslint.json',
+    rulesdir: './'
   });
-  jshintedEmberDebug = pickFiles(jshintedEmberDebug, {
-    srcDir: '/',
-    destDir: 'ember-debug/tests'
-  });
-  emberDebug = mergeTrees([emberDebug, jshintedEmberDebug]);
+  emberDebug = mergeTrees([emberDebug, linted]);
 }
 
-emberDebug = compileES6(emberDebug, {
-  inputFiles: ['ember-debug/**/*.js'],
-  loaderFile: 'ember-debug/vendor/loader.js',
-  outputFile: '/ember_debug.js',
-  wrapInEval: false,
-  ignoredModules: [
-    'ember-debug/vendor/loader',
-    'ember-debug/vendor/startup-wrapper',
+emberDebug = removeFile(emberDebug, {
+  files: [
+    'ember-debug/vendor/startup-wrapper.js',
+    'ember-debug/vendor/loader.js'
   ]
+});
+
+emberDebug = new ES6Modules(emberDebug, {
+  esperantoOptions: {
+    absolutePaths: true,
+    strict: true
+  }
 });
 
 var startupWrapper = pickFiles('ember_debug', {
@@ -70,10 +105,15 @@ var startupWrapper = pickFiles('ember_debug', {
   destDir: '/'
 });
 
-
 var sourceMap = pickFiles('ember_debug', {
   srcDir: '/vendor',
   files: ['source-map.js'],
+  destDir: '/'
+});
+
+var loader = pickFiles('ember_debug', {
+  srcDir: '/vendor',
+  files: ['loader.js'],
   destDir: '/'
 });
 
@@ -81,17 +121,16 @@ sourceMap = wrapFiles(sourceMap, {
   wrapper: ["(function() {\n", "\n}());"]
 });
 
-emberDebug = mergeTrees([startupWrapper, emberDebug]);
-emberDebug = mergeTrees([sourceMap, emberDebug]);
+emberDebug = mergeTrees([loader, startupWrapper, sourceMap, emberDebug]);
 
 emberDebug = concatFiles(emberDebug, {
-  inputFiles: ['**/*.js'],
+  inputFiles: ['loader.js', '**/*.js'],
   outputFile: '/ember_debug.js',
   wrapInFunction: false
 });
 
 emberDebug = wrapFiles(emberDebug, {
-  wrapper: ["(function(adapter) {\n", "\n}('" + (dist || 'basic') + "'));"]
+  wrapper: ["(function(adapter, env) {\n", "\n}('" + (dist || 'basic') + "', '" + env + "'));"]
 });
 
 var tree = app.toTree();

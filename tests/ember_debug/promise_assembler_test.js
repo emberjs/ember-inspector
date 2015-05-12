@@ -1,4 +1,6 @@
+/* jshint ignore:start */
 import Ember from "ember";
+import { module, test } from 'qunit';
 /*globals require*/
 var PromiseAssembler = require('ember-debug/libs/promise-assembler')["default"];
 
@@ -17,7 +19,7 @@ function startAssembler() {
 }
 
 module("PromiseAssembler", {
-  setup: function() {
+  beforeEach() {
     stubRSVP();
     Ember.run(function() {
       assembler = PromiseAssembler.create({
@@ -26,7 +28,7 @@ module("PromiseAssembler", {
     });
 
   },
-  teardown: function() {
+  afterEach() {
     if (assembler) {
       Ember.run(assembler, 'destroy');
       assembler = null;
@@ -34,7 +36,7 @@ module("PromiseAssembler", {
   }
 });
 
-test("Creates promises correctly", function() {
+test("Creates promises correctly", function(assert) {
   startAssembler();
   var date = new Date();
   var event;
@@ -50,20 +52,20 @@ test("Creates promises correctly", function() {
     stack: 'stack'
   });
 
-  ok(event);
+  assert.ok(event);
   var promise = event.promise;
-  equal(event.promise, assembler.find(promise.get('guid')));
+  assert.equal(event.promise, assembler.find(promise.get('guid')));
 
-  equal(assembler.find().get('length'), 1);
+  assert.equal(assembler.find().get('length'), 1);
 
-  equal(promise.get('guid'), 1);
-  equal(promise.get('label'), 'label');
-  equal(promise.get('createdAt'), date);
-  equal(promise.get('stack'), 'stack');
-  equal(promise.get('state'), 'created');
+  assert.equal(promise.get('guid'), 1);
+  assert.equal(promise.get('label'), 'label');
+  assert.equal(promise.get('createdAt'), date);
+  assert.equal(promise.get('stack'), 'stack');
+  assert.equal(promise.get('state'), 'created');
 });
 
-test("Chains a promise correctly (parent and child not-existing)", function() {
+test("Chains a promise correctly (parent and child not-existing)", function(assert) {
   startAssembler();
   var date = new Date();
   var event;
@@ -82,21 +84,21 @@ test("Chains a promise correctly (parent and child not-existing)", function() {
   var parent = event.promise;
   var child = event.child;
 
-  equal(assembler.find(parent.get('guid')), parent);
-  equal(assembler.find(child.get('guid')), child);
+  assert.equal(assembler.find(parent.get('guid')), parent);
+  assert.equal(assembler.find(child.get('guid')), child);
 
-  equal(assembler.find().get('length'), 2);
+  assert.equal(assembler.find().get('length'), 2);
 
-  equal(parent.get('guid'), 1);
-  equal(parent.get('label'), 'label');
-  equal(parent.get('chainedAt'), date);
-  equal(parent.get('children.length'), 1);
-  equal(child.get('guid'), 2);
-  equal(child.get('parent'), parent);
+  assert.equal(parent.get('guid'), 1);
+  assert.equal(parent.get('label'), 'label');
+  assert.equal(parent.get('chainedAt'), date);
+  assert.equal(parent.get('children.length'), 1);
+  assert.equal(child.get('guid'), 2);
+  assert.equal(child.get('parent'), parent);
 
 });
 
-test("Chains a promise correctly (parent and child existing)", function() {
+test("Chains a promise correctly (parent and child existing)", function(assert) {
 
   startAssembler();
   var date = new Date();
@@ -134,24 +136,24 @@ test("Chains a promise correctly (parent and child existing)", function() {
     childGuid: 2
   });
 
-  equal(parent, event.promise);
-  equal(child, event.child);
+  assert.equal(parent, event.promise);
+  assert.equal(child, event.child);
 
-  equal(assembler.find(parent.get('guid')), parent);
-  equal(assembler.find(child.get('guid')), child);
+  assert.equal(assembler.find(parent.get('guid')), parent);
+  assert.equal(assembler.find(child.get('guid')), child);
 
-  equal(assembler.find().get('length'), 2);
+  assert.equal(assembler.find().get('length'), 2);
 
-  equal(parent.get('guid'), 1);
-  equal(parent.get('label'), 'label');
-  equal(parent.get('chainedAt'), date);
-  equal(parent.get('children.length'), 1);
-  equal(child.get('guid'), 2);
-  equal(child.get('parent'), parent);
+  assert.equal(parent.get('guid'), 1);
+  assert.equal(parent.get('label'), 'label');
+  assert.equal(parent.get('chainedAt'), date);
+  assert.equal(parent.get('children.length'), 1);
+  assert.equal(child.get('guid'), 2);
+  assert.equal(child.get('parent'), parent);
 
 });
 
-test("Fulfills a promise correctly", function() {
+test("Fulfills a promise correctly", function(assert) {
   startAssembler();
   var date = new Date();
   var event;
@@ -167,7 +169,7 @@ test("Fulfills a promise correctly", function() {
 
   assembler.off('created');
 
-  equal(promise.get('state'), 'created');
+  assert.equal(promise.get('state'), 'created');
 
   assembler.on('fulfilled', function(e) {
     event = e;
@@ -179,14 +181,14 @@ test("Fulfills a promise correctly", function() {
     timeStamp: date
   });
 
-  equal(event.promise, promise);
-  equal(promise.get('state'), 'fulfilled');
-  equal(promise.get('value'), 'value');
-  equal(promise.get('settledAt'), date);
-  equal(assembler.find().get('length'), 1);
+  assert.equal(event.promise, promise);
+  assert.equal(promise.get('state'), 'fulfilled');
+  assert.equal(promise.get('value'), 'value');
+  assert.equal(promise.get('settledAt'), date);
+  assert.equal(assembler.find().get('length'), 1);
 });
 
-test("Rejects a promise correctly", function() {
+test("Rejects a promise correctly", function(assert) {
   startAssembler();
   var date = new Date();
   var event;
@@ -202,7 +204,7 @@ test("Rejects a promise correctly", function() {
 
   assembler.off('created');
 
-  equal(promise.get('state'), 'created');
+  assert.equal(promise.get('state'), 'created');
 
   assembler.on('rejected', function(e) {
     event = e;
@@ -214,27 +216,27 @@ test("Rejects a promise correctly", function() {
     timeStamp: date
   });
 
-  equal(event.promise, promise);
-  equal(promise.get('state'), 'rejected');
-  equal(promise.get('reason'), 'reason');
-  equal(promise.get('settledAt'), date);
-  equal(assembler.find().get('length'), 1);
+  assert.equal(event.promise, promise);
+  assert.equal(promise.get('state'), 'rejected');
+  assert.equal(promise.get('reason'), 'reason');
+  assert.equal(promise.get('settledAt'), date);
+  assert.equal(assembler.find().get('length'), 1);
 });
 
-test('#stop', function() {
+test('#stop', function(assert) {
   startAssembler();
 
   fakeRSVP.trigger('created', {
     guid: 1
   });
-  equal(assembler.find().get('length'), 1);
+  assert.equal(assembler.find().get('length'), 1);
 
   Ember.run(assembler, 'stop');
 
-  equal(assembler.find().get('length'), 0);
+  assert.equal(assembler.find().get('length'), 0);
   assembler.on('created', function() {
-    ok(false);
+    assert.ok(false);
   });
   fakeRSVP.trigger('created', { guid: 1 });
-  equal(assembler.find().get('length'), 0);
+  assert.equal(assembler.find().get('length'), 0);
 });

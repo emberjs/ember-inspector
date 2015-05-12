@@ -54,13 +54,14 @@ export default Ember.ArrayController.extend({
     return this.container.lookupFactory('controller:promise-item');
   }.property(),
 
+  /* jscs:disable validateIndentation */
   // TODO: This filter can be further optimized
   filtered: filterComputed(
-      'model.@each.createdAt',
-      'model.@each.fulfilledBranch',
-      'model.@each.rejectedBranch',
-      'model.@each.pendingBranch',
-      'model.@each.isVisible', function(item) {
+    'model.@each.createdAt',
+    'model.@each.fulfilledBranch',
+    'model.@each.rejectedBranch',
+    'model.@each.pendingBranch',
+    'model.@each.isVisible', function(item) {
 
     // exclude cleared promises
     if (this.get('createdAfter') && item.get('createdAt') < this.get('createdAfter')) {
@@ -96,6 +97,8 @@ export default Ember.ArrayController.extend({
     return true;
 
   }),
+  /* jscs:enable validateIndentation */
+
 
   filter: 'all',
 
@@ -135,7 +138,7 @@ export default Ember.ArrayController.extend({
       this.get('port').send('promise:tracePromise', { promiseId: promise.get('guid') });
     },
     updateInstrumentWithStack: function(bool) {
-      this.port.send('promise:setInstrumentWithStack', { instrumentWithStack: bool});
+      this.port.send('promise:setInstrumentWithStack', { instrumentWithStack: bool });
     }
   }
 });
