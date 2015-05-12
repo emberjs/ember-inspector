@@ -51,7 +51,7 @@ module("Route Tree Debug", {
 });
 
 test("Route tree", async function t(assert) {
-  var name = null, message = null, route, children;
+  var name = null, message = null, route;
   port.reopen({
     send(n, m) {
       name = n;

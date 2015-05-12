@@ -4,7 +4,7 @@ import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
 var App;
-var run = Ember.run;
+const { run } = Ember;
 
 var port;
 
@@ -16,7 +16,7 @@ module('Route Tree Tab', {
     port = App.__container__.lookup('port:main');
   },
   afterEach() {
-    Ember.run(App, App.destroy);
+    run(App, App.destroy);
   }
 });
 
@@ -56,7 +56,7 @@ var routeTree = {
 
 test("Route tree is successfully displayed", function(assert) {
   port.reopen({
-    send: function(name, message) {
+    send: function(name/*, message*/) {
       if (name === 'route:getTree') {
         this.trigger('route:routeTree', { tree: routeTree });
       }
@@ -167,7 +167,7 @@ test("Clicking on route handlers and controller sends an inspection message", fu
 
 test("Current Route is highlighted", function(assert) {
   port.reopen({
-    send: function(name, message) {
+    send: function(name/*, message*/) {
       if (name === 'route:getTree') {
         this.trigger('route:routeTree', { tree: routeTree });
       } else if (name === 'route:getCurrentRoute') {
@@ -201,7 +201,7 @@ test("Current Route is highlighted", function(assert) {
 
 test("Hiding non current route", function(assert) {
   port.reopen({
-    send: function(name, message) {
+    send: function(name/*, message*/) {
       if (name === 'route:getTree') {
         this.trigger('route:routeTree', { tree: routeTree });
       } else if (name === 'route:getCurrentRoute') {

@@ -55,7 +55,7 @@ function generatePromise(props) {
 
 test("Backwards compatibility - no promise support", async function t(assert) {
   port.reopen({
-    send(n, m) {
+    send(n/*, m*/) {
       if (n === 'promise:supported') {
         this.trigger('promise:supported', {
           supported: false

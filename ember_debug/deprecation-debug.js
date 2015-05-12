@@ -153,7 +153,7 @@ export default EmberObject.extend(PortMixin, {
 
   replaceDeprecate: function() {
     var self = this;
-    var originalDeprecate = this.originalDeprecate = Ember.deprecate;
+    this.originalDeprecate = Ember.deprecate;
 
     Ember.deprecate = function(message, test, options) {
       /* global __fail__*/

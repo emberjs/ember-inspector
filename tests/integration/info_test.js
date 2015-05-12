@@ -5,7 +5,7 @@ import { module } from 'qunit';
 import startApp from '../helpers/start-app';
 let App;
 
-let port, message, name;
+let port;
 
 module('Info Tab', {
   beforeEach() {
@@ -27,8 +27,6 @@ module('Info Tab', {
     });
   },
   afterEach() {
-    name = null;
-    message = null;
     Ember.run(App, App.destroy);
   }
 });

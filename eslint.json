@@ -102,7 +102,7 @@
     "no-underscore-dangle": 0,
     "no-unreachable": 2,
     "no-unused-expressions": 2,
-    "no-unused-vars": [0, "local"],
+    "no-unused-vars": [2, "local"],
     "no-use-before-define": 0,
     "no-with": 2,
     "no-void": 2,

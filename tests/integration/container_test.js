@@ -50,7 +50,7 @@ function getInstances() {
 
 test("Container types are successfully listed", async function t(assert) {
   port.reopen({
-    send: function(name, message) {
+    send: function(name) {
       if (name === 'container:getTypes') {
         this.trigger('container:types', { types: getTypes() });
       }
@@ -69,8 +69,6 @@ test("Container types are successfully listed", async function t(assert) {
 
 
 test("Container instances are successfully listed", async function t(assert) {
-  let types = [{ name: 'controller', count: 2 }];
-
   let instances = getInstances();
 
   port.reopen({
