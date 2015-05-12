@@ -1,5 +1,20 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 1.8.0
+
+* [IMPROVEMENT] The view tree now supports glimmer [#357](https://github.com/emberjs/ember-inspector/pull/357)
+* [IMPROVEMENT] Catch errors triggered by the inspector and show them as warnings [#343](https://github.com/emberjs/ember-inspector/pull/343)
+* [IMPROVEMENT] Handle and display errors caused by CP calculation in the object inspector [#342](https://github.com/emberjs/ember-inspector/pull/342)
+* [IMPROVEMENT] Stop deprecation logging in console and add one warning [#347](https://github.com/emberjs/ember-inspector/pull/347)
+* [IMPROVEMENT] Speed up the deprecations tab and source map computation [#358](https://github.com/emberjs/ember-inspector/pull/358)
+* [BUGFIX] Include ember-new-computed in ember-debug to remove CP syntax deprecations [#352](https://github.com/emberjs/ember-inspector/pull/352)
+* [INTERNAL] Tests now use async/await instead of async test helpers [#340](https://github.com/emberjs/ember-inspector/pull/340)
+* [INTERNAL] Use new CP syntax [#337](https://github.com/emberjs/ember-inspector/pull/337)
+* [INTERNAL] Add eslint [#340](https://github.com/emberjs/ember-inspector/pull/340)
+* [INTERNAL] Use broccoli-es6modules (esperanto) to transpile ember-debug [#328](https://github.com/emberjs/ember-inspector/pull/328)
+* [INTERNAL] Upgrade to ember-cli 0.2 and qunit 2.0 syntax [#330](https://github.com/emberjs/ember-inspector/pull/330) [#332](https://github.com/emberjs/ember-inspector/pull/332) [#293](https://github.com/emberjs/ember-inspector/pull/293)
+* [INTERNAL] Upgrade to Ember 1.10 [#329](https://github.com/emberjs/ember-inspector/pull/329)
+
 ## Ember Inspector 1.7.3
 
 * [BUGFIX] Don't assume prototype extensions are enabled
