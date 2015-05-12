@@ -6,6 +6,7 @@ var computed = Ember.computed;
 var oneWay = computed.oneWay;
 var run = Ember.run;
 var guidFor = Ember.guidFor;
+var RSVP = Ember.RSVP;
 
 export default EmberObject.extend(PortMixin, {
   portNamespace: 'deprecation',
@@ -43,27 +44,33 @@ export default EmberObject.extend(PortMixin, {
   fetchSourceMap: function(stackStr) {
     var self = this;
     if (this.get('emberCliConfig') && this.get('emberCliConfig.environment') === 'development') {
-      var mapped = Ember.A(this.get('sourceMap').map(stackStr));
-      if (mapped && mapped.length > 0) {
-        var source = mapped.find(function(item) {
-          return !!item.source.match(new RegExp(self.get('emberCliConfig.modulePrefix')));
-        });
-        if (source) {
-          source.found = true;
-        } else {
-          source = mapped.get('firstObject');
-          source.found = false;
+      return this.get('sourceMap').map(stackStr).then(function(mapped) {
+        if (mapped && mapped.length > 0) {
+          var source = mapped.find(function(item) {
+            return !!item.source.match(new RegExp(self.get('emberCliConfig.modulePrefix')));
+          });
+          if (source) {
+            source.found = true;
+          } else {
+            source = mapped.get('firstObject');
+            source.found = false;
+          }
+          return source;
         }
-        return source;
-      }
+      });
+    } else {
+      return RSVP.resolve(null);
     }
+
   },
 
   sendPending: function() {
     var self = this;
     var deprecations = Ember.A();
-    this.get('deprecationsToSend').forEach(function(deprecation) {
+
+    var promises = RSVP.all(this.get('deprecationsToSend').map(function(deprecation) {
       var obj;
+      var promise = RSVP.resolve();
       self.get('deprecations').pushObject(deprecation);
       var grouped = self.get('groupedDeprecations');
       var id = guidFor(deprecation.message);
@@ -80,35 +87,42 @@ export default EmberObject.extend(PortMixin, {
       }
       var found = obj.sources.findBy('stackStr', deprecation.stackStr);
       if (!found) {
-        var map = self.fetchSourceMap(deprecation.stackStr);
-        obj.sources.pushObject({
-          map: map,
-          stackStr: deprecation.stackStr
+        var stackStr = deprecation.stackStr;
+        promise = self.fetchSourceMap(stackStr).then(function(map) {
+          obj.sources.pushObject({
+            map: map,
+            stackStr: stackStr
+          });
+          if (map) {
+            obj.hasSourceMap = true;
+          }
         });
-        if (map) {
-          obj.hasSourceMap = true;
-        }
       }
-      delete obj.stackStr;
-      deprecations.addObject(obj);
-    }, this);
+      return promise.then(function() {
+        delete obj.stackStr;
+        deprecations.addObject(obj);
+      });
+    }, this));
 
-    this.sendMessage('deprecationsAdded', {
-      deprecations: deprecations
+    promises.then(function() {
+      self.sendMessage('deprecationsAdded', {
+        deprecations: deprecations
+      });
+
+      self.get('deprecationsToSend').clear();
+      self.sendCount();
     });
-
-    this.get('deprecationsToSend').clear();
-    this.sendCount();
   },
 
   sendCount: function() {
     this.sendMessage('count', {
-      count: this.get('deprecations.length')
+      count: this.get('deprecations.length') + this.get('deprecationsToSend.length')
     });
   },
 
   messages: {
     watch: function() {
+      this._watching = true;
       var grouped = this.get('groupedDeprecations');
       var deprecations = [];
       for (var i in grouped) {
@@ -120,6 +134,7 @@ export default EmberObject.extend(PortMixin, {
       this.sendMessage('deprecationsAdded', {
         deprecations: deprecations
       });
+      this.sendPending();
     },
 
     sendStackTraces: function(message) {
@@ -141,6 +156,10 @@ export default EmberObject.extend(PortMixin, {
       this.get('deprecations').clear();
       this.set('groupedDeprecations', {});
       this.sendCount();
+    },
+
+    release: function() {
+      this._watching = false;
     }
   },
 
@@ -209,9 +228,14 @@ export default EmberObject.extend(PortMixin, {
       };
 
       self.get('deprecationsToSend').pushObject(deprecation);
-      self.debounce = run.debounce(self, 'sendPending', 100);
+      run.cancel(self.debounce);
+      if (self._watching) {
+        self.debounce = run.debounce(self, 'sendPending', 100);
+      } else {
+        self.debounce = run.debounce(self, 'sendCount', 100);
+      }
       if (!self._warned) {
-        self.get("adapter").debug("Deprecations were detected, see the Ember Inspector deprecations tab for more details.");
+        self.get("adapter").warn("Deprecations were detected, see the Ember Inspector deprecations tab for more details.");
         self._warned = true;
       }
     };
