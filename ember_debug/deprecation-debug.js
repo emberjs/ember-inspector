@@ -59,7 +59,7 @@ export default EmberObject.extend(PortMixin, {
         }
       });
     } else {
-      return RSVP.resolve(null);
+      return RSVP.resolve(null, 'ember-inspector');
     }
 
   },
@@ -70,7 +70,7 @@ export default EmberObject.extend(PortMixin, {
 
     var promises = RSVP.all(this.get('deprecationsToSend').map(function(deprecation) {
       var obj;
-      var promise = RSVP.resolve();
+      var promise = RSVP.resolve(undefined, 'ember-inspector');
       self.get('deprecations').pushObject(deprecation);
       var grouped = self.get('groupedDeprecations');
       var id = guidFor(deprecation.message);
@@ -96,7 +96,7 @@ export default EmberObject.extend(PortMixin, {
           if (map) {
             obj.hasSourceMap = true;
           }
-        });
+        }, null, 'ember-inspector');
       }
       return promise.then(function() {
         delete obj.stackStr;
@@ -111,7 +111,7 @@ export default EmberObject.extend(PortMixin, {
 
       self.get('deprecationsToSend').clear();
       self.sendCount();
-    });
+    }, null, 'ember-inspector');
   },
 
   sendCount: function() {
