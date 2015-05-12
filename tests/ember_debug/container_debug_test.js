@@ -80,18 +80,3 @@ test("#getInstances on a non existing type", async function t(assert) {
   assert.equal(message.status, 404);
 });
 
-
-test("#getInstances on a non existing type", function() {
-  visit('/simple');
-
-  andThen(function() {
-    port.trigger('container:getInstances', { containerType: 'not-here' });
-    return wait();
-  });
-
-  andThen(function() {
-    equal(name, 'container:instances');
-    equal(message.status, 404);
-  });
-});
-
