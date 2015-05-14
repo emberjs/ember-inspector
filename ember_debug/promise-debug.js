@@ -89,13 +89,13 @@ export default EmberObject.extend(PortMixin, {
       this.sendInstrumentWithStack();
     }
   },
-  
+
   instrumentWithStack: computedPolyfill({
-    get: function(key) {
+    get: function() {
       return !!this.get('session').getItem('promise:stack');
     },
     set: function(key, value) {
-      this.get('session').setItem('promise:stack', val);
+      this.get('session').setItem('promise:stack', value);
     }
   }).property(),
 
