@@ -1,6 +1,6 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import PromiseAssembler from 'ember-debug/libs/promise-assembler';
-import computedPolyfill from '../addons/ember-new-computed/index';
+import computedPolyfill from './addons/ember-new-computed/index';
 var Ember = window.Ember;
 var computed = Ember.computed;
 var oneWay = computed.oneWay;
