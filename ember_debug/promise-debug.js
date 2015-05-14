@@ -96,6 +96,7 @@ export default EmberObject.extend(PortMixin, {
     },
     set: function(key, value) {
       this.get('session').setItem('promise:stack', value);
+      return value;
     }
   }).property(),
 
