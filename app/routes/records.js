@@ -1,13 +1,13 @@
 import Ember from "ember";
 import TabRoute from "ember-inspector/routes/tab";
 
-var set = Ember.set;
+const set = Ember.set;
 
 export default TabRoute.extend({
   setupController: function(controller, model) {
     this._super(controller, model);
 
-    var type = this.modelFor('model_type');
+    const type = this.modelFor('model_type');
 
     controller.set('modelType', type);
 
@@ -33,9 +33,9 @@ export default TabRoute.extend({
   },
 
   updateRecords: function(message) {
-    var route = this;
+    let route = this;
     message.records.forEach(function(record) {
-      var currentRecord = route.get('currentModel').findProperty('objectId', record.objectId);
+      const currentRecord = route.get('currentModel').findProperty('objectId', record.objectId);
       if (currentRecord) {
         set(currentRecord, 'columnValues', record.columnValues);
         set(currentRecord, 'filterValues', record.filterValues);

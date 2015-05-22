@@ -23,7 +23,7 @@ export default BasicAdapter.extend({
       return;
     }
 
-    var message = evt.data;
+    const message = evt.data;
     // check if the event is originated by our privileged ember inspector code
     if (evt.isTrusted) {
       if (typeof message.type === 'string' && message.type === 'iframes') {
@@ -39,7 +39,7 @@ export default BasicAdapter.extend({
   },
 
   _sendIframes: function (urls) {
-    var self = this;
+    let self = this;
     urls.forEach(function(url) {
       self.sendMessage({ type: "injectEmberDebug", frameURL: url });
     });

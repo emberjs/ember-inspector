@@ -1,11 +1,11 @@
 import Ember from "ember";
 import TabRoute from "ember-inspector/routes/tab";
 
-var Promise = Ember.RSVP.Promise;
+const { RSVP: { Promise } } = Ember;
 
 export default TabRoute.extend({
   model: function() {
-    var port = this.get('port');
+    const port = this.get('port');
     return new Promise(function(resolve) {
       port.one('render:profilesAdded', function(message) {
         resolve(message.profiles);
@@ -19,13 +19,13 @@ export default TabRoute.extend({
     if (model.length === 0) {
       controller.set('initialEmpty', true);
     }
-    var port = this.get('port');
+    const port = this.get('port');
     port.on('render:profilesUpdated', this, this.profilesUpdated);
     port.on('render:profilesAdded', this, this.profilesAdded);
   },
 
   deactivate: function() {
-    var port = this.get('port');
+    const port = this.get('port');
     port.off('render:profilesUpdated', this, this.profilesUpdated);
     port.off('render:profilesAdded', this, this.profilesAdded);
     port.send('render:releaseProfiles');
@@ -36,8 +36,8 @@ export default TabRoute.extend({
   },
 
   profilesAdded: function(message) {
-    var model = this.get('controller.model');
-    var profiles = message.profiles;
+    const model = this.get('controller.model');
+    const profiles = message.profiles;
 
     model.pushObjects(profiles);
   },

@@ -1,5 +1,5 @@
 import Ember from "ember";
-var View = Ember.View;
+const { View } = Ember;
 export default View.extend({
   attributeBindings: ['style'],
 
@@ -14,7 +14,7 @@ export default View.extend({
   filterHeight: 22,
 
   height: function() {
-    var filterHeight = this.get('filterHeight'),
+    const filterHeight = this.get('filterHeight'),
         headerHeight = 30,
         contentHeight = this.get('contentHeight');
 

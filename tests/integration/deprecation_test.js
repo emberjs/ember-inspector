@@ -3,9 +3,9 @@ import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
-var App;
+let App;
 
-var port, message, name;
+let port, message, name;
 
 function deprecationsWithSource() {
   return [{
@@ -74,9 +74,9 @@ test('No source map', async function t(assert) {
 
   await visit('/deprecations');
 
-  var rows = findByLabel('deprecation-item');
+  let rows = findByLabel('deprecation-item');
   assert.equal(rows.length, 1);
-  var row = rows[0];
+  let row = rows[0];
   assert.equal(findByLabel('deprecation-source', row).length, 0, 'no sources');
   assert.equal(findByLabel('deprecation-message', row).text().trim(), 'Deprecation 1', 'message shown');
   assert.equal(findByLabel('deprecation-count', row).text().trim(), 2, 'Count correct');

@@ -1,12 +1,10 @@
 import Ember from "ember";
-var ArrayController = Ember.ArrayController;
-var alias = Ember.computed.alias;
-var mapComputed = Ember.computed.map;
-var run = Ember.run;
+const { ArrayController, computed, run } = Ember;
+const { alias, map } = computed;
 
 export default ArrayController.extend({
-  model: mapComputed('port.detectedApplications', function(item) {
-    var name = item.split('__');
+  model: map('port.detectedApplications', function(item) {
+    let name = item.split('__');
     return {
       name: name[1],
       val: item
@@ -17,14 +15,14 @@ export default ArrayController.extend({
 
   selectedDidChange: function() {
     // Change iframe being debugged
-    var url = '/';
-    var applicationId = this.get('selectedApp');
-    var app = this.container.lookup('application:main');
-    var list = this.get('port').get('detectedApplications');
+    let url = '/';
+    let applicationId = this.get('selectedApp');
+    let app = this.container.lookup('application:main');
+    let list = this.get('port').get('detectedApplications');
 
     run(app, app.reset);
-    var router = app.__container__.lookup('router:main');
-    var port = app.__container__.lookup('port:main');
+    let router = app.__container__.lookup('router:main');
+    let port = app.__container__.lookup('port:main');
     port.set('applicationId', applicationId);
     port.set('detectedApplications', list);
 

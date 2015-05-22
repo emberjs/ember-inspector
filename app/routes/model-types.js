@@ -1,5 +1,5 @@
 import Ember from "ember";
-var Promise = Ember.RSVP.Promise;
+const { RSVP: { Promise } } = Ember;
 
 export default Ember.Route.extend({
   setupController: function(controller, model) {
@@ -9,7 +9,7 @@ export default Ember.Route.extend({
   },
 
   model: function() {
-    var port = this.get('port');
+    const port = this.get('port');
     return new Promise(function(resolve) {
       port.one('data:modelTypesAdded', this, function(message) {
         resolve(message.modelTypes);
@@ -29,9 +29,9 @@ export default Ember.Route.extend({
   },
 
   updateModelTypes: function(message) {
-    var route = this;
+    let route = this;
     message.modelTypes.forEach(function(modelType) {
-      var currentType = route.get('currentModel').findProperty('objectId', modelType.objectId);
+      const currentType = route.get('currentModel').findProperty('objectId', modelType.objectId);
       Ember.set(currentType, 'count', modelType.count);
     });
   }

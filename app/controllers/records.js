@@ -28,8 +28,8 @@ export default Controller.extend({
   }.observes('model'),
 
   recordToString: function(record) {
-    var search = '';
-    var searchKeywords = Ember.get(record, 'searchKeywords');
+    let search = '';
+    let searchKeywords = Ember.get(record, 'searchKeywords');
     if (searchKeywords) {
       search = Ember.get(record, 'searchKeywords').join(' ');
     }

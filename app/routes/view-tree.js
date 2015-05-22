@@ -1,6 +1,6 @@
 import Ember from "ember";
 import TabRoute from "ember-inspector/routes/tab";
-var $ = Ember.$;
+const $ = Ember.$;
 
 export default TabRoute.extend({
   model() {
@@ -26,7 +26,7 @@ export default TabRoute.extend({
   },
 
   setViewTree: function(options) {
-    var viewArray = topSort(options.tree);
+    let viewArray = topSort(options.tree);
     this.set('controller.model', viewArray);
   },
 
@@ -61,7 +61,7 @@ export default TabRoute.extend({
 
 function topSort(tree, list) {
   list = list || [];
-  var view = $.extend({}, tree);
+  let view = $.extend({}, tree);
   view.parentCount = view.parentCount || 0;
   delete view.children;
   list.push(view);

@@ -1,6 +1,7 @@
 import Ember from "ember";
-var Controller = Ember.Controller;
-var notEmpty = Ember.computed.notEmpty;
+const { Controller, computed } = Ember;
+const { notEmpty } = computed;
+
 export default Controller.extend({
   isExpanded: true,
 

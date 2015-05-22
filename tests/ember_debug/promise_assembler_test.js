@@ -2,11 +2,11 @@
 import Ember from "ember";
 import { module, test } from 'qunit';
 /*globals require*/
-var PromiseAssembler = require('ember-debug/libs/promise-assembler')["default"];
+const PromiseAssembler = require('ember-debug/libs/promise-assembler')["default"];
 
-var assembler;
+let assembler;
 
-var fakeRSVP;
+let fakeRSVP;
 
 function stubRSVP() {
   fakeRSVP = Ember.Object.createWithMixins(Ember.Evented, {
@@ -38,8 +38,8 @@ module("PromiseAssembler", {
 
 test("Creates promises correctly", function(assert) {
   startAssembler();
-  var date = new Date();
-  var event;
+  let date = new Date();
+  let event;
 
   assembler.on('created', function(e) {
     event = e;
@@ -53,7 +53,7 @@ test("Creates promises correctly", function(assert) {
   });
 
   assert.ok(event);
-  var promise = event.promise;
+  let promise = event.promise;
   assert.equal(event.promise, assembler.find(promise.get('guid')));
 
   assert.equal(assembler.find().get('length'), 1);
@@ -67,8 +67,8 @@ test("Creates promises correctly", function(assert) {
 
 test("Chains a promise correctly (parent and child not-existing)", function(assert) {
   startAssembler();
-  var date = new Date();
-  var event;
+  let date = new Date();
+  let event;
 
   assembler.on('chained', function(e) {
     event = e;
@@ -81,8 +81,8 @@ test("Chains a promise correctly (parent and child not-existing)", function(asse
     childGuid: 2
   });
 
-  var parent = event.promise;
-  var child = event.child;
+  let parent = event.promise;
+  let child = event.child;
 
   assert.equal(assembler.find(parent.get('guid')), parent);
   assert.equal(assembler.find(child.get('guid')), child);
@@ -101,10 +101,10 @@ test("Chains a promise correctly (parent and child not-existing)", function(asse
 test("Chains a promise correctly (parent and child existing)", function(assert) {
 
   startAssembler();
-  var date = new Date();
-  var event;
-  var parent;
-  var child;
+  let date = new Date();
+  let event;
+  let parent;
+  let child;
 
   assembler.on('created', function(e) {
     parent = e.promise;
@@ -155,9 +155,9 @@ test("Chains a promise correctly (parent and child existing)", function(assert) 
 
 test("Fulfills a promise correctly", function(assert) {
   startAssembler();
-  var date = new Date();
-  var event;
-  var promise;
+  let date = new Date();
+  let event;
+  let promise;
 
   assembler.on('created', function(e) {
     promise = e.promise;
@@ -190,9 +190,9 @@ test("Fulfills a promise correctly", function(assert) {
 
 test("Rejects a promise correctly", function(assert) {
   startAssembler();
-  var date = new Date();
-  var event;
-  var promise;
+  let date = new Date();
+  let event;
+  let promise;
 
   assembler.on('created', function(e) {
     promise = e.promise;

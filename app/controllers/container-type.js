@@ -1,10 +1,8 @@
 import Ember from "ember";
 import debounceComputed from "ember-inspector/computed/debounce";
 import searchMatch from "ember-inspector/utils/search-match";
-var ArrayController = Ember.ArrayController;
-var computed = Ember.computed;
-var filter = computed.filter;
-var get = Ember.get;
+const { ArrayController, computed, get } = Ember;
+const { filter } = computed;
 
 export default ArrayController.extend({
   needs: ['application'],

@@ -1,5 +1,5 @@
 import Ember from "ember";
-var Promise = Ember.RSVP.Promise;
+const { RSVP: { Promise } } = Ember;
 /*eslint camelcase: 0 */
 export default Ember.Route.extend({
   setupController: function(controller, model) {
@@ -9,7 +9,7 @@ export default Ember.Route.extend({
 
   model: function(params) {
     return new Promise(function(resolve) {
-      var type = this.modelFor('model-types').findBy('name', params.type_id);
+      const type = this.modelFor('model-types').findBy('name', params.type_id);
       if (type) {
         resolve(type);
       } else {

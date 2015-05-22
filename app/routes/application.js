@@ -6,7 +6,7 @@ export default Route.extend({
 
   setupController() {
     this.controllerFor('mixinStack').set('model', []);
-    var port = this.get('port');
+    let port = this.get('port');
     port.on('objectInspector:updateObject', this, this.updateObject);
     port.on('objectInspector:updateProperty', this, this.updateProperty);
     port.on('objectInspector:updateErrors', this, this.updateErrors);
@@ -16,7 +16,7 @@ export default Route.extend({
   },
 
   deactivate() {
-    var port = this.get('port');
+    let port = this.get('port');
     port.off('objectInspector:updateObject', this, this.updateObject);
     port.off('objectInspector:updateProperty', this, this.updateProperty);
     port.off('objectInspector:updateErrors', this, this.updateErrors);
@@ -25,7 +25,7 @@ export default Route.extend({
   },
 
   updateObject: function(options) {
-    var details = options.details,
+    const details = options.details,
       name = options.name,
       property = options.property,
       objectId = options.objectId,
@@ -34,7 +34,7 @@ export default Route.extend({
     Ember.NativeArray.apply(details);
     details.forEach(arrayize);
 
-    var controller = this.get('controller');
+    let controller = this.get('controller');
 
     if (options.parentObject) {
       controller.pushMixinDetails(name, property, objectId, details);
@@ -63,7 +63,7 @@ export default Route.extend({
   },
 
   droppedObject: function(message) {
-    var controller = this.get('controller');
+    let controller = this.get('controller');
     controller.droppedObject(message.objectId);
   },
 

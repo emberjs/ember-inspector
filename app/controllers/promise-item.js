@@ -1,15 +1,12 @@
 import Ember from "ember";
-var COLOR_MAP = {
+const { computed } = Ember;
+const { alias, notEmpty, empty, gt, equal } = computed;
+
+const COLOR_MAP = {
   red: '#ff2717',
   blue: '#174fff',
   green: '#006400'
 };
-
-var alias = Ember.computed.alias;
-var notEmpty = Ember.computed.notEmpty;
-var gt = Ember.computed.gt;
-var empty = Ember.computed.empty;
-var computedEqual = Ember.computed.equal;
 
 export default Ember.ObjectProxy.extend({
   promiseTreeController: function() {
@@ -21,10 +18,10 @@ export default Ember.ObjectProxy.extend({
 
   model: alias('content'),
 
-  isError: computedEqual('reason.type', 'type-error'),
+  isError: equal('reason.type', 'type-error'),
 
   style: function() {
-    var color = '';
+    let color = '';
     if (this.get('isFulfilled')) {
       color = 'green';
     } else if (this.get('isRejected')) {
@@ -37,7 +34,7 @@ export default Ember.ObjectProxy.extend({
 
 
   nodeStyle: function() {
-    var relevant;
+    let relevant;
     switch (this.get('filter')) {
       case 'pending':
         relevant = this.get('isPending');
@@ -115,8 +112,8 @@ export default Ember.ObjectProxy.extend({
     if (!this.get('createdAt') || !this.get('settledAt')) {
       return ' -- ';
     }
-    var startedAt = this.get('parent.settledAt') || this.get('createdAt');
-    var remaining = this.get('settledAt').getTime() - startedAt.getTime();
+    let startedAt = this.get('parent.settledAt') || this.get('createdAt');
+    let remaining = this.get('settledAt').getTime() - startedAt.getTime();
     return remaining;
   }.property('createdAt', 'settledAt', 'parent.settledAt')
 });

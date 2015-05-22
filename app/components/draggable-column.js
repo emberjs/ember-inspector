@@ -3,7 +3,7 @@
 // A wrapper for a resizable-column and a drag-handle component
 
 import Ember from "ember";
-var Component = Ember.Component;
+const { Component } = Ember;
 
 export default Component.extend({
   tagName: '', // Prevent wrapping in a div

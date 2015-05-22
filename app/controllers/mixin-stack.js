@@ -3,7 +3,7 @@ export default Ember.ArrayController.extend({
   needs: ['application'],
 
   trail: function() {
-    var nested = this.slice(1);
+    let nested = this.slice(1);
     if (nested.length === 0) { return ""; }
     return "." + nested.mapProperty('property').join(".");
   }.property('[]'),
@@ -21,7 +21,7 @@ export default Ember.ArrayController.extend({
     },
 
     sendObjectToConsole: function(obj) {
-      var objectId = Ember.get(obj, 'objectId');
+      let objectId = Ember.get(obj, 'objectId');
       this.get('port').send('objectInspector:sendToConsole', {
         objectId: objectId
       });

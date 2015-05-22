@@ -1,7 +1,7 @@
 /* globals chrome */
 import BasicAdapter from "./basic";
 
-var emberDebug = null;
+let emberDebug = null;
 
 export default BasicAdapter.extend({
   name: 'chrome',
@@ -16,8 +16,8 @@ export default BasicAdapter.extend({
   }.property(),
 
   _connect: function() {
-    var self = this;
-    var chromePort = this.get('_chromePort');
+    let self = this;
+    let chromePort = this.get('_chromePort');
     chromePort.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
 
     chromePort.onMessage.addListener(function(message) {
@@ -29,7 +29,7 @@ export default BasicAdapter.extend({
   }.on('init'),
 
   _handleReload: function() {
-    var self = this;
+    let self = this;
     chrome.devtools.network.onNavigated.addListener(function() {
       self._injectDebugger();
       location.reload(true);
@@ -76,7 +76,7 @@ function sendIframes(urls) {
 }
 
 function loadEmberDebug() {
-  var xhr;
+  let xhr;
   if (!emberDebug) {
     xhr = new XMLHttpRequest();
     xhr.open("GET", chrome.extension.getURL('/panes/ember_debug.js'), false);

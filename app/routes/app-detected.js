@@ -1,10 +1,9 @@
 import Ember from 'ember';
-var Route = Ember.Route;
-var Promise = Ember.RSVP.Promise;
+const { Route, RSVP: { Promise } } = Ember;
 
 export default Route.extend({
   model: function() {
-    var port = this.get('port');
+    let port = this.get('port');
     return new Promise(function(resolve) {
       port.on('general:applicationBooted', this, function(message) {
         if (message.booted) {

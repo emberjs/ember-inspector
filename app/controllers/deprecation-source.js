@@ -1,15 +1,12 @@
 import Ember from "ember";
-var Controller = Ember.Controller;
-var computed = Ember.computed;
-var bool = computed.bool;
-var readOnly = computed.readOnly;
-var and = computed.and;
+const { Controller, computed } = Ember;
+const { bool, readOnly, and } = computed;
 
 export default Controller.extend({
   known: bool('model.map.source'),
 
   url: function() {
-    var source = this.get('model.map.source');
+    let source = this.get('model.map.source');
     if (this.get('known')) {
       return source + ':' + this.get('model.map.line');
     } else {

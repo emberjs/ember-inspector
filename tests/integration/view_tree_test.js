@@ -3,10 +3,10 @@ import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
-var App;
-var run = Ember.run;
+let App;
+const { run } = Ember;
 
-var port;
+let port;
 
 module('View Tree Tab', {
   beforeEach() {
@@ -20,12 +20,12 @@ module('View Tree Tab', {
   }
 });
 
-var treeId = 0;
+let treeId = 0;
 function viewNodeFactory(props) {
   if (!props.template) {
     props.template = props.name;
   }
-  var obj = {
+  let obj = {
     value: props,
     children: [],
     treeId: ++treeId
@@ -34,11 +34,11 @@ function viewNodeFactory(props) {
 }
 
 function viewTreeFactory(tree) {
-  var children = tree.children;
+  let children = tree.children;
   delete tree.children;
-  var viewNode = viewNodeFactory(tree);
+  let viewNode = viewNodeFactory(tree);
   if (children) {
-    for (var i = 0; i < children.length; i++) {
+    for (let i = 0; i < children.length; i++) {
       viewNode.children.push(viewTreeFactory(children[i]));
     }
   }
@@ -107,7 +107,7 @@ function defaultViewTree() {
 }
 
 test("It should correctly display the view tree", function(assert) {
-  var viewTree = defaultViewTree();
+  const viewTree = defaultViewTree();
 
   visit('/');
 
@@ -120,9 +120,9 @@ test("It should correctly display the view tree", function(assert) {
 
   andThen(() => {
 
-    var $treeNodes = findByLabel('tree-node');
+    let $treeNodes = findByLabel('tree-node');
     assert.equal($treeNodes.length, 3, 'expected some tree nodes');
-    var controllerNames = [],
+    let controllerNames = [],
         templateNames = [],
         modelNames = [],
         viewClassNames = [],
@@ -140,7 +140,7 @@ test("It should correctly display the view tree", function(assert) {
       durations.push(label('view-duration', this));
     });
 
-    var titleTips = find('span[title]:not([data-label])').map(function (i, node) {
+    let titleTips = find('span[title]:not([data-label])').map(function (i, node) {
       return node.getAttribute('title');
     }).toArray().sort();
 
@@ -193,7 +193,7 @@ test("It should correctly display the view tree", function(assert) {
 
 test("It should update the view tree when the port triggers a change", function(assert) {
   assert.expect(4);
-  var $treeNodes, viewTree = defaultViewTree();
+  let $treeNodes, viewTree = defaultViewTree();
 
   visit('/')
   .then(function() {
@@ -225,7 +225,7 @@ test("It should update the view tree when the port triggers a change", function(
 });
 
 test("Previewing / showing a view on the client", function(assert) {
-  var messageSent = null;
+  let messageSent = null;
   port.reopen({
     send: function(name, message) {
       messageSent = { name: name, message: message };
@@ -234,7 +234,7 @@ test("Previewing / showing a view on the client", function(assert) {
 
   visit('/')
   .then(function() {
-    var viewTree = defaultViewTree();
+    let viewTree = defaultViewTree();
     viewTree.children = [];
     port.trigger('view:viewTree', { tree: viewTree });
     return wait();
@@ -251,7 +251,7 @@ test("Previewing / showing a view on the client", function(assert) {
 });
 
 test("Inspecting views on hover", function(assert) {
-  var messageSent = null;
+  let messageSent = null;
   port.reopen({
     send: function(name, message) {
       messageSent = { name: name, message: message };
@@ -274,7 +274,7 @@ test("Inspecting views on hover", function(assert) {
 });
 
 test("Configuring which views to show", function(assert) {
-  var messageSent = null;
+  let messageSent = null;
   port.reopen({
     send: function(name, message) {
       messageSent = { name: name, message: message };
@@ -283,7 +283,7 @@ test("Configuring which views to show", function(assert) {
 
   visit('/')
   .then(function() {
-    var checkbox = findByLabel('filter-components').find('input');
+    const checkbox = findByLabel('filter-components').find('input');
     checkbox.prop('checked', true);
     checkbox.trigger('change');
     return wait();
@@ -294,7 +294,7 @@ test("Configuring which views to show", function(assert) {
     return wait();
   })
   .then(function() {
-    var checkbox = findByLabel('filter-all-views').find('input');
+    const checkbox = findByLabel('filter-all-views').find('input');
     checkbox.prop('checked', true);
     checkbox.trigger('change');
     return wait();

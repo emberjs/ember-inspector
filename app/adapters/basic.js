@@ -12,7 +12,7 @@
  * ```
  */
 import Ember from "ember";
-var K = Ember.K;
+const K = Ember.K;
 export default Ember.Object.extend({
   name: 'basic',
   /**
