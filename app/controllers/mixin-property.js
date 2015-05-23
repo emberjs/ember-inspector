@@ -1,6 +1,5 @@
 import Ember from "ember";
-var equal = Ember.computed.equal;
-var alias = Ember.computed.alias;
+const { computed: { equal, alias} } = Ember;
 
 export default Ember.ObjectController.extend({
   isEdit: false,
@@ -24,12 +23,12 @@ export default Ember.ObjectController.extend({
   isDate: equal('value.type', 'type-date'),
 
   _parseTextValue: function(value) {
-    var parsedValue;
+    let parsedValue;
     try {
       parsedValue = JSON.parse(value);
     } catch(e) {
       // if surrounded by quotes, remove quotes
-      var match = value.match(/^"(.*)"$/);
+      let match = value.match(/^"(.*)"$/);
       if (match && match.length > 1) {
         parsedValue = match[1];
       } else {
@@ -55,8 +54,8 @@ export default Ember.ObjectController.extend({
         return;
       }
 
-      var value = this.get('value.inspect');
-      var type = this.get('value.type');
+      let value = this.get('value.inspect');
+      let type = this.get('value.type');
       if (type === 'type-string') {
         value = '"' + value + '"';
       }
@@ -70,7 +69,7 @@ export default Ember.ObjectController.extend({
     },
 
     saveProperty: function() {
-      var realValue, dataType;
+      let realValue, dataType;
       if (!this.get('isDate')) {
         realValue = this._parseTextValue(this.get('txtValue'));
       } else {

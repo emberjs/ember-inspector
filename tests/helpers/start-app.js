@@ -6,9 +6,9 @@ import triggerPort from './trigger-port';
 let { generateGuid } = Ember;
 
 export default function startApp(attrs) {
-  var application;
+  let application;
 
-  var attributes = Ember.merge({}, config.APP);
+  let attributes = Ember.merge({}, config.APP);
   attributes = Ember.merge(attributes, attrs); // use defaults, but you can override;
 
   Application.initializer({
@@ -34,8 +34,8 @@ export default function startApp(attrs) {
 // TODO: separate each helper in its own file
 
 Ember.Test.registerHelper('findByLabel', function(app, label, context) {
-  var selector = '[data-label="' + label + '"]';
-  var result = app.testHelpers.find(selector, context);
+  let selector = '[data-label="' + label + '"]';
+  let result = app.testHelpers.find(selector, context);
 
   return result;
 });

@@ -1,5 +1,5 @@
 import Ember from "ember";
-var oneWay = Ember.computed.oneWay;
+const { computed: { oneWay } } = Ember;
 
 export default Ember.ObjectController.extend({
   needs: ['mixin-details'],
@@ -13,8 +13,8 @@ export default Ember.ObjectController.extend({
 
   actions: {
     calculate: function(property) {
-      var objectId = this.get('objectId');
-      var mixinIndex = this.get('mixinDetails.model.mixins').indexOf(this.get('model'));
+      let objectId = this.get('objectId');
+      let mixinIndex = this.get('mixinDetails.model.mixins').indexOf(this.get('model'));
 
       this.get('port').send('objectInspector:calculate', {
         objectId: objectId,
@@ -24,7 +24,7 @@ export default Ember.ObjectController.extend({
     },
 
     sendToConsole: function(property) {
-      var objectId = this.get('objectId');
+      let objectId = this.get('objectId');
 
       this.get('port').send('objectInspector:sendToConsole', {
         objectId: objectId,
@@ -37,7 +37,7 @@ export default Ember.ObjectController.extend({
     },
 
     digDeeper: function(property) {
-      var objectId = this.get('objectId');
+      let objectId = this.get('objectId');
 
       this.get('port').send('objectInspector:digDeeper', {
         objectId: objectId,
@@ -46,7 +46,7 @@ export default Ember.ObjectController.extend({
     },
 
     saveProperty: function(prop, val, type) {
-      var mixinIndex = this.get('mixinDetails.model.mixins').indexOf(this.get('model'));
+      let mixinIndex = this.get('mixinDetails.model.mixins').indexOf(this.get('model'));
 
       this.get('port').send('objectInspector:saveProperty', {
         objectId: this.get('objectId'),

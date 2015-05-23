@@ -8,7 +8,7 @@ export default Ember.Object.extend(Ember.Evented, {
   }.property(),
 
   init: function() {
-    var detectedApplications = this.get('detectedApplications');
+    const detectedApplications = this.get('detectedApplications');
     this.get('adapter').onMessageReceived(function(message) {
       if (!message.applicationId) {
         return;
@@ -21,7 +21,7 @@ export default Ember.Object.extend(Ember.Evented, {
         detectedApplications.pushObject(message.applicationId);
       }
 
-      var applicationId = this.get('applicationId');
+      const applicationId = this.get('applicationId');
       if (applicationId === message.applicationId) {
         this.trigger(message.type, message, applicationId);
       }

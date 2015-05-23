@@ -1,12 +1,9 @@
 import Ember from "ember";
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
 import computed from 'ember-new-computed';
-var typeOf = Ember.typeOf;
-var or = Ember.computed.or;
-var equal = Ember.computed.equal;
-var not = Ember.computed.not;
+const { typeOf, computed: { or, equal, not } } = Ember;
 
-var dateComputed = function() {
+const dateComputed = function() {
   return computed({
     get: function() {
       return null;
@@ -29,7 +26,7 @@ export default Ember.Object.extend({
   parent: null,
 
   level: function() {
-    var parent = this.get('parent');
+    let parent = this.get('parent');
     if (!parent) {
       return 0;
     }
@@ -64,7 +61,7 @@ export default Ember.Object.extend({
     if (this.get(prop)) {
       return true;
     }
-    for (var i = 0; i < this.get('children.length'); i++) {
+    for (let i = 0; i < this.get('children.length'); i++) {
       if (this.get('children').objectAt(i).get(cp)) {
         return true;
       }
@@ -108,7 +105,7 @@ export default Ember.Object.extend({
       this.set('branchLabel', this.get('branchLabel') + ' ' + label);
     }
 
-    var parent = this.get('parent');
+    let parent = this.get('parent');
     if (parent) {
       parent.addBranchLabel(label);
     }
@@ -133,14 +130,14 @@ export default Ember.Object.extend({
   isManuallyExpanded: undefined,
 
   stateOrParentChanged: function() {
-    var parent = this.get('parent');
+    let parent = this.get('parent');
     if (parent) {
       Ember.run.once(parent, 'recalculateExpanded');
     }
   }.observes('isPending', 'isFulfilled', 'isRejected', 'parent'),
 
   _findTopParent: function() {
-    var parent = this.get('parent');
+    let parent = this.get('parent');
     if (!parent) {
       return this;
     } else {
@@ -149,13 +146,13 @@ export default Ember.Object.extend({
   },
 
   recalculateExpanded: function() {
-    var isExpanded = false;
+    let isExpanded = false;
     if (this.get('isManuallyExpanded') !== undefined) {
       isExpanded = this.get('isManuallyExpanded');
     } else {
-      var children = this._allChildren();
-      for (var i = 0, l = children.length; i < l; i++) {
-        var child = children[i];
+      let children = this._allChildren();
+      for (let i = 0, l = children.length; i < l; i++) {
+        let child = children[i];
         if (child.get('isRejected')) {
           isExpanded = true;
         }
@@ -166,7 +163,7 @@ export default Ember.Object.extend({
           break;
         }
       }
-      var parents = this._allParents();
+      let parents = this._allParents();
       if (isExpanded) {
         parents.forEach(function(parent) {
           parent.set('isExpanded', true);
@@ -187,7 +184,7 @@ export default Ember.Object.extend({
   }.property('parent.isExpanded', 'parent', 'parent.isVisible'),
 
   _allChildren: function() {
-    var children = Ember.$.extend([], this.get('children'));
+    let children = Ember.$.extend([], this.get('children'));
     children.forEach(function(item) {
       children = Ember.$.merge(children, item._allChildren());
     });
@@ -195,7 +192,7 @@ export default Ember.Object.extend({
   },
 
   _allParents: function() {
-    var parent = this.get('parent');
+    let parent = this.get('parent');
     if (parent) {
       return Ember.$.merge([parent], parent._allParents());
     } else {

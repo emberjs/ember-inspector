@@ -1,13 +1,13 @@
 import Ember from "ember";
 import Promise from "ember-inspector/models/promise";
 
-var EventedMixin = Ember.Evented;
+let EventedMixin = Ember.Evented;
 
-var arrayComputed = Ember.computed(function() {
+let arrayComputed = Ember.computed(function() {
   return [];
 });
 
-var objectComputed = Ember.computed(function() {
+let objectComputed = Ember.computed(function() {
   return {};
 });
 
@@ -39,7 +39,7 @@ export default Ember.Object.extend(EventedMixin, {
     this.get('topSort').clear();
 
     this.set('firstMessageReceived', false);
-    var all = this.get('all');
+    let all = this.get('all');
     // Lazily destroy promises
     // Allows for a smooth transition on deactivate,
     // and thus providing the illusion of better perf
@@ -67,21 +67,21 @@ export default Ember.Object.extend(EventedMixin, {
   rebuildPromises: function(promises) {
     promises.forEach(function(props) {
       props = Ember.copy(props);
-      var childrenIds = props.children;
-      var parentId = props.parent;
+      let childrenIds = props.children;
+      let parentId = props.parent;
       delete props.children;
       delete props.parent;
       if (parentId && parentId !== props.guid) {
         props.parent = this.updateOrCreate({ guid: parentId });
       }
-      var promise = this.updateOrCreate(props);
+      let promise = this.updateOrCreate(props);
       if (childrenIds) {
         childrenIds.forEach(function(childId) {
           // avoid infinite recursion
           if (childId === props.guid) {
             return;
           }
-          var child = this.updateOrCreate({ guid: childId, parent: promise });
+          let child = this.updateOrCreate({ guid: childId, parent: promise });
           promise.get('children').pushObject(child);
         }.bind(this));
       }
@@ -89,7 +89,7 @@ export default Ember.Object.extend(EventedMixin, {
   },
 
   updateTopSort: function(promise) {
-    var topSortMeta = this.get('topSortMeta'),
+    let topSortMeta = this.get('topSortMeta'),
         guid = promise.get('guid'),
         meta = topSortMeta[guid],
         isNew = !meta,
@@ -115,9 +115,9 @@ export default Ember.Object.extend(EventedMixin, {
   },
 
   insertInTopSort: function(promise) {
-    var topSort = this.get('topSort');
+    let topSort = this.get('topSort');
     if (promise.get('parent')) {
-      var parentIndex = topSort.indexOf(promise.get('parent'));
+      let parentIndex = topSort.indexOf(promise.get('parent'));
       topSort.insertAt(parentIndex + 1, promise);
     } else {
       topSort.pushObject(promise);
@@ -129,8 +129,8 @@ export default Ember.Object.extend(EventedMixin, {
   },
 
   updateOrCreate: function(props) {
-    var guid = props.guid;
-    var promise = this.findOrCreate(guid);
+    let guid = props.guid;
+    let promise = this.findOrCreate(guid);
 
     promise.setProperties(props);
 
@@ -140,7 +140,7 @@ export default Ember.Object.extend(EventedMixin, {
   },
 
   createPromise: function(props) {
-    var promise = Promise.create(props),
+    let promise = Promise.create(props),
         index = this.get('all.length');
 
     this.get('all').pushObject(promise);
@@ -150,7 +150,7 @@ export default Ember.Object.extend(EventedMixin, {
 
   find: function(guid) {
     if (guid) {
-      var index = this.get('promiseIndex')[guid];
+      let index = this.get('promiseIndex')[guid];
       if (index !== undefined) {
         return this.get('all').objectAt(index);
       }

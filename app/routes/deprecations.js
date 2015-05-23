@@ -1,10 +1,10 @@
 import Ember from "ember";
 import TabRoute from "ember-inspector/routes/tab";
-var set = Ember.set;
+const set = Ember.set;
 
 export default TabRoute.extend({
   setupController: function() {
-    var port = this.get('port');
+    let port = this.get('port');
     port.on('deprecation:deprecationsAdded', this, this.deprecationsAdded);
     port.send('deprecation:watch');
     this._super.apply(this, arguments);
@@ -19,9 +19,9 @@ export default TabRoute.extend({
   },
 
   deprecationsAdded: function(message) {
-    var model = this.get('currentModel');
+    const model = this.get('currentModel');
     message.deprecations.forEach(function(item) {
-      var record = model.findBy('id', item.id);
+      let record = model.findBy('id', item.id);
       if (record) {
         set(record, 'count', item.count);
         set(record, 'sources', item.sources);

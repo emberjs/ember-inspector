@@ -2,11 +2,10 @@
 import Ember from "ember";
 import { module, test, stop, start } from 'qunit';
 /*globals require */
-var EmberDebug = require("ember-debug/main")["default"];
+const EmberDebug = require("ember-debug/main")["default"];
 
-var port, name, message, RSVP = Ember.RSVP;
-var EmberDebug;
-var App;
+let port, name, message, RSVP = Ember.RSVP;
+let App;
 let { run, K, A: emberA } = Ember;
 
 function setupApp() {
@@ -95,7 +94,7 @@ test("Existing promises sent when requested", async function t(assert) {
 test("Updates are published when they happen", function(assert) {
   port.trigger('promise:getAndObservePromises');
 
-  var p;
+  let p;
 
   run(function() {
     p = new RSVP.Promise(function() {}, "Promise1");
@@ -104,17 +103,17 @@ test("Updates are published when they happen", function(assert) {
   let done = assert.async();
   Ember.run.later(function() {
     assert.equal(name, 'promise:promisesUpdated');
-    var promises = emberA(message.promises);
-    var promise = promises.findBy('label', 'Promise1');
+    let promises = emberA(message.promises);
+    let promise = promises.findBy('label', 'Promise1');
     assert.equal(promise.label, 'Promise1');
     p.then(function() {}, null, "Child1");
     Ember.run.later(function() {
       assert.equal(name, 'promise:promisesUpdated');
       assert.equal(message.promises.length, 2);
-      var child = message.promises[0];
+      let child = message.promises[0];
       assert.equal(child.parent, promise.guid);
       assert.equal(child.label, 'Child1');
-      var parent = message.promises[1];
+      let parent = message.promises[1];
       assert.equal(parent.guid, promise.guid);
       done();
     }, 200);
@@ -123,7 +122,7 @@ test("Updates are published when they happen", function(assert) {
 
 
 test("Instrumentation with stack is persisted to session storage", function(assert) {
-  var withStack = false;
+  let withStack = false;
   EmberDebug.get('promiseDebug').reopen({
     session: {
       getItem: function(/*key*/) {

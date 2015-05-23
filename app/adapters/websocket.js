@@ -1,9 +1,8 @@
 import Ember from "ember";
 import BasicAdapter from "./basic";
+const { computed } = Ember;
 
-var computed = Ember.computed;
-
-var WebsocketAdapter = BasicAdapter.extend({
+export default BasicAdapter.extend({
   init: function() {
     this._super();
     this._connect();
@@ -19,7 +18,7 @@ var WebsocketAdapter = BasicAdapter.extend({
   }).property(),
 
   _connect: function() {
-    var self = this;
+    let self = this;
     this.get('socket').on('emberInspectorMessage', function(message) {
       Ember.run(function() {
         self._messageReceived(message);
@@ -36,4 +35,3 @@ var WebsocketAdapter = BasicAdapter.extend({
   }
 });
 
-export default WebsocketAdapter;

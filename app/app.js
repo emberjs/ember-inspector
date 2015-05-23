@@ -10,9 +10,9 @@ import msToTime from "ember-inspector/helpers/ms-to-time";
 
 Ember.MODEL_FACTORY_INJECTIONS = true;
 
-var version = '1.8.0';
+const version = '1.8.0';
 
-var App = Ember.Application.extend({
+const App = Ember.Application.extend({
   modulePrefix: config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
   Resolver: Resolver
@@ -30,7 +30,7 @@ App.initializer({
 
   initialize: function(container, app) {
     // register and inject adapter
-    var Adapter;
+    let Adapter;
     if (Ember.typeOf(app.adapter) === 'string') {
       Adapter = container.resolve('adapter:' + app.adapter);
     } else {

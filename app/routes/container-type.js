@@ -1,7 +1,7 @@
 import Ember from "ember";
 import TabRoute from "ember-inspector/routes/tab";
-var get = Ember.get;
-var Promise = Ember.RSVP.Promise;
+const get = Ember.get;
+const { RSVP: { Promise } } = Ember;
 
 export default TabRoute.extend({
   setupController: function(controller) {
@@ -12,8 +12,8 @@ export default TabRoute.extend({
     this._super.apply(this, arguments);
   },
   model: function(params) {
-    var type = params.type_id;
-    var port = this.get('port');
+    const type = params.type_id;
+    const port = this.get('port');
     return new Promise((resolve, reject) => {
       port.one('container:instances', message => {
         if (message.status === 200) {

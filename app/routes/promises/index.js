@@ -1,9 +1,9 @@
 import Ember from "ember";
-var Promise = Ember.RSVP.Promise;
+const { RSVP: { Promise } } = Ember;
 
 export default Ember.Route.extend({
   beforeModel: function() {
-    var route = this;
+    let route = this;
     return new Promise(function(resolve) {
       route.get('port').one('promise:supported', this, function(message) {
         if (message.supported) {

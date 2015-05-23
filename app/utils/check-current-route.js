@@ -1,5 +1,5 @@
 export default function(currentRouteName, routeName) {
-  var regName, match;
+  let regName, match;
 
   if (routeName === 'application') {
     return true;

@@ -506,7 +506,7 @@ test("Errors are correctly displayed", async function t(assert) {
 
 function triggerEvent(elem, name) {
   /*global Event */
-  var event;
+  let event;
   try {
     event = new Event(name);
   } catch (e) {

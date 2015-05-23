@@ -7,8 +7,8 @@ import Ember from "ember";
 
 function accountForScrollbar() {
   /*jshint validthis:true */
-  var outside = this.$('.list-tree').innerWidth();
-  var inside = this.$('.ember-list-container').innerWidth();
+  let outside = this.$('.list-tree').innerWidth();
+  let inside = this.$('.ember-list-container').innerWidth();
   this.$('.spacer').width(outside - inside);
 }
 

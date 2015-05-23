@@ -11,7 +11,7 @@ export default Ember.Component.extend({
   minWidth: 60,
 
   startDragging: function() {
-    var self = this,
+    let self = this,
         $container = this.$().parent(),
         $containerOffsetLeft = $container.offset().left,
         $containerOffsetRight = $containerOffsetLeft + $container.width(),
@@ -20,7 +20,7 @@ export default Ember.Component.extend({
     this.sendAction('action', true);
 
     Ember.$('body').on('mousemove.' + namespace, function(e) {
-      var position = self.get('isLeft') ?
+      let position = self.get('isLeft') ?
                        e.pageX - $containerOffsetLeft :
                        $containerOffsetRight - e.pageX;
 

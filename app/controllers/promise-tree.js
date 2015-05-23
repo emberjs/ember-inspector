@@ -1,16 +1,18 @@
 import Ember from "ember";
 import filterComputed from "ember-inspector/computed/custom-filter";
+const { computed } = Ember;
+const { equal, bool, and, not } = computed;
 
 // Manual implementation of item controllers
 function itemProxyComputed(dependentKey, itemProxy) {
-  var options = {
+  let options = {
     addedItem: function(array, item, changeMeta) {
-      var proxy = itemProxy.create({ content: item });
+      let proxy = itemProxy.create({ content: item });
       array.insertAt(changeMeta.index, proxy);
       return array;
     },
     removedItem: function(array, item, changeMeta) {
-      var proxy = array.objectAt(changeMeta.index);
+      let proxy = array.objectAt(changeMeta.index);
       array.removeAt(changeMeta.index, 1);
       proxy.destroy();
       return array;
@@ -19,11 +21,6 @@ function itemProxyComputed(dependentKey, itemProxy) {
 
   return Ember.arrayComputed(dependentKey, options);
 }
-
-var equal = Ember.computed.equal;
-var bool = Ember.computed.bool;
-var and = Ember.computed.and;
-var not = Ember.computed.not;
 
 export default Ember.ArrayController.extend({
   needs: ['application'],
@@ -75,7 +72,7 @@ export default Ember.ArrayController.extend({
     // Exclude non-filter complying promises
     // If at least one of their children passes the filter,
     // then they pass
-    var include = true;
+    let include = true;
     if (this.get('filter') === 'pending') {
       include = item.get('pendingBranch');
     } else if (this.get('filter') === 'rejected') {
@@ -90,7 +87,7 @@ export default Ember.ArrayController.extend({
     // Search filter
     // If they or at least one of their children
     // match the search, then include them
-    var search = this.get('effectiveSearch');
+    let search = this.get('effectiveSearch');
     if (!Ember.isEmpty(search)) {
       return item.matches(search);
     }
@@ -115,7 +112,7 @@ export default Ember.ArrayController.extend({
   }.observes('search'),
 
   notifyChange: function() {
-    var self = this;
+    let self = this;
     this.set('effectiveSearch', this.get('search'));
     Ember.run.next(function() {
       self.notifyPropertyChange('model');
@@ -124,7 +121,7 @@ export default Ember.ArrayController.extend({
 
   actions: {
     setFilter: function(filter) {
-      var self = this;
+      let self = this;
       this.set('filter', filter);
       Ember.run.next(function() {
         self.notifyPropertyChange('filtered');

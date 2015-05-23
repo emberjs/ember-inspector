@@ -25,23 +25,23 @@ export default Controller.extend({
   }.property('search'),
 
   filtered: filter('model', function(item) {
-    var search = this.get('escapedSearch');
+    let search = this.get('escapedSearch');
     if (isEmpty(search)) {
       return true;
     }
-    var regExp = new RegExp(search);
+    let regExp = new RegExp(search);
     return !!recursiveMatch(item, regExp);
   }).property('model.@each.name', 'search')
 });
 
 function recursiveMatch(item, regExp) {
-  var children, child;
-  var name = get(item, 'name');
+  let children, child;
+  let name = get(item, 'name');
   if (name.toLowerCase().match(regExp)) {
     return true;
   }
   children = get(item, 'children');
-  for (var i = 0; i < children.length; i++) {
+  for (let i = 0; i < children.length; i++) {
     child = children[i];
     if (recursiveMatch(child, regExp)) {
       return true;

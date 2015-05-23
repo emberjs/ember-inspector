@@ -1,5 +1,5 @@
 import Ember from "ember";
-var oneWay = Ember.computed.oneWay;
+const { computed: { oneWay } } = Ember;
 
 export default Ember.ObjectController.extend({
   needs: ['model-types'],

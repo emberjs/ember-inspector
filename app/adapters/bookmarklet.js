@@ -17,10 +17,10 @@ export default BasicAdapter.extend({
   },
 
   _connect: function() {
-    var self = this;
+    let self = this;
 
     window.addEventListener('message', function(e) {
-      var message = e.data;
+      let message = e.data;
       if (e.origin !== self.get('inspectedWindowURL')) {
         return;
       }

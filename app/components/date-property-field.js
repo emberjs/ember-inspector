@@ -1,8 +1,7 @@
 import Ember from "ember";
 import DatePicker from "ember-inspector/components/pikaday-input";
-
-var once = Ember.run.once;
-var KEY_EVENTS = {
+const { run: { once } } = Ember;
+const KEY_EVENTS = {
   enter: 13,
   escape: 27
 };

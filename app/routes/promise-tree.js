@@ -1,13 +1,13 @@
 import Ember from "ember";
 import TabRoute from "ember-inspector/routes/tab";
 
-var Promise = Ember.RSVP.Promise;
+const { RSVP: { Promise } } = Ember;
 
 export default TabRoute.extend({
   model: function() {
     // block rendering until first batch arrives
     // Helps prevent flashing of "please refresh the page"
-    var route = this;
+    let route = this;
     return new Promise(function(resolve) {
       route.get('assembler').one('firstMessageReceived', function() {
         resolve(route.get('assembler.topSort'));
@@ -37,13 +37,13 @@ export default TabRoute.extend({
     },
 
     toggleExpand: function(promise) {
-      var isExpanded = !promise.get('isExpanded');
+      const isExpanded = !promise.get('isExpanded');
       promise.set('isManuallyExpanded', isExpanded);
       promise.recalculateExpanded();
-      var children = promise._allChildren();
+      let children = promise._allChildren();
       if (isExpanded) {
         children.forEach(function(child) {
-          var isManuallyExpanded = child.get('isManuallyExpanded');
+          let isManuallyExpanded = child.get('isManuallyExpanded');
           if (isManuallyExpanded === undefined) {
             child.set('isManuallyExpanded', isExpanded);
             child.recalculateExpanded();

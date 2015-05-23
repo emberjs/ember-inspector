@@ -1,11 +1,11 @@
 /*globals require */
 import { module, test } from 'qunit';
-var ProfileNode = require('ember-debug/models/profile-node')["default"];
+const ProfileNode = require('ember-debug/models/profile-node')["default"];
 
 module("ProfileNode");
 
 test("It can create a ProfileNode", function(assert) {
-  var p = new ProfileNode(1001, { template: 'application' });
+  const p = new ProfileNode(1001, { template: 'application' });
 
   assert.ok(!!p, "it creates a ProfileNode");
   assert.equal(p.start, 1001, "it stores the start time");
@@ -15,12 +15,12 @@ test("It can create a ProfileNode", function(assert) {
 });
 /* jshint ignore:start */
 test("with no payload it has an unknown name", function(assert) {
-  var p = new ProfileNode(1234);
+  const p = new ProfileNode(1234);
   assert.equal(p.name, "Unknown view");
 });
 
 test("It can extract the name from an object payload", function(assert) {
-  var p = new ProfileNode(1000, {
+  let p = new ProfileNode(1000, {
     object: {
       toString: function() { return "custom toString()"; }
     }
@@ -30,8 +30,8 @@ test("It can extract the name from an object payload", function(assert) {
 });
 
 test("It can create a child ProfileNode", function(assert) {
-  var p1 = new ProfileNode(new Date().getTime(), { template: 'items' }),
-      p2 = new ProfileNode(new Date().getTime(), { template: 'item' }, p1);
+  const p1 = new ProfileNode(new Date().getTime(), { template: 'items' }),
+        p2 = new ProfileNode(new Date().getTime(), { template: 'item' }, p1);
 
   assert.ok(!p1.parent, "Without a parent parameter, the attribute is not set");
   assert.equal(p2.parent, p1, "If passed, p2's parent is assigned to p1");
@@ -40,14 +40,14 @@ test("It can create a child ProfileNode", function(assert) {
 });
 
 test("It can finish the timer", function(assert) {
-  var p = new ProfileNode(1000, { template: 'users' });
+  const p = new ProfileNode(1000, { template: 'users' });
   p.finish(1004);
   assert.equal(p.time, 4, "it took 4 ms");
 });
 
 test("When a node has children, they are inserted when finished", function(assert) {
-  var p1 = new ProfileNode(1000, { template: 'candies' }),
-      p2 = new ProfileNode(1001, { template: 'candy' }, p1);
+  const p1 = new ProfileNode(1000, { template: 'candies' }),
+        p2 = new ProfileNode(1001, { template: 'candy' }, p1);
 
   assert.equal(p1.children.length, 0, "has no children at first");
   p2.finish(2022);
@@ -55,8 +55,8 @@ test("When a node has children, they are inserted when finished", function(asser
 });
 
 test("Can be serialized as JSON", function(assert) {
-  var p1 = new ProfileNode(1000, { template: 'donuts' }),
-      p2 = new ProfileNode(1001, { template: 'donut' }, p1);
+  const p1 = new ProfileNode(1000, { template: 'donuts' }),
+        p2 = new ProfileNode(1001, { template: 'donut' }, p1);
 
   p2.finish(1003);
   p1.finish(1004);
@@ -65,7 +65,7 @@ test("Can be serialized as JSON", function(assert) {
 });
 
 test("Name takes the following priority: display, containerKey, object", function(assert) {
-  var p;
+  let p;
   p = new ProfileNode(1000, { view: { instrumentDisplay: 'donuts', _debugContainerKey: 'candy' }, object: 'coffee' });
   assert.equal(p.name, 'donuts');
   p = new ProfileNode(1000, { view: { _debugContainerKey: 'candy' }, object: 'coffee' });
