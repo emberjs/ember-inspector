@@ -7,12 +7,11 @@ export default TabRoute.extend({
   model: function() {
     // block rendering until first batch arrives
     // Helps prevent flashing of "please refresh the page"
-    let route = this;
-    return new Promise(function(resolve) {
-      route.get('assembler').one('firstMessageReceived', function() {
-        resolve(route.get('assembler.topSort'));
+    return new Promise(resolve => {
+      this.get('assembler').one('firstMessageReceived', () => {
+        resolve(this.get('assembler.topSort'));
       });
-      route.get('assembler').start();
+      this.get('assembler').start();
     });
   },
 
@@ -42,7 +41,7 @@ export default TabRoute.extend({
       promise.recalculateExpanded();
       let children = promise._allChildren();
       if (isExpanded) {
-        children.forEach(function(child) {
+        children.forEach(child => {
           let isManuallyExpanded = child.get('isManuallyExpanded');
           if (isManuallyExpanded === undefined) {
             child.set('isManuallyExpanded', isExpanded);

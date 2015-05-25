@@ -1,6 +1,6 @@
 import Ember from "ember";
 import filterComputed from "ember-inspector/computed/custom-filter";
-const { computed } = Ember;
+const { computed, observer } = Ember;
 const { equal, bool, and, not } = computed;
 
 // Manual implementation of item controllers
@@ -47,9 +47,9 @@ export default Ember.ArrayController.extend({
     });
   },
 
-  promiseItemController: function() {
+  promiseItemController: computed(function() {
     return this.container.lookupFactory('controller:promise-item');
-  }.property(),
+  }),
 
   /* jscs:disable validateIndentation */
   // TODO: This filter can be further optimized
@@ -108,9 +108,9 @@ export default Ember.ArrayController.extend({
   search: null,
   effectiveSearch: null,
 
-  searchChanged: function() {
+  searchChanged: observer('search', function() {
     Ember.run.debounce(this, this.notifyChange, 500);
-  }.observes('search'),
+  }),
 
   notifyChange: function() {
     let self = this;

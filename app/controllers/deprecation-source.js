@@ -5,14 +5,14 @@ const { bool, readOnly, and } = computed;
 export default Controller.extend({
   known: bool('model.map.source'),
 
-  url: function() {
+  url: computed('model.map.source', 'model.map.line', 'known', function() {
     let source = this.get('model.map.source');
     if (this.get('known')) {
       return source + ':' + this.get('model.map.line');
     } else {
       return 'Unkown source';
     }
-  }.property('model.map.source', 'model.map.line', 'known'),
+  }),
 
   adapter: readOnly('port.adapter'),
 

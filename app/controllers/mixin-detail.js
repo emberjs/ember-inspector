@@ -1,5 +1,6 @@
 import Ember from "ember";
-const { computed: { oneWay } } = Ember;
+const { computed } = Ember;
+const { oneWay } = computed;
 
 export default Ember.ObjectController.extend({
   needs: ['mixin-details'],
@@ -7,9 +8,9 @@ export default Ember.ObjectController.extend({
   mixinDetails: oneWay('controllers.mixin-details').readOnly(),
   objectId: oneWay('mixinDetails.model.objectId').readOnly(),
 
-  isExpanded: function() {
+  isExpanded: computed('model.expand', 'model.properties.length', function() {
     return this.get('model.expand') && this.get('model.properties.length') > 0;
-  }.property('model.expand', 'model.properties.length'),
+  }),
 
   actions: {
     calculate: function(property) {

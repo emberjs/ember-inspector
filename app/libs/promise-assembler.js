@@ -65,7 +65,7 @@ export default Ember.Object.extend(EventedMixin, {
   },
 
   rebuildPromises: function(promises) {
-    promises.forEach(function(props) {
+    promises.forEach(props => {
       props = Ember.copy(props);
       let childrenIds = props.children;
       let parentId = props.parent;
@@ -76,16 +76,16 @@ export default Ember.Object.extend(EventedMixin, {
       }
       let promise = this.updateOrCreate(props);
       if (childrenIds) {
-        childrenIds.forEach(function(childId) {
+        childrenIds.forEach(childId => {
           // avoid infinite recursion
           if (childId === props.guid) {
             return;
           }
           let child = this.updateOrCreate({ guid: childId, parent: promise });
           promise.get('children').pushObject(child);
-        }.bind(this));
+        });
       }
-    }.bind(this));
+    });
   },
 
   updateTopSort: function(promise) {
@@ -122,10 +122,10 @@ export default Ember.Object.extend(EventedMixin, {
     } else {
       topSort.pushObject(promise);
     }
-    promise.get('children').forEach(function(child) {
+    promise.get('children').forEach(child => {
       topSort.removeObject(child);
       this.insertInTopSort(child);
-    }.bind(this));
+    });
   },
 
   updateOrCreate: function(props) {

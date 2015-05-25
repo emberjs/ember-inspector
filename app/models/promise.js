@@ -1,7 +1,7 @@
 import Ember from "ember";
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
 import computed from 'ember-new-computed';
-const { typeOf, computed: { or, equal, not } } = Ember;
+const { $, observer, typeOf, computed: { or, equal, not } } = Ember;
 
 const dateComputed = function() {
   return computed({
@@ -25,13 +25,13 @@ export default Ember.Object.extend({
 
   parent: null,
 
-  level: function() {
+  level: computed('parent.level', function() {
     let parent = this.get('parent');
     if (!parent) {
       return 0;
     }
     return parent.get('level') + 1;
-  }.property('parent.level'),
+  }),
 
   isSettled: or('isFulfilled', 'isRejected'),
 
@@ -41,21 +41,21 @@ export default Ember.Object.extend({
 
   isPending: not('isSettled'),
 
-  children: function() {
+  children: computed(function() {
     return [];
-  }.property(),
+  }),
 
-  pendingBranch: function() {
+  pendingBranch: computed('isPending', 'children.@each.pendingBranch', function() {
     return this.recursiveState('isPending', 'pendingBranch');
-  }.property('isPending', 'children.@each.pendingBranch'),
+  }),
 
-  rejectedBranch: function() {
+  rejectedBranch: computed('isRejected', 'children.@each.rejectedBranch', function() {
     return this.recursiveState('isRejected', 'rejectedBranch');
-  }.property('isRejected', 'children.@each.rejectedBranch'),
+  }),
 
-  fulfilledBranch: function() {
+  fulfilledBranch: computed('isFulfilled', 'children.@each.fulfilledBranch', function() {
     return this.recursiveState('isFulfilled', 'fulfilledBranch');
-  }.property('isFulfilled', 'children.@each.fulfilledBranch'),
+  }),
 
   recursiveState: function(prop, cp) {
     if (this.get(prop)) {
@@ -71,7 +71,7 @@ export default Ember.Object.extend({
 
   // Need this observer because CP dependent keys do not support nested arrays
   // TODO: This can be so much better
-  stateChanged: function() {
+  stateChanged: observer('pendingBranch', 'fulfilledBranch', 'rejectedBranch', function() {
     if (!this.get('parent')) {
       return;
     }
@@ -89,11 +89,11 @@ export default Ember.Object.extend({
       this.get('parent').notifyPropertyChange('pendingBranch');
     }
 
-  }.observes('pendingBranch', 'fulfilledBranch', 'rejectedBranch'),
+  }),
 
-  updateParentLabel: function() {
+  updateParentLabel: observer('label', 'parent', function() {
     this.addBranchLabel(this.get('label'), true);
-  }.observes('label', 'parent'),
+  }),
 
   addBranchLabel: function(label, replace) {
     if (Ember.isEmpty(label)) {
@@ -129,12 +129,12 @@ export default Ember.Object.extend({
 
   isManuallyExpanded: undefined,
 
-  stateOrParentChanged: function() {
+  stateOrParentChanged: observer('isPending', 'isFulfilled', 'isRejected', 'parent', function() {
     let parent = this.get('parent');
     if (parent) {
       Ember.run.once(parent, 'recalculateExpanded');
     }
-  }.observes('isPending', 'isFulfilled', 'isRejected', 'parent'),
+  }),
 
   _findTopParent: function() {
     let parent = this.get('parent');
@@ -165,7 +165,7 @@ export default Ember.Object.extend({
       }
       let parents = this._allParents();
       if (isExpanded) {
-        parents.forEach(function(parent) {
+        parents.forEach(parent => {
           parent.set('isExpanded', true);
         });
       } else if (this.get('parent.isExpanded')) {
@@ -176,17 +176,17 @@ export default Ember.Object.extend({
     return isExpanded;
   },
 
-  isVisible: function() {
+  isVisible: computed('parent.isExpanded', 'parent', 'parent.isVisible', function() {
     if (this.get('parent')) {
       return this.get('parent.isExpanded') && this.get('parent.isVisible');
     }
     return true;
-  }.property('parent.isExpanded', 'parent', 'parent.isVisible'),
+  }),
 
   _allChildren: function() {
-    let children = Ember.$.extend([], this.get('children'));
-    children.forEach(function(item) {
-      children = Ember.$.merge(children, item._allChildren());
+    let children = $.extend([], this.get('children'));
+    children.forEach(item => {
+      children = $.merge(children, item._allChildren());
     });
     return children;
   },
@@ -194,7 +194,7 @@ export default Ember.Object.extend({
   _allParents: function() {
     let parent = this.get('parent');
     if (parent) {
-      return Ember.$.merge([parent], parent._allParents());
+      return $.merge([parent], parent._allParents());
     } else {
       return [];
     }

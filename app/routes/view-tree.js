@@ -65,7 +65,7 @@ function topSort(tree, list) {
   view.parentCount = view.parentCount || 0;
   delete view.children;
   list.push(view);
-  tree.children.forEach(function(child) {
+  tree.children.forEach(child => {
     child.parentCount = view.parentCount + 1;
     topSort(child, list);
   });

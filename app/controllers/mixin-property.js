@@ -1,5 +1,6 @@
 import Ember from "ember";
-const { computed: { equal, alias} } = Ember;
+const { computed } = Ember;
+const { equal, alias } = computed;
 
 export default Ember.ObjectController.extend({
   isEdit: false,
@@ -8,9 +9,9 @@ export default Ember.ObjectController.extend({
   txtValue: null,
   dateValue: null,
 
-  isCalculated: function() {
+  isCalculated: computed('value.type', function() {
     return this.get('value.type') !== 'type-descriptor';
-  }.property('value.type'),
+  }),
 
   isEmberObject: equal('value.type', 'type-ember-object'),
 

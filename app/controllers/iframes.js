@@ -1,5 +1,5 @@
 import Ember from "ember";
-const { ArrayController, computed, run } = Ember;
+const { ArrayController, computed, run, observer } = Ember;
 const { alias, map } = computed;
 
 export default ArrayController.extend({
@@ -13,12 +13,12 @@ export default ArrayController.extend({
 
   selectedApp: alias('port.applicationId'),
 
-  selectedDidChange: function() {
+  selectedDidChange: observer('selectedApp', function() {
     // Change iframe being debugged
-    let url = '/';
-    let applicationId = this.get('selectedApp');
+    const url = '/';
+    const applicationId = this.get('selectedApp');
+    const list = this.get('port').get('detectedApplications');
     let app = this.container.lookup('application:main');
-    let list = this.get('port').get('detectedApplications');
 
     run(app, app.reset);
     let router = app.__container__.lookup('router:main');
@@ -30,5 +30,5 @@ export default ArrayController.extend({
     router.location.setURL(url);
     run(app, app.handleURL, url);
 
-  }.observes('selectedApp')
+  })
 });

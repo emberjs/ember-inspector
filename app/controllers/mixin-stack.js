@@ -1,16 +1,17 @@
 import Ember from "ember";
+const { computed } = Ember;
 export default Ember.ArrayController.extend({
   needs: ['application'],
 
-  trail: function() {
+  trail: computed('[]', function() {
     let nested = this.slice(1);
     if (nested.length === 0) { return ""; }
     return "." + nested.mapProperty('property').join(".");
-  }.property('[]'),
+  }),
 
-  isNested: function() {
+  isNested: computed('[]', function() {
     return this.get('length') > 1;
-  }.property('[]'),
+  }),
 
 
   actions: {

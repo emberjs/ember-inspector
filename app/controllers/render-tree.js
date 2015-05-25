@@ -20,9 +20,9 @@ export default Controller.extend({
   // model filtered based on this value
   search: '',
 
-  escapedSearch: function() {
+  escapedSearch: computed('search', function() {
     return escapeRegExp(this.get('search').toLowerCase());
-  }.property('search'),
+  }),
 
   filtered: filter('model', function(item) {
     let search = this.get('escapedSearch');

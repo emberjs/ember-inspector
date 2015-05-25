@@ -1,5 +1,5 @@
 import Ember from "ember";
-const { computed, Controller } = Ember;
+const { computed, Controller, on, observer } = Ember;
 const { alias } = computed;
 
 export default Controller.extend({
@@ -14,9 +14,9 @@ export default Controller.extend({
     allViews: false
   },
 
-  optionsChanged: function() {
+  optionsChanged: on('init', observer('options.components', 'options.allViews', function() {
     this.port.send('view:setOptions', { options: this.get('options') });
-  }.observes('options.components', 'options.allViews').on('init'),
+  })),
 
   actions: {
     previewLayer: function(node) {

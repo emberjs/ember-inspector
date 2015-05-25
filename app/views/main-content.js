@@ -6,9 +6,9 @@ export default Ember.View.extend({
   didInsertElement: function() {
     this._super();
 
-    Ember.$(window).on('resize.view-' + this.get('elementId'), function() {
+    Ember.$(window).on('resize.view-' + this.get('elementId'), () => {
       Ember.run.debounce(this, 'updateHeight', 200);
-    }.bind(this));
+    });
     this.updateHeight();
   },
 

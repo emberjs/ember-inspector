@@ -4,7 +4,7 @@ const { Route, RSVP: { Promise } } = Ember;
 export default Route.extend({
   model: function() {
     const port = this.get('port');
-    return new Promise(function(resolve) {
+    return new Promise(resolve => {
       port.one('container:types', function(message) {
         resolve(message.types);
       });

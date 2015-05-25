@@ -4,7 +4,7 @@ const { Route, RSVP: { Promise } } = Ember;
 export default Route.extend({
   model: function() {
     let port = this.get('port');
-    return new Promise(function(resolve) {
+    return new Promise(resolve => {
       port.on('general:applicationBooted', this, function(message) {
         if (message.booted) {
           port.off('general:applicationBooted');
@@ -12,7 +12,7 @@ export default Route.extend({
         }
       });
       port.send('general:applicationBooted');
-    }.bind(this));
+    });
   },
 
   setupController: function() {
