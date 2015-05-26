@@ -715,7 +715,7 @@ function toArray(errors) {
 function calculateCP(object, property, errorsForObject) {
   delete errorsForObject[property];
   try {
-   return get(object, property);
+    return get(object, property);
   } catch (e) {
     errorsForObject[property] = {
       property: property,

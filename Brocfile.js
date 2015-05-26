@@ -79,8 +79,10 @@ emberDebug = removeFile(emberDebug, {
 if (env === 'test') {
   var linted = eslint(emberDebug, {
     testGenerator: eslintTestGenerator,
-    config: './eslint.json',
-    rulesdir: './'
+    options: {
+      configFile: './ember_debug/.eslintrc',
+      rulePaths: ['./']
+    }
   });
   emberDebug = mergeTrees([emberDebug, linted]);
 }

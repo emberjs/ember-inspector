@@ -1,0 +1,13 @@
+{
+  "extends": "ember",
+  "parser": "babel-eslint",
+  "rules": {
+    "max-len": [2, 250],
+    "no-unused-vars": 0,
+    "dot-notation": 0,
+    "no-console": 0,
+    "no-undef": 0,
+    "no-shadow": 0,
+    "quotes": 0
+  }
+}

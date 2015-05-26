@@ -60,40 +60,41 @@ export default Ember.ArrayController.extend({
     'model.@each.pendingBranch',
     'model.@each.isVisible', function(item) {
 
-    // exclude cleared promises
-    if (this.get('createdAfter') && item.get('createdAt') < this.get('createdAfter')) {
-      return false;
-    }
+      // exclude cleared promises
+      if (this.get('createdAfter') && item.get('createdAt') < this.get('createdAfter')) {
+        return false;
+      }
 
-    if (!item.get('isVisible')) {
-      return false;
-    }
+      if (!item.get('isVisible')) {
+        return false;
+      }
 
-    // Exclude non-filter complying promises
-    // If at least one of their children passes the filter,
-    // then they pass
-    let include = true;
-    if (this.get('filter') === 'pending') {
-      include = item.get('pendingBranch');
-    } else if (this.get('filter') === 'rejected') {
-      include = item.get('rejectedBranch');
-    } else if (this.get('filter') === 'fulfilled') {
-      include = item.get('fulfilledBranch');
-    }
-    if (!include) {
-      return false;
-    }
+      // Exclude non-filter complying promises
+      // If at least one of their children passes the filter,
+      // then they pass
+      let include = true;
+      if (this.get('filter') === 'pending') {
+        include = item.get('pendingBranch');
+      } else if (this.get('filter') === 'rejected') {
+        include = item.get('rejectedBranch');
+      } else if (this.get('filter') === 'fulfilled') {
+        include = item.get('fulfilledBranch');
+      }
+      if (!include) {
+        return false;
+      }
 
-    // Search filter
-    // If they or at least one of their children
-    // match the search, then include them
-    let search = this.get('effectiveSearch');
-    if (!Ember.isEmpty(search)) {
-      return item.matches(search);
-    }
-    return true;
+      // Search filter
+      // If they or at least one of their children
+      // match the search, then include them
+      let search = this.get('effectiveSearch');
+      if (!Ember.isEmpty(search)) {
+        return item.matches(search);
+      }
+      return true;
 
-  }),
+    }
+  ),
   /* jscs:enable validateIndentation */
 
 
