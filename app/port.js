@@ -1,15 +1,16 @@
 import Ember from "ember";
+const { computed } = Ember;
 
 export default Ember.Object.extend(Ember.Evented, {
   applicationId: undefined,
 
-  detectedApplications: function() {
+  detectedApplications: computed(function() {
     return [];
-  }.property(),
+  }),
 
   init: function() {
     const detectedApplications = this.get('detectedApplications');
-    this.get('adapter').onMessageReceived(function(message) {
+    this.get('adapter').onMessageReceived(message => {
       if (!message.applicationId) {
         return;
       }
@@ -25,7 +26,7 @@ export default Ember.Object.extend(Ember.Evented, {
       if (applicationId === message.applicationId) {
         this.trigger(message.type, message, applicationId);
       }
-    }.bind(this));
+    });
   },
   send: function(type, message) {
     message = message || {};

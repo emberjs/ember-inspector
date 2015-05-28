@@ -9,9 +9,9 @@ const COLOR_MAP = {
 };
 
 export default Ember.ObjectProxy.extend({
-  promiseTreeController: function() {
+  promiseTreeController: computed(function() {
     return this.container.lookup('controller:promiseTree');
-  }.property(),
+  }),
 
   filter: alias('promiseTreeController.filter'),
   effectiveSearch: alias('promiseTreeController.effectiveSearch'),
@@ -20,7 +20,7 @@ export default Ember.ObjectProxy.extend({
 
   isError: equal('reason.type', 'type-error'),
 
-  style: function() {
+  style: computed('model.state', function() {
     let color = '';
     if (this.get('isFulfilled')) {
       color = 'green';
@@ -30,10 +30,10 @@ export default Ember.ObjectProxy.extend({
       color = 'blue';
     }
     return 'background-color:' + COLOR_MAP[color] + ';color:white;';
-  }.property('model.state'),
+  }),
 
 
-  nodeStyle: function() {
+  nodeStyle: computed('state', 'filter', 'effectiveSearch', function() {
     let relevant;
     switch (this.get('filter')) {
       case 'pending':
@@ -54,13 +54,13 @@ export default Ember.ObjectProxy.extend({
     if (!relevant) {
       return 'opacity: 0.3';
     }
-  }.property('state', 'filter', 'effectiveSearch'),
+  }),
 
-  labelStyle: function() {
+  labelStyle: computed('level', function() {
     return 'padding-left: ' + ((+this.get('level') * 20) + 5) + "px";
-  }.property('level'),
+  }),
 
-  expandedClass: function() {
+  expandedClass: computed('hasChildren', 'isExpanded', function() {
     if (!this.get('hasChildren')) { return; }
 
     if (this.get('isExpanded')) {
@@ -68,13 +68,13 @@ export default Ember.ObjectProxy.extend({
     } else {
       return 'row_arrow_collapsed';
     }
-  }.property('hasChildren', 'isExpanded'),
+  }),
 
   hasChildren: gt('children.length', 0),
 
   isTopNode: empty('parent'),
 
-  settledValue: function() {
+  settledValue: computed('value', function() {
     if (this.get('isFulfilled')) {
       return this.get('value');
     } else if (this.get('isRejected')) {
@@ -82,19 +82,19 @@ export default Ember.ObjectProxy.extend({
     } else {
       return '--';
     }
-  }.property('value'),
+  }),
 
   isValueInspectable: notEmpty('settledValue.objectId'),
 
-  hasValue: function() {
+  hasValue: computed('settledValue', 'isSettled', function() {
     return this.get('isSettled') && this.get('settledValue.type') !== 'type-undefined';
-  }.property('settledValue', 'isSettled'),
+  }),
 
-  label: function() {
+  label: computed('model.label', function() {
     return this.get('model.label') || (!!this.get('model.parent') && 'Then') || '<Unknown Promise>';
-  }.property('model.label'),
+  }),
 
-  state: function() {
+  state: computed('model.state', function() {
     if (this.get('isFulfilled')) {
       return 'Fulfilled';
     } else if (this.get('isRejected')) {
@@ -105,15 +105,15 @@ export default Ember.ObjectProxy.extend({
       return 'Pending';
     }
 
-  }.property('model.state'),
+  }),
 
 
-  timeToSettle: function() {
+  timeToSettle: computed('createdAt', 'settledAt', 'parent.settledAt', function() {
     if (!this.get('createdAt') || !this.get('settledAt')) {
       return ' -- ';
     }
     let startedAt = this.get('parent.settledAt') || this.get('createdAt');
     let remaining = this.get('settledAt').getTime() - startedAt.getTime();
     return remaining;
-  }.property('createdAt', 'settledAt', 'parent.settledAt')
+  })
 });

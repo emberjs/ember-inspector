@@ -14,19 +14,19 @@ export default Component.extend({
   // passed as an attribute
   pinnedObjectId: null,
 
-  isCurrent: function() {
+  isCurrent: computed('pinnedObjectId', 'model.value.objectId', function() {
     return this.get('pinnedObjectId') === this.get('model.value.objectId');
-  }.property('pinnedObjectId', 'model.value.objectId'),
+  }),
 
   hasController: bool('model.value.controller'),
 
-  modelInspectable: function() {
+  modelInspectable: computed('hasModel', 'model.value.model.type', function() {
     return this.get('hasModel') && this.get('model.value.model.type') === 'type-ember-object';
-  }.property('hasModel', 'model.value.model.type'),
+  }),
 
-  labelStyle: function() {
+  labelStyle: computed('model.parentCount', function() {
     return 'padding-left: ' + ((+this.get('model.parentCount') * 20) + 5) + "px";
-  }.property('model.parentCount'),
+  }),
 
   actions: {
     inspectView() {

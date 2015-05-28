@@ -8,14 +8,14 @@ export default Ember.Route.extend({
   },
 
   model: function(params) {
-    return new Promise(function(resolve) {
+    return new Promise(resolve => {
       const type = this.modelFor('model-types').findBy('name', params.type_id);
       if (type) {
         resolve(type);
       } else {
         this.transitionTo('model-types.index');
       }
-    }.bind(this));
+    });
   },
 
   deactivate: function() {

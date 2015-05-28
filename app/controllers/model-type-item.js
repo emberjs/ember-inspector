@@ -1,12 +1,13 @@
 import Ember from "ember";
-const { computed: { oneWay } } = Ember;
+const { computed } = Ember;
+const { oneWay } = computed;
 
 export default Ember.ObjectController.extend({
   needs: ['model-types'],
 
   modelTypes: oneWay('controllers.model-types').readOnly(),
 
-  selected: function() {
+  selected: computed('modelTypes.selected', function() {
     return this.get('model') === this.get('modelTypes.selected');
-  }.property('modelTypes.selected')
+  })
 });

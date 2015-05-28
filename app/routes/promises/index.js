@@ -1,18 +1,17 @@
 import Ember from "ember";
-const { RSVP: { Promise } } = Ember;
+const { RSVP: { Promise }, Route } = Ember;
 
-export default Ember.Route.extend({
+export default Route.extend({
   beforeModel: function() {
-    let route = this;
-    return new Promise(function(resolve) {
-      route.get('port').one('promise:supported', this, function(message) {
+    return new Promise(resolve => {
+      this.get('port').one('promise:supported', message => {
         if (message.supported) {
-          route.transitionTo('promise-tree');
+          this.transitionTo('promise-tree');
         } else {
           resolve();
         }
       });
-      route.get('port').send('promise:supported');
+      this.get('port').send('promise:supported');
     });
   },
 

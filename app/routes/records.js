@@ -33,9 +33,8 @@ export default TabRoute.extend({
   },
 
   updateRecords: function(message) {
-    let route = this;
-    message.records.forEach(function(record) {
-      const currentRecord = route.get('currentModel').findProperty('objectId', record.objectId);
+    message.records.forEach(record => {
+      const currentRecord = this.get('currentModel').findProperty('objectId', record.objectId);
       if (currentRecord) {
         set(currentRecord, 'columnValues', record.columnValues);
         set(currentRecord, 'filterValues', record.filterValues);

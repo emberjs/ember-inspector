@@ -4,6 +4,7 @@
  * This is a hack to allow account for scrollbar width (if any)
  */
 import Ember from "ember";
+const { on } = Ember;
 
 function accountForScrollbar() {
   /*jshint validthis:true */
@@ -13,7 +14,7 @@ function accountForScrollbar() {
 }
 
 export default Ember.Mixin.create({
-  _accountForScrollbar: function() {
+  _accountForScrollbar: on('didInsertElement', function() {
     Ember.run.scheduleOnce('afterRender', this, accountForScrollbar);
-  }.on('didInsertElement')
+  })
 });

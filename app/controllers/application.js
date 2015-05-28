@@ -39,9 +39,8 @@ export default Ember.Controller.extend({
   },
 
   activateMixinDetails(name, objectId, details, errors) {
-    let self = this;
-    this.get('mixinStack').forEach(function(item) {
-      self.get('port').send('objectInspector:releaseObject', { objectId: item.objectId });
+    this.get('mixinStack').forEach(item => {
+      this.get('port').send('objectInspector:releaseObject', { objectId: item.objectId });
     });
 
     this.set('mixinStack.model', []);
@@ -57,7 +56,7 @@ export default Ember.Controller.extend({
       for (let i = index; i >= 0; i--) {
         objectsToRemove.pushObject(mixinStack.objectAt(i));
       }
-      objectsToRemove.forEach(function(item) {
+      objectsToRemove.forEach(item => {
         mixinStack.removeObject(item);
       });
     }

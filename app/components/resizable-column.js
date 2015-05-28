@@ -1,12 +1,13 @@
 import Ember from "ember";
+const { computed } = Ember;
 export default Ember.Component.extend({
   width: null,
 
   attributeBindings: ['style'],
 
-  style: function () {
+  style: computed('width', function () {
     return '-webkit-flex: none; flex: none; width:' + this.get('width') + 'px;';
-  }.property('width'),
+  }),
 
   didInsertElement: function () {
     if (!this.get('width')) {
