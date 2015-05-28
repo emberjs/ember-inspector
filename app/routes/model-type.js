@@ -2,12 +2,12 @@ import Ember from "ember";
 const { RSVP: { Promise } } = Ember;
 /*eslint camelcase: 0 */
 export default Ember.Route.extend({
-  setupController: function(controller, model) {
+  setupController(controller, model) {
     this._super(controller, model);
     this.controllerFor('model-types').set('selected', model);
   },
 
-  model: function(params) {
+  model(params) {
     return new Promise(resolve => {
       const type = this.modelFor('model-types').findBy('name', params.type_id);
       if (type) {
@@ -18,11 +18,11 @@ export default Ember.Route.extend({
     });
   },
 
-  deactivate: function() {
+  deactivate() {
     this.controllerFor('model-types').set('selected', null);
   },
 
-  serialize: function (model) {
+  serialize(model) {
     return { type_id: Ember.get(model, 'name') };
   }
 });

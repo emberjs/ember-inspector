@@ -27,7 +27,7 @@ export default Controller.extend({
     this.set('search', '');
   }),
 
-  recordToString: function(record) {
+  recordToString(record) {
     let search = '';
     let searchKeywords = Ember.get(record, 'searchKeywords');
     if (searchKeywords) {

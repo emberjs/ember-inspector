@@ -3,7 +3,7 @@ import Ember from "ember";
 export default Ember.View.extend({
   height: Ember.computed.alias('controller.contentHeight'),
 
-  didInsertElement: function() {
+  didInsertElement() {
     this._super();
 
     Ember.$(window).on('resize.view-' + this.get('elementId'), () => {
@@ -12,14 +12,14 @@ export default Ember.View.extend({
     this.updateHeight();
   },
 
-  updateHeight: function() {
+  updateHeight() {
     // could be destroyed but with debounce pending
     if (this.$()) {
       this.set('height', this.$().height());
     }
   },
 
-  willDestroyElement: function() {
+  willDestroyElement() {
     Ember.$(window).off('.view-' + this.get('elementId'));
   }
 });

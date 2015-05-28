@@ -4,7 +4,7 @@ import TabRoute from "ember-inspector/routes/tab";
 const { RSVP: { Promise } } = Ember;
 
 export default TabRoute.extend({
-  model: function() {
+  model() {
     // block rendering until first batch arrives
     // Helps prevent flashing of "please refresh the page"
     return new Promise(resolve => {
@@ -15,27 +15,27 @@ export default TabRoute.extend({
     });
   },
 
-  setupController: function() {
+  setupController() {
     this._super.apply(this, arguments);
     this.get('port').on('promise:instrumentWithStack', this, this.setInstrumentWithStack);
     this.get('port').send('promise:getInstrumentWithStack');
   },
 
-  setInstrumentWithStack: function(message) {
+  setInstrumentWithStack(message) {
     this.set('controller.instrumentWithStack', message.instrumentWithStack);
   },
 
-  deactivate: function() {
+  deactivate() {
     this.get('assembler').stop();
     this.get('port').off('promse:getInstrumentWithStack', this, this.setInstrumentWithStack);
   },
 
   actions: {
-    sendValueToConsole: function(promise) {
+    sendValueToConsole(promise) {
       this.get('port').send('promise:sendValueToConsole', { promiseId: promise.get('guid') });
     },
 
-    toggleExpand: function(promise) {
+    toggleExpand(promise) {
       const isExpanded = !promise.get('isExpanded');
       promise.set('isManuallyExpanded', isExpanded);
       promise.recalculateExpanded();

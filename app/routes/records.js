@@ -4,7 +4,7 @@ import TabRoute from "ember-inspector/routes/tab";
 const set = Ember.set;
 
 export default TabRoute.extend({
-  setupController: function(controller, model) {
+  setupController(controller, model) {
     this._super(controller, model);
 
     const type = this.modelFor('model_type');
@@ -21,18 +21,18 @@ export default TabRoute.extend({
     this.get('port').send('data:getRecords', { objectId: type.objectId });
   },
 
-  model: function() {
+  model() {
     return [];
   },
 
-  deactivate: function() {
+  deactivate() {
     this.get('port').off('data:recordsAdded', this, this.addRecords);
     this.get('port').off('data:recordsUpdated', this, this.updateRecords);
     this.get('port').off('data:recordsRemoved', this, this.removeRecords);
     this.get('port').send('data:releaseRecords');
   },
 
-  updateRecords: function(message) {
+  updateRecords(message) {
     message.records.forEach(record => {
       const currentRecord = this.get('currentModel').findProperty('objectId', record.objectId);
       if (currentRecord) {
@@ -45,16 +45,16 @@ export default TabRoute.extend({
 
   },
 
-  addRecords: function(message) {
+  addRecords(message) {
     this.get('currentModel').pushObjects(message.records);
   },
 
-  removeRecords: function(message) {
+  removeRecords(message) {
     this.get('currentModel').removeAt(message.index, message.count);
   },
 
   actions: {
-    inspectModel: function(model) {
+    inspectModel(model) {
       this.get('port').send('data:inspectModel', { objectId: Ember.get(model, 'objectId') });
     }
   }

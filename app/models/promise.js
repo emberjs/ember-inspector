@@ -5,10 +5,10 @@ const { $, observer, typeOf, computed: { or, equal, not } } = Ember;
 
 const dateComputed = function() {
   return computed({
-    get: function() {
+    get() {
       return null;
     },
-    set: function(key, date) {
+    set(key, date) {
       if (typeOf(date) === 'date') {
         return date;
       } else if (typeof date === 'number' || typeof date === 'string') {
@@ -57,7 +57,7 @@ export default Ember.Object.extend({
     return this.recursiveState('isFulfilled', 'fulfilledBranch');
   }),
 
-  recursiveState: function(prop, cp) {
+  recursiveState(prop, cp) {
     if (this.get(prop)) {
       return true;
     }
@@ -95,7 +95,7 @@ export default Ember.Object.extend({
     this.addBranchLabel(this.get('label'), true);
   }),
 
-  addBranchLabel: function(label, replace) {
+  addBranchLabel(label, replace) {
     if (Ember.isEmpty(label)) {
       return;
     }
@@ -113,11 +113,11 @@ export default Ember.Object.extend({
 
   branchLabel: '',
 
-  matches: function(val) {
+  matches(val) {
     return !!this.get('branchLabel').toLowerCase().match(new RegExp('.*' + escapeRegExp(val.toLowerCase()) + '.*'));
   },
 
-  matchesExactly: function(val) {
+  matchesExactly(val) {
     return !!((this.get('label') || '').toLowerCase().match(new RegExp('.*' + escapeRegExp(val.toLowerCase()) + '.*')));
   },
 
@@ -136,7 +136,7 @@ export default Ember.Object.extend({
     }
   }),
 
-  _findTopParent: function() {
+  _findTopParent() {
     let parent = this.get('parent');
     if (!parent) {
       return this;
@@ -145,7 +145,7 @@ export default Ember.Object.extend({
     }
   },
 
-  recalculateExpanded: function() {
+  recalculateExpanded() {
     let isExpanded = false;
     if (this.get('isManuallyExpanded') !== undefined) {
       isExpanded = this.get('isManuallyExpanded');
@@ -183,7 +183,7 @@ export default Ember.Object.extend({
     return true;
   }),
 
-  _allChildren: function() {
+  _allChildren() {
     let children = $.extend([], this.get('children'));
     children.forEach(item => {
       children = $.merge(children, item._allChildren());
@@ -191,7 +191,7 @@ export default Ember.Object.extend({
     return children;
   },
 
-  _allParents: function() {
+  _allParents() {
     let parent = this.get('parent');
     if (parent) {
       return $.merge([parent], parent._allParents());

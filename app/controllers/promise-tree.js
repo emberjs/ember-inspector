@@ -6,12 +6,12 @@ const { equal, bool, and, not } = computed;
 // Manual implementation of item controllers
 function itemProxyComputed(dependentKey, itemProxy) {
   let options = {
-    addedItem: function(array, item, changeMeta) {
+    addedItem(array, item, changeMeta) {
       let proxy = itemProxy.create({ content: item });
       array.insertAt(changeMeta.index, proxy);
       return array;
     },
-    removedItem: function(array, item, changeMeta) {
+    removedItem(array, item, changeMeta) {
       let proxy = array.objectAt(changeMeta.index);
       array.removeAt(changeMeta.index, 1);
       proxy.destroy();
@@ -39,7 +39,7 @@ export default Ember.ArrayController.extend({
   // It is opt-in due to performance reasons.
   instrumentWithStack: false,
 
-  init: function() {
+  init() {
     this._super.apply(this, arguments);
     // List-view does not support item controllers
     this.reopen({
@@ -112,7 +112,7 @@ export default Ember.ArrayController.extend({
     Ember.run.debounce(this, this.notifyChange, 500);
   }),
 
-  notifyChange: function() {
+  notifyChange() {
     let self = this;
     this.set('effectiveSearch', this.get('search'));
     Ember.run.next(function() {
@@ -121,18 +121,18 @@ export default Ember.ArrayController.extend({
   },
 
   actions: {
-    setFilter: function(filter) {
+    setFilter(filter) {
       let self = this;
       this.set('filter', filter);
       Ember.run.next(function() {
         self.notifyPropertyChange('filtered');
       });
     },
-    clear: function() {
+    clear() {
       this.set('createdAfter', new Date());
       Ember.run.once(this, this.notifyChange);
     },
-    tracePromise: function(promise) {
+    tracePromise(promise) {
       this.get('port').send('promise:tracePromise', { promiseId: promise.get('guid') });
     },
     updateInstrumentWithStack: function(bool) {

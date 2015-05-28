@@ -14,7 +14,7 @@ export default Ember.View.extend({
 
   height: Ember.computed.alias('controller.height'),
 
-  didInsertElement: function() {
+  didInsertElement() {
     this._super();
 
     Ember.$(window).on('resize.application-view-' + this.get('elementId'), function() {
@@ -23,24 +23,24 @@ export default Ember.View.extend({
     this.updateHeight();
   },
 
-  updateHeight: function() {
+  updateHeight() {
     // could be destroyed but with debounce pending
     if (this.$()) {
       this.set('height', this.$().height());
     }
   },
 
-  willDestroyElement: function() {
+  willDestroyElement() {
     Ember.$(window).off('.application-view-' + this.get('elementId'));
   },
 
-  focusIn: function() {
+  focusIn() {
     if (!this.get('controller.active')) {
       this.set('controller.active', true);
     }
   },
 
-  focusOut: function() {
+  focusOut() {
     if (this.get('controller.active')) {
       this.set('controller.active', false);
     }

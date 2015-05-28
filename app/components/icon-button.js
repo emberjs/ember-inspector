@@ -7,7 +7,7 @@ export default Component.extend({
 
   title: null,
 
-  click: function () {
+  click() {
     this.sendAction();
   }
 });

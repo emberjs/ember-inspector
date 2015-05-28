@@ -15,13 +15,13 @@ export default Ember.ArrayController.extend({
 
 
   actions: {
-    popStack: function() {
+    popStack() {
       if (this.get('isNested')) {
         this.get('controllers.application').popMixinDetails();
       }
     },
 
-    sendObjectToConsole: function(obj) {
+    sendObjectToConsole(obj) {
       let objectId = Ember.get(obj, 'objectId');
       this.get('port').send('objectInspector:sendToConsole', {
         objectId: objectId

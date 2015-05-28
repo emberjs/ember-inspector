@@ -8,11 +8,11 @@ export default function filterComputed() {
     callback = slice.call(arguments, -1)[0];
   }
   let options = {
-    initialize: function (array, changeMeta, instanceMeta) {
+    initialize(array, changeMeta, instanceMeta) {
       instanceMeta.filteredArrayIndexes = new Ember.SubArray();
     },
 
-    addedItem: function(array, item, changeMeta, instanceMeta) {
+    addedItem(array, item, changeMeta, instanceMeta) {
       let match = !!callback.call(this, item),
           filterIndex = instanceMeta.filteredArrayIndexes.addItem(changeMeta.index, match);
 
@@ -23,7 +23,7 @@ export default function filterComputed() {
       return array;
     },
 
-    removedItem: function(array, item, changeMeta, instanceMeta) {
+    removedItem(array, item, changeMeta, instanceMeta) {
       let filterIndex = instanceMeta.filteredArrayIndexes.removeItem(changeMeta.index);
 
       if (filterIndex > -1) {

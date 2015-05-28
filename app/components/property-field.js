@@ -2,21 +2,21 @@ import Ember from "ember";
 export default Ember.TextField.extend({
   attributeBindings: ['label:data-label'],
 
-  didInsertElement: function() {
+  didInsertElement() {
     this._super();
     this.$().select();
   },
 
-  insertNewline: function() {
+  insertNewline() {
     this.sendAction('save-property');
     this.sendAction('finished-editing');
   },
 
-  cancel: function() {
+  cancel() {
     this.sendAction('finished-editing');
   },
 
-  focusOut: function() {
+  focusOut() {
     this.sendAction('finished-editing');
   }
 });

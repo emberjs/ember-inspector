@@ -22,18 +22,18 @@ export default Ember.Object.extend(EventedMixin, {
   // Mainly helps in triggering 'firstMessageReceived' event
   firstMessageReceived: false,
 
-  start: function() {
+  start() {
     this.get('port').on('promise:promisesUpdated', this, this.addOrUpdatePromises);
     this.get('port').send('promise:getAndObservePromises');
   },
 
-  stop: function() {
+  stop() {
     this.get('port').off('promise:promisesUpdated', this, this.addOrUpdatePromises);
     this.get('port').send('promise:releasePromises');
     this.reset();
   },
 
-  reset: function() {
+  reset() {
     this.set('topSortMeta', {});
     this.set('promiseIndex', {});
     this.get('topSort').clear();
@@ -49,13 +49,13 @@ export default Ember.Object.extend(EventedMixin, {
     this.set('all', []);
   },
 
-  destroyPromises: function(promises) {
+  destroyPromises(promises) {
     promises.forEach(function(item) {
       item.destroy();
     });
   },
 
-  addOrUpdatePromises: function(message) {
+  addOrUpdatePromises(message) {
     this.rebuildPromises(message.promises);
 
     if (!this.get('firstMessageReceived')) {
@@ -64,7 +64,7 @@ export default Ember.Object.extend(EventedMixin, {
     }
   },
 
-  rebuildPromises: function(promises) {
+  rebuildPromises(promises) {
     promises.forEach(props => {
       props = Ember.copy(props);
       let childrenIds = props.children;
@@ -88,7 +88,7 @@ export default Ember.Object.extend(EventedMixin, {
     });
   },
 
-  updateTopSort: function(promise) {
+  updateTopSort(promise) {
     let topSortMeta = this.get('topSortMeta'),
         guid = promise.get('guid'),
         meta = topSortMeta[guid],
@@ -114,7 +114,7 @@ export default Ember.Object.extend(EventedMixin, {
     }
   },
 
-  insertInTopSort: function(promise) {
+  insertInTopSort(promise) {
     let topSort = this.get('topSort');
     if (promise.get('parent')) {
       let parentIndex = topSort.indexOf(promise.get('parent'));
@@ -128,7 +128,7 @@ export default Ember.Object.extend(EventedMixin, {
     });
   },
 
-  updateOrCreate: function(props) {
+  updateOrCreate(props) {
     let guid = props.guid;
     let promise = this.findOrCreate(guid);
 
@@ -139,7 +139,7 @@ export default Ember.Object.extend(EventedMixin, {
     return promise;
   },
 
-  createPromise: function(props) {
+  createPromise(props) {
     let promise = Promise.create(props),
         index = this.get('all.length');
 
@@ -148,7 +148,7 @@ export default Ember.Object.extend(EventedMixin, {
     return promise;
   },
 
-  find: function(guid) {
+  find(guid) {
     if (guid) {
       let index = this.get('promiseIndex')[guid];
       if (index !== undefined) {
@@ -159,7 +159,7 @@ export default Ember.Object.extend(EventedMixin, {
     }
   },
 
-  findOrCreate: function(guid) {
+  findOrCreate(guid) {
     if (!guid) {
       Ember.assert('You have tried to findOrCreate without a guid');
     }
