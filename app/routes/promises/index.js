@@ -2,7 +2,7 @@ import Ember from "ember";
 const { RSVP: { Promise }, Route } = Ember;
 
 export default Route.extend({
-  beforeModel: function() {
+  beforeModel() {
     return new Promise(resolve => {
       this.get('port').one('promise:supported', message => {
         if (message.supported) {
@@ -15,7 +15,7 @@ export default Route.extend({
     });
   },
 
-  renderTemplate: function() {
+  renderTemplate() {
     this.render('promises.error');
   }
 });

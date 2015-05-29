@@ -13,7 +13,7 @@ export default Ember.Component.extend({
 
   classNameBindings: 'isRight:sidebar-toggle--right:sidebar-toggle--left',
 
-  click: function () {
+  click() {
     this.sendAction();
   }
 

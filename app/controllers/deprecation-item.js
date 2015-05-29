@@ -16,7 +16,7 @@ export default Controller.extend({
   }),
 
   actions: {
-    toggleExpand: function() {
+    toggleExpand() {
       this.toggleProperty('isExpanded');
     }
 

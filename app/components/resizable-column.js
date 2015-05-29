@@ -9,7 +9,7 @@ export default Ember.Component.extend({
     return '-webkit-flex: none; flex: none; width:' + this.get('width') + 'px;';
   }),
 
-  didInsertElement: function () {
+  didInsertElement() {
     if (!this.get('width')) {
       this.set('width', this.$().width());
     }

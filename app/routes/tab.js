@@ -1,7 +1,7 @@
 /* eslint no-empty:0 */
 import Ember from "ember";
 export default Ember.Route.extend({
-  renderTemplate: function () {
+  renderTemplate() {
     this.render();
     try {
       this.render(this.get('routeName').replace(/\./g, '/') + '-toolbar', {

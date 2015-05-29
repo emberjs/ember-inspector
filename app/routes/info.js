@@ -7,7 +7,7 @@ const { oneWay } = computed;
 export default TabRoute.extend({
   version: oneWay('config.VERSION').readOnly(),
 
-  model: function() {
+  model() {
     const version = this.get('version');
     const port = this.get('port');
     return new Promise(resolve => {

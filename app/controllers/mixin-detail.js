@@ -13,7 +13,7 @@ export default Ember.ObjectController.extend({
   }),
 
   actions: {
-    calculate: function(property) {
+    calculate(property) {
       let objectId = this.get('objectId');
       let mixinIndex = this.get('mixinDetails.model.mixins').indexOf(this.get('model'));
 
@@ -24,7 +24,7 @@ export default Ember.ObjectController.extend({
       });
     },
 
-    sendToConsole: function(property) {
+    sendToConsole(property) {
       let objectId = this.get('objectId');
 
       this.get('port').send('objectInspector:sendToConsole', {
@@ -33,11 +33,11 @@ export default Ember.ObjectController.extend({
       });
     },
 
-    toggleExpanded: function() {
+    toggleExpanded() {
       this.toggleProperty('isExpanded');
     },
 
-    digDeeper: function(property) {
+    digDeeper(property) {
       let objectId = this.get('objectId');
 
       this.get('port').send('objectInspector:digDeeper', {
@@ -46,7 +46,7 @@ export default Ember.ObjectController.extend({
       });
     },
 
-    saveProperty: function(prop, val, type) {
+    saveProperty(prop, val, type) {
       let mixinIndex = this.get('mixinDetails.model.mixins').indexOf(this.get('model'));
 
       this.get('port').send('objectInspector:saveProperty', {

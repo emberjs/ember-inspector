@@ -28,7 +28,7 @@ Ember.Handlebars.helper('ms-to-time', msToTime);
 App.initializer({
   name: "extension-init",
 
-  initialize: function(container, app) {
+  initialize(container, app) {
     // register and inject adapter
     let Adapter;
     if (Ember.typeOf(app.adapter) === 'string') {

@@ -8,7 +8,7 @@ let emberDebug = null;
 export default BasicAdapter.extend({
   name: 'chrome',
 
-  sendMessage: function(options) {
+  sendMessage(options) {
     options = options || {};
     this.get('_chromePort').postMessage(options);
   },
@@ -47,7 +47,7 @@ export default BasicAdapter.extend({
     });
   }),
 
-  willReload: function() {
+  willReload() {
     this._injectDebugger();
   },
 
@@ -55,7 +55,7 @@ export default BasicAdapter.extend({
     We handle the reload here so we can inject
     scripts as soon as possible into the new page.
   */
-  reloadTab: function() {
+  reloadTab() {
     chrome.devtools.inspectedWindow.reload({
       injectedScript: loadEmberDebug()
     });
@@ -63,7 +63,7 @@ export default BasicAdapter.extend({
 
   canOpenResource: true,
 
-  openResource: function(file, line) {
+  openResource(file, line) {
     /*global chrome */
     // For some reason it opens the line after the one specified
     chrome.devtools.panels.openResource(file, line - 1);

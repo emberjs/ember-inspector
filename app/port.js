@@ -8,7 +8,7 @@ export default Ember.Object.extend(Ember.Evented, {
     return [];
   }),
 
-  init: function() {
+  init() {
     const detectedApplications = this.get('detectedApplications');
     this.get('adapter').onMessageReceived(message => {
       if (!message.applicationId) {
@@ -28,7 +28,7 @@ export default Ember.Object.extend(Ember.Evented, {
       }
     });
   },
-  send: function(type, message) {
+  send(type, message) {
     message = message || {};
     message.type = type;
     message.from = 'devtools';

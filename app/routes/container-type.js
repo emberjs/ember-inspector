@@ -4,14 +4,14 @@ const get = Ember.get;
 const { RSVP: { Promise } } = Ember;
 
 export default TabRoute.extend({
-  setupController: function(controller) {
+  setupController(controller) {
     controller.setProperties({
       search: '',
       searchVal: ''
     });
     this._super.apply(this, arguments);
   },
-  model: function(params) {
+  model(params) {
     const type = params.type_id;
     const port = this.get('port');
     return new Promise((resolve, reject) => {
@@ -33,13 +33,13 @@ export default TabRoute.extend({
         this.transitionTo('container-types.index');
       }
     },
-    inspectInstance: function(obj) {
+    inspectInstance(obj) {
       if (!get(obj, 'inspectable')) {
         return;
       }
       this.get('port').send('objectInspector:inspectByContainerLookup', { name: get(obj, 'fullName') });
     },
-    sendInstanceToConsole: function(obj) {
+    sendInstanceToConsole(obj) {
       this.get('port').send('container:sendInstanceToConsole', { name: get(obj, 'fullName') });
     }
   }

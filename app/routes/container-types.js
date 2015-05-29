@@ -2,7 +2,7 @@ import Ember from "ember";
 const { Route, RSVP: { Promise } } = Ember;
 
 export default Route.extend({
-  model: function() {
+  model() {
     const port = this.get('port');
     return new Promise(resolve => {
       port.one('container:types', function(message) {
@@ -12,7 +12,7 @@ export default Route.extend({
     });
   },
   actions: {
-    reload: function() {
+    reload() {
       this.refresh();
     }
   }

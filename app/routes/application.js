@@ -24,7 +24,7 @@ export default Route.extend({
     port.off('deprecation:count', this, this.setDeprecationCount);
   },
 
-  updateObject: function(options) {
+  updateObject(options) {
     const details = options.details,
       name = options.name,
       property = options.property,
@@ -45,7 +45,7 @@ export default Route.extend({
     this.send('expandInspector');
   },
 
-  setDeprecationCount: function(message) {
+  setDeprecationCount(message) {
     this.controller.set('deprecationCount', message.count);
   },
 
@@ -62,27 +62,27 @@ export default Route.extend({
     }
   },
 
-  droppedObject: function(message) {
+  droppedObject(message) {
     let controller = this.get('controller');
     controller.droppedObject(message.objectId);
   },
 
   actions: {
-    expandInspector: function() {
+    expandInspector() {
       this.set("controller.inspectorExpanded", true);
     },
-    toggleInspector: function() {
+    toggleInspector() {
       this.toggleProperty("controller.inspectorExpanded");
     },
-    inspectObject: function(objectId) {
+    inspectObject(objectId) {
       if (objectId) {
         this.get('port').send('objectInspector:inspectById', { objectId: objectId });
       }
     },
-    setIsDragging: function (isDragging) {
+    setIsDragging(isDragging) {
       this.set('controller.isDragging', isDragging);
     },
-    refreshPage: function() {
+    refreshPage() {
       // If the adapter defined a `reloadTab` method, it means
       // they prefer to handle the reload themselves
       if (typeof this.get('adapter').reloadTab === 'function') {

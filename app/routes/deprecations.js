@@ -10,15 +10,15 @@ export default TabRoute.extend({
     this._super.apply(this, arguments);
   },
 
-  model: function() {
+  model() {
     return [];
   },
 
-  deactivate: function() {
+  deactivate() {
     this.get('port').off('deprecation:deprecationsAdded', this, this.deprecationsAdded);
   },
 
-  deprecationsAdded: function(message) {
+  deprecationsAdded(message) {
     const model = this.get('currentModel');
     message.deprecations.forEach(item => {
       let record = model.findBy('id', item.id);
@@ -33,17 +33,17 @@ export default TabRoute.extend({
   },
 
   actions: {
-    openResource: function(item) {
+    openResource(item) {
       this.get('adapter').openResource(item.fullSource, item.line);
     },
 
-    traceDeprecations: function(deprecation) {
+    traceDeprecations(deprecation) {
       this.get('port').send('deprecation:sendStackTraces', {
         deprecation: deprecation
       });
     },
 
-    traceSource: function(deprecation, source) {
+    traceSource(deprecation, source) {
       this.get('port').send('deprecation:sendStackTraces', {
         deprecation: {
           message: deprecation.message,
@@ -52,7 +52,7 @@ export default TabRoute.extend({
       });
     },
 
-    clear: function() {
+    clear() {
       this.get('port').send('deprecation:clear');
       this.get('currentModel').clear();
     }

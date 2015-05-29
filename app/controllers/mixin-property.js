@@ -23,7 +23,7 @@ export default Ember.ObjectController.extend({
 
   isDate: equal('value.type', 'type-date'),
 
-  _parseTextValue: function(value) {
+  _parseTextValue(value) {
     let parsedValue;
     try {
       parsedValue = JSON.parse(value);
@@ -40,7 +40,7 @@ export default Ember.ObjectController.extend({
   },
 
   actions: {
-    valueClick: function() {
+    valueClick() {
       if (this.get('isEmberObject') || this.get('isArray')) {
         this.get('target').send('digDeeper', this.get('model'));
         return;
@@ -69,7 +69,7 @@ export default Ember.ObjectController.extend({
 
     },
 
-    saveProperty: function() {
+    saveProperty() {
       let realValue, dataType;
       if (!this.get('isDate')) {
         realValue = this._parseTextValue(this.get('txtValue'));
@@ -80,7 +80,7 @@ export default Ember.ObjectController.extend({
       this.get('target').send('saveProperty', this.get('name'), realValue, dataType);
     },
 
-    finishedEditing: function() {
+    finishedEditing() {
       this.set('isEdit', false);
     }
   }

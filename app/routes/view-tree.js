@@ -7,7 +7,7 @@ export default TabRoute.extend({
     return [];
   },
 
-  setupController: function() {
+  setupController() {
     this._super(...arguments);
     this.get('port').on('view:viewTree', this, this.setViewTree);
     this.get('port').on('view:stopInspecting', this, this.stopInspecting);
@@ -17,7 +17,7 @@ export default TabRoute.extend({
     this.get('port').send('view:getTree');
   },
 
-  deactivate: function() {
+  deactivate() {
     this.get('port').off('view:viewTree', this, this.setViewTree);
     this.get('port').off('view:stopInspecting', this, this.stopInspecting);
     this.get('port').off('view:startInspecting', this, this.startInspecting);
@@ -25,34 +25,34 @@ export default TabRoute.extend({
     this.get('port').off('view:unpinView', this, this.unpinView);
   },
 
-  setViewTree: function(options) {
+  setViewTree(options) {
     let viewArray = topSort(options.tree);
     this.set('controller.model', viewArray);
   },
 
-  startInspecting: function() {
+  startInspecting() {
     this.set('controller.inspectingViews', true);
   },
 
-  stopInspecting: function() {
+  stopInspecting() {
     this.set('controller.inspectingViews', false);
   },
 
-  pinView: function(message) {
+  pinView(message) {
     this.set('controller.pinnedObjectId', message.objectId);
   },
 
-  unpinView: function() {
+  unpinView() {
     this.set('controller.pinnedObjectId', null);
   },
 
   actions: {
-    inspect: function(objectId) {
+    inspect(objectId) {
       if (objectId) {
         this.get('port').send('objectInspector:inspectById', { objectId: objectId });
       }
     },
-    inspectElement: function(objectId) {
+    inspectElement(objectId) {
       this.get('port').send('view:inspectElement', { objectId: objectId });
     }
   }

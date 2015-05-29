@@ -13,7 +13,7 @@ export default BasicAdapter.extend({
     return loadPageVar('inspectedWindowURL');
   }),
 
-  sendMessage: function(options) {
+  sendMessage(options) {
     options = options || {};
     this.get('inspectedWindow').postMessage(options, this.get('inspectedWindowURL'));
   },

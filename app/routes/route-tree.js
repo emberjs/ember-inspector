@@ -3,44 +3,44 @@ import TabRoute from "ember-inspector/routes/tab";
 const $ = Ember.$;
 
 export default TabRoute.extend({
-  setupController: function() {
+  setupController() {
     this.get('port').on('route:currentRoute', this, this.setCurrentRoute);
     this.get('port').send('route:getCurrentRoute');
     this.get('port').on('route:routeTree', this, this.setTree);
     this.get('port').send('route:getTree');
   },
 
-  deactivate: function() {
+  deactivate() {
     this.get('port').off('route:currentRoute');
     this.get('port').off('route:routeTree', this, this.setTree);
   },
 
-  setCurrentRoute: function(message) {
+  setCurrentRoute(message) {
     this.get('controller').set('currentRoute', message.name);
   },
 
-  setTree: function(options) {
+  setTree(options) {
     const routeArray = topSort(options.tree);
     this.set('controller.model', routeArray);
   },
 
   actions: {
-    inspectRoute: function(name) {
+    inspectRoute(name) {
       this.get('port').send('objectInspector:inspectRoute', { name: name } );
     },
 
-    inspectController: function(controller) {
+    inspectController(controller) {
       if (!controller.exists) {
         return;
       }
       this.get('port').send('objectInspector:inspectController', { name: controller.name } );
     },
 
-    sendControllerToConsole: function(controllerName) {
+    sendControllerToConsole(controllerName) {
       this.get('port').send('objectInspector:sendControllerToConsole', { name: controllerName });
     },
 
-    sendRouteHandlerToConsole: function(routeName) {
+    sendRouteHandlerToConsole(routeName) {
       this.get('port').send('objectInspector:sendRouteHandlerToConsole', { name: routeName });
     }
   }

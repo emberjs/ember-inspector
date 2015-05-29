@@ -11,7 +11,7 @@ export default ObjectController.extend({
 
   isExpanded: false,
 
-  expand: function() {
+  expand() {
     this.set('isExpanded', true);
   },
 
@@ -73,7 +73,7 @@ export default ObjectController.extend({
   }),
 
   actions: {
-    toggleExpand: function() {
+    toggleExpand() {
       this.toggleProperty('isExpanded');
     }
   }
