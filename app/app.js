@@ -29,6 +29,10 @@ App.initializer({
   name: "extension-init",
 
   initialize(container, app) {
+    // `window.EMBER_DIST` is set by dist-config.js
+    // which is created by the build process.
+    app.adapter = window.EMBER_DIST;
+
     // register and inject adapter
     let Adapter;
     if (Ember.typeOf(app.adapter) === 'string') {
