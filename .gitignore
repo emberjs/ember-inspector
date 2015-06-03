@@ -18,19 +18,4 @@
 npm-debug.log
 testem.log
 
-# dists
-
-/dist_chrome/panes
-/dist_chrome/ember_debug
-/dist_chrome/in-page-script.js
-/dist_chrome/ember-inspector.zip
-
-/dist_firefox/data/panes
-/dist_firefox/data/ember_debug
-/dist_firefox/data/in-page-script.js
-
-/dist_websocket
-
-/dist_bookmarklet
-
 /.mozilla-addon-sdk

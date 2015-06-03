@@ -105,18 +105,21 @@ test("Updates are published when they happen", function(assert) {
     assert.equal(name, 'promise:promisesUpdated');
     let promises = emberA(message.promises);
     let promise = promises.findBy('label', 'Promise1');
-    assert.equal(promise.label, 'Promise1');
-    p.then(function() {}, null, "Child1");
-    Ember.run.later(function() {
-      assert.equal(name, 'promise:promisesUpdated');
-      assert.equal(message.promises.length, 2);
-      let child = message.promises[0];
-      assert.equal(child.parent, promise.guid);
-      assert.equal(child.label, 'Child1');
-      let parent = message.promises[1];
-      assert.equal(parent.guid, promise.guid);
-      done();
-    }, 200);
+    assert.ok(!!promise);
+    if (promise) {
+      assert.equal(promise.label, 'Promise1');
+      p.then(function() {}, null, "Child1");
+      Ember.run.later(function() {
+        assert.equal(name, 'promise:promisesUpdated');
+        assert.equal(message.promises.length, 2);
+        let child = message.promises[0];
+        assert.equal(child.parent, promise.guid);
+        assert.equal(child.label, 'Child1');
+        let parent = message.promises[1];
+        assert.equal(parent.guid, promise.guid);
+        done();
+      }, 200);
+    }
   }, 200);
 });
 

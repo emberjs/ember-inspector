@@ -7,7 +7,7 @@ module.exports = function(grunt) {
       "stable": {
         options: {
           "mozilla-addon-sdk": "latest",
-          extension_dir: "dist_firefox",
+          extension_dir: "dist/firefox",
           dist_dir: "tmp/xpi"
         }
       }
@@ -24,7 +24,7 @@ module.exports = function(grunt) {
       "run": {
         options: {
           "mozilla-addon-sdk": "latest",
-          extension_dir: "dist_firefox",
+          extension_dir: "dist/firefox",
           command: "run"
         }
       }
@@ -35,7 +35,7 @@ module.exports = function(grunt) {
       },
       dist: {
         prefix: '^"?version"?:\s*[\'"]?',
-        src: ['dist_chrome/manifest.json', 'dist_firefox/package.json']
+        src: ['dist/chrome/manifest.json', 'dist/firefox/package.json']
       }
     },
     "s3": {
@@ -49,7 +49,7 @@ module.exports = function(grunt) {
       },
       bookmarklet: {
         sync: [{
-          src: 'dist_bookmarklet/**/*.*',
+          src: 'dist/bookmarklet/**/*.*',
           dest: 'dist_bookmarklet/',
           rel: 'dist_bookmarklet',
           options: { verify: true }
@@ -59,11 +59,11 @@ module.exports = function(grunt) {
     "compress": {
       main: {
         options: {
-          archive: 'dist_chrome/ember-inspector.zip'
+          archive: 'dist/chrome/ember-inspector.zip'
         },
         expand: true,
         pretty: true,
-        src: 'dist_chrome/**/*'
+        src: 'dist/chrome/**/*'
       }
     }
   };
