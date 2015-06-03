@@ -13,6 +13,8 @@ var eslint = require('broccoli-lint-eslint');
 var mv = require('broccoli-stew').mv;
 var writeFile = require('broccoli-file-creator');
 var replace = require('broccoli-replace');
+var esTranspiler = require('broccoli-babel-transpiler');
+
 
 /*global process */
 
@@ -102,6 +104,7 @@ emberDebug = new ES6Modules(emberDebug, {
     strict: true
   }
 });
+emberDebug = esTranspiler(emberDebug);
 
 var startupWrapper = pickFiles('ember_debug', {
   srcDir: '/vendor',
