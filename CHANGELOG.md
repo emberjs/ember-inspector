@@ -1,5 +1,9 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 1.8.1
+
+* [IMPROVEMENT] Remove new CP syntax deprecation warning [#362](https://github.com/emberjs/ember-inspector/pull/362)
+
 ## Ember Inspector 1.8.0
 
 * [IMPROVEMENT] The view tree now supports glimmer [#357](https://github.com/emberjs/ember-inspector/pull/357)
