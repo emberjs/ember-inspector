@@ -1,6 +1,6 @@
 {
   "name": "ember-inspector",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "Extends developer tools to allow you to better inspect your Ember.js apps.",
   "directories": {
     "test": "tests"
