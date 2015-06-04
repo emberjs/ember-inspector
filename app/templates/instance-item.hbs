@@ -1,5 +1,5 @@
 <div class="list-tree__item row" data-label="instance-row" {{action "inspectInstance" this}}>
-  <div {{bind-attr class=":cell inspectable:cell_clickable"}} >
+  <div class="cell {{if inspectable 'cell_clickable'}}" >
     {{name}}
   </div>
 </div>

@@ -1,6 +1,6 @@
 {{#route-item model=this currentRoute=view.currentRoute as |item|}}
   <div class="cell_type_main cell" data-label="route-name">
-    <div {{bind-attr style="item.labelStyle"}}>
+    <div style="{{item.labelStyle}}">
       <span title="{{unbound value.name}}" data-label="view-name">{{value.name}}</span>
     </div>
   </div>
