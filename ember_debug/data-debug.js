@@ -170,7 +170,15 @@ var DataDebug = Ember.Object.extend(PortMixin, {
       var type = this.sentTypes[message.objectId], self = this;
       this.releaseRecords();
 
-      var releaseMethod = this.get('adapter').watchRecords(type.object,
+      let typeOrName;
+      if (this.get('adapter.acceptsModelName')) {
+        // Ember >= 1.3
+        typeOrName = type.name;
+      } else {
+        // support for legacy Ember < 1.3
+        typeOrName = type.object;
+      }
+      var releaseMethod = this.get('adapter').watchRecords(typeOrName,
         function(recordsReceived) {
           self.recordsAdded(recordsReceived);
         },

@@ -62,7 +62,7 @@ function inspect(value) {
     // so summarize to just first 2 props
     var ret = [], v, count = 0, broken = false;
     for (var key in value) {
-      if (value.hasOwnProperty(key)) {
+      if (!('hasOwnProperty' in value) || value.hasOwnProperty(key)) {
         if (count++ > 1) {
           broken = true;
           break;
