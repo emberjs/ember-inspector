@@ -17,7 +17,7 @@ OR:
 - cd into the repo directory
 - run `npm install && bower install`
 - run `npm install -g ember-cli`
-- run `npm build` to build the `dist` directory
+- run `npm run build` to build the `dist` directory
 - Visit chrome://extensions in chrome
 - Make sure `Developer mode` is checked
 - Click on 'Load unpacked extension...'
@@ -43,7 +43,7 @@ OR:
 - cd into the repo directory
 - run `npm install`
 - run `npm install -g ember-cli`
-- run `npm build` to build the `dist` directory
+- run `npm run build` to build the `dist` directory
 - Visit chrome://extensions in chrome
 - Make sure `Developer mode` is checked
 - Click on 'Load unpacked extension...'
@@ -75,7 +75,7 @@ Building and Testing:
 
 Run `npm install && npm install -g ember-cli && && npm install -g bower && bower install && npm install -g grunt-cli` to install the required modules.
 
-- `npm build` to build the files in the `dist` directory
+- `npm run build` to build the files in the `dist` directory
 - `npm run watch` To watch the files and re-build in `dist` when anything changes (useful during development).
 - `npm test` To run the tests in the terminal
 - `npm run build:xpi` to download and build Firefox Addon XPI into `tmp/xpi/ember-inspector.xpi`
