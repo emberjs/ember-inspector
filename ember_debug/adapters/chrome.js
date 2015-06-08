@@ -1,42 +1,41 @@
 import BasicAdapter from "./basic";
-var Ember = window.Ember;
+const Ember = window.Ember;
+const { computed, run } = Ember;
 
-var ChromeAdapter = BasicAdapter.extend({
-  connect: function() {
-    var channel = this.get('_channel');
-    var self = this;
-    return this._super.apply(this, arguments).then(function() {
+export default BasicAdapter.extend({
+  connect() {
+    const channel = this.get('_channel');
+    return this._super(...arguments).then(() => {
       window.postMessage('debugger-client', [channel.port2], '*');
-      self._listen();
+      this._listen();
     }, null, 'ember-inspector');
   },
 
-  sendMessage: function(options) {
+  sendMessage(options) {
     options = options || {};
     this.get('_chromePort').postMessage(options);
   },
 
-  inspectElement: function(elem) {
+  inspectElement(elem) {
     /* globals inspect */
     inspect(elem);
   },
 
-  _channel: Ember.computed(function() {
+  _channel: computed(function() {
     return new MessageChannel();
-  }).property().readOnly(),
+  }).readOnly(),
 
-  _chromePort: Ember.computed(function() {
+  _chromePort: computed(function() {
     return this.get('_channel.port1');
-  }).property().readOnly(),
+  }).readOnly(),
 
-  _listen: function() {
-    var self = this,
-        chromePort = this.get('_chromePort');
+  _listen() {
+    let chromePort = this.get('_chromePort');
 
     chromePort.addEventListener('message', function(event) {
-      var message = event.data;
-      Ember.run(function() {
-        self._messageReceived(message);
+      const message = event.data;
+      run(() => {
+        this._messageReceived(message);
       });
     });
 
@@ -44,5 +43,3 @@ var ChromeAdapter = BasicAdapter.extend({
 
   }
 });
-
-export default ChromeAdapter;

@@ -1,15 +1,12 @@
 /* globals requireModule */
-var Ember = window.Ember;
-var computed = Ember.computed;
-var $ = Ember.$;
-var RSVP = Ember.RSVP;
-var Promise = RSVP.Promise;
+const Ember = window.Ember;
+const { $, A, computed, RSVP, Object: EmberObject } = Ember;
+const { Promise, resolve } = RSVP;
 
-export default Ember.Object.extend({
-  init: function() {
-    var self = this;
-    RSVP.resolve(this.connect(), 'ember-inspector').then(function() {
-      self.onConnectionReady();
+export default EmberObject.extend({
+  init() {
+    resolve(this.connect(), 'ember-inspector').then(() => {
+      this.onConnectionReady();
     }, null, 'ember-inspector');
   },
 
@@ -24,11 +21,11 @@ export default Ember.Object.extend({
     return requireModule('ember-debug/config')['default'].environment;
   }),
 
-  debug: function() {
+  debug() {
     return console.debug.apply(console, arguments);
   },
 
-  log: function() {
+  log() {
     return console.log.apply(console, arguments);
   },
 
@@ -37,7 +34,7 @@ export default Ember.Object.extend({
    *
    * @method warn
    */
-  warn: function() {
+  warn() {
     return console.warn.apply(console, arguments);
   },
 
@@ -46,7 +43,7 @@ export default Ember.Object.extend({
 
     @param {Object} type the message to the send
   */
-  sendMessage: function(/* options */) {},
+  sendMessage(/* options */) {},
 
   /**
     Register functions to be called
@@ -54,7 +51,7 @@ export default Ember.Object.extend({
 
     @param {Function} callback
   */
-  onMessageReceived: function(callback) {
+  onMessageReceived(callback) {
     this.get('_messageCallbacks').pushObject(callback);
   },
 
@@ -69,12 +66,12 @@ export default Ember.Object.extend({
 
     @param {DOM Element} elem
   */
-  inspectElement: function(/* elem */) {},
+  inspectElement(/* elem */) {},
 
-  _messageCallbacks: Ember.computed(function() { return Ember.A(); }).property(),
+  _messageCallbacks: computed(function() { return A(); }),
 
-  _messageReceived: function(message) {
-    this.get('_messageCallbacks').forEach(function(callback) {
+  _messageReceived(message) {
+    this.get('_messageCallbacks').forEach(callback => {
       callback.call(null, message);
     });
   },
@@ -92,7 +89,7 @@ export default Ember.Object.extend({
    * @method handleError
    * @param {Error} error
    */
-  handleError: function(error) {
+  handleError(error) {
     if (this.get('environment') === 'production') {
       if (error && error instanceof Error) {
         error = 'Error message: ' + error.message + '\nStack trace: ' + error.stack;
@@ -114,14 +111,13 @@ export default Ember.Object.extend({
 
     @return {Promise}
   */
-  connect: function() {
-    var self = this;
-    return new Promise(function(resolve, reject) {
-      $(function() {
-        if (self.isDestroyed) { reject(); }
-        self.interval = setInterval(function() {
+  connect() {
+    return new Promise((resolve, reject) => {
+      $(() => {
+        if (this.isDestroyed) { reject(); }
+        this.interval = setInterval(function() {
           if (document.documentElement.dataset.emberExtension) {
-            clearInterval(self.interval);
+            clearInterval(this.interval);
             resolve();
           }
         }, 10);
@@ -129,15 +125,15 @@ export default Ember.Object.extend({
     }, 'ember-inspector');
   },
 
-  willDestroy: function() {
+  willDestroy() {
     this._super();
     clearInterval(this.interval);
   },
 
   _isReady: false,
-  _pendingMessages: computed(function() { return Ember.A(); }).property(),
+  _pendingMessages: computed(function() { return A(); }),
 
-  send: function(options) {
+  send(options) {
     if (this._isReady) {
       this.sendMessage.apply(this, arguments);
     } else {
@@ -149,13 +145,10 @@ export default Ember.Object.extend({
     Called when the connection is set up.
     Flushes the pending messages.
   */
-  onConnectionReady: function() {
+  onConnectionReady() {
     // Flush pending messages
-    var self = this;
-    var messages = this.get('_pendingMessages');
-    messages.forEach(function(options) {
-      self.sendMessage(options);
-    });
+    const messages = this.get('_pendingMessages');
+    messages.forEach(options => this.sendMessage(options));
     messages.clear();
     this._isReady = true;
   }

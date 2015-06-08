@@ -1,17 +1,14 @@
 import PortMixin from "ember-debug/mixins/port-mixin";
 import ProfileManager from "ember-debug/models/profile-manager";
 
-var Ember = window.Ember;
-var computed = Ember.computed;
-var oneWay = computed.oneWay;
-var later = Ember.run.later;
+const Ember = window.Ember;
+const { computed: { oneWay }, run: { later }, subscribe, Object: EmberObject } = Ember;
 
-var profileManager = new ProfileManager();
-
-var queue = [];
+let profileManager = new ProfileManager();
+let queue = [];
 
 function push(info) {
-  var index = queue.push(info);
+  const index = queue.push(info);
   if (index === 1) {
     later(flush, 50);
   }
@@ -19,7 +16,7 @@ function push(info) {
 }
 
 function flush() {
-  var entry, i;
+  let entry, i;
   for (i = 0; i < queue.length; i++) {
     entry = queue[i];
     if (entry.type === 'began') {
@@ -35,9 +32,9 @@ function flush() {
   queue.length = 0;
 }
 
-Ember.subscribe("render", {
-  before: function(name, timestamp, payload) {
-    var info = {
+subscribe("render", {
+  before(name, timestamp, payload) {
+    const info = {
       type: 'began',
       timestamp: timestamp,
       payload: payload,
@@ -46,19 +43,19 @@ Ember.subscribe("render", {
     return push(info);
   },
 
-  after: function(name, timestamp, payload, beganIndex) {
-    var endedInfo = {
+  after(name, timestamp, payload, beganIndex) {
+    const endedInfo = {
       type: 'ended',
       timestamp: timestamp,
       payload: payload
     };
 
-    var index = push(endedInfo);
+    const index = push(endedInfo);
     queue[beganIndex].endedIndex = index;
   }
 });
 
-export default Ember.Object.extend(PortMixin, {
+export default EmberObject.extend(PortMixin, {
   namespace: null,
   port: oneWay('namespace.port').readOnly(),
   application: oneWay('namespace.application').readOnly(),
@@ -67,18 +64,15 @@ export default Ember.Object.extend(PortMixin, {
 
   profileManager: profileManager,
 
-  init: function() {
-    var self = this;
+  init() {
     this._super();
-    this.profileManager.wrapForErrors = function(context, callback) {
-      return self.get('port').wrap(function() {
-        return callback.call(context);
-      });
+    this.profileManager.wrapForErrors = (context, callback) => {
+      return this.get('port').wrap(() => callback.call(context));
     };
     this._subscribeForViewTrees();
   },
 
-  willDestroy: function() {
+  willDestroy() {
     this._super();
     this.profileManager.wrapForErrors = function(context, callback) {
       return callback.call(context);
@@ -87,13 +81,13 @@ export default Ember.Object.extend(PortMixin, {
     this.profileManager.offProfilesAdded(this, this._updateViewTree);
   },
 
-  _subscribeForViewTrees: function() {
+  _subscribeForViewTrees() {
     this.profileManager.onProfilesAdded(this, this._updateViewTree);
   },
 
-  _updateViewTree: function(profiles) {
-    var viewDurations = {};
-    this._flatten(profiles).forEach(function(node) {
+  _updateViewTree(profiles) {
+    let viewDurations = {};
+    this._flatten(profiles).forEach(node => {
       if (node.viewGuid) {
         viewDurations[node.viewGuid] = node.duration;
       }
@@ -101,31 +95,30 @@ export default Ember.Object.extend(PortMixin, {
     this.get('viewDebug').updateDurations(viewDurations);
   },
 
-  _flatten: function(profiles, array) {
-    var self = this;
+  _flatten(profiles, array) {
     array = array || [];
-    profiles.forEach(function(profile) {
+    profiles.forEach(profile => {
       array.push(profile);
-      self._flatten(profile.children, array);
+      this._flatten(profile.children, array);
     });
     return array;
   },
 
-  sendAdded: function(profiles) {
+  sendAdded(profiles) {
     this.sendMessage('profilesAdded', { profiles: profiles });
   },
 
   messages: {
-    watchProfiles: function() {
+    watchProfiles() {
       this.sendMessage('profilesAdded', { profiles: this.profileManager.profiles });
       this.profileManager.onProfilesAdded(this, this.sendAdded);
     },
 
-    releaseProfiles: function() {
+    releaseProfiles() {
       this.profileManager.offProfilesAdded(this, this.sendAdded);
     },
 
-    clear: function() {
+    clear() {
       this.profileManager.clearProfiles();
       this.sendMessage('profilesUpdated', { profiles: [] });
     }

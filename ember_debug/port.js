@@ -1,34 +1,32 @@
-var Ember = window.Ember;
-var oneWay = Ember.computed.oneWay;
-var guidFor = Ember.guidFor;
-var run = Ember.run;
+const Ember = window.Ember;
+const { Object: EmberObject, computed, guidFor, run } = Ember;
+const { oneWay } = computed;
 
-export default Ember.Object.extend(Ember.Evented, {
+
+export default EmberObject.extend(Ember.Evented, {
   adapter: oneWay('namespace.adapter').readOnly(),
 
   application: oneWay('namespace.application').readOnly(),
 
-  uniqueId: Ember.computed(function() {
+  uniqueId: computed('application', function() {
     return guidFor(this.get('application')) + '__' + window.location.href + '__' + Date.now();
-  }).property('application'),
+  }),
 
-  init: function() {
-    var self = this;
-    this.get('adapter').onMessageReceived(function(message) {
-      if (self.get('uniqueId') === message.applicationId || !message.applicationId) {
-        self.messageReceived(message.type, message);
+  init() {
+    this.get('adapter').onMessageReceived(message => {
+      if (this.get('uniqueId') === message.applicationId || !message.applicationId) {
+        this.messageReceived(message.type, message);
       }
     });
   },
 
-  messageReceived: function(name, message) {
-    var self = this;
-    this.wrap(function() {
-      self.trigger(name, message);
+  messageReceived(name, message) {
+    this.wrap(() => {
+      this.trigger(name, message);
     });
   },
 
-  send: function(messageType, options) {
+  send(messageType, options) {
     options.type = messageType;
     options.from = 'inspectedWindow';
     options.applicationId = this.get('uniqueId');
@@ -51,7 +49,7 @@ export default Ember.Object.extend(Ember.Evented, {
    * @param {Function} fn
    * @return {Mixed} The return value of the passed function
    */
-  wrap: function(fn) {
+  wrap(fn) {
     return run(this, function() {
       try {
         return fn();
