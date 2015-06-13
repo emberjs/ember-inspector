@@ -27,7 +27,7 @@ if (typeof env !== 'undefined') {
       return;
     }
     // prevent from injecting twice
-    if (!Ember.Debug) {
+    if (!Ember.EmberInspectorDebugger) {
       define('ember-debug/config', function() {
         return {
           default: {
@@ -35,13 +35,13 @@ if (typeof env !== 'undefined') {
           }
         };
       });
-      window.EmberInspector = Ember.Debug = requireModule('ember-debug/main')['default'];
-      Ember.Debug.Adapter = requireModule('ember-debug/adapters/' + adapter)['default'];
+      window.EmberInspector = Ember.EmberInspectorDebugger = requireModule('ember-debug/main')['default'];
+      Ember.EmberInspectorDebugger.Adapter = requireModule('ember-debug/adapters/' + adapter)['default'];
 
       onApplicationStart(function appStarted(app) {
         app.__inspector__booted = true;
-        Ember.Debug.set('application', app);
-        Ember.Debug.start(true);
+        Ember.EmberInspectorDebugger.set('application', app);
+        Ember.EmberInspectorDebugger.start(true);
         // Watch for app reset
         app.reopen({
           reset: function() {
@@ -49,8 +49,8 @@ if (typeof env !== 'undefined') {
             this._super.apply(this, arguments);
           },
           willDestroy: function() {
-            Ember.Debug.destroyContainer();
-            Ember.Debug.set('application', null);
+            Ember.EmberInspectorDebugger.destroyContainer();
+            Ember.EmberInspectorDebugger.set('application', null);
             this._super.apply(this, arguments);
           }
         });
