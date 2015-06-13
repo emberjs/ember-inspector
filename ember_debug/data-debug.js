@@ -170,7 +170,7 @@ var DataDebug = Ember.Object.extend(PortMixin, {
       var type = this.sentTypes[message.objectId], self = this;
       this.releaseRecords();
 
-      let typeOrName;
+      var typeOrName;
       if (this.get('adapter.acceptsModelName')) {
         // Ember >= 1.3
         typeOrName = type.name;
