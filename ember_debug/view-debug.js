@@ -145,7 +145,6 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     $(layerDiv).remove();
     $(previewDiv).remove();
     this.get('_lastNodes').clear();
-    Ember.View.removeMutationListener(this.viewTreeChanged);
     this.releaseCurrentObjects();
     this.stopInspecting();
   },
@@ -251,8 +250,6 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
       self.sendTree();
       self.hideLayer();
     };
-
-    Ember.View.addMutationListener(this.viewTreeChanged);
   },
 
   viewTree: function() {
@@ -263,7 +260,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     }
 
     var applicationViewId = $(emberApp.rootElement).find('> .ember-view').attr('id');
-    var rootView = Ember.View.views[applicationViewId];
+    var rootView = this.get('viewRegistry')[applicationViewId];
     // In case of App.reset view is destroyed
     if (!rootView) {
       return false;
@@ -405,7 +402,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
     if (element instanceof Ember.View) {
       view = element;
     } else {
-      view = Ember.View.views[element.id];
+      view = this.get('viewRegistry')[element.id];
     }
 
     var getViewBoundingClientRect = Ember.ViewUtils.getViewBoundingClientRect;
@@ -614,9 +611,13 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
    * @return {Boolean}
    */
   _isGlimmer: function() {
-    var id = Ember.keys(Ember.View.views)[0];
-    return id && !Ember.View.views[id].get('_childViews');
+    var id = Ember.keys(this.get('viewRegistry'))[0];
+    return id && !this.get('viewRegistry')[id].get('_childViews');
   },
+
+  viewRegistry: computed('application', function() {
+    return this.get('application.__container__').lookup('-view-registry:main') || Ember.View.views;
+  }),
 
   /**
    * Walk the render node hierarchy and build the tree.
