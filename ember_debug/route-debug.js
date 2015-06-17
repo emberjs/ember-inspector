@@ -56,7 +56,7 @@ export default Ember.Object.extend(PortMixin, {
       var route = routeNames[routeName];
       buildSubTree.call(this, routeTree, route);
     }
-    return arrayizeChildren({ children: routeTree }).children[0];
+    return arrayizeChildren({ children: routeTree });
   }).property('router'),
 
   sendTree: function() {
@@ -163,7 +163,11 @@ var buildSubTree = function(routeTree, route) {
 };
 
 function arrayizeChildren(routeTree) {
-  var obj = { value: routeTree.value };
+  var obj = {};
+  // Top node doesn't have a value
+  if (routeTree.value) {
+    obj.value = routeTree.value;
+  }
 
   if (routeTree.children) {
     var childrenArray = [];
