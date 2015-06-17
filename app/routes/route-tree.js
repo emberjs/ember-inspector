@@ -49,13 +49,16 @@ export default TabRoute.extend({
 
 function topSort(tree, list) {
   list = list || [];
-  let view = $.extend({}, tree);
-  view.parentCount = view.parentCount || 0;
-  delete view.children;
-  list.push(view);
+  let route = $.extend({}, tree);
+  delete route.children;
+  // Firt node in the tree doesn't have a value
+  if (route.value) {
+    route.parentCount = route.parentCount || 0;
+    list.push(route);
+  }
   tree.children = tree.children || [];
   tree.children.forEach(child => {
-    child.parentCount = view.parentCount + 1;
+    child.parentCount = route.parentCount + 1;
     topSort(child, list);
   });
   return list;
