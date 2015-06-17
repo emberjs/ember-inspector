@@ -66,7 +66,7 @@ test("Route tree", async function t(assert) {
 
   assert.equal(name, 'route:routeTree');
 
-  route = message.tree;
+  route = message.tree.children[0];
   assert.equal(route.value.name, 'application');
   assert.equal(route.value.type, 'resource');
   assert.equal(route.value.controller.name, 'application');
