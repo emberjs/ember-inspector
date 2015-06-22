@@ -1,8 +1,7 @@
 import PortMixin from "ember-debug/mixins/port-mixin";
-var Ember = window.Ember;
-var EmberObject = Ember.Object;
-var computed = Ember.computed;
-var oneWay = computed.oneWay;
+const Ember = window.Ember;
+const { Object: EmberObject, computed } = Ember;
+const { oneWay } = computed;
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,
@@ -11,9 +10,9 @@ export default EmberObject.extend(PortMixin, {
   application: oneWay('namespace.application').readOnly(),
   objectInspector: oneWay('namespace.objectInspector').readOnly(),
 
-  container: computed(function() {
+  container: computed('application', function() {
     return this.get('application.__container__');
-  }).property('application'),
+  }),
 
   portNamespace: 'container',
 
@@ -24,29 +23,30 @@ export default EmberObject.extend(PortMixin, {
       'resolver-for-debugging',
       'event_dispatcher'
     ];
-  }).property(),
+  }),
 
-  typeFromKey: function(key) {
+  typeFromKey(key) {
     return key.split(':').shift();
   },
 
-  nameFromKey: function(key) {
+  nameFromKey(key) {
     return key.split(':').pop();
   },
 
-  shouldHide: function(type) {
+  shouldHide(type) {
     return type[0] === '-' || this.get('TYPES_TO_SKIP').indexOf(type) !== -1;
   },
 
-  instancesByType: function() {
-    var key, instancesByType = {};
-    var cache = this.get('container').cache;
+  instancesByType() {
+    let key;
+    let instancesByType = {};
+    let cache = this.get('container').cache;
     // Detect if InheritingDict (from Ember < 1.8)
     if (typeof cache.dict !== 'undefined' && typeof cache.eachLocal !== 'undefined') {
       cache = cache.dict;
     }
     for (key in cache) {
-      var type = this.typeFromKey(key);
+      const type = this.typeFromKey(key);
       if (this.shouldHide(type)) { continue; }
       if (instancesByType[type] === undefined) {
         instancesByType[type] = [];
@@ -59,37 +59,38 @@ export default EmberObject.extend(PortMixin, {
     return instancesByType;
   },
 
-  getTypes: function() {
-    var key, types = [];
-    var instancesByType = this.instancesByType();
+  getTypes() {
+    let key;
+    let types = [];
+    const instancesByType = this.instancesByType();
     for (key in instancesByType) {
       types.push({ name: key, count: instancesByType[key].length });
     }
     return types;
   },
 
-  getInstances: function(type) {
-    var instances = this.instancesByType()[type];
+  getInstances(type) {
+    const instances = this.instancesByType()[type];
     if (!instances) {
       return null;
     }
-    return instances.map(function(item) {
+    return instances.map((item) => {
       return {
         name: this.nameFromKey(item.fullName),
         fullName: item.fullName,
         inspectable: this.get('objectInspector').canSend(item.instance)
       };
-    }.bind(this));
+    });
   },
 
   messages: {
-    getTypes: function() {
+    getTypes() {
       this.sendMessage('types', {
         types: this.getTypes()
       });
     },
-    getInstances: function(message) {
-      var instances = this.getInstances(message.containerType);
+    getInstances(message) {
+      let instances = this.getInstances(message.containerType);
       if (instances) {
         this.sendMessage('instances', {
           instances: instances,
@@ -101,8 +102,8 @@ export default EmberObject.extend(PortMixin, {
         });
       }
     },
-    sendInstanceToConsole: function(message) {
-      var instance = this.get('container').lookup(message.name);
+    sendInstanceToConsole(message) {
+      const instance = this.get('container').lookup(message.name);
       this.get('objectToConsole').sendValueToConsole(instance);
     }
   }

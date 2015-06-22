@@ -3,13 +3,10 @@
  * A lot of the code is inspired by/taken from
  * https://github.com/evanw/node-source-map-support
  */
-var Ember = window.Ember;
-var EmberObject = Ember.Object;
-var computed = Ember.computed;
-var RSVP = Ember.RSVP;
-var resolve = RSVP.resolve;
+const Ember = window.Ember;
+const { Object: EmberObject, A, computed, RSVP: { resolve, Promise } } = Ember;
 
-var notFoundError = new Error('Source map url not found');
+const notFoundError = new Error('Source map url not found');
 
 export default EmberObject.extend({
 
@@ -24,17 +21,16 @@ export default EmberObject.extend({
    * @param  {String} stack The stack trace
    * @return {RSVP.Promise}
    */
-  map: function(stack) {
-    var self = this;
-    var parsed = Ember.A(fromStackProperty(stack));
-    var array = Ember.A();
-    var lastPromise = null;
-    parsed.forEach(function(item) {
-      lastPromise = self.get('_lastPromise').then(function() {
-        return self.getSourceMap(item.url);
-      }, null, 'ember-inspector').then(function(smc) {
+  map(stack) {
+    const parsed = A(fromStackProperty(stack));
+    let array = A();
+    let lastPromise = null;
+    parsed.forEach(item => {
+      lastPromise = this.get('_lastPromise').then(() => {
+        return this.getSourceMap(item.url);
+      }, null, 'ember-inspector').then(smc => {
         if (smc) {
-          var source = smc.originalPositionFor({
+          let source = smc.originalPositionFor({
             line: item.line,
             column: item.column
           });
@@ -43,7 +39,7 @@ export default EmberObject.extend({
           return array;
         }
       }, null, 'ember-inspector');
-      self.set('_lastPromise', lastPromise);
+      this.set('_lastPromise', lastPromise);
     });
     return resolve(lastPromise, 'ember-inspector').catch(function(e) {
       if (e === notFoundError) {
@@ -57,13 +53,13 @@ export default EmberObject.extend({
     return {};
   }),
 
-  getSourceMap: function(url) {
-    var sourceMaps = this.get('sourceMapCache');
+  getSourceMap(url) {
+    let sourceMaps = this.get('sourceMapCache');
     if (sourceMaps[url] !== undefined) { return resolve(sourceMaps[url], 'ember-inspector'); }
-    return retrieveSourceMap(url).then(function(response) {
+    return retrieveSourceMap(url).then(response => {
       if (response) {
-        var map = JSON.parse(response.map);
-        var sm = new window.sourceMap.SourceMapConsumer(map);
+        const map = JSON.parse(response.map);
+        const sm = new window.sourceMap.SourceMapConsumer(map);
         sourceMaps[url] = sm;
         return sm;
       }
@@ -75,8 +71,8 @@ export default EmberObject.extend({
 
 
 function retrieveSourceMap(source) {
-  var mapURL;
-  return retrieveSourceMapURL(source).then(function(sourceMappingURL) {
+  let mapURL;
+  return retrieveSourceMapURL(source).then((sourceMappingURL) => {
     if (!sourceMappingURL) {
       throw notFoundError;
     }
@@ -86,7 +82,7 @@ function retrieveSourceMap(source) {
     return mapURL;
   })
   .then(retrieveFile)
-  .then(function(sourceMapData) {
+  .then((sourceMapData) => {
     if (!sourceMapData) {
       return null;
     }
@@ -99,15 +95,15 @@ function retrieveSourceMap(source) {
 
 function relativeToAbsolute(file, url) {
   if (!file) { return url; }
-  var dir = file.split('/');
+  let dir = file.split('/');
   dir.pop();
   dir.push(url);
   return dir.join('/');
 }
 
 function retrieveFile(source) {
-  return new RSVP.Promise(function(resolve) {
-    var xhr = new XMLHttpRequest();
+  return new Promise(function(resolve) {
+    const xhr = new XMLHttpRequest();
     xhr.onload = function() {
       resolve(this.responseText, 'ember-inspector');
     };
@@ -118,24 +114,25 @@ function retrieveFile(source) {
 
 function retrieveSourceMapURL(source) {
   return retrieveFile(source).then(function(fileData) {
-    var match = /\/\/[#@]\s*sourceMappingURL=(.*)\s*$/m.exec(fileData);
+    const match = /\/\/[#@]\s*sourceMappingURL=(.*)\s*$/m.exec(fileData);
     if (!match) { return null; }
     return match[1];
   });
 }
 
 
-var UNKNOWN_FUNCTION = "<unknown>";
+const UNKNOWN_FUNCTION = "<unknown>";
 
 // Taken from https://github.com/errorception/browser-stack-parser/
 function fromStackProperty(stackString) {
-  var chrome = /^\s*at (?:((?:\[object object\])?\S+(?: \[as \S+\])?) )?\(?((?:file|http|https):.*?):(\d+)(?::(\d+))?\)?\s*$/i,
+  const chrome = /^\s*at (?:((?:\[object object\])?\S+(?: \[as \S+\])?) )?\(?((?:file|http|https):.*?):(\d+)(?::(\d+))?\)?\s*$/i,
       gecko = /^\s*(\S*)(?:\((.*?)\))?@((?:file|http|https).*?):(\d+)(?::(\d+))?\s*$/i,
-      lines = stackString.split('\n'),
-      stack = [],
+      lines = stackString.split('\n');
+
+  let stack = [],
       parts;
 
-  for (var i = 0, j = lines.length; i < j; ++i) {
+  for (let i = 0, j = lines.length; i < j; ++i) {
     if ((parts = gecko.exec(lines[i]))) {
       stack.push({
         url: parts[3],

@@ -1,47 +1,47 @@
-var Ember = window.Ember;
-var Mixin = Ember.Mixin;
+const Ember = window.Ember;
+const { Mixin } = Ember;
 export default Mixin.create({
   port: null,
   messages: {},
 
   portNamespace: null,
 
-  init: function() {
+  init() {
     this.setupPortListeners();
   },
 
-  willDestroy: function() {
+  willDestroy() {
     this.removePortListeners();
   },
 
-  sendMessage: function(name, message) {
+  sendMessage(name, message) {
     this.get('port').send(this.messageName(name), message);
   },
 
-  setupPortListeners: function() {
-    var port = this.get('port'),
+  setupPortListeners() {
+    const port = this.get('port'),
         messages = this.get('messages');
 
-    for (var name in messages) {
+    for (let name in messages) {
       if (messages.hasOwnProperty(name)) {
         port.on(this.messageName(name), this, messages[name]);
       }
     }
   },
 
-  removePortListeners: function() {
-    var port = this.get('port'),
+  removePortListeners() {
+    const port = this.get('port'),
         messages = this.get('messages');
 
-    for (var name in messages) {
+    for (let name in messages) {
       if (messages.hasOwnProperty(name)) {
         port.off(this.messageName(name), this, messages[name]);
       }
     }
   },
 
-  messageName: function(name) {
-    var messageName = name;
+  messageName(name) {
+    let messageName = name;
     if (this.get('portNamespace')) {
       messageName = this.get('portNamespace') + ':' + messageName;
     }

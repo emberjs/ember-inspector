@@ -1,10 +1,11 @@
 /* eslint no-empty:0 */
 import PortMixin from "ember-debug/mixins/port-mixin";
-var Ember = window.Ember;
-var computed = Ember.computed;
-var oneWay = computed.oneWay;
+const Ember = window.Ember;
+const { $, computed, Object: EmberObject, A } = Ember;
+let { libraries } = Ember;
+const { oneWay } = computed;
 
-var GeneralDebug = Ember.Object.extend(PortMixin, {
+const GeneralDebug = EmberObject.extend(PortMixin, {
   namespace: null,
 
   port: oneWay('namespace.port').readOnly(),
@@ -17,11 +18,10 @@ var GeneralDebug = Ember.Object.extend(PortMixin, {
 
   // Keep an eye on https://github.com/ember-cli/ember-cli/issues/3045
   emberCliConfig: computed(function() {
-    var config;
-    var $ = Ember.$;
-    $('meta[name]').each(function() {
-      var meta = $(this);
-      var match = meta.attr('name').match(/environment$/);
+    let config;
+    $('meta[name]').each(() => {
+      const meta = $(this);
+      let match = meta.attr('name').match(/environment$/);
       if (match) {
         try {
           /* global unescape */
@@ -31,27 +31,26 @@ var GeneralDebug = Ember.Object.extend(PortMixin, {
       }
     });
     return config;
-  }).property(),
+  }),
 
 
-  sendBooted: function() {
+  sendBooted() {
     this.sendMessage('applicationBooted', {
       booted: this.get('application.__inspector__booted')
     });
   },
 
-  sendReset: function() {
+  sendReset() {
     this.sendMessage('reset', {
       reset: true
     });
   },
 
   messages: {
-    applicationBooted: function() {
+    applicationBooted() {
       this.sendBooted();
     },
-    getLibraries: function() {
-      var libraries = Ember.libraries;
+    getLibraries() {
 
       // Ember has changed where the array of libraries is located.
       // In older versions, `Ember.libraries` was the array itself,
@@ -62,16 +61,14 @@ var GeneralDebug = Ember.Object.extend(PortMixin, {
 
       this.sendMessage('libraries', { libraries: arrayize(libraries) });
     },
-    refresh: function() {
+    refresh() {
       window.location.reload();
     }
   }
 });
 
 function arrayize(enumerable) {
-  return Ember.A(enumerable).map(function(item) {
-    return item;
-  });
+  return A(enumerable).map(item => item);
 }
 
 export default GeneralDebug;
