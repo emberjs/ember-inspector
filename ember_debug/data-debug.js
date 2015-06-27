@@ -161,11 +161,19 @@ export default EmberObject.extend(PortMixin, {
       const type = this.sentTypes[message.objectId];
       this.releaseRecords();
 
-      const releaseMethod = this.get('adapter').watchRecords(type.object,
-        (recordsReceived) => {
+      let typeOrName;
+      if (this.get('adapter.acceptsModelName')) {
+        // Ember >= 1.3
+        typeOrName = type.name;
+      } else {
+        // support for legacy Ember < 1.3
+        typeOrName = type.object;
+      }
+      let releaseMethod = this.get('adapter').watchRecords(typeOrName,
+        recordsReceived => {
           this.recordsAdded(recordsReceived);
         },
-        (recordsUpdated) => {
+        recordsUpdated => {
           this.recordsUpdated(recordsUpdated);
         },
         () => {
@@ -190,4 +198,3 @@ export default EmberObject.extend(PortMixin, {
     }
   }
 });
-
