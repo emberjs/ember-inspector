@@ -57,7 +57,7 @@ function inspect(value) {
     let broken = false;
 
     for (let key in value) {
-      if (value.hasOwnProperty(key)) {
+      if (!('hasOwnProperty' in value) || value.hasOwnProperty(key)) {
         if (count++ > 1) {
           broken = true;
           break;
@@ -720,4 +720,3 @@ function errorsToSend(errors) {
     return { property: error.property };
   });
 }
-
