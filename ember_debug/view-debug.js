@@ -1047,4 +1047,3 @@ function viewDescription(view) {
   }
   return name;
 }
-

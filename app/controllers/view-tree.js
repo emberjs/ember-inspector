@@ -34,7 +34,7 @@ export default Controller.extend({
 
     sendModelToConsole(value) {
       // do not use `sendObjectToConsole` because models don't have to be ember objects
-      this.get('port').send('view:sendModelToConsole', { viewId: value.objectId, renderNodeId: value.renderNod });
+      this.get('port').send('view:sendModelToConsole', { viewId: value.objectId, renderNodeId: value.renderNodeId });
     },
 
     sendObjectToConsole(objectId) {
