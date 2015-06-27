@@ -32,7 +32,7 @@ export default BasicAdapter.extend({
   _listen() {
     let chromePort = this.get('_chromePort');
 
-    chromePort.addEventListener('message', function(event) {
+    chromePort.addEventListener('message', event => {
       const message = event.data;
       run(() => {
         this._messageReceived(message);
