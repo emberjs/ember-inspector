@@ -19,7 +19,7 @@ const GeneralDebug = EmberObject.extend(PortMixin, {
   // Keep an eye on https://github.com/ember-cli/ember-cli/issues/3045
   emberCliConfig: computed(function() {
     let config;
-    $('meta[name]').each(() => {
+    $('meta[name]').each(function() {
       const meta = $(this);
       let match = meta.attr('name').match(/environment$/);
       if (match) {
