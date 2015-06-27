@@ -27,7 +27,7 @@
   "devDependencies": {
     "babel-eslint": "^3.1.9",
     "broccoli-asset-rev": "^2.0.0",
-    "broccoli-babel-transpiler": "^5.0.0",
+    "broccoli-babel-transpiler": "5.1.0",
     "broccoli-concat": "0.0.12",
     "broccoli-es6modules": "^0.5.1",
     "broccoli-file-creator": "^0.1.0",
