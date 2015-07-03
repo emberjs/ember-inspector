@@ -794,7 +794,7 @@ export default EmberObject.extend(PortMixin, {
    * @return {String} the template name
    */
   _nodeTemplateName(renderNode) {
-    let template = renderNode.lastResult.template;
+    let template = renderNode.lastResult && renderNode.lastResult.template;
     if (template && template.meta && template.meta.moduleName) {
       return template.meta.moduleName.replace(/\.hbs$/, '');
     }
