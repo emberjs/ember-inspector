@@ -803,7 +803,7 @@ var ViewDebug = Ember.Object.extend(PortMixin, {
    * @return {String} the template name
    */
   _nodeTemplateName: function(renderNode) {
-    var template = renderNode.lastResult.template;
+    var template = renderNode.lastResult && renderNode.lastResult.template;
     if (template && template.meta && template.meta.moduleName) {
       return template.meta.moduleName.replace(/\.hbs$/, '');
     }
