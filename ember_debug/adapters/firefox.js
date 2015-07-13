@@ -44,7 +44,7 @@ export default BasicAdapter.extend({
 
   _listen() {
 
-    window.addEventListener('ember-debug-receive', function(event) {
+    window.addEventListener('ember-debug-receive', (event) => {
       var message = event.detail;
       run(() => {
         // FIX: needed to fix permission denied exception on Firefox >= 30
@@ -65,4 +65,3 @@ export default BasicAdapter.extend({
   }
 
 });
-
