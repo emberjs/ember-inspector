@@ -1,5 +1,11 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 1.8.3
+
+* [BUFIX] Fix routes pane for Ember >= 1.13 [#399](https://github.com/emberjs/ember-inspector/pull/399)
+* [BUFIX] Fix sending view model to console [#412](https://github.com/emberjs/ember-inspector/pull/412)
+* [BUFIX] Guard against renderNode not being rendered yet [#417](https://github.com/emberjs/ember-inspector/pull/417)
+
 ## Ember Inspector 1.8.2
 
 * [IMPROVEMENT] Add support for Ember Data >= 1.0.0-beta.19 [#383](https://github.com/emberjs/ember-inspector/pull/383)
