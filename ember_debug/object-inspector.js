@@ -1,9 +1,11 @@
 import PortMixin from "ember-debug/mixins/port-mixin";
 const Ember = window.Ember;
 const { Object: EmberObject, inspect: emberInspect, meta: emberMeta, typeOf,
-        Descriptor, computed, get, set, ComputedProperty, guidFor, isNone, keys, removeObserver,
+        Descriptor, computed, get, set, ComputedProperty, guidFor, isNone, removeObserver,
         Mixin, addObserver, cacheFor } = Ember;
 const { oneWay } = computed;
+
+const keys = Object.keys || Ember.keys;
 
 function inspectValue(value) {
   let string;

@@ -2,9 +2,11 @@
 import PortMixin from "ember-debug/mixins/port-mixin";
 
 const Ember = window.Ember;
-const { guidFor, $, computed, run, Object: EmberObject, View, typeOf, Component, ViewUtils, A, keys } = Ember;
+const { guidFor, $, computed, run, Object: EmberObject, View, typeOf, Component, ViewUtils, A } = Ember;
 const { later } = run;
 const { oneWay } = computed;
+
+const keys = Object.keys || Ember.keys;
 
 let layerDiv,
     previewDiv,
