@@ -115,7 +115,7 @@ export default EmberObject.extend({
     return new Promise((resolve, reject) => {
       $(() => {
         if (this.isDestroyed) { reject(); }
-        this.interval = setInterval(function() {
+        this.interval = setInterval(() => {
           if (document.documentElement.dataset.emberExtension) {
             clearInterval(this.interval);
             resolve();
