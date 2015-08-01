@@ -620,7 +620,7 @@ export default EmberObject.extend(PortMixin, {
    * @param  {Array} children
    */
   _appendNodeChildren(renderNode, children) {
-    let childNodes = renderNode.childNodes;
+    let childNodes = this._childrenForNode(renderNode);
     if (!childNodes) { return; }
     childNodes.forEach(childNode => {
       if (this._shouldShowNode(childNode, renderNode)) {
@@ -631,6 +631,20 @@ export default EmberObject.extend(PortMixin, {
         this._appendNodeChildren(childNode, children);
       }
     });
+  },
+
+  /**
+   * Gather the children assigned to the render node.
+   *
+   * @param  {Object} renderNode
+   * @return {Array} children
+   */
+  _childrenForNode(renderNode) {
+    if (renderNode.morphMap) {
+      return keys(renderNode.morphMap).map(key => renderNode.morphMap[key]);
+    } else {
+      return renderNode.childNodes;
+    }
   },
 
   /**
