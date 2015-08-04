@@ -124,7 +124,7 @@ export default EmberObject.extend(PortMixin, {
         deprecations.push(grouped[i]);
       }
       this.sendMessage('deprecationsAdded', {
-        deprecations: deprecations
+        deprecations
       });
       this.sendPending();
     },
