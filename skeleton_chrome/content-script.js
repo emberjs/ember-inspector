@@ -29,8 +29,14 @@
   document.documentElement.dataset.emberExtension = 1;
 
 
-  // clear a possible previous Ember icon
-  chrome.extension.sendMessage({ type: 'resetEmberIcon' });
+
+  // Iframes should not reset the icon so we make sure
+  // it's the parent window before resetting.
+  if (window.top === window) {
+    // Clear a possible previous Ember icon
+    chrome.extension.sendMessage({ type: 'resetEmberIcon' });
+  }
+
 
   // inject JS into the page to check for an app on domready
   var script = document.createElement('script');
