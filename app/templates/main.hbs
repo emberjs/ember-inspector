@@ -18,8 +18,10 @@
   <div class="split__panel">
     <div class="split__panel__hd">
       {{outlet "toolbar"}}
-      {{sidebar-toggle action="toggleInspector" side="right"
-        isExpanded=inspectorExpanded classNames="toolbar__icon-button"}}
+      {{#unless inspectorExpanded}}
+        {{sidebar-toggle action="toggleInspector" side="right"
+          isExpanded=false classNames="toolbar__icon-button"}}
+      {{/unless}}
     </div>
 
     {{#view "main-content" classNames="split__panel__bd"}}
