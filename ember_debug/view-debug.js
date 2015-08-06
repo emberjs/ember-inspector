@@ -731,7 +731,7 @@ export default EmberObject.extend(PortMixin, {
    * @return {Ember.Controller}
    */
   _controllerForNode(renderNode) {
-    return renderNode.lastResult.scope.locals.controller.value();
+    return renderNode.lastResult && renderNode.lastResult.scope.locals.controller.value();
   },
 
   /**
