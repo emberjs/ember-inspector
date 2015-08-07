@@ -51,7 +51,7 @@ module.exports = function(grunt) {
         sync: [{
           src: 'dist/bookmarklet/**/*.*',
           dest: 'dist_bookmarklet/',
-          rel: 'dist_bookmarklet',
+          rel: 'dist/bookmarklet',
           options: { verify: true }
         }]
       }
