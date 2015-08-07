@@ -1,5 +1,5 @@
 import Ember from 'ember';
-const { Component } = Ember;
+const { Component, computed } = Ember;
 const COLOR_MAP = {
   red: '#ff2717',
   blue: '#174fff',
@@ -16,7 +16,7 @@ export default Component.extend({
   label: 'record-row',
 
   // TODO: Color record based on `color` property.
-  style: function() {
+  style: computed('model.color', function() {
     let colorName = this.get('model.color');
     if (!Ember.isEmpty(colorName)) {
       let color = COLOR_MAP[colorName];
@@ -25,14 +25,14 @@ export default Component.extend({
       }
     }
     return '';
-  }.property('model.color'),
+  }),
 
-  columns: function() {
+  columns: computed('modelTypeColumns.@each', 'model.columnValues', function() {
     let columns = this.get('modelTypeColumns') || [];
     return columns.map(col => {
       return { name: col.name, value: this.get('model.columnValues.' + col.name) };
     });
-  }.property('modelTypeColumns.@each', 'model.columnValues'),
+  }),
 
   click() {
     this.sendAction('inspect', this.get('model'));

@@ -2,12 +2,11 @@ import Ember from "ember";
 import { module, test } from 'qunit';
 const { RSVP, run } = Ember;
 /*globals require */
-var EmberDebug = require("ember-debug/main")["default"];
+const EmberDebug = require("ember-debug/main").default;
 
-var port;
+let port;
 /* jshint ignore:start */
-var EmberDebug;
-var App;
+let App;
 
 function setupApp() {
   App = Ember.Application.create();
@@ -39,7 +38,7 @@ module("Deprecation Debug", {
 });
 
 test("deprecations are caught and sent", async function t(assert) {
-  var messages = [];
+  let messages = [];
   port.reopen({
     send: function(name, message) {
       messages.push({
@@ -59,9 +58,9 @@ test("deprecations are caught and sent", async function t(assert) {
 
   run(port, 'trigger', 'deprecation:watch');
   await visit('/');
-  var deprecations = messages.filterBy('name', 'deprecation:deprecationsAdded').get('lastObject').message.deprecations;
+  let deprecations = messages.filterBy('name', 'deprecation:deprecationsAdded').get('lastObject').message.deprecations;
   assert.equal(deprecations.length, 2);
-  var deprecation = deprecations[0];
+  let deprecation = deprecations[0];
   assert.equal(deprecation.count, 2, 'Correctly combined');
   assert.equal(deprecation.message, 'Deprecation 1');
   assert.equal(deprecation.sources.length, 2, 'Correctly separated by source');
@@ -71,7 +70,7 @@ test("deprecations are caught and sent", async function t(assert) {
   assert.equal(deprecation.sources.length, 1);
   assert.equal(deprecation.url, 'http://www.emberjs.com');
 
-  var count = messages.filterBy('name', 'deprecation:count').get('lastObject').message.count;
+  let count = messages.filterBy('name', 'deprecation:count').get('lastObject').message.count;
   assert.equal(count, 3, 'count correctly sent');
 
 });

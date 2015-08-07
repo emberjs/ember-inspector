@@ -1,21 +1,14 @@
 import PortMixin from "ember-debug/mixins/port-mixin";
-var Ember = window.Ember;
-var EmberObject = Ember.Object;
-var typeOf = Ember.typeOf;
-var Descriptor = Ember.Descriptor;
-var emberInspect = Ember.inspect;
-var computed = Ember.computed;
-var oneWay = computed.oneWay;
-var ComputedProperty = Ember.ComputedProperty;
-var get = Ember.get;
-var set = Ember.set;
-var guidFor = Ember.guidFor;
-var emberMeta = Ember.meta;
-var isNone = Ember.isNone;
-var keys = Ember.keys;
+const Ember = window.Ember;
+const { Object: EmberObject, inspect: emberInspect, meta: emberMeta, typeOf,
+        Descriptor, computed, get, set, ComputedProperty, guidFor, isNone, removeObserver,
+        Mixin, addObserver, cacheFor } = Ember;
+const { oneWay } = computed;
+
+const keys = Object.keys || Ember.keys;
 
 function inspectValue(value) {
-  var string;
+  let string;
   if (value instanceof EmberObject) {
     return { type: "type-ember-object", inspect: value.toString() };
   } else if (isComputed(value)) {
@@ -60,8 +53,12 @@ function inspect(value) {
     // `Ember.inspect` is able to handle this use case,
     // but it is very slow as it loops over all props,
     // so summarize to just first 2 props
-    var ret = [], v, count = 0, broken = false;
-    for (var key in value) {
+    let ret = [];
+    let v;
+    let count = 0;
+    let broken = false;
+
+    for (let key in value) {
       if (!('hasOwnProperty' in value) || value.hasOwnProperty(key)) {
         if (count++ > 1) {
           broken = true;
@@ -75,7 +72,7 @@ function inspect(value) {
         ret.push(key + ": " + v);
       }
     }
-    var suffix = ' }';
+    let suffix = ' }';
     if (broken) {
       suffix = ' ...}';
     }
@@ -85,7 +82,7 @@ function inspect(value) {
   }
 }
 
-var ObjectInspector = EmberObject.extend(PortMixin, {
+export default EmberObject.extend(PortMixin, {
   namespace: null,
 
   adapter: oneWay('namespace.adapter'),
@@ -94,15 +91,15 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
 
   application: oneWay('namespace.application'),
 
-  init: function() {
+  init() {
     this._super();
     this.set('sentObjects', {});
     this.set('boundObservers', {});
   },
 
-  willDestroy: function() {
+  willDestroy() {
     this._super();
-    for (var objectId in this.sentObjects) {
+    for (let objectId in this.sentObjects) {
       this.releaseObject(objectId);
     }
   },
@@ -116,14 +113,14 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
   portNamespace: 'objectInspector',
 
   messages: {
-    digDeeper: function(message) {
+    digDeeper(message) {
       this.digIntoObject(message.objectId, message.property);
     },
-    releaseObject: function(message) {
+    releaseObject(message) {
       this.releaseObject(message.objectId);
     },
-    calculate: function(message) {
-      var value;
+    calculate(message) {
+      let value;
       value = this.valueForObjectProperty(message.objectId, message.property, message.mixinIndex);
       if (value) {
         this.sendMessage('updateProperty', value);
@@ -135,67 +132,66 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
         errors: errorsToSend(this.get('_errorsFor')[message.objectId])
       });
     },
-    saveProperty: function(message) {
-      var value = message.value;
+    saveProperty(message) {
+      let value = message.value;
       if (message.dataType && message.dataType === 'date') {
         value = new Date(value);
       }
       this.saveProperty(message.objectId, message.mixinIndex, message.property, value);
     },
-    sendToConsole: function(message) {
+    sendToConsole(message) {
       this.sendToConsole(message.objectId, message.property);
     },
-    sendControllerToConsole: function(message) {
-      var container = this.get('application.__container__');
+    sendControllerToConsole(message) {
+      const container = this.get('application.__container__');
       this.sendValueToConsole(container.lookup('controller:' + message.name));
     },
-    sendRouteHandlerToConsole: function(message) {
-      var container = this.get('application.__container__');
+    sendRouteHandlerToConsole(message) {
+      const container = this.get('application.__container__');
       this.sendValueToConsole(container.lookup('route:' + message.name));
     },
-    inspectRoute: function(message) {
-      var container = this.get('application.__container__');
+    inspectRoute(message) {
+      const container = this.get('application.__container__');
       this.sendObject(container.lookup('router:main').router.getHandler(message.name));
     },
-    inspectController: function(message) {
-      var container = this.get('application.__container__');
+    inspectController(message) {
+      const container = this.get('application.__container__');
       this.sendObject(container.lookup('controller:' + message.name));
     },
-    inspectById: function(message) {
-      var obj = this.sentObjects[message.objectId];
+    inspectById(message) {
+      const obj = this.sentObjects[message.objectId];
       this.sendObject(obj);
     },
-    inspectByContainerLookup: function(message) {
-      var container = this.get('application.__container__');
+    inspectByContainerLookup(message) {
+      const container = this.get('application.__container__');
       this.sendObject(container.lookup(message.name));
     },
-    traceErrors: function(message) {
-      var errors = this.get('_errorsFor')[message.objectId];
-      var self = this;
-      toArray(errors).forEach(function(error) {
-        var stack = error.error;
+    traceErrors(message) {
+      let errors = this.get('_errorsFor')[message.objectId];
+      toArray(errors).forEach((error) => {
+        let stack = error.error;
         if (stack && stack.stack) {
           stack = stack.stack;
         } else {
           stack = error;
         }
-        self.get('adapter').log('Object Inspector error for ' + error.property, stack);
+        this.get('adapter').log('Object Inspector error for ' + error.property, stack);
       });
     }
   },
 
-  canSend: function(val) {
+  canSend(val) {
     return (val instanceof EmberObject) || typeOf(val) === 'array';
   },
 
-  saveProperty: function(objectId, mixinIndex, prop, val) {
-    var object = this.sentObjects[objectId];
+  saveProperty(objectId, mixinIndex, prop, val) {
+    let object = this.sentObjects[objectId];
     set(object, prop, val);
   },
 
-  sendToConsole: function(objectId, prop) {
-    var object = this.sentObjects[objectId];
-    var value;
+  sendToConsole(objectId, prop) {
+    let object = this.sentObjects[objectId];
+    let value;
 
     if (isNone(prop)) {
       value = this.sentObjects[objectId];
@@ -206,7 +202,7 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
     this.sendValueToConsole(value);
   },
 
-  sendValueToConsole: function(value) {
+  sendValueToConsole(value) {
     window.$E = value;
     if (value instanceof Error) {
       value = value.stack;
@@ -214,12 +210,12 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
     this.get("adapter").log('Ember Inspector ($E): ', value);
   },
 
-  digIntoObject: function(objectId, property) {
-    var parentObject = this.sentObjects[objectId],
+  digIntoObject(objectId, property) {
+    let parentObject = this.sentObjects[objectId],
       object = get(parentObject, property);
 
     if (this.canSend(object)) {
-      var details = this.mixinsForObject(object);
+      let details = this.mixinsForObject(object);
 
       this.sendMessage('updateObject', {
         parentObject: objectId,
@@ -232,11 +228,11 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
     }
   },
 
-  sendObject: function(object) {
+  sendObject(object) {
     if (!this.canSend(object)) {
       throw new Error("Can't inspect " + object + ". Only Ember objects and arrays are supported.");
     }
-    var details = this.mixinsForObject(object);
+    let details = this.mixinsForObject(object);
     this.sendMessage('updateObject', {
       objectId: details.objectId,
       name: object.toString(),
@@ -247,10 +243,9 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
   },
 
 
-  retainObject: function(object) {
-    var meta = emberMeta(object),
-        guid = guidFor(object),
-        self = this;
+  retainObject(object) {
+    let meta = emberMeta(object);
+    let guid = guidFor(object);
 
     meta._debugReferences = meta._debugReferences || 0;
     meta._debugReferences++;
@@ -259,10 +254,10 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
 
     if (meta._debugReferences === 1 && object.reopen) {
       // drop object on destruction
-      var _oldWillDestroy = object._oldWillDestroy = object.willDestroy;
+      let _oldWillDestroy = object._oldWillDestroy = object.willDestroy;
       object.reopen({
-        willDestroy: function() {
-          self.dropObject(guid);
+        willDestroy: () => {
+          this.dropObject(guid);
           return _oldWillDestroy.apply(this, arguments);
         }
       });
@@ -271,12 +266,12 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
     return guid;
   },
 
-  releaseObject: function(objectId) {
-    var object = this.sentObjects[objectId];
+  releaseObject(objectId) {
+    let object = this.sentObjects[objectId];
     if (!object) {
       return;
     }
-    var meta = emberMeta(object),
+    let meta = emberMeta(object),
         guid = guidFor(object);
 
     meta._debugReferences--;
@@ -287,8 +282,8 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
 
   },
 
-  dropObject: function(objectId) {
-    var object = this.sentObjects[objectId];
+  dropObject(objectId) {
+    let object = this.sentObjects[objectId];
 
     if (object.reopen) {
       object.reopen({ willDestroy: object._oldWillDestroy });
@@ -303,28 +298,28 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
     this.sendMessage('droppedObject', { objectId: objectId });
   },
 
-  removeObservers: function(objectId) {
-    var observers = this.boundObservers[objectId],
+  removeObservers(objectId) {
+    let observers = this.boundObservers[objectId],
         object = this.sentObjects[objectId];
 
     if (observers) {
-      observers.forEach(function(observer) {
-        Ember.removeObserver(object, observer.property, observer.handler);
+      observers.forEach((observer) => {
+        removeObserver(object, observer.property, observer.handler);
       });
     }
 
     delete this.boundObservers[objectId];
   },
 
-  mixinsForObject: function(object) {
-    var mixins = Ember.Mixin.mixins(object),
+  mixinsForObject(object) {
+    let mixins = Mixin.mixins(object),
         mixinDetails = [];
 
-    var ownProps = propertiesForMixin({ mixins: [{ properties: object }] });
+    let ownProps = propertiesForMixin({ mixins: [{ properties: object }] });
     mixinDetails.push({ name: "Own Properties", properties: ownProps, expand: true });
 
-    mixins.forEach(function(mixin) {
-      var name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor;
+    mixins.forEach((mixin) => {
+      let name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor;
       if (!name) {
         name = 'Unknown mixin';
       }
@@ -334,31 +329,31 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
     fixMandatorySetters(mixinDetails);
     applyMixinOverrides(mixinDetails);
 
-    var propertyInfo = null;
-    var debugInfo = getDebugInfo(object);
+    let propertyInfo = null;
+    let debugInfo = getDebugInfo(object);
     if (debugInfo) {
       propertyInfo = getDebugInfo(object).propertyInfo;
       mixinDetails = customizeProperties(mixinDetails, propertyInfo);
     }
 
-    var expensiveProperties = null;
+    let expensiveProperties = null;
     if (propertyInfo) {
       expensiveProperties = propertyInfo.expensiveProperties;
     }
 
-    var objectId = this.retainObject(object);
+    let objectId = this.retainObject(object);
 
-    var errorsForObject = this.get('_errorsFor')[objectId] = {};
+    let errorsForObject = this.get('_errorsFor')[objectId] = {};
     calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties);
 
     this.bindProperties(objectId, mixinDetails);
 
-    var errors = errorsToSend(errorsForObject);
+    let errors = errorsToSend(errorsForObject);
     return { objectId: objectId, mixins: mixinDetails, errors: errors };
   },
 
-  valueForObjectProperty: function(objectId, property, mixinIndex) {
-    var object = this.sentObjects[objectId], value;
+  valueForObjectProperty(objectId, property, mixinIndex) {
+    let object = this.sentObjects[objectId], value;
 
     if (object.isDestroying) {
       value = '<DESTROYED>';
@@ -380,44 +375,41 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
     }
   },
 
-  bindPropertyToDebugger: function(message) {
-    var objectId = message.objectId,
-        property = message.property,
-        mixinIndex = message.mixinIndex,
-        computed = message.computed,
-        self = this;
+  bindPropertyToDebugger(message) {
+    let objectId = message.objectId;
+    let property = message.property;
+    let mixinIndex = message.mixinIndex;
+    let computed = message.computed;
+    let object = this.sentObjects[objectId];
 
-    var object = this.sentObjects[objectId];
-
-    function handler() {
-      var value = get(object, property);
+    let handler = () => {
+      let value = get(object, property);
       value = inspectValue(value);
       value.computed = computed;
 
-      self.sendMessage('updateProperty', {
+      this.sendMessage('updateProperty', {
         objectId: objectId,
         property: property,
         value: value,
         mixinIndex: mixinIndex
       });
-    }
+    };
 
-    Ember.addObserver(object, property, handler);
+    addObserver(object, property, handler);
     this.boundObservers[objectId] = this.boundObservers[objectId] || [];
     this.boundObservers[objectId].push({ property: property, handler: handler });
 
   },
 
-  bindProperties: function(objectId, mixinDetails) {
-    var self = this;
-    mixinDetails.forEach(function(mixin, mixinIndex) {
-      mixin.properties.forEach(function(item) {
+  bindProperties(objectId, mixinDetails) {
+    mixinDetails.forEach((mixin, mixinIndex) => {
+      mixin.properties.forEach((item) => {
         if (item.overridden) {
           return true;
         }
         if (item.value.type !== 'type-descriptor' && item.value.type !== 'type-function') {
-          var computed = !!item.value.computed;
-          self.bindPropertyToDebugger({
+          let computed = !!item.value.computed;
+          this.bindPropertyToDebugger({
             objectId: objectId,
             property: item.name,
             mixinIndex: mixinIndex,
@@ -434,9 +426,9 @@ var ObjectInspector = EmberObject.extend(PortMixin, {
 
 
 function propertiesForMixin(mixin) {
-  var properties = [];
+  let properties = [];
 
-  mixin.mixins.forEach(function(mixin) {
+  mixin.mixins.forEach((mixin) => {
     if (mixin.properties) {
       addProperties(properties, mixin.properties);
     }
@@ -446,7 +438,7 @@ function propertiesForMixin(mixin) {
 }
 
 function addProperties(properties, hash) {
-  for (var prop in hash) {
+  for (let prop in hash) {
     if (!hash.hasOwnProperty(prop)) { continue; }
     if (prop.charAt(0) === '_') { continue; }
 
@@ -455,7 +447,7 @@ function addProperties(properties, hash) {
 
     // when mandatory setter is removed, an `undefined` value may be set
     if (hash[prop] === undefined) { continue; }
-    var options = { isMandatorySetter: isMandatorySetter(hash, prop) };
+    let options = { isMandatorySetter: isMandatorySetter(hash, prop) };
     if (isComputed(hash[prop])) {
       options.readOnly = hash[prop]._readOnly;
     }
@@ -464,7 +456,7 @@ function addProperties(properties, hash) {
 }
 
 function replaceProperty(properties, name, value, options) {
-  var found;
+  let found;
 
   for (var i = 0, l = properties.length; i < l; i++) {
     if (properties[i].name === name) {
@@ -475,18 +467,18 @@ function replaceProperty(properties, name, value, options) {
 
   if (found) { properties.splice(i, 1); }
 
-  var prop = { name: name, value: inspectValue(value) };
+  let prop = { name, value: inspectValue(value) };
   prop.isMandatorySetter = options.isMandatorySetter;
   prop.readOnly = options.readOnly;
   properties.push(prop);
 }
 
 function fixMandatorySetters(mixinDetails) {
-  var seen = {};
-  var propertiesToRemove = [];
+  let seen = {};
+  let propertiesToRemove = [];
 
-  mixinDetails.forEach(function(detail, detailIdx) {
-    detail.properties.forEach(function(property) {
+  mixinDetails.forEach((detail, detailIdx) => {
+    detail.properties.forEach(property => {
       if (property.isMandatorySetter) {
         seen[property.name] = {
           name: property.name,
@@ -501,9 +493,9 @@ function fixMandatorySetters(mixinDetails) {
     });
   });
 
-  propertiesToRemove.forEach(function(prop) {
-    var detail = mixinDetails[prop.detailIdx];
-    var index = detail.properties.indexOf(prop.property);
+  propertiesToRemove.forEach(prop => {
+    let detail = mixinDetails[prop.detailIdx];
+    let index = detail.properties.indexOf(prop.property);
     if (index !== -1) {
       detail.properties.splice(index, 1);
     }
@@ -512,9 +504,9 @@ function fixMandatorySetters(mixinDetails) {
 }
 
 function applyMixinOverrides(mixinDetails) {
-  var seen = {};
-  mixinDetails.forEach(function(detail) {
-    detail.properties.forEach(function(property) {
+  let seen = {};
+  mixinDetails.forEach(detail => {
+    detail.properties.forEach(property => {
       if (Object.prototype.hasOwnProperty(property.name)) { return; }
 
       if (seen[property.name]) {
@@ -529,7 +521,7 @@ function applyMixinOverrides(mixinDetails) {
 }
 
 function isMandatorySetter(object, prop) {
-  var descriptor = Object.getOwnPropertyDescriptor(object, prop);
+  let descriptor = Object.getOwnPropertyDescriptor(object, prop);
   if (descriptor.set && descriptor.set === Ember.MANDATORY_SETTER_FUNCTION) {
     return true;
   }
@@ -539,15 +531,15 @@ function isMandatorySetter(object, prop) {
 function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties) {
   expensiveProperties = expensiveProperties || [];
 
-  mixinDetails.forEach(function(mixin) {
-    mixin.properties.forEach(function(item) {
+  mixinDetails.forEach(mixin => {
+    mixin.properties.forEach(item => {
       if (item.overridden) {
         return true;
       }
       if (item.value.computed) {
-        var cache = Ember.cacheFor(object, item.name);
+        let cache = cacheFor(object, item.name);
         if (cache !== undefined || expensiveProperties.indexOf(item.name) === -1) {
-          var value = calculateCP(object, item.name, errorsForObject);
+          let value = calculateCP(object, item.name, errorsForObject);
           if (!value || !(value instanceof CalculateCPError)) {
             item.value = inspectValue(value);
             item.value.computed = true;
@@ -614,7 +606,7 @@ function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties
   ```
 */
 function customizeProperties(mixinDetails, propertyInfo) {
-  var newMixinDetails = [],
+  let newMixinDetails = [],
       neededProperties = {},
       groups = propertyInfo.groups || [],
       skipProperties = propertyInfo.skipProperties || [],
@@ -624,15 +616,15 @@ function customizeProperties(mixinDetails, propertyInfo) {
     mixinDetails[0].expand = false;
   }
 
-  groups.forEach(function(group) {
-    group.properties.forEach(function(prop) {
+  groups.forEach(group => {
+    group.properties.forEach(prop => {
       neededProperties[prop] = true;
     });
   });
 
-  mixinDetails.forEach(function(mixin) {
-    var newProperties = [];
-    mixin.properties.forEach(function(item) {
+  mixinDetails.forEach(mixin => {
+    let newProperties = [];
+    mixin.properties.forEach(item => {
       if (skipProperties.indexOf(item.name) !== -1) {
         return true;
       }
@@ -648,8 +640,8 @@ function customizeProperties(mixinDetails, propertyInfo) {
     }
   });
 
-  groups.slice().reverse().forEach(function(group) {
-    var newMixin = { name: group.name, expand: group.expand, properties: [] };
+  groups.slice().reverse().forEach(group => {
+    let newMixin = { name: group.name, expand: group.expand, properties: [] };
     group.properties.forEach(function(prop) {
       // make sure it's not `true` which means property wasn't found
       if (neededProperties[prop] !== true) {
@@ -664,18 +656,18 @@ function customizeProperties(mixinDetails, propertyInfo) {
 
 
 function getDebugInfo(object) {
-  var debugInfo = null;
+  let debugInfo = null;
   if (object._debugInfo && typeof object._debugInfo === 'function') {
     debugInfo = object._debugInfo();
   }
   debugInfo = debugInfo || {};
-  var propertyInfo = debugInfo.propertyInfo || (debugInfo.propertyInfo = {});
-  var skipProperties = propertyInfo.skipProperties = propertyInfo.skipProperties || (propertyInfo.skipProperties = []);
+  let propertyInfo = debugInfo.propertyInfo || (debugInfo.propertyInfo = {});
+  let skipProperties = propertyInfo.skipProperties = propertyInfo.skipProperties || (propertyInfo.skipProperties = []);
 
   skipProperties.push('isDestroyed', 'isDestroying', 'container');
   // 'currentState' and 'state' are un-observable private properties.
   // The rest are skipped to reduce noise in the inspector.
-  if (object instanceof Ember.View) {
+  if (Ember.View && object instanceof Ember.View) {
     skipProperties.push(
       'currentState',
       'state',
@@ -692,7 +684,7 @@ function getDebugInfo(object) {
   }
 
 
-  for (var prop in object) {
+  for (let prop in object) {
     // remove methods
     if (typeof object[prop] === 'function') {
       skipProperties.push(prop);
@@ -707,15 +699,13 @@ function isComputed(value) {
 }
 
 function toArray(errors) {
-  return keys(errors).map(function(key) {
-    return errors[key];
-  });
+  return keys(errors).map(key => errors[key]);
 }
 
 function calculateCP(object, property, errorsForObject) {
   delete errorsForObject[property];
   try {
-   return get(object, property);
+    return get(object, property);
   } catch (e) {
     errorsForObject[property] = {
       property: property,
@@ -728,9 +718,7 @@ function calculateCP(object, property, errorsForObject) {
 function CalculateCPError() {}
 
 function errorsToSend(errors) {
-  return toArray(errors).map(function(error) {
+  return toArray(errors).map(error => {
     return { property: error.property };
   });
 }
-
-export default ObjectInspector;

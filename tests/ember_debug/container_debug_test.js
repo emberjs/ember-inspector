@@ -1,15 +1,13 @@
 /* jshint ignore:start */
 import { module, test } from 'qunit';
 import Ember from "ember";
-var emberA = Ember.A;
-
-var EmberDebug;
-var port, name, message;
-var run = Ember.run;
-var App;
+const { run, A: emberA, Application } = Ember;
+let EmberDebug;
+let port, name, message;
+let App;
 
 function setupApp() {
-  App = Ember.Application.create();
+  App = Application.create();
   App.setupForTesting();
   App.injectTestHelpers();
 
@@ -21,7 +19,7 @@ function setupApp() {
 module("Container Debug", {
   beforeEach() {
     /* globals require */
-    EmberDebug = require('ember-debug/main')["default"];
+    EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({
       init: function() {},
       send: function(n, m) {

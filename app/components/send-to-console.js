@@ -5,7 +5,7 @@ export default Ember.Component.extend({
   attributeBindings: ['dataLabel:data-label'],
   dataLabel: 'send-to-console-btn',
   action: 'sendValueToConsole',
-  click: function() {
+  click() {
     this.sendAction('action', this.get('param'));
   }
 });

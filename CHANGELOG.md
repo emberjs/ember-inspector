@@ -1,19 +1,5 @@
 # Ember Inspector Changelog
 
-## Ember Inspector 1.8.3
-
-* [BUGFIX] Fix routes pane for Ember >= 1.13 [#399](https://github.com/emberjs/ember-inspector/pull/399)
-* [BUGFIX] Fix sending view model to console [#412](https://github.com/emberjs/ember-inspector/pull/412)
-* [BUGFIX] Guard against renderNode not being rendered yet [#417](https://github.com/emberjs/ember-inspector/pull/417)
-
-## Ember Inspector 1.8.2
-
-* [IMPROVEMENT] Add support for Ember Data >= 1.0.0-beta.19 [#383](https://github.com/emberjs/ember-inspector/pull/383)
-* [IMPROVEMENT] Add support for Ember >= 1.13.0 [#393](https://github.com/emberjs/ember-inspector/pull/393)
-  - Rename `Ember.Debug` to `Ember.EmberInspectorDebugger`
-  - Remove calls to `Ember.View.addMutationListener`
-  - Use the container's view registry instead of `Ember.View.views`
-
 ## Ember Inspector 1.8.1
 
 * [IMPROVEMENT] Remove new CP syntax deprecation warning [#362](https://github.com/emberjs/ember-inspector/pull/362)

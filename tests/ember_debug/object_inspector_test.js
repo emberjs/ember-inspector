@@ -2,10 +2,10 @@
 import Ember from "ember";
 import { module, test } from 'qunit';
 
-var EmberDebug;
-var port, name, message;
-var App;
-var objectInspector;
+let EmberDebug;
+let port, name, message;
+let App;
+let objectInspector;
 
 const { run, guidFor, Object: EmberObject, computed } = Ember;
 const { Handlebars: { compile } } = Ember;
@@ -29,7 +29,7 @@ let ignoreErrors = true;
 module("Ember Debug - Object Inspector", {
   beforeEach() {
     /* globals require */
-    EmberDebug = require('ember-debug/main')["default"];
+    EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
       send(n, m) {
@@ -57,9 +57,9 @@ module("Ember Debug - Object Inspector", {
 });
 
 test("An Ember Object is correctly transformed into an inspection hash", function(assert) {
-  var date = new Date();
+  let date = new Date();
 
-  var Parent = Ember.Object.extend({
+  let Parent = Ember.Object.extend({
     id: null,
     name: 'My Object'
   });
@@ -70,7 +70,7 @@ test("An Ember Object is correctly transformed into an inspection hash", functio
     }
   });
 
-  var inspected = Parent.create({
+  let inspected = Parent.create({
     id: 1,
     toString: function() {
       return 'Object:' + this.get('name');
@@ -85,41 +85,41 @@ test("An Ember Object is correctly transformed into an inspection hash", functio
 
   assert.equal(message.name, 'Object:My Object');
 
-  var firstDetail = message.details[0];
+  let firstDetail = message.details[0];
   assert.equal(firstDetail.name, 'Own Properties');
 
   assert.equal(firstDetail.properties.length, 3, 'methods are not included');
 
-  var idProperty = firstDetail.properties[0];
+  let idProperty = firstDetail.properties[0];
   assert.equal(idProperty.name, 'id');
   assert.equal(idProperty.value.type, 'type-number');
   assert.equal(idProperty.value.inspect, '1');
 
-  var nullProperty = firstDetail.properties[1];
+  let nullProperty = firstDetail.properties[1];
   assert.equal(nullProperty.name, 'nullVal');
   assert.equal(nullProperty.value.type, 'type-null');
   assert.equal(nullProperty.value.inspect, 'null');
 
-  var prop = firstDetail.properties[2];
+  let prop = firstDetail.properties[2];
   assert.equal(prop.name, 'dateVal');
   assert.equal(prop.value.type, 'type-date');
   assert.equal(prop.value.inspect, date.toString());
 
-  var secondDetail = message.details[1];
+  let secondDetail = message.details[1];
   assert.equal(secondDetail.name, 'Parent Object');
 
   idProperty = secondDetail.properties[0];
   assert.equal(idProperty.name, 'id');
   assert.equal(idProperty.overridden, 'Own Properties');
 
-  var nameProperty = secondDetail.properties[1];
+  let nameProperty = secondDetail.properties[1];
   assert.equal(nameProperty.name, 'name');
   assert.equal(nameProperty.value.inspect, 'My Object');
 
 });
 
 test("Computed properties are correctly calculated", function(assert) {
-  var inspected = Ember.Object.extend({
+  let inspected = Ember.Object.extend({
     hi: computed(function() {
       return 'Hello';
     }).property(),
@@ -134,14 +134,14 @@ test("Computed properties are correctly calculated", function(assert) {
 
   objectInspector.sendObject(inspected);
 
-  var computedProperty = message.details[1].properties[0];
+  let computedProperty = message.details[1].properties[0];
 
   assert.equal(computedProperty.name, 'hi');
   assert.ok(computedProperty.value.computed);
   assert.equal(computedProperty.value.type, 'type-descriptor');
   assert.equal(computedProperty.value.inspect, '<computed>');
 
-  var id = message.objectId;
+  let id = message.objectId;
 
   port.trigger('objectInspector:calculate', {
     objectId: id,
@@ -160,7 +160,7 @@ test("Computed properties are correctly calculated", function(assert) {
 });
 
 test("Cached Computed properties are pre-calculated", function(assert) {
-  var inspected = Ember.Object.extend({
+  let inspected = Ember.Object.extend({
     hi: computed(function() {
       return 'Hello';
     }).property()
@@ -171,7 +171,7 @@ test("Cached Computed properties are pre-calculated", function(assert) {
 
   objectInspector.sendObject(inspected);
 
-  var computedProperty = message.details[1].properties[0];
+  let computedProperty = message.details[1].properties[0];
 
   assert.equal(computedProperty.name, 'hi');
   assert.ok(computedProperty.value.computed);
@@ -181,7 +181,7 @@ test("Cached Computed properties are pre-calculated", function(assert) {
 });
 
 test("Properties are correctly bound", function(assert) {
-  var inspected = Ember.Object.extend({
+  let inspected = Ember.Object.extend({
     name: 'Teddy',
 
     hi: computed(function(key, val) {
@@ -203,7 +203,7 @@ test("Properties are correctly bound", function(assert) {
 
   objectInspector.sendObject(inspected);
 
-  var id = message.objectId;
+  let id = message.objectId;
 
   inspected.set('name', 'Alex');
 
@@ -243,13 +243,13 @@ test("Properties are correctly bound", function(assert) {
 });
 
 test("Properties can be updated through a port message", function(assert) {
-  var inspected = Ember.Object.extend({
+  let inspected = Ember.Object.extend({
     name: 'Teddy'
   }).create();
 
   objectInspector.sendObject(inspected);
 
-  var id = message.objectId;
+  let id = message.objectId;
 
   port.trigger('objectInspector:saveProperty', {
     objectId: id,
@@ -268,15 +268,15 @@ test("Properties can be updated through a port message", function(assert) {
 });
 
 test("Date properties are converted to dates before being updated", function(assert) {
-  var newDate = new Date('2015-01-01');
+  let newDate = new Date('2015-01-01');
 
-  var inspected = Ember.Object.extend({
+  let inspected = Ember.Object.extend({
     date: null
   }).create();
 
   objectInspector.sendObject(inspected);
 
-  var id = message.objectId;
+  let id = message.objectId;
 
   port.trigger('objectInspector:saveProperty', {
     objectId: id,
@@ -292,10 +292,10 @@ test("Date properties are converted to dates before being updated", function(ass
 });
 
 test("Property grouping can be customized using _debugInfo", function(assert) {
-  var mixinToSkip = Ember.Mixin.create({});
+  let mixinToSkip = Ember.Mixin.create({});
   mixinToSkip[Ember.NAME_KEY] = 'MixinToSkip';
 
-  var Inspected = Ember.Object.extend(mixinToSkip, {
+  let Inspected = Ember.Object.extend(mixinToSkip, {
     name: 'Teddy',
     gender: 'Male',
     hasChildren: false,
@@ -327,7 +327,7 @@ test("Property grouping can be customized using _debugInfo", function(assert) {
     return 'TestObject';
   };
 
-  var inspected = Inspected.create({
+  let inspected = Inspected.create({
     maritalStatus: 'Single',
     propertyToSkip: null
   });
@@ -355,14 +355,14 @@ test("Property grouping can be customized using _debugInfo", function(assert) {
 });
 
 test("Read Only Computed properties mush have a readOnly property", function(assert) {
-  var inspected = Ember.Object.extend({
+  let inspected = Ember.Object.extend({
     readCP: computed(function() {}).property().readOnly(),
     writeCP: computed(function() {}).property()
   }).create();
 
   objectInspector.sendObject(inspected);
 
-  var properties = message.details[1].properties;
+  let properties = message.details[1].properties;
 
   assert.ok(properties[0].readOnly);
   assert.ok(!properties[1].readOnly);

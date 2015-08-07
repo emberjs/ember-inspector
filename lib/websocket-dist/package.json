@@ -1,7 +1,0 @@
-{
-  "name": "websocket-dist",
-  "description": "Adds `{{ remote-port }}` to websocket's index.html",
-  "keywords": [
-    "ember-addon"
-  ]
-}

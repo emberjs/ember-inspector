@@ -6,7 +6,7 @@ export default Route.extend({
 
   setupController() {
     this.controllerFor('mixinStack').set('model', []);
-    var port = this.get('port');
+    let port = this.get('port');
     port.on('objectInspector:updateObject', this, this.updateObject);
     port.on('objectInspector:updateProperty', this, this.updateProperty);
     port.on('objectInspector:updateErrors', this, this.updateErrors);
@@ -16,7 +16,7 @@ export default Route.extend({
   },
 
   deactivate() {
-    var port = this.get('port');
+    let port = this.get('port');
     port.off('objectInspector:updateObject', this, this.updateObject);
     port.off('objectInspector:updateProperty', this, this.updateProperty);
     port.off('objectInspector:updateErrors', this, this.updateErrors);
@@ -24,8 +24,8 @@ export default Route.extend({
     port.off('deprecation:count', this, this.setDeprecationCount);
   },
 
-  updateObject: function(options) {
-    var details = options.details,
+  updateObject(options) {
+    const details = options.details,
       name = options.name,
       property = options.property,
       objectId = options.objectId,
@@ -34,7 +34,7 @@ export default Route.extend({
     Ember.NativeArray.apply(details);
     details.forEach(arrayize);
 
-    var controller = this.get('controller');
+    let controller = this.get('controller');
 
     if (options.parentObject) {
       controller.pushMixinDetails(name, property, objectId, details);
@@ -45,7 +45,7 @@ export default Route.extend({
     this.send('expandInspector');
   },
 
-  setDeprecationCount: function(message) {
+  setDeprecationCount(message) {
     this.controller.set('deprecationCount', message.count);
   },
 
@@ -62,27 +62,27 @@ export default Route.extend({
     }
   },
 
-  droppedObject: function(message) {
-    var controller = this.get('controller');
+  droppedObject(message) {
+    let controller = this.get('controller');
     controller.droppedObject(message.objectId);
   },
 
   actions: {
-    expandInspector: function() {
+    expandInspector() {
       this.set("controller.inspectorExpanded", true);
     },
-    toggleInspector: function() {
+    toggleInspector() {
       this.toggleProperty("controller.inspectorExpanded");
     },
-    inspectObject: function(objectId) {
+    inspectObject(objectId) {
       if (objectId) {
         this.get('port').send('objectInspector:inspectById', { objectId: objectId });
       }
     },
-    setIsDragging: function (isDragging) {
+    setIsDragging(isDragging) {
       this.set('controller.isDragging', isDragging);
     },
-    refreshPage: function() {
+    refreshPage() {
       // If the adapter defined a `reloadTab` method, it means
       // they prefer to handle the reload themselves
       if (typeof this.get('adapter').reloadTab === 'function') {

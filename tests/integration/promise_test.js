@@ -162,7 +162,7 @@ test("Fulfilled promise", async function t(assert) {
 test("Rejected promise", async function t(assert) {
   await visit('/promises');
 
-  var now = Date.now();
+  let now = Date.now();
 
   await triggerPort('promise:promisesUpdated', {
     promises: [

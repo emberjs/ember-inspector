@@ -1,27 +1,27 @@
 import Ember from "ember";
 import TabRoute from "ember-inspector/routes/tab";
-var set = Ember.set;
+const set = Ember.set;
 
 export default TabRoute.extend({
   setupController: function() {
-    var port = this.get('port');
+    let port = this.get('port');
     port.on('deprecation:deprecationsAdded', this, this.deprecationsAdded);
     port.send('deprecation:watch');
     this._super.apply(this, arguments);
   },
 
-  model: function() {
+  model() {
     return [];
   },
 
-  deactivate: function() {
+  deactivate() {
     this.get('port').off('deprecation:deprecationsAdded', this, this.deprecationsAdded);
   },
 
-  deprecationsAdded: function(message) {
-    var model = this.get('currentModel');
-    message.deprecations.forEach(function(item) {
-      var record = model.findBy('id', item.id);
+  deprecationsAdded(message) {
+    const model = this.get('currentModel');
+    message.deprecations.forEach(item => {
+      let record = model.findBy('id', item.id);
       if (record) {
         set(record, 'count', item.count);
         set(record, 'sources', item.sources);
@@ -33,17 +33,17 @@ export default TabRoute.extend({
   },
 
   actions: {
-    openResource: function(item) {
+    openResource(item) {
       this.get('adapter').openResource(item.fullSource, item.line);
     },
 
-    traceDeprecations: function(deprecation) {
+    traceDeprecations(deprecation) {
       this.get('port').send('deprecation:sendStackTraces', {
         deprecation: deprecation
       });
     },
 
-    traceSource: function(deprecation, source) {
+    traceSource(deprecation, source) {
       this.get('port').send('deprecation:sendStackTraces', {
         deprecation: {
           message: deprecation.message,
@@ -52,7 +52,7 @@ export default TabRoute.extend({
       });
     },
 
-    clear: function() {
+    clear() {
       this.get('port').send('deprecation:clear');
       this.get('currentModel').clear();
     }

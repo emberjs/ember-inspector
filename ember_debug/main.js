@@ -11,9 +11,10 @@ import ContainerDebug from "ember-debug/container-debug";
 import DeprecationDebug from "ember-debug/deprecation-debug";
 import Session from "ember-debug/services/session";
 
-var EmberDebug;
-var Ember = window.Ember;
-EmberDebug = Ember.Object.extend({
+const Ember = window.Ember;
+const { Object: EmberObject, run, Application, namespaces } = Ember;
+
+const EmberDebug = EmberObject.extend({
 
   application: null,
   started: false,
@@ -21,7 +22,7 @@ EmberDebug = Ember.Object.extend({
   Port: Port,
   Adapter: BasicAdapter,
 
-  start: function($keepAdapter) {
+  start($keepAdapter) {
     if (this.get('started')) {
       this.reset($keepAdapter);
       return;
@@ -37,11 +38,10 @@ EmberDebug = Ember.Object.extend({
     this.get("adapter").debug("Ember Inspector Active");
   },
 
-  destroyContainer: function() {
+  destroyContainer() {
     if (this.get('generalDebug')) {
       this.get('generalDebug').sendReset();
     }
-    var self = this;
     ['dataDebug',
     'viewDebug',
     'routeDebug',
@@ -52,27 +52,27 @@ EmberDebug = Ember.Object.extend({
     'deprecationDebug',
     'objectInspector',
     'session'
-    ].forEach(function(prop) {
-      var handler = self.get(prop);
+    ].forEach(prop => {
+      let handler = this.get(prop);
       if (handler) {
-        Ember.run(handler, 'destroy');
-        self.set(prop, null);
+        run(handler, 'destroy');
+        this.set(prop, null);
       }
     });
   },
 
-  startModule: function(prop, Module) {
+  startModule(prop, Module) {
     this.set(prop, Module.create({ namespace: this }));
   },
 
-  willDestroy: function() {
+  willDestroy() {
     this.destroyContainer();
     this._super.apply(this, arguments);
   },
 
-  reset: function($keepAdapter) {
+  reset($keepAdapter) {
     this.destroyContainer();
-    Ember.run(this, function() {
+    run(() => {
       // Adapters don't have state depending on the application itself.
       // They also maintain connections with the inspector which we will
       // lose if we destroy.
@@ -99,7 +99,7 @@ EmberDebug = Ember.Object.extend({
     });
   },
 
-  inspect: function(obj) {
+  inspect(obj) {
     this.get('objectInspector').sendObject(obj);
     this.get('adapter').log('Sent to the Object Inspector');
     return obj;
@@ -108,11 +108,11 @@ EmberDebug = Ember.Object.extend({
 }).create();
 
 function getApplication() {
-  var namespaces = Ember.Namespace.NAMESPACES,
+  let namespaces = Namespace.NAMESPACES,
       application;
 
-  namespaces.forEach(function(namespace) {
-    if (namespace instanceof Ember.Application) {
+  namespaces.forEach((namespace) => {
+    if (namespace instanceof Application) {
       application = namespace;
       return false;
     }

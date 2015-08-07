@@ -3,12 +3,11 @@
 
   @class ProfileNode
 **/
-var Ember = window.Ember;
-var get = Ember.get;
-var guidFor = Ember.guidFor;
+const Ember = window.Ember;
+const { get, guidFor } = Ember;
 
-var ProfileNode = function(start, payload, parent, now) {
-  var name;
+const ProfileNode = function(start, payload, parent, now) {
+  let name;
   this.start = start;
   this.timestamp = now || Date.now();
 
@@ -16,7 +15,7 @@ var ProfileNode = function(start, payload, parent, now) {
     if (payload.template) {
       name = payload.template;
     } else if (payload.view) {
-      var view = payload.view;
+      const view = payload.view;
       name = get(view, 'instrumentDisplay') || get(view, '_debugContainerKey');
       if (name) {
         name = name.replace(/^view:/, '');
@@ -27,7 +26,7 @@ var ProfileNode = function(start, payload, parent, now) {
     if (!name && payload.object) {
       name = payload.object.toString().replace(/:?:ember\d+>$/, '').replace(/^</, '');
       if (!this.viewGuid) {
-        var match = name.match(/:(ember\d+)>$/);
+        const match = name.match(/:(ember\d+)>$/);
         if (match && match.length > 1) {
           this.viewGuid = match[1];
         }
@@ -42,7 +41,7 @@ var ProfileNode = function(start, payload, parent, now) {
 };
 
 ProfileNode.prototype = {
-  finish: function(timestamp) {
+  finish(timestamp) {
     this.time = (timestamp - this.start);
     this.calcDuration();
 
@@ -54,7 +53,7 @@ ProfileNode.prototype = {
     }
   },
 
-  calcDuration: function() {
+  calcDuration() {
     this.duration = Math.round(this.time * 100) / 100;
   }
 };

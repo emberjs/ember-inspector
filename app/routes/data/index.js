@@ -1,9 +1,9 @@
 import Ember from "ember";
-var Promise = Ember.RSVP.Promise;
+const { RSVP: { Promise} } = Ember;
 
 export default Ember.Route.extend({
-  model: function() {
-    var route = this;
+  model() {
+    let route = this;
     return new Promise(function(resolve) {
       route.get('port').one('data:hasAdapter', function(message) {
         resolve(message.hasAdapter);
@@ -11,7 +11,7 @@ export default Ember.Route.extend({
       route.get('port').send('data:checkAdapter');
     });
   },
-  afterModel: function(model) {
+  afterModel(model) {
     if (model) {
       this.transitionTo('model-types');
     }

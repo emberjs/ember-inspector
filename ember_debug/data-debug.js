@@ -1,7 +1,10 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
-var Ember = window.Ember;
-var DataDebug = Ember.Object.extend(PortMixin, {
-  init: function() {
+const Ember = window.Ember;
+const { Object: EmberObject, computed, guidFor, A } = Ember;
+const { alias } = computed;
+
+export default EmberObject.extend(PortMixin, {
+  init() {
     this._super();
     this.sentTypes = {};
     this.sentRecords = {};
@@ -13,57 +16,55 @@ var DataDebug = Ember.Object.extend(PortMixin, {
   releaseTypesMethod: null,
   releaseRecordsMethod: null,
 
-  adapter: Ember.computed(function() {
-    var container = this.get('application').__container__;
+  adapter: computed('application', function() {
+    const container = this.get('application').__container__;
 
     // dataAdapter:main is deprecated
     return (this._resolve('data-adapter:main') && container.lookup('data-adapter:main')) ||
     (this._resolve('dataAdapter:main') && container.lookup('dataAdapter:main'));
-  }).property('application'),
+  }),
 
-  _resolve: function(name) {
-    var container = this.get('application').__container__;
-    var registry = this.get('application.registry');
+  _resolve(name) {
+    const container = this.get('application').__container__;
+    let registry = this.get('application.registry');
     if (registry) {
       // Ember >= 1.11
       return registry.resolve(name);
-    } else {
+    } else if (container.resolve) {
       // Ember < 1.11
       return container.resolve(name);
+    } else {
+      // Ember >= 2.0
+      return container.registry.resolve(name);
     }
 
   },
 
   namespace: null,
 
-  port: Ember.computed.alias('namespace.port'),
-  application: Ember.computed.alias('namespace.application'),
-  objectInspector: Ember.computed.alias('namespace.objectInspector'),
+  port: alias('namespace.port'),
+  application: alias('namespace.application'),
+  objectInspector: alias('namespace.objectInspector'),
 
   portNamespace: 'data',
 
-  modelTypesAdded: function(types) {
-    var self = this, typesToSend;
-    typesToSend = types.map(function(type) {
-      return self.wrapType(type);
-    });
+  modelTypesAdded(types) {
+    let typesToSend;
+    typesToSend = types.map(type => this.wrapType(type));
     this.sendMessage('modelTypesAdded', {
       modelTypes: typesToSend
     });
   },
 
-  modelTypesUpdated: function(types) {
-    var self = this;
-    var typesToSend = types.map(function(type) {
-      return self.wrapType(type);
-    });
-    self.sendMessage('modelTypesUpdated', {
+  modelTypesUpdated(types) {
+    let typesToSend = types.map(type => this.wrapType(type));
+    this.sendMessage('modelTypesUpdated', {
       modelTypes: typesToSend
     });
   },
 
-  wrapType: function(type) {
-    var objectId = Ember.guidFor(type.object);
+  wrapType(type) {
+    const objectId = guidFor(type.object);
     this.sentTypes[objectId] = type;
 
     return {
@@ -75,46 +76,41 @@ var DataDebug = Ember.Object.extend(PortMixin, {
   },
 
 
-  recordsAdded: function(recordsReceived) {
-    var self = this, records;
-    records = recordsReceived.map(function(record) {
-      return self.wrapRecord(record);
-    });
-    self.sendMessage('recordsAdded', {
+  recordsAdded(recordsReceived) {
+    let records;
+    records = recordsReceived.map(record => this.wrapRecord(record));
+    this.sendMessage('recordsAdded', {
       records: records
     });
   },
 
-  recordsUpdated: function(recordsReceived) {
-    var self = this;
-    var records = recordsReceived.map(function(record) {
-      return self.wrapRecord(record);
-    });
-    self.sendMessage('recordsUpdated', {
+  recordsUpdated(recordsReceived) {
+    let records = recordsReceived.map(record => this.wrapRecord(record));
+    this.sendMessage('recordsUpdated', {
       records: records
     });
   },
 
-  recordsRemoved: function(idx, count) {
+  recordsRemoved(idx, count) {
     this.sendMessage('recordsRemoved', {
       index: idx,
       count: count
     });
   },
 
-  wrapRecord: function(record) {
-    var objectId = Ember.guidFor(record.object);
-    var columnValues = {};
-    var searchKeywords = [];
+  wrapRecord(record) {
+    const objectId = guidFor(record.object);
+    let columnValues = {};
+    let searchKeywords = [];
     this.sentRecords[objectId] = record;
     // make objects clonable
-    for (var i in record.columnValues) {
+    for (let i in record.columnValues) {
       columnValues[i] = this.get('objectInspector').inspect(record.columnValues[i]);
     }
     // make sure keywords can be searched and clonable
-    searchKeywords = Ember.A(record.searchKeywords).filter(function(keyword) {
-      return (typeof keyword === 'string' || typeof keyword === 'number');
-    });
+    searchKeywords = A(record.searchKeywords).filter(keyword =>
+      (typeof keyword === 'string' || typeof keyword === 'number')
+    );
     return {
       columnValues: columnValues,
       searchKeywords: searchKeywords,
@@ -124,7 +120,7 @@ var DataDebug = Ember.Object.extend(PortMixin, {
     };
   },
 
-  releaseTypes: function() {
+  releaseTypes() {
     if (this.releaseTypesMethod) {
       this.releaseTypesMethod();
       this.releaseTypesMethod = null;
@@ -132,7 +128,7 @@ var DataDebug = Ember.Object.extend(PortMixin, {
     }
   },
 
-  releaseRecords: function() {
+  releaseRecords() {
     if (this.releaseRecordsMethod) {
       this.releaseRecordsMethod();
       this.releaseRecordsMethod = null;
@@ -140,37 +136,35 @@ var DataDebug = Ember.Object.extend(PortMixin, {
     }
   },
 
-  willDestroy: function() {
+  willDestroy() {
     this._super();
     this.releaseRecords();
     this.releaseTypes();
   },
 
   messages: {
-    checkAdapter: function() {
+    checkAdapter() {
       this.sendMessage('hasAdapter', { hasAdapter: !!this.get('adapter') });
     },
 
-    getModelTypes: function() {
-      var self = this;
+    getModelTypes() {
       this.releaseTypes();
-      this.releaseTypesMethod = this.get('adapter').watchModelTypes(
-        function(types) {
-          self.modelTypesAdded(types);
-        }, function(types) {
-        self.modelTypesUpdated(types);
+      this.releaseTypesMethod = this.get('adapter').watchModelTypes(types => {
+        this.modelTypesAdded(types);
+      }, types => {
+        this.modelTypesUpdated(types);
       });
     },
 
-    releaseModelTypes: function() {
+    releaseModelTypes() {
       this.releaseTypes();
     },
 
-    getRecords: function(message) {
-      var type = this.sentTypes[message.objectId], self = this;
+    getRecords(message) {
+      const type = this.sentTypes[message.objectId];
       this.releaseRecords();
 
-      var typeOrName;
+      let typeOrName;
       if (this.get('adapter.acceptsModelName')) {
         // Ember >= 1.3
         typeOrName = type.name;
@@ -178,34 +172,32 @@ var DataDebug = Ember.Object.extend(PortMixin, {
         // support for legacy Ember < 1.3
         typeOrName = type.object;
       }
-      var releaseMethod = this.get('adapter').watchRecords(typeOrName,
-        function(recordsReceived) {
-          self.recordsAdded(recordsReceived);
+      let releaseMethod = this.get('adapter').watchRecords(typeOrName,
+        recordsReceived => {
+          this.recordsAdded(recordsReceived);
         },
-        function(recordsUpdated) {
-          self.recordsUpdated(recordsUpdated);
+        recordsUpdated => {
+          this.recordsUpdated(recordsUpdated);
         },
-        function() {
-          self.recordsRemoved.apply(self, arguments);
+        () => {
+          this.recordsRemoved(...arguments);
         }
       );
       this.releaseRecordsMethod = releaseMethod;
     },
 
-    releaseRecords: function() {
+    releaseRecords() {
       this.releaseRecords();
     },
 
-    inspectModel: function(message) {
+    inspectModel(message) {
       this.get('objectInspector').sendObject(this.sentRecords[message.objectId].object);
     },
 
-    getFilters: function() {
+    getFilters() {
       this.sendMessage('filters', {
         filters: this.get('adapter').getFilters()
       });
     }
   }
 });
-
-export default DataDebug;

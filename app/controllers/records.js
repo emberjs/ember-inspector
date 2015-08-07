@@ -1,6 +1,6 @@
 import Ember from "ember";
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
-const { Controller, computed } = Ember;
+const { Controller, computed, observer } = Ember;
 const { none, alias } = computed;
 
 export default Controller.extend({
@@ -11,7 +11,7 @@ export default Controller.extend({
   columns: alias('modelType.columns'),
 
   search: '',
-  filters: function() { return []; }.property(),
+  filters: computed(function() { return []; }),
   filterValue: null,
 
   noFilterValue: none('filterValue'),
@@ -23,20 +23,20 @@ export default Controller.extend({
     }
   },
 
-  modelChanged: function() {
+  modelChanged: observer('model', function() {
     this.set('search', '');
-  }.observes('model'),
+  }),
 
-  recordToString: function(record) {
-    var search = '';
-    var searchKeywords = Ember.get(record, 'searchKeywords');
+  recordToString(record) {
+    let search = '';
+    let searchKeywords = Ember.get(record, 'searchKeywords');
     if (searchKeywords) {
       search = Ember.get(record, 'searchKeywords').join(' ');
     }
     return search.toLowerCase();
   },
 
-  filtered: function() {
+  filtered: computed('search', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValue', function() {
     let search = this.get('search'), filter = this.get('filterValue');
     return this.get('model').filter(item => {
       // check filters
@@ -51,5 +51,5 @@ export default Controller.extend({
       }
       return true;
     });
-  }.property('search', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValue')
+  })
 });

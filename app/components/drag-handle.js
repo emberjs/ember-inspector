@@ -1,5 +1,5 @@
 import Ember from "ember";
-
+const { computed } = Ember;
 export default Ember.Component.extend({
   classNames: ['drag-handle'],
   classNameBindings: ['isLeft:drag-handle--left', 'isRight:drag-handle--right', 'class'],
@@ -10,30 +10,29 @@ export default Ember.Component.extend({
   isLeft: Ember.computed.equal('side', 'left'),
   minWidth: 60,
 
-  startDragging: function() {
-    var self = this,
-        $container = this.$().parent(),
-        $containerOffsetLeft = $container.offset().left,
-        $containerOffsetRight = $containerOffsetLeft + $container.width(),
-        namespace = 'drag-' + this.get('elementId');
+  startDragging() {
+    const $container = this.$().parent(),
+          $containerOffsetLeft = $container.offset().left,
+          $containerOffsetRight = $containerOffsetLeft + $container.width(),
+          namespace = 'drag-' + this.get('elementId');
 
     this.sendAction('action', true);
 
-    Ember.$('body').on('mousemove.' + namespace, function(e) {
-      var position = self.get('isLeft') ?
+    Ember.$('body').on('mousemove.' + namespace, e => {
+      let position = this.get('isLeft') ?
                        e.pageX - $containerOffsetLeft :
                        $containerOffsetRight - e.pageX;
 
-      if (position >= self.get('minWidth')) {
-        self.set('position', position);
+      if (position >= this.get('minWidth')) {
+        this.set('position', position);
       }
     })
-    .on('mouseup.' + namespace + ' mouseleave.' + namespace, function() {
-      self.stopDragging();
+    .on('mouseup.' + namespace + ' mouseleave.' + namespace, () => {
+      this.stopDragging();
     });
   },
 
-  stopDragging: function() {
+  stopDragging() {
     this.sendAction('action', false);
     Ember.$('body').off('.drag-' + this.get('elementId'));
   },
@@ -43,16 +42,16 @@ export default Ember.Component.extend({
     this.stopDragging();
   },
 
-  mouseDown: function() {
+  mouseDown() {
     this.startDragging();
     return false;
   },
 
-  style: function () {
+  style: computed('side', 'position', function () {
     if (this.get('side')) {
       return this.get('side') + ':' + this.get('position') + 'px';
     } else {
       return '';
     }
-  }.property('side', 'position')
+  })
 });

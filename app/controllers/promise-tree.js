@@ -1,16 +1,18 @@
 import Ember from "ember";
 import filterComputed from "ember-inspector/computed/custom-filter";
+const { computed, observer } = Ember;
+const { equal, bool, and, not } = computed;
 
 // Manual implementation of item controllers
 function itemProxyComputed(dependentKey, itemProxy) {
-  var options = {
-    addedItem: function(array, item, changeMeta) {
-      var proxy = itemProxy.create({ content: item });
+  let options = {
+    addedItem(array, item, changeMeta) {
+      let proxy = itemProxy.create({ content: item });
       array.insertAt(changeMeta.index, proxy);
       return array;
     },
-    removedItem: function(array, item, changeMeta) {
-      var proxy = array.objectAt(changeMeta.index);
+    removedItem(array, item, changeMeta) {
+      let proxy = array.objectAt(changeMeta.index);
       array.removeAt(changeMeta.index, 1);
       proxy.destroy();
       return array;
@@ -19,11 +21,6 @@ function itemProxyComputed(dependentKey, itemProxy) {
 
   return Ember.arrayComputed(dependentKey, options);
 }
-
-var equal = Ember.computed.equal;
-var bool = Ember.computed.bool;
-var and = Ember.computed.and;
-var not = Ember.computed.not;
 
 export default Ember.ArrayController.extend({
   needs: ['application'],
@@ -42,7 +39,7 @@ export default Ember.ArrayController.extend({
   // It is opt-in due to performance reasons.
   instrumentWithStack: false,
 
-  init: function() {
+  init() {
     this._super.apply(this, arguments);
     // List-view does not support item controllers
     this.reopen({
@@ -50,9 +47,9 @@ export default Ember.ArrayController.extend({
     });
   },
 
-  promiseItemController: function() {
+  promiseItemController: computed(function() {
     return this.container.lookupFactory('controller:promise-item');
-  }.property(),
+  }),
 
   /* jscs:disable validateIndentation */
   // TODO: This filter can be further optimized
@@ -63,40 +60,41 @@ export default Ember.ArrayController.extend({
     'model.@each.pendingBranch',
     'model.@each.isVisible', function(item) {
 
-    // exclude cleared promises
-    if (this.get('createdAfter') && item.get('createdAt') < this.get('createdAfter')) {
-      return false;
-    }
+      // exclude cleared promises
+      if (this.get('createdAfter') && item.get('createdAt') < this.get('createdAfter')) {
+        return false;
+      }
 
-    if (!item.get('isVisible')) {
-      return false;
-    }
+      if (!item.get('isVisible')) {
+        return false;
+      }
 
-    // Exclude non-filter complying promises
-    // If at least one of their children passes the filter,
-    // then they pass
-    var include = true;
-    if (this.get('filter') === 'pending') {
-      include = item.get('pendingBranch');
-    } else if (this.get('filter') === 'rejected') {
-      include = item.get('rejectedBranch');
-    } else if (this.get('filter') === 'fulfilled') {
-      include = item.get('fulfilledBranch');
-    }
-    if (!include) {
-      return false;
-    }
+      // Exclude non-filter complying promises
+      // If at least one of their children passes the filter,
+      // then they pass
+      let include = true;
+      if (this.get('filter') === 'pending') {
+        include = item.get('pendingBranch');
+      } else if (this.get('filter') === 'rejected') {
+        include = item.get('rejectedBranch');
+      } else if (this.get('filter') === 'fulfilled') {
+        include = item.get('fulfilledBranch');
+      }
+      if (!include) {
+        return false;
+      }
 
-    // Search filter
-    // If they or at least one of their children
-    // match the search, then include them
-    var search = this.get('effectiveSearch');
-    if (!Ember.isEmpty(search)) {
-      return item.matches(search);
-    }
-    return true;
+      // Search filter
+      // If they or at least one of their children
+      // match the search, then include them
+      let search = this.get('effectiveSearch');
+      if (!Ember.isEmpty(search)) {
+        return item.matches(search);
+      }
+      return true;
 
-  }),
+    }
+  ),
   /* jscs:enable validateIndentation */
 
 
@@ -110,12 +108,12 @@ export default Ember.ArrayController.extend({
   search: null,
   effectiveSearch: null,
 
-  searchChanged: function() {
+  searchChanged: observer('search', function() {
     Ember.run.debounce(this, this.notifyChange, 500);
-  }.observes('search'),
+  }),
 
-  notifyChange: function() {
-    var self = this;
+  notifyChange() {
+    let self = this;
     this.set('effectiveSearch', this.get('search'));
     Ember.run.next(function() {
       self.notifyPropertyChange('model');
@@ -123,18 +121,18 @@ export default Ember.ArrayController.extend({
   },
 
   actions: {
-    setFilter: function(filter) {
-      var self = this;
+    setFilter(filter) {
+      let self = this;
       this.set('filter', filter);
       Ember.run.next(function() {
         self.notifyPropertyChange('filtered');
       });
     },
-    clear: function() {
+    clear() {
       this.set('createdAfter', new Date());
       Ember.run.once(this, this.notifyChange);
     },
-    tracePromise: function(promise) {
+    tracePromise(promise) {
       this.get('port').send('promise:tracePromise', { promiseId: promise.get('guid') });
     },
     updateInstrumentWithStack: function(bool) {

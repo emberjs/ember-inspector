@@ -10,9 +10,9 @@ import msToTime from "ember-inspector/helpers/ms-to-time";
 
 Ember.MODEL_FACTORY_INJECTIONS = true;
 
-var version = '1.8.3';
+const version = '1.9.0';
 
-var App = Ember.Application.extend({
+const App = Ember.Application.extend({
   modulePrefix: config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
   Resolver: Resolver
@@ -28,9 +28,13 @@ Ember.Handlebars.helper('ms-to-time', msToTime);
 App.initializer({
   name: "extension-init",
 
-  initialize: function(container, app) {
+  initialize(container, app) {
+    // `window.EMBER_DIST` is set by dist-config.js
+    // which is created by the build process.
+    app.adapter = window.EMBER_DIST;
+
     // register and inject adapter
-    var Adapter;
+    let Adapter;
     if (Ember.typeOf(app.adapter) === 'string') {
       Adapter = container.resolve('adapter:' + app.adapter);
     } else {

@@ -66,11 +66,11 @@ function modelTypes() {
 
 function recordFactory(attr, filterValues) {
   filterValues = filterValues || { isNew: false };
-  var searchKeywords = [];
-  for (var i in attr) {
+  let searchKeywords = [];
+  for (let i in attr) {
     searchKeywords.push(attr[i]);
   }
-  var object = Ember.Object.create();
+  let object = Ember.Object.create();
   return {
     columnValues: attr,
     objectId: attr.objectId || Ember.guidFor(object),

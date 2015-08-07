@@ -1,8 +1,9 @@
-var Ember = window.Ember;
-var supportsSetterGetter;
+const Ember = window.Ember;
+const { computed } = Ember;
+let supportsSetterGetter;
 
 try {
-  Ember.computed({
+  computed({
     set: function() { },
     get: function() { }
   });

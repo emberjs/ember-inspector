@@ -1,11 +1,10 @@
 import Ember from 'ember';
-var Route = Ember.Route;
-var Promise = Ember.RSVP.Promise;
+const { Route, RSVP: { Promise } } = Ember;
 
 export default Route.extend({
-  model: function() {
-    var port = this.get('port');
-    return new Promise(function(resolve) {
+  model() {
+    let port = this.get('port');
+    return new Promise(resolve => {
       port.on('general:applicationBooted', this, function(message) {
         if (message.booted) {
           port.off('general:applicationBooted');
@@ -13,19 +12,19 @@ export default Route.extend({
         }
       });
       port.send('general:applicationBooted');
-    }.bind(this));
+    });
   },
 
-  setupController: function() {
+  setupController() {
     this.controllerFor('application').set('emberApplication', true);
     this.get('port').one('general:reset', this, this.reset);
   },
 
-  reset: function() {
+  reset() {
     this.container.lookup('application:main').reset();
   },
 
-  deactivate: function() {
+  deactivate() {
     this.get('port').off('general:applicationBooted');
     this.get('port').off('general:reset', this, this.reset);
   }

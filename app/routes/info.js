@@ -1,17 +1,17 @@
 import Ember from "ember";
 import TabRoute from "ember-inspector/routes/tab";
 
-var Promise = Ember.RSVP.Promise;
-var oneWay = Ember.computed.oneWay;
+const { RSVP: { Promise }, computed } = Ember;
+const { oneWay } = computed;
 
 export default TabRoute.extend({
   version: oneWay('config.VERSION').readOnly(),
 
-  model: function() {
-    var version = this.get('version');
-    var port = this.get('port');
-    return new Promise(function(resolve) {
-      port.one('general:libraries', function(message) {
+  model() {
+    const version = this.get('version');
+    const port = this.get('port');
+    return new Promise(resolve => {
+      port.one('general:libraries', message => {
         message.libraries.insertAt(0, {
           name: 'Ember Inspector',
           version: version

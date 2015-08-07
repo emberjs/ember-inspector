@@ -1,5 +1,6 @@
 import Ember from "ember";
-var oneWay = Ember.computed.oneWay;
+const { computed } = Ember;
+const { oneWay } = computed;
 
 export default Ember.ObjectController.extend({
   needs: ['mixin-details'],
@@ -7,14 +8,14 @@ export default Ember.ObjectController.extend({
   mixinDetails: oneWay('controllers.mixin-details').readOnly(),
   objectId: oneWay('mixinDetails.model.objectId').readOnly(),
 
-  isExpanded: function() {
+  isExpanded: computed('model.expand', 'model.properties.length', function() {
     return this.get('model.expand') && this.get('model.properties.length') > 0;
-  }.property('model.expand', 'model.properties.length'),
+  }),
 
   actions: {
-    calculate: function(property) {
-      var objectId = this.get('objectId');
-      var mixinIndex = this.get('mixinDetails.model.mixins').indexOf(this.get('model'));
+    calculate(property) {
+      let objectId = this.get('objectId');
+      let mixinIndex = this.get('mixinDetails.model.mixins').indexOf(this.get('model'));
 
       this.get('port').send('objectInspector:calculate', {
         objectId: objectId,
@@ -23,8 +24,8 @@ export default Ember.ObjectController.extend({
       });
     },
 
-    sendToConsole: function(property) {
-      var objectId = this.get('objectId');
+    sendToConsole(property) {
+      let objectId = this.get('objectId');
 
       this.get('port').send('objectInspector:sendToConsole', {
         objectId: objectId,
@@ -32,12 +33,12 @@ export default Ember.ObjectController.extend({
       });
     },
 
-    toggleExpanded: function() {
+    toggleExpanded() {
       this.toggleProperty('isExpanded');
     },
 
-    digDeeper: function(property) {
-      var objectId = this.get('objectId');
+    digDeeper(property) {
+      let objectId = this.get('objectId');
 
       this.get('port').send('objectInspector:digDeeper', {
         objectId: objectId,
@@ -45,8 +46,8 @@ export default Ember.ObjectController.extend({
       });
     },
 
-    saveProperty: function(prop, val, type) {
-      var mixinIndex = this.get('mixinDetails.model.mixins').indexOf(this.get('model'));
+    saveProperty(prop, val, type) {
+      let mixinIndex = this.get('mixinDetails.model.mixins').indexOf(this.get('model'));
 
       this.get('port').send('objectInspector:saveProperty', {
         objectId: this.get('objectId'),

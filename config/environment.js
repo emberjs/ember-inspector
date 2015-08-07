@@ -18,7 +18,6 @@ module.exports = function(environment) {
     },
 
     APP: {
-      adapter: (process.env.EMBER_DIST || 'basic')
       // Here you can pass flags/options to your application instance
       // when it is created
     }

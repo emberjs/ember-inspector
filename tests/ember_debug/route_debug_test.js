@@ -1,15 +1,15 @@
 /* jshint ignore:start */
 import Ember from "ember";
 import { module, test } from 'qunit';
-const { run } = Ember;
+const { run, Application } = Ember;
 
 /* globals require */
-const EmberDebug = require('ember-debug/main')["default"];
+const EmberDebug = require('ember-debug/main').default;
 let port;
 let App;
 
 function setupApp() {
-  App = Ember.Application.create();
+  App = Application.create();
   App.toString = function() { return 'App'; };
   App.setupForTesting();
   App.injectTestHelpers();
@@ -51,7 +51,7 @@ module("Route Tree Debug", {
 });
 
 test("Route tree", async function t(assert) {
-  var name = null, message = null, route;
+  let name = null, message = null, route;
   port.reopen({
     send(n, m) {
       name = n;
@@ -78,7 +78,7 @@ test("Route tree", async function t(assert) {
 
   assert.deepEqual(getChildrenProperty(route, 'name'), ['loading', 'error', 'simple', 'posts', 'comments', 'index'] );
 
-  var commentsRoute = route.children.filter(function(child) {
+  let commentsRoute = route.children.filter(function(child) {
     return child.value.name === 'comments';
   })[0];
 

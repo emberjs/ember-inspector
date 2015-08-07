@@ -1,27 +1,28 @@
 import BasicAdapter from "./basic";
+import Ember from 'ember';
+const { on, computed } = Ember;
 
 export default BasicAdapter.extend({
   name: 'bookmarklet',
 
-  inspectedWindow: function() {
+  inspectedWindow: computed(function() {
     return window.opener || window.parent;
-  }.property(),
+  }),
 
-  inspectedWindowURL: function() {
+  inspectedWindowURL: computed(function() {
     return loadPageVar('inspectedWindowURL');
-  }.property(),
+  }),
 
-  sendMessage: function(options) {
+  sendMessage(options) {
     options = options || {};
     this.get('inspectedWindow').postMessage(options, this.get('inspectedWindowURL'));
   },
 
-  _connect: function() {
-    var self = this;
+  _connect: on('init', function() {
 
-    window.addEventListener('message', function(e) {
-      var message = e.data;
-      if (e.origin !== self.get('inspectedWindowURL')) {
+    window.addEventListener('message', e => {
+      let message = e.data;
+      if (e.origin !== this.get('inspectedWindowURL')) {
         return;
       }
       // close inspector if inspected window is unloading
@@ -29,11 +30,12 @@ export default BasicAdapter.extend({
         window.close();
       }
       if (message.from === 'inspectedWindow') {
-        self._messageReceived(message);
+        this._messageReceived(message);
       }
     });
-  }.on('init')
+  })
 });
+
 
 function loadPageVar (sVar) {
   return decodeURI(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURI(sVar).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));

@@ -1,27 +1,23 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 
-var Ember = window.Ember;
-var classify = Ember.String.classify;
-var dasherize = Ember.String.dasherize;
-var computed = Ember.computed;
-var oneWay = computed.oneWay;
-var observer = Ember.observer;
-var later = Ember.run.later;
+const Ember = window.Ember;
+const { String: { classify, dasherize }, computed, observer, run: { later }, Object: EmberObject } = Ember;
+const { oneWay } = computed;
 
-export default Ember.Object.extend(PortMixin, {
+export default EmberObject.extend(PortMixin, {
   namespace: null,
   port: oneWay('namespace.port').readOnly(),
 
   application: oneWay('namespace.application').readOnly(),
 
-  router: computed(function() {
+  router: computed('application', function() {
     return this.get('application.__container__').lookup('router:main');
-  }).property('application'),
+  }),
 
-  applicationController: computed(function() {
-    var container = this.get('application.__container__');
+  applicationController: computed('application', function() {
+    const container = this.get('application.__container__');
     return container.lookup('controller:application');
-  }).property('application'),
+  }),
 
   currentPath: oneWay('applicationController.currentPath').readOnly(),
 
@@ -30,55 +26,62 @@ export default Ember.Object.extend(PortMixin, {
   emberCliConfig: oneWay('namespace.generalDebug.emberCliConfig').readOnly(),
 
   messages: {
-    getTree: function() {
+    getTree() {
       this.sendTree();
     },
-    getCurrentRoute: function() {
+    getCurrentRoute() {
       this.sendCurrentRoute();
     }
   },
 
-  sendCurrentRoute: observer(function() {
-    var self = this;
-    later(function() {
-      self.sendMessage('currentRoute', { name: self.get('currentPath') });
+  sendCurrentRoute: observer('currentPath', function() {
+    later(() => {
+      this.sendMessage('currentRoute', { name: this.get('currentPath') });
     }, 50);
-  }, 'currentPath'),
+  }),
 
-  routeTree: computed(function() {
-    var routeNames = this.get('router.router.recognizer.names');
-    var routeTree = {};
+  routeTree: computed('router', function() {
+    let routeNames = this.get('router.router.recognizer.names');
+    let routeTree = {};
 
-    for (var routeName in routeNames) {
+    for (let routeName in routeNames) {
       if (!routeNames.hasOwnProperty(routeName)) {
         continue;
       }
-      var route = routeNames[routeName];
+      let route = routeNames[routeName];
       buildSubTree.call(this, routeTree, route);
     }
     return arrayizeChildren({ children: routeTree });
-  }).property('router'),
+  }),
 
-  sendTree: function() {
-    var routeTree = this.get('routeTree');
+  sendTree() {
+    const routeTree = this.get('routeTree');
     this.sendMessage('routeTree', { tree: routeTree });
   },
 
-  getClassName: function(name, type) {
-    var container = this.get('application.__container__');
-    var resolver = container.resolver;
+  getClassName(name, type) {
+    let container = this.get('application.__container__');
+    let resolver = container.resolver;
     if (!resolver) {
       resolver = this.get('application.registry.resolver');
     }
-    var prefix = this.get('emberCliConfig.modulePrefix');
-    var podPrefix = this.get('emberCliConfig.podModulePrefix');
-    var usePodsByDefault = this.get('emberCliConfig.usePodsByDefault');
-    var className;
+    if (!resolver) {
+      // Ember >= 2.0
+      resolver = container.registry;
+    }
+    let prefix = this.get('emberCliConfig.modulePrefix');
+    let podPrefix = this.get('emberCliConfig.podModulePrefix');
+    let usePodsByDefault = this.get('emberCliConfig.usePodsByDefault');
+    let className;
     if (prefix || podPrefix) {
       // Uses modules
       name = dasherize(name);
-      className = resolver.describe(type + ':' + name);
-      if (className) {
+      let fullName = `${type}:${name}`;
+      className = resolver.describe(fullName);
+      if (className === fullName) {
+        // full name returned as is - this resolver does not look for the module.
+        className = className.replace(new RegExp(`^${type}\:`), '');
+      } else if (className) {
         // Module exists and found
         className = className.replace(new RegExp('^/?(' + prefix +'|' + podPrefix + ')/' + type + 's/'), '');
       } else {
@@ -87,7 +90,7 @@ export default Ember.Object.extend(PortMixin, {
           // we don't include the prefix since it's redundant
           // and not part of the file path.
           // (podPrefix - prefix) is part of the file path.
-          var currentPrefix = '';
+          let currentPrefix = '';
           if (podPrefix) {
             currentPrefix = podPrefix.replace(new RegExp('^/?' + prefix + '/?'), '');
           }
@@ -110,16 +113,16 @@ export default Ember.Object.extend(PortMixin, {
 
 });
 
-var buildSubTree = function(routeTree, route) {
-  var handlers = route.handlers;
-  var container = this.get('application.__container__');
-  var subTree = routeTree, item,
+const buildSubTree = function(routeTree, route) {
+  let handlers = route.handlers;
+  let container = this.get('application.__container__');
+  let subTree = routeTree, item,
       routeClassName, routeHandler, controllerName,
       controllerClassName, templateName,
       controllerFactory;
-  for (var i = 0; i < handlers.length; i++) {
+  for (let i = 0; i < handlers.length; i++) {
     item = handlers[i];
-    var handler = item.handler;
+    let handler = item.handler;
     if (subTree[handler] === undefined) {
       routeClassName = this.getClassName(handler, 'route');
 
@@ -163,16 +166,16 @@ var buildSubTree = function(routeTree, route) {
 };
 
 function arrayizeChildren(routeTree) {
-  var obj = {};
+  let obj = {};
   // Top node doesn't have a value
   if (routeTree.value) {
     obj.value = routeTree.value;
   }
 
   if (routeTree.children) {
-    var childrenArray = [];
-    for (var i in routeTree.children) {
-      var route = routeTree.children[i];
+    let childrenArray = [];
+    for (let i in routeTree.children) {
+      let route = routeTree.children[i];
       childrenArray.push(arrayizeChildren(route));
     }
     obj.children = childrenArray;
@@ -182,10 +185,10 @@ function arrayizeChildren(routeTree) {
 }
 
 function getURL(container, segments) {
-  var locationImplementation = container.lookup('router:main').location;
-  var url = [];
-  for (var i = 0; i < segments.length; i++) {
-    var name = null;
+  const locationImplementation = container.lookup('router:main').location;
+  let url = [];
+  for (let i = 0; i < segments.length; i++) {
+    let name = null;
 
     try {
       name = segments[i].generate();

@@ -6,34 +6,34 @@
  */
 
 import Promise from 'ember-debug/models/promise';
-var Ember = window.Ember;
+const Ember = window.Ember;
+const { Object: EmberObject, Evented, A, computed, RSVP, copy, isNone } = Ember;
 
-var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
+let PromiseAssembler = EmberObject.extend(Evented, {
   // RSVP lib to debug
-  RSVP: Ember.RSVP,
+  RSVP,
 
-  all: Ember.computed(function() { return Ember.A(); }).property(),
+  all: computed(function() { return A(); }),
 
-  promiseIndex: Ember.computed(function() { return {}; }).property(),
+  promiseIndex: computed(function() { return {}; }),
 
   // injected on creation
   promiseDebug: null,
 
-  start: function() {
+  start() {
     this.RSVP.configure('instrument', true);
-    var self = this;
 
-    this.promiseChained = function(e) {
-      chain.call(self, e);
+    this.promiseChained = (e) => {
+      chain.call(this, e);
     };
-    this.promiseRejected = function(e) {
-      reject.call(self, e);
+    this.promiseRejected = (e) => {
+      reject.call(this, e);
     };
-    this.promiseFulfilled = function(e) {
-      fulfill.call(self, e);
+    this.promiseFulfilled = (e) => {
+      fulfill.call(this, e);
     };
-    this.promiseCreated = function(e) {
-      create.bind(self)(e);
+    this.promiseCreated = (e) => {
+      create.bind(this)(e);
     };
 
     this.RSVP.on('chained', this.promiseChained);
@@ -42,17 +42,17 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
     this.RSVP.on('created', this.promiseCreated);
   },
 
-  stop: function() {
+  stop() {
     this.RSVP.configure('instrument', false);
     this.RSVP.off('chained', this.promiseChained);
     this.RSVP.off('rejected', this.promiseRejected);
     this.RSVP.off('fulfilled', this.promiseFulfilled);
     this.RSVP.off('created', this.promiseCreated);
 
-    this.get('all').forEach(function(item) {
+    this.get('all').forEach((item) => {
       item.destroy();
     });
-    this.set('all', Ember.A());
+    this.set('all', A());
     this.set('promiseIndex', {});
 
     this.promiseChained = null;
@@ -61,13 +61,13 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
     this.promiseCreated = null;
   },
 
-  willDestroy: function() {
+  willDestroy() {
     this.stop();
     this._super();
   },
 
-  createPromise: function(props) {
-    var promise = Promise.create(props),
+  createPromise(props) {
+    const promise = Promise.create(props),
         index = this.get('all.length');
 
     this.get('all').pushObject(promise);
@@ -75,9 +75,9 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
     return promise;
   },
 
-  find: function(guid) {
+  find(guid) {
     if (guid) {
-      var index = this.get('promiseIndex')[guid];
+      const index = this.get('promiseIndex')[guid];
       if (index !== undefined) {
         return this.get('all').objectAt(index);
       }
@@ -86,18 +86,18 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
     }
   },
 
-  findOrCreate: function(guid) {
+  findOrCreate(guid) {
     return this.find(guid) || this.createPromise({
       guid: guid
     });
   },
 
-  updateOrCreate: function(guid, properties) {
-    var entry = this.find(guid);
+  updateOrCreate(guid, properties) {
+    let entry = this.find(guid);
     if (entry) {
       entry.setProperties(properties);
     } else {
-      properties = Ember.copy(properties);
+      properties = copy(properties);
       properties.guid = guid;
       entry = this.createPromise(properties);
     }
@@ -109,14 +109,14 @@ var PromiseAssembler = Ember.Object.extend(Ember.Evented, {
 export default PromiseAssembler;
 
 PromiseAssembler.reopenClass({
-  supported: function() {
-    return !!Ember.RSVP.on;
+  supported() {
+    return !!RSVP.on;
   }
 });
 
-var fulfill = function(event) {
-  var guid = event.guid;
-  var promise = this.updateOrCreate(guid, {
+const fulfill = function(event) {
+  const guid = event.guid;
+  const promise = this.updateOrCreate(guid, {
     label: event.label,
     settledAt: event.timeStamp,
     state: 'fulfilled',
@@ -128,9 +128,9 @@ var fulfill = function(event) {
 };
 
 
-var reject = function(event) {
-  var guid = event.guid;
-  var promise = this.updateOrCreate(guid, {
+const reject = function(event) {
+  const guid = event.guid;
+  const promise = this.updateOrCreate(guid, {
     label: event.label,
     settledAt: event.timeStamp,
     state: 'rejected',
@@ -143,7 +143,7 @@ var reject = function(event) {
 
 function chain(event) {
   /*jshint validthis:true */
-  var guid = event.guid,
+  const guid = event.guid,
       promise = this.updateOrCreate(guid, {
         label: event.label,
         chainedAt: event.timeStamp
@@ -162,16 +162,16 @@ function chain(event) {
 
 function create(event) {
   /*jshint validthis:true */
-  var guid = event.guid;
+  const guid = event.guid;
 
-  var promise = this.updateOrCreate(guid, {
+  const promise = this.updateOrCreate(guid, {
     label: event.label,
     createdAt: event.timeStamp,
     stack: event.stack
   });
 
   // todo fix ordering
-  if (Ember.isNone(promise.get('state'))) {
+  if (isNone(promise.get('state'))) {
     promise.set('state', 'created');
   }
   this.trigger('created', {

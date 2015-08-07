@@ -16,7 +16,7 @@ if (!Function.prototype.bind) {
       throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
     }
 
-    var aArgs = Array.prototype.slice.call(arguments, 1),
+    let aArgs = Array.prototype.slice.call(arguments, 1),
         fToBind = this,
         FNOP = function () {},
         fBound = function () {

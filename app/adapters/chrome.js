@@ -1,51 +1,53 @@
 /* globals chrome */
 import BasicAdapter from "./basic";
+import Ember from 'ember';
+const { on, computed } = Ember;
 
-var emberDebug = null;
+let emberDebug = null;
 
 export default BasicAdapter.extend({
   name: 'chrome',
 
-  sendMessage: function(options) {
+  sendMessage(options) {
     options = options || {};
     this.get('_chromePort').postMessage(options);
   },
 
-  _chromePort: function() {
+  _chromePort: computed(function() {
     return chrome.extension.connect();
-  }.property(),
+  }),
 
-  _connect: function() {
-    var self = this;
-    var chromePort = this.get('_chromePort');
+  _connect: on('init', function() {
+    let self = this;
+    let chromePort = this.get('_chromePort');
     chromePort.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
 
-    chromePort.onMessage.addListener(function(message) {
+    chromePort.onMessage.addListener(message => {
       if (typeof message.type === 'string' && message.type === 'iframes') {
         sendIframes(message.urls);
       }
       self._messageReceived(message);
     });
-  }.on('init'),
+  }),
 
-  _handleReload: function() {
-    var self = this;
+  _handleReload: on('init', function() {
+    let self = this;
     chrome.devtools.network.onNavigated.addListener(function() {
       self._injectDebugger();
       location.reload(true);
     });
-  }.on('init'),
+  }),
 
-  _injectDebugger: function() {
+  _injectDebugger: on('init', function() {
     chrome.devtools.inspectedWindow.eval(loadEmberDebug());
     chrome.devtools.inspectedWindow.onResourceAdded.addListener(function(opts) {
       if (opts.type === 'document') {
         sendIframes([opts.url]);
       }
     });
-  }.on('init'),
+  }),
 
-  willReload: function() {
+  willReload() {
     this._injectDebugger();
   },
 
@@ -53,7 +55,7 @@ export default BasicAdapter.extend({
     We handle the reload here so we can inject
     scripts as soon as possible into the new page.
   */
-  reloadTab: function() {
+  reloadTab() {
     chrome.devtools.inspectedWindow.reload({
       injectedScript: loadEmberDebug()
     });
@@ -61,7 +63,7 @@ export default BasicAdapter.extend({
 
   canOpenResource: true,
 
-  openResource: function(file, line) {
+  openResource(file, line) {
     /*global chrome */
     // For some reason it opens the line after the one specified
     chrome.devtools.panels.openResource(file, line - 1);
@@ -70,13 +72,13 @@ export default BasicAdapter.extend({
 });
 
 function sendIframes(urls) {
-  urls.forEach(function(url) {
+  urls.forEach(url => {
     chrome.devtools.inspectedWindow.eval(loadEmberDebug(), { frameURL: url });
   });
 }
 
 function loadEmberDebug() {
-  var xhr;
+  let xhr;
   if (!emberDebug) {
     xhr = new XMLHttpRequest();
     xhr.open("GET", chrome.extension.getURL('/panes/ember_debug.js'), false);

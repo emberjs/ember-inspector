@@ -1,28 +1,28 @@
 import Ember from "ember";
-var Promise = Ember.RSVP.Promise;
+const { RSVP: { Promise } } = Ember;
 /*eslint camelcase: 0 */
 export default Ember.Route.extend({
-  setupController: function(controller, model) {
+  setupController(controller, model) {
     this._super(controller, model);
     this.controllerFor('model-types').set('selected', model);
   },
 
-  model: function(params) {
-    return new Promise(function(resolve) {
-      var type = this.modelFor('model-types').findBy('name', params.type_id);
+  model(params) {
+    return new Promise(resolve => {
+      const type = this.modelFor('model-types').findBy('name', params.type_id);
       if (type) {
         resolve(type);
       } else {
         this.transitionTo('model-types.index');
       }
-    }.bind(this));
+    });
   },
 
-  deactivate: function() {
+  deactivate() {
     this.controllerFor('model-types').set('selected', null);
   },
 
-  serialize: function (model) {
+  serialize(model) {
     return { type_id: Ember.get(model, 'name') };
   }
 });

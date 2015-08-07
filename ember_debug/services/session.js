@@ -1,7 +1,7 @@
-var Ember = window.Ember;
-var EmberObject = Ember.Object;
+const Ember = window.Ember;
+const { Object: EmberObject } = Ember;
 
-var Session = EmberObject.extend({
+const Session = EmberObject.extend({
   setItem: function(/*key, val*/) {},
   removeItem: function(/*key*/) {},
   getItem: function(/*key*/) {}
@@ -12,16 +12,16 @@ if (typeof sessionStorage !== 'undefined') {
   Session.reopen({
     sessionStorage: sessionStorage,
     prefix: '__ember__inspector__',
-    makeKey: function(key) {
+    makeKey(key) {
       return this.prefix + key;
     },
-    setItem: function(key, val) {
+    setItem(key, val) {
       return this.sessionStorage.setItem(this.makeKey(key), val);
     },
-    removeItem: function(key) {
+    removeItem(key) {
       return this.sessionStorage.removeItem(this.makeKey(key));
     },
-    getItem: function(key) {
+    getItem(key) {
       return JSON.parse(this.sessionStorage.getItem(this.makeKey(key)));
     }
   });

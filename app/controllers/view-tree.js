@@ -1,5 +1,5 @@
 import Ember from "ember";
-const { computed, Controller } = Ember;
+const { computed, Controller, on, observer } = Ember;
 const { alias } = computed;
 
 export default Controller.extend({
@@ -14,30 +14,30 @@ export default Controller.extend({
     allViews: false
   },
 
-  optionsChanged: function() {
+  optionsChanged: on('init', observer('options.components', 'options.allViews', function() {
     this.port.send('view:setOptions', { options: this.get('options') });
-  }.observes('options.components', 'options.allViews').on('init'),
+  })),
 
   actions: {
-    previewLayer: function(node) {
+    previewLayer(node) {
       // We are passing both objectId and renderNodeId to support both pre-glimmer and post-glimmer
       this.get('port').send('view:previewLayer', { objectId: node.value.objectId, renderNodeId: node.value.renderNodeId });
     },
 
-    hidePreview: function() {
+    hidePreview() {
       this.get('port').send('view:hidePreview');
     },
 
-    toggleViewInspection: function() {
+    toggleViewInspection() {
       this.get('port').send('view:inspectViews', { inspect: !this.get('inspectingViews') });
     },
 
-    sendModelToConsole: function(value) {
+    sendModelToConsole(value) {
       // do not use `sendObjectToConsole` because models don't have to be ember objects
       this.get('port').send('view:sendModelToConsole', { viewId: value.objectId, renderNodeId: value.renderNodeId });
     },
 
-    sendObjectToConsole: function(objectId) {
+    sendObjectToConsole(objectId) {
       this.get('port').send('objectInspector:sendToConsole', { objectId: objectId });
     }
   }

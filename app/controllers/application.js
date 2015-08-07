@@ -1,7 +1,5 @@
 import Ember from "ember";
-
-var oneWay = Ember.computed.oneWay,
-    equal = Ember.computed.equal;
+const { computed: { oneWay, equal} } = Ember;
 
 export default Ember.Controller.extend({
   needs: ['mixin-stack', 'mixin-details'],
@@ -34,16 +32,15 @@ export default Ember.Controller.extend({
   },
 
   popMixinDetails() {
-    var mixinStack = this.get('controllers.mixin-stack');
-    var item = mixinStack.popObject();
+    let mixinStack = this.get('controllers.mixin-stack');
+    let item = mixinStack.popObject();
     this.set('mixinDetails.model', mixinStack.get('lastObject'));
     this.get('port').send('objectInspector:releaseObject', { objectId: item.objectId });
   },
 
   activateMixinDetails(name, objectId, details, errors) {
-    var self = this;
-    this.get('mixinStack').forEach(function(item) {
-      self.get('port').send('objectInspector:releaseObject', { objectId: item.objectId });
+    this.get('mixinStack').forEach(item => {
+      this.get('port').send('objectInspector:releaseObject', { objectId: item.objectId });
     });
 
     this.set('mixinStack.model', []);
@@ -51,15 +48,15 @@ export default Ember.Controller.extend({
   },
 
   droppedObject(objectId) {
-    var mixinStack = this.get('mixinStack.model');
-    var obj = mixinStack.findProperty('objectId', objectId);
+    let mixinStack = this.get('mixinStack.model');
+    let obj = mixinStack.findProperty('objectId', objectId);
     if (obj) {
-      var index = mixinStack.indexOf(obj);
-      var objectsToRemove = [];
-      for (var i = index; i >= 0; i--) {
+      let index = mixinStack.indexOf(obj);
+      let objectsToRemove = [];
+      for (let i = index; i >= 0; i--) {
         objectsToRemove.pushObject(mixinStack.objectAt(i));
       }
-      objectsToRemove.forEach(function(item) {
+      objectsToRemove.forEach(item => {
         mixinStack.removeObject(item);
       });
     }

@@ -1,10 +1,8 @@
 import Ember from "ember";
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
-var ObjectController = Ember.ObjectController;
-var gt = Ember.computed.gt;
-var oneWay = Ember.computed.oneWay;
-var isEmpty = Ember.isEmpty;
-var runOnce = Ember.run.once;
+const { ObjectController, computed, isEmpty, run, on, observer} = Ember;
+const { gt, oneWay } = computed;
+const { once } = run;
 
 export default ObjectController.extend({
   needs: ['render-tree'],
@@ -13,48 +11,48 @@ export default ObjectController.extend({
 
   isExpanded: false,
 
-  expand: function() {
+  expand() {
     this.set('isExpanded', true);
   },
 
-  searchChanged: function() {
-    var search = this.get('search');
+  searchChanged: on('init', observer('search', function() {
+    let search = this.get('search');
     if (!isEmpty(search)) {
-      runOnce(this, 'expand');
+      once(this, 'expand');
     }
-  }.observes('search').on('init'),
+  })),
 
-  searchMatch: function() {
-    var search = this.get('search');
+  searchMatch: computed('search', 'name', function() {
+    let search = this.get('search');
     if (isEmpty(search)) {
       return true;
     }
-    var name = this.get('name');
-    var regExp = new RegExp(escapeRegExp(search.toLowerCase()));
+    let name = this.get('name');
+    let regExp = new RegExp(escapeRegExp(search.toLowerCase()));
     return !!name.toLowerCase().match(regExp);
-  }.property('search', 'name'),
+  }),
 
-  nodeStyle: function() {
+  nodeStyle: computed('searchMatch', function() {
     if (!this.get('searchMatch')) {
       return 'opacity: 0.5';
     }
-  }.property('searchMatch'),
+  }),
 
-  level: function() {
-    var parentLevel = this.get('target.level');
+  level: computed('target.level', function() {
+    let parentLevel = this.get('target.level');
     if (parentLevel === undefined) {
       parentLevel = -1;
     }
     return parentLevel + 1;
-  }.property('target.level'),
+  }),
 
-  nameStyle: function() {
+  nameStyle: computed('level', function() {
     return 'padding-left: ' + ((+this.get('level') * 20) + 5) + "px";
-  }.property('level'),
+  }),
 
   hasChildren: gt('children.length', 0),
 
-  expandedClass: function() {
+  expandedClass: computed('hasChildren', 'isExpanded', function() {
     if (!this.get('hasChildren')) { return; }
 
     if (this.get('isExpanded')) {
@@ -62,20 +60,20 @@ export default ObjectController.extend({
     } else {
       return 'row_arrow_collapsed';
     }
-  }.property('hasChildren', 'isExpanded'),
+  }),
 
-  readableTime: function() {
-    var d = new Date(this.get('timestamp')),
+  readableTime: computed('timestamp', function() {
+    let d = new Date(this.get('timestamp')),
         ms = d.getMilliseconds(),
         seconds = d.getSeconds(),
         minutes = d.getMinutes().toString().length === 1 ? '0' + d.getMinutes() : d.getMinutes(),
         hours = d.getHours().toString().length === 1 ? '0' + d.getHours() : d.getHours();
 
     return hours + ':' + minutes + ':' + seconds + ':' + ms;
-  }.property('timestamp'),
+  }),
 
   actions: {
-    toggleExpand: function() {
+    toggleExpand() {
       this.toggleProperty('isExpanded');
     }
   }

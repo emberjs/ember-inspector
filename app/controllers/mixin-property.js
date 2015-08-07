@@ -1,6 +1,6 @@
 import Ember from "ember";
-var equal = Ember.computed.equal;
-var alias = Ember.computed.alias;
+const { computed } = Ember;
+const { equal, alias } = computed;
 
 export default Ember.ObjectController.extend({
   isEdit: false,
@@ -9,9 +9,9 @@ export default Ember.ObjectController.extend({
   txtValue: null,
   dateValue: null,
 
-  isCalculated: function() {
+  isCalculated: computed('value.type', function() {
     return this.get('value.type') !== 'type-descriptor';
-  }.property('value.type'),
+  }),
 
   isEmberObject: equal('value.type', 'type-ember-object'),
 
@@ -23,13 +23,13 @@ export default Ember.ObjectController.extend({
 
   isDate: equal('value.type', 'type-date'),
 
-  _parseTextValue: function(value) {
-    var parsedValue;
+  _parseTextValue(value) {
+    let parsedValue;
     try {
       parsedValue = JSON.parse(value);
     } catch(e) {
       // if surrounded by quotes, remove quotes
-      var match = value.match(/^"(.*)"$/);
+      let match = value.match(/^"(.*)"$/);
       if (match && match.length > 1) {
         parsedValue = match[1];
       } else {
@@ -40,7 +40,7 @@ export default Ember.ObjectController.extend({
   },
 
   actions: {
-    valueClick: function() {
+    valueClick() {
       if (this.get('isEmberObject') || this.get('isArray')) {
         this.get('target').send('digDeeper', this.get('model'));
         return;
@@ -55,8 +55,8 @@ export default Ember.ObjectController.extend({
         return;
       }
 
-      var value = this.get('value.inspect');
-      var type = this.get('value.type');
+      let value = this.get('value.inspect');
+      let type = this.get('value.type');
       if (type === 'type-string') {
         value = '"' + value + '"';
       }
@@ -69,8 +69,8 @@ export default Ember.ObjectController.extend({
 
     },
 
-    saveProperty: function() {
-      var realValue, dataType;
+    saveProperty() {
+      let realValue, dataType;
       if (!this.get('isDate')) {
         realValue = this._parseTextValue(this.get('txtValue'));
       } else {
@@ -80,7 +80,7 @@ export default Ember.ObjectController.extend({
       this.get('target').send('saveProperty', this.get('name'), realValue, dataType);
     },
 
-    finishedEditing: function() {
+    finishedEditing() {
       this.set('isEdit', false);
     }
   }

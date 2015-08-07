@@ -1,20 +1,21 @@
 import Ember from "ember";
-var View = Ember.View;
+const { View, computed } = Ember;
+
 export default View.extend({
   attributeBindings: ['style'],
 
   classNames: ["list-tree", "list-tree_scrollable"],
 
-  style: function() {
+  style: computed('height', function() {
     return 'height:' + this.get('height') + 'px';
-  }.property('height'),
+  }),
 
   contentHeight: Ember.computed.alias('controller.controllers.application.contentHeight'),
 
   filterHeight: 22,
 
-  height: function() {
-    var filterHeight = this.get('filterHeight'),
+  height: computed('contentHeight', function() {
+    const filterHeight = this.get('filterHeight'),
         headerHeight = 30,
         contentHeight = this.get('contentHeight');
 
@@ -24,5 +25,5 @@ export default View.extend({
       return 1;
     }
     return contentHeight - filterHeight - headerHeight;
-  }.property('contentHeight')
+  })
 });

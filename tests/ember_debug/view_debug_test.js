@@ -4,15 +4,12 @@ import { module, test } from 'qunit';
 const { $ } = Ember;
 
 /* globals require, findByLabel, clickByLabel */
-var EmberDebug = require('ember-debug/main').default;
-var port;
-var App, run = Ember.run;
-var compile = Ember.Handlebars.compile;
-var ObjectController = Ember.ObjectController;
-var View = Ember.View;
-var Route = Ember.Route;
-var EmberObject = Ember.Object;
-var OLD_TEMPLATES = {};
+const EmberDebug = require('ember-debug/main').default;
+const { View, Route, Object: EmberObject, Handlebars, ObjectController } = Ember;
+const { compile } = Handlebars;
+let port;
+let App, run = Ember.run;
+let OLD_TEMPLATES = {};
 
 function setTemplate(name, template) {
   OLD_TEMPLATES = Ember.TEMPLATES[name];
@@ -20,7 +17,7 @@ function setTemplate(name, template) {
 }
 
 function destroyTemplates() {
-  for (var name in OLD_TEMPLATES) {
+  for (let name in OLD_TEMPLATES) {
     Ember.TEMPLATES[name] = OLD_TEMPLATES[name];
   }
   OLD_TEMPLATES = {};

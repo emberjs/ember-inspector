@@ -1,51 +1,46 @@
 import BasicAdapter from "./basic";
-var Ember = window.Ember;
-var computed = Ember.computed;
-var Promise = Ember.RSVP.Promise;
-var $ = Ember.$;
+const Ember = window.Ember;
+const { $, computed, run, RSVP: { Promise } } = Ember;
 
-var WebsocketAdapter = BasicAdapter.extend({
+export default BasicAdapter.extend({
 
-  sendMessage: function(options) {
+  sendMessage(options) {
     options = options || {};
     this.get('socket').emit('emberInspectorMessage', options);
   },
 
   socket: computed(function() {
     return window.EMBER_INSPECTOR_CONFIG.remoteDebugSocket;
-  }).property(),
+  }),
 
-  _listen: function() {
-    var self = this;
+  _listen() {
     this.get('socket').on('emberInspectorMessage', function(message) {
-      Ember.run(function() {
-        self._messageReceived(message);
+      run(() => {
+        this._messageReceived(message);
       });
     });
   },
 
-  _disconnect: function() {
+  _disconnect() {
     this.get('socket').removeAllListeners("emberInspectorMessage");
   },
 
-  connect: function() {
-    var self = this;
-    return new Promise(function(resolve, reject) {
-      $(function() {
-        if (self.isDestroyed) { reject(); }
-        var EMBER_INSPECTOR_CONFIG = window.EMBER_INSPECTOR_CONFIG;
+  connect() {
+    return new Promise((resolve, reject) => {
+      $(() => {
+        if (this.isDestroyed) { reject(); }
+        const EMBER_INSPECTOR_CONFIG = window.EMBER_INSPECTOR_CONFIG;
         if (typeof EMBER_INSPECTOR_CONFIG === 'object' && EMBER_INSPECTOR_CONFIG.remoteDebugSocket) {
           resolve();
         }
       });
-    }).then(function() {
-      self._listen();
+    }).then(() => {
+      this._listen();
     });
   },
 
-  willDestroy: function() {
+  willDestroy() {
     this._disconnect();
   }
 });
 
-export default WebsocketAdapter;

@@ -1,8 +1,7 @@
 import Ember from "ember";
 import DatePicker from "ember-inspector/components/pikaday-input";
-
-var once = Ember.run.once;
-var KEY_EVENTS = {
+const { on, run: { once } } = Ember;
+const KEY_EVENTS = {
   enter: 13,
   escape: 27
 };
@@ -10,11 +9,11 @@ var KEY_EVENTS = {
 export default DatePicker.extend({
   attributeBindings: ['label:data-label'],
 
-  openDatePicker: function() {
+  openDatePicker: on('didInsertElement', function() {
     once(this.$(), 'click');
-  }.on('didInsertElement'),
+  }),
 
-  keyUp: function(e) {
+  keyUp(e) {
     if (e.keyCode === KEY_EVENTS.enter) {
       this.insertNewline();
     } else if (e.keyCode === KEY_EVENTS.escape) {
@@ -22,12 +21,12 @@ export default DatePicker.extend({
     }
   },
 
-  insertNewline: function() {
+  insertNewline() {
     this.sendAction('save-property');
     this.sendAction('finished-editing');
   },
 
-  cancel: function() {
+  cancel() {
     this.sendAction('finished-editing');
   }
 });

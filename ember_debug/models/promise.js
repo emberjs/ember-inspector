@@ -1,13 +1,14 @@
 import computedPolyfill from '../addons/ember-new-computed/index';
-var Ember = window.Ember;
+const Ember = window.Ember;
+const { typeOf, Object: EmberObject, computed, A } = Ember;
 
-var dateComputed = function() {
+const dateComputed = function() {
   return computedPolyfill({
-    get: function() {
+    get() {
       return null;
     },
-    set: function(key, date) {
-      if (Ember.typeOf(date) === 'date') {
+    set(key, date) {
+      if (typeOf(date) === 'date') {
         return date;
       } else if (typeof date === 'number' || typeof date === 'string') {
         return new Date(date);
@@ -17,35 +18,35 @@ var dateComputed = function() {
   });
 };
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
   createdAt: dateComputed(),
   settledAt: dateComputed(),
   chainedAt: dateComputed(),
 
   parent: null,
 
-  children: Ember.computed(function() {
-    return Ember.A();
-  }).property(),
+  children: computed(function() {
+    return A();
+  }),
 
-  level: Ember.computed(function() {
-    var parent = this.get('parent');
+  level: computed('parent.level', function() {
+    const parent = this.get('parent');
     if (!parent) {
       return 0;
     }
     return parent.get('level') + 1;
-  }).property('parent.level'),
+  }),
 
-  isSettled: Ember.computed(function() {
+  isSettled: computed('state', function() {
     return this.get('isFulfilled') || this.get('isRejected');
-  }).property('state'),
+  }),
 
-  isFulfilled: Ember.computed(function() {
+  isFulfilled: computed('state', function() {
     return this.get('state') === 'fulfilled';
-  }).property('state'),
+  }),
 
-  isRejected: Ember.computed(function() {
+  isRejected: computed('state', function() {
     return this.get('state') === 'rejected';
-  }).property('state')
+  })
 
 });

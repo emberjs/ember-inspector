@@ -1,19 +1,19 @@
 import Ember from "ember";
 export default function filterComputed() {
-  var dependentKeys, callback;
+  let dependentKeys, callback;
 
   if (arguments.length > 1) {
-    var slice = [].slice;
+    const slice = [].slice;
     dependentKeys = slice.call(arguments, 0, -1);
     callback = slice.call(arguments, -1)[0];
   }
-  var options = {
-    initialize: function (array, changeMeta, instanceMeta) {
+  let options = {
+    initialize(array, changeMeta, instanceMeta) {
       instanceMeta.filteredArrayIndexes = new Ember.SubArray();
     },
 
-    addedItem: function(array, item, changeMeta, instanceMeta) {
-      var match = !!callback.call(this, item),
+    addedItem(array, item, changeMeta, instanceMeta) {
+      let match = !!callback.call(this, item),
           filterIndex = instanceMeta.filteredArrayIndexes.addItem(changeMeta.index, match);
 
       if (match) {
@@ -23,8 +23,8 @@ export default function filterComputed() {
       return array;
     },
 
-    removedItem: function(array, item, changeMeta, instanceMeta) {
-      var filterIndex = instanceMeta.filteredArrayIndexes.removeItem(changeMeta.index);
+    removedItem(array, item, changeMeta, instanceMeta) {
+      let filterIndex = instanceMeta.filteredArrayIndexes.removeItem(changeMeta.index);
 
       if (filterIndex > -1) {
         array.removeAt(filterIndex);
@@ -33,7 +33,7 @@ export default function filterComputed() {
       return array;
     }
   };
-  var args = dependentKeys;
+  let args = dependentKeys;
   args.push(options);
 
   /*jshint validthis:true */

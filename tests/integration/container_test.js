@@ -3,9 +3,9 @@ import Ember from "ember";
 import { module } from 'qunit';
 import { test } from 'ember-qunit';
 import startApp from '../helpers/start-app';
-var App;
+let App;
 
-var port, message, name;
+let port, message, name;
 
 module('Container Tab', {
   beforeEach() {

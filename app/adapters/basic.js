@@ -12,7 +12,7 @@
  * ```
  */
 import Ember from "ember";
-var K = Ember.K;
+const { computed, K } = Ember;
 export default Ember.Object.extend({
   name: 'basic',
   /**
@@ -20,20 +20,20 @@ export default Ember.Object.extend({
 
     @param type {Object} the message to the send
   **/
-  sendMessage: function() {},
+  sendMessage() {},
 
   /**
     Register functions to be called
     when a message from EmberDebug is received
   **/
-  onMessageReceived: function(callback) {
+  onMessageReceived(callback) {
     this.get('_messageCallbacks').pushObject(callback);
   },
 
-  _messageCallbacks: function() { return []; }.property(),
+  _messageCallbacks: computed(function() { return []; }),
 
-  _messageReceived: function(message) {
-    this.get('_messageCallbacks').forEach(function(callback) {
+  _messageReceived(message) {
+    this.get('_messageCallbacks').forEach(callback => {
       callback.call(null, message);
     });
   },
@@ -42,6 +42,6 @@ export default Ember.Object.extend({
   willReload: K,
 
   canOpenResource: false,
-  openResource: function(/* file, line */) {}
+  openResource(/* file, line */) {}
 
 });

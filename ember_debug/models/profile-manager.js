@@ -1,11 +1,11 @@
 import ProfileNode from './profile-node';
-var Ember = window.Ember;
-var scheduleOnce = Ember.run.scheduleOnce;
+const Ember = window.Ember;
+const { run: { scheduleOnce } } = Ember;
 
 /**
  * A class for keeping track of active rendering profiles as a list.
  */
-var ProfileManager = function() {
+const ProfileManager = function() {
   this.profiles = [];
   this.current = null;
   this.currentSet = [];
@@ -13,14 +13,14 @@ var ProfileManager = function() {
 };
 
 ProfileManager.prototype = {
-  began: function(timestamp, payload, now) {
+  began(timestamp, payload, now) {
     return this.wrapForErrors(this, function() {
       this.current = new ProfileNode(timestamp, payload, this.current, now);
       return this.current;
     });
   },
 
-  ended: function(timestamp, payload, profileNode) {
+  ended(timestamp, payload, profileNode) {
     if (payload.exception) { throw payload.exception; }
     return this.wrapForErrors(this, function() {
       this.current = profileNode.parent;
@@ -35,21 +35,21 @@ ProfileManager.prototype = {
     });
   },
 
-  wrapForErrors: function(context, callback) {
+  wrapForErrors(context, callback) {
     return callback.call(context);
   },
 
-  clearProfiles: function() {
+  clearProfiles() {
     this.profiles.length = 0;
   },
 
-  _profilesFinished: function() {
+  _profilesFinished() {
     return this.wrapForErrors(this, function() {
-      var firstNode = this.currentSet[0],
-        parentNode = new ProfileNode(firstNode.start, { template: 'View Rendering' });
+      const firstNode = this.currentSet[0];
+      let parentNode = new ProfileNode(firstNode.start, { template: 'View Rendering' });
 
       parentNode.time = 0;
-      this.currentSet.forEach(function(n) {
+      this.currentSet.forEach((n) => {
         parentNode.time += n.time;
         parentNode.children.push(n);
       });
@@ -63,16 +63,16 @@ ProfileManager.prototype = {
 
   _profilesAddedCallbacks: undefined, // set to array on init
 
-  onProfilesAdded: function(context, callback) {
+  onProfilesAdded(context, callback) {
     this._profilesAddedCallbacks.push({
       context: context,
       callback: callback
     });
   },
 
-  offProfilesAdded: function(context, callback) {
-    var index = -1, item;
-    for (var i = 0, l = this._profilesAddedCallbacks.length; i < l; i++) {
+  offProfilesAdded(context, callback) {
+    let index = -1, item;
+    for (let i = 0, l = this._profilesAddedCallbacks.length; i < l; i++) {
       item = this._profilesAddedCallbacks[i];
       if (item.context === context && item.callback === callback) {
         index = i;
@@ -83,7 +83,7 @@ ProfileManager.prototype = {
     }
   },
 
-  _triggerProfilesAdded: function(profiles) {
+  _triggerProfilesAdded(profiles) {
     this._profilesAddedCallbacks.forEach(function(item) {
       item.callback.call(item.context, profiles);
     });

@@ -1,39 +1,36 @@
 import Ember from "ember";
 import BasicAdapter from "./basic";
+const { computed } = Ember;
 
-var computed = Ember.computed;
-
-var WebsocketAdapter = BasicAdapter.extend({
-  init: function() {
+export default BasicAdapter.extend({
+  init() {
     this._super();
     this._connect();
   },
 
-  sendMessage: function(options) {
+  sendMessage(options) {
     options = options || {};
     this.get('socket').emit('emberInspectorMessage', options);
   },
 
-  socket: computed(function() {
+  socket: computed(() => {
     return window.EMBER_INSPECTOR_CONFIG.remoteDebugSocket;
-  }).property(),
+  }),
 
-  _connect: function() {
-    var self = this;
-    this.get('socket').on('emberInspectorMessage', function(message) {
-      Ember.run(function() {
-        self._messageReceived(message);
+  _connect() {
+    this.get('socket').on('emberInspectorMessage', message => {
+      Ember.run(() => {
+        this._messageReceived(message);
       });
     });
   },
 
-  _disconnect: function() {
+  _disconnect() {
     this.get('socket').removeAllListeners("emberInspectorMessage");
   },
 
-  willDestroy: function() {
+  willDestroy() {
     this._disconnect();
   }
 });
 
-export default WebsocketAdapter;

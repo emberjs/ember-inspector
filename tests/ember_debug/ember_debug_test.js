@@ -1,18 +1,18 @@
-var name;
+let name;
 /* jshint ignore:start */
 /* eslint no-empty:0 */
 import Ember from "ember";
 import { module, test } from 'qunit';
 
-var EmberDebug;
-var name, port, adapter;
+let EmberDebug;
+let port, adapter;
 /* jshint ignore:start */
-var run = Ember.run;
-var App;
-var EmberInspector;
+const { run, Application, Object: EmberObject } = Ember;
+let App;
+let EmberInspector;
 
 function setupApp() {
-  App = Ember.Application.create();
+  App = Application.create();
   App.setupForTesting();
   App.injectTestHelpers();
 
@@ -21,7 +21,7 @@ function setupApp() {
 module("Ember Debug", {
   beforeEach() {
     /* globals require */
-    EmberDebug = require('ember-debug/main')["default"];
+    EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({
       init: function() {},
       send: function(n/*, m*/) {
@@ -54,7 +54,7 @@ function cantSend(obj, assert) {
 }
 
 test("EmberInspector#inspect sends inspectable objects", function(assert) {
-  var obj = Ember.Object.create();
+  let obj = EmberObject.create();
   EmberInspector.inspect(obj);
   assert.equal(name, "objectInspector:updateObject");
   name = null;

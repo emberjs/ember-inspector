@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import checkCurrentRoute from "ember-inspector/utils/check-current-route";
-const { Component } = Ember;
+const { Component, computed } = Ember;
 
 export default Component.extend({
   // passed as an attribute to the component
@@ -12,17 +12,17 @@ export default Component.extend({
 
   label: 'route-node',
 
-  labelStyle: function() {
+  labelStyle: computed('model.parentCount', function() {
     return 'padding-left: ' + ((+this.get('model.parentCount') * 20) + 5) + "px";
-  }.property('model.parentCount'),
+  }),
 
-  isCurrent: function() {
+  isCurrent: computed('currentRoute', 'model.value.name', function() {
     let currentRoute = this.get('currentRoute');
     if (!currentRoute) {
       return false;
     }
 
     return checkCurrentRoute( currentRoute, this.get('model.value.name') );
-  }.property('currentRoute', 'model.value.name')
+  })
 });
 

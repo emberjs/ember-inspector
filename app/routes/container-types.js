@@ -1,11 +1,10 @@
 import Ember from "ember";
-var Route = Ember.Route;
-var Promise = Ember.RSVP.Promise;
+const { Route, RSVP: { Promise } } = Ember;
 
 export default Route.extend({
-  model: function() {
-    var port = this.get('port');
-    return new Promise(function(resolve) {
+  model() {
+    const port = this.get('port');
+    return new Promise(resolve => {
       port.one('container:types', function(message) {
         resolve(message.types);
       });
@@ -13,7 +12,7 @@ export default Route.extend({
     });
   },
   actions: {
-    reload: function() {
+    reload() {
       this.refresh();
     }
   }
