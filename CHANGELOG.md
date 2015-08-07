@@ -1,5 +1,41 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 1.9.0
+
+* [IMPROVEMENT] Speed up source map computation in deprecations pane [#439](https://github.com/emberjs/ember-inspector/pull/439)
+* [BUGFIX] Fix resolver and Ember.View errors in Ember 2.0 canary [#440](https://github.com/emberjs/ember-inspector/pull/440)
+* [BUGFIX] Fix components not being detected inside {{each}} helper [#428](https://github.com/emberjs/ember-inspector/pull/428)
+* [BUGFIX] Fix "object could not be cloned" error when prototype extensions are disabled [#435](https://github.com/emberjs/ember-inspector/pull/435)
+* [BUGFIX] Tomster should be not hidden if the Ember app contains an iframe [#436](https://github.com/emberjs/ember-inspector/pull/436)
+* [BUGFIX] Guard against renderNode.lastResult being null
+[#437](https://github.com/emberjs/ember-inspector/pull/437)
+* [BUGFIX] Fix object inspector toggle button being hidden when the object inspector is expanded.
+[#438](https://github.com/emberjs/ember-inspector/pull/438)
+* [BUGFIX] Prevent deprecations for Ember.keys on Ember 2.0.0 [#426](https://github.com/emberjs/ember-inspector/pull/426)
+* [INTERNAL] Rewrite the entire build process to targets all platforms in the same build [#374](https://github.com/emberjs/ember-inspector/pull/374)
+* [INTERNAL] Refactor all the code to use ES6 [#368](https://github.com/emberjs/ember-inspector/pull/368), [#370](https://github.com/emberjs/ember-inspector/pull/370), [#372](https://github.com/emberjs/ember-inspector/pull/372),
+[#376](https://github.com/emberjs/ember-inspector/pull/376)
+,
+[#387](https://github.com/emberjs/ember-inspector/pull/387)
+* [INTERNAL] Update the README deployment steps [#442](https://github.com/emberjs/ember-inspector/pull/442)
+* [INTERNAL] Use a new eslint config (eslint-config-ember) [#371](https://github.com/emberjs/ember-inspector/pull/371)
+* [INTERNAL] Fix the build commands in README [#385](https://github.com/emberjs/ember-inspector/pull/385)
+* [INTERNAL] Add CODE_OF_CONDUCT.md
+
+## Ember Inspector 1.8.3
+
+* [BUGFIX] Fix routes pane for Ember >= 1.13 [#399](https://github.com/emberjs/ember-inspector/pull/399)
+* [BUGFIX] Fix sending view model to console [#412](https://github.com/emberjs/ember-inspector/pull/412)
+* [BUGFIX] Guard against renderNode not being rendered yet [#417](https://github.com/emberjs/ember-inspector/pull/417)
+
+## Ember Inspector 1.8.2
+
+* [IMPROVEMENT] Add support for Ember Data >= 1.0.0-beta.19 [#383](https://github.com/emberjs/ember-inspector/pull/383)
+* [IMPROVEMENT] Add support for Ember >= 1.13.0 [#393](https://github.com/emberjs/ember-inspector/pull/393)
+  - Rename `Ember.Debug` to `Ember.EmberInspectorDebugger`
+  - Remove calls to `Ember.View.addMutationListener`
+  - Use the container's view registry instead of `Ember.View.views`
+
 ## Ember Inspector 1.8.1
 
 * [IMPROVEMENT] Remove new CP syntax deprecation warning [#362](https://github.com/emberjs/ember-inspector/pull/362)
