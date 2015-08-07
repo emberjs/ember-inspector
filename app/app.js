@@ -19,7 +19,7 @@ const App = Ember.Application.extend({
 });
 
 
-config.VERSION = version;
+config.VERSION = config.APP.version;
 
 // Register Helpers
 Ember.Handlebars.helper('ms-to-time', msToTime);
