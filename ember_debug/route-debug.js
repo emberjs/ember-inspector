@@ -65,6 +65,10 @@ export default EmberObject.extend(PortMixin, {
     if (!resolver) {
       resolver = this.get('application.registry.resolver');
     }
+    if (!resolver) {
+      // Ember >= 2.0
+      resolver = container.registry;
+    }
     let prefix = this.get('emberCliConfig.modulePrefix');
     let podPrefix = this.get('emberCliConfig.podModulePrefix');
     let usePodsByDefault = this.get('emberCliConfig.usePodsByDefault');
