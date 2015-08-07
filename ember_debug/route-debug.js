@@ -76,8 +76,12 @@ export default EmberObject.extend(PortMixin, {
     if (prefix || podPrefix) {
       // Uses modules
       name = dasherize(name);
-      className = resolver.describe(type + ':' + name);
-      if (className) {
+      let fullName = `${type}:${name}`;
+      className = resolver.describe(fullName);
+      if (className === fullName) {
+        // full name returned as is - this resolver does not look for the module.
+        className = className.replace(new RegExp(`^${type}\:`), '');
+      } else if (className) {
         // Module exists and found
         className = className.replace(new RegExp('^/?(' + prefix +'|' + podPrefix + ')/' + type + 's/'), '');
       } else {
