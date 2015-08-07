@@ -30,9 +30,6 @@ module.exports = function(grunt) {
       }
     },
     "version": {
-      app: {
-        src: ['app/app.js']
-      },
       dist: {
         prefix: '^"?version"?:\s*[\'"]?',
         src: ['dist/chrome/manifest.json', 'dist/firefox/package.json']
