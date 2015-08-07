@@ -11,7 +11,7 @@
     "test": "ember test",
     "watch": "ember build --watch",
     "serve:bookmarklet": "ember serve --port 9191",
-    "build:production": "ember build --environment production",
+    "build:production": "ember build --environment production && grunt compress:main clean-tmp build-xpi",
     "upload": "npm run build:production && grunt s3:bookmarklet",
     "run-xpi": "npm run build && grunt run-xpi",
     "build:xpi": "npm run build && grunt build-xpi",
