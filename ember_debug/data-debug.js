@@ -30,9 +30,12 @@ export default EmberObject.extend(PortMixin, {
     if (registry) {
       // Ember >= 1.11
       return registry.resolve(name);
-    } else {
+    } else if (container.resolve) {
       // Ember < 1.11
       return container.resolve(name);
+    } else {
+      // Ember >= 2.0
+      return container.registry.resolve(name);
     }
 
   },
