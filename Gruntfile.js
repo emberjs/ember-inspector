@@ -35,7 +35,7 @@ module.exports = function(grunt) {
       },
       dist: {
         prefix: '^"?version"?:\s*[\'"]?',
-        src: ['dist/chrome/manifest.json', 'dist/firefox/package.json']
+        src: ['skeleton_chrome/manifest.json', 'skeleton_firefox/package.json']
       }
     },
     "s3": {
