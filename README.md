@@ -86,11 +86,34 @@ Run `npm install && npm install -g ember-cli && && npm install -g bower && bower
 Deploy new version:
 -----------
 
-- Update `package.json` to new version and run `grunt version`
+#### Patch versions
+
+Patch versions are only committed to the stable branch. So we need to cherry-pick the commits we need from master and bump stable to the new patch version.
+
+- `git checkout stable`
+- Cherry-pick the needed commits from master to stable
+- Bump the patch version in package.json and run `grunt version`. Add the change log entry and commit.
+- Follow the "Steps to publish" below.
+- `git checkout master`
+- Commit the change log entry to the master branch.
+
+#### Minor and Major versions
+
+When releasing a major/minor version, master would already have this version set, so what we need to do is to merge master into stable and release.
+
+- Add the new minor/major version's change log entry in `CHANGELOG.md` and commit to master.
+- `git checkout stable`
+- `git merge -X theirs master`
+- Follow the "Steps to publish" steps below.
+- `git checkout master`
+- Update `package.json` to the future major/minor version and run `grunt version`
+
+#### Steps to publish
+
+- Push the `stable` branch to github (this will publish the bookmarklet version).
 - `npm run build:production`
 - Publish `dist/chrome/ember-inspector.zip` to the Chrome web store
 - Publish `tmp/xpi/ember-inspector.xpi` to the Mozilla Addons
-- 'git checkout stable && git merge master' and push the `stable` branch (to update the bookmarklet)
 - `npm publish ./`
 - `git tag` the new version
 
