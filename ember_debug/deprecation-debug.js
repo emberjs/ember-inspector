@@ -43,7 +43,7 @@ export default EmberObject.extend(PortMixin, {
       return this.get('sourceMap').map(stackStr).then((mapped) => {
         if (mapped && mapped.length > 0) {
           var source = mapped.find(item => {
-            return !!item.source.match(new RegExp(this.get('emberCliConfig.modulePrefix')));
+            return item.source && !!item.source.match(new RegExp(this.get('emberCliConfig.modulePrefix')));
           });
           if (source) {
             source.found = true;
