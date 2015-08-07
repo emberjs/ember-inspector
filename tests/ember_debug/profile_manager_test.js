@@ -1,7 +1,7 @@
 /* jshint ignore:start */
 /* globals require */
 import { module, test } from 'qunit';
-const ProfileManager = require('ember-debug/models/profile-manager')["default"];
+const ProfileManager = require('ember-debug/models/profile-manager').default;
 
 test("Construction", function(assert) {
   let manager = new ProfileManager();
