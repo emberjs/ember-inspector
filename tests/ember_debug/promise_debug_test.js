@@ -2,7 +2,7 @@
 import Ember from "ember";
 import { module, test, stop, start } from 'qunit';
 /*globals require */
-const EmberDebug = require("ember-debug/main")["default"];
+const EmberDebug = require("ember-debug/main").default;
 
 let port, name, message, RSVP = Ember.RSVP;
 let App;

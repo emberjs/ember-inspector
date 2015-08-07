@@ -19,7 +19,7 @@ function setupApp() {
 module("Container Debug", {
   beforeEach() {
     /* globals require */
-    EmberDebug = require('ember-debug/main')["default"];
+    EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({
       init: function() {},
       send: function(n, m) {

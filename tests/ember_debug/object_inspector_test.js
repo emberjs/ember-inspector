@@ -29,7 +29,7 @@ let ignoreErrors = true;
 module("Ember Debug - Object Inspector", {
   beforeEach() {
     /* globals require */
-    EmberDebug = require('ember-debug/main')["default"];
+    EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
       send(n, m) {

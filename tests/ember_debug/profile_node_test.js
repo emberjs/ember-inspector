@@ -1,6 +1,6 @@
 /*globals require */
 import { module, test } from 'qunit';
-const ProfileNode = require('ember-debug/models/profile-node')["default"];
+const ProfileNode = require('ember-debug/models/profile-node').default;
 
 module("ProfileNode");
 
