@@ -255,9 +255,10 @@ export default EmberObject.extend(PortMixin, {
     if (meta._debugReferences === 1 && object.reopen) {
       // drop object on destruction
       let _oldWillDestroy = object._oldWillDestroy = object.willDestroy;
+      let self = this;
       object.reopen({
-        willDestroy: () => {
-          this.dropObject(guid);
+        willDestroy() {
+          self.dropObject(guid);
           return _oldWillDestroy.apply(this, arguments);
         }
       });
