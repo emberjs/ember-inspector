@@ -1,5 +1,9 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 1.9.1
+
+* [BUGFIX] Fix value of this after ES6 refactor
+
 ## Ember Inspector 1.9.0
 
 * [IMPROVEMENT] Speed up source map computation in deprecations pane [#439](https://github.com/emberjs/ember-inspector/pull/439)
