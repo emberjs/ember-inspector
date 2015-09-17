@@ -696,7 +696,11 @@ export default EmberObject.extend(PortMixin, {
    * @return {Boolean}
    */
   _nodeIsView(renderNode) {
-    return !!renderNode.state.manager;
+    if (renderNode.getState) {
+      return !!renderNode.getState().manager;
+    } else {
+      return !!renderNode.state.manager;
+    }
   },
 
   /**
@@ -731,7 +735,14 @@ export default EmberObject.extend(PortMixin, {
    * @return {Ember.Controller}
    */
   _controllerForNode(renderNode) {
-    return renderNode.lastResult && renderNode.lastResult.scope.locals.controller.value();
+    if (renderNode.lastResult) {
+      let scope = renderNode.lastResult.scope;
+      if (scope.getLocal) {
+        return scope.getLocal('controller');
+      } else {
+        return scope.locals.controller.value();
+      }
+    }
   },
 
   /**
