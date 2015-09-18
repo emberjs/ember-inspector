@@ -394,7 +394,7 @@ export default EmberObject.extend(PortMixin, {
     if (!element) { return; }
 
 
-    if (element instanceof View) {
+    if ((View && element instanceof View) || element instanceof Component) {
       view = element;
     } else {
       view = this.get('viewRegistry')[element.id];
