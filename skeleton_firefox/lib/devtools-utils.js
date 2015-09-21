@@ -4,10 +4,25 @@ const self = require("sdk/self");
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
-XPCOMUtils.defineLazyModuleGetter(this, "gDevTools",
-                                  "resource:///modules/devtools/gDevTools.jsm");
-XPCOMUtils.defineLazyModuleGetter(this, "gDevToolsBrowser",
-                                  "resource:///modules/devtools/gDevTools.jsm");
+function importDevTools(name) {
+  // The path to this file was moved in Firefox 44 and later.
+  // See https://bugzil.la/912121 for more details.
+  let value;
+  try {
+    value = Cu.import("resource:///modules/devtools/client/framework/" +
+                      "gDevTools.jsm", {})[name];
+  } catch (e) {
+    value = Cu.import("resource:///modules/devtools/gDevTools.jsm", {})[name];
+  }
+  return value;
+}
+
+XPCOMUtils.defineLazyGetter(this, "gDevTools", () => {
+  return importDevTools("gDevTools");
+});
+XPCOMUtils.defineLazyGetter(this, "gDevToolsBrowser", () => {
+  return importDevTools("gDevToolsBrowser");
+});
 
 var Promise = require("sdk/core/promise.js");
 
