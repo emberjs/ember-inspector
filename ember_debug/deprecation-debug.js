@@ -40,7 +40,7 @@ export default EmberObject.extend(PortMixin, {
    */
   fetchSourceMap(stackStr) {
     if (this.get('emberCliConfig') && this.get('emberCliConfig.environment') === 'development') {
-      return this.get('sourceMap').map(stackStr).then((mapped) => {
+      return this.get('sourceMap').map(stackStr).then(mapped => {
         if (mapped && mapped.length > 0) {
           var source = mapped.find(item => {
             return item.source && !!item.source.match(new RegExp(this.get('emberCliConfig.modulePrefix')));
@@ -63,7 +63,7 @@ export default EmberObject.extend(PortMixin, {
   sendPending() {
     let deprecations = A();
 
-    let promises = all(this.get('deprecationsToSend').map((deprecation) => {
+    let promises = all(this.get('deprecationsToSend').map(deprecation => {
       let obj;
       let promise = resolve(undefined, 'ember-inspector');
       let grouped = this.get('groupedDeprecations');

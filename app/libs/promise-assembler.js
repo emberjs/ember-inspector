@@ -89,14 +89,14 @@ export default Ember.Object.extend(EventedMixin, {
   },
 
   updateTopSort(promise) {
-    let topSortMeta = this.get('topSortMeta'),
-        guid = promise.get('guid'),
-        meta = topSortMeta[guid],
-        isNew = !meta,
-        hadParent = false,
-        hasParent = !!promise.get('parent'),
-        topSort = this.get('topSort'),
-        parentChanged = isNew;
+    let topSortMeta = this.get('topSortMeta');
+    let guid = promise.get('guid');
+    let meta = topSortMeta[guid];
+    let isNew = !meta;
+    let hadParent = false;
+    let hasParent = !!promise.get('parent');
+    let topSort = this.get('topSort');
+    let parentChanged = isNew;
 
     if (isNew) {
       meta = topSortMeta[guid] = {};
@@ -140,8 +140,8 @@ export default Ember.Object.extend(EventedMixin, {
   },
 
   createPromise(props) {
-    let promise = Promise.create(props),
-        index = this.get('all.length');
+    let promise = Promise.create(props);
+    let index = this.get('all.length');
 
     this.get('all').pushObject(promise);
     this.get('promiseIndex')[promise.get('guid')] = index;

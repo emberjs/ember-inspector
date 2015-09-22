@@ -36,17 +36,17 @@ export default Ember.ObjectProxy.extend({
   nodeStyle: computed('state', 'filter', 'effectiveSearch', function() {
     let relevant;
     switch (this.get('filter')) {
-      case 'pending':
-        relevant = this.get('isPending');
-        break;
-      case 'rejected':
-        relevant = this.get('isRejected');
-        break;
-      case 'fulfilled':
-        relevant = this.get('isFulfilled');
-        break;
-      default:
-        relevant = true;
+    case 'pending':
+      relevant = this.get('isPending');
+      break;
+    case 'rejected':
+      relevant = this.get('isRejected');
+      break;
+    case 'fulfilled':
+      relevant = this.get('isFulfilled');
+      break;
+    default:
+      relevant = true;
     }
     if (relevant && !Ember.isEmpty(this.get('effectiveSearch'))) {
       relevant = this.get('model').matchesExactly(this.get('effectiveSearch'));

@@ -1,4 +1,4 @@
 import Ember from 'ember';
-const { Controller} = Ember;
+const { Controller } = Ember;
 
 export default Controller;

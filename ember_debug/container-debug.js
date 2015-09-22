@@ -74,7 +74,7 @@ export default EmberObject.extend(PortMixin, {
     if (!instances) {
       return null;
     }
-    return instances.map((item) => {
+    return instances.map(item => {
       return {
         name: this.nameFromKey(item.fullName),
         fullName: item.fullName,

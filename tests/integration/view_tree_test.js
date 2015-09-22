@@ -122,11 +122,11 @@ test("It should correctly display the view tree", function(assert) {
 
     let $treeNodes = findByLabel('tree-node');
     assert.equal($treeNodes.length, 3, 'expected some tree nodes');
-    let controllerNames = [],
-        templateNames = [],
-        modelNames = [],
-        viewClassNames = [],
-        durations = [];
+    let controllerNames = [];
+    let templateNames = [];
+    let modelNames = [];
+    let viewClassNames = [];
+    let durations = [];
 
     function label(theLabel, context) {
       return findByLabel(theLabel, context).filter(':first').text().trim();

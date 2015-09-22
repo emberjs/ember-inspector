@@ -169,9 +169,8 @@ test("Instrumentation with stack is persisted to session storage", function(asse
 
 });
 
-test("Responds even if no promises detected", async function t(assert) {
+test("Responds even if no promises detected", function(assert) {
   port.trigger('promise:getAndObservePromises');
-
   assert.equal(name, 'promise:promisesUpdated');
   assert.equal(message.promises.length, 0);
 });

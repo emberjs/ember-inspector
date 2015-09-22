@@ -13,8 +13,8 @@ export default function filterComputed() {
     },
 
     addedItem(array, item, changeMeta, instanceMeta) {
-      let match = !!callback.call(this, item),
-          filterIndex = instanceMeta.filteredArrayIndexes.addItem(changeMeta.index, match);
+      let match = !!callback.call(this, item);
+      let filterIndex = instanceMeta.filteredArrayIndexes.addItem(changeMeta.index, match);
 
       if (match) {
         array.insertAt(filterIndex, item);

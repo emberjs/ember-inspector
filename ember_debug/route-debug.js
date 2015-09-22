@@ -116,10 +116,10 @@ export default EmberObject.extend(PortMixin, {
 const buildSubTree = function(routeTree, route) {
   let handlers = route.handlers;
   let container = this.get('application.__container__');
-  let subTree = routeTree, item,
-      routeClassName, routeHandler, controllerName,
-      controllerClassName, templateName,
-      controllerFactory;
+  let subTree = routeTree;
+  let item, routeClassName, routeHandler, controllerName,
+    controllerClassName, templateName, controllerFactory;
+
   for (let i = 0; i < handlers.length; i++) {
     item = handlers[i];
     let handler = item.handler;

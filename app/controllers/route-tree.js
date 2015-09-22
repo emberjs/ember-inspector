@@ -12,8 +12,8 @@ export default Controller.extend({
   },
 
   filtered: filter('content', function(routeItem) {
-    let currentRoute = this.get('currentRoute'),
-        hideRoutes = this.get('options.hideRoutes');
+    let currentRoute = this.get('currentRoute');
+    let hideRoutes = this.get('options.hideRoutes');
 
     if (hideRoutes && currentRoute) {
       return checkCurrentRoute( currentRoute, routeItem.value.name );

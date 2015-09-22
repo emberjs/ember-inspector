@@ -11,10 +11,10 @@ export default Ember.Component.extend({
   minWidth: 60,
 
   startDragging() {
-    const $container = this.$().parent(),
-          $containerOffsetLeft = $container.offset().left,
-          $containerOffsetRight = $containerOffsetLeft + $container.width(),
-          namespace = 'drag-' + this.get('elementId');
+    let $container = this.$().parent();
+    let $containerOffsetLeft = $container.offset().left;
+    let $containerOffsetRight = $containerOffsetLeft + $container.width();
+    let namespace = 'drag-' + this.get('elementId');
 
     this.sendAction('action', true);
 
