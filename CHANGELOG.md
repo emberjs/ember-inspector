@@ -1,5 +1,10 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 1.9.2
+
+* [BUGFIX] Don't assume Ember.View exists (for Ember 2.0+) [#469](https://github.com/emberjs/ember-inspector/pull/469)
+* [IMPROVEMENT] Update Firefox skeleton for path change in Firefox 44+ [#470](https://github.com/emberjs/ember-inspector/pull/470)
+
 ## Ember Inspector 1.9.1
 
 * [BUGFIX] Fix value of this after ES6 refactor
