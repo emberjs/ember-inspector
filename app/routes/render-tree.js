@@ -15,7 +15,7 @@ export default TabRoute.extend({
   },
 
   setupController(controller, model) {
-    this._super.apply(this, arguments);
+    this._super(...arguments);
     if (model.length === 0) {
       controller.set('initialEmpty', true);
     }

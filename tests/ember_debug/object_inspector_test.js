@@ -303,22 +303,22 @@ test("Property grouping can be customized using _debugInfo", function(assert) {
     _debugInfo: function() {
       return {
         propertyInfo: {
-            includeOtherProperties: true,
-            skipProperties: ['propertyToSkip'],
-            skipMixins: ['MixinToSkip'],
-            expensiveProperties: ['expensiveProperty'],
-            groups: [
-              {
-                name: 'Basic Info',
-                properties: ['name', 'gender'],
-                expand: true
-              },
-              {
-                name: 'Family Info',
-                properties: ['maritalStatus']
-              }
-            ]
-          }
+          includeOtherProperties: true,
+          skipProperties: ['propertyToSkip'],
+          skipMixins: ['MixinToSkip'],
+          expensiveProperties: ['expensiveProperty'],
+          groups: [
+            {
+              name: 'Basic Info',
+              properties: ['name', 'gender'],
+              expand: true
+            },
+            {
+              name: 'Family Info',
+              properties: ['maritalStatus']
+            }
+          ]
+        }
       };
     }
   });
@@ -460,12 +460,12 @@ test("Errors while computing CPs are handled", async function t(assert) {
   let object;
   run(() => {
     object = EmberObject.extend({
-     foo: computed(() => {
-       if (count++ < 2) {
-         throw new Error('CP Calculation');
-       }
-       return 'bar';
-     })
+      foo: computed(() => {
+        if (count++ < 2) {
+          throw new Error('CP Calculation');
+        }
+        return 'bar';
+      })
     }).create();
   });
 

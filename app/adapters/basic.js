@@ -34,7 +34,7 @@ export default Ember.Object.extend({
 
   _messageReceived(message) {
     this.get('_messageCallbacks').forEach(callback => {
-      callback.call(null, message);
+      callback(message);
     });
   },
 

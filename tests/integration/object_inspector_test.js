@@ -417,8 +417,7 @@ test("Date fields are editable", async function t(assert) {
   let obj = {
     name: 'My Object',
     objectId: 'myObject',
-    details: [
-    {
+    details: [{
       name: 'First Detail',
       expand: false,
       properties: [{

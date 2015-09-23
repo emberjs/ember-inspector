@@ -2,6 +2,7 @@
 import Ember from "ember";
 import { module, test } from 'qunit';
 const { run, Application } = Ember;
+const get = Ember.get;
 
 /* globals require */
 const EmberDebug = require('ember-debug/main').default;
@@ -25,7 +26,7 @@ function setupApp() {
 }
 
 function getChildrenProperty(route, prop) {
-  return route.children.map(function(item) {return Ember.get(item.value, prop); });
+  return route.children.map(item => get(item.value, prop));
 }
 
 module("Route Tree Debug", {

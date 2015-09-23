@@ -210,4 +210,3 @@ if (env === 'test') {
 }
 
 module.exports = output;
-

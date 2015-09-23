@@ -14,7 +14,7 @@ export default BasicAdapter.extend({
   },
 
   _listen() {
-    window.addEventListener('message', (e) => {
+    window.addEventListener('message', e => {
       if (e.origin !== window.emberInspector.url) {
         return;
       }

@@ -49,7 +49,7 @@ ProfileManager.prototype = {
       let parentNode = new ProfileNode(firstNode.start, { template: 'View Rendering' });
 
       parentNode.time = 0;
-      this.currentSet.forEach((n) => {
+      this.currentSet.forEach(n => {
         parentNode.time += n.time;
         parentNode.children.push(n);
       });

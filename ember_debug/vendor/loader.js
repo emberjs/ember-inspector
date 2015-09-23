@@ -22,10 +22,10 @@ if (typeof define !== 'function' || typeof requireModule !== 'function') {
         throw new Error("Module: '" + name + "' not found.");
       }
 
-      var deps = mod.deps,
-          callback = mod.callback,
-          reified = [],
-          exports;
+      var deps = mod.deps;
+      var callback = mod.callback;
+      var reified = [];
+      var exports;
 
       for (var i = 0, l = deps.length; i < l; i++) {
         if (deps[i] === 'exports') {

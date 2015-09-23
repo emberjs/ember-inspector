@@ -1,5 +1,5 @@
 import Ember from "ember";
-const { computed: { oneWay, equal} } = Ember;
+const { computed: { readOnly, equal } } = Ember;
 
 export default Ember.Controller.extend({
   needs: ['mixin-stack', 'mixin-details'],
@@ -7,8 +7,8 @@ export default Ember.Controller.extend({
   emberApplication: false,
   navWidth: 180,
   inspectorWidth: 360,
-  mixinStack: oneWay('controllers.mixin-stack').readOnly(),
-  mixinDetails: oneWay('controllers.mixin-details').readOnly(),
+  mixinStack: readOnly('controllers.mixin-stack'),
+  mixinDetails: readOnly('controllers.mixin-details'),
   isChrome: equal('port.adapter.name', 'chrome'),
 
   deprecationCount: 0,

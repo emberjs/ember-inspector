@@ -8,7 +8,7 @@ try {
     get: function() { }
   });
   supportsSetterGetter = true;
-} catch(e) {
+} catch (e) {
   supportsSetterGetter = false;
 }
 

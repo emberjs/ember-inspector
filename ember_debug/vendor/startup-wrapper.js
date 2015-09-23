@@ -8,9 +8,8 @@
 
   Also responsible for sending the first tree.
 **/
-
+/*eslint prefer-spread: 0 */
 /* globals Ember, adapter, env, requireModule */
-
 var currentAdapter = 'basic';
 if (typeof adapter !== 'undefined') {
   currentAdapter = adapter;

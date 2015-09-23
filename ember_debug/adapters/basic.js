@@ -1,4 +1,5 @@
 /* globals requireModule */
+/* eslint no-console: 0 */
 const Ember = window.Ember;
 const { $, A, computed, RSVP, Object: EmberObject } = Ember;
 const { Promise, resolve } = RSVP;
@@ -22,11 +23,11 @@ export default EmberObject.extend({
   }),
 
   debug() {
-    return console.debug.apply(console, arguments);
+    return console.debug(...arguments);
   },
 
   log() {
-    return console.log.apply(console, arguments);
+    return console.log(...arguments);
   },
 
   /**
@@ -35,7 +36,7 @@ export default EmberObject.extend({
    * @method warn
    */
   warn() {
-    return console.warn.apply(console, arguments);
+    return console.warn(...arguments);
   },
 
   /**
@@ -72,7 +73,7 @@ export default EmberObject.extend({
 
   _messageReceived(message) {
     this.get('_messageCallbacks').forEach(callback => {
-      callback.call(null, message);
+      callback(message);
     });
   },
 
@@ -135,7 +136,7 @@ export default EmberObject.extend({
 
   send(options) {
     if (this._isReady) {
-      this.sendMessage.apply(this, arguments);
+      this.sendMessage(...arguments);
     } else {
       this.get('_pendingMessages').push(options);
     }

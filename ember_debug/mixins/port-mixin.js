@@ -19,8 +19,8 @@ export default Mixin.create({
   },
 
   setupPortListeners() {
-    const port = this.get('port'),
-        messages = this.get('messages');
+    let port = this.get('port');
+    let messages = this.get('messages');
 
     for (let name in messages) {
       if (messages.hasOwnProperty(name)) {
@@ -30,8 +30,8 @@ export default Mixin.create({
   },
 
   removePortListeners() {
-    const port = this.get('port'),
-        messages = this.get('messages');
+    let port = this.get('port');
+    let messages = this.get('messages');
 
     for (let name in messages) {
       if (messages.hasOwnProperty(name)) {

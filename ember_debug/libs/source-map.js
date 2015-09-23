@@ -72,7 +72,7 @@ export default EmberObject.extend({
 
 function retrieveSourceMap(source) {
   let mapURL;
-  return retrieveSourceMapURL(source).then((sourceMappingURL) => {
+  return retrieveSourceMapURL(source).then(sourceMappingURL => {
     if (!sourceMappingURL) {
       throw notFoundError;
     }
@@ -82,7 +82,7 @@ function retrieveSourceMap(source) {
     return mapURL;
   })
   .then(retrieveFile)
-  .then((sourceMapData) => {
+  .then(sourceMapData => {
     if (!sourceMapData) {
       return null;
     }
@@ -125,12 +125,11 @@ const UNKNOWN_FUNCTION = "<unknown>";
 
 // Taken from https://github.com/errorception/browser-stack-parser/
 function fromStackProperty(stackString) {
-  const chrome = /^\s*at (?:((?:\[object object\])?\S+(?: \[as \S+\])?) )?\(?((?:file|http|https):.*?):(\d+)(?::(\d+))?\)?\s*$/i,
-      gecko = /^\s*(\S*)(?:\((.*?)\))?@((?:file|http|https).*?):(\d+)(?::(\d+))?\s*$/i,
-      lines = stackString.split('\n');
-
-  let stack = [],
-      parts;
+  let chrome = /^\s*at (?:((?:\[object object\])?\S+(?: \[as \S+\])?) )?\(?((?:file|http|https):.*?):(\d+)(?::(\d+))?\)?\s*$/i;
+  let gecko = /^\s*(\S*)(?:\((.*?)\))?@((?:file|http|https).*?):(\d+)(?::(\d+))?\s*$/i;
+  let lines = stackString.split('\n');
+  let stack = [];
+  let parts;
 
   for (let i = 0, j = lines.length; i < j; ++i) {
     if ((parts = gecko.exec(lines[i]))) {
