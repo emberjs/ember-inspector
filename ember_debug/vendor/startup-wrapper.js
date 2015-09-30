@@ -112,7 +112,11 @@ if (typeof env !== 'undefined') {
     }
     Ember.Application.initializer({
       name: 'ember-inspector-booted',
-      initialize: function(container, app) {
+      initialize: function() {
+        // If 2 arguments are passed, we are on Ember < 2.1 (app is second arg)
+        // If 1 argument is passed, we are on Ember 2.1+ (app is only arg)
+        var app = arguments[1] || arguments[0];
+
         app.reopen({
           didBecomeReady: function() {
             callback(app);
