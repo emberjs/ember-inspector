@@ -26,9 +26,17 @@
   }
 
   // let ember-debug know that content script has executed
+  if (document) {
+    if (document.documentElement) {
+      if (!document.documentElement.dataset) {
+        document.documentElement.dataset = {};
+      }
+    } else {
+      document.documentElement = {};
+      document.documentElement.dataset = {};
+    }
+  }
   document.documentElement.dataset.emberExtension = 1;
-
-
 
   // Iframes should not reset the icon so we make sure
   // it's the parent window before resetting.
