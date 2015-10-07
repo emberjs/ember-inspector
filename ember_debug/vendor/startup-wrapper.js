@@ -119,8 +119,11 @@ if (typeof env !== 'undefined') {
 
         app.reopen({
           didBecomeReady: function() {
+            // _super will get reset when we reopen the app
+            // so we store it in this variable to call it later.
+            var _super = this._super;
             callback(app);
-            return this._super.apply(this, arguments);
+            return _super.apply(this, arguments);
           }
         });
       }
