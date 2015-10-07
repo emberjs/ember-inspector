@@ -25,8 +25,12 @@
     port.start();
   }
 
-  // let ember-debug know that content script has executed
-  document.documentElement.dataset.emberExtension = 1;
+  // document.documentElement.dataset is not present for SVG elements
+  // this guard prevents that condition from triggering an error
+  if (document.documentElement && document.documentElement.dataset) {
+    // let ember-debug know that content script has executed
+    document.documentElement.dataset.emberExtension = 1;
+  }
 
 
 

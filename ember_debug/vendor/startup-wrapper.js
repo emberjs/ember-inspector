@@ -39,21 +39,24 @@ if (typeof env !== 'undefined') {
       Ember.EmberInspectorDebugger.Adapter = requireModule('ember-debug/adapters/' + adapter)['default'];
 
       onApplicationStart(function appStarted(app) {
+        var isFirstBoot = !('__inspector__booted' in app);
         app.__inspector__booted = true;
         Ember.EmberInspectorDebugger.set('application', app);
         Ember.EmberInspectorDebugger.start(true);
-        // Watch for app reset
-        app.reopen({
-          reset: function() {
-            this.__inspector__booted = false;
-            this._super.apply(this, arguments);
-          },
-          willDestroy: function() {
-            Ember.EmberInspectorDebugger.destroyContainer();
-            Ember.EmberInspectorDebugger.set('application', null);
-            this._super.apply(this, arguments);
-          }
-        });
+        if (isFirstBoot) {
+          // Watch for app reset/destroy
+          app.reopen({
+            reset: function() {
+              this.__inspector__booted = false;
+              this._super.apply(this, arguments);
+            },
+            willDestroy: function() {
+              Ember.EmberInspectorDebugger.destroyContainer();
+              Ember.EmberInspectorDebugger.set('application', null);
+              this._super.apply(this, arguments);
+            }
+          });
+        }
       });
     }
   });
@@ -112,13 +115,22 @@ if (typeof env !== 'undefined') {
     }
     Ember.Application.initializer({
       name: 'ember-inspector-booted',
-      initialize: function(container, app) {
-        app.reopen({
-          didBecomeReady: function() {
-            callback(app);
-            return this._super.apply(this, arguments);
-          }
-        });
+      initialize: function() {
+        // If 2 arguments are passed, we are on Ember < 2.1 (app is second arg)
+        // If 1 argument is passed, we are on Ember 2.1+ (app is only arg)
+        var app = arguments[1] || arguments[0];
+        if (!app.__inspector__setup) {
+          app.__inspector__setup = true;
+          app.reopen({
+            didBecomeReady: function() {
+              // _super will get reset when we reopen the app
+              // so we store it in this variable to call it later.
+              var _super = this._super;
+              callback(app);
+              return _super.apply(this, arguments);
+            }
+          });
+        }
       }
     });
   }

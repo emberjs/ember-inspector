@@ -1,5 +1,13 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 1.9.3
+
+* [BUGFIX] Make sure we only reopen the app once [#482](https://github.com/emberjs/ember-inspector/pull/482)
+* [BUGFIX] Save `_super` before reopening [#481](https://github.com/emberjs/ember-inspector/pull/481)
+* [BUGFIX] Prevent errors when document.documentElement.dataset is not present [#475](https://github.com/emberjs/ember-inspector/pull/475)
+* [BUGFIX] (Ember 2.1) Prevent deprecation for initializer arguments [#476](https://github.com/emberjs/ember-inspector/pull/476)
+* [BUGFIX] (Ember 2.1) Update getState and getLocals for compatibility with canary [#467](https://github.com/emberjs/ember-inspector/pull/467)
+
 ## Ember Inspector 1.9.2
 
 * [BUGFIX] Don't assume Ember.View exists (for Ember 2.0+) [#469](https://github.com/emberjs/ember-inspector/pull/469)
