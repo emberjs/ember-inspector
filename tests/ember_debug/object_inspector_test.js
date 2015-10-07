@@ -268,7 +268,7 @@ test("Properties can be updated through a port message", function(assert) {
 });
 
 test("Date properties are converted to dates before being updated", function(assert) {
-  let newDate = new Date('2015-01-01');
+  let newDate = new Date(2015, 0, 1);
 
   let inspected = Ember.Object.extend({
     date: null
