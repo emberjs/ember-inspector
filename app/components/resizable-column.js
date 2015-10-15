@@ -1,12 +1,12 @@
 import Ember from "ember";
-const { computed } = Ember;
-export default Ember.Component.extend({
+const { Component, computed, Handlebars: { SafeString } } = Ember;
+export default Component.extend({
   width: null,
 
   attributeBindings: ['style'],
 
   style: computed('width', function () {
-    return '-webkit-flex: none; flex: none; width:' + this.get('width') + 'px;';
+    return new SafeString(`-webkit-flex: none; flex: none; width: ${this.get('width')}px;`);
   }),
 
   didInsertElement() {

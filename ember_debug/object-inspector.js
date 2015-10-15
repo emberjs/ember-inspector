@@ -680,7 +680,8 @@ function getDebugInfo(object) {
       'layout',
       'templateData',
       'domManager',
-      'states'
+      'states',
+      'element'
     );
   }
 

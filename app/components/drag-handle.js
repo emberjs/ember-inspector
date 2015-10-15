@@ -1,5 +1,5 @@
 import Ember from "ember";
-const { computed } = Ember;
+const { computed, Handlebars: { SafeString } } = Ember;
 export default Ember.Component.extend({
   classNames: ['drag-handle'],
   classNameBindings: ['isLeft:drag-handle--left', 'isRight:drag-handle--right', 'class'],
@@ -49,9 +49,8 @@ export default Ember.Component.extend({
 
   style: computed('side', 'position', function () {
     if (this.get('side')) {
-      return this.get('side') + ':' + this.get('position') + 'px';
-    } else {
-      return '';
+      return new SafeString(`${this.get('side')}: ${this.get('position')}px;`);
     }
+    return '';
   })
 });

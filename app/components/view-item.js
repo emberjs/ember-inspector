@@ -1,5 +1,5 @@
 import Ember from "ember";
-const { computed, Component } = Ember;
+const { computed, Component, Handlebars: { SafeString } } = Ember;
 const { not, bool } = computed;
 
 export default Component.extend({
@@ -25,7 +25,7 @@ export default Component.extend({
   }),
 
   labelStyle: computed('model.parentCount', function() {
-    return 'padding-left: ' + ((+this.get('model.parentCount') * 20) + 5) + "px";
+    return new SafeString(`padding-left: ${+this.get('model.parentCount') * 20 + 5}px;`);
   }),
 
   actions: {

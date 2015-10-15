@@ -51,6 +51,7 @@
     "ember-cli-qunit": "0.3.9",
     "ember-cli-uglify": "1.0.1",
     "ember-export-application-global": "^1.0.2",
+    "ember-list-view": "0.0.6",
     "ember-pikaday": "^0.2.1",
     "eslint-config-ember": "0.2.0",
     "grunt": "^0.4.5",
@@ -59,8 +60,7 @@
     "grunt-mozilla-addon-sdk": "~0.4.0",
     "grunt-s3": "^0.2.0-alpha.3",
     "grunt-version": "^0.3.0",
-    "js-string-escape": "^1.0.0",
-    "list-view": "emberjs/list-view#aefb20f"
+    "js-string-escape": "^1.0.0"
   },
   "dependencies": {
     "ember-new-computed": "^1.0.0"

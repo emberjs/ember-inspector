@@ -464,7 +464,7 @@ test("Date fields are editable", async function t(assert) {
 });
 
 test("Errors are correctly displayed", async function t(assert) {
-  let obj = objectFactory( {
+  let obj = objectFactory({
     name: 'My Object',
     objectId: '1',
     errors: [
@@ -479,7 +479,7 @@ test("Errors are correctly displayed", async function t(assert) {
   assert.equal(findByLabel('object-inspector-errors').length, 1);
   assert.equal(findByLabel('object-inspector-error').length, 2);
 
-  clickByLabel('send-errors-to-console');
+  await clickByLabel('send-errors-to-console');
 
   assert.equal(name, 'objectInspector:traceErrors');
   assert.equal(message.objectId, '1');
