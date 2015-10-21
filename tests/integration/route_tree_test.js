@@ -67,26 +67,26 @@ test("Route tree is successfully displayed", function(assert) {
 
   andThen(function() {
 
-    let routeNodes = findByLabel('route-node');
+    let routeNodes = find('.js-route-node');
     assert.equal(routeNodes.length, 4);
 
-    let routeNames = findByLabel('route-name').get().map(function(item) {
+    let routeNames = find('.js-route-name').get().map(function(item) {
       return Ember.$(item).text().trim();
     });
     assert.deepEqual(routeNames, ['application', 'post', 'post.new', 'post.edit']);
 
-    let routeHandlers = findByLabel('route-handler').get().map(function(item) {
+    let routeHandlers = find('.js-route-handler').get().map(function(item) {
       return Ember.$(item).text().trim();
     });
     assert.deepEqual(routeHandlers, ['ApplicationRoute', 'PostRoute', 'PostNewRoute', 'PostEditRoute']);
 
-    let controllers = findByLabel('route-controller').get().map(function(item) {
+    let controllers = find('.js-route-controller').get().map(function(item) {
       return Ember.$(item).text().trim();
     });
 
     assert.deepEqual(controllers, ['ApplicationController', 'PostController', 'PostNewController', 'PostEditController']);
 
-    let templates = findByLabel('route-template').get().map(function(item) {
+    let templates = find('.js-route-template').get().map(function(item) {
       return Ember.$(item).text().trim();
     });
 
@@ -140,8 +140,8 @@ test("Clicking on route handlers and controller sends an inspection message", fu
   .then(function() {
     name = null;
     message = null;
-    applicationRow = findByLabel('route-node').first();
-    return clickByLabel('route-handler', applicationRow);
+    applicationRow = find('.js-route-node').first();
+    return click('.js-route-handler', applicationRow);
   })
   .then(function() {
     assert.equal(name, 'objectInspector:inspectRoute');
@@ -149,7 +149,7 @@ test("Clicking on route handlers and controller sends an inspection message", fu
 
     name = null;
     message = null;
-    return clickByLabel('route-controller', applicationRow);
+    return click('.js-route-controller', applicationRow);
   })
   .then(function() {
     assert.equal(name, 'objectInspector:inspectController');
@@ -157,8 +157,8 @@ test("Clicking on route handlers and controller sends an inspection message", fu
 
     name = null;
     message = null;
-    let postRow = findByLabel('route-node').eq(1);
-    return clickByLabel('route-controller', postRow);
+    let postRow = find('.js-route-node').eq(1);
+    return click('.js-route-controller', postRow);
   }).then(function() {
     assert.equal(name, null, "If controller does not exist, clicking should have no effect.");
     assert.equal(message, null);
@@ -181,7 +181,7 @@ test("Current Route is highlighted", function(assert) {
 
   visit('route-tree')
   .then(function() {
-    routeNodes = findByLabel('route-node');
+    routeNodes = find('.js-route-node');
     let isCurrent = routeNodes.get().map(function(item) {
       return Ember.$(item).hasClass('row_highlight');
     });
@@ -191,7 +191,7 @@ test("Current Route is highlighted", function(assert) {
     return wait();
   })
   .then(function() {
-    routeNodes = findByLabel('route-node');
+    routeNodes = find('.js-route-node');
     let isCurrent = routeNodes.get().map(function(item) {
       return Ember.$(item).hasClass('row_highlight');
     });
@@ -212,17 +212,17 @@ test("Hiding non current route", function(assert) {
 
   visit('route-tree');
   andThen( function() {
-    let routeNodes = findByLabel('route-node');
+    let routeNodes = find('.js-route-node');
     assert.equal(routeNodes.length, 4);
   });
   andThen( function() {
-    let checkbox = findByLabel('filter-hide-routes').find('input');
+    let checkbox = find('.js-filter-hide-routes').find('input');
     checkbox.prop('checked', true);
     checkbox.trigger('change');
     return wait();
   });
   andThen( function() {
-    let routeNodes = findByLabel('route-node');
+    let routeNodes = find('.js-route-node');
     assert.equal(routeNodes.length, 3);
   });
 });

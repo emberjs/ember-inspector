@@ -11,10 +11,10 @@
 
       <ul>
         {{#each sorted as |containerType|}}
-          <li data-label="container-type">
+          <li class="js-container-type">
             {{#link-to "container-type" containerType.name}}
-              <span data-label="container-type-name">{{containerType.name}}</span>
-              (<span data-label="container-type-count">{{containerType.count}}</span>)
+              <span class="js-container-type-name">{{containerType.name}}</span>
+              (<span class="js-container-type-count">{{containerType.count}}</span>)
             {{/link-to}}
           </li>
         {{/each}}

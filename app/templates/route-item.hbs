@@ -1,11 +1,11 @@
 {{#route-item model=this currentRoute=view.currentRoute as |item|}}
-  <div class="cell_type_main cell" data-label="route-name">
+  <div class="cell_type_main cell js-route-name">
     <div {{bind-attr style="item.labelStyle"}}>
-      <span title="{{unbound value.name}}" data-label="view-name">{{value.name}}</span>
+      <span title="{{unbound value.name}}" class="js-view-name">{{value.name}}</span>
     </div>
   </div>
   <div class="cell">
-    <div class="list-tree__limited cell_clickable" {{action "inspectRoute" value.routeHandler.name}} data-label="route-handler">
+    <div class="list-tree__limited cell_clickable js-route-handler" {{action "inspectRoute" value.routeHandler.name}}>
       <span title="{{unbound value.routeHandler.className}}">{{value.routeHandler.className}}</span>
     </div>
     <div class="list-tree__right-helper">
@@ -14,7 +14,7 @@
   </div>
   <div class="cell">
     {{#if value.controller.exists}}
-      <div class="list-tree__limited cell_clickable" {{action "inspectController" value.controller}} data-label="route-controller">
+      <div class="list-tree__limited cell_clickable js-route-controller" {{action "inspectController" value.controller}}>
         <span title="{{unbound value.controller.className}}">{{value.controller.className}}</span>
       </div>
       <div class="list-tree__right-helper">
@@ -22,15 +22,15 @@
       </div>
 
     {{else}}
-      <div data-label="route-controller">
+      <div class="js-route-controller">
         <span title="{{unbound value.controller.className}}">{{value.controller.className}}</span>
       </div>
     {{/if}}
   </div>
-  <div class="cell" data-label="route-template">
+  <div class="cell js-route-template">
     <span title="{{unbound value.template.name}}">{{value.template.name}}</span>
   </div>
-  <div class="cell cell_size_large" data-label="route-url">
+  <div class="cell cell_size_large js-route-url">
     <span title="{{unbound value.url}}">{{value.url}}</span>
   </div>
 {{/route-item}}

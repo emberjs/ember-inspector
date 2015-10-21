@@ -6,10 +6,10 @@
       <div class="nav__title"><h3>Model Types</h3></div>
       <ul>
         {{#each sorted as |modelType|}}
-          <li data-label="model-type">
+          <li class="js-model-type">
             {{#link-to "records" modelType.name}}
-              <span data-label="model-type-name">{{modelType.name}}</span>
-              (<span data-label="model-type-count">{{modelType.count}}</span>)
+              <span class="js-model-type-name">{{modelType.name}}</span>
+              (<span class="js-model-type-count">{{modelType.count}}</span>)
             {{/link-to}}
           </li>
         {{/each}}

@@ -6,11 +6,9 @@ export default Component.extend({
   // passed as an attribute to the component
   currentRoute: null,
 
-  classNames: ['list-tree__item', 'row'],
-  classNameBindings: ['isCurrent:row_highlight'],
-  attributeBindings: ['label:data-label'],
+  classNames: ['list-tree__item', 'row', 'js-route-node'],
 
-  label: 'route-node',
+  classNameBindings: ['isCurrent:row_highlight'],
 
   labelStyle: computed('model.parentCount', function() {
     return new SafeString(`padding-left: ${+this.get('model.parentCount') * 20 + 5}px;`);

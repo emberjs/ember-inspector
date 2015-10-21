@@ -1,16 +1,16 @@
 {{#view-item model=this inspect="inspect" pinnedObjectId=view.pinnedObjectId inspectElement="inspectElement" as |item|}}
   <div class="cell_type_main cell" >
     <div {{bind-attr style="item.labelStyle"}}>
-      <span {{bind-attr title="value.name"}} data-label="view-name">{{unbound value.name}}</span>
+      <span {{bind-attr title="value.name"}} class="js-view-name">{{unbound value.name}}</span>
     </div>
   </div>
 
-  <div {{bind-attr class=":cell item.hasElement:cell_clickable"}} {{action "inspectElement" target=item}} data-label="view-template">
+  <div {{bind-attr class=":cell item.hasElement:cell_clickable :js-view-template"}} {{action "inspectElement" target=item}}>
     <span title="{{unbound value.template}}">{{unbound value.template}}</span>
   </div>
-  <div class="cell" data-label="view-model">
+  <div class="cell js-view-model">
     {{#if item.hasModel}}
-      <div {{bind-attr class=":list-tree__limited item.modelInspectable:cell_clickable"}} {{action "inspectModel" value.model.objectId target=item}} data-label="view-model-clickable">
+      <div {{bind-attr class=":list-tree__limited item.modelInspectable:cell_clickable :js-view-model-clickable"}} {{action "inspectModel" value.model.objectId target=item}}>
         <span title="{{unbound value.model.completeName}}">{{unbound value.model.name}}</span>
       </div>
       <div class="list-tree__right-helper">
@@ -20,7 +20,7 @@
       --
     {{/if}}
   </div>
-  <div class="cell" data-label="view-controller">
+  <div class="cell js-view-controller">
     {{#if item.hasController}}
       <div {{bind-attr class=":list-tree__limited item.hasController:cell_clickable"}} {{action "inspect" value.controller.objectId}} >
         <span title="{{unbound value.controller.completeName}}">{{unbound value.controller.name}}</span>
@@ -30,7 +30,7 @@
       </div>
     {{/if}}
   </div>
-  <div class="cell" data-label="view-class">
+  <div class="cell js-view-class">
     {{#if item.hasView}}
       <div {{bind-attr class=":list-tree__limited item.hasView:cell_clickable"}} {{action "inspectView" target=item}} >
         <span title="{{unbound value.completeViewClass}}">{{unbound value.viewClass}}</span>
@@ -44,6 +44,6 @@
   </div>
 
   <div class="cell cell_size_small cell_value_numeric" >
-    <span class="pill pill_not-clickable pill_size_small" data-label="view-duration">{{ms-to-time value.duration}}</span>
+    <span class="pill pill_not-clickable pill_size_small js-view-duration">{{ms-to-time value.duration}}</span>
   </div>
 {{/view-item}}

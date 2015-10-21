@@ -13,13 +13,13 @@
     <div class="list-tree">
       <div class="ember-list-container">
         {{#each model as |library|}}
-          <div data-label="library-row" class="list-tree__item-wrapper row-wrapper">
+          <div class="list-tree__item-wrapper row-wrapper js-library-row">
             <div class="list-tree__item row">
               <div class="cell_type_main cell cell_size_large">
-                <span data-label="lib-name">{{unbound library.name}}</span>
+                <span class="js-lib-name">{{unbound library.name}}</span>
               </div>
               <div class="cell">
-                <span data-label="lib-version">{{unbound library.version}}</span>
+                <span class="js-lib-version">{{unbound library.version}}</span>
               </div>
             </div>
           </div>

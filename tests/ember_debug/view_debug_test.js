@@ -3,7 +3,7 @@ import Ember from "ember";
 import { module, test } from 'qunit';
 const { $ } = Ember;
 
-/* globals require, findByLabel, clickByLabel */
+/* globals require */
 const EmberDebug = require('ember-debug/main').default;
 const { View, Route, Object: EmberObject, Handlebars, ObjectController } = Ember;
 const { compile } = Handlebars;
@@ -169,14 +169,14 @@ test("Highlight a view", async function t(assert) {
     objectId: tree.children[0].value.objectId
   });
   await wait();
-  layerDiv = findByLabel('layer-div');
+  layerDiv = find('.js-layer-div');
   assert.ok(layerDiv.is(':visible'));
-  assert.equal(findByLabel('layer-template', layerDiv).text(), 'simple');
-  assert.equal(findByLabel('layer-controller', layerDiv).text(), 'App.SimpleController');
-  assert.equal(findByLabel('layer-model', layerDiv).text(), 'Simple Model');
-  assert.equal(findByLabel('layer-view', layerDiv).text(), 'App.SimpleView');
+  assert.equal(find('.js-layer-template', layerDiv).text(), 'simple');
+  assert.equal(find('.js-layer-controller', layerDiv).text(), 'App.SimpleController');
+  assert.equal(find('.js-layer-model', layerDiv).text(), 'Simple Model');
+  assert.equal(find('.js-layer-view', layerDiv).text(), 'App.SimpleView');
 
-  await clickByLabel('layer-controller', layerDiv);
+  await click('.js-layer-controller', layerDiv);
 
   let controller = App.__container__.lookup('controller:simple');
   assert.equal(name, 'objectInspector:updateObject');
@@ -184,12 +184,12 @@ test("Highlight a view", async function t(assert) {
   name = null;
   message = null;
 
-  await clickByLabel('layer-model', layerDiv);
+  await click('.js-layer-model', layerDiv);
 
   assert.equal(name, 'objectInspector:updateObject');
   assert.equal(message.name, 'Simple Model');
 
-  await clickByLabel('layer-close');
+  await click('.js-layer-close');
 
   assert.ok(!layerDiv.is(':visible'));
 });
@@ -234,45 +234,45 @@ test("Highlighting Views on hover", async function t(assert) {
   run(() => find('.simple-input').trigger('mousemove'));
   await wait();
 
-  let previewDiv = findByLabel('preview-div');
+  let previewDiv = find('.js-preview-div');
   assert.ok(previewDiv.is(':visible'));
-  assert.equal(findByLabel('layer-component').length, 0, "Components are not Highlighted by default");
-  assert.equal(findByLabel('layer-controller', previewDiv).text(), 'App.SimpleController');
-  assert.equal(findByLabel('layer-model', previewDiv).text(), 'Simple Model');
-  assert.equal(findByLabel('layer-template', previewDiv).text(), 'simple');
-  assert.equal(findByLabel('layer-view', previewDiv).text(), 'App.SimpleView');
+  assert.equal(find('.js-layer-component').length, 0, "Components are not Highlighted by default");
+  assert.equal(find('.js-layer-controller', previewDiv).text(), 'App.SimpleController');
+  assert.equal(find('.js-layer-model', previewDiv).text(), 'Simple Model');
+  assert.equal(find('.js-layer-template', previewDiv).text(), 'simple');
+  assert.equal(find('.js-layer-view', previewDiv).text(), 'App.SimpleView');
   run(() => port.trigger('view:setOptions', { options: { components: true } }));
   await wait();
 
   run(() => find('.simple-input').trigger('mousemove'));
   await wait();
 
-  previewDiv = findByLabel('preview-div');
+  previewDiv = find('.js-preview-div');
   assert.ok(previewDiv.is(':visible'));
-  assert.equal(findByLabel('layer-component').text().trim(), "Ember.TextField");
-  assert.equal(findByLabel('layer-controller', previewDiv).length, 0);
-  assert.equal(findByLabel('layer-model', previewDiv).length, 0);
+  assert.equal(find('.js-layer-component').text().trim(), "Ember.TextField");
+  assert.equal(find('.js-layer-controller', previewDiv).length, 0);
+  assert.equal(find('.js-layer-model', previewDiv).length, 0);
 
   run(() => find('.simple-view').trigger('mousemove'));
   await wait();
 
-  previewDiv = findByLabel('preview-div');
-  assert.equal(findByLabel('layer-view', previewDiv).text(), 'App.SimpleView', "Views without a controller are not highlighted by default.");
+  previewDiv = find('.js-preview-div');
+  assert.equal(find('.js-layer-view', previewDiv).text(), 'App.SimpleView', "Views without a controller are not highlighted by default.");
   run(() => port.trigger('view:setOptions', { options: { allViews: true } }));
   await wait();
 
   find('.simple-view').trigger('mousemove');
   await wait();
 
-  previewDiv = findByLabel('preview-div');
-  assert.equal(findByLabel('layer-view', previewDiv).text(), 'Ember.Select', "Views without controllers can be configured to be highlighted.");
+  previewDiv = find('.js-preview-div');
+  assert.equal(find('.js-layer-view', previewDiv).text(), 'Ember.Select', "Views without controllers can be configured to be highlighted.");
   run(() => port.trigger('view:inspectViews', { inspect: false }));
   await wait();
 
   run(() => find('.simple-view').trigger('mousemove'));
   await wait();
 
-  previewDiv = findByLabel('preview-div');
+  previewDiv = find('.js-preview-div');
   assert.ok(!previewDiv.is(':visible'));
 });
 

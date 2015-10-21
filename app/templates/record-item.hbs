@@ -1,6 +1,6 @@
 {{#record-item model=this modelTypeColumns=view.columns inspect="inspectModel" as |item|}}
   {{#each column in item.columns}}
-    <div class="cell cell_clickable" data-label="record-column" {{bind-attr style="item.style"}}>
+    <div class="cell cell_clickable js-record-column" {{bind-attr style="item.style"}}>
       {{column.value}}
     </div>
   {{/each}}

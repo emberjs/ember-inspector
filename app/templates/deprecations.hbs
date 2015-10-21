@@ -1,21 +1,21 @@
-<div class="list-view" data-label="deprecations">
+<div class="list-view js-deprecations">
 
   <div class="ember-list-container">
     {{#view "render-list"}}
       {{#each item in filtered itemController="deprecation-item"}}
-        <div data-label="deprecation-item">
-        <div data-label="deprecation-row" class="list-tree__item-wrapper row-wrapper">
+        <div class="js-deprecation-item">
+        <div class="js-deprecation-row list-tree__item-wrapper row-wrapper">
           <div class="list-tree__item row">
 
-            <div class="cell_type_main cell" data-label="deprecation-main-cell">
+            <div class="cell_type_main cell js-deprecation-main-cell">
 
               <span {{bind-attr title="message" class="item.expandedClass"}} {{action "toggleExpand"}}  >
                 <span class="cell__arrow"></span>
-                <span class="pill pill_not-clickable" data-label="deprecation-count">{{item.model.count}}</span>
-                <span data-label="deprecation-message" data-label="deprecation-message">{{item.model.message}}</span>
+                <span class="pill pill_not-clickable js-deprecation-count">{{item.model.count}}</span>
+                <span class="js-deprecation-message">{{item.model.message}}</span>
               </span>
               {{#if item.model.url}}
-                <a {{bind-attr href=item.model.url}} class="external-link" target="_blank" title="Transition Plan" data-label="deprecation-url">
+                <a {{bind-attr href=item.model.url}} class="external-link js-deprecation-url" target="_blank" title="Transition Plan">
                   Transition Plan
                 </a>
               {{/if}}
@@ -25,20 +25,20 @@
         {{#if item.isExpanded}}
         {{#if item.model.hasSourceMap}}
           {{#each source in item.model.sources itemController="deprecation-source"}}
-            <div class="list-tree__item-wrapper row-wrapper" data-label="deprecation-source">
+            <div class="list-tree__item-wrapper row-wrapper js-deprecation-source">
               <div class="list-tree__item row">
                 <div class="cell_type_main cell cell_size_larger" style="padding-left:48px">
                   <span class="source">
                   {{#if source.isClickable}}
-                    <a data-label="deprecation-source-link" href="#" {{action "openResource" source.model.map}}>{{source.url}}</a>
+                    <a class="js-deprecation-source-link" href="#" {{action "openResource" source.model.map}}>{{source.url}}</a>
                   {{else}}
-                    <span data-label="deprecation-source-text">{{source.url}}</span>
+                    <span class="js-deprecation-source-text">{{source.url}}</span>
                   {{/if}}
                   </span>
                 </div>
                 <div class="cell">
                   &nbsp; &nbsp;
-                  <span class="send-trace-to-console" {{action "traceSource" item source}} title="Trace deprecations in console" data-label="trace-deprecations-btn">
+                  <span class="send-trace-to-console js-trace-deprecations-btn" {{action "traceSource" item source}} title="Trace deprecations in console">
                     Trace in the console
                   </span>
                 </div>
@@ -46,10 +46,10 @@
             </div>
           {{/each}}
         {{else}}
-          <div class="list-tree__item-wrapper row-wrapper" data-label="deprecation-full-trace">
+          <div class="list-tree__item-wrapper row-wrapper js-deprecation-full-trace">
             <div class="list-tree__item row" >
               <div class="cell_type_main cell cell_clickable" style="padding-left:48px">
-                <div class="send-trace-to-console" {{action "traceDeprecations" item}} title="Trace deprecations in console" data-label="full-trace-deprecations-btn">
+                <div class="send-trace-to-console js-full-trace-deprecations-btn" {{action "traceDeprecations" item}} title="Trace deprecations in console">
                   Trace in the console
                 </div>
               </div>
@@ -59,9 +59,9 @@
         {{/if}}
       </div>
        {{else}}
-         <div class="notice" data-label="page-refresh">
+         <div class="notice js-page-refresh">
            <p>No deprecations have been detected. Try reloading to catch the deprecations that were logged before you opened the inspector.</p>
-           <button data-label="page-refresh-btn" {{action "refreshPage"}}>Reload</button>
+           <button class="js-page-refresh-btn" {{action "refreshPage"}}>Reload</button>
          </div>
       {{/each}}
     {{/view}}

@@ -59,12 +59,12 @@ test("Container types are successfully listed", async function t(assert) {
 
   await visit('/container-types');
 
-  let rows = findByLabel('container-type');
+  let rows = find('.js-container-type');
   assert.equal(rows.length, 2);
-  assert.equal(findByLabel('container-type-name', rows[0]).text().trim(), 'controller');
-  assert.equal(findByLabel('container-type-count', rows[0]).text().trim(), '2');
-  assert.equal(findByLabel('container-type-name', rows[1]).text().trim(), 'route');
-  assert.equal(findByLabel('container-type-count', rows[1]).text().trim(), '5');
+  assert.equal(find('.js-container-type-name', rows[0]).text().trim(), 'controller');
+  assert.equal(find('.js-container-type-count', rows[0]).text().trim(), '2');
+  assert.equal(find('.js-container-type-name', rows[1]).text().trim(), 'route');
+  assert.equal(find('.js-container-type-count', rows[1]).text().trim(), '5');
 });
 
 
@@ -88,8 +88,7 @@ test("Container instances are successfully listed", async function t(assert) {
   await visit('/container-types/controller');
   let rows;
 
-  rows = findByLabel('instance-row');
-  findByLabel(rows.length, 2);
+  rows = find('.js-instance-row');
   assert.equal(rows.eq(0).text().trim(), 'first');
   assert.equal(rows.eq(1).text().trim(), 'second');
   name = null;
@@ -102,9 +101,9 @@ test("Container instances are successfully listed", async function t(assert) {
 
   assert.equal(name, 'objectInspector:inspectByContainerLookup');
 
-  await fillIn(findByLabel('container-instance-search').find('input'), 'first');
+  await fillIn(find('.js-container-instance-search input'), 'first');
 
-  rows = findByLabel('instance-row');
+  rows = find('.js-instance-row');
   assert.equal(rows.length, 1);
   assert.equal(rows.eq(0).text().trim(), 'first');
 
@@ -146,13 +145,13 @@ test("Reload", async function t(assert) {
 
   await visit('/container-types/controller');
 
-  assert.equal(findByLabel('container-type').length, 0);
-  assert.equal(findByLabel('instance-row').length, 0);
+  assert.equal(find('.js-container-type').length, 0);
+  assert.equal(find('.js-instance-row').length, 0);
   types = getTypes();
   instances = getInstances();
 
-  await clickByLabel('reload-container-btn');
+  await click('.js-reload-container-btn');
 
-  assert.equal(findByLabel('container-type').length, 2);
-  assert.equal(findByLabel('instance-row').length, 2);
+  assert.equal(find('.js-container-type').length, 2);
+  assert.equal(find('.js-instance-row').length, 2);
 });

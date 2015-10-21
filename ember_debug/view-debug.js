@@ -96,11 +96,11 @@ export default EmberObject.extend(PortMixin, {
 
     layerDiv = $('<div>').appendTo('body').get(0);
     layerDiv.style.display = 'none';
-    layerDiv.setAttribute('data-label', 'layer-div');
+    layerDiv.classList.add('js-layer-div');
 
     previewDiv = $('<div>').appendTo('body').css('pointer-events', 'none').get(0);
     previewDiv.style.display = 'none';
-    previewDiv.setAttribute('data-label', 'preview-div');
+    previewDiv.classList.add('js-preview-div');
 
     $(window).on('resize.' + this.get('eventNamespace'), () => {
       if (highlightedElement) {
@@ -491,30 +491,30 @@ export default EmberObject.extend(PortMixin, {
     let output = "";
 
     if (!isPreview) {
-      output = "<span class='close' data-label='layer-close'>&times;</span>";
+      output = "<span class='close js-layer-close'>&times;</span>";
     }
 
     let template = options.template;
 
     if (template) {
-      output += "<p class='template'><span>template</span>=<span data-label='layer-template'>" + escapeHTML(template.name) + "</span></p>";
+      output += "<p class='template'><span>template</span>=<span class='js-layer-template'>" + escapeHTML(template.name) + "</span></p>";
     }
     let view = options.view;
     let controller = options.controller;
     if (!view ||!(view.object instanceof Ember.Component)) {
       if (controller) {
-        output += "<p class='controller'><span>controller</span>=<span data-label='layer-controller'>" + escapeHTML(controller.name) + "</span></p>";
+        output += "<p class='controller'><span>controller</span>=<span class='js-layer-controller'>" + escapeHTML(controller.name) + "</span></p>";
       }
       if (view) {
-        output += "<p class='view'><span>view</span>=<span data-label='layer-view'>" + escapeHTML(view.name) + "</span></p>";
+        output += "<p class='view'><span>view</span>=<span class='js-layer-view'>" + escapeHTML(view.name) + "</span></p>";
       }
     } else {
-      output += "<p class='component'><span>component</span>=<span data-label='layer-component'>" + escapeHTML(view.name) + "</span></p>";
+      output += "<p class='component'><span>component</span>=<span class='js-layer-component'>" + escapeHTML(view.name) + "</span></p>";
     }
 
     let model = options.model;
     if (model) {
-      output += "<p class='model'><span>model</span>=<span data-label='layer-model'>" + escapeHTML(model.name) + "</span></p>";
+      output += "<p class='model'><span>model</span>=<span class='js-layer-model'>" + escapeHTML(model.name) + "</span></p>";
     }
 
     $(div).html(output);
