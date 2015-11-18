@@ -735,11 +735,17 @@ export default EmberObject.extend(PortMixin, {
   _controllerForNode(renderNode) {
     if (renderNode.lastResult) {
       let scope = renderNode.lastResult.scope;
+      let controller;
       if (scope.getLocal) {
-        return scope.getLocal('controller');
+        controller = scope.getLocal('controller');
       } else {
-        return scope.locals.controller.value();
+        controller = scope.locals.controller.value();
       }
+      if (!controller && scope.getSelf) {
+        // Ember >= 2.2 + no ember-legacy-controllers addon
+        controller = scope.getSelf().value();
+      }
+      return controller;
     }
   },
 
