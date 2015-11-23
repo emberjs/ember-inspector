@@ -80,7 +80,7 @@ if (typeof env !== 'undefined') {
   }
 
   function onReady(callback) {
-    if (document.readyState === 'complete') {
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
       setTimeout(completed);
     } else {
       document.addEventListener( "DOMContentLoaded", completed, false);
