@@ -25,7 +25,11 @@ export default EmberObject.extend(PortMixin, {
   }),
 
   _resolve(name) {
-    const container = this.get('application').__container__;
+    // Ember >= 2.1
+    if (this.get('application').resolveRegistration) {
+      return this.get('application').resolveRegistration(name);
+    }
+    let container = this.get('application').__container__;
     let registry = this.get('application.registry');
     if (registry) {
       // Ember >= 1.11
@@ -33,9 +37,6 @@ export default EmberObject.extend(PortMixin, {
     } else if (container.resolve) {
       // Ember < 1.11
       return container.resolve(name);
-    } else if (container.resolveRegistration) {
-      // Ember >= 2.1
-      return container.resolveRegistration(name);
     } else {
       // Ember >= 2.0 < 2.1
       return container.registry.resolve(name);
