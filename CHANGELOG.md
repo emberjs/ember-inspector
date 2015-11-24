@@ -1,5 +1,12 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 1.9.4
+
+* [BUGFIX] Launch inspector if document ready state is `interactive` [#500](https://github.com/emberjs/ember-inspector/pull/500)
+* [BUGFIX] [Ember 2.2] Use the new `resolveRegistration` to remove the deprecation warning [#499](https://github.com/emberjs/ember-inspector/pull/499) [#497](https://github.com/emberjs/ember-inspector/pull/497)
+* [BUGFIX] [Ember 2.2] Fix the view tree: use `scope.getSelf` when available to get the controller [#496](https://github.com/emberjs/ember-inspector/pull/496)
+* [INTERNAL] Tweak Firefox skeleton again for 44 and later [#491](https://github.com/emberjs/ember-inspector/pull/491)
+
 ## Ember Inspector 1.9.3
 
 * [BUGFIX] Make sure we only reopen the app once [#482](https://github.com/emberjs/ember-inspector/pull/482)

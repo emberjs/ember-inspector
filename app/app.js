@@ -10,7 +10,7 @@ import msToTime from "ember-inspector/helpers/ms-to-time";
 
 Ember.MODEL_FACTORY_INJECTIONS = true;
 
-const version = '1.9.3';
+const version = '1.9.4';
 
 const App = Ember.Application.extend({
   modulePrefix: config.modulePrefix,
