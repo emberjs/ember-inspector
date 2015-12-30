@@ -694,7 +694,9 @@ export default EmberObject.extend(PortMixin, {
    * @return {Boolean}
    */
   _nodeIsView(renderNode) {
-    if (renderNode.getState) {
+    if (!renderNode) {
+      return false;
+    } else if (renderNode.getState) {
       return !!renderNode.getState().manager;
     } else {
       return !!renderNode.state.manager;
