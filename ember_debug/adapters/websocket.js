@@ -14,7 +14,7 @@ export default BasicAdapter.extend({
   }),
 
   _listen() {
-    this.get('socket').on('emberInspectorMessage', function(message) {
+    this.get('socket').on('emberInspectorMessage', message => {
       run(() => {
         this._messageReceived(message);
       });
