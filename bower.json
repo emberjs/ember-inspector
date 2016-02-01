@@ -1,7 +1,7 @@
 {
   "name": "ember-inspector",
   "dependencies": {
-    "jquery": "^1.11.1",
+    "jquery": "1.11.1",
     "ember": "1.12.0",
     "ember-resolver": "~0.1.12",
     "loader.js": "ember-cli/loader.js#3.2.0",
