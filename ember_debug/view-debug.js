@@ -639,7 +639,7 @@ export default EmberObject.extend(PortMixin, {
    */
   _childrenForNode(renderNode) {
     if (renderNode.morphMap) {
-      return keys(renderNode.morphMap).map(key => renderNode.morphMap[key]);
+      return keys(renderNode.morphMap).map(key => renderNode.morphMap[key]).filter(node => !!node);
     } else {
       return renderNode.childNodes;
     }
