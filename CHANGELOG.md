@@ -1,5 +1,10 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 1.9.5
+
+* [BUGFIX] filter out null/undefined nodes [#510](https://github.com/emberjs/ember-inspector/pull/510)
+* [BUGFIX] Fix websocket adapter ES6 conversion [#505](https://github.com/emberjs/ember-inspector/pull/505)
+
 ## Ember Inspector 1.9.4
 
 * [BUGFIX] Launch inspector if document ready state is `interactive` [#500](https://github.com/emberjs/ember-inspector/pull/500)

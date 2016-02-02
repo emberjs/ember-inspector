@@ -3,7 +3,7 @@
 
   "name": "Ember Inspector",
   "description": "Tool for debugging Ember applications.",
-  "version": "1.9.4",
+  "version": "1.9.5",
 
   "icons": {
     "16":  "panes/assets/images/icon16.png",
