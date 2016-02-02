@@ -25,7 +25,7 @@
   "author": "Tilde, Inc.",
   "license": "MIT",
   "devDependencies": {
-    "babel-eslint": "^3.1.9",
+    "babel-eslint": "4.1.7",
     "broccoli-asset-rev": "^2.0.0",
     "broccoli-babel-transpiler": "5.1.0",
     "broccoli-concat": "0.0.12",
