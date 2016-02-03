@@ -6,7 +6,6 @@
     "no-undef": 0,
     "no-shadow": 0,
     "space-infix-ops": 0,
-    "dot-notation": 0,
     "no-lonely-if": 0,
     "no-unneeded-ternary": 0,
     "guard-for-in": 0,
