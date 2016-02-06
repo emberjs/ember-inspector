@@ -5,6 +5,7 @@
   "id": "ember-inspector@emberjs.com",
   "description": "Tool for debugging Ember applications.",
   "permissions": {"private-browsing": true},
+  "main": "lib/main.js",
   "preferences": [{
     "name": "tomsterLocationbarButtonToggle",
         "title": "Display The Tomster icon when a site runs Ember.js",

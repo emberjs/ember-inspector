@@ -4,7 +4,7 @@ const { openEmberInspector } = require("./tomster-devtool-panel");
 
 const tabs = require("./tomster-tabs");
 
-const { UrlbarButton } = require("urlbarbutton");
+const { UrlbarButton } = require("./urlbarbutton");
 
 const { Panel } = require("sdk/panel");
 
