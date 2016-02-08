@@ -3,30 +3,10 @@ module.exports = function(grunt) {
   var config = {
     pkg: grunt.file.readJSON('package.json'),
     env: process.env,
-    "mozilla-cfx-xpi": {
-      "stable": {
-        options: {
-          "mozilla-addon-sdk": "latest",
-          extension_dir: "dist/firefox",
-          dist_dir: "tmp/xpi"
-        }
-      }
-    },
-    "mozilla-addon-sdk": {
-      "latest": {
-        options: {
-          revision: "latest",
-          dest_dir: "tmp/mozilla-addon-sdk"
-        }
-      }
-    },
-    "mozilla-cfx": {
-      "run": {
-        options: {
-          "mozilla-addon-sdk": "latest",
-          extension_dir: "dist/firefox",
-          command: "run"
-        }
+    "jpm": {
+      options: {
+        src: "dist/firefox",
+        xpi: "tmp/xpi"
       }
     },
     "version": {
@@ -70,17 +50,14 @@ module.exports = function(grunt) {
 
   grunt.initConfig(config);
 
-  grunt.loadNpmTasks('grunt-mozilla-addon-sdk');
+  grunt.loadNpmTasks('grunt-jpm');
   grunt.loadNpmTasks('grunt-version');
   grunt.loadNpmTasks('grunt-s3');
   grunt.loadNpmTasks('grunt-contrib-compress');
 
-  grunt.registerTask('build-xpi', [
-    'mozilla-addon-sdk',
-    'mozilla-cfx-xpi'
-  ]);
+  grunt.registerTask('build-xpi', ['jpm:xpi']);
 
-  grunt.registerTask('run-xpi', ['build-xpi', 'mozilla-cfx:run']);
+  grunt.registerTask('run-xpi', ['jpm:run']);
 
   grunt.registerTask('clean-tmp', function() {
     grunt.file.delete('./tmp');
