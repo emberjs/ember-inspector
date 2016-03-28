@@ -153,14 +153,29 @@ var firefoxAndChromeExtra = pickFiles('shared', {
   destDir: '/'
 });
 
+var tabLabelPattern = [{
+  match: /{{env}}/,
+  replacement: env === 'development' ? ' [DEV]' : ''
+}];
+
+var skeleton_chrome = replace('skeleton_chrome', {
+  files: ['devtools.js'],
+  patterns: tabLabelPattern
+});
+
+var skeleton_firefox = replace('skeleton_firefox', {
+  files: ['lib/tomster-devtool-panel.js'],
+  patterns: tabLabelPattern
+});
+
 var firefox = mergeTrees([
   mv(mergeTrees([tree, firefoxAndChromeExtra, emberDebugs.firefox]), 'data/panes'),
-  'skeleton_firefox'
+  skeleton_firefox
 ]);
 
 var chrome = mergeTrees([
   mv(mergeTrees([tree, firefoxAndChromeExtra, emberDebugs.chrome]), 'panes'),
-  'skeleton_chrome'
+  skeleton_chrome
 ]);
 
 var websocket = mergeTrees([tree, emberDebugs.websocket]);
