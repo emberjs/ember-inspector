@@ -6,6 +6,8 @@ tmp/
 dist/chrome/ember-inspector.zip
 dist/testing
 
+dist_prev
+
 *.xpi
 
 .mozilla-addon-sdk

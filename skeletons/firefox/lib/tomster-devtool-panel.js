@@ -6,6 +6,9 @@ const tabs = require("./tomster-tabs");
 
 const { curry } = require("sdk/lang/functional");
 
+const emberVersions = require('./ember-versions');
+const supportedVersions = emberVersions.supported;
+
 const log = curry(function log() {
   var args = Array.prototype.slice.call(arguments, 0);
   console.debug.apply(console, ["ember-extension: "].concat(args));
@@ -27,7 +30,7 @@ exports.openEmberInspector = function () {
 exports.devtoolTabDefinition = {
   id: "ember-inspector",
   ordinal: 7,
-  icon: self.data.url("panes/assets/images/icon19.png"),
+  icon: self.data.url("{{PANE_ROOT}}/assets/images/icon19.png"),
   url: self.data.url("devtool-panel.html"),
   label: "Ember{{env}}",
   tooltip: "Ember Inspector",
@@ -92,16 +95,28 @@ let EmberInspector = Class({
 
     log("_handleTargetTabLoad", tabId, worker.url);
 
-    tabs.sendToWorkersByTabId(tabId, "injectEmberDebug", null);
+    tabs.sendToWorkersByTabId(tabId, "injectEmberDebug", this._lastVersion);
 
     this.iframeWindow.contentWindow.location.reload(true);
   },
+
+  /**
+   * Keep track of the last version.
+   * 
+   * @propery _lastVersion
+   * @type {String}
+   */
+  _lastVersion: supportedVersions[0],
 
   _handleDevtoolPanelMessage: function(msg) {
     log("_handleDevtoolPanelMessage", msg);
     if (msg.origin === "resource://ember-inspector-at-emberjs-dot-com") {
       if (msg.data && msg.data.type === 'devtools:openSource') {
         openSource(this.toolbox._target, msg.data.url, msg.data.line);
+      } else if(msg.data.type === 'injectEmberDebug') {
+        this._lastVersion = msg.data.version;
+        // Request from devtools inspector to inject an ember debug version
+        tabs.sendToWorkersByTabId(this.targetTabId, "injectEmberDebug", msg.data.version);
       } else {
         this._sendToTargetTab(msg.data);
       }

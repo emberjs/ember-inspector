@@ -1,4 +1,5 @@
 /* jshint node: true */
+var packageJson = require('../package.json');
 
 module.exports = function(environment) {
   var ENV = {
@@ -10,6 +11,8 @@ module.exports = function(environment) {
     environment: environment,
     baseURL: '/',
     locationType: 'hash',
+    emberVersionsSupported: packageJson.emberVersionsSupported,
+    previousEmberVersionsSupported: packageJson.previousEmberVersionsSupported,
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build

@@ -97,7 +97,7 @@ Patch versions are only committed to the stable branch. So we need to cherry-pic
 - `git checkout master`
 - Commit the change log entry to the master branch.
 
-#### Minor and Major versions
+#### Minor and major versions
 
 When releasing a major/minor version, master would already have this version set, so what we need to do is to merge master into stable and release.
 
@@ -117,6 +117,20 @@ When releasing a major/minor version, master would already have this version set
 - `npm publish ./`
 - `git tag` the new version
 
+### Locking a version
+
+We can take a snapshot of the current inspector version to support a specific Ember version range. This allows us to stop supporting old Ember versions in master without breaking the published inspector for old Ember apps. It works by serving a different inspector version based on the current app's Ember version.
+
+The Ember versions supported by the current inspector are indicated in the `emberVersionsSupported` array in `package.json`.
+
+Here are the steps to lock an inspector version:
+
+- Update `package.json`'s `emberVersionsSupported`: add a second element that indicates the minimum Ember version this inspector *does not* support.
+- Release a new version (See "Minor and major versions"). Create a branch for this version.
+- Run `npm run lock-version`. This will build, compress, and upload this version to S3.
+- Update `package.json`'s `previousEmberVersionsSupported`: add the first Ember version supported by the recently locked version (the first element in the `emberVersionsSupported` array).
+- Update `package.json`'s `emberVersionsSupported`: Move the second element in the array to the first position. Add an empty string as the second element to indicate there's currently no maximum Ember version supported yet.
+- Commit.
 
 ### Window Messages
 

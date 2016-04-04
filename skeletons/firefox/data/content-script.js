@@ -48,9 +48,8 @@ function onEmberVersion(message) {
   }
 }
 
-function onInjectEmberDebug() {
-  //console.debug("ON INJECT EMBER DEBUG ON:", window.location.href);
-  document.defaultView.eval(self.options.emberDebugScript);
+function onInjectEmberDebug(version) {
+  document.defaultView.eval(self.options['emberDebugScript-' + version.replace(/\./g, '-')]);
 }
 
 function injectInPageScript() {
