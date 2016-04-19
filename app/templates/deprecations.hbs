@@ -9,13 +9,13 @@
 
             <div class="cell_type_main cell" data-label="deprecation-main-cell">
 
-              <span {{bind-attr title="message" class="item.expandedClass"}} {{action "toggleExpand"}}  >
+              <span title="{{message}}" class="{{item.expandedClass}}" {{action "toggleExpand"}}  >
                 <span class="cell__arrow"></span>
                 <span class="pill pill_not-clickable" data-label="deprecation-count">{{item.model.count}}</span>
                 <span data-label="deprecation-message" data-label="deprecation-message">{{item.model.message}}</span>
               </span>
               {{#if item.model.url}}
-                <a {{bind-attr href=item.model.url}} class="external-link" target="_blank" title="Transition Plan" data-label="deprecation-url">
+                <a href="{{item.model.url}}" class="external-link" target="_blank" title="Transition Plan" data-label="deprecation-url">
                   Transition Plan
                 </a>
               {{/if}}

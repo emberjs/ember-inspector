@@ -1,7 +1,7 @@
-<div {{bind-attr style="nodeStyle" class=":list-tree__item :row expandedClass"}}  data-label="promise-item">
-  <div class="cell_type_main cell" {{action "toggleExpand" model}} {{bind-attr style="labelStyle"}}>
+<div style="{{nodeStyle}}" class="list-tree__item row {{expandedClass}}"  data-label="promise-item">
+  <div class="cell_type_main cell" {{action "toggleExpand" model}} style="{{labelStyle}}">
     <div class="list-tree__limited list-tree__limited_helper_large">
-      <span {{bind-attr title="label"}} data-label="promise-label">
+      <span title="{{label}}" data-label="promise-label">
         <span class="cell__arrow"></span>
         {{label}}
       </span>
@@ -15,11 +15,11 @@
     </div>
   </div>
   <div class="cell cell_size_medium">
-    <div class="pill pill_text_clear" {{bind-attr style="style"}} data-label="promise-state">{{state}}</div>
+    <div class="pill pill_text_clear" style="{{style}}" data-label="promise-state">{{state}}</div>
   </div>
   <div class="cell cell_size_large" data-label="promise-value">
     {{#if hasValue}}
-        <div class="list-tree__limited  list-tree__limited_helper_very-large" {{bind-attr title="settledValue.inspect"}}>
+        <div class="list-tree__limited  list-tree__limited_helper_very-large" title="{{settledValue.inspect}}">
           {{#if isValueInspectable}}
 
             <span class="cell_clickable" {{action "inspectObject" settledValue.objectId}} data-label="promise-object-value">{{settledValue.inspect}}</span>
