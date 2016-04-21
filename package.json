@@ -11,20 +11,26 @@
     "test": "ember test",
     "watch": "ember build --watch",
     "serve:bookmarklet": "ember serve --port 9191",
-    "build:production": "ember build --environment production && grunt compress:main clean-tmp build-xpi",
+    "build:production": "EMBER_ENV=production node scripts/download-panes.js && ember build --environment production && grunt compress:main clean-tmp build-xpi",
     "upload": "npm run build:production && grunt s3:bookmarklet",
     "run-xpi": "npm run build && grunt run-xpi",
     "build:xpi": "npm run build && grunt build-xpi",
-    "build:xpi:production": "npm run build:production && grunt clean-tmp build-xpi"
+    "build:xpi:production": "npm run build:production && grunt clean-tmp build-xpi",
+    "compress:panes": "grunt compress:chrome-pane && grunt compress:firefox-pane && grunt compress:bookmarklet-pane",
+    "upload:panes": "npm run build && npm run compress:panes && node scripts/upload-panes.js",
+    "lock-version": "npm run build:production && npm run compress:panes && EMBER_ENV=production node scripts/upload-panes.js"
   },
   "repository": "https://github.com/emberjs/ember-inspector",
   "engines": {
     "node": ">= 0.10.0",
     "npm": ">= 2.0.0"
   },
+  "emberVersionsSupported": ["2.0.0", "3.0.0"],
+  "previousEmberVersionsSupported": ["0.0.0"],
   "author": "Tilde, Inc.",
   "license": "MIT",
   "devDependencies": {
+    "aws-sdk": "^2.3.3",
     "babel-eslint": "4.1.7",
     "broccoli-asset-rev": "^2.0.0",
     "broccoli-babel-transpiler": "5.1.0",
@@ -54,13 +60,16 @@
     "ember-list-view": "0.0.6",
     "ember-pikaday": "^0.2.1",
     "eslint-config-ember": "0.2.0",
+    "fstream": "^1.0.8",
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
     "grunt-contrib-compress": "^0.12.0",
     "grunt-jpm": "~0.1.3",
     "grunt-s3": "^0.2.0-alpha.3",
-    "grunt-version": "^0.3.0",
-    "js-string-escape": "^1.0.0"
+    "js-string-escape": "^1.0.0",
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.5.2",
+    "yauzl": "^2.4.1"
   },
   "dependencies": {
     "ember-new-computed": "^1.0.0"

@@ -78,7 +78,7 @@
    */
   var script = document.createElement('script');
   script.type = "text/javascript";
-  script.src = chrome.extension.getURL("panes/in-page-script.js");
+  script.src = chrome.extension.getURL("scripts/in-page-script.js");
   if (document.body && document.contentType !== "application/pdf") {
     document.body.appendChild(script);
     script.onload = function() {

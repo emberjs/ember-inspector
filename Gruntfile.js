@@ -1,21 +1,13 @@
 module.exports = function(grunt) {
-
+  var packageJson = grunt.file.readJSON('package.json');
+  var versionedPane = 'panes-' + packageJson.emberVersionsSupported[0].replace(/\./g, '-');
   var config = {
-    pkg: grunt.file.readJSON('package.json'),
+    pkg: packageJson,
     env: process.env,
     "jpm": {
       options: {
         src: "dist/firefox",
         xpi: "tmp/xpi"
-      }
-    },
-    "version": {
-      app: {
-        src: ['app/app.js']
-      },
-      dist: {
-        prefix: '^"?version"?:\s*[\'"]?',
-        src: ['skeleton_chrome/manifest.json', 'skeleton_firefox/package.json']
       }
     },
     "s3": {
@@ -44,6 +36,33 @@ module.exports = function(grunt) {
         expand: true,
         pretty: true,
         src: 'dist/chrome/**/*'
+      },
+      "chrome-pane": {
+        options: {
+          archive: 'dist/chrome-pane.zip'
+        },
+        expand: true,
+        pretty: true,
+        cwd: 'dist/chrome/' + versionedPane,
+        src: ['**/*']
+      },
+      "firefox-pane": {
+        options: {
+          archive: 'dist/firefox-pane.zip'
+        },
+        expand: true,
+        pretty: true,
+        cwd: 'dist/firefox/data/' + versionedPane,
+        src: ['**/*']
+      },
+      "bookmarklet-pane": {
+        options: {
+          archive: 'dist/bookmarklet-pane.zip'
+        },
+        expand: true,
+        pretty: true,
+        cwd: 'dist/bookmarklet/' + versionedPane,
+        src: ['**/*']
       }
     }
   };
@@ -51,7 +70,6 @@ module.exports = function(grunt) {
   grunt.initConfig(config);
 
   grunt.loadNpmTasks('grunt-jpm');
-  grunt.loadNpmTasks('grunt-version');
   grunt.loadNpmTasks('grunt-s3');
   grunt.loadNpmTasks('grunt-contrib-compress');
 
