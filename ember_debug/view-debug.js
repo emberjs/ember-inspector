@@ -8,9 +8,7 @@ const { oneWay } = computed;
 
 const keys = Object.keys || Ember.keys;
 
-let layerDiv,
-    previewDiv,
-    highlightedElement;
+let layerDiv, previewDiv, highlightedElement;
 
 export default EmberObject.extend(PortMixin, {
 
@@ -417,10 +415,10 @@ export default EmberObject.extend(PortMixin, {
     }
 
 
-    let templateName = view.get('templateName') || view.get('_debugTemplateName'),
-        controller = view.get('controller'),
-        model = controller && controller.get('model'),
-        modelName;
+    let templateName = view.get('templateName') || view.get('_debugTemplateName');
+    let controller = view.get('controller');
+    let model = controller && controller.get('model');
+    let modelName;
 
 
     let options = {
@@ -625,7 +623,7 @@ export default EmberObject.extend(PortMixin, {
     childNodes.forEach(childNode => {
       if (this._shouldShowNode(childNode, renderNode)) {
         let grandChildren = [];
-        children.push({ value: this._inspectNode(childNode), children: grandChildren});
+        children.push({ value: this._inspectNode(childNode), children: grandChildren });
         this._appendNodeChildren(childNode, grandChildren);
       } else {
         this._appendNodeChildren(childNode, children);
@@ -1028,9 +1026,10 @@ function virtualRange(view) {
 }
 
 function viewDescription(view) {
-  let templateName = view.get('templateName') || view.get('_debugTemplateName'),
-      name, viewClass = shortViewName(view), controller = view.get('controller'),
-      parentClassName;
+  let templateName = view.get('templateName') || view.get('_debugTemplateName');
+  let name, parentClassName;
+  let viewClass = shortViewName(view);
+  let controller = view.get('controller');
 
   if (templateName) {
     name = templateName;
@@ -1061,8 +1060,8 @@ function viewDescription(view) {
       name = Ember.String.camelize(viewClassName);
     }
   } else if (view.get('_parentView.controller') !== controller) {
-    let key = controller.get('_debugContainerKey'),
-    className = controller.constructor.toString();
+    let key = controller.get('_debugContainerKey');
+    let className = controller.constructor.toString();
 
     if (key) {
       name = key.split(':')[1];

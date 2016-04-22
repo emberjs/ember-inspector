@@ -3,11 +3,11 @@ import TabRoute from "ember-inspector/routes/tab";
 const set = Ember.set;
 
 export default TabRoute.extend({
-  setupController: function() {
+  setupController() {
     let port = this.get('port');
     port.on('deprecation:deprecationsAdded', this, this.deprecationsAdded);
     port.send('deprecation:watch');
-    this._super.apply(this, arguments);
+    this._super(...arguments);
   },
 
   model() {

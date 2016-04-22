@@ -23,16 +23,16 @@ let PromiseAssembler = EmberObject.extend(Evented, {
   start() {
     this.RSVP.configure('instrument', true);
 
-    this.promiseChained = (e) => {
+    this.promiseChained = e => {
       chain.call(this, e);
     };
-    this.promiseRejected = (e) => {
+    this.promiseRejected = e => {
       reject.call(this, e);
     };
-    this.promiseFulfilled = (e) => {
+    this.promiseFulfilled = e => {
       fulfill.call(this, e);
     };
-    this.promiseCreated = (e) => {
+    this.promiseCreated = e => {
       create.bind(this)(e);
     };
 
@@ -49,7 +49,7 @@ let PromiseAssembler = EmberObject.extend(Evented, {
     this.RSVP.off('fulfilled', this.promiseFulfilled);
     this.RSVP.off('created', this.promiseCreated);
 
-    this.get('all').forEach((item) => {
+    this.get('all').forEach(item => {
       item.destroy();
     });
     this.set('all', A());
@@ -67,8 +67,8 @@ let PromiseAssembler = EmberObject.extend(Evented, {
   },
 
   createPromise(props) {
-    const promise = Promise.create(props),
-        index = this.get('all.length');
+    let promise = Promise.create(props);
+    let index = this.get('all.length');
 
     this.get('all').pushObject(promise);
     this.get('promiseIndex')[promise.get('guid')] = index;
@@ -143,13 +143,13 @@ const reject = function(event) {
 
 function chain(event) {
   /*jshint validthis:true */
-  const guid = event.guid,
-      promise = this.updateOrCreate(guid, {
-        label: event.label,
-        chainedAt: event.timeStamp
-      }),
-      children = promise.get('children'),
-      child = this.findOrCreate(event.childGuid);
+  let guid = event.guid;
+  let promise = this.updateOrCreate(guid, {
+    label: event.label,
+    chainedAt: event.timeStamp
+  });
+  let children = promise.get('children');
+  let child = this.findOrCreate(event.childGuid);
 
   child.set('parent', promise);
   children.pushObject(child);

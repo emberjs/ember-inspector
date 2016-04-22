@@ -1,6 +1,19 @@
+/*global chrome*/
+
+/**
+ * Extension options for Chrome.
+ * This allows the user to decide if the Tomster icon should show when visiting
+ * a webpage that has Ember running.
+ *
+ * see:
+ *     https://developer.chrome.com/extensions/options
+ */
 (function() {
   "use strict";
 
+  /**
+   * Load the options from storage.
+   */
   function loadOptions() {
     chrome.storage.sync.get('options', function(data) {
       var options = data.options;
@@ -9,6 +22,9 @@
     });
   }
 
+  /**
+   * Save the updated options to storage.
+   */
   function storeOptions() {
     /*jshint validthis:true */
     var showTomster = this.checked;

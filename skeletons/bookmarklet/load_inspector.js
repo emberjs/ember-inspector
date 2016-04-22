@@ -14,7 +14,7 @@
   }
 
   var url = getScriptURL();
-  var windowUrl = url + '/index.html' + '?inspectedWindowURL=' + locationOrigin();
+  var windowUrl = url + '/{{PANE_ROOT}}' + '/index.html' + '?inspectedWindowURL=' + locationOrigin();
   var inspectorWindow;
 
   var pathArray = url.split( '/' );
@@ -41,6 +41,19 @@
     url: base
   };
 
+  /**
+   * Handle Ember version mismatch. Re-injects
+   * another version of ember-debug.
+   *
+   */
+  window.addEventListener('message', e => {
+    if (e.origin !== window.emberInspector.url) {
+      return;
+    }
+    if (e.data.name === 'version-mismatch') {
+      injectEmberDebug('panes-' + e.data.version.replace(/\./g, '-') + '/ember_debug.js');
+    }
+  });  
 
   if (!window.emberInspector) {
     alert('Unable to open the inspector in a popup.  Please enable popups and retry.');
@@ -48,10 +61,13 @@
   }
   document.documentElement.dataset.emberExtension = 1;
 
-  var script = document.createElement('script');
-  script.src = url + '/ember_debug.js';
-  document.body.appendChild(script);
+  function injectEmberDebug(fileName) {
+    var script = document.createElement('script');
+    script.src = url + '/' + fileName;
+    document.body.appendChild(script);
+  }
 
+  injectEmberDebug('{{PANE_ROOT}}/ember_debug.js');
 
   function locationOrigin() {
     var origin = window.location.origin;

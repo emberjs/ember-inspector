@@ -1,3 +1,13 @@
+/**
+ * The Chrome and Firefox extensions inject the in-page-script into the
+ * page to deteremine the version of Ember the ClientApp is running.
+ *
+ * An iife runs to gather the data and uses postMessage to send the data back
+ * to the extension.
+ *
+ * @namespace EmberInspector/Shared
+ * @class InPageScript
+ */
 (function($) {
   "use strict";
   if (!$) { return; }

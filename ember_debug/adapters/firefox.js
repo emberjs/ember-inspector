@@ -15,8 +15,8 @@ export default BasicAdapter.extend({
     // - https://github.com/firebug/firebug/pull/109
     // - https://code.google.com/p/fbug/issues/detail?id=7045
     try {
-      this._super.apply(this, arguments);
-    } catch(e) { }
+      this._super(...arguments);
+    } catch (e) { }
   },
   log() {
     // WORKAROUND: temporarily workaround issues with firebug console object:
@@ -24,8 +24,8 @@ export default BasicAdapter.extend({
     // - https://github.com/firebug/firebug/pull/109
     // - https://code.google.com/p/fbug/issues/detail?id=7045
     try {
-      this._super.apply(this, arguments);
-    } catch(e) { }
+      this._super(...arguments);
+    } catch (e) { }
   },
 
   sendMessage(options) {
@@ -44,7 +44,7 @@ export default BasicAdapter.extend({
 
   _listen() {
 
-    window.addEventListener('ember-debug-receive', (event) => {
+    window.addEventListener('ember-debug-receive', event => {
       var message = event.detail;
       run(() => {
         // FIX: needed to fix permission denied exception on Firefox >= 30

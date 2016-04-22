@@ -10,7 +10,7 @@ import msToTime from "ember-inspector/helpers/ms-to-time";
 
 Ember.MODEL_FACTORY_INJECTIONS = true;
 
-const version = '1.9.5';
+const version = '{{EMBER_INSPECTOR_VERSION}}';
 
 const App = Ember.Application.extend({
   modulePrefix: config.modulePrefix,
@@ -29,9 +29,8 @@ App.initializer({
   name: "extension-init",
 
   initialize(container, app) {
-    // `window.EMBER_DIST` is set by dist-config.js
-    // which is created by the build process.
-    app.adapter = window.EMBER_DIST;
+    // {{EMBER_DIST}} is replaced by the build process.
+    app.adapter = '{{EMBER_DIST}}';
 
     // register and inject adapter
     let Adapter;

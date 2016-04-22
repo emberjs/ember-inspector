@@ -40,7 +40,7 @@ export default Ember.ArrayController.extend({
   instrumentWithStack: false,
 
   init() {
-    this._super.apply(this, arguments);
+    this._super(...arguments);
     // List-view does not support item controllers
     this.reopen({
       items: itemProxyComputed('filtered', this.get('promiseItemController'))

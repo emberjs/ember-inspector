@@ -27,7 +27,7 @@ export default Ember.ObjectController.extend({
     let parsedValue;
     try {
       parsedValue = JSON.parse(value);
-    } catch(e) {
+    } catch (e) {
       // if surrounded by quotes, remove quotes
       let match = value.match(/^"(.*)"$/);
       if (match && match.length > 1) {

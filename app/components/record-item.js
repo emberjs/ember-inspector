@@ -1,5 +1,5 @@
 import Ember from 'ember';
-const { Component, computed } = Ember;
+const { Component, computed, Handlebars: { SafeString }, isEmpty } = Ember;
 const COLOR_MAP = {
   red: '#ff2717',
   blue: '#174fff',
@@ -18,10 +18,10 @@ export default Component.extend({
   // TODO: Color record based on `color` property.
   style: computed('model.color', function() {
     let colorName = this.get('model.color');
-    if (!Ember.isEmpty(colorName)) {
+    if (!isEmpty(colorName)) {
       let color = COLOR_MAP[colorName];
       if (color) {
-        return 'color:' + color + ';';
+        return new SafeString(`color: ${color};`);
       }
     }
     return '';

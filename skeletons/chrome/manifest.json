@@ -3,12 +3,12 @@
 
   "name": "Ember Inspector",
   "description": "Tool for debugging Ember applications.",
-  "version": "1.9.5",
+  "version": "{{EMBER_INSPECTOR_VERSION}}",
 
   "icons": {
-    "16":  "panes/assets/images/icon16.png",
-    "48":  "panes/assets/images/icon48.png",
-    "128": "panes/assets/images/icon128.png"
+    "16":  "{{PANE_ROOT}}/assets/images/icon16.png",
+    "48":  "{{PANE_ROOT}}/assets/images/icon48.png",
+    "128": "{{PANE_ROOT}}/assets/images/icon128.png"
   },
   "permissions": [
     "<all_urls>",
@@ -27,13 +27,13 @@
   },
   "page_action": {
     "default_icon": {
-      "19": "panes/assets/images/icon19.png",
-      "38": "panes/assets/images/icon38.png"
+      "19": "{{PANE_ROOT}}/assets/images/icon19.png",
+      "38": "{{PANE_ROOT}}/assets/images/icon38.png"
     },
     "default_title": "This webpage is running Ember.js"
   },
   "web_accessible_resources": [
-    "panes/in-page-script.js"
+    "scripts/in-page-script.js"
   ],
   "options_page": "options.html",
   "options_ui": {

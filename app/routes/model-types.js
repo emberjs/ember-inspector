@@ -1,7 +1,8 @@
 import Ember from "ember";
+import TabRoute from "ember-inspector/routes/tab";
 const { RSVP: { Promise } } = Ember;
 
-export default Ember.Route.extend({
+export default TabRoute.extend({
   setupController(controller, model) {
     this._super(controller, model);
     this.get('port').on('data:modelTypesAdded', this, this.addModelTypes);

@@ -9,7 +9,7 @@ export default TabRoute.extend({
       search: '',
       searchVal: ''
     });
-    this._super.apply(this, arguments);
+    this._super(...arguments);
   },
   model(params) {
     const type = params.type_id;

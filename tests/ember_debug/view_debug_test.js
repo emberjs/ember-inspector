@@ -309,8 +309,8 @@ test("Supports a view with a string as model", async function t(assert) {
 });
 
 test("Supports applications that don't have the ember-application CSS class", async function t(assert) {
-  let name = null,
-      $rootElement = $('body');
+  let name = null;
+  let $rootElement = $('body');
 
   await visit('/simple');
 

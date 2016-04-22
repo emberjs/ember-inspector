@@ -8,9 +8,8 @@
 
   Also responsible for sending the first tree.
 **/
-
+/*eslint prefer-spread: 0 */
 /* globals Ember, adapter, env, requireModule */
-
 var currentAdapter = 'basic';
 if (typeof adapter !== 'undefined') {
   currentAdapter = adapter;
@@ -20,14 +19,23 @@ if (typeof env !== 'undefined') {
   currentEnv = env;
 }
 
+var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
+
 (function(adapter) {
   onEmberReady(function() {
     // global to prevent injection
     if (window.NO_EMBER_DEBUG) {
       return;
     }
+
+    if (!versionTest(Ember.VERSION, EMBER_VERSIONS_SUPPORTED)) {
+      // Wrong inspector version. Redirect to the correct version.
+      sendVersionMiss();
+      return;
+    }
     // prevent from injecting twice
     if (!Ember.EmberInspectorDebugger) {
+      // Make sure we only work for the supported version
       define('ember-debug/config', function() {
         return {
           default: {
@@ -141,6 +149,89 @@ if (typeof env !== 'undefined') {
     return namespaces.filter(function(namespace) {
       return namespace instanceof Ember.Application;
     });
+  }
+
+  /**
+   * This function is called if the app's Ember version
+   * is not supported by this version of the inspector.
+   *
+   * It sends a message to the inspector app to redirect
+   * to an inspector version that supports this Ember version.
+   */
+  function sendVersionMiss() {
+    var adapter = requireModule('ember-debug/adapters/' + currentAdapter)['default'].create();
+    adapter.onMessageReceived(function(message) {
+      if (message.type === 'check-version') {
+        sendVersionMismatch();
+      }
+    });
+    sendVersionMismatch();
+
+    function sendVersionMismatch() {
+      adapter.sendMessage({
+        name: 'version-mismatch',
+        version: Ember.VERSION,
+        from: 'inspectedWindow'
+      });
+    }
+  }
+
+  /**
+   * Checksi if a version is between two different versions.
+   * version should be >= left side, < right side
+   *
+   * @param {String} version1
+   * @param {String} version2
+   * @return {Boolean}
+   */
+  function versionTest(version, between) {
+    var fromVersion = between[0];
+    var toVersion = between[1];
+
+    if (compareVersion(version, fromVersion) === -1) {
+      return false;
+    }
+    return !toVersion || compareVersion(version, toVersion) === -1;
+  }
+
+  /**
+   * Compares two Ember versions.
+   *
+   * Returns:
+   * `-1` if version < version
+   * 0 if version1 == version2
+   * 1 if version1 > version2
+   *
+   * @param {String} version1
+   * @param {String} version2
+   * @return {Boolean} result of the comparison
+   */
+  function compareVersion(version1, version2) {
+    var compared, i;
+    version1 = cleanupVersion(version1).split('.');
+    version2 = cleanupVersion(version2).split('.');
+    for (i = 0; i < 3; i++) {
+      compared = compare(+version1[i], +version2[i]);
+      if (compared !== 0) {
+        return compared;
+      }
+    }
+    return 0;
+  }
+
+  /* Remove -alpha, -beta, etc from versions */
+  function cleanupVersion(version) {
+    return version.replace(/-.*/g, '');
+  }
+
+  function compare(val, number) {
+    if (val === number) {
+      return 0;
+    } else if (val < number) {
+      return -1;
+    } else if (val > number) {
+      return 1;
+    }
   }
 
 }(currentAdapter));

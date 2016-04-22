@@ -14,7 +14,7 @@ var mv = require('broccoli-stew').mv;
 var writeFile = require('broccoli-file-creator');
 var replace = require('broccoli-replace');
 var esTranspiler = require('broccoli-babel-transpiler');
-
+var packageJson = require('./package.json');
 
 /*global process */
 
@@ -80,6 +80,13 @@ emberDebug = removeFile(emberDebug, {
   ]
 });
 
+emberDebug = removeFile(emberDebug, {
+  files: [
+    'ember-debug/vendor/startup-wrapper.js',
+    'ember-debug/vendor/loader.js'
+  ]
+});
+
 if (env === 'test') {
   var linted = eslint(emberDebug, {
     testGenerator: eslintTestGenerator,
@@ -91,13 +98,6 @@ if (env === 'test') {
   emberDebug = mergeTrees([emberDebug, linted]);
 }
 
-emberDebug = removeFile(emberDebug, {
-  files: [
-    'ember-debug/vendor/startup-wrapper.js',
-    'ember-debug/vendor/loader.js'
-  ]
-});
-
 emberDebug = new ES6Modules(emberDebug, {
   esperantoOptions: {
     absolutePaths: true,
@@ -106,10 +106,25 @@ emberDebug = new ES6Modules(emberDebug, {
 });
 emberDebug = esTranspiler(emberDebug);
 
+var previousEmberVersionsSupportedString = '[' + packageJson.previousEmberVersionsSupported.map(function(item) {
+  return "'" + item + "'";
+}).join(',') + ']';
+var emberVersionsSupportedString = '[' + packageJson.emberVersionsSupported.map(function(item) {
+  return "'" + item + "'";
+}).join(',') + ']';
+
 var startupWrapper = pickFiles('ember_debug', {
   srcDir: '/vendor',
   files: ['startup-wrapper.js'],
   destDir: '/'
+});
+
+startupWrapper = replace(startupWrapper, {
+  files: ['startup-wrapper.js'],
+  patterns: [{
+    match: /{{EMBER_VERSIONS_SUPPORTED}}/,
+    replacement: emberVersionsSupportedString
+  }]
 });
 
 var sourceMap = pickFiles('ember_debug', {
@@ -145,7 +160,20 @@ var emberDebugs = [];
 
 var tree = app.toTree();
 
-var bookmarklet = mergeTrees([tree, emberDebugs.bookmarklet, 'skeleton_bookmarklet']);
+var emberInspectorVersionPattern = [{
+  match: /{{EMBER_INSPECTOR_VERSION}}/g,
+  replacement: packageJson.version
+}];
+
+tree = replace(tree, {
+  files: ['**/*.js'],
+  patterns: emberInspectorVersionPattern
+});
+
+var minimumVersion = packageJson.emberVersionsSupported[0].replace(/\./g, '-');
+var chromeRoot = 'panes-' + minimumVersion;
+var firefoxRoot = 'data/' + chromeRoot;
+var bookmarkletRoot = chromeRoot;
 
 var firefoxAndChromeExtra = pickFiles('shared', {
   srcDir: '/',
@@ -153,29 +181,110 @@ var firefoxAndChromeExtra = pickFiles('shared', {
   destDir: '/'
 });
 
+var replacementPattern = [{
+  match: /{{env}}/,
+  replacement: env === 'development' ? ' [DEV]' : ''
+}, {
+  match: /{{PANE_ROOT}}/g,
+  replacement: 'panes-' + minimumVersion
+}, {
+  match: /{{PREVIOUS_EMBER_VERSIONS_SUPPORTED}}/g,
+  replacement: previousEmberVersionsSupportedString
+}, {
+  match: /{{EMBER_VERSIONS_SUPPORTED}}/g,
+  replacement: emberVersionsSupportedString
+}];
+
+replacementPattern = replacementPattern.concat(emberInspectorVersionPattern);
+
+var skeletonChrome = replace('skeletons/chrome', {
+  files: ['*'],
+  patterns: replacementPattern
+});
+
+var skeletonFirefox = replace('skeletons/firefox', {
+  files: ['*', '*/**'],
+  patterns: replacementPattern
+});
+
+var skeletonBookmarklet = replace('skeletons/bookmarklet', {
+  files: ['*'],
+  patterns: replacementPattern
+});
+
 var firefox = mergeTrees([
-  mv(mergeTrees([tree, firefoxAndChromeExtra, emberDebugs.firefox]), 'data/panes'),
-  'skeleton_firefox'
+  mv(mergeTrees([tree, emberDebugs.firefox]), firefoxRoot),
+  skeletonFirefox
 ]);
 
 var chrome = mergeTrees([
-  mv(mergeTrees([tree, firefoxAndChromeExtra, emberDebugs.chrome]), 'panes'),
-  'skeleton_chrome'
+  mv(mergeTrees([tree, emberDebugs.chrome]), chromeRoot),
+  skeletonChrome
 ]);
 
-var websocket = mergeTrees([tree, emberDebugs.websocket]);
-var basic = mergeTrees([tree, emberDebugs.basic]);
+var bookmarklet = mergeTrees([
+  mv(mergeTrees([tree, emberDebugs.bookmarklet]), chromeRoot),
+  skeletonBookmarklet
+]);
+
+packageJson.previousEmberVersionsSupported.forEach(function(version) {
+  version = version.replace(/\./g, '-');
+  if (env === 'production') {
+    var prevDist = 'dist_prev/' + env;
+
+    bookmarklet = mergeTrees([
+      mv(prevDist + '/bookmarklet/panes-' + version, 'panes-' + version),
+      bookmarklet
+    ]);
+    firefox = mergeTrees([
+      mv(prevDist + '/firefox/panes-' + version, 'data/panes-' + version),
+      firefox
+    ]);
+    chrome = mergeTrees([
+      mv(prevDist + '/chrome/panes-' + version, 'panes-' + version),
+      chrome
+    ]);
+  } else {
+    var file = writeFile('index.html', "This Ember version is not supported in development environment.");
+    var emberDebugFile = writeFile('ember_debug.js', 'void(0);');
+    chrome = mergeTrees([mv(file, 'panes-' + version), chrome]);
+    firefox = mergeTrees([mv(file, 'data/panes-' + version), mv(emberDebugFile, 'data/panes-' + version), firefox]);
+    bookmarklet = mergeTrees([mv(file, 'panes-' + version), mv(emberDebugFile, 'panes-' + version), bookmarklet]);
+  }
+});
+
+firefox = mergeTrees([
+  mv(firefoxAndChromeExtra, 'data/scripts'),
+  firefox
+]);
+
+chrome = mergeTrees([
+  mv(firefoxAndChromeExtra, 'scripts'),
+  chrome
+]);
 
 // Pass the current dist to the Ember Inspector app.
-chrome = mergeTrees([chrome, mv(writeFile('dist-config.js', "window.EMBER_DIST='chrome';"), 'panes/assets')]);
-firefox = mergeTrees([firefox, mv(writeFile('dist-config.js', "window.EMBER_DIST='firefox';"), 'data/panes/assets')]);
-bookmarklet = mergeTrees([bookmarklet, mv(writeFile('dist-config.js', "window.EMBER_DIST='bookmarklet';"), 'assets')]);
-websocket = mergeTrees([websocket, mv(writeFile('dist-config.js', "window.EMBER_DIST='websocket';"), 'assets')]);
-basic = mergeTrees([basic, mv(writeFile('dist-config.js', "window.EMBER_DIST='basic';"), 'assets')]);
+// EMBER DIST
+var dists = {
+  chrome: chrome,
+  firefox: firefox,
+  bookmarklet: bookmarklet,
+  websocket: mergeTrees([tree, emberDebugs.websocket]),
+  basic: mergeTrees([tree, emberDebugs.basic])
+};
+Object.keys(dists).forEach(function(key) {
+  dists[key] = replace(dists[key], {
+    files: ['**/*.js'],
+    patterns: [{
+      match: /{{EMBER_DIST}}/g,
+      replacement: key
+    }]
+  });
+});
 
 // Add {{ remote-port }} to the head
 // so that the websocket addon can replace it.
-websocket = replace(websocket, {
+dists.websocket = replace(dists.websocket, {
   files: ['index.html'],
   patterns: [{
     match: /<head>/,
@@ -188,11 +297,11 @@ var output;
 if (env === 'test') {
   // `ember test` expects the index.html file to be in the
   // output directory.
-  output = basic;
+  output = dists.basic;
 } else {
 
   // Change base tag for running tests in development env.
-  basic = replace(basic, {
+  dists.basic = replace(dists.basic, {
     files: ['tests/index.html'],
     patterns: [{
       match: /<base.*\/>/,
@@ -201,13 +310,12 @@ if (env === 'test') {
   });
 
   output = mergeTrees([
-    mv(bookmarklet, 'bookmarklet'),
-    mv(firefox, 'firefox'),
-    mv(chrome, 'chrome'),
-    mv(websocket, 'websocket'),
-    mv(basic, 'testing')
+    mv(dists.bookmarklet, 'bookmarklet'),
+    mv(dists.firefox, 'firefox'),
+    mv(dists.chrome, 'chrome'),
+    mv(dists.websocket, 'websocket'),
+    mv(dists.basic, 'testing')
   ]);
 }
 
 module.exports = output;
-

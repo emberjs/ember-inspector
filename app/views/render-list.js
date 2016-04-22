@@ -1,5 +1,5 @@
 import Ember from "ember";
-const { View, computed } = Ember;
+const { View, computed, Handlebars: { SafeString } } = Ember;
 
 export default View.extend({
   attributeBindings: ['style'],
@@ -7,7 +7,7 @@ export default View.extend({
   classNames: ["list-tree", "list-tree_scrollable"],
 
   style: computed('height', function() {
-    return 'height:' + this.get('height') + 'px';
+    return new SafeString(`height: ${this.get('height')}px;`);
   }),
 
   contentHeight: Ember.computed.alias('controller.controllers.application.contentHeight'),
@@ -15,9 +15,9 @@ export default View.extend({
   filterHeight: 22,
 
   height: computed('contentHeight', function() {
-    const filterHeight = this.get('filterHeight'),
-        headerHeight = 30,
-        contentHeight = this.get('contentHeight');
+    let filterHeight = this.get('filterHeight');
+    let headerHeight = 30;
+    let contentHeight = this.get('contentHeight');
 
     // In testing list-view is created before `contentHeight` is set
     // which will trigger an exception

@@ -67,7 +67,7 @@ const EmberDebug = EmberObject.extend({
 
   willDestroy() {
     this.destroyContainer();
-    this._super.apply(this, arguments);
+    this._super(...arguments);
   },
 
   reset($keepAdapter) {
@@ -108,10 +108,10 @@ const EmberDebug = EmberObject.extend({
 }).create();
 
 function getApplication() {
-  let namespaces = Namespace.NAMESPACES,
-      application;
+  let namespaces = Namespace.NAMESPACES;
+  let application;
 
-  namespaces.forEach((namespace) => {
+  namespaces.forEach(namespace => {
     if (namespace instanceof Application) {
       application = namespace;
       return false;

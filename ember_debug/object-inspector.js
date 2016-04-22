@@ -168,7 +168,7 @@ export default EmberObject.extend(PortMixin, {
     },
     traceErrors(message) {
       let errors = this.get('_errorsFor')[message.objectId];
-      toArray(errors).forEach((error) => {
+      toArray(errors).forEach(error => {
         let stack = error.error;
         if (stack && stack.stack) {
           stack = stack.stack;
@@ -272,8 +272,8 @@ export default EmberObject.extend(PortMixin, {
     if (!object) {
       return;
     }
-    let meta = emberMeta(object),
-        guid = guidFor(object);
+    let meta = emberMeta(object);
+    let guid = guidFor(object);
 
     meta._debugReferences--;
 
@@ -300,11 +300,11 @@ export default EmberObject.extend(PortMixin, {
   },
 
   removeObservers(objectId) {
-    let observers = this.boundObservers[objectId],
-        object = this.sentObjects[objectId];
+    let observers = this.boundObservers[objectId];
+    let object = this.sentObjects[objectId];
 
     if (observers) {
-      observers.forEach((observer) => {
+      observers.forEach(observer => {
         removeObserver(object, observer.property, observer.handler);
       });
     }
@@ -313,13 +313,13 @@ export default EmberObject.extend(PortMixin, {
   },
 
   mixinsForObject(object) {
-    let mixins = Mixin.mixins(object),
-        mixinDetails = [];
+    let mixins = Mixin.mixins(object);
+    let mixinDetails = [];
 
     let ownProps = propertiesForMixin({ mixins: [{ properties: object }] });
     mixinDetails.push({ name: "Own Properties", properties: ownProps, expand: true });
 
-    mixins.forEach((mixin) => {
+    mixins.forEach(mixin => {
       let name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor;
       if (!name) {
         name = 'Unknown mixin';
@@ -404,7 +404,7 @@ export default EmberObject.extend(PortMixin, {
 
   bindProperties(objectId, mixinDetails) {
     mixinDetails.forEach((mixin, mixinIndex) => {
-      mixin.properties.forEach((item) => {
+      mixin.properties.forEach(item => {
         if (item.overridden) {
           return true;
         }
@@ -429,7 +429,7 @@ export default EmberObject.extend(PortMixin, {
 function propertiesForMixin(mixin) {
   let properties = [];
 
-  mixin.mixins.forEach((mixin) => {
+  mixin.mixins.forEach(mixin => {
     if (mixin.properties) {
       addProperties(properties, mixin.properties);
     }
@@ -607,11 +607,11 @@ function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties
   ```
 */
 function customizeProperties(mixinDetails, propertyInfo) {
-  let newMixinDetails = [],
-      neededProperties = {},
-      groups = propertyInfo.groups || [],
-      skipProperties = propertyInfo.skipProperties || [],
-      skipMixins = propertyInfo.skipMixins || [];
+  let newMixinDetails = [];
+  let neededProperties = {};
+  let groups = propertyInfo.groups || [];
+  let skipProperties = propertyInfo.skipProperties || [];
+  let skipMixins = propertyInfo.skipMixins || [];
 
   if (groups.length) {
     mixinDetails[0].expand = false;
@@ -680,7 +680,8 @@ function getDebugInfo(object) {
       'layout',
       'templateData',
       'domManager',
-      'states'
+      'states',
+      'element'
     );
   }
 

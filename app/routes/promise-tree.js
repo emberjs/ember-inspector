@@ -16,7 +16,7 @@ export default TabRoute.extend({
   },
 
   setupController() {
-    this._super.apply(this, arguments);
+    this._super(...arguments);
     this.get('port').on('promise:instrumentWithStack', this, this.setInstrumentWithStack);
     this.get('port').send('promise:getInstrumentWithStack');
   },

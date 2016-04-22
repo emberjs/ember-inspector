@@ -1,41 +1,13 @@
 module.exports = function(grunt) {
-
+  var packageJson = grunt.file.readJSON('package.json');
+  var versionedPane = 'panes-' + packageJson.emberVersionsSupported[0].replace(/\./g, '-');
   var config = {
-    pkg: grunt.file.readJSON('package.json'),
+    pkg: packageJson,
     env: process.env,
-    "mozilla-cfx-xpi": {
-      "stable": {
-        options: {
-          "mozilla-addon-sdk": "latest",
-          extension_dir: "dist/firefox",
-          dist_dir: "tmp/xpi"
-        }
-      }
-    },
-    "mozilla-addon-sdk": {
-      "latest": {
-        options: {
-          revision: "latest",
-          dest_dir: "tmp/mozilla-addon-sdk"
-        }
-      }
-    },
-    "mozilla-cfx": {
-      "run": {
-        options: {
-          "mozilla-addon-sdk": "latest",
-          extension_dir: "dist/firefox",
-          command: "run"
-        }
-      }
-    },
-    "version": {
-      app: {
-        src: ['app/app.js']
-      },
-      dist: {
-        prefix: '^"?version"?:\s*[\'"]?',
-        src: ['skeleton_chrome/manifest.json', 'skeleton_firefox/package.json']
+    "jpm": {
+      options: {
+        src: "dist/firefox",
+        xpi: "tmp/xpi"
       }
     },
     "s3": {
@@ -64,23 +36,46 @@ module.exports = function(grunt) {
         expand: true,
         pretty: true,
         src: 'dist/chrome/**/*'
+      },
+      "chrome-pane": {
+        options: {
+          archive: 'dist/chrome-pane.zip'
+        },
+        expand: true,
+        pretty: true,
+        cwd: 'dist/chrome/' + versionedPane,
+        src: ['**/*']
+      },
+      "firefox-pane": {
+        options: {
+          archive: 'dist/firefox-pane.zip'
+        },
+        expand: true,
+        pretty: true,
+        cwd: 'dist/firefox/data/' + versionedPane,
+        src: ['**/*']
+      },
+      "bookmarklet-pane": {
+        options: {
+          archive: 'dist/bookmarklet-pane.zip'
+        },
+        expand: true,
+        pretty: true,
+        cwd: 'dist/bookmarklet/' + versionedPane,
+        src: ['**/*']
       }
     }
   };
 
   grunt.initConfig(config);
 
-  grunt.loadNpmTasks('grunt-mozilla-addon-sdk');
-  grunt.loadNpmTasks('grunt-version');
+  grunt.loadNpmTasks('grunt-jpm');
   grunt.loadNpmTasks('grunt-s3');
   grunt.loadNpmTasks('grunt-contrib-compress');
 
-  grunt.registerTask('build-xpi', [
-    'mozilla-addon-sdk',
-    'mozilla-cfx-xpi'
-  ]);
+  grunt.registerTask('build-xpi', ['jpm:xpi']);
 
-  grunt.registerTask('run-xpi', ['build-xpi', 'mozilla-cfx:run']);
+  grunt.registerTask('run-xpi', ['jpm:run']);
 
   grunt.registerTask('clean-tmp', function() {
     grunt.file.delete('./tmp');

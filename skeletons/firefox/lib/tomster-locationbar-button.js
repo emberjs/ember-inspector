@@ -4,7 +4,7 @@ const { openEmberInspector } = require("./tomster-devtool-panel");
 
 const tabs = require("./tomster-tabs");
 
-const { UrlbarButton } = require("urlbarbutton");
+const { UrlbarButton } = require("./urlbarbutton");
 
 const { Panel } = require("sdk/panel");
 
@@ -20,7 +20,7 @@ function enable() {
 
   button = UrlbarButton({
     id: TOMSTER_BUTTON_ID,
-    image : data.url("panes/assets/images/icon19.png"),
+    image : data.url("{{PANE_ROOT}}/assets/images/icon19.png"),
     // TODO: Warning for a panel hooked to a locationbar button:
     // "Passing a DOM node to Panel.show() method is an unsupported feature
     //  that will be soon replaced. See:

@@ -199,8 +199,8 @@ export default EmberObject.extend(PortMixin, {
   },
 
   inspectValue(value) {
-    let objectInspector = this.get('objectInspector'),
-        inspected = objectInspector.inspectValue(value);
+    let objectInspector = this.get('objectInspector');
+    let inspected = objectInspector.inspectValue(value);
 
     if (inspected.type === 'type-ember-object' || inspected.type === "type-array") {
       inspected.objectId = objectInspector.retainObject(value);

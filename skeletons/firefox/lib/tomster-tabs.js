@@ -8,6 +8,11 @@ const { EventTarget } = require("sdk/event/target");
 
 const tabs = require("sdk/tabs");
 
+const emberVersions = require('./ember-versions');
+const previousVersions = emberVersions.previous;
+const supportedVersions = emberVersions.supported;
+
+
 // route open/active/ready events (needed by tomster-locationbar-button)
 let emitTomsterTabsOpen = (tab) => emit(tomsterTabs, 'open', tab);
 let emitTomsterTabsActivate = (tab) => emit(tomsterTabs, 'activate', tab);
@@ -75,6 +80,16 @@ const Tabs = Class({
 let tomsterTabs = Tabs();
 module.exports = tomsterTabs;
 
+
+let contentScriptOptions = {
+  emberInPageScript: data.load("scripts/in-page-script.js")
+};
+
+previousVersions.concat([supportedVersions[0]]).forEach((version) => {
+  let dashedVersion = version.replace(/\./g, '-');
+  contentScriptOptions['emberDebugScript-' + dashedVersion] = data.load('panes-' + dashedVersion + '/ember_debug.js');
+});
+
 // create a page monitor to check ember versions and route
 // ember debug messages when needed
 let pageMod = PageMod({
@@ -82,10 +97,7 @@ let pageMod = PageMod({
   include: ["*", "file://*"],
   attachTo: ["top", "frame", "existing"],
   contentScriptFile: data.url('content-script.js'),
-  contentScriptOptions: {
-    emberDebugScript: data.load("panes/ember_debug.js"),
-    emberInPageScript: data.load("panes/in-page-script.js")
-  },
+  contentScriptOptions: contentScriptOptions,
   contentScriptWhen: "start",
   onAttach: (worker) => {
     console.debug("ON ATTACH WORKER", worker);
