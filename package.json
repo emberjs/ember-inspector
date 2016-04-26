@@ -25,8 +25,8 @@
     "node": ">= 0.10.0",
     "npm": ">= 2.0.0"
   },
-  "emberVersionsSupported": ["2.0.0", "3.0.0"],
-  "previousEmberVersionsSupported": ["0.0.0"],
+  "emberVersionsSupported": ["0.0.0", "2.7.0"],
+  "previousEmberVersionsSupported": [],
   "author": "Tilde, Inc.",
   "license": "MIT",
   "devDependencies": {
