@@ -1,5 +1,24 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 1.10.0
+
+* [IMPROVEMENT] Add [DEV] to the tab name for the inspector development version [#527](https://github.com/emberjs/ember-inspector/pull/527)
+* [BUGFIX] Fix PDF documents not opening on latest Chrome [#533](https://github.com/emberjs/ember-inspector/pull/533)
+* [INTERNAL] Publish multiple versions of the inspector to support all Ember versions [#535](https://github.com/emberjs/ember-inspector/pull/535)
+* [INTERNAL] Lock Ember version at 0.0.0 -> 2.6.0 and start supporting a new version at 2.7.0
+
+## Ember Inspector 1.9.5
+
+* [BUGFIX] filter out null/undefined nodes [#510](https://github.com/emberjs/ember-inspector/pull/510)
+* [BUGFIX] Fix websocket adapter ES6 conversion [#505](https://github.com/emberjs/ember-inspector/pull/505)
+
+## Ember Inspector 1.9.4
+
+* [BUGFIX] Launch inspector if document ready state is `interactive` [#500](https://github.com/emberjs/ember-inspector/pull/500)
+* [BUGFIX] [Ember 2.2] Use the new `resolveRegistration` to remove the deprecation warning [#499](https://github.com/emberjs/ember-inspector/pull/499) [#497](https://github.com/emberjs/ember-inspector/pull/497)
+* [BUGFIX] [Ember 2.2] Fix the view tree: use `scope.getSelf` when available to get the controller [#496](https://github.com/emberjs/ember-inspector/pull/496)
+* [INTERNAL] Tweak Firefox skeleton again for 44 and later [#491](https://github.com/emberjs/ember-inspector/pull/491)
+
 ## Ember Inspector 1.9.3
 
 * [BUGFIX] Make sure we only reopen the app once [#482](https://github.com/emberjs/ember-inspector/pull/482)
