@@ -92,7 +92,7 @@ Patch versions are only committed to the stable branch. So we need to cherry-pic
 
 - `git checkout stable`
 - Cherry-pick the needed commits from master to stable
-- Bump the patch version in package.json and run `grunt version`. Add the change log entry and commit.
+- Bump the patch version in package.json. Add the change log entry and commit.
 - Follow the "Steps to publish" below.
 - `git checkout master`
 - Commit the change log entry to the master branch.
@@ -106,7 +106,7 @@ When releasing a major/minor version, master would already have this version set
 - `git merge -X theirs master`
 - Follow the "Steps to publish" steps below.
 - `git checkout master`
-- Update `package.json` to the future major/minor version and run `grunt version`
+- Update `package.json` to the future major/minor version.
 
 #### Steps to publish
 
