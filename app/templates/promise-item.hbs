@@ -1,45 +1,46 @@
-<div {{bind-attr style="nodeStyle" class=":list-tree__item :row expandedClass"}}  data-label="promise-item">
-  <div class="cell_type_main cell" {{action "toggleExpand" model}} {{bind-attr style="labelStyle"}}>
-    <div class="list-tree__limited list-tree__limited_helper_large">
-      <span {{bind-attr title="label"}} data-label="promise-label">
-        <span class="cell__arrow"></span>
-        {{label}}
-      </span>
+{{#with view.content as |content|}}
+  <div style="{{content.nodeStyle}}" class="list-tree__item row {{content.expandedClass}}"  data-label="promise-item">
+    <div class="cell_type_main cell" style="{{content.labelStyle}}" {{action "toggleExpand" content.model}}>
+      <div class="list-tree__limited list-tree__limited_helper_large">
+        <span title="{{content.label}}" data-label="promise-label">
+          <span class="cell__arrow"></span>
+          {{content.label}}
+        </span>
+      </div>
+      <div class="list-tree__right-helper">
+        {{#if content.hasStack}}
+          <div class="send-trace-to-console" {{action "tracePromise" content.model}} title="Trace promise in console" data-label="trace-promise-btn">
+            Trace
+          </div>
+        {{/if}}
+      </div>
     </div>
-    <div class="list-tree__right-helper">
-      {{#if hasStack}}
-        <div class="send-trace-to-console" {{action "tracePromise" model}} title="Trace promise in console" data-label="trace-promise-btn">
-          Trace
-        </div>
+    <div class="cell cell_size_medium">
+      <div class="pill pill_text_clear" style="{{content.style}}" data-label="promise-state">{{content.state}}</div>
+    </div>
+    <div class="cell cell_size_large" data-label="promise-value">
+      {{#if content.hasValue}}
+          <div class="list-tree__limited  list-tree__limited_helper_very-large" title="{{content.settledValue.inspect}}">
+            {{#if content.isValueInspectable}}
+              <span class="cell_clickable" {{action "inspectObject" content.settledValue.objectId}} data-label="promise-object-value">{{content.settledValue.inspect}}</span>
+            {{else}}
+              {{content.settledValue.inspect}}
+            {{/if}}
+          </div>
+          <div class="list-tree__right-helper">
+            {{#if content.isError}}
+              <div class="send-trace-to-console" {{action "sendValueToConsole" content.model}} data-label="send-to-console-btn" title="Send stack trace to the console">
+                Stack trace
+              </div>
+            {{else}}
+              {{send-to-console action="sendValueToConsole" param=content.model}}
+            {{/if}}
+
+          </div>
+      {{else}}
+      --
       {{/if}}
     </div>
+    <div class="cell cell_size_medium cell_value_numeric" data-label="promise-time">{{ms-to-time content.timeToSettle}}</div>
   </div>
-  <div class="cell cell_size_medium">
-    <div class="pill pill_text_clear" {{bind-attr style="style"}} data-label="promise-state">{{state}}</div>
-  </div>
-  <div class="cell cell_size_large" data-label="promise-value">
-    {{#if hasValue}}
-        <div class="list-tree__limited  list-tree__limited_helper_very-large" {{bind-attr title="settledValue.inspect"}}>
-          {{#if isValueInspectable}}
-
-            <span class="cell_clickable" {{action "inspectObject" settledValue.objectId}} data-label="promise-object-value">{{settledValue.inspect}}</span>
-          {{else}}
-            {{settledValue.inspect}}
-          {{/if}}
-        </div>
-        <div class="list-tree__right-helper">
-          {{#if isError}}
-          <div class="send-trace-to-console" {{action "sendValueToConsole" model}} data-label="send-to-console-btn" title="Send stack trace to the console">
-            Stack trace
-          </div>
-          {{else}}
-            {{send-to-console action="sendValueToConsole" param=model}}
-          {{/if}}
-
-        </div>
-    {{else}}
-    --
-    {{/if}}
-  </div>
-  <div class="cell cell_size_medium cell_value_numeric" data-label="promise-time">{{ms-to-time timeToSettle}}</div>
-</div>
+{{/with}}

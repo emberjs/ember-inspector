@@ -1,5 +1,7 @@
-<div class="list-tree__item row" data-label="instance-row" {{action "inspectInstance" this}}>
-  <div {{bind-attr class=":cell inspectable:cell_clickable"}} >
-    {{name}}
+{{#with view.content as |content|}}
+  <div class="list-tree__item row" data-label="instance-row" {{action "inspectInstance" content}}>
+    <div class="cell {{if content.inspectable 'cell_clickable'}}">
+      {{content.name}}
+    </div>
   </div>
-</div>
+{{/with}}

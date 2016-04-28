@@ -1,4 +1,4 @@
-import ListItemView from 'ember-list-view/list-item-view';
+import Ember from 'ember';
 
 /**
  * @module Views
@@ -6,7 +6,7 @@ import ListItemView from 'ember-list-view/list-item-view';
  * @class ListItem
  * @namespace Views
  */
-export default ListItemView.extend({
+export default Ember.View.extend({
   /**
    * @property classNames
    * @type {Array}

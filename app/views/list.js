@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import ListView from 'ember-list-view';
 import ListItemView from 'ember-inspector/views/list-item';
 
 const { computed, computed: { alias } } = Ember;
@@ -12,18 +11,26 @@ const { computed, computed: { alias } } = Ember;
  * @class List
  * @namespace Views
  */
-export default ListView.extend({
+export default Ember.View.extend({
+  templateName: "list",
+
   /**
    * @property classNames
    * @type {Array}
    */
-  classNames: ["list-tree"],
+  classNames: ["list-tree", "ember-list-view"],
 
   /**
    * @property contentHeight
    * @type {Integer}
    */
   contentHeight: alias('controller.controllers.application.contentHeight'),
+
+  attributeBindings: ['style'],
+
+  style: computed('height', function() {
+    return `height:${this.get('height')}px`;
+  }),
 
   /**
    * @property height
@@ -48,9 +55,5 @@ export default ListView.extend({
    */
   rowHeight: 30,
 
-  /**
-   * @property itemViewClass
-   * @type {Ember.View}
-   */
   itemViewClass: ListItemView
 });
