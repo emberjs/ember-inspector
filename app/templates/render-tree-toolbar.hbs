@@ -1,13 +1,13 @@
 <div class="toolbar">
   {{clear-button action="clearProfiles" classNames="toolbar__icon-button"}}
-  <div class="toolbar__search" data-label="render-profiles-search">
+  <div class="toolbar__search js-render-profiles-search">
     {{input value=searchField placeholder="Search"}}
   </div>
   <div class="filter-bar__pills"></div>
 
   {{#unless showEmpty}}
     <div class="divider"></div>
-    <button data-label="toolbar-page-refresh-btn" {{action "refreshPage"}}>Reload</button>
+    <button class="js-toolbar-page-refresh-btn" {{action "refreshPage"}}>Reload</button>
   {{/unless}}
 
 </div>

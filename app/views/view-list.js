@@ -17,6 +17,12 @@ export default ListView.extend({
    */
   itemViewClass: ListItemView.extend({
     /**
+     * @property classNames
+     * @type {Array}
+     */
+    classNames: ['js-tree-node'],
+
+    /**
      * @property templateName
      * @type {String}
      * @default 'view_item'
@@ -36,22 +42,6 @@ export default ListView.extend({
      * @type {Ember.Controller}
      */
     node: readOnly('context'),
-
-    /**
-     * Needed for tests
-     *
-     * @property attributeBindings
-     * @type {Array}
-     * @default ['data-label:label']
-     */
-    attributeBindings: ['data-label:label'],
-
-    /**
-     * @property label
-     * @type {String}
-     * @default 'tree-node'
-     */
-    label: 'tree-node',
 
     /**
      * @method mouseEnter

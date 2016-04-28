@@ -95,63 +95,63 @@ function records(type) {
 test("Model types are successfully listed and bound", async function t(assert) {
   await visit('/data/model-types');
 
-  assert.equal(findByLabel('model-type').length, 2);
+  assert.equal(find('.js-model-type').length, 2);
   // they should be sorted alphabetically
-  assert.equal(findByLabel('model-type-name').eq(0).text().trim(), 'App.Comment');
-  assert.equal(findByLabel('model-type-name').eq(1).text().trim(), 'App.Post');
+  assert.equal(find('.js-model-type-name').eq(0).text().trim(), 'App.Comment');
+  assert.equal(find('.js-model-type-name').eq(1).text().trim(), 'App.Post');
 
-  assert.equal(findByLabel('model-type-count').eq(0).text().trim(), 1);
-  assert.equal(findByLabel('model-type-count').eq(1).text().trim(), 2);
+  assert.equal(find('.js-model-type-count').eq(0).text().trim(), 1);
+  assert.equal(find('.js-model-type-count').eq(1).text().trim(), 2);
 
   await triggerPort('data:modelTypesUpdated', {
     modelTypes: [
       modelTypeFactory({ name: 'App.Post', count: 3 })
     ]
   });
-  assert.equal(findByLabel('model-type-count').eq(1).text().trim(), 3);
+  assert.equal(find('.js-model-type-count').eq(1).text().trim(), 3);
 });
 
 
 test("Records are successfully listed and bound", async function t(assert) {
   await visit('/data/model-types');
 
-  await click(findByLabel('model-type').find('a').eq(1));
+  await click(find('.js-model-type').find('a').eq(1));
 
-  let columns = findByLabel('column-title');
+  let columns = find('.js-column-title');
   assert.equal(columns.eq(0).text().trim(), 'Id');
   assert.equal(columns.eq(1).text().trim(), 'Title');
   assert.equal(columns.eq(2).text().trim(), 'Body');
 
-  let recordRows = findByLabel('record-row');
+  let recordRows = find('.js-record-row');
   assert.equal(recordRows.length, 2);
 
   let firstRow = recordRows.eq(0);
-  assert.equal(findByLabel('record-column', firstRow).eq(0).text().trim(), 1);
-  assert.equal(findByLabel('record-column', firstRow).eq(1).text().trim(), 'My Post');
-  assert.equal(findByLabel('record-column', firstRow).eq(2).text().trim(), 'This is my first post');
+  assert.equal(find('.js-record-column', firstRow).eq(0).text().trim(), 1);
+  assert.equal(find('.js-record-column', firstRow).eq(1).text().trim(), 'My Post');
+  assert.equal(find('.js-record-column', firstRow).eq(2).text().trim(), 'This is my first post');
 
   let secondRow = recordRows.eq(1);
-  assert.equal(findByLabel('record-column', secondRow).eq(0).text().trim(), 2);
-  assert.equal(findByLabel('record-column', secondRow).eq(1).text().trim(), 'Hello');
-  assert.equal(findByLabel('record-column', secondRow).eq(2).text().trim(), '');
+  assert.equal(find('.js-record-column', secondRow).eq(0).text().trim(), 2);
+  assert.equal(find('.js-record-column', secondRow).eq(1).text().trim(), 'Hello');
+  assert.equal(find('.js-record-column', secondRow).eq(2).text().trim(), '');
 
   await triggerPort('data:recordsAdded', {
     records: [recordFactory({ objectId: 'new-post', id: 3, title: 'Added Post', body: 'I am new here' })]
   });
 
-  let row = findByLabel('record-row').eq(2);
-  assert.equal(findByLabel('record-column', row).eq(0).text().trim(), 3);
-  assert.equal(findByLabel('record-column', row).eq(1).text().trim(), 'Added Post');
-  assert.equal(findByLabel('record-column', row).eq(2).text().trim(), 'I am new here');
+  let row = find('.js-record-row').eq(2);
+  assert.equal(find('.js-record-column', row).eq(0).text().trim(), 3);
+  assert.equal(find('.js-record-column', row).eq(1).text().trim(), 'Added Post');
+  assert.equal(find('.js-record-column', row).eq(2).text().trim(), 'I am new here');
 
   await triggerPort('data:recordsUpdated', {
     records: [recordFactory({ objectId: 'new-post', id: 3, title: 'Modified Post', body: 'I am no longer new' })]
   });
 
-  row = findByLabel('record-row').last();
-  assert.equal(findByLabel('record-column', row).eq(0).text().trim(), 3);
-  assert.equal(findByLabel('record-column', row).eq(1).text().trim(), 'Modified Post');
-  assert.equal(findByLabel('record-column', row).eq(2).text().trim(), 'I am no longer new');
+  row = find('.js-record-row').last();
+  assert.equal(find('.js-record-column', row).eq(0).text().trim(), 3);
+  assert.equal(find('.js-record-column', row).eq(1).text().trim(), 'Modified Post');
+  assert.equal(find('.js-record-column', row).eq(2).text().trim(), 'I am no longer new');
 
   await triggerPort('data:recordsRemoved', {
     index: 2,
@@ -159,50 +159,50 @@ test("Records are successfully listed and bound", async function t(assert) {
   });
   await wait();
 
-  assert.equal(findByLabel('record-row').length, 2);
-  let lastRow = findByLabel('record-row').last();
-  assert.equal(findByLabel('record-column', lastRow).eq(0).text().trim(), 2, "Records successfully removed.");
+  assert.equal(find('.js-record-row').length, 2);
+  let lastRow = find('.js-record-row').last();
+  assert.equal(find('.js-record-column', lastRow).eq(0).text().trim(), 2, "Records successfully removed.");
 });
 
 test("Filtering records", async function t(assert) {
   await visit('/data/model-types');
 
-  await click(findByLabel('model-type').find('a').eq(1));
+  await click(find('.js-model-type').find('a').eq(1));
 
-  let rows = findByLabel('record-row');
+  let rows = find('.js-record-row');
   assert.equal(rows.length, 2);
-  let filters = findByLabel('filter');
+  let filters = find('.js-filter');
   assert.equal(filters.length, 2);
   let newFilter = filters.filter(':contains(New)');
   await click(newFilter);
 
-  rows = findByLabel('record-row');
+  rows = find('.js-record-row');
   assert.equal(rows.length, 1);
-  assert.equal(findByLabel('record-column', rows[0]).first().text().trim(), '2');
+  assert.equal(find('.js-record-column', rows[0]).first().text().trim(), '2');
 });
 
 test("Searching records", async function t(assert) {
   await visit('/data/model-types');
 
-  await click(findByLabel('model-type').find('a').eq(1));
+  await click(find('.js-model-type').find('a').eq(1));
 
-  let rows = findByLabel('record-row');
+  let rows = find('.js-record-row');
   assert.equal(rows.length, 2);
 
-  await fillIn('[data-label=records-search] input', 'Hello');
+  await fillIn('.js-records-search input', 'Hello');
 
-  rows = findByLabel('record-row');
+  rows = find('.js-record-row');
   assert.equal(rows.length, 1);
-  assert.equal(findByLabel('record-column', rows[0]).first().text().trim(), '2');
+  assert.equal(find('.js-record-column', rows[0]).first().text().trim(), '2');
 
-  await fillIn('[data-label=records-search] input', 'my first post');
+  await fillIn('.js-records-search input', 'my first post');
 
-  rows = findByLabel('record-row');
+  rows = find('.js-record-row');
   assert.equal(rows.length, 1);
-  assert.equal(findByLabel('record-column', rows[0]).first().text().trim(), '1');
+  assert.equal(find('.js-record-column', rows[0]).first().text().trim(), '1');
 
-  await fillIn('[data-label=records-search] input', '');
+  await fillIn('.js-records-search input', '');
 
-  rows = findByLabel('record-row');
+  rows = find('.js-record-row');
   assert.equal(rows.length, 2);
 });

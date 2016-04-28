@@ -120,7 +120,7 @@ test("It should correctly display the view tree", function(assert) {
 
   andThen(() => {
 
-    let $treeNodes = findByLabel('tree-node');
+    let $treeNodes = find('.js-tree-node');
     assert.equal($treeNodes.length, 3, 'expected some tree nodes');
     let controllerNames = [];
     let templateNames = [];
@@ -128,21 +128,26 @@ test("It should correctly display the view tree", function(assert) {
     let viewClassNames = [];
     let durations = [];
 
-    function label(theLabel, context) {
-      return findByLabel(theLabel, context).filter(':first').text().trim();
+    function jsClass(theClass, context) {
+      return find(theClass, context).filter(':first').text().trim();
     }
 
     $treeNodes.each(function() {
-      templateNames.push(label('view-template', this));
-      controllerNames.push(label('view-controller', this));
-      viewClassNames.push(label('view-class', this));
-      modelNames.push(label('view-model', this));
-      durations.push(label('view-duration', this));
+      templateNames.push(jsClass('.js-view-template', this));
+      controllerNames.push(jsClass('.js-view-controller', this));
+      viewClassNames.push(jsClass('.js-view-class', this));
+      modelNames.push(jsClass('.js-view-model', this));
+      durations.push(jsClass('.js-view-duration', this));
     });
 
-    let titleTips = find('span[title]:not([data-label])').map(function (i, node) {
-      return node.getAttribute('title');
-    }).toArray().sort();
+    // return pauseTest();
+    let titleTips = [];
+    [].forEach.call(document.querySelectorAll('.js-tree-node'), treeNode => {
+      let nodes = find('span[title]:not(:first)', treeNode);
+      [].forEach.call(nodes, node => titleTips.push(node.getAttribute('title')));
+    });
+
+    titleTips.sort();
 
     assert.deepEqual(controllerNames, [
       'App.ApplicationController',
@@ -203,9 +208,9 @@ test("It should update the view tree when the port triggers a change", function(
   })
   .then(function() {
 
-    $treeNodes = findByLabel('tree-node');
+    $treeNodes = find('.js-tree-node');
     assert.equal($treeNodes.length, 3);
-    assert.equal(findByLabel('view-controller').filter(':last').text().trim(), 'App.CommentsController');
+    assert.equal(find('.js-view-controller').filter(':last').text().trim(), 'App.CommentsController');
 
     viewTree = defaultViewTree();
     viewTree.children.splice(0, 1);
@@ -217,9 +222,9 @@ test("It should update the view tree when the port triggers a change", function(
   })
   .then(function() {
 
-    $treeNodes = findByLabel('tree-node');
+    $treeNodes = find('.js-tree-node');
     assert.equal($treeNodes.length, 2);
-    assert.equal(findByLabel('view-controller').filter(':last').text().trim(), 'App.SomeController');
+    assert.equal(find('.js-view-controller').filter(':last').text().trim(), 'App.SomeController');
   });
 
 });
@@ -239,12 +244,12 @@ test("Previewing / showing a view on the client", function(assert) {
     port.trigger('view:viewTree', { tree: viewTree });
     return wait();
   })
-  .mouseEnterByLabel('tree-node')
+  .mouseEnter('.js-tree-node')
   .then(function() {
     assert.equal(messageSent.name, 'view:previewLayer', "Client asked to preview layer");
     assert.equal(messageSent.message.objectId, 'applicationView', "Client sent correct id to preview layer");
   })
-  .mouseLeaveByLabel('tree-node')
+  .mouseLeave('.js-tree-node')
   .then(function() {
     assert.equal(messageSent.name, 'view:hidePreview', "Client asked to hide preview");
   });
@@ -259,14 +264,14 @@ test("Inspecting views on hover", function(assert) {
   });
 
   visit('/')
-  .clickByLabel('inspect-views')
+  .click('.js-inspect-views')
   .then(function() {
     assert.equal(messageSent.name, 'view:inspectViews');
     assert.deepEqual(messageSent.message, { inspect: true });
     port.trigger('view:startInspecting');
     return wait();
   })
-  .clickByLabel('inspect-views')
+  .click('.js-inspect-views')
   .then(function() {
     assert.equal(messageSent.name, 'view:inspectViews');
     assert.deepEqual(messageSent.message, { inspect: false });
@@ -283,7 +288,7 @@ test("Configuring which views to show", function(assert) {
 
   visit('/')
   .then(function() {
-    const checkbox = findByLabel('filter-components').find('input');
+    const checkbox = find('.js-filter-components').find('input');
     checkbox.prop('checked', true);
     checkbox.trigger('change');
     return wait();
@@ -294,7 +299,7 @@ test("Configuring which views to show", function(assert) {
     return wait();
   })
   .then(function() {
-    const checkbox = findByLabel('filter-all-views').find('input');
+    const checkbox = find('.js-filter-all-views').find('input');
     checkbox.prop('checked', true);
     checkbox.trigger('change');
     return wait();
@@ -324,7 +329,7 @@ test("Inspecting a model", function(assert) {
   });
 
   andThen(() => {
-    let model = findByLabel('view-model-clickable').eq(0);
+    let model = find('.js-view-model-clickable').eq(0);
     return click(model);
   });
 

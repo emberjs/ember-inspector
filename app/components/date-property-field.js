@@ -7,8 +7,6 @@ const KEY_EVENTS = {
 };
 
 export default DatePicker.extend({
-  attributeBindings: ['label:data-label'],
-
   openDatePicker: on('didInsertElement', function() {
     once(this.$(), 'click');
   }),

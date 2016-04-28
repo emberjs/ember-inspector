@@ -16,8 +16,6 @@
     "currentURL": true,
     "currentPath": true,
     "currentRouteName": true,
-    "findByLabel": true,
-    "clickByLabel": true,
     "triggerPort": true
   },
   "rules": {
