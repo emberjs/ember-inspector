@@ -48,12 +48,5 @@ export default Ember.View.extend({
     return contentHeight - headerHeight;
   }),
 
-  /**
-   * @property rowHeight
-   * @type {Integer}
-   * @default 30
-   */
-  rowHeight: 30,
-
   itemViewClass: ListItemView
 });
