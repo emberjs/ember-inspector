@@ -12,7 +12,7 @@ export default ArrayController.extend({
 
   search: null,
 
-  arrangedContent: filter('model', function(item) {
+  filtered: filter('model', function(item) {
     return searchMatch(get(item, 'name'), this.get('search'));
   }).property('model.@each.name', 'search')
 });

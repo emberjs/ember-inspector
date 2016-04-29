@@ -12,6 +12,14 @@ const { computed: { readOnly } } = Ember;
  */
 export default ListView.extend({
   /**
+   * Passed as an attribute
+   *
+   * @property pinnedObjectId
+   * @type {String}
+   */
+  pinnedObjectId: null,
+
+  /**
    * @property itemViewClass
    * @type {Ember.View}
    */
@@ -24,18 +32,10 @@ export default ListView.extend({
     templateName: 'view_item',
 
     /**
-     * TODO: Need a better way to pass this
-     *
-     * @property pinnedObjectId
-     * @type {Integer}
-     */
-    pinnedObjectId: readOnly('parentView.pinnedObjectId'),
-
-    /**
      * @property node
      * @type {Ember.Controller}
      */
-    node: readOnly('context'),
+    node: readOnly('content'),
 
     /**
      * Needed for tests

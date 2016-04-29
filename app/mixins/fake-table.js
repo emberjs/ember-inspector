@@ -8,7 +8,7 @@ const { on } = Ember;
 
 function accountForScrollbar() {
   /*jshint validthis:true */
-  let outside = this.$('.list-tree').innerWidth();
+  let outside = this.$('.view-list').innerWidth();
   let inside = this.$('.ember-list-container').innerWidth();
   this.$('.spacer').width(outside - inside);
 }
