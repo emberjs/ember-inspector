@@ -13,8 +13,6 @@
   border-bottom: 1px solid #bdbdbd;
   background-color: #f0f0f0;
   cursor: default;
-  -webkit-user-select: none;
-  -moz-user-select: none;
   user-select: none;
 }
 
@@ -77,7 +75,6 @@
   text-overflow: ellipsis;
   display: flex;
   flex-direction: row;
-  -webkit-align-items: center;
   align-items: center;
 }
 

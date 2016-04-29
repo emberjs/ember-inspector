@@ -32,7 +32,7 @@ export default TabRoute.extend({
   updateModelTypes(message) {
     let route = this;
     message.modelTypes.forEach(function(modelType) {
-      const currentType = route.get('currentModel').findProperty('objectId', modelType.objectId);
+      const currentType = route.get('currentModel').findBy('objectId', modelType.objectId);
       Ember.set(currentType, 'count', modelType.count);
     });
   }

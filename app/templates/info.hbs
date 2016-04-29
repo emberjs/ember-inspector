@@ -1,30 +1,25 @@
-<div class="list-view">
-  <div class="list-view__header row">
-    <div class="cell cell_type_header cell_size_large">
+{{#x-list}}
+  <div class="list__row list__row_header">
+    <div class="list__cell">
       Library
     </div>
-    <div class="cell cell_type_header">
+    <div class="list__cell">
       Version
     </div>
     <!-- Account for scrollbar width :'(  -->
-    <div class="cell cell_type_header spacer"></div>
+    <div class="list__cell list__cell_spacer"></div>
   </div>
-  <div class="list-view__list-container">
-    <div class="list-tree">
-      <div class="ember-list-container">
-        {{#each model as |library|}}
-          <div data-label="library-row" class="list-tree__item-wrapper row-wrapper">
-            <div class="list-tree__item row">
-              <div class="cell_type_main cell cell_size_large">
-                <span data-label="lib-name">{{unbound library.name}}</span>
-              </div>
-              <div class="cell">
-                <span data-label="lib-version">{{unbound library.version}}</span>
-              </div>
-            </div>
-          </div>
-        {{/each}}
+
+  {{#x-list-content contentHeight=application.contentHeight}}
+    {{#each model as |library|}}
+      <div class="list__row js-library-row">
+        <div class="list__cell list__cell_main list__cell_size_large">
+          <span class="js-lib-name">{{library.name}}</span>
+        </div>
+        <div class="list__cell">
+          <span class="js-lib-version">{{library.version}}</span>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
+    {{/each}}
+  {{/x-list-content}}
+{{/x-list}}

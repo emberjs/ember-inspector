@@ -31,6 +31,7 @@ export default TabRoute.extend({
     error(err) {
       if (err && err.status === 404) {
         this.transitionTo('container-types.index');
+        return false;
       }
     },
     inspectInstance(obj) {

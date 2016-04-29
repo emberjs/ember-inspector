@@ -3,10 +3,6 @@ var packageJson = require('../package.json');
 
 module.exports = function(environment) {
   var ENV = {
-    contentSecurityPolicy: {
-       'style-src': "'self' 'unsafe-inline'",
-       'img-src': "'self' data:"
-    },
     modulePrefix: 'ember-inspector',
     environment: environment,
     baseURL: '/',

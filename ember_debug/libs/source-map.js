@@ -22,7 +22,7 @@ export default EmberObject.extend({
    * @return {RSVP.Promise}
    */
   map(stack) {
-    const parsed = A(fromStackProperty(stack));
+    let parsed = A(fromStackProperty(stack));
     let array = A();
     let lastPromise = null;
     parsed.forEach(item => {
@@ -114,9 +114,14 @@ function retrieveFile(source) {
 
 function retrieveSourceMapURL(source) {
   return retrieveFile(source).then(function(fileData) {
-    const match = /\/\/[#@]\s*sourceMappingURL=(.*)\s*$/m.exec(fileData);
+    let match = /\/\/[#@]\s*sourceMappingURL=(.*)\s*$/g.exec(fileData);
     if (!match) { return null; }
-    return match[1];
+    let url = match[1];
+    // check not data URL
+    if (url.match(/^data/)) {
+      return null;
+    }
+    return url;
   });
 }
 

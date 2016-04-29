@@ -10,11 +10,8 @@ export default Component.extend({
   side: 'left',
   minWidth: 60,
   setIsDragging: 'setIsDragging',
-  classes: computed('classNames.[]', function() {
-    return this.get('classNames').join(' ');
-  }),
   actions: {
-    setIsDragging: function(isDragging) {
+    setIsDragging(isDragging) {
       this.sendAction('setIsDragging', isDragging);
     }
   }

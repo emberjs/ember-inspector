@@ -6,29 +6,27 @@ const Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.resource('app-detected', { path: '/' }, function() {
-    this.resource('view-tree', { path: '/' });
-    this.resource('route-tree');
+  this.route('app-detected', { path: '/', resetNamespace: true }, function() {
+    this.route('view-tree', { path: '/', resetNamespace: true });
+    this.route('route-tree', { resetNamespace: true });
 
-    this.resource('data', function() {
-      this.resource('model-types', function() {
-        this.resource('model-type', { path: '/:type_id' }, function() {
-          this.resource('records');
+    this.route('data', { resetNamespace: true }, function() {
+      this.route('model-types', { resetNamespace: true }, function() {
+        this.route('model-type', { path: '/:type_id', resetNamespace: true }, function() {
+          this.route('records', { resetNamespace: true });
         });
       });
     });
 
-    this.resource('promises', function() {
-      this.resource('promise-tree');
+    this.route('promise-tree', { resetNamespace: true });
+
+    this.route('info', { resetNamespace: true });
+    this.route('render-tree', { resetNamespace: true });
+    this.route('container-types', { resetNamespace: true }, function() {
+      this.route('container-type', { path: '/:type_id', resetNamespace: true });
     });
 
-    this.resource('info');
-    this.resource('render-tree');
-    this.resource('container-types', function() {
-      this.resource('container-type', { path: '/:type_id' });
-    });
-
-    this.resource('deprecations');
+    this.route('deprecations', { resetNamespace: true });
   });
 
 });

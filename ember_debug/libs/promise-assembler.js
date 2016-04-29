@@ -108,12 +108,6 @@ let PromiseAssembler = EmberObject.extend(Evented, {
 
 export default PromiseAssembler;
 
-PromiseAssembler.reopenClass({
-  supported() {
-    return !!RSVP.on;
-  }
-});
-
 const fulfill = function(event) {
   const guid = event.guid;
   const promise = this.updateOrCreate(guid, {

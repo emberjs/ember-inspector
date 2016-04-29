@@ -1,5 +1,6 @@
 import Ember from "ember";
-const { run, computed } = Ember;
+import computed from 'ember-new-computed';
+const { run } = Ember;
 const { debounce } = run;
 
 // Use this if you want a property to debounce
@@ -16,12 +17,12 @@ export default function(prop, delay, callback) {
     }
   };
 
-  return computed(function(key, val) {
-    if (arguments.length > 1) {
+  return computed({
+    get() {},
+    set(key, val) {
       value = val;
       debounce(this, updateVal, delay);
       return val;
     }
   });
-
 }

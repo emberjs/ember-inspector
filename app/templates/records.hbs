@@ -1,14 +1,21 @@
-<div class="list-view">
-  <div class="list-view__header row">
+{{#x-list}}
+  <div class="list__row list__row_header">
     {{#each columns as |column|}}
-      <div class="cell cell_type_header" data-label="column-title">{{column.desc}}</div>
+      <div class="list__cell js-column-title">{{column.desc}}</div>
     {{/each}}
 
     <!-- Account for scrollbar width :'(  -->
-    <div class="cell cell_type_header spacer"></div>
+    <div class="list__cell list__cell_spacer"></div>
   </div>
 
-  <div class="list-view__list-container">
-    {{view "record-list" content=filtered columns=columns}}
-  </div>
-</div>
+  {{#x-list-content contentHeight=application.contentHeight}}
+    {{#vertical-collection content=filtered defaultHeight=30 as |content|}}
+      {{record-item
+        model=content
+        modelTypeColumns=columns
+        inspect="inspectModel"
+        class="js-record-item"
+      }}
+    {{/vertical-collection}}
+  {{/x-list-content}}
+{{/x-list}}

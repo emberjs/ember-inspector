@@ -19,7 +19,7 @@ export default TabRoute.extend({
   },
 
   deprecationsAdded(message) {
-    const model = this.get('currentModel');
+    let model = this.get('currentModel');
     message.deprecations.forEach(item => {
       let record = model.findBy('id', item.id);
       if (record) {
@@ -33,25 +33,6 @@ export default TabRoute.extend({
   },
 
   actions: {
-    openResource(item) {
-      this.get('adapter').openResource(item.fullSource, item.line);
-    },
-
-    traceDeprecations(deprecation) {
-      this.get('port').send('deprecation:sendStackTraces', {
-        deprecation: deprecation
-      });
-    },
-
-    traceSource(deprecation, source) {
-      this.get('port').send('deprecation:sendStackTraces', {
-        deprecation: {
-          message: deprecation.message,
-          sources: [source]
-        }
-      });
-    },
-
     clear() {
       this.get('port').send('deprecation:clear');
       this.get('currentModel').clear();

@@ -20,29 +20,8 @@ export default TabRoute.extend({
   },
 
   setTree(options) {
-    const routeArray = topSort(options.tree);
+    let routeArray = topSort(options.tree);
     this.set('controller.model', routeArray);
-  },
-
-  actions: {
-    inspectRoute(name) {
-      this.get('port').send('objectInspector:inspectRoute', { name: name } );
-    },
-
-    inspectController(controller) {
-      if (!controller.exists) {
-        return;
-      }
-      this.get('port').send('objectInspector:inspectController', { name: controller.name } );
-    },
-
-    sendControllerToConsole(controllerName) {
-      this.get('port').send('objectInspector:sendControllerToConsole', { name: controllerName });
-    },
-
-    sendRouteHandlerToConsole(routeName) {
-      this.get('port').send('objectInspector:sendRouteHandlerToConsole', { name: routeName });
-    }
   }
 });
 

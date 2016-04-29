@@ -20,13 +20,11 @@ export default EmberObject.extend(PortMixin, {
 
   init() {
     this._super();
-    if (PromiseAssembler.supported()) {
-      this.set('promiseAssembler', PromiseAssembler.create());
-      this.get('promiseAssembler').set('promiseDebug', this);
-      this.setInstrumentWithStack();
-      this.sendInstrumentWithStack();
-      this.get('promiseAssembler').start();
-    }
+    this.set('promiseAssembler', PromiseAssembler.create());
+    this.get('promiseAssembler').set('promiseDebug', this);
+    this.setInstrumentWithStack();
+    this.sendInstrumentWithStack();
+    this.get('promiseAssembler').start();
   },
 
   delay: 100,
@@ -43,12 +41,6 @@ export default EmberObject.extend(PortMixin, {
   messages: {
     getAndObservePromises() {
       this.getAndObservePromises();
-    },
-
-    supported() {
-      this.sendMessage('supported', {
-        supported: PromiseAssembler.supported()
-      });
     },
 
     releasePromises() {
@@ -78,7 +70,7 @@ export default EmberObject.extend(PortMixin, {
     },
 
     setInstrumentWithStack(message) {
-      const bool = message.instrumentWithStack;
+      let bool = message.instrumentWithStack;
       this.set('instrumentWithStack', bool);
       this.setInstrumentWithStack();
     },

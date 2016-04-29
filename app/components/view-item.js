@@ -1,22 +1,13 @@
 import Ember from "ember";
-const { computed, Component, Handlebars: { SafeString } } = Ember;
+const { computed, Component, String: { htmlSafe } } = Ember;
 const { not, bool } = computed;
 
 export default Component.extend({
-  classNames: ['list-tree__item', 'row'],
-
-  classNameBindings: ['isCurrent:row_highlight'],
+  classNames: ['list__row'],
 
   hasView: not('model.value.isVirtual'),
   hasElement: not('model.value.isVirtual'),
   hasModel: bool('model.value.model'),
-
-  // passed as an attribute
-  pinnedObjectId: null,
-
-  isCurrent: computed('pinnedObjectId', 'model.value.objectId', function() {
-    return this.get('pinnedObjectId') === this.get('model.value.objectId');
-  }),
 
   hasController: bool('model.value.controller'),
 
@@ -25,8 +16,26 @@ export default Component.extend({
   }),
 
   labelStyle: computed('model.parentCount', function() {
-    return new SafeString(`padding-left: ${+this.get('model.parentCount') * 20 + 5}px;`);
+    return htmlSafe(`padding-left: ${+this.get('model.parentCount') * 20 + 5}px;`);
   }),
+
+  /**
+   * @method mouseEnter
+   * @param {Object} e event object
+   */
+  mouseEnter(e) {
+    this.sendAction('previewLayer', this.get('model'));
+    e.stopPropagation();
+  },
+
+  /**
+   * @method mouseLeave
+   * @param {Object} e event object
+   */
+  mouseLeave(e) {
+    this.sendAction('hidePreview', this.get('model'));
+    e.stopPropagation();
+  },
 
   actions: {
     inspectView() {
