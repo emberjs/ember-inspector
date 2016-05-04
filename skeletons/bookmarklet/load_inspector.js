@@ -46,7 +46,7 @@
    * another version of ember-debug.
    *
    */
-  window.addEventListener('message', e => {
+  window.addEventListener('message', function(e) {
     if (e.origin !== window.emberInspector.url) {
       return;
     }
