@@ -15,7 +15,7 @@ const version = '{{EMBER_INSPECTOR_VERSION}}';
 const App = Ember.Application.extend({
   modulePrefix: config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
-  Resolver: Resolver
+  Resolver
 });
 
 
