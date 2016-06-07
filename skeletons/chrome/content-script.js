@@ -89,35 +89,34 @@
   /**
    * Send the iframes to EmberInspector so that it can run
    * EmberDebug in the context of the iframe.
+   *
+   * @param {DOMEvent} event
    */
 
-  function sendFrameToInspector(url) {
-    chrome.extension.sendMessage({type: 'iframes', urls: [url]});
+  function sendFrameToInspector(event) {
+    chrome.extension.sendMessage({type: 'iframes', urls: [event.target.src]});
+  }
+
+  function setupOnLoadListenersForIFrames() {
+    // get all current frames and attach onLoad event
+    var iframes = document.getElementsByTagName('iframe');
+    for (var i = 0, l = iframes.length; i < l; i ++) {
+      var iframe = iframes[i];
+      if (!('__inspector__on__load_listener' in iframe)) {
+        iframe.__inspector__on__load_listener = true;
+        iframe.addEventListener('load', sendFrameToInspector);
+      }
+    }
   }
 
   // create an observer instance for body tag, so if any iframes get pushed
   // to DOM we attach onLoad event listener on it and when it has finally loaded
   // we send it's URL to Inspector, otherwise we might send URL but Ember app in the
   // frame is still loading and thus will not be detected
-  var forEach = Array.prototype.forEach;
-  var bodyObserver = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-      forEach.call(mutation.addedNodes, function(node){
-        if (node.tagName === 'IFRAME') {
-          node.addEventListener('load', function() {
-            sendFrameToInspector(node.src);
-          });
-        }
-      });
-    });
-  });
-  bodyObserver.observe(document.body, { childList: true });
+  new MutationObserver(function() {
+    setupOnLoadListenersForIFrames();
+  }).observe(document.body, { childList: true });
 
-  // get all current frames and attach onLoad event
-  var iframes = document.getElementsByTagName('iframe');
-  for (var i = 0, l = iframes.length; i < l; i ++) {
-    iframes[i].addEventListener('load', function() {
-      sendFrameToInspector(this.src);
-    });
-  }
+  // get frames already in DOM on boot
+  setupOnLoadListenersForIFrames();
 }());
