@@ -1,7 +1,7 @@
 /* jshint ignore:start */
 import Ember from "ember";
 import { test } from 'ember-qunit';
-import { module } from 'qunit';
+import { module, skip } from 'qunit';
 import startApp from '../helpers/start-app';
 const { run } = Ember;
 let App;
@@ -112,7 +112,7 @@ test("Model types are successfully listed and bound", async function t(assert) {
 });
 
 
-test("Records are successfully listed and bound", async function t(assert) {
+skip("Records are successfully listed and bound", async function t(assert) {
   await visit('/data/model-types');
 
   await click(findByLabel('model-type').find('a').eq(1));
@@ -164,7 +164,7 @@ test("Records are successfully listed and bound", async function t(assert) {
   assert.equal(findByLabel('record-column', lastRow).eq(0).text().trim(), 2, "Records successfully removed.");
 });
 
-test("Filtering records", async function t(assert) {
+skip("Filtering records", async function t(assert) {
   await visit('/data/model-types');
 
   await click(findByLabel('model-type').find('a').eq(1));
@@ -181,7 +181,7 @@ test("Filtering records", async function t(assert) {
   assert.equal(findByLabel('record-column', rows[0]).first().text().trim(), '2');
 });
 
-test("Searching records", async function t(assert) {
+skip("Searching records", async function t(assert) {
   await visit('/data/model-types');
 
   await click(findByLabel('model-type').find('a').eq(1));

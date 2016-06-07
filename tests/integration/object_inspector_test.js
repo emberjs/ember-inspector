@@ -1,7 +1,7 @@
 /* jshint ignore:start */
 import Ember from "ember";
 import { test } from 'ember-qunit';
-import { module } from 'qunit';
+import { module, skip } from 'qunit';
 import startApp from '../helpers/start-app';
 const { run, $ } = Ember;
 let App;
@@ -87,7 +87,7 @@ function objectToInspect() {
   });
 }
 
-test("The object displays correctly", async function t(assert) {
+skip("The object displays correctly", async function t(assert) {
   let obj = objectFactory( { name: 'My Object' });
   await visit('/');
 
@@ -98,7 +98,7 @@ test("The object displays correctly", async function t(assert) {
   assert.ok(findByLabel('object-detail').hasClass('mixin_state_expanded'), 'The "Own Properties" detail is expanded by default');
 });
 
-test("Object details", async function t(assert) {
+skip("Object details", async function t(assert) {
 
   let $firstDetail, $secondDetail;
 
@@ -133,7 +133,7 @@ test("Object details", async function t(assert) {
   assert.equal(findByLabel('object-property-value', $secondDetail).eq(1).text(), 'String Value');
 });
 
-test("Digging deeper into objects", async function t(assert) {
+skip("Digging deeper into objects", async function t(assert) {
   let $secondDetail;
 
   await visit('/');
@@ -182,7 +182,7 @@ test("Digging deeper into objects", async function t(assert) {
   assert.equal(findByLabel('object-trail').length, 0);
 });
 
-test("Computed properties", async function t(assert) {
+skip("Computed properties", async function t(assert) {
   await visit('/');
 
   let obj = {
@@ -220,7 +220,7 @@ test("Computed properties", async function t(assert) {
   assert.equal(findByLabel('object-property-value').text(), 'Computed value');
 });
 
-test("Properties are bound to the application properties", async function t(assert) {
+skip("Properties are bound to the application properties", async function t(assert) {
   await visit('/');
 
   let obj = {
@@ -281,7 +281,7 @@ test("Properties are bound to the application properties", async function t(asse
   assert.equal(findByLabel('object-property-value').text(), 'Joey');
 });
 
-test("Stringified json should not get double parsed", async function t(assert) {
+skip("Stringified json should not get double parsed", async function t(assert) {
   await visit('/');
 
   let obj = {
@@ -317,7 +317,7 @@ test("Stringified json should not get double parsed", async function t(assert) {
   assert.equal(message.mixinIndex, 0);
 });
 
-test("Send to console", async function t(assert) {
+skip("Send to console", async function t(assert) {
   await visit('/');
 
   let obj = {
@@ -352,7 +352,7 @@ test("Send to console", async function t(assert) {
   assert.equal(message.property, undefined);
 });
 
-test("Read only CPs cannot be edited", async function t(assert) {
+skip("Read only CPs cannot be edited", async function t(assert) {
   await visit('/');
 
   let obj = {
@@ -409,7 +409,7 @@ test("Dropping an object due to destruction", async function t(assert) {
   assert.equal(findByLabel('object-name').text().trim(), '');
 });
 
-test("Date fields are editable", async function t(assert) {
+skip("Date fields are editable", async function t(assert) {
   await visit('/');
 
   let date = new Date();

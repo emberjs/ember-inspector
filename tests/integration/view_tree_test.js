@@ -1,7 +1,7 @@
 /* jshint ignore:start */
 import Ember from "ember";
 import { test } from 'ember-qunit';
-import { module } from 'qunit';
+import { module, skip } from 'qunit';
 import startApp from '../helpers/start-app';
 let App;
 const { run } = Ember;
@@ -191,7 +191,7 @@ test("It should correctly display the view tree", function(assert) {
 
 });
 
-test("It should update the view tree when the port triggers a change", function(assert) {
+skip("It should update the view tree when the port triggers a change", function(assert) {
   assert.expect(4);
   let $treeNodes, viewTree = defaultViewTree();
 
@@ -224,7 +224,7 @@ test("It should update the view tree when the port triggers a change", function(
 
 });
 
-test("Previewing / showing a view on the client", function(assert) {
+skip("Previewing / showing a view on the client", function(assert) {
   let messageSent = null;
   port.reopen({
     send: function(name, message) {
@@ -306,7 +306,7 @@ test("Configuring which views to show", function(assert) {
   });
 });
 
-test("Inspecting a model", function(assert) {
+skip("Inspecting a model", function(assert) {
   let messageSent = null;
   port.reopen({
     send: function(name, message) {

@@ -1,6 +1,6 @@
 /* jshint ignore:start */
 import Ember from "ember";
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 const { $ } = Ember;
 
 /* globals require, findByLabel, clickByLabel */
@@ -100,7 +100,7 @@ module("View Debug", {
   }
 });
 
-test("Simple View Tree", async function t(assert) {
+skip("Simple View Tree", async function t(assert) {
   let name = null, message = null;
   port.reopen({
     send(n, m) {
@@ -131,7 +131,7 @@ test("Simple View Tree", async function t(assert) {
 });
 
 
-test("Views created by context switching {{each}} helper are shown", async function t(assert) {
+skip("Views created by context switching {{each}} helper are shown", async function t(assert) {
   let message = null;
   port.reopen({
     send(n, m) {
@@ -154,7 +154,7 @@ test("Views created by context switching {{each}} helper are shown", async funct
 });
 
 
-test("Highlight a view", async function t(assert) {
+skip("Highlight a view", async function t(assert) {
   let name, message, layerDiv;
   port.reopen({
     send(n, m) {
@@ -221,7 +221,7 @@ test("Components in view tree", async function t(assert) {
 
 });
 
-test("Highlighting Views on hover", async function t(assert) {
+skip("Highlighting Views on hover", async function t(assert) {
   port.reopen({
     send(/*n, m*/) {}
   });

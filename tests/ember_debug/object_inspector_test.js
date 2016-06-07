@@ -1,6 +1,6 @@
 /* jshint ignore:start */
 import Ember from "ember";
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 
 let EmberDebug;
 let port, name, message;
@@ -368,7 +368,7 @@ test("Read Only Computed properties mush have a readOnly property", function(ass
   assert.ok(!properties[1].readOnly);
 });
 
-test("Views are correctly handled when destroyed during transitions", async function t(assert) {
+skip("Views are correctly handled when destroyed during transitions", async function t(assert) {
   let objectId = null;
 
   await visit('/simple');

@@ -1,7 +1,7 @@
 /* jshint ignore:start */
 import Ember from "ember";
 import { test } from 'ember-qunit';
-import { module } from 'qunit';
+import { module, skip } from 'qunit';
 import startApp from '../helpers/start-app';
 let App;
 
@@ -103,7 +103,7 @@ test("Renders the list correctly", async function t(assert) {
   assert.equal(rows.length, 2, "Child is hidden when parent collapses");
 });
 
-test("Searching the profiles", async function t(assert) {
+skip("Searching the profiles", async function t(assert) {
   port.reopen({
     send(n/*, m*/) {
       if (n === 'render:watchProfiles') {

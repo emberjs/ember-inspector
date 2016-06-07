@@ -1,7 +1,7 @@
 /* jshint ignore:start */
 import Ember from "ember";
 import { test } from 'ember-qunit';
-import { module } from 'qunit';
+import { module, skip } from 'qunit';
 import startApp from '../helpers/start-app';
 const { $ } = Ember;
 
@@ -276,7 +276,7 @@ test("Logging error stack trace in the console", async function t(assert) {
 });
 
 
-test("Send fulfillment value to console", async function t(assert) {
+skip("Send fulfillment value to console", async function t(assert) {
   await visit('/promises');
 
   await triggerPort('promise:promisesUpdated', {

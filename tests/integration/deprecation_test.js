@@ -1,7 +1,7 @@
 /* jshint ignore:start */
 import Ember from "ember";
 import { test } from 'ember-qunit';
-import { module } from 'qunit';
+import { module, skip } from 'qunit';
 import startApp from '../helpers/start-app';
 let App;
 
@@ -49,7 +49,7 @@ module('Deprecation Tab', {
   }
 });
 
-test('No source map', async function t(assert) {
+skip('No source map', async function t(assert) {
   port.reopen({
     send(name) {
       if (name === 'deprecation:watch') {
@@ -88,7 +88,7 @@ test('No source map', async function t(assert) {
   assert.equal(message.deprecation.sources.length, 2);
 });
 
-test("With source map, source found, can't open resource", async function t(assert) {
+skip("With source map, source found, can't open resource", async function t(assert) {
   port.reopen({
     send(name) {
       if (name === 'deprecation:watch') {
@@ -130,7 +130,7 @@ test("With source map, source found, can't open resource", async function t(asse
 
 });
 
-test("With source map, source found, can open resource", async function t(assert) {
+skip("With source map, source found, can open resource", async function t(assert) {
   let openResourceArgs = false;
   port.get('adapter').reopen({
     canOpenResource: true,

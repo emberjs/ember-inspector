@@ -1,6 +1,6 @@
 /* jshint ignore:start */
 import Ember from "ember";
-import { module } from 'qunit';
+import { module, skip } from 'qunit';
 import { test } from 'ember-qunit';
 import startApp from '../helpers/start-app';
 let App;
@@ -130,7 +130,7 @@ test("Successfully redirects if the container type is not found", async function
   assert.equal(currentURL(), '/container-types');
 });
 
-test("Reload", async function t(assert) {
+skip("Reload", async function t(assert) {
   let types = [], instances = [];
 
   port.reopen({
