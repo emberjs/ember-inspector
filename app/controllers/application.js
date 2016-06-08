@@ -1,14 +1,13 @@
 import Ember from "ember";
-const { computed: { readOnly, equal } } = Ember;
+const { computed: { equal }, inject } = Ember;
 
 export default Ember.Controller.extend({
-  needs: ['mixin-stack', 'mixin-details'],
+  mixinStack: inject.controller('mixin-stack'),
+  mixinDetails: inject.controller('mixin-details'),
 
   emberApplication: false,
   navWidth: 180,
   inspectorWidth: 360,
-  mixinStack: readOnly('controllers.mixin-stack'),
-  mixinDetails: readOnly('controllers.mixin-details'),
   isChrome: equal('port.adapter.name', 'chrome'),
 
   deprecationCount: 0,
@@ -32,7 +31,7 @@ export default Ember.Controller.extend({
   },
 
   popMixinDetails() {
-    let mixinStack = this.get('controllers.mixin-stack.model');
+    let mixinStack = this.get('mixinStack.model');
     let item = mixinStack.popObject();
     this.set('mixinDetails.model', mixinStack.get('lastObject'));
     this.get('port').send('objectInspector:releaseObject', { objectId: item.objectId });

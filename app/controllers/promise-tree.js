@@ -1,6 +1,6 @@
 import Ember from "ember";
 import filterComputed from "ember-inspector/computed/custom-filter";
-const { computed, observer } = Ember;
+const { computed, observer, inject } = Ember;
 const { equal, bool, and, not } = computed;
 
 // Manual implementation of item controllers
@@ -23,7 +23,7 @@ function itemProxyComputed(dependentKey, itemProxy) {
 }
 
 export default Ember.Controller.extend({
-  needs: ['application'],
+  application: inject.controller(),
 
   queryParams: ['filter'],
 

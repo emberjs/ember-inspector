@@ -1,7 +1,7 @@
 import Ember from "ember";
-const { computed } = Ember;
+const { computed, inject } = Ember;
 export default Ember.Controller.extend({
-  needs: ['application'],
+  application: inject.controller(),
 
   trail: computed('model', function() {
     let nested = this.get('model').slice(1);
@@ -16,7 +16,7 @@ export default Ember.Controller.extend({
   actions: {
     popStack() {
       if (this.get('isNested')) {
-        this.get('controllers.application').popMixinDetails();
+        this.get('application').popMixinDetails();
       }
     },
 

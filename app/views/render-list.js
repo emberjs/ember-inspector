@@ -10,7 +10,7 @@ export default View.extend({
     return new SafeString(`height: ${this.get('height')}px;`);
   }),
 
-  contentHeight: Ember.computed.alias('controller.controllers.application.contentHeight'),
+  contentHeight: Ember.computed.alias('controller.application.contentHeight'),
 
   filterHeight: 22,
 

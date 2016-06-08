@@ -1,11 +1,11 @@
 import Ember from "ember";
 import debounceComputed from "ember-inspector/computed/debounce";
 import searchMatch from "ember-inspector/utils/search-match";
-const { Controller, computed, get } = Ember;
+const { Controller, computed, get, inject } = Ember;
 const { filter } = computed;
 
 export default Controller.extend({
-  needs: ['application'],
+  application: inject.controller(),
   sortProperties: ['name'],
 
   searchVal: debounceComputed('search', 300),

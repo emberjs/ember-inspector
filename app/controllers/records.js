@@ -1,10 +1,10 @@
 import Ember from "ember";
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
-const { Controller, computed, observer } = Ember;
+const { Controller, computed, observer, inject } = Ember;
 const { none, alias } = computed;
 
 export default Controller.extend({
-  needs: ['application'],
+  application: inject.controller(),
 
   queryParams: ['filterValue', 'search'],
 

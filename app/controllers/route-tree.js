@@ -1,11 +1,11 @@
 import Ember from "ember";
 import checkCurrentRoute from "ember-inspector/utils/check-current-route";
 
-const { Controller, computed } = Ember;
+const { Controller, computed, inject } = Ember;
 const { filter } = computed;
 
 export default Controller.extend({
-  needs: ['application'],
+  application: inject.controller(),
   currentRoute: null,
   options: {
     hideRoutes: false
