@@ -2,7 +2,7 @@ import Ember from "ember";
 const { computed } = Ember;
 const { equal, alias } = computed;
 
-export default Ember.ObjectController.extend({
+export default Ember.Controller.extend({
   isEdit: false,
 
   // Bound to editing textbox

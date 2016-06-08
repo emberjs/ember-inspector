@@ -5,7 +5,7 @@ const { $ } = Ember;
 
 /* globals require, findByLabel, clickByLabel */
 const EmberDebug = require('ember-debug/main').default;
-const { View, Route, Object: EmberObject, Handlebars, ObjectController } = Ember;
+const { View, Route, Object: EmberObject, Handlebars, Controller } = Ember;
 const { compile } = Handlebars;
 let port;
 let App, run = Ember.run;
@@ -60,7 +60,7 @@ function setupApp() {
     }
   });
 
-  App.SimpleController = ObjectController.extend();
+  App.SimpleController = Controller.extend();
   App.SimpleController.reopenClass({
     toString: function() {
       return 'App.SimpleController';

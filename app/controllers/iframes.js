@@ -1,8 +1,8 @@
 import Ember from "ember";
-const { ArrayController, computed, run, observer } = Ember;
+const { Controller, computed, run, observer } = Ember;
 const { alias, map } = computed;
 
-export default ArrayController.extend({
+export default Controller.extend({
   model: map('port.detectedApplications', function(item) {
     let name = item.split('__');
     return {

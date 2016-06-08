@@ -1,33 +1,34 @@
 import Ember from "ember";
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
-const { ObjectController, computed, isEmpty, run, on, observer, Handlebars: { SafeString } } = Ember;
-const { gt, readOnly } = computed;
+const { computed, isEmpty, run, on, observer, Handlebars: { SafeString } } = Ember;
+const { gt } = computed;
 const { once } = run;
 
-export default ObjectController.extend({
-  needs: ['render-tree'],
-
-  search: readOnly('controllers.render-tree.search'),
+const component = Ember.Component.extend({
+  item: null,
+  search: null,
 
   isExpanded: false,
 
-  expand() {
-    this.set('isExpanded', true);
+  expand(bool) {
+    this.set('isExpanded', bool);
   },
 
   searchChanged: on('init', observer('search', function() {
     let search = this.get('search');
     if (!isEmpty(search)) {
-      once(this, 'expand');
+      once(this, 'expand', true);
+    } else {
+      once(this, 'expand', false);
     }
   })),
 
-  searchMatch: computed('search', 'name', function() {
+  searchMatch: computed('search', 'item.name', function() {
     let search = this.get('search');
     if (isEmpty(search)) {
       return true;
     }
-    let name = this.get('name');
+    let name = this.get('item.name');
     let regExp = new RegExp(escapeRegExp(search.toLowerCase()));
     return !!name.toLowerCase().match(regExp);
   }),
@@ -50,7 +51,7 @@ export default ObjectController.extend({
     return new SafeString(`padding-left: ${+this.get('level') * 20 + 5}px;`);
   }),
 
-  hasChildren: gt('children.length', 0),
+  hasChildren: gt('item.children.length', 0),
 
   expandedClass: computed('hasChildren', 'isExpanded', function() {
     if (!this.get('hasChildren')) { return; }
@@ -62,8 +63,8 @@ export default ObjectController.extend({
     }
   }),
 
-  readableTime: computed('timestamp', function() {
-    let d = new Date(this.get('timestamp'));
+  readableTime: computed('item.timestamp', function() {
+    let d = new Date(this.get('item.timestamp'));
     let ms = d.getMilliseconds();
     let seconds = d.getSeconds();
     let minutes = d.getMinutes().toString().length === 1 ? '0' + d.getMinutes() : d.getMinutes();
@@ -77,5 +78,10 @@ export default ObjectController.extend({
       this.toggleProperty('isExpanded');
     }
   }
-
 });
+
+component.reopenClass({
+  positionalParams: ['item', 'search']
+});
+
+export default component;

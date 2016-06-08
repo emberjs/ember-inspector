@@ -4,8 +4,8 @@
 
       <span {{bind-attr title="name"}}>
         <span class="cell__arrow"></span>
-        <span data-label="render-profile-name">{{name}}</span>
-        <span class="pill pill_not-clickable" data-label="render-profile-duration">{{ms-to-time duration}}</span>
+        <span data-label="render-profile-name">{{item.name}}</span>
+        <span class="pill pill_not-clickable" data-label="render-profile-duration">{{ms-to-time item.duration}}</span>
       </span>
     </div>
     <div class="cell cell_value_numeric"  data-label="render-profile-timestamp">
@@ -14,7 +14,7 @@
   </div>
 </div>
 {{#if isExpanded}}
-  {{#each children as |child|}}
-    {{render "render_item" child}}
+  {{#each item.children as |child|}}
+    {{render-item child search}}
   {{/each}}
 {{/if}}

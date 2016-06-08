@@ -22,7 +22,7 @@ function itemProxyComputed(dependentKey, itemProxy) {
   return Ember.arrayComputed(dependentKey, options);
 }
 
-export default Ember.ArrayController.extend({
+export default Ember.Controller.extend({
   needs: ['application'],
 
   queryParams: ['filter'],

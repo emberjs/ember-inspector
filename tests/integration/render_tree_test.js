@@ -103,7 +103,7 @@ test("Renders the list correctly", async function t(assert) {
   assert.equal(rows.length, 2, "Child is hidden when parent collapses");
 });
 
-skip("Searching the profiles", async function t(assert) {
+test("Searching the profiles", async function t(assert) {
   port.reopen({
     send(n/*, m*/) {
       if (n === 'render:watchProfiles') {

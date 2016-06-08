@@ -2,7 +2,7 @@ import Ember from "ember";
 const { computed } = Ember;
 const { oneWay } = computed;
 
-export default Ember.ObjectController.extend({
+export default Ember.Controller.extend({
   needs: ['mixin-details'],
 
   mixinDetails: oneWay('controllers.mixin-details').readOnly(),

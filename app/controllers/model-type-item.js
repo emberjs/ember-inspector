@@ -2,7 +2,7 @@ import Ember from "ember";
 const { computed } = Ember;
 const { oneWay } = computed;
 
-export default Ember.ObjectController.extend({
+export default Ember.Controller.extend({
   needs: ['model-types'],
 
   modelTypes: oneWay('controllers.model-types').readOnly(),

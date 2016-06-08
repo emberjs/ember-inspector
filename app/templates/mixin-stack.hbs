@@ -1,6 +1,6 @@
 {{sidebar-toggle action="toggleInspector" side="right"
 isExpanded=true class="toolbar__icon-button sidebar-toggle--far-left"}}
-{{#if length}}
+{{#if model.length}}
 <div class="split__panel__hd">
   <div class="toolbar">
     <button {{action "popStack"}} data-label="object-inspector-back" {{bind-attr class=":toolbar__icon-button isNested:enabled:disabled"}}>
@@ -13,9 +13,9 @@ isExpanded=true class="toolbar__icon-button sidebar-toggle--far-left"}}
 
     <div class="divider"></div>
 
-    <code data-label="object-name" class="toolbar__title">{{firstObject.name}}</code>
+    <code data-label="object-name" class="toolbar__title">{{model.firstObject.name}}</code>
 
-    <button class="send-to-console" {{action "sendObjectToConsole" firstObject}} data-label="send-object-to-console-btn">
+    <button class="send-to-console" {{action "sendObjectToConsole" model.firstObject}} data-label="send-object-to-console-btn">
       <img src="assets/images/send.png" title="Send object to console">
     </button>
   </div>
