@@ -37,6 +37,13 @@ function setupApp() {
     this.resource('posts');
   });
 
+  App.ApplicationView = View.extend();
+  App.ApplicationView.reopenClass({
+    toString: function() {
+      return 'App.ApplicationView';
+    }
+  })
+
   App.SimpleRoute = Route.extend({
     model: function() {
       return EmberObject.create({
@@ -100,7 +107,7 @@ module("View Debug", {
   }
 });
 
-skip("Simple View Tree", async function t(assert) {
+test("Simple View Tree", async function t(assert) {
   let name = null, message = null;
   port.reopen({
     send(n, m) {
@@ -116,7 +123,7 @@ skip("Simple View Tree", async function t(assert) {
   let value = tree.value;
   assert.equal(tree.children.length, 1);
   assert.equal(value.controller.name, 'Ember.Controller');
-  assert.equal(value.viewClass, 'Ember.View');
+  assert.equal(value.viewClass, 'App.ApplicationView');
   assert.equal(value.name, 'application');
   assert.equal(value.tagName, 'div');
   assert.equal(value.template, 'application');

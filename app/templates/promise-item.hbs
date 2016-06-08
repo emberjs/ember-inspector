@@ -33,7 +33,7 @@
                 Stack trace
               </div>
             {{else}}
-              {{send-to-console action="sendValueToConsole" param=content.model}}
+              {{send-to-console click=(route-action "sendValueToConsole" content.model)}}
             {{/if}}
 
           </div>

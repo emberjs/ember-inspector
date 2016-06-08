@@ -1,6 +1,5 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import PromiseAssembler from 'ember-debug/libs/promise-assembler';
-import computedPolyfill from './addons/ember-new-computed/index';
 const Ember = window.Ember;
 const { computed, Object: EmberObject, RSVP, A, run } = Ember;
 const { oneWay } = computed;
@@ -88,7 +87,7 @@ export default EmberObject.extend(PortMixin, {
     }
   },
 
-  instrumentWithStack: computedPolyfill({
+  instrumentWithStack: computed({
     get() {
       return !!this.get('session').getItem('promise:stack');
     },

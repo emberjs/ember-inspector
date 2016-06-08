@@ -7,10 +7,12 @@ export default Mixin.create({
   portNamespace: null,
 
   init() {
+    this._super(...arguments);
     this.setupPortListeners();
   },
 
   willDestroy() {
+    this._super(...arguments);
     this.removePortListeners();
   },
 

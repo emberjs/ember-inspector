@@ -368,13 +368,13 @@ test("Read Only Computed properties mush have a readOnly property", function(ass
   assert.ok(!properties[1].readOnly);
 });
 
-skip("Views are correctly handled when destroyed during transitions", async function t(assert) {
+test("Views are correctly handled when destroyed during transitions", async function t(assert) {
   let objectId = null;
 
   await visit('/simple');
 
   objectId = find('.simple-view').get(0).id;
-  let view = Ember.View.views[objectId];
+  let view = App.__container__.lookup('-view-registry:main')[objectId];
   objectInspector.sendObject(view);
   await wait();
 
