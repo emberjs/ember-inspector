@@ -1,8 +1,8 @@
 <div data-label="render-profile-row" class="list-tree__item-wrapper row-wrapper">
-  <div {{bind-attr style="nodeStyle" class=":list-tree__item :row expandedClass"}}  data-label="render-profile-item">
-    <div class="cell_type_main cell" {{action "toggleExpand"}} {{bind-attr style="nameStyle"}} data-label="render-main-cell">
+  <div style={{nodeStyle}} class="list-tree__item row {{expandedClass}}" data-label="render-profile-item">
+    <div class="cell_type_main cell" {{action "toggleExpand"}} style={{nameStyle}} data-label="render-main-cell">
 
-      <span {{bind-attr title="name"}}>
+      <span title={{item.name}}>
         <span class="cell__arrow"></span>
         <span data-label="render-profile-name">{{item.name}}</span>
         <span class="pill pill_not-clickable" data-label="render-profile-duration">{{ms-to-time item.duration}}</span>

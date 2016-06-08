@@ -64,6 +64,7 @@
     "ember-cli-uglify": "^1.2.0",
     "ember-disable-proxy-controllers": "^1.0.1",
     "ember-export-application-global": "^1.0.4",
+    "ember-getowner-polyfill": "1.0.1",
     "ember-legacy-views": "0.2.0",
     "ember-pikaday": "^0.2.1",
     "eslint-config-ember": "0.2.0",

@@ -5,15 +5,15 @@
     {{input value=search placeholder="Search"}}
   </div>
 
-  <button data-label="filter" {{bind-attr class="noFilter:active :toolbar__radio"}} {{action "setFilter" "all"}}>
+  <button data-label="filter" class="{{if noFilter 'active' ''}} toolbar__radio" {{action "setFilter" "all"}}>
     All
   </button>
 
   <div class="divider"></div>
 
-  <button data-label="filter" {{bind-attr class="isRejectedFilter:active :toolbar__radio"}} {{action "setFilter" "rejected"}} >Rejected</button>
-  <button data-label="filter" {{bind-attr class="isPendingFilter:active :toolbar__radio"}} {{action "setFilter" "pending"}} >Pending</button>
-  <button data-label="filter" {{bind-attr class="isFulfilledFilter:active :toolbar__radio"}} {{action "setFilter" "fulfilled"}} >Fulfilled</button>
+  <button data-label="filter" class="{{if isRejectedFilter 'active' ''}} toolbar__radio" {{action "setFilter" "rejected"}} >Rejected</button>
+  <button data-label="filter" class="{{if isPendingFilter 'active' ''}} toolbar__radio" {{action "setFilter" "pending"}} >Pending</button>
+  <button data-label="filter" class="{{if isFulfilledFilter 'active' ''}} toolbar__radio" {{action "setFilter" "fulfilled"}} >Fulfilled</button>
 
   <div class="divider"></div>
 

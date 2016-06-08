@@ -1,7 +1,7 @@
 {{#with view.content as |content|}}
   {{#route-item model=content currentRoute=view.currentRoute as |item|}}
     <div class="cell_type_main cell" data-label="route-name">
-      <div style="{{item.labelStyle}}">
+      <div style={{item.labelStyle}}>
         <span title="{{unbound content.value.name}}" data-label="view-name">{{content.value.name}}</span>
       </div>
     </div>

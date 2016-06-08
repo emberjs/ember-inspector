@@ -51,7 +51,7 @@ export default Route.extend({
 
   updateProperty(options) {
     const detail = this.controllerFor('mixinDetails').get('model.mixins').objectAt(options.mixinIndex);
-    const property = Ember.get(detail, 'properties').findProperty('name', options.property);
+    const property = Ember.get(detail, 'properties').findBy('name', options.property);
     set(property, 'value', options.value);
   },
 

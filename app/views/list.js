@@ -29,7 +29,7 @@ export default Ember.View.extend({
   attributeBindings: ['style'],
 
   style: computed('height', function() {
-    return `height:${this.get('height')}px`;
+    return Ember.String.htmlSafe(`height:${this.get('height')}px`);
   }),
 
   /**

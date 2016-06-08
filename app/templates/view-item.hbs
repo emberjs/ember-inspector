@@ -1,8 +1,8 @@
 {{#with view.content as |content|}}
   {{#view-item model=content inspect="inspect" pinnedObjectId=view.pinnedObjectId inspectElement="inspectElement" as |item|}}
     <div class="cell_type_main cell" >
-      <div style="{{item.labelStyle}}">
-        <span title="{{content.value.name}}" data-label="view-name">{{unbound content.value.name}}</span>
+      <div style={{item.labelStyle}}>
+        <span title={{content.value.name}} data-label="view-name">{{unbound content.value.name}}</span>
       </div>
     </div>
 

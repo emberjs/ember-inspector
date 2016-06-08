@@ -4,6 +4,7 @@ import Router from '../../router';
 import config from '../../config/environment';
 import triggerPort from './trigger-port';
 let { generateGuid } = Ember;
+import getOwner from 'ember-getowner-polyfill';
 
 export default function startApp(attrs) {
   let application;
@@ -11,10 +12,10 @@ export default function startApp(attrs) {
   let attributes = Ember.merge({}, config.APP);
   attributes = Ember.merge(attributes, attrs); // use defaults, but you can override;
 
-  Application.initializer({
+  Application.instanceInitializer({
     name: generateGuid() + "-detectEmberApplication",
-    initialize: function(container) {
-      container.lookup('route:app-detected').reopen({
+    initialize: function(app) {
+      getOwner(app).lookup('route:app-detected').reopen({
         model: Ember.K
       });
     }

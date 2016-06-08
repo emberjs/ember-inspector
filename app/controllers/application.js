@@ -48,7 +48,7 @@ export default Ember.Controller.extend({
 
   droppedObject(objectId) {
     let mixinStack = this.get('mixinStack.model');
-    let obj = mixinStack.findProperty('objectId', objectId);
+    let obj = mixinStack.findBy('objectId', objectId);
     if (obj) {
       let index = mixinStack.indexOf(obj);
       let objectsToRemove = [];

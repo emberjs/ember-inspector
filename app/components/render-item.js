@@ -1,6 +1,6 @@
 import Ember from "ember";
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
-const { computed, isEmpty, run, on, observer, Handlebars: { SafeString } } = Ember;
+const { computed, isEmpty, run, on, observer } = Ember;
 const { gt } = computed;
 const { once } = run;
 
@@ -34,11 +34,10 @@ const component = Ember.Component.extend({
   }),
 
   nodeStyle: computed('searchMatch', function() {
-    if (!this.get('searchMatch')) {
-      return new SafeString('opacity: 0.5;');
-    }
+    return Ember.String.htmlSafe(!this.get('searchMatch') ? 'opacity: 0.5;' : '');
   }),
 
+  // TODO check this, probably not working
   level: computed('target.level', function() {
     let parentLevel = this.get('target.level');
     if (parentLevel === undefined) {
@@ -48,7 +47,7 @@ const component = Ember.Component.extend({
   }),
 
   nameStyle: computed('level', function() {
-    return new SafeString(`padding-left: ${+this.get('level') * 20 + 5}px;`);
+    return Ember.String.htmlSafe(`padding-left: ${+this.get('level') * 20 + 5}px;`);
   }),
 
   hasChildren: gt('item.children.length', 0),
