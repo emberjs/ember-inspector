@@ -3,7 +3,7 @@ const { Controller, computed, run, observer } = Ember;
 const { alias, map } = computed;
 
 export default Controller.extend({
-  model: map('port.detectedApplications', function(item) {
+  detectedApplications: map('port.detectedApplications', function(item) {
     let name = item.split('__');
     return {
       name: name[1],

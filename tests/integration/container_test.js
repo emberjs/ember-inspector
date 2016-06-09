@@ -130,7 +130,7 @@ test("Successfully redirects if the container type is not found", async function
   assert.equal(currentURL(), '/container-types');
 });
 
-skip("Reload", async function t(assert) {
+test("Reload", async function t(assert) {
   let types = [], instances = [];
 
   port.reopen({

@@ -7,6 +7,12 @@
   </div>
 
   <div class="list-view__list-container">
-    {{view "instanceList" content=filtered}}
+    {{#list-view items=filtered as |item|}}
+      <div class="list-tree__item row" data-label="instance-row" {{action "inspectInstance" item}}>
+        <div class="cell {{if item.inspectable 'cell_clickable'}}">
+          {{item.name}}
+        </div>
+      </div>
+    {{/list-view}}
   </div>
 </div>

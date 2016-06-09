@@ -1,0 +1,7 @@
+<div class="ember-list-container">
+  {{#each items as |item|}}
+    {{#list-view-item}}
+      {{yield item}}
+    {{/list-view-item}}
+  {{/each}}
+</div>
