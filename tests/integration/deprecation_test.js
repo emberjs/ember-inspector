@@ -49,7 +49,7 @@ module('Deprecation Tab', {
   }
 });
 
-skip('No source map', async function t(assert) {
+test('No source map', async function t(assert) {
   port.reopen({
     send(name) {
       if (name === 'deprecation:watch') {
@@ -88,7 +88,7 @@ skip('No source map', async function t(assert) {
   assert.equal(message.deprecation.sources.length, 2);
 });
 
-skip("With source map, source found, can't open resource", async function t(assert) {
+test("With source map, source found, can't open resource", async function t(assert) {
   port.reopen({
     send(name) {
       if (name === 'deprecation:watch') {
@@ -130,7 +130,7 @@ skip("With source map, source found, can't open resource", async function t(asse
 
 });
 
-skip("With source map, source found, can open resource", async function t(assert) {
+test("With source map, source found, can open resource", async function t(assert) {
   let openResourceArgs = false;
   port.get('adapter').reopen({
     canOpenResource: true,

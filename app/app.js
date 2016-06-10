@@ -49,6 +49,7 @@ App.initializer({
     container.register('port:main', app.Port || Port);
     container.typeInjection('controller', 'port', 'port:main');
     container.typeInjection('route', 'port', 'port:main');
+    container.typeInjection('component', 'port', 'port:main');
     container.typeInjection('promise-assembler', 'port', 'port:main');
 
     // register and inject promise assembler
