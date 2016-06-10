@@ -1,0 +1,21 @@
+<li class={{if model.overridden 'mixin__property_state_overridden' 'mixin__property'}} data-label="object-property">
+  {{#if model.value.computed}}
+    <button class="mixin__calc-btn {{if isCalculated 'mixin__calc-btn_calculated'}}" {{action "calculate" model bubbles=false}} data-label="calculate"><img src="assets/images/calculate.svg"></button>
+  {{else}}
+    <span class='pad'></span>
+  {{/if}}
+  <span class='mixin__property-name' data-label="object-property-name">{{model.name}}</span><span class='mixin__property-value-separator'>: </span>
+  {{#unless isEdit}}
+    <span  {{action "valueClick" model.model}} class="{{model.value.type}} mixin__property-value" data-label="object-property-value">{{model.value.inspect}}</span>
+  {{else}}
+    {{#unless isDate}}
+      {{property-field value=txtValue finished-editing="finishedEditing" save-property="saveProperty"
+       class="mixin__property-value-txt" label="object-property-value-txt"}}
+    {{else}}
+      {{date-property-field value=dateValue format="YYYY-MM-DD" finished-editing="finishedEditing" save-property="saveProperty"
+       class="mixin__property-value-txt" label="object-property-value-date"}}
+    {{/unless}}
+  {{/unless}}
+  <span class='mixin__property-overridden-by'>(Overridden by {{model.overridden}})</span>
+  <button class="mixin__send-btn" {{action "sendToConsole" model}} data-label="send-to-console-btn"><img src="assets/images/send.png" title="Send to console"></button>
+</li>

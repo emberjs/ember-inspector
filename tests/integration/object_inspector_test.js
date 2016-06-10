@@ -87,7 +87,7 @@ function objectToInspect() {
   });
 }
 
-skip("The object displays correctly", async function t(assert) {
+test("The object displays correctly", async function t(assert) {
   let obj = objectFactory( { name: 'My Object' });
   await visit('/');
 
@@ -98,7 +98,7 @@ skip("The object displays correctly", async function t(assert) {
   assert.ok(findByLabel('object-detail').hasClass('mixin_state_expanded'), 'The "Own Properties" detail is expanded by default');
 });
 
-skip("Object details", async function t(assert) {
+test("Object details", async function t(assert) {
 
   let $firstDetail, $secondDetail;
 
@@ -182,7 +182,7 @@ skip("Digging deeper into objects", async function t(assert) {
   assert.equal(findByLabel('object-trail').length, 0);
 });
 
-skip("Computed properties", async function t(assert) {
+test("Computed properties", async function t(assert) {
   await visit('/');
 
   let obj = {
@@ -220,7 +220,7 @@ skip("Computed properties", async function t(assert) {
   assert.equal(findByLabel('object-property-value').text(), 'Computed value');
 });
 
-skip("Properties are bound to the application properties", async function t(assert) {
+test("Properties are bound to the application properties", async function t(assert) {
   await visit('/');
 
   let obj = {
@@ -281,7 +281,7 @@ skip("Properties are bound to the application properties", async function t(asse
   assert.equal(findByLabel('object-property-value').text(), 'Joey');
 });
 
-skip("Stringified json should not get double parsed", async function t(assert) {
+test("Stringified json should not get double parsed", async function t(assert) {
   await visit('/');
 
   let obj = {
@@ -317,7 +317,7 @@ skip("Stringified json should not get double parsed", async function t(assert) {
   assert.equal(message.mixinIndex, 0);
 });
 
-skip("Send to console", async function t(assert) {
+test("Send to console", async function t(assert) {
   await visit('/');
 
   let obj = {
@@ -352,7 +352,7 @@ skip("Send to console", async function t(assert) {
   assert.equal(message.property, undefined);
 });
 
-skip("Read only CPs cannot be edited", async function t(assert) {
+test("Read only CPs cannot be edited", async function t(assert) {
   await visit('/');
 
   let obj = {
@@ -409,7 +409,7 @@ test("Dropping an object due to destruction", async function t(assert) {
   assert.equal(findByLabel('object-name').text().trim(), '');
 });
 
-skip("Date fields are editable", async function t(assert) {
+test("Date fields are editable", async function t(assert) {
   await visit('/');
 
   let date = new Date();
@@ -449,7 +449,7 @@ skip("Date fields are editable", async function t(assert) {
 
   let e = Ember.$.Event('keyup', { keyCode: 13 });
   run(() => {
-    findByLabel('object-property-value-date').trigger(e);
+    field.trigger(e);
   });
   await wait();
 

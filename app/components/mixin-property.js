@@ -1,13 +1,16 @@
-import Ember from "ember";
+import Ember from 'ember';
 const { computed } = Ember;
 const { equal, alias } = computed;
 
-export default Ember.Controller.extend({
+export default Ember.Component.extend({
+  tagName: '', // // TODO: fix, add classNameBindings
   isEdit: false,
 
   // Bound to editing textbox
   txtValue: null,
   dateValue: null,
+
+  value: alias('model.value'),
 
   isCalculated: computed('value.type', function() {
     return this.get('value.type') !== 'type-descriptor';
@@ -40,18 +43,21 @@ export default Ember.Controller.extend({
   },
 
   actions: {
+    calculate(property) {
+      this.sendAction('calculate', property);
+    },
     valueClick() {
       if (this.get('isEmberObject') || this.get('isArray')) {
-        this.get('target').send('digDeeper', this.get('model'));
+        this.sendAction('digDeeper', this.get('model'));
         return;
       }
 
       if (this.get('isComputedProperty') && !this.get('isCalculated')) {
-        this.get('target').send('calculate', this.get('model'));
+        this.sendAction('calculate', this.get('model'));
         return;
       }
 
-      if (this.get('isFunction') || this.get('overridden') || this.get('readOnly')) {
+      if (this.get('isFunction') || this.get('model.overridden') || this.get('model.readOnly')) {
         return;
       }
 
@@ -77,11 +83,15 @@ export default Ember.Controller.extend({
         realValue = this.get('dateValue').getTime();
         dataType = 'date';
       }
-      this.get('target').send('saveProperty', this.get('name'), realValue, dataType);
+      this.sendAction('saveProperty', this.get('model.name'), realValue, dataType);
     },
 
     finishedEditing() {
       this.set('isEdit', false);
+    },
+
+    sendToConsole(model) {
+      this.sendAction('sendToConsole', model);
     }
   }
 });
