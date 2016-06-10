@@ -27,7 +27,7 @@ export default Component.extend({
     return Ember.String.htmlSafe('');
   }),
 
-  columns: computed('modelTypeColumns.@each', 'model.columnValues', function() {
+  columns: computed('modelTypeColumns.[]', 'model.columnValues', function() {
     let columns = this.get('modelTypeColumns') || [];
     return columns.map(col => {
       return { name: col.name, value: this.get('model.columnValues.' + col.name) };

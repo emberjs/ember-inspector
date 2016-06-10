@@ -9,7 +9,7 @@
 
   <div class="divider"></div>
 
-  {{#each filters itemController="recordFilter" as |filter|}}
+  {{#each filters as |filter|}}
     <button data-label="filter" class="{{if filter.checked 'active' ''}} toolbar__radio" {{action "setFilter" filter.name}} >
       {{filter.desc}}
     </button>

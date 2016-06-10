@@ -9,6 +9,14 @@
   </div>
 
   <div class="list-view__list-container">
-    {{view "record-list" content=filtered columns=columns}}
+    {{#list-view items=filtered as |item|}}
+      {{#record-item model=item modelTypeColumns=columns inspect="inspectModel" as |recordItem|}}
+        {{#each column in recordItem.columns}}
+          <div class="cell cell_clickable" data-label="record-column" style={{recordItem.style}}>
+            {{column.value}}
+          </div>
+        {{/each}}
+      {{/record-item}}
+    {{/list-view}}
   </div>
 </div>

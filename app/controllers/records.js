@@ -36,7 +36,7 @@ export default Controller.extend({
     return search.toLowerCase();
   },
 
-  filtered: computed('search', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValue', function() {
+  filtered: computed('search', 'model.[].columnValues', 'model.[].filterValues', 'filterValue', function() {
     let search = this.get('search'), filter = this.get('filterValue');
     return this.get('model').filter(item => {
       // check filters
