@@ -184,12 +184,15 @@ test("Properties are correctly bound", function(assert) {
   let inspected = Ember.Object.extend({
     name: 'Teddy',
 
-    hi: computed(function(key, val) {
-      if (val !== undefined) {
+    hi: computed({
+      get() {
+        return 'hello'
+      },
+
+      set(key, val) {
         return val;
       }
-      return 'hello';
-    }).property(),
+    }),
 
     _debugInfo: function() {
       return {
