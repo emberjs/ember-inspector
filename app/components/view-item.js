@@ -7,6 +7,23 @@ export default Component.extend({
 
   classNameBindings: ['isCurrent:row_highlight'],
 
+  /**
+   * Needed for tests
+   *
+   * @property attributeBindings
+   * @type {Array}
+   * @default ['data-label:label']
+   */
+
+  attributeBindings: ['data-label:label'],
+
+  /**
+   * @property label
+   * @type {String}
+   * @default 'tree-node'
+   */
+  label: 'tree-node',
+
   hasView: not('model.value.isVirtual'),
   hasElement: not('model.value.isVirtual'),
   hasModel: bool('model.value.model'),
@@ -48,6 +65,24 @@ export default Component.extend({
         this.sendAction('inspect', objectId);
       }
     }
+  },
+
+  /**
+   * @method mouseEnter
+   * @param {Object} e event object
+   */
+  mouseEnter(e) {
+    this.sendAction('previewLayer', this.get('model'));
+    e.stopPropagation();
+  },
+
+  /**
+   * @method mouseLeave
+   * @param {Object} e event object
+   */
+  mouseLeave(e) {
+    this.sendAction('hidePreview', this.get('model'));
+    e.stopPropagation();
   }
 
 });
