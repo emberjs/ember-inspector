@@ -1,5 +1,6 @@
-{{sidebar-toggle action="toggleInspector" side="right"
+{{sidebar-toggle action=toggleInspector side="right"
 isExpanded=true class="toolbar__icon-button sidebar-toggle--far-left"}}
+
 {{#if model.length}}
 <div class="split__panel__hd">
   <div class="toolbar">
@@ -19,7 +20,6 @@ isExpanded=true class="toolbar__icon-button sidebar-toggle--far-left"}}
       <img src="assets/images/send.png" title="Send object to console">
     </button>
   </div>
-
   {{#if trail}}
     <code class="object-trail" data-label="object-trail">{{trail}}</code>
   {{/if}}
@@ -27,5 +27,5 @@ isExpanded=true class="toolbar__icon-button sidebar-toggle--far-left"}}
 {{/if}}
 
 <div class="split__panel__bd">
-  {{render "mixinDetails"}}
+  {{yield}}
 </div>

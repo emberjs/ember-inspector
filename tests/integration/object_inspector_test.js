@@ -1,7 +1,7 @@
 /* jshint ignore:start */
 import Ember from "ember";
 import { test } from 'ember-qunit';
-import { module, skip } from 'qunit';
+import { module } from 'qunit';
 import startApp from '../helpers/start-app';
 const { run, $ } = Ember;
 let App;
@@ -133,7 +133,7 @@ test("Object details", async function t(assert) {
   assert.equal(findByLabel('object-property-value', $secondDetail).eq(1).text(), 'String Value');
 });
 
-skip("Digging deeper into objects", async function t(assert) {
+test("Digging deeper into objects", async function t(assert) {
   let $secondDetail;
 
   await visit('/');

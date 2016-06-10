@@ -1,6 +1,8 @@
-import Ember from "ember";
-const { Controller, computed } = Ember;
-export default Controller.extend({
+import Ember from 'ember';
+
+const { computed } = Ember;
+
+export default Ember.Component.extend({
   objectId: computed.alias('model.objectId'),
   actions: {
     traceErrors() {
