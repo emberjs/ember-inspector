@@ -8,7 +8,7 @@ export default BasicAdapter.extend({
   connect() {
     const channel = this.get('_channel');
     return this._super(...arguments).then(() => {
-      window.postMessage('debugger-client', [channel.port2], '*');
+      window.postMessage('debugger-client', '*', [channel.port2]);
       this._listen();
     }, null, 'ember-inspector');
   },
