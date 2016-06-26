@@ -7,7 +7,7 @@
       <ul>
         {{#each sorted as |modelType|}}
           <li data-label="model-type">
-            {{#link-to "records" modelType.name}}
+            {{#link-to "records" (escape-url modelType.name)}}
               <span data-label="model-type-name">{{modelType.name}}</span>
               (<span data-label="model-type-count">{{modelType.count}}</span>)
             {{/link-to}}
