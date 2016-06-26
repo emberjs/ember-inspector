@@ -9,9 +9,9 @@ let assembler;
 let fakeRSVP;
 
 function stubRSVP() {
-  fakeRSVP = Ember.Object.createWithMixins(Ember.Evented, {
+  fakeRSVP = Ember.Object.extend(Ember.Evented, {
     configure: Ember.K
-  });
+  }).create();
 }
 
 function startAssembler() {

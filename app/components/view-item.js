@@ -1,11 +1,28 @@
 import Ember from "ember";
-const { computed, Component, Handlebars: { SafeString } } = Ember;
+const { computed, Component } = Ember;
 const { not, bool } = computed;
 
 export default Component.extend({
   classNames: ['list-tree__item', 'row'],
 
   classNameBindings: ['isCurrent:row_highlight'],
+
+  /**
+   * Needed for tests
+   *
+   * @property attributeBindings
+   * @type {Array}
+   * @default ['data-label:label']
+   */
+
+  attributeBindings: ['data-label:label'],
+
+  /**
+   * @property label
+   * @type {String}
+   * @default 'tree-node'
+   */
+  label: 'tree-node',
 
   hasView: not('model.value.isVirtual'),
   hasElement: not('model.value.isVirtual'),
@@ -25,7 +42,7 @@ export default Component.extend({
   }),
 
   labelStyle: computed('model.parentCount', function() {
-    return new SafeString(`padding-left: ${+this.get('model.parentCount') * 20 + 5}px;`);
+    return Ember.String.htmlSafe(`padding-left: ${+this.get('model.parentCount') * 20 + 5}px;`);
   }),
 
   actions: {
@@ -48,6 +65,24 @@ export default Component.extend({
         this.sendAction('inspect', objectId);
       }
     }
+  },
+
+  /**
+   * @method mouseEnter
+   * @param {Object} e event object
+   */
+  mouseEnter(e) {
+    this.sendAction('previewLayer', this.get('model'));
+    e.stopPropagation();
+  },
+
+  /**
+   * @method mouseLeave
+   * @param {Object} e event object
+   */
+  mouseLeave(e) {
+    this.sendAction('hidePreview', this.get('model'));
+    e.stopPropagation();
   }
 
 });

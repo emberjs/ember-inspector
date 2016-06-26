@@ -1,6 +1,6 @@
 {{#with view.content as |content|}}
-  <div style="{{content.nodeStyle}}" class="list-tree__item row {{content.expandedClass}}"  data-label="promise-item">
-    <div class="cell_type_main cell" style="{{content.labelStyle}}" {{action "toggleExpand" content.model}}>
+  <div style={{content.nodeStyle}} class="list-tree__item row {{content.expandedClass}}"  data-label="promise-item">
+    <div class="cell_type_main cell" style={{content.labelStyle}} {{action "toggleExpand" content.model}}>
       <div class="list-tree__limited list-tree__limited_helper_large">
         <span title="{{content.label}}" data-label="promise-label">
           <span class="cell__arrow"></span>
@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="cell cell_size_medium">
-      <div class="pill pill_text_clear" style="{{content.style}}" data-label="promise-state">{{content.state}}</div>
+      <div class="pill pill_text_clear" style={{content.style}} data-label="promise-state">{{content.state}}</div>
     </div>
     <div class="cell cell_size_large" data-label="promise-value">
       {{#if content.hasValue}}
@@ -33,7 +33,7 @@
                 Stack trace
               </div>
             {{else}}
-              {{send-to-console action="sendValueToConsole" param=content.model}}
+              {{send-to-console click=(route-action "sendValueToConsole" content.model)}}
             {{/if}}
 
           </div>

@@ -1,14 +1,14 @@
 import Ember from "ember";
-const { computed: { readOnly, equal } } = Ember;
+const { computed: { equal } } = Ember;
 
 export default Ember.Controller.extend({
-  needs: ['mixin-stack', 'mixin-details'],
+  // mixinStack: inject.controller('mixin-stack'),
+  mixinStack: [],
+  mixinDetails: null,
 
   emberApplication: false,
   navWidth: 180,
   inspectorWidth: 360,
-  mixinStack: readOnly('controllers.mixin-stack'),
-  mixinDetails: readOnly('controllers.mixin-details'),
   isChrome: equal('port.adapter.name', 'chrome'),
 
   deprecationCount: 0,
@@ -28,13 +28,13 @@ export default Ember.Controller.extend({
     };
 
     this.get('mixinStack').pushObject(details);
-    this.set('mixinDetails.model', details);
+    this.set('mixinDetails', details);
   },
 
   popMixinDetails() {
-    let mixinStack = this.get('controllers.mixin-stack');
+    let mixinStack = this.get('mixinStack');
     let item = mixinStack.popObject();
-    this.set('mixinDetails.model', mixinStack.get('lastObject'));
+    this.set('mixinDetails', mixinStack.get('lastObject'));
     this.get('port').send('objectInspector:releaseObject', { objectId: item.objectId });
   },
 
@@ -43,13 +43,13 @@ export default Ember.Controller.extend({
       this.get('port').send('objectInspector:releaseObject', { objectId: item.objectId });
     });
 
-    this.set('mixinStack.model', []);
+    this.set('mixinStack', []);
     this.pushMixinDetails(name, undefined, objectId, details, errors);
   },
 
   droppedObject(objectId) {
-    let mixinStack = this.get('mixinStack.model');
-    let obj = mixinStack.findProperty('objectId', objectId);
+    let mixinStack = this.get('mixinStack');
+    let obj = mixinStack.findBy('objectId', objectId);
     if (obj) {
       let index = mixinStack.indexOf(obj);
       let objectsToRemove = [];
@@ -61,10 +61,15 @@ export default Ember.Controller.extend({
       });
     }
     if (mixinStack.get('length') > 0) {
-      this.set('mixinDetails.model', mixinStack.get('lastObject'));
+      this.set('mixinDetails', mixinStack.get('lastObject'));
     } else {
-      this.set('mixinDetails.model', null);
+      this.set('mixinDetails', null);
     }
+  },
 
+  actions: {
+    popMixinDetails() {
+      this.popMixinDetails();
+    }
   }
 });

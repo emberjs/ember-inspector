@@ -1,11 +1,11 @@
 /* jshint ignore:start */
 import Ember from "ember";
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 const { $ } = Ember;
 
 /* globals require, findByLabel, clickByLabel */
 const EmberDebug = require('ember-debug/main').default;
-const { View, Route, Object: EmberObject, Handlebars, ObjectController } = Ember;
+const { View, Route, Object: EmberObject, Handlebars, Controller } = Ember;
 const { compile } = Handlebars;
 let port;
 let App, run = Ember.run;
@@ -37,6 +37,13 @@ function setupApp() {
     this.resource('posts');
   });
 
+  App.ApplicationView = View.extend();
+  App.ApplicationView.reopenClass({
+    toString: function() {
+      return 'App.ApplicationView';
+    }
+  })
+
   App.SimpleRoute = Route.extend({
     model: function() {
       return EmberObject.create({
@@ -60,7 +67,7 @@ function setupApp() {
     }
   });
 
-  App.SimpleController = ObjectController.extend();
+  App.SimpleController = Controller.extend();
   App.SimpleController.reopenClass({
     toString: function() {
       return 'App.SimpleController';
@@ -116,7 +123,7 @@ test("Simple View Tree", async function t(assert) {
   let value = tree.value;
   assert.equal(tree.children.length, 1);
   assert.equal(value.controller.name, 'Ember.Controller');
-  assert.equal(value.viewClass, 'Ember.View');
+  assert.equal(value.viewClass, 'App.ApplicationView');
   assert.equal(value.name, 'application');
   assert.equal(value.tagName, 'div');
   assert.equal(value.template, 'application');
@@ -131,7 +138,7 @@ test("Simple View Tree", async function t(assert) {
 });
 
 
-test("Views created by context switching {{each}} helper are shown", async function t(assert) {
+skip("Views created by context switching {{each}} helper are shown", async function t(assert) {
   let message = null;
   port.reopen({
     send(n, m) {
@@ -154,7 +161,7 @@ test("Views created by context switching {{each}} helper are shown", async funct
 });
 
 
-test("Highlight a view", async function t(assert) {
+skip("Highlight a view", async function t(assert) {
   let name, message, layerDiv;
   port.reopen({
     send(n, m) {
@@ -221,7 +228,7 @@ test("Components in view tree", async function t(assert) {
 
 });
 
-test("Highlighting Views on hover", async function t(assert) {
+skip("Highlighting Views on hover", async function t(assert) {
   port.reopen({
     send(/*n, m*/) {}
   });

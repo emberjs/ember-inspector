@@ -12,7 +12,7 @@ import DeprecationDebug from "ember-debug/deprecation-debug";
 import Session from "ember-debug/services/session";
 
 const Ember = window.Ember;
-const { Object: EmberObject, run, Application, namespaces } = Ember;
+const { Object: EmberObject, run, Application, Namespace } = Ember;
 
 const EmberDebug = EmberObject.extend({
 
@@ -108,7 +108,7 @@ const EmberDebug = EmberObject.extend({
 }).create();
 
 function getApplication() {
-  let namespaces = Namespace.NAMESPACES;
+  let namespaces = Ember.A(Namespace.NAMESPACES);
   let application;
 
   namespaces.forEach(namespace => {

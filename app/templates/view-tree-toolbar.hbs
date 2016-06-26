@@ -1,5 +1,5 @@
 <div class="toolbar">
-  <button {{bind-attr class="inspectingViews:active :toolbar__icon-button"}} {{action "toggleViewInspection"}} data-label="inspect-views">
+  <button class="{{if inspectingViews 'active' ''}} toolbar__icon-button" {{action "toggleViewInspection"}} data-label="inspect-views">
     <svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <g class="svg-stroke" transform="translate(3.000000, 4.000000)" stroke="#000000" stroke-width="2" fill="none"  fill-rule="evenodd">
         <path d="M7.5,7.5 L10.5,10.5" stroke-linecap="square"></path>

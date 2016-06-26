@@ -16,8 +16,11 @@ export default function(prop, delay, callback) {
     }
   };
 
-  return computed(function(key, val) {
-    if (arguments.length > 1) {
+  return computed({
+    get: function() {
+      return this.get(prop);
+    },
+    set: function(key, val) {
       value = val;
       debounce(this, updateVal, delay);
       return val;

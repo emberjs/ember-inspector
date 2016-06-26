@@ -1,4 +1,7 @@
 import Ember from "ember";
+
+const { run } = Ember;
+
 export default Ember.View.extend({
   classNames: ['app'],
 
@@ -18,9 +21,12 @@ export default Ember.View.extend({
     this._super();
 
     Ember.$(window).on('resize.application-view-' + this.get('elementId'), function() {
-      Ember.run.debounce(this, 'updateHeight', 200);
+      run.debounce(this, 'updateHeight', 200);
     }.bind(this));
-    this.updateHeight();
+
+    run.schedule('afterRender', () => {
+      this.updateHeight();
+    });
   },
 
   updateHeight() {

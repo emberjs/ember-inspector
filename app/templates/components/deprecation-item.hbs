@@ -1,0 +1,57 @@
+<div data-label="deprecation-item">
+<div data-label="deprecation-row" class="list-tree__item-wrapper row-wrapper">
+  <div class="list-tree__item row">
+
+    <div class="cell_type_main cell" data-label="deprecation-main-cell">
+
+      <span title={{item.message}} class={{expandedClass}} {{action "toggleExpand"}}  >
+        <span class="cell__arrow"></span>
+        <span class="pill pill_not-clickable" data-label="deprecation-count">{{item.count}}</span>
+        <span data-label="deprecation-message" data-label="deprecation-message">{{item.message}}</span>
+      </span>
+      {{#if item.url}}
+        <a href={{item.url}} class="external-link" target="_blank" title="Transition Plan" data-label="deprecation-url">
+          Transition Plan
+        </a>
+      {{/if}}
+    </div>
+  </div>
+</div>
+{{#if isExpanded}}
+  {{#if item.hasSourceMap}}
+    {{#each item.sources as |source|}}
+      {{#deprecation-item-source model=source as |itemSource|}}
+        <div class="list-tree__item-wrapper row-wrapper" data-label="deprecation-source">
+          <div class="list-tree__item row">
+            <div class="cell_type_main cell cell_size_larger" style="padding-left:48px">
+              <span class="source">
+              {{#if itemSource.isClickable}}
+                <a data-label="deprecation-source-link" href="#" {{action "openResource" source.map}}>{{itemSource.url}}</a>
+              {{else}}
+                <span data-label="deprecation-source-text">{{itemSource.url}}</span>
+              {{/if}}
+              </span>
+            </div>
+            <div class="cell">
+              &nbsp; &nbsp;
+              <span class="send-trace-to-console" {{action "traceSource" item source}} title="Trace deprecations in console" data-label="trace-deprecations-btn">
+                Trace in the console
+              </span>
+            </div>
+          </div>
+        </div>
+      {{/deprecation-item-source}}
+    {{/each}}
+  {{else}}
+    <div class="list-tree__item-wrapper row-wrapper" data-label="deprecation-full-trace">
+      <div class="list-tree__item row" >
+        <div class="cell_type_main cell cell_clickable" style="padding-left:48px">
+          <div class="send-trace-to-console" {{action "traceDeprecations" item}} title="Trace deprecations in console" data-label="full-trace-deprecations-btn">
+            Trace in the console
+          </div>
+        </div>
+      </div>
+    </div>
+  {{/if}}
+{{/if}}
+</div>

@@ -1,29 +1,9 @@
 import Ember from "ember";
-import filterComputed from "ember-inspector/computed/custom-filter";
-const { computed, observer } = Ember;
+const { computed, observer, inject } = Ember;
 const { equal, bool, and, not } = computed;
 
-// Manual implementation of item controllers
-function itemProxyComputed(dependentKey, itemProxy) {
-  let options = {
-    addedItem(array, item, changeMeta) {
-      let proxy = itemProxy.create({ content: item });
-      array.insertAt(changeMeta.index, proxy);
-      return array;
-    },
-    removedItem(array, item, changeMeta) {
-      let proxy = array.objectAt(changeMeta.index);
-      array.removeAt(changeMeta.index, 1);
-      proxy.destroy();
-      return array;
-    }
-  };
-
-  return Ember.arrayComputed(dependentKey, options);
-}
-
-export default Ember.ArrayController.extend({
-  needs: ['application'],
+export default Ember.Controller.extend({
+  application: inject.controller(),
 
   queryParams: ['filter'],
 
@@ -43,7 +23,12 @@ export default Ember.ArrayController.extend({
     this._super(...arguments);
     // List-view does not support item controllers
     this.reopen({
-      items: itemProxyComputed('filtered', this.get('promiseItemController'))
+      items: computed('filtered.[]', function() {
+        let promiseItemController = this.get('promiseItemController');
+        return this.get('filtered').map((item) => {
+          return promiseItemController.create({ content: item });
+        });
+      })
     });
   },
 
@@ -53,13 +38,8 @@ export default Ember.ArrayController.extend({
 
   /* jscs:disable validateIndentation */
   // TODO: This filter can be further optimized
-  filtered: filterComputed(
-    'model.@each.createdAt',
-    'model.@each.fulfilledBranch',
-    'model.@each.rejectedBranch',
-    'model.@each.pendingBranch',
-    'model.@each.isVisible', function(item) {
-
+  filtered: computed.filter(
+    'model.@each.{createdAt,fulfilledBranch,rejectedBranch,pendingBranch,isVisible}', function(item) {
       // exclude cleared promises
       if (this.get('createdAfter') && item.get('createdAt') < this.get('createdAfter')) {
         return false;

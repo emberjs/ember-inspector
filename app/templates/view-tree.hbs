@@ -23,6 +23,60 @@
   </div>
 
   <div class="list-view__list-container">
-    {{view "view-list" content=model pinnedObjectId=pinnedObjectId}}
+    {{!view "view-list" content=model pinnedObjectId=pinnedObjectId}}
+    {{#list-view items=model as |item|}}
+      {{#view-item model=item
+                   previewLayer="previewLayer"
+                   hidePreview="hidePreview"
+                   inspect="inspect" pinnedObjectId=pinnedObjectId inspectElement="inspectElement" as |viewItem|}}
+        <div class="cell_type_main cell" >
+          <div style={{viewItem.labelStyle}}>
+            <span title={{item.value.name}} data-label="view-name">{{unbound item.value.name}}</span>
+          </div>
+        </div>
+
+        <div class="cell {{if viewItem.hasElement 'cell_clickable'}}" {{action "inspectElement" target=viewItem}} data-label="view-template">
+          <span title="{{unbound item.value.template}}">{{unbound item.value.template}}</span>
+        </div>
+        <div class="cell" data-label="view-model">
+          {{#if viewItem.hasModel}}
+            <div class="list-tree__limited {{if viewItem.modelInspectable 'cell_clickable'}}" {{action "inspectModel" item.value.model.objectId target=viewItem}} data-label="view-model-clickable">
+              <span title="{{unbound item.value.model.completeName}}">{{unbound item.value.model.name}}</span>
+            </div>
+            <div class="list-tree__right-helper">
+              {{send-to-console action="sendModelToConsole" param=item.value}}
+            </div>
+          {{else}}
+            --
+          {{/if}}
+        </div>
+        <div class="cell" data-label="view-controller">
+          {{#if viewItem.hasController}}
+            <div class="list-tree__limited {{if viewItem.hasController 'cell_clickable'}}" {{action "inspect" item.value.controller.objectId}} >
+              <span title="{{unbound item.value.controller.completeName}}">{{unbound item.value.controller.name}}</span>
+            </div>
+            <div class="list-tree__right-helper">
+              {{send-to-console action="sendObjectToConsole" param=item.value.controller.objectId}}
+            </div>
+          {{/if}}
+        </div>
+        <div class="cell" data-label="view-class">
+          {{#if viewItem.hasView}}
+            <div class="list-tree__limited {{if viewItem.hasView 'cell_clickable'}}" {{action "inspectView" target=viewItem}} >
+              <span title="{{unbound item.value.completeViewClass}}">{{unbound item.value.viewClass}}</span>
+            </div>
+            <div class="list-tree__right-helper">
+              {{send-to-console action="sendObjectToConsole" param=item.value.objectId}}
+            </div>
+          {{else}}
+            --
+          {{/if}}
+        </div>
+
+        <div class="cell cell_size_small cell_value_numeric" >
+          <span class="pill pill_not-clickable pill_size_small" data-label="view-duration">{{ms-to-time item.value.duration}}</span>
+        </div>
+      {{/view-item}}
+    {{/list-view}}
   </div>
 </div>

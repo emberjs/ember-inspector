@@ -3,14 +3,14 @@
     {{input value=search placeholder="Search"}}
   </div>
 
-  <button data-label="filter" {{bind-attr class="noFilterValue:active :toolbar__radio"}} {{action "setFilter"}}>
+  <button data-label="filter" class="{{if noFilterValue 'active' ''}} toolbar__radio" {{action "setFilter"}}>
     All
   </button>
 
   <div class="divider"></div>
 
-  {{#each filters itemController="recordFilter" as |filter|}}
-    <button data-label="filter" {{bind-attr class="filter.checked:active :toolbar__radio"}} {{action "setFilter" filter.name}} >
+  {{#each filters as |filter|}}
+    <button data-label="filter" class="{{if filter.checked 'active' ''}} toolbar__radio" {{action "setFilter" filter.name}} >
       {{filter.desc}}
     </button>
   {{/each}}

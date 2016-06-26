@@ -1,6 +1,6 @@
 /* jshint ignore:start */
 import Ember from "ember";
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 
 let EmberDebug;
 let port, name, message;
@@ -184,12 +184,15 @@ test("Properties are correctly bound", function(assert) {
   let inspected = Ember.Object.extend({
     name: 'Teddy',
 
-    hi: computed(function(key, val) {
-      if (val !== undefined) {
+    hi: computed({
+      get() {
+        return 'hello'
+      },
+
+      set(key, val) {
         return val;
       }
-      return 'hello';
-    }).property(),
+    }),
 
     _debugInfo: function() {
       return {
@@ -374,7 +377,7 @@ test("Views are correctly handled when destroyed during transitions", async func
   await visit('/simple');
 
   objectId = find('.simple-view').get(0).id;
-  let view = Ember.View.views[objectId];
+  let view = App.__container__.lookup('-view-registry:main')[objectId];
   objectInspector.sendObject(view);
   await wait();
 

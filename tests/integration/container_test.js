@@ -1,6 +1,6 @@
 /* jshint ignore:start */
 import Ember from "ember";
-import { module } from 'qunit';
+import { module, skip } from 'qunit';
 import { test } from 'ember-qunit';
 import startApp from '../helpers/start-app';
 let App;

@@ -1,69 +1,18 @@
 <div class="list-view" data-label="deprecations">
 
   <div class="ember-list-container">
-    {{#view "render-list"}}
-      {{#each item in filtered itemController="deprecation-item"}}
-        <div data-label="deprecation-item">
-        <div data-label="deprecation-row" class="list-tree__item-wrapper row-wrapper">
-          <div class="list-tree__item row">
-
-            <div class="cell_type_main cell" data-label="deprecation-main-cell">
-
-              <span {{bind-attr title="message" class="item.expandedClass"}} {{action "toggleExpand"}}  >
-                <span class="cell__arrow"></span>
-                <span class="pill pill_not-clickable" data-label="deprecation-count">{{item.model.count}}</span>
-                <span data-label="deprecation-message" data-label="deprecation-message">{{item.model.message}}</span>
-              </span>
-              {{#if item.model.url}}
-                <a {{bind-attr href=item.model.url}} class="external-link" target="_blank" title="Transition Plan" data-label="deprecation-url">
-                  Transition Plan
-                </a>
-              {{/if}}
-            </div>
-          </div>
+    {{#render-list}}
+      {{#each filtered as |item|}}
+        {{deprecation-item item=item
+                           traceDeprecations="traceDeprecations"
+                           traceSource="traceSource"
+                           openResource="openResource"}}
+      {{else}}
+        <div class="notice" data-label="page-refresh">
+          <p>No deprecations have been detected. Try reloading to catch the deprecations that were logged before you opened the inspector.</p>
+          <button data-label="page-refresh-btn" {{action "refreshPage"}}>Reload</button>
         </div>
-        {{#if item.isExpanded}}
-        {{#if item.model.hasSourceMap}}
-          {{#each source in item.model.sources itemController="deprecation-source"}}
-            <div class="list-tree__item-wrapper row-wrapper" data-label="deprecation-source">
-              <div class="list-tree__item row">
-                <div class="cell_type_main cell cell_size_larger" style="padding-left:48px">
-                  <span class="source">
-                  {{#if source.isClickable}}
-                    <a data-label="deprecation-source-link" href="#" {{action "openResource" source.model.map}}>{{source.url}}</a>
-                  {{else}}
-                    <span data-label="deprecation-source-text">{{source.url}}</span>
-                  {{/if}}
-                  </span>
-                </div>
-                <div class="cell">
-                  &nbsp; &nbsp;
-                  <span class="send-trace-to-console" {{action "traceSource" item source}} title="Trace deprecations in console" data-label="trace-deprecations-btn">
-                    Trace in the console
-                  </span>
-                </div>
-              </div>
-            </div>
-          {{/each}}
-        {{else}}
-          <div class="list-tree__item-wrapper row-wrapper" data-label="deprecation-full-trace">
-            <div class="list-tree__item row" >
-              <div class="cell_type_main cell cell_clickable" style="padding-left:48px">
-                <div class="send-trace-to-console" {{action "traceDeprecations" item}} title="Trace deprecations in console" data-label="full-trace-deprecations-btn">
-                  Trace in the console
-                </div>
-              </div>
-            </div>
-          </div>
-        {{/if}}
-        {{/if}}
-      </div>
-       {{else}}
-         <div class="notice" data-label="page-refresh">
-           <p>No deprecations have been detected. Try reloading to catch the deprecations that were logged before you opened the inspector.</p>
-           <button data-label="page-refresh-btn" {{action "refreshPage"}}>Reload</button>
-         </div>
       {{/each}}
-    {{/view}}
+    {{/render-list}}
   </div>
 </div>

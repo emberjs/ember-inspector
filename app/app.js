@@ -6,7 +6,6 @@ import config from './config/environment';
 
 import Port from "./port";
 import PromiseAssembler from "ember-inspector/libs/promise-assembler";
-import msToTime from "ember-inspector/helpers/ms-to-time";
 
 Ember.MODEL_FACTORY_INJECTIONS = true;
 
@@ -15,14 +14,11 @@ const version = '{{EMBER_INSPECTOR_VERSION}}';
 const App = Ember.Application.extend({
   modulePrefix: config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
-  Resolver: Resolver
+  Resolver
 });
 
 
 config.VERSION = version;
-
-// Register Helpers
-Ember.Handlebars.helper('ms-to-time', msToTime);
 
 // Inject adapter
 App.initializer({
@@ -53,6 +49,7 @@ App.initializer({
     container.register('port:main', app.Port || Port);
     container.typeInjection('controller', 'port', 'port:main');
     container.typeInjection('route', 'port', 'port:main');
+    container.typeInjection('component', 'port', 'port:main');
     container.typeInjection('promise-assembler', 'port', 'port:main');
 
     // register and inject promise assembler

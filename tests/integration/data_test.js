@@ -171,6 +171,7 @@ test("Filtering records", async function t(assert) {
 
   let rows = findByLabel('record-row');
   assert.equal(rows.length, 2);
+
   let filters = findByLabel('filter');
   assert.equal(filters.length, 2);
   let newFilter = filters.filter(':contains(New)');

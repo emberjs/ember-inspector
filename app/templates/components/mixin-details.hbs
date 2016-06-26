@@ -1,0 +1,21 @@
+{{#if model.errors.length}}
+<div class="mixin mixin_props_no" data-label="object-inspector-errors">
+  <h2 class="mixin__name mixin__name_errors">
+    Errors
+    <span {{action "traceErrors"}} class="send-trace-to-console" data-label="send-errors-to-console">
+      Trace in the console
+    </span>
+  </h2>
+  <div class="mixin__properties">
+  {{#each model.errors as |error|}}
+    <div class="mixin__error" data-label="object-inspector-error">
+      Error while computing: {{error.property}}
+    </div>
+  {{/each}}
+  </div>
+</div>
+{{/if}}
+
+{{#each model.mixins as |mixin|}}
+  {{mixin-detail model=mixin calculate="calculate" sendToConsole="sendToConsole" digDeeper="digDeeper" saveProperty="saveProperty"}}
+{{/each}}

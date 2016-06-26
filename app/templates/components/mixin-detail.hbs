@@ -1,0 +1,17 @@
+<div class="mixin {{model.type}} {{if isExpanded 'mixin_state_expanded'}} {{if model.properties.length 'mixin_props_yes' 'mixin_props_no'}}" data-label="object-detail" >
+  {{#if model.properties.length}}
+    <h2 class="mixin__name" {{action "toggleExpanded"}} data-label="object-detail-name">{{model.name}}</h2>
+  {{else}}
+    <h2 class="mixin__name" data-label="object-detail-name">{{model.name}}</h2>
+  {{/if}}
+
+  {{#if isExpanded}}
+  <ul class="mixin__properties">
+    {{#each model.properties as |property|}}
+      {{mixin-property model=property digDeeper=digDeeper saveProperty=saveProperty sendToConsole=sendToConsole calculate=calculate}}
+    {{else}}
+      <li class="mixin__property">No Properties</li>
+    {{/each}}
+  </ul>
+  {{/if}}
+</div>

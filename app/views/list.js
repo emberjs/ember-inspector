@@ -24,12 +24,12 @@ export default Ember.View.extend({
    * @property contentHeight
    * @type {Integer}
    */
-  contentHeight: alias('controller.controllers.application.contentHeight'),
+  contentHeight: alias('controller.application.contentHeight'),
 
   attributeBindings: ['style'],
 
   style: computed('height', function() {
-    return `height:${this.get('height')}px`;
+    return Ember.String.htmlSafe(`height:${this.get('height')}px`);
   }),
 
   /**

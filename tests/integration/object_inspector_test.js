@@ -449,7 +449,7 @@ test("Date fields are editable", async function t(assert) {
 
   let e = Ember.$.Event('keyup', { keyCode: 13 });
   run(() => {
-    findByLabel('object-property-value-date').trigger(e);
+    field.trigger(e);
   });
   await wait();
 
