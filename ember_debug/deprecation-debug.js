@@ -159,7 +159,7 @@ export default EmberObject.extend(PortMixin, {
     Ember.deprecate = this.originalDeprecate;
     this.originalDeprecate = null;
     run.cancel(this.debounce);
-    this._super();
+    return this._super(...arguments);
   },
 
   replaceDeprecate() {
@@ -219,16 +219,20 @@ export default EmberObject.extend(PortMixin, {
         url: url
       };
 
-      self.get('deprecationsToSend').pushObject(deprecation);
-      run.cancel(self.debounce);
-      if (self._watching) {
-        self.debounce = run.debounce(self, 'sendPending', 100);
-      } else {
-        self.debounce = run.debounce(self, 'sendCount', 100);
-      }
-      if (!self._warned) {
-        self.get("adapter").warn("Deprecations were detected, see the Ember Inspector deprecations tab for more details.");
-        self._warned = true;
+      // For ember-debug testing we usually don't want
+      // to catch deprecations
+      if (!self.get('namespace').IGNORE_DEPRECATIONS) {
+        self.get('deprecationsToSend').pushObject(deprecation);
+        run.cancel(self.debounce);
+        if (self._watching) {
+          self.debounce = run.debounce(self, 'sendPending', 100);
+        } else {
+          self.debounce = run.debounce(self, 'sendCount', 100);
+        }
+        if (!self._warned) {
+          self.get("adapter").warn("Deprecations were detected, see the Ember Inspector deprecations tab for more details.");
+          self._warned = true;
+        }
       }
     };
   }

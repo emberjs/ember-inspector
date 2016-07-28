@@ -1,12 +1,9 @@
 import Ember from 'ember';
-import Resolver from 'ember/resolver';
-import loadInitializers from 'ember/load-initializers';
+import Resolver from './resolver';
+import loadInitializers from 'ember-load-initializers';
 import config from './config/environment';
-
-
 import Port from "./port";
 import PromiseAssembler from "ember-inspector/libs/promise-assembler";
-import msToTime from "ember-inspector/helpers/ms-to-time";
 
 Ember.MODEL_FACTORY_INJECTIONS = true;
 
@@ -15,49 +12,60 @@ const version = '{{EMBER_INSPECTOR_VERSION}}';
 const App = Ember.Application.extend({
   modulePrefix: config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
-  Resolver: Resolver
+  Resolver
 });
 
+// TODO: remove this when fixed
+// problem description: registry classes being registered
+// again on app reset. this will clear the registry.
+// long term solution: make registry initializers run once on app
+// creation.
+// issue: https://github.com/emberjs/ember.js/issues/10310
+// pr: https://github.com/emberjs/ember.js/pull/10597
+App.reopen({
+  buildInstance() {
+    this.buildRegistry();
+    return this._super(...arguments);
+  }
+});
 
 config.VERSION = version;
-
-// Register Helpers
-Ember.Handlebars.helper('ms-to-time', msToTime);
 
 // Inject adapter
 App.initializer({
   name: "extension-init",
 
-  initialize(container, app) {
+  initialize(instance) {
     // {{EMBER_DIST}} is replaced by the build process.
-    app.adapter = '{{EMBER_DIST}}';
+    instance.adapter = '{{EMBER_DIST}}';
 
     // register and inject adapter
     let Adapter;
-    if (Ember.typeOf(app.adapter) === 'string') {
-      Adapter = container.resolve('adapter:' + app.adapter);
+    if (Ember.typeOf(instance.adapter) === 'string') {
+      Adapter = instance.resolveRegistration('adapter:' + instance.adapter);
     } else {
-      Adapter = app.adapter;
+      Adapter = instance.adapter;
     }
-    container.register('adapter:main', Adapter);
-    container.typeInjection('port', 'adapter', 'adapter:main');
-    container.injection('route:application', 'adapter', 'adapter:main');
-    container.injection('route:deprecations', 'adapter', 'adapter:main');
-    container.injection('controller:deprecations', 'adapter', 'adapter:main');
+    instance.register('adapter:main', Adapter);
+    instance.inject('port', 'adapter', 'adapter:main');
+    instance.inject('route:application', 'adapter', 'adapter:main');
+    instance.inject('route:deprecations', 'adapter', 'adapter:main');
+    instance.inject('controller:deprecations', 'adapter', 'adapter:main');
 
     // register config
-    container.register('config:main', config, { instantiate: false });
-    container.typeInjection('route', 'config', 'config:main');
+    instance.register('config:main', config, { instantiate: false });
+    instance.inject('route', 'config', 'config:main');
 
     // inject port
-    container.register('port:main', app.Port || Port);
-    container.typeInjection('controller', 'port', 'port:main');
-    container.typeInjection('route', 'port', 'port:main');
-    container.typeInjection('promise-assembler', 'port', 'port:main');
+    instance.register('port:main', instance.Port || Port);
+    instance.inject('controller', 'port', 'port:main');
+    instance.inject('route', 'port', 'port:main');
+    instance.inject('component', 'port', 'port:main');
+    instance.inject('promise-assembler', 'port', 'port:main');
 
     // register and inject promise assembler
-    container.register('promise-assembler:main', PromiseAssembler);
-    container.injection('route:promiseTree', 'assembler', 'promise-assembler:main');
+    instance.register('promise-assembler:main', PromiseAssembler);
+    instance.inject('route:promiseTree', 'assembler', 'promise-assembler:main');
   }
 });
 

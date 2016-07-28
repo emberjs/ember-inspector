@@ -4,6 +4,8 @@
     "es6": true,
   },
   "rules": {
+    "no-eq-null": 0,
+    "eqeqeq": [2, "allow-null"],
     "no-implicit-coercion": 0,
     "spaced-comment": 0,
     "arrow-spacing": [ 2, { "before": true, "after": true } ],

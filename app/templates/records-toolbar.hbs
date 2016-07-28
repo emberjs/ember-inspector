@@ -1,17 +1,18 @@
 <div class="toolbar">
-  <div class="toolbar__search" data-label="records-search">
+  <div class="toolbar__search js-records-search">
     {{input value=search placeholder="Search"}}
   </div>
 
-  <button data-label="filter" {{bind-attr class="noFilterValue:active :toolbar__radio"}} {{action "setFilter"}}>
+  <button class="{{if noFilterValue 'active'}} toolbar__radio js-filter" {{action "setFilter"}}>
     All
   </button>
 
   <div class="divider"></div>
-
-  {{#each filters itemController="recordFilter" as |filter|}}
-    <button data-label="filter" {{bind-attr class="filter.checked:active :toolbar__radio"}} {{action "setFilter" filter.name}} >
-      {{filter.desc}}
-    </button>
+  {{#each filters as |item|}}
+    {{#record-filter model=item filterValue=filterValue as |filter|}}
+      <button class="{{if filter.checked 'active'}} toolbar__radio js-filter" {{action "setFilter" filter.model.name}} >
+        {{filter.model.desc}}
+      </button>
+    {{/record-filter}}
   {{/each}}
 </div>

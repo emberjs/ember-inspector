@@ -12,8 +12,6 @@ export default TabRoute.extend({
     this.get('port').on('view:viewTree', this, this.setViewTree);
     this.get('port').on('view:stopInspecting', this, this.stopInspecting);
     this.get('port').on('view:startInspecting', this, this.startInspecting);
-    this.get('port').on('view:pinView', this, this.pinView);
-    this.get('port').on('view:unpinView', this, this.unpinView);
     this.get('port').send('view:getTree');
   },
 
@@ -21,8 +19,6 @@ export default TabRoute.extend({
     this.get('port').off('view:viewTree', this, this.setViewTree);
     this.get('port').off('view:stopInspecting', this, this.stopInspecting);
     this.get('port').off('view:startInspecting', this, this.startInspecting);
-    this.get('port').off('view:pinView', this, this.pinView);
-    this.get('port').off('view:unpinView', this, this.unpinView);
   },
 
   setViewTree(options) {
@@ -36,27 +32,7 @@ export default TabRoute.extend({
 
   stopInspecting() {
     this.set('controller.inspectingViews', false);
-  },
-
-  pinView(message) {
-    this.set('controller.pinnedObjectId', message.objectId);
-  },
-
-  unpinView() {
-    this.set('controller.pinnedObjectId', null);
-  },
-
-  actions: {
-    inspect(objectId) {
-      if (objectId) {
-        this.get('port').send('objectInspector:inspectById', { objectId: objectId });
-      }
-    },
-    inspectElement(objectId) {
-      this.get('port').send('view:inspectElement', { objectId: objectId });
-    }
   }
-
 });
 
 function topSort(tree, list) {

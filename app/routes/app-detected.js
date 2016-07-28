@@ -1,5 +1,5 @@
 import Ember from 'ember';
-const { Route, RSVP: { Promise } } = Ember;
+const { Route, RSVP: { Promise }, getOwner } = Ember;
 
 export default Route.extend({
   model() {
@@ -21,7 +21,7 @@ export default Route.extend({
   },
 
   reset() {
-    this.container.lookup('application:main').reset();
+    getOwner(this).lookup('application:main').reset();
   },
 
   deactivate() {

@@ -1,5 +1,5 @@
 import Ember from 'ember';
-const { Handlebars: { makeBoundHelper } } = Ember;
+const { Helper: { helper } } = Ember;
 /**
  * Escape a url component
  *
@@ -11,4 +11,4 @@ export function escapeUrl(url) {
   return encodeURIComponent(url);
 }
 
-export default makeBoundHelper(escapeUrl);
+export default helper(escapeUrl);

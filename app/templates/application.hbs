@@ -1,31 +1,33 @@
-{{#if emberApplication}}
-  <div class="split">
-    <div class="split__panel">
-      {{partial 'main'}}
+{{#x-app active=active isDragging=isDragging}}
+  {{#if emberApplication}}
+    <div class="split">
+      <div class="split__panel">
+        {{partial 'main'}}
+      </div>
+
+      {{#if inspectorExpanded}}
+        {{#draggable-column
+                side="right"
+                width=inspectorWidth
+                classes="split__panel"}}
+          {{object-inspector application=this model=mixinStack mixinDetails=mixinDetails toggleInspector="toggleInspector"}}
+        {{/draggable-column}}
+      {{/if}}
     </div>
 
-    {{#if inspectorExpanded}}
-      {{#draggable-column
-              side="right"
-              width=inspectorWidth
-              classNames="split__panel"}}
-        {{render "mixinStack"}}
-      {{/draggable-column}}
+  {{else}}
+    {{#not-detected description="Ember application"}}
+    <li>This is not an Ember application.</li>
+    <li>You are using an old version of Ember (&lt; rc5).</li>
+    {{#if isChrome}}
+      <li>You are using the file:// protocol (instead of http://), in which case:
+        <ul>
+          <li>Visit the URL: chrome://extensions.</li>
+          <li>Find the Ember Inspector.</li>
+          <li>Make sure "Allow access to file URLs" is checked.</li>
+        </ul>
+      </li>
     {{/if}}
-  </div>
-
-{{else}}
-  {{#not-detected description="Ember application"}}
-  <li>This is not an Ember application.</li>
-  <li>You are using an old version of Ember (&lt; rc5).</li>
-  {{#if isChrome}}
-    <li>You are using the file:// protocol (instead of http://), in which case:
-      <ul>
-        <li>Visit the URL: chrome://extensions.</li>
-        <li>Find the Ember Inspector.</li>
-        <li>Make sure "Allow access to file URLs" is checked.</li>
-      </ul>
-    </li>
+    {{/not-detected}}
   {{/if}}
-  {{/not-detected}}
-{{/if}}
+{{/x-app}}

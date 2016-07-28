@@ -7,11 +7,8 @@
 /* .split: The container for one or more panels */
 
 .split {
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex: auto;
   flex: auto;
-  -webkit-flex-direction: row;
   flex-direction: row;
   overflow: hidden;
   position: absolute;
@@ -24,11 +21,8 @@
 /* .split__panel: Contains a body, and optional header and footer elements */
 
 .split__panel {
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: column;
   flex-direction: column;
-  -webkit-flex: auto;
   flex: auto;
   position: relative;
 }
@@ -41,14 +35,9 @@
 
 .split__panel__hd,
 .split__panel__ft {
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex: none;
   flex: none;
-  -webkit-flex-direction: column;
   flex-direction: column;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
   box-sizing: border-box;
   padding: 1px 2px;
   min-height: 23px;
@@ -63,7 +52,6 @@
 }
 
 .split__panel__bd {
-  -webkit-flex: auto;
   flex: auto;
   overflow: auto;
 }

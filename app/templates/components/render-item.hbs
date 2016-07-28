@@ -1,0 +1,17 @@
+<div style={{nodeStyle}} class="list__row js-render-profile-item">
+  <div class="list__cell list__cell_main {{expandedClass}} js-render-main-cell" {{action "toggleExpand"}} style={{nameStyle}}>
+    <span class="list__cell-arrow"></span>
+    <span title="{{model.name}}">
+      <span class="js-render-profile-name">{{model.name}}</span>
+      <span class="pill pill_not-clickable js-render-profile-duration">{{ms-to-time model.duration}}</span>
+    </span>
+  </div>
+  <div class="list__cell list__cell_value_numeric js-render-profile-timestamp">
+    {{readableTime}}
+  </div>
+</div>
+{{#if isExpanded}}
+  {{#each model.children as |child|}}
+    {{render-item model=child target=this}}
+  {{/each}}
+{{/if}}

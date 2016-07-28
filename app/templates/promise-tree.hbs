@@ -1,26 +1,36 @@
 {{#if shouldRefresh}}
   {{partial "page_refresh"}}
 {{else}}
-<div class="list-view" data-label="promise-tree">
-  <div class="list-view__header row">
-    <div class="cell cell_type_header">
-      Label
+  {{#x-list class="js-promise-tree"}}
+    <div class="list__row list__row_header">
+      <div class="list__cell">
+        Label
+      </div>
+      <div class="list__cell list__cell_size_medium">
+        State
+      </div>
+      <div class="list__cell list__cell_size_large">
+        Fulfillment / Rejection value
+      </div>
+      <div class="list__cell list__cell_size_medium list__cell_value_numeric">
+        Time to settle
+      </div>
+      <!-- Account for scrollbar width :'(  -->
+      <div class="list__cell list__cell_spacer"></div>
     </div>
-    <div class="cell cell_size_medium cell_type_header">
-      State
-    </div>
-    <div class="cell cell_size_large cell_type_header">
-      Fulfillment / Rejection value
-    </div>
-    <div class="cell cell_size_medium cell_value_numeric cell_type_header">
-      Time to settle
-    </div>
-    <!-- Account for scrollbar width :'(  -->
-    <div class="cell cell_type_header spacer"></div>
-  </div>
 
-  <div class="list-view__list-container">
-    {{view "promiseList" content=items}}
-  </div>
-</div>
+    {{#x-list-content contentHeight=application.contentHeight}}
+      {{#vertical-collection content=filtered defaultHeight=30 as |content|}}
+        {{promise-item
+          model=content
+          filter=filter
+          effectiveSearch=effectiveSearch
+          toggleExpand=(action "toggleExpand")
+          tracePromise=(action "tracePromise")
+          inspectObject=(action "inspectObject")
+          sendValueToConsole=(action "sendValueToConsole")
+        }}
+      {{/vertical-collection}}
+    {{/x-list-content}}
+  {{/x-list}}
 {{/if}}
