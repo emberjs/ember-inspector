@@ -6,7 +6,10 @@ const { Controller, computed, inject: { controller } } = Ember;
 export default Controller.extend({
   application: controller(),
 
+  queryParams: ['hideRoutes'],
+
   currentRoute: null,
+  hideRoutes: computed.alias('options.hideRoutes'),
 
   options: {
     hideRoutes: false
