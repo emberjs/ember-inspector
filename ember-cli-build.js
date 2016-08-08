@@ -5,9 +5,7 @@ var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 var ES6Modules = require('broccoli-es6modules');
 var mergeTrees  = require('broccoli-merge-trees');
 var wrapFiles = require('broccoli-wrap');
-var pickFiles = require('broccoli-static-compiler');
 var concatFiles = require('broccoli-concat');
-var removeFile = require('broccoli-file-remover');
 var path = require('path');
 var jsStringEscape = require('js-string-escape');
 var eslint = require('broccoli-lint-eslint');
@@ -15,6 +13,7 @@ var mv = require('broccoli-stew').mv;
 var writeFile = require('broccoli-file-creator');
 var replace = require('broccoli-replace');
 var esTranspiler = require('broccoli-babel-transpiler');
+var Funnel = require('broccoli-funnel');
 var packageJson = require('./package.json');
 
 /*global process */
@@ -86,22 +85,13 @@ module.exports = function(defaults) {
 
   var emberDebug = 'ember_debug';
 
-  emberDebug = pickFiles(emberDebug, {
-    srcDir: '/',
-    files: ['**/*.js'],
-    destDir: '/ember-debug'
-  });
-
-  emberDebug = removeFile(emberDebug, {
-    files: [
-      'ember-debug/vendor/source-map.js',
-    ]
-  });
-
-  emberDebug = removeFile(emberDebug, {
-    files: [
-      'ember-debug/vendor/startup-wrapper.js',
-      'ember-debug/vendor/loader.js'
+  emberDebug = new Funnel(emberDebug, {
+    destDir: 'ember-debug',
+    include: ['**/*.js'],
+    exclude: [
+      'vendor/loader.js',
+      'vendor/source-map.js',
+      'vendor/startup-wrapper.js',
     ]
   });
 
@@ -131,10 +121,9 @@ module.exports = function(defaults) {
     return "'" + item + "'";
   }).join(',') + ']';
 
-  var startupWrapper = pickFiles('ember_debug', {
-    srcDir: '/vendor',
+  var startupWrapper = new Funnel('ember_debug', {
+    srcDir: 'vendor',
     files: ['startup-wrapper.js'],
-    destDir: '/'
   });
 
   startupWrapper = replace(startupWrapper, {
@@ -145,16 +134,14 @@ module.exports = function(defaults) {
     }]
   });
 
-  var sourceMap = pickFiles('ember_debug', {
-    srcDir: '/vendor',
+  var sourceMap = new Funnel('ember_debug', {
+    srcDir: 'vendor',
     files: ['source-map.js'],
-    destDir: '/'
   });
 
-  var loader = pickFiles('ember_debug', {
-    srcDir: '/vendor',
+  var loader = new Funnel('ember_debug', {
+    srcDir: 'vendor',
     files: ['loader.js'],
-    destDir: '/'
   });
 
   sourceMap = wrapFiles(sourceMap, {
@@ -192,10 +179,8 @@ module.exports = function(defaults) {
   var chromeRoot = 'panes-' + minimumVersion;
   var firefoxRoot = 'data/' + chromeRoot;
 
-  var firefoxAndChromeExtra = pickFiles('shared', {
-    srcDir: '/',
+  var firefoxAndChromeExtra = new Funnel('shared', {
     files: ['in-page-script.js'],
-    destDir: '/'
   });
 
   var replacementPattern = [{
