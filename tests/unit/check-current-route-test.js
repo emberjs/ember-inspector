@@ -1,7 +1,7 @@
 import checkCurrentRoute from 'ember-inspector/utils/check-current-route';
 import { module, test } from 'qunit';
 
-module("checkCurrentRoute");
+module("Unit | Helper | checkCurrentRoute");
 
 test("matches the correct routes", function(assert) {
   assert.ok(checkCurrentRoute('whatever', 'application'), 'application is always current');

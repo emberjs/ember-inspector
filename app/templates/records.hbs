@@ -1,21 +1,17 @@
-{{#x-list}}
-  <div class="list__row list__row_header">
-    {{#each columns as |column|}}
-      <div class="list__cell js-column-title">{{column.desc}}</div>
-    {{/each}}
+{{#x-list
+  name="record-list"
+  schema=schema
+  storageKey=(concat "record-list-" modelType.name)
+  contentHeight=application.contentHeight
+  itemClass="list__row_highlight" as |list|}}
 
-    <!-- Account for scrollbar width :'(  -->
-    <div class="list__cell list__cell_spacer"></div>
-  </div>
-
-  {{#x-list-content contentHeight=application.contentHeight}}
-    {{#vertical-collection content=filtered defaultHeight=30 as |content|}}
-      {{record-item
-        model=content
-        modelTypeColumns=columns
-        inspect="inspectModel"
-        class="js-record-item"
-      }}
-    {{/vertical-collection}}
-  {{/x-list-content}}
+  {{#list.vertical-collection content=filtered as |content index|}}
+    {{record-item
+      model=content
+      modelTypeColumns=columns
+      list=list
+      index=index
+      on-click=(action "inspectModel" content)
+    }}
+  {{/list.vertical-collection}}
 {{/x-list}}

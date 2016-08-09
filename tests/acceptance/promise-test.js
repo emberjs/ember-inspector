@@ -72,14 +72,14 @@ test("Shows page refresh hint if no promises", async function(assert) {
   });
 
   assert.equal(find('.js-promise-tree').length, 1, 'promise tree is seen after being populated');
-  assert.equal(find('.js-promise-item').length, 1, '1 promise item can be seen');
+  assert.equal(find('.js-promise-tree-item').length, 1, '1 promise item can be seen');
   assert.equal(find('.js-page-refresh').length, 0, 'page refresh hint hidden');
 
   // make sure clearing does not show the refresh hint
   await click('.js-clear-promises-btn');
 
   assert.equal(find('.js-promise-tree').length, 1, 'promise-tree can be seen');
-  assert.equal(find('.js-promise-item').length, 0, 'promise items cleared');
+  assert.equal(find('.js-promise-tree-item').length, 0, 'promise items cleared');
   assert.equal(find('.js-page-refresh').length, 0, 'page refresh hint hidden');
 });
 
@@ -98,8 +98,8 @@ test("Pending promise", async function(assert) {
   });
   await wait();
 
-  assert.equal(find('.js-promise-item').length, 1);
-  let row = find('.js-promise-item').first();
+  assert.equal(find('.js-promise-tree-item').length, 1);
+  let row = find('.js-promise-tree-item').first();
   assert.equal(find('.js-promise-label', row).text().trim(), 'Promise 1');
   assert.equal(find('.js-promise-state', row).text().trim(), 'Pending');
 });
@@ -127,8 +127,8 @@ test("Fulfilled promise", async function(assert) {
   });
   await wait();
 
-  assert.equal(find('.js-promise-item').length, 1);
-  let row = find('.js-promise-item').first();
+  assert.equal(find('.js-promise-tree-item').length, 1);
+  let row = find('.js-promise-tree-item').first();
   assert.equal(find('.js-promise-label', row).text().trim(), 'Promise 1');
   assert.equal(find('.js-promise-state', row).text().trim(), 'Fulfilled');
   assert.equal(find('.js-promise-value', row).text().trim(), 'value');
@@ -157,8 +157,8 @@ test("Rejected promise", async function(assert) {
     ]
   });
 
-  assert.equal(find('.js-promise-item').length, 1);
-  let row = find('.js-promise-item').first();
+  assert.equal(find('.js-promise-tree-item').length, 1);
+  let row = find('.js-promise-tree-item').first();
   assert.equal(find('.js-promise-label', row).text().trim(), 'Promise 1');
   assert.equal(find('.js-promise-state', row).text().trim(), 'Rejected');
   assert.equal(find('.js-promise-value', row).text().trim(), 'reason');
@@ -183,12 +183,12 @@ test("Chained promises", async function(assert) {
     ]
   });
 
-  let rows = find('.js-promise-item');
+  let rows = find('.js-promise-tree-item');
   assert.equal(rows.length, 1, 'Collpased by default');
   assert.equal(find('.js-promise-label', rows.eq(0)).text().trim(), 'Parent');
   await click('.js-promise-label', rows.eq(0));
 
-  rows = find('.js-promise-item');
+  rows = find('.js-promise-tree-item');
   assert.equal(rows.length, 2, 'Chain now expanded');
   assert.equal(find('.js-promise-label', rows.eq(1)).text().trim(), 'Child');
 });
@@ -244,7 +244,7 @@ test("Logging error stack trace in the console", async function(assert) {
     })]
   });
 
-  let row = find('.js-promise-item').first();
+  let row = find('.js-promise-tree-item').first();
   assert.equal(find('.js-send-to-console-btn').text().trim(), 'Stack trace');
   await click('.js-send-to-console-btn', row);
 
@@ -267,7 +267,7 @@ test("Send fulfillment value to console", async function(assert) {
     })]
   });
 
-  let row = find('.js-promise-item').first();
+  let row = find('.js-promise-tree-item').first();
   await click('.js-send-to-console-btn', row);
 
   assert.equal(name, 'promise:sendValueToConsole');
@@ -289,7 +289,7 @@ test("Sending objects to the object inspector", async function(assert) {
     })]
   });
 
-  let row = find('.js-promise-item').first();
+  let row = find('.js-promise-tree-item').first();
   await click('.js-promise-object-value', row);
 
   assert.equal(name, 'objectInspector:inspectById');

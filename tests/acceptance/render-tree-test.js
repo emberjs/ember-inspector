@@ -76,7 +76,6 @@ test("Renders the list correctly", async function(assert) {
   await visit('/render-tree');
 
   assert.equal(find('.js-render-tree').length, 1);
-
   let rows = find('.js-render-profile-item');
   assert.equal(rows.length, 2, "Two rows are rendered initially");
 

@@ -3,7 +3,7 @@ import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
 let App;
-const { run } = Ember;
+const { run, $ } = Ember;
 
 let port;
 
@@ -64,7 +64,7 @@ test("Route tree is successfully displayed", async function(assert) {
 
   await visit('route-tree');
 
-  let routeNodes = find('.js-route-item');
+  let routeNodes = find('.js-route-tree-item');
   assert.equal(routeNodes.length, 4);
 
   let routeNames = find('.js-route-name').get().map(function(item) {
@@ -135,7 +135,7 @@ test("Clicking on route handlers and controller sends an inspection message", as
   await visit('route-tree');
   name = null;
   message = null;
-  applicationRow = find('.js-route-item').first();
+  applicationRow = find('.js-route-tree-item').first();
   await click('.js-route-handler', applicationRow);
   assert.equal(name, 'objectInspector:inspectRoute');
   assert.equal(message.name, 'application');
@@ -148,7 +148,7 @@ test("Clicking on route handlers and controller sends an inspection message", as
 
   name = null;
   message = null;
-  let postRow = find('.js-route-item').eq(1);
+  let postRow = find('.js-route-tree-item').eq(1);
   await click('.js-route-controller', postRow);
   assert.equal(name, null, "If controller does not exist, clicking should have no effect.");
   assert.equal(message, null);
@@ -169,18 +169,14 @@ test("Current Route is highlighted", async function(assert) {
   let routeNodes;
 
   await visit('route-tree');
-  routeNodes = find('.js-route-item');
-  let isCurrent = routeNodes.get().map(function(item) {
-    return Ember.$(item).hasClass('list__row_highlight');
-  });
+  routeNodes = find('.js-route-tree-item .js-route-name');
+  let isCurrent = routeNodes.get().map(item => $(item).hasClass('list__cell_highlight'));
   assert.deepEqual(isCurrent, [true, true, false, true]);
 
   run(() => port.trigger('route:currentRoute', { name: 'post.new' }));
   await wait();
-  routeNodes = find('.js-route-item');
-  isCurrent = routeNodes.get().map(function(item) {
-    return Ember.$(item).hasClass('list__row_highlight');
-  });
+  routeNodes = find('.js-route-tree-item .js-route-name');
+  isCurrent = routeNodes.get().map(item => $(item).hasClass('list__cell_highlight'));
   assert.deepEqual(isCurrent, [true, true, true, false], 'Current route is bound');
 });
 
@@ -196,12 +192,12 @@ test("Hiding non current route", async function(assert) {
   });
 
   await visit('route-tree');
-  let routeNodes = find('.js-route-item');
+  let routeNodes = find('.js-route-tree-item');
   assert.equal(routeNodes.length, 4);
   let checkbox = find('.js-filter-hide-routes input');
   checkbox.prop('checked', true);
   checkbox.trigger('change');
   await wait();
-  routeNodes = find('.js-route-item');
+  routeNodes = find('.js-route-tree-item');
   assert.equal(routeNodes.length, 3);
 });

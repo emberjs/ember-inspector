@@ -114,7 +114,7 @@ test("It should correctly display the view tree", async function(assert) {
   });
   await wait();
 
-  let $treeNodes = find('.js-view-item');
+  let $treeNodes = find('.js-view-tree-item');
   assert.equal($treeNodes.length, 3, 'expected some tree nodes');
   let controllerNames = [];
   let templateNames = [];
@@ -192,7 +192,7 @@ test("It should update the view tree when the port triggers a change", async fun
   run(() => port.trigger('view:viewTree', { tree: viewTree }));
   await wait();
 
-  $treeNodes = find('.js-view-item');
+  $treeNodes = find('.js-view-tree-item');
   assert.equal($treeNodes.length, 3);
   assert.equal(find('.js-view-controller').filter(':last').text().trim(), 'App.CommentsController');
 
@@ -201,7 +201,7 @@ test("It should update the view tree when the port triggers a change", async fun
   viewTree.children[0].value.controller.name = 'App.SomeController';
   run(() => port.trigger('view:viewTree', { tree: viewTree }));
   await wait();
-  $treeNodes = find('.js-view-item');
+  $treeNodes = find('.js-view-tree-item');
   assert.equal($treeNodes.length, 2);
   assert.equal(find('.js-view-controller').filter(':last').text().trim(), 'App.SomeController');
 });
@@ -219,11 +219,11 @@ test("Previewing / showing a view on the client", async function(assert) {
   viewTree.children = [];
   run(() => port.trigger('view:viewTree', { tree: viewTree }));
   await wait();
-  run(() => find('.js-view-item').mouseenter());
+  run(() => find('.js-view-tree-item').mouseenter());
   await wait();
   assert.equal(messageSent.name, 'view:previewLayer', "Client asked to preview layer");
   assert.equal(messageSent.message.objectId, 'applicationView', "Client sent correct id to preview layer");
-  run(() => find('.js-view-item').mouseleave());
+  run(() => find('.js-view-tree-item').mouseleave());
   await wait();
   assert.equal(messageSent.name, 'view:hidePreview', "Client asked to hide preview");
 });

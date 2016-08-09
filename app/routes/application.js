@@ -1,5 +1,7 @@
 import Ember from "ember";
-const { Route } = Ember;
+const { Route, inject, run, NativeArray } = Ember;
+const { service } = inject;
+const { schedule } = run;
 const set = Ember.set;
 const get = Ember.get;
 
@@ -32,7 +34,7 @@ export default Route.extend({
           objectId = options.objectId,
           errors = options.errors;
 
-    Ember.NativeArray.apply(details);
+    NativeArray.apply(details);
     details.forEach(arrayize);
 
     let controller = this.get('controller');
@@ -52,7 +54,7 @@ export default Route.extend({
 
   updateProperty(options) {
     const detail = this.get('controller.mixinDetails.mixins').objectAt(options.mixinIndex);
-    const property = Ember.get(detail, 'properties').findBy('name', options.property);
+    const property = get(detail, 'properties').findBy('name', options.property);
     set(property, 'value', options.value);
   },
 
@@ -69,12 +71,29 @@ export default Route.extend({
     this.get('controller').droppedObject(message.objectId);
   },
 
+  /**
+   * Service used to broadcast changes to the application's layout
+   * such as toggling of the object inspector.
+   *
+   * @property layout
+   * @type {Service}
+   */
+  layout: service(),
+
   actions: {
     expandInspector() {
       this.set("controller.inspectorExpanded", true);
+      // Broadcast that tables have been resized (used by `x-list`).
+      schedule('afterRender', () => {
+        this.get('layout').trigger('resize', { source: 'object-inspector' });
+      });
     },
     toggleInspector() {
       this.toggleProperty("controller.inspectorExpanded");
+      // Broadcast that tables have been resized (used by `x-list`).
+      schedule('afterRender', () => {
+        this.get('layout').trigger('resize', { source: 'object-inspector' });
+      });
     },
     inspectObject(objectId) {
       if (objectId) {
@@ -100,5 +119,5 @@ export default Route.extend({
 });
 
 function arrayize(mixin) {
-  Ember.NativeArray.apply(mixin.properties);
+  NativeArray.apply(mixin.properties);
 }

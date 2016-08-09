@@ -2,4 +2,4 @@
   {{yield}}
 {{/resizable-column}}
 
-{{drag-handle side=side position=width minWidth=minWidth action="setIsDragging"}}
+{{drag-handle side=side position=width minWidth=minWidth action="setIsDragging" on-drag=(action "didDrag")}}

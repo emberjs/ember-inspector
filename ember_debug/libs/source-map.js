@@ -63,7 +63,7 @@ export default EmberObject.extend({
       }
     }, function() {
       sourceMaps[url] = null;
-    });
+    }, 'ember-inspector');
   }
 });
 
@@ -78,8 +78,8 @@ function retrieveSourceMap(source) {
     // Support source map URLs relative to the source URL
     mapURL = relativeToAbsolute(source, sourceMappingURL);
     return mapURL;
-  })
-  .then(retrieveFile)
+  }, null, 'ember-inspector')
+  .then(retrieveFile, null, 'ember-inspector')
   .then(sourceMapData => {
     if (!sourceMapData) {
       return null;
@@ -88,7 +88,7 @@ function retrieveSourceMap(source) {
       url: mapURL,
       map: sourceMapData
     };
-  });
+  }, null, 'ember-inspector');
 }
 
 function relativeToAbsolute(file, url) {
@@ -120,7 +120,7 @@ function retrieveSourceMapURL(source) {
       return null;
     }
     return url;
-  });
+  }, null, 'ember-inspector');
 }
 
 

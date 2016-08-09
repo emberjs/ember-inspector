@@ -20,8 +20,10 @@ export default EmberObject.extend(PortMixin, {
     const container = this.get('application').__container__;
 
     // dataAdapter:main is deprecated
-    return (this._resolve('data-adapter:main') && container.lookup('data-adapter:main')) ||
-    (this._resolve('dataAdapter:main') && container.lookup('dataAdapter:main'));
+    let adapter = (this._resolve('data-adapter:main') && container.lookup('data-adapter:main'));
+    // column limit is now supported at the inspector level
+    adapter.set('attributeLimit', 100);
+    return adapter;
   }),
 
   _resolve(name) {

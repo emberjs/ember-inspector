@@ -1,35 +1,13 @@
-{{#x-list}}
-  <div class="list__row list__row_header">
-    <div class="list__cell">
-      Route Name
-    </div>
-    <div class="list__cell">
-      Route
-    </div>
-    <div class="list__cell">
-      Controller
-    </div>
-    <div class="list__cell">
-      Template
-    </div>
-    <div class="list__cell list__cell_size_large">
-      URL
-    </div>
-    <!-- Account for scrollbar width :'(  -->
-    <div class="list__cell list__cell_spacer"></div>
-  </div>
-
-  {{#x-list-content contentHeight=application.contentHeight}}
-    {{#vertical-collection content=filtered defaultHeight=30 as |content|}}
-      {{route-item
-        model=content
-        currentRoute=currentRoute
-        inspectRoute=(action "inspectRoute")
-        sendRouteHandlerToConsole=(action "sendRouteHandlerToConsole")
-        inspectController=(action "inspectController")
-        sendControllerToConsole=(action "sendControllerToConsole")
-        class="js-route-item"
-      }}
-    {{/vertical-collection}}
-  {{/x-list-content}}
+{{#x-list name="route-tree" schema=(schema-for "route-tree") contentHeight=application.contentHeight as |list|}}
+  {{#list.vertical-collection content=filtered as |content|}}
+    {{route-item
+      model=content
+      currentRoute=currentRoute
+      inspectRoute=(action "inspectRoute")
+      sendRouteHandlerToConsole=(action "sendRouteHandlerToConsole")
+      inspectController=(action "inspectController")
+      sendControllerToConsole=(action "sendControllerToConsole")
+      list=list
+    }}
+  {{/list.vertical-collection}}
 {{/x-list}}
