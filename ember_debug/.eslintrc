@@ -6,7 +6,6 @@
   "rules": {
     "callback-return": 0,
     "no-implicit-coercion": 0,
-    "spaced-comment": 0,
     "arrow-spacing": [ 2, { "before": true, "after": true } ],
     "prefer-reflect": 0,
     "prefer-const": 0,
