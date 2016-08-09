@@ -1,7 +1,6 @@
 /* global require, module */
 
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
-var ES6Modules = require('broccoli-es6modules');
 var mergeTrees = require('broccoli-merge-trees');
 var concatFiles = require('broccoli-concat');
 var path = require('path');
@@ -101,13 +100,10 @@ module.exports = function(defaults) {
     emberDebug = mergeTrees([emberDebug, linted]);
   }
 
-  emberDebug = new ES6Modules(emberDebug, {
-    esperantoOptions: {
-      absolutePaths: true,
-      strict: true
-    }
+  emberDebug = esTranspiler(emberDebug, {
+    moduleIds: true,
+    modules: 'amdStrict'
   });
-  emberDebug = esTranspiler(emberDebug);
 
   var previousEmberVersionsSupportedString = '[' + packageJson.previousEmberVersionsSupported.map(function(item) {
     return "'" + item + "'";
