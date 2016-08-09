@@ -24,9 +24,6 @@ var options = {
   babel: {
     // async/await
     optional: ['es7.asyncFunctions']
-  },
-  'ember-cli-qunit': {
-    useLintTree: false
   }
 };
 
