@@ -69,7 +69,6 @@
     "ember-pikaday": "2.0.0",
     "ember-resolver": "^2.0.3",
     "ember-run-raf": "1.1.2",
-    "eslint-config-ember": "0.2.0",
     "fstream": "^1.0.8",
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
