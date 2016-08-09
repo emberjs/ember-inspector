@@ -2,7 +2,7 @@
 
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 var ES6Modules = require('broccoli-es6modules');
-var mergeTrees  = require('broccoli-merge-trees');
+var mergeTrees = require('broccoli-merge-trees');
 var wrapFiles = require('broccoli-wrap');
 var concatFiles = require('broccoli-concat');
 var path = require('path');
