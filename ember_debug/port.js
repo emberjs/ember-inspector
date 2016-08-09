@@ -9,7 +9,7 @@ export default EmberObject.extend(Ember.Evented, {
   application: oneWay('namespace.application').readOnly(),
 
   uniqueId: computed('application', function() {
-    return guidFor(this.get('application')) + '__' + window.location.href + '__' + Date.now();
+    return `${guidFor(this.get('application'))}__${window.location.href}__${Date.now()}`;
   }),
 
   init() {

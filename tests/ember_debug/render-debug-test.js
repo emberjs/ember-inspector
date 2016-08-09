@@ -22,8 +22,8 @@ function setupApp() {
 module("Render Debug", {
   beforeEach() {
     EmberDebug.Port = EmberDebug.Port.extend({
-      init: function() {},
-      send: function() {}
+      init() {},
+      send() {}
     });
     run(function() {
       setupApp();

@@ -96,7 +96,7 @@ module.exports = function(defaults) {
     var linted = eslint(emberDebug, {
       testGenerator: eslintTestGenerator,
       options: {
-        configFile: './ember_debug/.eslintrc',
+        configFile: './ember_debug/.eslintrc.js',
         rulePaths: ['./']
       }
     });

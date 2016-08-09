@@ -1,7 +1,8 @@
 import Ember from 'ember';
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
-const { Component, computed, isEmpty, run, on, observer, String: { htmlSafe } } = Ember;
-const { gt, readOnly } = computed;
+
+const { Component, computed, isEmpty, isNone, run, on, observer, String: { htmlSafe } } = Ember;
+const { gt } = computed;
 const { once } = run;
 
 export default Component.extend({
@@ -42,7 +43,7 @@ export default Component.extend({
 
   level: computed('target.level', function() {
     let parentLevel = this.get('target.level');
-    if (parentLevel == null) {
+    if (isNone(parentLevel)) {
       parentLevel = -1;
     }
     return parentLevel + 1;
@@ -68,10 +69,10 @@ export default Component.extend({
     let d = new Date(this.get('model.timestamp'));
     let ms = d.getMilliseconds();
     let seconds = d.getSeconds();
-    let minutes = d.getMinutes().toString().length === 1 ? '0' + d.getMinutes() : d.getMinutes();
-    let hours = d.getHours().toString().length === 1 ? '0' + d.getHours() : d.getHours();
+    let minutes = d.getMinutes().toString().length === 1 ? `0${d.getMinutes()}` : d.getMinutes();
+    let hours = d.getHours().toString().length === 1 ? `0${d.getHours()}` : d.getHours();
 
-    return hours + ':' + minutes + ':' + seconds + ':' + ms;
+    return `${hours}:${minutes}:${seconds}:${ms}`;
   }),
 
   actions: {

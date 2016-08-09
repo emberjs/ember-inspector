@@ -36,8 +36,8 @@ subscribe("render", {
   before(name, timestamp, payload) {
     const info = {
       type: 'began',
-      timestamp: timestamp,
-      payload: payload,
+      timestamp,
+      payload,
       now: Date.now()
     };
     return push(info);
@@ -46,8 +46,8 @@ subscribe("render", {
   after(name, timestamp, payload, beganIndex) {
     const endedInfo = {
       type: 'ended',
-      timestamp: timestamp,
-      payload: payload
+      timestamp,
+      payload
     };
 
     const index = push(endedInfo);
@@ -62,13 +62,11 @@ export default EmberObject.extend(PortMixin, {
   viewDebug: oneWay('namespace.viewDebug').readOnly(),
   portNamespace: 'render',
 
-  profileManager: profileManager,
+  profileManager,
 
   init() {
     this._super();
-    this.profileManager.wrapForErrors = (context, callback) => {
-      return this.get('port').wrap(() => callback.call(context));
-    };
+    this.profileManager.wrapForErrors = (context, callback) => this.get('port').wrap(() => callback.call(context));
     this._subscribeForViewTrees();
   },
 
@@ -105,7 +103,7 @@ export default EmberObject.extend(PortMixin, {
   },
 
   sendAdded(profiles) {
-    this.sendMessage('profilesAdded', { profiles: profiles });
+    this.sendMessage('profilesAdded', { profiles });
   },
 
   messages: {

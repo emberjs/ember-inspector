@@ -17,7 +17,7 @@ function inspectValue(value) {
   } else if (isDescriptor(value)) {
     return { type: "type-descriptor", inspect: value.toString(), computed: true };
   } else {
-    return { type: "type-" + typeOf(value), inspect: inspect(value) };
+    return { type: `type-${typeOf(value)}`, inspect: inspect(value) };
   }
 }
 
@@ -39,12 +39,12 @@ function inspect(value) {
     if (value.length === 0) {
       return '[]';
     } else if (value.length === 1) {
-      return '[ ' + inspect(value[0]) + ' ]';
+      return `[ ${inspect(value[0])} ]`;
     } else {
-      return '[ ' + inspect(value[0]) + ', ... ]';
+      return `[ ${inspect(value[0])}, ... ]`;
     }
   } else if (value instanceof Error) {
-    return 'Error: ' + value.message;
+    return `Error: ${value.message}`;
   } else if (value === null) {
     return 'null';
   } else if (typeOf(value) === 'date') {
@@ -67,16 +67,16 @@ function inspect(value) {
         v = value[key];
         if (v === 'toString') { continue; } // ignore useless items
         if (typeOf(v) === 'function') { v = "function() { ... }"; }
-        if (typeOf(v) === 'array') { v = '[Array : ' + v.length + ']'; }
+        if (typeOf(v) === 'array') { v = `[Array : ${v.length}]`; }
         if (typeOf(v) === 'object') { v = '[Object]'; }
-        ret.push(key + ": " + v);
+        ret.push(`${key}: ${v}`);
       }
     }
     let suffix = ' }';
     if (broken) {
       suffix = ' ...}';
     }
-    return '{ ' + ret.join(', ') + suffix;
+    return `{ ${ret.join(', ')}${suffix}`;
   } else {
     return emberInspect(value);
   }
@@ -144,11 +144,11 @@ export default EmberObject.extend(PortMixin, {
     },
     sendControllerToConsole(message) {
       const container = this.get('application.__container__');
-      this.sendValueToConsole(container.lookup('controller:' + message.name));
+      this.sendValueToConsole(container.lookup(`controller:${message.name}`));
     },
     sendRouteHandlerToConsole(message) {
       const container = this.get('application.__container__');
-      this.sendValueToConsole(container.lookup('route:' + message.name));
+      this.sendValueToConsole(container.lookup(`route:${message.name}`));
     },
     inspectRoute(message) {
       const container = this.get('application.__container__');
@@ -156,7 +156,7 @@ export default EmberObject.extend(PortMixin, {
     },
     inspectController(message) {
       const container = this.get('application.__container__');
-      this.sendObject(container.lookup('controller:' + message.name));
+      this.sendObject(container.lookup(`controller:${message.name}`));
     },
     inspectById(message) {
       const obj = this.sentObjects[message.objectId];
@@ -175,7 +175,7 @@ export default EmberObject.extend(PortMixin, {
         } else {
           stack = error;
         }
-        this.get('adapter').log('Object Inspector error for ' + error.property, stack);
+        this.get('adapter').log(`Object Inspector error for ${error.property}`, stack);
       });
     }
   },
@@ -212,14 +212,14 @@ export default EmberObject.extend(PortMixin, {
 
   digIntoObject(objectId, property) {
     let parentObject = this.sentObjects[objectId],
-      object = get(parentObject, property);
+        object = get(parentObject, property);
 
     if (this.canSend(object)) {
       let details = this.mixinsForObject(object);
 
       this.sendMessage('updateObject', {
         parentObject: objectId,
-        property: property,
+        property,
         objectId: details.objectId,
         name: object.toString(),
         details: details.mixins,
@@ -230,7 +230,7 @@ export default EmberObject.extend(PortMixin, {
 
   sendObject(object) {
     if (!this.canSend(object)) {
-      throw new Error("Can't inspect " + object + ". Only Ember objects and arrays are supported.");
+      throw new Error(`Can't inspect ${object}. Only Ember objects and arrays are supported.`);
     }
     let details = this.mixinsForObject(object);
     this.sendMessage('updateObject', {
@@ -296,7 +296,7 @@ export default EmberObject.extend(PortMixin, {
 
     delete this.get('_errorsFor')[objectId];
 
-    this.sendMessage('droppedObject', { objectId: objectId });
+    this.sendMessage('droppedObject', { objectId });
   },
 
   removeObservers(objectId) {
@@ -350,7 +350,7 @@ export default EmberObject.extend(PortMixin, {
     this.bindProperties(objectId, mixinDetails);
 
     let errors = errorsToSend(errorsForObject);
-    return { objectId: objectId, mixins: mixinDetails, errors: errors };
+    return { objectId, mixins: mixinDetails, errors };
   },
 
   valueForObjectProperty(objectId, property, mixinIndex) {
@@ -367,12 +367,7 @@ export default EmberObject.extend(PortMixin, {
       value.computed = true;
 
 
-      return {
-        objectId: objectId,
-        property: property,
-        value: value,
-        mixinIndex: mixinIndex
-      };
+      return { objectId, property, value, mixinIndex };
     }
   },
 
@@ -388,17 +383,12 @@ export default EmberObject.extend(PortMixin, {
       value = inspectValue(value);
       value.computed = computed;
 
-      this.sendMessage('updateProperty', {
-        objectId: objectId,
-        property: property,
-        value: value,
-        mixinIndex: mixinIndex
-      });
+      this.sendMessage('updateProperty', { objectId, property, value, mixinIndex });
     };
 
     addObserver(object, property, handler);
     this.boundObservers[objectId] = this.boundObservers[objectId] || [];
-    this.boundObservers[objectId].push({ property: property, handler: handler });
+    this.boundObservers[objectId].push({ property, handler });
 
   },
 
@@ -410,19 +400,14 @@ export default EmberObject.extend(PortMixin, {
         }
         if (item.value.type !== 'type-descriptor' && item.value.type !== 'type-function') {
           let computed = !!item.value.computed;
-          this.bindPropertyToDebugger({
-            objectId: objectId,
-            property: item.name,
-            mixinIndex: mixinIndex,
-            computed: computed
-          });
+          this.bindPropertyToDebugger({ objectId, property: item.name, mixinIndex, computed });
         }
       });
     });
   },
 
-  inspect: inspect,
-  inspectValue: inspectValue
+  inspect,
+  inspectValue
 });
 
 
@@ -459,7 +444,8 @@ function addProperties(properties, hash) {
 function replaceProperty(properties, name, value, options) {
   let found;
 
-  for (var i = 0, l = properties.length; i < l; i++) {
+  let i, l;
+  for (i = 0, l = properties.length; i < l; i++) {
     if (properties[i].name === name) {
       found = i;
       break;
@@ -484,8 +470,8 @@ function fixMandatorySetters(mixinDetails) {
         seen[property.name] = {
           name: property.name,
           value: property.value.inspect,
-          detailIdx: detailIdx,
-          property: property
+          detailIdx,
+          property
         };
       } else if (seen.hasOwnProperty(property.name) && seen[property.name] === property.value.inspect) {
         propertiesToRemove.push(seen[property.name]);
@@ -708,11 +694,8 @@ function calculateCP(object, property, errorsForObject) {
   delete errorsForObject[property];
   try {
     return get(object, property);
-  } catch (e) {
-    errorsForObject[property] = {
-      property: property,
-      error: e
-    };
+  } catch (error) {
+    errorsForObject[property] = { property, error };
     return new CalculateCPError();
   }
 }
@@ -720,7 +703,5 @@ function calculateCP(object, property, errorsForObject) {
 function CalculateCPError() {}
 
 function errorsToSend(errors) {
-  return toArray(errors).map(error => {
-    return { property: error.property };
-  });
+  return toArray(errors).map(error => ({ property: error.property }));
 }

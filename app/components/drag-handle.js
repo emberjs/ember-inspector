@@ -14,11 +14,11 @@ export default Ember.Component.extend({
     let $container = this.$().parent();
     let $containerOffsetLeft = $container.offset().left;
     let $containerOffsetRight = $containerOffsetLeft + $container.width();
-    let namespace = 'drag-' + this.get('elementId');
+    let namespace = `drag-${this.get('elementId')}`;
 
     this.sendAction('action', true);
 
-    Ember.$('body').on('mousemove.' + namespace, e => {
+    Ember.$('body').on(`mousemove.${namespace}`, e => {
       let position = this.get('isLeft') ?
                        e.pageX - $containerOffsetLeft :
                        $containerOffsetRight - e.pageX;
@@ -27,17 +27,17 @@ export default Ember.Component.extend({
         this.set('position', position);
       }
     })
-    .on('mouseup.' + namespace + ' mouseleave.' + namespace, () => {
+    .on(`mouseup.${namespace} mouseleave.${namespace}`, () => {
       this.stopDragging();
     });
   },
 
   stopDragging() {
     this.sendAction('action', false);
-    Ember.$('body').off('.drag-' + this.get('elementId'));
+    Ember.$('body').off(`.drag-${this.get('elementId')}`);
   },
 
-  willDestroyElement: function() {
+  willDestroyElement() {
     this._super();
     this.stopDragging();
   },

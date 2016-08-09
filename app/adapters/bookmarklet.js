@@ -36,7 +36,7 @@ export default BasicAdapter.extend({
    */
   onVersionMismatch(goToVersion) {
     this.sendMessage({ name: 'version-mismatch', version: goToVersion });
-    window.location.href = `../panes-${goToVersion.replace(/\./g, '-')}/index.html` + window.location.search;
+    window.location.href = `../panes-${goToVersion.replace(/\./g, '-')}/index.html${window.location.search}`;
   },
 
   _connect() {
@@ -58,5 +58,5 @@ export default BasicAdapter.extend({
 
 
 function loadPageVar (sVar) {
-  return decodeURI(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURI(sVar).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+  return decodeURI(window.location.search.replace(new RegExp(`^(?:.*[&\\?]${encodeURI(sVar).replace(/[\.\+\*]/g, "\\$&")}(?:\\=([^&]*))?)?.*$`, "i"), "$1"));
 }

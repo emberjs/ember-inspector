@@ -95,7 +95,7 @@ export default EmberObject.extend(PortMixin, {
     previewDiv.style.display = 'none';
     previewDiv.setAttribute('data-label', 'preview-div');
 
-    $(window).on('resize.' + this.get('eventNamespace'), () => {
+    $(window).on(`resize.${this.get('eventNamespace')}`, () => {
       if (highlightedElement) {
         this.highlightView(highlightedElement);
       }
@@ -125,7 +125,7 @@ export default EmberObject.extend(PortMixin, {
   },
 
   eventNamespace: computed(function() {
-    return 'view_debug_' + guidFor(this);
+    return `view_debug_${guidFor(this)}`;
   }),
 
   willDestroy() {
@@ -168,14 +168,14 @@ export default EmberObject.extend(PortMixin, {
       return false;
     };
 
-    $('body').on('mousemove.inspect-' + this.get('eventNamespace'), e => {
+    $('body').on(`mousemove.inspect-${this.get('eventNamespace')}`, e => {
       let originalTarget = $(e.target);
       viewElem = this.findNearestView(originalTarget);
       if (viewElem) {
         this.highlightView(viewElem, true);
       }
     })
-    .on('mousedown.inspect-' + this.get('eventNamespace'), () => {
+    .on(`mousedown.inspect-${this.get('eventNamespace')}`, () => {
       // prevent app-defined clicks from being fired
       $(previewDiv).css('pointer-events', '')
       .one('mouseup', function() {
@@ -183,10 +183,7 @@ export default EmberObject.extend(PortMixin, {
         return pinView();
       });
     })
-    .on('mouseup.inspect-' + this.get('eventNamespace'), () => {
-      // firefox
-      return pinView();
-    })
+    .on(`mouseup.inspect-${this.get('eventNamespace')}`, () => /* firefox */ pinView())
     .css('cursor', '-webkit-zoom-in');
   },
 
@@ -205,10 +202,10 @@ export default EmberObject.extend(PortMixin, {
 
   stopInspecting() {
     $('body')
-    .off('mousemove.inspect-' + this.get('eventNamespace'))
-    .off('mousedown.inspect-' + this.get('eventNamespace'))
-    .off('mouseup.inspect-' + this.get('eventNamespace'))
-    .off('click.inspect-' + this.get('eventNamespace'))
+    .off(`mousemove.inspect-${this.get('eventNamespace')}`)
+    .off(`mousedown.inspect-${this.get('eventNamespace')}`)
+    .off(`mouseup.inspect-${this.get('eventNamespace')}`)
+    .off(`click.inspect-${this.get('eventNamespace')}`)
     .css('cursor', '');
 
     this.hidePreview();
@@ -224,9 +221,7 @@ export default EmberObject.extend(PortMixin, {
       this.releaseCurrentObjects();
       let tree = this.viewTree();
       if (tree) {
-        this.sendMessage('viewTree', {
-          tree: tree
-        });
+        this.sendMessage('viewTree', { tree });
       }
     }, 50);
   },
@@ -255,7 +250,7 @@ export default EmberObject.extend(PortMixin, {
     let children = [];
     this.get('_lastNodes').clear();
     let renderNode = rootView._renderNode;
-    tree = { value: this._inspectNode(renderNode), children: children };
+    tree = { value: this._inspectNode(renderNode), children };
     this._appendNodeChildren(renderNode, children);
 
     return tree;
@@ -292,13 +287,13 @@ export default EmberObject.extend(PortMixin, {
     let timeToRender = this._durations[viewId];
 
     let value = {
-      viewClass: viewClass,
+      viewClass,
       completeViewClass: viewName(view),
       objectId: viewId,
       duration: timeToRender,
-      name: name,
+      name,
       template: templateName || '(inline)',
-      tagName: tagName,
+      tagName,
       isVirtual: view.get('isVirtual'),
       isComponent: (view instanceof Component)
     };
@@ -322,7 +317,7 @@ export default EmberObject.extend(PortMixin, {
         } else {
           value.model = {
             name: this.get('objectInspector').inspect(model),
-            type: 'type-' + typeOf(model)
+            type: `type-${typeOf(model)}`
           };
         }
       }
@@ -350,7 +345,7 @@ export default EmberObject.extend(PortMixin, {
   },
 
   highlightView(element, isPreview) {
-    let range, view, rect;
+    let view, rect;
 
     if (!isPreview) {
       highlightedElement = element;
@@ -375,7 +370,7 @@ export default EmberObject.extend(PortMixin, {
 
 
     let options = {
-      isPreview: isPreview,
+      isPreview,
       view: {
         name: viewName(view),
         object: view
@@ -414,8 +409,8 @@ export default EmberObject.extend(PortMixin, {
     // take into account the scrolling position as mentioned in docs
     // https://developer.mozilla.org/en-US/docs/Web/API/element.getBoundingClientRect
     rect = $.extend({}, rect);
-    rect.top = rect.top + window.scrollY;
-    rect.left = rect.left + window.scrollX;
+    rect.top += window.scrollY;
+    rect.left += window.scrollX;
 
     if (isPreview) {
       div = previewDiv;
@@ -450,24 +445,24 @@ export default EmberObject.extend(PortMixin, {
     let template = options.template;
 
     if (template) {
-      output += "<p class='template'><span>template</span>=<span data-label='layer-template'>" + escapeHTML(template.name) + "</span></p>";
+      output += `<p class='template'><span>template</span>=<span data-label='layer-template'>${escapeHTML(template.name)}</span></p>`;
     }
     let view = options.view;
     let controller = options.controller;
-    if (!view ||!(view.object instanceof Component)) {
+    if (!view || !(view.object instanceof Component)) {
       if (controller) {
-        output += "<p class='controller'><span>controller</span>=<span data-label='layer-controller'>" + escapeHTML(controller.name) + "</span></p>";
+        output += `<p class='controller'><span>controller</span>=<span data-label='layer-controller'>${escapeHTML(controller.name)}</span></p>`;
       }
       if (view) {
-        output += "<p class='view'><span>view</span>=<span data-label='layer-view'>" + escapeHTML(view.name) + "</span></p>";
+        output += `<p class='view'><span>view</span>=<span data-label='layer-view'>${escapeHTML(view.name)}</span></p>`;
       }
     } else {
-      output += "<p class='component'><span>component</span>=<span data-label='layer-component'>" + escapeHTML(view.name) + "</span></p>";
+      output += `<p class='component'><span>component</span>=<span data-label='layer-component'>${escapeHTML(view.name)}</span></p>`;
     }
 
     let model = options.model;
     if (model) {
-      output += "<p class='model'><span>model</span>=<span data-label='layer-model'>" + escapeHTML(model.name) + "</span></p>";
+      output += `<p class='model'><span>model</span>=<span data-label='layer-model'>${escapeHTML(model.name)}</span></p>`;
     }
 
     $(div).html(output);
@@ -725,13 +720,13 @@ export default EmberObject.extend(PortMixin, {
 
     let value = {
       template: this._nodeTemplateName(renderNode) || '(inline)',
-      name: name,
+      name,
       objectId: viewId,
       viewClass: viewClassName,
       duration: timeToRender,
       completeViewClass: completeViewClassName,
       isComponent: this._nodeIsEmberComponent(renderNode),
-      tagName: tagName,
+      tagName,
       isVirtual: !viewClass
     };
 
@@ -756,7 +751,7 @@ export default EmberObject.extend(PortMixin, {
         } else {
           value.model = {
             name: this.get('objectInspector').inspect(model),
-            type: 'type-' + typeOf(model)
+            type: `type-${typeOf(model)}`
           };
         }
       }
@@ -852,9 +847,7 @@ export default EmberObject.extend(PortMixin, {
     range.setEndAfter(renderNode.lastNode);
     let rect = range.getBoundingClientRect();
 
-    let options = {
-      isPreview: isPreview
-    };
+    let options = { isPreview };
 
     let controller = this._controllerForNode(renderNode);
     if (controller) {
@@ -921,7 +914,7 @@ function getModelName(model) {
 
 
   if (name.length > 50) {
-    name = name.substr(0, 50) + '...';
+    name = `${name.substr(0, 50)}...`;
   }
   return name;
 }
@@ -967,7 +960,7 @@ function viewDescription(view) {
   } else if (view.get('_parentView.controller') === controller || view instanceof Component) {
     let viewClassName = view.get('_debugContainerKey');
     if (viewClassName) {
-      viewClassName = viewClassName.match(/\:(.*)/);
+      viewClassName = viewClassName.match(/:(.*)/);
       if (viewClassName) {
         viewClassName = viewClassName[1];
       }

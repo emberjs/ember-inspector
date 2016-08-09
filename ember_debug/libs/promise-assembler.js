@@ -87,9 +87,7 @@ let PromiseAssembler = EmberObject.extend(Evented, {
   },
 
   findOrCreate(guid) {
-    return this.find(guid) || this.createPromise({
-      guid: guid
-    });
+    return this.find(guid) || this.createPromise({ guid });
   },
 
   updateOrCreate(guid, properties) {
@@ -116,9 +114,7 @@ function fulfill(event) {
     state: 'fulfilled',
     value: event.detail
   });
-  this.trigger('fulfilled', {
-    promise: promise
-  });
+  this.trigger('fulfilled', { promise });
 }
 
 function reject(event) {
@@ -129,9 +125,7 @@ function reject(event) {
     state: 'rejected',
     reason: event.detail
   });
-  this.trigger('rejected', {
-    promise: promise
-  });
+  this.trigger('rejected', { promise });
 }
 
 function chain(event) {
@@ -147,10 +141,7 @@ function chain(event) {
   child.set('parent', promise);
   children.pushObject(child);
 
-  this.trigger('chained', {
-    promise: promise,
-    child: child
-  });
+  this.trigger('chained', { promise, child });
 }
 
 function create(event) {
@@ -167,7 +158,5 @@ function create(event) {
   if (isNone(promise.get('state'))) {
     promise.set('state', 'created');
   }
-  this.trigger('created', {
-    promise: promise
-  });
+  this.trigger('created', { promise });
 }

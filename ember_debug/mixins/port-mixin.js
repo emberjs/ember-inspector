@@ -43,7 +43,7 @@ export default Mixin.create({
   messageName(name) {
     let messageName = name;
     if (this.get('portNamespace')) {
-      messageName = this.get('portNamespace') + ':' + messageName;
+      messageName = `${this.get('portNamespace')}:${messageName}`;
     }
     return messageName;
   }

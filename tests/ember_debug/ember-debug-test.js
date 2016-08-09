@@ -23,8 +23,8 @@ module("Ember Debug", {
     /* globals require */
     EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({
-      init: function() {},
-      send: function(n/*, m*/) {
+      init() {},
+      send(n/*, m*/) {
         name = n;
       }
     });

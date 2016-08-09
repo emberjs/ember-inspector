@@ -13,9 +13,7 @@ export default BasicAdapter.extend({
     this.get('socket').emit('emberInspectorMessage', options);
   },
 
-  socket: computed(() => {
-    return window.EMBER_INSPECTOR_CONFIG.remoteDebugSocket;
-  }),
+  socket: computed(() => window.EMBER_INSPECTOR_CONFIG.remoteDebugSocket),
 
   _connect() {
     this.get('socket').on('emberInspectorMessage', message => {

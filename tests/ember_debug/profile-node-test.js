@@ -22,7 +22,7 @@ test("with no payload it has an unknown name", function(assert) {
 test("It can extract the name from an object payload", function(assert) {
   let p = new ProfileNode(1000, {
     object: {
-      toString: function() { return "custom toString()"; }
+      toString() { return "custom toString()"; }
     }
   });
 

@@ -14,7 +14,7 @@ module('Render Tree Tab', {
     });
     port = App.__container__.lookup('port:main');
     port.reopen({
-      send: function(/*n, m*/) {}
+      send(/*n, m*/) {}
     });
   },
   afterEach() {

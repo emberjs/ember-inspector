@@ -26,9 +26,7 @@ export default EmberObject.extend({
     let array = A();
     let lastPromise = null;
     parsed.forEach(item => {
-      lastPromise = this.get('_lastPromise').then(() => {
-        return this.getSourceMap(item.url);
-      }, null, 'ember-inspector').then(smc => {
+      lastPromise = this.get('_lastPromise').then(() => this.getSourceMap(item.url), null, 'ember-inspector').then(smc => {
         if (smc) {
           let source = smc.originalPositionFor({
             line: item.line,
@@ -114,7 +112,7 @@ function retrieveFile(source) {
 
 function retrieveSourceMapURL(source) {
   return retrieveFile(source).then(function(fileData) {
-    let match = /\/\/[#@]\s*sourceMappingURL=(.*)\s*$/g.exec(fileData);
+    let match = (/\/\/[#@]\s*sourceMappingURL=(.*)\s*$/g).exec(fileData);
     if (!match) { return null; }
     let url = match[1];
     // check not data URL

@@ -38,14 +38,14 @@ export default BasicAdapter.extend({
   inspectElement(elem) {
     this.sendMessage({
       type: 'view:devtools:inspectDOMElement',
-      elementSelector: "#" + elem.getAttribute('id')
+      elementSelector: `#${elem.getAttribute('id')}`
     });
   },
 
   _listen() {
 
     window.addEventListener('ember-debug-receive', event => {
-      var message = event.detail;
+      let message = event.detail;
       run(() => {
         // FIX: needed to fix permission denied exception on Firefox >= 30
         // - https://github.com/emberjs/ember-inspector/issues/147

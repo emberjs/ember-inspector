@@ -22,15 +22,15 @@ module('Route Tree Tab', {
 
 function routeValue(name, props) {
   let value = {
-    name: name,
+    name,
     controller: {
-      name: name,
-      className: name.replace(/\./g, '_').classify() + 'Controller',
+      name,
+      className: `${name.replace(/\./g, '_').classify()}Controller`,
       exists: true
     },
     routeHandler: {
-      name: name,
-      className: name.replace(/\./g, '_').classify() + 'Route'
+      name,
+      className: `${name.replace(/\./g, '_').classify()}Route`
     },
     template: {
       name: name.replace(/\./g, '/')

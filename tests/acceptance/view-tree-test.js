@@ -111,7 +111,7 @@ test("It should correctly display the view tree", async function(assert) {
 
   await visit('/');
   run(() => {
-    port.trigger('view:viewTree', { tree: viewTree } );
+    port.trigger('view:viewTree', { tree: viewTree });
   });
   await wait();
 
@@ -165,9 +165,7 @@ test("It should correctly display the view tree", async function(assert) {
     '2.50ms'
   ], 'expected render durations');
 
-  let titleTips = find('span[title]').toArray().map(node => {
-    return node.getAttribute('title');
-  }).sort();
+  let titleTips = find('span[title]').toArray().map(node => node.getAttribute('title')).sort();
 
   assert.deepEqual(titleTips, [
     'App.ApplicationController',
@@ -213,7 +211,7 @@ test("Previewing / showing a view on the client", async function(assert) {
   let messageSent = null;
   port.reopen({
     send(name, message) {
-      messageSent = { name: name, message: message };
+      messageSent = { name, message };
     }
   });
 
@@ -235,7 +233,7 @@ test("Inspecting views on hover", async function(assert) {
   let messageSent = null;
   port.reopen({
     send(name, message) {
-      messageSent = { name: name, message: message };
+      messageSent = { name, message };
     }
   });
 
@@ -254,7 +252,7 @@ test("Configuring which views to show", async function(assert) {
   let messageSent = null;
   port.reopen({
     send(name, message) {
-      messageSent = { name: name, message: message };
+      messageSent = { name, message };
     }
   });
 
@@ -279,14 +277,14 @@ test("Inspecting a model", async function(assert) {
   let messageSent = null;
   port.reopen({
     send(name, message) {
-      messageSent = { name: name, message: message };
+      messageSent = { name, message };
     }
   });
 
   await visit('/');
   let tree = defaultViewTree();
   run(() => {
-    port.trigger('view:viewTree', { tree } );
+    port.trigger('view:viewTree', { tree });
   });
   await wait();
   let model = find('.js-view-model-clickable').eq(0);
