@@ -12,7 +12,7 @@ import DeprecationDebug from "ember-debug/deprecation-debug";
 import Session from "ember-debug/services/session";
 
 const Ember = window.Ember;
-const { Object: EmberObject, run, Application, namespaces } = Ember;
+const { Object: EmberObject, run, Application, Namespace } = Ember;
 
 const EmberDebug = EmberObject.extend({
 
