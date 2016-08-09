@@ -552,7 +552,7 @@ export default EmberObject.extend(PortMixin, {
   }),
 
   viewRegistry: computed('application', function() {
-    return this.get('application.__container__').lookup('-view-registry:main') || View.views;
+    return this.get('application.__container__').lookup('-view-registry:main');
   }),
 
   /**
