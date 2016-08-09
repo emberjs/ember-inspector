@@ -156,6 +156,18 @@ export default EmberObject.extend(PortMixin, {
     // we don't want the preview div to intercept the mousemove event
     $(previewDiv).css('pointer-events', 'none');
 
+    const pinView = () => {
+      if (viewElem) {
+        this.highlightView(viewElem);
+        let view = this.get('objectInspector').sentObjects[viewElem.id];
+        if (view instanceof Component) {
+          this.get('objectInspector').sendObject(view);
+        }
+      }
+      this.stopInspecting();
+      return false;
+    };
+
     $('body').on('mousemove.inspect-' + this.get('eventNamespace'), e => {
       let originalTarget = $(e.target);
       viewElem = this.findNearestView(originalTarget);
@@ -176,18 +188,6 @@ export default EmberObject.extend(PortMixin, {
       return pinView();
     })
     .css('cursor', '-webkit-zoom-in');
-
-    const pinView = () => {
-      if (viewElem) {
-        this.highlightView(viewElem);
-        let view = this.get('objectInspector').sentObjects[viewElem.id];
-        if (view instanceof Component) {
-          this.get('objectInspector').sendObject(view);
-        }
-      }
-      this.stopInspecting();
-      return false;
-    };
   },
 
   findNearestView(elem) {
