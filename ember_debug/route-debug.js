@@ -113,7 +113,7 @@ export default EmberObject.extend(PortMixin, {
 
 });
 
-const buildSubTree = function(routeTree, route) {
+function buildSubTree(routeTree, route) {
   let handlers = route.handlers;
   let container = this.get('application.__container__');
   let subTree = routeTree;
@@ -163,7 +163,7 @@ const buildSubTree = function(routeTree, route) {
     }
     subTree = subTree[handler].children;
   }
-};
+}
 
 function arrayizeChildren(routeTree) {
   let obj = {};

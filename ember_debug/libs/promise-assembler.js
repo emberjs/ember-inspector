@@ -108,7 +108,7 @@ let PromiseAssembler = EmberObject.extend(Evented, {
 
 export default PromiseAssembler;
 
-const fulfill = function(event) {
+function fulfill(event) {
   const guid = event.guid;
   const promise = this.updateOrCreate(guid, {
     label: event.label,
@@ -119,10 +119,9 @@ const fulfill = function(event) {
   this.trigger('fulfilled', {
     promise: promise
   });
-};
+}
 
-
-const reject = function(event) {
+function reject(event) {
   const guid = event.guid;
   const promise = this.updateOrCreate(guid, {
     label: event.label,
@@ -133,7 +132,7 @@ const reject = function(event) {
   this.trigger('rejected', {
     promise: promise
   });
-};
+}
 
 function chain(event) {
   /*jshint validthis:true */
