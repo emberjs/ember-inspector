@@ -3,17 +3,19 @@
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 var ES6Modules = require('broccoli-es6modules');
 var mergeTrees = require('broccoli-merge-trees');
-var wrapFiles = require('broccoli-wrap');
 var concatFiles = require('broccoli-concat');
 var path = require('path');
 var jsStringEscape = require('js-string-escape');
 var eslint = require('broccoli-lint-eslint');
-var mv = require('broccoli-stew').mv;
+var stew = require('broccoli-stew');
 var writeFile = require('broccoli-file-creator');
 var replace = require('broccoli-string-replace');
 var esTranspiler = require('broccoli-babel-transpiler');
 var Funnel = require('broccoli-funnel');
 var packageJson = require('./package.json');
+
+var mv = stew.mv;
+var map = stew.map;
 
 /*global process */
 
@@ -137,8 +139,8 @@ module.exports = function(defaults) {
     files: ['loader.js'],
   });
 
-  sourceMap = wrapFiles(sourceMap, {
-    wrapper: ["(function() {\n", "\n}());"]
+  sourceMap = map(sourceMap, '**/*.js', function(content) {
+    return "(function() {\n" + content + "\n}());";
   });
 
   emberDebug = mergeTrees([loader, startupWrapper, sourceMap, emberDebug]);
@@ -151,8 +153,8 @@ module.exports = function(defaults) {
 
   var emberDebugs = [];
   ['basic', 'chrome', 'firefox', 'bookmarklet', 'websocket'].forEach(function(dist) {
-    emberDebugs[dist] = wrapFiles(emberDebug, {
-      wrapper: ["(function(adapter, env) {\n", "\n}('" + dist + "', '" + env + "'));"]
+    emberDebugs[dist] = map(emberDebug, '**/*.js', function(content) {
+      return "(function(adapter, env) {\n" + content + "\n}('" + dist + "', '" + env + "'));";
     });
   });
 
