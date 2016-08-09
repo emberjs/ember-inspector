@@ -1,21 +1,10 @@
 {
   "parser": "babel-eslint",
-  "extends": "ember",
+  "env": {
+    "embertest": true
+  },
   "globals": {
-    "define": true,
-    "visit": true,
-    "exists": true,
-    "fillIn": true,
-    "click": true,
-    "keyEvent": true,
-    "triggerEvent": true,
-    "find": true,
-    "findWithAssert": true,
     "wait": true,
-    "andThen": true,
-    "currentURL": true,
-    "currentPath": true,
-    "currentRouteName": true,
     "triggerPort": true
   },
   "rules": {

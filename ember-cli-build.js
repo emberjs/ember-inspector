@@ -26,9 +26,6 @@ var options = {
     // async/await
     optional: ['es7.asyncFunctions']
   },
-  eslint: {
-    testGenerator: eslintTestGenerator
-  },
   'ember-cli-qunit': {
     useLintTree: false
   }
