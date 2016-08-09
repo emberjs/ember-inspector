@@ -144,9 +144,9 @@ module.exports = function(defaults) {
   emberDebug = mergeTrees([loader, startupWrapper, sourceMap, emberDebug]);
 
   emberDebug = concatFiles(emberDebug, {
-    inputFiles: ['loader.js', '**/*.js'],
-    outputFile: '/ember_debug.js',
-    wrapInFunction: false
+    headerFiles: ['loader.js'],
+    inputFiles: ['**/*.js'],
+    outputFile: '/ember_debug.js'
   });
 
   var emberDebugs = [];
