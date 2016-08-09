@@ -1,4 +1,3 @@
-/* jshint ignore:start */
 import { module, test } from 'qunit';
 import Ember from "ember";
 const { run, A: emberA, Application } = Ember;

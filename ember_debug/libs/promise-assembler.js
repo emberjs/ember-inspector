@@ -129,7 +129,6 @@ function reject(event) {
 }
 
 function chain(event) {
-  /*jshint validthis:true */
   let guid = event.guid;
   let promise = this.updateOrCreate(guid, {
     label: event.label,
@@ -145,7 +144,6 @@ function chain(event) {
 }
 
 function create(event) {
-  /*jshint validthis:true */
   const guid = event.guid;
 
   const promise = this.updateOrCreate(guid, {

@@ -1,12 +1,10 @@
 let name;
-/* jshint ignore:start */
 /* eslint no-empty:0 */
 import Ember from "ember";
 import { module, test } from 'qunit';
 
 let EmberDebug;
 let port, adapter;
-/* jshint ignore:start */
 const { run, Application, Object: EmberObject } = Ember;
 let App;
 let EmberInspector;

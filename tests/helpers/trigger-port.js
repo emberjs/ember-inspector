@@ -1,4 +1,3 @@
-/* jshint ignore:start */
 import Ember from 'ember';
 const { run, Test: { registerHelper } } = Ember;
 export default registerHelper('triggerPort', async function t(app, ...args) {

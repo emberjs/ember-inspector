@@ -1,4 +1,3 @@
-/* jshint node: true */
 var packageJson = require('../package.json');
 
 module.exports = function(environment) {

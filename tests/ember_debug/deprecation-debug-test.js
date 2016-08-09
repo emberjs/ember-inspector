@@ -5,7 +5,6 @@ const { RSVP, run } = Ember;
 const EmberDebug = require("ember-debug/main").default;
 
 let port;
-/* jshint ignore:start */
 let App;
 
 function setupApp() {
