@@ -10,6 +10,7 @@ var stew = require('broccoli-stew');
 var writeFile = require('broccoli-file-creator');
 var replace = require('broccoli-string-replace');
 var esTranspiler = require('broccoli-babel-transpiler');
+var moduleResolver = require('amd-name-resolver').resolveModules({ throwOnRootAccess: false });
 var Funnel = require('broccoli-funnel');
 var packageJson = require('./package.json');
 
@@ -102,7 +103,8 @@ module.exports = function(defaults) {
 
   emberDebug = esTranspiler(emberDebug, {
     moduleIds: true,
-    modules: 'amdStrict'
+    modules: 'amdStrict',
+    resolveModuleSource: moduleResolver,
   });
 
   var previousEmberVersionsSupportedString = '[' + packageJson.previousEmberVersionsSupported.map(function(item) {

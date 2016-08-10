@@ -34,6 +34,7 @@
   "author": "Tilde, Inc.",
   "license": "MIT",
   "devDependencies": {
+    "amd-name-resolver": "^0.0.5",
     "aws-sdk": "^2.3.3",
     "babel-eslint": "^6.1.2",
     "broccoli-asset-rev": "^2.4.2",
