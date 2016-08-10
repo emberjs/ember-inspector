@@ -14,7 +14,7 @@ export default TabRoute.extend({
       port.one('general:libraries', message => {
         message.libraries.insertAt(0, {
           name: 'Ember Inspector',
-          version: version
+          version
         });
         resolve(message.libraries);
       });

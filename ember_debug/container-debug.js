@@ -74,13 +74,11 @@ export default EmberObject.extend(PortMixin, {
     if (!instances) {
       return null;
     }
-    return instances.map(item => {
-      return {
-        name: this.nameFromKey(item.fullName),
-        fullName: item.fullName,
-        inspectable: this.get('objectInspector').canSend(item.instance)
-      };
-    });
+    return instances.map(item => ({
+      name: this.nameFromKey(item.fullName),
+      fullName: item.fullName,
+      inspectable: this.get('objectInspector').canSend(item.instance)
+    }));
   },
 
   messages: {
@@ -93,7 +91,7 @@ export default EmberObject.extend(PortMixin, {
       let instances = this.getInstances(message.containerType);
       if (instances) {
         this.sendMessage('instances', {
-          instances: instances,
+          instances,
           status: 200
         });
       } else {

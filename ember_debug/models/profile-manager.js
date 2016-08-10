@@ -64,10 +64,7 @@ ProfileManager.prototype = {
   _profilesAddedCallbacks: undefined, // set to array on init
 
   onProfilesAdded(context, callback) {
-    this._profilesAddedCallbacks.push({
-      context: context,
-      callback: callback
-    });
+    this._profilesAddedCallbacks.push({ context, callback });
   },
 
   offProfilesAdded(context, callback) {

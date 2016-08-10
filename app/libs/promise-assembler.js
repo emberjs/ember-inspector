@@ -163,8 +163,6 @@ export default Ember.Object.extend(EventedMixin, {
     if (!guid) {
       Ember.assert('You have tried to findOrCreate without a guid');
     }
-    return this.find(guid) || this.createPromise({
-      guid: guid
-    });
+    return this.find(guid) || this.createPromise({ guid });
   }
 });

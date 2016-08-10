@@ -1,4 +1,3 @@
-/* jshint ignore:start */
 import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
@@ -15,7 +14,7 @@ module('Promise Tab', {
     });
     port = App.__container__.lookup('port:main');
     port.reopen({
-      send: function(n, m) {
+      send(n, m) {
         if (n === 'promise:getAndObservePromises') {
           port.trigger('promise:promisesUpdated', {
             promises: []

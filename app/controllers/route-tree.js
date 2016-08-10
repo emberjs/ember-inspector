@@ -32,7 +32,7 @@ export default Controller.extend({
 
   actions: {
     inspectRoute(name) {
-      this.get('port').send('objectInspector:inspectRoute', { name } );
+      this.get('port').send('objectInspector:inspectRoute', { name });
     },
     sendRouteHandlerToConsole(name) {
       this.get('port').send('objectInspector:sendRouteHandlerToConsole', { name });
@@ -41,7 +41,7 @@ export default Controller.extend({
       if (!controller.exists) {
         return;
       }
-      this.get('port').send('objectInspector:inspectController', { name: controller.name } );
+      this.get('port').send('objectInspector:inspectController', { name: controller.name });
     },
     sendControllerToConsole(name) {
       this.get('port').send('objectInspector:sendControllerToConsole', { name });

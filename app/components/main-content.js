@@ -12,7 +12,7 @@ export default Component.extend({
   updateHeight: null,
 
   didInsertElement() {
-    $(window).on('resize.view-' + this.get('elementId'), () => {
+    $(window).on(`resize.view-${this.get('elementId')}`, () => {
       this._updateHeightDebounce = debounce(this, '_updateHeight', 200);
     });
     schedule('afterRender', this, '_updateHeight');
@@ -24,7 +24,7 @@ export default Component.extend({
   },
 
   willDestroyElement() {
-    $(window).off('.view-' + this.get('elementId'));
+    $(window).off(`.view-${this.get('elementId')}`);
     cancel(this._updateHeightDebounce);
     return this._super(...arguments);
   }

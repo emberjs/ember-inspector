@@ -64,7 +64,7 @@ export default EmberObject.extend(PortMixin, {
       let stack = promise.get('stack');
       if (stack) {
         stack = stack.split("\n");
-        stack.splice(0, 2, ['Ember Inspector (Promise Trace): ' + (promise.get('label') || '')]);
+        stack.splice(0, 2, [`Ember Inspector (Promise Trace): ${promise.get('label') || ''}`]);
         this.get("adapter").log(stack.join("\n"));
       }
     },
@@ -128,7 +128,7 @@ export default EmberObject.extend(PortMixin, {
 
   updatedPromises: computed(function() { return A(); }),
 
-  promisesUpdated: function(uniquePromises) {
+  promisesUpdated(uniquePromises) {
     if (!uniquePromises) {
       uniquePromises = A();
       this.get('updatedPromises').forEach(promise => {
@@ -136,9 +136,7 @@ export default EmberObject.extend(PortMixin, {
       });
     }
     // Remove inspector-created promises
-    uniquePromises = uniquePromises.filter(promise => {
-      return promise.get('label') !== 'ember-inspector';
-    });
+    uniquePromises = uniquePromises.filter(promise => promise.get('label') !== 'ember-inspector');
     const serialized = this.serializeArray(uniquePromises);
     this.sendMessage('promisesUpdated', {
       promises: serialized
@@ -158,9 +156,7 @@ export default EmberObject.extend(PortMixin, {
   },
 
   serializeArray(promises) {
-    return promises.map(item => {
-      return this.serialize(item);
-    });
+    return promises.map(item => this.serialize(item));
   },
 
   serialize(promise) {
@@ -185,9 +181,7 @@ export default EmberObject.extend(PortMixin, {
   },
 
   promiseIds(promises) {
-    return promises.map(promise => {
-      return promise.get('guid');
-    });
+    return promises.map(promise => promise.get('guid'));
   },
 
   inspectValue(value) {

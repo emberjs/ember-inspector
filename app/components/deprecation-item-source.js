@@ -8,7 +8,7 @@ export default Component.extend({
   url: computed('model.map.source', 'model.map.line', 'known', function() {
     let source = this.get('model.map.source');
     if (this.get('known')) {
-      return source + ':' + this.get('model.map.line');
+      return `${source}:${this.get('model.map.line')}`;
     } else {
       return 'Unkown source';
     }

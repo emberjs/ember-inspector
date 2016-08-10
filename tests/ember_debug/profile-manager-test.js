@@ -1,6 +1,5 @@
-/* jshint ignore:start */
 /* globals require */
-import { module, test } from 'qunit';
+import { test } from 'qunit';
 const ProfileManager = require('ember-debug/models/profile-manager').default;
 
 test("Construction", function(assert) {

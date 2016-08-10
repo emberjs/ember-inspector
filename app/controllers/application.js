@@ -1,5 +1,6 @@
 import Ember from "ember";
-const { Controller, computed, computed: { equal }, inject: { controller } } = Ember;
+
+const { Controller, computed, computed: { equal } } = Ember;
 
 export default Controller.extend({
   isDragging: false,

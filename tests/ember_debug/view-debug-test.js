@@ -1,11 +1,10 @@
-/* jshint ignore:start */
 import Ember from "ember";
 import { module, test } from 'qunit';
 const { $, Application } = Ember;
 
 /* globals require */
 const EmberDebug = require('ember-debug/main').default;
-const { View, Route, Object: EmberObject, Handlebars, Controller } = Ember;
+const { Route, Object: EmberObject, Handlebars, Controller } = Ember;
 const { compile } = Handlebars;
 let port;
 let App, run = Ember.run;
@@ -89,8 +88,8 @@ function setupApp() {
 module("View Debug", {
   beforeEach() {
     EmberDebug.Port = EmberDebug.Port.extend({
-      init: function() {},
-      send: function() {}
+      init() {},
+      send() {}
     });
     run(function() {
       setupApp();

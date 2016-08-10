@@ -1,4 +1,3 @@
-/* jshint ignore:start */
 import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
@@ -36,7 +35,7 @@ module('Deprecation Tab', {
     App = startApp({ adapter: 'basic' });
     port = App.__container__.lookup('port:main');
     port.reopen({
-      send: function(n, m) {
+      send(n, m) {
         name = n;
         message = m;
       }

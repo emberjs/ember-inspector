@@ -1,4 +1,3 @@
-/*jshint node:true*/
 /* global require, module */
 
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
@@ -25,9 +24,6 @@ var options = {
   babel: {
     // async/await
     optional: ['es7.asyncFunctions']
-  },
-  eslint: {
-    testGenerator: eslintTestGenerator
   },
   'ember-cli-qunit': {
     useLintTree: false
@@ -99,7 +95,7 @@ module.exports = function(defaults) {
     var linted = eslint(emberDebug, {
       testGenerator: eslintTestGenerator,
       options: {
-        configFile: './ember_debug/.eslintrc',
+        configFile: './ember_debug/.eslintrc.js',
         rulePaths: ['./']
       }
     });

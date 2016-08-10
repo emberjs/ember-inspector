@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-const { Component, computed, computed: { readOnly }, String: { htmlSafe } } = Ember;
+const { Component, computed, String: { htmlSafe } } = Ember;
 
 /**
  * Base list view config

@@ -19,6 +19,6 @@ export default Component.extend({
       return false;
     }
 
-    return checkCurrentRoute( currentRoute, this.get('model.value.name') );
+    return checkCurrentRoute(currentRoute, this.get('model.value.name'));
   })
 });

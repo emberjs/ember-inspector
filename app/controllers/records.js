@@ -44,14 +44,14 @@ export default Controller.extend({
     let filter = this.get('filterValue');
     return this.get('model').filter(item => {
       // check filters
-      if (filter && !get(item, 'filterValues.' + filter)) {
+      if (filter && !get(item, `filterValues.${filter}`)) {
         return false;
       }
 
       // check search
       if (!Ember.isEmpty(search)) {
         let searchString = this.recordToString(item);
-        return !!searchString.match(new RegExp('.*' + escapeRegExp(search.toLowerCase()) + '.*'));
+        return !!searchString.match(new RegExp(`.*${escapeRegExp(search.toLowerCase())}.*`));
       }
       return true;
     });

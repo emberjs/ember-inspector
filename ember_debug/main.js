@@ -12,13 +12,15 @@ import DeprecationDebug from "ember-debug/deprecation-debug";
 import Session from "ember-debug/services/session";
 
 const Ember = window.Ember;
-const { Object: EmberObject, run, Application, namespaces } = Ember;
+const { Object: EmberObject, run, Application, Namespace } = Ember;
 
 const EmberDebug = EmberObject.extend({
 
   application: null,
   started: false,
 
+  // Using object shorthand syntax here is somehow having strange side effects.
+  // eslint-disable-next-line object-shorthand
   Port: Port,
   Adapter: BasicAdapter,
 

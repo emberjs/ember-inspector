@@ -1,4 +1,3 @@
-/* jshint ignore:start */
 import Ember from "ember";
 import { module, test } from 'qunit';
 const { run, Application } = Ember;
@@ -32,8 +31,8 @@ function getChildrenProperty(route, prop) {
 module("Route Tree Debug", {
   beforeEach() {
     EmberDebug.Port = EmberDebug.Port.extend({
-      init: function() {},
-      send: function() {}
+      init() {},
+      send() {}
     });
     run(function() {
       setupApp();
@@ -77,7 +76,7 @@ test("Route tree", async function t(assert) {
   assert.equal(route.value.template.name, 'application');
   assert.equal(route.children.length, 6);
 
-  assert.deepEqual(getChildrenProperty(route, 'name'), ['loading', 'error', 'simple', 'posts', 'comments', 'index'] );
+  assert.deepEqual(getChildrenProperty(route, 'name'), ['loading', 'error', 'simple', 'posts', 'comments', 'index']);
 
   let commentsRoute = route.children.filter(function(child) {
     return child.value.name === 'comments';

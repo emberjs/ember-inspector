@@ -1,5 +1,6 @@
 import Ember from "ember";
-const { Controller, computed, observer, run, inject: { controller }, getOwner, isEmpty } = Ember;
+
+const { Controller, computed, observer, run, inject: { controller }, isEmpty } = Ember;
 const { equal, bool, and, not, filter } = computed;
 const { next, once, debounce } = run;
 

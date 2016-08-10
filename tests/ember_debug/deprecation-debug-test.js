@@ -5,7 +5,6 @@ const { RSVP, run } = Ember;
 const EmberDebug = require("ember-debug/main").default;
 
 let port;
-/* jshint ignore:start */
 let App;
 
 function setupApp() {
@@ -17,8 +16,8 @@ function setupApp() {
 module("Deprecation Debug", {
   beforeEach() {
     EmberDebug.Port = EmberDebug.Port.extend({
-      init: function() {},
-      send: function(/*n, m*/) {}
+      init() {},
+      send(/*n, m*/) {}
     });
     run(function() {
       setupApp();
@@ -28,7 +27,7 @@ module("Deprecation Debug", {
     port = EmberDebug.port;
     EmberDebug.IGNORE_DEPRECATIONS = true;
     EmberDebug.deprecationDebug.reopen({
-      fetchSourceMap: function() { return RSVP.resolve(null); },
+      fetchSourceMap() { return RSVP.resolve(null); },
       emberCliConfig: null
     });
   },
@@ -41,11 +40,8 @@ module("Deprecation Debug", {
 test("deprecations are caught and sent", async function t(assert) {
   let messages = [];
   port.reopen({
-    send: function(name, message) {
-      messages.push({
-        name: name,
-        message: message
-      });
+    send(name, message) {
+      messages.push({ name, message });
     }
   });
 

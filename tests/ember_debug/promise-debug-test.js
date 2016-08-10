@@ -1,6 +1,5 @@
-/* jshint ignore:start */
 import Ember from "ember";
-import { module, test, stop, start } from 'qunit';
+import { module, test } from 'qunit';
 /*globals require */
 const EmberDebug = require("ember-debug/main").default;
 
@@ -24,8 +23,8 @@ module("Promise Debug", {
   beforeEach() {
 
     EmberDebug.Port = EmberDebug.Port.extend({
-      init: function() {},
-      send: function(n, m) {
+      init() {},
+      send(n, m) {
         name = n;
         message = m;
       }
@@ -128,10 +127,10 @@ test("Instrumentation with stack is persisted to session storage", function(asse
   let withStack = false;
   EmberDebug.get('promiseDebug').reopen({
     session: {
-      getItem: function(/*key*/) {
+      getItem(/*key*/) {
         return withStack;
       },
-      setItem: function(key, val) {
+      setItem(key, val) {
         withStack = val;
       }
     }

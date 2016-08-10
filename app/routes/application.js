@@ -27,10 +27,10 @@ export default Route.extend({
 
   updateObject(options) {
     const details = options.details,
-      name = options.name,
-      property = options.property,
-      objectId = options.objectId,
-      errors = options.errors;
+          name = options.name,
+          property = options.property,
+          objectId = options.objectId,
+          errors = options.errors;
 
     Ember.NativeArray.apply(details);
     details.forEach(arrayize);
@@ -78,7 +78,7 @@ export default Route.extend({
     },
     inspectObject(objectId) {
       if (objectId) {
-        this.get('port').send('objectInspector:inspectById', { objectId: objectId });
+        this.get('port').send('objectInspector:inspectById', { objectId });
       }
     },
     setIsDragging(isDragging) {

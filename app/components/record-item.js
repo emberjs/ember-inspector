@@ -26,9 +26,7 @@ export default Component.extend({
 
   columns: computed('modelTypeColumns.[]', 'model.columnValues', function() {
     let columns = this.get('modelTypeColumns') || [];
-    return columns.map(col => {
-      return { name: col.name, value: this.get('model.columnValues.' + col.name) };
-    });
+    return columns.map(col => ({ name: col.name, value: this.get(`model.columnValues.${col.name}`) }));
   }),
 
   click() {

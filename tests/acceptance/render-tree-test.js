@@ -1,4 +1,3 @@
-/* jshint ignore:start */
 import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
@@ -14,7 +13,7 @@ module('Render Tree Tab', {
     });
     port = App.__container__.lookup('port:main');
     port.reopen({
-      send: function(/*n, m*/) {}
+      send(/*n, m*/) {}
     });
   },
   afterEach() {

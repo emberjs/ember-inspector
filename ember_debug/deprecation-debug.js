@@ -42,9 +42,9 @@ export default EmberObject.extend(PortMixin, {
     if (this.get('emberCliConfig') && this.get('emberCliConfig.environment') === 'development') {
       return this.get('sourceMap').map(stackStr).then(mapped => {
         if (mapped && mapped.length > 0) {
-          var source = mapped.find(item => {
-            return item.source && !!item.source.match(new RegExp(this.get('emberCliConfig.modulePrefix')));
-          });
+          let source = mapped.find(
+            item => item.source && !!item.source.match(new RegExp(this.get('emberCliConfig.modulePrefix'))));
+
           if (source) {
             source.found = true;
           } else {
@@ -84,10 +84,7 @@ export default EmberObject.extend(PortMixin, {
       if (!found) {
         let stackStr = deprecation.stackStr;
         promise = this.fetchSourceMap(stackStr).then(map => {
-          obj.sources.pushObject({
-            map: map,
-            stackStr: stackStr
-          });
+          obj.sources.pushObject({ map, stackStr });
           if (map) {
             obj.hasSourceMap = true;
           }
@@ -134,7 +131,7 @@ export default EmberObject.extend(PortMixin, {
       deprecation.sources.forEach(source => {
         let stack = source.stackStr;
         stack = stack.split('\n');
-        stack.unshift('Ember Inspector (Deprecation Trace): ' + (deprecation.message || ''));
+        stack.unshift(`Ember Inspector (Deprecation Trace): ${deprecation.message || ''}`);
         this.get('adapter').log(stack.join('\n'));
       });
     },
@@ -163,7 +160,7 @@ export default EmberObject.extend(PortMixin, {
   },
 
   replaceDeprecate() {
-    var self = this;
+    let self = this;
     this.originalDeprecate = Ember.deprecate;
 
     Ember.deprecate = function(message, test, options) {
@@ -205,7 +202,7 @@ export default EmberObject.extend(PortMixin, {
           replace(/^\(/gm, '{anonymous}(').split('\n');
         }
 
-        stackStr = "\n    " + stack.slice(2).join("\n    ");
+        stackStr = `\n    ${stack.slice(2).join("\n    ")}`;
       }
 
       let url;
@@ -213,11 +210,7 @@ export default EmberObject.extend(PortMixin, {
         url = options.url;
       }
 
-      const deprecation = {
-        message: message,
-        stackStr: stackStr,
-        url: url
-      };
+      const deprecation = { message, stackStr, url };
 
       // For ember-debug testing we usually don't want
       // to catch deprecations

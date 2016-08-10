@@ -1,4 +1,3 @@
-/* jshint ignore:start */
 import Ember from "ember";
 import { module, test } from 'qunit';
 import computed from 'ember-new-computed';
@@ -27,6 +26,7 @@ function setupApp() {
 let ignoreErrors = true;
 
 module("Ember Debug - Object Inspector", {
+  // eslint-disable-next-line object-shorthand
   beforeEach: async function() {
     /* globals require */
     EmberDebug = require('ember-debug/main').default;
@@ -66,15 +66,15 @@ test("An Ember Object is correctly transformed into an inspection hash", functio
   });
 
   Parent.reopenClass({
-    toString: function() {
+    toString() {
       return 'Parent Object';
     }
   });
 
   let inspected = Parent.create({
     id: 1,
-    toString: function() {
-      return 'Object:' + this.get('name');
+    toString() {
+      return `Object:${this.get('name')}`;
     },
     nullVal: null,
     dateVal: date
@@ -124,7 +124,7 @@ test("Computed properties are correctly calculated", function(assert) {
     hi: computed(function() {
       return 'Hello';
     }).property(),
-    _debugInfo: function() {
+    _debugInfo() {
       return {
         propertyInfo: {
           expensiveProperties: ['hi']
@@ -302,7 +302,7 @@ test("Property grouping can be customized using _debugInfo", function(assert) {
     gender: 'Male',
     hasChildren: false,
     expensiveProperty: computed(function() { return ''; }).property(),
-    _debugInfo: function() {
+    _debugInfo() {
       return {
         propertyInfo: {
           includeOtherProperties: true,
@@ -390,7 +390,7 @@ test("Views are correctly handled when destroyed during transitions", async func
 test("Objects are dropped on destruction", async function(assert) {
   let didDestroy = false;
   let object = Ember.Object.create({
-    willDestroy: function() {
+    willDestroy() {
       didDestroy = true;
     }
   });
@@ -408,7 +408,7 @@ test("Objects are dropped on destruction", async function(assert) {
   assert.ok(didDestroy, 'Original willDestroy is preserved.');
   assert.ok(!objectInspector.sentObjects[objectId], 'Object is dropped');
   assert.equal(name, 'objectInspector:droppedObject');
-  assert.deepEqual(message, { objectId: objectId });
+  assert.deepEqual(message, { objectId });
 
 });
 

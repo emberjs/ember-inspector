@@ -1,6 +1,7 @@
 import Ember from "ember";
-const { Component, computed, String: { htmlSafe }, getOwner, isEmpty } = Ember;
-const { alias, notEmpty, empty, gt, equal } = computed;
+
+const { Component, computed, String: { htmlSafe }, isEmpty } = Ember;
+const { notEmpty, gt, equal } = computed;
 
 const COLOR_MAP = {
   red: '#ff2717',

@@ -42,7 +42,7 @@ App.initializer({
     // register and inject adapter
     let Adapter;
     if (Ember.typeOf(instance.adapter) === 'string') {
-      Adapter = instance.resolveRegistration('adapter:' + instance.adapter);
+      Adapter = instance.resolveRegistration(`adapter:${instance.adapter}`);
     } else {
       Adapter = instance.adapter;
     }

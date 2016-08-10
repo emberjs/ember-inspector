@@ -1,4 +1,3 @@
-/* jshint ignore:start */
 import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
@@ -74,8 +73,8 @@ function recordFactory(attr, filterValues) {
   return {
     columnValues: attr,
     objectId: attr.objectId || Ember.guidFor(object),
-    filterValues: filterValues,
-    searchKeywords: searchKeywords
+    filterValues,
+    searchKeywords
   };
 }
 

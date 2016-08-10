@@ -117,11 +117,10 @@ export default Ember.Object.extend({
  * @return {Boolean} result of the comparison
  */
 function compareVersion(version1, version2) {
-  var compared, i;
   version1 = cleanupVersion(version1).split('.');
   version2 = cleanupVersion(version2).split('.');
-  for (i = 0; i < 3; i++) {
-    compared = compare(+version1[i], +version2[i]);
+  for (let i = 0; i < 3; i++) {
+    let compared = compare(+version1[i], +version2[i]);
     if (compared !== 0) {
       return compared;
     }

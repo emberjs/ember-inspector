@@ -83,7 +83,7 @@ export default EmberObject.extend(PortMixin, {
         className = className.replace(new RegExp(`^${type}\:`), '');
       } else if (className) {
         // Module exists and found
-        className = className.replace(new RegExp('^/?(' + prefix +'|' + podPrefix + ')/' + type + 's/'), '');
+        className = className.replace(new RegExp(`^/?(${prefix}|${podPrefix})/${type}s/`), '');
       } else {
         // Module does not exist
         if (usePodsByDefault) {
@@ -92,9 +92,9 @@ export default EmberObject.extend(PortMixin, {
           // (podPrefix - prefix) is part of the file path.
           let currentPrefix = '';
           if (podPrefix) {
-            currentPrefix = podPrefix.replace(new RegExp('^/?' + prefix + '/?'), '');
+            currentPrefix = podPrefix.replace(new RegExp(`^/?${prefix}/?`), '');
           }
-          className = currentPrefix + '/' + name + '/' + type;
+          className = `${currentPrefix}/${name}/${type}`;
         } else {
           className = name.replace(/\./g, '/');
         }
@@ -103,7 +103,7 @@ export default EmberObject.extend(PortMixin, {
     } else {
       // No modules
       if (type !== 'template') {
-        className = classify(name.replace(/\./g, '_') + '_' + type);
+        className = classify(`${name.replace(/\./g, '_')}_${type}`);
       } else {
         className = name.replace(/\./g, '/');
       }
@@ -113,12 +113,12 @@ export default EmberObject.extend(PortMixin, {
 
 });
 
-const buildSubTree = function(routeTree, route) {
+function buildSubTree(routeTree, route) {
   let handlers = route.handlers;
   let container = this.get('application.__container__');
   let subTree = routeTree;
   let item, routeClassName, routeHandler, controllerName,
-    controllerClassName, templateName, controllerFactory;
+      controllerClassName, templateName, controllerFactory;
 
   for (let i = 0; i < handlers.length; i++) {
     item = handlers[i];
@@ -128,7 +128,7 @@ const buildSubTree = function(routeTree, route) {
 
       routeHandler = container.lookup('router:main').router.getHandler(handler);
       controllerName = routeHandler.get('controllerName') || routeHandler.get('routeName');
-      controllerFactory = container.lookupFactory('controller:' + controllerName);
+      controllerFactory = container.lookupFactory(`controller:${controllerName}`);
       controllerClassName = this.getClassName(controllerName, 'controller');
       templateName = this.getClassName(handler, 'template');
 
@@ -142,7 +142,7 @@ const buildSubTree = function(routeTree, route) {
           controller: {
             className: controllerClassName,
             name: controllerName,
-            exists: controllerFactory ? true : false
+            exists: !!controllerFactory
           },
           template: {
             name: templateName
@@ -163,7 +163,7 @@ const buildSubTree = function(routeTree, route) {
     }
     subTree = subTree[handler].children;
   }
-};
+}
 
 function arrayizeChildren(routeTree) {
   let obj = {};
@@ -194,7 +194,7 @@ function getURL(container, segments) {
       name = segments[i].generate();
     } catch (e) {
       // is dynamic
-      name = ':' + segments[i].name;
+      name = `:${segments[i].name}`;
     }
     if (name) {
       url.push(name);
@@ -206,7 +206,7 @@ function getURL(container, segments) {
   if (url.match(/_unused_dummy_/)) {
     url = '';
   } else {
-    url = '/' + url;
+    url = `/${url}`;
     url = locationImplementation.formatURL(url);
   }
 

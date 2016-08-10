@@ -1,9 +1,8 @@
-/* jshint ignore:start */
 import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
-const { run, $ } = Ember;
+const { run } = Ember;
 let App;
 let port, message, name;
 
@@ -15,7 +14,7 @@ module('Object Inspector', {
     });
     port = App.__container__.lookup('port:main');
     port.reopen({
-      send: function(n, m) {
+      send(n, m) {
         name = n;
         message = m;
       }
@@ -49,7 +48,7 @@ function objectFactory(props) {
 }
 
 function objectToInspect() {
-  return objectFactory( {
+  return objectFactory({
     name: 'My Object',
     objectId: 'objectId',
     errors: [],
@@ -88,7 +87,7 @@ function objectToInspect() {
 }
 
 test("The object displays correctly", async function (assert) {
-  let obj = objectFactory( { name: 'My Object' });
+  let obj = objectFactory({ name: 'My Object' });
   await visit('/');
 
   await triggerPort('objectInspector:updateObject', obj);
@@ -404,7 +403,7 @@ test("Dropping an object due to destruction", async function (assert) {
   await triggerPort('objectInspector:updateObject', obj);
 
   assert.equal(find('.js-object-name').text().trim(), 'My Object');
-  await triggerPort('objectInspector:droppedObject', { objectId: 'myObject' } );
+  await triggerPort('objectInspector:droppedObject', { objectId: 'myObject' });
 
   assert.equal(find('.js-object-name').text().trim(), '');
 });
@@ -498,19 +497,3 @@ test("Errors are correctly displayed", async function (assert) {
 
   assert.equal(find('.js-object-inspector-errors').length, 0);
 });
-
-
-
-function triggerEvent(elem, name) {
-  /*global Event */
-  let event;
-  try {
-    event = new Event(name);
-  } catch (e) {
-    //phatomjs < 2.0
-    event = document.createEvent('Event');
-    event.initEvent('change');
-  }
-
-  $(elem)[0].dispatchEvent(event);
-}

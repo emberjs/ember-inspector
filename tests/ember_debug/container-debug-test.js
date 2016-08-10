@@ -1,4 +1,3 @@
-/* jshint ignore:start */
 import { module, test } from 'qunit';
 import Ember from "ember";
 const { run, A: emberA, Application } = Ember;
@@ -21,8 +20,8 @@ module("Container Debug", {
     /* globals require */
     EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({
-      init: function() {},
-      send: function(n, m) {
+      init() {},
+      send(n, m) {
         name = n;
         message = m;
       }
