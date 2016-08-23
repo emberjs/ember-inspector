@@ -15,5 +15,21 @@ export default Controller.extend({
 
   filtered: filter('model', function(item) {
     return searchMatch(get(item, 'name'), this.get('search'));
-  }).property('model.@each.name', 'search')
+  }).property('model.@each.name', 'search'),
+
+  actions: {
+    /**
+     * Inspect an instance in the object inspector.
+     * Called whenever an item in the list is clicked.
+     *
+     * @method inspectInstance
+     * @param {Object} obj
+     */
+    inspectInstance(obj) {
+      if (!get(obj, 'inspectable')) {
+        return;
+      }
+      this.get('port').send('objectInspector:inspectByContainerLookup', { name: get(obj, 'fullName') });
+    }
+  }
 });

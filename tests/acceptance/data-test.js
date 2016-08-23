@@ -116,12 +116,12 @@ test("Records are successfully listed and bound", async function t(assert) {
 
   await click(find('.js-model-type').find('a').eq(1));
 
-  let columns = find('.js-column-title');
+  let columns = find('.js-header-column');
   assert.equal(columns.eq(0).text().trim(), 'Id');
   assert.equal(columns.eq(1).text().trim(), 'Title');
   assert.equal(columns.eq(2).text().trim(), 'Body');
 
-  let recordRows = find('.js-record-item');
+  let recordRows = find('.js-record-list-item');
   assert.equal(recordRows.length, 2);
 
   let firstRow = recordRows.eq(0);
@@ -138,7 +138,7 @@ test("Records are successfully listed and bound", async function t(assert) {
     records: [recordFactory({ objectId: 'new-post', id: 3, title: 'Added Post', body: 'I am new here' })]
   });
 
-  let row = find('.js-record-item').eq(2);
+  let row = find('.js-record-list-item').eq(2);
   assert.equal(find('.js-record-column', row).eq(0).text().trim(), 3);
   assert.equal(find('.js-record-column', row).eq(1).text().trim(), 'Added Post');
   assert.equal(find('.js-record-column', row).eq(2).text().trim(), 'I am new here');
@@ -147,7 +147,7 @@ test("Records are successfully listed and bound", async function t(assert) {
     records: [recordFactory({ objectId: 'new-post', id: 3, title: 'Modified Post', body: 'I am no longer new' })]
   });
 
-  row = find('.js-record-item').last();
+  row = find('.js-record-list-item').last();
   assert.equal(find('.js-record-column', row).eq(0).text().trim(), 3);
   assert.equal(find('.js-record-column', row).eq(1).text().trim(), 'Modified Post');
   assert.equal(find('.js-record-column', row).eq(2).text().trim(), 'I am no longer new');
@@ -158,8 +158,8 @@ test("Records are successfully listed and bound", async function t(assert) {
   });
   await wait();
 
-  assert.equal(find('.js-record-item').length, 2);
-  let lastRow = find('.js-record-item').last();
+  assert.equal(find('.js-record-list-item').length, 2);
+  let lastRow = find('.js-record-list-item').last();
   assert.equal(find('.js-record-column', lastRow).eq(0).text().trim(), 2, "Records successfully removed.");
 });
 
@@ -168,14 +168,14 @@ test("Filtering records", async function t(assert) {
 
   await click(find('.js-model-type').find('a').eq(1));
 
-  let rows = find('.js-record-item');
+  let rows = find('.js-record-list-item');
   assert.equal(rows.length, 2);
   let filters = find('.js-filter');
   assert.equal(filters.length, 2);
   let newFilter = filters.filter(':contains(New)');
   await click(newFilter);
 
-  rows = find('.js-record-item');
+  rows = find('.js-record-list-item');
   assert.equal(rows.length, 1);
   assert.equal(find('.js-record-column', rows[0]).first().text().trim(), '2');
 });
@@ -185,23 +185,23 @@ test("Searching records", async function t(assert) {
 
   await click(find('.js-model-type').find('a').eq(1));
 
-  let rows = find('.js-record-item');
+  let rows = find('.js-record-list-item');
   assert.equal(rows.length, 2);
 
   await fillIn('.js-records-search input', 'Hello');
 
-  rows = find('.js-record-item');
+  rows = find('.js-record-list-item');
   assert.equal(rows.length, 1);
   assert.equal(find('.js-record-column', rows[0]).first().text().trim(), '2');
 
   await fillIn('.js-records-search input', 'my first post');
 
-  rows = find('.js-record-item');
+  rows = find('.js-record-list-item');
   assert.equal(rows.length, 1);
   assert.equal(find('.js-record-column', rows[0]).first().text().trim(), '1');
 
   await fillIn('.js-records-search input', '');
 
-  rows = find('.js-record-item');
+  rows = find('.js-record-list-item');
   assert.equal(rows.length, 2);
 });

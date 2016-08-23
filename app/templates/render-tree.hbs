@@ -1,26 +1,15 @@
-{{#unless showEmpty}}
-  {{#x-list class="js-render-tree"}}
-    <div class="list__row list__row_header">
-      <div class="list__cell">
-        Name
-      </div>
-      <div class="list__cell list__cell_value_numeric">
-        Timestamp
-      </div>
-      <!-- Account for scrollbar width :'(  -->
-      <div class="list__cell list__cell_spacer"></div>
-    </div>
-
-    {{#x-list-content contentHeight=application.contentHeight}}
-      {{#each filtered as |item|}}
-        {{render-item model=item search=search}}
-      {{/each}}
-    {{/x-list-content}}
-  {{/x-list}}
-{{else}}
+{{#if showEmpty}}
   <div class="notice js-render-tree-empty">
     <p>No rendering metrics have been collected. Try reloading or navigating around your application.</p>
     <p><strong>Note:</strong> Very fast rendering times (&lt;1ms) are excluded.</p>
     <button class="js-toolbar-page-refresh-btn" {{action "refreshPage"}}>Reload</button>
   </div>
-{{/unless}}
+{{else}}
+  {{#x-list name="render-tree" schema=(schema-for "render-tree") contentHeight=application.contentHeight class="list_no-alternate-color js-render-tree" as |list|}}
+    <tbody>
+      {{#each filtered as |item|}}
+        {{render-item model=item search=search list=list}}
+      {{/each}}
+    </tbody>
+  {{/x-list}}
+{{/if}}

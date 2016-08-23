@@ -75,6 +75,8 @@ module.exports = function(defaults) {
   }
 
   app.import('vendor/babel-polyfill.js', { prepend: true });
+  app.import('bower_components/contextMenu/contextMenu.js');
+  app.import('bower_components/contextMenu/contextMenu.css');
 
   // Ember Debug
 

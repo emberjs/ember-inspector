@@ -3,6 +3,14 @@ const { Component, computed } = Ember;
 const { bool, readOnly, and } = computed;
 
 export default Component.extend({
+  /**
+   * No tag.
+   *
+   * @property tagName
+   * @type {String}
+   */
+  tagName: '',
+
   known: bool('model.map.source'),
 
   url: computed('model.map.source', 'model.map.line', 'known', function() {

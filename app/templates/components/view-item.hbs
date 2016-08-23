@@ -1,13 +1,13 @@
-<div class="list__cell list__cell_main" >
+{{#list.cell class="list__cell_main"}}
   <div style={{labelStyle}}>
     <span title="{{model.value.name}}" class="js-view-name">{{model.value.name}}</span>
   </div>
-</div>
-<div class="list__cell {{if hasElement 'list__cell_clickable'}} js-view-template" {{action inspectElement}}>
+{{/list.cell}}
+{{#list.cell class="js-view-template" clickable=hasElement on-click=inspectElement}}
   <span title="{{model.value.template}}">{{model.value.template}}</span>
-</div>
+{{/list.cell}}
 
-<div class="list__cell js-view-model">
+{{#list.cell class="js-view-model"}}
   {{#if hasModel}}
     <div class="list__cell-partial {{if modelInspectable 'list__cell-partial_clickable'}} js-view-model-clickable" {{action "inspectModel" model.value.model.objectId}}>
       <span title="{{model.value.model.completeName}}">{{model.value.model.name}}</span>
@@ -18,9 +18,9 @@
   {{else}}
     --
   {{/if}}
-</div>
+{{/list.cell}}
 
-<div class="list__cell js-view-controller">
+{{#list.cell class="js-view-controller"}}
   {{#if hasController}}
     <div class="list__cell-partial {{if hasController 'list__cell-partial_clickable'}}" {{action inspect model.value.controller.objectId}} >
       <span title="{{model.value.controller.completeName}}">{{model.value.controller.name}}</span>
@@ -29,9 +29,9 @@
       {{send-to-console action=sendObjectToConsole param=model.value.controller.objectId}}
     </div>
   {{/if}}
-</div>
+{{/list.cell}}
 
-<div class="list__cell js-view-class">
+{{#list.cell class="js-view-class"}}
   {{#if hasView}}
     <div class="list__cell-partial {{if hasView 'list__cell-partial_clickable'}}" {{action "inspectView"}} >
       <span title="{{model.value.completeViewClass}}">{{model.value.viewClass}}</span>
@@ -42,8 +42,8 @@
   {{else}}
     --
   {{/if}}
-</div>
+{{/list.cell}}
 
-<div class="list__cell list__cell_size_small list__cell_value_numeric">
+{{#list.cell class="list__cell_size_small list__cell_value_numeric"}}
   <span class="pill pill_not-clickable pill_size_small js-view-duration">{{ms-to-time model.value.duration}}</span>
-</div>
+{{/list.cell}}

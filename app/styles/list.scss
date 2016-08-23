@@ -3,37 +3,79 @@
   font-size: 11px;
   height: 100%;
   box-sizing: border-box;
-  min-width: 700px;
-  background: white
-
-  /* Smoke and mirrors */
-  vertical-item {
-    background: #f3f3f3;
-  }
-
-  vertical-item:nth-of-type(2n) {
-    background: #fff;
-  }
-  /********************/
+  background: white;
+  overflow: hidden;
 }
 
 .list__content {
+  overflow: hidden;
   overflow-y: scroll;
+  transform: translateZ(0);
 }
 
-.list__row {
-  display: flex;
+.list {
+  table {
+    position: absolute;
+    left: 0;
+    top: 0;
+    table-layout: fixed;
+    border-spacing: 0;
+    border-collapse: separate;
+    width: 100%;
+  }
+}
+
+.list__header {
+  position: relative;
+  overflow: hidden;
+  overflow-y: scroll;
+
+  text-align: left;
+  user-select: none;
+  border-bottom: 1px solid #cacaca;
+
+  height: 30px;
+
+  .list__row {
+    background: #fff;
+  }
+
+  .list__cell {
+    padding: 0;
+    padding-left: 5px;
+
+    opacity: 1;
+    color: inherit;
+    font-weight: normal;
+
+    position: relative;
+  }
+}
+
+.list:not(.list_no-alternate-color) .list__content {
+
+  .list__row {
+    background: #f3f3f3;
+
+    &:nth-of-type(2n) {
+      background: #fff;
+    }
+  }
+}
+
+.list__cell-content {
+  width: 100%;
 }
 
 .list__cell {
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   line-height: 30px;
   min-height: 30px;
   padding-left: 5px;
   box-sizing: border-box;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   opacity: 0.7;
 
@@ -114,22 +156,6 @@
   margin-right: 5px;
 }
 
-.list__row_header {
-  text-align: left;
-  user-select: none;
-  border-bottom: 1px solid #cacaca;
-
-  .list__cell {
-    padding: 0;
-    padding-left: 5px;
-
-    opacity: 1;
-    color: inherit;
-    font-weight: normal;
-    border-left: 1px solid #cacaca;
-  }
-}
-
 .list__link {
   cursor: pointer;
 }
@@ -152,10 +178,10 @@
   }
 }
 
-.list__row_highlight {
-  .list__cell {
-    opacity: 1;
-  }
+
+.list__row_highlight .list__cell,
+.list__cell_highlight  {
+  opacity: 1;
 }
 
 /* ARROW FOR COLLAPSING AND EXPANDING */

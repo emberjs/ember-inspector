@@ -1,36 +1,18 @@
 {{#if shouldRefresh}}
   {{partial "page_refresh"}}
 {{else}}
-  {{#x-list class="js-promise-tree"}}
-    <div class="list__row list__row_header">
-      <div class="list__cell">
-        Label
-      </div>
-      <div class="list__cell list__cell_size_medium">
-        State
-      </div>
-      <div class="list__cell list__cell_size_large">
-        Fulfillment / Rejection value
-      </div>
-      <div class="list__cell list__cell_size_medium list__cell_value_numeric">
-        Time to settle
-      </div>
-      <!-- Account for scrollbar width :'(  -->
-      <div class="list__cell list__cell_spacer"></div>
-    </div>
-
-    {{#x-list-content contentHeight=application.contentHeight}}
-      {{#vertical-collection content=filtered defaultHeight=30 as |content|}}
-        {{promise-item
-          model=content
-          filter=filter
-          effectiveSearch=effectiveSearch
-          toggleExpand=(action "toggleExpand")
-          tracePromise=(action "tracePromise")
-          inspectObject=(action "inspectObject")
-          sendValueToConsole=(action "sendValueToConsole")
-        }}
-      {{/vertical-collection}}
-    {{/x-list-content}}
+  {{#x-list name="promise-tree" schema=(schema-for "promise-tree") contentHeight=application.contentHeight class="js-promise-tree" as |list|}}
+    {{#list.vertical-collection content=filtered as |content|}}
+      {{promise-item
+        model=content
+        filter=filter
+        effectiveSearch=effectiveSearch
+        toggleExpand=(action "toggleExpand")
+        tracePromise=(action "tracePromise")
+        inspectObject=(action "inspectObject")
+        sendValueToConsole=(action "sendValueToConsole")
+        list=list
+      }}
+    {{/list.vertical-collection}}
   {{/x-list}}
 {{/if}}

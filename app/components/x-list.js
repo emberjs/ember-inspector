@@ -1,18 +1,232 @@
 import Ember from 'ember';
-const { Component, run: { next } } = Ember;
+import { task, timeout } from 'ember-concurrency';
+import ResizableColumns from 'ember-inspector/libs/resizable-columns';
+const { Component, run, computed, inject, $ } = Ember;
+const { scheduleOnce } = run;
+const { service } = inject;
+const { readOnly, reads } = computed;
+
+const CHECK_HTML = '&#10003;';
+
 export default Component.extend({
+
   classNames: ['list'],
 
+  /**
+   * Class to pass to each row in `vertical-collection`.
+   *
+   * @property itemClass
+   * @type {String}
+   * @default ''
+   */
+  itemClass: '',
+
+  /**
+   * Layout service used to listen to changes to the application
+   * layout such as resizing of the main nav or object inspecto.
+   *
+   * @property layout
+   * @type {Service}
+   */
+  layout: service(),
+
+  /**
+   * Indicate the table's header's height in pixels.
+   * Set this to `0` when there's no header.
+   *
+   * @property headerHeight
+   * @type {Number}
+   * @default 31
+   */
+  headerHeight: 31,
+
+  /**
+   * The name of the list. Used for `js-` classes added
+   * to elements of the list. Also used as the default
+   * key for schema caching.
+   *
+   * @property name
+   * @type {String}
+   */
+  name: null,
+
+  /**
+   * Service used for local storage. Local storage is
+   * needed for caching of widths and visibility of columns.
+   *
+   * @property localStorage
+   * @return {Service}
+   */
+  localStorage: service(),
+
+  /**
+   * The key used to cache the current schema. Defaults
+   * to the list's name.
+   *
+   * @property storageKey
+   * @type {String}
+   */
+  storageKey: reads('name'),
+
+  /**
+   * The schema that contains the list's columns,
+   * their ids, names, and default visibility.
+   *
+   * @property schema
+   * @type {Object}
+   */
+  schema: null,
+
+  /**
+   * The array of columns including their ids, names,
+   * and widths. This array only contains the currently
+   * visible columns.
+   *
+   * @property columns
+   * @type {Array}
+   */
+  columns: readOnly('resizableColumns.columns'),
+
+  /**
+   * The instance responsible for building the `columns`
+   * array. This means that this instance controls
+   * the widths of the columns as well as their visibility.
+   *
+   * @property resizableColumns
+   * @type {ResizableColumn}
+   */
+  resizableColumns: null,
+
+  /**
+   * The minimum width a column can be resized to.
+   * It should be high enough so that the column is still
+   * visible and resizable.
+   *
+   * @property minWidth
+   * @type {Number}
+   * @default 10
+   */
+  minWidth: 10,
+
   didInsertElement() {
-    /* The header columns are not inside the scrollable list.  The scrollbar will
-     * cause flexbox to fail to match header and content.
-     * This is a hack to account for scrollbar width (if any)
-     */
-    next(() => {
-      let outside = this.$().innerWidth();
-      let inside = this.$('.list__content')[0].clientWidth;
-      this.$('.list__cell_spacer').css('width', `${outside - inside}px`);
-    });
+    scheduleOnce('afterRender', this, this.setupColumns);
+    this.onResize = () => {
+      this.get('debounceColumnWidths').perform();
+    };
+    $(window).on(`resize.${this.get('elementId')}`, this.onResize);
+    this.get('layout').on('resize', this.onResize);
     return this._super(...arguments);
+  },
+
+  /**
+   * Setup the context menu which allows the user
+   * to toggle the visibility of each column.
+   *
+   * The context menu opened by right clicking on the table's
+   * header.
+   *
+   * @method setupContextMenu
+   */
+  setupContextMenu() {
+    let menu = this.resizableColumns.getColumnVisibility().reduce((arr, { id, name, visible }) => {
+      let check = `${CHECK_HTML}`;
+      if (!visible) {
+        check = `<span style='opacity:0'>${check}</span>`;
+      }
+      name = `${check} ${name}`;
+      arr.push({
+        name,
+        title: name,
+        fun: run.bind(this, this.toggleColumnVisibility, id)
+      });
+      return arr;
+    }, []);
+
+    this.$('.list__header').contextMenu(menu, { triggerOn: 'contextmenu' });
+  },
+
+  /**
+   * Toggle a column's visibility. This is called
+   * when a user clicks on a specific column in the context
+   * menu. After toggling visibility it destroys the current
+   * context menu and rebuilds it with the updated column data.
+   *
+   * @method toggleColumnVisibility
+   * @param {String} id The column's id
+   */
+  toggleColumnVisibility(id) {
+    this.resizableColumns.toggleVisibility(id);
+    this.$('.list__header').contextMenu('destroy');
+    this.setupContextMenu();
+  },
+
+  /**
+   * Restartable `ember-concurrency` task called whenever
+   * the table widths need to be recalculated due to some
+   * resizing of the window or application.
+   *
+   * @method debounceColumnWidths
+   * @type {Function}
+   */
+  debounceColumnWidths: task(function * () {
+    yield timeout(100);
+    this.resizableColumns.setTableWidth(this.getTableWidth());
+  }).restartable(),
+
+  /**
+   * Hook called when the component element will be destroyed.
+   * Clean up everything.
+   *
+   * @method willDestroyElement
+   */
+  willDestroyElement() {
+    Ember.$(window).off(`.${this.get('elementId')}`);
+    this.$('.list__header').contextMenu('destroy');
+    this.get('layout').off('resize', this.onResize);
+    return this._super(...arguments);
+  },
+
+  /**
+   * Returns the table's width in pixels.
+   *
+   * @method getTableWidth
+   * @return {Number} The width in pixels
+   */
+  getTableWidth() {
+    return this.$('.list__table-container').innerWidth();
+  },
+
+  /**
+   * Creates a new `ResizableColumns` instance which
+   * will calculate the columns' width and visibility.
+   *
+   * @method setupColumns
+   */
+  setupColumns() {
+    let resizableColumns = new ResizableColumns({
+      key: this.get('storageKey'),
+      tableWidth: this.getTableWidth(),
+      minWidth: this.get('minWidth'),
+      localStorage: this.get('localStorage'),
+      columnSchema: this.get('schema.columns') || []
+    });
+    resizableColumns.build();
+    this.set('resizableColumns', resizableColumns);
+    this.setupContextMenu();
+  },
+
+  actions: {
+    /**
+     * Called whenever a column is resized using the draggable handle.
+     * It is responsible for updating the column info by notifying
+     * `resizableColumns` about the update.
+     *
+     * @method didResize
+     * @param {String} id The column's id
+     * @param {Number} width The new width
+     */
+    didResize(id, width) {
+      this.resizableColumns.updateColumnWidth(id, width);
+    }
   }
 });

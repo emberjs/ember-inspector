@@ -53,7 +53,7 @@ export default EmberObject.extend(PortMixin, {
           }
           return source;
         }
-      });
+      }, null, 'ember-inspector');
     } else {
       return resolve(null, 'ember-inspector');
     }
@@ -93,7 +93,7 @@ export default EmberObject.extend(PortMixin, {
       return promise.then(() => {
         delete obj.stackStr;
         deprecations.addObject(obj);
-      });
+      }, null, 'ember-inspector');
     }));
 
     promises.then(() => {

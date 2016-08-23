@@ -1,7 +1,8 @@
 import Ember from "ember";
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
-const { Controller, computed, observer, inject: { controller } } = Ember;
+const { Controller, computed, observer, inject: { controller }, String } = Ember;
 const { none, readOnly } = computed;
+const { dasherize } = String;
 const get = Ember.get;
 
 export default Controller.extend({
@@ -19,13 +20,6 @@ export default Controller.extend({
 
   noFilterValue: none('filterValue'),
 
-  actions: {
-    setFilter(val) {
-      val = val || null;
-      this.set('filterValue', val);
-    }
-  },
-
   modelChanged: observer('model', function() {
     this.set('search', '');
   }),
@@ -38,6 +32,45 @@ export default Controller.extend({
     }
     return search.toLowerCase();
   },
+
+  /**
+   * The number of columns to show by default. Since a specific's model's
+   * column count is unknown, we only show the first 5 by default.
+   * The visibility can be modified on the list level itself.
+   *
+   * @property columnLimit
+   * @type {Number}
+   * @default 5
+   */
+  columnLimit: 5,
+
+  /**
+   * The lists's schema containing info about the list's columns.
+   * This is usually a static object except in this case each model
+   * type has different columns so we need to build it dynamically.
+   *
+   * The format is:
+   * ```js
+   * {
+   *   columns: [{
+   *     id: 'title',
+   *     name: 'Title',
+   *     visible: true
+   *   }]
+   * }
+   * ```
+   *
+   * @property schema
+   * @type {Object}
+   */
+  schema: computed('columns', function() {
+    let columns = this.get('columns').map(({ desc }, index) => ({
+      id: dasherize(desc),
+      name: desc,
+      visible: index < this.get('columnLimit')
+    }));
+    return { columns };
+  }),
 
   filtered: computed('search', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValue', function() {
     let search = this.get('search');
@@ -55,5 +88,29 @@ export default Controller.extend({
       }
       return true;
     });
-  })
+  }),
+
+  actions: {
+    /**
+     * Called whenever the filter is updated.
+     *
+     * @method setFilter
+     * @param {String} val
+     */
+    setFilter(val) {
+      val = val || null;
+      this.set('filterValue', val);
+    },
+
+    /**
+     * Inspect a specific record. Called when a row
+     * is clicked.
+     *
+     * @method inspectModel
+     * @property {Object}
+     */
+    inspectModel(model) {
+      this.get('port').send('data:inspectModel', { objectId: Ember.get(model, 'objectId') });
+    }
+  }
 });

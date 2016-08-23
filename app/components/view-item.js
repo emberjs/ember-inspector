@@ -1,15 +1,35 @@
 import Ember from "ember";
+import RowEventsMixin from 'ember-inspector/mixins/row-events';
 const { computed, Component, String: { htmlSafe } } = Ember;
 const { not, bool } = computed;
 
-export default Component.extend({
-  classNames: ['list__row'],
+export default Component.extend(RowEventsMixin, {
+  /**
+   * No tag. This component should not affect
+   * the DOM.
+   *
+   * @property tagName
+   * @type {String}
+   * @default ''
+   */
+  tagName: '',
 
   hasView: not('model.value.isVirtual'),
   hasElement: not('model.value.isVirtual'),
   hasModel: bool('model.value.model'),
 
   hasController: bool('model.value.controller'),
+
+  /**
+   * The index of the current row. Currently used for the
+   * `RowEvents` mixin. This property is passed through
+   * the template.
+   *
+   * @property index
+   * @type {Number}
+   * @default null
+   */
+  index: null,
 
   modelInspectable: computed('hasModel', 'model.value.model.type', function() {
     return this.get('hasModel') && this.get('model.value.model.type') === 'type-ember-object';
@@ -18,24 +38,6 @@ export default Component.extend({
   labelStyle: computed('model.parentCount', function() {
     return htmlSafe(`padding-left: ${+this.get('model.parentCount') * 20 + 5}px;`);
   }),
-
-  /**
-   * @method mouseEnter
-   * @param {Object} e event object
-   */
-  mouseEnter(e) {
-    this.sendAction('previewLayer', this.get('model'));
-    e.stopPropagation();
-  },
-
-  /**
-   * @method mouseLeave
-   * @param {Object} e event object
-   */
-  mouseLeave(e) {
-    this.sendAction('hidePreview', this.get('model'));
-    e.stopPropagation();
-  },
 
   actions: {
     inspectView() {

@@ -51,11 +51,5 @@ export default TabRoute.extend({
 
   removeRecords(message) {
     this.get('currentModel').removeAt(message.index, message.count);
-  },
-
-  actions: {
-    inspectModel(model) {
-      this.get('port').send('data:inspectModel', { objectId: Ember.get(model, 'objectId') });
-    }
   }
 });

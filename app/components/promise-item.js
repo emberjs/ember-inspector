@@ -48,14 +48,14 @@ export default Component.extend({
       relevant = this.get('model').matchesExactly(this.get('effectiveSearch'));
     }
     if (!relevant) {
-      return htmlSafe('opacity: 0.3;');
+      return 'opacity: 0.3;';
     } else {
-      return htmlSafe('');
+      return '';
     }
   }),
 
-  labelStyle: computed('model.level', function() {
-    return htmlSafe(`padding-left: ${+this.get('model.level') * 20 + 5}px;`);
+  labelStyle: computed('model.level', 'nodeStyle', function() {
+    return htmlSafe(`padding-left: ${+this.get('model.level') * 20 + 5}px;${this.get('nodeStyle')}`);
   }),
 
   expandedClass: computed('hasChildren', 'model.isExpanded', function() {

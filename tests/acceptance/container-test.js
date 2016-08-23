@@ -86,7 +86,8 @@ test("Container instances are successfully listed", async function(assert) {
   await visit('/container-types/controller');
   let rows;
 
-  rows = find('.js-instance-row');
+  rows = find('.js-container-instance-list-item');
+
   find(rows.length, 2);
   assert.equal(rows.eq(0).text().trim(), 'first');
   assert.equal(rows.eq(1).text().trim(), 'second');
@@ -102,7 +103,7 @@ test("Container instances are successfully listed", async function(assert) {
 
   await fillIn(find('.js-container-instance-search').find('input'), 'first');
 
-  rows = find('.js-instance-row');
+  rows = find('.js-container-instance-list-item');
   assert.equal(rows.length, 1);
   assert.equal(rows.eq(0).text().trim(), 'first');
 
@@ -153,12 +154,12 @@ test("Reload", async function(assert) {
   await visit('/container-types/controller');
 
   assert.equal(find('.js-container-type').length, 0);
-  assert.equal(find('.js-instance-row').length, 0);
+  assert.equal(find('.js-container-instance-list-item').length, 0);
   types = getTypes();
   instances = getInstances();
 
   await click('.js-reload-container-btn');
 
   assert.equal(find('.js-container-type').length, 2);
-  assert.equal(find('.js-instance-row').length, 2);
+  assert.equal(find('.js-container-instance-list-item').length, 2);
 });

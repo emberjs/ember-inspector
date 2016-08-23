@@ -1,25 +1,14 @@
-{{#x-list}}
-  <div class="list__row list__row_header">
-    <div class="list__cell">
-      Library
-    </div>
-    <div class="list__cell">
-      Version
-    </div>
-    <!-- Account for scrollbar width :'(  -->
-    <div class="list__cell list__cell_spacer"></div>
-  </div>
-
-  {{#x-list-content contentHeight=application.contentHeight}}
+{{#x-list name="info-list" schema=(schema-for "info-list") contentHeight=application.contentHeight as |list|}}
+  <tbody>
     {{#each model as |library|}}
-      <div class="list__row js-library-row">
-        <div class="list__cell list__cell_main list__cell_size_large">
+      <tr class="list__row js-library-row">
+        {{#list.cell class="list__cell_main"}}
           <span class="js-lib-name">{{library.name}}</span>
-        </div>
-        <div class="list__cell">
+        {{/list.cell}}
+        {{#list.cell}}
           <span class="js-lib-version">{{library.version}}</span>
-        </div>
-      </div>
+        {{/list.cell}}
+      </tr>
     {{/each}}
-  {{/x-list-content}}
+  </tbody>
 {{/x-list}}

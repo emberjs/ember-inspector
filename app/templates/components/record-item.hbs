@@ -1,5 +1,5 @@
 {{#each columns as |column|}}
-  <div class="list__cell list__cell_clickable js-record-column" style={{item.style}}>
+  {{#list.cell class="js-record-column" clickable=true style=style}}
     {{column.value}}
-  </div>
+  {{/list.cell}}
 {{/each}}

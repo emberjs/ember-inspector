@@ -6,8 +6,15 @@ export default Component.extend({
   // passed as an attribute to the component
   currentRoute: null,
 
-  classNames: ['list__row'],
-  classNameBindings: ['isCurrent:list__row_highlight'],
+  /**
+   * No tag. This component should not affect
+   * the DOM.
+   *
+   * @property tagName
+   * @type {String}
+   * @default ''
+   */
+  tagName: '',
 
   labelStyle: computed('model.parentCount', function() {
     return htmlSafe(`padding-left: ${+this.get('model.parentCount') * 20 + 5}px;`);
