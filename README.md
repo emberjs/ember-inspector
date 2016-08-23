@@ -73,7 +73,7 @@ javascript: (function() { var s = document.createElement('script'); s.src = 'htt
 Building and Testing:
 --------------------
 
-Run `npm install && npm install -g ember-cli && && npm install -g bower && bower install && npm install -g grunt-cli` to install the required modules.
+Run `npm install && npm install -g ember-cli && npm install -g bower && bower install && npm install -g grunt-cli` to install the required modules.
 
 - `npm run build` to build the files in the `dist` directory
 - `npm run watch` To watch the files and re-build in `dist` when anything changes (useful during development).
