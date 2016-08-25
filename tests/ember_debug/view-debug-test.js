@@ -79,7 +79,7 @@ function setupApp() {
     }
   });
 
-  setTemplate('application', '{{outlet}}');
+  setTemplate('application', '<div class="application">{{outlet}}</div>');
   setTemplate('simple', 'Simple {{input class="simple-input"}}');
   setTemplate('comments/index', '{{#each}}{{this}}{{/each}}');
   setTemplate('posts', 'Posts');
@@ -128,48 +128,6 @@ test("Simple View Tree", async function t(assert) {
   assert.equal(value.template, 'application');
 });
 
-test("Highlight a view", async function t(assert) {
-  let name, message, layerDiv;
-  port.reopen({
-    send(n, m) {
-      name = n;
-      message = m;
-    }
-  });
-
-  run(() => {
-    port.trigger('view:setOptions', { options: { components: true } });
-  });
-
-  await visit('/simple');
-  let tree = message.tree;
-  port.trigger('view:showLayer', {
-    objectId: tree.value.objectId
-  });
-  await wait();
-  layerDiv = find('[data-label=layer-div]');
-  assert.ok(layerDiv.is(':visible'));
-  assert.equal(find('[data-label=layer-model]', layerDiv).text(), 'Application model');
-  assert.equal(find('[data-label=layer-view]', layerDiv).text(), '(unknown mixin)');
-
-  await click('[data-label=layer-controller]', layerDiv);
-
-  let controller = App.__container__.lookup('controller:application');
-  assert.equal(name, 'objectInspector:updateObject');
-  assert.equal(controller.toString(), message.name);
-  name = null;
-  message = null;
-
-  await click('[data-label=layer-model]', layerDiv);
-
-  assert.equal(name, 'objectInspector:updateObject');
-  assert.equal(message.name, 'Application model');
-
-  await click('[data-label=layer-close]');
-
-  assert.ok(!layerDiv.is(':visible'));
-});
-
 test("Components in view tree", async function t(assert) {
   let message;
   port.reopen({
@@ -198,8 +156,12 @@ test("Components in view tree", async function t(assert) {
 });
 
 test("Highlighting Views on hover", async function t(assert) {
+  let name, message;
   port.reopen({
-    send(/*n, m*/) {}
+    send(n, m) {
+      name = n;
+      message = m;
+    }
   });
 
   await visit('/simple');
@@ -207,16 +169,41 @@ test("Highlighting Views on hover", async function t(assert) {
   run(() => port.trigger('view:inspectViews', { inspect: true }));
   await wait();
 
-  run(() => find('.simple-input').trigger('mousemove'));
+  run(() => find('.application').trigger('mousemove'));
   await wait();
 
   let previewDiv = find('[data-label=preview-div]');
   assert.ok(previewDiv.is(':visible'));
-  assert.equal(find('[data-label=layer-component]').length, 0, "Components are not Highlighted by default");
+  assert.equal(find('[data-label=layer-component]').length, 0, "Component layer not shown on outlet views");
   assert.equal(find('[data-label=layer-controller]', previewDiv).text(), 'App.ApplicationController');
   assert.equal(find('[data-label=layer-model]', previewDiv).text(), 'Application model');
   assert.equal(find('[data-label=layer-view]', previewDiv).text(), '(unknown mixin)');
-  run(() => port.trigger('view:setOptions', { options: { components: true } }));
+
+  let layerDiv = find('[data-label=layer-div]');
+  run(() => previewDiv.trigger('mouseup'));
+  await wait();
+
+  assert.ok(layerDiv.is(':visible'));
+  assert.equal(find('[data-label=layer-model]', layerDiv).text(), 'Application model');
+  assert.equal(find('[data-label=layer-view]', layerDiv).text(), '(unknown mixin)');
+  await click('[data-label=layer-controller]', layerDiv);
+
+  let controller = App.__container__.lookup('controller:application');
+  assert.equal(name, 'objectInspector:updateObject');
+  assert.equal(controller.toString(), message.name);
+  name = null;
+  message = null;
+
+  await click('[data-label=layer-model]', layerDiv);
+
+  assert.equal(name, 'objectInspector:updateObject');
+  assert.equal(message.name, 'Application model');
+
+  await click('[data-label=layer-close]');
+
+  assert.ok(!layerDiv.is(':visible'));
+
+  run(() => port.trigger('view:inspectViews', { inspect: true }));
   await wait();
 
   run(() => find('.simple-input').trigger('mousemove'));

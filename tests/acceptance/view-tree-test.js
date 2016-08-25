@@ -261,14 +261,14 @@ test("Configuring which views to show", async function(assert) {
   checkbox.trigger('change');
   await wait();
   assert.equal(messageSent.name, 'view:setOptions');
-  assert.deepEqual(messageSent.message.options, { components: true, allViews: false });
+  assert.deepEqual(messageSent.message.options, { components: true });
   await wait();
   checkbox = find('.js-filter-all-views input');
   checkbox.prop('checked', true);
   checkbox.trigger('change');
   await wait();
   assert.equal(messageSent.name, 'view:setOptions');
-  assert.deepEqual(messageSent.message.options, { components: true, allViews: true });
+  assert.deepEqual(messageSent.message.options, { components: true });
   await wait();
 });
 

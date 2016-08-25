@@ -1,10 +1,32 @@
 /* eslint no-cond-assign:0 */
-import PortMixin from "ember-debug/mixins/port-mixin";
+import PortMixin from 'ember-debug/mixins/port-mixin';
+import GlimmerTree from 'ember-debug/libs/glimmer-tree';
+import {
+  modelName as getModelName,
+  shortModelName as getShortModelName,
+  controllerName as getControllerName,
+  shortControllerName as getShortControllerName,
+  viewName as getViewName,
+  shortViewName as getShortViewName
+} from 'ember-debug/utils/name-functions';
 
 const Ember = window.Ember;
-const { guidFor, $, computed, run, Object: EmberObject, typeOf, Component, Controller, ViewUtils, A, LinkComponent, String } = Ember;
+
+const {
+  guidFor,
+  $,
+  computed,
+  run,
+  Object: EmberObject,
+  typeOf,
+  Component,
+  Controller,
+  ViewUtils,
+  A
+} = Ember;
 const { later } = run;
-const { oneWay } = computed;
+const { readOnly } = computed;
+const { getViewBoundingClientRect } = ViewUtils;
 
 const keys = Object.keys || Ember.keys;
 
@@ -14,10 +36,10 @@ export default EmberObject.extend(PortMixin, {
 
   namespace: null,
 
-  application: oneWay('namespace.application').readOnly(),
-  adapter: oneWay('namespace.adapter').readOnly(),
-  port: oneWay('namespace.port').readOnly(),
-  objectInspector: oneWay('namespace.objectInspector').readOnly(),
+  application: readOnly('namespace.application'),
+  adapter: readOnly('namespace.adapter'),
+  port: readOnly('namespace.port'),
+  objectInspector: readOnly('namespace.objectInspector'),
 
   retainedObjects: [],
 
@@ -34,24 +56,18 @@ export default EmberObject.extend(PortMixin, {
     hideLayer() {
       this.hideLayer();
     },
-    showLayer(message) {
-      // >= Ember 1.13
-      if (message.renderNodeId !== undefined) {
-        this._highlightNode(this.get('_lastNodes').objectAt(message.renderNodeId), false);
-      } else {
-        // < Ember 1.13
-        this.showLayer(message.objectId);
-      }
-    },
     previewLayer(message) {
-      // >= Ember 1.13
-      if (message.renderNodeId !== undefined) {
-        this._highlightNode(this.get('_lastNodes').objectAt(message.renderNodeId), true);
+      if (this.glimmerTree) {
+        // >= Ember 2.9
+        this.glimmerTree.highlightLayer(message.objectId || message.elementId, true);
       } else {
-        // < Ember 1.13
-        this.previewLayer(message.objectId);
+        // 1.13 >= Ember <= 2.8
+        if (message.renderNodeId !== undefined) {
+          this._highlightNode(this.get('_lastNodes').objectAt(message.renderNodeId), true);
+        } else if (message.objectId) {
+          this.highlightView(this.get('objectInspector').sentObjects[message.objectId], true);
+        }
       }
-
     },
     hidePreview() {
       this.hidePreview();
@@ -63,17 +79,29 @@ export default EmberObject.extend(PortMixin, {
         this.stopInspecting();
       }
     },
-    inspectElement(message) {
-      this.inspectElement(message.objectId);
+    inspectElement({ objectId, elementId }) {
+      if (objectId) {
+        this.inspectViewElement(objectId);
+      } else {
+        let element = $(`#${elementId}`)[0];
+        this.inspectElement(element);
+      }
     },
-    setOptions(message) {
-      this.set('options', message.options);
+    setOptions({ options }) {
+      this.set('options', options);
+      if (this.glimmerTree) {
+        this.glimmerTree.updateOptions(options);
+      }
       this.sendTree();
     },
     sendModelToConsole(message) {
       let model;
-      let renderNode = this.get('_lastNodes').objectAt(message.renderNodeId);
-      model = this._modelForNode(renderNode);
+      if (this.glimmerTree) {
+        model = this.glimmerTree.modelForViewNodeValue(message);
+      } else {
+        let renderNode = this.get('_lastNodes').objectAt(message.renderNodeId);
+        model = this._modelForNode(renderNode);
+      }
       if (model) {
         this.get('objectInspector').sendValueToConsole(model);
       }
@@ -81,7 +109,7 @@ export default EmberObject.extend(PortMixin, {
   },
 
   init() {
-    this._super();
+    this._super(...arguments);
 
     this.viewListener();
     this.retainedObjects = [];
@@ -96,10 +124,26 @@ export default EmberObject.extend(PortMixin, {
     previewDiv.setAttribute('data-label', 'preview-div');
 
     $(window).on(`resize.${this.get('eventNamespace')}`, () => {
-      if (highlightedElement) {
-        this.highlightView(highlightedElement);
+      if (this.glimmerTree) {
+        this.hideLayer();
+      } else {
+        if (highlightedElement) {
+          this.highlightView(highlightedElement);
+        }
       }
     });
+
+    if (this.isGlimmerTwo()) {
+      this.glimmerTree = new GlimmerTree({
+        container: this.getContainer(),
+        retainObject: this.retainObject.bind(this),
+        highlightRange: this._highlightRange.bind(this),
+        options: this.get('options'),
+        objectInspector: this.get('objectInspector'),
+        durations: this._durations,
+        viewRegistry: this.get('viewRegistry')
+      });
+    }
   },
 
   updateDurations(durations) {
@@ -108,6 +152,9 @@ export default EmberObject.extend(PortMixin, {
         continue;
       }
       this._durations[guid] = durations[guid];
+    }
+    if (this.glimmerTree) {
+      this.glimmerTree.updateDurations(this._durations);
     }
     this.sendTree();
   },
@@ -138,11 +185,22 @@ export default EmberObject.extend(PortMixin, {
     this.stopInspecting();
   },
 
-  inspectElement(objectId) {
+  inspectViewElement(objectId) {
     let view = this.get('objectInspector').sentObjects[objectId];
     if (view && view.get('element')) {
-      this.get('adapter').inspectElement(view.get('element'));
+      this.inspectElement(view.get('element'));
     }
+  },
+
+  /**
+   * Opens the "Elements" tab and selects the given element. Doesn't work in all
+   * browsers/addons (only in the Chrome and FF devtools addons at the time of writing).
+   *
+   * @method inspectElement
+   * @param  {Element} element The element to inspect
+   */
+  inspectElement(element) {
+    this.get('adapter').inspectElement(element);
   },
 
   sendTree() {
@@ -156,9 +214,13 @@ export default EmberObject.extend(PortMixin, {
     // we don't want the preview div to intercept the mousemove event
     $(previewDiv).css('pointer-events', 'none');
 
-    const pinView = () => {
+    let pinView = () => {
       if (viewElem) {
-        this.highlightView(viewElem);
+        if (this.glimmerTree) {
+          this.glimmerTree.highlightLayer(viewElem.attr('id'));
+        } else {
+          this.highlightView(viewElem[0]);
+        }
         let view = this.get('objectInspector').sentObjects[viewElem.id];
         if (view instanceof Component) {
           this.get('objectInspector').sendObject(view);
@@ -169,10 +231,13 @@ export default EmberObject.extend(PortMixin, {
     };
 
     $('body').on(`mousemove.inspect-${this.get('eventNamespace')}`, e => {
-      let originalTarget = $(e.target);
-      viewElem = this.findNearestView(originalTarget);
+      viewElem = this.findNearestView($(e.target));
       if (viewElem) {
-        this.highlightView(viewElem, true);
+        if (this.glimmerTree) {
+          this.glimmerTree.highlightLayer(viewElem.attr('id'), true);
+        } else {
+          this.highlightView(viewElem[0], true);
+        }
       }
     })
     .on(`mousedown.inspect-${this.get('eventNamespace')}`, () => {
@@ -188,14 +253,9 @@ export default EmberObject.extend(PortMixin, {
   },
 
   findNearestView(elem) {
-    let viewElem, view;
     if (!elem || elem.length === 0) { return null; }
     if (elem.hasClass('ember-view')) {
-      viewElem = elem.get(0);
-      view = this.get('objectInspector').sentObjects[viewElem.id];
-      if (view && this.shouldShowView(view)) {
-        return viewElem;
-      }
+      return elem;
     }
     return this.findNearestView($(elem).parents('.ember-view:first'));
   },
@@ -243,17 +303,25 @@ export default EmberObject.extend(PortMixin, {
     let applicationViewId = $(emberApp.rootElement).find('> .ember-view').attr('id');
     let rootView = this.get('viewRegistry')[applicationViewId];
     // In case of App.reset view is destroyed
-    if (!rootView) {
-      return false;
+    if (this.glimmerTree) {
+      // Glimmer 2
+      tree = this.glimmerTree.build();
+    } else if (rootView) {
+      let children = [];
+      this.get('_lastNodes').clear();
+      let renderNode = rootView._renderNode;
+      tree = { value: this._inspectNode(renderNode), children };
+      this._appendNodeChildren(renderNode, children);
     }
-
-    let children = [];
-    this.get('_lastNodes').clear();
-    let renderNode = rootView._renderNode;
-    tree = { value: this._inspectNode(renderNode), children };
-    this._appendNodeChildren(renderNode, children);
-
     return tree;
+  },
+
+  getContainer() {
+    return this.get('application.__container__');
+  },
+
+  isGlimmerTwo() {
+    return this.get('application').hasRegistration('service:-glimmer-environment');
   },
 
   modelForView(view) {
@@ -265,70 +333,11 @@ export default EmberObject.extend(PortMixin, {
     return model;
   },
 
-  inspectView(view, retained) {
-    let templateName = view.get('templateName') || view.get('_debugTemplateName');
-    let viewClass = shortViewName(view);
-    let name;
-
-    let tagName = view.get('tagName');
-    if (tagName === '') {
-      tagName = '(virtual)';
-    }
-
-    tagName = tagName || 'div';
-
-    let controller = view.get('controller');
-
-    name = viewDescription(view);
-
-    let viewId = this.retainObject(view);
-    retained.push(viewId);
-
-    let timeToRender = this._durations[viewId];
-
-    let value = {
-      viewClass,
-      completeViewClass: viewName(view),
-      objectId: viewId,
-      duration: timeToRender,
-      name,
-      template: templateName || '(inline)',
-      tagName,
-      isVirtual: view.get('isVirtual'),
-      isComponent: (view instanceof Component)
-    };
-
-    if (controller && !(view instanceof Component)) {
-      value.controller = {
-        name: shortControllerName(controller),
-        completeName: controllerName(controller),
-        objectId: this.retainObject(controller)
-      };
-
-      let model = this.modelForView(view);
-      if (model) {
-        if (EmberObject.detectInstance(model) || typeOf(model) === 'array') {
-          value.model = {
-            name: shortModelName(model),
-            completeName: getModelName(model),
-            objectId: this.retainObject(model),
-            type: 'type-ember-object'
-          };
-        } else {
-          value.model = {
-            name: this.get('objectInspector').inspect(model),
-            type: `type-${typeOf(model)}`
-          };
-        }
-      }
-    }
-
-    return value;
-  },
-
   shouldShowView(view) {
-    return (this.options.allViews || this.hasOwnController(view) || this.hasOwnContext(view)) &&
-        (this.options.components || !(view instanceof Component)) &&
+    if (view instanceof Component) {
+      return this.options.components;
+    }
+    return (this.hasOwnController(view) || this.hasOwnContext(view)) &&
         (!view.get('isVirtual') || this.hasOwnController(view) || this.hasOwnContext(view));
   },
 
@@ -359,7 +368,6 @@ export default EmberObject.extend(PortMixin, {
     } else {
       view = this.get('viewRegistry')[element.id];
     }
-    let getViewBoundingClientRect = ViewUtils.getViewBoundingClientRect;
 
     rect = getViewBoundingClientRect(view);
 
@@ -368,18 +376,17 @@ export default EmberObject.extend(PortMixin, {
     let model = controller && controller.get('model');
     let modelName;
 
-
     let options = {
       isPreview,
       view: {
-        name: viewName(view),
+        name: getViewName(view),
         object: view
       }
     };
 
     if (controller) {
       options.controller = {
-        name: controllerName(controller),
+        name: getControllerName(controller),
         object: controller
       };
     }
@@ -508,7 +515,11 @@ export default EmberObject.extend(PortMixin, {
     });
 
     $('p.template span:last-child', div).css({ cursor: 'pointer' }).click(() => {
-      this.inspectElement(guidFor(view.object));
+      if (view) {
+        this.inspectViewElement(guidFor(view.object));
+      } else if (options.element) {
+        this.inspectElement(options.element);
+      }
     });
 
     if (model && model.object && ((model.object instanceof EmberObject) || typeOf(model.object) === 'array')) {
@@ -516,14 +527,6 @@ export default EmberObject.extend(PortMixin, {
         this.get('objectInspector').sendObject(model.object);
       });
     }
-  },
-
-  showLayer(objectId) {
-    this.highlightView(this.get('objectInspector').sentObjects[objectId]);
-  },
-
-  previewLayer(objectId) {
-    this.highlightView(this.get('objectInspector').sentObjects[objectId], true);
   },
 
   hideLayer() {
@@ -547,7 +550,7 @@ export default EmberObject.extend(PortMixin, {
   }),
 
   viewRegistry: computed('application', function() {
-    return this.get('application.__container__').lookup('-view-registry:main');
+    return this.getContainer().lookup('-view-registry:main');
   }),
 
   /**
@@ -606,7 +609,7 @@ export default EmberObject.extend(PortMixin, {
     if (!this._nodeTemplateName(renderNode) && !this._nodeHasViewInstance(renderNode)) {
       return false;
     }
-    return (this.options.allViews || this._nodeHasOwnController(renderNode, parentNode)) &&
+    return this._nodeHasOwnController(renderNode, parentNode) &&
         (this.options.components || !(this._nodeIsEmberComponent(renderNode))) &&
         (this._nodeHasViewInstance(renderNode) || this._nodeHasOwnController(renderNode, parentNode));
   },
@@ -709,8 +712,8 @@ export default EmberObject.extend(PortMixin, {
     let viewClass = this._viewInstanceForNode(renderNode);
 
     if (viewClass) {
-      viewClassName = shortViewName(viewClass);
-      completeViewClassName = viewName(viewClass);
+      viewClassName = getShortViewName(viewClass);
+      completeViewClassName = getViewName(viewClass);
       tagName = viewClass.get('tagName') || 'div';
       viewId = this.retainObject(viewClass);
       timeToRender = this._durations[viewId];
@@ -734,8 +737,8 @@ export default EmberObject.extend(PortMixin, {
     let controller = this._controllerForNode(renderNode);
     if (controller && !(this._nodeIsEmberComponent(renderNode))) {
       value.controller = {
-        name: shortControllerName(controller),
-        completeName: controllerName(controller),
+        name: getShortControllerName(controller),
+        completeName: getControllerName(controller),
         objectId: this.retainObject(controller)
       };
 
@@ -743,7 +746,7 @@ export default EmberObject.extend(PortMixin, {
       if (model) {
         if (EmberObject.detectInstance(model) || typeOf(model) === 'array') {
           value.model = {
-            name: shortModelName(model),
+            name: getShortModelName(model),
             completeName: getModelName(model),
             objectId: this.retainObject(model),
             type: 'type-ember-object'
@@ -852,7 +855,7 @@ export default EmberObject.extend(PortMixin, {
     let controller = this._controllerForNode(renderNode);
     if (controller) {
       options.controller = {
-        name: controllerName(controller),
+        name: getControllerName(controller),
         object: controller
       };
     }
@@ -880,7 +883,7 @@ export default EmberObject.extend(PortMixin, {
 
     if (view) {
       options.view = {
-        name: viewName(view),
+        name: getViewName(view),
         object: view
       };
     }
@@ -889,115 +892,8 @@ export default EmberObject.extend(PortMixin, {
   }
 });
 
-function viewName(view) {
-  let name = view.constructor.toString(), match;
-  if (name.match(/\._/)) {
-    name = "virtual";
-  } else if (match = name.match(/\(subclass of (.*)\)/)) {
-    name = match[1];
-  }
-  return name;
-}
-
-function shortViewName(view) {
-  let name = viewName(view);
-  // jj-abrams-resolver adds `app@view:` and `app@component:`
-  // Also `_debugContainerKey` has the format `type-key:factory-name`
-  return name.replace(/.*(view|component):(?!$)/, '').replace(/:$/, '');
-}
-
-function getModelName(model) {
-  let name = '<Unknown model>';
-  if (model.toString) {
-    name = model.toString();
-  }
-
-
-  if (name.length > 50) {
-    name = `${name.substr(0, 50)}...`;
-  }
-  return name;
-}
-
-function shortModelName(model) {
-  let name = getModelName(model);
-  // jj-abrams-resolver adds `app@model:`
-  return name.replace(/<[^>]+@model:/g, '<');
-}
-
-function controllerName(controller) {
-  let match;
-  let className = controller.constructor.toString();
-
-  if (match = className.match(/^\(subclass of (.*)\)/)) {
-    className = match[1];
-  }
-  return className;
-}
-
-function shortControllerName(controller) {
-  let name = controllerName(controller);
-  // jj-abrams-resolver adds `app@controller:` at the begining and `:` at the end
-  return name.replace(/^.+@controller:/, '').replace(/:$/, '');
-}
-
 function escapeHTML(string) {
   let div = document.createElement('div');
   div.appendChild(document.createTextNode(string));
   return div.innerHTML;
-}
-
-function viewDescription(view) {
-  let templateName = view.get('templateName') || view.get('_debugTemplateName');
-  let name, parentClassName;
-  let viewClass = shortViewName(view);
-  let controller = view.get('controller');
-
-  if (templateName) {
-    name = templateName;
-  } else if (view instanceof LinkComponent) {
-    name = 'link';
-  } else if (view.get('_parentView.controller') === controller || view instanceof Component) {
-    let viewClassName = view.get('_debugContainerKey');
-    if (viewClassName) {
-      viewClassName = viewClassName.match(/:(.*)/);
-      if (viewClassName) {
-        viewClassName = viewClassName[1];
-      }
-    }
-    if (!viewClassName && viewClass) {
-      viewClassName = viewClass.match(/\.(.*)/);
-      if (viewClassName) {
-        viewClassName = viewClassName[1];
-      } else {
-        viewClassName = viewClass;
-      }
-
-      let shortName = viewClassName.match(/(.*)(View|Component)$/);
-      if (shortName) {
-        viewClassName = shortName[1];
-      }
-    }
-    if (viewClassName) {
-      name = String.camelize(viewClassName);
-    }
-  } else if (view.get('_parentView.controller') !== controller) {
-    let key = controller.get('_debugContainerKey');
-    let className = controller.constructor.toString();
-
-    if (key) {
-      name = key.split(':')[1];
-    } else {
-      if (parentClassName = className.match(/^\(subclass of (.*)\)/)) {
-        className = parentClassName[1];
-      }
-      name = className.split('.').pop();
-      name = String.camelize(name);
-    }
-  }
-
-  if (!name) {
-    name = '(inline view)';
-  }
-  return name;
 }

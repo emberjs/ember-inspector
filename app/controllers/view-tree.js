@@ -6,22 +6,21 @@ export default Controller.extend({
   application: controller(),
   pinnedObjectId: null,
   inspectingViews: false,
-  queryParams: ['components', 'allViews'],
+  queryParams: ['components'],
   components: alias('options.components'),
-  allViews: alias('options.allViews'),
   options: {
-    components: false,
-    allViews: false
+    components: false
   },
 
-  optionsChanged: on('init', observer('options.components', 'options.allViews', function() {
+  optionsChanged: on('init', observer('options.components', function() {
     this.port.send('view:setOptions', { options: this.get('options') });
   })),
 
   actions: {
-    previewLayer(node) {
-      // We are passing both objectId and renderNodeId to support both pre-glimmer and post-glimmer
-      this.get('port').send('view:previewLayer', { objectId: node.value.objectId, renderNodeId: node.value.renderNodeId });
+    previewLayer({ value: { objectId, elementId, renderNodeId } }) {
+      // We are passing all of objectId, elementId, and renderNodeId to support post-glimmer 1, post-glimmer 2, and root for
+      // post-glimmer 2
+      this.get('port').send('view:previewLayer', { objectId, renderNodeId, elementId });
     },
 
     hidePreview() {
@@ -34,7 +33,7 @@ export default Controller.extend({
 
     sendModelToConsole(value) {
       // do not use `sendObjectToConsole` because models don't have to be ember objects
-      this.get('port').send('view:sendModelToConsole', { viewId: value.objectId, renderNodeId: value.renderNodeId });
+      this.get('port').send('view:sendModelToConsole', value);
     },
 
     sendObjectToConsole(objectId) {
@@ -47,8 +46,8 @@ export default Controller.extend({
       }
     },
 
-    inspectElement(objectId) {
-      this.get('port').send('view:inspectElement', { objectId });
+    inspectElement({ objectId, elementId }) {
+      this.get('port').send('view:inspectElement', { objectId, elementId });
     }
   }
 });
