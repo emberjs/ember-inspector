@@ -22,13 +22,11 @@ export default EmberObject.extend({
    * @return {RSVP.Promise}
    */
   map(stack) {
-    const parsed = A(fromStackProperty(stack));
+    let parsed = A(fromStackProperty(stack));
     let array = A();
     let lastPromise = null;
     parsed.forEach(item => {
-      lastPromise = this.get('_lastPromise').then(() => {
-        return this.getSourceMap(item.url);
-      }, null, 'ember-inspector').then(smc => {
+      lastPromise = this.get('_lastPromise').then(() => this.getSourceMap(item.url), null, 'ember-inspector').then(smc => {
         if (smc) {
           let source = smc.originalPositionFor({
             line: item.line,
@@ -65,7 +63,7 @@ export default EmberObject.extend({
       }
     }, function() {
       sourceMaps[url] = null;
-    });
+    }, 'ember-inspector');
   }
 });
 
@@ -80,8 +78,8 @@ function retrieveSourceMap(source) {
     // Support source map URLs relative to the source URL
     mapURL = relativeToAbsolute(source, sourceMappingURL);
     return mapURL;
-  })
-  .then(retrieveFile)
+  }, null, 'ember-inspector')
+  .then(retrieveFile, null, 'ember-inspector')
   .then(sourceMapData => {
     if (!sourceMapData) {
       return null;
@@ -90,7 +88,7 @@ function retrieveSourceMap(source) {
       url: mapURL,
       map: sourceMapData
     };
-  });
+  }, null, 'ember-inspector');
 }
 
 function relativeToAbsolute(file, url) {
@@ -114,10 +112,15 @@ function retrieveFile(source) {
 
 function retrieveSourceMapURL(source) {
   return retrieveFile(source).then(function(fileData) {
-    const match = /\/\/[#@]\s*sourceMappingURL=(.*)\s*$/m.exec(fileData);
+    let match = (/\/\/[#@]\s*sourceMappingURL=(.*)\s*$/g).exec(fileData);
     if (!match) { return null; }
-    return match[1];
-  });
+    let url = match[1];
+    // check not data URL
+    if (url.match(/^data/)) {
+      return null;
+    }
+    return url;
+  }, null, 'ember-inspector');
 }
 
 

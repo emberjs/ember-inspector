@@ -2,15 +2,15 @@ const Ember = window.Ember;
 const { Object: EmberObject } = Ember;
 
 const Session = EmberObject.extend({
-  setItem: function(/*key, val*/) {},
-  removeItem: function(/*key*/) {},
-  getItem: function(/*key*/) {}
+  setItem(/*key, val*/) {},
+  removeItem(/*key*/) {},
+  getItem(/*key*/) {}
 });
 
 // Feature detection
 if (typeof sessionStorage !== 'undefined') {
   Session.reopen({
-    sessionStorage: sessionStorage,
+    sessionStorage,
     prefix: '__ember__inspector__',
     makeKey(key) {
       return this.prefix + key;

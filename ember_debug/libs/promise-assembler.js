@@ -87,9 +87,7 @@ let PromiseAssembler = EmberObject.extend(Evented, {
   },
 
   findOrCreate(guid) {
-    return this.find(guid) || this.createPromise({
-      guid: guid
-    });
+    return this.find(guid) || this.createPromise({ guid });
   },
 
   updateOrCreate(guid, properties) {
@@ -108,13 +106,7 @@ let PromiseAssembler = EmberObject.extend(Evented, {
 
 export default PromiseAssembler;
 
-PromiseAssembler.reopenClass({
-  supported() {
-    return !!RSVP.on;
-  }
-});
-
-const fulfill = function(event) {
+function fulfill(event) {
   const guid = event.guid;
   const promise = this.updateOrCreate(guid, {
     label: event.label,
@@ -122,13 +114,10 @@ const fulfill = function(event) {
     state: 'fulfilled',
     value: event.detail
   });
-  this.trigger('fulfilled', {
-    promise: promise
-  });
-};
+  this.trigger('fulfilled', { promise });
+}
 
-
-const reject = function(event) {
+function reject(event) {
   const guid = event.guid;
   const promise = this.updateOrCreate(guid, {
     label: event.label,
@@ -136,13 +125,10 @@ const reject = function(event) {
     state: 'rejected',
     reason: event.detail
   });
-  this.trigger('rejected', {
-    promise: promise
-  });
-};
+  this.trigger('rejected', { promise });
+}
 
 function chain(event) {
-  /*jshint validthis:true */
   let guid = event.guid;
   let promise = this.updateOrCreate(guid, {
     label: event.label,
@@ -154,14 +140,10 @@ function chain(event) {
   child.set('parent', promise);
   children.pushObject(child);
 
-  this.trigger('chained', {
-    promise: promise,
-    child: child
-  });
+  this.trigger('chained', { promise, child });
 }
 
 function create(event) {
-  /*jshint validthis:true */
   const guid = event.guid;
 
   const promise = this.updateOrCreate(guid, {
@@ -174,7 +156,5 @@ function create(event) {
   if (isNone(promise.get('state'))) {
     promise.set('state', 'created');
   }
-  this.trigger('created', {
-    promise: promise
-  });
+  this.trigger('created', { promise });
 }

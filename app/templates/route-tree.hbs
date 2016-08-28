@@ -1,25 +1,13 @@
-<div class="list-view">
-  <div class="list-view__header row">
-    <div class="cell cell_type_header">
-      Route Name
-    </div>
-    <div class="cell cell_type_header">
-      Route
-    </div>
-    <div class="cell cell_type_header">
-      Controller
-    </div>
-    <div class="cell cell_type_header">
-      Template
-    </div>
-    <div class="cell cell_type_header cell_size_large">
-      URL
-    </div>
-    <!-- Account for scrollbar width :'(  -->
-    <div class="cell cell_type_header spacer"></div>
-  </div>
-
-  <div class="list-view__list-container">
-    {{view "routeList" content=filtered currentRoute=currentRoute}}
-  </div>
-</div>
+{{#x-list name="route-tree" schema=(schema-for "route-tree") as |list|}}
+  {{#list.vertical-collection content=filtered as |content|}}
+    {{route-item
+      model=content
+      currentRoute=currentRoute
+      inspectRoute=(action "inspectRoute")
+      sendRouteHandlerToConsole=(action "sendRouteHandlerToConsole")
+      inspectController=(action "inspectController")
+      sendControllerToConsole=(action "sendControllerToConsole")
+      list=list
+    }}
+  {{/list.vertical-collection}}
+{{/x-list}}

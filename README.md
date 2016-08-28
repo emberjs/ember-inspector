@@ -73,7 +73,7 @@ javascript: (function() { var s = document.createElement('script'); s.src = 'htt
 Building and Testing:
 --------------------
 
-Run `npm install && npm install -g ember-cli && && npm install -g bower && bower install && npm install -g grunt-cli` to install the required modules.
+Run `npm install && npm install -g ember-cli && npm install -g bower && bower install && npm install -g grunt-cli` to install the required modules.
 
 - `npm run build` to build the files in the `dist` directory
 - `npm run watch` To watch the files and re-build in `dist` when anything changes (useful during development).
@@ -92,7 +92,7 @@ Patch versions are only committed to the stable branch. So we need to cherry-pic
 
 - `git checkout stable`
 - Cherry-pick the needed commits from master to stable
-- Bump the patch version in package.json and run `grunt version`. Add the change log entry and commit.
+- Bump the patch version in package.json. Add the change log entry and commit.
 - Follow the "Steps to publish" below.
 - `git checkout master`
 - Commit the change log entry to the master branch.
@@ -106,7 +106,7 @@ When releasing a major/minor version, master would already have this version set
 - `git merge -X theirs master`
 - Follow the "Steps to publish" steps below.
 - `git checkout master`
-- Update `package.json` to the future major/minor version and run `grunt version`
+- Update `package.json` to the future major/minor version.
 
 #### Steps to publish
 

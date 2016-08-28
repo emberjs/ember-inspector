@@ -31,13 +31,8 @@ export default TabRoute.extend({
     error(err) {
       if (err && err.status === 404) {
         this.transitionTo('container-types.index');
+        return false;
       }
-    },
-    inspectInstance(obj) {
-      if (!get(obj, 'inspectable')) {
-        return;
-      }
-      this.get('port').send('objectInspector:inspectByContainerLookup', { name: get(obj, 'fullName') });
     },
     sendInstanceToConsole(obj) {
       this.get('port').send('container:sendInstanceToConsole', { name: get(obj, 'fullName') });

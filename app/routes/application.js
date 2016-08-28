@@ -1,11 +1,14 @@
 import Ember from "ember";
-const { Route } = Ember;
+const { Route, inject, run, NativeArray } = Ember;
+const { service } = inject;
+const { schedule } = run;
 const set = Ember.set;
+const get = Ember.get;
 
 export default Route.extend({
 
-  setupController() {
-    this.controllerFor('mixinStack').set('model', []);
+  setupController(controller) {
+    controller.set('mixinStack', []);
     let port = this.get('port');
     port.on('objectInspector:updateObject', this, this.updateObject);
     port.on('objectInspector:updateProperty', this, this.updateProperty);
@@ -26,12 +29,12 @@ export default Route.extend({
 
   updateObject(options) {
     const details = options.details,
-      name = options.name,
-      property = options.property,
-      objectId = options.objectId,
-      errors = options.errors;
+          name = options.name,
+          property = options.property,
+          objectId = options.objectId,
+          errors = options.errors;
 
-    Ember.NativeArray.apply(details);
+    NativeArray.apply(details);
     details.forEach(arrayize);
 
     let controller = this.get('controller');
@@ -50,33 +53,51 @@ export default Route.extend({
   },
 
   updateProperty(options) {
-    const detail = this.controllerFor('mixinDetails').get('model.mixins').objectAt(options.mixinIndex);
-    const property = Ember.get(detail, 'properties').findProperty('name', options.property);
+    const detail = this.get('controller.mixinDetails.mixins').objectAt(options.mixinIndex);
+    const property = get(detail, 'properties').findBy('name', options.property);
     set(property, 'value', options.value);
   },
 
   updateErrors(options) {
-    const mixinDetails = this.controllerFor('mixinDetails');
-    if (mixinDetails.get('model.objectId') === options.objectId) {
-      mixinDetails.set('model.errors', options.errors);
+    let mixinDetails = this.get('controller.mixinDetails');
+    if (mixinDetails) {
+      if (get(mixinDetails, 'objectId') === options.objectId) {
+        set(mixinDetails, 'errors', options.errors);
+      }
     }
   },
 
   droppedObject(message) {
-    let controller = this.get('controller');
-    controller.droppedObject(message.objectId);
+    this.get('controller').droppedObject(message.objectId);
   },
+
+  /**
+   * Service used to broadcast changes to the application's layout
+   * such as toggling of the object inspector.
+   *
+   * @property layout
+   * @type {Service}
+   */
+  layout: service(),
 
   actions: {
     expandInspector() {
       this.set("controller.inspectorExpanded", true);
+      // Broadcast that tables have been resized (used by `x-list`).
+      schedule('afterRender', () => {
+        this.get('layout').trigger('resize', { source: 'object-inspector' });
+      });
     },
     toggleInspector() {
       this.toggleProperty("controller.inspectorExpanded");
+      // Broadcast that tables have been resized (used by `x-list`).
+      schedule('afterRender', () => {
+        this.get('layout').trigger('resize', { source: 'object-inspector' });
+      });
     },
     inspectObject(objectId) {
       if (objectId) {
-        this.get('port').send('objectInspector:inspectById', { objectId: objectId });
+        this.get('port').send('objectInspector:inspectById', { objectId });
       }
     },
     setIsDragging(isDragging) {
@@ -98,5 +119,5 @@ export default Route.extend({
 });
 
 function arrayize(mixin) {
-  Ember.NativeArray.apply(mixin.properties);
+  NativeArray.apply(mixin.properties);
 }

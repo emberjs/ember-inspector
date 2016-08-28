@@ -9,7 +9,7 @@ export default Ember.Route.extend({
 
   model(params) {
     return new Promise(resolve => {
-      const type = this.modelFor('model-types').findBy('name', params.type_id);
+      const type = this.modelFor('model-types').findBy('name', decodeURIComponent(params.type_id));
       if (type) {
         resolve(type);
       } else {

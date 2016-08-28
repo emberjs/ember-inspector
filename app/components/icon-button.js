@@ -1,7 +1,7 @@
 import Ember from "ember";
 const { Component } = Ember;
 export default Component.extend({
-  attributeBindings: ['dataLabel:data-label', 'title'],
+  attributeBindings: ['title'],
 
   tagName: 'button',
 

@@ -26,7 +26,6 @@
    * Save the updated options to storage.
    */
   function storeOptions() {
-    /*jshint validthis:true */
     var showTomster = this.checked;
 
     chrome.storage.sync.set({

@@ -1,1 +1,5 @@
-{{yield this}}
+{{#each columns as |column|}}
+  {{#list.cell class="js-record-column" clickable=true style=style}}
+    {{column.value}}
+  {{/list.cell}}
+{{/each}}

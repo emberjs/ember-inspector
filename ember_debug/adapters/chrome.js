@@ -8,7 +8,7 @@ export default BasicAdapter.extend({
   connect() {
     const channel = this.get('_channel');
     return this._super(...arguments).then(() => {
-      window.postMessage('debugger-client', [channel.port2], '*');
+      window.postMessage('debugger-client', '*', [channel.port2]);
       this._listen();
     }, null, 'ember-inspector');
   },
@@ -25,9 +25,25 @@ export default BasicAdapter.extend({
     this.get('_chromePort').postMessage(options);
   },
 
+  /**
+   * Open the devtools "Elements" and select an element.
+   *
+   * NOTE:
+   * This method was supposed to call `inspect` which is a Chrome specific function
+   * that can either be called from the console or from code evaled using `inspectedWindow.eval`
+   * (which is how this code is executed). See https://developer.chrome.com/extensions/devtools#evaluating-js.
+   * However for some reason Chrome 52+ has started throwing an Error that `inspect`
+   * is not a function when called from this code. The current workaround is to
+   * message the Ember Ibspector asking it to execute `inspected.Window.eval('inspect(element)')`
+   * for us.
+   *
+   * @param  {HTMLElement} elem The element to select
+   */
   inspectElement(elem) {
-    /* globals inspect */
-    inspect(elem);
+    /* inspect(elem); */
+    this.get('namespace.port').send('view:inspectDOMElement', {
+      elementSelector: `#${elem.getAttribute('id')}`
+    });
   },
 
   _channel: computed(function() {

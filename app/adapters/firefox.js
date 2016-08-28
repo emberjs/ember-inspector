@@ -71,7 +71,7 @@ export default BasicAdapter.extend({
     this.sendMessage({
       type: 'devtools:openSource',
       url: file,
-      line: line
+      line
     });
   }
 

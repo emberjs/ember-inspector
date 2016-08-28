@@ -1,31 +1,72 @@
 import Ember from "ember";
-const { computed, Component, Handlebars: { SafeString } } = Ember;
-const { not, bool } = computed;
+import RowEventsMixin from 'ember-inspector/mixins/row-events';
+const { computed, Component, String: { htmlSafe } } = Ember;
+const { not, bool, equal } = computed;
 
-export default Component.extend({
-  classNames: ['list-tree__item', 'row'],
+export default Component.extend(RowEventsMixin, {
+  /**
+   * No tag. This component should not affect
+   * the DOM.
+   *
+   * @property tagName
+   * @type {String}
+   * @default ''
+   */
+  tagName: '',
 
-  classNameBindings: ['isCurrent:row_highlight'],
+  /**
+   * Has a view (component) instance.
+   *
+   * @property hasView
+   * @type {Boolean}
+   */
+  hasView: bool('model.value.viewClass'),
 
-  hasView: not('model.value.isVirtual'),
-  hasElement: not('model.value.isVirtual'),
+  /**
+   * Whether it has a tag or not.
+   *
+   * @property isTagless
+   * @type {Boolean}
+   */
+  isTagless: equal('model.value.tagName', ''),
+
+  /**
+   * Whether it has an element or not (depends on the tagName).
+   *
+   * @property hasElement
+   * @type {Boolean}
+   */
+  hasElement: not('isTagless'),
+
+  /**
+   * Whether it has a layout/template or not.
+   *
+   * @property hasTemplate
+   * @type {Boolean}
+   */
+  hasTemplate: bool('model.value.template'),
+
   hasModel: bool('model.value.model'),
 
-  // passed as an attribute
-  pinnedObjectId: null,
-
-  isCurrent: computed('pinnedObjectId', 'model.value.objectId', function() {
-    return this.get('pinnedObjectId') === this.get('model.value.objectId');
-  }),
-
   hasController: bool('model.value.controller'),
+
+  /**
+   * The index of the current row. Currently used for the
+   * `RowEvents` mixin. This property is passed through
+   * the template.
+   *
+   * @property index
+   * @type {Number}
+   * @default null
+   */
+  index: null,
 
   modelInspectable: computed('hasModel', 'model.value.model.type', function() {
     return this.get('hasModel') && this.get('model.value.model.type') === 'type-ember-object';
   }),
 
   labelStyle: computed('model.parentCount', function() {
-    return new SafeString(`padding-left: ${+this.get('model.parentCount') * 20 + 5}px;`);
+    return htmlSafe(`padding-left: ${+this.get('model.parentCount') * 20 + 5}px;`);
   }),
 
   actions: {
@@ -35,12 +76,15 @@ export default Component.extend({
       }
     },
     inspectElement(objectId) {
+      let elementId;
       if (!objectId && this.get('hasElement')) {
         objectId = this.get('model.value.objectId');
       }
-
-      if (objectId) {
-        this.sendAction('inspectElement', objectId);
+      if (!objectId) {
+        elementId = this.get('model.value.elementId');
+      }
+      if (objectId || elementId) {
+        this.sendAction('inspectElement', { objectId, elementId });
       }
     },
     inspectModel(objectId) {
@@ -49,5 +93,4 @@ export default Component.extend({
       }
     }
   }
-
 });

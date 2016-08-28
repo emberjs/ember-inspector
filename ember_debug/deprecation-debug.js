@@ -42,9 +42,9 @@ export default EmberObject.extend(PortMixin, {
     if (this.get('emberCliConfig') && this.get('emberCliConfig.environment') === 'development') {
       return this.get('sourceMap').map(stackStr).then(mapped => {
         if (mapped && mapped.length > 0) {
-          var source = mapped.find(item => {
-            return item.source && !!item.source.match(new RegExp(this.get('emberCliConfig.modulePrefix')));
-          });
+          let source = mapped.find(
+            item => item.source && !!item.source.match(new RegExp(this.get('emberCliConfig.modulePrefix'))));
+
           if (source) {
             source.found = true;
           } else {
@@ -53,7 +53,7 @@ export default EmberObject.extend(PortMixin, {
           }
           return source;
         }
-      });
+      }, null, 'ember-inspector');
     } else {
       return resolve(null, 'ember-inspector');
     }
@@ -84,10 +84,7 @@ export default EmberObject.extend(PortMixin, {
       if (!found) {
         let stackStr = deprecation.stackStr;
         promise = this.fetchSourceMap(stackStr).then(map => {
-          obj.sources.pushObject({
-            map: map,
-            stackStr: stackStr
-          });
+          obj.sources.pushObject({ map, stackStr });
           if (map) {
             obj.hasSourceMap = true;
           }
@@ -96,7 +93,7 @@ export default EmberObject.extend(PortMixin, {
       return promise.then(() => {
         delete obj.stackStr;
         deprecations.addObject(obj);
-      });
+      }, null, 'ember-inspector');
     }));
 
     promises.then(() => {
@@ -134,7 +131,7 @@ export default EmberObject.extend(PortMixin, {
       deprecation.sources.forEach(source => {
         let stack = source.stackStr;
         stack = stack.split('\n');
-        stack.unshift('Ember Inspector (Deprecation Trace): ' + (deprecation.message || ''));
+        stack.unshift(`Ember Inspector (Deprecation Trace): ${deprecation.message || ''}`);
         this.get('adapter').log(stack.join('\n'));
       });
     },
@@ -159,11 +156,11 @@ export default EmberObject.extend(PortMixin, {
     Ember.deprecate = this.originalDeprecate;
     this.originalDeprecate = null;
     run.cancel(this.debounce);
-    this._super();
+    return this._super(...arguments);
   },
 
   replaceDeprecate() {
-    var self = this;
+    let self = this;
     this.originalDeprecate = Ember.deprecate;
 
     Ember.deprecate = function(message, test, options) {
@@ -205,7 +202,7 @@ export default EmberObject.extend(PortMixin, {
           replace(/^\(/gm, '{anonymous}(').split('\n');
         }
 
-        stackStr = "\n    " + stack.slice(2).join("\n    ");
+        stackStr = `\n    ${stack.slice(2).join("\n    ")}`;
       }
 
       let url;
@@ -213,22 +210,22 @@ export default EmberObject.extend(PortMixin, {
         url = options.url;
       }
 
-      const deprecation = {
-        message: message,
-        stackStr: stackStr,
-        url: url
-      };
+      const deprecation = { message, stackStr, url };
 
-      self.get('deprecationsToSend').pushObject(deprecation);
-      run.cancel(self.debounce);
-      if (self._watching) {
-        self.debounce = run.debounce(self, 'sendPending', 100);
-      } else {
-        self.debounce = run.debounce(self, 'sendCount', 100);
-      }
-      if (!self._warned) {
-        self.get("adapter").warn("Deprecations were detected, see the Ember Inspector deprecations tab for more details.");
-        self._warned = true;
+      // For ember-debug testing we usually don't want
+      // to catch deprecations
+      if (!self.get('namespace').IGNORE_DEPRECATIONS) {
+        self.get('deprecationsToSend').pushObject(deprecation);
+        run.cancel(self.debounce);
+        if (self._watching) {
+          self.debounce = run.debounce(self, 'sendPending', 100);
+        } else {
+          self.debounce = run.debounce(self, 'sendCount', 100);
+        }
+        if (!self._warned) {
+          self.get("adapter").warn("Deprecations were detected, see the Ember Inspector deprecations tab for more details.");
+          self._warned = true;
+        }
       }
     };
   }

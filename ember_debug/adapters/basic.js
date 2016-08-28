@@ -93,12 +93,11 @@ export default EmberObject.extend({
   handleError(error) {
     if (this.get('environment') === 'production') {
       if (error && error instanceof Error) {
-        error = 'Error message: ' + error.message + '\nStack trace: ' + error.stack;
+        error = `Error message: ${error.message}\nStack trace: ${error.stack}`;
       }
-      this.warn('Ember Inspector has errored.\n' +
-        'This is likely a bug in the inspector itself.\n' +
-        'You can report bugs at https://github.com/emberjs/ember-inspector.\n' +
-        error);
+      this.warn(`Ember Inspector has errored.\n` +
+        `This is likely a bug in the inspector itself.\n` +
+        `You can report bugs at https://github.com/emberjs/ember-inspector.\n${error}`);
     } else {
       this.warn('EmberDebug has errored:');
       throw error;

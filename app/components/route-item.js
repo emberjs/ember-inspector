@@ -1,19 +1,23 @@
 import Ember from 'ember';
 import checkCurrentRoute from "ember-inspector/utils/check-current-route";
-const { Component, computed, Handlebars: { SafeString } } = Ember;
+const { Component, computed, String: { htmlSafe } } = Ember;
 
 export default Component.extend({
   // passed as an attribute to the component
   currentRoute: null,
 
-  classNames: ['list-tree__item', 'row'],
-  classNameBindings: ['isCurrent:row_highlight'],
-  attributeBindings: ['label:data-label'],
-
-  label: 'route-node',
+  /**
+   * No tag. This component should not affect
+   * the DOM.
+   *
+   * @property tagName
+   * @type {String}
+   * @default ''
+   */
+  tagName: '',
 
   labelStyle: computed('model.parentCount', function() {
-    return new SafeString(`padding-left: ${+this.get('model.parentCount') * 20 + 5}px;`);
+    return htmlSafe(`padding-left: ${+this.get('model.parentCount') * 20 + 5}px;`);
   }),
 
   isCurrent: computed('currentRoute', 'model.value.name', function() {
@@ -22,6 +26,6 @@ export default Component.extend({
       return false;
     }
 
-    return checkCurrentRoute( currentRoute, this.get('model.value.name') );
+    return checkCurrentRoute(currentRoute, this.get('model.value.name'));
   })
 });

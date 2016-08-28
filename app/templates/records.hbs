@@ -1,14 +1,16 @@
-<div class="list-view">
-  <div class="list-view__header row">
-    {{#each columns as |column|}}
-      <div class="cell cell_type_header" data-label="column-title">{{column.desc}}</div>
-    {{/each}}
+{{#x-list
+  name="record-list"
+  schema=schema
+  storageKey=(concat "record-list-" modelType.name)
+  itemClass="list__row_highlight" as |list|}}
 
-    <!-- Account for scrollbar width :'(  -->
-    <div class="cell cell_type_header spacer"></div>
-  </div>
-
-  <div class="list-view__list-container">
-    {{view "record-list" content=filtered columns=columns}}
-  </div>
-</div>
+  {{#list.vertical-collection content=filtered as |content index|}}
+    {{record-item
+      model=content
+      modelTypeColumns=columns
+      list=list
+      index=index
+      on-click=(action "inspectModel" content)
+    }}
+  {{/list.vertical-collection}}
+{{/x-list}}

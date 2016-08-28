@@ -102,7 +102,7 @@ export default Ember.Object.extend({
     if (replace) {
       this.set('branchLabel', label);
     } else {
-      this.set('branchLabel', this.get('branchLabel') + ' ' + label);
+      this.set('branchLabel', `${this.get('branchLabel')} ${label}`);
     }
 
     let parent = this.get('parent');
@@ -114,11 +114,11 @@ export default Ember.Object.extend({
   branchLabel: '',
 
   matches(val) {
-    return !!this.get('branchLabel').toLowerCase().match(new RegExp('.*' + escapeRegExp(val.toLowerCase()) + '.*'));
+    return !!this.get('branchLabel').toLowerCase().match(new RegExp(`.*${escapeRegExp(val.toLowerCase())}.*`));
   },
 
   matchesExactly(val) {
-    return !!((this.get('label') || '').toLowerCase().match(new RegExp('.*' + escapeRegExp(val.toLowerCase()) + '.*')));
+    return !!((this.get('label') || '').toLowerCase().match(new RegExp(`.*${escapeRegExp(val.toLowerCase())}.*`)));
   },
 
 

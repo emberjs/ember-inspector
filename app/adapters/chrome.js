@@ -64,6 +64,16 @@ export default BasicAdapter.extend({
   },
 
   /**
+   * Open the devtools "Elements" tab and select a specific DOM element.
+   *
+   * @method inspectDOMElement
+   * @param  {String} selector jQuery selector
+   */
+  inspectDOMElement(selector) {
+    chrome.devtools.inspectedWindow.eval(`inspect($('${selector}')[0])`);
+  },
+
+  /**
    * Redirect to the correct inspector version.
    *
    * @method onVersionMismatch

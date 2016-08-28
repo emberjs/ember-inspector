@@ -34,7 +34,7 @@ export default TabRoute.extend({
 
   updateRecords(message) {
     message.records.forEach(record => {
-      const currentRecord = this.get('currentModel').findProperty('objectId', record.objectId);
+      let currentRecord = this.get('currentModel').findBy('objectId', record.objectId);
       if (currentRecord) {
         set(currentRecord, 'columnValues', record.columnValues);
         set(currentRecord, 'filterValues', record.filterValues);
@@ -51,11 +51,5 @@ export default TabRoute.extend({
 
   removeRecords(message) {
     this.get('currentModel').removeAt(message.index, message.count);
-  },
-
-  actions: {
-    inspectModel(model) {
-      this.get('port').send('data:inspectModel', { objectId: Ember.get(model, 'objectId') });
-    }
   }
 });

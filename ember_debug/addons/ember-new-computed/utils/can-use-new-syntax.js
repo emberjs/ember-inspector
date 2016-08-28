@@ -4,8 +4,8 @@ let supportsSetterGetter;
 
 try {
   computed({
-    set: function() { },
-    get: function() { }
+    set() { },
+    get() { }
   });
   supportsSetterGetter = true;
 } catch (e) {

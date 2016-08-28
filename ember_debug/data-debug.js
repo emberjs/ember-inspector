@@ -20,8 +20,10 @@ export default EmberObject.extend(PortMixin, {
     const container = this.get('application').__container__;
 
     // dataAdapter:main is deprecated
-    return (this._resolve('data-adapter:main') && container.lookup('data-adapter:main')) ||
-    (this._resolve('dataAdapter:main') && container.lookup('dataAdapter:main'));
+    let adapter = (this._resolve('data-adapter:main') && container.lookup('data-adapter:main'));
+    // column limit is now supported at the inspector level
+    adapter.set('attributeLimit', 100);
+    return adapter;
   }),
 
   _resolve(name) {
@@ -75,31 +77,23 @@ export default EmberObject.extend(PortMixin, {
       columns: type.columns,
       count: type.count,
       name: type.name,
-      objectId: objectId
+      objectId
     };
   },
 
 
   recordsAdded(recordsReceived) {
-    let records;
-    records = recordsReceived.map(record => this.wrapRecord(record));
-    this.sendMessage('recordsAdded', {
-      records: records
-    });
+    let records = recordsReceived.map(record => this.wrapRecord(record));
+    this.sendMessage('recordsAdded', { records });
   },
 
   recordsUpdated(recordsReceived) {
     let records = recordsReceived.map(record => this.wrapRecord(record));
-    this.sendMessage('recordsUpdated', {
-      records: records
-    });
+    this.sendMessage('recordsUpdated', { records });
   },
 
-  recordsRemoved(idx, count) {
-    this.sendMessage('recordsRemoved', {
-      index: idx,
-      count: count
-    });
+  recordsRemoved(index, count) {
+    this.sendMessage('recordsRemoved', { index, count });
   },
 
   wrapRecord(record) {
@@ -116,11 +110,11 @@ export default EmberObject.extend(PortMixin, {
       (typeof keyword === 'string' || typeof keyword === 'number')
     );
     return {
-      columnValues: columnValues,
-      searchKeywords: searchKeywords,
+      columnValues,
+      searchKeywords,
       filterValues: record.filterValues,
       color: record.color,
-      objectId: objectId
+      objectId
     };
   },
 

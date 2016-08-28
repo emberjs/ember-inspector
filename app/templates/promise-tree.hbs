@@ -1,26 +1,18 @@
 {{#if shouldRefresh}}
   {{partial "page_refresh"}}
 {{else}}
-<div class="list-view" data-label="promise-tree">
-  <div class="list-view__header row">
-    <div class="cell cell_type_header">
-      Label
-    </div>
-    <div class="cell cell_size_medium cell_type_header">
-      State
-    </div>
-    <div class="cell cell_size_large cell_type_header">
-      Fulfillment / Rejection value
-    </div>
-    <div class="cell cell_size_medium cell_value_numeric cell_type_header">
-      Time to settle
-    </div>
-    <!-- Account for scrollbar width :'(  -->
-    <div class="cell cell_type_header spacer"></div>
-  </div>
-
-  <div class="list-view__list-container">
-    {{view "promiseList" content=items}}
-  </div>
-</div>
+  {{#x-list name="promise-tree" schema=(schema-for "promise-tree") class="js-promise-tree" as |list|}}
+    {{#list.vertical-collection content=filtered as |content|}}
+      {{promise-item
+        model=content
+        filter=filter
+        effectiveSearch=effectiveSearch
+        toggleExpand=(action "toggleExpand")
+        tracePromise=(action "tracePromise")
+        inspectObject=(action "inspectObject")
+        sendValueToConsole=(action "sendValueToConsole")
+        list=list
+      }}
+    {{/list.vertical-collection}}
+  {{/x-list}}
 {{/if}}

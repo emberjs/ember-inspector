@@ -5,13 +5,11 @@
 
 .dropdown {
   position: relative;
-  -webkit-flex: auto;
   flex: auto;
 }
 
 .dropdown__select {
   -webkit-appearance: none;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box;
   display: block;
   width: 100%;

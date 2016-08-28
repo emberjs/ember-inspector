@@ -1,29 +1,11 @@
 import Ember from "ember";
-import filterComputed from "ember-inspector/computed/custom-filter";
-const { computed, observer } = Ember;
-const { equal, bool, and, not } = computed;
 
-// Manual implementation of item controllers
-function itemProxyComputed(dependentKey, itemProxy) {
-  let options = {
-    addedItem(array, item, changeMeta) {
-      let proxy = itemProxy.create({ content: item });
-      array.insertAt(changeMeta.index, proxy);
-      return array;
-    },
-    removedItem(array, item, changeMeta) {
-      let proxy = array.objectAt(changeMeta.index);
-      array.removeAt(changeMeta.index, 1);
-      proxy.destroy();
-      return array;
-    }
-  };
+const { Controller, computed, observer, run, inject: { controller }, isEmpty } = Ember;
+const { equal, bool, and, not, filter } = computed;
+const { next, once, debounce } = run;
 
-  return Ember.arrayComputed(dependentKey, options);
-}
-
-export default Ember.ArrayController.extend({
-  needs: ['application'],
+export default Controller.extend({
+  application: controller(),
 
   queryParams: ['filter'],
 
@@ -39,26 +21,9 @@ export default Ember.ArrayController.extend({
   // It is opt-in due to performance reasons.
   instrumentWithStack: false,
 
-  init() {
-    this._super(...arguments);
-    // List-view does not support item controllers
-    this.reopen({
-      items: itemProxyComputed('filtered', this.get('promiseItemController'))
-    });
-  },
-
-  promiseItemController: computed(function() {
-    return this.container.lookupFactory('controller:promise-item');
-  }),
-
   /* jscs:disable validateIndentation */
-  // TODO: This filter can be further optimized
-  filtered: filterComputed(
-    'model.@each.createdAt',
-    'model.@each.fulfilledBranch',
-    'model.@each.rejectedBranch',
-    'model.@each.pendingBranch',
-    'model.@each.isVisible', function(item) {
+  filtered: filter(
+    'model.@each.{createdAt,fulfilledBranch,rejectedBranch,pendingBranch,isVisible}', function(item) {
 
       // exclude cleared promises
       if (this.get('createdAfter') && item.get('createdAt') < this.get('createdAfter')) {
@@ -88,7 +53,7 @@ export default Ember.ArrayController.extend({
       // If they or at least one of their children
       // match the search, then include them
       let search = this.get('effectiveSearch');
-      if (!Ember.isEmpty(search)) {
+      if (!isEmpty(search)) {
         return item.matches(search);
       }
       return true;
@@ -109,34 +74,53 @@ export default Ember.ArrayController.extend({
   effectiveSearch: null,
 
   searchChanged: observer('search', function() {
-    Ember.run.debounce(this, this.notifyChange, 500);
+    debounce(this, this.notifyChange, 500);
   }),
 
   notifyChange() {
-    let self = this;
     this.set('effectiveSearch', this.get('search'));
-    Ember.run.next(function() {
-      self.notifyPropertyChange('model');
+    next(() => {
+      this.notifyPropertyChange('model');
     });
   },
 
   actions: {
     setFilter(filter) {
-      let self = this;
       this.set('filter', filter);
-      Ember.run.next(function() {
-        self.notifyPropertyChange('filtered');
+      next(() => {
+        this.notifyPropertyChange('filtered');
       });
     },
     clear() {
       this.set('createdAfter', new Date());
-      Ember.run.once(this, this.notifyChange);
+      once(this, this.notifyChange);
     },
     tracePromise(promise) {
       this.get('port').send('promise:tracePromise', { promiseId: promise.get('guid') });
     },
-    updateInstrumentWithStack: function(bool) {
+    updateInstrumentWithStack(bool) {
       this.port.send('promise:setInstrumentWithStack', { instrumentWithStack: bool });
+    },
+    toggleExpand(promise) {
+      let isExpanded = !promise.get('isExpanded');
+      promise.set('isManuallyExpanded', isExpanded);
+      promise.recalculateExpanded();
+      let children = promise._allChildren();
+      if (isExpanded) {
+        children.forEach(child => {
+          let isManuallyExpanded = child.get('isManuallyExpanded');
+          if (isManuallyExpanded === undefined) {
+            child.set('isManuallyExpanded', isExpanded);
+            child.recalculateExpanded();
+          }
+        });
+      }
+    },
+    inspectObject() {
+      this.get('target').send('inspectObject', ...arguments);
+    },
+    sendValueToConsole(promise) {
+      this.get('port').send('promise:sendValueToConsole', { promiseId: promise.get('guid') });
     }
   }
 });

@@ -1,30 +1,14 @@
-<div class="list-view">
-  <div class="list-view__header row">
-    <div class="cell cell_type_header cell_size_large">
-      Library
-    </div>
-    <div class="cell cell_type_header">
-      Version
-    </div>
-    <!-- Account for scrollbar width :'(  -->
-    <div class="cell cell_type_header spacer"></div>
-  </div>
-  <div class="list-view__list-container">
-    <div class="list-tree">
-      <div class="ember-list-container">
-        {{#each model as |library|}}
-          <div data-label="library-row" class="list-tree__item-wrapper row-wrapper">
-            <div class="list-tree__item row">
-              <div class="cell_type_main cell cell_size_large">
-                <span data-label="lib-name">{{unbound library.name}}</span>
-              </div>
-              <div class="cell">
-                <span data-label="lib-version">{{unbound library.version}}</span>
-              </div>
-            </div>
-          </div>
-        {{/each}}
-      </div>
-    </div>
-  </div>
-</div>
+{{#x-list name="info-list" schema=(schema-for "info-list") as |list|}}
+  <tbody>
+    {{#each model as |library|}}
+      <tr class="list__row js-library-row">
+        {{#list.cell class="list__cell_main"}}
+          <span class="js-lib-name">{{library.name}}</span>
+        {{/list.cell}}
+        {{#list.cell}}
+          <span class="js-lib-version">{{library.version}}</span>
+        {{/list.cell}}
+      </tr>
+    {{/each}}
+  </tbody>
+{{/x-list}}

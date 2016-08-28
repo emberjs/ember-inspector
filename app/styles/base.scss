@@ -26,12 +26,3 @@ a {
 code {
   font-family: Menlo, Monaco, monospace;
 }
-
-.ember-list-view {
-  overflow: auto !important;
-  overflow-y: scroll !important;
-  position: relative;
-}
-.ember-list-item-view {
-  position: absolute;
-}
