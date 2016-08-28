@@ -19,7 +19,7 @@
   </div>
 {{/if}}
 
-{{#x-list-content contentHeight=contentHeight headerHeight=headerHeight columns=columns as |content|}}
+{{#x-list-content headerHeight=headerHeight columns=columns as |content|}}
   {{yield
     (hash
       cell=(component "x-list-cell" tagName="td")

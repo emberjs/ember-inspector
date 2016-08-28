@@ -67,10 +67,5 @@ export default Controller.extend({
       this.set('mixinDetails', null);
     }
 
-  },
-  actions: {
-    updateContentHeight(height) {
-      this.set('contentHeight', height);
-    }
   }
 });

@@ -5,7 +5,7 @@
     <button class="js-toolbar-page-refresh-btn" {{action "refreshPage"}}>Reload</button>
   </div>
 {{else}}
-  {{#x-list name="render-tree" schema=(schema-for "render-tree") contentHeight=application.contentHeight class="list_no-alternate-color js-render-tree" as |list|}}
+  {{#x-list name="render-tree" schema=(schema-for "render-tree") class="list_no-alternate-color js-render-tree" as |list|}}
     <tbody>
       {{#each filtered as |item|}}
         {{render-item model=item search=search list=list}}

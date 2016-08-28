@@ -1,7 +1,7 @@
 {{#if shouldRefresh}}
   {{partial "page_refresh"}}
 {{else}}
-  {{#x-list name="promise-tree" schema=(schema-for "promise-tree") contentHeight=application.contentHeight class="js-promise-tree" as |list|}}
+  {{#x-list name="promise-tree" schema=(schema-for "promise-tree") class="js-promise-tree" as |list|}}
     {{#list.vertical-collection content=filtered as |content|}}
       {{promise-item
         model=content

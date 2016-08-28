@@ -1,4 +1,4 @@
-{{#x-list name="route-tree" schema=(schema-for "route-tree") contentHeight=application.contentHeight as |list|}}
+{{#x-list name="route-tree" schema=(schema-for "route-tree") as |list|}}
   {{#list.vertical-collection content=filtered as |content|}}
     {{route-item
       model=content
