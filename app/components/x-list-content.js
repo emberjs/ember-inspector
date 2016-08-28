@@ -1,7 +1,8 @@
 import Ember from 'ember';
 
-const { Component, computed, String: { htmlSafe }, Evented, $, run, Object: EmberObject } = Ember;
+const { Component, computed, String: { htmlSafe }, Evented, $, run, Object: EmberObject, inject } = Ember;
 const { schedule } = run;
+const { service } = inject;
 
 /**
  * Base list view config
@@ -12,6 +13,14 @@ const { schedule } = run;
  * @namespace Components
  */
 export default Component.extend(Evented, {
+  /**
+   * The layout service. Used to observe the app's content height.
+   *
+   * @property layoutService
+   * @type {Service}
+   */
+  layoutService: service('layout'),
+
   /**
    * @property classNames
    * @type {Array}
@@ -26,7 +35,39 @@ export default Component.extend(Evented, {
    * @method didInsertElement
    */
   didInsertElement() {
+    schedule('afterRender', this, this.setupHeight);
     schedule('afterRender', this, this.setupEvents);
+  },
+
+  /**
+   * Set up the content height and listen to any updates to that property.
+   *
+   * @method setupHeight
+   */
+  setupHeight() {
+    this.set('contentHeight', this.get('layoutService.contentHeight'));
+    this.get('layoutService').on('content-height-update', this, this.updateContentHeight);
+  },
+
+  /**
+   * Triggered whenever the app's content height changes. This usually happens
+   * when the window is resized. Once we detect a change we:
+   * 1. Update this component's `contentHeight` property and consequently its `height` style.
+   * 2. Check the previous height. If previous height was zero that means the inspector launched
+   * in the background and was therefore not visible. Go to (a). Otherwise skip (a).
+   *   a. Rerender the component. This is needed because smoke and mirrors doesn't know that the content height
+   *   has changed.
+   *
+   * @method updateContentHeight
+   * @param  {Number} height The app's new content height
+   */
+  updateContentHeight(height) {
+    let previousHeight = this.get('contentHeight');
+    this.set('contentHeight', height);
+    if (previousHeight === 0 && height > 0) {
+      this.rerender();
+    }
+
   },
 
   /**
@@ -52,17 +93,6 @@ export default Component.extend(Evented, {
   triggerRowEvent({ type, currentTarget }) {
     this.get('rowEvents').trigger(type, { index: $(currentTarget).index(), type });
   },
-
-  /**
-   * Pass this thought the template.
-   * It's the application controller's  `contentHeight`
-   * property.
-   *
-   * @property contentHeight
-   * @type {Integer}
-   * @default null
-   */
-  contentHeight: null,
 
   attributeBindings: ['style'],
 

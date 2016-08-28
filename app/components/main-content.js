@@ -1,31 +1,55 @@
 import Ember from "ember";
-const { Component, run: { schedule, debounce, cancel }, $ } = Ember;
+const { Component, run: { schedule }, $, inject: { service } } = Ember;
+import { task, timeout } from 'ember-concurrency';
+
 // Currently used to determine the height of list-views
 export default Component.extend({
   /**
-   * Action that indicates this
-   * component's height has changed.
+   * Layout service. We inject it to keep its `contentHeight` property
+   * up-to-date.
    *
-   * @property updateHeight
-   * @type {Function|String}
+   * @property layoutService
+   * @type  {Service} layout
    */
-  updateHeight: null,
+  layoutService: service('layout'),
 
   didInsertElement() {
     $(window).on(`resize.view-${this.get('elementId')}`, () => {
-      this._updateHeightDebounce = debounce(this, '_updateHeight', 200);
+      this.get('updateHeightDebounce').perform();
     });
-    schedule('afterRender', this, '_updateHeight');
+    schedule('afterRender', this, this.updateHeight);
     return this._super(...arguments);
   },
 
-  _updateHeight() {
-    this.sendAction('updateHeight', this.$().height());
+  /**
+   * Restartable Ember Concurrency task that triggers
+   * `updateHeight` after 100ms.
+   *
+   * @property updateHeightDebounce
+   * @type {Object} Ember Concurrency task
+   */
+  updateHeightDebounce: task(function * () {
+    yield timeout(100);
+    this.updateHeight();
+  }).restartable(),
+
+  /**
+   * Update the layout's `contentHeight` property.
+   * This will cause the layout service to trigger
+   * the `content-height-update` event which will update
+   * list heights.
+   *
+   * This is called initially when this component is inserted
+   * and whenever the window is resized.
+   *
+   * @method updateHeight
+   */
+  updateHeight() {
+    this.get('layoutService').updateContentHeight(this.$().height());
   },
 
   willDestroyElement() {
     $(window).off(`.view-${this.get('elementId')}`);
-    cancel(this._updateHeightDebounce);
     return this._super(...arguments);
   }
 });

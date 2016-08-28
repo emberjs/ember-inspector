@@ -165,8 +165,8 @@ export default Component.extend({
    * the table widths need to be recalculated due to some
    * resizing of the window or application.
    *
-   * @method debounceColumnWidths
-   * @type {Function}
+   * @property debounceColumnWidths
+   * @type {Object} Ember Concurrency task
    */
   debounceColumnWidths: task(function * () {
     yield timeout(100);
