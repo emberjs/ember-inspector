@@ -71,7 +71,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
 
   function onEmberReady(callback) {
     var triggered = false;
-    var triggerOnce = function() {
+    var triggerOnce = function(string) {
       if (triggered) { return; }
       if (!window.Ember) { return; }
       // `Ember.Application` load hook triggers before all of Ember is ready.
@@ -80,10 +80,17 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       triggered = true;
       callback();
     };
+
     // Newest Ember versions >= 1.10
     window.addEventListener('Ember', triggerOnce, false);
     // Old Ember versions
-    window.addEventListener('Ember.Application', triggerOnce, false);
+    window.addEventListener('Ember.Application', function() {
+      if (window.Ember && window.Ember.VERSION && compareVersion(window.Ember.VERSION, '1.10.0') === 1) {
+        // Ember >= 1.10 should be handled by `Ember` load hook instead.
+        return;
+      }
+      triggerOnce();
+    }, false);
     // Oldest Ember versions or if this was injected after Ember has loaded.
     onReady(triggerOnce);
   }

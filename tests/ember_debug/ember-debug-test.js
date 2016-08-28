@@ -28,10 +28,9 @@ module("Ember Debug", {
     });
     run(function() {
       setupApp();
-      EmberDebug.set('app', App);
+      EmberDebug.set('application', App);
     });
     run(EmberDebug, 'start');
-    EmberDebug.start();
     EmberInspector = EmberDebug;
     port = EmberDebug.port;
     adapter = EmberDebug.get('port.adapter');

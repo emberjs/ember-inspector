@@ -1,7 +1,7 @@
 import Ember from "ember";
 import RowEventsMixin from 'ember-inspector/mixins/row-events';
 const { computed, Component, String: { htmlSafe } } = Ember;
-const { not, bool } = computed;
+const { not, bool, equal } = computed;
 
 export default Component.extend(RowEventsMixin, {
   /**
@@ -14,8 +14,38 @@ export default Component.extend(RowEventsMixin, {
    */
   tagName: '',
 
-  hasView: not('model.value.isVirtual'),
-  hasElement: not('model.value.isVirtual'),
+  /**
+   * Has a view (component) instance.
+   *
+   * @property hasView
+   * @type {Boolean}
+   */
+  hasView: bool('model.value.viewClass'),
+
+  /**
+   * Whether it has a tag or not.
+   *
+   * @property isTagless
+   * @type {Boolean}
+   */
+  isTagless: equal('model.value.tagName', ''),
+
+  /**
+   * Whether it has an element or not (depends on the tagName).
+   *
+   * @property hasElement
+   * @type {Boolean}
+   */
+  hasElement: not('isTagless'),
+
+  /**
+   * Whether it has a layout/template or not.
+   *
+   * @property hasTemplate
+   * @type {Boolean}
+   */
+  hasTemplate: bool('model.value.template'),
+
   hasModel: bool('model.value.model'),
 
   hasController: bool('model.value.controller'),
@@ -46,12 +76,15 @@ export default Component.extend(RowEventsMixin, {
       }
     },
     inspectElement(objectId) {
+      let elementId;
       if (!objectId && this.get('hasElement')) {
         objectId = this.get('model.value.objectId');
       }
-
-      if (objectId) {
-        this.sendAction('inspectElement', objectId);
+      if (!objectId) {
+        elementId = this.get('model.value.elementId');
+      }
+      if (objectId || elementId) {
+        this.sendAction('inspectElement', { objectId, elementId });
       }
     },
     inspectModel(objectId) {
@@ -60,5 +93,4 @@ export default Component.extend(RowEventsMixin, {
       }
     }
   }
-
 });

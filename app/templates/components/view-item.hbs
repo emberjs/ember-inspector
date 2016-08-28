@@ -3,8 +3,8 @@
     <span title="{{model.value.name}}" class="js-view-name">{{model.value.name}}</span>
   </div>
 {{/list.cell}}
-{{#list.cell class="js-view-template" clickable=hasElement on-click=inspectElement}}
-  <span title="{{model.value.template}}">{{model.value.template}}</span>
+{{#list.cell class="js-view-template" clickable=hasElement on-click=(action "inspectElement")}}
+  <span title="{{model.value.template}}">{{if hasTemplate model.value.template '--'}}</span>
 {{/list.cell}}
 
 {{#list.cell class="js-view-model"}}
