@@ -106,7 +106,7 @@ module.exports = function(defaults) {
   emberDebug = esTranspiler(emberDebug, {
     moduleIds: true,
     modules: 'amdStrict',
-    resolveModuleSource: moduleResolver,
+    resolveModuleSource: moduleResolver
   });
 
   var previousEmberVersionsSupportedString = '[' + packageJson.previousEmberVersionsSupported.map(function(item) {
@@ -148,7 +148,8 @@ module.exports = function(defaults) {
   emberDebug = concatFiles(emberDebug, {
     headerFiles: ['loader.js'],
     inputFiles: ['**/*.js'],
-    outputFile: '/ember_debug.js'
+    outputFile: '/ember_debug.js',
+    sourceMapConfig: { enabled: false }
   });
 
   var emberDebugs = [];
