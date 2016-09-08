@@ -83,6 +83,16 @@ export default Component.extend(Evented, {
   },
 
   /**
+   * Hook called before destruction. Clean up events listeners.
+   *
+   * @method willDestroyElement
+   */
+  willDestroyElement() {
+    this.get('layoutService').off('content-height-update', this, this.updateContentHeight);
+    return this._super(...arguments);
+  },
+
+  /**
    * Broadcasts that an event was triggered on a row.
    *
    * @method triggerRowEvent
