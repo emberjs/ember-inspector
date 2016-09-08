@@ -326,7 +326,7 @@ export default class {
    */
   elementForRoot() {
     let renderer = this.container.lookup('renderer:-dom');
-    return renderer._result && renderer._result.firstNode();
+    return renderer._roots && renderer._roots[0] && renderer._roots[0].result && renderer._roots[0].result.firstNode();
   }
 
   /**
