@@ -58,7 +58,7 @@ function modelTypes() {
     modelTypeFactory({
       name: 'App.Comment',
       count: 1,
-      columns: [{ name: 'id', desc: 'Id' }, { name: 'title', desc: 'Title' }, { name: 'body', desc: 'Body' }]
+      columns: [{ name: 'id', desc: 'Id' }, { name: 'title', desc: 'Title' }, { name: 'content', desc: 'Content' }]
     })
   ];
 }
@@ -86,7 +86,7 @@ function records(type) {
     ];
   } else if (type === 'App.Comment') {
     return [
-      recordFactory({ id: 2, title: 'I am confused', body: 'I have no idea what im doing' })
+      recordFactory({ id: 2, title: 'I am confused', content: 'I have no idea what im doing' })
     ];
   }
 }
@@ -109,7 +109,6 @@ test("Model types are successfully listed and bound", async function t(assert) {
   });
   assert.equal(find('.js-model-type-count').eq(1).text().trim(), 3);
 });
-
 
 test("Records are successfully listed and bound", async function t(assert) {
   await visit('/data/model-types');
@@ -204,4 +203,11 @@ test("Searching records", async function t(assert) {
 
   rows = find('.js-record-list-item');
   assert.equal(rows.length, 2);
+});
+
+test("Columns successfully updated when switching model types", async function t(assert) {
+  await visit('/data/model-types/App.Post/records');
+  assert.equal(find('.js-header-column:last').text().trim(), 'Body');
+  await visit('/data/model-types/App.Comment/records');
+  assert.equal(find('.js-header-column:last').text().trim(), 'Content');
 });

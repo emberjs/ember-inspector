@@ -88,6 +88,23 @@ export default Component.extend({
   columns: readOnly('resizableColumns.columns'),
 
   /**
+   * Hook called whenever attributes are updated.
+   * We use this to listen to changes to the schema.
+   * If the schema changes for an existing `x-list` component
+   * (happens when switching model types for example), we need
+   * to rebuild the columns from scratch.
+   *
+   * @method didUpdateAttrs
+   * @param  {Object} newAttrs and oldAttrs
+   */
+  didUpdateAttrs({ newAttrs: { schema: newSchema }, oldAttrs: { schema: oldSchema } }) {
+    if (newSchema && newSchema !== oldSchema) {
+      scheduleOnce('actions', this, this.setupColumns);
+    }
+    return this._super(...arguments);
+  },
+
+  /**
    * The instance responsible for building the `columns`
    * array. This means that this instance controls
    * the widths of the columns as well as their visibility.
