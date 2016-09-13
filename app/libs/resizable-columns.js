@@ -21,17 +21,17 @@ export default class {
    *  - {String} key Used as key for local storage caching
    *  - {Number} tableWidth The table's width used for width calculations
    *  - {Number} minWidth The minimum width a column can reach
-   *  - {Service} localStorage The local storage service that manages caching
+   *  - {Service} storage The local storage service that manages caching
    *  - {Array} columnSchema Contains the list of columns. Each column object should contain:
    *    - {String} id The column's unique identifier
    *    - {String} name The column's name
    *    - {Boolean} visible The column's default visibility
    */
-  constructor({ key, tableWidth = 0, minWidth = 10, localStorage, columnSchema }) {
+  constructor({ key, tableWidth = 0, minWidth = 10, storage, columnSchema }) {
     this.tableWidth = tableWidth;
     this.minWidth = minWidth;
     this.key = key;
-    this.localStorage = localStorage;
+    this.storage = storage;
     this.columnSchema = columnSchema;
     this.setupCache();
   }
@@ -60,9 +60,9 @@ export default class {
    * @method setCacheTimestamp
    */
   setCacheTimestamp() {
-    let saved = this.localStorage.getItem(this.getStorageKey()) || {};
+    let saved = this.storage.getItem(this.getStorageKey()) || {};
     saved.updatedAt = Date.now();
-    this.localStorage.setItem(this.getStorageKey(), saved);
+    this.storage.setItem(this.getStorageKey(), saved);
   }
 
   /**
@@ -77,13 +77,13 @@ export default class {
    * @method clearInvalidCache
    */
   clearInvalidCache() {
-    let saved = this.localStorage.getItem(this.getStorageKey());
+    let saved = this.storage.getItem(this.getStorageKey());
     if (saved && saved.columnVisibility) {
       let savedIds = keys(saved.columnVisibility).sort();
       let schemaIds = this.columnSchema.mapBy('id').sort();
       if (!compareArrays(savedIds, schemaIds)) {
         // Clear saved items
-        this.localStorage.removeItem(this.getStorageKey());
+        this.storage.removeItem(this.getStorageKey());
       }
     }
   }
@@ -99,10 +99,10 @@ export default class {
    */
   clearExpiredCache() {
     let now = Date.now();
-    this.localStorage.keys().filter(key => key.match(/^x-list/))
+    this.storage.keys().filter(key => key.match(/^x-list/))
     .forEach(key => {
-      if (now - this.localStorage.getItem(key).updatedAt > THIRTY_DAYS_FROM_NOW) {
-        this.localStorage.removeItem(key);
+      if (now - this.storage.getItem(key).updatedAt > THIRTY_DAYS_FROM_NOW) {
+        this.storage.removeItem(key);
       }
     });
   }
@@ -158,7 +158,7 @@ export default class {
    * @return {Boolean}
    */
   isColumnVisible(id) {
-    let saved = this.localStorage.getItem(this.getStorageKey()) || {};
+    let saved = this.storage.getItem(this.getStorageKey()) || {};
     if (saved.columnVisibility && !isNone(saved.columnVisibility[id])) {
       return saved.columnVisibility[id];
     }
@@ -304,12 +304,12 @@ export default class {
    * @method saveVisibility
    */
   saveVisibility() {
-    let saved = this.localStorage.getItem(this.getStorageKey()) || {};
+    let saved = this.storage.getItem(this.getStorageKey()) || {};
     saved.columnVisibility = this._columnVisibility.reduce((obj, { id, visible }) => {
       obj[id] = visible;
       return obj;
     }, {});
-    this.localStorage.setItem(this.getStorageKey(), saved);
+    this.storage.setItem(this.getStorageKey(), saved);
   }
 
   /**
@@ -319,9 +319,9 @@ export default class {
    * @method resetWidths
    */
   resetWidths() {
-    let saved = this.localStorage.getItem(this.getStorageKey()) || {};
+    let saved = this.storage.getItem(this.getStorageKey()) || {};
     delete saved.columnWidths;
-    this.localStorage.setItem(this.getStorageKey(), saved);
+    this.storage.setItem(this.getStorageKey(), saved);
     this.build();
   }
 
@@ -340,9 +340,9 @@ export default class {
     this._columns.forEach(({ id, width }) => {
       columns[id] = width / totalWidth;
     });
-    let saved = this.localStorage.getItem(this.getStorageKey()) || {};
+    let saved = this.storage.getItem(this.getStorageKey()) || {};
     saved.columnWidths = columns;
-    this.localStorage.setItem(this.getStorageKey(), saved);
+    this.storage.setItem(this.getStorageKey(), saved);
   }
 
   /**
@@ -363,7 +363,7 @@ export default class {
    * @return {Number}    The cached percentage
    */
   getSavedPercentage(id) {
-    let saved = this.localStorage.getItem(this.getStorageKey()) || {};
+    let saved = this.storage.getItem(this.getStorageKey()) || {};
     return saved.columnWidths && saved.columnWidths[id];
   }
 }
