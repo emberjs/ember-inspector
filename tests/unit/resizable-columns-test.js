@@ -9,7 +9,7 @@ function getOptions() {
     key: 'my-key',
     tableWidth: 30,
     minWidth: 5,
-    localStorage: {
+    storage: {
       setItem(key, value) {
         storage[key] = value;
       },
@@ -106,8 +106,8 @@ test('updates the width correctly', function(assert) {
 test('uses the correct cache key', function(assert) {
   let resizableColumns = new ResizableColumns(this.options);
   resizableColumns.build();
-  assert.equal(this.options.localStorage.keys().length, 1, "Only uses one key");
-  assert.equal(this.options.localStorage.keys()[0], 'x-list__my-key', "Uses the correct key");
+  assert.equal(this.options.storage.keys().length, 1, "Only uses one key");
+  assert.equal(this.options.storage.keys()[0], 'x-list__my-key', "Uses the correct key");
 });
 
 test('shows/hides the correct columns', function(assert) {
@@ -135,7 +135,7 @@ test('shows/hides the correct columns', function(assert) {
 
 test("resets cache correctly if schema doesn't match cache", function(assert) {
   assert.expect(1);
-  this.options.localStorage.removeItem = (key) => {
+  this.options.storage.removeItem = (key) => {
     assert.equal(key, 'x-list__my-key', "cache was cleared");
   };
   let resizableColumns = new ResizableColumns(this.options);
@@ -153,7 +153,7 @@ test("clears expired cache", function(assert) {
   let sixtyDaysAgo = 1000 * 60 * 60 * 24 * 30 * 2;
   storage['x-list__my-key'] = { updatedAt: Date.now() - sixtyDaysAgo };
   assert.expect(1);
-  this.options.localStorage.removeItem = (key) => {
+  this.options.storage.removeItem = (key) => {
     assert.equal(key, 'x-list__my-key', "cache was cleared");
   };
   let resizableColumns = new ResizableColumns(this.options);
