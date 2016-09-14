@@ -2,19 +2,20 @@
  * Service that manages local storage. This service is useful because
  * it abstracts serialization and parsing of json.
  *
- * @class LocalStorage
+ * @class Local
  * @extends Service
  */
 import Ember from 'ember';
 const { Service, isNone } = Ember;
 const { parse, stringify } = JSON;
+
 export default Service.extend({
   /**
    * Reads a stored json string and parses it to
    * and object.
    *
    * @method getItem
-   * @param  {Stirng} key The cache key
+   * @param  {String} key The cache key
    * @return {Object}     The json value
    */
   getItem(key) {

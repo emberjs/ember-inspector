@@ -7,9 +7,20 @@ const { service } = inject;
 const { readOnly, reads } = computed;
 
 const CHECK_HTML = '&#10003;';
+let LOCAL_STORAGE_SUPPORTED;
+try {
+  LOCAL_STORAGE_SUPPORTED = !!window.localStorage;
+} catch (e) {
+  // Security setting in chrome that disables storage for third party
+  // throws an error when `localStorage` is accessed.
+  LOCAL_STORAGE_SUPPORTED = false;
+}
 
 export default Component.extend({
-
+  /**
+   * @property classNames
+   * @type {Array}
+   */
   classNames: ['list'],
 
   /**
@@ -51,13 +62,16 @@ export default Component.extend({
   name: null,
 
   /**
-   * Service used for local storage. Local storage is
+   * Service used for storage. Storage is
    * needed for caching of widths and visibility of columns.
+   * The default storage service is local storage however we
+   * fall back to memory storage if local storage is disabled (For
+   * example as a security setting in Chrome).
    *
-   * @property localStorage
+   * @property storage
    * @return {Service}
    */
-  localStorage: service(),
+  storage: service(`storage/${LOCAL_STORAGE_SUPPORTED ? 'local' : 'memory'}`),
 
   /**
    * The key used to cache the current schema. Defaults
@@ -224,7 +238,7 @@ export default Component.extend({
       key: this.get('storageKey'),
       tableWidth: this.getTableWidth(),
       minWidth: this.get('minWidth'),
-      localStorage: this.get('localStorage'),
+      storage: this.get('storage'),
       columnSchema: this.get('schema.columns') || []
     });
     resizableColumns.build();
