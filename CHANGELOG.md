@@ -1,5 +1,35 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 2.0.2
+
+* [BUGFIX] Rebuild columns when schema changes [#589](https://github.com/emberjs/ember-inspector/pull/589)
+* [BUGFIX] Update to new way to get the root element in Glimmer [#588](https://github.com/emberjs/ember-inspector/pull/588)
+
+## Ember Inspector 2.0.1
+
+* [BUGFIX] Disable source map for ember_debug.js [#583](https://github.com/emberjs/ember-inspector/pull/583)
+
+## Ember Inspector 2.0.0
+
+* [FEATURE] Added the ability to resize and toggle columns [#574](https://github.com/emberjs/ember-inspector/pull/574)
+* [IMPROVEMENT] Added Glimmer 2 support [#579](https://github.com/emberjs/ember-inspector/pull/579)
+* [IMPROVEMENT] Current route only checkbox persists between refreshes now [#568](https://github.com/emberjs/ember-inspector/pull/568)
+* [DOC] Fix typo in install instructions [#576](https://github.com/emberjs/ember-inspector/pull/576)
+* [DOC] Remove `grunt version` command from README [#540](https://github.com/emberjs/ember-inspector/pull/540)
+* [BUGFIX] The bookmarklet's `load_inspector.js` should not include ES6 [#546](https://github.com/emberjs/ember-inspector/pull/546)
+* [BUGFIX] Fix deprecated `window.postMessage` usage [#555](https://github.com/emberjs/ember-inspector/pull/555)
+* [INTERNAL] Upgrade Ember 1.12 -> Ember and Ember CLI 2.6 [#563](https://github.com/emberjs/ember-inspector/pull/563)
+* [INTERNAL] Use smoke-and-mirrors for lazy rendering [#563](https://github.com/emberjs/ember-inspector/pull/563)
+* [INTERNAL] Replace obsolete Broccoli plugins with "broccoli-funnel" [#571](https://github.com/emberjs/ember-inspector/pull/571)
+* [INTERNAL] Update ESLint and enable more rules [#572](https://github.com/emberjs/ember-inspector/pull/572)
+* [INTERNAL] Update build dependencies [#573](https://github.com/emberjs/ember-inspector/pull/573) [#578](https://github.com/emberjs/ember-inspector/pull/578)
+* [INTERNAL] Remove `list-view` in order to upgrade Ember [#543](https://github.com/emberjs/ember-inspector/pull/543)
+* [INTERNAL] Remove `dist-config.js` from index files [#542](https://github.com/emberjs/ember-inspector/pull/542)
+* [INTERNAL] Lock down jQuery version [#512](https://github.com/emberjs/ember-inspector/pull/512)
+* [INTERNAL] Upgrade babel-eslint [#515](https://github.com/emberjs/ember-inspector/pull/515)
+* [INTERNAL] remove duplicate key from eslintrc [#517](https://github.com/emberjs/ember-inspector/pull/517)
+* [INTERNAL] Port Gruntfile tasks to `grunt-jpm` to build a valid xpi for Firefox [#519](https://github.com/emberjs/ember-inspector/pull/519)
+
 ## Ember Inspector 1.10.0
 
 * [IMPROVEMENT] Add [DEV] to the tab name for the inspector development version [#527](https://github.com/emberjs/ember-inspector/pull/527)
