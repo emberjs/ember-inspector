@@ -8,8 +8,9 @@
 import Ember from 'ember';
 const { Service, isNone } = Ember;
 const { parse, stringify } = JSON;
+let LOCAL_STORAGE_SUPPORTED;
 
-export default Service.extend({
+const LocalStorage = Service.extend({
   /**
    * Reads a stored json string and parses it to
    * and object.
@@ -62,3 +63,26 @@ export default Service.extend({
     return keys;
   }
 });
+
+try {
+  localStorage.setItem('test', 0);
+  localStorage.removeItem('test');
+  LOCAL_STORAGE_SUPPORTED = true;
+} catch (e) {
+  // Security setting in chrome that disables storage for third party
+  // throws an error when `localStorage` is accessed. Safari in Private mode
+  // also throws an error.
+  LOCAL_STORAGE_SUPPORTED = false;
+}
+
+LocalStorage.reopenClass({
+  /**
+   * Checks if `localStorage` is supported.
+   *
+   * @property SUPPORTED
+   * @type {Boolean}
+   */
+  SUPPORTED: LOCAL_STORAGE_SUPPORTED
+});
+
+export default LocalStorage;
