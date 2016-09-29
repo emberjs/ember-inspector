@@ -1,0 +1,31 @@
+.warning {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  background: #FFFEC2;
+  font-size: 11px;
+  padding: 0;
+}
+
+.warning__image {
+  display: inline;
+  max-width:15px;
+  max-height:15px;
+  margin: 5px;
+}
+
+.warning__text {
+  margin: 5px 0;
+  padding: 0;
+}
+
+.warning__close {
+  font-weight: 200;
+  color: #6E68C6;
+  text-decoration: underline;
+  background: #FFFEC2;
+  border: hidden;
+  cursor: pointer;
+  padding: 0;
+  margin: 5px 10px 5px auto;
+}

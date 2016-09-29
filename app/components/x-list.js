@@ -1,20 +1,14 @@
 import Ember from 'ember';
 import { task, timeout } from 'ember-concurrency';
 import ResizableColumns from 'ember-inspector/libs/resizable-columns';
+import LocalStorageService from "ember-inspector/services/storage/local";
+
 const { Component, run, computed, inject, $ } = Ember;
 const { scheduleOnce } = run;
 const { service } = inject;
 const { readOnly, reads } = computed;
 
 const CHECK_HTML = '&#10003;';
-let LOCAL_STORAGE_SUPPORTED;
-try {
-  LOCAL_STORAGE_SUPPORTED = !!window.localStorage;
-} catch (e) {
-  // Security setting in chrome that disables storage for third party
-  // throws an error when `localStorage` is accessed.
-  LOCAL_STORAGE_SUPPORTED = false;
-}
 
 export default Component.extend({
   /**
@@ -71,7 +65,7 @@ export default Component.extend({
    * @property storage
    * @return {Service}
    */
-  storage: service(`storage/${LOCAL_STORAGE_SUPPORTED ? 'local' : 'memory'}`),
+  storage: service(`storage/${LocalStorageService.SUPPORTED ? 'local' : 'memory'}`),
 
   /**
    * The key used to cache the current schema. Defaults
