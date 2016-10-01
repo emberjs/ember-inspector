@@ -139,11 +139,10 @@ export default class {
    * @return {Object}  Tree of inspected outlets
    */
   buildOutletTree() {
-    let root = this.getRoot();
-    let outletTree = this.makeOutletTree(root.outletState);
+    let outletTree = this.makeOutletTree(this.getApplicationOutlet());
 
     // set root element's id
-    let rootElement = this.elementForRoot(root);
+    let rootElement = this.elementForRoot();
     outletTree.value.elementId = rootElement.getAttribute('id');
     outletTree.value.tagName = 'div';
 
@@ -238,8 +237,6 @@ export default class {
   /**
    * Given a component, return its children.
    *
-   * TODO: Update to use the correct Ember API
-   *
    * @method childComponents
    * @param  {Component} component The parent component
    * @return {Array}  Array of components (children)
@@ -250,7 +247,6 @@ export default class {
 
   /**
    * Get the top level components.
-   * TODO: Update to use correct Ember API.
    *
    * @method topComponents
    * @return {Array}  Array of components
@@ -318,6 +314,15 @@ export default class {
   }
 
   /**
+   * Returns the application (top) outlet.
+   *
+   * @return {Object} The application outlet state
+   */
+  getApplicationOutlet() {
+    return this.getRoot().outletState.outlets.main;
+  }
+
+  /**
    * The root's DOM element. The root is the only outlet view
    * with a DOM element.
    *
@@ -367,7 +372,6 @@ export default class {
     let name = this.nameForOutlet(outlet);
     let template = this.templateForOutlet(outlet);
     let controller = this.controllerForOutlet(outlet);
-
     let value = {
       controller: this.inspectController(controller),
       template,
@@ -479,7 +483,7 @@ export default class {
    * @return {String}        The layout's name
    */
   nameFromLayout(layout) {
-    let moduleName = layout && get(layout, '_layout.meta.moduleName');
+    let moduleName = layout && get(layout, 'meta.moduleName');
     if (moduleName) {
       return moduleName.replace(/\.hbs$/, '');
     }
@@ -598,8 +602,8 @@ export default class {
    * @param  {Boolean} isPreview
    */
   highlightRoot(isPreview = false) {
-    let root = this.getRoot();
-    let element = this.elementForRoot(root);
+    let applicationOutlet = this.getApplicationOutlet();
+    let element = this.elementForRoot();
 
     if (!element) { return; }
 
@@ -607,11 +611,11 @@ export default class {
       isPreview,
       element,
       template: {
-        name: this.templateForOutlet(root.outletState)
+        name: this.templateForOutlet(applicationOutlet)
       }
     };
 
-    let controller = this.controllerForOutlet(root.outletState);
+    let controller = this.controllerForOutlet(applicationOutlet);
     if (controller) {
       options.controller = {
         name: getControllerName(controller),
@@ -688,7 +692,7 @@ export default class {
    * @return {Boolean}
    */
   isRootElement(element) {
-    return this.elementForRoot(this.getRoot()) === element;
+    return this.elementForRoot() === element;
   }
 
   /**
