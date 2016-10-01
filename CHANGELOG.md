@@ -1,5 +1,10 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 2.0.3
+
+* [BUGFIX] Fall back to memory caching if local storage is inaccessible [#592](https://github.com/emberjs/ember-inspector/pull/592)
+* [BUGFIX] Update outlet and template Glimmer code to match 2.9.beta-3  [#607](https://github.com/emberjs/ember-inspector/pull/607)
+
 ## Ember Inspector 2.0.2
 
 * [BUGFIX] Rebuild columns when schema changes [#589](https://github.com/emberjs/ember-inspector/pull/589)
