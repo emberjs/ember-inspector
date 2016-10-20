@@ -224,6 +224,10 @@ export default class {
     let arr = [];
     components.forEach(component => {
       let currentController = this.controllerForComponent(component);
+      if (!currentController) {
+        return;
+      }
+
       let children = this.componentsForController(this.childComponents(component), controller);
       if (currentController === controller) {
         arr.push({ value: this.inspectComponent(component), children });
@@ -534,6 +538,10 @@ export default class {
    */
   controllerForComponent(component) {
     let controller = component.get('_targetObject');
+    if (!controller) {
+      return null;
+    }
+
     if (controller instanceof Controller) {
       return controller;
     } else {
