@@ -1,5 +1,10 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 2.0.4
+
+* [BUGFIX] Account for components that are appended manually [#610](https://github.com/emberjs/ember-inspector/pull/610)
+* [BUGFIX] Only list sub-routes if they are defined [#612](https://github.com/emberjs/ember-inspector/pull/612)
+
 ## Ember Inspector 2.0.3
 
 * [BUGFIX] Fall back to memory caching if local storage is inaccessible [#592](https://github.com/emberjs/ember-inspector/pull/592)
