@@ -1,6 +1,6 @@
 import Ember from "ember";
 import { module, test } from 'qunit';
-const { run, Application } = Ember;
+const { run, Application, Route } = Ember;
 const get = Ember.get;
 
 /* globals require */
@@ -22,6 +22,8 @@ function setupApp() {
       this.route('edit', { path: '/edit/:comment_id' });
     });
   });
+
+  App.LoadingRoute = App.ErrorRoute = Route;
 }
 
 function getChildrenProperty(route, prop) {
@@ -84,16 +86,16 @@ test("Route tree", async function t(assert) {
 
   assert.ok(commentsRoute, 'expected comment steps');
 
-  assert.equal(commentsRoute.children.length, 5);
+  assert.equal(commentsRoute.children.length, 3);
   assert.equal(commentsRoute.value.type, 'resource');
   assert.equal(commentsRoute.value.controller.className, 'CommentsController');
   assert.equal(commentsRoute.value.routeHandler.className, 'CommentsRoute');
 
-  assert.deepEqual(getChildrenProperty(commentsRoute, 'name'), ['comments.loading', 'comments.error', 'comments.new', 'comments.edit', 'comments.index']);
+  assert.deepEqual(getChildrenProperty(commentsRoute, 'name'), ['comments.new', 'comments.edit', 'comments.index']);
 
-  assert.deepEqual(getChildrenProperty(commentsRoute, 'url'), ['/comments/loading', '', '/comments/new', '/comments/edit/:comment_id', '/comments']);
-  assert.deepEqual(getChildrenProperty(commentsRoute, 'type'), ['route', 'route', 'route', 'route', 'route']);
-  assert.deepEqual(getChildrenProperty(commentsRoute, 'controller.className'), ['CommentsLoadingController', 'CommentsErrorController', 'CommentsNewController', 'CommentsEditController', 'CommentsIndexController']);
-  assert.deepEqual(getChildrenProperty(commentsRoute, 'routeHandler.className'), ['CommentsLoadingRoute', 'CommentsErrorRoute', 'CommentsNewRoute', 'CommentsEditRoute', 'CommentsIndexRoute']);
-  assert.deepEqual(getChildrenProperty(commentsRoute, 'template.name'), ['comments/loading', 'comments/error', 'comments/new', 'comments/edit', 'comments/index']);
+  assert.deepEqual(getChildrenProperty(commentsRoute, 'url'), ['/comments/new', '/comments/edit/:comment_id', '/comments']);
+  assert.deepEqual(getChildrenProperty(commentsRoute, 'type'), ['route', 'route', 'route']);
+  assert.deepEqual(getChildrenProperty(commentsRoute, 'controller.className'), ['CommentsNewController', 'CommentsEditController', 'CommentsIndexController']);
+  assert.deepEqual(getChildrenProperty(commentsRoute, 'routeHandler.className'), ['CommentsNewRoute', 'CommentsEditRoute', 'CommentsIndexRoute']);
+  assert.deepEqual(getChildrenProperty(commentsRoute, 'template.name'), ['comments/new', 'comments/edit', 'comments/index']);
 });
