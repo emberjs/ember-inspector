@@ -1,7 +1,7 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 
 const Ember = window.Ember;
-const { String: { classify, dasherize }, computed, observer, run: { later }, Object: EmberObject } = Ember;
+const { String: { classify, dasherize }, computed, observer, run: { later }, Object: EmberObject, getOwner } = Ember;
 const { oneWay } = computed;
 
 export default EmberObject.extend(PortMixin, {
@@ -116,6 +116,7 @@ export default EmberObject.extend(PortMixin, {
 function buildSubTree(routeTree, route) {
   let handlers = route.handlers;
   let container = this.get('application.__container__');
+  let owner = getOwner(this.get('router'));
   let subTree = routeTree;
   let item, routeClassName, routeHandler, controllerName,
       controllerClassName, templateName, controllerFactory;
@@ -123,6 +124,14 @@ function buildSubTree(routeTree, route) {
   for (let i = 0; i < handlers.length; i++) {
     item = handlers[i];
     let handler = item.handler;
+    if (handler.match(/(loading|error)$/)) {
+      // make sure it has been defined before calling `getHandler` because
+      // we don't want to generate sub routes as this has side-effects.
+      if (!routeHasBeenDefined(owner, handler)) {
+        continue;
+      }
+    }
+
     if (subTree[handler] === undefined) {
       routeClassName = this.getClassName(handler, 'route');
 
@@ -159,7 +168,6 @@ function buildSubTree(routeTree, route) {
         subTree[handler].children = {};
         subTree[handler].value.type = 'resource';
       }
-
     }
     subTree = subTree[handler].children;
   }
@@ -211,4 +219,9 @@ function getURL(container, segments) {
   }
 
   return url;
+}
+
+
+function routeHasBeenDefined(owner, name) {
+  return owner.hasRegistration(`template:${name}`) || owner.hasRegistration(`route:${name}`);
 }
