@@ -207,7 +207,11 @@ export default EmberObject.extend(PortMixin, {
     if (value instanceof Error) {
       value = value.stack;
     }
-    this.get("adapter").log('Ember Inspector ($E): ', value);
+    let args = [value];
+    if (value instanceof EmberObject) {
+      args.unshift(inspect(value));
+    }
+    this.get("adapter").log('Ember Inspector ($E): ', ...args);
   },
 
   digIntoObject(objectId, property) {
