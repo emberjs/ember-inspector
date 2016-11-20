@@ -37,9 +37,9 @@ module("Promise Debug", {
     EmberDebug.get('promiseDebug').reopen({
       delay: 5,
       session: {
-        getItem: Ember.K,
-        setItem: Ember.K,
-        removeItem: Ember.K
+        getItem() {},
+        setItem() {},
+        removeItem() {}
       }
     });
     port = EmberDebug.port;

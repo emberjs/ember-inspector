@@ -9,7 +9,7 @@ let fakeRSVP;
 
 function stubRSVP() {
   fakeRSVP = Ember.Object.extend(Ember.Evented, {
-    configure: Ember.K
+    configure() {}
   }).create();
 }
 
