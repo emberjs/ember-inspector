@@ -7,7 +7,7 @@
  * to events on `rowEvents`.
  */
 import Ember from 'ember';
-const { Mixin, assert, isNone, computed: { readOnly }, K } = Ember;
+const { Mixin, assert, isNone, computed: { readOnly } } = Ember;
 
 export default Mixin.create({
   /**
@@ -25,27 +25,24 @@ export default Mixin.create({
    *
    * @property on-click
    * @type {Function}
-   * @default Ember.K
    */
-  'on-click': K,
+  'on-click'() {},
 
   /**
    * Action to trigger when a row mouseenter event is triggered.
    *
    * @property on-mouseenter
    * @type {Function}
-   * @default Ember.K
    */
-  'on-mouseenter': K,
+  'on-mouseenter'() {},
 
   /**
    * Action to trigger when a row mouseleave event is triggered.
    *
    * @property on-mouseleave
    * @type {Function}
-   * @default Ember.K
    */
-  'on-mouseleave': K,
+  'on-mouseleave'() {},
 
   /**
    * An alias to the list's `rowEvents` property.
