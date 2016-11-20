@@ -1,5 +1,7 @@
 import Ember from "ember";
-const { computed, String: { htmlSafe }, K } = Ember;
+
+const { computed, String: { htmlSafe } } = Ember;
+
 export default Ember.Component.extend({
   classNames: ['drag-handle'],
   classNameBindings: ['isLeft:drag-handle--left', 'isRight:drag-handle--right', 'faded:drag-handle--faded'],
@@ -43,9 +45,8 @@ export default Ember.Component.extend({
    *
    * @property on-drag
    * @type {Function}
-   * @default Ember.K
    */
-  'on-drag': K,
+  'on-drag'() {},
 
   startDragging() {
     let $container = this.$().parent();
