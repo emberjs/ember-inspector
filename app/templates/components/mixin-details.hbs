@@ -25,7 +25,7 @@
       {{/if}}
       {{#if mixin.isExpanded}}
         <ul class="mixin__properties">
-          {{#each mixin.model.properties as |prop|}}
+          {{#each mixin.sortedProperties as |prop|}}
             {{#mixin-property model=prop mixin=mixin as |property|}}
               <li class="{{if property.model.overridden 'mixin__property_state_overridden'}} mixin__property js-object-property">
                 {{#if property.model.value.computed}}
