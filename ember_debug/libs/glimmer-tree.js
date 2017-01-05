@@ -167,7 +167,11 @@ export default class {
     let { render: { controller }, outlets } = outletState;
     let node = { value: this.inspectOutlet(outletState), controller, children: [] };
     for (let key in outlets) {
-      node.children.push(this.makeOutletTree(outlets[key]));
+      // disconnectOutlet() resets the controller value as undefined (https://github.com/emberjs/ember.js/blob/v2.6.2/packages/ember-routing/lib/system/route.js#L2048).
+      // So skip building the tree, if the outletState doesn't have a controller.
+      if (this.controllerForOutlet(outlets[key])) {
+        node.children.push(this.makeOutletTree(outlets[key]));
+      }
     }
     return node;
   }
