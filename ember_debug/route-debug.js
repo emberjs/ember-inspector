@@ -4,6 +4,8 @@ const Ember = window.Ember;
 const { String: { classify, dasherize }, computed, observer, run: { later }, Object: EmberObject, getOwner } = Ember;
 const { oneWay } = computed;
 
+const { hasOwnProperty } = Object.prototype;
+
 export default EmberObject.extend(PortMixin, {
   namespace: null,
   port: oneWay('namespace.port').readOnly(),
@@ -45,7 +47,7 @@ export default EmberObject.extend(PortMixin, {
     let routeTree = {};
 
     for (let routeName in routeNames) {
-      if (!routeNames.hasOwnProperty(routeName)) {
+      if (!hasOwnProperty.call(routeNames, routeName)) {
         continue;
       }
       let route = routeNames[routeName];
