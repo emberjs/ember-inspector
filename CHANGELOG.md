@@ -1,5 +1,12 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 2.0.5
+
+* [BUGFIX] Avoid errors when `router.router.recognizer.names` is an `Object.create(null)` [#635](https://github.com/emberjs/ember-inspector/pull/635)
+* [IMPROVEMENT] `$E` now also prints the name of object sent to console [#614](https://github.com/emberjs/ember-inspector/pull/614)
+* [INTERNAL] Remove `Ember.K` [#617](https://github.com/emberjs/ember-inspector/pull/617)
+
+
 ## Ember Inspector 2.0.4
 
 * [BUGFIX] Account for components that are appended manually [#610](https://github.com/emberjs/ember-inspector/pull/610)
