@@ -41,7 +41,7 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `npm install`
+- run `npm install && bower install`
 - run `npm install -g ember-cli`
 - run `npm run build` to build the `dist` directory
 - Visit chrome://extensions in chrome
