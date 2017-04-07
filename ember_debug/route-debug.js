@@ -139,7 +139,7 @@ function buildSubTree(routeTree, route) {
 
       routeHandler = container.lookup('router:main').router.getHandler(handler);
       controllerName = routeHandler.get('controllerName') || routeHandler.get('routeName');
-      controllerFactory = container.lookupFactory(`controller:${controllerName}`);
+      controllerFactory = owner.factoryFor ? owner.factoryFor(`controller:${controllerName}`) : container.lookupFactory(`controller:${controllerName}`);
       controllerClassName = this.getClassName(controllerName, 'controller');
       templateName = this.getClassName(handler, 'template');
 
