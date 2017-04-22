@@ -30,7 +30,7 @@
       "19": "{{PANE_ROOT}}/assets/images/icon19.png",
       "38": "{{PANE_ROOT}}/assets/images/icon38.png"
     },
-    "default_title": "This webpage is running Ember.js"
+    "default_title": "This webpage is not running Ember.js"
   },
   "web_accessible_resources": [
     "scripts/in-page-script.js"
