@@ -43,7 +43,9 @@ export default EmberObject.extend(PortMixin, {
   }),
 
   routeTree: computed('router', function() {
-    let routeNames = this.get('router.router.recognizer.names');
+    const router = this.get('router');
+    const routerLib = router._routerMicrolib || router.router;
+    let routeNames = routerLib.recognizer.names;
     let routeTree = {};
 
     for (let routeName in routeNames) {
@@ -137,7 +139,9 @@ function buildSubTree(routeTree, route) {
     if (subTree[handler] === undefined) {
       routeClassName = this.getClassName(handler, 'route');
 
-      routeHandler = container.lookup('router:main').router.getHandler(handler);
+      const router = this.get('router');
+      const routerLib = router._routerMicrolib || router.router;
+      routeHandler = routerLib.getHandler(handler);
       controllerName = routeHandler.get('controllerName') || routeHandler.get('routeName');
       controllerFactory = owner.factoryFor ? owner.factoryFor(`controller:${controllerName}`) : container.lookupFactory(`controller:${controllerName}`);
       controllerClassName = this.getClassName(controllerName, 'controller');
