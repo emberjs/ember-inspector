@@ -1,5 +1,10 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 2.0.6
+
+* [BUGFIX] Fix lookupFactory deprecation [#645](https://github.com/emberjs/ember-inspector/pull/645)
+* [BUGFIX] Ember tooltip now says "This webpage is not running Ember.js" on non-ember pages [#654](https://github.com/emberjs/ember-inspector/pull/654)
+
 ## Ember Inspector 2.0.5
 
 * [BUGFIX] Avoid errors when `router.router.recognizer.names` is an `Object.create(null)` [#635](https://github.com/emberjs/ember-inspector/pull/635)
