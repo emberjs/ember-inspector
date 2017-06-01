@@ -72,7 +72,7 @@
    *
    * @param {Port} emberInspectorChromePort
    */
-  chrome.extension.onConnect.addListener(function(emberInspectorChromePort) {
+  chrome.runtime.onConnect.addListener(function(emberInspectorChromePort) {
     var appId;
 
     /**
@@ -106,7 +106,7 @@
    * @param {Object} request
    * @param {MessageSender} sender
    */
-  chrome.extension.onMessage.addListener(function(request, sender) {
+  chrome.runtime.onMessage.addListener(function(request, sender) {
     // only listen to messages from the content-script
     if (!sender.tab) {
       // noop
