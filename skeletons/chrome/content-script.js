@@ -29,7 +29,7 @@
       var emberDebugPort = event.ports[0];
       listenToEmberDebugPort(emberDebugPort);
     } else if (event.data && event.data.type) {
-      chrome.extension.sendMessage(event.data);
+      chrome.runtime.sendMessage(event.data);
     }
   });
 
@@ -40,11 +40,11 @@
   function listenToEmberDebugPort(emberDebugPort) {
     // listen for messages from EmberDebug, and pass them on to the background-script
     emberDebugPort.addEventListener('message', function(event) {
-      chrome.extension.sendMessage(event.data);
+      chrome.runtime.sendMessage(event.data);
     });
 
     // listen for messages from the EmberInspector, and pass them on to EmberDebug
-    chrome.extension.onMessage.addListener(function(message) {
+    chrome.runtime.onMessage.addListener(function(message) {
       if (message.from === 'devtools') {
         // forward message to EmberDebug
         emberDebugPort.postMessage(message);
@@ -67,7 +67,7 @@
   // it's the top level window before resetting.
   if (window.top === window) {
     // Clear a possible previous Ember icon
-    chrome.extension.sendMessage({ type: 'resetEmberIcon' });
+    chrome.runtime.sendMessage({ type: 'resetEmberIcon' });
   }
 
 
@@ -78,7 +78,7 @@
    */
   var script = document.createElement('script');
   script.type = "text/javascript";
-  script.src = chrome.extension.getURL("scripts/in-page-script.js");
+  script.src = chrome.runtime.getURL("scripts/in-page-script.js");
   if (document.body && document.contentType !== "application/pdf") {
     document.body.appendChild(script);
     script.onload = function() {
@@ -101,7 +101,7 @@
    */
   //FIX ME
   setTimeout(function() {
-    chrome.extension.sendMessage({type: 'iframes', urls: urls});
+    chrome.runtime.sendMessage({type: 'iframes', urls: urls});
   }, 500);
 
 
