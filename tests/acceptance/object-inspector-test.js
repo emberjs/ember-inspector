@@ -2,9 +2,8 @@ import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
-import { visit, find, findAll, click, fillIn, keyEvent, triggerEvent } from 'ember-native-dom-helpers';
+import { visit, find, findAll, click, fillIn, keyEvent } from 'ember-native-dom-helpers';
 
-const { run } = Ember;
 let App;
 let port, message, name;
 
