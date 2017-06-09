@@ -65,7 +65,7 @@
     "ember-concurrency": "0.7.8",
     "ember-export-application-global": "^1.0.5",
     "ember-load-initializers": "^1.0.0",
-    "ember-native-dom-helpers": "^0.4.1",
+    "ember-native-dom-helpers": "^0.4.2",
     "ember-pikaday": "2.0.0",
     "ember-resolver": "^2.0.3",
     "ember-run-raf": "1.1.2",

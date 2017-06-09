@@ -2,6 +2,8 @@ import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
+import { visit, find, findAll, click, fillIn, keyEvent, triggerEvent } from 'ember-native-dom-helpers';
+
 const { run } = Ember;
 let App;
 let port, message, name;
@@ -92,59 +94,56 @@ test("The object displays correctly", async function (assert) {
 
   await triggerPort('objectInspector:updateObject', obj);
 
-  assert.equal(find('.js-object-name').text(), 'My Object');
-  assert.equal(find('.js-object-detail-name').filter(':first').text(), 'Own Properties');
-  assert.ok(find('.js-object-detail').hasClass('mixin_state_expanded'), 'The "Own Properties" detail is expanded by default');
+  assert.equal(find('.js-object-name').textContent, 'My Object');
+  assert.equal(find('.js-object-detail-name').textContent, 'Own Properties');
+  assert.ok(find('.js-object-detail').classList.contains('mixin_state_expanded'), 'The "Own Properties" detail is expanded by default');
 });
 
 test("Object details", async function (assert) {
-
-  let $firstDetail, $secondDetail;
+  let firstDetail, secondDetail;
 
   await visit('/');
 
   await triggerPort('objectInspector:updateObject', objectToInspect());
 
-  assert.equal(find('.js-object-name').text(), 'My Object');
-  $firstDetail = find('.js-object-detail').eq(0);
-  $secondDetail = find('.js-object-detail').eq(1);
-  assert.equal(find('.js-object-detail-name', $firstDetail).text(), 'First Detail');
-  assert.ok(!$firstDetail.hasClass('mixin_state_expanded'), 'Detail not expanded by default');
+  assert.equal(find('.js-object-name').textContent, 'My Object');
+  firstDetail = findAll('.js-object-detail')[0];
+  secondDetail = findAll('.js-object-detail')[1];
+  assert.equal(find('.js-object-detail-name', firstDetail).textContent, 'First Detail');
+  assert.notOk(firstDetail.classList.contains('mixin_state_expanded'), 'Detail not expanded by default');
 
-  await click('.js-object-detail-name', $firstDetail);
+  await click('.js-object-detail-name', firstDetail);
 
-  assert.ok($firstDetail.hasClass('mixin_state_expanded'), 'Detail expands on click.');
-  assert.ok(!$secondDetail.hasClass('mixin_state_expanded'), 'Second detail does not expand.');
-  assert.equal(find('.js-object-property', $firstDetail).length, 1);
-  assert.equal(find('.js-object-property-name', $firstDetail).text(), 'numberProperty');
-  assert.equal(find('.js-object-property-value', $firstDetail).text(), '1');
+  assert.ok(firstDetail.classList.contains('mixin_state_expanded'), 'Detail expands on click.');
+  assert.notOk(secondDetail.classList.contains('mixin_state_expanded'), 'Second detail does not expand.');
+  assert.equal(findAll('.js-object-property', firstDetail).length, 1);
+  assert.equal(find('.js-object-property-name', firstDetail).textContent, 'numberProperty');
+  assert.equal(find('.js-object-property-value', firstDetail).textContent, '1');
 
-  await click('.js-object-detail-name', $firstDetail);
+  await click('.js-object-detail-name', firstDetail);
 
-  assert.ok(!$firstDetail.hasClass('mixin_state_expanded'), 'Expanded detail minimizes on click.');
-  await click('.js-object-detail-name', $secondDetail);
+  assert.notOk(firstDetail.classList.contains('mixin_state_expanded'), 'Expanded detail minimizes on click.');
+  await click('.js-object-detail-name', secondDetail);
 
-  assert.ok($secondDetail.hasClass('mixin_state_expanded'));
-  assert.equal(find('.js-object-property', $secondDetail).length, 2);
-  assert.equal(find('.js-object-property-name', $secondDetail).eq(0).text(), 'objectProperty');
-  assert.equal(find('.js-object-property-value', $secondDetail).eq(0).text(), 'Ember Object Name');
-  assert.equal(find('.js-object-property-name', $secondDetail).eq(1).text(), 'stringProperty');
-  assert.equal(find('.js-object-property-value', $secondDetail).eq(1).text(), 'String Value');
+  assert.ok(secondDetail.classList.contains('mixin_state_expanded'));
+  assert.equal(findAll('.js-object-property', secondDetail).length, 2);
+  assert.equal(findAll('.js-object-property-name', secondDetail)[0].textContent, 'objectProperty');
+  assert.equal(findAll('.js-object-property-value', secondDetail)[0].textContent, 'Ember Object Name');
+  assert.equal(findAll('.js-object-property-name', secondDetail)[1].textContent, 'stringProperty');
+  assert.equal(findAll('.js-object-property-value', secondDetail)[1].textContent, 'String Value');
 });
 
 test("Digging deeper into objects", async function (assert) {
-  let $secondDetail;
+  let secondDetail;
 
   await visit('/');
 
   triggerPort('objectInspector:updateObject', objectToInspect());
 
-  $secondDetail = find('.js-object-detail').eq(1);
-  await click('.js-object-detail-name', $secondDetail);
+  secondDetail = findAll('.js-object-detail')[1];
+  await click('.js-object-detail-name', secondDetail);
 
-  let $objectProperty = find('.js-object-property').filter(':first');
-  $objectProperty = find('.js-object-property-value', $objectProperty);
-  await click($objectProperty);
+  await click('.js-object-property .js-object-property-value');
 
   assert.equal(name, 'objectInspector:digDeeper');
   assert.deepEqual(message, { objectId: 'objectId', property: 'objectProperty' });
@@ -168,17 +167,17 @@ test("Digging deeper into objects", async function (assert) {
 
   await triggerPort('objectInspector:updateObject', nestedObject);
 
-  assert.equal(find('.js-object-name').text(), 'My Object', 'Title stays as the initial object.');
-  assert.equal(find('.js-object-trail').text(), '.objectProperty', 'Nested property shows below title');
-  assert.equal(find('.js-object-detail-name').text(), 'Nested Detail');
+  assert.equal(find('.js-object-name').textContent, 'My Object', 'Title stays as the initial object.');
+  assert.equal(find('.js-object-trail').textContent, '.objectProperty', 'Nested property shows below title');
+  assert.equal(find('.js-object-detail-name').textContent, 'Nested Detail');
   await click('.js-object-detail-name');
 
-  assert.ok(find('.js-object-detail').hasClass('mixin_state_expanded'));
-  assert.equal(find('.js-object-property-name').text(), 'nestedProp');
-  assert.equal(find('.js-object-property-value').text(), 'Nested Prop');
+  assert.ok(find('.js-object-detail').classList.contains('mixin_state_expanded'));
+  assert.equal(find('.js-object-property-name').textContent, 'nestedProp');
+  assert.equal(find('.js-object-property-value').textContent, 'Nested Prop');
   await click('.js-object-inspector-back');
 
-  assert.equal(find('.js-object-trail').length, 0);
+  assert.notOk(find('.js-object-trail'), 0);
 });
 
 test("Computed properties", async function (assert) {
@@ -216,7 +215,7 @@ test("Computed properties", async function (assert) {
     mixinIndex: 0
   });
 
-  assert.equal(find('.js-object-property-value').text(), 'Computed value');
+  assert.equal(find('.js-object-property-value').textContent, 'Computed value');
 });
 
 test("Properties are bound to the application properties", async function (assert) {
@@ -241,7 +240,7 @@ test("Properties are bound to the application properties", async function (asser
   };
   await triggerPort('objectInspector:updateObject', obj);
 
-  assert.equal(find('.js-object-property-value').first().text(), 'Teddy');
+  assert.equal(find('.js-object-property-value').textContent, 'Teddy');
   await triggerPort('objectInspector:updateProperty', {
     objectId: 'object-id',
     mixinIndex: 0,
@@ -256,11 +255,10 @@ test("Properties are bound to the application properties", async function (asser
   await click('.js-object-property-value');
 
   let txtField = find('.js-object-property-value-txt');
-  assert.equal(txtField.val(), '"Alex"');
+  assert.equal(txtField.value, '"Alex"');
   await fillIn(txtField, '"Joey"');
 
-  let e = Ember.$.Event('keyup', { keyCode: 13 });
-  find('.js-object-property-value-txt').trigger(e);
+  await keyEvent('.js-object-property-value-txt', 'keyup', 13);
   assert.equal(name, 'objectInspector:saveProperty');
   assert.equal(message.property, 'boundProp');
   assert.equal(message.value, 'Joey');
@@ -277,7 +275,7 @@ test("Properties are bound to the application properties", async function (asser
     }
   });
 
-  assert.equal(find('.js-object-property-value').text(), 'Joey');
+  assert.equal(find('.js-object-property-value').textContent, 'Joey');
 });
 
 test("Stringified json should not get double parsed", async function (assert) {
@@ -305,11 +303,10 @@ test("Stringified json should not get double parsed", async function (assert) {
   await click('.js-object-property-value');
 
   let txtField = find('.js-object-property-value-txt');
-  assert.equal(txtField.val(), '"{"name":"teddy"}"');
+  assert.equal(txtField.value, '"{"name":"teddy"}"');
   await fillIn(txtField, '"{"name":"joey"}"');
 
-  let e = Ember.$.Event('keyup', { keyCode: 13 });
-  find('.js-object-property-value-txt').trigger(e);
+  await keyEvent('.js-object-property-value-txt', 'keyup', 13);
   assert.equal(name, 'objectInspector:saveProperty');
   assert.equal(message.property, 'boundProp');
   assert.equal(message.value, '{"name":"joey"}');
@@ -380,12 +377,13 @@ test("Read only CPs cannot be edited", async function (assert) {
     }]
   };
   await triggerPort('objectInspector:updateObject', obj);
-  await click(find('.js-object-property-value').first());
-  assert.equal(find('.js-object-property-value-txt').length, 0);
+  await click('.js-object-property-value');
+  assert.notOk(find('.js-object-property-value-txt'));
 
-  await click(find('.js-object-property-value').last());
+  let valueElements = findAll('.js-object-property-value');
+  await click(valueElements[valueElements.length - 1]);
 
-  assert.equal(find('.js-object-property-value-txt').length, 1);
+  assert.ok(find('.js-object-property-value-txt'));
 });
 
 test("Dropping an object due to destruction", async function (assert) {
@@ -402,10 +400,10 @@ test("Dropping an object due to destruction", async function (assert) {
 
   await triggerPort('objectInspector:updateObject', obj);
 
-  assert.equal(find('.js-object-name').text().trim(), 'My Object');
+  assert.equal(find('.js-object-name').textContent.trim(), 'My Object');
   await triggerPort('objectInspector:droppedObject', { objectId: 'myObject' });
 
-  assert.equal(find('.js-object-name').text().trim(), '');
+  assert.notOk(find('.js-object-name'));
 });
 
 test("Date fields are editable", async function (assert) {
@@ -432,23 +430,11 @@ test("Date fields are editable", async function (assert) {
   assert.ok(true);
 
   await click('.js-object-detail-name');
-
-  await click('.js-object-property-value:first');
+  await click('.js-object-property-value');
 
   let field = find('.js-object-property-value-date');
-  assert.equal(field.length, 1);
+  assert.ok(field);
   await fillIn(field, '2015-01-01');
-
-  // pickaday.js needs this
-  run(find('.js-object-property-value-date'), 'change');
-
-  await wait();
-
-  let e = Ember.$.Event('keyup', { keyCode: 13 });
-  run(() => {
-    find('.js-object-property-value-date').trigger(e);
-  });
-  await wait();
 
   assert.equal(name, 'objectInspector:saveProperty');
   assert.equal(message.property, 'dateProperty');
@@ -472,9 +458,9 @@ test("Errors are correctly displayed", async function (assert) {
   await visit('/');
   await triggerPort('objectInspector:updateObject', obj);
 
-  assert.equal(find('.js-object-name').text(), 'My Object');
-  assert.equal(find('.js-object-inspector-errors').length, 1);
-  assert.equal(find('.js-object-inspector-error').length, 2);
+  assert.equal(find('.js-object-name').textContent, 'My Object');
+  assert.equal(findAll('.js-object-inspector-errors').length, 1);
+  assert.equal(findAll('.js-object-inspector-error').length, 2);
 
   await click('.js-send-errors-to-console');
 
@@ -488,12 +474,12 @@ test("Errors are correctly displayed", async function (assert) {
     ]
   });
 
-  assert.equal(find('.js-object-inspector-error').length, 1);
+  assert.ok(find('.js-object-inspector-error'));
 
   await triggerPort('objectInspector:updateErrors', {
     objectId: '1',
     errors: []
   });
 
-  assert.equal(find('.js-object-inspector-errors').length, 0);
+  assert.notOk(find('.js-object-inspector-errors'));
 });
