@@ -123,7 +123,7 @@ test("Updates are published when they happen", function(assert) {
 });
 
 
-test("Instrumentation with stack is persisted to session storage", function(assert) {
+test("Instrumentation with stack is persisted to session storage", async function(assert) {
   let withStack = false;
   EmberDebug.get('promiseDebug').reopen({
     session: {
@@ -138,36 +138,30 @@ test("Instrumentation with stack is persisted to session storage", function(asse
   // Clear CP cache
   EmberDebug.get('promiseDebug').propertyDidChange('instrumentWithStack');
 
-  andThen(function() {
-    port.trigger('promise:getInstrumentWithStack');
-    return wait();
+  await wait();
+  port.trigger('promise:getInstrumentWithStack');
+
+
+  await wait();
+  assert.equal(name, 'promise:instrumentWithStack');
+  assert.equal(message.instrumentWithStack, false);
+  port.trigger('promise:setInstrumentWithStack', {
+    instrumentWithStack: true
   });
 
-  andThen(function() {
-    assert.equal(name, 'promise:instrumentWithStack');
-    assert.equal(message.instrumentWithStack, false);
-    port.trigger('promise:setInstrumentWithStack', {
-      instrumentWithStack: true
-    });
-    return wait();
+
+  await wait();
+  assert.equal(name, 'promise:instrumentWithStack');
+  assert.equal(message.instrumentWithStack, true);
+  assert.equal(withStack, true, 'persisted');
+  port.trigger('promise:setInstrumentWithStack', {
+    instrumentWithStack: false
   });
 
-  andThen(function() {
-    assert.equal(name, 'promise:instrumentWithStack');
-    assert.equal(message.instrumentWithStack, true);
-    assert.equal(withStack, true, 'persisted');
-    port.trigger('promise:setInstrumentWithStack', {
-      instrumentWithStack: false
-    });
-    return wait();
-  });
-
-  andThen(function() {
-    assert.equal(name, 'promise:instrumentWithStack');
-    assert.equal(message.instrumentWithStack, false);
-    assert.equal(withStack, false, 'persisted');
-  });
-
+  await wait();
+  assert.equal(name, 'promise:instrumentWithStack');
+  assert.equal(message.instrumentWithStack, false);
+  assert.equal(withStack, false, 'persisted');
 });
 
 test("Responds even if no promises detected", function(assert) {

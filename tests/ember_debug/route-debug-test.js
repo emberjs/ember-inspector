@@ -1,5 +1,7 @@
 import Ember from "ember";
 import { module, test } from 'qunit';
+import { visit } from 'ember-native-dom-helpers';
+
 const { run, Application, Route } = Ember;
 const get = Ember.get;
 

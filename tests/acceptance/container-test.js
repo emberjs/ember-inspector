@@ -2,6 +2,7 @@ import Ember from "ember";
 import { module } from 'qunit';
 import { test } from 'ember-qunit';
 import startApp from '../helpers/start-app';
+import { visit, findAll, find, click, fillIn, currentURL } from 'ember-native-dom-helpers';
 let App;
 
 let port, message, name;
@@ -57,12 +58,12 @@ test("Container types are successfully listed", async function(assert) {
   });
 
   await visit('/container-types');
-  let rows = find('.js-container-type');
+  let rows = findAll('.js-container-type');
   assert.equal(rows.length, 2);
-  assert.equal(find('.js-container-type-name', rows[0]).text().trim(), 'controller');
-  assert.equal(find('.js-container-type-count', rows[0]).text().trim(), '2');
-  assert.equal(find('.js-container-type-name', rows[1]).text().trim(), 'route');
-  assert.equal(find('.js-container-type-count', rows[1]).text().trim(), '5');
+  assert.equal(find('.js-container-type-name', rows[0]).textContent.trim(), 'controller');
+  assert.equal(find('.js-container-type-count', rows[0]).textContent.trim(), '2');
+  assert.equal(find('.js-container-type-name', rows[1]).textContent.trim(), 'route');
+  assert.equal(find('.js-container-type-count', rows[1]).textContent.trim(), '5');
 });
 
 
@@ -86,11 +87,10 @@ test("Container instances are successfully listed", async function(assert) {
   await visit('/container-types/controller');
   let rows;
 
-  rows = find('.js-container-instance-list-item');
+  rows = findAll('.js-container-instance-list-item');
 
-  find(rows.length, 2);
-  assert.equal(rows.eq(0).text().trim(), 'first');
-  assert.equal(rows.eq(1).text().trim(), 'second');
+  assert.equal(rows[0].textContent.trim(), 'first');
+  assert.equal(rows[1].textContent.trim(), 'second');
   name = null;
   message = null;
 
@@ -101,12 +101,11 @@ test("Container instances are successfully listed", async function(assert) {
 
   assert.equal(name, 'objectInspector:inspectByContainerLookup');
 
-  await fillIn(find('.js-container-instance-search').find('input'), 'first');
+  await fillIn('.js-container-instance-search input', 'first');
 
-  rows = find('.js-container-instance-list-item');
+  rows = findAll('.js-container-instance-list-item');
   assert.equal(rows.length, 1);
-  assert.equal(rows.eq(0).text().trim(), 'first');
-
+  assert.equal(rows[0].textContent.trim(), 'first');
 });
 
 test("Successfully redirects if the container type is not found", async function(assert) {
@@ -153,13 +152,13 @@ test("Reload", async function(assert) {
 
   await visit('/container-types/controller');
 
-  assert.equal(find('.js-container-type').length, 0);
-  assert.equal(find('.js-container-instance-list-item').length, 0);
+  assert.equal(findAll('.js-container-type').length, 0);
+  assert.equal(findAll('.js-container-instance-list-item').length, 0);
   types = getTypes();
   instances = getInstances();
 
   await click('.js-reload-container-btn');
 
-  assert.equal(find('.js-container-type').length, 2);
-  assert.equal(find('.js-container-instance-list-item').length, 2);
+  assert.equal(findAll('.js-container-type').length, 2);
+  assert.equal(findAll('.js-container-instance-list-item').length, 2);
 });

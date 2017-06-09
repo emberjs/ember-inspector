@@ -2,8 +2,10 @@ import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
+import { visit, find, findAll, click, triggerEvent } from 'ember-native-dom-helpers';
+
 let App;
-const { run, $ } = Ember;
+const { run } = Ember;
 
 let port;
 
@@ -64,35 +66,32 @@ test("Route tree is successfully displayed", async function(assert) {
 
   await visit('route-tree');
 
-  let routeNodes = find('.js-route-tree-item');
+  let routeNodes = findAll('.js-route-tree-item');
   assert.equal(routeNodes.length, 4);
 
-  let routeNames = find('.js-route-name').get().map(function(item) {
-    return Ember.$(item).text().trim();
+  let routeNames = [...findAll('.js-route-name')].map(function(item) {
+    return item.textContent.trim();
   });
   assert.deepEqual(routeNames, ['application', 'post', 'post.new', 'post.edit']);
 
-  let routeHandlers = find('.js-route-handler').get().map(function(item) {
-    return Ember.$(item).text().trim();
+  let routeHandlers = [...findAll('.js-route-handler')].map(function(item) {
+    return item.textContent.trim();
   });
   assert.deepEqual(routeHandlers, ['ApplicationRoute', 'PostRoute', 'PostNewRoute', 'PostEditRoute']);
 
-  let controllers = find('.js-route-controller').get().map(function(item) {
-    return Ember.$(item).text().trim();
+  let controllers = [...findAll('.js-route-controller')].map(function(item) {
+    return item.textContent.trim();
   });
 
   assert.deepEqual(controllers, ['ApplicationController', 'PostController', 'PostNewController', 'PostEditController']);
 
-  let templates = find('.js-route-template').get().map(function(item) {
-    return Ember.$(item).text().trim();
+  let templates = [...findAll('.js-route-template')].map(function(item) {
+    return item.textContent.trim();
   });
 
   assert.deepEqual(templates, ['application', 'post', 'post/new', 'post/edit']);
 
-  let titleTips = find('span[title]', routeNodes).map(function (i, node) {
-    return node.getAttribute('title');
-  }).toArray().sort();
-
+  let titleTips = [...findAll('span[title]', routeNodes)].map((n) => n.getAttribute('title')).sort();
 
   assert.deepEqual(titleTips, [
     "",
@@ -135,7 +134,7 @@ test("Clicking on route handlers and controller sends an inspection message", as
   await visit('route-tree');
   name = null;
   message = null;
-  applicationRow = find('.js-route-tree-item').first();
+  applicationRow = find('.js-route-tree-item');
   await click('.js-route-handler', applicationRow);
   assert.equal(name, 'objectInspector:inspectRoute');
   assert.equal(message.name, 'application');
@@ -148,7 +147,7 @@ test("Clicking on route handlers and controller sends an inspection message", as
 
   name = null;
   message = null;
-  let postRow = find('.js-route-tree-item').eq(1);
+  let postRow = findAll('.js-route-tree-item')[1];
   await click('.js-route-controller', postRow);
   assert.equal(name, null, "If controller does not exist, clicking should have no effect.");
   assert.equal(message, null);
@@ -169,14 +168,14 @@ test("Current Route is highlighted", async function(assert) {
   let routeNodes;
 
   await visit('route-tree');
-  routeNodes = find('.js-route-tree-item .js-route-name');
-  let isCurrent = routeNodes.get().map(item => $(item).hasClass('list__cell_highlight'));
+  routeNodes = findAll('.js-route-tree-item .js-route-name');
+  let isCurrent = [...routeNodes].map(item => item.classList.contains('list__cell_highlight'));
   assert.deepEqual(isCurrent, [true, true, false, true]);
 
   run(() => port.trigger('route:currentRoute', { name: 'post.new' }));
   await wait();
-  routeNodes = find('.js-route-tree-item .js-route-name');
-  isCurrent = routeNodes.get().map(item => $(item).hasClass('list__cell_highlight'));
+  routeNodes = findAll('.js-route-tree-item .js-route-name');
+  isCurrent = [...routeNodes].map(item => item.classList.contains('list__cell_highlight'));
   assert.deepEqual(isCurrent, [true, true, true, false], 'Current route is bound');
 });
 
@@ -192,12 +191,11 @@ test("Hiding non current route", async function(assert) {
   });
 
   await visit('route-tree');
-  let routeNodes = find('.js-route-tree-item');
+  let routeNodes = findAll('.js-route-tree-item');
   assert.equal(routeNodes.length, 4);
   let checkbox = find('.js-filter-hide-routes input');
-  checkbox.prop('checked', true);
-  checkbox.trigger('change');
-  await wait();
-  routeNodes = find('.js-route-tree-item');
+  checkbox.checked = true;
+  await triggerEvent(checkbox, 'change');
+  routeNodes = findAll('.js-route-tree-item');
   assert.equal(routeNodes.length, 3);
 });

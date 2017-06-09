@@ -2,7 +2,7 @@ import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
-const { $ } = Ember;
+import { visit, find, findAll, click } from 'ember-native-dom-helpers';
 
 let App;
 let port, message, name;
@@ -34,7 +34,7 @@ module('Promise Tab', {
 
 let guids = 0;
 function generatePromise(props) {
-  return $.extend({
+  return Object.assign({
     guid: ++guids,
     label: 'Generated Promise',
     parent: null,
@@ -54,8 +54,8 @@ test("Shows page refresh hint if no promises", async function(assert) {
     promises: []
   });
 
-  assert.equal(find('.js-promise-tree').length, 0, "no promise list");
-  assert.equal(find('.js-page-refresh').length, 1, "page refresh hint seen");
+  assert.notOk(find('.js-promise-tree'), "no promise list");
+  assert.ok(find('.js-page-refresh'), "page refresh hint seen");
 
   await click('.js-page-refresh-btn');
 
@@ -71,20 +71,19 @@ test("Shows page refresh hint if no promises", async function(assert) {
     ]
   });
 
-  assert.equal(find('.js-promise-tree').length, 1, 'promise tree is seen after being populated');
-  assert.equal(find('.js-promise-tree-item').length, 1, '1 promise item can be seen');
-  assert.equal(find('.js-page-refresh').length, 0, 'page refresh hint hidden');
+  assert.ok(find('.js-promise-tree'), 'promise tree is seen after being populated');
+  assert.equal(findAll('.js-promise-tree-item').length, 1, '1 promise item can be seen');
+  assert.notOk(find('.js-page-refresh'), 'page refresh hint hidden');
 
   // make sure clearing does not show the refresh hint
   await click('.js-clear-promises-btn');
 
-  assert.equal(find('.js-promise-tree').length, 1, 'promise-tree can be seen');
-  assert.equal(find('.js-promise-tree-item').length, 0, 'promise items cleared');
-  assert.equal(find('.js-page-refresh').length, 0, 'page refresh hint hidden');
+  assert.ok(find('.js-promise-tree'), 'promise-tree can be seen');
+  assert.notOk(find('.js-promise-tree-item'), 'promise items cleared');
+  assert.notOk(find('.js-page-refresh'), 'page refresh hint hidden');
 });
 
 test("Pending promise", async function(assert) {
-
   await visit('/promise-tree');
 
   await triggerPort('promise:promisesUpdated', {
@@ -98,10 +97,10 @@ test("Pending promise", async function(assert) {
   });
   await wait();
 
-  assert.equal(find('.js-promise-tree-item').length, 1);
-  let row = find('.js-promise-tree-item').first();
-  assert.equal(find('.js-promise-label', row).text().trim(), 'Promise 1');
-  assert.equal(find('.js-promise-state', row).text().trim(), 'Pending');
+  assert.equal(findAll('.js-promise-tree-item').length, 1);
+  let row = find('.js-promise-tree-item');
+  assert.equal(find('.js-promise-label', row).textContent.trim(), 'Promise 1');
+  assert.equal(find('.js-promise-state', row).textContent.trim(), 'Pending');
 });
 
 
@@ -127,12 +126,12 @@ test("Fulfilled promise", async function(assert) {
   });
   await wait();
 
-  assert.equal(find('.js-promise-tree-item').length, 1);
-  let row = find('.js-promise-tree-item').first();
-  assert.equal(find('.js-promise-label', row).text().trim(), 'Promise 1');
-  assert.equal(find('.js-promise-state', row).text().trim(), 'Fulfilled');
-  assert.equal(find('.js-promise-value', row).text().trim(), 'value');
-  assert.equal(find('.js-promise-time', row).text().trim(), '10.00ms');
+  assert.equal(findAll('.js-promise-tree-item').length, 1);
+  let row = find('.js-promise-tree-item');
+  assert.equal(find('.js-promise-label', row).textContent.trim(), 'Promise 1');
+  assert.equal(find('.js-promise-state', row).textContent.trim(), 'Fulfilled');
+  assert.equal(find('.js-promise-value', row).textContent.trim(), 'value');
+  assert.equal(find('.js-promise-time', row).textContent.trim(), '10.00ms');
 });
 
 
@@ -157,12 +156,12 @@ test("Rejected promise", async function(assert) {
     ]
   });
 
-  assert.equal(find('.js-promise-tree-item').length, 1);
-  let row = find('.js-promise-tree-item').first();
-  assert.equal(find('.js-promise-label', row).text().trim(), 'Promise 1');
-  assert.equal(find('.js-promise-state', row).text().trim(), 'Rejected');
-  assert.equal(find('.js-promise-value', row).text().trim(), 'reason');
-  assert.equal(find('.js-promise-time', row).text().trim(), '20.00ms');
+  assert.equal(findAll('.js-promise-tree-item').length, 1);
+  let row = find('.js-promise-tree-item');
+  assert.equal(find('.js-promise-label', row).textContent.trim(), 'Promise 1');
+  assert.equal(find('.js-promise-state', row).textContent.trim(), 'Rejected');
+  assert.equal(find('.js-promise-value', row).textContent.trim(), 'reason');
+  assert.equal(find('.js-promise-time', row).textContent.trim(), '20.00ms');
 });
 
 test("Chained promises", async function(assert) {
@@ -183,14 +182,14 @@ test("Chained promises", async function(assert) {
     ]
   });
 
-  let rows = find('.js-promise-tree-item');
+  let rows = findAll('.js-promise-tree-item');
   assert.equal(rows.length, 1, 'Collpased by default');
-  assert.equal(find('.js-promise-label', rows.eq(0)).text().trim(), 'Parent');
-  await click('.js-promise-label', rows.eq(0));
+  assert.equal(find('.js-promise-label', rows[0]).textContent.trim(), 'Parent');
+  await click('.js-promise-label', rows[0]);
 
-  rows = find('.js-promise-tree-item');
+  rows = findAll('.js-promise-tree-item');
   assert.equal(rows.length, 2, 'Chain now expanded');
-  assert.equal(find('.js-promise-label', rows.eq(1)).text().trim(), 'Child');
+  assert.equal(find('.js-promise-label', rows[1]).textContent.trim(), 'Child');
 });
 
 test("Can trace promise when there is a stack", async function(assert) {
@@ -214,7 +213,7 @@ test("Trace button hidden if promise has no stack", async function(assert) {
     promises: [generatePromise({ guid: 1, hasStack: false })]
   });
 
-  assert.equal(find('.js-trace-promise-btn').length, 0);
+  assert.notOk(find('.js-trace-promise-btn'));
 });
 
 test("Toggling promise trace option", async function(assert) {
@@ -222,8 +221,8 @@ test("Toggling promise trace option", async function(assert) {
 
   await visit('/promise-tree');
 
-  let input = find('.js-with-stack').find('input');
-  assert.ok(!input.prop('checked'), 'should not be checked by default');
+  let input = find('.js-with-stack input');
+  assert.notOk(input.checked, 'should not be checked by default');
   await click(input);
 
   assert.equal(name, 'promise:setInstrumentWithStack');
@@ -244,8 +243,8 @@ test("Logging error stack trace in the console", async function(assert) {
     })]
   });
 
-  let row = find('.js-promise-tree-item').first();
-  assert.equal(find('.js-send-to-console-btn').text().trim(), 'Stack trace');
+  let row = find('.js-promise-tree-item');
+  assert.equal(find('.js-send-to-console-btn').textContent.trim(), 'Stack trace');
   await click('.js-send-to-console-btn', row);
 
   assert.equal(name, 'promise:sendValueToConsole');
@@ -267,7 +266,7 @@ test("Send fulfillment value to console", async function(assert) {
     })]
   });
 
-  let row = find('.js-promise-tree-item').first();
+  let row = find('.js-promise-tree-item');
   await click('.js-send-to-console-btn', row);
 
   assert.equal(name, 'promise:sendValueToConsole');
@@ -289,7 +288,7 @@ test("Sending objects to the object inspector", async function(assert) {
     })]
   });
 
-  let row = find('.js-promise-tree-item').first();
+  let row = find('.js-promise-tree-item');
   await click('.js-promise-object-value', row);
 
   assert.equal(name, 'objectInspector:inspectById');

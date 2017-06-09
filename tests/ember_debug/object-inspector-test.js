@@ -1,6 +1,7 @@
 import Ember from "ember";
 import { module, test } from 'qunit';
 import computed from 'ember-new-computed';
+import { visit } from 'ember-native-dom-helpers';
 
 let EmberDebug;
 let port, name, message;
