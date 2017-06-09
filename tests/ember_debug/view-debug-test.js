@@ -1,6 +1,6 @@
 import Ember from "ember";
 import { module, test } from 'qunit';
-import { visit, click } from 'ember-native-dom-helpers';
+import { visit, click, triggerEvent } from 'ember-native-dom-helpers';
 
 const { $, Application } = Ember;
 
@@ -182,13 +182,12 @@ test("Highlighting Views on hover", async function t(assert) {
   assert.equal(find('[data-label=layer-view]', previewDiv).text(), '(unknown mixin)');
 
   let layerDiv = find('[data-label=layer-div]');
-  run(() => previewDiv.trigger('mouseup'));
-  await wait();
+  await triggerEvent(layerDiv[0], 'mouseup');
 
   assert.ok(layerDiv.is(':visible'));
   assert.equal(find('[data-label=layer-model]', layerDiv).text(), 'Application model');
   assert.equal(find('[data-label=layer-view]', layerDiv).text(), '(unknown mixin)');
-  await click('[data-label=layer-controller]', layerDiv);
+  await click('[data-label=layer-controller]', layerDiv[0]);
 
   let controller = App.__container__.lookup('controller:application');
   assert.equal(name, 'objectInspector:updateObject');
@@ -196,20 +195,18 @@ test("Highlighting Views on hover", async function t(assert) {
   name = null;
   message = null;
 
-  await click('[data-label=layer-model]', layerDiv);
+  await click('[data-label=layer-model]', layerDiv[0]);
 
   assert.equal(name, 'objectInspector:updateObject');
   assert.equal(message.name, 'Application model');
-
-  await click('[data-label=layer-close]');
+  await click(document.querySelector('[data-label=layer-close]'));
 
   assert.ok(!layerDiv.is(':visible'));
 
   run(() => port.trigger('view:inspectViews', { inspect: true }));
   await wait();
 
-  run(() => find('.simple-input').trigger('mousemove'));
-  await wait();
+  await triggerEvent(document.querySelector('.simple-input'), 'mousemove');
 
   previewDiv = find('[data-label=preview-div]');
   assert.ok(previewDiv.is(':visible'));
