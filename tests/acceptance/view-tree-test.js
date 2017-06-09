@@ -2,6 +2,7 @@ import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
+import { triggerEvent } from 'ember-native-dom-helpers';
 let App;
 const { run } = Ember;
 
@@ -219,12 +220,10 @@ test("Previewing / showing a view on the client", async function(assert) {
   viewTree.children = [];
   run(() => port.trigger('view:viewTree', { tree: viewTree }));
   await wait();
-  run(() => find('.js-view-tree-item').mouseenter());
-  await wait();
+  await triggerEvent('.js-view-tree-item', 'mouseenter');
   assert.equal(messageSent.name, 'view:previewLayer', "Client asked to preview layer");
   assert.equal(messageSent.message.objectId, 'applicationView', "Client sent correct id to preview layer");
-  run(() => find('.js-view-tree-item').mouseleave());
-  await wait();
+  await triggerEvent('.js-view-tree-item', 'mouseleave');
   assert.equal(messageSent.name, 'view:hidePreview', "Client asked to hide preview");
 });
 

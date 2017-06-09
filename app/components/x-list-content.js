@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-const { Component, computed, String: { htmlSafe }, Evented, $, run, Object: EmberObject, inject } = Ember;
+const { Component, computed, String: { htmlSafe }, Evented, run, Object: EmberObject, inject } = Ember;
 const { schedule } = run;
 const { service } = inject;
 
@@ -79,7 +79,15 @@ export default Component.extend(Evented, {
    */
   setupEvents() {
     this.set('rowEvents', EmberObject.extend(Evented).create());
-    this.$().on('click mouseleave mouseenter', 'tr', run.bind(this, 'triggerRowEvent'));
+    let cb = run.bind(this, 'triggerRowEvent');
+    let handler = function(e) {
+      if (e.target.tagName.toUpperCase() === 'TR') {
+        cb(e);
+      }
+    };
+    this.element.addEventListener('click', handler);
+    this.element.addEventListener('mouseleave', handler);
+    this.element.addEventListener('mouseenter', handler);
   },
 
   /**
@@ -100,8 +108,9 @@ export default Component.extend(Evented, {
    *  - {String} type The event type to trigger
    *  - {DOMElement} currentTarget The element the event was triggered on
    */
-  triggerRowEvent({ type, currentTarget }) {
-    this.get('rowEvents').trigger(type, { index: $(currentTarget).index(), type });
+  triggerRowEvent({ type, target }) {
+    let index = [].indexOf.call(target.parentNode.children, target);
+    this.get('rowEvents').trigger(type, { index, type });
   },
 
   attributeBindings: ['style'],
