@@ -10,10 +10,12 @@ cache:
   directories:
     - node_modules
 
+addons:
+  chrome: stable
+
 before_install:
   - npm config set spin false
   - npm install -g bower
-  - npm install phantomjs-prebuilt
 
 install:
   - npm install
