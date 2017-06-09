@@ -1,5 +1,7 @@
 import { module, test } from 'qunit';
 import Ember from "ember";
+import { visit } from 'ember-native-dom-helpers';
+
 const { run, A: emberA, Application } = Ember;
 let EmberDebug;
 let port, name, message;

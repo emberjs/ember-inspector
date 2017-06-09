@@ -1,5 +1,7 @@
 import Ember from "ember";
 import { module, test } from 'qunit';
+import { visit, click } from 'ember-native-dom-helpers';
+
 const { $, Application } = Ember;
 
 /* globals require */
