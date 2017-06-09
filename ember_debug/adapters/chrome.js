@@ -1,8 +1,8 @@
 import BasicAdapter from "./basic";
 const Ember = window.Ember;
-const { computed, run, $: { extend } } = Ember;
+const { computed, run } = Ember;
 const { isArray } = Array;
-const { keys } = Object;
+const { keys, assign } = Object;
 
 export default BasicAdapter.extend({
   connect() {
@@ -20,7 +20,7 @@ export default BasicAdapter.extend({
     // "clone" them through postMessage unless they are converted to a
     // native array.
     if (!Ember.EXTEND_PROTOTYPES || Ember.EXTEND_PROTOTYPES.Array === false) {
-      options = deepCloneArrays(extend(true, {}, options));
+      options = deepCloneArrays(assign(true, {}, options));
     }
     this.get('_chromePort').postMessage(options);
   },
