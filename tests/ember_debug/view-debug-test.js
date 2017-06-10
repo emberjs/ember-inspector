@@ -2,7 +2,7 @@ import Ember from "ember";
 import { module, test } from 'qunit';
 import { visit, find, click, triggerEvent, settings as nativeDomHelpersSettings } from 'ember-native-dom-helpers';
 
-const { $, Application } = Ember;
+const { Application } = Ember;
 
 /* globals require */
 const EmberDebug = require('ember-debug/main').default;
@@ -22,6 +22,10 @@ function destroyTemplates() {
     Ember.TEMPLATES[name] = OLD_TEMPLATES[name];
   }
   OLD_TEMPLATES = {};
+}
+
+function isVisible(elem) {
+  return elem.offsetWidth > 0 || elem.offsetHeight > 0 || elem.getClientRects().length > 0;
 }
 
 function setupApp() {
@@ -176,7 +180,8 @@ test("Highlighting Views on hover", async function t(assert) {
   await triggerEvent('.application', 'mousemove');
 
   let previewDiv = find('[data-label=preview-div]');
-  assert.ok($(previewDiv).is(':visible'));
+
+  assert.ok(isVisible(previewDiv));
   assert.notOk(find('[data-label=layer-component]'), "Component layer not shown on outlet views");
   assert.equal(find('[data-label=layer-controller]', previewDiv).textContent, 'App.ApplicationController');
   assert.equal(find('[data-label=layer-model]', previewDiv).textContent, 'Application model');
@@ -185,7 +190,7 @@ test("Highlighting Views on hover", async function t(assert) {
   let layerDiv = find('[data-label=layer-div]');
   await triggerEvent(layerDiv, 'mouseup');
 
-  assert.ok($(layerDiv).is(':visible'));
+  assert.ok(isVisible(layerDiv));
   assert.equal(find('[data-label=layer-model]', layerDiv).textContent, 'Application model');
   assert.equal(find('[data-label=layer-view]', layerDiv).textContent, '(unknown mixin)');
   await click('[data-label=layer-controller]', layerDiv);
@@ -202,7 +207,7 @@ test("Highlighting Views on hover", async function t(assert) {
   assert.equal(message.name, 'Application model');
   await click('[data-label=layer-close]');
 
-  assert.notOk($(layerDiv).is(':visible'));
+  assert.notOk(isVisible(layerDiv));
 
   run(() => port.trigger('view:inspectViews', { inspect: true }));
   await wait();
@@ -210,7 +215,7 @@ test("Highlighting Views on hover", async function t(assert) {
   await triggerEvent('.simple-input', 'mousemove');
 
   previewDiv = find('[data-label=preview-div]');
-  assert.ok($(previewDiv).is(':visible'));
+  assert.ok(isVisible(previewDiv));
   assert.equal(find('[data-label=layer-component]').textContent.trim(), "Ember.TextField");
   assert.notOk(find('[data-label=layer-controller]', previewDiv));
   assert.notOk(find('[data-label=layer-model]', previewDiv));

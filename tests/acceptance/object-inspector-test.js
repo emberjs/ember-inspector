@@ -45,7 +45,7 @@ const objectAttr = {
 };
 
 function objectFactory(props) {
-  return Ember.$.extend(true, {}, objectAttr, props);
+  return Object.assign({}, objectAttr, props);
 }
 
 function objectToInspect() {

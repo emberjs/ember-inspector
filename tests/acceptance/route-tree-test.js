@@ -21,6 +21,10 @@ module('Route Tree Tab', {
   }
 });
 
+function deepAssign(...objects) {
+  return Ember.$.extend(true, ...objects);
+}
+
 function routeValue(name, props) {
   let value = {
     name,
@@ -38,7 +42,7 @@ function routeValue(name, props) {
     }
   };
   props = props || {};
-  return Ember.$.extend(true, {}, value, props);
+  return deepAssign({}, value, props);
 }
 
 let routeTree = {
