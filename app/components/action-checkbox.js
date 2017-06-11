@@ -13,7 +13,7 @@ export default Component.extend({
   },
 
   _updateElementValue() {
-    this.set('checked', this.$().prop('checked'));
+    this.set('checked', this.element.checked);
     this.sendAction('on-update', this.get('checked'));
   }
 });
