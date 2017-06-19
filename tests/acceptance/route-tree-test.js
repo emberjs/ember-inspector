@@ -116,8 +116,6 @@ test("Route tree is successfully displayed", async function(assert) {
   let titleTips = [...findAll('span[title]', routeNodes)].map((n) => n.getAttribute('title')).sort();
 
   assert.deepEqual(titleTips, [
-    "",
-    "",
     "ApplicationController",
     "ApplicationRoute",
     "PostController",
