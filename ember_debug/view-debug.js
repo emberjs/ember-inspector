@@ -733,7 +733,6 @@ export default EmberObject.extend(PortMixin, {
       isVirtual: !viewClass
     };
 
-
     let controller = this._controllerForNode(renderNode);
     if (controller && !(this._nodeIsEmberComponent(renderNode))) {
       value.controller = {
