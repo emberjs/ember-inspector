@@ -131,7 +131,6 @@ test("Simple View Tree", async function t(assert) {
   let value = tree.value;
   assert.equal(tree.children.length, 1);
   assert.equal(value.controller.name, 'App.ApplicationController');
-  assert.equal(value.viewClass, '(unknown mixin)');
   assert.equal(value.name, 'application');
   assert.equal(value.tagName, 'div');
   assert.equal(value.template, 'application');
@@ -185,14 +184,12 @@ test("Highlighting Views on hover", async function t(assert) {
   assert.notOk(find('[data-label=layer-component]'), "Component layer not shown on outlet views");
   assert.equal(find('[data-label=layer-controller]', previewDiv).textContent, 'App.ApplicationController');
   assert.equal(find('[data-label=layer-model]', previewDiv).textContent, 'Application model');
-  assert.equal(find('[data-label=layer-view]', previewDiv).textContent, '(unknown mixin)');
 
   let layerDiv = find('[data-label=layer-div]');
   await triggerEvent(layerDiv, 'mouseup');
 
   assert.ok(isVisible(layerDiv));
   assert.equal(find('[data-label=layer-model]', layerDiv).textContent, 'Application model');
-  assert.equal(find('[data-label=layer-view]', layerDiv).textContent, '(unknown mixin)');
   await click('[data-label=layer-controller]', layerDiv);
 
   let controller = App.__container__.lookup('controller:application');
