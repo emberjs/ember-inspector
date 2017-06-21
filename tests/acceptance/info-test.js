@@ -12,6 +12,7 @@ module('Info Tab', {
     App = startApp({
       adapter: 'basic'
     });
+    App.__container__.lookup('config:main').VERSION = '9.9.9';
     port = App.__container__.lookup('port:main');
     port.reopen({
       send(name) {
@@ -32,11 +33,6 @@ module('Info Tab', {
 });
 
 test("Libraries are displayed correctly", async function t(assert) {
-  let infoRoute = App.__container__.lookup('route:info');
-  infoRoute.reopen({
-    version: '9.9.9'
-  });
-
   await visit('/info');
 
   let libraries = findAll('.js-library-row');
