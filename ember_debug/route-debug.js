@@ -204,11 +204,23 @@ function getURL(container, segments) {
   for (let i = 0; i < segments.length; i++) {
     let name = null;
 
-    try {
-      name = segments[i].generate();
-    } catch (e) {
-      // is dynamic
-      name = `:${segments[i].name}`;
+    if (typeof segments[i].generate !== 'function') {
+      // After changes in RouteRecognizer in >= 2.12
+      let { type, value } = segments[i];
+      if (type === 1) { // dynamic
+        name = `:${value}`;
+      } else if (type === 2) { // star
+        name = `*${value}`;
+      } else {
+        name = value;
+      }
+    } else {
+      // 2.11 and before
+      try {
+        name = segments[i].generate();
+      } catch (e) { // is dynamic
+        name = `:${segments[i].name}`;
+      }
     }
     if (name) {
       url.push(name);

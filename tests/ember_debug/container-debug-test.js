@@ -51,9 +51,6 @@ test("#getTypes", async function t(assert) {
 
   assert.equal(name, 'container:types');
   let types = emberA(message.types);
-  let application = types.findBy('name', 'application');
-  assert.ok(application);
-  assert.equal(application.count, 1);
   assert.ok(types.findBy('name', 'controller'));
   assert.ok(types.findBy('name', 'route'));
 });
