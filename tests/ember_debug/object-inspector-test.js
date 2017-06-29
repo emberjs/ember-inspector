@@ -3,6 +3,7 @@ import { module, test } from 'qunit';
 import computed from 'ember-new-computed';
 import { visit, find, settings as nativeDomHelpersSettings } from 'ember-native-dom-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import require from 'require';
 
 let EmberDebug;
 let port, name, message;
@@ -30,7 +31,6 @@ let defaultRootForFinder;
 module("Ember Debug - Object Inspector", {
   // eslint-disable-next-line object-shorthand
   beforeEach: async function() {
-    /* globals require */
     EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
