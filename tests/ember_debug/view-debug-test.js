@@ -2,10 +2,10 @@ import Ember from "ember";
 import { module, test } from 'qunit';
 import { visit, find, click, triggerEvent, settings as nativeDomHelpersSettings } from 'ember-native-dom-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import require from 'require';
 
 const { Application } = Ember;
 
-/* globals require */
 const EmberDebug = require('ember-debug/main').default;
 const { Route, Object: EmberObject, Controller } = Ember;
 let port;

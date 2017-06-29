@@ -14,7 +14,7 @@ var esTranspiler = require('broccoli-babel-transpiler');
 var moduleResolver = require('amd-name-resolver').resolveModules({ throwOnRootAccess: false });
 var Funnel = require('broccoli-funnel');
 var packageJson = require('./package.json');
-
+var modulesBabelPlugin = require('babel-plugin-transform-es2015-modules-amd');
 var mv = stew.mv;
 var map = stew.map;
 
@@ -23,10 +23,6 @@ var map = stew.map;
 var options = {
   fingerprint: {
     enabled: false
-  },
-  babel: {
-    // async/await
-    optional: ['es7.asyncFunctions']
   }
 };
 
@@ -101,7 +97,7 @@ module.exports = function(defaults) {
 
   emberDebug = esTranspiler(emberDebug, {
     moduleIds: true,
-    modules: 'amdStrict',
+    plugins: [[modulesBabelPlugin, { noInterop: true }]],
     resolveModuleSource: moduleResolver
   });
 

@@ -2,6 +2,7 @@ let name;
 /* eslint no-empty:0 */
 import Ember from "ember";
 import { module, test } from 'qunit';
+import require from 'require';
 
 let EmberDebug;
 let port, adapter;
@@ -18,7 +19,6 @@ function setupApp() {
 
 module("Ember Debug", {
   beforeEach() {
-    /* globals require */
     EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
