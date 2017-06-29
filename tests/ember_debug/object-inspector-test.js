@@ -2,13 +2,14 @@ import Ember from "ember";
 import { module, test } from 'qunit';
 import computed from 'ember-new-computed';
 import { visit, find, settings as nativeDomHelpersSettings } from 'ember-native-dom-helpers';
+import hbs from 'htmlbars-inline-precompile';
 
 let EmberDebug;
 let port, name, message;
 let App;
 let objectInspector;
 
-const { run, guidFor, Object: EmberObject, Handlebars: { compile } } = Ember;
+const { run, guidFor, Object: EmberObject } = Ember;
 
 function setupApp() {
   App = Ember.Application.create();
@@ -21,7 +22,7 @@ function setupApp() {
 
   App.XSimpleComponent = Ember.Component;
 
-  Ember.TEMPLATES.simple = compile('Simple {{input class="simple-input"}} {{x-simple class="simple-view"}}');
+  Ember.TEMPLATES.simple = hbs`Simple {{input class="simple-input"}} {{x-simple class="simple-view"}}`;
 }
 
 let ignoreErrors = true;

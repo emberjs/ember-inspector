@@ -1,20 +1,21 @@
 import Ember from "ember";
 import { module, test } from 'qunit';
 import { visit, find, click, triggerEvent, settings as nativeDomHelpersSettings } from 'ember-native-dom-helpers';
+import hbs from 'htmlbars-inline-precompile';
 
 const { Application } = Ember;
 
 /* globals require */
 const EmberDebug = require('ember-debug/main').default;
-const { Route, Object: EmberObject, Handlebars, Controller } = Ember;
-const { compile } = Handlebars;
+const { Route, Object: EmberObject, Controller } = Ember;
 let port;
 let App, run = Ember.run;
 let OLD_TEMPLATES = {};
 
 function setTemplate(name, template) {
   OLD_TEMPLATES = Ember.TEMPLATES[name];
-  Ember.TEMPLATES[name] = compile(template, { moduleName: name });
+  template.meta.moduleName = name;
+  Ember.TEMPLATES[name] = template;
 }
 
 function destroyTemplates() {
@@ -85,10 +86,10 @@ function setupApp() {
     }
   });
 
-  setTemplate('application', '<div class="application">{{outlet}}</div>');
-  setTemplate('simple', 'Simple {{input class="simple-input"}}');
-  setTemplate('comments/index', '{{#each}}{{this}}{{/each}}');
-  setTemplate('posts', 'Posts');
+  setTemplate('application', hbs`<div class="application">{{outlet}}</div>`);
+  setTemplate('simple', hbs`Simple {{input class="simple-input"}}`);
+  setTemplate('comments/index', hbs`{{#each}}{{this}}{{/each}}`);
+  setTemplate('posts', hbs`Posts`);
 }
 let defaultRootForFinder;
 module("View Debug", {
@@ -282,9 +283,9 @@ test("Does not list nested {{yield}} views", async function t(assert) {
     }
   });
 
-  setTemplate('posts', '{{#x-first}}Foo{{/x-first}}');
-  setTemplate('components/x-first', '{{#x-second}}{{yield}}{{/x-second}}');
-  setTemplate('components/x-second', '{{yield}}');
+  setTemplate('posts', hbs`{{#x-first}}Foo{{/x-first}}`);
+  setTemplate('components/x-first', hbs`{{#x-second}}{{yield}}{{/x-second}}`);
+  setTemplate('components/x-second', hbs`{{yield}}`);
 
   await visit('/posts');
 

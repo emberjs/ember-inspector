@@ -70,11 +70,6 @@ module.exports = function(defaults) {
   //
   var env = process.env.EMBER_ENV;
 
-  if (env !== 'production') {
-    // To be able to compile htmlbars templates in tests
-    app.import('bower_components/ember/ember-template-compiler.js');
-  }
-
   app.import('vendor/babel-polyfill.js', { prepend: true });
   app.import('bower_components/contextMenu/contextMenu.js');
   app.import('bower_components/contextMenu/contextMenu.css');
