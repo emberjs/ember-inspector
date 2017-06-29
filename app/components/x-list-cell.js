@@ -15,7 +15,7 @@
  * ```
  */
 import Ember from 'ember';
-const { Component, K, computed, String: { htmlSafe } } = Ember;
+const { Component, computed, String: { htmlSafe } } = Ember;
 export default Component.extend({
   /**
    * Defaults to a table cell. For headers
@@ -110,7 +110,7 @@ export default Component.extend({
    * @property on-click
    * @type {Function}
    */
-  'on-click': K,
+  'on-click'() {},
 
   /**
    * DOM event triggered when cell is clicked.
