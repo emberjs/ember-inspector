@@ -105,10 +105,13 @@ export default Component.extend({
    * @method didUpdateAttrs
    * @param  {Object} newAttrs and oldAttrs
    */
-  didUpdateAttrs({ newAttrs: { schema: newSchema }, oldAttrs: { schema: oldSchema } }) {
+  didUpdateAttrs() {
+    let oldSchema = this.get('oldSchema');
+    let newSchema = this.get('schema');
     if (newSchema && newSchema !== oldSchema) {
       scheduleOnce('actions', this, this.setupColumns);
     }
+    this.set('oldSchema', newSchema);
     return this._super(...arguments);
   },
 

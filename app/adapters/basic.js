@@ -13,7 +13,7 @@
  */
 import Ember from "ember";
 import config from 'ember-inspector/config/environment';
-const { computed, K } = Ember;
+const { computed } = Ember;
 
 export default Ember.Object.extend({
   /**
@@ -69,7 +69,7 @@ export default Ember.Object.extend({
    * @method onVersionMismatch
    * @param {String} neededVersion (The version to go to)
    */
-  onVersionMismatch: K,
+  onVersionMismatch() {},
 
   name: 'basic',
 
@@ -97,7 +97,7 @@ export default Ember.Object.extend({
   },
 
   // Called when the "Reload" is clicked by the user
-  willReload: K,
+  willReload() {},
 
   canOpenResource: false,
   openResource(/* file, line */) {}

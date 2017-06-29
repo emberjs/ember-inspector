@@ -6,7 +6,7 @@ const EmberDebug = require("ember-debug/main").default;
 
 let port, name, message, RSVP = Ember.RSVP;
 let App;
-let { run, K, A: emberA } = Ember;
+let { run, A: emberA } = Ember;
 
 function setupApp() {
   App = Ember.Application.create();
@@ -61,7 +61,7 @@ test("Existing promises sent when requested", async function t(assert) {
     .then(function() {}, null, "Child1");
 
     // catch so we don't get a promise failure
-    RSVP.reject('reason', "Promise2").catch(K);
+    RSVP.reject('reason', "Promise2").catch(() => {});
   });
 
   await rsvpDelay();
