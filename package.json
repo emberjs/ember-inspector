@@ -68,7 +68,7 @@
     "ember-export-application-global": "^2.0.0",
     "ember-load-initializers": "^1.0.0",
     "ember-native-dom-helpers": "^0.4.2",
-    "ember-pikaday": "2.0.0",
+    "ember-pikaday": "^2.2.2",
     "ember-resolver": "^4.0.0",
     "ember-source": "2.13.3",
     "ember-cli-shims": "^1.1.0",
