@@ -1,6 +1,4 @@
 import BasicAdapter from "./basic";
-const Ember = window.Ember;
-const { $ } = Ember;
 
 export default BasicAdapter.extend({
   init() {
@@ -24,10 +22,10 @@ export default BasicAdapter.extend({
       }
     });
 
-    $(window).on('unload', () => {
+    window.onunload = () => {
       this.sendMessage({
         unloading: true
       });
-    });
+    };
   }
 });
