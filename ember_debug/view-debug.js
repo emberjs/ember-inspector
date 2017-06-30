@@ -14,7 +14,6 @@ const Ember = window.Ember;
 
 const {
   guidFor,
-  $,
   computed,
   run,
   Object: EmberObject,
@@ -83,7 +82,7 @@ export default EmberObject.extend(PortMixin, {
       if (objectId) {
         this.inspectViewElement(objectId);
       } else {
-        let element = $(`#${elementId}`)[0];
+        let element = document.getElementById(elementId);
         this.inspectElement(element);
       }
     },
@@ -114,16 +113,18 @@ export default EmberObject.extend(PortMixin, {
     this.viewListener();
     this.retainedObjects = [];
     this.options = {};
-
-    layerDiv = $('<div>').appendTo('body').get(0);
-    layerDiv.style.display = 'none';
+    layerDiv = document.createElement('div');
     layerDiv.setAttribute('data-label', 'layer-div');
+    layerDiv.style.display = 'none';
+    document.body.appendChild(layerDiv);
 
-    previewDiv = $('<div>').appendTo('body').css('pointer-events', 'none').get(0);
+    previewDiv = document.createElement('div');
+    previewDiv.style.pointerEvents = 'none';
     previewDiv.style.display = 'none';
     previewDiv.setAttribute('data-label', 'preview-div');
+    document.body.appendChild(previewDiv);
 
-    $(window).on(`resize.${this.get('eventNamespace')}`, () => {
+    this.resizeHandler = () => {
       if (this.glimmerTree) {
         this.hideLayer();
       } else {
@@ -131,7 +132,8 @@ export default EmberObject.extend(PortMixin, {
           this.highlightView(highlightedElement);
         }
       }
-    });
+    };
+    window.addEventListener('resize', this.resizeHandler);
 
     if (this.isGlimmerTwo()) {
       this.glimmerTree = new GlimmerTree({
@@ -177,9 +179,9 @@ export default EmberObject.extend(PortMixin, {
 
   willDestroy() {
     this._super();
-    $(window).off(this.get('eventNamespace'));
-    $(layerDiv).remove();
-    $(previewDiv).remove();
+    window.removeEventListener('resize', this.resizeHandler);
+    document.body.removeChild(layerDiv);
+    document.body.removeChild(previewDiv);
     this.get('_lastNodes').clear();
     this.releaseCurrentObjects();
     this.stopInspecting();
@@ -212,12 +214,12 @@ export default EmberObject.extend(PortMixin, {
     this.sendMessage('startInspecting', {});
 
     // we don't want the preview div to intercept the mousemove event
-    $(previewDiv).css('pointer-events', 'none');
+    previewDiv.style.pointerEvents = 'none';
 
     let pinView = () => {
       if (viewElem) {
         if (this.glimmerTree) {
-          this.glimmerTree.highlightLayer(viewElem.attr('id'));
+          this.glimmerTree.highlightLayer(viewElem.id);
         } else {
           this.highlightView(viewElem[0]);
         }
@@ -230,44 +232,41 @@ export default EmberObject.extend(PortMixin, {
       return false;
     };
 
-    $('body').on(`mousemove.inspect-${this.get('eventNamespace')}`, e => {
-      viewElem = this.findNearestView($(e.target));
+    this.mousemoveHandler = (e) => {
+      viewElem = this.findNearestView(e.target);
       if (viewElem) {
         if (this.glimmerTree) {
-          this.glimmerTree.highlightLayer(viewElem.attr('id'), true);
+          this.glimmerTree.highlightLayer(viewElem.id, true);
         } else {
           this.highlightView(viewElem[0], true);
         }
       }
-    })
-    .on(`mousedown.inspect-${this.get('eventNamespace')}`, () => {
+    };
+    this.mousedownHandler = () => {
       // prevent app-defined clicks from being fired
-      $(previewDiv).css('pointer-events', '')
-      .one('mouseup', function() {
-        // chrome
-        return pinView();
-      });
-    })
-    .on(`mouseup.inspect-${this.get('eventNamespace')}`, () => /* firefox */ pinView())
-    .css('cursor', '-webkit-zoom-in');
+      previewDiv.style.pointerEvents = '';
+      previewDiv.addEventListener('mouseup', () => pinView(), { once: true });
+    };
+    this.mouseupHandler = () => pinView();
+    document.body.addEventListener('mousemove', this.mousemoveHandler);
+    document.body.addEventListener('mousedown', this.mousedownHandler);
+    document.body.addEventListener('mouseup', this.mouseupHandler);
+    document.body.style.cursor = '-webkit-zoom-in';
   },
 
   findNearestView(elem) {
-    if (!elem || elem.length === 0) { return null; }
-    if (elem.hasClass('ember-view')) {
+    if (!elem) { return null; }
+    if (elem.classList.contains('ember-view')) {
       return elem;
     }
-    return this.findNearestView($(elem).parents('.ember-view:first'));
+    return this.findNearestView(elem.closest('.ember-view'));
   },
 
   stopInspecting() {
-    $('body')
-    .off(`mousemove.inspect-${this.get('eventNamespace')}`)
-    .off(`mousedown.inspect-${this.get('eventNamespace')}`)
-    .off(`mouseup.inspect-${this.get('eventNamespace')}`)
-    .off(`click.inspect-${this.get('eventNamespace')}`)
-    .css('cursor', '');
-
+    document.body.removeEventListener('mousemove', this.mousemoveHandler);
+    document.body.removeEventListener('mousedown', this.mousedownHandler);
+    document.body.removeEventListener('mouseup', this.mouseupHandler);
+    document.body.style.cursor = '';
     this.hidePreview();
     this.sendMessage('stopInspecting', {});
   },
@@ -299,8 +298,8 @@ export default EmberObject.extend(PortMixin, {
     if (!emberApp) {
       return false;
     }
-
-    let applicationViewId = $(emberApp.rootElement).find('> .ember-view').attr('id');
+    let applicationView = document.querySelector('body > .ember-view');
+    let applicationViewId = applicationView ? applicationView.id : undefined;
     let rootView = this.get('viewRegistry')[applicationViewId];
     // In case of App.reset view is destroyed
     if (this.glimmerTree) {
@@ -415,20 +414,7 @@ export default EmberObject.extend(PortMixin, {
 
     // take into account the scrolling position as mentioned in docs
     // https://developer.mozilla.org/en-US/docs/Web/API/element.getBoundingClientRect
-    rect = $.extend({}, rect);
-    rect.top += window.scrollY;
-    rect.left += window.scrollX;
-
-    if (isPreview) {
-      div = previewDiv;
-    } else {
-      this.hideLayer();
-      div = layerDiv;
-      this.hidePreview();
-    }
-
-    $(div).css(rect);
-    $(div).css({
+    let styles = {
       display: "block",
       position: "absolute",
       backgroundColor: "rgba(255, 255, 255, 0.7)",
@@ -441,8 +427,23 @@ export default EmberObject.extend(PortMixin, {
       fontFamily: "Menlo, sans-serif",
       minHeight: 63,
       zIndex: 10000
-    });
+    };
+    for (let prop in rect) {
+      styles[prop] = rect[prop];
+    }
+    styles.top += window.scrollY;
+    styles.left += window.scrollX;
 
+    if (isPreview) {
+      div = previewDiv;
+    } else {
+      this.hideLayer();
+      div = layerDiv;
+      this.hidePreview();
+    }
+    for (let prop in styles) {
+      div.style[prop] = styles[prop];
+    }
     let output = "";
 
     if (!isPreview) {
@@ -471,61 +472,92 @@ export default EmberObject.extend(PortMixin, {
     if (model) {
       output += `<p class='model'><span>model</span>=<span data-label='layer-model'>${escapeHTML(model.name)}</span></p>`;
     }
+    div.innerHTML = output;
 
-    $(div).html(output);
-
-    $('p', div).css({ float: 'left', margin: 0, backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: '5px', color: 'rgb(0, 0, 153)' });
-    $('p.model', div).css({ clear: 'left' });
-    $('p span:first-child', div).css({ color: 'rgb(153, 153, 0)' });
-    $('p span:last-child', div).css({ color: 'rgb(153, 0, 153)' });
+    for (let p of div.querySelectorAll('p')) {
+      p.style.float = 'left';
+      p.style.margin = 0;
+      p.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+      p.style.padding = '5px';
+      p.style.color = 'rgb(0, 0, 153)';
+    }
+    for (let p of div.querySelectorAll('p.model')) {
+      p.style.clear = 'left';
+    }
+    for (let p of div.querySelectorAll('p span:first-child')) {
+      p.style.color = 'rgb(153, 153, 0)';
+    }
+    for (let p of div.querySelectorAll('p span:last-child')) {
+      p.style.color = 'rgb(153, 0, 153)';
+    }
 
     if (!isPreview) {
-      $('span.close', div).css({
-        float: 'right',
-        margin: '5px',
-        background: '#666',
-        color: '#eee',
-        fontFamily: 'helvetica, sans-serif',
-        fontSize: '12px',
-        width: 16,
-        height: 16,
-        lineHeight: '14px',
-        borderRadius: 16,
-        textAlign: 'center',
-        cursor: 'pointer'
-      }).on('click', () => {
-        this.hideLayer();
-        return false;
-      }).on('mouseup mousedown', function() {
-        // prevent re-pinning
-        return false;
+      let cancelEvent = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      };
+      for (let span of div.querySelectorAll('span.close')) {
+        span.style.float = 'right';
+        span.style.margin = '5px';
+        span.style.background = '#666';
+        span.style.color = '#eee';
+        span.style.fontFamily = 'helvetica, sans-serif';
+        span.style.fontSize = '12px';
+        span.style.width = 16;
+        span.style.height = 16;
+        span.style.lineHeight = '14px';
+        span.style.borderRadius = 16;
+        span.style.textAlign = 'center';
+        span.style.cursor = 'pointer';
+        span.addEventListener('click', (e) => {
+          cancelEvent(e);
+          this.hideLayer();
+        });
+        span.addEventListener('mouseup', cancelEvent);
+        span.addEventListener('mousedown', cancelEvent);
+      }
+    }
+
+    for (let span of div.querySelectorAll('p.view span:last-child')) {
+      span.style.cursor = 'pointer';
+      span.addEventListener('click', () => {
+        this.get('objectInspector').sendObject(view.object);
       });
     }
 
-    $('p.view span:last-child', div).css({ cursor: 'pointer' }).click(() => {
-      this.get('objectInspector').sendObject(view.object);
-    });
+    for (let span of div.querySelectorAll('p.controller span:last-child')) {
+      span.style.cursor = 'pointer';
+      span.addEventListener('click', () => {
+        this.get('objectInspector').sendObject(controller.object);
+      });
+    }
 
-    $('p.controller span:last-child', div).css({ cursor: 'pointer' }).click(() => {
-      this.get('objectInspector').sendObject(controller.object);
-    });
+    for (let span of div.querySelectorAll('p.component span:last-child')) {
+      span.style.cursor = 'pointer';
+      span.addEventListener('click', () => {
+        this.get('objectInspector').sendObject(view.object);
+      });
+    }
 
-    $('p.component span:last-child', div).css({ cursor: 'pointer' }).click(() => {
-      this.get('objectInspector').sendObject(view.object);
-    });
+    for (let span of div.querySelectorAll('p.template span:last-child')) {
+      span.style.cursor = 'pointer';
+      span.addEventListener('click', () => {
+        if (view) {
+          this.inspectViewElement(guidFor(view.object));
+        } else if (options.element) {
+          this.inspectElement(options.element);
+        }
+      });
+    }
 
-    $('p.template span:last-child', div).css({ cursor: 'pointer' }).click(() => {
-      if (view) {
-        this.inspectViewElement(guidFor(view.object));
-      } else if (options.element) {
-        this.inspectElement(options.element);
-      }
-    });
 
     if (model && model.object && ((model.object instanceof EmberObject) || typeOf(model.object) === 'array')) {
-      $('p.model span:last-child', div).css({ cursor: 'pointer' }).click(() => {
-        this.get('objectInspector').sendObject(model.object);
-      });
+      for (let span of div.querySelectorAll('p.model span:last-child')) {
+        span.style.cursor = 'pointer';
+        span.addEventListener('click', () => {
+          this.get('objectInspector').sendObject(model.object);
+        });
+      }
     }
   },
 
