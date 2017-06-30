@@ -69,6 +69,8 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     }
   });
 
+  var onReady = requireModule('ember-debug/utils/on-ready').onReady;
+
   function onEmberReady(callback) {
     var triggered = false;
     var triggerOnce = function(string) {
@@ -93,22 +95,6 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     }, false);
     // Oldest Ember versions or if this was injected after Ember has loaded.
     onReady(triggerOnce);
-  }
-
-  function onReady(callback) {
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
-      setTimeout(completed);
-    } else {
-      document.addEventListener( "DOMContentLoaded", completed, false);
-      // For some reason DOMContentLoaded doesn't always work
-      window.addEventListener( "load", completed, false );
-    }
-
-    function completed() {
-      document.removeEventListener( "DOMContentLoaded", completed, false );
-      window.removeEventListener( "load", completed, false );
-      callback();
-    }
   }
 
   // There's probably a better way
