@@ -1,7 +1,7 @@
 /* eslint no-empty:0 */
 import PortMixin from "ember-debug/mixins/port-mixin";
 const Ember = window.Ember;
-const { $, computed, Object: EmberObject, A } = Ember;
+const { computed, Object: EmberObject, A } = Ember;
 let { libraries } = Ember;
 const { oneWay } = computed;
 
@@ -19,9 +19,10 @@ const GeneralDebug = EmberObject.extend(PortMixin, {
   // Keep an eye on https://github.com/ember-cli/ember-cli/issues/3045
   emberCliConfig: computed(function() {
     let config;
-    $('meta[name]').each(function() {
-      const meta = $(this);
-      let match = meta.attr('name').match(/environment$/);
+    let metas = document.querySelectorAll('meta[name]');
+    for (let i = 0; i < metas.length; i++) {
+      let meta = metas[i];
+      let match = meta.getAttribute('name').match(/environment$/);
       if (match) {
         try {
           /* global unescape */
@@ -29,7 +30,7 @@ const GeneralDebug = EmberObject.extend(PortMixin, {
           return false;
         } catch (e) {}
       }
-    });
+    }
     return config;
   }),
 
