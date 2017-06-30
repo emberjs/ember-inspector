@@ -219,7 +219,7 @@ export default EmberObject.extend(PortMixin, {
     let pinView = () => {
       if (viewElem) {
         if (this.glimmerTree) {
-          this.glimmerTree.highlightLayer(viewElem.attr('id'));
+          this.glimmerTree.highlightLayer(viewElem.id);
         } else {
           this.highlightView(viewElem[0]);
         }
@@ -233,10 +233,10 @@ export default EmberObject.extend(PortMixin, {
     };
 
     this.mousemoveHandler = (e) => {
-      viewElem = this.findNearestView($(e.target));
+      viewElem = this.findNearestView(e.target);
       if (viewElem) {
         if (this.glimmerTree) {
-          this.glimmerTree.highlightLayer(viewElem.attr('id'), true);
+          this.glimmerTree.highlightLayer(viewElem.id, true);
         } else {
           this.highlightView(viewElem[0], true);
         }
@@ -255,11 +255,11 @@ export default EmberObject.extend(PortMixin, {
   },
 
   findNearestView(elem) {
-    if (!elem || elem.length === 0) { return null; }
-    if (elem.hasClass('ember-view')) {
+    if (!elem) { return null; }
+    if (elem.classList.contains('ember-view')) {
       return elem;
     }
-    return this.findNearestView($(elem).parents('.ember-view:first'));
+    return this.findNearestView(elem.closest('.ember-view'));
   },
 
   stopInspecting() {
