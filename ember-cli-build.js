@@ -15,6 +15,8 @@ var moduleResolver = require('amd-name-resolver').resolveModules({ throwOnRootAc
 var Funnel = require('broccoli-funnel');
 var packageJson = require('./package.json');
 var modulesBabelPlugin = require('babel-plugin-transform-es2015-modules-amd');
+var Rollup = require('broccoli-rollup');
+var rollupNodeResolve = require('rollup-plugin-node-resolve');
 var mv = stew.mv;
 var map = stew.map;
 
@@ -167,8 +169,25 @@ module.exports = function(defaults) {
   var chromeRoot = 'panes-' + minimumVersion;
   var firefoxRoot = 'data/' + chromeRoot;
 
-  var firefoxAndChromeExtra = new Funnel('shared', {
+  var firefoxExtra = new Funnel('shared', {
     files: ['in-page-script.js'],
+  });
+
+  var chromeExtra = new Rollup('shared', {
+    rollup: {
+      entry: 'in-page-script-chrome.js',
+      dest: 'in-page-script.js',
+      format: 'iife',
+      external: [
+        'ember'
+      ],
+      globals: {
+        ember: 'Ember'
+      },
+      plugins: [
+        rollupNodeResolve()
+      ]
+    }
   });
 
   var replacementPattern = [{
@@ -244,12 +263,12 @@ module.exports = function(defaults) {
   });
 
   firefox = mergeTrees([
-    mv(firefoxAndChromeExtra, 'data/scripts'),
+    mv(firefoxExtra, 'data/scripts'),
     firefox
   ]);
 
   chrome = mergeTrees([
-    mv(firefoxAndChromeExtra, 'scripts'),
+    mv(chromeExtra, 'scripts'),
     chrome
   ]);
 
