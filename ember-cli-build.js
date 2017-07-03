@@ -182,7 +182,7 @@ module.exports = function(defaults) {
         'ember'
       ],
       globals: {
-        ember: 'Ember'
+        ember: 'window.Ember'
       },
       plugins: [
         rollupNodeResolve()
