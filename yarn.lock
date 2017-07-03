@@ -1453,9 +1453,9 @@ broccoli-plugin@^1.0.0, broccoli-plugin@^1.1.0, broccoli-plugin@^1.2.0, broccoli
     rimraf "^2.3.4"
     symlink-or-copy "^1.1.8"
 
-broccoli-rollup@^1.3.0:
+"broccoli-rollup@https://github.com/dwickern/broccoli-rollup.git#rollup-0.43-dist":
   version "1.3.0"
-  resolved "https://registry.yarnpkg.com/broccoli-rollup/-/broccoli-rollup-1.3.0.tgz#43a0a7798555bab54217009eb470a4ff5a056df0"
+  resolved "https://github.com/dwickern/broccoli-rollup.git#98b7e4985e141c6c501b26d8617068322166d811"
   dependencies:
     broccoli-plugin "^1.2.1"
     es6-map "^0.1.4"
@@ -1465,7 +1465,7 @@ broccoli-rollup@^1.3.0:
     heimdalljs-logger "^0.1.7"
     md5-hex "^1.3.0"
     node-modules-path "^1.0.1"
-    rollup "^0.41.4"
+    rollup "^0.43.0"
     symlink-or-copy "^1.1.8"
     walk-sync "^0.3.1"
 
@@ -6035,9 +6035,9 @@ rollup-plugin-node-resolve@^3.0.0:
     is-module "^1.0.0"
     resolve "^1.1.6"
 
-rollup@^0.41.4:
-  version "0.41.6"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-0.41.6.tgz#e0d05497877a398c104d816d2733a718a7a94e2a"
+rollup@^0.43.0:
+  version "0.43.0"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-0.43.0.tgz#b36bdb75fa5e0823b6de8aee18ff7b5655520543"
   dependencies:
     source-map-support "^0.4.0"
 
