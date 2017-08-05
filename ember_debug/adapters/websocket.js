@@ -1,6 +1,7 @@
 import BasicAdapter from "./basic";
 const Ember = window.Ember;
 const { computed, run, RSVP: { Promise } } = Ember;
+import { onReady } from '../utils/on-ready';
 
 export default BasicAdapter.extend({
 
@@ -27,7 +28,7 @@ export default BasicAdapter.extend({
 
   connect() {
     return new Promise((resolve, reject) => {
-      document.addEventListener('DOMContentLoaded', () => {
+      onReady(() => {
         if (this.isDestroyed) { reject(); }
         const EMBER_INSPECTOR_CONFIG = window.EMBER_INSPECTOR_CONFIG;
         if (typeof EMBER_INSPECTOR_CONFIG === 'object' && EMBER_INSPECTOR_CONFIG.remoteDebugSocket) {
@@ -43,4 +44,3 @@ export default BasicAdapter.extend({
     this._disconnect();
   }
 });
-
