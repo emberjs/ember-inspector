@@ -5,7 +5,7 @@ module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'ember-inspector',
     environment: environment,
-    rootURL: '/',
+    rootURL: '',
     locationType: 'hash',
     emberVersionsSupported: packageJson.emberVersionsSupported,
     previousEmberVersionsSupported: packageJson.previousEmberVersionsSupported,
