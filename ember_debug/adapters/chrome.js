@@ -1,8 +1,8 @@
 import BasicAdapter from "./basic";
 const Ember = window.Ember;
-const { computed, run } = Ember;
+const { computed, run, typeOf } = Ember;
 const { isArray } = Array;
-const { keys, assign } = Object;
+const { keys } = Object;
 
 export default BasicAdapter.extend({
   connect() {
@@ -20,7 +20,7 @@ export default BasicAdapter.extend({
     // "clone" them through postMessage unless they are converted to a
     // native array.
     if (!Ember.EXTEND_PROTOTYPES || Ember.EXTEND_PROTOTYPES.Array === false) {
-      options = deepCloneArrays(assign(true, {}, options));
+      options = deepCloneArrays(deepClone(options));
     }
     this.get('_chromePort').postMessage(options);
   },
@@ -84,10 +84,27 @@ function deepCloneArrays(item) {
     item.forEach((child, key) => {
       item[key] = deepCloneArrays(child);
     });
-  } else if (item && typeof item === 'object') {
+  } else if (item && typeOf(item) === 'object') {
     keys(item).forEach(key => {
       item[key] = deepCloneArrays(item[key]);
     });
   }
   return item;
+}
+
+/**
+ * Recursive function that performs a deep clone on an object.
+ *
+ * @param {Any} obj
+ * @return {Any} Deep cloned object
+ */
+function deepClone(obj) {
+  if (obj && typeOf(obj) === 'object') {
+    let item = {};
+    keys(obj).forEach(key => {
+      item[key] = deepClone(obj[key]);
+    });
+    return item;
+  }
+  return obj;
 }
