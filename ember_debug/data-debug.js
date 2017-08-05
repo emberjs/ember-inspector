@@ -1,6 +1,6 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 const Ember = window.Ember;
-const { Object: EmberObject, computed, guidFor, A } = Ember;
+const { Object: EmberObject, computed, guidFor, A, set } = Ember;
 const { alias } = computed;
 
 export default EmberObject.extend(PortMixin, {
@@ -22,8 +22,10 @@ export default EmberObject.extend(PortMixin, {
     // dataAdapter:main is deprecated
     let adapter = (this._resolve('data-adapter:main') && container.lookup('data-adapter:main'));
     // column limit is now supported at the inspector level
-    adapter.set('attributeLimit', 100);
-    return adapter;
+    if (adapter) {
+      set(adapter, 'attributeLimit', 100);
+      return adapter;
+    }
   }),
 
   _resolve(name) {
