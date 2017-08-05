@@ -87,22 +87,36 @@
   }
 
   /**
-   * Gather the iframes running in the ClientApp
-   */
-  var iframes = document.getElementsByTagName('iframe');
-  var urls = [];
-  for (var i = 0, l = iframes.length; i < l; i ++) {
-    urls.push(iframes[i].src);
-  }
-
-  /**
    * Send the iframes to EmberInspector so that it can run
    * EmberDebug in the context of the iframe.
+   *
+   * @param {DOMEvent} event
    */
-  //FIX ME
-  setTimeout(function() {
-    chrome.extension.sendMessage({type: 'iframes', urls: urls});
-  }, 500);
 
+  function sendFrameToInspector(event) {
+    chrome.extension.sendMessage({type: 'iframes', urls: [event.target.src]});
+  }
 
+  function setupOnLoadListenersForIFrames() {
+    // get all current frames and attach onLoad event
+    var iframes = document.getElementsByTagName('iframe');
+    for (var i = 0, l = iframes.length; i < l; i ++) {
+      var iframe = iframes[i];
+      if (!('__inspector__on__load_listener' in iframe)) {
+        iframe.__inspector__on__load_listener = true;
+        iframe.addEventListener('load', sendFrameToInspector);
+      }
+    }
+  }
+
+  // create an observer instance for body tag, so if any iframes get pushed
+  // to DOM we attach onLoad event listener on it and when it has finally loaded
+  // we send it's URL to Inspector, otherwise we might send URL but Ember app in the
+  // frame is still loading and thus will not be detected
+  new MutationObserver(function() {
+    setupOnLoadListenersForIFrames();
+  }).observe(document.body, { childList: true });
+
+  // get frames already in DOM on boot
+  setupOnLoadListenersForIFrames();
 }());
