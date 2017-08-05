@@ -22,6 +22,8 @@ if (typeof env !== 'undefined') {
 var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
 
 (function(adapter) {
+  var onReady = requireModule('ember-debug/utils/on-ready').onReady;
+
   onEmberReady(function() {
     // global to prevent injection
     if (window.NO_EMBER_DEBUG) {
@@ -68,8 +70,6 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       });
     }
   });
-
-  var onReady = requireModule('ember-debug/utils/on-ready').onReady;
 
   function onEmberReady(callback) {
     var triggered = false;
