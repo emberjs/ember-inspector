@@ -8,10 +8,25 @@
  * @namespace EmberInspector/Shared
  * @class InPageScript
  */
-(function($) {
+(function() {
   "use strict";
-  if (!$) { return; }
-  $(function() {
+  function onReady(callback) {
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      setTimeout(completed);
+    } else {
+      document.addEventListener("DOMContentLoaded", completed, false);
+      // For some reason DOMContentLoaded doesn't always work
+      window.addEventListener("load", completed, false);
+    }
+
+    function completed() {
+      document.removeEventListener("DOMContentLoaded", completed, false);
+      window.removeEventListener("load", completed, false);
+      callback();
+    }
+  }
+
+  onReady(function() {
     var libraries = window.Ember && window.Ember.libraries;
     if (libraries) {
       // Ember has changed where the array of libraries is located.
@@ -28,4 +43,4 @@
       }, '*');
     }
   });
-}(window.jQuery));
+}());
