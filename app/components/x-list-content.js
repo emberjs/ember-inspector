@@ -80,16 +80,51 @@ export default Component.extend(Evented, {
   setupEvents() {
     this.set('rowEvents', EmberObject.extend(Evented).create());
     let cb = run.bind(this, 'triggerRowEvent');
-    let handler = function(e) {
+    let listContentElement = this.element;
+    // Delegated event handler for click on rows
+    this.element.addEventListener('click', function(e) {
       let tr = e.target.closest('tr');
       if (!tr || !e.currentTarget.contains(tr)) {
         return;
       }
       cb(e.type, tr);
-    };
-    this.element.addEventListener('click', handler);
-    this.element.addEventListener('mouseleave', handler);
-    this.element.addEventListener('mouseenter', handler);
+    });
+    // Delegated event handler for mouseenter/leave on rows.
+    // Since mouseenter/leave do not bubble, this event handler simulates
+    // it using the mouseover and keeping track of the currently hovered row.
+    let currentlyHoveredRow;
+    this.element.addEventListener('mouseover', function(e) {
+      let target = e.target;
+      let match;
+      while (target && target !== listContentElement && !(match = target.matches('tr'))) {
+        target = target.parentNode;
+      }
+      if (!match) {
+        if (currentlyHoveredRow) {
+          currentlyHoveredRow = null;
+          cb('mouseleave', target);
+        }
+        return;
+      }
+
+      if (!currentlyHoveredRow) {
+        currentlyHoveredRow = target;
+        cb('mouseenter', target);
+      } else if (target !== currentlyHoveredRow) {
+        cb('mouseleave', currentlyHoveredRow);
+        cb('mouseenter', target);
+        currentlyHoveredRow = target;
+      }
+    });
+    // Delegated event handler for mouseleave the entire list
+    // This is needed to fire the last mouseleave on the row when the mouse leaves
+    // the table entirely.
+    this.element.addEventListener('mouseleave', function() {
+      if (currentlyHoveredRow) {
+        cb('mouseleave', currentlyHoveredRow);
+        currentlyHoveredRow = null;
+      }
+    });
   },
 
   /**
