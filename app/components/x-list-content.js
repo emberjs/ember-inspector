@@ -81,9 +81,11 @@ export default Component.extend(Evented, {
     this.set('rowEvents', EmberObject.extend(Evented).create());
     let cb = run.bind(this, 'triggerRowEvent');
     let handler = function(e) {
-      if (e.target.tagName.toUpperCase() === 'TR') {
-        cb(e);
+      let tr = e.target.closest('tr');
+      if (!tr || !e.currentTarget.contains(tr)) {
+        return;
       }
+      cb(e.type, tr);
     };
     this.element.addEventListener('click', handler);
     this.element.addEventListener('mouseleave', handler);
@@ -104,12 +106,11 @@ export default Component.extend(Evented, {
    * Broadcasts that an event was triggered on a row.
    *
    * @method triggerRowEvent
-   * @param {Object}
-   *  - {String} type The event type to trigger
-   *  - {DOMElement} currentTarget The element the event was triggered on
+   * @param {String} type The event type to trigger
+   * @param {DOMElement} row The element the event was triggered on
    */
-  triggerRowEvent({ type, target }) {
-    let index = [].indexOf.call(target.parentNode.children, target);
+  triggerRowEvent(type, row) {
+    let index = [].indexOf.call(row.parentNode.children, row);
     this.get('rowEvents').trigger(type, { index, type });
   },
 
