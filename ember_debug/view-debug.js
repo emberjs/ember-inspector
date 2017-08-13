@@ -430,7 +430,7 @@ export default EmberObject.extend(PortMixin, {
       top: `${rect.top + window.scrollY}px`,
       left: `${rect.left + window.scrollX}px`,
       width: `${rect.width}px`,
-      height: `${rect.height}px`,
+      height: `${rect.height}px`
     };
 
     if (isPreview) {
