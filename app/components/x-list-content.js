@@ -89,42 +89,38 @@ export default Component.extend(Evented, {
       }
       cb(e.type, tr);
     });
-    // Delegated event handler for mouseenter/leave on rows.
-    // Since mouseenter/leave do not bubble, this event handler simulates
-    // it using the mouseover and keeping track of the currently hovered row.
-    let currentlyHoveredRow;
-    this.element.addEventListener('mouseover', function(e) {
-      let target = e.target;
-      let match;
-      while (target && target !== listContentElement && !(match = target.matches('tr'))) {
-        target = target.parentNode;
-      }
-      if (!match) {
-        if (currentlyHoveredRow) {
-          currentlyHoveredRow = null;
-          cb('mouseleave', target);
-        }
-        return;
-      }
 
-      if (!currentlyHoveredRow) {
-        currentlyHoveredRow = target;
-        cb('mouseenter', target);
-      } else if (target !== currentlyHoveredRow) {
-        cb('mouseleave', currentlyHoveredRow);
-        cb('mouseenter', target);
-        currentlyHoveredRow = target;
-      }
-    });
-    // Delegated event handler for mouseleave the entire list
-    // This is needed to fire the last mouseleave on the row when the mouse leaves
-    // the table entirely.
-    this.element.addEventListener('mouseleave', function() {
-      if (currentlyHoveredRow) {
-        cb('mouseleave', currentlyHoveredRow);
-        currentlyHoveredRow = null;
-      }
-    });
+    // Delegated event handler for mouseenter/leave on rows.
+    // Since mouseenter/leave do not bubble, these event handlers simulate it using
+    // `mouseover`/`mouseout`.
+    this.element.addEventListener('mouseover', simulateMouseEvent('mouseenter'));
+    this.element.addEventListener('mouseout', simulateMouseEvent('mouseleave'));
+
+    function simulateMouseEvent(eventName) {
+      return function (e) {
+        let target = e.target;
+        let related = event.relatedTarget;
+        let match;
+        // search for a parent node matching the delegation selector
+        while (target && target !== listContentElement && !(match = target.matches('tr'))) {
+          target = target.parentNode;
+        }
+        // exit if no matching node has been found
+        if (!match) {
+          return;
+        }
+
+        // loop through the parent of the related target to make sure that it's not a child of the target
+        while (related && related !== target && related !== document) {
+          related = related.parentNode;
+        }
+
+        // exit if this is the case
+        if (related === target) { return; }
+
+        cb(eventName, target);
+      };
+    }
   },
 
   /**
