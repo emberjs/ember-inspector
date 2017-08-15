@@ -38,12 +38,7 @@ export function shortModelName(model) {
  * @return {String}            The controller name
  */
 export function controllerName(controller) {
-  let className = controller.constructor.toString();
-  let match = className.match(/^\(subclass of (.*)\)/);
-  if (match) {
-    className = match[1];
-  }
-  return className;
+  return controller.toString();
 }
 
 /**
@@ -54,9 +49,33 @@ export function controllerName(controller) {
  * @return {String}            The short controller name
  */
 export function shortControllerName(controller) {
-  let name = controllerName(controller);
-  // jj-abrams-resolver adds `app@controller:` at the begining and `:` at the end
-  return name.replace(/^.+@controller:/, '').replace(/:$/, '');
+  let name = cleanupInstanceName(controllerName(controller));
+  let match = name.match(/^\(generated (.+) controller\)/);
+  if (match) {
+    return match[1];
+  }
+  return name;
+}
+
+/**
+ * Cleans up an instance name to create shorter/less noisy names.
+ * Example: `<app@component:textarea::ember545>` becomes `textarea`.
+ *
+ * @method cleanupInstanceName
+ * @param  {String} name
+ * @return {String} The short/cleaner name
+ */
+function cleanupInstanceName(name) {
+  let match = name.match(/^.+:(.+)::/);
+  if (!match) {
+    // Support for Namespace names (instead of module) (for the tests).
+    // `<App.ApplicationController:ember301>` => `App.ApplicationController`
+    match = name.match(/^<(.+):/);
+  }
+  if (match) {
+    return match[1];
+  }
+  return name;
 }
 
 /**
@@ -67,10 +86,7 @@ export function shortControllerName(controller) {
  * @return {String}      The short view name.
  */
 export function shortViewName(view) {
-  let name = viewName(view);
-  // jj-abrams-resolver adds `app@view:` and `app@component:`
-  // Also `_debugContainerKey` has the format `type-key:factory-name`
-  return name.replace(/.*(view|component):(?!$)/, '').replace(/:$/, '');
+  return cleanupInstanceName(viewName(view));
 }
 
 /**
@@ -81,11 +97,5 @@ export function shortViewName(view) {
  * @return {String}      The view name.
  */
 export function viewName(view) {
-  let name = view.constructor.toString();
-
-  let match = name.match(/\(subclass of (.*)\)/);
-  if (match) {
-    name = match[1];
-  }
-  return name;
+  return view.toString();
 }
