@@ -327,6 +327,9 @@ export default EmberObject.extend(PortMixin, {
 
     mixins.forEach(mixin => {
       let name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor;
+      if (!name && typeof mixin.toString === 'function') {
+        name = mixin.toString();
+      }
       if (!name) {
         name = 'Unknown mixin';
       }
