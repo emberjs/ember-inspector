@@ -415,23 +415,24 @@ export default EmberObject.extend(PortMixin, {
     // take into account the scrolling position as mentioned in docs
     // https://developer.mozilla.org/en-US/docs/Web/API/element.getBoundingClientRect
     let styles = {
-      display: 'block',
-      position: 'absolute',
-      backgroundColor: 'rgba(255, 255, 255, 0.7)',
-      border: '2px solid rgb(102, 102, 102)',
-      padding: '0',
-      right: 'auto',
-      direction: 'ltr',
-      boxSizing: 'border-box',
-      color: 'rgb(51, 51, 255)',
-      fontFamily: 'Menlo, sans-serif',
-      minHeight: '63px',
-      zIndex: 10000,
-      top: `${rect.top + window.scrollY}px`,
-      left: `${rect.left + window.scrollX}px`,
-      width: `${rect.width}px`,
-      height: `${rect.height}px`
+      display: "block",
+      position: "absolute",
+      backgroundColor: "rgba(255, 255, 255, 0.7)",
+      border: "2px solid rgb(102, 102, 102)",
+      padding: "0",
+      right: "auto",
+      direction: "ltr",
+      boxSizing: "border-box",
+      color: "rgb(51, 51, 255)",
+      fontFamily: "Menlo, sans-serif",
+      minHeight: 63,
+      zIndex: 10000
     };
+    for (let prop in rect) {
+      styles[prop] = rect[prop];
+    }
+    styles.top += window.scrollY;
+    styles.left += window.scrollX;
 
     if (isPreview) {
       div = previewDiv;
@@ -502,10 +503,10 @@ export default EmberObject.extend(PortMixin, {
         span.style.color = '#eee';
         span.style.fontFamily = 'helvetica, sans-serif';
         span.style.fontSize = '12px';
-        span.style.width = '16px';
-        span.style.height = '16px';
+        span.style.width = 16;
+        span.style.height = 16;
         span.style.lineHeight = '14px';
-        span.style.borderRadius = '16px';
+        span.style.borderRadius = 16;
         span.style.textAlign = 'center';
         span.style.cursor = 'pointer';
         span.addEventListener('click', (e) => {
