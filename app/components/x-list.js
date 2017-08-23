@@ -9,14 +9,6 @@ const { service } = inject;
 const { readOnly, reads } = computed;
 
 const CHECK_HTML = '&#10003;';
-let LOCAL_STORAGE_SUPPORTED;
-try {
-  LOCAL_STORAGE_SUPPORTED = !!window.localStorage;
-} catch (e) {
-  // Security setting in chrome that disables storage for third party
-  // throws an error when `localStorage` is accessed.
-  LOCAL_STORAGE_SUPPORTED = false;
-}
 
 export default Component.extend({
   /**
