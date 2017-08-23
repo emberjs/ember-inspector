@@ -28,9 +28,7 @@ const Ember = window.Ember;
 import {
   modelName as getModelName,
   shortModelName as getShortModelName,
-  controllerName as getControllerName,
   shortControllerName as getShortControllerName,
-  viewName as getViewName,
   shortViewName as getShortViewName
 } from 'ember-debug/utils/name-functions';
 
@@ -167,7 +165,11 @@ export default class {
     let { render: { controller }, outlets } = outletState;
     let node = { value: this.inspectOutlet(outletState), controller, children: [] };
     for (let key in outlets) {
-      node.children.push(this.makeOutletTree(outlets[key]));
+      // disconnectOutlet() resets the controller value as undefined (https://github.com/emberjs/ember.js/blob/v2.6.2/packages/ember-routing/lib/system/route.js#L2048).
+      // So skip building the tree, if the outletState doesn't have a controller.
+      if (this.controllerForOutlet(outlets[key])) {
+        node.children.push(this.makeOutletTree(outlets[key]));
+      }
     }
     return node;
   }
@@ -402,7 +404,7 @@ export default class {
   inspectController(controller) {
     return {
       name: getShortControllerName(controller),
-      completeName: getControllerName(controller),
+      completeName: getShortControllerName(controller),
       objectId: this.retainObject(controller)
     };
   }
@@ -417,7 +419,7 @@ export default class {
    */
   inspectComponent(component) {
     let viewClass = getShortViewName(component);
-    let completeViewClass = getViewName(component);
+    let completeViewClass = viewClass;
     let tagName = component.get('tagName');
     let objectId = this.retainObject(component);
     let duration = this.durations[objectId];
@@ -575,13 +577,12 @@ export default class {
    * @param  {Boolean} isPreview Whether it's a preview or not
    */
   highlightComponent(component, isPreview = false) {
-
     let rect = getViewBoundingClientRect(component);
 
     let options = {
       isPreview,
       view: {
-        name: getViewName(component),
+        name: getShortViewName(component),
         object: component
       }
     };
@@ -592,7 +593,6 @@ export default class {
         name: templateName
       };
     }
-
     this.highlightRange(rect, options);
   }
 
@@ -626,7 +626,7 @@ export default class {
     let controller = this.controllerForOutlet(applicationOutlet);
     if (controller) {
       options.controller = {
-        name: getControllerName(controller),
+        name: getShortControllerName(controller),
         object: controller
       };
 
@@ -639,7 +639,6 @@ export default class {
         };
       }
     }
-
     let rect = this.getBoundingClientRect(element);
     this.highlightRange(rect, options);
   }

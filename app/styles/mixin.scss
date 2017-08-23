@@ -14,6 +14,9 @@
   background-color: #f0f0f0;
   cursor: default;
   user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .mixin__name:active {

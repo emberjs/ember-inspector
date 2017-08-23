@@ -1,5 +1,8 @@
 import { module, test } from 'qunit';
 import Ember from "ember";
+import { visit } from 'ember-native-dom-helpers';
+import require from 'require';
+
 const { run, A: emberA, Application } = Ember;
 let EmberDebug;
 let port, name, message;
@@ -17,7 +20,6 @@ function setupApp() {
 
 module("Container Debug", {
   beforeEach() {
-    /* globals require */
     EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
@@ -49,9 +51,6 @@ test("#getTypes", async function t(assert) {
 
   assert.equal(name, 'container:types');
   let types = emberA(message.types);
-  let application = types.findBy('name', 'application');
-  assert.ok(application);
-  assert.equal(application.count, 1);
   assert.ok(types.findBy('name', 'controller'));
   assert.ok(types.findBy('name', 'route'));
 });

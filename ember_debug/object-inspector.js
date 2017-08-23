@@ -152,7 +152,9 @@ export default EmberObject.extend(PortMixin, {
     },
     inspectRoute(message) {
       const container = this.get('application.__container__');
-      this.sendObject(container.lookup('router:main').router.getHandler(message.name));
+      const router = container.lookup('router:main');
+      const routerLib = router._routerMicrolib || router.router;
+      this.sendObject(routerLib.getHandler(message.name));
     },
     inspectController(message) {
       const container = this.get('application.__container__');
@@ -325,6 +327,9 @@ export default EmberObject.extend(PortMixin, {
 
     mixins.forEach(mixin => {
       let name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor;
+      if (!name && typeof mixin.toString === 'function') {
+        name = mixin.toString();
+      }
       if (!name) {
         name = 'Unknown mixin';
       }

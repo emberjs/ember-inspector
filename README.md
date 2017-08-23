@@ -41,7 +41,7 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `npm install`
+- run `npm install && bower install`
 - run `npm install -g ember-cli`
 - run `npm run build` to build the `dist` directory
 - Visit chrome://extensions in chrome
@@ -112,10 +112,21 @@ When releasing a major/minor version, master would already have this version set
 
 - Push the `stable` branch to github (this will publish the bookmarklet version).
 - `npm run build:production`
-- Publish `dist/chrome/ember-inspector.zip` to the Chrome web store
+- Follow the "Publishing to Chrome" steps
 - Publish `tmp/xpi/ember-inspector.xpi` to the Mozilla Addons
 - `npm publish ./`
 - `git tag` the new version
+
+##### Publishing to Chrome
+
+- Sign in to the [Chrome Webstore]((https://chrome.google.com/webstore))
+- Click on Settings -> Developer dashboard
+- Click on "Edit" next to "Ember Inspector"
+- Click on Upload Updated Package
+- Click on "Choose file"
+- Choose the file `dist/chrome/ember-inspector.zip`
+- Click "Upload"
+- Click "Save and publish changes"
 
 ### Locking a version
 

@@ -1,9 +1,11 @@
 import Ember from "ember";
 import { module, test } from 'qunit';
+import { visit } from 'ember-native-dom-helpers';
+import hbs from 'htmlbars-inline-precompile';
+import require from 'require';
 
-/* globals require */
 const EmberDebug = require('ember-debug/main').default;
-const { run, Application, Handlebars: { compile } } = Ember;
+const { run, Application } = Ember;
 let port, App;
 
 
@@ -15,7 +17,7 @@ function setupApp() {
   App.Router.map(function() {
     this.route('simple');
   });
-  Ember.TEMPLATES.simple = compile('Simple template');
+  Ember.TEMPLATES.simple = hbs`Simple template`;
 }
 
 module("Render Debug", {

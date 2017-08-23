@@ -1,10 +1,11 @@
+/* eslint-env node */
 var packageJson = require('../package.json');
 
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'ember-inspector',
     environment: environment,
-    baseURL: '/',
+    rootURL: '',
     locationType: 'hash',
     emberVersionsSupported: packageJson.emberVersionsSupported,
     previousEmberVersionsSupported: packageJson.previousEmberVersionsSupported,
@@ -12,6 +13,10 @@ module.exports = function(environment) {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
         // e.g. 'with-controller': true
+      },
+      EXTEND_PROTOTYPES: {
+        // Prevent Ember Data from overriding Date.parse.
+        Date: false
       }
     },
 
@@ -31,8 +36,8 @@ module.exports = function(environment) {
 
   if (environment === 'test') {
     // Testem prefers this...
-    ENV.baseURL = '/';
     ENV.locationType = 'none';
+    ENV.rootURL = '/testing/';
 
     // keep test console output quieter
     ENV.APP.LOG_ACTIVE_GENERATION = false;

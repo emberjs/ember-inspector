@@ -1,18 +1,21 @@
 import Ember from "ember";
 import { module, test } from 'qunit';
-const { $, Application } = Ember;
+import { visit, find, click, triggerEvent, settings as nativeDomHelpersSettings } from 'ember-native-dom-helpers';
+import hbs from 'htmlbars-inline-precompile';
+import require from 'require';
 
-/* globals require */
+const { Application } = Ember;
+
 const EmberDebug = require('ember-debug/main').default;
-const { Route, Object: EmberObject, Handlebars, Controller } = Ember;
-const { compile } = Handlebars;
+const { Route, Object: EmberObject, Controller } = Ember;
 let port;
 let App, run = Ember.run;
 let OLD_TEMPLATES = {};
 
 function setTemplate(name, template) {
   OLD_TEMPLATES = Ember.TEMPLATES[name];
-  Ember.TEMPLATES[name] = compile(template, { moduleName: name });
+  template.meta.moduleName = name;
+  Ember.TEMPLATES[name] = template;
 }
 
 function destroyTemplates() {
@@ -20,6 +23,10 @@ function destroyTemplates() {
     Ember.TEMPLATES[name] = OLD_TEMPLATES[name];
   }
   OLD_TEMPLATES = {};
+}
+
+function isVisible(elem) {
+  return elem.offsetWidth > 0 || elem.offsetHeight > 0 || elem.getClientRects().length > 0;
 }
 
 function setupApp() {
@@ -79,12 +86,12 @@ function setupApp() {
     }
   });
 
-  setTemplate('application', '<div class="application">{{outlet}}</div>');
-  setTemplate('simple', 'Simple {{input class="simple-input"}}');
-  setTemplate('comments/index', '{{#each}}{{this}}{{/each}}');
-  setTemplate('posts', 'Posts');
+  setTemplate('application', hbs`<div class="application">{{outlet}}</div>`);
+  setTemplate('simple', hbs`Simple {{input class="simple-input"}}`);
+  setTemplate('comments/index', hbs`{{#each}}{{this}}{{/each}}`);
+  setTemplate('posts', hbs`Posts`);
 }
-
+let defaultRootForFinder;
 module("View Debug", {
   beforeEach() {
     EmberDebug.Port = EmberDebug.Port.extend({
@@ -98,11 +105,14 @@ module("View Debug", {
     EmberDebug.IGNORE_DEPRECATIONS = true;
     run(EmberDebug, 'start');
     port = EmberDebug.port;
+    defaultRootForFinder = nativeDomHelpersSettings.rootElement;
+    nativeDomHelpersSettings.rootElement = 'body';
   },
   afterEach() {
     EmberDebug.destroyContainer();
     run(App, 'destroy');
     destroyTemplates();
+    nativeDomHelpersSettings.rootElement = defaultRootForFinder;
   }
 });
 
@@ -122,7 +132,6 @@ test("Simple View Tree", async function t(assert) {
   let value = tree.value;
   assert.equal(tree.children.length, 1);
   assert.equal(value.controller.name, 'App.ApplicationController');
-  assert.equal(value.viewClass, '(unknown mixin)');
   assert.equal(value.name, 'application');
   assert.equal(value.tagName, 'div');
   assert.equal(value.template, 'application');
@@ -152,7 +161,6 @@ test("Components in view tree", async function t(assert) {
   assert.equal(simple.children.length, 1, "Components can be configured to show.");
   let component = simple.children[0];
   assert.equal(component.value.viewClass, 'Ember.TextField');
-
 });
 
 test("Highlighting Views on hover", async function t(assert) {
@@ -169,23 +177,20 @@ test("Highlighting Views on hover", async function t(assert) {
   run(() => port.trigger('view:inspectViews', { inspect: true }));
   await wait();
 
-  run(() => find('.application').trigger('mousemove'));
-  await wait();
+  await triggerEvent('.application', 'mousemove');
 
   let previewDiv = find('[data-label=preview-div]');
-  assert.ok(previewDiv.is(':visible'));
-  assert.equal(find('[data-label=layer-component]').length, 0, "Component layer not shown on outlet views");
-  assert.equal(find('[data-label=layer-controller]', previewDiv).text(), 'App.ApplicationController');
-  assert.equal(find('[data-label=layer-model]', previewDiv).text(), 'Application model');
-  assert.equal(find('[data-label=layer-view]', previewDiv).text(), '(unknown mixin)');
+
+  assert.ok(isVisible(previewDiv));
+  assert.notOk(find('[data-label=layer-component]'), "Component layer not shown on outlet views");
+  assert.equal(find('[data-label=layer-controller]', previewDiv).textContent, 'App.ApplicationController');
+  assert.equal(find('[data-label=layer-model]', previewDiv).textContent, 'Application model');
 
   let layerDiv = find('[data-label=layer-div]');
-  run(() => previewDiv.trigger('mouseup'));
-  await wait();
+  await triggerEvent(layerDiv, 'mouseup');
 
-  assert.ok(layerDiv.is(':visible'));
-  assert.equal(find('[data-label=layer-model]', layerDiv).text(), 'Application model');
-  assert.equal(find('[data-label=layer-view]', layerDiv).text(), '(unknown mixin)');
+  assert.ok(isVisible(layerDiv));
+  assert.equal(find('[data-label=layer-model]', layerDiv).textContent, 'Application model');
   await click('[data-label=layer-controller]', layerDiv);
 
   let controller = App.__container__.lookup('controller:application');
@@ -198,22 +203,20 @@ test("Highlighting Views on hover", async function t(assert) {
 
   assert.equal(name, 'objectInspector:updateObject');
   assert.equal(message.name, 'Application model');
-
   await click('[data-label=layer-close]');
 
-  assert.ok(!layerDiv.is(':visible'));
+  assert.notOk(isVisible(layerDiv));
 
   run(() => port.trigger('view:inspectViews', { inspect: true }));
   await wait();
 
-  run(() => find('.simple-input').trigger('mousemove'));
-  await wait();
+  await triggerEvent('.simple-input', 'mousemove');
 
   previewDiv = find('[data-label=preview-div]');
-  assert.ok(previewDiv.is(':visible'));
-  assert.equal(find('[data-label=layer-component]').text().trim(), "Ember.TextField");
-  assert.equal(find('[data-label=layer-controller]', previewDiv).length, 0);
-  assert.equal(find('[data-label=layer-model]', previewDiv).length, 0);
+  assert.ok(isVisible(previewDiv));
+  assert.equal(find('[data-label=layer-component]').textContent.trim(), "Ember.TextField");
+  assert.notOk(find('[data-label=layer-controller]', previewDiv));
+  assert.notOk(find('[data-label=layer-model]', previewDiv));
 });
 
 test("Highlighting a view without an element should not throw an error", async function t(assert) {
@@ -250,12 +253,12 @@ test("Supports a view with a string as model", async function t(assert) {
 
 test("Supports applications that don't have the ember-application CSS class", async function t(assert) {
   let name = null;
-  let $rootElement = $('body');
+  let rootElement = find('');
 
   await visit('/simple');
 
-  assert.ok($rootElement.hasClass('ember-application'), "The rootElement has the .ember-application CSS class");
-  $rootElement.removeClass('ember-application');
+  assert.ok(rootElement.classList.contains('ember-application'), "The rootElement has the .ember-application CSS class");
+  rootElement.classList.remove('ember-application');
 
   // Restart the inspector
   EmberDebug.start();
@@ -280,9 +283,9 @@ test("Does not list nested {{yield}} views", async function t(assert) {
     }
   });
 
-  setTemplate('posts', '{{#x-first}}Foo{{/x-first}}');
-  setTemplate('components/x-first', '{{#x-second}}{{yield}}{{/x-second}}');
-  setTemplate('components/x-second', '{{yield}}');
+  setTemplate('posts', hbs`{{#x-first}}Foo{{/x-first}}`);
+  setTemplate('components/x-first', hbs`{{#x-second}}{{yield}}{{/x-second}}`);
+  setTemplate('components/x-second', hbs`{{yield}}`);
 
   await visit('/posts');
 

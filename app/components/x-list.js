@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import { task, timeout } from 'ember-concurrency';
 import ResizableColumns from 'ember-inspector/libs/resizable-columns';
+import LocalStorageService from "ember-inspector/services/storage/local";
+
 const { Component, run, computed, inject, $ } = Ember;
 const { scheduleOnce } = run;
 const { service } = inject;
@@ -71,7 +73,7 @@ export default Component.extend({
    * @property storage
    * @return {Service}
    */
-  storage: service(`storage/${LOCAL_STORAGE_SUPPORTED ? 'local' : 'memory'}`),
+  storage: service(`storage/${LocalStorageService.SUPPORTED ? 'local' : 'memory'}`),
 
   /**
    * The key used to cache the current schema. Defaults
@@ -111,10 +113,13 @@ export default Component.extend({
    * @method didUpdateAttrs
    * @param  {Object} newAttrs and oldAttrs
    */
-  didUpdateAttrs({ newAttrs: { schema: newSchema }, oldAttrs: { schema: oldSchema } }) {
+  didUpdateAttrs() {
+    let oldSchema = this.get('oldSchema');
+    let newSchema = this.get('schema');
     if (newSchema && newSchema !== oldSchema) {
       scheduleOnce('actions', this, this.setupColumns);
     }
+    this.set('oldSchema', newSchema);
     return this._super(...arguments);
   },
 

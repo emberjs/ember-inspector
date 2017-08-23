@@ -1,3 +1,4 @@
+/* eslint no-useless-escape: 0 */
 import BasicAdapter from "./basic";
 import Ember from 'ember';
 const { computed } = Ember;

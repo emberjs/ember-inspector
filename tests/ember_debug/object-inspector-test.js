@@ -1,13 +1,16 @@
 import Ember from "ember";
 import { module, test } from 'qunit';
 import computed from 'ember-new-computed';
+import { visit, find, settings as nativeDomHelpersSettings } from 'ember-native-dom-helpers';
+import hbs from 'htmlbars-inline-precompile';
+import require from 'require';
 
 let EmberDebug;
 let port, name, message;
 let App;
 let objectInspector;
 
-const { run, guidFor, Object: EmberObject, Handlebars: { compile } } = Ember;
+const { run, guidFor, Object: EmberObject } = Ember;
 
 function setupApp() {
   App = Ember.Application.create();
@@ -20,15 +23,14 @@ function setupApp() {
 
   App.XSimpleComponent = Ember.Component;
 
-  Ember.TEMPLATES.simple = compile('Simple {{input class="simple-input"}} {{x-simple class="simple-view"}}');
+  Ember.TEMPLATES.simple = hbs`Simple {{input class="simple-input"}} {{x-simple class="simple-view"}}`;
 }
 
 let ignoreErrors = true;
-
+let defaultRootForFinder;
 module("Ember Debug - Object Inspector", {
   // eslint-disable-next-line object-shorthand
   beforeEach: async function() {
-    /* globals require */
     EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
@@ -48,8 +50,11 @@ module("Ember Debug - Object Inspector", {
     await wait();
     objectInspector = EmberDebug.get('objectInspector');
     port = EmberDebug.port;
+    defaultRootForFinder = nativeDomHelpersSettings.rootElement;
+    nativeDomHelpersSettings.rootElement = 'body';
   },
   afterEach() {
+    nativeDomHelpersSettings.rootElement = defaultRootForFinder;
     name = null;
     message = null;
     EmberDebug.destroyContainer();
@@ -375,7 +380,7 @@ test("Views are correctly handled when destroyed during transitions", async func
 
   await visit('/simple');
 
-  objectId = find('.simple-view').get(0).id;
+  objectId = find('.simple-view').id;
   let view = App.__container__.lookup('-view-registry:main')[objectId];
   objectInspector.sendObject(view);
   await wait();

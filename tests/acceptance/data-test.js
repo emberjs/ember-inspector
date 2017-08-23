@@ -2,6 +2,8 @@ import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
+import { visit, findAll, click, fillIn } from 'ember-native-dom-helpers';
+
 const { run } = Ember;
 let App;
 
@@ -94,62 +96,63 @@ function records(type) {
 test("Model types are successfully listed and bound", async function t(assert) {
   await visit('/data/model-types');
 
-  assert.equal(find('.js-model-type').length, 2);
+  assert.equal(findAll('.js-model-type').length, 2);
   // they should be sorted alphabetically
-  assert.equal(find('.js-model-type-name').eq(0).text().trim(), 'App.Comment');
-  assert.equal(find('.js-model-type-name').eq(1).text().trim(), 'App.Post');
+  assert.equal(findAll('.js-model-type-name')[0].textContent.trim(), 'App.Comment');
+  assert.equal(findAll('.js-model-type-name')[1].textContent.trim(), 'App.Post');
 
-  assert.equal(find('.js-model-type-count').eq(0).text().trim(), 1);
-  assert.equal(find('.js-model-type-count').eq(1).text().trim(), 2);
+  assert.equal(findAll('.js-model-type-count')[0].textContent.trim(), 1);
+  assert.equal(findAll('.js-model-type-count')[1].textContent.trim(), 2);
 
   await triggerPort('data:modelTypesUpdated', {
     modelTypes: [
       modelTypeFactory({ name: 'App.Post', count: 3 })
     ]
   });
-  assert.equal(find('.js-model-type-count').eq(1).text().trim(), 3);
+  assert.equal(findAll('.js-model-type-count')[1].textContent.trim(), 3);
 });
 
 test("Records are successfully listed and bound", async function t(assert) {
   await visit('/data/model-types');
 
-  await click(find('.js-model-type').find('a').eq(1));
+  await click(findAll('.js-model-type a')[1]);
 
-  let columns = find('.js-header-column');
-  assert.equal(columns.eq(0).text().trim(), 'Id');
-  assert.equal(columns.eq(1).text().trim(), 'Title');
-  assert.equal(columns.eq(2).text().trim(), 'Body');
+  let columns = findAll('.js-header-column');
+  assert.equal(columns[0].textContent.trim(), 'Id');
+  assert.equal(columns[1].textContent.trim(), 'Title');
+  assert.equal(columns[2].textContent.trim(), 'Body');
 
-  let recordRows = find('.js-record-list-item');
+  let recordRows = findAll('.js-record-list-item');
   assert.equal(recordRows.length, 2);
 
-  let firstRow = recordRows.eq(0);
-  assert.equal(find('.js-record-column', firstRow).eq(0).text().trim(), 1);
-  assert.equal(find('.js-record-column', firstRow).eq(1).text().trim(), 'My Post');
-  assert.equal(find('.js-record-column', firstRow).eq(2).text().trim(), 'This is my first post');
+  let firstRow = recordRows[0];
+  assert.equal(findAll('.js-record-column', firstRow)[0].textContent.trim(), 1);
+  assert.equal(findAll('.js-record-column', firstRow)[1].textContent.trim(), 'My Post');
+  assert.equal(findAll('.js-record-column', firstRow)[2].textContent.trim(), 'This is my first post');
 
-  let secondRow = recordRows.eq(1);
-  assert.equal(find('.js-record-column', secondRow).eq(0).text().trim(), 2);
-  assert.equal(find('.js-record-column', secondRow).eq(1).text().trim(), 'Hello');
-  assert.equal(find('.js-record-column', secondRow).eq(2).text().trim(), '');
+  let secondRow = recordRows[1];
+  assert.equal(findAll('.js-record-column', secondRow)[0].textContent.trim(), 2);
+  assert.equal(findAll('.js-record-column', secondRow)[1].textContent.trim(), 'Hello');
+  assert.equal(findAll('.js-record-column', secondRow)[2].textContent.trim(), '');
 
   await triggerPort('data:recordsAdded', {
     records: [recordFactory({ objectId: 'new-post', id: 3, title: 'Added Post', body: 'I am new here' })]
   });
 
-  let row = find('.js-record-list-item').eq(2);
-  assert.equal(find('.js-record-column', row).eq(0).text().trim(), 3);
-  assert.equal(find('.js-record-column', row).eq(1).text().trim(), 'Added Post');
-  assert.equal(find('.js-record-column', row).eq(2).text().trim(), 'I am new here');
+  let row = findAll('.js-record-list-item')[2];
+  assert.equal(findAll('.js-record-column', row)[0].textContent.trim(), 3);
+  assert.equal(findAll('.js-record-column', row)[1].textContent.trim(), 'Added Post');
+  assert.equal(findAll('.js-record-column', row)[2].textContent.trim(), 'I am new here');
 
   await triggerPort('data:recordsUpdated', {
     records: [recordFactory({ objectId: 'new-post', id: 3, title: 'Modified Post', body: 'I am no longer new' })]
   });
 
-  row = find('.js-record-list-item').last();
-  assert.equal(find('.js-record-column', row).eq(0).text().trim(), 3);
-  assert.equal(find('.js-record-column', row).eq(1).text().trim(), 'Modified Post');
-  assert.equal(find('.js-record-column', row).eq(2).text().trim(), 'I am no longer new');
+  let rows = findAll('.js-record-list-item');
+  row = rows[rows.length - 1];
+  assert.equal(findAll('.js-record-column', row)[0].textContent.trim(), 3);
+  assert.equal(findAll('.js-record-column', row)[1].textContent.trim(), 'Modified Post');
+  assert.equal(findAll('.js-record-column', row)[2].textContent.trim(), 'I am no longer new');
 
   await triggerPort('data:recordsRemoved', {
     index: 2,
@@ -157,57 +160,60 @@ test("Records are successfully listed and bound", async function t(assert) {
   });
   await wait();
 
-  assert.equal(find('.js-record-list-item').length, 2);
-  let lastRow = find('.js-record-list-item').last();
-  assert.equal(find('.js-record-column', lastRow).eq(0).text().trim(), 2, "Records successfully removed.");
+  assert.equal(findAll('.js-record-list-item').length, 2);
+  rows = findAll('.js-record-list-item');
+  let lastRow = rows[rows.length - 1];
+  assert.equal(findAll('.js-record-column', lastRow)[0].textContent.trim(), 2, "Records successfully removed.");
 });
 
 test("Filtering records", async function t(assert) {
   await visit('/data/model-types');
 
-  await click(find('.js-model-type').find('a').eq(1));
+  await click(findAll('.js-model-type a')[1]);
 
-  let rows = find('.js-record-list-item');
+  let rows = findAll('.js-record-list-item');
   assert.equal(rows.length, 2);
-  let filters = find('.js-filter');
+  let filters = findAll('.js-filter');
   assert.equal(filters.length, 2);
-  let newFilter = filters.filter(':contains(New)');
+  let newFilter = [...filters].find((e) => e.textContent.indexOf('New') > -1);
   await click(newFilter);
 
-  rows = find('.js-record-list-item');
+  rows = findAll('.js-record-list-item');
   assert.equal(rows.length, 1);
-  assert.equal(find('.js-record-column', rows[0]).first().text().trim(), '2');
+  assert.equal(findAll('.js-record-column', rows[0])[0].textContent.trim(), '2');
 });
 
 test("Searching records", async function t(assert) {
   await visit('/data/model-types');
 
-  await click(find('.js-model-type').find('a').eq(1));
+  await click(findAll('.js-model-type a')[1]);
 
-  let rows = find('.js-record-list-item');
+  let rows = findAll('.js-record-list-item');
   assert.equal(rows.length, 2);
 
   await fillIn('.js-records-search input', 'Hello');
 
-  rows = find('.js-record-list-item');
+  rows = findAll('.js-record-list-item');
   assert.equal(rows.length, 1);
-  assert.equal(find('.js-record-column', rows[0]).first().text().trim(), '2');
+  assert.equal(findAll('.js-record-column', rows[0])[0].textContent.trim(), '2');
 
   await fillIn('.js-records-search input', 'my first post');
 
-  rows = find('.js-record-list-item');
+  rows = findAll('.js-record-list-item');
   assert.equal(rows.length, 1);
-  assert.equal(find('.js-record-column', rows[0]).first().text().trim(), '1');
+  assert.equal(findAll('.js-record-column', rows[0])[0].textContent.trim(), '1');
 
   await fillIn('.js-records-search input', '');
 
-  rows = find('.js-record-list-item');
+  rows = findAll('.js-record-list-item');
   assert.equal(rows.length, 2);
 });
 
 test("Columns successfully updated when switching model types", async function t(assert) {
   await visit('/data/model-types/App.Post/records');
-  assert.equal(find('.js-header-column:last').text().trim(), 'Body');
+  let columns = findAll('.js-header-column');
+  assert.equal(columns[columns.length - 1].textContent.trim(), 'Body');
   await visit('/data/model-types/App.Comment/records');
-  assert.equal(find('.js-header-column:last').text().trim(), 'Content');
+  columns = findAll('.js-header-column');
+  assert.equal(columns[columns.length - 1].textContent.trim(), 'Content');
 });

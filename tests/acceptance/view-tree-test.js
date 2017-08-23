@@ -2,6 +2,8 @@ import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
+import { visit, find, findAll, click, triggerEvent } from 'ember-native-dom-helpers';
+
 let App;
 const { run } = Ember;
 
@@ -114,8 +116,8 @@ test("It should correctly display the view tree", async function(assert) {
   });
   await wait();
 
-  let $treeNodes = find('.js-view-tree-item');
-  assert.equal($treeNodes.length, 3, 'expected some tree nodes');
+  let treeNodes = findAll('.js-view-tree-item');
+  assert.equal(treeNodes.length, 3, 'expected some tree nodes');
   let controllerNames = [];
   let templateNames = [];
   let modelNames = [];
@@ -123,15 +125,15 @@ test("It should correctly display the view tree", async function(assert) {
   let durations = [];
 
   function textFor(selector, context) {
-    return find(selector, context).filter(':first').text().trim();
+    return find(selector, context).textContent.trim();
   }
 
-  $treeNodes.each(function() {
-    templateNames.push(textFor('.js-view-template', this));
-    controllerNames.push(textFor('.js-view-controller', this));
-    viewClassNames.push(textFor('.js-view-class', this));
-    modelNames.push(textFor('.js-view-model', this));
-    durations.push(textFor('.js-view-duration', this));
+  [...treeNodes].forEach(function(node) {
+    templateNames.push(textFor('.js-view-template', node));
+    controllerNames.push(textFor('.js-view-controller', node));
+    viewClassNames.push(textFor('.js-view-class', node));
+    modelNames.push(textFor('.js-view-model', node));
+    durations.push(textFor('.js-view-duration', node));
   });
 
   assert.deepEqual(controllerNames, [
@@ -164,7 +166,7 @@ test("It should correctly display the view tree", async function(assert) {
     '2.50ms'
   ], 'expected render durations');
 
-  let titleTips = find('span[title]').toArray().map(node => node.getAttribute('title')).sort();
+  let titleTips = [...findAll('span[title]')].map(node => node.getAttribute('title')).sort();
 
   assert.deepEqual(titleTips, [
     'App.ApplicationController',
@@ -186,24 +188,26 @@ test("It should correctly display the view tree", async function(assert) {
 
 test("It should update the view tree when the port triggers a change", async function(assert) {
   assert.expect(4);
-  let $treeNodes, viewTree = defaultViewTree();
+  let treeNodes, viewTree = defaultViewTree();
 
   await visit('/');
   run(() => port.trigger('view:viewTree', { tree: viewTree }));
   await wait();
 
-  $treeNodes = find('.js-view-tree-item');
-  assert.equal($treeNodes.length, 3);
-  assert.equal(find('.js-view-controller').filter(':last').text().trim(), 'App.CommentsController');
+  treeNodes = findAll('.js-view-tree-item');
+  assert.equal(treeNodes.length, 3);
+  let viewControllersEls = findAll('.js-view-controller');
+  assert.equal(viewControllersEls[viewControllersEls.length - 1].textContent.trim(), 'App.CommentsController');
 
   viewTree = defaultViewTree();
   viewTree.children.splice(0, 1);
   viewTree.children[0].value.controller.name = 'App.SomeController';
   run(() => port.trigger('view:viewTree', { tree: viewTree }));
   await wait();
-  $treeNodes = find('.js-view-tree-item');
-  assert.equal($treeNodes.length, 2);
-  assert.equal(find('.js-view-controller').filter(':last').text().trim(), 'App.SomeController');
+  treeNodes = findAll('.js-view-tree-item');
+  assert.equal(treeNodes.length, 2);
+  viewControllersEls = findAll('.js-view-controller');
+  assert.equal(viewControllersEls[viewControllersEls.length - 1].textContent.trim(), 'App.SomeController');
 });
 
 test("Previewing / showing a view on the client", async function(assert) {
@@ -219,12 +223,10 @@ test("Previewing / showing a view on the client", async function(assert) {
   viewTree.children = [];
   run(() => port.trigger('view:viewTree', { tree: viewTree }));
   await wait();
-  run(() => find('.js-view-tree-item').mouseenter());
-  await wait();
+  await triggerEvent('.js-view-tree-item', 'mouseover');
   assert.equal(messageSent.name, 'view:previewLayer', "Client asked to preview layer");
   assert.equal(messageSent.message.objectId, 'applicationView', "Client sent correct id to preview layer");
-  run(() => find('.js-view-tree-item').mouseleave());
-  await wait();
+  await triggerEvent('.js-view-tree-item', 'mouseout');
   assert.equal(messageSent.name, 'view:hidePreview', "Client asked to hide preview");
 });
 
@@ -256,20 +258,11 @@ test("Configuring which views to show", async function(assert) {
   });
 
   await visit('/');
-  let checkbox = find('.js-filter-components input');
-  checkbox.prop('checked', true);
-  checkbox.trigger('change');
-  await wait();
+  await click('.js-filter-components input');
   assert.equal(messageSent.name, 'view:setOptions');
   assert.deepEqual(messageSent.message.options, { components: true });
-  await wait();
-  checkbox = find('.js-filter-all-views input');
-  checkbox.prop('checked', true);
-  checkbox.trigger('change');
-  await wait();
   assert.equal(messageSent.name, 'view:setOptions');
   assert.deepEqual(messageSent.message.options, { components: true });
-  await wait();
 });
 
 test("Inspecting a model", async function(assert) {
@@ -286,7 +279,7 @@ test("Inspecting a model", async function(assert) {
     port.trigger('view:viewTree', { tree });
   });
   await wait();
-  let model = find('.js-view-model-clickable').eq(0);
+  let model = find('.js-view-model-clickable');
   await click(model);
   assert.equal(messageSent.name, 'objectInspector:inspectById');
   assert.equal(messageSent.message.objectId, 'postsArray');

@@ -1,8 +1,9 @@
 /* globals requireModule */
 /* eslint no-console: 0 */
 const Ember = window.Ember;
-const { $, A, computed, RSVP, Object: EmberObject } = Ember;
+const { A, computed, RSVP, Object: EmberObject } = Ember;
 const { Promise, resolve } = RSVP;
+import { onReady } from '../utils/on-ready';
 
 export default EmberObject.extend({
   init() {
@@ -113,7 +114,7 @@ export default EmberObject.extend({
   */
   connect() {
     return new Promise((resolve, reject) => {
-      $(() => {
+      onReady(() => {
         if (this.isDestroyed) { reject(); }
         this.interval = setInterval(() => {
           if (document.documentElement.dataset.emberExtension) {

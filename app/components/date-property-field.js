@@ -11,7 +11,7 @@ export default DatePicker.extend({
    * on a destroyed component.
    */
   onPikadayClose() {
-    if (!this.$()) { return; }
+    if (!this.element) { return; }
     return this._super(...arguments);
   },
 

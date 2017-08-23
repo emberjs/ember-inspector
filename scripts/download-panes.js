@@ -1,7 +1,7 @@
 /**
  * Download all previous Ember Inspectors that
  * were uploaded to S3. Each version supports
- * a differnt Ember version range.
+ * a different Ember version range.
  *
  * These versions will end up in the folder
  * `dist_prev` to be added to the published
