@@ -1,8 +1,9 @@
-import PortMixin from "ember-debug/mixins/port-mixin";
+import PortMixin from 'ember-debug/mixins/port-mixin';
+import { compareVersion } from 'ember-debug/utils/version';
 const Ember = window.Ember;
 const { Object: EmberObject, inspect: emberInspect, meta: emberMeta, typeOf,
         Descriptor, computed, get, set, ComputedProperty, guidFor, isNone, removeObserver,
-        Mixin, addObserver, cacheFor } = Ember;
+        Mixin, addObserver, cacheFor, VERSION } = Ember;
 const { oneWay } = computed;
 
 const keys = Object.keys || Ember.keys;
@@ -327,8 +328,13 @@ export default EmberObject.extend(PortMixin, {
 
     mixins.forEach(mixin => {
       let name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor;
-      if (!name && typeof mixin.toString === 'function') {
-        name = mixin.toString();
+      // Only call `toString` on mixins in Ember >= 2.11
+      // See https://github.com/emberjs/ember-inspector/issues/706#issuecomment-325121494
+      // for more details.
+      if (compareVersion(VERSION, '2.11.0') !== -1) {
+        if (!name && typeof mixin.toString === 'function') {
+          name = mixin.toString();
+        }
       }
       if (!name) {
         name = 'Unknown mixin';
@@ -649,7 +655,6 @@ function customizeProperties(mixinDetails, propertyInfo) {
 
   return newMixinDetails;
 }
-
 
 function getDebugInfo(object) {
   let debugInfo = null;
