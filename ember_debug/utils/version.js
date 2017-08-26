@@ -39,8 +39,8 @@ function cleanupVersion(version) {
  * @param {Number} number
  * @return {Number}
  *  0: same
+ * -1: <
  *  1: >
- *  2: <
  */
 function compare(val, number) {
   if (val === number) {
