@@ -11,7 +11,7 @@
  * @return {Boolean} result of the comparison
  */
 export function compareVersion(version1, version2) {
-  var compared, i;
+  let compared, i;
   version1 = cleanupVersion(version1).split('.');
   version2 = cleanupVersion(version2).split('.');
   for (i = 0; i < 3; i++) {
