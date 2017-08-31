@@ -179,8 +179,8 @@ export default EmberObject.extend(PortMixin, {
         recordsUpdated => {
           this.recordsUpdated(recordsUpdated);
         },
-        () => {
-          this.recordsRemoved(...arguments);
+        (...args) => {
+          this.recordsRemoved(...args);
         }
       );
       this.releaseRecordsMethod = releaseMethod;
