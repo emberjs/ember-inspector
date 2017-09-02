@@ -4,12 +4,6 @@ module.exports = function(grunt) {
   var config = {
     pkg: packageJson,
     env: process.env,
-    "jpm": {
-      options: {
-        src: "dist/firefox",
-        xpi: "tmp/xpi"
-      }
-    },
     "s3": {
       options: {
         bucket: 'ember-extension',
@@ -29,13 +23,21 @@ module.exports = function(grunt) {
       }
     },
     "compress": {
-      main: {
+      chrome: {
         options: {
           archive: 'dist/chrome/ember-inspector.zip'
         },
         expand: true,
         pretty: true,
         src: 'dist/chrome/**/*'
+      },
+      firefox: {
+        options: {
+          archive: 'dist/firefox/ember-inspector.zip'
+        },
+        expand: true,
+        pretty: true,
+        src: 'dist/firefox/**/*'
       },
       "chrome-pane": {
         options: {
@@ -52,7 +54,7 @@ module.exports = function(grunt) {
         },
         expand: true,
         pretty: true,
-        cwd: 'dist/firefox/data/' + versionedPane,
+        cwd: 'dist/firefox/' + versionedPane,
         src: ['**/*']
       },
       "bookmarklet-pane": {
@@ -68,14 +70,8 @@ module.exports = function(grunt) {
   };
 
   grunt.initConfig(config);
-
-  grunt.loadNpmTasks('grunt-jpm');
   grunt.loadNpmTasks('grunt-s3');
   grunt.loadNpmTasks('grunt-contrib-compress');
-
-  grunt.registerTask('build-xpi', ['jpm:xpi']);
-
-  grunt.registerTask('run-xpi', ['jpm:run']);
 
   grunt.registerTask('clean-tmp', function() {
     grunt.file.delete('./tmp');
