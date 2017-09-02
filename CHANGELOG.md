@@ -1,5 +1,10 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 2.1.1
+
+* [BUGFIX] Only call Mixin#toString on Ember > 2.11 [#708](https://github.com/emberjs/ember-inspector/pull/708)
+* [BUGFIX] Fix unloading a record in the data tab [#709](https://github.com/emberjs/ember-inspector/pull/709)
+
 ## Ember Inspector 2.0.4
 
 * [BUGFIX] Account for components that are appended manually [#610](https://github.com/emberjs/ember-inspector/pull/610)
