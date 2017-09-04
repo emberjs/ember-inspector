@@ -99,7 +99,7 @@ export default Component.extend(Evented, {
     function simulateMouseEvent(eventName) {
       return function (e) {
         let target = e.target;
-        let related = event.relatedTarget;
+        let related = e.relatedTarget;
         let match;
         // search for a parent node matching the delegation selector
         while (target && target !== listContentElement && !(match = target.matches('tr'))) {
