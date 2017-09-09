@@ -171,15 +171,7 @@ tree = replace(tree, {
 });
 
 var minimumVersion = packageJson.emberVersionsSupported[0].replace(/\./g, '-');
-var chromeRoot = 'panes-' + minimumVersion;
-var firefoxRoot = 'data/' + chromeRoot;
-var bookmarkletRoot = chromeRoot;
-
-var firefoxAndChromeExtra = pickFiles('shared', {
-  srcDir: '/',
-  files: ['in-page-script.js'],
-  destDir: '/'
-});
+var webExtensionRoot = 'panes-' + minimumVersion;
 
 var replacementPattern = [{
   match: /{{env}}/,
@@ -197,13 +189,8 @@ var replacementPattern = [{
 
 replacementPattern = replacementPattern.concat(emberInspectorVersionPattern);
 
-var skeletonChrome = replace('skeletons/chrome', {
+var skeletonWebExtension = replace('skeletons/web-extension', {
   files: ['*'],
-  patterns: replacementPattern
-});
-
-var skeletonFirefox = replace('skeletons/firefox', {
-  files: ['*', '*/**'],
   patterns: replacementPattern
 });
 
@@ -213,17 +200,17 @@ var skeletonBookmarklet = replace('skeletons/bookmarklet', {
 });
 
 var firefox = mergeTrees([
-  mv(mergeTrees([tree, emberDebugs.firefox]), firefoxRoot),
-  skeletonFirefox
+  mv(mergeTrees([tree, emberDebugs.firefox]), webExtensionRoot),
+  skeletonWebExtension
 ]);
 
 var chrome = mergeTrees([
-  mv(mergeTrees([tree, emberDebugs.chrome]), chromeRoot),
-  skeletonChrome
+  mv(mergeTrees([tree, emberDebugs.chrome]), webExtensionRoot),
+  skeletonWebExtension
 ]);
 
 var bookmarklet = mergeTrees([
-  mv(mergeTrees([tree, emberDebugs.bookmarklet]), chromeRoot),
+  mv(mergeTrees([tree, emberDebugs.bookmarklet]), webExtensionRoot),
   skeletonBookmarklet
 ]);
 
@@ -248,20 +235,10 @@ packageJson.previousEmberVersionsSupported.forEach(function(version) {
     var file = writeFile('index.html', "This Ember version is not supported in development environment.");
     var emberDebugFile = writeFile('ember_debug.js', 'void(0);');
     chrome = mergeTrees([mv(file, 'panes-' + version), chrome]);
-    firefox = mergeTrees([mv(file, 'data/panes-' + version), mv(emberDebugFile, 'data/panes-' + version), firefox]);
+    firefox = mergeTrees([mv(file, 'panes-' + version), firefox]);
     bookmarklet = mergeTrees([mv(file, 'panes-' + version), mv(emberDebugFile, 'panes-' + version), bookmarklet]);
   }
 });
-
-firefox = mergeTrees([
-  mv(firefoxAndChromeExtra, 'data/scripts'),
-  firefox
-]);
-
-chrome = mergeTrees([
-  mv(firefoxAndChromeExtra, 'scripts'),
-  chrome
-]);
 
 // Pass the current dist to the Ember Inspector app.
 // EMBER DIST

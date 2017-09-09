@@ -4,7 +4,7 @@
  * before publishing.
  *
  * Make sure you add the correct AWS credentials
- * to `config/secrets.yml` before uploading.
+ * to `config/secrets.json` before uploading.
  */
 var AWS = require('aws-sdk');
 var packageJson = require('../package.json');
