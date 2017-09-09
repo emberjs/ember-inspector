@@ -46,7 +46,7 @@ module.exports = function(grunt) {
         },
         expand: true,
         pretty: true,
-        cwd: 'dist/firefox/data/' + versionedPane,
+        cwd: 'dist/firefox/' + versionedPane,
         src: ['**/*']
       },
       "bookmarklet-pane": {
