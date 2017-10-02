@@ -464,6 +464,13 @@ export default EmberObject.extend(PortMixin, {
     rect.top = rect.top + window.scrollY;
     rect.left = rect.left + window.scrollX;
 
+    // in Chrome 61, rect has an extra toJSON property which will break
+    // $(div).css(rect)
+    // Error: Uncaught TypeError: Illegal invocation
+    if (rect.hasOwnProperty('toJSON')) {
+      delete rect.toJSON;
+    }
+
     if (isPreview) {
       div = previewDiv;
     } else {
