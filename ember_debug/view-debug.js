@@ -460,16 +460,17 @@ export default EmberObject.extend(PortMixin, {
 
     // take into account the scrolling position as mentioned in docs
     // https://developer.mozilla.org/en-US/docs/Web/API/element.getBoundingClientRect
-    rect = $.extend({}, rect);
-    rect.top = rect.top + window.scrollY;
-    rect.left = rect.left + window.scrollX;
-
-    // in Chrome 61, rect has an extra toJSON property which will break
-    // $(div).css(rect)
-    // Error: Uncaught TypeError: Illegal invocation
-    if (rect.hasOwnProperty('toJSON')) {
-      delete rect.toJSON;
-    }
+    // there's another issue with Chrome 61, rect has an extra toJSON property,
+    // we do not need that property for our styling,
+    // so we specifically select the properties we need
+    rect = {
+      left: rect.left + window.scrollX,,
+      top: rect.top + window.scrollY,
+      right: rect.right,
+      bottom: rect.bottom,
+      width: rect.width,
+      height: rect.height
+    };
 
     if (isPreview) {
       div = previewDiv;
