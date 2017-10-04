@@ -458,7 +458,7 @@ export default EmberObject.extend(PortMixin, {
     let div;
     let isPreview = options.isPreview;
 
-    // there's another issue with Chrome 61, rect has an extra toJSON property,
+    // there's an issue with Chrome 61, rect has an extra toJSON property,
     // we do not need that property for our styling,
     // so we specifically select the properties we need
     rect = {
