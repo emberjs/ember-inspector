@@ -464,7 +464,7 @@ export default EmberObject.extend(PortMixin, {
     rect = {
       // take into account the scrolling position as mentioned in docs
       // https://developer.mozilla.org/en-US/docs/Web/API/element.getBoundingClientRect
-      left: rect.left + window.scrollX,,
+      left: rect.left + window.scrollX,
       top: rect.top + window.scrollY,
       right: rect.right,
       bottom: rect.bottom,
