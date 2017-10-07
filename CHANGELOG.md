@@ -1,5 +1,10 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 2.2.0
+
+* [IMPROVEMENT] Rewrite the FF addon as a FF WebExtension [#715](https://github.com/emberjs/ember-inspector/pull/715)
+* [BUGFIX] Fix `event` variable name [#714](https://github.com/emberjs/ember-inspector/pull/714)
+
 ## Ember Inspector 2.1.1
 
 * [BUGFIX] Only call Mixin#toString on Ember > 2.11 [#708](https://github.com/emberjs/ember-inspector/pull/708)
