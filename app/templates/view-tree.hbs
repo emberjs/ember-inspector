@@ -1,4 +1,3 @@
-{{input value=searchText}}{{viewNames}}
 {{#x-list name="view-tree" schema=(schema-for "view-tree") as |list|}}
   {{#list.vertical-collection content=filteredList as |content index|}}
     {{view-item
