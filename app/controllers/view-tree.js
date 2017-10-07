@@ -15,10 +15,13 @@ export default Controller.extend({
   searchText: "",
 
   filteredList: computed('model', 'searchText', function() {
-    let searchText = this.get('searchText') || false;
-    if (!searchText) return this.get('model');
+    let searchText = this.get('searchText');
 
-    let filtered = this.get('model').filter(v => v.value.name.indexOf(searchText) > -1);
+    if (!searchText) {
+      return this.get('model');
+    }
+
+    let filtered = this.get('model').filter(v => v.value.name.includes(searchText));
     return filtered;
   }),
 
