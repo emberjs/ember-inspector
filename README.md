@@ -1,11 +1,9 @@
-Ember Inspector [![Build Status](https://secure.travis-ci.org/emberjs/ember-inspector.svg?branch=master)](https://travis-ci.org/emberjs/ember-inspector)
-===============
+# Ember Inspector [![Build Status](https://secure.travis-ci.org/emberjs/ember-inspector.svg?branch=master)](https://travis-ci.org/emberjs/ember-inspector)
 
 Adds an Ember tab to the browser's Developer Tools that allows you to inspect
 Ember objects in your application.
 
-Installation
-------------
+## Installation
 
 ### Chrome
 
@@ -52,9 +50,7 @@ OR:
 - Choose the `dist/chrome` folder in the cloned repo
 - Close and re-open developer tools if it's already open
 
-
 ### Bookmarklet (All Browsers)
-
 
 ```javascript
 javascript: (function() { var s = document.createElement('script'); s.src = '//ember-extension.s3.amazonaws.com/dist_bookmarklet/load_inspector.js'; document.body.appendChild(s); }());
@@ -71,9 +67,7 @@ For development:
 javascript: (function() { var s = document.createElement('script'); s.src = 'http://localhost:9191/bookmarklet/load_inspector.js'; document.body.appendChild(s); }());
 ```
 
-
-Building and Testing:
---------------------
+## Building and Testing:
 
 Run `yarn install && yarn global add ember-cli && yarn global add bower && bower install && grunt-cli` to install the required modules.
 
@@ -83,8 +77,7 @@ Run `yarn install && yarn global add ember-cli && yarn global add bower && bower
 - `yarn start` To start the test server at `localhost:4200/testing/tests`
 
 
-Deploy new version:
------------
+## Deploy new version:
 
 #### Patch versions
 
@@ -114,7 +107,7 @@ When releasing a major/minor version, master would already have this version set
 - `yarn run build:production`
 - `git tag` the new version
 - Follow the "Publishing to Chrome" steps
-- Publish "Publishing to Firefox" steps
+- Follow the "Publishing to Firefox" steps
 - `yarn publish ./`
 
 ##### Publishing to Chrome
