@@ -14,12 +14,6 @@ export default Controller.extend({
 
   searchText: "",
 
-  viewNames: computed('searchText', 'filteredList.[]', function() {
-    let list = this.get('filteredList');
-    if (list.length) return list.map(v => v.value.name).join(" ");
-    return `hello ${this.get('searchText')}`;
-  }),
-
   filteredList: computed('model', 'searchText', function() {
     let searchText = this.get('searchText') || false;
     if (!searchText) return this.get('model');
@@ -33,7 +27,6 @@ export default Controller.extend({
   })),
 
   actions: {
-
     previewLayer({ value: { objectId, elementId, renderNodeId } }) {
       // We are passing all of objectId, elementId, and renderNodeId to support post-glimmer 1, post-glimmer 2, and root for
       // post-glimmer 2
