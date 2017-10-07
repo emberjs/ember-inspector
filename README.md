@@ -1,11 +1,9 @@
-Ember Inspector [![Build Status](https://secure.travis-ci.org/emberjs/ember-inspector.svg?branch=master)](https://travis-ci.org/emberjs/ember-inspector)
-===============
+# Ember Inspector [![Build Status](https://secure.travis-ci.org/emberjs/ember-inspector.svg?branch=master)](https://travis-ci.org/emberjs/ember-inspector)
 
-Adds an Ember tab to Chrome or Firefox Developer Tools that allows you to inspect
+Adds an Ember tab to the browser's Developer Tools that allows you to inspect
 Ember objects in your application.
 
-Installation
-------------
+## Installation
 
 ### Chrome
 
@@ -15,10 +13,10 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `npm install && bower install`
-- run `npm install -g ember-cli`
-- run `npm run build` to build the `dist` directory
-- Visit chrome://extensions in chrome
+- run `yarn install && bower install`
+- run `yarn global add ember-cli`
+- run `yarn run build` to build the `dist` directory
+- Visit `chrome://extensions` in Chrome
 - Make sure `Developer mode` is checked
 - Click on 'Load unpacked extension...'
 - Choose the `dist/chrome` folder in the cloned repo
@@ -32,27 +30,27 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `npm install && bower install`
-- run `npm install -g ember-cli`
-- run `npm run build:xpi` to build the `dist` directory, download Firefox Addon SDK and build Firefox Addon XPI to 'tmp/xpi/ember-inspector.xpi'
-  or `npm run run-xpi` to run the Firefox Addon in a temporary profile (or use `FIREFOX_BIN` and `FIREFOX_PROFILE` to customize Firefox profile directory and Firefox binary used to run the extension)
+- run `yarn install && bower install`
+- run `yarn global add ember-cli`
+- run `yarn run build` to build the `dist` directory
+- Visit `about:debugging` in Firefox
+- Click on 'Load Temporary Addon-on'
+- Choose the `dist/firefox/manifest.json` file in the cloned repo
 
 ### Opera
 
 - Clone the repository
 - cd into the repo directory
-- run `npm install && bower install`
-- run `npm install -g ember-cli`
-- run `npm run build` to build the `dist` directory
-- Visit chrome://extensions in chrome
+- run `yarn install && bower install`
+- run `yarn global add ember-cli`
+- run `yarn run build` to build the `dist` directory
+- Visit `chrome://extensions` in Opera
 - Make sure `Developer mode` is checked
 - Click on 'Load unpacked extension...'
 - Choose the `dist/chrome` folder in the cloned repo
 - Close and re-open developer tools if it's already open
 
-
 ### Bookmarklet (All Browsers)
-
 
 ```javascript
 javascript: (function() { var s = document.createElement('script'); s.src = '//ember-extension.s3.amazonaws.com/dist_bookmarklet/load_inspector.js'; document.body.appendChild(s); }());
@@ -62,29 +60,24 @@ Internet explorer will open an iframe instead of a popup due to the lack of supp
 
 For development:
 
-- run `npm run serve:bookmarklet`
+- run `yarn run serve:bookmarklet`
 - create a bookmark (make sure you unblock the popup when you run the bookmarklet):
 
 ```javascript
 javascript: (function() { var s = document.createElement('script'); s.src = 'http://localhost:9191/bookmarklet/load_inspector.js'; document.body.appendChild(s); }());
 ```
 
+## Building and Testing:
 
-Building and Testing:
---------------------
+Run `yarn install && yarn global add ember-cli && yarn global add bower && bower install && grunt-cli` to install the required modules.
 
-Run `npm install && npm install -g ember-cli && npm install -g bower && bower install && npm install -g grunt-cli` to install the required modules.
-
-- `npm run build` to build the files in the `dist` directory
-- `npm run watch` To watch the files and re-build in `dist` when anything changes (useful during development).
-- `npm test` To run the tests in the terminal
-- `npm run build:xpi` to download and build Firefox Addon XPI into `tmp/xpi/ember-inspector.xpi`
-- `npm run run-xpi` to run the Firefox Addon XPI on a temporary new profile (or use `FIREFOX_BIN` and `FIREFOX_PROFILE` to customize Firefox profile directory and Firefox binary used to run the extension)
-- `npm start` To start the test server at `localhost:4200/testing/tests`
+- `yarn run build` to build the files in the `dist` directory
+- `yarn run watch` To watch the files and re-build in `dist` when anything changes (useful during development).
+- `yarn test` To run the tests in the terminal
+- `yarn start` To start the test server at `localhost:4200/testing/tests`
 
 
-Deploy new version:
------------
+## Deploy new version:
 
 #### Patch versions
 
@@ -92,7 +85,7 @@ Patch versions are only committed to the stable branch. So we need to cherry-pic
 
 - `git checkout stable`
 - Cherry-pick the needed commits from master to stable
-- Bump the patch version in package.json. Add the change log entry and commit.
+- Bump the patch version in `package.json`. Add the change log entry and commit.
 - Follow the "Steps to publish" below.
 - `git checkout master`
 - Commit the change log entry to the master branch.
@@ -111,15 +104,16 @@ When releasing a major/minor version, master would already have this version set
 #### Steps to publish
 
 - Push the `stable` branch to github (this will publish the bookmarklet version).
-- `npm run build:production`
-- Follow the "Publishing to Chrome" steps
-- Publish `tmp/xpi/ember-inspector.xpi` to the Mozilla Addons
-- `npm publish ./`
+- `yarn run build:production`
 - `git tag` the new version
+- Follow the "Publishing to Chrome" steps
+- Follow the "Publishing to Firefox" steps
+- `yarn publish ./`
 
 ##### Publishing to Chrome
 
-- Sign in to the [Chrome Webstore]((https://chrome.google.com/webstore))
+- Make sure you have the correct credentials to publish to Chrome.
+- Sign in to the [Chrome Webstore](https://chrome.google.com/webstore)
 - Click on Settings -> Developer dashboard
 - Click on "Edit" next to "Ember Inspector"
 - Click on Upload Updated Package
@@ -127,6 +121,16 @@ When releasing a major/minor version, master would already have this version set
 - Choose the file `dist/chrome/ember-inspector.zip`
 - Click "Upload"
 - Click "Save and publish changes"
+
+##### Publishing to Firefox
+
+- Make sure you have the correct credentials to publish to Firefox.
+- Sign in to the [Mozilla Addons Site](https://addons.mozilla.org)
+- Click on Tools -> Manage My Submissions
+- Click on "New Version" below "Ember Inspector"
+- Click on "Select a file"
+- Choose the file `dist/firefox/ember-inspector.zip`
+- Follow the steps to publish
 
 ### Locking a version
 
@@ -138,7 +142,7 @@ Here are the steps to lock an inspector version:
 
 - Update `package.json`'s `emberVersionsSupported`: add a second element that indicates the minimum Ember version this inspector *does not* support.
 - Release a new version (See "Minor and major versions"). Create a branch for this version.
-- Run `npm run lock-version`. This will build, compress, and upload this version to S3.
+- Run `yarn run lock-version`. This will build, compress, and upload this version to S3.
 - Update `package.json`'s `previousEmberVersionsSupported`: add the first Ember version supported by the recently locked version (the first element in the `emberVersionsSupported` array).
 - Update `package.json`'s `emberVersionsSupported`: Move the second element in the array to the first position. Add an empty string as the second element to indicate there's currently no maximum Ember version supported yet.
 - Commit.
