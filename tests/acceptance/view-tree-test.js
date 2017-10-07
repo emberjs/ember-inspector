@@ -2,7 +2,7 @@ import Ember from "ember";
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
-import { visit, find, findAll, click, triggerEvent } from 'ember-native-dom-helpers';
+import { visit, fillIn, find, findAll, click, triggerEvent } from 'ember-native-dom-helpers';
 
 let App;
 const { run } = Ember;
@@ -118,6 +118,7 @@ test("It should correctly display the view tree", async function(assert) {
 
   let treeNodes = findAll('.js-view-tree-item');
   assert.equal(treeNodes.length, 3, 'expected some tree nodes');
+
   let controllerNames = [];
   let templateNames = [];
   let modelNames = [];
@@ -181,6 +182,71 @@ test("It should correctly display the view tree", async function(assert) {
     'application',
     'comments',
     'comments',
+    'posts',
+    'posts'
+  ], 'expected title tips');
+});
+
+test("It should filter the view tree using the search text", async function(assert) {
+  let viewTree = defaultViewTree();
+
+  await visit('/');
+  run(() => {
+    port.trigger('view:viewTree', { tree: viewTree });
+  });
+  await wait();
+
+  let treeNodes = findAll('.js-view-tree-item');
+  assert.equal(treeNodes.length, 3, 'expected some tree nodes');
+
+  fillIn('.js-filter-views input', 'post');
+  treeNodes = findAll('.js-view-tree-item');
+  assert.equal(treeNodes.length, 1, 'expected filtered tree nodes');
+
+  let controllerNames = [];
+  let templateNames = [];
+  let modelNames = [];
+  let viewClassNames = [];
+  let durations = [];
+
+  function textFor(selector, context) {
+    return find(selector, context).textContent.trim();
+  }
+
+  [...treeNodes].forEach(function(node) {
+    templateNames.push(textFor('.js-view-template', node));
+    controllerNames.push(textFor('.js-view-controller', node));
+    viewClassNames.push(textFor('.js-view-class', node));
+    modelNames.push(textFor('.js-view-model', node));
+    durations.push(textFor('.js-view-duration', node));
+  });
+
+  assert.deepEqual(controllerNames, [
+    'App.PostsController',
+  ], 'expected controller names');
+
+  assert.deepEqual(templateNames, [
+    'posts',
+  ], 'expected template names');
+
+  assert.deepEqual(modelNames, [
+    'PostsArray',
+  ], 'expected model names');
+
+  assert.deepEqual(viewClassNames, [
+    'App.PostsView',
+  ], 'expected view class names');
+
+  assert.deepEqual(durations, [
+    '1.00ms',
+  ], 'expected render durations');
+
+  let titleTips = [...findAll('span[title]')].map(node => node.getAttribute('title')).sort();
+
+  assert.deepEqual(titleTips, [
+    'App.PostsController',
+    'App.PostsView',
+    'PostsArray',
     'posts',
     'posts'
   ], 'expected title tips');
