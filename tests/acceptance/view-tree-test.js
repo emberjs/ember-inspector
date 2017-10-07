@@ -21,6 +21,10 @@ module('View Tree Tab', {
   }
 });
 
+function textFor(selector, context) {
+  return find(selector, context).textContent.trim();
+}
+
 let treeId = 0;
 function viewNodeFactory(props) {
   if (!props.template) {
@@ -125,10 +129,6 @@ test("It should correctly display the view tree", async function(assert) {
   let viewClassNames = [];
   let durations = [];
 
-  function textFor(selector, context) {
-    return find(selector, context).textContent.trim();
-  }
-
   [...treeNodes].forEach(function(node) {
     templateNames.push(textFor('.js-view-template', node));
     controllerNames.push(textFor('.js-view-controller', node));
@@ -199,7 +199,7 @@ test("It should filter the view tree using the search text", async function(asse
   let treeNodes = findAll('.js-view-tree-item');
   assert.equal(treeNodes.length, 3, 'expected some tree nodes');
 
-  fillIn('.js-filter-views input', 'post');
+  await fillIn('.js-filter-views input', 'post');
   treeNodes = findAll('.js-view-tree-item');
   assert.equal(treeNodes.length, 1, 'expected filtered tree nodes');
 
@@ -208,10 +208,6 @@ test("It should filter the view tree using the search text", async function(asse
   let modelNames = [];
   let viewClassNames = [];
   let durations = [];
-
-  function textFor(selector, context) {
-    return find(selector, context).textContent.trim();
-  }
 
   [...treeNodes].forEach(function(node) {
     templateNames.push(textFor('.js-view-template', node));
