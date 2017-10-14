@@ -108,7 +108,7 @@ When releasing a major/minor version, master would already have this version set
 - `git tag` the new version
 - Follow the "Publishing to Chrome" steps
 - Follow the "Publishing to Firefox" steps
-- `yarn publish ./`
+- `npm publish ./`
 
 ##### Publishing to Chrome
 
