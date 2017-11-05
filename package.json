@@ -1,6 +1,6 @@
 {
   "name": "ember-inspector",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Extends developer tools to allow you to better inspect your Ember.js apps.",
   "directories": {
     "test": "tests"
@@ -12,10 +12,10 @@
     "watch": "ember build --watch",
     "serve:bookmarklet": "ember serve --port 9191",
     "build:production": "EMBER_ENV=production node scripts/download-panes.js && ember build --environment production && grunt compress:chrome compress:firefox clean-tmp",
-    "upload": "npm run build:production && grunt s3:bookmarklet",
+    "upload": "yarn run build:production && grunt s3:bookmarklet",
     "compress:panes": "grunt compress:chrome-pane && grunt compress:firefox-pane && grunt compress:bookmarklet-pane",
-    "upload:panes": "npm run build && npm run compress:panes && node scripts/upload-panes.js",
-    "lock-version": "npm run build:production && npm run compress:panes && EMBER_ENV=production node scripts/upload-panes.js"
+    "upload:panes": "yarn run build && yarn run compress:panes && node scripts/upload-panes.js",
+    "lock-version": "yarn run build:production && yarn run compress:panes && EMBER_ENV=production node scripts/upload-panes.js"
   },
   "repository": "https://github.com/emberjs/ember-inspector",
   "engines": {

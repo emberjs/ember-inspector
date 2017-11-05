@@ -12,7 +12,7 @@ export default WebExtension.extend({
   },
 
   onResourceAdded() {
-    chrome.devtools.inspectedWindow.onResourceAdded.addListener(function(opts) {
+    chrome.devtools.inspectedWindow.onResourceAdded.addListener(opts => {
       if (opts.type === 'document') {
         this.sendIframes([opts.url]);
       }

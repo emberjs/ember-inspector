@@ -1,6 +1,6 @@
 import Ember from "ember";
 const { computed, Component } = Ember;
-const { readOnly } = computed;
+const { readOnly, sort } = computed;
 
 export default Component.extend({
   /**
@@ -16,6 +16,22 @@ export default Component.extend({
   isExpanded: computed('model.expand', 'model.properties.length', function() {
     return this.get('model.expand') && this.get('model.properties.length') > 0;
   }),
+
+  /**
+   * Used by the `sort` computed macro.
+   *
+   * @property sortProperties
+   * @type {Array<String>}
+   */
+  sortProperties: ['name'],
+
+  /**
+   * Sort the properties by name to make them easier to find in the object inspector.
+   *
+   * @property sortedProperties
+   * @type {Array<Object>}
+   */
+  sortedProperties: sort('model.properties', 'sortProperties'),
 
   actions: {
     calculate({ name }) {

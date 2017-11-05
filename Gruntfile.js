@@ -29,7 +29,8 @@ module.exports = function(grunt) {
         },
         expand: true,
         pretty: true,
-        src: 'dist/chrome/**/*'
+        src: '**/*',
+        cwd: 'dist/chrome'
       },
       firefox: {
         options: {
@@ -37,7 +38,8 @@ module.exports = function(grunt) {
         },
         expand: true,
         pretty: true,
-        src: 'dist/firefox/**/*'
+        src: '**/*',
+        cwd: 'dist/firefox'
       },
       "chrome-pane": {
         options: {

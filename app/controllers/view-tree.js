@@ -1,6 +1,7 @@
 import Ember from "ember";
-const { computed, Controller, on, observer, inject: { controller } } = Ember;
-const { alias } = computed;
+import searchMatch from "ember-inspector/utils/search-match";
+const { computed, Controller, get, on, observer, inject: { controller } } = Ember;
+const { alias, filter } = computed;
 
 export default Controller.extend({
   application: controller(),
@@ -11,6 +12,25 @@ export default Controller.extend({
   options: {
     components: false
   },
+
+  /**
+   * Bound to the search field to filter the component list.
+   *
+   * @property searchText
+   * @type {String}
+   * @default ''
+   */
+  searchText: '',
+
+  /**
+   * The filtered view list.
+   *
+   * @property filteredList
+   * @type {Array<Object>}
+   */
+  filteredList: filter('model', function(item) {
+    return searchMatch(get(item, 'value.name'), this.get('searchText'));
+  }).property('model.[]', 'searchText'),
 
   optionsChanged: on('init', observer('options.components', function() {
     this.port.send('view:setOptions', { options: this.get('options') });
