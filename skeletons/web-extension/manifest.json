@@ -14,7 +14,7 @@
     "<all_urls>",
     "storage"
   ],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "content_security_policy": "script-src 'self'; object-src 'self'",
   "devtools_page": "devtools.html",
   "content_scripts": [{
     "matches": ["<all_urls>"],
