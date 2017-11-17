@@ -1,5 +1,9 @@
 # Ember Inspector Changelog
 
+## Ember Inspector 2.3.1
+
+* [INTERNAL] Remove unsafe-eval from csp [#737](https://github.com/emberjs/ember-inspector/pull/737)
+
 ## Ember Inspector 2.3.0
 
 * [FEATURE] View tree filter support [#720](https://github.com/emberjs/ember-inspector/pull/720)
