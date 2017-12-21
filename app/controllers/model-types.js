@@ -1,14 +1,28 @@
-import Ember from "ember";
+import Ember from 'ember';
+import LocalStorageService from 'ember-inspector/services/storage/local';
 const { Controller, computed, get, inject } = Ember;
 const { sort } = computed;
-const { controller } = inject;
+const { controller, service } = inject;
 
 export default Controller.extend({
   application: controller(),
   navWidth: 180,
   sortProperties: ['name'],
+  storage: service(`storage/${LocalStorageService.SUPPORTED ? 'local' : 'memory'}`),
   options: {
-    hideEmptyModelTypes: false
+    hideEmptyModelTypes: computed({
+      get() {
+        return !!this.get('storage').getItem('are-model-types-hidden');
+      },
+      set(key, value) {
+        if (!value) {
+          this.get('storage').removeItem('are-model-types-hidden');
+        } else {
+          this.get('storage').setItem('are-model-types-hidden', value);
+        }
+        return value;
+      }
+    })
   },
 
   sorted: sort('filtered', 'sortProperties'),
