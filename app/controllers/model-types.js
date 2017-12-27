@@ -12,6 +12,8 @@ export default Controller.extend({
   options: {
     hideEmptyModelTypes: computed({
       get() {
+        // TODO fix test resolution lookup
+        if (!this.get) { return false; }
         return !!this.get('storage').getItem('are-model-types-hidden');
       },
       set(key, value) {
