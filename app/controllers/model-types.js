@@ -9,29 +9,26 @@ export default Controller.extend({
   navWidth: 180,
   sortProperties: ['name'],
   storage: service(`storage/${LocalStorageService.SUPPORTED ? 'local' : 'memory'}`),
-  options: {
-    hideEmptyModelTypes: computed({
-      get() {
-        // TODO fix test resolution lookup
-        if (!this.get) { return false; }
-        return !!this.get('storage').getItem('are-model-types-hidden');
-      },
-      set(key, value) {
-        if (!value) {
-          this.get('storage').removeItem('are-model-types-hidden');
-        } else {
-          this.get('storage').setItem('are-model-types-hidden', value);
-        }
-        return value;
+  hideEmptyModelTypes: computed({
+    get() {
+      return !!this.get('storage').getItem('are-model-types-hidden');
+    },
+    set(key, value) {
+      if (!value) {
+        this.get('storage').removeItem('are-model-types-hidden');
+      } else {
+        this.get('storage').setItem('are-model-types-hidden', value);
       }
-    })
-  },
+      return value;
+    }
+  }),
+  options: {},
 
   sorted: sort('filtered', 'sortProperties'),
 
-  filtered: computed('model.@each.count', 'options.hideEmptyModelTypes', function() {
+  filtered: computed('model.@each.count', 'hideEmptyModelTypes', function() {
     return this.get('model').filter(item => {
-      let hideEmptyModels = get(this, 'options.hideEmptyModelTypes');
+      let hideEmptyModels = get(this, 'hideEmptyModelTypes');
 
       if (hideEmptyModels) {
         return !!get(item, 'count');
