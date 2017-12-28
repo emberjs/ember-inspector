@@ -22,7 +22,6 @@ export default Controller.extend({
       return value;
     }
   }),
-  options: {},
 
   sorted: sort('filtered', 'sortProperties'),
 
