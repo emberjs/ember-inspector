@@ -501,13 +501,16 @@ export default EmberObject.extend(PortMixin, {
         span.style.background = '#666';
         span.style.color = '#eee';
         span.style.fontFamily = 'helvetica, sans-serif';
-        span.style.fontSize = '12px';
+        span.style.fontSize = '14px';
         span.style.width = '16px';
         span.style.height = '16px';
         span.style.lineHeight = '14px';
         span.style.borderRadius = '16px';
         span.style.textAlign = 'center';
         span.style.cursor = 'pointer';
+        span.style.opacity = '0.5';
+        span.style.fontWeight = 'normal';
+        span.style.textShadow = 'none';
         span.addEventListener('click', (e) => {
           cancelEvent(e);
           this.hideLayer();
