@@ -1,6 +1,6 @@
 import Ember from "ember";
+const { computed } = Ember;
 import { module, test } from 'qunit';
-import computed from 'ember-new-computed';
 import { visit, find, settings as nativeDomHelpersSettings } from 'ember-native-dom-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';

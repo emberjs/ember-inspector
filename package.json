@@ -84,6 +84,5 @@
     "yauzl": "^2.4.1"
   },
   "dependencies": {
-    "ember-new-computed": "^1.0.0"
   }
 }
