@@ -1,7 +1,6 @@
 import Ember from "ember";
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
-import computed from 'ember-new-computed';
-const { $, observer, typeOf, computed: { or, equal, not } } = Ember;
+const { $, observer, typeOf, computed, computed: { or, equal, not } } = Ember;
 
 const dateComputed = function() {
   return computed({
