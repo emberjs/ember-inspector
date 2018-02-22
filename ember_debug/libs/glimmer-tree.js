@@ -325,7 +325,9 @@ export default class {
    * @return {Object} The application outlet state
    */
   getApplicationOutlet() {
-    return this.getRoot().outletState.outlets.main;
+    // Support multiple paths to outletState for various Ember versions
+    const outletState = this.getRoot().outletState || this.getRoot().state.ref.outletState;
+    return outletState.outlets.main;
   }
 
   /**
