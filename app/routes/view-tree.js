@@ -1,6 +1,5 @@
-import Ember from "ember";
+import $ from 'jquery';
 import TabRoute from "ember-inspector/routes/tab";
-const $ = Ember.$;
 
 export default TabRoute.extend({
   model() {

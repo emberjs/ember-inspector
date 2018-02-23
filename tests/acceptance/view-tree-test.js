@@ -1,11 +1,17 @@
-import Ember from "ember";
+import { run } from '@ember/runloop';
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
-import { visit, fillIn, find, findAll, click, triggerEvent } from 'ember-native-dom-helpers';
+import {
+  visit,
+  fillIn,
+  find,
+  findAll,
+  click,
+  triggerEvent
+} from 'ember-native-dom-helpers';
 
 let App;
-const { run } = Ember;
 
 let port;
 
@@ -17,7 +23,7 @@ module('View Tree Tab', {
     port = App.__container__.lookup('port:main');
   },
   afterEach() {
-    Ember.run(App, App.destroy);
+    run(App, App.destroy);
   }
 });
 

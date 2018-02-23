@@ -1,17 +1,19 @@
-import Ember from "ember";
+import { assert } from '@ember/debug';
+import { copy } from '@ember/object/internals';
+import { later } from '@ember/runloop';
+import EmberObject, { computed } from '@ember/object';
+import EventedMixin from '@ember/object/evented';
 import Promise from "ember-inspector/models/promise";
 
-let EventedMixin = Ember.Evented;
-
-let arrayComputed = Ember.computed(function() {
+let arrayComputed = computed(function() {
   return [];
 });
 
-let objectComputed = Ember.computed(function() {
+let objectComputed = computed(function() {
   return {};
 });
 
-export default Ember.Object.extend(EventedMixin, {
+export default EmberObject.extend(EventedMixin, {
   all: arrayComputed,
   topSort: arrayComputed,
   topSortMeta: objectComputed,
@@ -43,7 +45,7 @@ export default Ember.Object.extend(EventedMixin, {
     // Lazily destroy promises
     // Allows for a smooth transition on deactivate,
     // and thus providing the illusion of better perf
-    Ember.run.later(this, function() {
+    later(this, function() {
       this.destroyPromises(all);
     }, 500);
     this.set('all', []);
@@ -66,7 +68,7 @@ export default Ember.Object.extend(EventedMixin, {
 
   rebuildPromises(promises) {
     promises.forEach(props => {
-      props = Ember.copy(props);
+      props = copy(props);
       let childrenIds = props.children;
       let parentId = props.parent;
       delete props.children;
@@ -161,7 +163,7 @@ export default Ember.Object.extend(EventedMixin, {
 
   findOrCreate(guid) {
     if (!guid) {
-      Ember.assert('You have tried to findOrCreate without a guid');
+      assert('You have tried to findOrCreate without a guid');
     }
     return this.find(guid) || this.createPromise({ guid });
   }

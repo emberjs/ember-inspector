@@ -1,6 +1,6 @@
-import Ember from "ember";
+import { on } from '@ember/object/evented';
+import { once } from '@ember/runloop';
 import DatePicker from "ember-inspector/components/pikaday-input";
-const { on, run: { once } } = Ember;
 const KEY_EVENTS = {
   escape: 27
 };

@@ -1,8 +1,8 @@
 /* globals chrome */
+import { computed } from '@ember/object';
+
 import BasicAdapter from "./basic";
-import Ember from 'ember';
 import config from 'ember-inspector/config/environment';
-const { computed } = Ember;
 
 let emberDebug = null;
 

@@ -1,7 +1,7 @@
-import Ember from "ember";
-const { RSVP: { Promise } } = Ember;
+import Route from '@ember/routing/route';
+import { Promise } from 'rsvp';
 
-export default Ember.Route.extend({
+export default Route.extend({
   model() {
     let route = this;
     return new Promise(function(resolve) {

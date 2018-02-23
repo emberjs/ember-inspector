@@ -1,7 +1,7 @@
 /* eslint no-useless-escape: 0 */
+import { computed } from '@ember/object';
+
 import BasicAdapter from "./basic";
-import Ember from 'ember';
-const { computed } = Ember;
 
 export default BasicAdapter.extend({
   name: 'bookmarklet',

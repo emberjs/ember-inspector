@@ -5,8 +5,9 @@
  * @class Local
  * @extends Service
  */
-import Ember from 'ember';
-const { Service, isNone } = Ember;
+import Service from '@ember/service';
+
+import { isNone } from '@ember/utils';
 const { parse, stringify } = JSON;
 let LOCAL_STORAGE_SUPPORTED;
 

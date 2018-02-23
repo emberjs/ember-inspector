@@ -11,11 +11,11 @@
  * });
  * ```
  */
-import Ember from "ember";
-import config from 'ember-inspector/config/environment';
-const { computed } = Ember;
+import EmberObject, { computed } from '@ember/object';
 
-export default Ember.Object.extend({
+import config from 'ember-inspector/config/environment';
+
+export default EmberObject.extend({
   /**
    * Called when the adapter is created (when
    * the inspector app boots).

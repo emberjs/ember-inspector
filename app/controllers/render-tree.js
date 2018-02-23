@@ -1,11 +1,11 @@
-import Ember from "ember";
+import { computed, get } from '@ember/object';
+import { isEmpty } from '@ember/utils';
+import Controller, { inject as controller } from '@ember/controller';
+import { inject as service } from '@ember/service';
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
 import debounceComputed from "ember-inspector/computed/debounce";
 import LocalStorageService from "ember-inspector/services/storage/local";
-
-const { computed, isEmpty, Controller, inject: { controller, service } } = Ember;
-const { and, equal, filter } = computed;
-const get = Ember.get;
+import { and, equal, filter } from '@ember/object/computed';
 
 export default Controller.extend({
   application: controller(),

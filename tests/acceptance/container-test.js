@@ -1,8 +1,16 @@
+import { run } from '@ember/runloop';
 import Ember from "ember";
 import { module } from 'qunit';
 import { test } from 'ember-qunit';
 import startApp from '../helpers/start-app';
-import { visit, findAll, find, click, fillIn, currentURL } from 'ember-native-dom-helpers';
+import {
+  visit,
+  findAll,
+  find,
+  click,
+  fillIn,
+  currentURL
+} from 'ember-native-dom-helpers';
 let App;
 
 let port, message, name;
@@ -17,7 +25,7 @@ module('Container Tab', {
   afterEach() {
     name = null;
     message = null;
-    Ember.run(App, App.destroy);
+    run(App, App.destroy);
   }
 });
 

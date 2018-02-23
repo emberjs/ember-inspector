@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { typeOf } from '@ember/utils';
+import Application from '@ember/application';
 import Resolver from './resolver';
 import loadInitializers from 'ember-load-initializers';
 import config from './config/environment';
@@ -7,7 +8,7 @@ import PromiseAssembler from "ember-inspector/libs/promise-assembler";
 
 const version = '{{EMBER_INSPECTOR_VERSION}}';
 
-const App = Ember.Application.extend({
+const App = Application.extend({
   modulePrefix: config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
   Resolver
@@ -39,7 +40,7 @@ App.initializer({
 
     // register and inject adapter
     let Adapter;
-    if (Ember.typeOf(instance.adapter) === 'string') {
+    if (typeOf(instance.adapter) === 'string') {
       Adapter = instance.resolveRegistration(`adapter:${instance.adapter}`);
     } else {
       Adapter = instance.adapter;

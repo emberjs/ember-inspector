@@ -1,6 +1,5 @@
-import Ember from "ember";
-const { Component, computed } = Ember;
-const { notEmpty } = computed;
+import Component from '@ember/component';
+import { notEmpty } from '@ember/object/computed';
 
 export default Component.extend({
   isExpanded: true,

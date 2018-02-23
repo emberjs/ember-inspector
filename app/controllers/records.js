@@ -1,9 +1,9 @@
-import Ember from "ember";
+import { isEmpty } from '@ember/utils';
+import { observer, computed, get } from '@ember/object';
+import Controller, { inject as controller } from '@ember/controller';
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
-const { Controller, computed, observer, inject: { controller }, String } = Ember;
-const { none, readOnly } = computed;
-const { dasherize } = String;
-const get = Ember.get;
+import { none, readOnly } from '@ember/object/computed';
+import { dasherize } from '@ember/string';
 
 export default Controller.extend({
   application: controller(),
@@ -82,7 +82,7 @@ export default Controller.extend({
       }
 
       // check search
-      if (!Ember.isEmpty(search)) {
+      if (!isEmpty(search)) {
         let searchString = this.recordToString(item);
         return !!searchString.match(new RegExp(`.*${escapeRegExp(search.toLowerCase())}.*`));
       }
@@ -110,7 +110,7 @@ export default Controller.extend({
      * @property {Object}
      */
     inspectModel(model) {
-      this.get('port').send('data:inspectModel', { objectId: Ember.get(model, 'objectId') });
+      this.get('port').send('data:inspectModel', { objectId: get(model, 'objectId') });
     }
   }
 });

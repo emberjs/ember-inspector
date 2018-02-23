@@ -1,6 +1,6 @@
-import Ember from "ember";
+import { set } from '@ember/object';
+import { Promise } from 'rsvp';
 import TabRoute from "ember-inspector/routes/tab";
-const { RSVP: { Promise } } = Ember;
 
 export default TabRoute.extend({
   setupController(controller, model) {
@@ -33,7 +33,7 @@ export default TabRoute.extend({
     let route = this;
     message.modelTypes.forEach(function(modelType) {
       const currentType = route.get('currentModel').findBy('objectId', modelType.objectId);
-      Ember.set(currentType, 'count', modelType.count);
+      set(currentType, 'count', modelType.count);
     });
   }
 });

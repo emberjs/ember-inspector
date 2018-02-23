@@ -1,6 +1,6 @@
-import Ember from "ember";
+import { run } from '@ember/runloop';
+import { computed } from '@ember/object';
 import BasicAdapter from "./basic";
-const { computed } = Ember;
 
 export default BasicAdapter.extend({
   init() {
@@ -17,7 +17,7 @@ export default BasicAdapter.extend({
 
   _connect() {
     this.get('socket').on('emberInspectorMessage', message => {
-      Ember.run(() => {
+      run(() => {
         this._messageReceived(message);
       });
     });

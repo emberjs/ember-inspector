@@ -1,5 +1,6 @@
-import Ember from 'ember';
-const { Route, RSVP: { Promise }, getOwner } = Ember;
+import Route from '@ember/routing/route';
+import { Promise } from 'rsvp';
+import { getOwner } from '@ember/application';
 
 export default Route.extend({
   model() {

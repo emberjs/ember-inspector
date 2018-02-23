@@ -7,9 +7,9 @@
  *
  * Since it has no tag it has no effect on the DOM hierarchy.
  */
-import Ember from 'ember';
+import Component from '@ember/component';
+
 import RowEventsMixin from 'ember-inspector/mixins/row-events';
-const { Component } = Ember;
 export default Component.extend(RowEventsMixin, {
   /**
    * No tag

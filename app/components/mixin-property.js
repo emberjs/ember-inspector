@@ -1,6 +1,6 @@
-import Ember from "ember";
-const { computed, Component } = Ember;
-const { equal, alias } = computed;
+import { computed } from '@ember/object';
+import Component from '@ember/component';
+import { equal, alias } from '@ember/object/computed';
 
 export default Component.extend({
   isEdit: false,

@@ -1,8 +1,8 @@
-import Ember from "ember";
+import { get } from '@ember/object';
+import Controller, { inject as controller } from '@ember/controller';
 import debounceComputed from "ember-inspector/computed/debounce";
 import searchMatch from "ember-inspector/utils/search-match";
-const { Controller, computed, get, inject: { controller } } = Ember;
-const { filter } = computed;
+import { filter } from '@ember/object/computed';
 
 export default Controller.extend({
   /**

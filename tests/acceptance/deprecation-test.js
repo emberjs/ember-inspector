@@ -1,4 +1,4 @@
-import Ember from "ember";
+import { run } from '@ember/runloop';
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
@@ -46,7 +46,7 @@ module('Deprecation Tab', {
   afterEach() {
     name = null;
     message = null;
-    Ember.run(App, App.destroy);
+    run(App, App.destroy);
   }
 });
 

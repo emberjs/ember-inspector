@@ -1,5 +1,6 @@
-import Ember from "ember";
-export default Ember.Component.extend({
+import { equal } from '@ember/object/computed';
+import Component from '@ember/component';
+export default Component.extend({
 
   tagName: 'button',
 
@@ -7,7 +8,7 @@ export default Ember.Component.extend({
 
   isExpanded: false,
 
-  isRight: Ember.computed.equal('side', 'right'),
+  isRight: equal('side', 'right'),
 
   classNames: 'sidebar-toggle',
 

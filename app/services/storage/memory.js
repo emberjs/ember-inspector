@@ -5,8 +5,9 @@
  * @class Memory
  * @extends Service
  */
-import Ember from 'ember';
-const { Service, computed } = Ember;
+import Service from '@ember/service';
+
+import { computed } from '@ember/object';
 const { keys } = Object;
 
 export default Service.extend({

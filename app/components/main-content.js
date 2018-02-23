@@ -1,5 +1,7 @@
-import Ember from "ember";
-const { Component, run: { schedule }, $, inject: { service } } = Ember;
+import Component from '@ember/component';
+import { schedule } from '@ember/runloop';
+import $ from 'jquery';
+import { inject as service } from '@ember/service';
 import { task, timeout } from 'ember-concurrency';
 
 // Currently used to determine the height of list-views

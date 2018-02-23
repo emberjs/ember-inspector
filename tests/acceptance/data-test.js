@@ -1,10 +1,11 @@
-import Ember from "ember";
+import { guidFor } from '@ember/object/internals';
+import EmberObject from '@ember/object';
+import { run } from '@ember/runloop';
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
 import { visit, findAll, click, fillIn } from 'ember-native-dom-helpers';
 
-const { run } = Ember;
 let App;
 
 let port, name;
@@ -71,10 +72,10 @@ function recordFactory(attr, filterValues) {
   for (let i in attr) {
     searchKeywords.push(attr[i]);
   }
-  let object = Ember.Object.create();
+  let object = EmberObject.create();
   return {
     columnValues: attr,
-    objectId: attr.objectId || Ember.guidFor(object),
+    objectId: attr.objectId || guidFor(object),
     filterValues,
     searchKeywords
   };

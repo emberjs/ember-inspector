@@ -1,5 +1,5 @@
-import Ember from 'ember';
-const { Component, computed: { not } } = Ember;
+import Component from '@ember/component';
+import { not } from '@ember/object/computed';
 export default Component.extend({
   classNames: ['app'],
 

@@ -4,9 +4,12 @@
  *
  * Uses local storage to cache a user's preferred settings.
  */
-import Ember from 'ember';
+import { set } from '@ember/object';
+
+import { isNone } from '@ember/utils';
+import { copy } from '@ember/object/internals';
+import { merge } from '@ember/polyfills';
 import compareArrays from 'ember-inspector/utils/compare-arrays';
-const { set, isNone, copy, merge } = Ember;
 const { floor } = Math;
 const { keys } = Object;
 const THIRTY_DAYS_FROM_NOW = 1000 * 60 * 60 * 24 * 30;

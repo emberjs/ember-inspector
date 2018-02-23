@@ -1,7 +1,5 @@
-import Ember from "ember";
+import { set } from '@ember/object';
 import TabRoute from "ember-inspector/routes/tab";
-
-const set = Ember.set;
 
 export default TabRoute.extend({
   setupController(controller, model) {
