@@ -1,8 +1,9 @@
-import Ember from 'ember';
-
-const { Component, computed, String: { htmlSafe }, Evented, run, Object: EmberObject, inject } = Ember;
-const { schedule } = run;
-const { service } = inject;
+import Component from '@ember/component';
+import { htmlSafe } from '@ember/string';
+import Evented from '@ember/object/evented';
+import EmberObject, { computed } from '@ember/object';
+import { run, schedule } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 
 /**
  * Base list view config

@@ -1,5 +1,5 @@
-import Ember from "ember";
-const { Controller, computed: { sort } } = Ember;
+import Controller from '@ember/controller';
+import { sort } from '@ember/object/computed';
 
 export default Controller.extend({
   sortProperties: ['name'],

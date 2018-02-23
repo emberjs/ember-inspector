@@ -1,7 +1,8 @@
-import Ember from "ember";
+import { computed } from '@ember/object';
+import Component from '@ember/component';
+import { htmlSafe } from '@ember/string';
 import RowEventsMixin from 'ember-inspector/mixins/row-events';
-const { computed, Component, String: { htmlSafe } } = Ember;
-const { not, bool, equal } = computed;
+import { not, bool, equal } from '@ember/object/computed';
 
 export default Component.extend(RowEventsMixin, {
   /**

@@ -1,8 +1,8 @@
-import Ember from 'ember';
+import Controller, { inject as controller } from '@ember/controller';
+import { get, computed } from '@ember/object';
 import LocalStorageService from 'ember-inspector/services/storage/local';
-const { Controller, computed, get, inject } = Ember;
-const { sort } = computed;
-const { controller, service } = inject;
+import { sort } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
 
 export default Controller.extend({
   application: controller(),

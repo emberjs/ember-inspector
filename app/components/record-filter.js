@@ -1,5 +1,5 @@
-import Ember from "ember";
-const { computed, Component } = Ember;
+import { computed } from '@ember/object';
+import Component from '@ember/component';
 export default Component.extend({
   filterValue: null,
   checked: computed('filterValue', 'model.name', function() {

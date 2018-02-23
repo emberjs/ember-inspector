@@ -1,6 +1,6 @@
-import Ember from "ember";
-
-const { Controller, computed, computed: { equal } } = Ember;
+import Controller from '@ember/controller';
+import { computed } from '@ember/object';
+import { equal } from '@ember/object/computed';
 
 export default Controller.extend({
   isDragging: false,

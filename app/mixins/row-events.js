@@ -6,8 +6,11 @@
  * the yielded `x-list` and index to it. Then you'll be able to listen
  * to events on `rowEvents`.
  */
-import Ember from 'ember';
-const { Mixin, assert, isNone, computed: { readOnly } } = Ember;
+import Mixin from '@ember/object/mixin';
+
+import { assert } from '@ember/debug';
+import { isNone } from '@ember/utils';
+import { readOnly } from '@ember/object/computed';
 
 export default Mixin.create({
   /**

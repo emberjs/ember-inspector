@@ -1,8 +1,14 @@
-import Ember from "ember";
+import { run } from '@ember/runloop';
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
 import startApp from '../helpers/start-app';
-import { visit, find, findAll, click, fillIn } from 'ember-native-dom-helpers';
+import {
+  visit,
+  find,
+  findAll,
+  click,
+  fillIn
+} from 'ember-native-dom-helpers';
 let App;
 
 let port;
@@ -18,7 +24,7 @@ module('Render Tree Tab', {
     });
   },
   afterEach() {
-    Ember.run(App, App.destroy);
+    run(App, App.destroy);
   }
 });
 

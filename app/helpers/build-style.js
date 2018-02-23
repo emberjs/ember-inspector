@@ -8,8 +8,9 @@
  * @param {Object} options The options that become styles
  * @return {String} The style sting.
  */
-import Ember from 'ember';
-const { Helper: { helper }, String: { htmlSafe } } = Ember;
+import { helper } from '@ember/component/helper';
+
+import { htmlSafe } from '@ember/string';
 const { keys } = Object;
 
 export function buildStyle(_, options) {

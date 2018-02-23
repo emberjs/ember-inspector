@@ -1,6 +1,6 @@
-import Ember from 'ember';
-const { Component, computed } = Ember;
-const { bool, readOnly, and } = computed;
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { bool, readOnly, and } from '@ember/object/computed';
 
 export default Component.extend({
   /**

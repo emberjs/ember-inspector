@@ -1,7 +1,7 @@
-import Ember from "ember";
+import { alias } from '@ember/object/computed';
+import { computed } from '@ember/object';
+import Controller, { inject as controller } from '@ember/controller';
 import checkCurrentRoute from "ember-inspector/utils/check-current-route";
-
-const { Controller, computed, inject: { controller } } = Ember;
 
 export default Controller.extend({
   application: controller(),
@@ -9,7 +9,7 @@ export default Controller.extend({
   queryParams: ['hideRoutes'],
 
   currentRoute: null,
-  hideRoutes: computed.alias('options.hideRoutes'),
+  hideRoutes: alias('options.hideRoutes'),
 
   options: {
     hideRoutes: false

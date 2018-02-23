@@ -1,6 +1,7 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { htmlSafe } from '@ember/string';
 import checkCurrentRoute from "ember-inspector/utils/check-current-route";
-const { Component, computed, String: { htmlSafe } } = Ember;
 
 export default Component.extend({
   // passed as an attribute to the component

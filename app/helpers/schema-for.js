@@ -7,8 +7,9 @@
  * @param {Array} [name] First element is the name of the schema
  * @return {Object} The schema
  */
-import Ember from 'ember';
-const { Helper, getOwner } = Ember;
+import Helper from '@ember/component/helper';
+
+import { getOwner } from '@ember/application';
 export default Helper.extend({
   compute([name]) {
     return getOwner(this).resolveRegistration(`schema:${name}`);

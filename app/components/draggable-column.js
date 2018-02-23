@@ -2,9 +2,8 @@
 // ===============
 // A wrapper for a resizable-column and a drag-handle component
 
-import Ember from "ember";
-const { Component, inject } = Ember;
-const { service } = inject;
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 
 export default Component.extend({
   tagName: '', // Prevent wrapping in a div

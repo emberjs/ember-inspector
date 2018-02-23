@@ -1,6 +1,8 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { htmlSafe } from '@ember/string';
+import { isEmpty } from '@ember/utils';
 import RowEventsMixin from 'ember-inspector/mixins/row-events';
-const { Component, computed, String: { htmlSafe }, isEmpty } = Ember;
 const COLOR_MAP = {
   red: '#ff2717',
   blue: '#174fff',

@@ -6,8 +6,7 @@
  * @param {Array} [val] The array containing one value.
  * @return {Any} The value passed
  */
-import Ember from 'ember';
-const { Helper: { helper } } = Ember;
+import { helper } from '@ember/component/helper';
 
 export function oneWay([val]) {
   return val;
