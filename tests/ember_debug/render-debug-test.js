@@ -20,8 +20,8 @@ function setupApp() {
   Ember.TEMPLATES.simple = hbs`Simple template`;
 }
 
-module("Render Debug", {
-  beforeEach() {
+module("Render Debug", function(hooks) {
+  hooks.beforeEach(function() {
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
       send() {}
@@ -32,51 +32,52 @@ module("Render Debug", {
     });
     run(EmberDebug, 'start');
     port = EmberDebug.port;
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     EmberDebug.destroyContainer();
     run(App, 'destroy');
-  }
-});
-
-test("Simple Render", async function t(assert) {
-  let profiles = [];
-  port.reopen({
-    send(n, m) {
-      if (n === "render:profilesAdded") {
-        profiles = profiles.concat(m.profiles);
-      }
-    }
-  });
-  port.trigger('render:watchProfiles');
-
-  await visit('/simple');
-
-  assert.ok(profiles.length > 0, "it has created profiles");
-});
-
-test("Clears correctly", async function t(assert) {
-  let profiles = [];
-
-  port.reopen({
-    send(n, m) {
-      if (n === "render:profilesAdded") {
-        profiles.push(m.profiles);
-      }
-      if (n === "render:profilesUpdated") {
-        profiles = m.profiles;
-      }
-    }
   });
 
-  port.trigger('render:watchProfiles');
+  test("Simple Render", async function t(assert) {
+    let profiles = [];
+    port.reopen({
+      send(n, m) {
+        if (n === "render:profilesAdded") {
+          profiles = profiles.concat(m.profiles);
+        }
+      }
+    });
+    port.trigger('render:watchProfiles');
 
-  await visit('/simple');
+    await visit('/simple');
 
-  assert.ok(profiles.length > 0, "it has created profiles");
-  port.trigger('render:clear');
-  await wait();
+    assert.ok(profiles.length > 0, "it has created profiles");
+  });
 
-  assert.ok(profiles.length === 0, "it has cleared the profiles");
+  test("Clears correctly", async function t(assert) {
+    let profiles = [];
 
+    port.reopen({
+      send(n, m) {
+        if (n === "render:profilesAdded") {
+          profiles.push(m.profiles);
+        }
+        if (n === "render:profilesUpdated") {
+          profiles = m.profiles;
+        }
+      }
+    });
+
+    port.trigger('render:watchProfiles');
+
+    await visit('/simple');
+
+    assert.ok(profiles.length > 0, "it has created profiles");
+    port.trigger('render:clear');
+    await wait();
+
+    assert.ok(profiles.length === 0, "it has cleared the profiles");
+
+  });
 });
