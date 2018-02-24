@@ -1,6 +1,6 @@
 import PortMixin from "ember-debug/mixins/port-mixin";
 import SourceMap from "ember-debug/libs/source-map";
-const Ember = window.Ember;
+import Ember from 'ember';
 const { Object: EmberObject, computed, guidFor, run, RSVP, A } = Ember;
 const { resolve, all } = RSVP;
 const { oneWay } = computed;

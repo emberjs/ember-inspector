@@ -1,7 +1,7 @@
 import PortMixin from "ember-debug/mixins/port-mixin";
 import ProfileManager from "ember-debug/models/profile-manager";
 
-const Ember = window.Ember;
+import Ember from 'ember';
 const { computed: { oneWay }, run: { later }, subscribe, Object: EmberObject } = Ember;
 
 let profileManager = new ProfileManager();

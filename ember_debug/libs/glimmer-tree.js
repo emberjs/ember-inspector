@@ -24,7 +24,7 @@
  *
  * @class GlimmerTree
  */
-const Ember = window.Ember;
+import Ember from 'ember';
 import {
   modelName as getModelName,
   shortModelName as getShortModelName,

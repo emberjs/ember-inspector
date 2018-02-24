@@ -3,7 +3,7 @@
 
   @class ProfileNode
 **/
-const Ember = window.Ember;
+import Ember from 'ember';
 const { get, guidFor } = Ember;
 
 const ProfileNode = function(start, payload, parent, now) {

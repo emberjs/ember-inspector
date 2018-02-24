@@ -3,7 +3,7 @@
  * A lot of the code is inspired by/taken from
  * https://github.com/evanw/node-source-map-support
  */
-const Ember = window.Ember;
+import Ember from 'ember';
 const { Object: EmberObject, A, computed, RSVP: { resolve, Promise } } = Ember;
 
 const notFoundError = new Error('Source map url not found');

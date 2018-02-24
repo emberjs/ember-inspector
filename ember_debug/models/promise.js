@@ -1,5 +1,5 @@
 import computedPolyfill from '../addons/ember-new-computed/index';
-const Ember = window.Ember;
+import Ember from 'ember';
 const { typeOf, Object: EmberObject, computed, A } = Ember;
 
 const dateComputed = function() {

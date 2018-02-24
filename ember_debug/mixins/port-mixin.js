@@ -1,4 +1,4 @@
-const Ember = window.Ember;
+import Ember from 'ember';
 const { Mixin } = Ember;
 export default Mixin.create({
   port: null,

@@ -1,4 +1,4 @@
-const Ember = window.Ember;
+import Ember from 'ember';
 const { computed } = Ember;
 let supportsSetterGetter;
 
