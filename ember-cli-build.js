@@ -140,7 +140,7 @@ module.exports = function(defaults) {
   var emberDebugs = [];
   ['basic', 'chrome', 'firefox', 'bookmarklet', 'websocket'].forEach(function(dist) {
     emberDebugs[dist] = map(emberDebug, '**/*.js', function(content) {
-      return "(function(adapter, env) {\n" + content + "\n}('" + dist + "', '" + env + "'));";
+      return "try { (function(adapter, env) {\n" + content + "\n}('" + dist + "', '" + env + "')); } catch(e) {console.error(e)}";
     });
   });
 
