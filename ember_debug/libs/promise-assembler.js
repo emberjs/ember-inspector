@@ -6,7 +6,7 @@
  */
 
 import Promise from 'ember-debug/models/promise';
-const Ember = window.Ember;
+import Ember from 'ember';
 const { Object: EmberObject, Evented, A, computed, RSVP, copy, isNone } = Ember;
 
 let PromiseAssembler = EmberObject.extend(Evented, {

@@ -11,7 +11,7 @@ import ContainerDebug from "ember-debug/container-debug";
 import DeprecationDebug from "ember-debug/deprecation-debug";
 import Session from "ember-debug/services/session";
 
-const Ember = window.Ember;
+import Ember from 'ember';
 const { Object: EmberObject, run, Application, Namespace } = Ember;
 
 const EmberDebug = EmberObject.extend({

@@ -1,6 +1,6 @@
 import canUseNewSyntax from './utils/can-use-new-syntax';
 
-const Ember = window.Ember;
+import Ember from 'ember';
 const { computed } = Ember;
 
 export default function() {

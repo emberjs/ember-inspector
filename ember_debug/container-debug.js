@@ -1,5 +1,5 @@
 import PortMixin from "ember-debug/mixins/port-mixin";
-const Ember = window.Ember;
+import Ember from 'ember';
 const { Object: EmberObject, computed } = Ember;
 const { oneWay } = computed;
 

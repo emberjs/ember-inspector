@@ -1,6 +1,6 @@
 /* eslint no-empty:0 */
 import PortMixin from "ember-debug/mixins/port-mixin";
-const Ember = window.Ember;
+import Ember from 'ember';
 const { computed, Object: EmberObject, A } = Ember;
 let { libraries } = Ember;
 const { readOnly } = computed;

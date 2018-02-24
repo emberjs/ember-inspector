@@ -10,7 +10,7 @@ import {
   shortViewName as getShortViewName
 } from 'ember-debug/utils/name-functions';
 
-const Ember = window.Ember;
+import Ember from 'ember';
 
 const {
   guidFor,

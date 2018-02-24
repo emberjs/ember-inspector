@@ -78,7 +78,6 @@ module.exports = function(defaults) {
     destDir: 'ember-debug',
     include: ['**/*.js'],
     exclude: [
-      'vendor/loader.js',
       'vendor/source-map.js',
       'vendor/startup-wrapper.js',
     ]
@@ -126,19 +125,13 @@ module.exports = function(defaults) {
     files: ['source-map.js'],
   });
 
-  var loader = new Funnel('ember_debug', {
-    srcDir: 'vendor',
-    files: ['loader.js'],
-  });
-
   sourceMap = map(sourceMap, '**/*.js', function(content) {
     return "(function() {\n" + content + "\n}());";
   });
 
-  emberDebug = mergeTrees([loader, startupWrapper, sourceMap, emberDebug]);
+  emberDebug = mergeTrees([startupWrapper, sourceMap, emberDebug]);
 
   emberDebug = concatFiles(emberDebug, {
-    headerFiles: ['loader.js'],
     inputFiles: ['**/*.js'],
     outputFile: '/ember_debug.js',
     sourceMapConfig: { enabled: false }
@@ -147,7 +140,7 @@ module.exports = function(defaults) {
   var emberDebugs = [];
   ['basic', 'chrome', 'firefox', 'bookmarklet', 'websocket'].forEach(function(dist) {
     emberDebugs[dist] = map(emberDebug, '**/*.js', function(content) {
-      return "(function(adapter, env) {\n" + content + "\n}('" + dist + "', '" + env + "'));";
+      return "try { (function(adapter, env) {\n" + content + "\n}('" + dist + "', '" + env + "')); } catch(e) {console.error(e)}";
     });
   });
 

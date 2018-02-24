@@ -1,5 +1,5 @@
 import BasicAdapter from "./basic";
-const Ember = window.Ember;
+import Ember from 'ember';
 const { computed, run, RSVP: { Promise } } = Ember;
 import { onReady } from '../utils/on-ready';
 

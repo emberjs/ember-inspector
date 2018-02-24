@@ -1,4 +1,4 @@
-const Ember = window.Ember;
+import Ember from 'ember';
 const { Object: EmberObject, computed, guidFor, run } = Ember;
 const { oneWay } = computed;
 
