@@ -92,8 +92,9 @@ function setupApp() {
   setTemplate('posts', hbs`Posts`);
 }
 let defaultRootForFinder;
-module("View Debug", {
-  beforeEach() {
+
+module("View Debug", function(hooks) {
+  hooks.beforeEach(function() {
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
       send() {}
@@ -107,188 +108,189 @@ module("View Debug", {
     port = EmberDebug.port;
     defaultRootForFinder = nativeDomHelpersSettings.rootElement;
     nativeDomHelpersSettings.rootElement = 'body';
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     EmberDebug.destroyContainer();
     run(App, 'destroy');
     destroyTemplates();
     nativeDomHelpersSettings.rootElement = defaultRootForFinder;
-  }
-});
-
-test("Simple View Tree", async function t(assert) {
-  let name = null, message = null;
-  port.reopen({
-    send(n, m) {
-      name = n;
-      message = m;
-    }
   });
 
-  await visit('/simple');
+  test("Simple View Tree", async function t(assert) {
+    let name = null, message = null;
+    port.reopen({
+      send(n, m) {
+        name = n;
+        message = m;
+      }
+    });
 
-  assert.equal(name, 'view:viewTree');
-  let tree = message.tree;
-  let value = tree.value;
-  assert.equal(tree.children.length, 1);
-  assert.equal(value.controller.name, 'App.ApplicationController');
-  assert.equal(value.name, 'application');
-  assert.equal(value.tagName, 'div');
-  assert.equal(value.template, 'application');
-});
+    await visit('/simple');
 
-test("Components in view tree", async function t(assert) {
-  let message;
-  port.reopen({
-    send(n, m) {
-      message = m;
-    }
+    assert.equal(name, 'view:viewTree');
+    let tree = message.tree;
+    let value = tree.value;
+    assert.equal(tree.children.length, 1);
+    assert.equal(value.controller.name, 'App.ApplicationController');
+    assert.equal(value.name, 'application');
+    assert.equal(value.tagName, 'div');
+    assert.equal(value.template, 'application');
   });
 
-  await visit('/simple');
+  test("Components in view tree", async function t(assert) {
+    let message;
+    port.reopen({
+      send(n, m) {
+        message = m;
+      }
+    });
 
-  let tree = message.tree;
-  let simple = tree.children[0];
-  assert.equal(simple.children.length, 0, "Components are not listed by default.");
-  run(() => {
-    port.trigger('view:setOptions', { options: { components: true } });
+    await visit('/simple');
+
+    let tree = message.tree;
+    let simple = tree.children[0];
+    assert.equal(simple.children.length, 0, "Components are not listed by default.");
+    run(() => {
+      port.trigger('view:setOptions', { options: { components: true } });
+    });
+
+    await wait();
+
+    tree = message.tree;
+    simple = tree.children[0];
+    assert.equal(simple.children.length, 1, "Components can be configured to show.");
+    let component = simple.children[0];
+    assert.equal(component.value.viewClass, 'Ember.TextField');
   });
 
-  await wait();
+  test("Highlighting Views on hover", async function t(assert) {
+    let name, message;
+    port.reopen({
+      send(n, m) {
+        name = n;
+        message = m;
+      }
+    });
 
-  tree = message.tree;
-  simple = tree.children[0];
-  assert.equal(simple.children.length, 1, "Components can be configured to show.");
-  let component = simple.children[0];
-  assert.equal(component.value.viewClass, 'Ember.TextField');
-});
+    await visit('/simple');
 
-test("Highlighting Views on hover", async function t(assert) {
-  let name, message;
-  port.reopen({
-    send(n, m) {
-      name = n;
-      message = m;
-    }
+    run(() => port.trigger('view:inspectViews', { inspect: true }));
+    await wait();
+
+    await triggerEvent('.application', 'mousemove');
+
+    let previewDiv = find('[data-label=preview-div]');
+
+    assert.ok(isVisible(previewDiv));
+    assert.notOk(find('[data-label=layer-component]'), "Component layer not shown on outlet views");
+    assert.equal(find('[data-label=layer-controller]', previewDiv).textContent, 'App.ApplicationController');
+    assert.equal(find('[data-label=layer-model]', previewDiv).textContent, 'Application model');
+
+    let layerDiv = find('[data-label=layer-div]');
+    await triggerEvent(layerDiv, 'mouseup');
+
+    assert.ok(isVisible(layerDiv));
+    assert.equal(find('[data-label=layer-model]', layerDiv).textContent, 'Application model');
+    await click('[data-label=layer-controller]', layerDiv);
+
+    let controller = App.__container__.lookup('controller:application');
+    assert.equal(name, 'objectInspector:updateObject');
+    assert.equal(controller.toString(), message.name);
+    name = null;
+    message = null;
+
+    await click('[data-label=layer-model]', layerDiv);
+
+    assert.equal(name, 'objectInspector:updateObject');
+    assert.equal(message.name, 'Application model');
+    await click('[data-label=layer-close]');
+
+    assert.notOk(isVisible(layerDiv));
+
+    run(() => port.trigger('view:inspectViews', { inspect: true }));
+    await wait();
+
+    await triggerEvent('.simple-input', 'mousemove');
+
+    previewDiv = find('[data-label=preview-div]');
+    assert.ok(isVisible(previewDiv));
+    assert.equal(find('[data-label=layer-component]').textContent.trim(), "Ember.TextField");
+    assert.notOk(find('[data-label=layer-controller]', previewDiv));
+    assert.notOk(find('[data-label=layer-model]', previewDiv));
   });
 
-  await visit('/simple');
+  test("Highlighting a view without an element should not throw an error", async function t(assert) {
+    let message = null;
+    port.reopen({
+      send(n, m) {
+        message = m;
+      }
+    });
 
-  run(() => port.trigger('view:inspectViews', { inspect: true }));
-  await wait();
+    await visit('/posts');
 
-  await triggerEvent('.application', 'mousemove');
+    let tree = message.tree;
+    let postsView = tree.children[0];
+    port.trigger('view:previewLayer', { objectId: postsView.value.objectId });
+    await wait();
 
-  let previewDiv = find('[data-label=preview-div]');
-
-  assert.ok(isVisible(previewDiv));
-  assert.notOk(find('[data-label=layer-component]'), "Component layer not shown on outlet views");
-  assert.equal(find('[data-label=layer-controller]', previewDiv).textContent, 'App.ApplicationController');
-  assert.equal(find('[data-label=layer-model]', previewDiv).textContent, 'Application model');
-
-  let layerDiv = find('[data-label=layer-div]');
-  await triggerEvent(layerDiv, 'mouseup');
-
-  assert.ok(isVisible(layerDiv));
-  assert.equal(find('[data-label=layer-model]', layerDiv).textContent, 'Application model');
-  await click('[data-label=layer-controller]', layerDiv);
-
-  let controller = App.__container__.lookup('controller:application');
-  assert.equal(name, 'objectInspector:updateObject');
-  assert.equal(controller.toString(), message.name);
-  name = null;
-  message = null;
-
-  await click('[data-label=layer-model]', layerDiv);
-
-  assert.equal(name, 'objectInspector:updateObject');
-  assert.equal(message.name, 'Application model');
-  await click('[data-label=layer-close]');
-
-  assert.notOk(isVisible(layerDiv));
-
-  run(() => port.trigger('view:inspectViews', { inspect: true }));
-  await wait();
-
-  await triggerEvent('.simple-input', 'mousemove');
-
-  previewDiv = find('[data-label=preview-div]');
-  assert.ok(isVisible(previewDiv));
-  assert.equal(find('[data-label=layer-component]').textContent.trim(), "Ember.TextField");
-  assert.notOk(find('[data-label=layer-controller]', previewDiv));
-  assert.notOk(find('[data-label=layer-model]', previewDiv));
-});
-
-test("Highlighting a view without an element should not throw an error", async function t(assert) {
-  let message = null;
-  port.reopen({
-    send(n, m) {
-      message = m;
-    }
+    assert.ok(true, "Does not throw an error.");
   });
 
-  await visit('/posts');
+  test("Supports a view with a string as model", async function t(assert) {
+    let message = null;
+    port.reopen({
+      send(n, m) {
+        message = m;
+      }
+    });
 
-  let tree = message.tree;
-  let postsView = tree.children[0];
-  port.trigger('view:previewLayer', { objectId: postsView.value.objectId });
-  await wait();
+    await visit('/posts');
 
-  assert.ok(true, "Does not throw an error.");
-});
-
-test("Supports a view with a string as model", async function t(assert) {
-  let message = null;
-  port.reopen({
-    send(n, m) {
-      message = m;
-    }
+    assert.equal(message.tree.children[0].value.model.name, 'String as model');
+    assert.equal(message.tree.children[0].value.model.type, 'type-string');
   });
 
-  await visit('/posts');
+  test("Supports applications that don't have the ember-application CSS class", async function t(assert) {
+    let name = null;
+    let rootElement = find('');
 
-  assert.equal(message.tree.children[0].value.model.name, 'String as model');
-  assert.equal(message.tree.children[0].value.model.type, 'type-string');
-});
+    await visit('/simple');
 
-test("Supports applications that don't have the ember-application CSS class", async function t(assert) {
-  let name = null;
-  let rootElement = find('');
+    assert.ok(rootElement.classList.contains('ember-application'), "The rootElement has the .ember-application CSS class");
+    rootElement.classList.remove('ember-application');
 
-  await visit('/simple');
+    // Restart the inspector
+    EmberDebug.start();
+    port = EmberDebug.port;
 
-  assert.ok(rootElement.classList.contains('ember-application'), "The rootElement has the .ember-application CSS class");
-  rootElement.classList.remove('ember-application');
+    port.reopen({
+      send(n/*, m*/) {
+        name = n;
+      }
+    });
 
-  // Restart the inspector
-  EmberDebug.start();
-  port = EmberDebug.port;
+    await visit('/simple');
 
-  port.reopen({
-    send(n/*, m*/) {
-      name = n;
-    }
+    assert.equal(name, 'view:viewTree');
   });
 
-  await visit('/simple');
+  test("Does not list nested {{yield}} views", async function t(assert) {
+    let message = null;
+    port.reopen({
+      send(n, m) {
+        message = m;
+      }
+    });
 
-  assert.equal(name, 'view:viewTree');
-});
+    setTemplate('posts', hbs`{{#x-first}}Foo{{/x-first}}`);
+    setTemplate('components/x-first', hbs`{{#x-second}}{{yield}}{{/x-second}}`);
+    setTemplate('components/x-second', hbs`{{yield}}`);
 
-test("Does not list nested {{yield}} views", async function t(assert) {
-  let message = null;
-  port.reopen({
-    send(n, m) {
-      message = m;
-    }
+    await visit('/posts');
+
+    assert.equal(message.tree.children.length, 1, 'Only the posts view should render');
+    assert.equal(message.tree.children[0].children.length, 0, 'posts view should have no children');
   });
-
-  setTemplate('posts', hbs`{{#x-first}}Foo{{/x-first}}`);
-  setTemplate('components/x-first', hbs`{{#x-second}}{{yield}}{{/x-second}}`);
-  setTemplate('components/x-second', hbs`{{yield}}`);
-
-  await visit('/posts');
-
-  assert.equal(message.tree.children.length, 1, 'Only the posts view should render');
-  assert.equal(message.tree.children[0].children.length, 0, 'posts view should have no children');
 });

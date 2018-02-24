@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@ember/test-helpers@^0.7.9":
-  version "0.7.14"
-  resolved "https://registry.yarnpkg.com/@ember/test-helpers/-/test-helpers-0.7.14.tgz#e53b0a66f144a0a85579c4432e56960971a3f739"
+"@ember/test-helpers@^0.7.18":
+  version "0.7.18"
+  resolved "https://registry.yarnpkg.com/@ember/test-helpers/-/test-helpers-0.7.18.tgz#a0c474c3029588ec46d2e406252fc072b7f9aa3c"
   dependencies:
     broccoli-funnel "^2.0.1"
     ember-cli-babel "^6.10.0"
@@ -2466,7 +2466,7 @@ ember-cli-babel@^5.0.0, ember-cli-babel@^5.1.5, ember-cli-babel@^5.1.6, ember-cl
     ember-cli-version-checker "^1.0.2"
     resolve "^1.1.2"
 
-ember-cli-babel@^6.0.0-beta.4, ember-cli-babel@^6.0.0-beta.7, ember-cli-babel@^6.1.0, ember-cli-babel@^6.10.0, ember-cli-babel@^6.3.0, ember-cli-babel@^6.6.0, ember-cli-babel@^6.8.0, ember-cli-babel@^6.8.1:
+ember-cli-babel@^6.0.0-beta.4, ember-cli-babel@^6.0.0-beta.7, ember-cli-babel@^6.1.0, ember-cli-babel@^6.10.0, ember-cli-babel@^6.11.0, ember-cli-babel@^6.3.0, ember-cli-babel@^6.6.0, ember-cli-babel@^6.8.0, ember-cli-babel@^6.8.1:
   version "6.11.0"
   resolved "https://registry.yarnpkg.com/ember-cli-babel/-/ember-cli-babel-6.11.0.tgz#79cb184bac3c05bfe181ddc306bac100ab1f9493"
   dependencies:
@@ -2641,12 +2641,12 @@ ember-cli-preprocess-registry@^3.1.0:
     process-relative-require "^1.0.0"
     silent-error "^1.0.0"
 
-ember-cli-qunit@^4.0.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/ember-cli-qunit/-/ember-cli-qunit-4.3.0.tgz#1ce65dea553d18f5fd9b6b08d3d5128afb2ab94e"
+ember-cli-qunit@^4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/ember-cli-qunit/-/ember-cli-qunit-4.3.2.tgz#cfd89ad3b0dbc28a9c2223d532b52eeade7c602c"
   dependencies:
-    ember-cli-babel "^6.8.1"
-    ember-qunit "^3.3.0"
+    ember-cli-babel "^6.11.0"
+    ember-qunit "^3.3.2"
 
 ember-cli-release@^0.2.9:
   version "0.2.9"
@@ -2889,11 +2889,11 @@ ember-pikaday@^2.2.2:
     fastboot-transform "^0.1.1"
     pikaday "^1.5.1"
 
-ember-qunit@^3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/ember-qunit/-/ember-qunit-3.3.0.tgz#98c0c8d9473808fa7be48808989255cbfa70e760"
+ember-qunit@^3.3.2:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/ember-qunit/-/ember-qunit-3.3.2.tgz#cb48e9deaffa3b4c90983f28c5cf8590894c8ea3"
   dependencies:
-    "@ember/test-helpers" "^0.7.9"
+    "@ember/test-helpers" "^0.7.18"
     broccoli-funnel "^2.0.1"
     broccoli-merge-trees "^2.0.0"
     common-tags "^1.4.0"

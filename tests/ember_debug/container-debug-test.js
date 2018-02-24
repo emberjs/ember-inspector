@@ -18,8 +18,8 @@ function setupApp() {
   });
 }
 
-module("Container Debug", {
-  beforeEach() {
+module("Container Debug", function(hooks) {
+  hooks.beforeEach(function() {
     EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
@@ -34,44 +34,45 @@ module("Container Debug", {
     });
     run(EmberDebug, 'start');
     port = EmberDebug.port;
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     name = null;
     message = null;
     EmberDebug.destroyContainer();
     run(App, 'destroy');
-  }
-});
+  });
 
-test("#getTypes", async function t(assert) {
-  await visit('/simple');
+  test("#getTypes", async function t(assert) {
+    await visit('/simple');
 
-  port.trigger('container:getTypes');
-  await wait();
+    port.trigger('container:getTypes');
+    await wait();
 
-  assert.equal(name, 'container:types');
-  let types = emberA(message.types);
-  assert.ok(types.findBy('name', 'controller'));
-  assert.ok(types.findBy('name', 'route'));
-});
+    assert.equal(name, 'container:types');
+    let types = emberA(message.types);
+    assert.ok(types.findBy('name', 'controller'));
+    assert.ok(types.findBy('name', 'route'));
+  });
 
-test("#getInstances", async function t(assert) {
-  await visit('/simple');
+  test("#getInstances", async function t(assert) {
+    await visit('/simple');
 
-  port.trigger('container:getInstances', { containerType: 'controller' });
-  await wait();
+    port.trigger('container:getInstances', { containerType: 'controller' });
+    await wait();
 
-  assert.equal(name, 'container:instances');
-  let instances = emberA(message.instances);
-  assert.ok(instances.findBy('name', 'simple'));
-});
+    assert.equal(name, 'container:instances');
+    let instances = emberA(message.instances);
+    assert.ok(instances.findBy('name', 'simple'));
+  });
 
-test("#getInstances on a non existing type", async function t(assert) {
-  await visit('/simple');
+  test("#getInstances on a non existing type", async function t(assert) {
+    await visit('/simple');
 
-  port.trigger('container:getInstances', { containerType: 'not-here' });
-  await wait();
+    port.trigger('container:getInstances', { containerType: 'not-here' });
+    await wait();
 
-  assert.equal(name, 'container:instances');
-  assert.equal(message.status, 404);
+    assert.equal(name, 'container:instances');
+    assert.equal(message.status, 404);
+  });
 });
