@@ -1,3 +1,5 @@
+import { run } from '@ember/runloop';
+import Application from '@ember/application';
 import Ember from "ember";
 import { module, test } from 'qunit';
 import { visit } from 'ember-native-dom-helpers';
@@ -5,7 +7,6 @@ import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
 
 const EmberDebug = require('ember-debug/main').default;
-const { run, Application } = Ember;
 let port, App;
 
 

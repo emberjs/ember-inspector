@@ -1,7 +1,6 @@
-import { run } from '@ember/runloop';
 import Ember from "ember";
 import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
+import { setupApplicationTest } from 'ember-qunit';
 import {
   visit,
   findAll,
@@ -10,22 +9,20 @@ import {
   fillIn,
   currentURL
 } from 'ember-native-dom-helpers';
-let App;
 
 let port, message, name;
 
 module('Container Tab', function(hooks) {
+  setupApplicationTest(hooks);
+
   hooks.beforeEach(function() {
-    App = startApp({
-      adapter: 'basic'
-    });
-    port = App.__container__.lookup('port:main');
+    debugger;
+    port = this.owner.lookup('port:main');
   });
 
   hooks.afterEach(function() {
     name = null;
     message = null;
-    run(App, App.destroy);
   });
 
 

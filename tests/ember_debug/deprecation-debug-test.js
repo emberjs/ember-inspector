@@ -1,16 +1,19 @@
-import Ember from "ember";
+import { deprecate } from '@ember/application/deprecations';
+import Route from '@ember/routing/route';
+import Application from '@ember/application';
+import RSVP from 'rsvp';
+import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { visit } from 'ember-native-dom-helpers';
 import require from 'require';
 
-const { RSVP, run } = Ember;
 const EmberDebug = require("ember-debug/main").default;
 
 let port;
 let App;
 
 function setupApp() {
-  App = Ember.Application.create();
+  App = Application.create();
   App.injectTestHelpers();
   App.setupForTesting();
 }
@@ -36,7 +39,7 @@ module("Deprecation Debug", function(hooks) {
 
   hooks.afterEach(function() {
     EmberDebug.destroyContainer();
-    Ember.run(App, 'destroy');
+    run(App, 'destroy');
   });
 
   test("deprecations are caught and sent", async function t(assert) {
@@ -47,12 +50,12 @@ module("Deprecation Debug", function(hooks) {
       }
     });
 
-    App.ApplicationRoute = Ember.Route.extend({
+    App.ApplicationRoute = Route.extend({
       setupController() {
         EmberDebug.IGNORE_DEPRECATIONS = false;
-        Ember.deprecate('Deprecation 1');
-        Ember.deprecate('Deprecation 2', false, { url: 'http://www.emberjs.com' });
-        Ember.deprecate('Deprecation 1');
+        deprecate('Deprecation 1');
+        deprecate('Deprecation 2', false, { url: 'http://www.emberjs.com' });
+        deprecate('Deprecation 1');
         EmberDebug.IGNORE_DEPRECATIONS = true;
       }
     });
@@ -86,11 +89,11 @@ module("Deprecation Debug", function(hooks) {
         assert.equal(++count, 1, 'Warns once');
       }
     });
-    App.ApplicationRoute = Ember.Route.extend({
+    App.ApplicationRoute = Route.extend({
       setupController() {
         EmberDebug.IGNORE_DEPRECATIONS = false;
-        Ember.deprecate('Deprecation 1');
-        Ember.deprecate('Deprecation 2');
+        deprecate('Deprecation 1');
+        deprecate('Deprecation 2');
         EmberDebug.IGNORE_DEPRECATIONS = true;
       }
     });

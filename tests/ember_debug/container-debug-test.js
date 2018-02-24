@@ -1,9 +1,10 @@
+import { run } from '@ember/runloop';
+import { A as emberA } from '@ember/array';
+import Application from '@ember/application';
 import { module, test } from 'qunit';
-import Ember from "ember";
 import { visit } from 'ember-native-dom-helpers';
 import require from 'require';
 
-const { run, A: emberA, Application } = Ember;
 let EmberDebug;
 let port, name, message;
 let App;

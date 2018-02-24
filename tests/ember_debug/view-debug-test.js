@@ -1,15 +1,24 @@
+import { A } from '@ember/array';
+import { run } from '@ember/runloop';
+import Route from '@ember/routing/route';
+import EmberObject from '@ember/object';
+import Controller from '@ember/controller';
+import Application from '@ember/application';
 import Ember from "ember";
 import { module, test } from 'qunit';
-import { visit, find, click, triggerEvent, settings as nativeDomHelpersSettings } from 'ember-native-dom-helpers';
+import {
+  visit,
+  find,
+  click,
+  triggerEvent,
+  settings as nativeDomHelpersSettings
+} from 'ember-native-dom-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
 
-const { Application } = Ember;
-
 const EmberDebug = require('ember-debug/main').default;
-const { Route, Object: EmberObject, Controller } = Ember;
 let port;
-let App, run = Ember.run;
+let App;
 let OLD_TEMPLATES = {};
 
 function setTemplate(name, template) {
@@ -63,7 +72,7 @@ function setupApp() {
 
   App.CommentsIndexRoute = Route.extend({
     model() {
-      return Ember.A(['first comment', 'second comment', 'third comment']);
+      return A(['first comment', 'second comment', 'third comment']);
     }
   });
 

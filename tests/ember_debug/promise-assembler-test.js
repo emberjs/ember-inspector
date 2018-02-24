@@ -1,4 +1,6 @@
-import Ember from "ember";
+import { run } from '@ember/runloop';
+import Evented from '@ember/object/evented';
+import EmberObject from '@ember/object';
 import { module, test } from 'qunit';
 import require from 'require';
 
@@ -9,19 +11,19 @@ let assembler;
 let fakeRSVP;
 
 function stubRSVP() {
-  fakeRSVP = Ember.Object.extend(Ember.Evented, {
+  fakeRSVP = EmberObject.extend(Evented, {
     configure() {}
   }).create();
 }
 
 function startAssembler() {
-  Ember.run(assembler, 'start');
+  run(assembler, 'start');
 }
 
 module("PromiseAssembler", function(hooks) {
   hooks.beforeEach(function() {
     stubRSVP();
-    Ember.run(function() {
+    run(function() {
       assembler = PromiseAssembler.create({
         RSVP: fakeRSVP
       });
@@ -31,7 +33,7 @@ module("PromiseAssembler", function(hooks) {
 
   hooks.afterEach(function() {
     if (assembler) {
-      Ember.run(assembler, 'destroy');
+      run(assembler, 'destroy');
       assembler = null;
     }
   });
@@ -231,7 +233,7 @@ module("PromiseAssembler", function(hooks) {
     });
     assert.equal(assembler.find().get('length'), 1);
 
-    Ember.run(assembler, 'stop');
+    run(assembler, 'stop');
 
     assert.equal(assembler.find().get('length'), 0);
     assembler.on('created', function() {

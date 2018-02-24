@@ -1,12 +1,12 @@
+import { run } from '@ember/runloop';
+import Application from '@ember/application';
+import EmberObject from '@ember/object';
 let name;
-/* eslint no-empty:0 */
-import Ember from "ember";
 import { module, test } from 'qunit';
 import require from 'require';
 
 let EmberDebug;
 let port, adapter;
-const { run, Application, Object: EmberObject } = Ember;
 let App;
 let EmberInspector;
 

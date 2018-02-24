@@ -2,12 +2,17 @@
   "name": "ember-inspector",
   "version": "2.4.0",
   "description": "Extends developer tools to allow you to better inspect your Ember.js apps.",
+  "license": "MIT",
+  "author": "Tilde, Inc.",
   "directories": {
+    "doc": "doc",
     "test": "tests"
   },
+  "repository": "https://github.com/emberjs/ember-inspector",
   "scripts": {
     "build": "ember build",
-    "start": "ember server",
+    "lint:js": "eslint ./*.js app config lib server tests",
+    "start": "ember serve",
     "test": "ember test",
     "watch": "ember build --watch",
     "serve:bookmarklet": "ember serve --port 9191",
@@ -17,10 +22,6 @@
     "upload:panes": "yarn run build && yarn run compress:panes && node scripts/upload-panes.js",
     "lock-version": "yarn run build:production && yarn run compress:panes && EMBER_ENV=production node scripts/upload-panes.js"
   },
-  "repository": "https://github.com/emberjs/ember-inspector",
-  "engines": {
-    "node": ">= 4"
-  },
   "emberVersionsSupported": [
     "2.7.0",
     ""
@@ -28,8 +29,7 @@
   "previousEmberVersionsSupported": [
     "0.0.0"
   ],
-  "author": "Tilde, Inc.",
-  "license": "MIT",
+  "dependencies": {},
   "devDependencies": {
     "amd-name-resolver": "^0.0.5",
     "aws-sdk": "^2.3.3",
@@ -44,7 +44,7 @@
     "broccoli-stew": "^1.3.2",
     "broccoli-string-replace": "^0.1.1",
     "ember-async-image": "0.1.1",
-    "ember-cli": "~2.13.3 ",
+    "ember-cli": "~3.1.0-beta.1",
     "ember-cli-app-version": "^3.0.0",
     "ember-cli-babel": "^6.6.0",
     "ember-cli-dependency-checker": "^2.1.0",
@@ -56,16 +56,18 @@
     "ember-cli-moment-shim": "3.5.0",
     "ember-cli-qunit": "^4.3.2",
     "ember-cli-sass": "^7.1.7",
+    "ember-cli-shims": "^1.2.0",
     "ember-cli-uglify": "^2.0.2",
     "ember-concurrency": "0.8.15",
     "ember-export-application-global": "^2.0.0",
     "ember-load-initializers": "^1.0.0",
+    "ember-maybe-import-regenerator": "^0.1.6",
     "ember-native-dom-helpers": "^0.4.2",
     "ember-pikaday": "^2.2.2",
     "ember-resolver": "^4.0.0",
-    "ember-source": "2.13.3",
-    "ember-cli-shims": "^1.1.0",
+    "ember-source": "~3.0.0",
     "ember-truth-helpers": "2.0.0",
+    "eslint-plugin-ember": "^5.0.0",
     "fstream": "^1.0.8",
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
@@ -79,6 +81,7 @@
     "smoke-and-mirrors": "0.5.5",
     "yauzl": "^2.4.1"
   },
-  "dependencies": {
+  "engines": {
+    "node": "^4.5 || 6.* || >= 7.*"
   }
 }

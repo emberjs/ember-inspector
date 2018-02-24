@@ -1,17 +1,21 @@
 ---
 language: node_js
-
 node_js:
   - "6"
 
+sudo: false
 dist: trusty
-sudo: required
+
+addons:
+  chrome: stable
 
 cache:
   yarn: true
 
-addons:
-  chrome: stable
+env:
+  global:
+    # See https://git.io/vdao3 for details.
+    - JOBS=1
 
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash
@@ -23,6 +27,7 @@ install:
   - bower install
 
 script:
+  - yarn lint:js
   - yarn test
 
 after_success:

@@ -1,22 +1,24 @@
-import Ember from "ember";
+import Application from '@ember/application';
+import { run, later } from '@ember/runloop';
+import { A as emberA } from '@ember/array';
+import RSVP from 'rsvp';
 import { module, test } from 'qunit';
 import require from 'require';
 
 const EmberDebug = require("ember-debug/main").default;
 
-let port, name, message, RSVP = Ember.RSVP;
+let port, name, message;
 let App;
-let { run, A: emberA } = Ember;
 
 function setupApp() {
-  App = Ember.Application.create();
+  App = Application.create();
   App.injectTestHelpers();
   App.setupForTesting();
 }
 
 // RSVP instrumentation is out of band (50 ms delay)
 async function rsvpDelay() {
-  Ember.run.later(function() {}, 100);
+  later(function() {}, 100);
   await wait();
 }
 
@@ -34,7 +36,7 @@ module("Promise Debug", function(hooks) {
       setupApp();
       EmberDebug.set('application', App);
     });
-    Ember.run(EmberDebug, 'start');
+    run(EmberDebug, 'start');
     EmberDebug.get('promiseDebug').reopen({
       delay: 5,
       session: {
@@ -50,7 +52,7 @@ module("Promise Debug", function(hooks) {
     name = null;
     message = null;
     EmberDebug.destroyContainer();
-    Ember.run(App, 'destroy');
+    run(App, 'destroy');
   });
 
   test("Existing promises sent when requested", async function t(assert) {
@@ -101,7 +103,7 @@ module("Promise Debug", function(hooks) {
     });
 
     let done = assert.async();
-    Ember.run.later(function() {
+    later(function() {
       assert.equal(name, 'promise:promisesUpdated');
       let promises = emberA(message.promises);
       let promise = promises.findBy('label', 'Promise1');
@@ -109,7 +111,7 @@ module("Promise Debug", function(hooks) {
       if (promise) {
         assert.equal(promise.label, 'Promise1');
         p.then(function() {}, null, "Child1");
-        Ember.run.later(function() {
+        later(function() {
           assert.equal(name, 'promise:promisesUpdated');
           assert.equal(message.promises.length, 2);
           let child = message.promises[0];
