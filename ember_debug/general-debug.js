@@ -3,18 +3,34 @@ import PortMixin from "ember-debug/mixins/port-mixin";
 const Ember = window.Ember;
 const { computed, Object: EmberObject, A } = Ember;
 let { libraries } = Ember;
-const { oneWay } = computed;
+const { readOnly } = computed;
 
 const GeneralDebug = EmberObject.extend(PortMixin, {
+  /**
+   * Passed on creation.
+   *
+   * @type {EmberDebug}
+   */
   namespace: null,
 
-  port: oneWay('namespace.port').readOnly(),
+  /**
+   * Used by PortMixin.
+   *
+   * @type {Port}
+   */
+  port: readOnly('namespace.port'),
 
-  application: oneWay('namespace.application').readOnly(),
-
-  promiseDebug: oneWay('namespace.promiseDebug').readOnly(),
-
+  /**
+   * Used by the PortMixin
+   *
+   * @type {String}
+   */
   portNamespace: 'general',
+
+  /**
+   * @type {Application}
+   */
+  application: readOnly('namespace.application'),
 
   // Keep an eye on https://github.com/ember-cli/ember-cli/issues/3045
   emberCliConfig: computed(function() {
@@ -34,25 +50,40 @@ const GeneralDebug = EmberObject.extend(PortMixin, {
     return config;
   }),
 
-
+  /**
+   * Sends a reply back indicating if the app has been booted.
+   *
+   * `__inspector__booted` is a property set on the application instance
+   * when the ember-debug is inserted into the target app.
+   * see: startup-wrapper.
+   */
   sendBooted() {
     this.sendMessage('applicationBooted', {
       booted: this.get('application.__inspector__booted')
     });
   },
 
+  /**
+   * Sends a reply back indicating that ember-debug has been reset.
+   * We need to reset ember-debug to remove state between tests.
+   */
   sendReset() {
-    this.sendMessage('reset', {
-      reset: true
-    });
+    this.sendMessage('reset');
   },
 
   messages: {
+    /**
+     * Called from the inspector to check if the inspected app has been booted.
+     */
     applicationBooted() {
       this.sendBooted();
     },
-    getLibraries() {
 
+    /**
+     * Called from the inspector to fetch the libraries that are displayed in
+     * the info tab.
+     */
+    getLibraries() {
       // Ember has changed where the array of libraries is located.
       // In older versions, `Ember.libraries` was the array itself,
       // but now it's found under _registry.
@@ -62,6 +93,7 @@ const GeneralDebug = EmberObject.extend(PortMixin, {
 
       this.sendMessage('libraries', { libraries: arrayize(libraries) });
     },
+
     refresh() {
       window.location.reload();
     }
