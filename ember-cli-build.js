@@ -6,7 +6,6 @@ var mergeTrees = require('broccoli-merge-trees');
 var concatFiles = require('broccoli-concat');
 var path = require('path');
 var jsStringEscape = require('js-string-escape');
-var eslint = require('broccoli-lint-eslint');
 var stew = require('broccoli-stew');
 var writeFile = require('broccoli-file-creator');
 var replace = require('broccoli-string-replace');
@@ -32,16 +31,6 @@ function renderErrors(errors) {
     return error.line + ':' + error.column + ' ' +
       ' - ' + error.message + ' (' + error.ruleId +')';
   }).join('\n');
-}
-
-function eslintTestGenerator(relativePath, errors) {
-  var pass = !errors || errors.length === 0;
-  return "import { module, test } from 'qunit';\n" +
-    "module('ESLINT - " + path.dirname(relativePath) + "');\n" +
-    "test('" + relativePath + " should pass eslint', function(assert) {\n" +
-    "  assert.ok(" + pass + ", '" + relativePath + " should pass eslint." +
-    jsStringEscape("\n" + renderErrors(errors)) + "');\n" +
-   "});\n";
 }
 
 // Firefox requires non-minified assets for review :(
@@ -83,17 +72,6 @@ module.exports = function(defaults) {
       'vendor/startup-wrapper.js',
     ]
   });
-
-  if (env === 'test') {
-    var linted = eslint(emberDebug, {
-      testGenerator: eslintTestGenerator,
-      options: {
-        configFile: './ember_debug/.eslintrc.js',
-        rulePaths: ['./']
-      }
-    });
-    emberDebug = mergeTrees([emberDebug, linted]);
-  }
 
   emberDebug = esTranspiler(emberDebug, {
     moduleIds: true,
