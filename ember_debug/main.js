@@ -1,15 +1,15 @@
-import BasicAdapter from "ember-debug/adapters/basic";
-import Port from "ember-debug/port";
-import ObjectInspector from "ember-debug/object-inspector";
-import GeneralDebug from "ember-debug/general-debug";
-import RenderDebug from "ember-debug/render-debug";
-import ViewDebug from "ember-debug/view-debug";
-import RouteDebug from "ember-debug/route-debug";
-import DataDebug from "ember-debug/data-debug";
-import PromiseDebug from "ember-debug/promise-debug";
-import ContainerDebug from "ember-debug/container-debug";
-import DeprecationDebug from "ember-debug/deprecation-debug";
-import Session from "ember-debug/services/session";
+import BasicAdapter from 'ember-debug/adapters/basic';
+import Port from 'ember-debug/port';
+import ObjectInspector from 'ember-debug/object-inspector';
+import GeneralDebug from 'ember-debug/general-debug';
+import RenderDebug from 'ember-debug/render-debug';
+import ViewDebug from 'ember-debug/view-debug';
+import RouteDebug from 'ember-debug/route-debug';
+import DataDebug from 'ember-debug/data-debug';
+import PromiseDebug from 'ember-debug/promise-debug';
+import ContainerDebug from 'ember-debug/container-debug';
+import DeprecationDebug from 'ember-debug/deprecation-debug';
+import Session from 'ember-debug/services/session';
 
 const Ember = window.Ember;
 const { Object: EmberObject, run, Application, Namespace } = Ember;
@@ -37,7 +37,7 @@ const EmberDebug = EmberObject.extend({
 
     this.reset();
 
-    this.get("adapter").debug("Ember Inspector Active");
+    this.get('adapter').debug('Ember Inspector Active');
   },
 
   destroyContainer() {
@@ -45,15 +45,15 @@ const EmberDebug = EmberObject.extend({
       this.get('generalDebug').sendReset();
     }
     ['dataDebug',
-    'viewDebug',
-    'routeDebug',
-    'generalDebug',
-    'renderDebug',
-    'promiseDebug',
-    'containerDebug',
-    'deprecationDebug',
-    'objectInspector',
-    'session'
+      'viewDebug',
+      'routeDebug',
+      'generalDebug',
+      'renderDebug',
+      'promiseDebug',
+      'containerDebug',
+      'deprecationDebug',
+      'objectInspector',
+      'session'
     ].forEach(prop => {
       let handler = this.get(prop);
       if (handler) {
