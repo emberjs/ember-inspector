@@ -429,11 +429,13 @@ export default EmberObject.extend(PortMixin, {
 function propertiesForMixin(mixin) {
   let properties = [];
 
-  mixin.mixins.forEach(mixin => {
-    if (mixin.properties) {
-      addProperties(properties, mixin.properties);
-    }
-  });
+  if (mixin.mixins) {
+    mixin.mixins.forEach(mixin => {
+      if (mixin.properties) {
+        addProperties(properties, mixin.properties);
+      }
+    });
+  }
 
   return properties;
 }
