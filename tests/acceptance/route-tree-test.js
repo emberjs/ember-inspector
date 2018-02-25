@@ -2,6 +2,7 @@ import { visit, find, findAll, click, triggerEvent } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
+import wait from 'ember-test-helpers/wait';
 
 export function isObject(item) {
   return (item && typeof item === 'object' && !Array.isArray(item));

@@ -4,6 +4,7 @@ import { A as emberA } from '@ember/array';
 import RSVP from 'rsvp';
 import { module, test } from 'qunit';
 import require from 'require';
+import wait from 'ember-test-helpers/wait';
 
 const EmberDebug = require("ember-debug/main").default;
 

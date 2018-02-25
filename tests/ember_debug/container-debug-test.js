@@ -4,6 +4,7 @@ import { A as emberA } from '@ember/array';
 import Application from '@ember/application';
 import { module, test } from 'qunit';
 import require from 'require';
+import wait from 'ember-test-helpers/wait';
 
 let EmberDebug;
 let port, name, message;

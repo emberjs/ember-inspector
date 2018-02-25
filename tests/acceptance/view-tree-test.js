@@ -2,6 +2,7 @@ import { visit, fillIn, find, findAll, click, triggerEvent } from '@ember/test-h
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
+import wait from 'ember-test-helpers/wait';
 
 let port;
 

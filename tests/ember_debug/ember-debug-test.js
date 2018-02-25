@@ -4,6 +4,7 @@ import EmberObject from '@ember/object';
 let name;
 import { module, test } from 'qunit';
 import require from 'require';
+import wait from 'ember-test-helpers/wait';
 
 let EmberDebug;
 let port, adapter;

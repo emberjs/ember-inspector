@@ -4,6 +4,7 @@ import EmberObject from '@ember/object';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { triggerPort } from '../helpers/trigger-port';
+import wait from 'ember-test-helpers/wait';
 
 let port, name;
 

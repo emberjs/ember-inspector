@@ -5,6 +5,7 @@ import Application from '@ember/application';
 import Route from '@ember/routing/route';
 import { module, test } from 'qunit';
 import require from 'require';
+import wait from 'ember-test-helpers/wait';
 
 const EmberDebug = require('ember-debug/main').default;
 let port;

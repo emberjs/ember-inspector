@@ -10,6 +10,7 @@ import { module, test } from 'qunit';
 import { settings as nativeDomHelpersSettings } from 'ember-native-dom-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
+import wait from 'ember-test-helpers/wait';
 
 const EmberDebug = require('ember-debug/main').default;
 let port;

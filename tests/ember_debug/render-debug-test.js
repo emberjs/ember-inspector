@@ -5,6 +5,7 @@ import Ember from "ember";
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
+import wait from 'ember-test-helpers/wait';
 
 const EmberDebug = require('ember-debug/main').default;
 let port, App;
