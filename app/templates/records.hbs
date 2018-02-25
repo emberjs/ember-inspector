@@ -5,12 +5,14 @@
   itemClass="list__row_highlight" as |list|}}
 
   {{#list.vertical-collection content=filtered as |content index|}}
-    {{record-item
-      model=content
-      modelTypeColumns=columns
-      list=list
-      index=index
-      on-click=(action "inspectModel" content)
-    }}
+    <tr class="list__row js-record-list-item">
+      {{record-item
+        model=content
+        modelTypeColumns=columns
+        list=list
+        index=index
+        on-click=(action "inspectModel" content)
+      }}
+    </tr>
   {{/list.vertical-collection}}
 {{/x-list}}

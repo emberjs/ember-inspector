@@ -3,16 +3,18 @@
 {{else}}
   {{#x-list name="promise-tree" schema=(schema-for "promise-tree") class="js-promise-tree" as |list|}}
     {{#list.vertical-collection filtered as |content|}}
-      {{promise-item
-        model=content
-        filter=filter
-        effectiveSearch=effectiveSearch
-        toggleExpand=(action "toggleExpand")
-        tracePromise=(action "tracePromise")
-        inspectObject=(action "inspectObject")
-        sendValueToConsole=(action "sendValueToConsole")
-        list=list
-      }}
+      <tr class="list__row js-promise-tree-item">
+        {{promise-item
+          model=content
+          filter=filter
+          effectiveSearch=effectiveSearch
+          toggleExpand=(action "toggleExpand")
+          tracePromise=(action "tracePromise")
+          inspectObject=(action "inspectObject")
+          sendValueToConsole=(action "sendValueToConsole")
+          list=list
+        }}
+      </tr>
     {{/list.vertical-collection}}
   {{/x-list}}
 {{/if}}
