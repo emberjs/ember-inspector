@@ -1,6 +1,6 @@
 {{#x-list name="view-tree" schema=(schema-for "view-tree") as |list|}}
   {{#list.vertical-collection filteredList as |content index|}}
-    <tr class="list__row js-view-item">
+    <tr class="list__row js-view-tree-item">
       {{view-item
           model=content
           inspect=(action "inspect")
