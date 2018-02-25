@@ -2,7 +2,7 @@ import PortMixin from 'ember-debug/mixins/port-mixin';
 
 const Ember = window.Ember;
 const { String: { classify, dasherize }, computed, observer, run: { later }, Object: EmberObject, getOwner } = Ember;
-const { oneWay } = computed;
+const { oneWay, readOnly } = computed;
 
 const { hasOwnProperty } = Object.prototype;
 
@@ -25,7 +25,7 @@ export default EmberObject.extend(PortMixin, {
 
   portNamespace: 'route',
 
-  emberCliConfig: oneWay('namespace.generalDebug.emberCliConfig').readOnly(),
+  emberCliConfig: readOnly('namespace.generalDebug.emberCliConfig'),
 
   messages: {
     getTree() {
