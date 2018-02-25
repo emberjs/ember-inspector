@@ -10,7 +10,11 @@
         <tbody>
           <tr class="list__row">
             {{#each columns key="id" as |column|}}
-              {{#x-list-cell tagName="th" class="js-header-column"}}{{column.name}}{{/x-list-cell}}
+              {{#x-list-cell
+                tagName="th"
+                class="js-header-column"}}
+                {{column.name}}
+              {{/x-list-cell}}
             {{/each}}
           </tr>
         </tbody>
@@ -23,7 +27,11 @@
   {{yield
     (hash
       cell=(component "x-list-cell" tagName="td")
-      vertical-collection=(component "vertical-collection" defaultHeight=30 tagName="tbody" itemClassNames=(concat "list__row js-" name "-item " itemClass) containerSelector=".js-list-content")
+      vertical-collection=(component "vertical-collection"
+        estimateHeight=30
+        tagName="tbody"
+        itemClassNames=(concat "list__row js-" name "-item " itemClass)
+        containerSelector=".js-list-content")
       rowEvents=content.rowEvents
     )
   }}
@@ -31,6 +39,13 @@
 
 {{#each columns key="id" as |column|}}
   {{#unless (eq column columns.lastObject)}}
-    {{drag-handle side="left" left=column.left position=(one-way column.width) minWidth=minWidth maxWidth=column.maxWidth on-drag=(action "didResize" column.id) faded=true}}
+    {{drag-handle
+      side="left"
+      left=column.left
+      position=(one-way column.width)
+      minWidth=minWidth
+      maxWidth=column.maxWidth
+      on-drag=(action "didResize" column.id)
+      faded=true}}
   {{/unless}}
 {{/each}}

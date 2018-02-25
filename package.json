@@ -31,6 +31,7 @@
   ],
   "dependencies": {},
   "devDependencies": {
+    "@html-next/vertical-collection": "^1.0.0-beta.10",
     "amd-name-resolver": "^0.0.5",
     "aws-sdk": "^2.3.3",
     "babel-eslint": "^8.2.2",
@@ -78,7 +79,6 @@
     "loader.js": "^4.2.3",
     "mkdirp": "^0.5.1",
     "rimraf": "^2.5.2",
-    "smoke-and-mirrors": "0.5.5",
     "yauzl": "^2.4.1"
   },
   "engines": {
