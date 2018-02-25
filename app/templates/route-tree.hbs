@@ -1,5 +1,5 @@
 {{#x-list name="route-tree" schema=(schema-for "route-tree") as |list|}}
-  {{#list.vertical-collection content=filtered as |content|}}
+  {{#list.vertical-collection filtered as |content|}}
     {{route-item
       model=content
       currentRoute=currentRoute

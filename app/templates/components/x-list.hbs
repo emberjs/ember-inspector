@@ -27,12 +27,12 @@
   {{yield
     (hash
       cell=(component "x-list-cell" tagName="td")
+      rowEvents=content.rowEvents
       vertical-collection=(component "vertical-collection"
         estimateHeight=30
-        tagName="tbody"
         itemClassNames=(concat "list__row js-" name "-item " itemClass)
-        containerSelector=".js-list-content")
-      rowEvents=content.rowEvents
+        containerSelector=".js-list-content"
+        tagName="tbody")
     )
   }}
 {{/x-list-content}}
