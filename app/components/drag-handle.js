@@ -60,8 +60,8 @@ export default Component.extend({
 
     $('body').on(`mousemove.${namespace}`, e => {
       let position = this.get('isLeft') ?
-                       e.pageX - $containerOffsetLeft :
-                       $containerOffsetRight - e.pageX;
+        e.pageX - $containerOffsetLeft :
+        $containerOffsetRight - e.pageX;
 
       position -= this.get('left');
       if (position >= this.get('minWidth') && position <= this.get('maxWidth')) {
@@ -69,9 +69,9 @@ export default Component.extend({
         this.get('on-drag')(position);
       }
     })
-    .on(`mouseup.${namespace} mouseleave.${namespace}`, () => {
-      this.stopDragging();
-    });
+      .on(`mouseup.${namespace} mouseleave.${namespace}`, () => {
+        this.stopDragging();
+      });
   },
 
   stopDragging() {
@@ -89,7 +89,7 @@ export default Component.extend({
     return false;
   },
 
-  style: computed('side', 'position', 'left', function () {
+  style: computed('side', 'position', 'left', function() {
     let string;
     if (this.get('side')) {
       string = `${this.get('side')}: ${(this.get('position') + this.get('left'))}px;`;
