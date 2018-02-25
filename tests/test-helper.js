@@ -2,7 +2,6 @@ import Application from '../app';
 import config from '../config/environment';
 import { setApplication } from '@ember/test-helpers';
 import { start } from 'ember-qunit';
-import triggerPort from './helpers/trigger-port';
 const { generateGuid } = Ember;
 
 setApplication(Application.create(config.APP));

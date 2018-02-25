@@ -1,24 +1,16 @@
-import { run } from '@ember/runloop';
+import { visit, find, findAll, click, fillIn, triggerKeyEvent } from '@ember/test-helpers';
 import { module, test } from 'qunit';
-import {
-  visit,
-  find,
-  findAll,
-  click,
-  fillIn,
-  keyEvent
-} from 'ember-native-dom-helpers';
+import { setupApplicationTest } from 'ember-qunit';
+import { triggerPort } from '../helpers/trigger-port';
 
-let App;
 let port, message, name;
 
 
 module('Object Inspector', function(hooks) {
+  setupApplicationTest(hooks);
+
   hooks.beforeEach(function() {
-    App = startApp({
-      adapter: 'basic'
-    });
-    port = App.__container__.lookup('port:main');
+    port = this.owner.lookup('port:main');
     port.reopen({
       send(n, m) {
         name = n;
@@ -30,7 +22,6 @@ module('Object Inspector', function(hooks) {
   hooks.afterEach(function() {
     name = null;
     message = null;
-    run(App, App.destroy);
   });
 
   const objectAttr = {
@@ -96,7 +87,7 @@ module('Object Inspector', function(hooks) {
     let obj = objectFactory({ name: 'My Object' });
     await visit('/');
 
-    await triggerPort('objectInspector:updateObject', obj);
+    await triggerPort(this, 'objectInspector:updateObject', obj);
 
     assert.equal(find('.js-object-name').textContent, 'My Object');
     assert.equal(find('.js-object-detail-name').textContent, 'Own Properties');
@@ -108,7 +99,7 @@ module('Object Inspector', function(hooks) {
 
     await visit('/');
 
-    await triggerPort('objectInspector:updateObject', objectToInspect());
+    await triggerPort(this, 'objectInspector:updateObject', objectToInspect());
 
     assert.equal(find('.js-object-name').textContent, 'My Object');
     firstDetail = findAll('.js-object-detail')[0];
@@ -142,7 +133,7 @@ module('Object Inspector', function(hooks) {
 
     await visit('/');
 
-    triggerPort('objectInspector:updateObject', objectToInspect());
+    triggerPort(this, 'objectInspector:updateObject', objectToInspect());
 
     secondDetail = findAll('.js-object-detail')[1];
     await click('.js-object-detail-name', secondDetail);
@@ -169,7 +160,7 @@ module('Object Inspector', function(hooks) {
       }]
     };
 
-    await triggerPort('objectInspector:updateObject', nestedObject);
+    await triggerPort(this, 'objectInspector:updateObject', nestedObject);
 
     assert.equal(find('.js-object-name').textContent, 'My Object', 'Title stays as the initial object.');
     assert.equal(find('.js-object-trail').textContent, '.objectProperty', 'Nested property shows below title');
@@ -203,14 +194,14 @@ module('Object Inspector', function(hooks) {
       }]
     };
 
-    await triggerPort('objectInspector:updateObject', obj);
+    await triggerPort(this, 'objectInspector:updateObject', obj);
 
     await click('.js-object-detail-name');
     await click('.js-calculate');
 
     assert.equal(name, 'objectInspector:calculate');
     assert.deepEqual(message, { objectId: 'myObject', property: 'computedProp', mixinIndex: 0 });
-    await triggerPort('objectInspector:updateProperty', {
+    await triggerPort(this, 'objectInspector:updateProperty', {
       objectId: 'myObject',
       property: 'computedProp',
       value: {
@@ -242,10 +233,10 @@ module('Object Inspector', function(hooks) {
 
       }]
     };
-    await triggerPort('objectInspector:updateObject', obj);
+    await triggerPort(this, 'objectInspector:updateObject', obj);
 
     assert.equal(find('.js-object-property-value').textContent, 'Teddy');
-    await triggerPort('objectInspector:updateProperty', {
+    await triggerPort(this, 'objectInspector:updateProperty', {
       objectId: 'object-id',
       mixinIndex: 0,
       property: 'boundProp',
@@ -262,13 +253,13 @@ module('Object Inspector', function(hooks) {
     assert.equal(txtField.value, '"Alex"');
     await fillIn(txtField, '"Joey"');
 
-    await keyEvent('.js-object-property-value-txt', 'keyup', 13);
+    await triggerKeyEvent('.js-object-property-value-txt', 'keyup', 13);
     assert.equal(name, 'objectInspector:saveProperty');
     assert.equal(message.property, 'boundProp');
     assert.equal(message.value, 'Joey');
     assert.equal(message.mixinIndex, 0);
 
-    await triggerPort('objectInspector:updateProperty', {
+    await triggerPort(this, 'objectInspector:updateProperty', {
       objectId: 'object-id',
       mixinIndex: 0,
       property: 'boundProp',
@@ -302,7 +293,7 @@ module('Object Inspector', function(hooks) {
 
       }]
     };
-    await triggerPort('objectInspector:updateObject', obj);
+    await triggerPort(this, 'objectInspector:updateObject', obj);
 
     await click('.js-object-property-value');
 
@@ -310,7 +301,7 @@ module('Object Inspector', function(hooks) {
     assert.equal(txtField.value, '"{"name":"teddy"}"');
     await fillIn(txtField, '"{"name":"joey"}"');
 
-    await keyEvent('.js-object-property-value-txt', 'keyup', 13);
+    await triggerKeyEvent('.js-object-property-value-txt', 'keyup', 13);
     assert.equal(name, 'objectInspector:saveProperty');
     assert.equal(message.property, 'boundProp');
     assert.equal(message.value, '{"name":"joey"}');
@@ -337,7 +328,7 @@ module('Object Inspector', function(hooks) {
 
       }]
     };
-    await triggerPort('objectInspector:updateObject', obj);
+    await triggerPort(this, 'objectInspector:updateObject', obj);
 
     await click('.js-send-to-console-btn');
 
@@ -380,7 +371,7 @@ module('Object Inspector', function(hooks) {
         }]
       }]
     };
-    await triggerPort('objectInspector:updateObject', obj);
+    await triggerPort(this, 'objectInspector:updateObject', obj);
     await click('.js-object-property-value');
     assert.notOk(find('.js-object-property-value-txt'));
 
@@ -402,10 +393,10 @@ module('Object Inspector', function(hooks) {
       }]
     };
 
-    await triggerPort('objectInspector:updateObject', obj);
+    await triggerPort(this, 'objectInspector:updateObject', obj);
 
     assert.equal(find('.js-object-name').textContent.trim(), 'My Object');
-    await triggerPort('objectInspector:droppedObject', { objectId: 'myObject' });
+    await triggerPort(this, 'objectInspector:droppedObject', { objectId: 'myObject' });
 
     assert.notOk(find('.js-object-name'));
   });
@@ -430,7 +421,7 @@ module('Object Inspector', function(hooks) {
         }]
       }]
     };
-    await triggerPort('objectInspector:updateObject', obj);
+    await triggerPort(this, 'objectInspector:updateObject', obj);
     assert.ok(true);
 
     await click('.js-object-detail-name');
@@ -460,7 +451,7 @@ module('Object Inspector', function(hooks) {
       ]
     });
     await visit('/');
-    await triggerPort('objectInspector:updateObject', obj);
+    await triggerPort(this, 'objectInspector:updateObject', obj);
 
     assert.equal(find('.js-object-name').textContent, 'My Object');
     assert.equal(findAll('.js-object-inspector-errors').length, 1);
@@ -471,7 +462,7 @@ module('Object Inspector', function(hooks) {
     assert.equal(name, 'objectInspector:traceErrors');
     assert.equal(message.objectId, '1');
 
-    await triggerPort('objectInspector:updateErrors', {
+    await triggerPort(this, 'objectInspector:updateErrors', {
       objectId: '1',
       errors: [
         { property: 'foo' }
@@ -480,7 +471,7 @@ module('Object Inspector', function(hooks) {
 
     assert.ok(find('.js-object-inspector-error'));
 
-    await triggerPort('objectInspector:updateErrors', {
+    await triggerPort(this, 'objectInspector:updateErrors', {
       objectId: '1',
       errors: []
     });

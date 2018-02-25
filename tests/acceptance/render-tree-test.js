@@ -1,29 +1,18 @@
+import { visit, find, findAll, click, fillIn } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
-import {
-  visit,
-  find,
-  findAll,
-  click,
-  fillIn
-} from 'ember-native-dom-helpers';
-let App;
+import { setupApplicationTest } from 'ember-qunit';
 
 let port;
 
 module('Render Tree Tab', function(hooks) {
+  setupApplicationTest(hooks);
+
   hooks.beforeEach(function() {
-    App = startApp({
-      adapter: 'basic'
-    });
-    port = App.__container__.lookup('port:main');
+    port = this.owner.lookup('port:main');
     port.reopen({
       send(/*n, m*/) {}
     });
-  });
-
-  hooks.afterEach(function() {
-    run(App, App.destroy);
   });
 
   function generateProfiles() {

@@ -1,9 +1,9 @@
+import { visit } from '@ember/test-helpers';
 import { get } from '@ember/object';
 import { run } from '@ember/runloop';
 import Application from '@ember/application';
 import Route from '@ember/routing/route';
 import { module, test } from 'qunit';
-import { visit } from 'ember-native-dom-helpers';
 import require from 'require';
 
 const EmberDebug = require('ember-debug/main').default;

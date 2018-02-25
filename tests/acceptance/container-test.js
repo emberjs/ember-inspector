@@ -4,7 +4,6 @@ import { setupApplicationTest } from 'ember-qunit';
 import {
   visit,
   findAll,
-  find,
   click,
   fillIn,
   currentURL

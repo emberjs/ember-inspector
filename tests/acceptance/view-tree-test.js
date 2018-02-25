@@ -1,28 +1,15 @@
+import { visit, fillIn, find, findAll, click, triggerEvent } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
-import {
-  visit,
-  fillIn,
-  find,
-  findAll,
-  click,
-  triggerEvent
-} from 'ember-native-dom-helpers';
-
-let App;
+import { setupApplicationTest } from 'ember-qunit';
 
 let port;
 
 module('View Tree Tab', function(hooks) {
-  hooks.beforeEach(function() {
-    App = startApp({
-      adapter: 'basic'
-    });
-    port = App.__container__.lookup('port:main');
-  });
+  setupApplicationTest(hooks);
 
-  hooks.afterEach(function() {
-    run(App, App.destroy);
+  hooks.beforeEach(function() {
+    port = this.owner.lookup('port:main');
   });
 
   function textFor(selector, context) {

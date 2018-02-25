@@ -1,10 +1,10 @@
+import { visit } from '@ember/test-helpers';
 import { deprecate } from '@ember/application/deprecations';
 import Route from '@ember/routing/route';
 import Application from '@ember/application';
 import RSVP from 'rsvp';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
-import { visit } from 'ember-native-dom-helpers';
 import require from 'require';
 
 const EmberDebug = require("ember-debug/main").default;

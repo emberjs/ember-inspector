@@ -1,16 +1,15 @@
-import { run } from '@ember/runloop';
+import { visit, find, findAll, click } from '@ember/test-helpers';
 import { module, test } from 'qunit';
-import { visit, find, findAll, click } from 'ember-native-dom-helpers';
+import { setupApplicationTest } from 'ember-qunit';
+import { triggerPort } from '../helpers/trigger-port';
 
-let App;
 let port, message, name;
 
 module('Promise Tab', function(hooks) {
+  setupApplicationTest(hooks);
+
   hooks.beforeEach(function() {
-    App = startApp({
-      adapter: 'basic'
-    });
-    port = App.__container__.lookup('port:main');
+    port = this.owner.lookup('port:main');
     port.reopen({
       send(n, m) {
         if (n === 'promise:getAndObservePromises') {
@@ -27,7 +26,6 @@ module('Promise Tab', function(hooks) {
   hooks.afterEach(function() {
     name = null;
     message = null;
-    run(App, App.destroy);
   });
 
   let guids = 0;
@@ -48,7 +46,7 @@ module('Promise Tab', function(hooks) {
   test("Shows page refresh hint if no promises", async function(assert) {
     await visit('/promise-tree');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: []
     });
 
@@ -59,7 +57,7 @@ module('Promise Tab', function(hooks) {
 
     assert.equal(name, 'general:refresh');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [
         generatePromise({
           guid: 1,
@@ -84,7 +82,7 @@ module('Promise Tab', function(hooks) {
   test("Pending promise", async function(assert) {
     await visit('/promise-tree');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [
         generatePromise({
           guid: 1,
@@ -107,7 +105,7 @@ module('Promise Tab', function(hooks) {
 
     let now = Date.now();
 
-    triggerPort('promise:promisesUpdated', {
+    triggerPort(this, 'promise:promisesUpdated', {
       promises: [
         generatePromise({
           guid: 1,
@@ -138,7 +136,7 @@ module('Promise Tab', function(hooks) {
 
     let now = Date.now();
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [
         generatePromise({
           guid: 1,
@@ -165,7 +163,7 @@ module('Promise Tab', function(hooks) {
   test("Chained promises", async function(assert) {
     await visit('/promise-tree');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [
         generatePromise({
           guid: 2,
@@ -193,7 +191,7 @@ module('Promise Tab', function(hooks) {
   test("Can trace promise when there is a stack", async function(assert) {
     await visit('/promise-tree');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [generatePromise({ guid: 1, hasStack: true })]
     });
 
@@ -207,7 +205,7 @@ module('Promise Tab', function(hooks) {
   test("Trace button hidden if promise has no stack", async function(assert) {
     await visit('/promise-tree');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [generatePromise({ guid: 1, hasStack: false })]
     });
 
@@ -230,7 +228,7 @@ module('Promise Tab', function(hooks) {
   test("Logging error stack trace in the console", async function(assert) {
     await visit('/promise-tree');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [generatePromise({
         guid: 1,
         state: 'rejected',
@@ -253,7 +251,7 @@ module('Promise Tab', function(hooks) {
   test("Send fulfillment value to console", async function(assert) {
     await visit('/promise-tree');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [generatePromise({
         guid: 1,
         state: 'fulfilled',
@@ -274,7 +272,7 @@ module('Promise Tab', function(hooks) {
   test("Sending objects to the object inspector", async function(assert) {
     await visit('/promise-tree');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [generatePromise({
         guid: 1,
         state: 'fulfilled',

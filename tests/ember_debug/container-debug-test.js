@@ -1,8 +1,8 @@
+import { visit } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { A as emberA } from '@ember/array';
 import Application from '@ember/application';
 import { module, test } from 'qunit';
-import { visit } from 'ember-native-dom-helpers';
 import require from 'require';
 
 let EmberDebug;

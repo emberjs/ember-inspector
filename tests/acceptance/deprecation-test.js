@@ -1,8 +1,6 @@
-import { run } from '@ember/runloop';
+import { visit, find, findAll, click } from '@ember/test-helpers';
 import { module, test } from 'qunit';
-import { visit, find, findAll, click } from 'ember-native-dom-helpers';
-
-let App;
+import { setupApplicationTest } from 'ember-qunit';
 
 let port, message, name;
 
@@ -31,9 +29,10 @@ function deprecationsWithSource() {
 }
 
 module('Deprecation Tab', function(hooks) {
+  setupApplicationTest(hooks);
+
   hooks.beforeEach(function() {
-    App = startApp({ adapter: 'basic' });
-    port = App.__container__.lookup('port:main');
+    port = this.owner.lookup('port:main');
     port.reopen({
       send(n, m) {
         name = n;
@@ -45,7 +44,6 @@ module('Deprecation Tab', function(hooks) {
   hooks.afterEach(function() {
     name = null;
     message = null;
-    run(App, App.destroy);
   });
 
   test('No source map', async function(assert) {

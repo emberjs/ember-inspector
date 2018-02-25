@@ -1,17 +1,15 @@
-import { run } from '@ember/runloop';
+import { visit, find, findAll } from '@ember/test-helpers';
 import { module, test } from 'qunit';
-import { visit, find, findAll } from 'ember-native-dom-helpers';
-let App;
+import { setupApplicationTest } from 'ember-qunit';
 
 let port;
 
 module('Info Tab', function(hooks) {
+  setupApplicationTest(hooks);
+
   hooks.beforeEach(function() {
-    App = startApp({
-      adapter: 'basic'
-    });
-    App.__container__.lookup('config:main').VERSION = '9.9.9';
-    port = App.__container__.lookup('port:main');
+    this.owner.lookup('config:main').VERSION = '9.9.9';
+    port = this.owner.lookup('port:main');
     port.reopen({
       send(name) {
         if (name === 'general:getLibraries') {
@@ -24,10 +22,6 @@ module('Info Tab', function(hooks) {
         }
       }
     });
-  });
-
-  hooks.afterEach(function() {
-    run(App, App.destroy);
   });
 
   test("Libraries are displayed correctly", async function t(assert) {

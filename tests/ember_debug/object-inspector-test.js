@@ -1,3 +1,4 @@
+import { visit, find } from '@ember/test-helpers';
 import Mixin from '@ember/object/mixin';
 import Component from '@ember/component';
 import Application from '@ember/application';
@@ -6,11 +7,7 @@ import { guidFor } from '@ember/object/internals';
 import EmberObject, { computed } from '@ember/object';
 import Ember from "ember";
 import { module, test } from 'qunit';
-import {
-  visit,
-  find,
-  settings as nativeDomHelpersSettings
-} from 'ember-native-dom-helpers';
+import { settings as nativeDomHelpersSettings } from 'ember-native-dom-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
 

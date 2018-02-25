@@ -1,8 +1,8 @@
+import { visit } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import Application from '@ember/application';
 import Ember from "ember";
 import { module, test } from 'qunit';
-import { visit } from 'ember-native-dom-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
 
