@@ -47,7 +47,9 @@ module("Ember Debug", function(hooks) {
     try {
       EmberInspector.inspect(obj);
       assert.ok(false);
-    } catch (e) {}
+    } catch (e) {
+      // Intentionally empty
+    }
   }
 
   test("EmberInspector#inspect sends inspectable objects", function(assert) {

@@ -1,4 +1,5 @@
 import Application from '../app';
+import Ember from 'ember';
 import config from '../config/environment';
 import { setApplication } from '@ember/test-helpers';
 import { start } from 'ember-qunit';
