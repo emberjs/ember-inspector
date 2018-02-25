@@ -2,7 +2,6 @@ import { guidFor } from '@ember/object/internals';
 import EmberObject from '@ember/object';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
 import { visit, findAll, click, fillIn } from 'ember-native-dom-helpers';
 
 let App;

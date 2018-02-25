@@ -8,15 +8,40 @@ import {
   click,
   fillIn,
   currentURL
-} from 'ember-native-dom-helpers';
+} from 'ember-test-helpers';
 
 let port, message, name;
+
+function getTypes() {
+  return [
+    {
+      name: 'route',
+      count: 5
+    },
+    {
+      name: 'controller',
+      count: 2
+    }
+  ];
+}
+
+function getInstances() {
+  return [
+    {
+      name: 'first',
+      inspectable: false
+    },
+    {
+      name: 'second',
+      inspectable: true
+    }
+  ];
+}
 
 module('Container Tab', function(hooks) {
   setupApplicationTest(hooks);
 
   hooks.beforeEach(function() {
-    debugger;
     port = this.owner.lookup('port:main');
   });
 
@@ -25,32 +50,6 @@ module('Container Tab', function(hooks) {
     message = null;
   });
 
-
-  function getTypes() {
-    return [
-      {
-        name: 'route',
-        count: 5
-      },
-      {
-        name: 'controller',
-        count: 2
-      }
-    ];
-  }
-
-  function getInstances() {
-    return [
-      {
-        name: 'first',
-        inspectable: false
-      },
-      {
-        name: 'second',
-        inspectable: true
-      }
-    ];
-  }
 
   test("Container types are successfully listed", async function(assert) {
     port.reopen({
@@ -64,10 +63,10 @@ module('Container Tab', function(hooks) {
     await visit('/container-types');
     let rows = findAll('.js-container-type');
     assert.equal(rows.length, 2);
-    assert.equal(find('.js-container-type-name', rows[0]).textContent.trim(), 'controller');
-    assert.equal(find('.js-container-type-count', rows[0]).textContent.trim(), '2');
-    assert.equal(find('.js-container-type-name', rows[1]).textContent.trim(), 'route');
-    assert.equal(find('.js-container-type-count', rows[1]).textContent.trim(), '5');
+    assert.equal(findAll('.js-container-type-name')[0].textContent.trim(), 'controller');
+    assert.equal(findAll('.js-container-type-count')[0].textContent.trim(), '2');
+    assert.equal(findAll('.js-container-type-name')[1].textContent.trim(), 'route');
+    assert.equal(findAll('.js-container-type-count')[1].textContent.trim(), '5');
   });
 
 

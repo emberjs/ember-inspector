@@ -14,19 +14,6 @@ const App = Application.extend({
   Resolver
 });
 
-// TODO: remove this when fixed
-// problem description: registry classes being registered
-// again on app reset. this will clear the registry.
-// long term solution: make registry initializers run once on app
-// creation.
-// issue: https://github.com/emberjs/ember.js/issues/10310
-// pr: https://github.com/emberjs/ember.js/pull/10597
-App.reopen({
-  buildInstance() {
-    this.buildRegistry();
-    return this._super(...arguments);
-  }
-});
 
 config.VERSION = version;
 
