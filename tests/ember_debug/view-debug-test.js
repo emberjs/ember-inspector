@@ -106,7 +106,7 @@ module("View Debug", function(hooks) {
     });
     run(function() {
       setupApp();
-      EmberDebug.set('application', App);
+      EmberDebug.set('owner', App.__deprecatedInstance__);
     });
     EmberDebug.IGNORE_DEPRECATIONS = true;
     run(EmberDebug, 'start');

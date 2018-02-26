@@ -41,7 +41,7 @@ module("Route Tree Debug", function(hooks) {
     });
     run(function() {
       setupApp();
-      EmberDebug.set('application', App);
+      EmberDebug.set('owner', App.__deprecatedInstance__);
     });
     run(EmberDebug, 'start');
     EmberDebug.get('generalDebug').reopen({

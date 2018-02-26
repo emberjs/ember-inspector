@@ -7,11 +7,11 @@ export default EmberObject.extend(PortMixin, {
   namespace: null,
 
   port: oneWay('namespace.port').readOnly(),
-  application: oneWay('namespace.application').readOnly(),
   objectInspector: oneWay('namespace.objectInspector').readOnly(),
 
-  container: computed('application', function() {
-    return this.get('application.__container__');
+  container: computed('namespace.owner', function() {
+    // should update this to use real owner API
+    return this.get('namespace.owner.__container__');
   }),
 
   portNamespace: 'container',
