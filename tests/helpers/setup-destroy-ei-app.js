@@ -14,13 +14,17 @@ import { run } from '@ember/runloop';
 export async function setupEIApp(EmberDebug, routes) {
   assert('setupEIApp requires `EmberDebug` to be passed.', EmberDebug !== undefined);
 
-  const Router = EmberRouter.extend();
+  const Router = EmberRouter.extend({
+    location: 'none'
+  });
+
   if (routes) {
     Router.map(routes);
   }
 
   let App = Application.create({ autoboot: false });
   App.register('router:main', Router);
+
   await setApplication(App);
   await setupContext(this);
   await setupApplicationContext(this);

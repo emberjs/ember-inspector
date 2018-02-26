@@ -1,7 +1,6 @@
 import { visit, find } from '@ember/test-helpers';
 import Mixin from '@ember/object/mixin';
 import Component from '@ember/component';
-import Application from '@ember/application';
 import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import EmberObject, { computed } from '@ember/object';
@@ -11,6 +10,7 @@ import { settings as nativeDomHelpersSettings } from 'ember-native-dom-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
 import wait from 'ember-test-helpers/wait';
+import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
 
 let EmberDebug;
 let port, name, message;
@@ -18,17 +18,8 @@ let App;
 let objectInspector;
 
 function setupApp() {
-  App = Application.create();
-  App.setupForTesting();
-  App.injectTestHelpers();
-
-  App.Router.map(function() {
-    this.route('simple');
-  });
-
-  App.XSimpleComponent = Component;
-
-  Ember.TEMPLATES.simple = hbs`Simple {{input class="simple-input"}} {{x-simple class="simple-view"}}`;
+  this.owner.register('component:x-simple', Component);
+  this.owner.register('template:simple', hbs`Simple {{input class="simple-input"}} {{x-simple class="simple-view"}}`);
 }
 
 let ignoreErrors = true;
@@ -48,11 +39,13 @@ module("Ember Debug - Object Inspector", function(hooks) {
         message = m;
       }
     });
-    run(() => {
-      setupApp();
-      EmberDebug.set('owner', App.__deprecatedInstance__);
+
+    App = await setupEIApp.call(this, EmberDebug, function() {
+      this.route('simple');
     });
-    run(EmberDebug, 'start');
+
+    setupApp.call(this);
+
     await wait();
     objectInspector = EmberDebug.get('objectInspector');
     port = EmberDebug.port;
@@ -60,12 +53,11 @@ module("Ember Debug - Object Inspector", function(hooks) {
     nativeDomHelpersSettings.rootElement = 'body';
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(async function() {
     nativeDomHelpersSettings.rootElement = defaultRootForFinder;
     name = null;
     message = null;
-    EmberDebug.destroyContainer();
-    run(App, 'destroy');
+    await destroyEIApp.call(this, EmberDebug, App);
   });
 
   test("An Ember Object is correctly transformed into an inspection hash", function(assert) {

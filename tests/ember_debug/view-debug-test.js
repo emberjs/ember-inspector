@@ -4,30 +4,19 @@ import { run } from '@ember/runloop';
 import Route from '@ember/routing/route';
 import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
-import Application from '@ember/application';
-import Ember from "ember";
 import { module, test } from 'qunit';
-import { settings as nativeDomHelpersSettings } from 'ember-native-dom-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
 import wait from 'ember-test-helpers/wait';
+import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
 
 const EmberDebug = require('ember-debug/main').default;
 let port;
 let App;
-let OLD_TEMPLATES = {};
 
 function setTemplate(name, template) {
-  OLD_TEMPLATES = Ember.TEMPLATES[name];
   template.meta.moduleName = name;
-  Ember.TEMPLATES[name] = template;
-}
-
-function destroyTemplates() {
-  for (let name in OLD_TEMPLATES) {
-    Ember.TEMPLATES[name] = OLD_TEMPLATES[name];
-  }
-  OLD_TEMPLATES = {};
+  this.owner.register(`template:${name}`, template);
 }
 
 function isVisible(elem) {
@@ -35,18 +24,7 @@ function isVisible(elem) {
 }
 
 function setupApp() {
-  App = Application.create();
-  App.setupForTesting();
-  App.injectTestHelpers();
-
-
-  App.Router.map(function() {
-    this.route('simple');
-    this.route('comments', { resetNamespace: true }, function() {});
-    this.route('posts', { resetNamespace: true });
-  });
-
-  App.ApplicationRoute = Route.extend({
+  this.owner.register('route:application', Route.extend({
     model() {
       return EmberObject.create({
         toString() {
@@ -54,9 +32,9 @@ function setupApp() {
         }
       });
     }
-  });
+  }));
 
-  App.SimpleRoute = Route.extend({
+  this.owner.register('route:simple', Route.extend({
     model() {
       return EmberObject.create({
         toString() {
@@ -64,65 +42,62 @@ function setupApp() {
         }
       });
     }
-  });
+  }));
 
-  App.CommentsIndexRoute = Route.extend({
+  this.owner.register('route:comments.index', Route.extend({
     model() {
       return A(['first comment', 'second comment', 'third comment']);
     }
-  });
+  }));
 
-  App.PostsRoute = Route.extend({
+  this.owner.register('route:posts', Route.extend({
     model() {
       return 'String as model';
     }
-  });
+  }));
 
-  App.ApplicationController = Controller.extend();
-  App.ApplicationController.reopenClass({
+  this.owner.register('controller:application', Controller.extend().reopenClass({
     toString() {
       return 'App.ApplicationController';
     }
-  });
-  App.SimpleController = Controller.extend();
-  App.SimpleController.reopenClass({
+  }));
+
+  this.owner.register('controller:simple', Controller.extend().reopenClass({
     toString() {
       return 'App.SimpleController';
     }
-  });
+  }));
 
-  setTemplate('application', hbs`<div class="application">{{outlet}}</div>`);
-  setTemplate('simple', hbs`Simple {{input class="simple-input"}}`);
-  setTemplate('comments/index', hbs`{{#each}}{{this}}{{/each}}`);
-  setTemplate('posts', hbs`Posts`);
+  setTemplate.call(this, 'application', hbs`<div class="application">{{outlet}}</div>`);
+  setTemplate.call(this, 'simple', hbs`Simple {{input class="simple-input"}}`);
+  setTemplate.call(this, 'comments/index', hbs`{{#each}}{{this}}{{/each}}`);
+  setTemplate.call(this, 'posts', hbs`Posts`);
 }
-let defaultRootForFinder;
 
-module("View Debug", function(hooks) {
-  hooks.beforeEach(function() {
+module('View Debug', function(hooks) {
+  hooks.beforeEach(async function() {
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
       send() {}
     });
-    run(function() {
-      setupApp();
-      EmberDebug.set('owner', App.__deprecatedInstance__);
-    });
     EmberDebug.IGNORE_DEPRECATIONS = true;
-    run(EmberDebug, 'start');
+
+    App = await setupEIApp.call(this, EmberDebug, function() {
+      this.route('simple');
+      this.route('comments', { resetNamespace: true }, function() {});
+      this.route('posts', { resetNamespace: true });
+    });
+
+    setupApp.call(this);
+
     port = EmberDebug.port;
-    defaultRootForFinder = nativeDomHelpersSettings.rootElement;
-    nativeDomHelpersSettings.rootElement = 'body';
   });
 
-  hooks.afterEach(function() {
-    EmberDebug.destroyContainer();
-    run(App, 'destroy');
-    destroyTemplates();
-    nativeDomHelpersSettings.rootElement = defaultRootForFinder;
+  hooks.afterEach(async function() {
+    await destroyEIApp.call(this, EmberDebug, App);
   });
 
-  test("Simple View Tree", async function t(assert) {
+  test('Simple View Tree', async function t(assert) {
     let name = null, message = null;
     port.reopen({
       send(n, m) {
@@ -143,7 +118,7 @@ module("View Debug", function(hooks) {
     assert.equal(value.template, 'application');
   });
 
-  test("Components in view tree", async function t(assert) {
+  test('Components in view tree', async function t(assert) {
     let message;
     port.reopen({
       send(n, m) {
@@ -155,7 +130,7 @@ module("View Debug", function(hooks) {
 
     let tree = message.tree;
     let simple = tree.children[0];
-    assert.equal(simple.children.length, 0, "Components are not listed by default.");
+    assert.equal(simple.children.length, 0, 'Components are not listed by default.');
     run(() => {
       port.trigger('view:setOptions', { options: { components: true } });
     });
@@ -164,12 +139,12 @@ module("View Debug", function(hooks) {
 
     tree = message.tree;
     simple = tree.children[0];
-    assert.equal(simple.children.length, 1, "Components can be configured to show.");
+    assert.equal(simple.children.length, 1, 'Components can be configured to show.');
     let component = simple.children[0];
     assert.equal(component.value.viewClass, 'Ember.TextField');
   });
 
-  test("Highlighting Views on hover", async function t(assert) {
+  test('Highlighting Views on hover', async function t(assert) {
     let name, message;
     port.reopen({
       send(n, m) {
@@ -188,7 +163,7 @@ module("View Debug", function(hooks) {
     let previewDiv = find('[data-label=preview-div]');
 
     assert.ok(isVisible(previewDiv));
-    assert.notOk(find('[data-label=layer-component]'), "Component layer not shown on outlet views");
+    assert.notOk(find('[data-label=layer-component]'), 'Component layer not shown on outlet views');
     assert.equal(find('[data-label=layer-controller]', previewDiv).textContent, 'App.ApplicationController');
     assert.equal(find('[data-label=layer-model]', previewDiv).textContent, 'Application model');
 
@@ -220,12 +195,12 @@ module("View Debug", function(hooks) {
 
     previewDiv = find('[data-label=preview-div]');
     assert.ok(isVisible(previewDiv));
-    assert.equal(find('[data-label=layer-component]').textContent.trim(), "Ember.TextField");
+    assert.equal(find('[data-label=layer-component]').textContent.trim(), 'Ember.TextField');
     assert.notOk(find('[data-label=layer-controller]', previewDiv));
     assert.notOk(find('[data-label=layer-model]', previewDiv));
   });
 
-  test("Highlighting a view without an element should not throw an error", async function t(assert) {
+  test('Highlighting a view without an element should not throw an error', async function t(assert) {
     let message = null;
     port.reopen({
       send(n, m) {
@@ -240,10 +215,10 @@ module("View Debug", function(hooks) {
     port.trigger('view:previewLayer', { objectId: postsView.value.objectId });
     await wait();
 
-    assert.ok(true, "Does not throw an error.");
+    assert.ok(true, 'Does not throw an error.');
   });
 
-  test("Supports a view with a string as model", async function t(assert) {
+  test('Supports a view with a string as model', async function t(assert) {
     let message = null;
     port.reopen({
       send(n, m) {
@@ -257,13 +232,13 @@ module("View Debug", function(hooks) {
     assert.equal(message.tree.children[0].value.model.type, 'type-string');
   });
 
-  test("Supports applications that don't have the ember-application CSS class", async function t(assert) {
+  test('Supports applications that don\'t have the ember-application CSS class', async function t(assert) {
     let name = null;
-    let rootElement = find('');
+    let rootElement = find('body');
 
     await visit('/simple');
 
-    assert.ok(rootElement.classList.contains('ember-application'), "The rootElement has the .ember-application CSS class");
+    assert.ok(rootElement.classList.contains('ember-application'), 'The rootElement has the .ember-application CSS class');
     rootElement.classList.remove('ember-application');
 
     // Restart the inspector
@@ -281,7 +256,7 @@ module("View Debug", function(hooks) {
     assert.equal(name, 'view:viewTree');
   });
 
-  test("Does not list nested {{yield}} views", async function t(assert) {
+  test('Does not list nested {{yield}} views', async function t(assert) {
     let message = null;
     port.reopen({
       send(n, m) {
@@ -289,9 +264,9 @@ module("View Debug", function(hooks) {
       }
     });
 
-    setTemplate('posts', hbs`{{#x-first}}Foo{{/x-first}}`);
-    setTemplate('components/x-first', hbs`{{#x-second}}{{yield}}{{/x-second}}`);
-    setTemplate('components/x-second', hbs`{{yield}}`);
+    setTemplate.call(this, 'posts', hbs`{{#x-first}}Foo{{/x-first}}`);
+    setTemplate.call(this, 'components/x-first', hbs`{{#x-second}}{{yield}}{{/x-second}}`);
+    setTemplate.call(this, 'components/x-second', hbs`{{yield}}`);
 
     await visit('/posts');
 
