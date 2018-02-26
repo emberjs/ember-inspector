@@ -1,7 +1,8 @@
-import { visit } from '@ember/test-helpers';
+import { visit, setApplication, setupContext, setupApplicationContext, teardownContext, teardownApplicationContext } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { A as emberA } from '@ember/array';
 import Application from '@ember/application';
+import EmberRouter from '@ember/routing/router';
 import { module, test } from 'qunit';
 import require from 'require';
 import wait from 'ember-test-helpers/wait';
@@ -11,17 +12,17 @@ let port, name, message;
 let App;
 
 function setupApp() {
-  App = Application.create();
-  App.setupForTesting();
-  App.injectTestHelpers();
-
-  App.Router.map(function() {
+  let Router = EmberRouter.extend();
+  Router.map(function() {
     this.route('simple');
   });
+
+  App = Application.create({ autoboot: false });
+  App.register('router:main', Router);
 }
 
 module("Container Debug", function(hooks) {
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
@@ -30,18 +31,26 @@ module("Container Debug", function(hooks) {
         message = m;
       }
     });
-    run(function() {
-      setupApp();
-      EmberDebug.set('owner', App.__deprecatedInstance__);
+
+    setupApp();
+    await setApplication(App);
+    await setupContext(this);
+    await setupApplicationContext(this);
+
+    run(() => {
+      EmberDebug.set('owner', this.owner);
     });
+
     run(EmberDebug, 'start');
     port = EmberDebug.port;
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(async function() {
     name = null;
     message = null;
     EmberDebug.destroyContainer();
+    await teardownApplicationContext(this);
+    await teardownContext(this);
     run(App, 'destroy');
   });
 
