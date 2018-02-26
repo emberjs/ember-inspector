@@ -10,14 +10,12 @@ export default EmberObject.extend(PortMixin, {
   namespace: null,
   port: oneWay('namespace.port').readOnly(),
 
-  application: oneWay('namespace.application').readOnly(),
-
-  router: computed('application', function() {
-    return this.get('application.__container__').lookup('router:main');
+  router: computed('namespace.owner', function() {
+    return this.get('namespace.owner').lookup('router:main');
   }),
 
-  applicationController: computed('application', function() {
-    const container = this.get('application.__container__');
+  applicationController: computed('namespace.owner', function() {
+    const container = this.get('namespace.owner');
     return container.lookup('controller:application');
   }),
 
@@ -64,10 +62,10 @@ export default EmberObject.extend(PortMixin, {
   },
 
   getClassName(name, type) {
-    let container = this.get('application.__container__');
+    let container = this.get('namespace.owner');
     let resolver = container.resolver;
     if (!resolver) {
-      resolver = this.get('application.registry.resolver');
+      resolver = this.get('namespace.owner.application.registry.resolver');
     }
     if (!resolver) {
       // Ember >= 2.0
@@ -119,7 +117,7 @@ export default EmberObject.extend(PortMixin, {
 
 function buildSubTree(routeTree, route) {
   let handlers = route.handlers;
-  let container = this.get('application.__container__');
+  let container = this.get('namespace.owner');
   let owner = getOwner(this.get('router'));
   let subTree = routeTree;
   let item, routeClassName, routeHandler, controllerName,

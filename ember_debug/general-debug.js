@@ -68,7 +68,7 @@ export default EmberObject.extend(PortMixin, {
   /**
    * @type {Application}
    */
-  application: readOnly('namespace.application'),
+  application: readOnly('namespace.owner.application'),
 
   /**
    * Sends a reply back indicating if the app has been booted.

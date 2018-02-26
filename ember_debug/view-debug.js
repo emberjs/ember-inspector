@@ -35,7 +35,6 @@ export default EmberObject.extend(PortMixin, {
 
   namespace: null,
 
-  application: readOnly('namespace.application'),
   adapter: readOnly('namespace.adapter'),
   port: readOnly('namespace.port'),
   objectInspector: readOnly('namespace.objectInspector'),
@@ -137,7 +136,7 @@ export default EmberObject.extend(PortMixin, {
 
     if (this.isGlimmerTwo()) {
       this.glimmerTree = new GlimmerTree({
-        container: this.getContainer(),
+        owner: this.getOwner(),
         retainObject: this.retainObject.bind(this),
         highlightRange: this._highlightRange.bind(this),
         options: this.get('options'),
@@ -294,7 +293,7 @@ export default EmberObject.extend(PortMixin, {
 
   viewTree() {
     let tree;
-    let emberApp = this.get('application');
+    let emberApp = this.get('namespace.owner');
     if (!emberApp) {
       return false;
     }
@@ -315,12 +314,12 @@ export default EmberObject.extend(PortMixin, {
     return tree;
   },
 
-  getContainer() {
-    return this.get('application.__container__');
+  getOwner() {
+    return this.get('namespace.owner');
   },
 
   isGlimmerTwo() {
-    return this.get('application').hasRegistration('service:-glimmer-environment');
+    return this.get('namespace.owner').hasRegistration('service:-glimmer-environment');
   },
 
   modelForView(view) {
@@ -583,8 +582,8 @@ export default EmberObject.extend(PortMixin, {
     return A([]);
   }),
 
-  viewRegistry: computed('application', function() {
-    return this.getContainer().lookup('-view-registry:main');
+  viewRegistry: computed('namespace.owner', function() {
+    return this.getOwner().lookup('-view-registry:main');
   }),
 
   /**

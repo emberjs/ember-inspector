@@ -45,7 +45,7 @@ module("Ember Debug - Object Inspector", function(hooks) {
     });
     run(() => {
       setupApp();
-      EmberDebug.set('application', App);
+      EmberDebug.set('owner', App.__deprecatedInstance__);
     });
     run(EmberDebug, 'start');
     await wait();

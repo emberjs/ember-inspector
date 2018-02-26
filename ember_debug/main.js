@@ -16,7 +16,7 @@ const { Object: EmberObject, run, Application, Namespace } = Ember;
 
 const EmberDebug = EmberObject.extend({
 
-  application: null,
+  owner: null,
   started: false,
 
   // Using object shorthand syntax here is somehow having strange side effects.
@@ -31,8 +31,8 @@ const EmberDebug = EmberObject.extend({
     }
     this.set('started', true);
 
-    if (!this.get('application')) {
-      this.set('application', getApplication());
+    if (!this.get('owner')) {
+      this.set('owner', getOwner());
     }
 
     this.reset();
@@ -109,7 +109,7 @@ const EmberDebug = EmberObject.extend({
 
 }).create();
 
-function getApplication() {
+function getOwner() {
   let namespaces = Namespace.NAMESPACES;
   let application;
 
@@ -119,7 +119,7 @@ function getApplication() {
       return false;
     }
   });
-  return application;
+  return application.__deprecatedInstance__;
 }
 
 export default EmberDebug;

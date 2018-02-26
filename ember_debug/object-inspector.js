@@ -90,8 +90,6 @@ export default EmberObject.extend(PortMixin, {
 
   port: oneWay('namespace.port'),
 
-  application: oneWay('namespace.application'),
-
   init() {
     this._super();
     this.set('sentObjects', {});
@@ -144,21 +142,21 @@ export default EmberObject.extend(PortMixin, {
       this.sendToConsole(message.objectId, message.property);
     },
     sendControllerToConsole(message) {
-      const container = this.get('application.__container__');
+      const container = this.get('namespace.owner');
       this.sendValueToConsole(container.lookup(`controller:${message.name}`));
     },
     sendRouteHandlerToConsole(message) {
-      const container = this.get('application.__container__');
+      const container = this.get('namespace.owner');
       this.sendValueToConsole(container.lookup(`route:${message.name}`));
     },
     inspectRoute(message) {
-      const container = this.get('application.__container__');
+      const container = this.get('namespace.owner');
       const router = container.lookup('router:main');
       const routerLib = router._routerMicrolib || router.router;
       this.sendObject(routerLib.getHandler(message.name));
     },
     inspectController(message) {
-      const container = this.get('application.__container__');
+      const container = this.get('namespace.owner');
       this.sendObject(container.lookup(`controller:${message.name}`));
     },
     inspectById(message) {
@@ -166,7 +164,7 @@ export default EmberObject.extend(PortMixin, {
       this.sendObject(obj);
     },
     inspectByContainerLookup(message) {
-      const container = this.get('application.__container__');
+      const container = this.get('namespace.owner');
       this.sendObject(container.lookup(message.name));
     },
     traceErrors(message) {

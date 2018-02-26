@@ -32,7 +32,7 @@ module("Promise Debug", function(hooks) {
     });
     run(function() {
       setupApp();
-      EmberDebug.set('application', App);
+      EmberDebug.set('owner', App.__deprecatedInstance__);
     });
     Ember.run(EmberDebug, 'start');
     EmberDebug.get('promiseDebug').reopen({
