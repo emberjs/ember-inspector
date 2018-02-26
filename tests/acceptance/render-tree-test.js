@@ -72,22 +72,22 @@ module('Render Tree Tab', function(hooks) {
     let rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 2, "Two rows are rendered initially");
 
-    assert.equal(find('.js-render-profile-name', rows[0]).textContent.trim(), "First View Rendering");
-    assert.equal(find('.js-render-profile-duration', rows[0]).textContent.trim(), "476.87ms");
-    assert.equal(find('.js-render-profile-timestamp', rows[0]).textContent.trim(), "13:16:22:715");
+    assert.equal(rows[0].querySelector('.js-render-profile-name').textContent.trim(), "First View Rendering");
+    assert.equal(rows[0].querySelector('.js-render-profile-duration').textContent.trim(), "476.87ms");
+    assert.equal(rows[0].querySelector('.js-render-profile-timestamp').textContent.trim(), "13:16:22:715");
 
-    assert.equal(find('.js-render-profile-name', rows[1]).textContent.trim(), "Second View Rendering");
-    assert.equal(find('.js-render-profile-duration', rows[1]).textContent.trim(), "10.00ms");
-    assert.equal(find('.js-render-profile-timestamp', rows[1]).textContent.trim(), "13:16:22:759");
+    assert.equal(rows[1].querySelector('.js-render-profile-name').textContent.trim(), "Second View Rendering");
+    assert.equal(rows[1].querySelector('.js-render-profile-duration').textContent.trim(), "10.00ms");
+    assert.equal(rows[1].querySelector('.js-render-profile-timestamp').textContent.trim(), "13:16:22:759");
 
     await click('.js-render-main-cell', rows[0]);
 
     rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 3, "Child is shown below the parent");
 
-    assert.equal(find('.js-render-profile-name', rows[1]).textContent.trim(), "Child view");
-    assert.equal(find('.js-render-profile-duration', rows[1]).textContent.trim(), "0.36ms");
-    assert.equal(find('.js-render-profile-timestamp', rows[1]).textContent.trim(), "13:16:22:581");
+    assert.equal(rows[1].querySelector('.js-render-profile-name').textContent.trim(), "Child view");
+    assert.equal(rows[1].querySelector('.js-render-profile-duration').textContent.trim(), "0.36ms");
+    assert.equal(rows[1].querySelector('.js-render-profile-timestamp').textContent.trim(), "13:16:22:581");
 
     await click('.js-render-main-cell', rows[0]);
 
