@@ -111,15 +111,15 @@ module('Render Tree Tab', function(hooks) {
     let rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 2, "Two rows are rendered initially");
 
-    assert.equal(find('.js-render-profile-name', rows[0]).textContent.trim(), "First View Rendering");
-    assert.equal(find('.js-render-profile-name', rows[1]).textContent.trim(), "Second View Rendering");
+    assert.equal(rows[0].querySelector('.js-render-profile-name').textContent.trim(), "First View Rendering");
+    assert.equal(rows[1].querySelector('.js-render-profile-name').textContent.trim(), "Second View Rendering");
 
     await fillIn('.js-render-profiles-search input', 'first');
 
     rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 2, "The first parent is rendered with the child");
-    assert.equal(find('.js-render-profile-name', rows[0]).textContent.trim(), "First View Rendering");
-    assert.equal(find('.js-render-profile-name', rows[1]).textContent.trim(), "Child view");
+    assert.equal(rows[0].querySelector('.js-render-profile-name').textContent.trim(), "First View Rendering");
+    assert.equal(rows[1].querySelector('.js-render-profile-name').textContent.trim(), "Child view");
 
     // Minimize to hide child view
     await click('.js-render-main-cell');
@@ -129,13 +129,13 @@ module('Render Tree Tab', function(hooks) {
     rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 2, "filter is reset");
 
-    assert.equal(find('.js-render-profile-name', rows[0]).textContent.trim(), "First View Rendering");
-    assert.equal(find('.js-render-profile-name', rows[1]).textContent.trim(), "Second View Rendering");
+    assert.equal(rows[0].querySelector('.js-render-profile-name').textContent.trim(), "First View Rendering");
+    assert.equal(rows[1].querySelector('.js-render-profile-name').textContent.trim(), "Second View Rendering");
 
     await fillIn('.js-render-profiles-search input', 'Second');
 
     rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 1, "The second row is the only one showing");
-    assert.equal(find('.js-render-profile-name', rows[0]).textContent.trim(), "Second View Rendering");
+    assert.equal(rows[0].querySelector('.js-render-profile-name').textContent.trim(), "Second View Rendering");
   });
 });

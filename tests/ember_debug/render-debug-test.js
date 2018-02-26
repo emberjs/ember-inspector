@@ -1,44 +1,32 @@
 import { visit } from '@ember/test-helpers';
-import { run } from '@ember/runloop';
-import Application from '@ember/application';
 import Ember from "ember";
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
 import wait from 'ember-test-helpers/wait';
+import { setupEIApp, destroyEIApp } from '../helpers/setup-destroy-ei-app';
 
 const EmberDebug = require('ember-debug/main').default;
 let port, App;
 
-
-function setupApp() {
-  App = Application.create();
-  App.setupForTesting();
-  App.injectTestHelpers();
-
-  App.Router.map(function() {
-    this.route('simple');
-  });
-  Ember.TEMPLATES.simple = hbs`Simple template`;
-}
-
 module("Render Debug", function(hooks) {
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
       send() {}
     });
-    run(function() {
-      setupApp();
-      EmberDebug.set('owner', App.__deprecatedInstance__);
+
+    App = await setupEIApp.call(this, EmberDebug, function() {
+      this.route('simple');
     });
-    run(EmberDebug, 'start');
+
+    Ember.TEMPLATES.simple = hbs`Simple template`;
+
     port = EmberDebug.port;
   });
 
-  hooks.afterEach(function() {
-    EmberDebug.destroyContainer();
-    run(App, 'destroy');
+  hooks.afterEach(async function() {
+    await destroyEIApp.call(this, EmberDebug, App);
   });
 
   test("Simple Render", async function t(assert) {

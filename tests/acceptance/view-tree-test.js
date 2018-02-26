@@ -14,7 +14,7 @@ module('View Tree Tab', function(hooks) {
   });
 
   function textFor(selector, context) {
-    return find(selector, context).textContent.trim();
+    return context.querySelector(selector).textContent.trim();
   }
 
   let treeId = 0;

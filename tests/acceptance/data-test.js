@@ -123,33 +123,37 @@ module('Data Tab', function(hooks) {
     assert.equal(recordRows.length, 2);
 
     let firstRow = recordRows[0];
-    assert.equal(findAll('.js-record-column', firstRow)[0].textContent.trim(), 1);
-    assert.equal(findAll('.js-record-column', firstRow)[1].textContent.trim(), 'My Post');
-    assert.equal(findAll('.js-record-column', firstRow)[2].textContent.trim(), 'This is my first post');
+    let firstRowColumns = firstRow.querySelectorAll('.js-record-column');
+    assert.equal(firstRowColumns[0].textContent.trim(), 1);
+    assert.equal(firstRowColumns[1].textContent.trim(), 'My Post');
+    assert.equal(firstRowColumns[2].textContent.trim(), 'This is my first post');
 
     let secondRow = recordRows[1];
-    assert.equal(findAll('.js-record-column', secondRow)[0].textContent.trim(), 2);
-    assert.equal(findAll('.js-record-column', secondRow)[1].textContent.trim(), 'Hello');
-    assert.equal(findAll('.js-record-column', secondRow)[2].textContent.trim(), '');
+    let secondRowColumns = secondRow.querySelectorAll('.js-record-column');
+    assert.equal(secondRowColumns[0].textContent.trim(), 2);
+    assert.equal(secondRowColumns[1].textContent.trim(), 'Hello');
+    assert.equal(secondRowColumns[2].textContent.trim(), '');
 
     await triggerPort(this, 'data:recordsAdded', {
       records: [recordFactory({ objectId: 'new-post', id: 3, title: 'Added Post', body: 'I am new here' })]
     });
 
-    let row = findAll('.js-record-list-item')[2];
-    assert.equal(findAll('.js-record-column', row)[0].textContent.trim(), 3);
-    assert.equal(findAll('.js-record-column', row)[1].textContent.trim(), 'Added Post');
-    assert.equal(findAll('.js-record-column', row)[2].textContent.trim(), 'I am new here');
+    let addedRow = findAll('.js-record-list-item')[2];
+    let addedRowColumns = addedRow.querySelectorAll('.js-record-column');
+    assert.equal(addedRowColumns[0].textContent.trim(), 3);
+    assert.equal(addedRowColumns[1].textContent.trim(), 'Added Post');
+    assert.equal(addedRowColumns[2].textContent.trim(), 'I am new here');
 
     await triggerPort(this, 'data:recordsUpdated', {
       records: [recordFactory({ objectId: 'new-post', id: 3, title: 'Modified Post', body: 'I am no longer new' })]
     });
 
     let rows = findAll('.js-record-list-item');
-    row = rows[rows.length - 1];
-    assert.equal(findAll('.js-record-column', row)[0].textContent.trim(), 3);
-    assert.equal(findAll('.js-record-column', row)[1].textContent.trim(), 'Modified Post');
-    assert.equal(findAll('.js-record-column', row)[2].textContent.trim(), 'I am no longer new');
+    let modifiedRow = rows[rows.length - 1];
+    let modifiedRowColumns = modifiedRow.querySelectorAll('.js-record-column');
+    assert.equal(modifiedRowColumns[0].textContent.trim(), 3);
+    assert.equal(modifiedRowColumns[1].textContent.trim(), 'Modified Post');
+    assert.equal(modifiedRowColumns[2].textContent.trim(), 'I am no longer new');
 
     await triggerPort(this, 'data:recordsRemoved', {
       index: 2,
@@ -160,7 +164,8 @@ module('Data Tab', function(hooks) {
     assert.equal(findAll('.js-record-list-item').length, 2);
     rows = findAll('.js-record-list-item');
     let lastRow = rows[rows.length - 1];
-    assert.equal(findAll('.js-record-column', lastRow)[0].textContent.trim(), 2, 'Records successfully removed.');
+    let lastRowColumns = lastRow.querySelectorAll('.js-record-column');
+    assert.equal(lastRowColumns[0].textContent.trim(), 2, 'Records successfully removed.');
   });
 
   test('Filtering records', async function t(assert) {

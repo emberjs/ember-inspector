@@ -1,21 +1,15 @@
-import Application from '@ember/application';
 import { run, later } from '@ember/runloop';
 import { A as emberA } from '@ember/array';
 import RSVP from 'rsvp';
 import { module, test } from 'qunit';
 import require from 'require';
 import wait from 'ember-test-helpers/wait';
+import { setupEIApp, destroyEIApp } from '../helpers/setup-destroy-ei-app';
 
 const EmberDebug = require("ember-debug/main").default;
 
 let port, name, message;
 let App;
-
-function setupApp() {
-  App = Application.create();
-  App.injectTestHelpers();
-  App.setupForTesting();
-}
 
 // RSVP instrumentation is out of band (50 ms delay)
 async function rsvpDelay() {
@@ -24,7 +18,7 @@ async function rsvpDelay() {
 }
 
 module("Promise Debug", function(hooks) {
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
 
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
@@ -33,11 +27,9 @@ module("Promise Debug", function(hooks) {
         message = m;
       }
     });
-    run(function() {
-      setupApp();
-      EmberDebug.set('owner', App.__deprecatedInstance__);
-    });
-    run(EmberDebug, 'start');
+
+    App = await setupEIApp.call(this, EmberDebug);
+
     EmberDebug.get('promiseDebug').reopen({
       delay: 5,
       session: {
@@ -49,11 +41,10 @@ module("Promise Debug", function(hooks) {
     port = EmberDebug.port;
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(async function() {
     name = null;
     message = null;
-    EmberDebug.destroyContainer();
-    run(App, 'destroy');
+    await destroyEIApp.call(this, EmberDebug, App);
   });
 
   test("Existing promises sent when requested", async function t(assert) {

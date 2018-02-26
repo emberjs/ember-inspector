@@ -96,8 +96,8 @@ module('Promise Tab', function(hooks) {
 
     assert.equal(findAll('.js-promise-tree-item').length, 1);
     let row = find('.js-promise-tree-item');
-    assert.equal(find('.js-promise-label', row).textContent.trim(), 'Promise 1');
-    assert.equal(find('.js-promise-state', row).textContent.trim(), 'Pending');
+    assert.equal(row.querySelector('.js-promise-label').textContent.trim(), 'Promise 1');
+    assert.equal(row.querySelector('.js-promise-state').textContent.trim(), 'Pending');
   });
 
 
@@ -125,10 +125,10 @@ module('Promise Tab', function(hooks) {
 
     assert.equal(findAll('.js-promise-tree-item').length, 1);
     let row = find('.js-promise-tree-item');
-    assert.equal(find('.js-promise-label', row).textContent.trim(), 'Promise 1');
-    assert.equal(find('.js-promise-state', row).textContent.trim(), 'Fulfilled');
-    assert.equal(find('.js-promise-value', row).textContent.trim(), 'value');
-    assert.equal(find('.js-promise-time', row).textContent.trim(), '10.00ms');
+    assert.equal(row.querySelector('.js-promise-label').textContent.trim(), 'Promise 1');
+    assert.equal(row.querySelector('.js-promise-state').textContent.trim(), 'Fulfilled');
+    assert.equal(row.querySelector('.js-promise-value').textContent.trim(), 'value');
+    assert.equal(row.querySelector('.js-promise-time').textContent.trim(), '10.00ms');
   });
 
 
@@ -155,10 +155,10 @@ module('Promise Tab', function(hooks) {
 
     assert.equal(findAll('.js-promise-tree-item').length, 1);
     let row = find('.js-promise-tree-item');
-    assert.equal(find('.js-promise-label', row).textContent.trim(), 'Promise 1');
-    assert.equal(find('.js-promise-state', row).textContent.trim(), 'Rejected');
-    assert.equal(find('.js-promise-value', row).textContent.trim(), 'reason');
-    assert.equal(find('.js-promise-time', row).textContent.trim(), '20.00ms');
+    assert.equal(row.querySelector('.js-promise-label').textContent.trim(), 'Promise 1');
+    assert.equal(row.querySelector('.js-promise-state').textContent.trim(), 'Rejected');
+    assert.equal(row.querySelector('.js-promise-value').textContent.trim(), 'reason');
+    assert.equal(row.querySelector('.js-promise-time').textContent.trim(), '20.00ms');
   });
 
   test("Chained promises", async function(assert) {
@@ -181,12 +181,12 @@ module('Promise Tab', function(hooks) {
 
     let rows = findAll('.js-promise-tree-item');
     assert.equal(rows.length, 1, 'Collpased by default');
-    assert.equal(find('.js-promise-label', rows[0]).textContent.trim(), 'Parent');
-    await click('.js-promise-label', rows[0]);
+    assert.equal(rows[0].querySelector('.js-promise-label').textContent.trim(), 'Parent');
+    await click(rows[0].querySelector('.js-promise-label'));
 
     rows = findAll('.js-promise-tree-item');
     assert.equal(rows.length, 2, 'Chain now expanded');
-    assert.equal(find('.js-promise-label', rows[1]).textContent.trim(), 'Child');
+    assert.equal(rows[1].querySelector('.js-promise-label').textContent.trim(), 'Child');
   });
 
   test("Can trace promise when there is a stack", async function(assert) {
@@ -242,7 +242,7 @@ module('Promise Tab', function(hooks) {
 
     let row = find('.js-promise-tree-item');
     assert.equal(find('.js-send-to-console-btn').textContent.trim(), 'Stack trace');
-    await click('.js-send-to-console-btn', row);
+    await click(row.querySelector('.js-send-to-console-btn'));
 
     assert.equal(name, 'promise:sendValueToConsole');
     assert.deepEqual(message, { promiseId: 1 });
@@ -264,7 +264,7 @@ module('Promise Tab', function(hooks) {
     });
 
     let row = find('.js-promise-tree-item');
-    await click('.js-send-to-console-btn', row);
+    await click(row.querySelector('.js-send-to-console-btn'));
 
     assert.equal(name, 'promise:sendValueToConsole');
     assert.deepEqual(message, { promiseId: 1 });
@@ -286,7 +286,7 @@ module('Promise Tab', function(hooks) {
     });
 
     let row = find('.js-promise-tree-item');
-    await click('.js-promise-object-value', row);
+    await click(row.querySelector('.js-promise-object-value'));
 
     assert.equal(name, 'objectInspector:inspectById');
     assert.deepEqual(message, { objectId: 100 });

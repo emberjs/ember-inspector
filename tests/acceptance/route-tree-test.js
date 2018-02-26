@@ -147,20 +147,20 @@ module('Route Tree Tab', function(hooks) {
     name = null;
     message = null;
     applicationRow = find('.js-route-tree-item');
-    await click('.js-route-handler', applicationRow);
+    await click(applicationRow.querySelector('.js-route-handler'));
     assert.equal(name, 'objectInspector:inspectRoute');
     assert.equal(message.name, 'application');
 
     name = null;
     message = null;
-    await click('.js-route-controller', applicationRow);
+    await click(applicationRow.querySelector('.js-route-controller'));
     assert.equal(name, 'objectInspector:inspectController');
     assert.equal(message.name, 'application');
 
     name = null;
     message = null;
     let postRow = findAll('.js-route-tree-item')[1];
-    await click('.js-route-controller', postRow);
+    await click(postRow.querySelector('.js-route-controller'));
     assert.equal(name, null, "If controller does not exist, clicking should have no effect.");
     assert.equal(message, null);
   });

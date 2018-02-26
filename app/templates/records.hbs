@@ -4,7 +4,7 @@
   storageKey=(concat "record-list-" modelType.name)
   itemClass="list__row_highlight" as |list|}}
 
-  {{#list.vertical-collection content=filtered as |content index|}}
+  {{#list.vertical-collection filtered as |content index|}}
     <tr class="list__row js-record-list-item">
       {{record-item
         model=content

@@ -1,34 +1,26 @@
 import { visit } from '@ember/test-helpers';
 import { deprecate } from '@ember/application/deprecations';
 import Route from '@ember/routing/route';
-import Application from '@ember/application';
 import RSVP from 'rsvp';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import require from 'require';
+import { setupEIApp, destroyEIApp } from '../helpers/setup-destroy-ei-app';
 
-const EmberDebug = require("ember-debug/main").default;
+const EmberDebug = require('ember-debug/main').default;
 
 let port;
 let App;
 
-function setupApp() {
-  App = Application.create();
-  App.injectTestHelpers();
-  App.setupForTesting();
-}
-
-module("Deprecation Debug", function(hooks) {
-  hooks.beforeEach(function() {
+module('Deprecation Debug', function(hooks) {
+  hooks.beforeEach(async function() {
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
       send(/*n, m*/) {}
     });
-    run(function() {
-      setupApp();
-      EmberDebug.set('owner', App.__deprecatedInstance__);
-    });
-    run(EmberDebug, 'start');
+
+    App = await setupEIApp.call(this, EmberDebug);
+
     port = EmberDebug.port;
     EmberDebug.IGNORE_DEPRECATIONS = true;
     EmberDebug.deprecationDebug.reopen({
@@ -37,12 +29,11 @@ module("Deprecation Debug", function(hooks) {
     });
   });
 
-  hooks.afterEach(function() {
-    EmberDebug.destroyContainer();
-    run(App, 'destroy');
+  hooks.afterEach(async function() {
+    await destroyEIApp.call(this, EmberDebug, App);
   });
 
-  test("deprecations are caught and sent", async function t(assert) {
+  test('deprecations are caught and sent', async function t(assert) {
     let messages = [];
     port.reopen({
       send(name, message) {
