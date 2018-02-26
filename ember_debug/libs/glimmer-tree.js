@@ -354,9 +354,7 @@ export default class {
 
     if (!template) {
       let layout = component.get('layout');
-      if (layout) {
-        layout = this.getGlimmerEnvironment().getTemplate(layout);
-      } else {
+      if (!layout) {
         let componentName = component.get('_debugContainerKey');
         if (componentName) {
           let layoutName = componentName.replace(/component:/, 'template:components/');
@@ -551,16 +549,6 @@ export default class {
     } else {
       return this.controllerForComponent(controller);
     }
-  }
-
-  /**
-   * The glimmer environment is needed for looking up templates.
-   *
-   * @method getGlimmerEnvironment
-   * @return {Class} The glimmer environment
-   */
-  getGlimmerEnvironment() {
-    return this.container.lookup('service:-glimmer-environment');
   }
 
   /**
