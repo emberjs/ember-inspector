@@ -63,14 +63,7 @@ export default EmberObject.extend(PortMixin, {
 
   getClassName(name, type) {
     let container = this.get('namespace.owner');
-    let resolver = container.resolver;
-    if (!resolver) {
-      resolver = this.get('namespace.owner.application.registry.resolver');
-    }
-    if (!resolver) {
-      // Ember >= 2.0
-      resolver = container.registry;
-    }
+    let resolver = container.application.__registry__.resolver;
     let prefix = this.get('emberCliConfig.modulePrefix');
     let podPrefix = this.get('emberCliConfig.podModulePrefix');
     let usePodsByDefault = this.get('emberCliConfig.usePodsByDefault');
@@ -79,7 +72,11 @@ export default EmberObject.extend(PortMixin, {
       // Uses modules
       name = dasherize(name);
       let fullName = `${type}:${name}`;
-      className = resolver.describe(fullName);
+      if (resolver.lookupDescription) {
+        className = resolver.lookupDescription(fullName);
+      } else if (resolver.describe) {
+        className = resolver.describe(fullName);
+      }
       if (className === fullName) {
         // full name returned as is - this resolver does not look for the module.
         className = className.replace(new RegExp(`^${type}\:`), '');
@@ -121,7 +118,7 @@ function buildSubTree(routeTree, route) {
   let owner = getOwner(this.get('router'));
   let subTree = routeTree;
   let item, routeClassName, routeHandler, controllerName,
-      controllerClassName, templateName, controllerFactory;
+    controllerClassName, templateName, controllerFactory;
 
   for (let i = 0; i < handlers.length; i++) {
     item = handlers[i];
