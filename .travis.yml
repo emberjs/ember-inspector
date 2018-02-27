@@ -38,15 +38,16 @@ jobs:
     # runs tests against each supported Ember version
     - stage: ember debug test
       env: 
-        - EMBER_TRY_SCENARIO=ember-2.7
-        - EMBER_TRY_SCENARIO=ember-lts-2.8
-        - EMBER_TRY_SCENARIO=ember-lts-2.12
-        - EMBER_TRY_SCENARIO=ember-lts-2.16
-        - EMBER_TRY_SCENARIO=ember-lts-2.18
-        - EMBER_TRY_SCENARIO=ember-release
-        - EMBER_TRY_SCENARIO=ember-beta
-        - EMBER_TRY_SCENARIO=ember-canary
-        - EMBER_TRY_SCENARIO=ember-default
+        matrix:
+          - EMBER_TRY_SCENARIO=ember-2.7
+          - EMBER_TRY_SCENARIO=ember-lts-2.8
+          - EMBER_TRY_SCENARIO=ember-lts-2.12
+          - EMBER_TRY_SCENARIO=ember-lts-2.16
+          - EMBER_TRY_SCENARIO=ember-lts-2.18
+          - EMBER_TRY_SCENARIO=ember-release
+          - EMBER_TRY_SCENARIO=ember-beta
+          - EMBER_TRY_SCENARIO=ember-canary
+          - EMBER_TRY_SCENARIO=ember-default
       script:
         - node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO --- node_modules/.bin/ember test --filter="Ember Debug"
         
