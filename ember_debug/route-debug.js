@@ -114,8 +114,7 @@ export default EmberObject.extend(PortMixin, {
 
 function buildSubTree(routeTree, route) {
   let handlers = route.handlers;
-  let container = this.get('namespace.owner');
-  let owner = getOwner(this.get('router'));
+  let owner = this.get('namespace.owner');
   let subTree = routeTree;
   let item, routeClassName, routeHandler, controllerName,
       controllerClassName, templateName, controllerFactory;
@@ -138,7 +137,7 @@ function buildSubTree(routeTree, route) {
       const routerLib = router._routerMicrolib || router.router;
       routeHandler = routerLib.getHandler(handler);
       controllerName = routeHandler.get('controllerName') || routeHandler.get('routeName');
-      controllerFactory = owner.factoryFor ? owner.factoryFor(`controller:${controllerName}`) : container.lookupFactory(`controller:${controllerName}`);
+      controllerFactory = owner.factoryFor ? owner.factoryFor(`controller:${controllerName}`) : owner._lookupFactory(`controller:${controllerName}`);
       controllerClassName = this.getClassName(controllerName, 'controller');
       templateName = this.getClassName(handler, 'template');
 
@@ -162,7 +161,7 @@ function buildSubTree(routeTree, route) {
 
       if (i === handlers.length - 1) {
         // it is a route, get url
-        subTree[handler].value.url = getURL(container, route.segments);
+        subTree[handler].value.url = getURL(owner, route.segments);
         subTree[handler].value.type = 'route';
       } else {
         // it is a resource, set children object

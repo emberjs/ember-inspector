@@ -69,7 +69,7 @@
     "ember-source": "~3.0.0",
     "ember-source-channel-url": "^1.0.1",
     "ember-truth-helpers": "2.0.0",
-    "ember-try": "^0.2.23",
+    "ember-try": "^1.0.0-beta.1",
     "eslint-plugin-ember": "^5.0.0",
     "fstream": "^1.0.8",
     "grunt": "^0.4.5",
