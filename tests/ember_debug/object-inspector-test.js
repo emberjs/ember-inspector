@@ -380,7 +380,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     await visit('/simple');
 
     objectId = find('.simple-view').id;
-    let view = App.__container__.lookup('-view-registry:main')[objectId];
+    let view = this.owner.lookup('-view-registry:main')[objectId];
     objectInspector.sendObject(view);
     await wait();
 

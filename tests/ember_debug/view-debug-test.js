@@ -164,17 +164,17 @@ module('View Debug', function(hooks) {
 
     assert.ok(isVisible(previewDiv));
     assert.notOk(find('[data-label=layer-component]'), 'Component layer not shown on outlet views');
-    assert.equal(find('[data-label=layer-controller]', previewDiv).textContent, 'App.ApplicationController');
-    assert.equal(find('[data-label=layer-model]', previewDiv).textContent, 'Application model');
+    assert.equal(previewDiv.querySelector('[data-label=layer-controller]').textContent, 'App.ApplicationController');
+    assert.equal(previewDiv.querySelector('[data-label=layer-model]').textContent, 'Application model');
 
     let layerDiv = find('[data-label=layer-div]');
     await triggerEvent(layerDiv, 'mouseup');
 
     assert.ok(isVisible(layerDiv));
-    assert.equal(find('[data-label=layer-model]', layerDiv).textContent, 'Application model');
-    await click('[data-label=layer-controller]', layerDiv);
+    assert.equal(layerDiv.querySelector('[data-label=layer-model]').textContent, 'Application model');
+    await click(layerDiv.querySelector('[data-label=layer-controller]'));
 
-    let controller = App.__container__.lookup('controller:application');
+    let controller = this.owner.lookup('controller:application');
     assert.equal(name, 'objectInspector:updateObject');
     assert.equal(controller.toString(), message.name);
     name = null;
@@ -196,8 +196,8 @@ module('View Debug', function(hooks) {
     previewDiv = find('[data-label=preview-div]');
     assert.ok(isVisible(previewDiv));
     assert.equal(find('[data-label=layer-component]').textContent.trim(), 'Ember.TextField');
-    assert.notOk(find('[data-label=layer-controller]', previewDiv));
-    assert.notOk(find('[data-label=layer-model]', previewDiv));
+    assert.notOk(previewDiv.querySelector('[data-label=layer-controller]'));
+    assert.notOk(previewDiv.querySelector('[data-label=layer-model]'));
   });
 
   test('Highlighting a view without an element should not throw an error', async function t(assert) {
