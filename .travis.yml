@@ -46,6 +46,8 @@ jobs:
       env: EMBER_TRY_SCENARIO=ember-beta
       env: EMBER_TRY_SCENARIO=ember-canary
       env: EMBER_TRY_SCENARIO=ember-default
+      script:
+        - node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO --- node_modules/.bin/ember test --filter="Ember Debug"
         
 
 before_install:
@@ -56,11 +58,6 @@ before_install:
 install:
   - yarn install --ignore-engines
   - bower install
-
-script:
-  - yarn lint:js
-  - yarn test
-  - node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO --- node_modules/.bin/ember test --filter="Ember Debug"
 
 after_success:
   - test $TRAVIS_BRANCH == "stable" && yarn run upload
