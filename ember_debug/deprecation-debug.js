@@ -193,13 +193,13 @@ export default EmberObject.extend(PortMixin, {
         if (error['arguments']) {
           // Chrome
           stack = error.stack.replace(/^\s+at\s+/gm, '').
-          replace(/^([^\(]+?)([\n$])/gm, '{anonymous}($1)$2').
-          replace(/^Object.<anonymous>\s*\(([^\)]+)\)/gm, '{anonymous}($1)').split('\n');
+            replace(/^([^\(]+?)([\n$])/gm, '{anonymous}($1)$2').
+            replace(/^Object.<anonymous>\s*\(([^\)]+)\)/gm, '{anonymous}($1)').split('\n');
           stack.shift();
         } else {
           // Firefox
           stack = error.stack.replace(/(?:\n@:0)?\s+$/m, '').
-          replace(/^\(/gm, '{anonymous}(').split('\n');
+            replace(/^\(/gm, '{anonymous}(').split('\n');
         }
 
         stackStr = `\n    ${stack.slice(2).join("\n    ")}`;

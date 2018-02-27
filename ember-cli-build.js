@@ -6,8 +6,6 @@
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 const mergeTrees = require('broccoli-merge-trees');
 const concatFiles = require('broccoli-concat');
-const path = require('path');
-const jsStringEscape = require('js-string-escape');
 const stew = require('broccoli-stew');
 const writeFile = require('broccoli-file-creator');
 const replace = require('broccoli-string-replace');
@@ -27,13 +25,14 @@ const options = {
   }
 };
 
-function renderErrors(errors) {
-  if (!errors) { return ''; }
-  return errors.map(function(error) {
-    return error.line + ':' + error.column + ' ' +
-      ' - ' + error.message + ' (' + error.ruleId +')';
-  }).join('\n');
-}
+// TODO: just commented this out for now. Need confirmation from Teddy on whether we need it or not
+// function renderErrors(errors) {
+//   if (!errors) { return ''; }
+//   return errors.map(function(error) {
+//     return `${error.line}:${error.column} ` +
+//       ` - ${error.message} (${error.ruleId})`;
+//   }).join('\n');
+// }
 
 // Firefox requires non-minified assets for review :(
 options.minifyJS = { enabled: false };
@@ -81,12 +80,12 @@ module.exports = function(defaults) {
     resolveModuleSource: moduleResolver
   });
 
-  const previousEmberVersionsSupportedString = '[' + packageJson.previousEmberVersionsSupported.map(function(item) {
-    return "'" + item + "'";
-  }).join(',') + ']';
-  const emberVersionsSupportedString = '[' + packageJson.emberVersionsSupported.map(function(item) {
-    return "'" + item + "'";
-  }).join(',') + ']';
+  const previousEmberVersionsSupportedString = `[${packageJson.previousEmberVersionsSupported.map(function(item) {
+    return `'${item}'`;
+  }).join(',')}]`;
+  const emberVersionsSupportedString = `[${packageJson.emberVersionsSupported.map(function(item) {
+    return `'${item}'`;
+  }).join(',')}]`;
 
   let startupWrapper = new Funnel('ember_debug', {
     srcDir: 'vendor',
@@ -112,7 +111,7 @@ module.exports = function(defaults) {
   });
 
   sourceMap = map(sourceMap, '**/*.js', function(content) {
-    return "(function() {\n" + content + "\n}());";
+    return `(function() {\n${content}\n}());`;
   });
 
   emberDebug = mergeTrees([loader, startupWrapper, sourceMap, emberDebug]);
@@ -127,7 +126,7 @@ module.exports = function(defaults) {
   const emberDebugs = [];
   ['basic', 'chrome', 'firefox', 'bookmarklet', 'websocket'].forEach(function(dist) {
     emberDebugs[dist] = map(emberDebug, '**/*.js', function(content) {
-      return "(function(adapter, env) {\n" + content + "\n}('" + dist + "', '" + env + "'));";
+      return `(function(adapter, env) {\n${content}\n}('${dist}', '${env}'));`;
     });
   });
 
@@ -144,14 +143,14 @@ module.exports = function(defaults) {
   });
 
   const minimumVersion = packageJson.emberVersionsSupported[0].replace(/\./g, '-');
-  const webExtensionRoot = 'panes-' + minimumVersion;
+  const webExtensionRoot = `panes-${minimumVersion}`;
 
   let replacementPattern = [{
     match: /{{env}}/,
     replacement: env === 'development' ? ' [DEV]' : ''
   }, {
     match: /{{PANE_ROOT}}/g,
-    replacement: 'panes-' + minimumVersion
+    replacement: `panes-${minimumVersion}`
   }, {
     match: /{{PREVIOUS_EMBER_VERSIONS_SUPPORTED}}/g,
     replacement: previousEmberVersionsSupportedString
@@ -190,35 +189,35 @@ module.exports = function(defaults) {
   packageJson.previousEmberVersionsSupported.forEach(function(version) {
     version = version.replace(/\./g, '-');
     if (env === 'production') {
-      const prevDist = 'dist_prev/' + env;
+      const prevDist = `dist_prev/${env}`;
 
       bookmarklet = mergeTrees([
-        mv(prevDist + '/bookmarklet/panes-' + version, 'panes-' + version),
+        mv(`${prevDist}/bookmarklet/panes-${version}`, `panes-${version}`),
         bookmarklet
       ]);
       firefox = mergeTrees([
-        mv(prevDist + '/firefox/panes-' + version, 'panes-' + version),
+        mv(`${prevDist}/firefox/panes-${version}`, `panes-${version}`),
         firefox
       ]);
       chrome = mergeTrees([
-        mv(prevDist + '/chrome/panes-' + version, 'panes-' + version),
+        mv(`${prevDist}/chrome/panes-${version}`, `panes-${version}`),
         chrome
       ]);
     } else {
       const file = writeFile('index.html', "This Ember version is not supported in development environment.");
       const emberDebugFile = writeFile('ember_debug.js', 'void(0);');
-      chrome = mergeTrees([mv(file, 'panes-' + version), chrome]);
-      firefox = mergeTrees([mv(file, 'panes-' + version), firefox]);
-      bookmarklet = mergeTrees([mv(file, 'panes-' + version), mv(emberDebugFile, 'panes-' + version), bookmarklet]);
+      chrome = mergeTrees([mv(file, `panes-${version}`), chrome]);
+      firefox = mergeTrees([mv(file, `panes-${version}`), firefox]);
+      bookmarklet = mergeTrees([mv(file, `panes-${version}`), mv(emberDebugFile, `panes-${version}`), bookmarklet]);
     }
   });
 
   // Pass the current dist to the Ember Inspector app.
   // EMBER DIST
   const dists = {
-    chrome: chrome,
-    firefox: firefox,
-    bookmarklet: bookmarklet,
+    chrome,
+    firefox,
+    bookmarklet,
     websocket: mergeTrees([tree, emberDebugs.websocket]),
     basic: mergeTrees([tree, emberDebugs.basic])
   };

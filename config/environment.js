@@ -1,7 +1,7 @@
 'use strict';
 
 /* eslint-env node */
-var packageJson = require('../package.json');
+let packageJson = require('../package.json');
 
 module.exports = function(environment) {
   let ENV = {
@@ -50,7 +50,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
+    // Intentionally empty
   }
 
   return ENV;

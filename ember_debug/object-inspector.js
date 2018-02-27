@@ -2,8 +2,8 @@ import PortMixin from 'ember-debug/mixins/port-mixin';
 import { compareVersion } from 'ember-debug/utils/version';
 const Ember = window.Ember;
 const { Object: EmberObject, inspect: emberInspect, meta: emberMeta, typeOf,
-        Descriptor, computed, get, set, ComputedProperty, guidFor, isNone, removeObserver,
-        Mixin, addObserver, cacheFor, VERSION } = Ember;
+  Descriptor, computed, get, set, ComputedProperty, guidFor, isNone, removeObserver,
+  Mixin, addObserver, cacheFor, VERSION } = Ember;
 const { oneWay } = computed;
 
 const keys = Object.keys || Ember.keys;
