@@ -16,10 +16,6 @@ env:
   global:
     - secure: EYaa9XxKkfJbQENuQPNFAIIieMWBiSknGCO9he8MH8ZHbqJODTjFixJnD5ZYLZCXH67SmjorBneznQHp8Xaf0aIuHbRhRY/MOUzqEWw12MmexW1kJF5wX+oxEnvzoiVAUJLNTIQi+g5WN43YBleASKMjUPa2i/3GBIcTlsVdf3U=
     - secure: g+Qh9jUTpK1yFpcZi9O8rsybfqv3TFE2hTFvG8XZ+QaQYBLLZ52JfhsJhdI0cvRRp7qWOhzE784iadkPWgvhj8c0/N/af5ZrSP3ceiv6RKqSUG2/iQyzX/qUh3vqrZ7a4xTsELTwswQtR+sA+I+DQVVlnqcCqYTAW2SFR/D4H8o=
-    
-stages:
-  - test
-  - ember debug test
 
 jobs:
   fail_fast: false
@@ -44,8 +40,6 @@ jobs:
     - env: EMBER_TRY_SCENARIO=ember-beta
     - env: EMBER_TRY_SCENARIO=ember-canary
     - env: EMBER_TRY_SCENARIO=ember-default
-      script:
-        - node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO --- node_modules/.bin/ember test --filter="Ember Debug"  
       
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash
@@ -55,6 +49,9 @@ before_install:
 install:
   - yarn install --ignore-engines
   - bower install
+  
+script:
+  - node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO --- node_modules/.bin/ember test --filter="Ember Debug"    
 
 after_success:
   - test $TRAVIS_BRANCH == "stable" && yarn run upload
