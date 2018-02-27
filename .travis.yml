@@ -37,21 +37,16 @@ jobs:
 
     # runs tests against each supported Ember version
     - stage: ember debug test
-      env: 
-        matrix:
-          - EMBER_TRY_SCENARIO=ember-2.7
-          - EMBER_TRY_SCENARIO=ember-lts-2.8
-          - EMBER_TRY_SCENARIO=ember-lts-2.12
-          - EMBER_TRY_SCENARIO=ember-lts-2.16
-          - EMBER_TRY_SCENARIO=ember-lts-2.18
-          - EMBER_TRY_SCENARIO=ember-release
-          - EMBER_TRY_SCENARIO=ember-beta
-          - EMBER_TRY_SCENARIO=ember-canary
-          - EMBER_TRY_SCENARIO=ember-default
-      script:
-        - node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO --- node_modules/.bin/ember test --filter="Ember Debug"
-        
-
+      env: EMBER_TRY_SCENARIO=ember-2.7
+    - env: EMBER_TRY_SCENARIO=ember-lts-2.8
+    - env: EMBER_TRY_SCENARIO=ember-lts-2.12
+    - env: EMBER_TRY_SCENARIO=ember-lts-2.16
+    - env EMBER_TRY_SCENARIO=ember-lts-2.18
+    - env EMBER_TRY_SCENARIO=ember-release
+    - env EMBER_TRY_SCENARIO=ember-beta
+    - env  EMBER_TRY_SCENARIO=ember-canary
+    - env EMBER_TRY_SCENARIO=ember-default
+      
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH=$HOME/.yarn/bin:$PATH
@@ -60,6 +55,9 @@ before_install:
 install:
   - yarn install --ignore-engines
   - bower install
+  
+script:
+  - node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO --- node_modules/.bin/ember test --filter="Ember Debug"  
 
 after_success:
   - test $TRAVIS_BRANCH == "stable" && yarn run upload
