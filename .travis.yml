@@ -24,7 +24,7 @@ stages:
   - ember debug test
 
 jobs:
-  fail_fast: true
+  fail_fast: false
   allow_failures:
     - env: EMBER_TRY_SCENARIO=ember-canary
 
