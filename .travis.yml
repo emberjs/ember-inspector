@@ -14,8 +14,6 @@ cache:
 
 env:
   global:
-    # See https://git.io/vdao3 for details.
-    - JOBS=1
     - secure: EYaa9XxKkfJbQENuQPNFAIIieMWBiSknGCO9he8MH8ZHbqJODTjFixJnD5ZYLZCXH67SmjorBneznQHp8Xaf0aIuHbRhRY/MOUzqEWw12MmexW1kJF5wX+oxEnvzoiVAUJLNTIQi+g5WN43YBleASKMjUPa2i/3GBIcTlsVdf3U=
     - secure: g+Qh9jUTpK1yFpcZi9O8rsybfqv3TFE2hTFvG8XZ+QaQYBLLZ52JfhsJhdI0cvRRp7qWOhzE784iadkPWgvhj8c0/N/af5ZrSP3ceiv6RKqSUG2/iQyzX/qUh3vqrZ7a4xTsELTwswQtR+sA+I+DQVVlnqcCqYTAW2SFR/D4H8o=
     
@@ -35,7 +33,7 @@ jobs:
         - yarn lint:js
         - yarn test
 
-    # runs tests against each supported Ember version
+    # runs tests for ember_debug against each supported Ember version
     - stage: ember debug test
       env: EMBER_TRY_SCENARIO=ember-2.7
     - env: EMBER_TRY_SCENARIO=ember-lts-2.8
