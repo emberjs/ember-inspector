@@ -45,7 +45,8 @@ install:
 
 script:
   - yarn lint:js
-  - node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO --skip-cleanup
+  - yarn test
+  - node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO --- node_modules/.bin/ember test --filter="Ember Debug"
 
 after_success:
   - test $TRAVIS_BRANCH == "stable" && yarn run upload

@@ -6,7 +6,7 @@ import require from 'require';
 import wait from 'ember-test-helpers/wait';
 import { setupEIApp, destroyEIApp } from '../helpers/setup-destroy-ei-app';
 
-const EmberDebug = require("ember-debug/main").default;
+const EmberDebug = require('ember-debug/main').default;
 
 let port, name, message;
 let App;
@@ -17,7 +17,7 @@ async function rsvpDelay() {
   await wait();
 }
 
-module("Promise Debug", function(hooks) {
+module('Ember Debug - Promise Debug', function(hooks) {
   hooks.beforeEach(async function() {
 
     EmberDebug.Port = EmberDebug.Port.extend({
@@ -47,15 +47,15 @@ module("Promise Debug", function(hooks) {
     await destroyEIApp.call(this, EmberDebug, App);
   });
 
-  test("Existing promises sent when requested", async function t(assert) {
+  test('Existing promises sent when requested', async function t(assert) {
     let promise1, child1, promise2;
 
     run(function() {
-      RSVP.resolve('value', "Promise1")
-        .then(function() {}, null, "Child1");
+      RSVP.resolve('value', 'Promise1')
+        .then(function() {}, null, 'Child1');
 
       // catch so we don't get a promise failure
-      RSVP.reject('reason', "Promise2").catch(() => {});
+      RSVP.reject('reason', 'Promise2').catch(() => {});
     });
 
     await rsvpDelay();
@@ -85,13 +85,13 @@ module("Promise Debug", function(hooks) {
 
   });
 
-  test("Updates are published when they happen", function(assert) {
+  test('Updates are published when they happen', function(assert) {
     port.trigger('promise:getAndObservePromises');
 
     let p;
 
     run(function() {
-      p = new RSVP.Promise(function() {}, "Promise1");
+      p = new RSVP.Promise(function() {}, 'Promise1');
     });
 
     let done = assert.async();
@@ -102,7 +102,7 @@ module("Promise Debug", function(hooks) {
       assert.ok(!!promise);
       if (promise) {
         assert.equal(promise.label, 'Promise1');
-        p.then(function() {}, null, "Child1");
+        p.then(function() {}, null, 'Child1');
         later(function() {
           assert.equal(name, 'promise:promisesUpdated');
           assert.equal(message.promises.length, 2);
@@ -118,7 +118,7 @@ module("Promise Debug", function(hooks) {
   });
 
 
-  test("Instrumentation with stack is persisted to session storage", async function(assert) {
+  test('Instrumentation with stack is persisted to session storage', async function(assert) {
     let withStack = false;
     EmberDebug.get('promiseDebug').reopen({
       session: {
@@ -159,7 +159,7 @@ module("Promise Debug", function(hooks) {
     assert.equal(withStack, false, 'persisted');
   });
 
-  test("Responds even if no promises detected", function(assert) {
+  test('Responds even if no promises detected', function(assert) {
     port.trigger('promise:getAndObservePromises');
     assert.equal(name, 'promise:promisesUpdated');
     assert.equal(message.promises.length, 0);

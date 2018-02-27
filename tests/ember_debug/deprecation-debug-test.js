@@ -12,7 +12,7 @@ const EmberDebug = require('ember-debug/main').default;
 let port;
 let App;
 
-module('Deprecation Debug', function(hooks) {
+module('Ember Debug - Deprecation', function(hooks) {
   hooks.beforeEach(async function() {
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},

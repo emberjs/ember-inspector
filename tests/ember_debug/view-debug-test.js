@@ -74,7 +74,7 @@ function setupApp() {
   setTemplate.call(this, 'posts', hbs`Posts`);
 }
 
-module('View Debug', function(hooks) {
+module('Ember Debug - View', function(hooks) {
   hooks.beforeEach(async function() {
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},

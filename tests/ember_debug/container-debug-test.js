@@ -11,7 +11,7 @@ let EmberDebug;
 let port, name, message;
 let App;
 
-module('Container Debug', function(hooks) {
+module('Ember Debug - Container', function(hooks) {
   hooks.beforeEach(async function() {
     EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({

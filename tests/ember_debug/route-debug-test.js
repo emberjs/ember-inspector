@@ -20,7 +20,7 @@ function getChildrenProperty(route, prop) {
   return route.children.map(item => get(item.value, prop));
 }
 
-module("Route Tree Debug", function(hooks) {
+module('Ember Debug - Route Tree', function(hooks) {
   hooks.beforeEach(async function() {
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
@@ -46,7 +46,7 @@ module("Route Tree Debug", function(hooks) {
     await destroyEIApp.call(this, EmberDebug, App);
   });
 
-  test("Route tree", async function t(assert) {
+  test('Route tree', async function t(assert) {
     let name = null, message = null, route;
     port.reopen({
       send(n, m) {

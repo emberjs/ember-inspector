@@ -1,5 +1,5 @@
 import { visit } from '@ember/test-helpers';
-import Ember from "ember";
+import Ember from 'ember';
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
@@ -9,7 +9,7 @@ import { setupEIApp, destroyEIApp } from '../helpers/setup-destroy-ei-app';
 const EmberDebug = require('ember-debug/main').default;
 let port, App;
 
-module("Render Debug", function(hooks) {
+module('Ember Debug - Render Debug', function(hooks) {
   hooks.beforeEach(async function() {
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
@@ -29,11 +29,11 @@ module("Render Debug", function(hooks) {
     await destroyEIApp.call(this, EmberDebug, App);
   });
 
-  test("Simple Render", async function t(assert) {
+  test('Simple Render', async function t(assert) {
     let profiles = [];
     port.reopen({
       send(n, m) {
-        if (n === "render:profilesAdded") {
+        if (n === 'render:profilesAdded') {
           profiles = profiles.concat(m.profiles);
         }
       }
@@ -42,18 +42,18 @@ module("Render Debug", function(hooks) {
 
     await visit('/simple');
 
-    assert.ok(profiles.length > 0, "it has created profiles");
+    assert.ok(profiles.length > 0, 'it has created profiles');
   });
 
-  test("Clears correctly", async function t(assert) {
+  test('Clears correctly', async function t(assert) {
     let profiles = [];
 
     port.reopen({
       send(n, m) {
-        if (n === "render:profilesAdded") {
+        if (n === 'render:profilesAdded') {
           profiles.push(m.profiles);
         }
-        if (n === "render:profilesUpdated") {
+        if (n === 'render:profilesUpdated') {
           profiles = m.profiles;
         }
       }
@@ -63,11 +63,11 @@ module("Render Debug", function(hooks) {
 
     await visit('/simple');
 
-    assert.ok(profiles.length > 0, "it has created profiles");
+    assert.ok(profiles.length > 0, 'it has created profiles');
     port.trigger('render:clear');
     await wait();
 
-    assert.ok(profiles.length === 0, "it has cleared the profiles");
+    assert.ok(profiles.length === 0, 'it has cleared the profiles');
 
   });
 });

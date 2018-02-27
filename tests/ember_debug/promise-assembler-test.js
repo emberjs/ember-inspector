@@ -20,7 +20,7 @@ function startAssembler() {
   run(assembler, 'start');
 }
 
-module("PromiseAssembler", function(hooks) {
+module('Ember Debug - PromiseAssembler', function(hooks) {
   hooks.beforeEach(function() {
     stubRSVP();
     run(function() {
@@ -38,7 +38,7 @@ module("PromiseAssembler", function(hooks) {
     }
   });
 
-  test("Creates promises correctly", function(assert) {
+  test('Creates promises correctly', function(assert) {
     startAssembler();
     let date = new Date();
     let event;
@@ -67,7 +67,7 @@ module("PromiseAssembler", function(hooks) {
     assert.equal(promise.get('state'), 'created');
   });
 
-  test("Chains a promise correctly (parent and child not-existing)", function(assert) {
+  test('Chains a promise correctly (parent and child not-existing)', function(assert) {
     startAssembler();
     let date = new Date();
     let event;
@@ -100,7 +100,7 @@ module("PromiseAssembler", function(hooks) {
 
   });
 
-  test("Chains a promise correctly (parent and child existing)", function(assert) {
+  test('Chains a promise correctly (parent and child existing)', function(assert) {
 
     startAssembler();
     let date = new Date();
@@ -155,7 +155,7 @@ module("PromiseAssembler", function(hooks) {
 
   });
 
-  test("Fulfills a promise correctly", function(assert) {
+  test('Fulfills a promise correctly', function(assert) {
     startAssembler();
     let date = new Date();
     let event;
@@ -190,7 +190,7 @@ module("PromiseAssembler", function(hooks) {
     assert.equal(assembler.find().get('length'), 1);
   });
 
-  test("Rejects a promise correctly", function(assert) {
+  test('Rejects a promise correctly', function(assert) {
     startAssembler();
     let date = new Date();
     let event;
