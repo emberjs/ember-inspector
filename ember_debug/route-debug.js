@@ -118,7 +118,7 @@ function buildSubTree(routeTree, route) {
   let owner = getOwner(this.get('router'));
   let subTree = routeTree;
   let item, routeClassName, routeHandler, controllerName,
-    controllerClassName, templateName, controllerFactory;
+      controllerClassName, templateName, controllerFactory;
 
   for (let i = 0; i < handlers.length; i++) {
     item = handlers[i];
