@@ -18,17 +18,11 @@ env:
     - secure: g+Qh9jUTpK1yFpcZi9O8rsybfqv3TFE2hTFvG8XZ+QaQYBLLZ52JfhsJhdI0cvRRp7qWOhzE784iadkPWgvhj8c0/N/af5ZrSP3ceiv6RKqSUG2/iQyzX/qUh3vqrZ7a4xTsELTwswQtR+sA+I+DQVVlnqcCqYTAW2SFR/D4H8o=
 
 jobs:
-  fail_fast: false
+  fail_fast: true
   allow_failures:
     - env: EMBER_TRY_SCENARIO=ember-canary
 
   include:
-    # runs tests with current locked deps and linting
-    - stage: test
-      script:
-        - yarn lint:js
-        - yarn test
-
     # runs tests for ember_debug against each supported Ember version
     - stage: ember debug test
       env: EMBER_TRY_SCENARIO=ember-2.7
@@ -40,7 +34,13 @@ jobs:
     - env: EMBER_TRY_SCENARIO=ember-beta
     - env: EMBER_TRY_SCENARIO=ember-canary
     - env: EMBER_TRY_SCENARIO=ember-default
-      
+    
+    # runs tests with current locked deps and linting
+    - stage: test
+      script:
+        - yarn lint:js
+        - yarn test
+
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH=$HOME/.yarn/bin:$PATH
