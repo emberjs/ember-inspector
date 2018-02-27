@@ -234,7 +234,7 @@ module('View Debug', function(hooks) {
 
   test('Supports applications that don\'t have the ember-application CSS class', async function t(assert) {
     let name = null;
-    let rootElement = find('body');
+    let rootElement = document.body;
 
     await visit('/simple');
 
