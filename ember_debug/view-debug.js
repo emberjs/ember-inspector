@@ -732,7 +732,7 @@ export default EmberObject.extend(PortMixin, {
         // Ember >= 2.2 + no ember-legacy-controllers addon
         controller = scope.getSelf().value();
         if (!(controller instanceof Controller)) {
-          controller = controller._controller;
+          controller = controller._controller || controller.controller;
         }
       }
       return controller;
