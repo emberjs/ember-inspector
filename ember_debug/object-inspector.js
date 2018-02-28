@@ -1,9 +1,12 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import { compareVersion } from 'ember-debug/utils/version';
+
 const Ember = window.Ember;
-const { Object: EmberObject, inspect: emberInspect, meta: emberMeta, typeOf,
+const {
+  Object: EmberObject, inspect: emberInspect, meta: emberMeta, typeOf,
   Descriptor, computed, get, set, ComputedProperty, guidFor, isNone, removeObserver,
-  Mixin, addObserver, cacheFor, VERSION } = Ember;
+  Mixin, addObserver, cacheFor, VERSION
+} = Ember;
 const { oneWay } = computed;
 
 const keys = Object.keys || Ember.keys;
@@ -11,12 +14,12 @@ const keys = Object.keys || Ember.keys;
 function inspectValue(value) {
   let string;
   if (value instanceof EmberObject) {
-    return { type: "type-ember-object", inspect: value.toString() };
+    return { type: 'type-ember-object', inspect: value.toString() };
   } else if (isComputed(value)) {
-    string = "<computed>";
-    return { type: "type-descriptor", inspect: string, computed: true };
+    string = '<computed>';
+    return { type: 'type-descriptor', inspect: string, computed: true };
   } else if (isDescriptor(value)) {
-    return { type: "type-descriptor", inspect: value.toString(), computed: true };
+    return { type: 'type-descriptor', inspect: value.toString(), computed: true };
   } else {
     return { type: `type-${typeOf(value)}`, inspect: inspect(value) };
   }
@@ -33,7 +36,7 @@ function isDescriptor(value) {
 
 function inspect(value) {
   if (typeof value === 'function') {
-    return "function() { ... }";
+    return 'function() { ... }';
   } else if (value instanceof EmberObject) {
     return value.toString();
   } else if (typeOf(value) === 'array') {
@@ -66,10 +69,18 @@ function inspect(value) {
           break;
         }
         v = value[key];
-        if (v === 'toString') { continue; } // ignore useless items
-        if (typeOf(v) === 'function') { v = "function() { ... }"; }
-        if (typeOf(v) === 'array') { v = `[Array : ${v.length}]`; }
-        if (typeOf(v) === 'object') { v = '[Object]'; }
+        if (v === 'toString') {
+          continue;
+        } // ignore useless items
+        if (typeOf(v) === 'function') {
+          v = 'function() { ... }';
+        }
+        if (typeOf(v) === 'array') {
+          v = `[Array : ${v.length}]`;
+        }
+        if (typeOf(v) === 'object') {
+          v = '[Object]';
+        }
         ret.push(`${key}: ${v}`);
       }
     }
@@ -212,12 +223,12 @@ export default EmberObject.extend(PortMixin, {
     if (value instanceof EmberObject) {
       args.unshift(inspect(value));
     }
-    this.get("adapter").log('Ember Inspector ($E): ', ...args);
+    this.get('adapter').log('Ember Inspector ($E): ', ...args);
   },
 
   digIntoObject(objectId, property) {
     let parentObject = this.sentObjects[objectId],
-        object = get(parentObject, property);
+      object = get(parentObject, property);
 
     if (this.canSend(object)) {
       let details = this.mixinsForObject(object);
@@ -322,7 +333,7 @@ export default EmberObject.extend(PortMixin, {
     let mixinDetails = [];
 
     let ownProps = propertiesForMixin({ mixins: [{ properties: object }] });
-    mixinDetails.push({ name: "Own Properties", properties: ownProps, expand: true });
+    mixinDetails.push({ name: 'Own Properties', properties: ownProps, expand: true });
 
     mixins.forEach(mixin => {
       let name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor;
@@ -440,14 +451,22 @@ function propertiesForMixin(mixin) {
 
 function addProperties(properties, hash) {
   for (let prop in hash) {
-    if (!hash.hasOwnProperty(prop)) { continue; }
-    if (prop.charAt(0) === '_') { continue; }
+    if (!hash.hasOwnProperty(prop)) {
+      continue;
+    }
+    if (prop.charAt(0) === '_') {
+      continue;
+    }
 
     // remove `fooBinding` type props
-    if (prop.match(/Binding$/)) { continue; }
+    if (prop.match(/Binding$/)) {
+      continue;
+    }
 
     // when mandatory setter is removed, an `undefined` value may be set
-    if (hash[prop] === undefined) { continue; }
+    if (hash[prop] === undefined) {
+      continue;
+    }
     let options = { isMandatorySetter: isMandatorySetter(hash, prop) };
     if (isComputed(hash[prop])) {
       options.readOnly = hash[prop]._readOnly;
@@ -467,7 +486,9 @@ function replaceProperty(properties, name, value, options) {
     }
   }
 
-  if (found) { properties.splice(i, 1); }
+  if (found) {
+    properties.splice(i, 1);
+  }
 
   let prop = { name, value: inspectValue(value) };
   prop.isMandatorySetter = options.isMandatorySetter;
@@ -509,7 +530,9 @@ function applyMixinOverrides(mixinDetails) {
   let seen = {};
   mixinDetails.forEach(detail => {
     detail.properties.forEach(property => {
-      if (Object.prototype.hasOwnProperty(property.name)) { return; }
+      if (Object.prototype.hasOwnProperty(property.name)) {
+        return;
+      }
 
       if (seen[property.name]) {
         property.overridden = seen[property.name];
@@ -553,60 +576,60 @@ function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties
 }
 
 /**
-  Customizes an object's properties
-  based on the property `propertyInfo` of
-  the object's `_debugInfo` method.
+ Customizes an object's properties
+ based on the property `propertyInfo` of
+ the object's `_debugInfo` method.
 
-  Possible options:
-    - `groups` An array of groups that contains the properties for each group
-      For example:
-      ```javascript
-      groups: [
-        { name: 'Attributes', properties: ['firstName', 'lastName'] },
-        { name: 'Belongs To', properties: ['country'] }
-      ]
-      ```
-    - `includeOtherProperties` Boolean,
-      - `true` to include other non-listed properties,
-      - `false` to only include given properties
-    - `skipProperties` Array containing list of properties *not* to include
-    - `skipMixins` Array containing list of mixins *not* to include
-    - `expensiveProperties` An array of computed properties that are too expensive.
-       Adding a property to this array makes sure the CP is not calculated automatically.
+ Possible options:
+ - `groups` An array of groups that contains the properties for each group
+ For example:
+ ```javascript
+ groups: [
+ { name: 'Attributes', properties: ['firstName', 'lastName'] },
+ { name: 'Belongs To', properties: ['country'] }
+ ]
+ ```
+ - `includeOtherProperties` Boolean,
+ - `true` to include other non-listed properties,
+ - `false` to only include given properties
+ - `skipProperties` Array containing list of properties *not* to include
+ - `skipMixins` Array containing list of mixins *not* to include
+ - `expensiveProperties` An array of computed properties that are too expensive.
+ Adding a property to this array makes sure the CP is not calculated automatically.
 
-  Example:
-  ```javascript
-  {
-    propertyInfo: {
-      includeOtherProperties: true,
-      skipProperties: ['toString', 'send', 'withTransaction'],
-      skipMixins: [ 'Ember.Evented'],
-      calculate: ['firstName', 'lastName'],
-      groups: [
-        {
-          name: 'Attributes',
-          properties: [ 'id', 'firstName', 'lastName' ],
-          expand: true // open by default
-        },
-        {
-          name: 'Belongs To',
-          properties: [ 'maritalStatus', 'avatar' ],
-          expand: true
-        },
-        {
-          name: 'Has Many',
-          properties: [ 'phoneNumbers' ],
-          expand: true
-        },
-        {
-          name: 'Flags',
-          properties: ['isLoaded', 'isLoading', 'isNew', 'isDirty']
-        }
-      ]
-    }
-  }
-  ```
-*/
+ Example:
+ ```javascript
+ {
+   propertyInfo: {
+     includeOtherProperties: true,
+     skipProperties: ['toString', 'send', 'withTransaction'],
+     skipMixins: [ 'Ember.Evented'],
+     calculate: ['firstName', 'lastName'],
+     groups: [
+       {
+         name: 'Attributes',
+         properties: [ 'id', 'firstName', 'lastName' ],
+         expand: true // open by default
+       },
+       {
+         name: 'Belongs To',
+         properties: [ 'maritalStatus', 'avatar' ],
+         expand: true
+       },
+       {
+         name: 'Has Many',
+         properties: [ 'phoneNumbers' ],
+         expand: true
+       },
+       {
+         name: 'Flags',
+         properties: ['isLoaded', 'isLoading', 'isNew', 'isDirty']
+       }
+     ]
+   }
+ }
+ ```
+ */
 function customizeProperties(mixinDetails, propertyInfo) {
   let newMixinDetails = [];
   let neededProperties = {};
@@ -627,9 +650,12 @@ function customizeProperties(mixinDetails, propertyInfo) {
   mixinDetails.forEach(mixin => {
     let newProperties = [];
     mixin.properties.forEach(item => {
+      //TODO: Ask rwjblue if there is a better way than this hack to exclude these
+      skipProperties = filterHack(item.name, skipProperties);
       if (skipProperties.indexOf(item.name) !== -1) {
         return true;
       }
+
       if (!item.overridden && neededProperties.hasOwnProperty(item.name) && neededProperties[item.name]) {
         neededProperties[item.name] = item;
       } else {
@@ -654,6 +680,24 @@ function customizeProperties(mixinDetails, propertyInfo) {
   });
 
   return newMixinDetails;
+}
+
+/**
+ * There are a bunch of const cased values in Ember 2.10 we end up observing somehow, so we need to filter those out.
+ * @param itemName The name to check against exlusion values
+ * @param skipProperties The array of properties to skip
+ */
+function filterHack(itemName, skipProperties) {
+  [
+    'CHILD_VIEW_IDS',
+    'VIEW_ELEMENT'
+  ].forEach((valueToExclude) => {
+    if (itemName.startsWith(valueToExclude)) {
+      skipProperties.push(itemName);
+    }
+  });
+
+  return skipProperties;
 }
 
 function getDebugInfo(object) {
