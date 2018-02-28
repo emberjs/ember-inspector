@@ -668,7 +668,7 @@ function getDebugInfo(object) {
   skipProperties.push('isDestroyed', 'isDestroying', 'container');
   // 'currentState' and 'state' are un-observable private properties.
   // The rest are skipped to reduce noise in the inspector.
-  if (Ember.View && object instanceof Ember.View) {
+  if (Ember.Component && object instanceof Ember.Component) {
     skipProperties.push(
       'currentState',
       'state',
