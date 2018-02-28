@@ -220,8 +220,9 @@ export default EmberObject.extend(PortMixin, {
         if (this.glimmerTree) {
           this.glimmerTree.highlightLayer(viewElem.id);
         } else {
-          this.highlightView(viewElem[0]);
+          this.highlightView(viewElem);
         }
+
         let view = this.get('objectInspector').sentObjects[viewElem.id];
         if (view instanceof Component) {
           this.get('objectInspector').sendObject(view);
@@ -233,11 +234,12 @@ export default EmberObject.extend(PortMixin, {
 
     this.mousemoveHandler = (e) => {
       viewElem = this.findNearestView(e.target);
+
       if (viewElem) {
         if (this.glimmerTree) {
           this.glimmerTree.highlightLayer(viewElem.id, true);
         } else {
-          this.highlightView(viewElem[0], true);
+          this.highlightView(viewElem, true);
         }
       }
     };
@@ -254,7 +256,9 @@ export default EmberObject.extend(PortMixin, {
   },
 
   findNearestView(elem) {
-    if (!elem) { return null; }
+    if (!elem) {
+      return null;
+    }
     if (elem.classList.contains('ember-view')) {
       return elem;
     }
@@ -336,12 +340,12 @@ export default EmberObject.extend(PortMixin, {
       return this.options.components;
     }
     return (this.hasOwnController(view) || this.hasOwnContext(view)) &&
-        (!view.get('isVirtual') || this.hasOwnController(view) || this.hasOwnContext(view));
+      (!view.get('isVirtual') || this.hasOwnController(view) || this.hasOwnContext(view));
   },
 
   hasOwnController(view) {
     return view.get('controller') !== view.get('_parentView.controller') &&
-    ((view instanceof Component) || !(view.get('_parentView.controller') instanceof Component));
+      ((view instanceof Component) || !(view.get('_parentView.controller') instanceof Component));
   },
 
   hasOwnContext(view) {
@@ -358,7 +362,9 @@ export default EmberObject.extend(PortMixin, {
       highlightedElement = element;
     }
 
-    if (!element) { return; }
+    if (!element) {
+      return;
+    }
 
     // element && element._renderNode to detect top view (application)
     if (element instanceof Component || (element && element._renderNode)) {
@@ -442,10 +448,10 @@ export default EmberObject.extend(PortMixin, {
     for (let prop in styles) {
       div.style[prop] = styles[prop];
     }
-    let output = "";
+    let output = '';
 
     if (!isPreview) {
-      output = "<span class='close' data-label='layer-close'>&times;</span>";
+      output = '<span class=\'close\' data-label=\'layer-close\'>&times;</span>';
     }
 
     let template = options.template;
@@ -594,7 +600,9 @@ export default EmberObject.extend(PortMixin, {
    */
   _appendNodeChildren(renderNode, children) {
     let childNodes = this._childrenForNode(renderNode);
-    if (!childNodes) { return; }
+    if (!childNodes) {
+      return;
+    }
     childNodes.forEach(childNode => {
       if (this._shouldShowNode(childNode, renderNode)) {
         let grandChildren = [];
@@ -643,8 +651,8 @@ export default EmberObject.extend(PortMixin, {
       return false;
     }
     return this._nodeHasOwnController(renderNode, parentNode) &&
-        (this.options.components || !(this._nodeIsEmberComponent(renderNode))) &&
-        (this._nodeHasViewInstance(renderNode) || this._nodeHasOwnController(renderNode, parentNode));
+      (this.options.components || !(this._nodeIsEmberComponent(renderNode))) &&
+      (this._nodeHasViewInstance(renderNode) || this._nodeHasOwnController(renderNode, parentNode));
   },
 
   /**
