@@ -56,13 +56,13 @@ function setupApp() {
     }
   }));
 
-  this.owner.register('controller:application', Controller.extend().reopen({
+  this.owner.register('controller:application', Controller.extend({
     toString() {
       return 'App.ApplicationController';
     }
   }));
 
-  this.owner.register('controller:simple', Controller.extend().reopen({
+  this.owner.register('controller:simple', Controller.extend({
     toString() {
       return 'App.SimpleController';
     }

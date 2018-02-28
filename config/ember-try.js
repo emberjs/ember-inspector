@@ -47,6 +47,57 @@ module.exports = function() {
           }
         },
         {
+          name: 'ember-2.9',
+          bower: {
+            dependencies: {
+              'ember': '2.9.0'
+            },
+            resolutions: {
+              'ember': '2.9.0'
+            }
+          },
+          npm: {
+            devDependencies: {
+              'ember-source': null,
+              'ember-native-dom-event-dispatcher': null
+            }
+          }
+        },
+        {
+          name: 'ember-2.10',
+          bower: {
+            dependencies: {
+              'ember': '2.10.0'
+            },
+            resolutions: {
+              'ember': '2.10.0'
+            }
+          },
+          npm: {
+            devDependencies: {
+              'ember-source': null,
+              'ember-native-dom-event-dispatcher': null
+            }
+          }
+        },
+        {
+          name: 'ember-2.11',
+          bower: {
+            dependencies: {
+              'ember': '2.11.0'
+            },
+            resolutions: {
+              'ember': '2.11.0'
+            }
+          },
+          npm: {
+            devDependencies: {
+              'ember-source': null,
+              'ember-native-dom-event-dispatcher': null
+            }
+          }
+        },
+        {
           name: 'ember-lts-2.12',
           npm: {
             devDependencies: {
