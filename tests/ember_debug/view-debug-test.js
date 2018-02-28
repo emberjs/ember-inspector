@@ -195,8 +195,7 @@ module('Ember Debug - View', function(hooks) {
 
     previewDiv = find('[data-label=preview-div]');
     assert.ok(isVisible(previewDiv));
-    // TODO: do we need this to be exactly Ember.TextField or is <Ember.TextField:ember405> okay?
-    assert.ok(find('[data-label=layer-component]').textContent.trim().includes('Ember.TextField'));
+    assert.ok(find('[data-label=layer-component]').textContent.trim(), 'Ember.TextField');
     assert.notOk(previewDiv.querySelector('[data-label=layer-controller]'));
     assert.notOk(previewDiv.querySelector('[data-label=layer-model]'));
   });

@@ -383,7 +383,7 @@ export default EmberObject.extend(PortMixin, {
     let options = {
       isPreview,
       view: {
-        name: getViewName(view),
+        name: getShortViewName(view),
         object: view
       }
     };
