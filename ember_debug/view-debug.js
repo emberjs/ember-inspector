@@ -59,12 +59,7 @@ export default EmberObject.extend(PortMixin, {
         // >= Ember 2.9
         this.glimmerTree.highlightLayer(message.objectId || message.elementId, true);
       } else {
-        // 1.13 >= Ember <= 2.8
-        if (message.renderNodeId !== undefined) {
-          this._highlightNode(this.get('_lastNodes').objectAt(message.renderNodeId), true);
-        } else if (message.objectId) {
-          this.highlightView(this.get('objectInspector').sentObjects[message.objectId], true);
-        }
+        this.highlightView(this.get('objectInspector').sentObjects[message.objectId], true);
       }
     },
     hidePreview() {

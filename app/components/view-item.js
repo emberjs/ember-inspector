@@ -1,10 +1,9 @@
 import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { htmlSafe } from '@ember/string';
-import RowEventsMixin from 'ember-inspector/mixins/row-events';
 import { not, bool, equal } from '@ember/object/computed';
 
-export default Component.extend(RowEventsMixin, {
+export default Component.extend({
   /**
    * No tag. This component should not affect
    * the DOM.

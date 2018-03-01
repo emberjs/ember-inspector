@@ -2,14 +2,13 @@ import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { htmlSafe } from '@ember/string';
 import { isEmpty } from '@ember/utils';
-import RowEventsMixin from 'ember-inspector/mixins/row-events';
 const COLOR_MAP = {
   red: '#ff2717',
   blue: '#174fff',
   green: '#006400'
 };
 
-export default Component.extend(RowEventsMixin, {
+export default Component.extend({
   /**
    * No tag. This component should not affect
    * the DOM.
