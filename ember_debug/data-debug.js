@@ -1,4 +1,5 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
+
 const Ember = window.Ember;
 const { Object: EmberObject, computed, guidFor, A, set } = Ember;
 const { alias } = computed;
@@ -31,24 +32,7 @@ export default EmberObject.extend(PortMixin, {
   _resolve(name) {
     const owner = this.get('namespace.owner');
 
-    // Ember >= 2.1
-    if (owner.resolveRegistration) {
-      return owner.resolveRegistration(name);
-    }
-    // TODO: do we still need to support this? I thought we only supported 2.7+
-    //let container = this.get('application').__container__;
-    //let registry = this.get('application.registry');
-    //if (registry) {
-    //  // Ember >= 1.11
-    //  return registry.resolve(name);
-    //} else if (container.resolve) {
-    //  // Ember < 1.11
-    //  return container.resolve(name);
-    //} else {
-    //  // Ember >= 2.0 < 2.1
-    //  return container.registry.resolve(name);
-    //}
-
+    return owner.resolveRegistration(name);
   },
 
   namespace: null,

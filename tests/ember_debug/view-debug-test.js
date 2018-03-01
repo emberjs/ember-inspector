@@ -117,6 +117,7 @@ module('Ember Debug - View', function(hooks) {
     assert.equal(value.name, 'application');
     assert.equal(value.tagName, 'div');
     //TODO: this is almost certainly bugged, we should have a template here, right? Right?!
+    // Spoke to rwjblue about this and he is going to work with krisselden on meta versus referrer template name stuff
     if (!hasEmberVersion(3, 1)) {
       assert.equal(value.template, 'application');
     }

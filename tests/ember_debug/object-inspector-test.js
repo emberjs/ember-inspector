@@ -124,8 +124,10 @@ module('Ember Debug - Object Inspector', function(hooks) {
   });
 
   test('Computed properties are correctly calculated', function(assert) {
+
     let inspected = EmberObject.extend({
       hi: computed(function() {
+        assert.step('calculating computed');
         return 'Hello';
       }).property(),
       _debugInfo() {
@@ -137,20 +139,19 @@ module('Ember Debug - Object Inspector', function(hooks) {
       }
     }).create();
 
+    assert.step('inspector: sendObject');
     objectInspector.sendObject(inspected);
 
-    //TODO: check if we want to do this or not. It seems computeds are auto-computed in 3.1+, so this intermediate state does not exist
-    if (!hasEmberVersion(3, 1)) {
-      let computedProperty = message.details[1].properties[0];
+    let computedProperty = message.details[1].properties[0];
 
-      assert.equal(computedProperty.name, 'hi');
-      assert.ok(computedProperty.value.computed);
-      assert.equal(computedProperty.value.type, 'type-descriptor');
-      assert.equal(computedProperty.value.inspect, '<computed>');
-    }
+    assert.equal(computedProperty.name, 'hi');
+    assert.ok(computedProperty.value.computed);
+    assert.equal(computedProperty.value.type, 'type-descriptor');
+    assert.equal(computedProperty.value.inspect, '<computed>');
 
     let id = message.objectId;
 
+    assert.step('inspector: calculate');
     port.trigger('objectInspector:calculate', {
       objectId: id,
       property: 'hi',
@@ -165,6 +166,11 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.value.inspect, 'Hello');
     assert.ok(message.value.computed);
 
+    assert.verifySteps([
+      'inspector: sendObject',
+      'inspector: calculate',
+      'calculating computed'
+    ]);
   });
 
   test('Cached Computed properties are pre-calculated', function(assert) {
@@ -232,10 +238,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     inspected.set('hi', 'Hey');
 
-    //TODO: check if we want to do this or not. It seems computeds are auto-computed in 3.1+, so this intermediate state does not exist
-    if (!hasEmberVersion(3, 1)) {
-      assert.equal(message, null, 'Computed properties are not bound as long as they haven\'t been calculated');
-    }
+    assert.equal(message, null, 'Computed properties are not bound as long as they haven\'t been calculated');
 
     port.trigger('objectInspector:calculate', {
       objectId: id,
@@ -360,13 +363,9 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.details[3].name, 'TestObject');
     assert.equal(message.details[3].properties.length, 2, 'Does not duplicate properties');
     assert.equal(message.details[3].properties[0].name, 'hasChildren');
-    //TODO: check if we want to do this or not. It seems computeds are auto-computed in 3.1+, so this intermediate state does not exist
-    if (!hasEmberVersion(3, 1)) {
-      assert.equal(message.details[3].properties[1].value.type, 'type-descriptor', 'Does not calculate expensive properties');
-    }
+    assert.equal(message.details[3].properties[1].value.type, 'type-descriptor', 'Does not calculate expensive properties');
 
     assert.ok(message.details[4].name !== 'MixinToSkip', 'Correctly skips properties');
-
   });
 
   test('Read Only Computed properties mush have a readOnly property', function(assert) {
@@ -471,61 +470,58 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(props[0].name, 'foo');
   });
 
-  //TODO: I do not know if we can handle errors for CPs since they are now auto calculated?
-  if (!hasEmberVersion(3, 1)) {
-    test('Errors while computing CPs are handled', async function(assert) {
-      // catch error port messages (ignored by default)
-      ignoreErrors = false;
+  test('Errors while computing CPs are handled', async function(assert) {
+    // catch error port messages (ignored by default)
+    ignoreErrors = false;
 
-      let count = 0;
-      let object;
-      run(() => {
-        object = EmberObject.extend({
-          foo: computed(() => {
-            if (count++ < 2) {
-              throw new Error('CP Calculation');
-            }
-            return 'bar';
-          })
-        }).create();
-      });
-
-      run(objectInspector, 'sendObject', object);
-      await wait();
-
-      let errors = message.errors;
-      assert.equal(errors.length, 1);
-      assert.equal(errors[0].property, 'foo');
-      ignoreErrors = false;
-
-      // Calculate CP a second time
-      run(() => {
-        port.trigger('objectInspector:calculate', {
-          objectId: guidFor(object),
-          property: 'foo',
-          mixinIndex: 1
-        });
-      });
-      await wait();
-      ignoreErrors = true;
-      assert.equal(name, 'objectInspector:updateErrors');
-      assert.equal(errors.length, 1);
-      assert.equal(errors[0].property, 'foo');
-
-      // Calculate CP a third time (no error this time)
-      run(() => {
-        port.trigger('objectInspector:calculate', {
-          objectId: guidFor(object),
-          property: 'foo',
-          mixinIndex: 1
-        });
-      });
-      await wait();
-      assert.equal(name, 'objectInspector:updateProperty');
-      assert.equal(message.value.inspect, 'bar');
-
-      // teardown
-      ignoreErrors = true;
+    let count = 0;
+    let object;
+    run(() => {
+      object = EmberObject.extend({
+        foo: computed(() => {
+          if (count++ < 2) {
+            throw new Error('CP Calculation');
+          }
+          return 'bar';
+        })
+      }).create();
     });
-  }
+
+    run(objectInspector, 'sendObject', object);
+    await wait();
+
+    let errors = message.errors;
+    assert.equal(errors.length, 1);
+    assert.equal(errors[0].property, 'foo');
+    ignoreErrors = false;
+
+    // Calculate CP a second time
+    run(() => {
+      port.trigger('objectInspector:calculate', {
+        objectId: guidFor(object),
+        property: 'foo',
+        mixinIndex: 1
+      });
+    });
+    await wait();
+    ignoreErrors = true;
+    assert.equal(name, 'objectInspector:updateErrors');
+    assert.equal(errors.length, 1);
+    assert.equal(errors[0].property, 'foo');
+
+    // Calculate CP a third time (no error this time)
+    run(() => {
+      port.trigger('objectInspector:calculate', {
+        objectId: guidFor(object),
+        property: 'foo',
+        mixinIndex: 1
+      });
+    });
+    await wait();
+    assert.equal(name, 'objectInspector:updateProperty');
+    assert.equal(message.value.inspect, 'bar');
+
+    // teardown
+    ignoreErrors = true;
+  });
 });

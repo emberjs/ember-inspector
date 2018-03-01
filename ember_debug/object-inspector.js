@@ -650,8 +650,11 @@ function customizeProperties(mixinDetails, propertyInfo) {
   mixinDetails.forEach(mixin => {
     let newProperties = [];
     mixin.properties.forEach(item => {
-      //TODO: Ask rwjblue if there is a better way than this hack to exclude these
-      skipProperties = filterHack(item.name, skipProperties);
+      // If 2.10.0 or 2.10.x but < 2.11
+      if (compareVersion(VERSION, '2.10.0') === 0 ||
+        (compareVersion(VERSION, '2.10.0') === 1 && compareVersion(VERSION, '2.11.0') === -1)) {
+        skipProperties = twoTenfilterHack(item.name, skipProperties);
+      }
       if (skipProperties.indexOf(item.name) !== -1) {
         return true;
       }
@@ -683,19 +686,15 @@ function customizeProperties(mixinDetails, propertyInfo) {
 }
 
 /**
- * There are a bunch of const cased values in Ember 2.10 we end up observing somehow, so we need to filter those out.
- * @param itemName The name to check against exlusion values
- * @param skipProperties The array of properties to skip
+ * There are a bunch of const cased values in Ember 2.10 we end up observing, but they are removed in 2.11+
+ * Only for 2.10 we want to filter out these values. We are checking if `__ember` is in the value to exclude.
+ * @param {String} itemName The name to check against exlusion values
+ * @param {[String]} skipProperties The array of properties to skip
  */
-function filterHack(itemName, skipProperties) {
-  [
-    'CHILD_VIEW_IDS',
-    'VIEW_ELEMENT'
-  ].forEach((valueToExclude) => {
-    if (itemName.startsWith(valueToExclude)) {
-      skipProperties.push(itemName);
-    }
-  });
+function twoTenfilterHack(itemName, skipProperties) {
+  if (itemName.includes('__ember')) {
+    skipProperties.push(itemName);
+  }
 
   return skipProperties;
 }
@@ -729,13 +728,24 @@ function getDebugInfo(object) {
     );
   }
 
-
+  let meta = Ember.meta(object);
   for (let prop in object) {
+
+    // when in Ember 3.1
+    if (compareVersion(VERSION, '3.1.0') !== -1) {
+      // in Ember 3.1+ CP's are eagerly invoked via a normal
+      // JS getter, this avoids invoking the computed property
+      // _just_ to determine if it was a function
+      let descriptor = meta.peekDescriptors(prop);
+      if (descriptor) {
+        continue;
+      }
+    }
+
     // remove methods
     if (typeof object[prop] === 'function') {
       skipProperties.push(prop);
     }
-
   }
   return debugInfo;
 }
