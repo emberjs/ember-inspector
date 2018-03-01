@@ -227,8 +227,8 @@ export default EmberObject.extend(PortMixin, {
   },
 
   digIntoObject(objectId, property) {
-    let parentObject = this.sentObjects[objectId],
-      object = get(parentObject, property);
+    let parentObject = this.sentObjects[objectId];
+    let object = get(parentObject, property);
 
     if (this.canSend(object)) {
       let details = this.mixinsForObject(object);
