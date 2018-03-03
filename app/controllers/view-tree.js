@@ -38,11 +38,10 @@ export default Controller.extend({
   })),
 
   actions: {
-    previewLayer({ value }) {
-      const { elementId } = value;
-      const objectId = value.objectId || value.controller.objectId;
-
-      this.get('port').send('view:previewLayer', { objectId, elementId });
+    previewLayer({ value: { objectId, elementId, renderNodeId } }) {
+      // We are passing all of objectId, elementId, and renderNodeId to support post-glimmer 1, post-glimmer 2, and root for
+      // post-glimmer 2
+      this.get('port').send('view:previewLayer', { objectId, renderNodeId, elementId });
     },
 
     hidePreview() {
