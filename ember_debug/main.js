@@ -12,11 +12,40 @@ import DeprecationDebug from 'ember-debug/deprecation-debug';
 import Session from 'ember-debug/services/session';
 
 const Ember = window.Ember;
-const { Object: EmberObject, run, Application, Namespace } = Ember;
+const { Object: EmberObject, run, Application, Namespace, guidFor, computed } = Ember;
 
 const EmberDebug = EmberObject.extend({
+  /**
+   * Set to true during testing.
+   *
+   * @type {Boolean}
+   * @default false
+   */
+  isTesting: false,
+
+  /**
+   * @private
+   * @property _application
+   * @type {Application}
+   */
+  _application: null,
 
   owner: null,
+
+  /**
+   * We use the application's id instead of the owner's id so that we use the same inspector
+   * instance for the same application even if it was reset (owner changes on reset).
+   *
+   * @property applicationId
+   * @type {String}
+   */
+  applicationId: computed('_application', 'isTesting', 'owner', function() {
+    if (!this.get('isTesting')) {
+      return guidFor(this.get('_application'));
+    }
+    return guidFor(this.get('owner'));
+  }),
+
   started: false,
 
   // Using object shorthand syntax here is somehow having strange side effects.
@@ -29,11 +58,10 @@ const EmberDebug = EmberObject.extend({
       this.reset($keepAdapter);
       return;
     }
-    this.set('started', true);
-
-    if (!this.get('owner')) {
-      this.set('owner', getOwner());
+    if (!this.get('_application') && !this.get('isTesting')) {
+      this.set('_application', getApplication());
     }
+    this.set('started', true);
 
     this.reset();
 
@@ -73,6 +101,9 @@ const EmberDebug = EmberObject.extend({
   },
 
   reset($keepAdapter) {
+    if (!this.get('isTesting')) {
+      this.set('owner', getOwner(this.get('_application')));
+    }
     this.destroyContainer();
     run(() => {
       // Adapters don't have state depending on the application itself.
@@ -105,11 +136,18 @@ const EmberDebug = EmberObject.extend({
     this.get('objectInspector').sendObject(obj);
     this.get('adapter').log('Sent to the Object Inspector');
     return obj;
+  },
+
+  clear() {
+    this.setProperties({
+      '_application': null,
+      owner: null
+    });
   }
 
 }).create();
 
-function getOwner() {
+function getApplication() {
   let namespaces = Namespace.NAMESPACES;
   let application;
 
@@ -119,6 +157,10 @@ function getOwner() {
       return false;
     }
   });
+  return application;
+}
+
+function getOwner(application) {
   return application.__deprecatedInstance__;
 }
 

@@ -63,7 +63,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
             },
             willDestroy: function() {
               Ember.EmberInspectorDebugger.destroyContainer();
-              Ember.EmberInspectorDebugger.set('application', null);
+              Ember.EmberInspectorDebugger.clear();
               this._super.apply(this, arguments);
             }
           });

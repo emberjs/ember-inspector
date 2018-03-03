@@ -1,10 +1,7 @@
-import { typeOf } from '@ember/utils';
 import Application from '@ember/application';
 import Resolver from './resolver';
 import loadInitializers from 'ember-load-initializers';
 import config from './config/environment';
-import Port from "./port";
-import PromiseAssembler from "ember-inspector/libs/promise-assembler";
 
 const version = '{{EMBER_INSPECTOR_VERSION}}';
 
@@ -14,47 +11,7 @@ const App = Application.extend({
   Resolver
 });
 
-
 config.VERSION = version;
-
-// Inject adapter
-App.initializer({
-  name: "extension-init",
-
-  initialize(instance) {
-    // {{EMBER_DIST}} is replaced by the build process.
-    instance.adapter = '{{EMBER_DIST}}';
-
-    // register and inject adapter
-    let Adapter;
-    if (typeOf(instance.adapter) === 'string') {
-      Adapter = instance.resolveRegistration(`adapter:${instance.adapter}`);
-    } else {
-      Adapter = instance.adapter;
-    }
-    instance.register('adapter:main', Adapter);
-    instance.inject('port', 'adapter', 'adapter:main');
-    instance.inject('route:application', 'adapter', 'adapter:main');
-    instance.inject('route:deprecations', 'adapter', 'adapter:main');
-    instance.inject('controller:deprecations', 'adapter', 'adapter:main');
-
-    // register config
-    instance.register('config:main', config, { instantiate: false });
-    instance.inject('route', 'config', 'config:main');
-
-    // inject port
-    instance.register('port:main', instance.Port || Port);
-    instance.inject('controller', 'port', 'port:main');
-    instance.inject('route', 'port', 'port:main');
-    instance.inject('component', 'port', 'port:main');
-    instance.inject('promise-assembler', 'port', 'port:main');
-
-    // register and inject promise assembler
-    instance.register('promise-assembler:main', PromiseAssembler);
-    instance.inject('route:promiseTree', 'assembler', 'promise-assembler:main');
-  }
-});
-
 
 loadInitializers(App, config.modulePrefix);
 
