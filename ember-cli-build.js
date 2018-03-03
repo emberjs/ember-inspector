@@ -25,15 +25,6 @@ const options = {
   }
 };
 
-// TODO: just commented this out for now. Need confirmation from Teddy on whether we need it or not
-// function renderErrors(errors) {
-//   if (!errors) { return ''; }
-//   return errors.map(function(error) {
-//     return `${error.line}:${error.column} ` +
-//       ` - ${error.message} (${error.ruleId})`;
-//   }).join('\n');
-// }
-
 // Firefox requires non-minified assets for review :(
 options.minifyJS = { enabled: false };
 options.minifyCSS = { enabled: false };
