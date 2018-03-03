@@ -146,10 +146,15 @@ module('Ember Debug - View', function(hooks) {
     simple = tree.children[0];
     assert.equal(simple.children.length, 1, 'Components can be configured to show.');
     let component = simple.children[0];
+    // Less than 3.1
     if (!hasEmberVersion(3, 1)) {
       assert.equal(component.value.viewClass, 'Ember.TextField');
-    } else {
+    } else if (!hasEmberVersion(3, 2)) {
+      // Only 3.1
       assert.equal(component.value.viewClass, '(subclass of Ember.Component)');
+    } else {
+      // 3.2+
+      assert.equal(component.value.viewClass, '@ember/component/text-field');
     }
   });
 
