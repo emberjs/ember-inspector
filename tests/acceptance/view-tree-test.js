@@ -277,10 +277,10 @@ module('View Tree Tab', function(hooks) {
     viewTree.children = [];
     run(() => port.trigger('view:viewTree', { tree: viewTree }));
     await wait();
-    await triggerEvent('.js-view-tree-item', 'mouseover');
+    await triggerEvent('.js-view-tree-item', 'mouseenter');
     assert.equal(messageSent.name, 'view:previewLayer', "Client asked to preview layer");
     assert.equal(messageSent.message.objectId, 'applicationView', "Client sent correct id to preview layer");
-    await triggerEvent('.js-view-tree-item', 'mouseout');
+    await triggerEvent('.js-view-tree-item', 'mouseleave');
     assert.equal(messageSent.name, 'view:hidePreview', "Client asked to hide preview");
   });
 
