@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
-  var packageJson = grunt.file.readJSON('package.json');
-  var versionedPane = 'panes-' + packageJson.emberVersionsSupported[0].replace(/\./g, '-');
-  var config = {
+  let packageJson = grunt.file.readJSON('package.json');
+  let versionedPane = `panes-${packageJson.emberVersionsSupported[0].replace(/\./g, '-')}`;
+  let config = {
     pkg: packageJson,
     env: process.env,
     "s3": {
@@ -47,7 +47,7 @@ module.exports = function(grunt) {
         },
         expand: true,
         pretty: true,
-        cwd: 'dist/chrome/' + versionedPane,
+        cwd: `dist/chrome/${versionedPane}`,
         src: ['**/*']
       },
       "firefox-pane": {
@@ -56,7 +56,7 @@ module.exports = function(grunt) {
         },
         expand: true,
         pretty: true,
-        cwd: 'dist/firefox/' + versionedPane,
+        cwd: `dist/firefox/${versionedPane}`,
         src: ['**/*']
       },
       "bookmarklet-pane": {
@@ -65,7 +65,7 @@ module.exports = function(grunt) {
         },
         expand: true,
         pretty: true,
-        cwd: 'dist/bookmarklet/' + versionedPane,
+        cwd: `dist/bookmarklet/${versionedPane}`,
         src: ['**/*']
       }
     }

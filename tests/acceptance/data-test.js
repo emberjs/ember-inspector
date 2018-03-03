@@ -1,20 +1,18 @@
+import { visit, findAll, click, fillIn } from '@ember/test-helpers';
 import { guidFor } from '@ember/object/internals';
 import EmberObject from '@ember/object';
-import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
-import { visit, findAll, click, fillIn } from 'ember-native-dom-helpers';
-
-let App;
+import { setupApplicationTest } from 'ember-qunit';
+import { triggerPort } from '../helpers/trigger-port';
+import wait from 'ember-test-helpers/wait';
 
 let port, name;
 
 module('Data Tab', function(hooks) {
+  setupApplicationTest(hooks);
+
   hooks.beforeEach(function() {
-    App = startApp({
-      adapter: 'basic'
-    });
-    port = App.__container__.lookup('port:main');
+    port = this.owner.lookup('port:main');
     port.reopen({
       init() {},
       send(n, m) {
@@ -34,7 +32,6 @@ module('Data Tab', function(hooks) {
 
   hooks.afterEach(function() {
     name = null;
-    run(App, App.destroy);
   });
 
   function modelTypeFactory(options) {
@@ -93,7 +90,7 @@ module('Data Tab', function(hooks) {
     }
   }
 
-  test("Model types are successfully listed and bound", async function t(assert) {
+  test('Model types are successfully listed and bound', async function t(assert) {
     await visit('/data/model-types');
 
     assert.equal(findAll('.js-model-type').length, 2);
@@ -104,7 +101,7 @@ module('Data Tab', function(hooks) {
     assert.equal(findAll('.js-model-type-count')[0].textContent.trim(), 1);
     assert.equal(findAll('.js-model-type-count')[1].textContent.trim(), 2);
 
-    await triggerPort('data:modelTypesUpdated', {
+    await triggerPort(this, 'data:modelTypesUpdated', {
       modelTypes: [
         modelTypeFactory({ name: 'App.Post', count: 3 })
       ]
@@ -112,7 +109,7 @@ module('Data Tab', function(hooks) {
     assert.equal(findAll('.js-model-type-count')[1].textContent.trim(), 3);
   });
 
-  test("Records are successfully listed and bound", async function t(assert) {
+  test('Records are successfully listed and bound', async function t(assert) {
     await visit('/data/model-types');
 
     await click(findAll('.js-model-type a')[1]);
@@ -126,35 +123,39 @@ module('Data Tab', function(hooks) {
     assert.equal(recordRows.length, 2);
 
     let firstRow = recordRows[0];
-    assert.equal(findAll('.js-record-column', firstRow)[0].textContent.trim(), 1);
-    assert.equal(findAll('.js-record-column', firstRow)[1].textContent.trim(), 'My Post');
-    assert.equal(findAll('.js-record-column', firstRow)[2].textContent.trim(), 'This is my first post');
+    let firstRowColumns = firstRow.querySelectorAll('.js-record-column');
+    assert.equal(firstRowColumns[0].textContent.trim(), 1);
+    assert.equal(firstRowColumns[1].textContent.trim(), 'My Post');
+    assert.equal(firstRowColumns[2].textContent.trim(), 'This is my first post');
 
     let secondRow = recordRows[1];
-    assert.equal(findAll('.js-record-column', secondRow)[0].textContent.trim(), 2);
-    assert.equal(findAll('.js-record-column', secondRow)[1].textContent.trim(), 'Hello');
-    assert.equal(findAll('.js-record-column', secondRow)[2].textContent.trim(), '');
+    let secondRowColumns = secondRow.querySelectorAll('.js-record-column');
+    assert.equal(secondRowColumns[0].textContent.trim(), 2);
+    assert.equal(secondRowColumns[1].textContent.trim(), 'Hello');
+    assert.equal(secondRowColumns[2].textContent.trim(), '');
 
-    await triggerPort('data:recordsAdded', {
+    await triggerPort(this, 'data:recordsAdded', {
       records: [recordFactory({ objectId: 'new-post', id: 3, title: 'Added Post', body: 'I am new here' })]
     });
 
-    let row = findAll('.js-record-list-item')[2];
-    assert.equal(findAll('.js-record-column', row)[0].textContent.trim(), 3);
-    assert.equal(findAll('.js-record-column', row)[1].textContent.trim(), 'Added Post');
-    assert.equal(findAll('.js-record-column', row)[2].textContent.trim(), 'I am new here');
+    let addedRow = findAll('.js-record-list-item')[2];
+    let addedRowColumns = addedRow.querySelectorAll('.js-record-column');
+    assert.equal(addedRowColumns[0].textContent.trim(), 3);
+    assert.equal(addedRowColumns[1].textContent.trim(), 'Added Post');
+    assert.equal(addedRowColumns[2].textContent.trim(), 'I am new here');
 
-    await triggerPort('data:recordsUpdated', {
+    await triggerPort(this, 'data:recordsUpdated', {
       records: [recordFactory({ objectId: 'new-post', id: 3, title: 'Modified Post', body: 'I am no longer new' })]
     });
 
     let rows = findAll('.js-record-list-item');
-    row = rows[rows.length - 1];
-    assert.equal(findAll('.js-record-column', row)[0].textContent.trim(), 3);
-    assert.equal(findAll('.js-record-column', row)[1].textContent.trim(), 'Modified Post');
-    assert.equal(findAll('.js-record-column', row)[2].textContent.trim(), 'I am no longer new');
+    let modifiedRow = rows[rows.length - 1];
+    let modifiedRowColumns = modifiedRow.querySelectorAll('.js-record-column');
+    assert.equal(modifiedRowColumns[0].textContent.trim(), 3);
+    assert.equal(modifiedRowColumns[1].textContent.trim(), 'Modified Post');
+    assert.equal(modifiedRowColumns[2].textContent.trim(), 'I am no longer new');
 
-    await triggerPort('data:recordsRemoved', {
+    await triggerPort(this, 'data:recordsRemoved', {
       index: 2,
       count: 1
     });
@@ -163,10 +164,11 @@ module('Data Tab', function(hooks) {
     assert.equal(findAll('.js-record-list-item').length, 2);
     rows = findAll('.js-record-list-item');
     let lastRow = rows[rows.length - 1];
-    assert.equal(findAll('.js-record-column', lastRow)[0].textContent.trim(), 2, "Records successfully removed.");
+    let lastRowColumns = lastRow.querySelectorAll('.js-record-column');
+    assert.equal(lastRowColumns[0].textContent.trim(), 2, 'Records successfully removed.');
   });
 
-  test("Filtering records", async function t(assert) {
+  test('Filtering records', async function t(assert) {
     await visit('/data/model-types');
 
     await click(findAll('.js-model-type a')[1]);
@@ -183,7 +185,7 @@ module('Data Tab', function(hooks) {
     assert.equal(findAll('.js-record-column', rows[0])[0].textContent.trim(), '2');
   });
 
-  test("Searching records", async function t(assert) {
+  test('Searching records', async function t(assert) {
     await visit('/data/model-types');
 
     await click(findAll('.js-model-type a')[1]);
@@ -209,7 +211,7 @@ module('Data Tab', function(hooks) {
     assert.equal(rows.length, 2);
   });
 
-  test("Columns successfully updated when switching model types", async function t(assert) {
+  test('Columns successfully updated when switching model types', async function t(assert) {
     await visit('/data/model-types/App.Post/records');
     let columns = findAll('.js-header-column');
     assert.equal(columns[columns.length - 1].textContent.trim(), 'Body');

@@ -1,24 +1,17 @@
+import EmberObject from '@ember/object';
 let name;
-/* eslint no-empty:0 */
-import Ember from "ember";
 import { module, test } from 'qunit';
 import require from 'require';
+import wait from 'ember-test-helpers/wait';
+import { setupEIApp, destroyEIApp } from '../helpers/setup-destroy-ei-app';
 
 let EmberDebug;
 let port, adapter;
-const { run, Application, Object: EmberObject } = Ember;
 let App;
 let EmberInspector;
 
-function setupApp() {
-  App = Application.create();
-  App.setupForTesting();
-  App.injectTestHelpers();
-
-}
-
 module("Ember Debug", function(hooks) {
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
@@ -26,20 +19,17 @@ module("Ember Debug", function(hooks) {
         name = n;
       }
     });
-    run(function() {
-      setupApp();
-      EmberDebug.set('application', App);
-    });
-    run(EmberDebug, 'start');
+
+    App = await setupEIApp.call(this, EmberDebug);
+
     EmberInspector = EmberDebug;
     port = EmberDebug.port;
     adapter = EmberDebug.get('port.adapter');
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(async function() {
     name = null;
-    EmberDebug.destroyContainer();
-    run(App, 'destroy');
+    await destroyEIApp.call(this, EmberDebug, App);
   });
 
 
@@ -47,7 +37,9 @@ module("Ember Debug", function(hooks) {
     try {
       EmberInspector.inspect(obj);
       assert.ok(false);
-    } catch (e) {}
+    } catch (e) {
+      // Intentionally empty
+    }
   }
 
   test("EmberInspector#inspect sends inspectable objects", function(assert) {

@@ -1,13 +1,8 @@
+import { visit, find, findAll, click, triggerEvent } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
-import {
-  visit,
-  find,
-  findAll,
-  click,
-  triggerEvent
-} from 'ember-native-dom-helpers';
+import { setupApplicationTest } from 'ember-qunit';
+import wait from 'ember-test-helpers/wait';
 
 export function isObject(item) {
   return (item && typeof item === 'object' && !Array.isArray(item));
@@ -31,19 +26,13 @@ export function deepAssign(target, ...sources) {
   return deepAssign(target, ...sources);
 }
 
-let App;
 let port;
 
 module('Route Tree Tab', function(hooks) {
-  hooks.beforeEach(function() {
-    App = startApp({
-      adapter: 'basic'
-    });
-    port = App.__container__.lookup('port:main');
-  });
+  setupApplicationTest(hooks);
 
-  hooks.afterEach(function() {
-    run(App, App.destroy);
+  hooks.beforeEach(function() {
+    port = this.owner.lookup('port:main');
   });
 
   function routeValue(name, props) {
@@ -158,20 +147,20 @@ module('Route Tree Tab', function(hooks) {
     name = null;
     message = null;
     applicationRow = find('.js-route-tree-item');
-    await click('.js-route-handler', applicationRow);
+    await click(applicationRow.querySelector('.js-route-handler'));
     assert.equal(name, 'objectInspector:inspectRoute');
     assert.equal(message.name, 'application');
 
     name = null;
     message = null;
-    await click('.js-route-controller', applicationRow);
+    await click(applicationRow.querySelector('.js-route-controller'));
     assert.equal(name, 'objectInspector:inspectController');
     assert.equal(message.name, 'application');
 
     name = null;
     message = null;
     let postRow = findAll('.js-route-tree-item')[1];
-    await click('.js-route-controller', postRow);
+    await click(postRow.querySelector('.js-route-controller'));
     assert.equal(name, null, "If controller does not exist, clicking should have no effect.");
     assert.equal(message, null);
   });

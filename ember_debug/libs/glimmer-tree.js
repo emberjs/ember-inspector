@@ -41,7 +41,7 @@ export default class {
    *
    * @method constructor
    * @param {Object} options
-   *  - {Container}  container       The Ember app's container.
+   *  - {owner}      owner           The Ember app's owner.
    *  - {Function}   retainObject    Called to retain an object for future inspection.
    *  - {Object}     options         Options whether to show components or not.
    *  - {Object}     durations       Hash containing time to render per view id.
@@ -50,7 +50,7 @@ export default class {
    *  - {Object}     viewRegistry    Hash containing all currently rendered components by id.
    */
   constructor({
-    container,
+    owner,
     retainObject,
     options,
     durations,
@@ -58,7 +58,7 @@ export default class {
     objectInspector,
     viewRegistry
   }) {
-    this.container = container;
+    this.owner = owner;
     this.retainObject = retainObject;
     this.options = options;
     this.durations = durations;
@@ -258,7 +258,7 @@ export default class {
    * @return {Array}  Array of components
    */
   topComponents() {
-    return getRootViews(this.container.owner);
+    return getRootViews(this.owner);
   }
 
   /**
@@ -306,7 +306,7 @@ export default class {
    * @return {Router}
    */
   getRouter() {
-    return this.container.lookup('router:main');
+    return this.owner.lookup('router:main');
   }
 
   /**
@@ -338,7 +338,7 @@ export default class {
    * @return {Element}
    */
   elementForRoot() {
-    let renderer = this.container.lookup('renderer:-dom');
+    let renderer = this.owner.lookup('renderer:-dom');
     return renderer._roots && renderer._roots[0] && renderer._roots[0].result && renderer._roots[0].result.firstNode();
   }
 
@@ -358,7 +358,7 @@ export default class {
         let componentName = component.get('_debugContainerKey');
         if (componentName) {
           let layoutName = componentName.replace(/component:/, 'template:components/');
-          layout = this.container.lookup(layoutName);
+          layout = this.owner.lookup(layoutName);
         }
       }
       template = this.nameFromLayout(layout);

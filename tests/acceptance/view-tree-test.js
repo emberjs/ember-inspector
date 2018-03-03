@@ -1,33 +1,20 @@
+import { visit, fillIn, find, findAll, click, triggerEvent } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
-import {
-  visit,
-  fillIn,
-  find,
-  findAll,
-  click,
-  triggerEvent
-} from 'ember-native-dom-helpers';
-
-let App;
+import { setupApplicationTest } from 'ember-qunit';
+import wait from 'ember-test-helpers/wait';
 
 let port;
 
 module('View Tree Tab', function(hooks) {
-  hooks.beforeEach(function() {
-    App = startApp({
-      adapter: 'basic'
-    });
-    port = App.__container__.lookup('port:main');
-  });
+  setupApplicationTest(hooks);
 
-  hooks.afterEach(function() {
-    run(App, App.destroy);
+  hooks.beforeEach(function() {
+    port = this.owner.lookup('port:main');
   });
 
   function textFor(selector, context) {
-    return find(selector, context).textContent.trim();
+    return context.querySelector(selector).textContent.trim();
   }
 
   let treeId = 0;
@@ -290,10 +277,10 @@ module('View Tree Tab', function(hooks) {
     viewTree.children = [];
     run(() => port.trigger('view:viewTree', { tree: viewTree }));
     await wait();
-    await triggerEvent('.js-view-tree-item', 'mouseover');
+    await triggerEvent('.js-view-tree-item', 'mouseenter');
     assert.equal(messageSent.name, 'view:previewLayer', "Client asked to preview layer");
     assert.equal(messageSent.message.objectId, 'applicationView', "Client sent correct id to preview layer");
-    await triggerEvent('.js-view-tree-item', 'mouseout');
+    await triggerEvent('.js-view-tree-item', 'mouseleave');
     assert.equal(messageSent.name, 'view:hidePreview', "Client asked to hide preview");
   });
 

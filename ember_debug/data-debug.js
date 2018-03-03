@@ -1,4 +1,5 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
+
 const Ember = window.Ember;
 const { Object: EmberObject, computed, guidFor, A, set } = Ember;
 const { alias } = computed;
@@ -16,11 +17,11 @@ export default EmberObject.extend(PortMixin, {
   releaseTypesMethod: null,
   releaseRecordsMethod: null,
 
-  adapter: computed('application', function() {
-    const container = this.get('application').__container__;
+  adapter: computed('namespace.owner', function() {
+    const owner = this.get('namespace.owner');
 
     // dataAdapter:main is deprecated
-    let adapter = (this._resolve('data-adapter:main') && container.lookup('data-adapter:main'));
+    let adapter = (this._resolve('data-adapter:main') && owner.lookup('data-adapter:main'));
     // column limit is now supported at the inspector level
     if (adapter) {
       set(adapter, 'attributeLimit', 100);
@@ -29,29 +30,14 @@ export default EmberObject.extend(PortMixin, {
   }),
 
   _resolve(name) {
-    // Ember >= 2.1
-    if (this.get('application').resolveRegistration) {
-      return this.get('application').resolveRegistration(name);
-    }
-    let container = this.get('application').__container__;
-    let registry = this.get('application.registry');
-    if (registry) {
-      // Ember >= 1.11
-      return registry.resolve(name);
-    } else if (container.resolve) {
-      // Ember < 1.11
-      return container.resolve(name);
-    } else {
-      // Ember >= 2.0 < 2.1
-      return container.registry.resolve(name);
-    }
+    const owner = this.get('namespace.owner');
 
+    return owner.resolveRegistration(name);
   },
 
   namespace: null,
 
   port: alias('namespace.port'),
-  application: alias('namespace.application'),
   objectInspector: alias('namespace.objectInspector'),
 
   portNamespace: 'data',

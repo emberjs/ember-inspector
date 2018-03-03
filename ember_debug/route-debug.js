@@ -1,7 +1,7 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 
 const Ember = window.Ember;
-const { String: { classify, dasherize }, computed, observer, run: { later }, Object: EmberObject, getOwner } = Ember;
+const { String: { classify, dasherize }, computed, observer, run: { later }, Object: EmberObject } = Ember;
 const { oneWay, readOnly } = computed;
 
 const { hasOwnProperty } = Object.prototype;
@@ -10,14 +10,12 @@ export default EmberObject.extend(PortMixin, {
   namespace: null,
   port: oneWay('namespace.port').readOnly(),
 
-  application: oneWay('namespace.application').readOnly(),
-
-  router: computed('application', function() {
-    return this.get('application.__container__').lookup('router:main');
+  router: computed('namespace.owner', function() {
+    return this.get('namespace.owner').lookup('router:main');
   }),
 
-  applicationController: computed('application', function() {
-    const container = this.get('application.__container__');
+  applicationController: computed('namespace.owner', function() {
+    const container = this.get('namespace.owner');
     return container.lookup('controller:application');
   }),
 
@@ -64,15 +62,8 @@ export default EmberObject.extend(PortMixin, {
   },
 
   getClassName(name, type) {
-    let container = this.get('application.__container__');
-    let resolver = container.resolver;
-    if (!resolver) {
-      resolver = this.get('application.registry.resolver');
-    }
-    if (!resolver) {
-      // Ember >= 2.0
-      resolver = container.registry;
-    }
+    let container = this.get('namespace.owner');
+    let resolver = container.application.__registry__.resolver;
     let prefix = this.get('emberCliConfig.modulePrefix');
     let podPrefix = this.get('emberCliConfig.podModulePrefix');
     let usePodsByDefault = this.get('emberCliConfig.usePodsByDefault');
@@ -81,7 +72,11 @@ export default EmberObject.extend(PortMixin, {
       // Uses modules
       name = dasherize(name);
       let fullName = `${type}:${name}`;
-      className = resolver.describe(fullName);
+      if (resolver.lookupDescription) {
+        className = resolver.lookupDescription(fullName);
+      } else if (resolver.describe) {
+        className = resolver.describe(fullName);
+      }
       if (className === fullName) {
         // full name returned as is - this resolver does not look for the module.
         className = className.replace(new RegExp(`^${type}\:`), '');
@@ -119,8 +114,7 @@ export default EmberObject.extend(PortMixin, {
 
 function buildSubTree(routeTree, route) {
   let handlers = route.handlers;
-  let container = this.get('application.__container__');
-  let owner = getOwner(this.get('router'));
+  let owner = this.get('namespace.owner');
   let subTree = routeTree;
   let item, routeClassName, routeHandler, controllerName,
       controllerClassName, templateName, controllerFactory;
@@ -143,7 +137,7 @@ function buildSubTree(routeTree, route) {
       const routerLib = router._routerMicrolib || router.router;
       routeHandler = routerLib.getHandler(handler);
       controllerName = routeHandler.get('controllerName') || routeHandler.get('routeName');
-      controllerFactory = owner.factoryFor ? owner.factoryFor(`controller:${controllerName}`) : container.lookupFactory(`controller:${controllerName}`);
+      controllerFactory = owner.factoryFor ? owner.factoryFor(`controller:${controllerName}`) : owner._lookupFactory(`controller:${controllerName}`);
       controllerClassName = this.getClassName(controllerName, 'controller');
       templateName = this.getClassName(handler, 'template');
 
@@ -167,7 +161,7 @@ function buildSubTree(routeTree, route) {
 
       if (i === handlers.length - 1) {
         // it is a route, get url
-        subTree[handler].value.url = getURL(container, route.segments);
+        subTree[handler].value.url = getURL(owner, route.segments);
         subTree[handler].value.type = 'route';
       } else {
         // it is a resource, set children object

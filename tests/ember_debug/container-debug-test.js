@@ -1,25 +1,18 @@
-import { module, test } from 'qunit';
-import Ember from "ember";
-import { visit } from 'ember-native-dom-helpers';
-import require from 'require';
+import { visit } from '@ember/test-helpers';
+import { A as emberA } from '@ember/array';
 
-const { run, A: emberA, Application } = Ember;
+import { module, test } from 'qunit';
+import require from 'require';
+import wait from 'ember-test-helpers/wait';
+
+import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
+
 let EmberDebug;
 let port, name, message;
 let App;
 
-function setupApp() {
-  App = Application.create();
-  App.setupForTesting();
-  App.injectTestHelpers();
-
-  App.Router.map(function() {
-    this.route('simple');
-  });
-}
-
-module("Container Debug", function(hooks) {
-  hooks.beforeEach(function() {
+module('Ember Debug - Container', function(hooks) {
+  hooks.beforeEach(async function() {
     EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
@@ -28,22 +21,21 @@ module("Container Debug", function(hooks) {
         message = m;
       }
     });
-    run(function() {
-      setupApp();
-      EmberDebug.set('application', App);
+
+    App = await setupEIApp.call(this, EmberDebug, function() {
+      this.route('simple');
     });
-    run(EmberDebug, 'start');
+
     port = EmberDebug.port;
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(async function() {
     name = null;
     message = null;
-    EmberDebug.destroyContainer();
-    run(App, 'destroy');
+    await destroyEIApp.call(this, EmberDebug, App);
   });
 
-  test("#getTypes", async function t(assert) {
+  test('#getTypes', async function t(assert) {
     await visit('/simple');
 
     port.trigger('container:getTypes');
@@ -55,7 +47,7 @@ module("Container Debug", function(hooks) {
     assert.ok(types.findBy('name', 'route'));
   });
 
-  test("#getInstances", async function t(assert) {
+  test('#getInstances', async function t(assert) {
     await visit('/simple');
 
     port.trigger('container:getInstances', { containerType: 'controller' });
@@ -66,7 +58,7 @@ module("Container Debug", function(hooks) {
     assert.ok(instances.findBy('name', 'simple'));
   });
 
-  test("#getInstances on a non existing type", async function t(assert) {
+  test('#getInstances on a non existing type', async function t(assert) {
     await visit('/simple');
 
     port.trigger('container:getInstances', { containerType: 'not-here' });

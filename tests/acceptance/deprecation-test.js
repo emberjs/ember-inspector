@@ -1,9 +1,6 @@
-import { run } from '@ember/runloop';
+import { visit, find, findAll, click } from '@ember/test-helpers';
 import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
-import { visit, find, findAll, click } from 'ember-native-dom-helpers';
-
-let App;
+import { setupApplicationTest } from 'ember-qunit';
 
 let port, message, name;
 
@@ -32,9 +29,10 @@ function deprecationsWithSource() {
 }
 
 module('Deprecation Tab', function(hooks) {
+  setupApplicationTest(hooks);
+
   hooks.beforeEach(function() {
-    App = startApp({ adapter: 'basic' });
-    port = App.__container__.lookup('port:main');
+    port = this.owner.lookup('port:main');
     port.reopen({
       send(n, m) {
         name = n;
@@ -46,7 +44,6 @@ module('Deprecation Tab', function(hooks) {
   hooks.afterEach(function() {
     name = null;
     message = null;
-    run(App, App.destroy);
   });
 
   test('No source map', async function(assert) {
@@ -105,10 +102,10 @@ module('Deprecation Tab', function(hooks) {
 
     let sources = findAll('.js-deprecation-source');
     assert.equal(sources.length, 2, 'shows all sources');
-    assert.notOk(find('.js-deprecation-source-link', sources[0]), 'source not clickable');
-    assert.equal(find('.js-deprecation-source-text', sources[0]).textContent.trim(), 'path-to-file.js:1');
-    assert.notOk(find('.js-deprecation-source-link', sources[1]), 'source not clickable');
-    assert.equal(find('.js-deprecation-source-text', sources[1]).textContent.trim(), 'path-to-second-file.js:2');
+    assert.notOk(sources[0].querySelector('.js-deprecation-source-link'), 'source not clickable');
+    assert.equal(sources[0].querySelector('.js-deprecation-source-text').textContent.trim(), 'path-to-file.js:1');
+    assert.notOk(sources[1].querySelector('.js-deprecation-source-link'), 'source not clickable');
+    assert.equal(sources[1].querySelector('.js-deprecation-source-text').textContent.trim(), 'path-to-second-file.js:2');
 
     await click('.js-trace-deprecations-btn', sources[0]);
 
@@ -151,10 +148,10 @@ module('Deprecation Tab', function(hooks) {
 
     let sources = findAll('.js-deprecation-source');
     assert.equal(sources.length, 2, 'shows all sources');
-    assert.notOk(find('.js-deprecation-source-text', sources[0]), 'source clickable');
-    assert.equal(find('.js-deprecation-source-link', sources[0]).textContent.trim(), 'path-to-file.js:1');
-    assert.notOk(find('.js-deprecation-source-text', sources[1]), 'source clickable');
-    assert.equal(find('.js-deprecation-source-link', sources[1]).textContent.trim(), 'path-to-second-file.js:2');
+    assert.notOk(sources[0].querySelector('.js-deprecation-source-text'), 'source clickable');
+    assert.equal(sources[0].querySelector('.js-deprecation-source-link').textContent.trim(), 'path-to-file.js:1');
+    assert.notOk(sources[1].querySelector('.js-deprecation-source-text'), 'source clickable');
+    assert.equal(sources[1].querySelector('.js-deprecation-source-link').textContent.trim(), 'path-to-second-file.js:2');
 
     openResourceArgs = false;
     await click('.js-deprecation-source-link', sources[0]);

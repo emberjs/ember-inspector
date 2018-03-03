@@ -1,60 +1,52 @@
-import Ember from "ember";
+import { visit } from '@ember/test-helpers';
+import { get } from '@ember/object';
+import { run } from '@ember/runloop';
+import Route from '@ember/routing/route';
 import { module, test } from 'qunit';
-import { visit } from 'ember-native-dom-helpers';
 import require from 'require';
-
-const { run, Application, Route } = Ember;
-const get = Ember.get;
+import wait from 'ember-test-helpers/wait';
+import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
 
 const EmberDebug = require('ember-debug/main').default;
 let port;
 let App;
 
 function setupApp() {
-  App = Application.create();
-  App.toString = function() { return 'App'; };
-  App.setupForTesting();
-  App.injectTestHelpers();
-
-  App.Router.map(function() {
-    this.route('simple');
-    this.route('posts', { resetNamespace: true });
-    this.route('comments', { resetNamespace: true }, function() {
-      this.route('new');
-      this.route('edit', { path: '/edit/:comment_id' });
-    });
-  });
-
-  App.LoadingRoute = App.ErrorRoute = Route;
+  this.owner.register('route:loading', Route);
+  this.owner.register('route:error', Route);
 }
 
 function getChildrenProperty(route, prop) {
   return route.children.map(item => get(item.value, prop));
 }
 
-module("Route Tree Debug", function(hooks) {
-  hooks.beforeEach(function() {
+module('Ember Debug - Route Tree', function(hooks) {
+  hooks.beforeEach(async function() {
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
       send() {}
     });
-    run(function() {
-      setupApp();
-      EmberDebug.set('application', App);
+    App = await setupEIApp.call(this, EmberDebug, function() {
+      this.route('simple');
+      this.route('posts', { resetNamespace: true });
+      this.route('comments', { resetNamespace: true }, function() {
+        this.route('new');
+        this.route('edit', { path: '/edit/:comment_id' });
+      });
     });
-    run(EmberDebug, 'start');
+
+    setupApp.call(this);
     EmberDebug.get('generalDebug').reopen({
       emberCliConfig: null
     });
     port = EmberDebug.port;
   });
 
-  hooks.afterEach(function() {
-    EmberDebug.destroyContainer();
-    run(App, 'destroy');
+  hooks.afterEach(async function() {
+    await destroyEIApp.call(this, EmberDebug, App);
   });
 
-  test("Route tree", async function t(assert) {
+  test('Route tree', async function t(assert) {
     let name = null, message = null, route;
     port.reopen({
       send(n, m) {

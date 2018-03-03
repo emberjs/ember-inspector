@@ -1,59 +1,54 @@
-import { run } from '@ember/runloop';
 import Ember from "ember";
 import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
+import { setupApplicationTest } from 'ember-qunit';
 import {
   visit,
   findAll,
-  find,
   click,
   fillIn,
   currentURL
-} from 'ember-native-dom-helpers';
-let App;
+} from 'ember-test-helpers';
 
 let port, message, name;
 
+function getTypes() {
+  return [
+    {
+      name: 'route',
+      count: 5
+    },
+    {
+      name: 'controller',
+      count: 2
+    }
+  ];
+}
+
+function getInstances() {
+  return [
+    {
+      name: 'first',
+      inspectable: false
+    },
+    {
+      name: 'second',
+      inspectable: true
+    }
+  ];
+}
+
 module('Container Tab', function(hooks) {
+  setupApplicationTest(hooks);
+
   hooks.beforeEach(function() {
-    App = startApp({
-      adapter: 'basic'
-    });
-    port = App.__container__.lookup('port:main');
+    port = this.owner.lookup('port:main');
   });
 
   hooks.afterEach(function() {
     name = null;
     message = null;
-    run(App, App.destroy);
   });
 
-
-  function getTypes() {
-    return [
-      {
-        name: 'route',
-        count: 5
-      },
-      {
-        name: 'controller',
-        count: 2
-      }
-    ];
-  }
-
-  function getInstances() {
-    return [
-      {
-        name: 'first',
-        inspectable: false
-      },
-      {
-        name: 'second',
-        inspectable: true
-      }
-    ];
-  }
 
   test("Container types are successfully listed", async function(assert) {
     port.reopen({
@@ -67,10 +62,10 @@ module('Container Tab', function(hooks) {
     await visit('/container-types');
     let rows = findAll('.js-container-type');
     assert.equal(rows.length, 2);
-    assert.equal(find('.js-container-type-name', rows[0]).textContent.trim(), 'controller');
-    assert.equal(find('.js-container-type-count', rows[0]).textContent.trim(), '2');
-    assert.equal(find('.js-container-type-name', rows[1]).textContent.trim(), 'route');
-    assert.equal(find('.js-container-type-count', rows[1]).textContent.trim(), '5');
+    assert.equal(findAll('.js-container-type-name')[0].textContent.trim(), 'controller');
+    assert.equal(findAll('.js-container-type-count')[0].textContent.trim(), '2');
+    assert.equal(findAll('.js-container-type-name')[1].textContent.trim(), 'route');
+    assert.equal(findAll('.js-container-type-count')[1].textContent.trim(), '5');
   });
 
 

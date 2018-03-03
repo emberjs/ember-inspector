@@ -1,30 +1,17 @@
-import { run } from '@ember/runloop';
+import { visit, find, findAll, click, fillIn } from '@ember/test-helpers';
 import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
-import {
-  visit,
-  find,
-  findAll,
-  click,
-  fillIn
-} from 'ember-native-dom-helpers';
-let App;
+import { setupApplicationTest } from 'ember-qunit';
 
 let port;
 
 module('Render Tree Tab', function(hooks) {
+  setupApplicationTest(hooks);
+
   hooks.beforeEach(function() {
-    App = startApp({
-      adapter: 'basic'
-    });
-    port = App.__container__.lookup('port:main');
+    port = this.owner.lookup('port:main');
     port.reopen({
       send(/*n, m*/) {}
     });
-  });
-
-  hooks.afterEach(function() {
-    run(App, App.destroy);
   });
 
   function generateProfiles() {
@@ -85,22 +72,22 @@ module('Render Tree Tab', function(hooks) {
     let rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 2, "Two rows are rendered initially");
 
-    assert.equal(find('.js-render-profile-name', rows[0]).textContent.trim(), "First View Rendering");
-    assert.equal(find('.js-render-profile-duration', rows[0]).textContent.trim(), "476.87ms");
-    assert.equal(find('.js-render-profile-timestamp', rows[0]).textContent.trim(), "13:16:22:715");
+    assert.equal(rows[0].querySelector('.js-render-profile-name').textContent.trim(), "First View Rendering");
+    assert.equal(rows[0].querySelector('.js-render-profile-duration').textContent.trim(), "476.87ms");
+    assert.equal(rows[0].querySelector('.js-render-profile-timestamp').textContent.trim(), "13:16:22:715");
 
-    assert.equal(find('.js-render-profile-name', rows[1]).textContent.trim(), "Second View Rendering");
-    assert.equal(find('.js-render-profile-duration', rows[1]).textContent.trim(), "10.00ms");
-    assert.equal(find('.js-render-profile-timestamp', rows[1]).textContent.trim(), "13:16:22:759");
+    assert.equal(rows[1].querySelector('.js-render-profile-name').textContent.trim(), "Second View Rendering");
+    assert.equal(rows[1].querySelector('.js-render-profile-duration').textContent.trim(), "10.00ms");
+    assert.equal(rows[1].querySelector('.js-render-profile-timestamp').textContent.trim(), "13:16:22:759");
 
     await click('.js-render-main-cell', rows[0]);
 
     rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 3, "Child is shown below the parent");
 
-    assert.equal(find('.js-render-profile-name', rows[1]).textContent.trim(), "Child view");
-    assert.equal(find('.js-render-profile-duration', rows[1]).textContent.trim(), "0.36ms");
-    assert.equal(find('.js-render-profile-timestamp', rows[1]).textContent.trim(), "13:16:22:581");
+    assert.equal(rows[1].querySelector('.js-render-profile-name').textContent.trim(), "Child view");
+    assert.equal(rows[1].querySelector('.js-render-profile-duration').textContent.trim(), "0.36ms");
+    assert.equal(rows[1].querySelector('.js-render-profile-timestamp').textContent.trim(), "13:16:22:581");
 
     await click('.js-render-main-cell', rows[0]);
 
@@ -124,15 +111,15 @@ module('Render Tree Tab', function(hooks) {
     let rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 2, "Two rows are rendered initially");
 
-    assert.equal(find('.js-render-profile-name', rows[0]).textContent.trim(), "First View Rendering");
-    assert.equal(find('.js-render-profile-name', rows[1]).textContent.trim(), "Second View Rendering");
+    assert.equal(rows[0].querySelector('.js-render-profile-name').textContent.trim(), "First View Rendering");
+    assert.equal(rows[1].querySelector('.js-render-profile-name').textContent.trim(), "Second View Rendering");
 
     await fillIn('.js-render-profiles-search input', 'first');
 
     rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 2, "The first parent is rendered with the child");
-    assert.equal(find('.js-render-profile-name', rows[0]).textContent.trim(), "First View Rendering");
-    assert.equal(find('.js-render-profile-name', rows[1]).textContent.trim(), "Child view");
+    assert.equal(rows[0].querySelector('.js-render-profile-name').textContent.trim(), "First View Rendering");
+    assert.equal(rows[1].querySelector('.js-render-profile-name').textContent.trim(), "Child view");
 
     // Minimize to hide child view
     await click('.js-render-main-cell');
@@ -142,13 +129,13 @@ module('Render Tree Tab', function(hooks) {
     rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 2, "filter is reset");
 
-    assert.equal(find('.js-render-profile-name', rows[0]).textContent.trim(), "First View Rendering");
-    assert.equal(find('.js-render-profile-name', rows[1]).textContent.trim(), "Second View Rendering");
+    assert.equal(rows[0].querySelector('.js-render-profile-name').textContent.trim(), "First View Rendering");
+    assert.equal(rows[1].querySelector('.js-render-profile-name').textContent.trim(), "Second View Rendering");
 
     await fillIn('.js-render-profiles-search input', 'Second');
 
     rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 1, "The second row is the only one showing");
-    assert.equal(find('.js-render-profile-name', rows[0]).textContent.trim(), "Second View Rendering");
+    assert.equal(rows[0].querySelector('.js-render-profile-name').textContent.trim(), "Second View Rendering");
   });
 });

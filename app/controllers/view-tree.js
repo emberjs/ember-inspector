@@ -1,7 +1,7 @@
 import { on } from '@ember/object/evented';
 import { observer, get } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
-import searchMatch from "ember-inspector/utils/search-match";
+import searchMatch from 'ember-inspector/utils/search-match';
 import { alias, filter } from '@ember/object/computed';
 
 export default Controller.extend({

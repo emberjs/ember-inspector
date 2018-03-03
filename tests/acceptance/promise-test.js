@@ -1,17 +1,16 @@
-import { run } from '@ember/runloop';
+import { visit, find, findAll, click } from '@ember/test-helpers';
 import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
-import { visit, find, findAll, click } from 'ember-native-dom-helpers';
+import { setupApplicationTest } from 'ember-qunit';
+import { triggerPort } from '../helpers/trigger-port';
+import wait from 'ember-test-helpers/wait';
 
-let App;
 let port, message, name;
 
 module('Promise Tab', function(hooks) {
+  setupApplicationTest(hooks);
+
   hooks.beforeEach(function() {
-    App = startApp({
-      adapter: 'basic'
-    });
-    port = App.__container__.lookup('port:main');
+    port = this.owner.lookup('port:main');
     port.reopen({
       send(n, m) {
         if (n === 'promise:getAndObservePromises') {
@@ -28,7 +27,6 @@ module('Promise Tab', function(hooks) {
   hooks.afterEach(function() {
     name = null;
     message = null;
-    run(App, App.destroy);
   });
 
   let guids = 0;
@@ -49,7 +47,7 @@ module('Promise Tab', function(hooks) {
   test("Shows page refresh hint if no promises", async function(assert) {
     await visit('/promise-tree');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: []
     });
 
@@ -60,7 +58,7 @@ module('Promise Tab', function(hooks) {
 
     assert.equal(name, 'general:refresh');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [
         generatePromise({
           guid: 1,
@@ -85,7 +83,7 @@ module('Promise Tab', function(hooks) {
   test("Pending promise", async function(assert) {
     await visit('/promise-tree');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [
         generatePromise({
           guid: 1,
@@ -98,8 +96,8 @@ module('Promise Tab', function(hooks) {
 
     assert.equal(findAll('.js-promise-tree-item').length, 1);
     let row = find('.js-promise-tree-item');
-    assert.equal(find('.js-promise-label', row).textContent.trim(), 'Promise 1');
-    assert.equal(find('.js-promise-state', row).textContent.trim(), 'Pending');
+    assert.equal(row.querySelector('.js-promise-label').textContent.trim(), 'Promise 1');
+    assert.equal(row.querySelector('.js-promise-state').textContent.trim(), 'Pending');
   });
 
 
@@ -108,7 +106,7 @@ module('Promise Tab', function(hooks) {
 
     let now = Date.now();
 
-    triggerPort('promise:promisesUpdated', {
+    triggerPort(this, 'promise:promisesUpdated', {
       promises: [
         generatePromise({
           guid: 1,
@@ -127,10 +125,10 @@ module('Promise Tab', function(hooks) {
 
     assert.equal(findAll('.js-promise-tree-item').length, 1);
     let row = find('.js-promise-tree-item');
-    assert.equal(find('.js-promise-label', row).textContent.trim(), 'Promise 1');
-    assert.equal(find('.js-promise-state', row).textContent.trim(), 'Fulfilled');
-    assert.equal(find('.js-promise-value', row).textContent.trim(), 'value');
-    assert.equal(find('.js-promise-time', row).textContent.trim(), '10.00ms');
+    assert.equal(row.querySelector('.js-promise-label').textContent.trim(), 'Promise 1');
+    assert.equal(row.querySelector('.js-promise-state').textContent.trim(), 'Fulfilled');
+    assert.equal(row.querySelector('.js-promise-value').textContent.trim(), 'value');
+    assert.equal(row.querySelector('.js-promise-time').textContent.trim(), '10.00ms');
   });
 
 
@@ -139,7 +137,7 @@ module('Promise Tab', function(hooks) {
 
     let now = Date.now();
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [
         generatePromise({
           guid: 1,
@@ -157,16 +155,16 @@ module('Promise Tab', function(hooks) {
 
     assert.equal(findAll('.js-promise-tree-item').length, 1);
     let row = find('.js-promise-tree-item');
-    assert.equal(find('.js-promise-label', row).textContent.trim(), 'Promise 1');
-    assert.equal(find('.js-promise-state', row).textContent.trim(), 'Rejected');
-    assert.equal(find('.js-promise-value', row).textContent.trim(), 'reason');
-    assert.equal(find('.js-promise-time', row).textContent.trim(), '20.00ms');
+    assert.equal(row.querySelector('.js-promise-label').textContent.trim(), 'Promise 1');
+    assert.equal(row.querySelector('.js-promise-state').textContent.trim(), 'Rejected');
+    assert.equal(row.querySelector('.js-promise-value').textContent.trim(), 'reason');
+    assert.equal(row.querySelector('.js-promise-time').textContent.trim(), '20.00ms');
   });
 
   test("Chained promises", async function(assert) {
     await visit('/promise-tree');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [
         generatePromise({
           guid: 2,
@@ -183,18 +181,18 @@ module('Promise Tab', function(hooks) {
 
     let rows = findAll('.js-promise-tree-item');
     assert.equal(rows.length, 1, 'Collpased by default');
-    assert.equal(find('.js-promise-label', rows[0]).textContent.trim(), 'Parent');
-    await click('.js-promise-label', rows[0]);
+    assert.equal(rows[0].querySelector('.js-promise-label').textContent.trim(), 'Parent');
+    await click(rows[0].querySelector('.js-promise-label'));
 
     rows = findAll('.js-promise-tree-item');
     assert.equal(rows.length, 2, 'Chain now expanded');
-    assert.equal(find('.js-promise-label', rows[1]).textContent.trim(), 'Child');
+    assert.equal(rows[1].querySelector('.js-promise-label').textContent.trim(), 'Child');
   });
 
   test("Can trace promise when there is a stack", async function(assert) {
     await visit('/promise-tree');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [generatePromise({ guid: 1, hasStack: true })]
     });
 
@@ -208,7 +206,7 @@ module('Promise Tab', function(hooks) {
   test("Trace button hidden if promise has no stack", async function(assert) {
     await visit('/promise-tree');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [generatePromise({ guid: 1, hasStack: false })]
     });
 
@@ -231,7 +229,7 @@ module('Promise Tab', function(hooks) {
   test("Logging error stack trace in the console", async function(assert) {
     await visit('/promise-tree');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [generatePromise({
         guid: 1,
         state: 'rejected',
@@ -244,7 +242,7 @@ module('Promise Tab', function(hooks) {
 
     let row = find('.js-promise-tree-item');
     assert.equal(find('.js-send-to-console-btn').textContent.trim(), 'Stack trace');
-    await click('.js-send-to-console-btn', row);
+    await click(row.querySelector('.js-send-to-console-btn'));
 
     assert.equal(name, 'promise:sendValueToConsole');
     assert.deepEqual(message, { promiseId: 1 });
@@ -254,7 +252,7 @@ module('Promise Tab', function(hooks) {
   test("Send fulfillment value to console", async function(assert) {
     await visit('/promise-tree');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [generatePromise({
         guid: 1,
         state: 'fulfilled',
@@ -266,7 +264,7 @@ module('Promise Tab', function(hooks) {
     });
 
     let row = find('.js-promise-tree-item');
-    await click('.js-send-to-console-btn', row);
+    await click(row.querySelector('.js-send-to-console-btn'));
 
     assert.equal(name, 'promise:sendValueToConsole');
     assert.deepEqual(message, { promiseId: 1 });
@@ -275,7 +273,7 @@ module('Promise Tab', function(hooks) {
   test("Sending objects to the object inspector", async function(assert) {
     await visit('/promise-tree');
 
-    await triggerPort('promise:promisesUpdated', {
+    await triggerPort(this, 'promise:promisesUpdated', {
       promises: [generatePromise({
         guid: 1,
         state: 'fulfilled',
@@ -288,7 +286,7 @@ module('Promise Tab', function(hooks) {
     });
 
     let row = find('.js-promise-tree-item');
-    await click('.js-promise-object-value', row);
+    await click(row.querySelector('.js-promise-object-value'));
 
     assert.equal(name, 'objectInspector:inspectById');
     assert.deepEqual(message, { objectId: 100 });

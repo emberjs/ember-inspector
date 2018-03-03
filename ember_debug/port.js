@@ -6,10 +6,8 @@ const { oneWay } = computed;
 export default EmberObject.extend(Ember.Evented, {
   adapter: oneWay('namespace.adapter').readOnly(),
 
-  application: oneWay('namespace.application').readOnly(),
-
-  uniqueId: computed('application', function() {
-    return `${guidFor(this.get('application'))}__${window.location.href}__${Date.now()}`;
+  uniqueId: computed('namespace.owner', function() {
+    return `${guidFor(this.get('namespace.owner'))}__${window.location.href}__${Date.now()}`;
   }),
 
   init() {

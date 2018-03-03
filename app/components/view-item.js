@@ -1,10 +1,9 @@
 import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { htmlSafe } from '@ember/string';
-import RowEventsMixin from 'ember-inspector/mixins/row-events';
 import { not, bool, equal } from '@ember/object/computed';
 
-export default Component.extend(RowEventsMixin, {
+export default Component.extend({
   /**
    * No tag. This component should not affect
    * the DOM.
@@ -50,17 +49,6 @@ export default Component.extend(RowEventsMixin, {
   hasModel: bool('model.value.model'),
 
   hasController: bool('model.value.controller'),
-
-  /**
-   * The index of the current row. Currently used for the
-   * `RowEvents` mixin. This property is passed through
-   * the template.
-   *
-   * @property index
-   * @type {Number}
-   * @default null
-   */
-  index: null,
 
   modelInspectable: computed('hasModel', 'model.value.model.type', function() {
     return this.get('hasModel') && this.get('model.value.model.type') === 'type-ember-object';
