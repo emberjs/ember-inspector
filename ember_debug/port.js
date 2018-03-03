@@ -14,9 +14,12 @@ export default EmberObject.extend(Ember.Evented, {
   now: computed(() => Date.now()),
 
   /**
-   * Dependent key is sensible here, it needs to be `namespace` so it never invalidates
+   * Unique id per applciation (not application instance). It's very important
+   * that this id doesn't change when the app is reset otherwise the inspector
+   * will no longer recognize the app.
    *
    * @property uniqueId
+   * @type {String}
    */
   uniqueId: computed('namespace.applicationId', 'now', function() {
     return `${this.get('namespace.applicationId')}__${window.location.href}__${this.get('now')}`;
