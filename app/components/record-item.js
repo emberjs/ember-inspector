@@ -21,17 +21,6 @@ export default Component.extend({
 
   modelTypeColumns: null,
 
-  /**
-   * The index of the current row. Currently used for the
-   * `RowEvents` mixin. This property is passed through
-   * the template.
-   *
-   * @property index
-   * @type {Number}
-   * @default null
-   */
-  index: null,
-
   // TODO: Color record based on `color` property.
   style: computed('model.color', function() {
     let string = '';

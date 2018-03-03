@@ -50,17 +50,6 @@ export default Component.extend({
 
   hasController: bool('model.value.controller'),
 
-  /**
-   * The index of the current row. Currently used for the
-   * `RowEvents` mixin. This property is passed through
-   * the template.
-   *
-   * @property index
-   * @type {Number}
-   * @default null
-   */
-  index: null,
-
   modelInspectable: computed('hasModel', 'model.value.model.type', function() {
     return this.get('hasModel') && this.get('model.value.model.type') === 'type-ember-object';
   }),
