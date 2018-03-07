@@ -45,7 +45,6 @@ export default EmberObject.extend(PortMixin, {
     const routerLib = router._routerMicrolib || router.router;
     let routeNames = routerLib.recognizer.names;
     let routeTree = {};
-
     for (let routeName in routeNames) {
       if (!hasOwnProperty.call(routeNames, routeName)) {
         continue;

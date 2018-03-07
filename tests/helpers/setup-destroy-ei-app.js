@@ -30,7 +30,10 @@ export async function setupEIApp(EmberDebug, routes) {
   await setupApplicationContext(this);
 
   run(() => {
-    EmberDebug.set('owner', this.owner);
+    EmberDebug.setProperties({
+      isTesting: true,
+      owner: this.owner
+    });
   });
 
   run(EmberDebug, 'start');
