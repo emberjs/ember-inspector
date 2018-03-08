@@ -149,9 +149,6 @@ module('Ember Debug - View', function(hooks) {
     // Less than 3.1
     if (!hasEmberVersion(3, 1)) {
       assert.equal(component.value.viewClass, 'Ember.TextField');
-    } else if (!hasEmberVersion(3, 2)) {
-      // Only 3.1
-      assert.equal(component.value.viewClass, '(subclass of Ember.Component)');
     } else {
       // 3.2+
       assert.equal(component.value.viewClass, '@ember/component/text-field');
