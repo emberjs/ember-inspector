@@ -1,28 +1,23 @@
-import Ember from "ember";
+import { visit, find, click, triggerEvent } from '@ember/test-helpers';
+import { A } from '@ember/array';
+import { run } from '@ember/runloop';
+import Route from '@ember/routing/route';
+import EmberObject from '@ember/object';
+import Controller from '@ember/controller';
 import { module, test } from 'qunit';
-import { visit, find, click, triggerEvent, settings as nativeDomHelpersSettings } from 'ember-native-dom-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
-
-const { Application } = Ember;
+import wait from 'ember-test-helpers/wait';
+import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
+import hasEmberVersion from '@ember/test-helpers/has-ember-version';
 
 const EmberDebug = require('ember-debug/main').default;
-const { Route, Object: EmberObject, Controller } = Ember;
 let port;
-let App, run = Ember.run;
-let OLD_TEMPLATES = {};
+let App;
 
 function setTemplate(name, template) {
-  OLD_TEMPLATES = Ember.TEMPLATES[name];
   template.meta.moduleName = name;
-  Ember.TEMPLATES[name] = template;
-}
-
-function destroyTemplates() {
-  for (let name in OLD_TEMPLATES) {
-    Ember.TEMPLATES[name] = OLD_TEMPLATES[name];
-  }
-  OLD_TEMPLATES = {};
+  this.owner.register(`template:${name}`, template);
 }
 
 function isVisible(elem) {
@@ -30,18 +25,7 @@ function isVisible(elem) {
 }
 
 function setupApp() {
-  App = Application.create();
-  App.setupForTesting();
-  App.injectTestHelpers();
-
-
-  App.Router.map(function() {
-    this.route('simple');
-    this.route('comments', { resetNamespace: true }, function() {});
-    this.route('posts', { resetNamespace: true });
-  });
-
-  App.ApplicationRoute = Route.extend({
+  this.owner.register('route:application', Route.extend({
     model() {
       return EmberObject.create({
         toString() {
@@ -49,9 +33,9 @@ function setupApp() {
         }
       });
     }
-  });
+  }));
 
-  App.SimpleRoute = Route.extend({
+  this.owner.register('route:simple', Route.extend({
     model() {
       return EmberObject.create({
         toString() {
@@ -59,236 +43,248 @@ function setupApp() {
         }
       });
     }
-  });
+  }));
 
-  App.CommentsIndexRoute = Route.extend({
+  this.owner.register('route:comments.index', Route.extend({
     model() {
-      return Ember.A(['first comment', 'second comment', 'third comment']);
+      return A(['first comment', 'second comment', 'third comment']);
     }
-  });
+  }));
 
-  App.PostsRoute = Route.extend({
+  this.owner.register('route:posts', Route.extend({
     model() {
       return 'String as model';
     }
-  });
+  }));
 
-  App.ApplicationController = Controller.extend();
-  App.ApplicationController.reopenClass({
+  this.owner.register('controller:application', Controller.extend({
     toString() {
       return 'App.ApplicationController';
     }
-  });
-  App.SimpleController = Controller.extend();
-  App.SimpleController.reopenClass({
+  }));
+
+  this.owner.register('controller:simple', Controller.extend({
     toString() {
       return 'App.SimpleController';
     }
-  });
+  }));
 
-  setTemplate('application', hbs`<div class="application">{{outlet}}</div>`);
-  setTemplate('simple', hbs`Simple {{input class="simple-input"}}`);
-  setTemplate('comments/index', hbs`{{#each}}{{this}}{{/each}}`);
-  setTemplate('posts', hbs`Posts`);
+  setTemplate.call(this, 'application', hbs`<div class="application">{{outlet}}</div>`);
+  setTemplate.call(this, 'simple', hbs`Simple {{input class="simple-input"}}`);
+  setTemplate.call(this, 'comments/index', hbs`{{#each}}{{this}}{{/each}}`);
+  setTemplate.call(this, 'posts', hbs`Posts`);
 }
-let defaultRootForFinder;
-module("View Debug", {
-  beforeEach() {
+
+module('Ember Debug - View', function(hooks) {
+  hooks.beforeEach(async function() {
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
       send() {}
     });
-    run(function() {
-      setupApp();
-      EmberDebug.set('application', App);
-    });
     EmberDebug.IGNORE_DEPRECATIONS = true;
-    run(EmberDebug, 'start');
+
+    App = await setupEIApp.call(this, EmberDebug, function() {
+      this.route('simple');
+      this.route('comments', { resetNamespace: true }, function() {});
+      this.route('posts', { resetNamespace: true });
+    });
+
+    setupApp.call(this);
+
     port = EmberDebug.port;
-    defaultRootForFinder = nativeDomHelpersSettings.rootElement;
-    nativeDomHelpersSettings.rootElement = 'body';
-  },
-  afterEach() {
-    EmberDebug.destroyContainer();
-    run(App, 'destroy');
-    destroyTemplates();
-    nativeDomHelpersSettings.rootElement = defaultRootForFinder;
-  }
-});
+  });
 
-test("Simple View Tree", async function t(assert) {
-  let name = null, message = null;
-  port.reopen({
-    send(n, m) {
-      name = n;
-      message = m;
+  hooks.afterEach(async function() {
+    await destroyEIApp.call(this, EmberDebug, App);
+  });
+
+  test('Simple View Tree', async function t(assert) {
+    let name = null, message = null;
+    port.reopen({
+      send(n, m) {
+        name = n;
+        message = m;
+      }
+    });
+
+    await visit('/simple');
+
+    assert.equal(name, 'view:viewTree');
+    let tree = message.tree;
+    let value = tree.value;
+    assert.equal(tree.children.length, 1);
+    assert.equal(value.controller.name, 'App.ApplicationController');
+    assert.equal(value.name, 'application');
+    assert.equal(value.tagName, 'div');
+    //TODO: this is almost certainly bugged, we should have a template here, right? Right?!
+    // Spoke to rwjblue about this and he is going to work with krisselden on meta versus referrer template name stuff
+    if (!hasEmberVersion(3, 1)) {
+      assert.equal(value.template, 'application');
     }
   });
 
-  await visit('/simple');
+  test('Components in view tree', async function t(assert) {
+    let message;
+    port.reopen({
+      send(n, m) {
+        message = m;
+      }
+    });
 
-  assert.equal(name, 'view:viewTree');
-  let tree = message.tree;
-  let value = tree.value;
-  assert.equal(tree.children.length, 1);
-  assert.equal(value.controller.name, 'App.ApplicationController');
-  assert.equal(value.name, 'application');
-  assert.equal(value.tagName, 'div');
-  assert.equal(value.template, 'application');
-});
+    await visit('/simple');
 
-test("Components in view tree", async function t(assert) {
-  let message;
-  port.reopen({
-    send(n, m) {
-      message = m;
+    let tree = message.tree;
+    let simple = tree.children[0];
+    assert.equal(simple.children.length, 0, 'Components are not listed by default.');
+    run(() => {
+      port.trigger('view:setOptions', { options: { components: true } });
+    });
+
+    await wait();
+
+    tree = message.tree;
+    simple = tree.children[0];
+    assert.equal(simple.children.length, 1, 'Components can be configured to show.');
+    let component = simple.children[0];
+    // Less than 3.1
+    if (!hasEmberVersion(3, 1)) {
+      assert.equal(component.value.viewClass, 'Ember.TextField');
+    } else if (!hasEmberVersion(3, 2)) {
+      // Only 3.1
+      assert.equal(component.value.viewClass, '(subclass of Ember.Component)');
+    } else {
+      // 3.2+
+      assert.equal(component.value.viewClass, '@ember/component/text-field');
     }
   });
 
-  await visit('/simple');
+  test('Highlighting Views on hover', async function t(assert) {
+    let name, message;
+    port.reopen({
+      send(n, m) {
+        name = n;
+        message = m;
+      }
+    });
 
-  let tree = message.tree;
-  let simple = tree.children[0];
-  assert.equal(simple.children.length, 0, "Components are not listed by default.");
-  run(() => {
-    port.trigger('view:setOptions', { options: { components: true } });
+    await visit('/simple');
+
+    run(() => port.trigger('view:inspectViews', { inspect: true }));
+    await wait();
+
+    await triggerEvent('.application', 'mousemove');
+
+    let previewDiv = find('[data-label=preview-div]');
+
+    assert.ok(isVisible(previewDiv));
+    assert.notOk(find('[data-label=layer-component]'), 'Component layer not shown on outlet views');
+    assert.equal(previewDiv.querySelector('[data-label=layer-controller]').textContent, 'App.ApplicationController');
+    assert.equal(previewDiv.querySelector('[data-label=layer-model]').textContent, 'Application model');
+
+    let layerDiv = find('[data-label=layer-div]');
+    await triggerEvent(layerDiv, 'mouseup');
+
+    assert.ok(isVisible(layerDiv));
+    assert.equal(layerDiv.querySelector('[data-label=layer-model]').textContent, 'Application model');
+    await click(layerDiv.querySelector('[data-label=layer-controller]'));
+
+    let controller = this.owner.lookup('controller:application');
+    assert.equal(name, 'objectInspector:updateObject');
+    assert.equal(controller.toString(), message.name);
+    name = null;
+    message = null;
+
+    await click(layerDiv.querySelector('[data-label=layer-model]'));
+
+    assert.equal(name, 'objectInspector:updateObject');
+    assert.equal(message.name, 'Application model');
+    await click('[data-label=layer-close]');
+
+    assert.notOk(isVisible(layerDiv));
+
+    run(() => port.trigger('view:inspectViews', { inspect: true }));
+    await wait();
+
+    await triggerEvent('.simple-input', 'mousemove');
+
+    previewDiv = find('[data-label=preview-div]');
+    assert.ok(isVisible(previewDiv));
+    assert.ok(find('[data-label=layer-component]').textContent.trim(), 'Ember.TextField');
+    assert.notOk(previewDiv.querySelector('[data-label=layer-controller]'));
+    assert.notOk(previewDiv.querySelector('[data-label=layer-model]'));
   });
 
-  await wait();
+  test('Highlighting a view without an element should not throw an error', async function t(assert) {
+    let message = null;
+    port.reopen({
+      send(n, m) {
+        message = m;
+      }
+    });
 
-  tree = message.tree;
-  simple = tree.children[0];
-  assert.equal(simple.children.length, 1, "Components can be configured to show.");
-  let component = simple.children[0];
-  assert.equal(component.value.viewClass, 'Ember.TextField');
-});
+    await visit('/posts');
 
-test("Highlighting Views on hover", async function t(assert) {
-  let name, message;
-  port.reopen({
-    send(n, m) {
-      name = n;
-      message = m;
-    }
+    let tree = message.tree;
+    let postsView = tree.children[0];
+    port.trigger('view:previewLayer', { objectId: postsView.value.objectId });
+    await wait();
+
+    assert.ok(true, 'Does not throw an error.');
   });
 
-  await visit('/simple');
+  test('Supports a view with a string as model', async function t(assert) {
+    let message = null;
+    port.reopen({
+      send(n, m) {
+        message = m;
+      }
+    });
 
-  run(() => port.trigger('view:inspectViews', { inspect: true }));
-  await wait();
+    await visit('/posts');
 
-  await triggerEvent('.application', 'mousemove');
-
-  let previewDiv = find('[data-label=preview-div]');
-
-  assert.ok(isVisible(previewDiv));
-  assert.notOk(find('[data-label=layer-component]'), "Component layer not shown on outlet views");
-  assert.equal(find('[data-label=layer-controller]', previewDiv).textContent, 'App.ApplicationController');
-  assert.equal(find('[data-label=layer-model]', previewDiv).textContent, 'Application model');
-
-  let layerDiv = find('[data-label=layer-div]');
-  await triggerEvent(layerDiv, 'mouseup');
-
-  assert.ok(isVisible(layerDiv));
-  assert.equal(find('[data-label=layer-model]', layerDiv).textContent, 'Application model');
-  await click('[data-label=layer-controller]', layerDiv);
-
-  let controller = App.__container__.lookup('controller:application');
-  assert.equal(name, 'objectInspector:updateObject');
-  assert.equal(controller.toString(), message.name);
-  name = null;
-  message = null;
-
-  await click('[data-label=layer-model]', layerDiv);
-
-  assert.equal(name, 'objectInspector:updateObject');
-  assert.equal(message.name, 'Application model');
-  await click('[data-label=layer-close]');
-
-  assert.notOk(isVisible(layerDiv));
-
-  run(() => port.trigger('view:inspectViews', { inspect: true }));
-  await wait();
-
-  await triggerEvent('.simple-input', 'mousemove');
-
-  previewDiv = find('[data-label=preview-div]');
-  assert.ok(isVisible(previewDiv));
-  assert.equal(find('[data-label=layer-component]').textContent.trim(), "Ember.TextField");
-  assert.notOk(find('[data-label=layer-controller]', previewDiv));
-  assert.notOk(find('[data-label=layer-model]', previewDiv));
-});
-
-test("Highlighting a view without an element should not throw an error", async function t(assert) {
-  let message = null;
-  port.reopen({
-    send(n, m) {
-      message = m;
-    }
+    assert.equal(message.tree.children[0].value.model.name, 'String as model');
+    assert.equal(message.tree.children[0].value.model.type, 'type-string');
   });
 
-  await visit('/posts');
+  test('Supports applications that don\'t have the ember-application CSS class', async function t(assert) {
+    let name = null;
+    let rootElement = document.body;
 
-  let tree = message.tree;
-  let postsView = tree.children[0];
-  port.trigger('view:previewLayer', { objectId: postsView.value.objectId });
-  await wait();
+    await visit('/simple');
 
-  assert.ok(true, "Does not throw an error.");
-});
+    assert.ok(rootElement.classList.contains('ember-application'), 'The rootElement has the .ember-application CSS class');
+    rootElement.classList.remove('ember-application');
 
-test("Supports a view with a string as model", async function t(assert) {
-  let message = null;
-  port.reopen({
-    send(n, m) {
-      message = m;
-    }
+    // Restart the inspector
+    EmberDebug.start();
+    port = EmberDebug.port;
+
+    port.reopen({
+      send(n/*, m*/) {
+        name = n;
+      }
+    });
+
+    await visit('/simple');
+
+    assert.equal(name, 'view:viewTree');
   });
 
-  await visit('/posts');
+  test('Does not list nested {{yield}} views', async function t(assert) {
+    let message = null;
+    port.reopen({
+      send(n, m) {
+        message = m;
+      }
+    });
 
-  assert.equal(message.tree.children[0].value.model.name, 'String as model');
-  assert.equal(message.tree.children[0].value.model.type, 'type-string');
-});
+    setTemplate.call(this, 'posts', hbs`{{#x-first}}Foo{{/x-first}}`);
+    setTemplate.call(this, 'components/x-first', hbs`{{#x-second}}{{yield}}{{/x-second}}`);
+    setTemplate.call(this, 'components/x-second', hbs`{{yield}}`);
 
-test("Supports applications that don't have the ember-application CSS class", async function t(assert) {
-  let name = null;
-  let rootElement = find('');
+    await visit('/posts');
 
-  await visit('/simple');
-
-  assert.ok(rootElement.classList.contains('ember-application'), "The rootElement has the .ember-application CSS class");
-  rootElement.classList.remove('ember-application');
-
-  // Restart the inspector
-  EmberDebug.start();
-  port = EmberDebug.port;
-
-  port.reopen({
-    send(n/*, m*/) {
-      name = n;
-    }
+    assert.equal(message.tree.children.length, 1, 'Only the posts view should render');
+    assert.equal(message.tree.children[0].children.length, 0, 'posts view should have no children');
   });
-
-  await visit('/simple');
-
-  assert.equal(name, 'view:viewTree');
-});
-
-test("Does not list nested {{yield}} views", async function t(assert) {
-  let message = null;
-  port.reopen({
-    send(n, m) {
-      message = m;
-    }
-  });
-
-  setTemplate('posts', hbs`{{#x-first}}Foo{{/x-first}}`);
-  setTemplate('components/x-first', hbs`{{#x-second}}{{yield}}{{/x-second}}`);
-  setTemplate('components/x-second', hbs`{{yield}}`);
-
-  await visit('/posts');
-
-  assert.equal(message.tree.children.length, 1, 'Only the posts view should render');
-  assert.equal(message.tree.children[0].children.length, 0, 'posts view should have no children');
 });

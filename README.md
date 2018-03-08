@@ -15,7 +15,7 @@ OR:
 - cd into the repo directory
 - run `yarn install && bower install`
 - run `yarn global add ember-cli`
-- run `yarn run build` to build the `dist` directory
+- run `yarn build` to build the `dist` directory
 - Visit `chrome://extensions` in Chrome
 - Make sure `Developer mode` is checked
 - Click on 'Load unpacked extension...'
@@ -32,7 +32,7 @@ OR:
 - cd into the repo directory
 - run `yarn install && bower install`
 - run `yarn global add ember-cli`
-- run `yarn run build` to build the `dist` directory
+- run `yarn build` to build the `dist` directory
 - Visit `about:debugging` in Firefox
 - Click on 'Load Temporary Addon-on'
 - Choose the `dist/firefox/manifest.json` file in the cloned repo
@@ -43,7 +43,7 @@ OR:
 - cd into the repo directory
 - run `yarn install && bower install`
 - run `yarn global add ember-cli`
-- run `yarn run build` to build the `dist` directory
+- run `yarn build` to build the `dist` directory
 - Visit `chrome://extensions` in Opera
 - Make sure `Developer mode` is checked
 - Click on 'Load unpacked extension...'
@@ -60,7 +60,7 @@ Internet explorer will open an iframe instead of a popup due to the lack of supp
 
 For development:
 
-- run `yarn run serve:bookmarklet`
+- run `yarn serve:bookmarklet`
 - create a bookmark (make sure you unblock the popup when you run the bookmarklet):
 
 ```javascript
@@ -71,8 +71,8 @@ javascript: (function() { var s = document.createElement('script'); s.src = 'htt
 
 Run `yarn install && yarn global add ember-cli && yarn global add bower && bower install && grunt-cli` to install the required modules.
 
-- `yarn run build` to build the files in the `dist` directory
-- `yarn run watch` To watch the files and re-build in `dist` when anything changes (useful during development).
+- `yarn build` to build the files in the `dist` directory
+- `yarn watch` To watch the files and re-build in `dist` when anything changes (useful during development).
 - `yarn test` To run the tests in the terminal
 - `yarn start` To start the test server at `localhost:4200/testing/tests`
 
@@ -104,7 +104,7 @@ When releasing a major/minor version, master would already have this version set
 #### Steps to publish
 
 - Push the `stable` branch to github (this will publish the bookmarklet version).
-- `yarn run build:production`
+- `yarn build:production`
 - `git tag` the new version
 - Follow the "Publishing to Chrome" steps
 - Follow the "Publishing to Firefox" steps
@@ -142,7 +142,7 @@ Here are the steps to lock an inspector version:
 
 - Update `package.json`'s `emberVersionsSupported`: add a second element that indicates the minimum Ember version this inspector *does not* support.
 - Release a new version (See "Minor and major versions"). Create a branch for this version.
-- Run `yarn run lock-version`. This will build, compress, and upload this version to S3.
+- Run `yarn lock-version`. This will build, compress, and upload this version to S3.
 - Update `package.json`'s `previousEmberVersionsSupported`: add the first Ember version supported by the recently locked version (the first element in the `emberVersionsSupported` array).
 - Update `package.json`'s `emberVersionsSupported`: Move the second element in the array to the first position. Add an empty string as the second element to indicate there's currently no maximum Ember version supported yet.
 - Commit.

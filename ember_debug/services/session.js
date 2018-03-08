@@ -7,8 +7,29 @@ const Session = EmberObject.extend({
   getItem(/*key*/) {}
 });
 
+let SESSION_STORAGE_SUPPORTED = false;
+
+try {
+  if (typeof sessionStorage !== 'undefined') {
+    SESSION_STORAGE_SUPPORTED = true;
+  }
+} catch (e) {
+  // This can be reached with the following succession of events:
+  //
+  //   1. On Google Chrome
+  //   2. Disable 3rd-party cookies
+  //   3. Open the browser inspector
+  //   4. Open on the Ember inspector
+  //   5. Visit a page showing an Ember app, on a frame
+  //      loaded from a different domain
+  //
+  // It's important that the Ember inspector is already open when
+  // you land on the page (hence step 4 before 5). Reloading the iframe
+  // page with the Ember inspector open also reproduces the problem.
+}
+
 // Feature detection
-if (typeof sessionStorage !== 'undefined') {
+if (SESSION_STORAGE_SUPPORTED) {
   Session.reopen({
     sessionStorage,
     prefix: '__ember__inspector__',

@@ -1,6 +1,8 @@
-import Ember from "ember";
-const { Component, computed, run, observer, getOwner } = Ember;
-const { alias } = computed;
+import Component from '@ember/component';
+import { run } from '@ember/runloop';
+import { observer, computed } from '@ember/object';
+import { getOwner } from '@ember/application';
+import { alias } from '@ember/object/computed';
 
 export default Component.extend({
   model: computed('port.detectedApplications.[]', function() {

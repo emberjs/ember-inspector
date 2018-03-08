@@ -1,10 +1,19 @@
-import resolver from './helpers/resolver';
-import {
-  setResolver
-} from 'ember-qunit';
-import { start } from 'ember-cli-qunit';
+import Application from '../app';
+import Ember from 'ember';
+import config from '../config/environment';
+import { setApplication } from '@ember/test-helpers';
+import { start } from 'ember-qunit';
+const { generateGuid } = Ember;
 
-setResolver(resolver);
-
+setApplication(Application.create(config.APP));
 window.NO_EMBER_DEBUG = true;
 start();
+
+Application.instanceInitializer({
+  name: `${generateGuid()}-detectEmberApplication`,
+  initialize(instance) {
+    instance.lookup('route:app-detected').reopen({
+      model() { }
+    });
+  }
+});

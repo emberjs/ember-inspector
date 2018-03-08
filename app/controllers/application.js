@@ -1,11 +1,18 @@
-import Ember from "ember";
-
-const { Controller, computed, computed: { equal } } = Ember;
+import Controller from '@ember/controller';
+import { computed } from '@ember/object';
+import { equal } from '@ember/object/computed';
 
 export default Controller.extend({
   isDragging: false,
   contentHeight: null,
-  emberApplication: false,
+
+  /**
+   * Indicates if the inspector has detected an ember app.
+   *
+   * @type {Boolean}
+   */
+  isEmberApplication: false,
+
   navWidth: 180,
   inspectorWidth: 360,
   mixinStack: computed(() => []),

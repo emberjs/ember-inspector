@@ -1,22 +1,51 @@
-import BasicAdapter from "ember-debug/adapters/basic";
-import Port from "ember-debug/port";
-import ObjectInspector from "ember-debug/object-inspector";
-import GeneralDebug from "ember-debug/general-debug";
-import RenderDebug from "ember-debug/render-debug";
-import ViewDebug from "ember-debug/view-debug";
-import RouteDebug from "ember-debug/route-debug";
-import DataDebug from "ember-debug/data-debug";
-import PromiseDebug from "ember-debug/promise-debug";
-import ContainerDebug from "ember-debug/container-debug";
-import DeprecationDebug from "ember-debug/deprecation-debug";
-import Session from "ember-debug/services/session";
+import BasicAdapter from 'ember-debug/adapters/basic';
+import Port from 'ember-debug/port';
+import ObjectInspector from 'ember-debug/object-inspector';
+import GeneralDebug from 'ember-debug/general-debug';
+import RenderDebug from 'ember-debug/render-debug';
+import ViewDebug from 'ember-debug/view-debug';
+import RouteDebug from 'ember-debug/route-debug';
+import DataDebug from 'ember-debug/data-debug';
+import PromiseDebug from 'ember-debug/promise-debug';
+import ContainerDebug from 'ember-debug/container-debug';
+import DeprecationDebug from 'ember-debug/deprecation-debug';
+import Session from 'ember-debug/services/session';
 
 const Ember = window.Ember;
-const { Object: EmberObject, run, Application, Namespace } = Ember;
+const { Object: EmberObject, run, Application, Namespace, guidFor, computed } = Ember;
 
 const EmberDebug = EmberObject.extend({
+  /**
+   * Set to true during testing.
+   *
+   * @type {Boolean}
+   * @default false
+   */
+  isTesting: false,
 
-  application: null,
+  /**
+   * @private
+   * @property _application
+   * @type {Application}
+   */
+  _application: null,
+
+  owner: null,
+
+  /**
+   * We use the application's id instead of the owner's id so that we use the same inspector
+   * instance for the same application even if it was reset (owner changes on reset).
+   *
+   * @property applicationId
+   * @type {String}
+   */
+  applicationId: computed('_application', 'isTesting', 'owner', function() {
+    if (!this.get('isTesting')) {
+      return guidFor(this.get('_application'));
+    }
+    return guidFor(this.get('owner'));
+  }),
+
   started: false,
 
   // Using object shorthand syntax here is somehow having strange side effects.
@@ -29,15 +58,14 @@ const EmberDebug = EmberObject.extend({
       this.reset($keepAdapter);
       return;
     }
-    this.set('started', true);
-
-    if (!this.get('application')) {
-      this.set('application', getApplication());
+    if (!this.get('_application') && !this.get('isTesting')) {
+      this.set('_application', getApplication());
     }
+    this.set('started', true);
 
     this.reset();
 
-    this.get("adapter").debug("Ember Inspector Active");
+    this.get('adapter').debug('Ember Inspector Active');
   },
 
   destroyContainer() {
@@ -45,15 +73,15 @@ const EmberDebug = EmberObject.extend({
       this.get('generalDebug').sendReset();
     }
     ['dataDebug',
-    'viewDebug',
-    'routeDebug',
-    'generalDebug',
-    'renderDebug',
-    'promiseDebug',
-    'containerDebug',
-    'deprecationDebug',
-    'objectInspector',
-    'session'
+      'viewDebug',
+      'routeDebug',
+      'generalDebug',
+      'renderDebug',
+      'promiseDebug',
+      'containerDebug',
+      'deprecationDebug',
+      'objectInspector',
+      'session'
     ].forEach(prop => {
       let handler = this.get(prop);
       if (handler) {
@@ -73,6 +101,9 @@ const EmberDebug = EmberObject.extend({
   },
 
   reset($keepAdapter) {
+    if (!this.get('isTesting')) {
+      this.set('owner', getOwner(this.get('_application')));
+    }
     this.destroyContainer();
     run(() => {
       // Adapters don't have state depending on the application itself.
@@ -105,6 +136,13 @@ const EmberDebug = EmberObject.extend({
     this.get('objectInspector').sendObject(obj);
     this.get('adapter').log('Sent to the Object Inspector');
     return obj;
+  },
+
+  clear() {
+    this.setProperties({
+      '_application': null,
+      owner: null
+    });
   }
 
 }).create();
@@ -120,6 +158,10 @@ function getApplication() {
     }
   });
   return application;
+}
+
+function getOwner(application) {
+  return application.__deprecatedInstance__;
 }
 
 export default EmberDebug;

@@ -1,9 +1,11 @@
+import { set, get } from '@ember/object';
+import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
+import { schedule } from '@ember/runloop';
 import Ember from "ember";
-const { Route, inject, run, NativeArray } = Ember;
-const { service } = inject;
-const { schedule } = run;
-const set = Ember.set;
-const get = Ember.get;
+const {
+  NativeArray
+} = Ember;
 
 export default Route.extend({
 

@@ -1,6 +1,5 @@
-import Ember from "ember";
-import computed from 'ember-new-computed';
-const { run } = Ember;
+import { run } from '@ember/runloop';
+import { computed } from '@ember/object';
 const { debounce } = run;
 
 // Use this if you want a property to debounce

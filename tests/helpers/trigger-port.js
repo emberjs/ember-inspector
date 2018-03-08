@@ -1,7 +1,7 @@
-import Ember from 'ember';
-const { run, Test: { registerHelper } } = Ember;
-export default registerHelper('triggerPort', async function t(app, ...args) {
-  run(() => app.__container__.lookup('port:main').trigger(...args));
+import { run } from '@ember/runloop';
+import wait from 'ember-test-helpers/wait';
+export async function triggerPort(app, ...args) {
+  run(() => app.owner.lookup('port:main').trigger(...args));
   await wait();
-});
+}
 

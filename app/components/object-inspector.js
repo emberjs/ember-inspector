@@ -1,6 +1,5 @@
-import Ember from "ember";
-const { Component, computed } = Ember;
-const get = Ember.get;
+import Component from '@ember/component';
+import { computed, get } from '@ember/object';
 export default Component.extend({
   tagName: '',
 

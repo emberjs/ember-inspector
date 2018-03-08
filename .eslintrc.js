@@ -4,7 +4,13 @@ module.exports = {
     ecmaVersion: 2017,
     sourceType: 'module'
   },
-  extends: 'eslint:recommended',
+  plugins: [
+    'ember'
+  ],
+  extends: [
+    'eslint:recommended',
+    'plugin:ember/recommended'
+  ],
   env: {
     browser: true
   },
@@ -42,7 +48,7 @@ module.exports = {
     'no-shadow': 0,
     'no-use-before-define': [2, {
       'classes': false,
-      'functions': false,
+      'functions': false
     }],
 
     /* Stylistic Issues */
@@ -50,11 +56,11 @@ module.exports = {
     'array-bracket-spacing': 2,
     'block-spacing': 2,
     'camelcase': [0, {
-      'properties': 'always',
+      'properties': 'always'
     }],
     'comma-spacing': [2, {
       'before': false,
-      'after': true,
+      'after': true
     }],
     'comma-style': 2,
     'computed-property-spacing': 2,
@@ -63,19 +69,19 @@ module.exports = {
       'VariableDeclarator': {
         'var': 2,
         'let': 2,
-        'const': 3,
+        'const': 3
       }
     }],
     'key-spacing': [2, {
       'beforeColon': false,
-      'afterColon': true,
+      'afterColon': true
     }],
     'keyword-spacing': 2,
     'linebreak-style': [2, 'unix'],
     'max-len': [2, 250],
     'max-nested-callbacks': [2, 5],
     'new-cap': [2, {
-      'capIsNew': false,
+      'capIsNew': false
     }],
     'new-parens': 2,
     'no-array-constructor': 2,
@@ -115,5 +121,32 @@ module.exports = {
     'prefer-template': 2,
     'require-yield': 2,
     'template-curly-spacing': 2,
+
+    // Temporarily turn these off
+    'ember/avoid-leaking-state-in-ember-objects': 'off',
+    'ember/closure-actions': 'off',
+    'ember/no-on-calls-in-components': 'off',
+    'ember/jquery-ember-run': 'off',
+    'ember/use-brace-expansion': 'off'
   },
+  overrides: [
+    // node files
+    {
+      files: [
+        'testem.js',
+        'ember-cli-build.js',
+        'config/**/*.js',
+        'lib/*/index.js',
+        'Gruntfile.js'
+      ],
+      parserOptions: {
+        sourceType: 'script',
+        ecmaVersion: 2015
+      },
+      env: {
+        browser: false,
+        node: true
+      }
+    }
+  ]
 };

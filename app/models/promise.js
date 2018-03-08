@@ -1,7 +1,9 @@
-import Ember from "ember";
+import { once } from '@ember/runloop';
+import $ from 'jquery';
+import { typeOf, isEmpty } from '@ember/utils';
+import EmberObject, { computed, observer } from '@ember/object';
+import { not, equal, or } from '@ember/object/computed';
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
-import computed from 'ember-new-computed';
-const { $, observer, typeOf, computed: { or, equal, not } } = Ember;
 
 const dateComputed = function() {
   return computed({
@@ -19,7 +21,7 @@ const dateComputed = function() {
   });
 };
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
   createdAt: dateComputed(),
   settledAt: dateComputed(),
 
@@ -96,7 +98,7 @@ export default Ember.Object.extend({
   }),
 
   addBranchLabel(label, replace) {
-    if (Ember.isEmpty(label)) {
+    if (isEmpty(label)) {
       return;
     }
     if (replace) {
@@ -132,7 +134,7 @@ export default Ember.Object.extend({
   stateOrParentChanged: observer('isPending', 'isFulfilled', 'isRejected', 'parent', function() {
     let parent = this.get('parent');
     if (parent) {
-      Ember.run.once(parent, 'recalculateExpanded');
+      once(parent, 'recalculateExpanded');
     }
   }),
 

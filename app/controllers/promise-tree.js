@@ -1,8 +1,8 @@
-import Ember from "ember";
-
-const { Controller, computed, observer, run, inject: { controller }, isEmpty } = Ember;
-const { equal, bool, and, not, filter } = computed;
-const { next, once, debounce } = run;
+import { observer } from '@ember/object';
+import Controller, { inject as controller } from '@ember/controller';
+import { isEmpty } from '@ember/utils';
+import { equal, bool, and, not, filter } from '@ember/object/computed';
+import { debounce, next, once } from '@ember/runloop';
 
 export default Controller.extend({
   application: controller(),

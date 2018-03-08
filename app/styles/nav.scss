@@ -15,7 +15,6 @@
   text-overflow: ellipsis;
   overflow: hidden;
   color: #6e6e6e;
-  text-transform: uppercase;
   text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
   float: left;
   padding: 0;
@@ -49,7 +48,7 @@
 .nav li > a {
   display: block;
   height: 18px;
-  line-height: 15px;
+  line-height: 18px;
   margin-top: 1px;
   padding: 2px 5px;
   white-space: nowrap;

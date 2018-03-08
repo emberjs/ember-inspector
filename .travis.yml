@@ -1,17 +1,48 @@
 ---
 language: node_js
-
 node_js:
   - "6"
 
-dist: trusty
 sudo: false
+dist: trusty
+
+addons:
+  chrome: stable
 
 cache:
   yarn: true
 
-addons:
-  chrome: stable
+env:
+  global:
+    - secure: EYaa9XxKkfJbQENuQPNFAIIieMWBiSknGCO9he8MH8ZHbqJODTjFixJnD5ZYLZCXH67SmjorBneznQHp8Xaf0aIuHbRhRY/MOUzqEWw12MmexW1kJF5wX+oxEnvzoiVAUJLNTIQi+g5WN43YBleASKMjUPa2i/3GBIcTlsVdf3U=
+    - secure: g+Qh9jUTpK1yFpcZi9O8rsybfqv3TFE2hTFvG8XZ+QaQYBLLZ52JfhsJhdI0cvRRp7qWOhzE784iadkPWgvhj8c0/N/af5ZrSP3ceiv6RKqSUG2/iQyzX/qUh3vqrZ7a4xTsELTwswQtR+sA+I+DQVVlnqcCqYTAW2SFR/D4H8o=
+
+jobs:
+  fail_fast: true
+  allow_failures:
+    - env: EMBER_TRY_SCENARIO=ember-canary
+
+  include:
+    # runs tests for ember_debug against each supported Ember version
+    - stage: ember debug test
+      env: EMBER_TRY_SCENARIO=ember-2.7
+    - env: EMBER_TRY_SCENARIO=ember-lts-2.8
+    - env: EMBER_TRY_SCENARIO=ember-2.9
+    - env: EMBER_TRY_SCENARIO=ember-2.10
+    - env: EMBER_TRY_SCENARIO=ember-2.11
+    - env: EMBER_TRY_SCENARIO=ember-lts-2.12
+    - env: EMBER_TRY_SCENARIO=ember-lts-2.16
+    - env: EMBER_TRY_SCENARIO=ember-lts-2.18
+    - env: EMBER_TRY_SCENARIO=ember-release
+    - env: EMBER_TRY_SCENARIO=ember-beta
+    - env: EMBER_TRY_SCENARIO=ember-canary
+    - env: EMBER_TRY_SCENARIO=ember-default
+
+    # runs tests with current locked deps and linting
+    - stage: test
+      script:
+        - yarn lint:js
+        - yarn test
 
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash
@@ -23,12 +54,11 @@ install:
   - bower install
 
 script:
-  - yarn test
+  - node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO --skip-cleanup=true --- node_modules/.bin/ember test --filter="Ember Debug"
 
 after_success:
   - test $TRAVIS_BRANCH == "stable" && yarn run upload
 
-env:
-  global:
-  - secure: EYaa9XxKkfJbQENuQPNFAIIieMWBiSknGCO9he8MH8ZHbqJODTjFixJnD5ZYLZCXH67SmjorBneznQHp8Xaf0aIuHbRhRY/MOUzqEWw12MmexW1kJF5wX+oxEnvzoiVAUJLNTIQi+g5WN43YBleASKMjUPa2i/3GBIcTlsVdf3U=
-  - secure: g+Qh9jUTpK1yFpcZi9O8rsybfqv3TFE2hTFvG8XZ+QaQYBLLZ52JfhsJhdI0cvRRp7qWOhzE784iadkPWgvhj8c0/N/af5ZrSP3ceiv6RKqSUG2/iQyzX/qUh3vqrZ7a4xTsELTwswQtR+sA+I+DQVVlnqcCqYTAW2SFR/D4H8o=
+branches:
+  only:
+    - "master"

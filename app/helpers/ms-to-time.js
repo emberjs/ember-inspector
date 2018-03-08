@@ -1,5 +1,4 @@
-import Ember from 'ember';
-const { Helper: { helper } } = Ember;
+import { helper } from '@ember/component/helper';
 
 export function msToTime([time]) {
   if (time && !isNaN(+time)) {

@@ -1,12 +1,11 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { run, scheduleOnce } from '@ember/runloop';
+import $ from 'jquery';
 import { task, timeout } from 'ember-concurrency';
 import ResizableColumns from 'ember-inspector/libs/resizable-columns';
 import LocalStorageService from "ember-inspector/services/storage/local";
-
-const { Component, run, computed, inject, $ } = Ember;
-const { scheduleOnce } = run;
-const { service } = inject;
-const { readOnly, reads } = computed;
+import { inject as service } from '@ember/service';
+import { readOnly, reads } from '@ember/object/computed';
 
 const CHECK_HTML = '&#10003;';
 
@@ -208,7 +207,7 @@ export default Component.extend({
    * @method willDestroyElement
    */
   willDestroyElement() {
-    Ember.$(window).off(`.${this.get('elementId')}`);
+    $(window).off(`.${this.get('elementId')}`);
     this.$('.list__header').contextMenu('destroy');
     this.get('layout').off('resize', this.onResize);
     return this._super(...arguments);

@@ -1,7 +1,8 @@
-import Ember from "ember";
-const { RSVP: { Promise } } = Ember;
+import { get } from '@ember/object';
+import Route from '@ember/routing/route';
+import { Promise } from 'rsvp';
 /*eslint camelcase: 0 */
-export default Ember.Route.extend({
+export default Route.extend({
   setupController(controller, model) {
     this._super(controller, model);
     this.controllerFor('model-types').set('selected', model);
@@ -23,6 +24,6 @@ export default Ember.Route.extend({
   },
 
   serialize(model) {
-    return { type_id: Ember.get(model, 'name') };
+    return { type_id: get(model, 'name') };
   }
 });

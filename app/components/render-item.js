@@ -1,8 +1,12 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { isNone, isEmpty } from '@ember/utils';
+import { run } from '@ember/runloop';
+import { on } from '@ember/object/evented';
+import { observer, computed } from '@ember/object';
+import { htmlSafe } from '@ember/string';
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
 
-const { Component, computed, isEmpty, isNone, run, on, observer, String: { htmlSafe } } = Ember;
-const { gt } = computed;
+import { gt } from '@ember/object/computed';
 const { once } = run;
 
 export default Component.extend({

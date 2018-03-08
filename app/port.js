@@ -1,7 +1,7 @@
-import Ember from "ember";
-const { computed } = Ember;
+import Evented from '@ember/object/evented';
+import EmberObject, { computed } from '@ember/object';
 
-export default Ember.Object.extend(Ember.Evented, {
+export default EmberObject.extend(Evented, {
   applicationId: undefined,
 
   detectedApplications: computed(function() {

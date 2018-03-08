@@ -1,8 +1,9 @@
-import Ember from 'ember';
-
-const { Component, computed, String: { htmlSafe }, Evented, run, Object: EmberObject, inject } = Ember;
-const { schedule } = run;
-const { service } = inject;
+import Component from '@ember/component';
+import { htmlSafe } from '@ember/string';
+import Evented from '@ember/object/evented';
+import { computed } from '@ember/object';
+import { schedule } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 
 /**
  * Base list view config
@@ -29,14 +30,11 @@ export default Component.extend(Evented, {
 
   /**
    * Hook called when content element is inserted.
-   * Used to setup event listeners to work-around
-   * smoke-and-mirrors lack of events.
    *
    * @method didInsertElement
    */
   didInsertElement() {
     schedule('afterRender', this, this.setupHeight);
-    schedule('afterRender', this, this.setupEvents);
   },
 
   /**
@@ -71,59 +69,6 @@ export default Component.extend(Evented, {
   },
 
   /**
-   * Set up event listening on the individual rows in the table.
-   * Rows can listen to these events by listening to events on the `rowEvents`
-   * property.
-   *
-   * @method setupEvents
-   */
-  setupEvents() {
-    this.set('rowEvents', EmberObject.extend(Evented).create());
-    let cb = run.bind(this, 'triggerRowEvent');
-    let listContentElement = this.element;
-    // Delegated event handler for click on rows
-    this.element.addEventListener('click', function(e) {
-      let tr = e.target.closest('tr');
-      if (!tr || !e.currentTarget.contains(tr)) {
-        return;
-      }
-      cb(e.type, tr);
-    });
-
-    // Delegated event handler for mouseenter/leave on rows.
-    // Since mouseenter/leave do not bubble, these event handlers simulate it using
-    // `mouseover`/`mouseout`.
-    this.element.addEventListener('mouseover', simulateMouseEvent('mouseenter'));
-    this.element.addEventListener('mouseout', simulateMouseEvent('mouseleave'));
-
-    function simulateMouseEvent(eventName) {
-      return function (e) {
-        let target = e.target;
-        let related = e.relatedTarget;
-        let match;
-        // search for a parent node matching the delegation selector
-        while (target && target !== listContentElement && !(match = target.matches('tr'))) {
-          target = target.parentNode;
-        }
-        // exit if no matching node has been found
-        if (!match) {
-          return;
-        }
-
-        // loop through the parent of the related target to make sure that it's not a child of the target
-        while (related && related !== target && related !== document) {
-          related = related.parentNode;
-        }
-
-        // exit if this is the case
-        if (related === target) { return; }
-
-        cb(eventName, target);
-      };
-    }
-  },
-
-  /**
    * Hook called before destruction. Clean up events listeners.
    *
    * @method willDestroyElement
@@ -131,18 +76,6 @@ export default Component.extend(Evented, {
   willDestroyElement() {
     this.get('layoutService').off('content-height-update', this, this.updateContentHeight);
     return this._super(...arguments);
-  },
-
-  /**
-   * Broadcasts that an event was triggered on a row.
-   *
-   * @method triggerRowEvent
-   * @param {String} type The event type to trigger
-   * @param {DOMElement} row The element the event was triggered on
-   */
-  triggerRowEvent(type, row) {
-    let index = [].indexOf.call(row.parentNode.children, row);
-    this.get('rowEvents').trigger(type, { index, type });
   },
 
   attributeBindings: ['style'],

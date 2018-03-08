@@ -1,5 +1,4 @@
-import Ember from 'ember';
-const { Controller, inject: { controller } } = Ember;
+import Controller, { inject as controller } from '@ember/controller';
 
 export default Controller.extend({
   application: controller()

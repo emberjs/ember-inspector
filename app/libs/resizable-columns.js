@@ -4,9 +4,13 @@
  *
  * Uses local storage to cache a user's preferred settings.
  */
-import Ember from 'ember';
+import { set } from '@ember/object';
+
+import { isNone } from '@ember/utils';
+import { copy } from '@ember/object/internals';
+import { merge } from '@ember/polyfills';
 import compareArrays from 'ember-inspector/utils/compare-arrays';
-const { set, isNone, copy, merge } = Ember;
+
 const { floor } = Math;
 const { keys } = Object;
 const THIRTY_DAYS_FROM_NOW = 1000 * 60 * 60 * 24 * 30;
@@ -100,11 +104,11 @@ export default class {
   clearExpiredCache() {
     let now = Date.now();
     this.storage.keys().filter(key => key.match(/^x-list/))
-    .forEach(key => {
-      if (now - this.storage.getItem(key).updatedAt > THIRTY_DAYS_FROM_NOW) {
-        this.storage.removeItem(key);
-      }
-    });
+      .forEach(key => {
+        if (now - this.storage.getItem(key).updatedAt > THIRTY_DAYS_FROM_NOW) {
+          this.storage.removeItem(key);
+        }
+      });
   }
 
   /**
@@ -205,11 +209,11 @@ export default class {
     this.buildColumnVisibility();
     let totalWidth = 0;
     let columns = this._columnVisibility.filterBy('visible')
-    .map(({ id, name }) => {
-      let width = this.getColumnWidth(id);
-      totalWidth += width;
-      return { width, id, name };
-    });
+      .map(({ id, name }) => {
+        let width = this.getColumnWidth(id);
+        totalWidth += width;
+        return { width, id, name };
+      });
     // Fix percentage precision errors. If we only add it to the last column
     // the last column will slowly increase in size every time we visit this list.
     // So we distribute the extra pixels starting with the smallest column.
@@ -280,7 +284,7 @@ export default class {
   processColumns() {
     let columns = this._columns;
     let prevLeft, prevWidth;
-    columns = columns.map(({ id, name, visible, width }, index) => {
+    columns = columns.map(({ id, name, width }, index) => {
       let last = this._columns[this._columns.length - 1];
       let left = 0;
       if (index > 0) {

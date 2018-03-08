@@ -1,25 +1,18 @@
-import { module, test } from 'qunit';
-import Ember from "ember";
-import { visit } from 'ember-native-dom-helpers';
-import require from 'require';
+import { visit } from '@ember/test-helpers';
+import { A as emberA } from '@ember/array';
 
-const { run, A: emberA, Application } = Ember;
+import { module, test } from 'qunit';
+import require from 'require';
+import wait from 'ember-test-helpers/wait';
+
+import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
+
 let EmberDebug;
 let port, name, message;
 let App;
 
-function setupApp() {
-  App = Application.create();
-  App.setupForTesting();
-  App.injectTestHelpers();
-
-  App.Router.map(function() {
-    this.route('simple');
-  });
-}
-
-module("Container Debug", {
-  beforeEach() {
+module('Ember Debug - Container', function(hooks) {
+  hooks.beforeEach(async function() {
     EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
@@ -28,51 +21,51 @@ module("Container Debug", {
         message = m;
       }
     });
-    run(function() {
-      setupApp();
-      EmberDebug.set('application', App);
+
+    App = await setupEIApp.call(this, EmberDebug, function() {
+      this.route('simple');
     });
-    run(EmberDebug, 'start');
+
     port = EmberDebug.port;
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(async function() {
     name = null;
     message = null;
-    EmberDebug.destroyContainer();
-    run(App, 'destroy');
-  }
-});
+    await destroyEIApp.call(this, EmberDebug, App);
+  });
 
-test("#getTypes", async function t(assert) {
-  await visit('/simple');
+  test('#getTypes', async function t(assert) {
+    await visit('/simple');
 
-  port.trigger('container:getTypes');
-  await wait();
+    port.trigger('container:getTypes');
+    await wait();
 
-  assert.equal(name, 'container:types');
-  let types = emberA(message.types);
-  assert.ok(types.findBy('name', 'controller'));
-  assert.ok(types.findBy('name', 'route'));
-});
+    assert.equal(name, 'container:types');
+    let types = emberA(message.types);
+    assert.ok(types.findBy('name', 'controller'));
+    assert.ok(types.findBy('name', 'route'));
+  });
 
-test("#getInstances", async function t(assert) {
-  await visit('/simple');
+  test('#getInstances', async function t(assert) {
+    await visit('/simple');
 
-  port.trigger('container:getInstances', { containerType: 'controller' });
-  await wait();
+    port.trigger('container:getInstances', { containerType: 'controller' });
+    await wait();
 
-  assert.equal(name, 'container:instances');
-  let instances = emberA(message.instances);
-  assert.ok(instances.findBy('name', 'simple'));
-});
+    assert.equal(name, 'container:instances');
+    let instances = emberA(message.instances);
+    assert.ok(instances.findBy('name', 'simple'));
+  });
 
-test("#getInstances on a non existing type", async function t(assert) {
-  await visit('/simple');
+  test('#getInstances on a non existing type', async function t(assert) {
+    await visit('/simple');
 
-  port.trigger('container:getInstances', { containerType: 'not-here' });
-  await wait();
+    port.trigger('container:getInstances', { containerType: 'not-here' });
+    await wait();
 
-  assert.equal(name, 'container:instances');
-  assert.equal(message.status, 404);
+    assert.equal(name, 'container:instances');
+    assert.equal(message.status, 404);
+  });
 });
 

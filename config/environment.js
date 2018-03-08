@@ -1,10 +1,12 @@
+'use strict';
+
 /* eslint-env node */
-var packageJson = require('../package.json');
+let packageJson = require('../package.json');
 
 module.exports = function(environment) {
-  var ENV = {
+  let ENV = {
     modulePrefix: 'ember-inspector',
-    environment: environment,
+    environment,
     rootURL: '',
     locationType: 'hash',
     emberVersionsSupported: packageJson.emberVersionsSupported,
@@ -44,10 +46,11 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
     ENV.APP.rootElement = '#ember-testing';
+    ENV.APP.autoboot = false;
   }
 
   if (environment === 'production') {
-
+    // Intentionally empty
   }
 
   return ENV;

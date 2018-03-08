@@ -48,7 +48,7 @@
    */
   function updateTabAction(tabId){
     chrome.storage.sync.get("options", function(data) {
-      if (!data.options.showTomster) { return; }
+      if (!data.options || !data.options.showTomster) { return; }
       chrome.pageAction.show(tabId);
       setActionTitle(tabId);
     });

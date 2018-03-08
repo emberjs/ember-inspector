@@ -1,7 +1,8 @@
-import Ember from "ember";
-import searchMatch from "ember-inspector/utils/search-match";
-const { computed, Controller, get, on, observer, inject: { controller } } = Ember;
-const { alias, filter } = computed;
+import { on } from '@ember/object/evented';
+import { observer, get } from '@ember/object';
+import Controller, { inject as controller } from '@ember/controller';
+import searchMatch from 'ember-inspector/utils/search-match';
+import { alias, filter } from '@ember/object/computed';
 
 export default Controller.extend({
   application: controller(),
