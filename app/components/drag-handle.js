@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { equal } from '@ember/object/computed';
 import Component from '@ember/component';
 import { computed } from '@ember/object';
@@ -51,32 +50,18 @@ export default Component.extend({
   'on-drag'() {},
 
   startDragging() {
-    let $container = this.$().parent();
-    let $containerOffsetLeft = $container.offset().left;
-    let $containerOffsetRight = $containerOffsetLeft + $container.width();
-    let namespace = `drag-${this.get('elementId')}`;
+    let namespace = `drag-${this.elementId}`;
 
     this.sendAction('action', true);
 
-    $('body').on(`mousemove.${namespace}`, e => {
-      let position = this.get('isLeft') ?
-        e.pageX - $containerOffsetLeft :
-        $containerOffsetRight - e.pageX;
-
-      position -= this.get('left');
-      if (position >= this.get('minWidth') && position <= this.get('maxWidth')) {
-        this.set('position', position);
-        this.get('on-drag')(position);
-      }
-    })
-      .on(`mouseup.${namespace} mouseleave.${namespace}`, () => {
-        this.stopDragging();
-      });
+    document.body.addEventListener(`mousemove.${namespace}`, this._mouseMoveHandler);
+    document.body.addEventListener(`mouseup.${namespace} mouseleave.${namespace}`, this.stopDragging);
   },
 
   stopDragging() {
     this.sendAction('action', false);
-    $('body').off(`.drag-${this.get('elementId')}`);
+    document.body.removeEventListener(`.drag-${this.elementId}`, this._mouseMoveHandler);
+    document.body.removeEventListener(`.drag-${this.elementId}`, this.stopDragging);
   },
 
   willDestroyElement() {
@@ -97,5 +82,21 @@ export default Component.extend({
       string = '';
     }
     return htmlSafe(string);
-  })
+  }),
+
+  _mouseMoveHandler(e) {
+    let $container = this.element.parentNode;
+    let $containerOffsetLeft = $container.offset().left;
+    let $containerOffsetRight = $containerOffsetLeft + $container.width();
+
+    let position = this.get('isLeft') ?
+      e.pageX - $containerOffsetLeft :
+      $containerOffsetRight - e.pageX;
+
+    position -= this.get('left');
+    if (position >= this.get('minWidth') && position <= this.get('maxWidth')) {
+      this.set('position', position);
+      this.get('on-drag')(position);
+    }
+  }
 });

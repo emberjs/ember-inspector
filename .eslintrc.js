@@ -14,6 +14,9 @@ module.exports = {
   env: {
     browser: true
   },
+  globals: {
+    basicContext: false
+  },
   rules: {
     /* Possible Errors */
 
@@ -121,6 +124,8 @@ module.exports = {
     'prefer-template': 2,
     'require-yield': 2,
     'template-curly-spacing': 2,
+
+    'ember/no-jquery': 'error',
 
     // Temporarily turn these off
     'ember/avoid-leaking-state-in-ember-objects': 'off',

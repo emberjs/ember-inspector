@@ -16,7 +16,7 @@ export default DatePicker.extend({
   },
 
   openDatePicker: on('didInsertElement', function() {
-    once(this.$(), 'click');
+    once(this.element, 'click');
   }),
 
   keyUp(e) {

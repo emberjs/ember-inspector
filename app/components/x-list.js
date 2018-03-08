@@ -1,9 +1,8 @@
 import Component from '@ember/component';
 import { run, scheduleOnce } from '@ember/runloop';
-import $ from 'jquery';
 import { task, timeout } from 'ember-concurrency';
 import ResizableColumns from 'ember-inspector/libs/resizable-columns';
-import LocalStorageService from "ember-inspector/services/storage/local";
+import LocalStorageService from 'ember-inspector/services/storage/local';
 import { inject as service } from '@ember/service';
 import { readOnly, reads } from '@ember/object/computed';
 
@@ -140,7 +139,7 @@ export default Component.extend({
     this.onResize = () => {
       this.get('debounceColumnWidths').perform();
     };
-    $(window).on(`resize.${this.get('elementId')}`, this.onResize);
+    window.addEventListener(`resize.${this.get('elementId')}`, this.onResize);
     this.get('layout').on('resize', this.onResize);
     return this._super(...arguments);
   },
@@ -164,12 +163,19 @@ export default Component.extend({
       arr.push({
         name,
         title: name,
-        fun: run.bind(this, this.toggleColumnVisibility, id)
+        fn: run.bind(this, this.toggleColumnVisibility, id)
       });
       return arr;
     }, []);
 
-    this.$('.list__header').contextMenu(menu, { triggerOn: 'contextmenu' });
+    this.showBasicContext = (e) => {
+      basicContext.show(menu, e);
+    };
+
+    const listHeader = this.element.querySelector('.list__header');
+    if (listHeader) {
+      listHeader.addEventListener('contextmenu', this.showBasicContext);
+    }
   },
 
   /**
@@ -183,7 +189,10 @@ export default Component.extend({
    */
   toggleColumnVisibility(id) {
     this.resizableColumns.toggleVisibility(id);
-    this.$('.list__header').contextMenu('destroy');
+    const listHeader = this.element.querySelector('.list__header');
+    if (listHeader) {
+      listHeader.removeEventListener('contextmenu', this.showBasicContext);
+    }
     this.setupContextMenu();
   },
 
@@ -195,7 +204,7 @@ export default Component.extend({
    * @property debounceColumnWidths
    * @type {Object} Ember Concurrency task
    */
-  debounceColumnWidths: task(function * () {
+  debounceColumnWidths: task(function* () {
     yield timeout(100);
     this.resizableColumns.setTableWidth(this.getTableWidth());
   }).restartable(),
@@ -207,8 +216,11 @@ export default Component.extend({
    * @method willDestroyElement
    */
   willDestroyElement() {
-    $(window).off(`.${this.get('elementId')}`);
-    this.$('.list__header').contextMenu('destroy');
+    window.removeEventListener(`.${this.elementId}`, this.onResize);
+    const listHeader = this.element.querySelector('.list__header');
+    if (listHeader) {
+      listHeader.removeEventListener('contextmenu', this.showBasicContext);
+    }
     this.get('layout').off('resize', this.onResize);
     return this._super(...arguments);
   },
@@ -220,7 +232,7 @@ export default Component.extend({
    * @return {Number} The width in pixels
    */
   getTableWidth() {
-    return this.$('.list__table-container').innerWidth();
+    return this.element.querySelector('.list__table-container').clientWidth;
   },
 
   /**
