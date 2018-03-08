@@ -62,3 +62,5 @@ after_success:
 branches:
   only:
     - "master"
+    - "stable"
+    - "ember-0.0.0-2.7.0"
