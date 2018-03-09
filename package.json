@@ -36,6 +36,7 @@
     "aws-sdk": "^2.3.3",
     "babel-eslint": "^8.2.2",
     "babel-plugin-transform-es2015-modules-amd": "^6.24.0",
+    "basiccontext": "^3.5.1",
     "broccoli-asset-rev": "^2.4.5",
     "broccoli-babel-transpiler": "^6.0.0",
     "broccoli-concat": "^3.0.1",

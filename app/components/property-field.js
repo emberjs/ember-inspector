@@ -12,7 +12,7 @@ export default TextField.extend({
   properyComponent: null,
 
   didInsertElement() {
-    this.$().select();
+    this.element.select();
     return this._super(...arguments);
   },
 

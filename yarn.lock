@@ -1199,6 +1199,10 @@ basic-auth@~2.0.0:
   dependencies:
     safe-buffer "5.1.1"
 
+basiccontext@^3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/basiccontext/-/basiccontext-3.5.1.tgz#e1f512d447c8c19c48d0a616f77a725d6b181ee0"
+
 bcrypt-pbkdf@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/bcrypt-pbkdf/-/bcrypt-pbkdf-1.0.1.tgz#63bc5dcb61331b92bc05fd528953c33462a06f8d"
