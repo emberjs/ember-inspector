@@ -3,7 +3,7 @@
   font-size: 11px;
   height: 100%;
   box-sizing: border-box;
-  background: white;
+  background: var(--base00);
   overflow: hidden;
 }
 
@@ -32,12 +32,12 @@
 
   text-align: left;
   user-select: none;
-  border-bottom: 1px solid #cacaca;
+  border-bottom: 1px solid var(--base08);
 
   height: 30px;
 
   .list__row {
-    background: #fff;
+    background: var(--base00);
   }
 
   .list__cell {
@@ -55,10 +55,10 @@
 .list:not(.list_no-alternate-color) .list__content {
 
   .list__row {
-    background: #f3f3f3;
+    background: var(--base03);
 
     &:nth-of-type(2n) {
-      background: #fff;
+      background: var(--base00);
     }
   }
 }
@@ -200,7 +200,7 @@
     top: 0px;
 
     font-size: 75%;
-    color: #737373;
+    color: var(--base18);
   }
 }
 

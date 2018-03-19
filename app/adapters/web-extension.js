@@ -3,6 +3,10 @@ import { computed } from '@ember/object';
 
 import BasicAdapter from "./basic";
 import config from 'ember-inspector/config/environment';
+import {
+  LightTheme,
+  DarkTheme,
+} from 'ember-inspector/constants/theme-colors';
 
 let emberDebug = null;
 
@@ -16,6 +20,8 @@ export default BasicAdapter.extend({
     this._connect();
     this._handleReload();
     this._injectDebugger();
+    this._setThemeColors();
+
     return this._super(...arguments);
   },
 
@@ -53,6 +59,23 @@ export default BasicAdapter.extend({
   _injectDebugger() {
     chrome.devtools.inspectedWindow.eval(loadEmberDebug());
     this.onResourceAdded();
+  },
+
+  _setThemeColors() {
+    const rootElement = document.querySelector('html');
+    let theme;
+
+    if (chrome.devtools.panels.themeName === 'dark') {
+      theme = DarkTheme;
+    } else {
+      theme = LightTheme;
+    }
+
+    for (let colorVar in theme) {
+      const formattedVar = `--${colorVar}`;
+
+      rootElement.style.setProperty(formattedVar, theme[colorVar]);
+    }
   },
 
   onResourceAdded(/*callback*/) {},
