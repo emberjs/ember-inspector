@@ -1,65 +1,3 @@
-# Change Log
-
-## [Unreleased](https://github.com/emberjs/ember-inspector/tree/HEAD)
-
-[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.0.0...HEAD)
-
-**Fixed bugs:**
-
-- "Cannot read property 'outlets' of undefined" On Ember 3.1-beta.1 [\#770](https://github.com/emberjs/ember-inspector/issues/770)
-- Data tab not working [\#739](https://github.com/emberjs/ember-inspector/issues/739)
-
-**Merged pull requests:**
-
-- Bump minor version to 3.1.0 [\#769](https://github.com/emberjs/ember-inspector/pull/769) ([teddyzeenny](https://github.com/teddyzeenny))
-- Remove jQuery from app [\#768](https://github.com/emberjs/ember-inspector/pull/768) ([rwwagner90](https://github.com/rwwagner90))
-
-## [v3.0.0](https://github.com/emberjs/ember-inspector/tree/v3.0.0) (2018-03-08)
-[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v2.3.1...v3.0.0)
-
-**Implemented enhancements:**
-
-- Test against all supported Ember versions with ember-try [\#763](https://github.com/emberjs/ember-inspector/issues/763)
-
-**Fixed bugs:**
-
-- Empty mixins break component selector [\#752](https://github.com/emberjs/ember-inspector/issues/752)
-- Make View Tree support Glimmer components [\#750](https://github.com/emberjs/ember-inspector/issues/750)
-- Not visible in Chromium 62 or Vivaldi 1.12 [\#734](https://github.com/emberjs/ember-inspector/issues/734)
-
-**Closed issues:**
-
-- Remove ember\_debug/addons/ember-new-computed [\#758](https://github.com/emberjs/ember-inspector/issues/758)
-- Consider dropping Ember 1.x support / `ember-new-computed` [\#745](https://github.com/emberjs/ember-inspector/issues/745)
-- \[feature discussion\] ability to configure value for "Hide Empty Model Types" [\#741](https://github.com/emberjs/ember-inspector/issues/741)
-- Can not build current master [\#736](https://github.com/emberjs/ember-inspector/issues/736)
-- Support Firefox 57.0 \("Quantum"\) [\#735](https://github.com/emberjs/ember-inspector/issues/735)
-- Illegal invocation when using View tree. [\#718](https://github.com/emberjs/ember-inspector/issues/718)
-- Compatibility with new modules API \(Ember 2.16\) [\#707](https://github.com/emberjs/ember-inspector/issues/707)
-
-**Merged pull requests:**
-
-- Fix text field assertion [\#767](https://github.com/emberjs/ember-inspector/pull/767) ([rwwagner90](https://github.com/rwwagner90))
-- Add branches to build in Travis CI [\#766](https://github.com/emberjs/ember-inspector/pull/766) ([teddyzeenny](https://github.com/teddyzeenny))
-- Fix inspector reset on client app's reset and destroy [\#765](https://github.com/emberjs/ember-inspector/pull/765) ([teddyzeenny](https://github.com/teddyzeenny))
-- Bump version to 3.0.0 [\#764](https://github.com/emberjs/ember-inspector/pull/764) ([teddyzeenny](https://github.com/teddyzeenny))
-- Ember 3.0, dep updates, testing updates, and codemods [\#762](https://github.com/emberjs/ember-inspector/pull/762) ([rwwagner90](https://github.com/rwwagner90))
-- Remove computedPolyfill [\#761](https://github.com/emberjs/ember-inspector/pull/761) ([rwwagner90](https://github.com/rwwagner90))
-- Remove getTemplate stuff [\#760](https://github.com/emberjs/ember-inspector/pull/760) ([rwwagner90](https://github.com/rwwagner90))
-- WIP [\#759](https://github.com/emberjs/ember-inspector/pull/759) ([rwwagner90](https://github.com/rwwagner90))
-- Fix file paths displayed in the Routes tab [\#757](https://github.com/emberjs/ember-inspector/pull/757) ([omarhamdan](https://github.com/omarhamdan))
-- Add Documentation + Minor Cleanup [\#755](https://github.com/emberjs/ember-inspector/pull/755) ([omarhamdan](https://github.com/omarhamdan))
-- Allow for empty mixins [\#753](https://github.com/emberjs/ember-inspector/pull/753) ([XuluWarrior](https://github.com/XuluWarrior))
-- ember-qunit-codemod [\#751](https://github.com/emberjs/ember-inspector/pull/751) ([rwwagner90](https://github.com/rwwagner90))
-- Start converting to module imports [\#749](https://github.com/emberjs/ember-inspector/pull/749) ([rwwagner90](https://github.com/rwwagner90))
-- Fix loading main outlet [\#748](https://github.com/emberjs/ember-inspector/pull/748) ([rwwagner90](https://github.com/rwwagner90))
-- Drop ember-new-computed [\#746](https://github.com/emberjs/ember-inspector/pull/746) ([jacobq](https://github.com/jacobq))
-- UI Tweaks to Match Latest Inspectors [\#744](https://github.com/emberjs/ember-inspector/pull/744) ([nummi](https://github.com/nummi))
-- Update Inspect Views Icon [\#743](https://github.com/emberjs/ember-inspector/pull/743) ([nummi](https://github.com/nummi))
-- preserve model type hiding [\#742](https://github.com/emberjs/ember-inspector/pull/742) ([efx](https://github.com/efx))
-- Bump patch version to 2.3.1 [\#738](https://github.com/emberjs/ember-inspector/pull/738) ([teddyzeenny](https://github.com/teddyzeenny))
-- Avoid error in some environments [\#638](https://github.com/emberjs/ember-inspector/pull/638) ([pablobm](https://github.com/pablobm))
-
 # Ember Inspector Changelog
 
 ## Ember Inspector 2.3.0
@@ -343,6 +281,3 @@
 * Added a hint to refresh the page when the Inspector is open after a few promises were created and uncaught.
 * [BUGFIX] Error message about file:// protocol should only be shown on Chrome
 * [BUGFIX] Add missing ember.prod.js file in vendors
-
-
-\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
