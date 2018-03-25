@@ -1,0 +1,11 @@
+<div class="list__content" style="height: 100%;">
+  {{#vertical-collection filteredList estimateHeight=20 as |item i|}}
+    <div onmouseenter={{action "previewLayer" item}}
+      onmouseleave={{action "hidePreview"}}>
+      {{component-tree-item
+        item=item
+        inspect=(action "inspect")
+        sendObjectToConsole=(action "sendObjectToConsole")}}
+    </div>
+  {{/vertical-collection}}
+</div>

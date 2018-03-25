@@ -1,0 +1,17 @@
+<div style={{labelStyle}} class="component-tree-item">
+  {{#if item.hasChildren}}
+    <span class="expand-arrow {{if item.expanded "expanded" "collapsed"}}" {{action 'toggleExpanded' item}}>
+    </span>
+  {{/if}}
+
+  <span class="component-tag" {{action inspect item.view.objectId}}>
+    {{#if item.view.isComponent}}
+      <span class="component-bracket">\{{</span>
+    {{/if}}
+    <span class="component-name">{{item.view.name}}</span>
+    {{#if item.view.isComponent}}
+      <span class="component-bracket">}}</span>
+    {{/if}}
+  </span>
+  {{send-to-console action=sendObjectToConsole param=item.view.objectId}}
+</div>
