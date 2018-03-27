@@ -1,17 +1,11 @@
-<div style={{labelStyle}} class="component-tree-item">
+<div style={{labelStyle}} class="component-tree-item {{if (eq pinnedObjectId item.view.objectId) "component-tree-item--selected"}}">
   {{#if item.hasChildren}}
-    <span class="expand-arrow {{if item.expanded "expanded" "collapsed"}}" {{action 'toggleExpanded' item}}>
-    </span>
+    <svg class="expand-arrow {{if item.expanded "expanded" "collapsed"}}" {{action "toggleExpanded" item}} xmlns="http://www.w3.org/2000/svg" width="43" height="36" viewBox="0 0 43 36">
+      <polygon fill="#6E6E6E" fill-rule="evenodd" points="39 18 4 -3 4 39" transform="rotate(90 21.5 18)"/>
+    </svg>
   {{/if}}
 
-  <span class="component-tag" {{action inspect item.view.objectId}}>
-    {{#if item.view.isComponent}}
-      <span class="component-bracket">\{{</span>
-    {{/if}}
-    <span class="component-name">{{item.view.name}}</span>
-    {{#if item.view.isComponent}}
-      <span class="component-bracket">}}</span>
-    {{/if}}
-  </span>
-  {{send-to-console action=sendObjectToConsole param=item.view.objectId}}
+  <code class="component-tag" {{action inspect item.view.objectId}}>
+    <span class="component-name {{if item.view.isComponent "component-bracket"}}">{{item.view.name}}</span>
+  </code>
 </div>

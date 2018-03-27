@@ -107,6 +107,7 @@ export default Controller.extend({
 
     inspect(objectId) {
       if (objectId) {
+        this.set('pinnedObjectId', objectId);
         this.get('port').send('objectInspector:inspectById', { objectId });
       }
     },
