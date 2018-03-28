@@ -1,20 +1,15 @@
 import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { htmlSafe } from '@ember/string';
-import { not, bool, equal } from '@ember/object/computed';
 
 export default Component.extend({
   item: null,
   tagName: '',
-
-  init() {
-    this._super(...arguments);
-  },
+  activeSearch: false,
 
   labelStyle: computed('item.parentCount', function() {
-    return htmlSafe(
-      `padding-left: ${+this.get('item.parentCount') * 25 + 10}px;`
-    );
+    let padding = this.get('item.parentCount') * 25 + 10;
+    return htmlSafe(`padding-left: ${padding}px;`);
   }),
 
   actions: {
