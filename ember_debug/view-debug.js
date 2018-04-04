@@ -79,7 +79,10 @@ export default EmberObject.extend(PortMixin, {
     },
 
     scrollToElement({ elementId }) {
-      document.querySelector(`#${elementId}`).scrollIntoView();
+      let el = document.querySelector(`#${elementId}`);
+      if (el) {
+        el.scrollIntoView();
+      }
     },
 
     inspectElement({ objectId, elementId }) {
