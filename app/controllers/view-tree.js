@@ -1,4 +1,3 @@
-import { on } from '@ember/object/evented';
 import { observer, get } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import searchMatch from 'ember-inspector/utils/search-match';

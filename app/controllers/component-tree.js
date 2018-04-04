@@ -37,7 +37,7 @@ let ComponentViewItem = EmberObject.extend({
       if (this.get('activeSearch')) {
         return this.get('searchMatched') || (parent && parent.get('expanded') && parent.get('visible'));
       } else {
-        return !parent || (parent && parent.get('expanded') && parent.get('visible'))
+        return !parent || (parent && parent.get('expanded') && parent.get('visible'));
       }
     }),
 });
@@ -190,6 +190,7 @@ export default Controller.extend({
     },
 
     scrollToElement(elementId) {
+      console.log("going to message view debug with ", elementId);
       this.get('port').send('view:scrollToElement', { elementId });
     },
 
