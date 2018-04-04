@@ -77,6 +77,11 @@ export default EmberObject.extend(PortMixin, {
         this.stopInspecting();
       }
     },
+
+    scrollToElement({ elementId }) {
+      document.querySelector(`#${elementId}`).scrollIntoView();
+    },
+
     inspectElement({ objectId, elementId }) {
       if (objectId) {
         this.inspectViewElement(objectId);

@@ -189,6 +189,10 @@ export default Controller.extend({
       }
     },
 
+    scrollToElement(elementId) {
+      this.get('port').send('view:scrollToElement', { elementId });
+    },
+
     inspectElement({
       objectId,
       elementId
