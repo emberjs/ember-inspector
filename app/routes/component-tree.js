@@ -11,6 +11,7 @@ export default TabRoute.extend({
     this.get('port').on('view:stopInspecting', this, this.stopInspecting);
     this.get('port').on('view:startInspecting', this, this.startInspecting);
     this.get('port').on('view:inspectDOMElement', this, this.inspectDOMElement);
+    this.get('port').on('view:inspectComponent', this, this.inspectComponent);
     this.get('port').send('view:getTree');
   },
 
@@ -19,6 +20,8 @@ export default TabRoute.extend({
     this.get('port').off('view:stopInspecting', this, this.stopInspecting);
     this.get('port').off('view:startInspecting', this, this.startInspecting);
     this.get('port').off('view:inspectDOMElement', this, this.inspectDOMElement);
+    this.get('port').off('view:inspectComponent', this, this.inspectComponent);
+
   },
 
   setViewTree(options) {
@@ -31,6 +34,10 @@ export default TabRoute.extend({
 
   stopInspecting() {
     this.set('controller.inspectingViews', false);
+  },
+
+  inspectComponent({ viewId }) {
+    this.get('controller').send('inspect', viewId);
   },
 
   inspectDOMElement({ elementSelector }) {
