@@ -12,6 +12,7 @@ export default TabRoute.extend({
     this.get('port').on('view:startInspecting', this, this.startInspecting);
     this.get('port').on('view:inspectDOMElement', this, this.inspectDOMElement);
     this.get('port').on('view:inspectComponent', this, this.inspectComponent);
+    this.get('port').send('view:setOptions', { options: this.get('controller.options') });
     this.get('port').send('view:getTree');
   },
 

@@ -33,9 +33,9 @@ export default Controller.extend({
     return searchMatch(get(item, 'value.name'), this.get('searchValue'));
   }).property('model.[]', 'searchValue'),
 
-  optionsChanged: on('init', observer('options.components', function() {
+  optionsChanged: observer('options.components', function() {
     this.port.send('view:setOptions', { options: this.get('options') });
-  })),
+  }),
 
   actions: {
     previewLayer({ value: { objectId, elementId, renderNodeId } }) {

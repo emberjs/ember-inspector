@@ -145,19 +145,7 @@ export default Controller.extend({
 
   init() {
     this._super(...arguments);
-    this.port.send('view:setOptions', {
-      options: this.get('options')
-    });
   },
-
-  optionsChanged: on(
-    'init',
-    observer('options.components', function () {
-      this.port.send('view:setOptions', {
-        options: this.get('options')
-      });
-    })
-  ),
 
   actions: {
     previewLayer({
