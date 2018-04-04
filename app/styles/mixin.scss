@@ -6,69 +6,54 @@
  or a mixin the object extends
 */
 
+$mixin-left-padding: 22px;
+
 .mixin__name {
-  margin-top: -1px;
-  padding: 2px 2px 2px 5px;
-  border-top: 1px solid #cecece;
+  position: relative;
+  padding: 4px 2px 4px $mixin-left-padding;
   border-bottom: 1px solid #cecece;
   background-color: #f5f5f5;
   cursor: default;
   user-select: none;
+  color: #222;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .mixin__name:active {
-  background-color: #ccc;
-  border-top: 1px solid #b2b2b2;
-  border-bottom: 1px solid #b2b2b2;
+  background-color: #e7e7e7;
+}
+
+.mixin__name--no-props {
+  color: #777;
 }
 
   .mixin_props_no .mixin__name:before {
     opacity: 0;
   }
 
-  .mixin.ember-mixin .mixin__name {
-    color: #888;
-  }
-
 .mixin__name:before {
+  position: absolute;
+  top: 5px;
+  left: 7px;
   content: "\25B6";
   color: #737373;
-  margin-right: 4px;
-  position: relative;
-  top: -1px;
-  font-size: 75%;
+  margin-right: 5px;
+  font-size: 90%;
 }
-
-  .mixin_state_expanded .mixin__name {
-    border-bottom: 1px solid #bdbdbd;
-  }
 
   .mixin_state_expanded .mixin__name:before {
     content: "\25BC";
   }
 
-  .mixin.ember-mixin .mixin__name:before {
-    color: #aaa;
-  }
-
-.mixin__name_errors {
-  background-color: #fff;
-
-  &:active{
-    background-color: #fff;
-  }
-}
-
-
 .mixin__properties {
-  margin: 5px;
   list-style-type: none;
-  padding: 0;
+  border-bottom: 1px solid #cecece;
+  margin: 0;
+  padding: 3px 0 5px 0;
   font-size: 12px;
-  font-family: Menlo, Monaco, monospace;
+  font-family: 'SF Mono', Menlo, Monaco, monospace;
 }
 
 .mixin__property {
@@ -79,7 +64,10 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  min-height: 19px;
 }
+
+/* Errors */
 
 .mixin__error {
   margin-right: 3px;
@@ -87,16 +75,41 @@
   color: red;
 }
 
-.mixin__property button {
-  border: none;
-  background: none;
-  margin: 0;
-  padding: 0;
+.mixin__name--errors {
+  background-color: #fff;
+
+  &:active{
+    background-color: #fff;
+  }
 }
 
-.mixin__property button img, .mixin__property span.pad {
-  margin-right: 3px;
-  width: 20px;
+/* Buttons */
+
+.mixin__property {
+  button {
+    border: none;
+    background: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .pad { width: $mixin-left-padding; }
+  .mixin__calc-btn {
+    width: $mixin-left-padding;
+
+    img {
+      max-height: 16px;
+    }
+  }
+
+  .mixin__calc-btn--calculated {
+    opacity: 0.4;
+  }
+
+  .mixin__send-btn {
+    opacity: 0;
+    padding-right: 6px;
+  }
 }
 
 .mixin__property-overridden-by {
@@ -122,15 +135,6 @@
   box-shadow: 2px 2px 2px #888;
   /*box-shadow: none;*/
   outline: none;
-}
-
-.mixin__calc-btn_calculated {
-  opacity: 0.4;
-}
-
-.mixin__send-btn {
-  width: 20px;
-  opacity: 0;
 }
 
 
@@ -173,7 +177,7 @@
 
 
 .mixin__property:not(.mixin__property_state_overridden):hover {
-  background-color: #ffe;
+  background-color: #f3f3f3;
 }
 
 
@@ -186,9 +190,10 @@
 }
 
 .mixin__property:not(.mixin__property_state_overridden):hover .mixin__send-btn {
-    opacity: 1;
+  opacity: 1;
+
+  &:active {
+    opacity: 0.5;
+  }
 }
 
-.mixin__property:not(.mixin__property_state_overridden):hover .mixin__send-btn:active {
-  opacity: 0.5;
-}
