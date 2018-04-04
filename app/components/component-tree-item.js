@@ -8,7 +8,8 @@ export default Component.extend({
   activeSearch: false,
 
   labelStyle: computed('item.parentCount', function() {
-    let padding = this.get('item.parentCount') * 25 + 10;
+    let expanderOffset = this.get('item.hasChildren') ? 10 : 0;
+    let padding = this.get('item.parentCount') * 25 - expanderOffset;
     return htmlSafe(`padding-left: ${padding}px;`);
   }),
 
