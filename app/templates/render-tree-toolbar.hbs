@@ -2,6 +2,11 @@
   {{clear-button action="clearProfiles" classNames="toolbar__icon-button"}}
   <div class="toolbar__search js-render-profiles-search">
     {{input value=searchField placeholder="Search"}}
+    {{#if searchField}}
+      <button {{action "clearSearchField"}} class="toolbar__icon-button toolbar__search-clear-button" title="clear">
+        {{icon-input-clear}}
+      </button>
+    {{/if}}
   </div>
   <div class="filter-bar__pills"></div>
 

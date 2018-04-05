@@ -3,5 +3,10 @@
 
   <div class="toolbar__search toolbar__search--small js-container-instance-search">
     {{input value=searchVal placeholder="Search"}}
+    {{#if searchVal}}
+      <button {{action "clearSearchVal"}} class="toolbar__icon-button toolbar__search-clear-button" title="clear">
+        {{icon-input-clear}}
+      </button>
+    {{/if}}
   </div>
 </div>

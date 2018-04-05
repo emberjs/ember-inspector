@@ -85,6 +85,10 @@ export default Controller.extend({
   },
 
   actions: {
+    clearSearch() {
+      this.set('search', '');
+    },
+
     setFilter(filter) {
       this.set('filter', filter);
       next(() => {

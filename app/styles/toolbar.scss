@@ -158,6 +158,7 @@
 */
 
 .toolbar__search {
+  position: relative;
   margin-right: 6px;
 }
 
@@ -183,6 +184,18 @@
 
 .toolbar__search--small input {
   width: 150px;
+}
+
+.toolbar__search-clear-button {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: auto;
+  height: auto;
+
+  svg {
+    path { fill: #666; }
+  }
 }
 
 /**

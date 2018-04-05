@@ -46,7 +46,7 @@
                   {{/unless}}
                 {{/unless}}
                 <span class="mixin__property-overridden-by">(Overridden by {{property.model.overridden}})</span>
-                <button class="mixin__send-btn js-send-to-console-btn" {{action "sendToConsole" property.model target=mixin}}><img src="assets/images/send.png" title="Send to console"></button>
+                <button class="mixin__send-btn send-to-console js-send-to-console-btn" {{action "sendToConsole" property.model target=mixin}}><img src="assets/images/send.png" title="Send to console"></button>
               </li>
             {{/mixin-property}}
           {{else}}

@@ -1,13 +1,19 @@
 <div class="toolbar">
   <div class="toolbar__search js-records-search">
     {{input value=search placeholder="Search"}}
+    {{#if search}}
+      <button {{action "clearSearch"}} class="toolbar__icon-button toolbar__search-clear-button" title="clear">
+        {{icon-input-clear}}
+      </button>
+    {{/if}}
   </div>
+
+  <div class="divider" aria-hidden="true"></div>
 
   <button class="{{if noFilterValue 'active'}} toolbar__radio js-filter" {{action "setFilter"}}>
     All
   </button>
 
-  <div class="divider"></div>
   {{#each filters as |item|}}
     {{#record-filter model=item filterValue=filterValue as |filter|}}
       <button class="{{if filter.checked 'active'}} toolbar__radio js-filter" {{action "setFilter" filter.model.name}} >

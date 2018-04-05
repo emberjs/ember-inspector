@@ -18,6 +18,10 @@ export default Controller.extend({
     return searchMatch(get(item, 'message'), this.get('search'));
   }).property('model.@each.message', 'search'),
   actions: {
+    clearSearchVal() {
+      this.set('searchVal', '');
+    },
+
     openResource(item) {
       this.get('adapter').openResource(item.fullSource, item.line);
     },

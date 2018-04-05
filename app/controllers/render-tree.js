@@ -63,6 +63,10 @@ export default Controller.extend({
      */
     closeWarning() {
       this.set('isWarningClosed', true);
+    },
+
+    clearSearchField() {
+      this.set('searchField', '');
     }
   },
 

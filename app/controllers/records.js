@@ -111,6 +111,10 @@ export default Controller.extend({
      */
     inspectModel(model) {
       this.get('port').send('data:inspectModel', { objectId: get(model, 'objectId') });
+    },
+
+    clearSearch() {
+      this.set('search', '');
     }
   }
 });

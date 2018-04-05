@@ -3,6 +3,11 @@
 
   <div class="toolbar__search js-promise-search">
     {{input value=search placeholder="Search"}}
+    {{#if search}}
+      <button {{action "clearSearch"}} class="toolbar__icon-button toolbar__search-clear-button" title="clear">
+        {{icon-input-clear}}
+      </button>
+    {{/if}}
   </div>
 
   <button class="{{if noFilter 'active'}} toolbar__radio js-filter" {{action "setFilter" "all"}}>

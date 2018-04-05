@@ -18,5 +18,10 @@
 
   <div class="toolbar__search js-filter-views">
     {{input type="text" id="options-views" placeholder="Search Views" value=searchText}}
+    {{#if searchText}}
+      <button {{action "clearSearchText"}} class="toolbar__icon-button toolbar__search-clear-button" title="clear">
+        {{icon-input-clear}}
+      </button>
+    {{/if}}
   </div>
 </div>
