@@ -1,6 +1,8 @@
 <div class="toolbar">
   {{clear-button action="clear" classNames="toolbar__icon-button js-clear-deprecations-btn"}}
 
+  <div class="divider" aria-hidden="true"></div>
+
   <div class="toolbar__search js-deprecations-search">
     {{input value=searchVal placeholder="Search"}}
     {{#if searchVal}}

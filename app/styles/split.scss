@@ -39,13 +39,11 @@
   flex: none;
   flex-direction: column;
   box-sizing: border-box;
-  padding: 1px 2px;
-  min-height: 23px;
-  line-height: 20px;
   border-color: #d6d6d6;
 }
 
 .split__panel__hd {
+  min-height: 29px;
   border-bottom-width: 1px;
   border-bottom-style: solid;
   background: #fff;
@@ -58,6 +56,8 @@
 }
 
 .split__panel__ft {
+  justify-content: center;
+  height: 23px;
   border-top-width: 1px;
   border-top-style: solid;
   background: #F3F3F3;

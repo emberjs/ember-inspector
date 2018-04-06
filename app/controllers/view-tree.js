@@ -41,7 +41,7 @@ export default Controller.extend({
     clearSearchText() {
       this.set('searchText', '');
     },
-  
+
     previewLayer({ value: { objectId, elementId, renderNodeId } }) {
       // We are passing all of objectId, elementId, and renderNodeId to support post-glimmer 1, post-glimmer 2, and root for
       // post-glimmer 2
