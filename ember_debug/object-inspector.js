@@ -468,13 +468,17 @@ function addProperties(properties, hash) {
       continue;
     }
     let options = { isMandatorySetter: isMandatorySetter(hash, prop) };
+
+    if (typeof hash[prop] === 'object' && hash[prop] !== null) {
+      options.isService = hash[prop].type === 'service';
+    }
+
     if (isComputed(hash[prop])) {
-      // if (Array.isArray(hash[prop]._dependentKeys)) {
         options.dependentKeys = hash[prop]._dependentKeys;
-        // debugger;
-        //.slice(0);
-      // }
-      options.readOnly = hash[prop]._readOnly;
+        if (!options.isService) {
+          options.code = hash[prop]._getter.toString();
+        }
+        options.readOnly = hash[prop]._readOnly;
     }
     replaceProperty(properties, prop, hash[prop], options);
   }
@@ -498,7 +502,9 @@ function replaceProperty(properties, name, value, options) {
   let prop = { name, value: inspectValue(value) };
   prop.isMandatorySetter = options.isMandatorySetter;
   prop.readOnly = options.readOnly;
-  prop.dependentKeys = options.dependentKeys;
+  prop.dependentKeys = options.dependentKeys || [];
+  prop.isService = options.isService;
+  prop.code = options.code;
   properties.push(prop);
 }
 

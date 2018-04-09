@@ -34,7 +34,13 @@
                 {{else}}
                   <span class='pad'></span>
                 {{/if}}
-                <span class="mixin__property-name js-object-property-name">{{property.model.name}}</span>
+                <span class="mixin__property-name js-object-property-name">
+                  {{#if property.model.isService}}
+                    <span title="service" style="color:green;font-weight: bold;">{{property.model.name}}</span>
+                  {{else}}
+                    {{property.model.name}}
+                  {{/if}}
+                </span>
                 <span class='mixin__property-value-separator'>: </span>
                 {{#unless property.isEdit}}
                   <span  {{action "valueClick" property.model target=property}} class="{{property.model.value.type}} mixin__property-value js-object-property-value">
@@ -51,25 +57,19 @@
                 {{/unless}}
                 <span class='mixin__property-overridden-by'>(Overridden by {{property.model.overridden}})</span>
                 <button class="mixin__send-btn js-send-to-console-btn" {{action "sendToConsole" property.model target=mixin}}><img src="assets/images/send.png" title="Send to console"></button>
-             
-              {{#if property.model.dependentKeys.length}}
-                    
-              <div style="
-    clear: left;
-    display: block;
-    width: 100%;
-    font-family: monospace;
-    color: red;
-    margin-left: 23px;
-    position: fixed;
-    font-size: 11px;
-    margin-top: 11px;
-">-&gt; {{#each property.model.dependentKeys as |depKey|}}
-                          {{depKey}},
-                        {{/each}}</div>
- {{/if}}
-
              </li>
+
+    
+              {{#each property.model.dependentKeys as |depKey|}}
+                <li style="
+                padding-left: 20px;
+                font-family: monospace;
+                color: #4281eb;
+                line-height: 1;
+                font-size: 12px;
+    ">~ {{depKey}}</li>
+              {{/each}}
+              
             {{/mixin-property}}
           {{else}}
             <li class="mixin__property">No Properties</li>
