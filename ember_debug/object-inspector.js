@@ -503,7 +503,7 @@ function replaceProperty(properties, name, value, options) {
   prop.isMandatorySetter = options.isMandatorySetter;
   prop.readOnly = options.readOnly;
   prop.dependentKeys = options.dependentKeys || [];
-  prop.isService = options.isService;
+  prop.isService = options.isService || prop.value.inspect.includes('@service:');
   prop.code = options.code;
   properties.push(prop);
 }
