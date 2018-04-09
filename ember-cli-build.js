@@ -22,6 +22,12 @@ const map = stew.map;
 const options = {
   fingerprint: {
     enabled: false
+  },
+
+  svgJar: {
+    sourceDirs: [
+      'public/assets/svg'
+    ]
   }
 };
 

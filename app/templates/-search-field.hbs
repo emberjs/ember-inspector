@@ -1,6 +1,6 @@
 {{input value=searchValue type="text" placeholder="Search"}}
 {{#if searchValue}}
   <button {{action "clearSearch"}} class="toolbar__icon-button toolbar__search-clear-button" title="clear">
-    {{icon-input-clear}}
+    {{svg-jar "clear" width="14px" height="14px"}}
   </button>
 {{/if}}

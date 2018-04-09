@@ -29,7 +29,7 @@
             {{#mixin-property model=prop mixin=mixin as |property|}}
               <li class="{{if property.model.overridden 'mixin__property_state_overridden'}} mixin__property js-object-property">
                 {{#if property.model.value.computed}}
-                  <button class="mixin__calc-btn {{if property.isCalculated 'mixin__calc-btn--calculated'}} js-calculate" {{action "calculate" property.model bubbles=false target=mixin}}><img src="assets/images/calculate.svg"></button>
+                  <button class="mixin__calc-btn {{if property.isCalculated 'mixin__calc-btn--calculated'}} js-calculate" {{action "calculate" property.model bubbles=false target=mixin}}><img src="assets/svg/calculate.svg"></button>
                 {{else}}
                   <span class="pad"></span>
                 {{/if}}
