@@ -232,7 +232,6 @@ export default EmberObject.extend(PortMixin, {
 
     if (this.canSend(object)) {
       let details = this.mixinsForObject(object);
-
       this.sendMessage('updateObject', {
         parentObject: objectId,
         property,
@@ -336,6 +335,7 @@ export default EmberObject.extend(PortMixin, {
     mixinDetails.push({ name: 'Own Properties', properties: ownProps, expand: true });
 
     mixins.forEach(mixin => {
+      console.log('mixin',mixin);
       let name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor;
       // Only call `toString` on mixins in Ember >= 2.11
       // See https://github.com/emberjs/ember-inspector/issues/706#issuecomment-325121494
@@ -469,6 +469,11 @@ function addProperties(properties, hash) {
     }
     let options = { isMandatorySetter: isMandatorySetter(hash, prop) };
     if (isComputed(hash[prop])) {
+      // if (Array.isArray(hash[prop]._dependentKeys)) {
+        options.dependentKeys = hash[prop]._dependentKeys;
+        // debugger;
+        //.slice(0);
+      // }
       options.readOnly = hash[prop]._readOnly;
     }
     replaceProperty(properties, prop, hash[prop], options);
@@ -493,6 +498,7 @@ function replaceProperty(properties, name, value, options) {
   let prop = { name, value: inspectValue(value) };
   prop.isMandatorySetter = options.isMandatorySetter;
   prop.readOnly = options.readOnly;
+  prop.dependentKeys = options.dependentKeys;
   properties.push(prop);
 }
 
