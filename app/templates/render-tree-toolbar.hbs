@@ -9,11 +9,6 @@
   <div class="divider" aria-hidden="true"></div>
 
   <div class="toolbar__search js-render-profiles-search">
-    {{input value=searchField placeholder="Search"}}
-    {{#if searchField}}
-      <button {{action "clearSearchField"}} class="toolbar__icon-button toolbar__search-clear-button" title="clear">
-        {{icon-input-clear}}
-      </button>
-    {{/if}}
+    {{partial "search-field"}}
   </div>
 </div>

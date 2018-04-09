@@ -1,11 +1,6 @@
 <div class="toolbar">
   <div class="toolbar__search js-records-search">
-    {{input value=search placeholder="Search"}}
-    {{#if search}}
-      <button {{action "clearSearch"}} class="toolbar__icon-button toolbar__search-clear-button" title="clear">
-        {{icon-input-clear}}
-      </button>
-    {{/if}}
+    {{partial "search-field"}}
   </div>
 
   <div class="divider" aria-hidden="true"></div>

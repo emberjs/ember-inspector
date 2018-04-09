@@ -17,11 +17,11 @@ export default Controller.extend({
   /**
    * Bound to the search field to filter the component list.
    *
-   * @property searchText
+   * @property searchValue
    * @type {String}
    * @default ''
    */
-  searchText: '',
+  searchValue: '',
 
   /**
    * The filtered view list.
@@ -30,16 +30,16 @@ export default Controller.extend({
    * @type {Array<Object>}
    */
   filteredList: filter('model', function(item) {
-    return searchMatch(get(item, 'value.name'), this.get('searchText'));
-  }).property('model.[]', 'searchText'),
+    return searchMatch(get(item, 'value.name'), this.get('searchValue'));
+  }).property('model.[]', 'searchValue'),
 
   optionsChanged: on('init', observer('options.components', function() {
     this.port.send('view:setOptions', { options: this.get('options') });
   })),
 
   actions: {
-    clearSearchText() {
-      this.set('searchText', '');
+    clearSearch() {
+      this.set('searchValue', '');
     },
 
     previewLayer({ value: { objectId, elementId, renderNodeId } }) {

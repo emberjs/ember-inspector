@@ -4,11 +4,6 @@
   <div class="divider" aria-hidden="true"></div>
 
   <div class="toolbar__search js-deprecations-search">
-    {{input value=searchVal placeholder="Search"}}
-    {{#if searchVal}}
-      <button {{action "clearSearchVal"}} class="toolbar__icon-button toolbar__search-clear-button" title="clear">
-        {{icon-input-clear}}
-      </button>
-    {{/if}}
+    {{partial "search-field"}}
   </div>
 </div>

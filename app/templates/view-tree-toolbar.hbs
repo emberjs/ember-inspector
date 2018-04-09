@@ -20,11 +20,6 @@
   <div class="divider"></div>
 
   <div class="toolbar__search js-filter-views">
-    {{input type="text" id="options-views" placeholder="Search" value=searchText}}
-    {{#if searchText}}
-      <button {{action "clearSearchText"}} class="toolbar__icon-button toolbar__search-clear-button" title="clear">
-        {{icon-input-clear}}
-      </button>
-    {{/if}}
+    {{partial "search-field"}}
   </div>
 </div>

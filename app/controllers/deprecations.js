@@ -13,13 +13,15 @@ export default Controller.extend({
    */
   application: controller(),
   search: null,
-  searchVal: debounceComputed('search', 300),
+  searchValue: debounceComputed('search', 300),
+
   filtered: filter('model', function(item) {
     return searchMatch(get(item, 'message'), this.get('search'));
   }).property('model.@each.message', 'search'),
+
   actions: {
-    clearSearchVal() {
-      this.set('searchVal', '');
+    clearSearch() {
+      this.set('searchValue', '');
     },
 
     openResource(item) {

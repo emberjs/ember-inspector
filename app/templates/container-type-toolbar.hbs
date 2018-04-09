@@ -1,12 +1,9 @@
 <div class="toolbar">
   {{reload-button action="reload" classNames="toolbar__icon-button js-reload-container-btn"}}
 
+  <div class="divider" aria-hidden="true"></div>
+
   <div class="toolbar__search toolbar__search--small js-container-instance-search">
-    {{input value=searchVal placeholder="Search"}}
-    {{#if searchVal}}
-      <button {{action "clearSearchVal"}} class="toolbar__icon-button toolbar__search-clear-button" title="clear">
-        {{icon-input-clear}}
-      </button>
-    {{/if}}
+    {{partial "search-field"}}
   </div>
 </div>

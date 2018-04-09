@@ -8,11 +8,11 @@ import { dasherize } from '@ember/string';
 export default Controller.extend({
   application: controller(),
 
-  queryParams: ['filterValue', 'search'],
+  queryParams: ['filterValue', 'searchValue'],
 
   columns: readOnly('modelType.columns'),
 
-  search: '',
+  searchValue: '',
 
   filters: computed(() => []),
 
@@ -21,7 +21,7 @@ export default Controller.extend({
   noFilterValue: none('filterValue'),
 
   modelChanged: observer('model', function() {
-    this.set('search', '');
+    this.set('searchValue', '');
   }),
 
   recordToString(record) {
@@ -72,8 +72,8 @@ export default Controller.extend({
     return { columns };
   }),
 
-  filtered: computed('search', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValue', function() {
-    let search = this.get('search');
+  filtered: computed('searchValue', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValue', function() {
+    let search = this.get('searchValue');
     let filter = this.get('filterValue');
     return this.get('model').filter(item => {
       // check filters
@@ -114,7 +114,7 @@ export default Controller.extend({
     },
 
     clearSearch() {
-      this.set('search', '');
+      this.set('searchValue', '');
     }
   }
 });

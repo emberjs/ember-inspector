@@ -9,7 +9,7 @@ export default Controller.extend({
 
   sortProperties: ['name'],
 
-  searchVal: debounceComputed('search', 300),
+  searchValue: debounceComputed('search', 300),
 
   search: null,
 
@@ -18,8 +18,8 @@ export default Controller.extend({
   }).property('model.@each.name', 'search'),
 
   actions: {
-    clearSearchVal() {
-      this.set('searchVal', '');
+    clearSearch() {
+      this.set('searchValue', '');
     },
 
     /**
