@@ -35,9 +35,8 @@ export default Route.extend({
           property = options.property,
           objectId = options.objectId,
           errors = options.errors;
-          // console.log(Object.assign({},details));
+
     NativeArray.apply(details);
-   
     details.forEach(arrayize);
 
     let controller = this.get('controller');
