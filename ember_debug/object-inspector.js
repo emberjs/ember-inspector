@@ -476,7 +476,11 @@ function addProperties(properties, hash) {
     if (isComputed(hash[prop])) {
         options.dependentKeys = hash[prop]._dependentKeys;
         if (!options.isService) {
-          options.code = hash[prop]._getter.toString();
+          try {
+            options.code = hash[prop]._getter.toString();
+          } catch(e) {
+            options.code = '';
+          }
         }
         options.readOnly = hash[prop]._readOnly;
     }
