@@ -14,7 +14,26 @@
 :root {
   --pink: #909;
   --green: #318409;
+  --black: #000;
+  --light-black: #333;
+  --white: #fff;
   --light-pink: #b96aa0;
+}
+
+.icon-service {
+  background-color: #76c76b;
+  border-color: #569c69;
+  &::before {
+    content: "S";
+  }
+}
+
+.icon-computed {
+  background-color: #e358b1;
+  border-color: #740674;
+  &::before {
+    content: "C";
+  }
 }
 
 .mixin__property--group {
@@ -37,7 +56,6 @@
 .mixin__property-dependency-item--computed {
   color: var(--light-pink);
 }
-
 
 .mixin__property-name--computed {
   color: var(--pink);
@@ -70,7 +88,6 @@
   margin-top: 1px;
 }
 
-
 .property-icon {
   width: 16px;
   margin-top: 1px;
@@ -78,39 +95,22 @@
   margin-right: 3px;
   margin-bottom: 2px;
   height: 17px;
-  background-color: gray;
-  border: 1px solid black;
+  border: 1px solid var(--black);
   border-radius: 4px;
   font-family: monospace;
   font-size: 16px;
   text-align: center;
   line-height: 1;
-  color: white;
+  color: var(--white);
   font-weight: bold;
+  text-shadow: 0px 0px 2px var(--light-black);
+
   &:hover {
     cursor: pointer;
-    box-shadow: 0px 0px 1px 0px #fff inset;
+    box-shadow: 0px 0px 1px 0px var(--white) inset;
   }
   &:active {
     cursor: pointer;
-    box-shadow: 0px 0px 1px 0px #333 inset;
-  }
-}
-
-.icon-service {
-  background-color: #76c76b;
-  border-color: #569c69;
-  text-shadow: 0px 0px 2px #740674;
-  &::before {
-    content: "S";
-  }
-}
-
-.icon-computed {
-  background-color: #e358b1;
-  border-color: #740674;
-  text-shadow: 0px 0px 2px #740674;
-  &::before {
-    content: "C";
+    box-shadow: 0px 0px 1px 0px var(--light-black) inset;
   }
 }
