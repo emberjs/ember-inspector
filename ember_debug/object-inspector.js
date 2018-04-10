@@ -335,7 +335,6 @@ export default EmberObject.extend(PortMixin, {
     mixinDetails.push({ name: 'Own Properties', properties: ownProps, expand: true });
 
     mixins.forEach(mixin => {
-      console.log('mixin',mixin);
       let name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor;
       // Only call `toString` on mixins in Ember >= 2.11
       // See https://github.com/emberjs/ember-inspector/issues/706#issuecomment-325121494

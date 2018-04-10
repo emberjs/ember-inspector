@@ -27,7 +27,6 @@ export default Controller.extend({
   inspectorExpanded: false,
 
   pushMixinDetails(name, property, objectId, details, errors) {
-    console.log('pushMixinDetails', arguments);
     details = {
       name,
       property,

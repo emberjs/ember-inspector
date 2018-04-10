@@ -1,6 +1,6 @@
 import { computed } from '@ember/object';
 import Component from '@ember/component';
-import { equal, alias } from '@ember/object/computed';
+import { equal, alias, and } from '@ember/object/computed';
 
 export default Component.extend({
   isEdit: false,
@@ -37,7 +37,7 @@ export default Component.extend({
 
   isDepsExpanded: false,
 
-  showDependedKeys: computed.and('isDepsExpanded', 'model.dependentKeys.length', 'isCalculated'),
+  showDependedKeys: and('isDepsExpanded', 'model.dependentKeys.length', 'isCalculated'),
 
   _parseTextValue(value) {
     let parsedValue;
