@@ -1,0 +1,6 @@
+{{input value=value type="text" placeholder="Search"}}
+{{#if search}}
+  <button {{action "clear"}} class="toolbar__icon-button toolbar__search-clear-button" title="clear">
+    {{svg-jar "clear" width="14px" height="14px"}}
+  </button>
+{{/if}}

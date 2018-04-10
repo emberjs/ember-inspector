@@ -1,7 +1,7 @@
 <tr class="list__row {{if isExpanded 'list__row_arrow_expanded' 'list__row_arrow_collapsed'}} js-deprecation-item" {{action "toggleExpand"}}>
   {{#list.cell class="list__cell_main js-deprecation-main-cell" title=model.message}}
     <div class="list__cell-arrow"></div>
-    <span class="pill pill_not-clickable js-deprecation-count">{{model.count}}</span>
+    <span class="pill pill--not-clickable js-deprecation-count">{{model.count}}</span>
     <span class="js-deprecation-message">{{model.message}}</span>
     {{#if model.url}}
       <a href={{model.url}} class="external-link js-deprecation-url" target="_blank" title="Transition Plan">

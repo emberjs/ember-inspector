@@ -70,15 +70,15 @@ export default Controller.extend({
   isPendingFilter: equal('filter', 'pending'),
   isFulfilledFilter: equal('filter', 'fulfilled'),
 
-  search: null,
+  searchValue: null,
   effectiveSearch: null,
 
-  searchChanged: observer('search', function() {
+  searchChanged: observer('searchValue', function() {
     debounce(this, this.notifyChange, 500);
   }),
 
   notifyChange() {
-    this.set('effectiveSearch', this.get('search'));
+    this.set('effectiveSearch', this.get('searchValue'));
     next(() => {
       this.notifyPropertyChange('model');
     });

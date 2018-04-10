@@ -1,15 +1,16 @@
+$toolbar-height: 28px;
+
 .toolbar {
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: row;
   flex-direction: row;
   align-items: center;
+  min-height: $toolbar-height;
 }
 
 .toolbar > * {
-  -webkit-flex: none;
   flex: none;
 }
+
 
 /**
  Toolbar Title
@@ -17,7 +18,6 @@
 */
 
 .toolbar__title {
-  -webkit-flex: auto;
   flex: auto;
   font-weight: 700;
   white-space: nowrap;
@@ -31,19 +31,21 @@
 */
 
 .toolbar__icon-button {
-  display: inline-block;
-  width: 32px;
-  height: 20px;
-  margin-left: 0;
-  padding: 0;
-  vertical-align: top;
+  display: flex;
+  align-items: center;
+  height: $toolbar-height;
+  margin-right: 2px;
+  margin-left: 2px;
+  padding: 0 2px;
   border: 0 transparent none;
-  background-color: rgba(0, 0, 0, 0);
-  background: white;
+  vertical-align: top;
+  background: transparent;
 }
 
+/* if first item in toolbar, create extra clickable space */
 .toolbar__icon-button:first-child {
-  margin-left: -2px;
+  margin-left: 0;
+  padding-left: 10px;
 }
 
 .toolbar__icon-button:focus {
@@ -96,17 +98,40 @@
   fill: #cacaca;
 }
 
+
+
 /**
  Toolbar Checkboxes
  ==================
 */
 
 .toolbar__checkbox {
-  margin: auto 6px auto 0;
-  height: auto;
-  line-height: 20px;
+  height: 100%;
   white-space: nowrap;
   overflow: hidden;
+  margin-right: 4px;
+  margin-left: 4px;
+}
+
+.toolbar__checkbox label {
+  display: block;
+  height: 100%;
+  line-height: $toolbar-height;
+}
+
+.toolbar__checkbox input {
+  margin: 0;
+}
+
+/* if first item in toolbar, create extra clickable space */
+
+.toolbar__checkbox:first-child {
+  margin-left: 0;
+}
+
+.toolbar__checkbox:first-child label {
+  margin-left: 0;
+  padding-left: 8px;
 }
 
 /**
@@ -120,13 +145,12 @@
   position: relative;
   cursor: default;
   display: inline-block;
-  margin-right: 6px;
-  padding: 2px 6px;
-  line-height: 12px;
-  background: transparent;
-  text-shadow: rgba(255, 255, 255, 0.5) 0 1px 0;
+  margin-left: 2px;
+  margin-right: 2px;
+  padding: 0 6px;
+  background: rgba(0, 0, 0, 0.04);
   border: none;
-  border-radius: 8px;
+  border-radius: 2px;
   vertical-align: middle;
 }
 
@@ -135,21 +159,27 @@
 .toolbar__radio:focus,
 .toolbar__radio.active {
   outline: none;
-  color: white;
-  text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0;
 }
 
+.toolbar__radio--first {
+  margin-left: 4px;
+}
+
+.toolbar__radio--last {
+  margin-right: 4px;
+}
 
 .toolbar__radio:hover {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .toolbar__radio:active {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .toolbar__radio.active {
-  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  background: #3F81EE;
 }
 
 /**
@@ -158,23 +188,22 @@
 */
 
 .toolbar__search {
-  margin-right: 6px;
+  position: relative;
+  margin-right: 4px;
+  margin-left: 4px;
 }
 
 .toolbar__search input {
-  -moz-box-sizing: border-box;
   box-sizing: border-box;
-  border: 1px solid #b3b3b3;
-  border-radius: 2px;
-  margin: auto 0;
-  padding: 0 3px;
+  width: 175px;
+  height: $toolbar-height - 7;
   margin: 0;
-  -webkit-appearance: none;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 0 15px 0 4px;
   font-size: 12px;
-  background-color: #FFF;
-  height: 20px;
   line-height: normal;
-  width: 179px;
+  background-color: #FFF;
 }
 
 .toolbar__search input:focus {
@@ -185,6 +214,18 @@
   width: 150px;
 }
 
+.toolbar__search-clear-button {
+  position: absolute;
+  top: 3px;
+  right: 0;
+  width: auto;
+  height: auto;
+
+  svg {
+    path { fill: #666; }
+  }
+}
+
 /**
  Toolbar Divider
  ===============
@@ -193,8 +234,9 @@
 .toolbar .divider {
   display: inline-block;
   width: 1px;
-  height: 16px;
+  height: $toolbar-height - 10px;
   position: relative;
-  margin-right: 6px;
+  margin-right: 4px;
+  margin-left: 4px;
   background-color: #cacaca;
 }
