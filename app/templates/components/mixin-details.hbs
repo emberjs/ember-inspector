@@ -38,10 +38,10 @@
                   <span class="pad"></span>
                 {{/if}}
                 <span class="mixin__property-name js-object-property-name">
-                  {{#if property.model.isService}}
+                  {{#if property.isService}}
                       <span title="service" class="mixin__property-name--service mixin__property--group">{{property.model.name}}</span>
                   {{else}}
-                    {{#if property.model.dependentKeys.length}}
+                    {{#if property.hasDependedKeys}}
                       <span title="computed" class="mixin__property-name--computed mixin__property--group">{{property.model.name}}</span>
                     {{else}}
                       {{property.model.name}}
