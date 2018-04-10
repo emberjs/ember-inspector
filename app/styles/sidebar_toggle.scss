@@ -6,11 +6,18 @@
 
 .sidebar-toggle {
   position: absolute;
-  top: 2px;
+  top: 0;
+  max-height: 27px;
 }
 
+  .toolbar__icon-button.sidebar-toggle {
+    margin-right: 0;
+    padding-right: 6px;
+    background: #fff;
+  }
+
 .sidebar-toggle--right {
-  right: -6px;
+  right: 0;
 }
 
 .sidebar-toggle--left {
