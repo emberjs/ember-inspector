@@ -203,7 +203,6 @@ export default Controller.extend({
     },
 
     scrollToElement(elementId) {
-      console.log('going to message view debug with ', elementId);
       this.get('port').send('view:scrollToElement', { elementId });
     },
 
