@@ -476,7 +476,7 @@ function addProperties(properties, hash) {
     if (isComputed(hash[prop])) {
         options.dependentKeys = hash[prop]._dependentKeys;
         if (!options.isService) {
-          if (typeof hash[prop]._getter === 'string') {
+          if (typeof hash[prop]._getter === 'function') {
             options.code = Function.prototype.toString.call(hash[prop]._getter)
           } else {
             options.code = '';

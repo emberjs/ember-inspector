@@ -10,3 +10,107 @@
   margin-left: 39px;
   word-break: break-all;
 }
+
+:root {
+  --pink: #909;
+  --green: #318409;
+  --light-pink: #b96aa0;
+}
+
+.mixin__property--group {
+  font-weight: bold;
+}
+
+.mixin__property-dependency-list, .mixin__property-dependency-item {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: block;
+  margin-bottom: 0.2em;
+}
+
+.mixin__property-dependency-item {
+  margin-left: 2.5em;
+  position: relative;
+}
+
+.mixin__property-dependency-item--computed {
+  color: var(--light-pink);
+}
+
+
+.mixin__property-name--computed {
+  color: var(--pink);
+}
+.mixin__property-name--service {
+  color: var(--green);
+}
+
+.mixin__property-dependency-item::before {
+  content: "";
+  display: block;
+  background: url("data:image/svg+xml;utf8,<svg width='8' height='16' xmlns='http://www.w3.org/2000/svg'><g transform='translate(-14 -16)' stroke='#979797' fill='none' fill-rule='evenodd'><circle cx='18' cy='28' r='3'/><path d='M18 24.571V16.5'/></g></svg>") no-repeat;
+  width: 8px;
+  height: 16px;
+  position: absolute;
+  bottom: 0.2em;
+  left: -0.8em;
+}
+
+.mixin__property-dependency-item:first-child::before {
+  background: url('data:image/svg+xml;utf8,<svg width="17" height="15" version="1" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd" stroke="#979797"><circle cx="13" cy="11" r="3"/><path d="M13 8c0-3-1-4-4-4H5C2 4 1 3 1 0"/></g></svg>') no-repeat;
+  width: 17px;
+  height: 15px;
+  position: absolute;
+  bottom: 0.2em;
+  left: -1.6em;
+}
+
+.mixin__property-dependenciy-list {
+  margin-top: 1px;
+}
+
+
+.property-icon {
+  width: 16px;
+  margin-top: 1px;
+  margin-left: 3px;
+  margin-right: 3px;
+  margin-bottom: 2px;
+  height: 17px;
+  background-color: gray;
+  border: 1px solid black;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 16px;
+  text-align: center;
+  line-height: 1;
+  color: white;
+  font-weight: bold;
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 1px 0px #fff inset;
+  }
+  &:active {
+    cursor: pointer;
+    box-shadow: 0px 0px 1px 0px #333 inset;
+  }
+}
+
+.icon-service {
+  background-color: #76c76b;
+  border-color: #569c69;
+  text-shadow: 0px 0px 2px #740674;
+  &::before {
+    content: "S";
+  }
+}
+
+.icon-computed {
+  background-color: #e358b1;
+  border-color: #740674;
+  text-shadow: 0px 0px 2px #740674;
+  &::before {
+    content: "C";
+  }
+}
