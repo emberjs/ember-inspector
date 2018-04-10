@@ -18,10 +18,6 @@ export default Controller.extend({
   }).property('model.@each.name', 'search'),
 
   actions: {
-    clearSearch() {
-      this.set('searchValue', '');
-    },
-
     /**
      * Inspect an instance in the object inspector.
      * Called whenever an item in the list is clicked.

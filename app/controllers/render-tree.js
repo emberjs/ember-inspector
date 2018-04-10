@@ -63,10 +63,6 @@ export default Controller.extend({
      */
     closeWarning() {
       this.set('isWarningClosed', true);
-    },
-
-    clearSearch() {
-      this.set('searchValue', '');
     }
   },
 

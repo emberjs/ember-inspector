@@ -20,10 +20,6 @@ export default Controller.extend({
   }).property('model.@each.message', 'search'),
 
   actions: {
-    clearSearch() {
-      this.set('searchValue', '');
-    },
-
     openResource(item) {
       this.get('adapter').openResource(item.fullSource, item.line);
     },
