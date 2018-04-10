@@ -37,7 +37,9 @@ export default Component.extend({
 
   isDepsExpanded: false,
 
-  showDependedKeys: and('isDepsExpanded', 'model.dependentKeys.length', 'isCalculated'),
+  hasDependedKeys: and('model.dependentKeys.length', 'isCalculated'),
+
+  showDependedKeys: and('isDepsExpanded', 'hasDependedKeys'),
 
   _parseTextValue(value) {
     let parsedValue;
