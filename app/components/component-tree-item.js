@@ -11,11 +11,5 @@ export default Component.extend({
     let expanderOffset = this.get('item.hasChildren') ? 10 : 0;
     let padding = this.get('item.parentCount') * 25 - expanderOffset;
     return htmlSafe(`padding-left: ${padding}px;`);
-  }),
-
-  actions: {
-    toggleExpanded(item) {
-      item.toggleProperty('expanded');
-    },
-  },
+  })
 });

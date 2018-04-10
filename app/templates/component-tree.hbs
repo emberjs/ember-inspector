@@ -5,6 +5,7 @@
       {{component-tree-item
         item=item
         pinnedObjectId=pinnedObjectId
+        toggleExpanded=(action "toggleExpanded" item)
         inspect=(action "inspect")
         scrollToElement=(action "scrollToElement")
         sendObjectToConsole=(action "sendObjectToConsole")}}
