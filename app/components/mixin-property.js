@@ -17,29 +17,31 @@ export default Component.extend({
   txtValue: null,
   dateValue: null,
 
-  isCalculated: computed('model.value.type', function() {
-    return this.get('model.value.type') !== 'type-descriptor';
+  isCalculated: computed('valueType', function() {
+    return this.get('valueType') !== 'type-descriptor';
   }),
+
+  valueType: alias('model.value.type'),
 
   isService: alias('model.isService'),
 
-  isOverhidden: alias('model.overridden'),
+  isOverridden: alias('model.overridden'),
 
-  isEmberObject: equal('model.value.type', 'type-ember-object'),
+  isEmberObject: equal('valueType', 'type-ember-object'),
 
   isComputedProperty: alias('model.value.computed'),
 
-  isFunction: equal('model.value.type', 'type-function'),
+  isFunction: equal('valueType', 'type-function'),
 
-  isArray: equal('model.value.type', 'type-array'),
+  isArray: equal('valueType', 'type-array'),
 
-  isDate: equal('model.value.type', 'type-date'),
+  isDate: equal('valueType', 'type-date'),
 
   isDepsExpanded: false,
 
-  hasDependedKeys: and('model.dependentKeys.length', 'isCalculated'),
+  hasDependentKeys: and('model.dependentKeys.length', 'isCalculated'),
 
-  showDependedKeys: and('isDepsExpanded', 'hasDependedKeys'),
+  showDependentKeys: and('isDepsExpanded', 'hasDependentKeys'),
 
   _parseTextValue(value) {
     let parsedValue;
@@ -77,7 +79,7 @@ export default Component.extend({
       }
 
       let value = this.get('model.value.inspect');
-      let type = this.get('model.value.type');
+      let type = this.get('valueType');
       if (type === 'type-string') {
         value = `"${value}"`;
       }

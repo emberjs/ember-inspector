@@ -27,10 +27,10 @@
         <ul class="mixin__properties">
           {{#each mixin.sortedProperties as |prop|}}
             {{#mixin-property model=prop mixin=mixin as |property|}}
-              <li class="{{if property.isOverhidden 'mixin__property_state_overridden'}} mixin__property js-object-property">
+              <li class="{{if property.isOverridden 'mixin__property_state_overridden'}} mixin__property js-object-property">
                 {{#if property.isComputedProperty}}
                   {{#if property.isCalculated}}
-                      <div title="{{if property.model.code property.model.code 'code not avaliable' }}" {{action "toggleDeps" target=property}} class="property-icon {{if property.isService 'icon-service' 'icon-computed' }}"></div>
+                      <div title="{{if property.model.code property.model.code 'code not avaliable' }}" {{action "toggleDeps" target=property}} class="mixin__property-icon {{if property.isService 'mixin__property-icon--service' 'mixin__property-icon--computed' }}"></div>
                     {{else}}
                       <button class="mixin__calc-btn js-calculate" {{action "calculate" property.model bubbles=false target=mixin}}><img src="assets/svg/calculate.svg"></button>
                   {{/if}}
@@ -41,7 +41,7 @@
                   {{#if property.isService}}
                       <span title="service" class="mixin__property-name--service mixin__property--group">{{property.model.name}}</span>
                   {{else}}
-                    {{#if property.hasDependedKeys}}
+                    {{#if property.hasDependentKeys}}
                       <span title="computed" class="mixin__property-name--computed mixin__property--group">{{property.model.name}}</span>
                     {{else}}
                       {{property.model.name}}
@@ -50,9 +50,7 @@
                 </span>
                 <span class='mixin__property-value-separator'>: </span>
                 {{#unless property.isEdit}}
-                  <span  {{action "valueClick" property.model target=property}} class="{{property.model.value.type}} mixin__property-value js-object-property-value">
-                    {{property.model.value.inspect}}
-                  </span>
+                  <span  {{action "valueClick" property.model target=property}} class="{{property.model.value.type}} mixin__property-value js-object-property-value">{{property.model.value.inspect}}</span>
                 {{else}}
                   {{#unless property.isDate}}
                     {{property-field value=property.txtValue finished-editing="finishedEditing" save-property="saveProperty" propertyComponent=property
@@ -66,8 +64,8 @@
                 <button class="mixin__send-btn send-to-console js-send-to-console-btn" {{action "sendToConsole" property.model target=mixin}}><img src="assets/images/send.png" title="Send to console"></button>
              </li>
              
-              {{#if property.showDependedKeys}}
-                <li class="mixin__property-dependenciy-list">
+              {{#if property.showDependentKeys}}
+                <li class="mixin__property-dependency-list">
                   {{#each property.model.dependentKeys as |depKey index|}}
                     <span class="mixin__property-dependency-item mixin__property-dependency-item--computed">
                       <span class="mixin__property-dependency-name" data-label="object-property-name">{{depKey}}</span>
