@@ -22,7 +22,7 @@
 
 .icon-service {
   background-color: #76c76b;
-  border-color: #569c69;
+  border-color: #569c69 !important;
   &::before {
     content: "S";
   }
@@ -30,7 +30,7 @@
 
 .icon-computed {
   background-color: #e358b1;
-  border-color: #740674;
+  border-color: #740674  !important;
   &::before {
     content: "C";
   }
@@ -89,16 +89,16 @@
 }
 
 .property-icon {
-  width: 16px;
+  width: 14px;
   margin-top: 1px;
   margin-left: 3px;
   margin-right: 3px;
   margin-bottom: 2px;
-  height: 17px;
+  height: 14px;
   border: 1px solid var(--black);
-  border-radius: 4px;
+  border-radius: 3px;
   font-family: monospace;
-  font-size: 16px;
+  font-size: 14px;
   text-align: center;
   line-height: 1;
   color: var(--white);
