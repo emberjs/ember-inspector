@@ -110,6 +110,38 @@ module('Container Tab', function(hooks) {
     assert.equal(rows[0].textContent.trim(), 'first');
   });
 
+  test("It should clear the search filter when the clear button is clicked", async function(assert) {
+    let instances = getInstances();
+
+    port.reopen({
+      send(n, m) {
+        name = n;
+        message = m;
+        if (name === 'container:getTypes') {
+          this.trigger('container:types', { types: getTypes() });
+        }
+
+        if (name === 'container:getInstances' && message.containerType === 'controller') {
+          this.trigger('container:instances', { instances, status: 200 });
+        }
+      }
+    });
+
+    await visit('/container-types/controller');
+    let rows;
+
+    rows = findAll('.js-container-instance-list-item');
+    assert.equal(rows.length, 2, 'expected all rows');
+
+    await fillIn('.js-container-instance-search input', 'xxxxx');
+    rows = findAll('.js-container-instance-list-item');
+    assert.equal(rows.length, 0, 'expected filtered rows');
+
+    await click('.js-search-field-clear-button');
+    rows = findAll('.js-container-instance-list-item');
+    assert.equal(rows.length, 2, 'expected all rows');
+  });
+
   test("Successfully redirects if the container type is not found", async function(assert) {
 
     port.reopen({

@@ -211,6 +211,23 @@ module('Data Tab', function(hooks) {
     assert.equal(rows.length, 2);
   });
 
+  test("It should clear the search filter when the clear button is clicked", async function(assert) {
+    await visit('/data/model-types');
+    await click(findAll('.js-model-type a')[1]);
+
+    let rows = findAll('.js-record-list-item');
+    assert.equal(rows.length, 2);
+
+    await fillIn('.js-records-search input', 'Hello');
+
+    rows = findAll('.js-record-list-item');
+    assert.equal(rows.length, 1);
+
+    await click('.js-search-field-clear-button');
+    rows = findAll('.js-record-list-item');
+    assert.equal(rows.length, 2);
+  });
+
   test('Columns successfully updated when switching model types', async function t(assert) {
     await visit('/data/model-types/App.Post/records');
     let columns = findAll('.js-header-column');

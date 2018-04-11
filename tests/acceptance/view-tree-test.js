@@ -240,6 +240,27 @@ module('View Tree Tab', function(hooks) {
     ], 'expected title tips');
   });
 
+  test("It should clear the search filter when the clear button is clicked", async function(assert) {
+    let viewTree = defaultViewTree();
+
+    await visit('/');
+    run(() => {
+      port.trigger('view:viewTree', { tree: viewTree });
+    });
+    await wait();
+
+    let treeNodes = findAll('.js-view-tree-item');
+    assert.equal(treeNodes.length, 3, 'expected all tree nodes');
+
+    await fillIn('.js-filter-views input', 'post');
+    treeNodes = findAll('.js-view-tree-item');
+    assert.equal(treeNodes.length, 1, 'expected filtered tree nodes');
+
+    await click('.js-search-field-clear-button');
+    treeNodes = findAll('.js-view-tree-item');
+    assert.equal(treeNodes.length, 3, 'expected all tree nodes');
+  });
+
   test("It should update the view tree when the port triggers a change", async function(assert) {
     assert.expect(4);
     let treeNodes, viewTree = defaultViewTree();

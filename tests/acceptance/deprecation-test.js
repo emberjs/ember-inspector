@@ -1,4 +1,4 @@
-import { visit, find, findAll, click } from '@ember/test-helpers';
+import { visit, find, findAll, fillIn, click } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 
@@ -173,5 +173,31 @@ module('Deprecation Tab', function(hooks) {
     assert.equal(name, 'deprecation:sendStackTraces');
     assert.equal(message.deprecation.message, 'Deprecation 1');
     assert.equal(message.deprecation.sources.length, 1);
+  });
+
+  test("It should clear the search filter when the clear button is clicked", async function(assert) {
+    port.reopen({
+      send(name) {
+        if (name === 'deprecation:watch') {
+          port.trigger('deprecation:deprecationsAdded', {
+            deprecations: deprecationsWithSource()
+          });
+        }
+        return this._super(...arguments);
+      }
+    });
+
+    await visit('/deprecations');
+
+    let sources = findAll('.js-deprecation-source');
+    assert.equal(sources.length, 2, 'shows all sources');
+
+    await fillIn('.js-deprecations-search input', 'xxxx');
+    sources = findAll('.js-deprecation-source');
+    assert.equal(sources.length, 0, 'sources filtered');
+
+    await click('.js-search-field-clear-button');
+    sources = findAll('.js-deprecation-source');
+    assert.equal(sources.length, 2, 'show all sources');
   });
 });

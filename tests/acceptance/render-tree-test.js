@@ -138,4 +138,29 @@ module('Render Tree Tab', function(hooks) {
     assert.equal(rows.length, 1, "The second row is the only one showing");
     assert.equal(rows[0].querySelector('.js-render-profile-name').textContent.trim(), "Second View Rendering");
   });
+
+  test("It should clear the search filter when the clear button is clicked", async function(assert) {
+    port.reopen({
+      send(n/*, m*/) {
+        if (n === 'render:watchProfiles') {
+          this.trigger('render:profilesAdded', {
+            profiles: generateProfiles()
+          });
+        }
+      }
+    });
+
+    await visit('/render-tree');
+
+    let rows = findAll('.js-render-profile-item');
+    assert.equal(rows.length, 2, "expected all rows");
+
+    await fillIn('.js-render-profiles-search input', 'xxxxxx');
+    rows = findAll('.js-render-profile-item');
+    assert.equal(rows.length, 0, 'expected filtered rows');
+
+    await click('.js-search-field-clear-button');
+    rows = findAll('.js-render-profile-item');
+    assert.equal(rows.length, 2, 'expected all rows');
+  });
 });
