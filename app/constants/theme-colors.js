@@ -1,14 +1,11 @@
 export const LightTheme = {
   base00: '#ffffff',
   base01: '#f3f3f3',
-  base02: '#f0f0f0',
   base03: '#ededed',
-  base04: '#e6e6e6',
   base05: '#dedede',
   base06: '#d1d1d1',
   base07: '#cccccc',
   base08: '#cacaca',
-  base09: '#bdbdbd',
   base10: '#b4b4b4',
   base11: '#b3b3b3',
   base12: '#b2b2b2',
@@ -55,7 +52,6 @@ const themeKeys = Object.keys(LightTheme);
 const customDarkThemeColors = {
   base00: '#242424',
   base01: '#242424',
-  base02: '#242424',
 };
 
 export const DarkTheme = themeKeys.reduce((all, key) => {
