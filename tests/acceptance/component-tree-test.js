@@ -186,6 +186,27 @@ module('Component Tab', function(hooks) {
     );
   });
 
+  test("It should clear the search filter when the clear button is clicked", async function(assert) {
+    let viewTree = defaultViewTree();
+
+    await visit('/component-tree');
+    run(() => {
+      port.trigger('view:viewTree', { tree: viewTree });
+    });
+    await wait();
+
+    let treeNodes = findAll('.component-tree-item');
+    assert.equal(treeNodes.length, 4, 'expected all tree nodes');
+
+    await fillIn('.js-filter-views input', 'xxxxxx');
+    treeNodes = findAll('.component-tree-item');
+    assert.equal(treeNodes.length, 0, 'expected filtered tree nodes');
+
+    await click('.js-search-field-clear-button');
+    treeNodes = findAll('.component-tree-item');
+    assert.equal(treeNodes.length, 4, 'expected all tree nodes');
+  });
+
   test('It should update the view tree when the port triggers a change, preserving the expanded state of existing nodes', async function(assert) {
     let viewTree = defaultViewTree();
 
