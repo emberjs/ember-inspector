@@ -36,14 +36,14 @@ let ComponentViewItem = EmberObject.extend({
 });
 
 const flattenSearchTree = (
-  searchText,
+  searchValue,
   treeNode,
   parent,
   parentCount,
   parentMatched,
   list
 ) => {
-  let searchMatched = searchMatch(get(treeNode, 'value.name'), searchText);
+  let searchMatched = searchMatch(get(treeNode, 'value.name'), searchValue);
 
   let viewItem = ComponentViewItem.create({
     view: treeNode.value,
@@ -63,7 +63,7 @@ const flattenSearchTree = (
 
   treeNode.children.forEach(child => {
     flattenSearchTree(
-      searchText,
+      searchValue,
       child,
       viewItem,
       newParentCount,
@@ -102,13 +102,13 @@ export default Controller.extend({
   /**
    * Bound to the search field to filter the component list.
    *
-   * @property searchText
+   * @property searchValue
    * @type {String}
    * @default ''
    */
-  searchText: '',
+  searchValue: '',
 
-  activeSearch: notEmpty('searchText'),
+  activeSearch: notEmpty('searchValue'),
 
   /**
    * The filtered view list.
@@ -135,16 +135,16 @@ export default Controller.extend({
     return viewArray;
   }),
 
-  viewArray: computed('viewTree', 'searchText', function() {
+  viewArray: computed('viewTree', 'searchValue', function() {
     let tree = this.get('viewTree');
     if (!tree) {
       return [];
     }
-    if (isEmpty(this.get('searchText'))) {
+    if (isEmpty(this.get('searchValue'))) {
       return flattenTree(tree, null, 0, []);
     } else {
       return flattenSearchTree(
-        this.get('searchText'),
+        this.get('searchValue'),
         tree,
         null,
         0,
