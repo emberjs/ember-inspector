@@ -14,8 +14,18 @@
   }
 }
 
+.component-tree-item__view-element {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
 .component-tree-item__tag {
   cursor: pointer;
+  display: flex;
 }
 
 .component-tree-item__bracket::before {

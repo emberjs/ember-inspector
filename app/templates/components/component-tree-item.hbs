@@ -5,18 +5,16 @@
     </svg>
   {{/if}}
 
-  <code class="component-tree-item__tag" {{action inspect item.view.objectId}}>
-    <span class="component-tree-item__name {{if item.view.isComponent "component-tree-item__bracket"}}">
-      {{item.view.name}}
-    </span>
+  <code class="component-tree-item__tag {{if item.view.isComponent "component-tree-item__bracket"}}"
+    onclick={{action inspect item.view.objectId}}>
+    {{item.view.name}}
   </code>
 
-  <div {{action scrollToElement item.view.objectId}}
+  <button {{action scrollToElement item.view.objectId}}
     class="component-tree-item__view-element">
     {{svg-jar "eye"
       title="Scroll into view"
-      class="component-tree-item__view-element"
       width="20px" height="20px"
     }}
-  </div>
+  </button>
 </div>
