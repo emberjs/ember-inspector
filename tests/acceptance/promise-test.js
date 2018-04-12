@@ -1,4 +1,4 @@
-import { visit, find, findAll, click } from '@ember/test-helpers';
+import { visit, find, findAll, fillIn, click } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { triggerPort } from '../helpers/trigger-port';
@@ -290,5 +290,26 @@ module('Promise Tab', function(hooks) {
 
     assert.equal(name, 'objectInspector:inspectById');
     assert.deepEqual(message, { objectId: 100 });
+  });
+
+  test("It should clear the search filter when the clear button is clicked", async function(assert) {
+    await visit('/promise-tree');
+
+    await triggerPort(this, 'promise:promisesUpdated', {
+      promises: [
+        generatePromise({
+          guid: 1,
+          label: 'Promise 1',
+          state: 'created'
+        })
+      ]
+    });
+    await wait();
+
+    assert.equal(findAll('.js-promise-tree-item').length, 1);
+    await fillIn('.js-promise-search input', 'xxxxx');
+    assert.equal(findAll('.js-promise-tree-item').length, 0);
+    await click('.js-search-field-clear-button');
+    assert.equal(findAll('.js-promise-tree-item').length, 1);
   });
 });
