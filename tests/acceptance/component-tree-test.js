@@ -215,12 +215,12 @@ module('Component Tab', function(hooks) {
       },
     });
 
-    await visit('/');
+    await visit('/component-tree');
     let viewTree = defaultViewTree();
     viewTree.children = [];
     run(() => port.trigger('view:viewTree', { tree: viewTree }));
     await wait();
-    await triggerEvent('.js-view-tree-item', 'mouseenter');
+    await triggerEvent('.component-tree-item', 'mouseenter');
     assert.equal(
       messageSent.name,
       'view:previewLayer',
@@ -231,11 +231,52 @@ module('Component Tab', function(hooks) {
       'applicationView',
       'Client sent correct id to preview layer'
     );
-    await triggerEvent('.js-view-tree-item', 'mouseleave');
+    await triggerEvent('.component-tree-item', 'mouseleave');
     assert.equal(
       messageSent.name,
       'view:hidePreview',
       'Client asked to hide preview'
     );
+  });
+
+  test('Scrolling an element into view', async function(assert) {
+    let messageSent = null;
+    port.reopen({
+      send(name, message) {
+        messageSent = { name, message };
+      },
+    });
+
+    await visit('/component-tree');
+    let viewTree = defaultViewTree();
+    run(() => port.trigger('view:viewTree', { tree: viewTree }));
+    await wait();
+
+    await click('.component-tree-item__view-element');
+    assert.equal(
+      messageSent.name,
+      'view:scrollToElement',
+      'Client asked to scroll element into view'
+    );
+  });
+
+  test('Inspects the component in the object inspector on click', async function(assert) {
+    let messageSent = null;
+    port.reopen({
+      send(name, message) {
+        messageSent = { name, message };
+      }
+    });
+
+    await visit('/component-tree');
+    let tree = defaultViewTree();
+    run(() => {
+      port.trigger('view:viewTree', { tree });
+    });
+    await wait();
+
+    await click('.component-tree-item--component code');
+    assert.equal(messageSent.name, 'objectInspector:inspectById');
+    assert.equal(messageSent.message.objectId, 'ember392');
   });
 });

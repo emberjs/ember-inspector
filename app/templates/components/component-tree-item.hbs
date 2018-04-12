@@ -1,4 +1,4 @@
-<div style={{labelStyle}} class="component-tree-item {{if (eq pinnedObjectId item.view.objectId) "component-tree-item--selected"}}">
+<div style={{labelStyle}} class="component-tree-item {{if item.view.isComponent "component-tree-item--component"}} {{if (eq pinnedObjectId item.view.objectId) "component-tree-item--selected"}}">
   {{#if item.hasChildren}}
     <svg class="component-tree-item__expand {{if item.expanded "expanded" "collapsed"}}" {{action toggleExpanded}} xmlns="http://www.w3.org/2000/svg" width="43" height="36" viewBox="0 0 43 36">
       <polygon fill="#6E6E6E" fill-rule="evenodd" points="39 18 4 -3 4 39" transform="rotate(90 21.5 18)"/>
