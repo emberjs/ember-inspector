@@ -5,7 +5,6 @@ import { htmlSafe } from '@ember/string';
 export default Component.extend({
   item: null,
   tagName: '',
-  activeSearch: false,
 
   labelStyle: computed('item.parentCount', function() {
     let expanderOffset = this.get('item.hasChildren') ? 12 : 0;
