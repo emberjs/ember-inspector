@@ -9,12 +9,13 @@
     onclick={{action inspect item.view.objectId}}>
     {{item.view.name}}
   </code>
-
-  <button {{action scrollToElement item.view.objectId}}
-    class="component-tree-item__view-element">
-    {{svg-jar "eye"
-      title="Scroll into view"
-      width="20px" height="20px"
-    }}
-  </button>
+  {{#if item.view.isComponent}}
+    <button {{action scrollToElement item.view.objectId}}
+      class="component-tree-item__view-element">
+      {{svg-jar "eye"
+        title="Scroll into view"
+        width="20px" height="20px"
+      }}
+    </button>
+  {{/if}}
 </div>
