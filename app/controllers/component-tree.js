@@ -200,6 +200,20 @@ export default Controller.extend({
       });
     },
 
+    expandAll() {
+      this.get('viewTree').forEach(function(item) {
+        item.set('expanded', true);
+        this.expandedStateCache[item.view.objectId] = item.get('expanded');
+      });
+    },
+
+    collapseAll() {
+      this.get('viewTree').forEach(function(item) {
+        item.set('expanded', false);
+        this.expandedStateCache[item.view.objectId] = item.get('expanded');
+      });
+    },
+
     toggleExpanded(item) {
       item.toggleProperty('expanded');
       this.expandedStateCache[item.view.objectId] = item.get('expanded');

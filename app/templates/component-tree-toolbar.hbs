@@ -4,6 +4,17 @@
   </button>
 
   <div class="divider"></div>
+
+  <button class="toolbar__icon-button" title="expand all" {{action "expandAll"}}>
+    {{svg-jar "chevron-down" width="16px" height="16px"}}
+  </button>
+
+  <button class="toolbar__icon-button" title="collapse all" {{action "collapseAll"}}>
+    {{svg-jar "chevron-right" width="16px" height="16px"}}
+  </button>
+
+  <div class="divider"></div>
+
   <div class="toolbar__search js-filter-views">
     {{search-field value=searchValue}}
   </div>
