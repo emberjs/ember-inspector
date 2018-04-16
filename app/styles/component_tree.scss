@@ -27,6 +27,8 @@
   padding: 0;
   border: 0;
   background: transparent;
+
+  &:focus { outline: none; }
 }
 
 .component-tree-item__tag {
@@ -48,14 +50,19 @@
 
 .component-tree-item__expand {
   display: inline-block;
-  height: 9px;
-  width: 9px;
-  margin-right: 2px;
+  border: 0;
+  padding: 0 2px;
   cursor: pointer;
-  transition-property: transform;
-  transition-duration: 0.1s;
+  background: transparent;
 
-  &.collapsed {
+  &:focus { outline: none; }
+
+  svg {
+    transition-property: transform;
+    transition-duration: 0.1s;
+  }
+
+  &.collapsed svg {
     transform: rotate(-90deg);
   }
 }
