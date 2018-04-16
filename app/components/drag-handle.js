@@ -52,14 +52,14 @@ export default Component.extend({
   startDragging() {
     let namespace = `drag-${this.elementId}`;
 
-    this.sendAction('action', true);
+    this.setIsDragging(true);
 
     document.body.addEventListener(`mousemove.${namespace}`, this._mouseMoveHandler);
     document.body.addEventListener(`mouseup.${namespace} mouseleave.${namespace}`, this.stopDragging);
   },
 
   stopDragging() {
-    this.sendAction('action', false);
+    this.setIsDragging(false);
     document.body.removeEventListener(`.drag-${this.elementId}`, this._mouseMoveHandler);
     document.body.removeEventListener(`.drag-${this.elementId}`, this.stopDragging);
   },

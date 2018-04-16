@@ -67,6 +67,7 @@
     "ember-native-dom-helpers": "^0.4.2",
     "ember-pikaday": "^2.2.2",
     "ember-resolver": "^4.0.0",
+    "ember-route-action-helper": "^2.0.6",
     "ember-source": "~3.0.0",
     "ember-source-channel-url": "^1.0.1",
     "ember-svg-jar": "^1.1.1",

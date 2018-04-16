@@ -9,7 +9,6 @@ export default Component.extend({
   tagName: '', // Prevent wrapping in a div
   side: 'left',
   minWidth: 60,
-  setIsDragging: 'setIsDragging',
 
   /**
    * Injected `layout` service. Used to broadcast
@@ -32,10 +31,6 @@ export default Component.extend({
   },
 
   actions: {
-    setIsDragging(isDragging) {
-      this.sendAction('setIsDragging', isDragging);
-    },
-
     /**
      * Action called whenever the draggable column has been
      * resized.

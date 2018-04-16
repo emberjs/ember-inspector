@@ -3,6 +3,7 @@ import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { schedule } from '@ember/runloop';
 import Ember from "ember";
+
 const {
   NativeArray
 } = Ember;
@@ -31,10 +32,10 @@ export default Route.extend({
 
   updateObject(options) {
     const details = options.details,
-          name = options.name,
-          property = options.property,
-          objectId = options.objectId,
-          errors = options.errors;
+      name = options.name,
+      property = options.property,
+      objectId = options.objectId,
+      errors = options.errors;
 
     NativeArray.apply(details);
     details.forEach(arrayize);
