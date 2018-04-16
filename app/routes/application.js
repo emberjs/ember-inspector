@@ -78,24 +78,24 @@ export default Route.extend({
    * Service used to broadcast changes to the application's layout
    * such as toggling of the object inspector.
    *
-   * @property layout
+   * @property layoutService
    * @type {Service}
    */
-  layout: service(),
+  layoutService: service('layout'),
 
   actions: {
     expandInspector() {
       this.set("controller.inspectorExpanded", true);
       // Broadcast that tables have been resized (used by `x-list`).
       schedule('afterRender', () => {
-        this.get('layout').trigger('resize', { source: 'object-inspector' });
+        this.get('layoutService').trigger('resize', { source: 'object-inspector' });
       });
     },
     toggleInspector() {
       this.toggleProperty("controller.inspectorExpanded");
       // Broadcast that tables have been resized (used by `x-list`).
       schedule('afterRender', () => {
-        this.get('layout').trigger('resize', { source: 'object-inspector' });
+        this.get('layoutService').trigger('resize', { source: 'object-inspector' });
       });
     },
     inspectObject(objectId) {
