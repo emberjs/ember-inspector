@@ -32,10 +32,10 @@ export default Route.extend({
 
   updateObject(options) {
     const details = options.details,
-      name = options.name,
-      property = options.property,
-      objectId = options.objectId,
-      errors = options.errors;
+          name = options.name,
+          property = options.property,
+          objectId = options.objectId,
+          errors = options.errors;
 
     NativeArray.apply(details);
     details.forEach(arrayize);
