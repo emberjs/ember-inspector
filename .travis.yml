@@ -47,11 +47,9 @@ jobs:
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH=$HOME/.yarn/bin:$PATH
-  - yarn global add bower
 
 install:
   - yarn install --ignore-engines
-  - bower install
 
 script:
   - node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO --skip-cleanup=true --- node_modules/.bin/ember test --filter="Ember Debug"
