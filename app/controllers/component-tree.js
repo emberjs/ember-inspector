@@ -201,14 +201,14 @@ export default Controller.extend({
     },
 
     expandAll() {
-      this.get('viewTree').forEach(function(item) {
+      this.get('filteredArray').forEach(function(item) {
         item.set('expanded', true);
         this.expandedStateCache[item.view.objectId] = item.get('expanded');
       });
     },
 
     collapseAll() {
-      this.get('viewTree').forEach(function(item) {
+      this.get('filteredArray').forEach(function(item) {
         item.set('expanded', false);
         this.expandedStateCache[item.view.objectId] = item.get('expanded');
       });
