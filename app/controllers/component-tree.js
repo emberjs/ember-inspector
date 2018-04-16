@@ -1,8 +1,18 @@
-import EmberObject, { get, computed } from '@ember/object';
-import Controller, { inject as controller } from '@ember/controller';
+import EmberObject, {
+  get,
+  computed
+} from '@ember/object';
+import Controller, {
+  inject as controller
+} from '@ember/controller';
 import searchMatch from 'ember-inspector/utils/search-match';
-import { notEmpty, reads } from '@ember/object/computed';
-import { isEmpty } from '@ember/utils';
+import {
+  notEmpty,
+  reads
+} from '@ember/object/computed';
+import {
+  isEmpty
+} from '@ember/utils';
 
 /**
  * ComponentViewItem is used to represent the flattened nodes in the component tree
@@ -33,11 +43,19 @@ let ComponentViewItem = EmberObject.extend({
 
   id: reads('view.objectId'),
 
+  expandParents() {
+    let parent = this.get('parent');
+    if (parent) {
+      parent.set('expanded', true);
+      parent.expandParents();
+    }
+  },
+
   visible: computed(
     'parent.{visible,expanded}',
     'searchMatched',
     'activeSearch',
-    function() {
+    function () {
       let parent = this.get('parent');
       let showNodeInHierarchy =
         parent && parent.get('expanded') && parent.get('visible');
@@ -69,9 +87,9 @@ const flattenSearchTree = (
   list
 ) => {
   let activeSearch = !isEmpty(searchValue);
-  let searchMatched = activeSearch
-    ? searchMatch(get(treeNode, 'value.name'), searchValue)
-    : true;
+  let searchMatched = activeSearch ?
+    searchMatch(get(treeNode, 'value.name'), searchValue) :
+    true;
 
   let viewItem = ComponentViewItem.create({
     view: treeNode.value,
@@ -139,11 +157,11 @@ export default Controller.extend({
    * interest of clarity rather than performance (even if the extra CPs might avoid doing some extra
    * work when users expand/contract tree nodes)
    */
-  displayedList: computed('filteredArray.@each.visible', function() {
+  displayedList: computed('filteredArray.@each.visible', function () {
     return this.get('filteredArray').filterBy('visible');
   }),
 
-  filteredArray: computed('viewArray.[]', function() {
+  filteredArray: computed('viewArray.[]', function () {
     let viewArray = this.get('viewArray');
     let expandedStateCache = this.get('expandedStateCache');
     viewArray.forEach(viewItem => {
@@ -158,7 +176,7 @@ export default Controller.extend({
     return viewArray;
   }),
 
-  viewArray: computed('viewTree', 'searchValue', function() {
+  viewArray: computed('viewTree', 'searchValue', function () {
     let tree = this.get('viewTree');
     if (!tree) {
       return [];
@@ -173,8 +191,21 @@ export default Controller.extend({
     this.set('expandedStateCache', {});
   },
 
+  expandToNode(objectId) {
+    let node = this.get('filteredArray').find(item => item.get('id') === objectId);
+    if (node) {
+      node.expandParents();
+    }
+  },
+
   actions: {
-    previewLayer({ view: { objectId, elementId, renderNodeId } }) {
+    previewLayer({
+      view: {
+        objectId,
+        elementId,
+        renderNodeId
+      }
+    }) {
       // We are passing all of objectId, elementId, and renderNodeId to support post-glimmer 1, post-glimmer 2, and root for
       // post-glimmer 2
       this.get('port').send('view:previewLayer', {
@@ -201,16 +232,18 @@ export default Controller.extend({
     },
 
     expandAll() {
-      this.get('filteredArray').forEach(function(item) {
+      this.expandedStateCache = {};
+      this.get('filteredArray').forEach((item) => {
         item.set('expanded', true);
-        this.expandedStateCache[item.view.objectId] = item.get('expanded');
+        this.expandedStateCache[item.view.objectId] = true;
       });
     },
 
     collapseAll() {
-      this.get('filteredArray').forEach(function(item) {
+      this.expandedStateCache = {};
+      this.get('filteredArray').forEach((item) => {
         item.set('expanded', false);
-        this.expandedStateCache[item.view.objectId] = item.get('expanded');
+        this.expandedStateCache[item.view.objectId] = false;
       });
     },
 
@@ -222,6 +255,7 @@ export default Controller.extend({
     inspect(objectId) {
       if (objectId) {
         this.set('pinnedObjectId', objectId);
+        this.expandToNode(objectId);
         this.get('port').send('objectInspector:inspectById', {
           objectId,
         });
@@ -229,10 +263,15 @@ export default Controller.extend({
     },
 
     scrollToElement(elementId) {
-      this.get('port').send('view:scrollToElement', { elementId });
+      this.get('port').send('view:scrollToElement', {
+        elementId
+      });
     },
 
-    inspectElement({ objectId, elementId }) {
+    inspectElement({
+      objectId,
+      elementId
+    }) {
       this.get('port').send('view:inspectElement', {
         objectId,
         elementId,
