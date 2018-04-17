@@ -26,12 +26,12 @@ export default Component.extend({
 
   /**
    * Layout service used to listen to changes to the application
-   * layout such as resizing of the main nav or object inspecto.
+   * layout such as resizing of the main nav or object inspector.
    *
-   * @property layout
+   * @property layoutService
    * @type {Service}
    */
-  layout: service(),
+  layoutService: service('layout'),
 
   /**
    * Indicate the table's header's height in pixels.
@@ -140,7 +140,7 @@ export default Component.extend({
       this.get('debounceColumnWidths').perform();
     };
     window.addEventListener(`resize.${this.get('elementId')}`, this.onResize);
-    this.get('layout').on('resize', this.onResize);
+    this.get('layoutService').on('resize', this.onResize);
     return this._super(...arguments);
   },
 
@@ -221,7 +221,7 @@ export default Component.extend({
     if (listHeader) {
       listHeader.removeEventListener('contextmenu', this.showBasicContext);
     }
-    this.get('layout').off('resize', this.onResize);
+    this.get('layoutService').off('resize', this.onResize);
     return this._super(...arguments);
   },
 

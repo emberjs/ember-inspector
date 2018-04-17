@@ -1,7 +1,11 @@
 {{#if shouldRefresh}}
   {{partial "page_refresh"}}
 {{else}}
-  {{#x-list name="promise-tree" schema=(schema-for "promise-tree") class="js-promise-tree" as |list|}}
+  {{#x-list
+    class="js-promise-tree"
+    name="promise-tree"
+    schema=(schema-for "promise-tree")
+    setIsDragging=(route-action 'setIsDragging') as |list|}}
     {{#list.vertical-collection filtered as |content|}}
       <tr class="list__row js-promise-tree-item">
         {{promise-item
