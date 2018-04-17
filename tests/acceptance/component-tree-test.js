@@ -127,7 +127,7 @@ module('Component Tab', function(hooks) {
     let templateNames = [];
 
     [...treeNodes].forEach(function(node) {
-      templateNames.push(textFor('span', node));
+      templateNames.push(textFor('code', node));
     });
 
     assert.deepEqual(
@@ -176,7 +176,7 @@ module('Component Tab', function(hooks) {
 
     let visibleComponentNames = [];
     [...treeNodes].forEach(function(node) {
-      visibleComponentNames.push(textFor('span', node));
+      visibleComponentNames.push(textFor('code', node));
     });
 
     assert.deepEqual(
