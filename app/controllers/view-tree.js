@@ -1,4 +1,3 @@
-import { on } from '@ember/object/evented';
 import { observer, get } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import searchMatch from 'ember-inspector/utils/search-match';
@@ -33,9 +32,9 @@ export default Controller.extend({
     return searchMatch(get(item, 'value.name'), this.get('searchValue'));
   }).property('model.[]', 'searchValue'),
 
-  optionsChanged: on('init', observer('options.components', function() {
+  optionsChanged: observer('options.components', function() {
     this.port.send('view:setOptions', { options: this.get('options') });
-  })),
+  }),
 
   actions: {
     previewLayer({ value: { objectId, elementId, renderNodeId } }) {

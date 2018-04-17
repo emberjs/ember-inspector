@@ -3,14 +3,15 @@
     {{svg-jar "inspect" width="16px" height="17px"}}
   </button>
 
-  <div class="divider" aria-hidden="true"></div>
+  <div class="divider"></div>
 
-  <div class="toolbar__checkbox js-filter-components">
-    <label for="options-components">
-      {{input type="checkbox" checked=options.components id="options-components"}}
-      Components
-    </label>
-  </div>
+  <button class="toolbar__icon-button" title="expand all" {{action "expandAll"}}>
+    {{svg-jar "chevron-down" width="16px" height="16px"}}
+  </button>
+
+  <button class="toolbar__icon-button" title="collapse all" {{action "collapseAll"}}>
+    {{svg-jar "chevron-right" width="16px" height="16px"}}
+  </button>
 
   <div class="divider"></div>
 
