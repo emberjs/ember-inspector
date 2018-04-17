@@ -1,10 +1,6 @@
 import TabRoute from "ember-inspector/routes/tab";
 
 export default TabRoute.extend({
-  model() {
-    return [];
-  },
-
   setupController() {
     this._super(...arguments);
     this.get('port').on('view:viewTree', this, this.setViewTree);

@@ -1,4 +1,4 @@
-import EmberObject, {
+import {
   get,
   computed
 } from '@ember/object';
@@ -8,65 +8,12 @@ import Controller, {
 import searchMatch from 'ember-inspector/utils/search-match';
 import {
   notEmpty,
-  reads
 } from '@ember/object/computed';
 import {
   isEmpty
 } from '@ember/utils';
 
-/**
- * ComponentViewItem is used to represent the flattened nodes in the component tree
- */
-let ComponentViewItem = EmberObject.extend({
-  /**
-   * The Ember View object this item represents
-   */
-  view: null,
-
-  /**
-   * A reference to the parent `ComponentViewItem`, null at the root of the tree
-   */
-  parent: null,
-
-  /**
-   * Used to set indentation levels later
-   */
-  parentCount: 0,
-  expanded: true,
-  hasChildren: true,
-  searchMatched: false,
-
-  /**
-   * If the user has typed text into the search box (used to calculate visibility)
-   */
-  activeSearch: false,
-
-  id: reads('view.objectId'),
-
-  expandParents() {
-    let parent = this.get('parent');
-    if (parent) {
-      parent.set('expanded', true);
-      parent.expandParents();
-    }
-  },
-
-  visible: computed(
-    'parent.{visible,expanded}',
-    'searchMatched',
-    'activeSearch',
-    function () {
-      let parent = this.get('parent');
-      let showNodeInHierarchy =
-        parent && parent.get('expanded') && parent.get('visible');
-      if (this.get('activeSearch')) {
-        return this.get('searchMatched') || showNodeInHierarchy;
-      } else {
-        return !parent || showNodeInHierarchy;
-      }
-    }
-  ),
-});
+import ComponentViewItem from 'ember-inspector/models/component-view-item';
 
 /**
  * Takes the `viewTree` from `view-debug`'s `sendTree()` method, and recursively
