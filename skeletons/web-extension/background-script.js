@@ -16,6 +16,8 @@
   "use strict";
 
   var activeTabs = {},
+      activeTabId,
+      contextMenuAdded = false,
       emberInspectorChromePorts = {};
 
   /**
@@ -33,7 +35,7 @@
    * Creates the title for the pageAction for the current ClientApp
    * @param {Number} tabId - the current tab
    */
-  function setActionTitle(tabId){
+  function setActionTitle(tabId) {
     chrome.pageAction.setTitle({
       tabId: tabId,
       title: generateVersionsTooltip(activeTabs[tabId])
@@ -46,7 +48,7 @@
    * is updated to display the ClientApp's information in the tooltip.
    * @param {Number} tabId - the current tab
    */
-  function updateTabAction(tabId){
+  function updateTabAction(tabId) {
     chrome.storage.sync.get("options", function(data) {
       if (!data.options || !data.options.showTomster) { return; }
       chrome.pageAction.show(tabId);
@@ -59,9 +61,41 @@
    * Typically used to clearout the icon after reload.
    * @param {Number} tabId - the current tab
    */
-  function hideAction(tabId){
-    delete activeTabs[tabId];
+  function hideAction(tabId) {
+    if (!activeTabs[tabId]) {
+      return;
+    }
+
     chrome.pageAction.hide(tabId);
+  }
+
+  /**
+   * Update the tab's contextMenu: https://developer.chrome.com/extensions/contextMenus
+   * Add a menu item called "Inspect Ember Component" that shows info
+   * about the component in the inspector.
+   */
+  function updateContextMenu() {
+    // Only add context menu item when an Ember app has been detected
+    var isEmberApp = !!activeTabs[activeTabId];
+    if (!isEmberApp && contextMenuAdded) {
+      chrome.contextMenus.remove('inspect-ember-component');
+      contextMenuAdded = false;
+    }
+
+    if (isEmberApp && !contextMenuAdded) {
+      chrome.contextMenus.create({
+        id: 'inspect-ember-component',
+        title: 'Inspect Ember Component',
+        contexts: ['all'],
+        onclick: function() {
+          chrome.tabs.sendMessage(activeTabId, {
+            from: 'devtools',
+            type: 'view:contextMenu'
+          });
+        }
+      });
+      contextMenuAdded = true;
+    }
   }
 
   /**
@@ -113,7 +147,9 @@
     } else if (request && request.type === 'emberVersion') {
       // set the version info and update title
       activeTabs[sender.tab.id] = request.versions;
+
       updateTabAction(sender.tab.id);
+      updateContextMenu();
     } else if (request && request.type === 'resetEmberIcon') {
       // hide the Tomster icon
       hideAction(sender.tab.id);
@@ -124,18 +160,22 @@
     }
   });
 
-
-
   /**
-   * Event listener for when the tab is updated, usually reloaded.
-   * Check to see if a ClientApp exists for this tab, and reset the icon
-   * to show the latest data.
-   * @param {Number} tabId - the current tab
+   * Keep track of which browser tab is active and update the context menu.
    */
-  chrome.tabs.onUpdated.addListener(function(tabId) {
+  chrome.tabs.onActivated.addListener(({ tabId }) => {
+    activeTabId = tabId;
     if (activeTabs[tabId]) {
       updateTabAction(tabId);
     }
+    updateContextMenu();
+  });
+
+  /**
+   * Only keep track of active tabs
+   */
+  chrome.tabs.onRemoved.addListener(({ tabId }) => {
+    delete activeTabs[tabId];
   });
 
 }());

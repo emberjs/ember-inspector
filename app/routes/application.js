@@ -18,6 +18,7 @@ export default Route.extend({
     port.on('objectInspector:updateErrors', this, this.updateErrors);
     port.on('objectInspector:droppedObject', this, this.droppedObject);
     port.on('deprecation:count', this, this.setDeprecationCount);
+    port.on('view:inspectComponent', this, this.inspectComponent);
     port.send('deprecation:getCount');
   },
 
@@ -28,6 +29,19 @@ export default Route.extend({
     port.off('objectInspector:updateErrors', this, this.updateErrors);
     port.off('objectInspector:droppedObject', this, this.droppedObject);
     port.off('deprecation:count', this, this.setDeprecationCount);
+    port.off('view:inspectComponent', this, this.inspectComponent);
+  },
+
+  inspectComponent({ viewId }) {
+    const isActive = this.get('controller.active');
+    if (!isActive) {
+      //TODO: Tell the user to open the Ember devtools panel
+    }
+    this.transitionTo('component-tree', {
+      queryParams: {
+        pinnedObjectId: viewId
+      }
+    });
   },
 
   updateObject(options) {

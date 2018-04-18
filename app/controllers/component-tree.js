@@ -71,12 +71,14 @@ const flattenSearchTree = (
 
 export default Controller.extend({
   application: controller(),
+  queryParams: ['pinnedObjectId'],
   pinnedObjectId: null,
   inspectingViews: false,
   components: true,
   options: {
     components: true,
   },
+  viewTreeLoaded: false,
 
   /**
    * Bound to the search field to filter the component list.
