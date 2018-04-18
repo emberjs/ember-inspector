@@ -172,7 +172,9 @@ export default EmberObject.extend(PortMixin, {
     },
     inspectById(message) {
       const obj = this.sentObjects[message.objectId];
-      this.sendObject(obj);
+      if (obj) {
+        this.sendObject(obj);
+      }
     },
     inspectByContainerLookup(message) {
       const container = this.get('namespace.owner');

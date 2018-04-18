@@ -12,7 +12,8 @@
   },
   "permissions": [
     "<all_urls>",
-    "storage"
+    "storage",
+    "contextMenus"
   ],
   "content_security_policy": "script-src 'self'; object-src 'self'",
   "devtools_page": "devtools.html",
