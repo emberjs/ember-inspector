@@ -9,7 +9,9 @@
 $mixin-left-padding: 22px;
 
 .mixin__name {
-  position: relative;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
   padding: 4px 2px 4px $mixin-left-padding;
   border-bottom: 1px solid #cecece;
   background-color: #f5f5f5;
@@ -19,6 +21,7 @@ $mixin-left-padding: 22px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  z-index: 1;
 }
 
 .mixin__name:active {
