@@ -272,7 +272,7 @@ module('View Tree Tab', function(hooks) {
     treeNodes = findAll('.js-view-tree-item');
     assert.equal(treeNodes.length, 3);
     let viewControllersEls = findAll('.js-view-controller');
-    assert.equal(viewControllersEls[viewControllersEls.length - 1].textContent.trim(), 'App.CommentsController');
+    assert.dom(viewControllersEls[viewControllersEls.length - 1]).hasText('App.CommentsController');
 
     viewTree = defaultViewTree();
     viewTree.children.splice(0, 1);
@@ -282,7 +282,7 @@ module('View Tree Tab', function(hooks) {
     treeNodes = findAll('.js-view-tree-item');
     assert.equal(treeNodes.length, 2);
     viewControllersEls = findAll('.js-view-controller');
-    assert.equal(viewControllersEls[viewControllersEls.length - 1].textContent.trim(), 'App.SomeController');
+    assert.dom(viewControllersEls[viewControllersEls.length - 1]).hasText('App.SomeController');
   });
 
   test("Previewing / showing a view on the client", async function(assert) {

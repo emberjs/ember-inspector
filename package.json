@@ -83,6 +83,7 @@
     "js-string-escape": "^1.0.0",
     "loader.js": "^4.2.3",
     "mkdirp": "^0.5.1",
+    "qunit-dom": "^0.6.2",
     "rimraf": "^2.5.2",
     "yauzl": "^2.4.1"
   },

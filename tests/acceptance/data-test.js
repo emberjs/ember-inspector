@@ -93,20 +93,20 @@ module('Data Tab', function(hooks) {
   test('Model types are successfully listed and bound', async function t(assert) {
     await visit('/data/model-types');
 
-    assert.equal(findAll('.js-model-type').length, 2);
+    assert.dom('.js-model-type').exists({ count: 2 });
     // they should be sorted alphabetically
-    assert.equal(findAll('.js-model-type-name')[0].textContent.trim(), 'App.Comment');
-    assert.equal(findAll('.js-model-type-name')[1].textContent.trim(), 'App.Post');
+    assert.dom(findAll('.js-model-type-name')[0]).hasText('App.Comment');
+    assert.dom(findAll('.js-model-type-name')[1]).hasText('App.Post');
 
-    assert.equal(findAll('.js-model-type-count')[0].textContent.trim(), 1);
-    assert.equal(findAll('.js-model-type-count')[1].textContent.trim(), 2);
+    assert.dom(findAll('.js-model-type-count')[0]).hasText('1');
+    assert.dom(findAll('.js-model-type-count')[1]).hasText('2');
 
     await triggerPort(this, 'data:modelTypesUpdated', {
       modelTypes: [
         modelTypeFactory({ name: 'App.Post', count: 3 })
       ]
     });
-    assert.equal(findAll('.js-model-type-count')[1].textContent.trim(), 3);
+    assert.dom(findAll('.js-model-type-count')[1]).hasText('3');
   });
 
   test('Records are successfully listed and bound', async function t(assert) {
@@ -115,24 +115,24 @@ module('Data Tab', function(hooks) {
     await click(findAll('.js-model-type a')[1]);
 
     let columns = findAll('.js-header-column');
-    assert.equal(columns[0].textContent.trim(), 'Id');
-    assert.equal(columns[1].textContent.trim(), 'Title');
-    assert.equal(columns[2].textContent.trim(), 'Body');
+    assert.dom(columns[0]).hasText('Id');
+    assert.dom(columns[1]).hasText('Title');
+    assert.dom(columns[2]).hasText('Body');
 
     let recordRows = findAll('.js-record-list-item');
     assert.equal(recordRows.length, 2);
 
     let firstRow = recordRows[0];
     let firstRowColumns = firstRow.querySelectorAll('.js-record-column');
-    assert.equal(firstRowColumns[0].textContent.trim(), 1);
-    assert.equal(firstRowColumns[1].textContent.trim(), 'My Post');
-    assert.equal(firstRowColumns[2].textContent.trim(), 'This is my first post');
+    assert.dom(firstRowColumns[0]).hasText('1');
+    assert.dom(firstRowColumns[1]).hasText('My Post');
+    assert.dom(firstRowColumns[2]).hasText('This is my first post');
 
     let secondRow = recordRows[1];
     let secondRowColumns = secondRow.querySelectorAll('.js-record-column');
-    assert.equal(secondRowColumns[0].textContent.trim(), 2);
-    assert.equal(secondRowColumns[1].textContent.trim(), 'Hello');
-    assert.equal(secondRowColumns[2].textContent.trim(), '');
+    assert.dom(secondRowColumns[0]).hasText('2');
+    assert.dom(secondRowColumns[1]).hasText('Hello');
+    assert.dom(secondRowColumns[2]).hasText('');
 
     await triggerPort(this, 'data:recordsAdded', {
       records: [recordFactory({ objectId: 'new-post', id: 3, title: 'Added Post', body: 'I am new here' })]
@@ -140,9 +140,9 @@ module('Data Tab', function(hooks) {
 
     let addedRow = findAll('.js-record-list-item')[2];
     let addedRowColumns = addedRow.querySelectorAll('.js-record-column');
-    assert.equal(addedRowColumns[0].textContent.trim(), 3);
-    assert.equal(addedRowColumns[1].textContent.trim(), 'Added Post');
-    assert.equal(addedRowColumns[2].textContent.trim(), 'I am new here');
+    assert.dom(addedRowColumns[0]).hasText('3');
+    assert.dom(addedRowColumns[1]).hasText('Added Post');
+    assert.dom(addedRowColumns[2]).hasText('I am new here');
 
     await triggerPort(this, 'data:recordsUpdated', {
       records: [recordFactory({ objectId: 'new-post', id: 3, title: 'Modified Post', body: 'I am no longer new' })]
@@ -151,9 +151,9 @@ module('Data Tab', function(hooks) {
     let rows = findAll('.js-record-list-item');
     let modifiedRow = rows[rows.length - 1];
     let modifiedRowColumns = modifiedRow.querySelectorAll('.js-record-column');
-    assert.equal(modifiedRowColumns[0].textContent.trim(), 3);
-    assert.equal(modifiedRowColumns[1].textContent.trim(), 'Modified Post');
-    assert.equal(modifiedRowColumns[2].textContent.trim(), 'I am no longer new');
+    assert.dom(modifiedRowColumns[0]).hasText('3');
+    assert.dom(modifiedRowColumns[1]).hasText('Modified Post');
+    assert.dom(modifiedRowColumns[2]).hasText('I am no longer new');
 
     await triggerPort(this, 'data:recordsRemoved', {
       index: 2,
@@ -161,11 +161,11 @@ module('Data Tab', function(hooks) {
     });
     await wait();
 
-    assert.equal(findAll('.js-record-list-item').length, 2);
+    assert.dom('.js-record-list-item').exists({ count: 2 });
     rows = findAll('.js-record-list-item');
     let lastRow = rows[rows.length - 1];
     let lastRowColumns = lastRow.querySelectorAll('.js-record-column');
-    assert.equal(lastRowColumns[0].textContent.trim(), 2, 'Records successfully removed.');
+    assert.dom(lastRowColumns[0]).hasText('2', 'Records successfully removed.');
   });
 
   test('Filtering records', async function t(assert) {
@@ -182,7 +182,7 @@ module('Data Tab', function(hooks) {
 
     rows = findAll('.js-record-list-item');
     assert.equal(rows.length, 1);
-    assert.equal(findAll('.js-record-column', rows[0])[0].textContent.trim(), '2');
+    assert.dom(findAll('.js-record-column', rows[0])[0]).hasText('2');
   });
 
   test('Searching records', async function t(assert) {
@@ -197,13 +197,13 @@ module('Data Tab', function(hooks) {
 
     rows = findAll('.js-record-list-item');
     assert.equal(rows.length, 1);
-    assert.equal(findAll('.js-record-column', rows[0])[0].textContent.trim(), '2');
+    assert.dom(findAll('.js-record-column', rows[0])[0]).hasText('2');
 
     await fillIn('.js-records-search input', 'my first post');
 
     rows = findAll('.js-record-list-item');
     assert.equal(rows.length, 1);
-    assert.equal(findAll('.js-record-column', rows[0])[0].textContent.trim(), '1');
+    assert.dom(findAll('.js-record-column', rows[0])[0]).hasText('1');
 
     await fillIn('.js-records-search input', '');
 
@@ -231,9 +231,9 @@ module('Data Tab', function(hooks) {
   test('Columns successfully updated when switching model types', async function t(assert) {
     await visit('/data/model-types/App.Post/records');
     let columns = findAll('.js-header-column');
-    assert.equal(columns[columns.length - 1].textContent.trim(), 'Body');
+    assert.dom(columns[columns.length - 1]).hasText('Body');
     await visit('/data/model-types/App.Comment/records');
     columns = findAll('.js-header-column');
-    assert.equal(columns[columns.length - 1].textContent.trim(), 'Content');
+    assert.dom(columns[columns.length - 1]).hasText('Content');
   });
 });
