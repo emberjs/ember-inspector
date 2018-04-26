@@ -59,7 +59,7 @@ export default BasicAdapter.extend({
 
   _setThemeColors() {
     // Remove old theme colors to ensure switching themes works
-    document.body.classList.remove('theme--light', 'theme--dark')
+    document.body.classList.remove('theme--light', 'theme--dark');
 
     let theme = 'theme--light';
     if (chrome.devtools.panels.themeName === 'dark') {
