@@ -6,16 +6,16 @@
   margin: 3px 3px 0 3px;
   border-radius: 4px;
   font-size: 12px;
-  color: #555;
+  color: var(--base21);
 
 }
 
 .component-tree-item--component {
-  color: #7C207C;
+  color: var(--spec12);
 
   &:hover {
-    background-color: #ECF1FA;
-   
+    background-color: var(--spec14);
+
     .component-tree-item__view-element { opacity: 1; }
   }
 }
@@ -41,11 +41,11 @@
 
 .component-tree-item__bracket::before {
   content: '{{';
-  color: #A595A5;
+  color: var(--base14);
 }
 .component-tree-item__bracket::after {
   content: '}}';
-  color: #A595A5;
+  color: var(--base14);
 }
 
 .component-tree-item__expand {
@@ -73,7 +73,7 @@
   opacity: 0;
   cursor: pointer;
 
-  polygon, rect, path { fill: #222; }
+  polygon, rect, path { fill: var(--base28); }
 }
 
 
@@ -82,18 +82,18 @@
  */
 
 .component-tree-item--selected {
-  color: #fff;
-  background: #4977D2;
-  &:hover { background: #4977D2; }
+  color: var(--base00);
+  background: var(--spec13);
+  &:hover { background: var(--spec13); }
 
   .component-tree-item__bracket::before,
   .component-tree-item__bracket::after {
-    color: #A5A5A5
+    color: var(--base14);
   }
 
   .component-tree-item__expand,
   .component-tree-item__view-element {
     opacity: 1;
-    polygon, rect, path { fill: #fff; }
+    polygon, rect, path { fill: var(--base00); }
   }
 }

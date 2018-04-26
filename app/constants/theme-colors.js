@@ -45,6 +45,9 @@ export const LightTheme = {
   spec09: '#2b7fb3',
   spec10: '#000099',
   spec11: '#3F81EE',
+  spec12: '#7c027c',
+  spec13: '#4977d2',
+  spec14: '#ecf1fa',
 };
 
 const themeKeys = Object.keys(LightTheme);
