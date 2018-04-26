@@ -225,7 +225,7 @@ module('Component Tab', function(hooks) {
     run(() => port.trigger('view:viewTree', { tree: viewTree }));
     await wait();
 
-    assert.equal(findAll('.component-tree-item').length, 3, 'the last node should still be hidden');
+    assert.dom('.component-tree-item').exists({ count: 3 }, 'the last node should still be hidden');
   });
 
   test('Previewing / showing a view on the client', async function(assert) {

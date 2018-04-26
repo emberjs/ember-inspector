@@ -62,10 +62,10 @@ module('Container Tab', function(hooks) {
     await visit('/container-types');
     let rows = findAll('.js-container-type');
     assert.equal(rows.length, 2);
-    assert.equal(findAll('.js-container-type-name')[0].textContent.trim(), 'controller');
-    assert.equal(findAll('.js-container-type-count')[0].textContent.trim(), '2');
-    assert.equal(findAll('.js-container-type-name')[1].textContent.trim(), 'route');
-    assert.equal(findAll('.js-container-type-count')[1].textContent.trim(), '5');
+    assert.dom(findAll('.js-container-type-name')[0]).hasText('controller');
+    assert.dom(findAll('.js-container-type-count')[0]).hasText('2');
+    assert.dom(findAll('.js-container-type-name')[1]).hasText('route');
+    assert.dom(findAll('.js-container-type-count')[1]).hasText('5');
   });
 
 
@@ -91,8 +91,8 @@ module('Container Tab', function(hooks) {
 
     rows = findAll('.js-container-instance-list-item');
 
-    assert.equal(rows[0].textContent.trim(), 'first');
-    assert.equal(rows[1].textContent.trim(), 'second');
+    assert.dom(rows[0]).hasText('first');
+    assert.dom(rows[1]).hasText('second');
     name = null;
     message = null;
 
@@ -107,7 +107,7 @@ module('Container Tab', function(hooks) {
 
     rows = findAll('.js-container-instance-list-item');
     assert.equal(rows.length, 1);
-    assert.equal(rows[0].textContent.trim(), 'first');
+    assert.dom(rows[0]).hasText('first');
   });
 
   test("It should clear the search filter when the clear button is clicked", async function(assert) {
@@ -186,14 +186,14 @@ module('Container Tab', function(hooks) {
 
     await visit('/container-types/controller');
 
-    assert.equal(findAll('.js-container-type').length, 0);
-    assert.equal(findAll('.js-container-instance-list-item').length, 0);
+    assert.dom('.js-container-type').doesNotExist();
+    assert.dom('.js-container-instance-list-item').doesNotExist();
     types = getTypes();
     instances = getInstances();
 
     await click('.js-reload-container-btn');
 
-    assert.equal(findAll('.js-container-type').length, 2);
-    assert.equal(findAll('.js-container-instance-list-item').length, 2);
+    assert.dom('.js-container-type').exists({ count: 2 });
+    assert.dom('.js-container-instance-list-item').exists({ count: 2 });
   });
 });
