@@ -58,23 +58,14 @@ export default BasicAdapter.extend({
   },
 
   _setThemeColors() {
-    const elementClassList = document.querySelector('body').classList;
-    const currentThemes = elementClassList.value.match(/theme(-|--)?\w+/g);
-    let theme;
+    // Remove old theme colors to ensure switching themes works
+    document.body.classList.remove('theme--light', 'theme--dark')
 
-    if (currentThemes) {
-      currentThemes.forEach(currentTheme => {
-        elementClassList.remove(currentTheme);
-      });
-    }
-
+    let theme = 'theme--light';
     if (chrome.devtools.panels.themeName === 'dark') {
       theme = 'theme--dark';
-    } else {
-      theme = 'theme--light';
     }
-
-    elementClassList.add(theme);
+    document.body.classList.add(theme);
   },
 
   onResourceAdded(/*callback*/) {},
