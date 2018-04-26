@@ -9,9 +9,9 @@
   height: 22px;
   text-overflow: ellipsis;
   overflow: hidden;
-  color: #6e6e6e;
+  color: var(--base19);
   line-height: 22px;
-  text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
+  text-shadow: var(--base05) 0 1px 0;
   padding: 0 5px;
   margin: 2px 0 0 0;
 }
@@ -59,7 +59,7 @@
 .nav li > a path,
 .nav li > a rect,
 .nav li > a circle {
-  fill: #222;
+  fill: var(--base28);
 }
 
 .nav li > a:focus {
@@ -67,19 +67,19 @@
 }
 
 .nav li > a.active {
-  color: #fff;
-  background: #3F81EE;
+  color: var(--base00);
+  background: var(--spec11);
 }
 
 .nav li > a.active polygon,
 .nav li > a.active path,
 .nav li > a.active rect,
 .nav li > a.active circle {
-  fill: #fff;
+  fill: var(--base00);
 }
 
 .app.inactive .nav li > a.active {
-  background: #b4b4b4;
+  background: var(--base10);
 }
 
 /* Custom navs */
@@ -89,7 +89,7 @@
   align-items: center;
   height: 38px;
   padding-left: 12px;
-  color: #333;
+  color: var(--base26);
   line-height: 38px;
 }
 
@@ -107,4 +107,3 @@
   transform: scaleX(-1);
   transform-origin: 18px;
 }
-

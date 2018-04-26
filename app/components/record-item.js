@@ -5,7 +5,7 @@ import { isEmpty } from '@ember/utils';
 const COLOR_MAP = {
   red: '#ff2717',
   blue: '#174fff',
-  green: '#006400'
+  green: '#009900'
 };
 
 export default Component.extend({
