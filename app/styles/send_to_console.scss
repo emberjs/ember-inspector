@@ -23,7 +23,7 @@
 }
 
 .send-to-console:hover {
-  border-bottom: solid 1px rgb(43, 127, 179);
+  border-bottom: 1px solid var(--spec09);
 }
 
 .send-to-console:active {
@@ -42,7 +42,7 @@
 
 
 .send-trace-to-console:hover {
-  color: black;
+  color: var(--base29);
 }
 
 .send-trace-to-console:active {

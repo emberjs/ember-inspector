@@ -1,4 +1,4 @@
-import { visit, find, findAll, click, fillIn } from '@ember/test-helpers';
+import { visit, findAll, click, fillIn } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 
@@ -51,8 +51,8 @@ module('Render Tree Tab', function(hooks) {
 
     await visit('/render-tree');
 
-    assert.notOk(find('.js-render-tree'), "no render tree");
-    assert.ok(find('.js-render-tree-empty'), "Message about empty render tree shown");
+    assert.dom('.js-render-tree').doesNotExist("no render tree");
+    assert.dom('.js-render-tree-empty').exists("Message about empty render tree shown");
   });
 
   test("Renders the list correctly", async function(assert) {
@@ -68,26 +68,26 @@ module('Render Tree Tab', function(hooks) {
 
     await visit('/render-tree');
 
-    assert.ok(find('.js-render-tree'));
+    assert.dom('.js-render-tree').exists();
     let rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 2, "Two rows are rendered initially");
 
-    assert.equal(rows[0].querySelector('.js-render-profile-name').textContent.trim(), "First View Rendering");
-    assert.equal(rows[0].querySelector('.js-render-profile-duration').textContent.trim(), "476.87ms");
-    assert.equal(rows[0].querySelector('.js-render-profile-timestamp').textContent.trim(), "13:16:22:715");
+    assert.dom(rows[0].querySelector('.js-render-profile-name')).hasText('First View Rendering');
+    assert.dom(rows[0].querySelector('.js-render-profile-duration')).hasText('476.87ms');
+    assert.dom(rows[0].querySelector('.js-render-profile-timestamp')).hasText('13:16:22:715');
 
-    assert.equal(rows[1].querySelector('.js-render-profile-name').textContent.trim(), "Second View Rendering");
-    assert.equal(rows[1].querySelector('.js-render-profile-duration').textContent.trim(), "10.00ms");
-    assert.equal(rows[1].querySelector('.js-render-profile-timestamp').textContent.trim(), "13:16:22:759");
+    assert.dom(rows[1].querySelector('.js-render-profile-name')).hasText('Second View Rendering');
+    assert.dom(rows[1].querySelector('.js-render-profile-duration')).hasText('10.00ms');
+    assert.dom(rows[1].querySelector('.js-render-profile-timestamp')).hasText('13:16:22:759');
 
     await click('.js-render-main-cell', rows[0]);
 
     rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 3, "Child is shown below the parent");
 
-    assert.equal(rows[1].querySelector('.js-render-profile-name').textContent.trim(), "Child view");
-    assert.equal(rows[1].querySelector('.js-render-profile-duration').textContent.trim(), "0.36ms");
-    assert.equal(rows[1].querySelector('.js-render-profile-timestamp').textContent.trim(), "13:16:22:581");
+    assert.dom(rows[1].querySelector('.js-render-profile-name')).hasText('Child view');
+    assert.dom(rows[1].querySelector('.js-render-profile-duration')).hasText('0.36ms');
+    assert.dom(rows[1].querySelector('.js-render-profile-timestamp')).hasText('13:16:22:581');
 
     await click('.js-render-main-cell', rows[0]);
 
@@ -111,15 +111,15 @@ module('Render Tree Tab', function(hooks) {
     let rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 2, "Two rows are rendered initially");
 
-    assert.equal(rows[0].querySelector('.js-render-profile-name').textContent.trim(), "First View Rendering");
-    assert.equal(rows[1].querySelector('.js-render-profile-name').textContent.trim(), "Second View Rendering");
+    assert.dom(rows[0].querySelector('.js-render-profile-name')).hasText('First View Rendering');
+    assert.dom(rows[1].querySelector('.js-render-profile-name')).hasText('Second View Rendering');
 
     await fillIn('.js-render-profiles-search input', 'first');
 
     rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 2, "The first parent is rendered with the child");
-    assert.equal(rows[0].querySelector('.js-render-profile-name').textContent.trim(), "First View Rendering");
-    assert.equal(rows[1].querySelector('.js-render-profile-name').textContent.trim(), "Child view");
+    assert.dom(rows[0].querySelector('.js-render-profile-name')).hasText('First View Rendering');
+    assert.dom(rows[1].querySelector('.js-render-profile-name')).hasText('Child view');
 
     // Minimize to hide child view
     await click('.js-render-main-cell');
@@ -129,13 +129,38 @@ module('Render Tree Tab', function(hooks) {
     rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 2, "filter is reset");
 
-    assert.equal(rows[0].querySelector('.js-render-profile-name').textContent.trim(), "First View Rendering");
-    assert.equal(rows[1].querySelector('.js-render-profile-name').textContent.trim(), "Second View Rendering");
+    assert.dom(rows[0].querySelector('.js-render-profile-name')).hasText('First View Rendering');
+    assert.dom(rows[1].querySelector('.js-render-profile-name')).hasText('Second View Rendering');
 
     await fillIn('.js-render-profiles-search input', 'Second');
 
     rows = findAll('.js-render-profile-item');
     assert.equal(rows.length, 1, "The second row is the only one showing");
-    assert.equal(rows[0].querySelector('.js-render-profile-name').textContent.trim(), "Second View Rendering");
+    assert.dom(rows[0].querySelector('.js-render-profile-name')).hasText('Second View Rendering');
+  });
+
+  test("It should clear the search filter when the clear button is clicked", async function(assert) {
+    port.reopen({
+      send(n/*, m*/) {
+        if (n === 'render:watchProfiles') {
+          this.trigger('render:profilesAdded', {
+            profiles: generateProfiles()
+          });
+        }
+      }
+    });
+
+    await visit('/render-tree');
+
+    let rows = findAll('.js-render-profile-item');
+    assert.equal(rows.length, 2, "expected all rows");
+
+    await fillIn('.js-render-profiles-search input', 'xxxxxx');
+    rows = findAll('.js-render-profile-item');
+    assert.equal(rows.length, 0, 'expected filtered rows');
+
+    await click('.js-search-field-clear-button');
+    rows = findAll('.js-render-profile-item');
+    assert.equal(rows.length, 2, 'expected all rows');
   });
 });

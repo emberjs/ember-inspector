@@ -8,15 +8,15 @@
           {{/each}}
         </colgroup>
         <tbody>
-          <tr class="list__row">
-            {{#each columns key="id" as |column|}}
-              {{#x-list-cell
-                tagName="th"
-                class="js-header-column"}}
-                {{column.name}}
-              {{/x-list-cell}}
-            {{/each}}
-          </tr>
+        <tr class="list__row">
+          {{#each columns key="id" as |column|}}
+            {{#x-list-cell
+              tagName="th"
+              class="js-header-column"}}
+              {{column.name}}
+            {{/x-list-cell}}
+          {{/each}}
+        </tr>
         </tbody>
       </table>
     </div>
@@ -39,12 +39,13 @@
 {{#each columns key="id" as |column|}}
   {{#unless (eq column columns.lastObject)}}
     {{drag-handle
-      side="left"
+      faded=true
       left=column.left
-      position=(one-way column.width)
       minWidth=minWidth
       maxWidth=column.maxWidth
       on-drag=(action "didResize" column.id)
-      faded=true}}
+      position=(one-way column.width)
+      setIsDragging=setIsDragging
+      side="left"}}
   {{/unless}}
 {{/each}}

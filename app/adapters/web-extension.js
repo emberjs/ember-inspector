@@ -16,6 +16,8 @@ export default BasicAdapter.extend({
     this._connect();
     this._handleReload();
     this._injectDebugger();
+    this._setThemeColors();
+
     return this._super(...arguments);
   },
 
@@ -53,6 +55,17 @@ export default BasicAdapter.extend({
   _injectDebugger() {
     chrome.devtools.inspectedWindow.eval(loadEmberDebug());
     this.onResourceAdded();
+  },
+
+  _setThemeColors() {
+    // Remove old theme colors to ensure switching themes works
+    document.body.classList.remove('theme--light', 'theme--dark');
+
+    let theme = 'theme--light';
+    if (chrome.devtools.panels.themeName === 'dark') {
+      theme = 'theme--dark';
+    }
+    document.body.classList.add(theme);
   },
 
   onResourceAdded(/*callback*/) {},

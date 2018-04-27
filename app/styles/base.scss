@@ -21,7 +21,7 @@ html, body {
 
 body, input {
   font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Cantarell', 'Oxygen', 'Ubuntu', 'Helvetica Neue', helvetica, arial, sans-serif;
-  color: #333;
+  color: var(--base26);
 }
 
 body, div, nav {

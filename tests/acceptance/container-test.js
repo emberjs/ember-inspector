@@ -62,10 +62,10 @@ module('Container Tab', function(hooks) {
     await visit('/container-types');
     let rows = findAll('.js-container-type');
     assert.equal(rows.length, 2);
-    assert.equal(findAll('.js-container-type-name')[0].textContent.trim(), 'controller');
-    assert.equal(findAll('.js-container-type-count')[0].textContent.trim(), '2');
-    assert.equal(findAll('.js-container-type-name')[1].textContent.trim(), 'route');
-    assert.equal(findAll('.js-container-type-count')[1].textContent.trim(), '5');
+    assert.dom(findAll('.js-container-type-name')[0]).hasText('controller');
+    assert.dom(findAll('.js-container-type-count')[0]).hasText('2');
+    assert.dom(findAll('.js-container-type-name')[1]).hasText('route');
+    assert.dom(findAll('.js-container-type-count')[1]).hasText('5');
   });
 
 
@@ -91,8 +91,8 @@ module('Container Tab', function(hooks) {
 
     rows = findAll('.js-container-instance-list-item');
 
-    assert.equal(rows[0].textContent.trim(), 'first');
-    assert.equal(rows[1].textContent.trim(), 'second');
+    assert.dom(rows[0]).hasText('first');
+    assert.dom(rows[1]).hasText('second');
     name = null;
     message = null;
 
@@ -107,7 +107,39 @@ module('Container Tab', function(hooks) {
 
     rows = findAll('.js-container-instance-list-item');
     assert.equal(rows.length, 1);
-    assert.equal(rows[0].textContent.trim(), 'first');
+    assert.dom(rows[0]).hasText('first');
+  });
+
+  test("It should clear the search filter when the clear button is clicked", async function(assert) {
+    let instances = getInstances();
+
+    port.reopen({
+      send(n, m) {
+        name = n;
+        message = m;
+        if (name === 'container:getTypes') {
+          this.trigger('container:types', { types: getTypes() });
+        }
+
+        if (name === 'container:getInstances' && message.containerType === 'controller') {
+          this.trigger('container:instances', { instances, status: 200 });
+        }
+      }
+    });
+
+    await visit('/container-types/controller');
+    let rows;
+
+    rows = findAll('.js-container-instance-list-item');
+    assert.equal(rows.length, 2, 'expected all rows');
+
+    await fillIn('.js-container-instance-search input', 'xxxxx');
+    rows = findAll('.js-container-instance-list-item');
+    assert.equal(rows.length, 0, 'expected filtered rows');
+
+    await click('.js-search-field-clear-button');
+    rows = findAll('.js-container-instance-list-item');
+    assert.equal(rows.length, 2, 'expected all rows');
   });
 
   test("Successfully redirects if the container type is not found", async function(assert) {
@@ -154,14 +186,14 @@ module('Container Tab', function(hooks) {
 
     await visit('/container-types/controller');
 
-    assert.equal(findAll('.js-container-type').length, 0);
-    assert.equal(findAll('.js-container-instance-list-item').length, 0);
+    assert.dom('.js-container-type').doesNotExist();
+    assert.dom('.js-container-instance-list-item').doesNotExist();
     types = getTypes();
     instances = getInstances();
 
     await click('.js-reload-container-btn');
 
-    assert.equal(findAll('.js-container-type').length, 2);
-    assert.equal(findAll('.js-container-instance-list-item').length, 2);
+    assert.dom('.js-container-type').exists({ count: 2 });
+    assert.dom('.js-container-instance-list-item').exists({ count: 2 });
   });
 });

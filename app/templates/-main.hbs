@@ -1,7 +1,8 @@
 <div class="split split--main">
   {{#draggable-column
-          width=navWidth
-          classes="split__panel split__panel--sidebar-1"}}
+    width=navWidth
+    classes="split__panel split__panel--sidebar-1"
+    setIsDragging=(route-action 'setIsDragging')}}
     <div class="split__panel__hd">
       {{iframe-picker}}
     </div>
@@ -20,7 +21,7 @@
       {{outlet "toolbar"}}
       {{#unless inspectorExpanded}}
         {{sidebar-toggle action="toggleInspector" side="right"
-          isExpanded=false classNames="toolbar__icon-button"}}
+                         isExpanded=false classNames="toolbar__icon-button"}}
       {{/unless}}
     </div>
 

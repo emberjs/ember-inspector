@@ -1,4 +1,8 @@
-{{#x-list name="route-tree" schema=(schema-for "route-tree") as |list|}}
+{{#x-list
+  name="route-tree"
+  schema=(schema-for "route-tree")
+  setIsDragging=(route-action 'setIsDragging')
+as |list|}}
   {{#list.vertical-collection filtered as |content|}}
     <tr class="list__row js-route-tree-item">
       {{route-item

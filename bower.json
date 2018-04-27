@@ -1,7 +1,0 @@
-{
-  "name": "ember-inspector",
-  "dependencies": {
-    "moment": "~2.8.4",
-    "animation-frame": "~0.2.4"
-  }
-}
