@@ -236,9 +236,9 @@ module('Object Inspector', function(hooks) {
 
     assert.equal(findAll('.mixin__property--group').length, 1);
     assert.equal(findAll('.mixin__property-icon--service').length, 1);
-    assert.equal(findAll('.mixin__property-name--service').length, 1);
+    assert.equal(findAll('.js-property-name-service').length, 1);
     assert.equal(findAll('.mixin__property-dependency-list').length, 0);
-    assert.equal(findAll('.mixin__property-dependency-item--computed').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item').length, 0);
     assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 0);
   });
 
@@ -283,13 +283,13 @@ module('Object Inspector', function(hooks) {
     await click('.mixin__property-icon--computed');
 
     assert.equal(findAll('.mixin__property-dependency-list').length, 0);
-    assert.equal(findAll('.mixin__property-dependency-item--computed').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item').length, 0);
     assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 0);
 
     await click('.mixin__property-icon--computed');
 
     assert.equal(findAll('.mixin__property-dependency-list').length, 0);
-    assert.equal(findAll('.mixin__property-dependency-item--computed').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item').length, 0);
     assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 0);
   });
 
@@ -333,13 +333,13 @@ module('Object Inspector', function(hooks) {
     await click('.mixin__property-icon--computed');
 
     assert.equal(findAll('.mixin__property-dependency-list').length, 1);
-    assert.equal(findAll('.mixin__property-dependency-item--computed').length, 1);
+    assert.equal(findAll('.mixin__property-dependency-item').length, 1);
     assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 1);
 
     await click('.mixin__property-icon--computed');
 
     assert.equal(findAll('.mixin__property-dependency-list').length, 0);
-    assert.equal(findAll('.mixin__property-dependency-item--computed').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item').length, 0);
     assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 0);
   });
 
