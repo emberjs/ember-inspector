@@ -534,26 +534,9 @@ export default EmberObject.extend(PortMixin, {
       }
     }
 
-    for (let span of div.querySelectorAll('p.view span:last-child')) {
-      span.style.cursor = 'pointer';
-      span.addEventListener('click', () => {
-        this.get('objectInspector').sendObject(view.object);
-      });
-    }
-
-    for (let span of div.querySelectorAll('p.controller span:last-child')) {
-      span.style.cursor = 'pointer';
-      span.addEventListener('click', () => {
-        this.get('objectInspector').sendObject(controller.object);
-      });
-    }
-
-    for (let span of div.querySelectorAll('p.component span:last-child')) {
-      span.style.cursor = 'pointer';
-      span.addEventListener('click', () => {
-        this.get('objectInspector').sendObject(view.object);
-      });
-    }
+    this._addClickListeners(div, view, 'component');
+    this._addClickListeners(div, controller, 'controller');
+    this._addClickListeners(div, view, 'view');
 
     for (let span of div.querySelectorAll('p.template span:last-child')) {
       span.style.cursor = 'pointer';
@@ -584,6 +567,15 @@ export default EmberObject.extend(PortMixin, {
 
   hidePreview() {
     previewDiv.style.display = 'none';
+  },
+
+  _addClickListeners(div, item, selector) {
+    for (let span of div.querySelectorAll(`p.${selector} span:last-child`)) {
+      span.style.cursor = 'pointer';
+      span.addEventListener('click', () => {
+        this.get('objectInspector').sendObject(item.object);
+      });
+    }
   },
 
   /**
