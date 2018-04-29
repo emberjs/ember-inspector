@@ -4,6 +4,7 @@ import Component from '@ember/component';
 import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import EmberObject, { computed } from '@ember/object';
+import Service from '@ember/service';
 import Ember from 'ember';
 import { module, test } from 'qunit';
 import { settings as nativeDomHelpersSettings } from 'ember-native-dom-helpers';
@@ -366,6 +367,44 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.details[3].properties[1].value.type, 'type-descriptor', 'Does not calculate expensive properties');
 
     assert.ok(message.details[4].name !== 'MixinToSkip', 'Correctly skips properties');
+  });
+
+
+  test("Service should be successfully tagged as service on serialization", function(assert) {
+    let inspectedService = Service.extend({
+      fooBoo() {
+        return true;
+      }
+    }).create();
+
+    let inspected = EmberObject.extend({
+      service: inspectedService
+    }).create();
+
+    objectInspector.sendObject(inspected);
+
+    let serializedServiceProperty = message.details[1].properties[0];
+
+    assert.equal(serializedServiceProperty.isService, true);
+  });
+
+  test("Computed property dependent keys and code should be successfully serialized", function(assert) {
+    let compuedFn = function() {
+      return this.get("foo") + this.get("bar");
+    };
+
+    let inspected = EmberObject.extend({
+      foo: true,
+      bar: false,
+      fooAndBar: computed("foo", "bar", compuedFn)
+    }).create();
+
+    objectInspector.sendObject(inspected);
+    let serializedComputedProperty = message.details[1].properties[2];
+
+    assert.equal(serializedComputedProperty.code, compuedFn.toString());
+    assert.equal(serializedComputedProperty.dependentKeys[0], "foo");
+    assert.equal(serializedComputedProperty.dependentKeys[1], "bar");
   });
 
   test('Read Only Computed properties mush have a readOnly property', function(assert) {

@@ -114,7 +114,6 @@ module('Object Inspector', function(hooks) {
     assert.equal(firstDetail.querySelectorAll('.js-object-property').length, 1);
     assert.dom(firstDetail.querySelector('.js-object-property-name')).hasText('numberProperty');
     assert.dom(firstDetail.querySelector('.js-object-property-value')).hasText('1');
-
     await click(firstDetail.querySelector('.js-object-detail-name'));
 
     assert.dom(firstDetail).hasNoClass('mixin_state_expanded', 'Expanded detail minimizes on click.');
@@ -211,6 +210,137 @@ module('Object Inspector', function(hooks) {
     });
 
     assert.dom('.js-object-property-value').hasText('Computed value');
+  });
+
+  test("Service highlight", async function(assert) {
+    await visit('/');
+
+    let obj = {
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [{
+        name: 'Detail',
+        properties: [{
+          name: 'serviceProp',
+          isService: true,
+          value: {
+            inspect: '<service>',
+            computed: true
+          }
+        }]
+      }]
+    };
+
+    await triggerPort(this, 'objectInspector:updateObject', obj);
+    await click('.js-object-detail-name');
+
+    assert.equal(findAll('.mixin__property--group').length, 1);
+    assert.equal(findAll('.mixin__property-icon--service').length, 1);
+    assert.equal(findAll('.js-property-name-service').length, 1);
+    assert.equal(findAll('.mixin__property-dependency-list').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 0);
+  });
+
+  test("Computed properties no dependency", async function (assert) {
+    await visit('/');
+
+    let obj = {
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [{
+        name: 'Detail',
+        properties: [{
+          name: 'computedProp',
+          dependentKeys: [],
+          value: {
+            inspect: '<computed>',
+            type: 'type-descriptor',
+            computed: true
+          }
+        }]
+      }]
+    };
+
+    await triggerPort(this, 'objectInspector:updateObject', obj);
+    await click('.js-object-detail-name');
+    await click('.js-calculate');
+
+    assert.equal(name, 'objectInspector:calculate');
+    assert.deepEqual(message, { objectId: 'myObject', property: 'computedProp', mixinIndex: 0 });
+    await triggerPort(this, 'objectInspector:updateProperty', {
+      objectId: 'myObject',
+      property: 'computedProp',
+      value: {
+        inspect: 'Computed value',
+        computed: 'foo-bar'
+      },
+      mixinIndex: 0
+    });
+
+    assert.equal(findAll('.mixin__property--group').length, 0);
+
+    await click('.mixin__property-icon--computed');
+
+    assert.equal(findAll('.mixin__property-dependency-list').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 0);
+
+    await click('.mixin__property-icon--computed');
+
+    assert.equal(findAll('.mixin__property-dependency-list').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 0);
+  });
+
+  test("Computed properties dependency expand", async function (assert) {
+    await visit('/');
+
+    let obj = {
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [{
+        name: 'Detail',
+        properties: [{
+          name: 'computedProp',
+          dependentKeys: ['foo.@each.bar'],
+          value: {
+            inspect: '<computed>',
+            type: 'type-descriptor',
+            computed: true
+          }
+        }]
+      }]
+    };
+    await triggerPort(this, 'objectInspector:updateObject', obj);
+    await click('.js-object-detail-name');
+    await click('.js-calculate');
+
+    assert.equal(name, 'objectInspector:calculate');
+    assert.deepEqual(message, { objectId: 'myObject', property: 'computedProp', mixinIndex: 0 });
+    await triggerPort(this, 'objectInspector:updateProperty', {
+      objectId: 'myObject',
+      property: 'computedProp',
+      value: {
+        inspect: 'Computed value',
+        computed: 'foo-bar'
+      },
+      mixinIndex: 0
+    });
+
+    assert.equal(findAll('.mixin__property--group').length, 1);
+
+    await click('.mixin__property-icon--computed');
+
+    assert.equal(findAll('.mixin__property-dependency-list').length, 1);
+    assert.equal(findAll('.mixin__property-dependency-item').length, 1);
+    assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 1);
+
+    await click('.mixin__property-icon--computed');
+
+    assert.equal(findAll('.mixin__property-dependency-list').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 0);
   });
 
   test("Properties are bound to the application properties", async function (assert) {

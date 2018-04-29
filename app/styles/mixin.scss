@@ -39,15 +39,17 @@ $mixin-left-padding: 22px;
 .mixin__name:before {
   position: absolute;
   top: 5px;
-  left: 7px;
+  left: 6px;
   content: "\25B6";
   color: var(--base18);
   margin-right: 5px;
   font-size: 90%;
+  transform: rotate(0deg);
+  transition: all 0.1s;
 }
 
   .mixin_state_expanded .mixin__name:before {
-    content: "\25BC";
+    transform: rotate(90deg);
   }
 
 .mixin__properties {
@@ -56,7 +58,7 @@ $mixin-left-padding: 22px;
   margin: 0;
   padding: 3px 0 5px 0;
   font-size: 12px;
-  font-family: 'SF Mono', Menlo, Monaco, monospace;
+  font-family: var(--font-monospace);
 }
 
 .mixin__property {
@@ -68,6 +70,25 @@ $mixin-left-padding: 22px;
   flex-direction: row;
   align-items: center;
   min-height: 19px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+
+  .mixin__cp-toggle {
+    width: $mixin-left-padding;
+    outline: none;
+
+    svg {
+      transition: all 0.2s;
+      transform:
+        rotate(-90deg)
+        translateY(1px);
+    }
+  }
+  .mixin__cp-toggle--expanded {
+    svg {
+      transform: rotate(0deg);
+    }
+  }
 }
 
 /* Errors */
@@ -97,16 +118,9 @@ $mixin-left-padding: 22px;
   }
 
   .pad { width: $mixin-left-padding; }
-  .mixin__calc-btn {
-    width: $mixin-left-padding;
 
-    img {
-      max-height: 16px;
-    }
-  }
-
-  .mixin__calc-btn--calculated {
-    opacity: 0.4;
+  .mixin__calc-btn svg {
+    path, circle { fill: var(--spec18); }
   }
 
   .mixin__send-btn {
@@ -120,7 +134,7 @@ $mixin-left-padding: 22px;
 }
 
 .mixin__property-name {
-  color: var(--spec04);
+  color: var(--base26);
 }
 
 .mixin__property-value {
@@ -149,7 +163,7 @@ $mixin-left-padding: 22px;
 }
 
 .mixin__property .type-object {
-  color: var(--base15);
+  color: var(--base20);
 }
 
 .mixin__property .type-ember-object,
@@ -157,12 +171,8 @@ $mixin-left-padding: 22px;
   cursor: pointer;
 }
 
-.mixin__property-calculated-value {
-  flex: 1;
-  color: var(--base15);
-}
-
-.mixin__property .type-null, .mixin__property .type-boolean {
+.mixin__property .type-null,
+.mixin__property .type-boolean {
   color: var(--spec10);
 }
 
@@ -171,6 +181,9 @@ $mixin-left-padding: 22px;
   color: var(--spec05);
 }
 
+.mixin__property .type-service {
+  color: var(--spec17);
+}
 
 
 .mixin__property_state_overridden {
