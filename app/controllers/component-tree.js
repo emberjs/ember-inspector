@@ -180,7 +180,7 @@ export default Controller.extend({
 
     /**
      * Expand or collapse all component nodes
-     * @param {boolean} expanded If true, expanded, if false, collapsed
+     * @param {Boolean} expanded If true, expanded, if false, collapsed
      */
     expandOrCollapseAll(expanded) {
       this.expandedStateCache = {};

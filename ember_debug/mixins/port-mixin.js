@@ -32,7 +32,7 @@ export default Mixin.create({
 
   /**
    * Setup or tear down port listeners. Call on `init` and `willDestroy`
-   * @param onOrOff 'on' or 'off' the functions to call i.e. port.on or port.off for adding or removing listeners
+   * @param {String} onOrOff 'on' or 'off' the functions to call i.e. port.on or port.off for adding or removing listeners
    */
   setupOrRemovePortListeners(onOrOff) {
     let port = this.get('port');
