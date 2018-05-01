@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { typeOf, isEmpty } from '@ember/utils';
 import EmberObject, { computed, observer } from '@ember/object';
 import { not, equal, or } from '@ember/object/computed';
-import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
+import escapeRegExp from 'ember-inspector/utils/escape-reg-exp';
 
 const dateComputed = function() {
   return computed({
@@ -77,20 +77,15 @@ export default EmberObject.extend({
     if (!this.get('parent')) {
       return;
     }
-    if (this.get('pendingBranch') && !this.get('parent.pendingBranch')) {
-      this.get('parent').notifyPropertyChange('fulfilledBranch');
-      this.get('parent').notifyPropertyChange('rejectedBranch');
-      this.get('parent').notifyPropertyChange('pendingBranch');
-    } else if (this.get('fulfilledBranch') && !this.get('parent.fulfilledBranch')) {
-      this.get('parent').notifyPropertyChange('fulfilledBranch');
-      this.get('parent').notifyPropertyChange('rejectedBranch');
-      this.get('parent').notifyPropertyChange('pendingBranch');
-    } else if (this.get('rejectedBranch') && !this.get('parent.rejectedBranch')) {
+    if (
+      (this.get('pendingBranch') && !this.get('parent.pendingBranch')) ||
+      (this.get('fulfilledBranch') && !this.get('parent.fulfilledBranch')) ||
+      (this.get('rejectedBranch') && !this.get('parent.rejectedBranch'))
+    ) {
       this.get('parent').notifyPropertyChange('fulfilledBranch');
       this.get('parent').notifyPropertyChange('rejectedBranch');
       this.get('parent').notifyPropertyChange('pendingBranch');
     }
-
   }),
 
   updateParentLabel: observer('label', 'parent', function() {
@@ -122,7 +117,6 @@ export default EmberObject.extend({
   matchesExactly(val) {
     return !!((this.get('label') || '').toLowerCase().match(new RegExp(`.*${escapeRegExp(val.toLowerCase())}.*`)));
   },
-
 
 
   // EXPANDED / COLLAPSED PROMISES
