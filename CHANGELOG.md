@@ -2,15 +2,53 @@
 
 ## [Unreleased](https://github.com/emberjs/ember-inspector/tree/HEAD)
 
-[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.0.0...HEAD)
-
-**Fixed bugs:**
-
-- "Cannot read property 'outlets' of undefined" On Ember 3.1-beta.1 [\#770](https://github.com/emberjs/ember-inspector/issues/770)
-- Data tab not working [\#739](https://github.com/emberjs/ember-inspector/issues/739)
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.1.0...HEAD)
 
 **Merged pull requests:**
 
+- Refactor duplication [\#792](https://github.com/emberjs/ember-inspector/pull/792) ([rwwagner90](https://github.com/rwwagner90))
+
+## [v3.1.0](https://github.com/emberjs/ember-inspector/tree/v3.1.0) (2018-05-01)
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.0.0...v3.1.0)
+
+**Implemented enhancements:**
+
+- Implement dark theme [\#771](https://github.com/emberjs/ember-inspector/issues/771)
+- Remove bower deps [\#786](https://github.com/emberjs/ember-inspector/pull/786) ([rwwagner90](https://github.com/rwwagner90))
+- UI Tweaks April 2018 [\#780](https://github.com/emberjs/ember-inspector/pull/780) ([nummi](https://github.com/nummi))
+
+**Fixed bugs:**
+
+- ember inspector error in Chrome Version 65.0.3325.181 [\#783](https://github.com/emberjs/ember-inspector/issues/783)
+- "Cannot read property 'outlets' of undefined" On Ember 3.1-beta.1 [\#770](https://github.com/emberjs/ember-inspector/issues/770)
+- Data tab not working [\#739](https://github.com/emberjs/ember-inspector/issues/739)
+
+**Closed issues:**
+
+- Show computed property dependent keys [\#779](https://github.com/emberjs/ember-inspector/issues/779)
+- UI Tweaks April 2018 [\#778](https://github.com/emberjs/ember-inspector/issues/778)
+- \[Quest\] - Implement Component Tree [\#774](https://github.com/emberjs/ember-inspector/issues/774)
+- Cannot read property 'getAttribute' of undefined [\#727](https://github.com/emberjs/ember-inspector/issues/727)
+- Stack trace: TypeError: definedControllerClass.proto is not a function [\#629](https://github.com/emberjs/ember-inspector/issues/629)
+- Remove jQuery [\#590](https://github.com/emberjs/ember-inspector/issues/590)
+- Error: You must use Ember.set\(\) to set the `scheduledRevalidation` property [\#559](https://github.com/emberjs/ember-inspector/issues/559)
+- Erro when i click ViewTree and any Controller. [\#523](https://github.com/emberjs/ember-inspector/issues/523)
+- \[IDEA\] Component Hierarchy Tab [\#465](https://github.com/emberjs/ember-inspector/issues/465)
+- Can't fetch Ember deprecations [\#429](https://github.com/emberjs/ember-inspector/issues/429)
+
+**Merged pull requests:**
+
+- Adjust toolbar radio colors [\#794](https://github.com/emberjs/ember-inspector/pull/794) ([nummi](https://github.com/nummi))
+- Remove references to bower in README [\#793](https://github.com/emberjs/ember-inspector/pull/793) ([josemarluedke](https://github.com/josemarluedke))
+- Use `qunit-dom` for DOM assertions [\#790](https://github.com/emberjs/ember-inspector/pull/790) ([Turbo87](https://github.com/Turbo87))
+- Sticky Mixin Headers [\#789](https://github.com/emberjs/ember-inspector/pull/789) ([nummi](https://github.com/nummi))
+- \[WIP\] Trying to fix beta and canary [\#787](https://github.com/emberjs/ember-inspector/pull/787) ([rwwagner90](https://github.com/rwwagner90))
+- Initial component tree implementation [\#785](https://github.com/emberjs/ember-inspector/pull/785) ([Bestra](https://github.com/Bestra))
+- search-field  Component Bug Fix and Acceptance Tests [\#784](https://github.com/emberjs/ember-inspector/pull/784) ([nummi](https://github.com/nummi))
+- Implement dark theme [\#782](https://github.com/emberjs/ember-inspector/pull/782) ([pbishop16](https://github.com/pbishop16))
+- Feature: ComputedProperty Dependent keys in debugger & services highlighting [\#781](https://github.com/emberjs/ember-inspector/pull/781) ([lifeart](https://github.com/lifeart))
+- Link directly to issues url [\#776](https://github.com/emberjs/ember-inspector/pull/776) ([sivakumar-kailasam](https://github.com/sivakumar-kailasam))
+- Start auto generating changelogs [\#773](https://github.com/emberjs/ember-inspector/pull/773) ([rwwagner90](https://github.com/rwwagner90))
 - Bump minor version to 3.1.0 [\#769](https://github.com/emberjs/ember-inspector/pull/769) ([teddyzeenny](https://github.com/teddyzeenny))
 - Remove jQuery from app [\#768](https://github.com/emberjs/ember-inspector/pull/768) ([rwwagner90](https://github.com/rwwagner90))
 
