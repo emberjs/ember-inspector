@@ -68,7 +68,7 @@ export default Controller.extend({
 
   // bound to the input field, updates the `search` property
   // 300ms after changing
-  searchField: debounceComputed('search', 300),
+  searchValue: debounceComputed('search', 300),
 
   // model filtered based on this value
   search: '',

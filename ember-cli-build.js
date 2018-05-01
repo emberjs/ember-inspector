@@ -22,6 +22,12 @@ const map = stew.map;
 const options = {
   fingerprint: {
     enabled: false
+  },
+
+  svgJar: {
+    sourceDirs: [
+      'public/assets/svg'
+    ]
   }
 };
 
@@ -48,8 +54,9 @@ module.exports = function(defaults) {
   const env = process.env.EMBER_ENV;
 
   app.import('vendor/babel-polyfill.js', { prepend: true });
-  app.import('bower_components/contextMenu/contextMenu.js');
-  app.import('bower_components/contextMenu/contextMenu.css');
+  app.import('node_modules/basiccontext/dist/basicContext.min.css');
+  app.import('node_modules/basiccontext/dist/themes/default.min.css');
+  app.import('node_modules/basiccontext/dist/basicContext.min.js');
 
   // Ember Debug
 

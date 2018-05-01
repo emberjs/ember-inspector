@@ -1,4 +1,7 @@
-{{#x-list name="info-list" schema=(schema-for "info-list") as |list|}}
+{{#x-list
+  name="info-list"
+  schema=(schema-for "info-list")
+  setIsDragging=(route-action 'setIsDragging') as |list|}}
   <tbody>
     {{#each model as |library|}}
       <tr class="list__row js-library-row">

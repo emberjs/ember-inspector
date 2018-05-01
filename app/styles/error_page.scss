@@ -15,13 +15,13 @@
 
 .error-page {
   padding: 10px;
-  background: #ededed;
+  background: var(--base03);
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   min-height: 100%;
-  color: #505050;
+  color: var(--base22);
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
@@ -32,14 +32,14 @@
   padding: 25px;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  background: #ffffff;
-  border: solid 1px #d1d1d1;
+  background: var(--base00);
+  border: 1px solid var(--base06);
   border-radius: 5px;
   margin: auto;
 }
 
 .error-page__content a {
-  color: #f23818;
+  color: var(--spec03);
   text-decoration: none;
 }
 
@@ -49,7 +49,7 @@
   padding-top: 15px;
   padding-bottom: 30px;
   margin-bottom: 10px;
-  border-bottom: solid 1px #d1d1d1;
+  border-bottom: 1px solid var(--base06);
   position: relative;
 }
 
@@ -58,6 +58,7 @@
   width: 128px;
   height: 89px;
   background: url("images/fishy_tomster.png") left center no-repeat;
+  background-size: 128px 89px;
   position: absolute;
   right: 0px;
   bottom: 0px;
@@ -82,7 +83,7 @@
 .error-page__list {
   padding-left: 16px;
   padding-bottom: 5px;
-  border-bottom: solid 1px #d1d1d1;;
+  border-bottom: 1px solid var(--base06);
 }
 
 .error-page__list li {

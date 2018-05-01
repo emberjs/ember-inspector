@@ -12,7 +12,7 @@ export default Component.extend({
 
   didInsertElement() {
     if (!this.get('width')) {
-      this.set('width', this.$().width());
+      this.set('width', this.element.clientWidth);
     }
   }
 });

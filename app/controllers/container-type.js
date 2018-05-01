@@ -9,7 +9,7 @@ export default Controller.extend({
 
   sortProperties: ['name'],
 
-  searchVal: debounceComputed('search', 300),
+  searchValue: debounceComputed('search', 300),
 
   search: null,
 

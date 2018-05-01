@@ -1,4 +1,4 @@
-import { visit, find, findAll, click } from '@ember/test-helpers';
+import { visit, find, findAll, fillIn, click } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { triggerPort } from '../helpers/trigger-port';
@@ -51,8 +51,8 @@ module('Promise Tab', function(hooks) {
       promises: []
     });
 
-    assert.notOk(find('.js-promise-tree'), "no promise list");
-    assert.ok(find('.js-page-refresh'), "page refresh hint seen");
+    assert.dom('.js-promise-tree').doesNotExist("no promise list");
+    assert.dom('.js-page-refresh').exists("page refresh hint seen");
 
     await click('.js-page-refresh-btn');
 
@@ -68,16 +68,16 @@ module('Promise Tab', function(hooks) {
       ]
     });
 
-    assert.ok(find('.js-promise-tree'), 'promise tree is seen after being populated');
-    assert.equal(findAll('.js-promise-tree-item').length, 1, '1 promise item can be seen');
-    assert.notOk(find('.js-page-refresh'), 'page refresh hint hidden');
+    assert.dom('.js-promise-tree').exists('promise tree is seen after being populated');
+    assert.dom('.js-promise-tree-item').exists({ count: 1 }, '1 promise item can be seen');
+    assert.dom('.js-page-refresh').doesNotExist('page refresh hint hidden');
 
     // make sure clearing does not show the refresh hint
     await click('.js-clear-promises-btn');
 
-    assert.ok(find('.js-promise-tree'), 'promise-tree can be seen');
-    assert.notOk(find('.js-promise-tree-item'), 'promise items cleared');
-    assert.notOk(find('.js-page-refresh'), 'page refresh hint hidden');
+    assert.dom('.js-promise-tree').exists('promise-tree can be seen');
+    assert.dom('.js-promise-tree-item').doesNotExist('promise items cleared');
+    assert.dom('.js-page-refresh').doesNotExist('page refresh hint hidden');
   });
 
   test("Pending promise", async function(assert) {
@@ -94,10 +94,10 @@ module('Promise Tab', function(hooks) {
     });
     await wait();
 
-    assert.equal(findAll('.js-promise-tree-item').length, 1);
+    assert.dom('.js-promise-tree-item').exists({ count: 1 });
     let row = find('.js-promise-tree-item');
-    assert.equal(row.querySelector('.js-promise-label').textContent.trim(), 'Promise 1');
-    assert.equal(row.querySelector('.js-promise-state').textContent.trim(), 'Pending');
+    assert.dom(row.querySelector('.js-promise-label')).hasText('Promise 1');
+    assert.dom(row.querySelector('.js-promise-state')).hasText('Pending');
   });
 
 
@@ -123,12 +123,12 @@ module('Promise Tab', function(hooks) {
     });
     await wait();
 
-    assert.equal(findAll('.js-promise-tree-item').length, 1);
+    assert.dom('.js-promise-tree-item').exists({ count: 1 });
     let row = find('.js-promise-tree-item');
-    assert.equal(row.querySelector('.js-promise-label').textContent.trim(), 'Promise 1');
-    assert.equal(row.querySelector('.js-promise-state').textContent.trim(), 'Fulfilled');
-    assert.equal(row.querySelector('.js-promise-value').textContent.trim(), 'value');
-    assert.equal(row.querySelector('.js-promise-time').textContent.trim(), '10.00ms');
+    assert.dom(row.querySelector('.js-promise-label')).hasText('Promise 1');
+    assert.dom(row.querySelector('.js-promise-state')).hasText('Fulfilled');
+    assert.dom(row.querySelector('.js-promise-value')).hasText('value');
+    assert.dom(row.querySelector('.js-promise-time')).hasText('10.00ms');
   });
 
 
@@ -153,12 +153,12 @@ module('Promise Tab', function(hooks) {
       ]
     });
 
-    assert.equal(findAll('.js-promise-tree-item').length, 1);
+    assert.dom('.js-promise-tree-item').exists({ count: 1 });
     let row = find('.js-promise-tree-item');
-    assert.equal(row.querySelector('.js-promise-label').textContent.trim(), 'Promise 1');
-    assert.equal(row.querySelector('.js-promise-state').textContent.trim(), 'Rejected');
-    assert.equal(row.querySelector('.js-promise-value').textContent.trim(), 'reason');
-    assert.equal(row.querySelector('.js-promise-time').textContent.trim(), '20.00ms');
+    assert.dom(row.querySelector('.js-promise-label')).hasText('Promise 1');
+    assert.dom(row.querySelector('.js-promise-state')).hasText('Rejected');
+    assert.dom(row.querySelector('.js-promise-value')).hasText('reason');
+    assert.dom(row.querySelector('.js-promise-time')).hasText('20.00ms');
   });
 
   test("Chained promises", async function(assert) {
@@ -181,12 +181,12 @@ module('Promise Tab', function(hooks) {
 
     let rows = findAll('.js-promise-tree-item');
     assert.equal(rows.length, 1, 'Collpased by default');
-    assert.equal(rows[0].querySelector('.js-promise-label').textContent.trim(), 'Parent');
+    assert.dom(rows[0].querySelector('.js-promise-label')).hasText('Parent');
     await click(rows[0].querySelector('.js-promise-label'));
 
     rows = findAll('.js-promise-tree-item');
     assert.equal(rows.length, 2, 'Chain now expanded');
-    assert.equal(rows[1].querySelector('.js-promise-label').textContent.trim(), 'Child');
+    assert.dom(rows[1].querySelector('.js-promise-label')).hasText('Child');
   });
 
   test("Can trace promise when there is a stack", async function(assert) {
@@ -210,7 +210,7 @@ module('Promise Tab', function(hooks) {
       promises: [generatePromise({ guid: 1, hasStack: false })]
     });
 
-    assert.notOk(find('.js-trace-promise-btn'));
+    assert.dom('.js-trace-promise-btn').doesNotExist();
   });
 
   test("Toggling promise trace option", async function(assert) {
@@ -241,7 +241,7 @@ module('Promise Tab', function(hooks) {
     });
 
     let row = find('.js-promise-tree-item');
-    assert.equal(find('.js-send-to-console-btn').textContent.trim(), 'Stack trace');
+    assert.dom('.js-send-to-console-btn').hasText('Stack trace');
     await click(row.querySelector('.js-send-to-console-btn'));
 
     assert.equal(name, 'promise:sendValueToConsole');
@@ -290,5 +290,26 @@ module('Promise Tab', function(hooks) {
 
     assert.equal(name, 'objectInspector:inspectById');
     assert.deepEqual(message, { objectId: 100 });
+  });
+
+  test("It should clear the search filter when the clear button is clicked", async function(assert) {
+    await visit('/promise-tree');
+
+    await triggerPort(this, 'promise:promisesUpdated', {
+      promises: [
+        generatePromise({
+          guid: 1,
+          label: 'Promise 1',
+          state: 'created'
+        })
+      ]
+    });
+    await wait();
+
+    assert.dom('.js-promise-tree-item').exists({ count: 1 });
+    await fillIn('.js-promise-search input', 'xxxxx');
+    assert.dom('.js-promise-tree-item').doesNotExist();
+    await click('.js-search-field-clear-button');
+    assert.dom('.js-promise-tree-item').exists({ count: 1 });
   });
 });

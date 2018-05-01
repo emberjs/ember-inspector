@@ -3,22 +3,17 @@
  ===
  Navigation lists and links
 */
-.nav__title {
-  padding: 3px 5px;
-  line-height: 11px;
-  height: 15px;
-}
 
-.nav__title h3 {
+.nav__title h1 {
   white-space: nowrap;
-  display: inline-block;
+  height: 22px;
   text-overflow: ellipsis;
   overflow: hidden;
-  color: #6e6e6e;
-  text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
-  float: left;
-  padding: 0;
-  margin: 0;
+  color: var(--base19);
+  line-height: 22px;
+  text-shadow: var(--base05) 0 1px 0;
+  padding: 0 5px;
+  margin: 2px 0 0 0;
 }
 
 /* List */
@@ -33,24 +28,22 @@
 
 .nav li {
   display: block;
-  margin-top: 2px;
 }
 
 .nav li svg {
-  position: absolute;
-  top: 50%;
-  left: 14px;
-  margin-top: -10px;
+  flex-shrink: 0;
+  margin-right: 7px;
+  width: 22px;
+  height: 22px;
 }
 
 /* List anchor */
 
 .nav li > a {
   display: block;
-  height: 18px;
-  line-height: 18px;
-  margin-top: 1px;
-  padding: 2px 5px;
+  height: 22px;
+  line-height: 22px;
+  padding: 0 5px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -66,7 +59,7 @@
 .nav li > a path,
 .nav li > a rect,
 .nav li > a circle {
-  fill: #222;
+  fill: var(--base28);
 }
 
 .nav li > a:focus {
@@ -74,38 +67,43 @@
 }
 
 .nav li > a.active {
-  color: #fff;
-  text-shadow: 0 1px 0 rgba(0,0,0, 0.33);
-  background: #3879D9;
+  color: var(--base00);
+  background: var(--spec11);
 }
 
 .nav li > a.active polygon,
 .nav li > a.active path,
 .nav li > a.active rect,
 .nav li > a.active circle {
-  fill: #fff;
+  fill: var(--base00);
 }
 
 .app.inactive .nav li > a.active {
-  background: #b4b4b4;
+  background: var(--base10);
 }
 
 /* Custom navs */
 
 .nav--main li > a {
-  position: relative;
-  height: 33px;
-  padding-left: 40px;
-  color: #333;
-  line-height: 33px;
+  display: flex;
+  align-items: center;
+  height: 38px;
+  padding-left: 12px;
+  color: var(--base26);
+  line-height: 38px;
 }
 
-.nav.nav--main .nav__title {
-  padding-left: 15px;
+.nav--main .pill {
+  margin-left: 5px;
 }
 
-/* Custom nav title */
+.nav.nav--main .nav__title h1 {
+  padding-left: 14px;
+}
 
-.nav__title--middle {
-  line-height: 21px;
+/* Flip path on Promises icon */
+
+.promises-icon-circle {
+  transform: scaleX(-1);
+  transform-origin: 18px;
 }

@@ -1,4 +1,8 @@
-{{#x-list name="container-instance-list" schema=(hash columns=null) headerHeight=0 as |list|}}
+{{#x-list
+  headerHeight=0
+  name="container-instance-list"
+  schema=(hash columns=null)
+  setIsDragging=(route-action 'setIsDragging') as |list|}}
   {{#list.vertical-collection filtered estimateHeight=30 itemClass="js-instance-row" as |content index|}}
     <tr class="list__row js-container-instance-list-item" {{action "inspectInstance" content}}>
       {{#list.cell class="list__cell_main" clickable=content.inspectable}}

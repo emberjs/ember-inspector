@@ -13,7 +13,7 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `yarn install && bower install`
+- run `yarn install`
 - run `yarn global add ember-cli`
 - run `yarn build` to build the `dist` directory
 - Visit `chrome://extensions` in Chrome
@@ -30,7 +30,7 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `yarn install && bower install`
+- run `yarn install`
 - run `yarn global add ember-cli`
 - run `yarn build` to build the `dist` directory
 - Visit `about:debugging` in Firefox
@@ -41,7 +41,7 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `yarn install && bower install`
+- run `yarn install`
 - run `yarn global add ember-cli`
 - run `yarn build` to build the `dist` directory
 - Visit `chrome://extensions` in Opera
@@ -69,7 +69,7 @@ javascript: (function() { var s = document.createElement('script'); s.src = 'htt
 
 ## Building and Testing:
 
-Run `yarn install && yarn global add ember-cli && yarn global add bower && bower install && grunt-cli` to install the required modules.
+Run `yarn install && yarn global add ember-cli && grunt-cli` to install the required modules.
 
 - `yarn build` to build the files in the `dist` directory
 - `yarn watch` To watch the files and re-build in `dist` when anything changes (useful during development).

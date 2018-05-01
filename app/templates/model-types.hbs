@@ -1,7 +1,10 @@
 <div class="split">
-  {{#draggable-column width=navWidth classes="split__panel split__panel--sidebar-2 nav"}}
+  {{#draggable-column
+    width=navWidth
+    classes="split__panel split__panel--sidebar-2 nav"
+    setIsDragging=(route-action 'setIsDragging')}}
     <div class="split__panel__bd">
-      <div class="nav__title"><h3>Model Types</h3></div>
+      <div class="nav__title"><h1>Model Types</h1></div>
       <ul>
         {{#each sorted as |modelType|}}
           <li class="js-model-type">

@@ -89,9 +89,12 @@ module('Object Inspector', function(hooks) {
 
     await triggerPort(this, 'objectInspector:updateObject', obj);
 
-    assert.equal(find('.js-object-name').textContent, 'My Object');
-    assert.equal(find('.js-object-detail-name').textContent, 'Own Properties');
-    assert.ok(find('.js-object-detail').classList.contains('mixin_state_expanded'), 'The "Own Properties" detail is expanded by default');
+    assert.dom('.js-object-name').hasText('My Object');
+    assert.dom('.js-object-detail-name').hasText('Own Properties');
+    assert.dom('.js-object-detail').hasClass(
+      'mixin_state_expanded',
+      'The "Own Properties" detail is expanded by default'
+    );
   });
 
   test("Object details", async function (assert) {
@@ -99,30 +102,29 @@ module('Object Inspector', function(hooks) {
 
     await triggerPort(this, 'objectInspector:updateObject', objectToInspect());
 
-    assert.equal(find('.js-object-name').textContent, 'My Object');
+    assert.dom('.js-object-name').hasText('My Object');
     let [firstDetail, secondDetail] = findAll('.js-object-detail');
-    assert.equal(firstDetail.querySelector('.js-object-detail-name').textContent, 'First Detail');
-    assert.notOk(firstDetail.classList.contains('mixin_state_expanded'), 'Detail not expanded by default');
+    assert.dom(firstDetail.querySelector('.js-object-detail-name')).hasText('First Detail');
+    assert.dom(firstDetail).hasNoClass('mixin_state_expanded', 'Detail not expanded by default');
 
     await click('.js-object-detail-name', firstDetail);
 
-    assert.ok(firstDetail.classList.contains('mixin_state_expanded'), 'Detail expands on click.');
-    assert.notOk(secondDetail.classList.contains('mixin_state_expanded'), 'Second detail does not expand.');
+    assert.dom(firstDetail).hasClass('mixin_state_expanded', 'Detail expands on click.');
+    assert.dom(secondDetail).hasNoClass('mixin_state_expanded', 'Second detail does not expand.');
     assert.equal(firstDetail.querySelectorAll('.js-object-property').length, 1);
-    assert.equal(firstDetail.querySelector('.js-object-property-name').textContent, 'numberProperty');
-    assert.equal(firstDetail.querySelector('.js-object-property-value').textContent, '1');
-
+    assert.dom(firstDetail.querySelector('.js-object-property-name')).hasText('numberProperty');
+    assert.dom(firstDetail.querySelector('.js-object-property-value')).hasText('1');
     await click(firstDetail.querySelector('.js-object-detail-name'));
 
-    assert.notOk(firstDetail.classList.contains('mixin_state_expanded'), 'Expanded detail minimizes on click.');
+    assert.dom(firstDetail).hasNoClass('mixin_state_expanded', 'Expanded detail minimizes on click.');
     await click(secondDetail.querySelector('.js-object-detail-name'));
 
-    assert.ok(secondDetail.classList.contains('mixin_state_expanded'));
+    assert.dom(secondDetail).hasClass('mixin_state_expanded');
     assert.equal(secondDetail.querySelectorAll('.js-object-property').length, 2);
-    assert.equal(secondDetail.querySelectorAll('.js-object-property-name')[0].textContent, 'objectProperty');
-    assert.equal(secondDetail.querySelectorAll('.js-object-property-value')[0].textContent, 'Ember Object Name');
-    assert.equal(secondDetail.querySelectorAll('.js-object-property-name')[1].textContent, 'stringProperty');
-    assert.equal(secondDetail.querySelectorAll('.js-object-property-value')[1].textContent, 'String Value');
+    assert.dom(secondDetail.querySelectorAll('.js-object-property-name')[0]).hasText('objectProperty');
+    assert.dom(secondDetail.querySelectorAll('.js-object-property-value')[0]).hasText('Ember Object Name');
+    assert.dom(secondDetail.querySelectorAll('.js-object-property-name')[1]).hasText('stringProperty');
+    assert.dom(secondDetail.querySelectorAll('.js-object-property-value')[1]).hasText('String Value');
   });
 
   test("Digging deeper into objects", async function (assert) {
@@ -159,17 +161,17 @@ module('Object Inspector', function(hooks) {
 
     await triggerPort(this, 'objectInspector:updateObject', nestedObject);
 
-    assert.equal(find('.js-object-name').textContent, 'My Object', 'Title stays as the initial object.');
-    assert.equal(find('.js-object-trail').textContent, '.objectProperty', 'Nested property shows below title');
-    assert.equal(find('.js-object-detail-name').textContent, 'Nested Detail');
+    assert.dom('.js-object-name').hasText('My Object', 'Title stays as the initial object.');
+    assert.dom('.js-object-trail').hasText('.objectProperty', 'Nested property shows below title');
+    assert.dom('.js-object-detail-name').hasText('Nested Detail');
     await click('.js-object-detail-name');
 
-    assert.ok(find('.js-object-detail').classList.contains('mixin_state_expanded'));
-    assert.equal(find('.js-object-property-name').textContent, 'nestedProp');
-    assert.equal(find('.js-object-property-value').textContent, 'Nested Prop');
+    assert.dom('.js-object-detail').hasClass('mixin_state_expanded');
+    assert.dom('.js-object-property-name').hasText('nestedProp');
+    assert.dom('.js-object-property-value').hasText('Nested Prop');
     await click('.js-object-inspector-back');
 
-    assert.notOk(find('.js-object-trail'), 0);
+    assert.dom('.js-object-trail').doesNotExist(0);
   });
 
   test("Computed properties", async function (assert) {
@@ -207,7 +209,138 @@ module('Object Inspector', function(hooks) {
       mixinIndex: 0
     });
 
-    assert.equal(find('.js-object-property-value').textContent, 'Computed value');
+    assert.dom('.js-object-property-value').hasText('Computed value');
+  });
+
+  test("Service highlight", async function(assert) {
+    await visit('/');
+
+    let obj = {
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [{
+        name: 'Detail',
+        properties: [{
+          name: 'serviceProp',
+          isService: true,
+          value: {
+            inspect: '<service>',
+            computed: true
+          }
+        }]
+      }]
+    };
+
+    await triggerPort(this, 'objectInspector:updateObject', obj);
+    await click('.js-object-detail-name');
+
+    assert.equal(findAll('.mixin__property--group').length, 1);
+    assert.equal(findAll('.mixin__property-icon--service').length, 1);
+    assert.equal(findAll('.js-property-name-service').length, 1);
+    assert.equal(findAll('.mixin__property-dependency-list').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 0);
+  });
+
+  test("Computed properties no dependency", async function (assert) {
+    await visit('/');
+
+    let obj = {
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [{
+        name: 'Detail',
+        properties: [{
+          name: 'computedProp',
+          dependentKeys: [],
+          value: {
+            inspect: '<computed>',
+            type: 'type-descriptor',
+            computed: true
+          }
+        }]
+      }]
+    };
+
+    await triggerPort(this, 'objectInspector:updateObject', obj);
+    await click('.js-object-detail-name');
+    await click('.js-calculate');
+
+    assert.equal(name, 'objectInspector:calculate');
+    assert.deepEqual(message, { objectId: 'myObject', property: 'computedProp', mixinIndex: 0 });
+    await triggerPort(this, 'objectInspector:updateProperty', {
+      objectId: 'myObject',
+      property: 'computedProp',
+      value: {
+        inspect: 'Computed value',
+        computed: 'foo-bar'
+      },
+      mixinIndex: 0
+    });
+
+    assert.equal(findAll('.mixin__property--group').length, 0);
+
+    await click('.mixin__property-icon--computed');
+
+    assert.equal(findAll('.mixin__property-dependency-list').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 0);
+
+    await click('.mixin__property-icon--computed');
+
+    assert.equal(findAll('.mixin__property-dependency-list').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 0);
+  });
+
+  test("Computed properties dependency expand", async function (assert) {
+    await visit('/');
+
+    let obj = {
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [{
+        name: 'Detail',
+        properties: [{
+          name: 'computedProp',
+          dependentKeys: ['foo.@each.bar'],
+          value: {
+            inspect: '<computed>',
+            type: 'type-descriptor',
+            computed: true
+          }
+        }]
+      }]
+    };
+    await triggerPort(this, 'objectInspector:updateObject', obj);
+    await click('.js-object-detail-name');
+    await click('.js-calculate');
+
+    assert.equal(name, 'objectInspector:calculate');
+    assert.deepEqual(message, { objectId: 'myObject', property: 'computedProp', mixinIndex: 0 });
+    await triggerPort(this, 'objectInspector:updateProperty', {
+      objectId: 'myObject',
+      property: 'computedProp',
+      value: {
+        inspect: 'Computed value',
+        computed: 'foo-bar'
+      },
+      mixinIndex: 0
+    });
+
+    assert.equal(findAll('.mixin__property--group').length, 1);
+
+    await click('.mixin__property-icon--computed');
+
+    assert.equal(findAll('.mixin__property-dependency-list').length, 1);
+    assert.equal(findAll('.mixin__property-dependency-item').length, 1);
+    assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 1);
+
+    await click('.mixin__property-icon--computed');
+
+    assert.equal(findAll('.mixin__property-dependency-list').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item').length, 0);
+    assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 0);
   });
 
   test("Properties are bound to the application properties", async function (assert) {
@@ -232,7 +365,7 @@ module('Object Inspector', function(hooks) {
     };
     await triggerPort(this, 'objectInspector:updateObject', obj);
 
-    assert.equal(find('.js-object-property-value').textContent, 'Teddy');
+    assert.dom('.js-object-property-value').hasText('Teddy');
     await triggerPort(this, 'objectInspector:updateProperty', {
       objectId: 'object-id',
       mixinIndex: 0,
@@ -267,7 +400,7 @@ module('Object Inspector', function(hooks) {
       }
     });
 
-    assert.equal(find('.js-object-property-value').textContent, 'Joey');
+    assert.dom('.js-object-property-value').hasText('Joey');
   });
 
   test("Stringified json should not get double parsed", async function (assert) {
@@ -370,12 +503,12 @@ module('Object Inspector', function(hooks) {
     };
     await triggerPort(this, 'objectInspector:updateObject', obj);
     await click('.js-object-property-value');
-    assert.notOk(find('.js-object-property-value-txt'));
+    assert.dom('.js-object-property-value-txt').doesNotExist();
 
     let valueElements = findAll('.js-object-property-value');
     await click(valueElements[valueElements.length - 1]);
 
-    assert.ok(find('.js-object-property-value-txt'));
+    assert.dom('.js-object-property-value-txt').exists();
   });
 
   test("Dropping an object due to destruction", async function (assert) {
@@ -392,10 +525,10 @@ module('Object Inspector', function(hooks) {
 
     await triggerPort(this, 'objectInspector:updateObject', obj);
 
-    assert.equal(find('.js-object-name').textContent.trim(), 'My Object');
+    assert.dom('.js-object-name').hasText('My Object');
     await triggerPort(this, 'objectInspector:droppedObject', { objectId: 'myObject' });
 
-    assert.notOk(find('.js-object-name'));
+    assert.dom('.js-object-name').doesNotExist();
   });
 
   test("Date fields are editable", async function (assert) {
@@ -450,9 +583,9 @@ module('Object Inspector', function(hooks) {
     await visit('/');
     await triggerPort(this, 'objectInspector:updateObject', obj);
 
-    assert.equal(find('.js-object-name').textContent, 'My Object');
-    assert.equal(findAll('.js-object-inspector-errors').length, 1);
-    assert.equal(findAll('.js-object-inspector-error').length, 2);
+    assert.dom('.js-object-name').hasText('My Object');
+    assert.dom('.js-object-inspector-errors').exists({ count: 1 });
+    assert.dom('.js-object-inspector-error').exists({ count: 2 });
 
     await click('.js-send-errors-to-console');
 
@@ -466,13 +599,13 @@ module('Object Inspector', function(hooks) {
       ]
     });
 
-    assert.ok(find('.js-object-inspector-error'));
+    assert.dom('.js-object-inspector-error').exists();
 
     await triggerPort(this, 'objectInspector:updateErrors', {
       objectId: '1',
       errors: []
     });
 
-    assert.notOk(find('.js-object-inspector-errors'));
+    assert.dom('.js-object-inspector-errors').doesNotExist();
   });
 });

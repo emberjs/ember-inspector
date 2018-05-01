@@ -1,14 +1,18 @@
-{{#x-list name="view-tree" schema=(schema-for "view-tree") as |list|}}
+{{#x-list
+  name="view-tree"
+  schema=(schema-for "view-tree")
+  setIsDragging=(route-action 'setIsDragging') as |list|}}
   {{#list.vertical-collection filteredList as |content index|}}
-    <tr class="list__row js-view-tree-item" onmouseenter={{action "previewLayer" content}} onmouseleave={{action "hidePreview"}}>
+    <tr class="list__row js-view-tree-item" onmouseenter={{action "previewLayer" content}} onmouseleave={{action
+      "hidePreview"}}>
       {{view-item
-          model=content
-          inspect=(action "inspect")
-          inspectElement=(action "inspectElement")
-          sendModelToConsole=(action "sendModelToConsole")
-          sendObjectToConsole=(action "sendObjectToConsole")
-          list=list
-        }}
+        model=content
+        inspect=(action "inspect")
+        inspectElement=(action "inspectElement")
+        sendModelToConsole=(action "sendModelToConsole")
+        sendObjectToConsole=(action "sendObjectToConsole")
+        list=list
+      }}
     </tr>
   {{/list.vertical-collection}}
 {{/x-list}}

@@ -1,12 +1,13 @@
 <div class="split">
 
   {{#draggable-column
-          width=180
-          classes="split__panel split__panel--sidebar-2 nav"}}
+    width=180
+    classes="split__panel split__panel--sidebar-2 nav"
+    setIsDragging=(route-action 'setIsDragging')}}
 
     <div class="split__panel__bd">
       <div class="nav__title">
-        <h3>Types</h3>
+        <h1>Types</h1>
       </div>
 
       <ul>

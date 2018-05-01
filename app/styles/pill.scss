@@ -12,24 +12,24 @@
   padding: 2px 6px;
   line-height: 12px;
   background: transparent;
-  text-shadow: rgba(255, 255, 255, 0.5) 0 1px 0;
   border-radius: 8px;
   vertical-align: middle;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--base11);
 }
 
-.pill_text_clear {
-  text-shadow: none;
-  font-weight: bold;
+a.active > .pill {
+  background: var(--base21);
 }
 
-.pill_not-clickable {
+.pill--not-clickable {
   cursor: inherit;
 }
 
-/** MODIFIER: SIZE = SMALL **/
-.pill_size_small {
-  font-size: 10px;
-
+.pill--small {
   padding: 2px 4px;
+  font-size: 10px;
+}
+
+.pill--bold {
+  font-weight: bold;
 }
