@@ -46,7 +46,7 @@
     left: -9px;
     width: 1px;
     height: 8px;
-    background-color: #888;
+    background-color: var(--base16);
   }
 
   svg {
@@ -55,8 +55,8 @@
     left: -13px;
     
     ellipse {
-      stroke: #888;
-      fill: #fff;
+      stroke: var(--base16);
+      fill: var(--base00);
     }
   }
 }

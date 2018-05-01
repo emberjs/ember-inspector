@@ -148,7 +148,7 @@ $toolbar-height: 28px;
   margin-left: 2px;
   margin-right: 2px;
   padding: 0 6px;
-  background: var(--base12);
+  background: var(--base03);
   border: none;
   border-radius: 2px;
   vertical-align: middle;
@@ -171,11 +171,11 @@ $toolbar-height: 28px;
 }
 
 .toolbar__radio:hover {
-  background: var(--base16);
+  background: var(--base06);
 }
 
 .toolbar__radio:active {
-  background: var(--base19);
+  background: var(--base00);
 }
 
 .toolbar__radio.active {
