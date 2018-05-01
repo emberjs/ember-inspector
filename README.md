@@ -94,7 +94,9 @@ Patch versions are only committed to the stable branch. So we need to cherry-pic
 
 When releasing a major/minor version, master would already have this version set, so what we need to do is to merge master into stable and release.
 
-- Add the new minor/major version's change log entry in `CHANGELOG.md` and commit to master.
+- Add the new minor/major version's change log entry in `CHANGELOG.md` and commit to master. We use [github-changelog-generator](https://github.com/github-changelog-generator/github-changelog-generator)
+for this. You will want to follow the installation instructions on their README, and take note that you will need to provide a GitHub token.
+Once installed, and you add a token, you can just run `github_changelog_generator` in your terminal.
 - `git checkout stable`
 - `git merge -X theirs master`
 - Follow the "Steps to publish" steps below.
