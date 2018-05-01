@@ -178,19 +178,15 @@ export default Controller.extend({
       });
     },
 
-    expandAll() {
+    /**
+     * Expand or collapse all component nodes
+     * @param {Boolean} expanded If true, expanded, if false, collapsed
+     */
+    expandOrCollapseAll(expanded) {
       this.expandedStateCache = {};
       this.get('filteredArray').forEach((item) => {
-        item.set('expanded', true);
-        this.expandedStateCache[item.view.objectId] = true;
-      });
-    },
-
-    collapseAll() {
-      this.expandedStateCache = {};
-      this.get('filteredArray').forEach((item) => {
-        item.set('expanded', false);
-        this.expandedStateCache[item.view.objectId] = false;
+        item.set('expanded', expanded);
+        this.expandedStateCache[item.view.objectId] = expanded;
       });
     },
 
