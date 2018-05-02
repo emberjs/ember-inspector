@@ -1,4 +1,4 @@
-import { visit, find, findAll, click, triggerEvent } from '@ember/test-helpers';
+import { visit, fillIn, find, findAll, click, triggerEvent } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
@@ -189,6 +189,30 @@ module('Route Tree Tab', function(hooks) {
     routeNodes = findAll('.js-route-tree-item .js-route-name');
     isCurrent = [...routeNodes].map(item => item.classList.contains('list__cell_highlight'));
     assert.deepEqual(isCurrent, [true, true, true, false], 'Current route is bound');
+  });
+
+  test("It should filter the tree using the search text", async function(assert) {
+    port.reopen({
+      send(name/*, message*/) {
+        if (name === 'route:getTree') {
+          this.trigger('route:routeTree', { tree: routeTree });
+        } else if (name === 'route:getCurrentRoute') {
+          this.trigger('route:currentRoute', { name: 'post.edit' });
+        }
+      }
+    });
+
+    await visit('route-tree');
+    let routeNodes = findAll('.js-route-tree-item');
+    assert.equal(routeNodes.length, 4);
+
+    await fillIn('.js-filter-views input', 'edit');
+    routeNodes = findAll('.js-route-tree-item');
+    assert.equal(routeNodes.length, 1);
+
+    await click('.js-search-field-clear-button');
+    routeNodes = findAll('.js-route-tree-item');
+    assert.equal(routeNodes.length, 4);
   });
 
   test("Hiding non current route", async function(assert) {
