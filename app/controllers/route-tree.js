@@ -2,6 +2,7 @@ import { alias } from '@ember/object/computed';
 import { computed } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import checkCurrentRoute from "ember-inspector/utils/check-current-route";
+import searchMatch from 'ember-inspector/utils/search-match';
 
 export default Controller.extend({
   application: controller(),
@@ -10,6 +11,7 @@ export default Controller.extend({
 
   currentRoute: null,
   hideRoutes: alias('options.hideRoutes'),
+  searchValue: '',
 
   options: {
     hideRoutes: false
@@ -17,16 +19,20 @@ export default Controller.extend({
 
   model: computed(() => []),
 
-  filtered: computed('model.[]', 'options.hideRoutes', 'currentRoute', function() {
+  filtered: computed('model.[]', 'options.hideRoutes', 'currentRoute', 'searchValue', function() {
     return this.get('model').filter(routeItem => {
       let currentRoute = this.get('currentRoute');
       let hideRoutes = this.get('options.hideRoutes');
 
+      if (!searchMatch(routeItem.value.name, this.get('searchValue'))) {
+        return false;
+      }
+
       if (hideRoutes && currentRoute) {
         return checkCurrentRoute(currentRoute, routeItem.value.name);
-      } else {
-        return true;
       }
+
+      return true;
     });
   }),
 
