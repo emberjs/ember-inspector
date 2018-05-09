@@ -64,6 +64,7 @@
 .mixin__property-dependency-item:first-child::before { display: none; }
 
 .mixin__property-icon-container {
+  flex-shrink: 0;
   width: $mixin-left-padding;
 }
 

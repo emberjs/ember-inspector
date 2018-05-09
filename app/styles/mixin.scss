@@ -117,13 +117,17 @@ $mixin-left-padding: 22px;
     padding: 0;
   }
 
-  .pad { width: $mixin-left-padding; }
+  .pad {
+    flex-shrink: 0;
+    width: $mixin-left-padding;
+  }
 
   .mixin__calc-btn svg {
     path, circle { fill: var(--spec18); }
   }
 
   .mixin__send-btn {
+    flex-shrink: 0;
     opacity: 0;
     padding-right: 6px;
   }
@@ -134,6 +138,10 @@ $mixin-left-padding: 22px;
 }
 
 .mixin__property-name {
+  max-width: 50%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   color: var(--base26);
 }
 
