@@ -1,5 +1,5 @@
-{{#each columns as |column|}}
-  {{#list.cell class="js-record-column" clickable=true style=style}}
-    {{column.value}}
+{{#each columns as |recordColumn|}}
+  {{#list.cell class="js-record-column" column=recordColumn.id clickable=true style=style}}
+    {{recordColumn.value}}
   {{/list.cell}}
 {{/each}}
