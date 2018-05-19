@@ -144,6 +144,10 @@ export default Component.extend({
     return this._super(...arguments);
   },
 
+  showBasicContext(e) {
+    basicContext.show(this.menuContent, e);
+  },
+
   /**
    * Setup the context menu which allows the user
    * to toggle the visibility of each column.
@@ -154,7 +158,7 @@ export default Component.extend({
    * @method setupContextMenu
    */
   setupContextMenu() {
-    let menu = this.resizableColumns.getColumnVisibility().reduce((arr, { id, name, visible }) => {
+    this.menuContent = this.resizableColumns.getColumnVisibility().reduce((arr, { id, name, visible }) => {
       let check = `${CHECK_HTML}`;
       if (!visible) {
         check = `<span style='opacity:0'>${check}</span>`;
@@ -168,13 +172,11 @@ export default Component.extend({
       return arr;
     }, []);
 
-    this.showBasicContext = (e) => {
-      basicContext.show(menu, e);
-    };
-
     const listHeader = this.element.querySelector('.list__header');
-    if (listHeader) {
-      listHeader.addEventListener('contextmenu', this.showBasicContext);
+
+    if (listHeader && !this._contextListenerAdded) {
+      listHeader.addEventListener('contextmenu', this.showBasicContext.bind(this));
+      this._contextListenerAdded = true;
     }
   },
 
