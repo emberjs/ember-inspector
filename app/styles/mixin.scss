@@ -96,7 +96,7 @@ $mixin-left-padding: 22px;
 .mixin__error {
   margin-right: 3px;
   padding: 0px 20px;
-  color: var(--spec02);
+  color: var(--spec01);
 }
 
 .mixin__name--errors {
@@ -123,7 +123,7 @@ $mixin-left-padding: 22px;
   }
 
   .mixin__calc-btn svg {
-    path, circle { fill: var(--spec15); }
+    path, circle { fill: var(--spec07); }
   }
 
   .mixin__send-btn {
@@ -181,16 +181,16 @@ $mixin-left-padding: 22px;
 
 .mixin__property .type-null,
 .mixin__property .type-boolean {
-  color: var(--spec10);
+  color: var(--spec03);
 }
 
 .mixin__property .type-descriptor {
   cursor: pointer;
-  color: var(--spec05);
+  color: var(--spec02);
 }
 
 .mixin__property .type-service {
-  color: var(--spec17);
+  color: var(--spec09);
 }
 
 

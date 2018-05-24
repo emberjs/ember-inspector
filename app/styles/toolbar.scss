@@ -74,11 +74,11 @@ $toolbar-height: 28px;
 
 /* active (highlighted) */
 .toolbar__icon-button.active .svg-stroke {
-  stroke: var(--spec11);
+  stroke: var(--spec04);
 }
 
 .toolbar__icon-button.active .svg-fill {
-  fill: var(--spec11);
+  fill: var(--spec04);
 }
 
 /* disabled */
@@ -180,7 +180,7 @@ $toolbar-height: 28px;
 
 .toolbar__radio.active {
   color: var(--base00);
-  background: var(--spec11);
+  background: var(--spec04);
 }
 
 /**

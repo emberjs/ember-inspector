@@ -83,14 +83,14 @@
 }
 
 .mixin__property-icon--service {
-  background-color: var(--spec16);
+  background-color: var(--spec08);
   &::before {
     content: "S";
   }
 }
 
 .mixin__property-icon--computed {
-  background-color: var(--spec15);
+  background-color: var(--spec07);
   &::before {
     content: "C";
   }
