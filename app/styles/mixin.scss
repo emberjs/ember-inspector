@@ -123,7 +123,7 @@ $mixin-left-padding: 22px;
   }
 
   .mixin__calc-btn svg {
-    path, circle { fill: var(--spec18); }
+    path, circle { fill: var(--spec15); }
   }
 
   .mixin__send-btn {
@@ -206,7 +206,7 @@ $mixin-left-padding: 22px;
 
 .mixin__property_state_overridden:hover .mixin__property-overridden-by {
   position: absolute;
-  background-color: var(--spec01);
+  background-color: var(--spec00);
   right: 0;
   display: inline;
   text-decoration: none;

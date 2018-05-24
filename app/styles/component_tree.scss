@@ -83,8 +83,8 @@
 
 .component-tree-item--selected {
   color: var(--base00);
-  background: var(--spec13);
-  &:hover { background: var(--spec13); }
+  background: var(--spec11);
+  &:hover { background: var(--spec11); }
 
   .component-tree-item__bracket::before,
   .component-tree-item__bracket::after {
