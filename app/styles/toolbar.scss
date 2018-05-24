@@ -199,7 +199,7 @@ $toolbar-height: 28px;
   width: 175px;
   height: $toolbar-height - 7;
   margin: 0;
-  border: 1px solid var(--base07);
+  border: 1px solid var(--base08);
   border-radius: 3px;
   padding: 0 15px 0 4px;
   font-size: 12px;
@@ -223,7 +223,7 @@ $toolbar-height: 28px;
   height: auto;
 
   svg {
-    path { fill: var(--base33); }
+    path { fill: var(--base20); }
   }
 }
 

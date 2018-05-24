@@ -13,8 +13,8 @@ $mixin-left-padding: 22px;
   position: sticky;
   top: 0;
   padding: 4px 2px 4px $mixin-left-padding;
-  border-bottom: 1px solid var(--base34);
-  background-color: var(--base35);
+  border-bottom: 1px solid var(--base32);
+  background-color: var(--base01);
   cursor: default;
   user-select: none;
   color: var(--base28);
@@ -25,7 +25,7 @@ $mixin-left-padding: 22px;
 }
 
 .mixin__name:active {
-  background-color: var(--base36);
+  background-color: var(--base03);
 }
 
 .mixin__name--no-props {
@@ -54,7 +54,7 @@ $mixin-left-padding: 22px;
 
 .mixin__properties {
   list-style-type: none;
-  border-bottom: 1px solid var(--base34);
+  border-bottom: 1px solid var(--base32);
   margin: 0;
   padding: 3px 0 5px 0;
   font-size: 12px;
@@ -167,7 +167,7 @@ $mixin-left-padding: 22px;
 }
 
 .mixin__property .type-function {
-  color: var(--base15);
+  color: var(--base16);
 }
 
 .mixin__property .type-object {
