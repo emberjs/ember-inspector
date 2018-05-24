@@ -9,7 +9,7 @@
   height: 22px;
   text-overflow: ellipsis;
   overflow: hidden;
-  color: var(--base20);
+  color: var(--base11);
   line-height: 22px;
   padding: 0 5px;
   margin: 2px 0 0 0;
@@ -58,7 +58,7 @@
 .nav li > a path,
 .nav li > a rect,
 .nav li > a circle {
-  fill: var(--base28);
+  fill: var(--base15);
 }
 
 .nav li > a:focus {
@@ -78,7 +78,7 @@
 }
 
 .app.inactive .nav li > a.active {
-  background: var(--base11);
+  background: var(--base06);
 }
 
 /* Custom navs */
@@ -88,7 +88,7 @@
   align-items: center;
   height: 38px;
   padding-left: 12px;
-  color: var(--base26);
+  color: var(--base14);
   line-height: 38px;
 }
 
