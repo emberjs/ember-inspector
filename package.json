@@ -1,6 +1,6 @@
 {
   "name": "ember-inspector",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "Extends developer tools to allow you to better inspect your Ember.js apps.",
   "license": "MIT",
   "author": "Tilde, Inc.",
