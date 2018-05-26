@@ -5,13 +5,6 @@
   "description": "Tool for debugging Ember applications.",
   "version": "{{EMBER_INSPECTOR_VERSION}}",
 
-  "applications": {
-    "gecko": {
-      "id": "ember-inspector@emberjs.com",
-      "strict_min_version": "48.0"
-    }
-  },
-
   "icons": {
     "16":  "{{PANE_ROOT}}/assets/images/icon16.png",
     "48":  "{{PANE_ROOT}}/assets/images/icon48.png",
