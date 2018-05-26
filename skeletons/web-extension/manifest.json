@@ -7,7 +7,7 @@
 
   "applications": {
     "gecko": {
-      "id": "@emberjs.com",
+      "id": "ember-inspector@emberjs.com",
       "strict_min_version": "48.0"
     }
   },
@@ -48,7 +48,7 @@
   "web_accessible_resources": [
     "scripts/in-page-script.js"
   ],
-  
+
   "options_ui": {
     "page": "options-dialog.html",
     "browser_style": true
