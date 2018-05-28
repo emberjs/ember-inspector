@@ -32,7 +32,7 @@
 
   text-align: left;
   user-select: none;
-  border-bottom: 1px solid var(--base08);
+  border-bottom: 1px solid var(--base05);
 
   height: 30px;
 
@@ -55,7 +55,7 @@
 .list:not(.list_no-alternate-color) .list__content {
 
   .list__row {
-    background: var(--base03);
+    background: var(--base02);
 
     &:nth-of-type(2n) {
       background: var(--base00);
@@ -200,7 +200,7 @@
     top: 0px;
 
     font-size: 75%;
-    color: var(--base18);
+    color: var(--base10);
   }
 }
 

@@ -37,7 +37,7 @@
   margin-bottom: 2px;
   margin-left: 55px;
   font-size: 11px;
-  color: var(--base21);
+  color: var(--base12);
 
   &::before {
     content: '';
@@ -46,7 +46,7 @@
     left: -9px;
     width: 1px;
     height: 8px;
-    background-color: var(--base16);
+    background-color: var(--base08);
   }
 
   svg {
@@ -55,7 +55,7 @@
     left: -13px;
     
     ellipse {
-      stroke: var(--base16);
+      stroke: var(--base08);
       fill: var(--base00);
     }
   }
@@ -83,21 +83,21 @@
 }
 
 .mixin__property-icon--service {
-  background-color: var(--spec16);
+  background-color: var(--spec08);
   &::before {
     content: "S";
   }
 }
 
 .mixin__property-icon--computed {
-  background-color: var(--spec15);
+  background-color: var(--spec07);
   &::before {
     content: "C";
   }
 }
 
 .mixin__property-icon--property {
-  background-color: var(--base11);
+  background-color: var(--base06);
   &::before {
     content: "P";
   }

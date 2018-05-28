@@ -6,15 +6,15 @@
   margin: 3px 3px 0 3px;
   border-radius: 4px;
   font-size: 12px;
-  color: var(--base21);
+  color: var(--base12);
 
 }
 
 .component-tree-item--component {
-  color: var(--spec12);
+  color: var(--spec05);
 
   &:hover {
-    background-color: var(--spec14);
+    background-color: var(--spec06);
 
     .component-tree-item__view-element { opacity: 1; }
   }
@@ -41,11 +41,11 @@
 
 .component-tree-item__bracket::before {
   content: '{{';
-  color: var(--base14);
+  color: var(--base07);
 }
 .component-tree-item__bracket::after {
   content: '}}';
-  color: var(--base14);
+  color: var(--base07);
 }
 
 .component-tree-item__expand {
@@ -73,7 +73,7 @@
   opacity: 0;
   cursor: pointer;
 
-  polygon, rect, path { fill: var(--base28); }
+  polygon, rect, path { fill: var(--base15); }
 }
 
 
@@ -83,12 +83,12 @@
 
 .component-tree-item--selected {
   color: var(--base00);
-  background: var(--spec13);
-  &:hover { background: var(--spec13); }
+  background: var(--spec04);
+  &:hover { background: var(--spec04); }
 
   .component-tree-item__bracket::before,
   .component-tree-item__bracket::after {
-    color: var(--base14);
+    color: var(--base07);
   }
 
   .component-tree-item__expand,

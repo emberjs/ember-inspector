@@ -53,19 +53,19 @@ $toolbar-height: 28px;
 }
 
 .toolbar__icon-button .svg-stroke {
-  stroke: var(--base20);
+  stroke: var(--base11);
 }
 
 .toolbar__icon-button .svg-fill {
-  fill: var(--base20);
+  fill: var(--base11);
 }
 
 .toolbar__icon-button:hover .svg-stroke {
-  stroke: var(--base24);
+  stroke: var(--base13);
 }
 
 .toolbar__icon-button:hover .svg-fill {
-  fill: var(--base24);
+  fill: var(--base13);
 }
 
 .toolbar__icon-button:active {
@@ -74,11 +74,11 @@ $toolbar-height: 28px;
 
 /* active (highlighted) */
 .toolbar__icon-button.active .svg-stroke {
-  stroke: var(--spec07);
+  stroke: var(--spec04);
 }
 
 .toolbar__icon-button.active .svg-fill {
-  fill: var(--spec07);
+  fill: var(--spec04);
 }
 
 /* disabled */
@@ -91,11 +91,11 @@ $toolbar-height: 28px;
 }
 
 .toolbar__icon-button.disabled .svg-stroke {
-  stroke: var(--base08);
+  stroke: var(--base05);
 }
 
 .toolbar__icon-button.disabled .svg-fill {
-  fill: var(--base08);
+  fill: var(--base05);
 }
 
 
@@ -148,11 +148,11 @@ $toolbar-height: 28px;
   margin-left: 2px;
   margin-right: 2px;
   padding: 0 6px;
-  background: var(--base03);
+  background: var(--base02);
   border: none;
   border-radius: 2px;
   vertical-align: middle;
-  color: var(--base26);
+  color: var(--base14);
 }
 
 .toolbar__radio:active,
@@ -171,7 +171,7 @@ $toolbar-height: 28px;
 }
 
 .toolbar__radio:hover {
-  background: var(--base06);
+  background: var(--base04);
 }
 
 .toolbar__radio:active {
@@ -180,7 +180,7 @@ $toolbar-height: 28px;
 
 .toolbar__radio.active {
   color: var(--base00);
-  background: var(--spec11);
+  background: var(--spec04);
 }
 
 /**
@@ -199,7 +199,7 @@ $toolbar-height: 28px;
   width: 175px;
   height: $toolbar-height - 7;
   margin: 0;
-  border: 1px solid var(--base07);
+  border: 1px solid var(--base05);
   border-radius: 3px;
   padding: 0 15px 0 4px;
   font-size: 12px;
@@ -223,7 +223,7 @@ $toolbar-height: 28px;
   height: auto;
 
   svg {
-    path { fill: var(--base33); }
+    path { fill: var(--base11); }
   }
 }
 
@@ -239,5 +239,5 @@ $toolbar-height: 28px;
   position: relative;
   margin-right: 4px;
   margin-left: 4px;
-  background-color: var(--base08);
+  background-color: var(--base05);
 }
