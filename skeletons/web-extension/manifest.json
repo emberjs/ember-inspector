@@ -35,9 +35,8 @@
   "web_accessible_resources": [
     "scripts/in-page-script.js"
   ],
-  "options_page": "options.html",
   "options_ui": {
     "page": "options-dialog.html",
-    "chrome_style": true
+    "browser_style": true
   }
 }
