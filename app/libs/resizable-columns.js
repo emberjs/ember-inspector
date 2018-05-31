@@ -208,11 +208,11 @@ export default class {
   buildColumns() {
     this.buildColumnVisibility();
     let totalWidth = 0;
-    let columns = this._columnVisibility.filterBy('visible')
-      .map(({ id, name }) => {
-        let width = this.getColumnWidth(id);
+    let columns = this._columnVisibility
+      .map(({ id, name, visible }) => {
+        let width = visible ? this.getColumnWidth(id) : 0;
         totalWidth += width;
-        return { width, id, name };
+        return { width, id, name, visible };
       });
     // Fix percentage precision errors. If we only add it to the last column
     // the last column will slowly increase in size every time we visit this list.
@@ -220,7 +220,7 @@ export default class {
     if (columns.length > 0) {
       let diff = this.tableWidth - totalWidth;
       while (diff > 0) {
-        columns.sortBy('width').forEach(column => {
+        columns.filterBy('visible').sortBy('width').forEach(column => {
           if (diff > 0) {
             column.width++;
             diff--;
