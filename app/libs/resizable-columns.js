@@ -284,7 +284,7 @@ export default class {
   processColumns() {
     let columns = this._columns;
     let prevLeft, prevWidth;
-    columns = columns.map(({ id, name, width }, index) => {
+    columns = columns.map(({ id, name, width, visible }, index) => {
       let last = this._columns[this._columns.length - 1];
       let left = 0;
       if (index > 0) {
@@ -293,7 +293,7 @@ export default class {
       let maxWidth = width + last.width - this.minWidth;
       prevLeft = left;
       prevWidth = width;
-      return { id, name, width, left, maxWidth };
+      return { id, name, width, left, maxWidth, visible };
     });
     this.saveVisibility();
     this.saveWidths();
