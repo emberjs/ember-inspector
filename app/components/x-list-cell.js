@@ -18,6 +18,7 @@ import Component from '@ember/component';
 
 import { computed } from '@ember/object';
 import { htmlSafe } from '@ember/string';
+import { isEmpty } from '@ember/utils';
 export default Component.extend({
   /**
    * Defaults to a table cell. For headers
@@ -28,31 +29,7 @@ export default Component.extend({
    * @type {String}
    * @default 'td'
    */
-  tagName: 'td',
-
-  /**
-   * @property classNames
-   * @type {Array}
-   */
-  classNames: ['list__cell'],
-
-  /**
-   * `highlight` and `clickable` or class modifiers.
-   *
-   * @property classNameBindings
-   * @type {Array}
-   */
-  classNameBindings: ['highlight:list__cell_highlight', 'clickable:list__cell_clickable'],
-
-  /**
-   * Style passed through the `style` property
-   * should end up as the DOM element's style.
-   * Same applies to the `title` attribute.
-   *
-   * @property attributeBindings
-   * @type {Array}
-   */
-  attributeBindings: ['safeStyle:style', 'title'],
+  tagName: '',
 
   /**
    * Avoid unsafe style warning. This property does not
@@ -105,6 +82,39 @@ export default Component.extend({
   highlight: false,
 
   /**
+   * The list of possible columns
+   * @property columns
+   * @type {Array<{id: String, name: String, maxWidth: Number, width: Number}>}
+   */
+  columns: null,
+
+  /**
+   * The column name that this cell corresponds to. If the column name doesn't
+   * exist in `columns, the cell won't render.
+   * @property column
+   * @type {String}
+   */
+  column: null,
+
+
+  showColumn: computed('columns.[]', 'column', function() {
+    if (isEmpty(this.get('columns')) || isEmpty(this.get('column'))) {
+      return true;
+    } else {
+      const ids = this.get('columns').map(c => c.id);
+      let show = ids.includes(this.get('column'));
+      return show;
+    }
+  }),
+
+  init() {
+    this._super(...arguments);
+    if (isEmpty(this.get('columns'))) {
+      this.set('columns', []);
+    }
+  },
+
+  /**
    * Action to trigger when the cell is clicked.
    * Pass the action through the template using the `action`
    * helper.
@@ -113,14 +123,4 @@ export default Component.extend({
    * @type {Function}
    */
   'on-click'() {},
-
-  /**
-   * DOM event triggered when cell is clicked.
-   * Calls the `on-click` action (if set).
-   *
-   * @method click
-   */
-  click() {
-    this.get('on-click')();
-  }
 });

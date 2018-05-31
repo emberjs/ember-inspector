@@ -11,7 +11,6 @@
         <tr class="list__row">
           {{#each columns key="id" as |column|}}
             {{#x-list-cell
-              tagName="th"
               class="js-header-column"}}
               {{column.name}}
             {{/x-list-cell}}
@@ -26,7 +25,7 @@
 {{#x-list-content headerHeight=headerHeight columns=columns as |content|}}
   {{yield
     (hash
-      cell=(component "x-list-cell" tagName="td")
+      cell=(component "x-list-cell" columns=columns)
       rowEvents=content.rowEvents
       vertical-collection=(component "vertical-collection"
         estimateHeight=30

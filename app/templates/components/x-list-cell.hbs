@@ -1,1 +1,8 @@
-{{yield}}
+{{#if showColumn}}
+    <td class="list__cell {{if highlight "list__cell_highlight"}} {{class}} {{if clickable "list__cell_clickable"}} "
+        {{action (action on-click)}}
+        title={{title}}
+        style={{safeStyle}}>
+      {{yield}}
+    </td>
+{{/if}}
