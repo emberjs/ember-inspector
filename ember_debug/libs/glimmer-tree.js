@@ -141,7 +141,9 @@ export default class {
 
     // set root element's id
     let rootElement = this.elementForRoot();
-    outletTree.value.elementId = rootElement.getAttribute('id');
+    if (rootElement instanceof HTMLElement) {
+      outletTree.value.elementId = rootElement.getAttribute('id');
+    }
     outletTree.value.tagName = 'div';
 
     return outletTree;
