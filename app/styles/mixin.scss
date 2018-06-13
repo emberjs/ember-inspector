@@ -105,6 +105,10 @@ $mixin-left-padding: 22px;
   &:active{
     background-color: var(--base00);
   }
+
+  button {
+    margin-left: 10px;
+  }
 }
 
 /* Buttons */

@@ -42,6 +42,10 @@ $toolbar-height: 28px;
   background: transparent;
 }
 
+.toolbar .send-to-console {
+  margin-right: 5px;
+}
+
 /* if first item in toolbar, create extra clickable space */
 .toolbar__icon-button:first-child {
   margin-left: 0;

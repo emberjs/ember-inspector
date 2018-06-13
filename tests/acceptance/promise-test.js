@@ -241,7 +241,7 @@ module('Promise Tab', function(hooks) {
     });
 
     let row = find('.js-promise-tree-item');
-    assert.dom('.js-send-to-console-btn').hasText('Stack trace');
+    assert.dom('.js-send-to-console-btn').hasText('Stack Trace');
     await click(row.querySelector('.js-send-to-console-btn'));
 
     assert.equal(name, 'promise:sendValueToConsole');
