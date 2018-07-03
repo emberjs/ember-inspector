@@ -5,8 +5,7 @@ import { onReady } from '../utils/on-ready';
 
 export default BasicAdapter.extend({
 
-  sendMessage(options) {
-    options = options || {};
+  sendMessage(options = {}) {
     this.get('socket').emit('emberInspectorMessage', options);
   },
 

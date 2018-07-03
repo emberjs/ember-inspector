@@ -13,11 +13,11 @@ $mixin-left-padding: 22px;
   position: sticky;
   top: 0;
   padding: 4px 2px 4px $mixin-left-padding;
-  border-bottom: 1px solid var(--base34);
-  background-color: var(--base35);
+  border-bottom: 1px solid var(--base03);
+  background-color: var(--base01);
   cursor: default;
   user-select: none;
-  color: var(--base28);
+  color: var(--base15);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -25,11 +25,11 @@ $mixin-left-padding: 22px;
 }
 
 .mixin__name:active {
-  background-color: var(--base36);
+  background-color: var(--base02);
 }
 
 .mixin__name--no-props {
-  color: var(--base17);
+  color: var(--base09);
 }
 
 .mixin_props_no .mixin__name:before {
@@ -41,7 +41,7 @@ $mixin-left-padding: 22px;
   top: 5px;
   left: 6px;
   content: "\25B6";
-  color: var(--base18);
+  color: var(--base10);
   margin-right: 5px;
   font-size: 90%;
   transform: rotate(0deg);
@@ -54,7 +54,7 @@ $mixin-left-padding: 22px;
 
 .mixin__properties {
   list-style-type: none;
-  border-bottom: 1px solid var(--base34);
+  border-bottom: 1px solid var(--base03);
   margin: 0;
   padding: 3px 0 5px 0;
   font-size: 12px;
@@ -96,7 +96,7 @@ $mixin-left-padding: 22px;
 .mixin__error {
   margin-right: 3px;
   padding: 0px 20px;
-  color: var(--spec02);
+  color: var(--spec01);
 }
 
 .mixin__name--errors {
@@ -123,7 +123,7 @@ $mixin-left-padding: 22px;
   }
 
   .mixin__calc-btn svg {
-    path, circle { fill: var(--spec18); }
+    path, circle { fill: var(--spec07); }
   }
 
   .mixin__send-btn {
@@ -142,7 +142,7 @@ $mixin-left-padding: 22px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: var(--base26);
+  color: var(--base14);
 }
 
 .mixin__property-value {
@@ -155,9 +155,9 @@ $mixin-left-padding: 22px;
 
 .mixin__property-value-txt {
   flex: 1;
-  border: 1px solid var(--base17);
+  border: 1px solid var(--base09);
   outline: none;
-  color: var(--base26);
+  color: var(--base14);
   font-size: 12px;
   background: var(--base01);
 }
@@ -167,11 +167,11 @@ $mixin-left-padding: 22px;
 }
 
 .mixin__property .type-function {
-  color: var(--base15);
+  color: var(--base08);
 }
 
 .mixin__property .type-object {
-  color: var(--base20);
+  color: var(--base11);
 }
 
 .mixin__property .type-ember-object,
@@ -181,16 +181,16 @@ $mixin-left-padding: 22px;
 
 .mixin__property .type-null,
 .mixin__property .type-boolean {
-  color: var(--spec10);
+  color: var(--spec03);
 }
 
 .mixin__property .type-descriptor {
   cursor: pointer;
-  color: var(--spec05);
+  color: var(--spec02);
 }
 
 .mixin__property .type-service {
-  color: var(--spec17);
+  color: var(--spec09);
 }
 
 
@@ -206,7 +206,7 @@ $mixin-left-padding: 22px;
 
 .mixin__property_state_overridden:hover .mixin__property-overridden-by {
   position: absolute;
-  background-color: var(--spec01);
+  background-color: var(--spec00);
   right: 0;
   display: inline;
   text-decoration: none;

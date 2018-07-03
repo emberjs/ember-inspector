@@ -15,13 +15,13 @@
 
 .error-page {
   padding: 10px;
-  background: var(--base03);
+  background: var(--base02);
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   min-height: 100%;
-  color: var(--base22);
+  color: var(--base13);
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
@@ -33,13 +33,13 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   background: var(--base00);
-  border: 1px solid var(--base06);
+  border: 1px solid var(--base04);
   border-radius: 5px;
   margin: auto;
 }
 
 .error-page__content a {
-  color: var(--spec03);
+  color: var(--spec01);
   text-decoration: none;
 }
 
@@ -49,7 +49,7 @@
   padding-top: 15px;
   padding-bottom: 30px;
   margin-bottom: 10px;
-  border-bottom: 1px solid var(--base06);
+  border-bottom: 1px solid var(--base04);
   position: relative;
 }
 
@@ -83,7 +83,7 @@
 .error-page__list {
   padding-left: 16px;
   padding-bottom: 5px;
-  border-bottom: 1px solid var(--base06);
+  border-bottom: 1px solid var(--base04);
 }
 
 .error-page__list li {

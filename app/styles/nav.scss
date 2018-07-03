@@ -9,9 +9,8 @@
   height: 22px;
   text-overflow: ellipsis;
   overflow: hidden;
-  color: var(--base19);
+  color: var(--base11);
   line-height: 22px;
-  text-shadow: var(--base05) 0 1px 0;
   padding: 0 5px;
   margin: 2px 0 0 0;
 }
@@ -59,7 +58,7 @@
 .nav li > a path,
 .nav li > a rect,
 .nav li > a circle {
-  fill: var(--base28);
+  fill: var(--base15);
 }
 
 .nav li > a:focus {
@@ -68,7 +67,7 @@
 
 .nav li > a.active {
   color: var(--base00);
-  background: var(--spec11);
+  background: var(--spec04);
 }
 
 .nav li > a.active polygon,
@@ -79,7 +78,7 @@
 }
 
 .app.inactive .nav li > a.active {
-  background: var(--base10);
+  background: var(--base06);
 }
 
 /* Custom navs */
@@ -89,7 +88,7 @@
   align-items: center;
   height: 38px;
   padding-left: 12px;
-  color: var(--base26);
+  color: var(--base14);
   line-height: 38px;
 }
 

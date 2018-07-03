@@ -37,7 +37,7 @@
 {{/x-list-content}}
 
 {{#each columns key="id" as |column|}}
-  {{#unless (eq column columns.lastObject)}}
+  {{#unless (or (not column.visible) (eq column columns.lastObject))}}
     {{drag-handle
       faded=true
       left=column.left
