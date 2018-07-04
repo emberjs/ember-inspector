@@ -27,15 +27,14 @@ module.exports = function(environment) {
       // when it is created
     },
     contentSecurityPolicy: {
-      'default-src': ["'none'"],
+      'default-src': ["'self'"],
       'script-src': ["'self'"],
       'font-src': ["'self'"],
       'connect-src': ["'self'"],
       'img-src': ["'self'"],
       'style-src': ["'self'"],
       'media-src': ["'self'"]
-    },
-    contentSecurityPolicyMeta: true
+    }
   };
 
   if (environment === 'development') {
