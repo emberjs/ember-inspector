@@ -13,6 +13,7 @@ dist_prev
 .mozilla-addon-sdk
 
 aws.json
+config/secrets.json
 
 # ember-try
 .node_modules.ember-try/
