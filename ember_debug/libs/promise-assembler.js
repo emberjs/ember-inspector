@@ -7,7 +7,7 @@
 
 import Promise from 'ember-debug/models/promise';
 const Ember = window.Ember;
-const { Object: EmberObject, Evented, A, computed, RSVP, copy, isNone } = Ember;
+const { Object: EmberObject, Evented, A, computed, RSVP, isNone } = Ember;
 
 let PromiseAssembler = EmberObject.extend(Evented, {
   // RSVP lib to debug
@@ -95,7 +95,7 @@ let PromiseAssembler = EmberObject.extend(Evented, {
     if (entry) {
       entry.setProperties(properties);
     } else {
-      properties = copy(properties);
+      properties = Object.assign({}, properties);
       properties.guid = guid;
       entry = this.createPromise(properties);
     }
