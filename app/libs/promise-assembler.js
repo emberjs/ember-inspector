@@ -1,5 +1,4 @@
 import { assert } from '@ember/debug';
-import { copy } from '@ember/object/internals';
 import { later } from '@ember/runloop';
 import EmberObject, { computed } from '@ember/object';
 import EventedMixin from '@ember/object/evented';
@@ -68,7 +67,7 @@ export default EmberObject.extend(EventedMixin, {
 
   rebuildPromises(promises) {
     promises.forEach(props => {
-      props = copy(props);
+      props = Object.assign({}, props);
       let childrenIds = props.children;
       let parentId = props.parent;
       delete props.children;
