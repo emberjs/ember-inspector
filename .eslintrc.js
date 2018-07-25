@@ -138,8 +138,9 @@ module.exports = {
     // node files
     {
       files: [
-        'testem.js',
         'ember-cli-build.js',
+        'testem.js',
+        'blueprints/*/index.js',
         'config/**/*.js',
         'lib/*/index.js',
         'Gruntfile.js'

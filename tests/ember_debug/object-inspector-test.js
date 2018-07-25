@@ -1,6 +1,7 @@
 import { visit, find } from '@ember/test-helpers';
 import Mixin from '@ember/object/mixin';
 import Component from '@ember/component';
+import { inspect } from '@ember/debug';
 import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import EmberObject, { computed } from '@ember/object';
@@ -120,8 +121,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     let nameProperty = secondDetail.properties[1];
     assert.equal(nameProperty.name, 'name');
-    assert.equal(nameProperty.value.inspect, 'My Object');
-
+    assert.equal(nameProperty.value.inspect, inspect('My Object'));
   });
 
   test('Computed properties are correctly calculated', function(assert) {
@@ -164,7 +164,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.property, 'hi');
     assert.equal(message.mixinIndex, 1);
     assert.equal(message.value.type, 'type-string');
-    assert.equal(message.value.inspect, 'Hello');
+    assert.equal(message.value.inspect, inspect('Hello'));
     assert.ok(message.value.computed);
 
     assert.verifySteps([
@@ -191,8 +191,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(computedProperty.name, 'hi');
     assert.ok(computedProperty.value.computed);
     assert.equal(computedProperty.value.type, 'type-string');
-    assert.equal(computedProperty.value.inspect, 'Hello');
-
+    assert.equal(computedProperty.value.inspect, inspect('Hello'));
   });
 
   test('Properties are correctly bound', function(assert) {
@@ -230,7 +229,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.property, 'name');
     assert.equal(message.mixinIndex, 1);
     assert.equal(message.value.computed, false);
-    assert.equal(message.value.inspect, 'Alex');
+    assert.equal(message.value.inspect, inspect('Alex'));
     assert.equal(message.value.type, 'type-string');
 
     // un-cached computed properties are not bound until calculated
@@ -279,7 +278,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     // A property updated message is published
     assert.equal(name, 'objectInspector:updateProperty');
     assert.equal(message.property, 'name');
-    assert.equal(message.value.inspect, 'Alex');
+    assert.equal(message.value.inspect, inspect('Alex'));
     assert.equal(message.value.type, 'type-string');
   });
 
