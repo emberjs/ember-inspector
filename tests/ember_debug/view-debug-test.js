@@ -4,6 +4,7 @@ import { run } from '@ember/runloop';
 import Route from '@ember/routing/route';
 import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
+import { inspect } from '@ember/debug';
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
@@ -239,7 +240,7 @@ module('Ember Debug - View', function(hooks) {
 
     await visit('/posts');
 
-    assert.equal(message.tree.children[0].value.model.name, 'String as model');
+    assert.equal(message.tree.children[0].value.model.name, inspect('String as model'));
     assert.equal(message.tree.children[0].value.model.type, 'type-string');
   });
 
