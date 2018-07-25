@@ -253,7 +253,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.property, 'hi');
     assert.equal(message.mixinIndex, 1);
     assert.ok(message.value.computed);
-    assert.equal(message.value.inspect, 'Hello!');
+    assert.equal(message.value.inspect, inspect('Hello!'));
     assert.equal(message.value.type, 'type-string');
   });
 
@@ -557,7 +557,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     });
     await wait();
     assert.equal(name, 'objectInspector:updateProperty');
-    assert.equal(message.value.inspect, 'bar');
+    assert.equal(message.value.inspect, inspect('bar'));
 
     // teardown
     ignoreErrors = true;
