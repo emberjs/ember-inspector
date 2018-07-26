@@ -6,7 +6,7 @@
   itemClass="list__row_highlight" as |list|}}
 
   {{#list.vertical-collection filtered as |content index|}}
-    <tr class="list__row js-record-list-item" onclick={{action "inspectModel" content}}>
+    <tr class="list__row js-record-list-item {{if (mod index 2) 'striped'}}" onclick={{action "inspectModel" content}}>
       {{record-item
         model=content
         modelTypeColumns=columns
