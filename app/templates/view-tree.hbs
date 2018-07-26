@@ -3,7 +3,7 @@
   schema=(schema-for "view-tree")
   setIsDragging=(route-action 'setIsDragging') as |list|}}
   {{#list.vertical-collection filteredList as |content index|}}
-    <tr class="list__row js-view-tree-item" onmouseenter={{action "previewLayer" content}} onmouseleave={{action
+    <tr class="list__row js-view-tree-item {{if (mod index 2) 'striped'}}" onmouseenter={{action "previewLayer" content}} onmouseleave={{action
       "hidePreview"}}>
       {{view-item
         model=content
