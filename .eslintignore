@@ -16,4 +16,6 @@
 /.node_modules.ember-try/
 
 # ember-inspector specific
-ember_debug/vendor/startup-wrapper.js
+/scripts
+/skeletons
+/ember_debug/vendor/startup-wrapper.js
