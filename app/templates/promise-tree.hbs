@@ -6,8 +6,8 @@
     name="promise-tree"
     schema=(schema-for "promise-tree")
     setIsDragging=(route-action 'setIsDragging') as |list|}}
-    {{#list.vertical-collection filtered as |content|}}
-      <tr class="list__row js-promise-tree-item">
+    {{#list.vertical-collection filtered as |content index|}}
+      <tr class="list__row js-promise-tree-item {{if (mod index 2) 'striped'}}">
         {{promise-item
           model=content
           filter=filter
