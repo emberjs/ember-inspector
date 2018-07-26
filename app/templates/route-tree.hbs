@@ -3,8 +3,8 @@
   schema=(schema-for "route-tree")
   setIsDragging=(route-action 'setIsDragging')
 as |list|}}
-  {{#list.vertical-collection filtered as |content|}}
-    <tr class="list__row js-route-tree-item">
+  {{#list.vertical-collection filtered as |content index|}}
+    <tr class="list__row js-route-tree-item {{if (mod index 2) 'striped'}}">
       {{route-item
         model=content
         currentRoute=currentRoute
