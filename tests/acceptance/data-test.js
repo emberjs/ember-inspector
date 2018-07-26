@@ -182,7 +182,7 @@ module('Data Tab', function(hooks) {
 
     rows = findAll('.js-record-list-item');
     assert.equal(rows.length, 1);
-    assert.dom(findAll('.js-record-column', rows[0])[0]).hasText('2');
+    assert.dom(rows[0].querySelector('.js-record-column')).hasText('2');
   });
 
   test('Searching records', async function t(assert) {
@@ -197,13 +197,13 @@ module('Data Tab', function(hooks) {
 
     rows = findAll('.js-record-list-item');
     assert.equal(rows.length, 1);
-    assert.dom(findAll('.js-record-column', rows[0])[0]).hasText('2');
+    assert.dom(rows[0].querySelector('.js-record-column')).hasText('2');
 
     await fillIn('.js-records-search input', 'my first post');
 
     rows = findAll('.js-record-list-item');
     assert.equal(rows.length, 1);
-    assert.dom(findAll('.js-record-column', rows[0])[0]).hasText('1');
+    assert.dom(rows[0].querySelector('.js-record-column')).hasText('1');
 
     await fillIn('.js-records-search input', '');
 
