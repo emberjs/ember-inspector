@@ -7,8 +7,6 @@
 import { set } from '@ember/object';
 
 import { isNone } from '@ember/utils';
-import { copy } from '@ember/object/internals';
-import { merge } from '@ember/polyfills';
 import compareArrays from 'ember-inspector/utils/compare-arrays';
 
 const { floor } = Math;
@@ -193,7 +191,7 @@ export default class {
     if (this._columnVisibility) {
       return this._columnVisibility;
     }
-    this._columnVisibility = this.columnSchema.map(column => merge(copy(column), {
+    this._columnVisibility = this.columnSchema.map(column => Object.assign({}, column, {
       visible: this.isColumnVisible(column.id)
     }));
   }
@@ -208,11 +206,11 @@ export default class {
   buildColumns() {
     this.buildColumnVisibility();
     let totalWidth = 0;
-    let columns = this._columnVisibility.filterBy('visible')
-      .map(({ id, name }) => {
-        let width = this.getColumnWidth(id);
+    let columns = this._columnVisibility
+      .map(({ id, name, visible }) => {
+        let width = visible ? this.getColumnWidth(id) : 0;
         totalWidth += width;
-        return { width, id, name };
+        return { width, id, name, visible };
       });
     // Fix percentage precision errors. If we only add it to the last column
     // the last column will slowly increase in size every time we visit this list.
@@ -220,7 +218,7 @@ export default class {
     if (columns.length > 0) {
       let diff = this.tableWidth - totalWidth;
       while (diff > 0) {
-        columns.sortBy('width').forEach(column => {
+        columns.filterBy('visible').sortBy('width').forEach(column => {
           if (diff > 0) {
             column.width++;
             diff--;
@@ -284,7 +282,7 @@ export default class {
   processColumns() {
     let columns = this._columns;
     let prevLeft, prevWidth;
-    columns = columns.map(({ id, name, width }, index) => {
+    columns = columns.map(({ id, name, width, visible }, index) => {
       let last = this._columns[this._columns.length - 1];
       let left = 0;
       if (index > 0) {
@@ -293,7 +291,7 @@ export default class {
       let maxWidth = width + last.width - this.minWidth;
       prevLeft = left;
       prevWidth = width;
-      return { id, name, width, left, maxWidth };
+      return { id, name, width, left, maxWidth, visible };
     });
     this.saveVisibility();
     this.saveWidths();

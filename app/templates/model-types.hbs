@@ -1,26 +1,7 @@
-<div class="split">
-  {{#draggable-column
-    width=navWidth
-    classes="split__panel split__panel--sidebar-2 nav"
-    setIsDragging=(route-action 'setIsDragging')}}
-    <div class="split__panel__bd">
-      <div class="nav__title"><h1>Model Types</h1></div>
-      <ul>
-        {{#each sorted as |modelType|}}
-          <li class="js-model-type">
-            {{#link-to "records" (escape-url modelType.name)}}
-              <span class="js-model-type-name">{{modelType.name}}</span>
-              (<span class="js-model-type-count">{{modelType.count}}</span>)
-            {{/link-to}}
-          </li>
-        {{/each}}
-      </ul>
-    </div>
-  {{/draggable-column}}
-
-  <div class="split__panel">
-    <div class="split__panel__bd">
-      {{outlet}}
-    </div>
-  </div>
-</div>
+{{item-types
+  header='Model Types'
+  setIsDragging=(route-action 'setIsDragging')
+  sorted=(readonly sorted)
+  type='model'
+  width=navWidth
+}}

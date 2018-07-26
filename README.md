@@ -13,7 +13,7 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `yarn install && bower install`
+- run `yarn install`
 - run `yarn global add ember-cli`
 - run `yarn build` to build the `dist` directory
 - Visit `chrome://extensions` in Chrome
@@ -30,7 +30,7 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `yarn install && bower install`
+- run `yarn install`
 - run `yarn global add ember-cli`
 - run `yarn build` to build the `dist` directory
 - Visit `about:debugging` in Firefox
@@ -41,7 +41,7 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `yarn install && bower install`
+- run `yarn install`
 - run `yarn global add ember-cli`
 - run `yarn build` to build the `dist` directory
 - Visit `chrome://extensions` in Opera
@@ -69,7 +69,7 @@ javascript: (function() { var s = document.createElement('script'); s.src = 'htt
 
 ## Building and Testing:
 
-Run `yarn install && yarn global add ember-cli && yarn global add bower && bower install && grunt-cli` to install the required modules.
+Run `yarn install && yarn global add ember-cli && grunt-cli` to install the required modules.
 
 - `yarn build` to build the files in the `dist` directory
 - `yarn watch` To watch the files and re-build in `dist` when anything changes (useful during development).
@@ -94,7 +94,9 @@ Patch versions are only committed to the stable branch. So we need to cherry-pic
 
 When releasing a major/minor version, master would already have this version set, so what we need to do is to merge master into stable and release.
 
-- Add the new minor/major version's change log entry in `CHANGELOG.md` and commit to master.
+- Add the new minor/major version's change log entry in `CHANGELOG.md` and commit to master. We use [github-changelog-generator](https://github.com/github-changelog-generator/github-changelog-generator)
+for this. You will want to follow the installation instructions on their README, and take note that you will need to provide a GitHub token.
+Once installed, and you add a token, you can just run `github_changelog_generator` in your terminal.
 - `git checkout stable`
 - `git merge -X theirs master`
 - Follow the "Steps to publish" steps below.

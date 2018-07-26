@@ -13,15 +13,12 @@ export default BasicAdapter.extend({
     }, null, 'ember-inspector');
   },
 
-  sendMessage(options) {
-    options = options || {};
+  sendMessage(options = {}) {
     // If prototype extensions are disabled, `Ember.A()` arrays
     // would not be considered native arrays, so it's not possible to
     // "clone" them through postMessage unless they are converted to a
     // native array.
-    if (!Ember.EXTEND_PROTOTYPES || Ember.EXTEND_PROTOTYPES.Array === false) {
-      options = deepCloneArrays(deepClone(options));
-    }
+    options = deepClone(options);
     this.get('_chromePort').postMessage(options);
   },
 
@@ -78,33 +75,18 @@ export default BasicAdapter.extend({
  * @param {Mixed} item The item to clone
  * @return {Mixed}
  */
-function deepCloneArrays(item) {
+function deepClone(item) {
+  let clone = item;
   if (isArray(item)) {
-    item = item.slice();
+    clone = new Array(item.length);
     item.forEach((child, key) => {
-      item[key] = deepCloneArrays(child);
+      clone[key] = deepClone(child);
     });
   } else if (item && typeOf(item) === 'object') {
+    clone = {};
     keys(item).forEach(key => {
-      item[key] = deepCloneArrays(item[key]);
+      clone[key] = deepClone(item[key]);
     });
   }
-  return item;
-}
-
-/**
- * Recursive function that performs a deep clone on an object.
- *
- * @param {Any} obj
- * @return {Any} Deep cloned object
- */
-function deepClone(obj) {
-  if (obj && typeOf(obj) === 'object') {
-    let item = {};
-    keys(obj).forEach(key => {
-      item[key] = deepClone(obj[key]);
-    });
-    return item;
-  }
-  return obj;
+  return clone;
 }

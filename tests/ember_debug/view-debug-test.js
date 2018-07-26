@@ -4,6 +4,7 @@ import { run } from '@ember/runloop';
 import Route from '@ember/routing/route';
 import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
+import { inspect } from '@ember/debug';
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
@@ -174,15 +175,15 @@ module('Ember Debug - View', function(hooks) {
     let previewDiv = find('[data-label=preview-div]');
 
     assert.ok(isVisible(previewDiv));
-    assert.notOk(find('[data-label=layer-component]'), 'Component layer not shown on outlet views');
-    assert.equal(previewDiv.querySelector('[data-label=layer-controller]').textContent, 'App.ApplicationController');
-    assert.equal(previewDiv.querySelector('[data-label=layer-model]').textContent, 'Application model');
+    assert.dom('[data-label=layer-component]').doesNotExist('Component layer not shown on outlet views');
+    assert.dom(previewDiv.querySelector('[data-label=layer-controller]')).hasText('App.ApplicationController');
+    assert.dom(previewDiv.querySelector('[data-label=layer-model]')).hasText('Application model');
 
     let layerDiv = find('[data-label=layer-div]');
     await triggerEvent(layerDiv, 'mouseup');
 
     assert.ok(isVisible(layerDiv));
-    assert.equal(layerDiv.querySelector('[data-label=layer-model]').textContent, 'Application model');
+    assert.dom(layerDiv.querySelector('[data-label=layer-model]')).hasText('Application model');
     await click(layerDiv.querySelector('[data-label=layer-controller]'));
 
     let controller = this.owner.lookup('controller:application');
@@ -239,7 +240,7 @@ module('Ember Debug - View', function(hooks) {
 
     await visit('/posts');
 
-    assert.equal(message.tree.children[0].value.model.name, 'String as model');
+    assert.equal(message.tree.children[0].value.model.name, inspect('String as model'));
     assert.equal(message.tree.children[0].value.model.type, 'type-string');
   });
 
@@ -249,7 +250,10 @@ module('Ember Debug - View', function(hooks) {
 
     await visit('/simple');
 
-    assert.ok(rootElement.classList.contains('ember-application'), 'The rootElement has the .ember-application CSS class');
+    assert.dom(rootElement).hasClass(
+      'ember-application',
+      'The rootElement has the .ember-application CSS class'
+    );
     rootElement.classList.remove('ember-application');
 
     // Restart the inspector

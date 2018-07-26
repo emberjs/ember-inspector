@@ -10,3 +10,95 @@
   margin-left: 39px;
   word-break: break-all;
 }
+
+.mixin__property-dependency-list {
+  position: relative;
+  margin-bottom: 5px;
+  margin-top: 2px;
+  padding-top: 2px;
+
+  & > svg {
+    position: absolute;
+    top: -4px;
+    left: 28px;
+    width: 19px;
+    height: 10px;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.mixin__property-dependency-item {
+  position: relative;
+  margin-bottom: 2px;
+  margin-left: 55px;
+  font-size: 11px;
+  color: var(--base12);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -9px;
+    width: 1px;
+    height: 8px;
+    background-color: var(--base08);
+  }
+
+  svg {
+    position: absolute;
+    bottom: 2px;
+    left: -13px;
+    
+    ellipse {
+      stroke: var(--base08);
+      fill: var(--base00);
+    }
+  }
+}
+
+.mixin__property-dependency-item:first-child::before { display: none; }
+
+.mixin__property-icon-container {
+  flex-shrink: 0;
+  width: $mixin-left-padding;
+}
+
+.mixin__property-icon {
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 13px;
+  line-height: 17px;
+  font-family: var(--font-monospace);
+  text-align: center;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mixin__property-icon--service {
+  background-color: var(--spec08);
+  &::before {
+    content: "S";
+  }
+}
+
+.mixin__property-icon--computed {
+  background-color: var(--spec07);
+  &::before {
+    content: "C";
+  }
+}
+
+.mixin__property-icon--property {
+  background-color: var(--base06);
+  &::before {
+    content: "P";
+  }
+}

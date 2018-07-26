@@ -1,3 +1,9 @@
+:root {
+  --font-sans-serif: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Cantarell', 'Oxygen', 'Ubuntu', 'Helvetica Neue', helvetica, arial, sans-serif;
+  --font-monospace: 'SF Mono', Menlo, Monaco, monospace;
+}
+
+
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
   padding: 0;
@@ -10,8 +16,8 @@ html, body {
 }
 
 body, input {
-  font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Cantarell', 'Oxygen', 'Ubuntu', 'Helvetica Neue', helvetica, arial, sans-serif;
-  color: #333;
+  font-family: var(--font-sans-serif);
+  color: var(--base14);
 }
 
 body, div, nav {
@@ -24,5 +30,5 @@ a {
 }
 
 code {
-  font-family: Menlo, Monaco, monospace;
+  font-family: var(--font-monospace);
 }

@@ -1,4 +1,4 @@
-import { visit, find, findAll, fillIn, click } from '@ember/test-helpers';
+import { visit, findAll, fillIn, click } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 
@@ -71,10 +71,10 @@ module('Deprecation Tab', function(hooks) {
 
     await visit('/deprecations');
 
-    assert.notOk(find('.js-deprecation-source'), 'no sources');
-    assert.equal(findAll('.js-deprecation-message')[0].textContent.trim(), 'Deprecation 1', 'message shown');
-    assert.equal(findAll('.js-deprecation-count')[0].textContent.trim(), 2, 'Count correct');
-    assert.ok(find('.js-deprecation-full-trace'), 'Full trace button shown');
+    assert.dom('.js-deprecation-source').doesNotExist('no sources');
+    assert.dom(findAll('.js-deprecation-message')[0]).hasText('Deprecation 1', 'message shown');
+    assert.dom(findAll('.js-deprecation-count')[0]).hasText('2', 'Count correct');
+    assert.dom('.js-deprecation-full-trace').exists('Full trace button shown');
     await click('.js-full-trace-deprecations-btn');
 
     assert.equal(name, 'deprecation:sendStackTraces');
@@ -96,16 +96,16 @@ module('Deprecation Tab', function(hooks) {
 
     await visit('/deprecations');
 
-    assert.equal(find('.js-deprecation-message').textContent.trim(), 'Deprecation 1', 'message shown');
-    assert.equal(find('.js-deprecation-count').textContent.trim(), 2, 'Count correct');
-    assert.notOk(find('.js-deprecation-full-trace'), 'Full trace button not shown');
+    assert.dom('.js-deprecation-message').hasText('Deprecation 1', 'message shown');
+    assert.dom('.js-deprecation-count').hasText('2', 'Count correct');
+    assert.dom('.js-deprecation-full-trace').doesNotExist('Full trace button not shown');
 
     let sources = findAll('.js-deprecation-source');
     assert.equal(sources.length, 2, 'shows all sources');
     assert.notOk(sources[0].querySelector('.js-deprecation-source-link'), 'source not clickable');
-    assert.equal(sources[0].querySelector('.js-deprecation-source-text').textContent.trim(), 'path-to-file.js:1');
+    assert.dom(sources[0].querySelector('.js-deprecation-source-text')).hasText('path-to-file.js:1');
     assert.notOk(sources[1].querySelector('.js-deprecation-source-link'), 'source not clickable');
-    assert.equal(sources[1].querySelector('.js-deprecation-source-text').textContent.trim(), 'path-to-second-file.js:2');
+    assert.dom(sources[1].querySelector('.js-deprecation-source-text')).hasText('path-to-second-file.js:2');
 
     await click('.js-trace-deprecations-btn', sources[0]);
 
@@ -142,16 +142,16 @@ module('Deprecation Tab', function(hooks) {
 
     await visit('/deprecations');
 
-    assert.equal(find('.js-deprecation-message').textContent.trim(), 'Deprecation 1', 'message shown');
-    assert.equal(find('.js-deprecation-count').textContent.trim(), 2, 'Count correct');
-    assert.notOk(find('.js-deprecation-full-trace'), 'Full trace button not shown');
+    assert.dom('.js-deprecation-message').hasText('Deprecation 1', 'message shown');
+    assert.dom('.js-deprecation-count').hasText('2', 'Count correct');
+    assert.dom('.js-deprecation-full-trace').doesNotExist('Full trace button not shown');
 
     let sources = findAll('.js-deprecation-source');
     assert.equal(sources.length, 2, 'shows all sources');
     assert.notOk(sources[0].querySelector('.js-deprecation-source-text'), 'source clickable');
-    assert.equal(sources[0].querySelector('.js-deprecation-source-link').textContent.trim(), 'path-to-file.js:1');
+    assert.dom(sources[0].querySelector('.js-deprecation-source-link')).hasText('path-to-file.js:1');
     assert.notOk(sources[1].querySelector('.js-deprecation-source-text'), 'source clickable');
-    assert.equal(sources[1].querySelector('.js-deprecation-source-link').textContent.trim(), 'path-to-second-file.js:2');
+    assert.dom(sources[1].querySelector('.js-deprecation-source-link')).hasText('path-to-second-file.js:2');
 
     openResourceArgs = false;
     await click('.js-deprecation-source-link', sources[0]);

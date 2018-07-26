@@ -1,6 +1,6 @@
 import { computed } from '@ember/object';
 import Component from '@ember/component';
-import { equal, alias } from '@ember/object/computed';
+import { equal, alias, and } from '@ember/object/computed';
 
 export default Component.extend({
   isEdit: false,
@@ -17,19 +17,31 @@ export default Component.extend({
   txtValue: null,
   dateValue: null,
 
-  isCalculated: computed('model.value.type', function() {
-    return this.get('model.value.type') !== 'type-descriptor';
+  isCalculated: computed('valueType', function() {
+    return this.get('valueType') !== 'type-descriptor';
   }),
 
-  isEmberObject: equal('model.value.type', 'type-ember-object'),
+  valueType: alias('model.value.type'),
+
+  isService: alias('model.isService'),
+
+  isOverridden: alias('model.overridden'),
+
+  isEmberObject: equal('valueType', 'type-ember-object'),
 
   isComputedProperty: alias('model.value.computed'),
 
-  isFunction: equal('model.value.type', 'type-function'),
+  isFunction: equal('valueType', 'type-function'),
 
-  isArray: equal('model.value.type', 'type-array'),
+  isArray: equal('valueType', 'type-array'),
 
-  isDate: equal('model.value.type', 'type-date'),
+  isDate: equal('valueType', 'type-date'),
+
+  isDepsExpanded: false,
+
+  hasDependentKeys: and('model.dependentKeys.length', 'isCalculated'),
+
+  showDependentKeys: and('isDepsExpanded', 'hasDependentKeys'),
 
   _parseTextValue(value) {
     let parsedValue;
@@ -48,6 +60,9 @@ export default Component.extend({
   },
 
   actions: {
+    toggleDeps() {
+      this.toggleProperty('isDepsExpanded');
+    },
     valueClick() {
       if (this.get('isEmberObject') || this.get('isArray')) {
         this.get('mixin').send('digDeeper', this.get('model'));
@@ -64,7 +79,7 @@ export default Component.extend({
       }
 
       let value = this.get('model.value.inspect');
-      let type = this.get('model.value.type');
+      let type = this.get('valueType');
       if (type === 'type-string') {
         value = `"${value}"`;
       }

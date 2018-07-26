@@ -9,51 +9,56 @@
 $mixin-left-padding: 22px;
 
 .mixin__name {
-  position: relative;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
   padding: 4px 2px 4px $mixin-left-padding;
-  border-bottom: 1px solid #cecece;
-  background-color: #f5f5f5;
+  border-bottom: 1px solid var(--base03);
+  background-color: var(--base01);
   cursor: default;
   user-select: none;
-  color: #222;
+  color: var(--base15);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  z-index: 1;
 }
 
 .mixin__name:active {
-  background-color: #e7e7e7;
+  background-color: var(--base02);
 }
 
 .mixin__name--no-props {
-  color: #777;
+  color: var(--base09);
 }
 
-  .mixin_props_no .mixin__name:before {
-    opacity: 0;
-  }
+.mixin_props_no .mixin__name:before {
+  opacity: 0;
+}
 
 .mixin__name:before {
   position: absolute;
   top: 5px;
-  left: 7px;
+  left: 6px;
   content: "\25B6";
-  color: #737373;
+  color: var(--base10);
   margin-right: 5px;
   font-size: 90%;
+  transform: rotate(0deg);
+  transition: all 0.1s;
 }
 
   .mixin_state_expanded .mixin__name:before {
-    content: "\25BC";
+    transform: rotate(90deg);
   }
 
 .mixin__properties {
   list-style-type: none;
-  border-bottom: 1px solid #cecece;
+  border-bottom: 1px solid var(--base03);
   margin: 0;
   padding: 3px 0 5px 0;
   font-size: 12px;
-  font-family: 'SF Mono', Menlo, Monaco, monospace;
+  font-family: var(--font-monospace);
 }
 
 .mixin__property {
@@ -65,6 +70,25 @@ $mixin-left-padding: 22px;
   flex-direction: row;
   align-items: center;
   min-height: 19px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+
+  .mixin__cp-toggle {
+    width: $mixin-left-padding;
+    outline: none;
+
+    svg {
+      transition: all 0.2s;
+      transform:
+        rotate(-90deg)
+        translateY(1px);
+    }
+  }
+  .mixin__cp-toggle--expanded {
+    svg {
+      transform: rotate(0deg);
+    }
+  }
 }
 
 /* Errors */
@@ -72,14 +96,14 @@ $mixin-left-padding: 22px;
 .mixin__error {
   margin-right: 3px;
   padding: 0px 20px;
-  color: red;
+  color: var(--spec01);
 }
 
 .mixin__name--errors {
-  background-color: #fff;
+  background-color: var(--base00);
 
   &:active{
-    background-color: #fff;
+    background-color: var(--base00);
   }
 }
 
@@ -93,20 +117,17 @@ $mixin-left-padding: 22px;
     padding: 0;
   }
 
-  .pad { width: $mixin-left-padding; }
-  .mixin__calc-btn {
+  .pad {
+    flex-shrink: 0;
     width: $mixin-left-padding;
-
-    img {
-      max-height: 16px;
-    }
   }
 
-  .mixin__calc-btn--calculated {
-    opacity: 0.4;
+  .mixin__calc-btn svg {
+    path, circle { fill: var(--spec07); }
   }
 
   .mixin__send-btn {
+    flex-shrink: 0;
     opacity: 0;
     padding-right: 6px;
   }
@@ -117,7 +138,11 @@ $mixin-left-padding: 22px;
 }
 
 .mixin__property-name {
-  color: #909;
+  max-width: 50%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--base14);
 }
 
 .mixin__property-value {
@@ -130,24 +155,23 @@ $mixin-left-padding: 22px;
 
 .mixin__property-value-txt {
   flex: 1;
-  border: solid 1px #ccc;
-  /*border: none;*/
-  box-shadow: 2px 2px 2px #888;
-  /*box-shadow: none;*/
+  border: 1px solid var(--base09);
   outline: none;
+  color: var(--base14);
+  font-size: 12px;
+  background: var(--base01);
 }
-
 
 .mixin__property-value-separator {
   margin-right: 5px;
 }
 
 .mixin__property .type-function {
-  color: #999;
+  color: var(--base08);
 }
 
 .mixin__property .type-object {
-  color: #999;
+  color: var(--base11);
 }
 
 .mixin__property .type-ember-object,
@@ -155,20 +179,19 @@ $mixin-left-padding: 22px;
   cursor: pointer;
 }
 
-.mixin__property-calculated-value {
-  flex: 1;
-  color: #999;
-}
-
-.mixin__property .type-null, .mixin__property .type-boolean {
-  color: #009;
+.mixin__property .type-null,
+.mixin__property .type-boolean {
+  color: var(--spec03);
 }
 
 .mixin__property .type-descriptor {
   cursor: pointer;
-  color: #900;
+  color: var(--spec02);
 }
 
+.mixin__property .type-service {
+  color: var(--spec09);
+}
 
 
 .mixin__property_state_overridden {
@@ -177,13 +200,13 @@ $mixin-left-padding: 22px;
 
 
 .mixin__property:not(.mixin__property_state_overridden):hover {
-  background-color: #f3f3f3;
+  background-color: var(--base01);
 }
 
 
 .mixin__property_state_overridden:hover .mixin__property-overridden-by {
   position: absolute;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: var(--spec00);
   right: 0;
   display: inline;
   text-decoration: none;
@@ -196,4 +219,3 @@ $mixin-left-padding: 22px;
     opacity: 0.5;
   }
 }
-

@@ -39,18 +39,18 @@
   flex: none;
   flex-direction: column;
   box-sizing: border-box;
-  border-color: #d6d6d6;
+  border-color: var(--base03);
 }
 
 .split__panel__hd {
   min-height: 29px;
   border-bottom-width: 1px;
   border-bottom-style: solid;
-  background: #fff;
+  background: var(--base00);
 }
 
 .split__panel__bd {
-  background: #fff;
+  background: var(--base00);
   flex: auto;
   overflow: auto;
 }
@@ -60,7 +60,7 @@
   height: 23px;
   border-top-width: 1px;
   border-top-style: solid;
-  background: #F3F3F3;
+  background: var(--base01);
 }
 
 /* Fix visibility issue with phantomjs test runner
@@ -75,7 +75,7 @@
 /* Custom panels */
 
 .split__panel--sidebar-1 .split__panel__bd {
-  background: #F3F3F3;
+  background: var(--base01);
 }
 
 .split__panel--sidebar-1 > .split__panel__ft {
@@ -83,7 +83,7 @@
 }
 
 .split__panel--sidebar-2 .split__panel__bd {
-  background: #f3f3f3;
+  background: var(--base01);
 }
 
 /* Fix main list-view scrolling */

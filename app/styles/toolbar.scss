@@ -53,19 +53,19 @@ $toolbar-height: 28px;
 }
 
 .toolbar__icon-button .svg-stroke {
-  stroke: rgb(103,103,103);
+  stroke: var(--base11);
 }
 
 .toolbar__icon-button .svg-fill {
-  fill: rgb(103,103,103);
+  fill: var(--base11);
 }
 
 .toolbar__icon-button:hover .svg-stroke {
-  stroke: rgb(64,64,64);
+  stroke: var(--base13);
 }
 
 .toolbar__icon-button:hover .svg-fill {
-  fill: rgb(64,64,64);
+  fill: var(--base13);
 }
 
 .toolbar__icon-button:active {
@@ -74,11 +74,11 @@ $toolbar-height: 28px;
 
 /* active (highlighted) */
 .toolbar__icon-button.active .svg-stroke {
-  stroke: #4281eb;
+  stroke: var(--spec04);
 }
 
 .toolbar__icon-button.active .svg-fill {
-  fill: #4281eb;
+  fill: var(--spec04);
 }
 
 /* disabled */
@@ -91,11 +91,11 @@ $toolbar-height: 28px;
 }
 
 .toolbar__icon-button.disabled .svg-stroke {
-  stroke: #cacaca;
+  stroke: var(--base05);
 }
 
 .toolbar__icon-button.disabled .svg-fill {
-  fill: #cacaca;
+  fill: var(--base05);
 }
 
 
@@ -148,10 +148,11 @@ $toolbar-height: 28px;
   margin-left: 2px;
   margin-right: 2px;
   padding: 0 6px;
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--base02);
   border: none;
   border-radius: 2px;
   vertical-align: middle;
+  color: var(--base14);
 }
 
 .toolbar__radio:active,
@@ -170,16 +171,16 @@ $toolbar-height: 28px;
 }
 
 .toolbar__radio:hover {
-  background: rgba(0, 0, 0, 0.1);
+  background: var(--base04);
 }
 
 .toolbar__radio:active {
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--base00);
 }
 
 .toolbar__radio.active {
-  color: #fff;
-  background: #3F81EE;
+  color: var(--base00);
+  background: var(--spec04);
 }
 
 /**
@@ -198,12 +199,12 @@ $toolbar-height: 28px;
   width: 175px;
   height: $toolbar-height - 7;
   margin: 0;
-  border: 1px solid #ccc;
+  border: 1px solid var(--base05);
   border-radius: 3px;
   padding: 0 15px 0 4px;
   font-size: 12px;
+  background-color: var(--base00);
   line-height: normal;
-  background-color: #FFF;
 }
 
 .toolbar__search input:focus {
@@ -222,7 +223,7 @@ $toolbar-height: 28px;
   height: auto;
 
   svg {
-    path { fill: #666; }
+    path { fill: var(--base11); }
   }
 }
 
@@ -238,5 +239,5 @@ $toolbar-height: 28px;
   position: relative;
   margin-right: 4px;
   margin-left: 4px;
-  background-color: #cacaca;
+  background-color: var(--base05);
 }

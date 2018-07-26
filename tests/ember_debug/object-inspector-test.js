@@ -1,9 +1,11 @@
 import { visit, find } from '@ember/test-helpers';
 import Mixin from '@ember/object/mixin';
 import Component from '@ember/component';
+import { inspect } from '@ember/debug';
 import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import EmberObject, { computed } from '@ember/object';
+import Service from '@ember/service';
 import Ember from 'ember';
 import { module, test } from 'qunit';
 import { settings as nativeDomHelpersSettings } from 'ember-native-dom-helpers';
@@ -119,8 +121,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     let nameProperty = secondDetail.properties[1];
     assert.equal(nameProperty.name, 'name');
-    assert.equal(nameProperty.value.inspect, 'My Object');
-
+    assert.equal(nameProperty.value.inspect, inspect('My Object'));
   });
 
   test('Computed properties are correctly calculated', function(assert) {
@@ -163,7 +164,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.property, 'hi');
     assert.equal(message.mixinIndex, 1);
     assert.equal(message.value.type, 'type-string');
-    assert.equal(message.value.inspect, 'Hello');
+    assert.equal(message.value.inspect, inspect('Hello'));
     assert.ok(message.value.computed);
 
     assert.verifySteps([
@@ -190,8 +191,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(computedProperty.name, 'hi');
     assert.ok(computedProperty.value.computed);
     assert.equal(computedProperty.value.type, 'type-string');
-    assert.equal(computedProperty.value.inspect, 'Hello');
-
+    assert.equal(computedProperty.value.inspect, inspect('Hello'));
   });
 
   test('Properties are correctly bound', function(assert) {
@@ -229,7 +229,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.property, 'name');
     assert.equal(message.mixinIndex, 1);
     assert.equal(message.value.computed, false);
-    assert.equal(message.value.inspect, 'Alex');
+    assert.equal(message.value.inspect, inspect('Alex'));
     assert.equal(message.value.type, 'type-string');
 
     // un-cached computed properties are not bound until calculated
@@ -253,7 +253,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.property, 'hi');
     assert.equal(message.mixinIndex, 1);
     assert.ok(message.value.computed);
-    assert.equal(message.value.inspect, 'Hello!');
+    assert.equal(message.value.inspect, inspect('Hello!'));
     assert.equal(message.value.type, 'type-string');
   });
 
@@ -278,7 +278,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     // A property updated message is published
     assert.equal(name, 'objectInspector:updateProperty');
     assert.equal(message.property, 'name');
-    assert.equal(message.value.inspect, 'Alex');
+    assert.equal(message.value.inspect, inspect('Alex'));
     assert.equal(message.value.type, 'type-string');
   });
 
@@ -366,6 +366,44 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.details[3].properties[1].value.type, 'type-descriptor', 'Does not calculate expensive properties');
 
     assert.ok(message.details[4].name !== 'MixinToSkip', 'Correctly skips properties');
+  });
+
+
+  test("Service should be successfully tagged as service on serialization", function(assert) {
+    let inspectedService = Service.extend({
+      fooBoo() {
+        return true;
+      }
+    }).create();
+
+    let inspected = EmberObject.extend({
+      service: inspectedService
+    }).create();
+
+    objectInspector.sendObject(inspected);
+
+    let serializedServiceProperty = message.details[1].properties[0];
+
+    assert.equal(serializedServiceProperty.isService, true);
+  });
+
+  test("Computed property dependent keys and code should be successfully serialized", function(assert) {
+    let compuedFn = function() {
+      return this.get("foo") + this.get("bar");
+    };
+
+    let inspected = EmberObject.extend({
+      foo: true,
+      bar: false,
+      fooAndBar: computed("foo", "bar", compuedFn)
+    }).create();
+
+    objectInspector.sendObject(inspected);
+    let serializedComputedProperty = message.details[1].properties[2];
+
+    assert.equal(serializedComputedProperty.code, compuedFn.toString());
+    assert.equal(serializedComputedProperty.dependentKeys[0], "foo");
+    assert.equal(serializedComputedProperty.dependentKeys[1], "bar");
   });
 
   test('Read Only Computed properties mush have a readOnly property', function(assert) {
@@ -519,7 +557,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     });
     await wait();
     assert.equal(name, 'objectInspector:updateProperty');
-    assert.equal(message.value.inspect, 'bar');
+    assert.equal(message.value.inspect, inspect('bar'));
 
     // teardown
     ignoreErrors = true;

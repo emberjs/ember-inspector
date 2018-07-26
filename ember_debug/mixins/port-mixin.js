@@ -9,37 +9,17 @@ export default Mixin.create({
   init() {
     this._super(...arguments);
 
-    this.setupPortListeners();
+    this.setupOrRemovePortListeners('on');
   },
 
   willDestroy() {
-    this.removePortListeners();
+    this._super(...arguments);
+
+    this.setupOrRemovePortListeners('off');
   },
 
   sendMessage(name, message) {
     this.get('port').send(this.messageName(name), message);
-  },
-
-  setupPortListeners() {
-    let port = this.get('port');
-    let messages = this.get('messages');
-
-    for (let name in messages) {
-      if (messages.hasOwnProperty(name)) {
-        port.on(this.messageName(name), this, messages[name]);
-      }
-    }
-  },
-
-  removePortListeners() {
-    let port = this.get('port');
-    let messages = this.get('messages');
-
-    for (let name in messages) {
-      if (messages.hasOwnProperty(name)) {
-        port.off(this.messageName(name), this, messages[name]);
-      }
-    }
   },
 
   messageName(name) {
@@ -48,5 +28,20 @@ export default Mixin.create({
       messageName = `${this.get('portNamespace')}:${messageName}`;
     }
     return messageName;
+  },
+
+  /**
+   * Setup or tear down port listeners. Call on `init` and `willDestroy`
+   * @param {String} onOrOff 'on' or 'off' the functions to call i.e. port.on or port.off for adding or removing listeners
+   */
+  setupOrRemovePortListeners(onOrOff) {
+    let port = this.get('port');
+    let messages = this.get('messages');
+
+    for (let name in messages) {
+      if (messages.hasOwnProperty(name)) {
+        port[onOrOff](this.messageName(name), this, messages[name]);
+      }
+    }
   }
 });

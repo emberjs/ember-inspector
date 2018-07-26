@@ -14,7 +14,11 @@
   background: transparent;
   border-radius: 8px;
   vertical-align: middle;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--base06);
+}
+
+a.active > .pill {
+  background: var(--base12);
 }
 
 .pill--not-clickable {

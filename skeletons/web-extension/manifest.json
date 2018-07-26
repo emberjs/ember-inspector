@@ -10,22 +10,27 @@
     "48":  "{{PANE_ROOT}}/assets/images/icon48.png",
     "128": "{{PANE_ROOT}}/assets/images/icon128.png"
   },
+
   "permissions": [
     "<all_urls>",
     "storage",
     "contextMenus"
   ],
+
   "content_security_policy": "script-src 'self'; object-src 'self'",
   "devtools_page": "devtools.html",
+
   "content_scripts": [{
     "matches": ["<all_urls>"],
     "js": ["content-script.js"],
     "run_at": "document_end",
     "all_frames": true
   }],
+
   "background": {
     "scripts": ["background-script.js"]
   },
+
   "page_action": {
     "default_icon": {
       "19": "{{PANE_ROOT}}/assets/images/icon19.png",
@@ -33,12 +38,13 @@
     },
     "default_title": "This webpage is not running Ember.js"
   },
+
   "web_accessible_resources": [
     "scripts/in-page-script.js"
   ],
-  "options_page": "options.html",
+
   "options_ui": {
     "page": "options-dialog.html",
-    "chrome_style": true
+    "browser_style": true
   }
 }

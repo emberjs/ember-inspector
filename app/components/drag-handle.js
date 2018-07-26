@@ -50,18 +50,21 @@ export default Component.extend({
   'on-drag'() {},
 
   startDragging() {
-    let namespace = `drag-${this.elementId}`;
 
     this.setIsDragging(true);
 
-    document.body.addEventListener(`mousemove.${namespace}`, this._mouseMoveHandler);
-    document.body.addEventListener(`mouseup.${namespace} mouseleave.${namespace}`, this.stopDragging);
+    this._mouseMoveHandler = this.mouseMoveHandler.bind(this);
+    this._stopDragging = this.stopDragging.bind(this);
+    document.body.addEventListener(`mousemove`, this._mouseMoveHandler);
+    document.body.addEventListener(`mouseup`, this._stopDragging);
+    document.body.addEventListener(`mouseleave`, this._stopDragging);
   },
 
   stopDragging() {
     this.setIsDragging(false);
-    document.body.removeEventListener(`.drag-${this.elementId}`, this._mouseMoveHandler);
-    document.body.removeEventListener(`.drag-${this.elementId}`, this.stopDragging);
+    document.body.removeEventListener(`mousemove`, this._mouseMoveHandler);
+    document.body.removeEventListener(`mouseup`, this._stopDragging);
+    document.body.removeEventListener(`mouseleave`, this._stopDragging);
   },
 
   willDestroyElement() {
@@ -84,14 +87,14 @@ export default Component.extend({
     return htmlSafe(string);
   }),
 
-  _mouseMoveHandler(e) {
-    let $container = this.element.parentNode;
-    let $containerOffsetLeft = $container.offset().left;
-    let $containerOffsetRight = $containerOffsetLeft + $container.width();
+  mouseMoveHandler(e) {
+    let container = this.element.parentNode;
+    let containerOffsetLeft = getOffsetLeft(container);
+    let containerOffsetRight = containerOffsetLeft + container.offsetWidth;
 
     let position = this.get('isLeft') ?
-      e.pageX - $containerOffsetLeft :
-      $containerOffsetRight - e.pageX;
+      e.pageX - containerOffsetLeft :
+      containerOffsetRight - e.pageX;
 
     position -= this.get('left');
     if (position >= this.get('minWidth') && position <= this.get('maxWidth')) {
@@ -100,3 +103,15 @@ export default Component.extend({
     }
   }
 });
+
+function getOffsetLeft(elem) {
+  let offsetLeft = 0;
+  do {
+    if (!isNaN(elem.offsetLeft))
+    {
+      offsetLeft += elem.offsetLeft;
+    }
+    elem = elem.offsetParent;
+  } while (elem.offsetParent);
+  return offsetLeft;
+}
