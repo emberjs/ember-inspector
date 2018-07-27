@@ -23,12 +23,12 @@ const options = {
   fingerprint: {
     enabled: false
   },
-
   svgJar: {
     sourceDirs: [
       'public/assets/svg'
     ]
-  }
+  },
+  vendorFiles: { 'jquery.js': null }
 };
 
 // Firefox requires non-minified assets for review :(

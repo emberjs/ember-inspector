@@ -1,6 +1,7 @@
 import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { equal, alias, and } from '@ember/object/computed';
+import { next } from '@ember/runloop';
 
 export default Component.extend({
   isEdit: false,
@@ -103,10 +104,12 @@ export default Component.extend({
     },
 
     finishedEditing() {
-      this.set('isEdit', false);
+      next(() => {
+        this.set('isEdit', false);
+      });
     },
 
-    dateSelected(val) {
+    dateSelected([val]) {
       this.set('dateValue', val);
       this.send('saveProperty');
       this.send('finishedEditing');

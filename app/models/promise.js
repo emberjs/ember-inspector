@@ -1,5 +1,5 @@
+import { assign } from '@ember/polyfills';
 import { once } from '@ember/runloop';
-import $ from 'jquery';
 import { typeOf, isEmpty } from '@ember/utils';
 import EmberObject, { computed, observer } from '@ember/object';
 import { not, equal, or } from '@ember/object/computed';
@@ -180,9 +180,9 @@ export default EmberObject.extend({
   }),
 
   _allChildren() {
-    let children = $.extend([], this.get('children'));
+    let children = assign([], this.get('children'));
     children.forEach(item => {
-      children = $.merge(children, item._allChildren());
+      children = assign(children, item._allChildren());
     });
     return children;
   },
@@ -190,7 +190,7 @@ export default EmberObject.extend({
   _allParents() {
     let parent = this.get('parent');
     if (parent) {
-      return $.merge([parent], parent._allParents());
+      return assign([parent], parent._allParents());
     } else {
       return [];
     }
