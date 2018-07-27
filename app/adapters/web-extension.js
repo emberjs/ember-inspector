@@ -53,8 +53,10 @@ export default BasicAdapter.extend({
   },
 
   _injectDebugger() {
-    chrome.devtools.inspectedWindow.eval(loadEmberDebug());
-    this.onResourceAdded();
+    loadEmberDebug().then((emberDebug) => {
+      chrome.devtools.inspectedWindow.eval(emberDebug);
+      this.onResourceAdded();
+    });
   },
 
   _setThemeColors() {
@@ -68,7 +70,7 @@ export default BasicAdapter.extend({
     document.body.classList.add(theme);
   },
 
-  onResourceAdded(/*callback*/) {},
+  onResourceAdded(/*callback*/) { },
 
   willReload() {
     this._injectDebugger();
@@ -99,16 +101,19 @@ export default BasicAdapter.extend({
     scripts as soon as possible into the new page.
   */
   reloadTab() {
-    chrome.devtools.inspectedWindow.reload({
-      injectedScript: loadEmberDebug()
+    loadEmberDebug().then((emberDebug) => {
+      chrome.devtools.inspectedWindow.reload({ injectedScript: emberDebug });
     });
+
   },
 
   canOpenResource: false,
 
   sendIframes(urls) {
-    urls.forEach(url => {
-      chrome.devtools.inspectedWindow.eval(loadEmberDebug(), { frameURL: url });
+    loadEmberDebug().then((emberDebug) => {
+      urls.forEach(url => {
+        chrome.devtools.inspectedWindow.eval(emberDebug, { frameURL: url });
+      });
     });
   }
 });
@@ -116,11 +121,22 @@ export default BasicAdapter.extend({
 function loadEmberDebug() {
   let minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
   let xhr;
-  if (!emberDebug) {
-    xhr = new XMLHttpRequest();
-    xhr.open("GET", chrome.runtime.getURL(`/panes-${minimumVersion}/ember_debug.js`), false);
-    xhr.send();
-    emberDebug = xhr.responseText;
-  }
-  return emberDebug;
+  return new Promise((resolve) => {
+    if (!emberDebug) {
+      xhr = new XMLHttpRequest();
+      xhr.open("GET", chrome.runtime.getURL(`/panes-${minimumVersion}/ember_debug.js`));
+      xhr.onload = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            emberDebug = xhr.responseText;
+            resolve(emberDebug);
+          }
+        }
+      };
+
+      xhr.send();
+    } else {
+      resolve(emberDebug);
+    }
+  });
 }
