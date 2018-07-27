@@ -73,10 +73,11 @@
    * Update the tab's contextMenu: https://developer.chrome.com/extensions/contextMenus
    * Add a menu item called "Inspect Ember Component" that shows info
    * about the component in the inspector.
+   * @param {Boolean} force don't use the activeTabs array to check for an existing context menu
    */
-  function updateContextMenu() {
+  function updateContextMenu(force) {
     // Only add context menu item when an Ember app has been detected
-    var isEmberApp = !!activeTabs[activeTabId];
+    var isEmberApp = !!activeTabs[activeTabId] || force;
     if (!isEmberApp && contextMenuAdded) {
       chrome.contextMenus.remove('inspect-ember-component');
       contextMenuAdded = false;
@@ -153,6 +154,8 @@
     } else if (request && request.type === 'resetEmberIcon') {
       // hide the Tomster icon
       hideAction(sender.tab.id);
+    } else if (request && request.type === 'inspectorLoaded') {
+      updateContextMenu(true);
     } else {
       // forward the message to EmberInspector
       var emberInspectorChromePort = emberInspectorChromePorts[sender.tab.id];
