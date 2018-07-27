@@ -8,7 +8,6 @@ import EmberObject, { computed } from '@ember/object';
 import Service from '@ember/service';
 import Ember from 'ember';
 import { module, test } from 'qunit';
-import { settings as nativeDomHelpersSettings } from 'ember-native-dom-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
 import wait from 'ember-test-helpers/wait';
@@ -26,7 +25,6 @@ function setupApp() {
 }
 
 let ignoreErrors = true;
-let defaultRootForFinder;
 
 module('Ember Debug - Object Inspector', function(hooks) {
   // eslint-disable-next-line object-shorthand
@@ -52,12 +50,9 @@ module('Ember Debug - Object Inspector', function(hooks) {
     await wait();
     objectInspector = EmberDebug.get('objectInspector');
     port = EmberDebug.port;
-    defaultRootForFinder = nativeDomHelpersSettings.rootElement;
-    nativeDomHelpersSettings.rootElement = 'body';
   });
 
   hooks.afterEach(async function() {
-    nativeDomHelpersSettings.rootElement = defaultRootForFinder;
     name = null;
     message = null;
     await destroyEIApp.call(this, EmberDebug, App);
