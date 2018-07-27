@@ -72,6 +72,11 @@ const flattenSearchTree = (
 export default Controller.extend({
   application: controller(),
   queryParams: ['pinnedObjectId'],
+
+  /**
+   * The entry in the component tree corresponding to the pinnedObjectId
+   * will be selected
+   */
   pinnedObjectId: null,
   inspectingViews: false,
   components: true,
@@ -140,12 +145,33 @@ export default Controller.extend({
     this.set('expandedStateCache', {});
   },
 
+  /**
+   * Expands the component tree so that entry for the given view will
+   * be shown.  Recursively expands the entry's parents up to the root.
+   * @param {*} objectId The id of the ember view to show
+   */
   expandToNode(objectId) {
     let node = this.get('filteredArray').find(item => item.get('id') === objectId);
     if (node) {
       node.expandParents();
     }
   },
+
+  /**
+   * This method is basically a trick to get the `{{vertical-collection}}` in the vicinity
+   * of the item that's been selected.  We can't directly scroll to the element but we
+   * can guess at how far down the list the item is. Then we can manually set the scrollTop
+   * of the virtual scroll.
+   */
+  scrollTreeToItem(objectId) {
+    let selectedItemIndex = this.get('displayedList').findIndex(item => item.view.objectId === objectId);
+
+    if (selectedItemIndex) {
+      const averageItemHeight = 22;
+      document.querySelector('.js-component-tree').scrollTop = averageItemHeight * selectedItemIndex;
+    }
+  },
+
 
   actions: {
     previewLayer({
@@ -201,12 +227,16 @@ export default Controller.extend({
       if (objectId) {
         this.set('pinnedObjectId', objectId);
         this.expandToNode(objectId);
+        this.scrollTreeToItem(objectId);
         this.get('port').send('objectInspector:inspectById', {
           objectId,
         });
       }
     },
 
+    /**
+     * Scrolls the main page to put the selected element into view
+     */
     scrollToElement(elementId) {
       this.get('port').send('view:scrollToElement', {
         elementId

@@ -33,10 +33,6 @@ export default Route.extend({
   },
 
   inspectComponent({ viewId }) {
-    const isActive = this.get('controller.active');
-    if (!isActive) {
-      //TODO: Tell the user to open the Ember devtools panel
-    }
     this.transitionTo('component-tree', {
       queryParams: {
         pinnedObjectId: viewId
