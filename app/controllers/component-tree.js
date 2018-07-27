@@ -13,6 +13,10 @@ import {
   isEmpty
 } from '@ember/utils';
 
+import {
+  schedule
+} from '@ember/runloop';
+
 import ComponentViewItem from 'ember-inspector/models/component-view-item';
 
 /**
@@ -168,7 +172,9 @@ export default Controller.extend({
 
     if (selectedItemIndex) {
       const averageItemHeight = 22;
-      document.querySelector('.js-component-tree').scrollTop = averageItemHeight * selectedItemIndex;
+      schedule('afterRender', () => {
+        document.querySelector('.js-component-tree').scrollTop = averageItemHeight * selectedItemIndex;
+      });
     }
   },
 
