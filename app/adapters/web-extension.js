@@ -110,8 +110,8 @@ export default BasicAdapter.extend({
   canOpenResource: false,
 
   sendIframes(urls) {
-    urls.forEach(url => {
-      loadEmberDebug().then((emberDebug) => {
+    loadEmberDebug().then((emberDebug) => {
+      urls.forEach(url => {
         chrome.devtools.inspectedWindow.eval(emberDebug, { frameURL: url });
       });
     });
