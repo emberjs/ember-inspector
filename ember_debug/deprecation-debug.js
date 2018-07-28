@@ -188,7 +188,7 @@ export default EmberObject.extend(PortMixin, {
       }
 
       let url;
-      if (arguments.length === 3 && options && typeof options === 'object') {
+      if (options && typeof options === 'object') {
         url = options.url;
       }
 
