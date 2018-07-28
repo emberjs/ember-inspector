@@ -4,6 +4,7 @@ import {
   findAll,
   click,
   triggerEvent,
+  currentURL,
 } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
@@ -299,5 +300,22 @@ module('Component Tab', function(hooks) {
     await click('.component-tree-item--component code');
     assert.equal(messageSent.name, 'objectInspector:inspectById');
     assert.equal(messageSent.message.objectId, 'ember392');
+  });
+
+  test('Selects a component in the tree in response to a message from the context menu', async function(assert) {
+    // Go to the component tree and populate it before sending the message from the context menu
+    let viewTree = defaultViewTree();
+    await visit('/component-tree');
+    run(() => {
+      port.trigger('view:viewTree', { tree: viewTree });
+    });
+    await wait();
+
+    run(() => {
+      port.trigger('view:inspectComponent', { viewId: 'ember267' });
+    });
+    await wait();
+    assert.equal(currentURL(), '/component-tree?pinnedObjectId=ember267', 'It pins the element id as a query param');
+    assert.dom('.component-tree-item--selected').hasText('todo-item', 'It selects the item in the tree corresponding to the element');
   });
 });

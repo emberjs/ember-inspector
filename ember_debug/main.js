@@ -66,6 +66,9 @@ const EmberDebug = EmberObject.extend({
     this.reset();
 
     this.get('adapter').debug('Ember Inspector Active');
+    this.get('adapter').sendMessage({
+      type: 'inspectorLoaded'
+    });
   },
 
   destroyContainer() {
