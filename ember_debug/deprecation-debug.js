@@ -1,9 +1,10 @@
 import PortMixin from "ember-debug/mixins/port-mixin";
 import SourceMap from "ember-debug/libs/source-map";
 const Ember = window.Ember;
-const { Object: EmberObject, computed, guidFor, run, RSVP, A } = Ember;
+const { Debug, Object: EmberObject, computed, guidFor, run, RSVP, A } = Ember;
 const { resolve, all } = RSVP;
 const { oneWay } = computed;
+const { registerDeprecationHandler } = Debug;
 
 export default EmberObject.extend(PortMixin, {
   portNamespace: 'deprecation',
@@ -32,7 +33,7 @@ export default EmberObject.extend(PortMixin, {
 
   init() {
     this._super();
-    this.replaceDeprecate();
+    this.handleDeprecations();
   },
 
   /**
@@ -153,32 +154,13 @@ export default EmberObject.extend(PortMixin, {
   },
 
   willDestroy() {
-    Ember.deprecate = this.originalDeprecate;
-    this.originalDeprecate = null;
     run.cancel(this.debounce);
     return this._super(...arguments);
   },
 
-  replaceDeprecate() {
-    let self = this;
-    this.originalDeprecate = Ember.deprecate;
-
-    Ember.deprecate = function(message, test, options) {
+  handleDeprecations() {
+    registerDeprecationHandler((message, options) => {
       /* global __fail__*/
-      // Code taken from https://github.com/emberjs/ember.js/blob/master/packages/ember-debug/lib/main.js
-      let noDeprecation;
-
-      if (typeof test === 'function' && !(EmberObject.detect(test))) {
-        // try/catch to support old Ember versions
-        try { noDeprecation = test(); }
-        catch (e) {
-          noDeprecation = true;
-        }
-      } else {
-        noDeprecation = test;
-      }
-
-      if (noDeprecation) { return; }
 
       let error;
 
@@ -206,7 +188,7 @@ export default EmberObject.extend(PortMixin, {
       }
 
       let url;
-      if (arguments.length === 3 && options && typeof options === 'object') {
+      if (options && typeof options === 'object') {
         url = options.url;
       }
 
@@ -214,20 +196,20 @@ export default EmberObject.extend(PortMixin, {
 
       // For ember-debug testing we usually don't want
       // to catch deprecations
-      if (!self.get('namespace').IGNORE_DEPRECATIONS) {
-        self.get('deprecationsToSend').pushObject(deprecation);
-        run.cancel(self.debounce);
-        if (self._watching) {
-          self.debounce = run.debounce(self, 'sendPending', 100);
+      if (!this.get('namespace').IGNORE_DEPRECATIONS) {
+        this.get('deprecationsToSend').pushObject(deprecation);
+        run.cancel(this.debounce);
+        if (this._watching) {
+          this.debounce = run.debounce(this, 'sendPending', 100);
         } else {
-          self.debounce = run.debounce(self, 'sendCount', 100);
+          this.debounce = run.debounce(this, 'sendCount', 100);
         }
-        if (!self._warned) {
-          self.get("adapter").warn("Deprecations were detected, see the Ember Inspector deprecations tab for more details.");
-          self._warned = true;
+        if (!this._warned) {
+          this.get("adapter").warn("Deprecations were detected, see the Ember Inspector deprecations tab for more details.");
+          this._warned = true;
         }
       }
-    };
+    });
   }
 
 });
