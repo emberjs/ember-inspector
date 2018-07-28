@@ -751,7 +751,8 @@ function getDebugInfo(object) {
       'templateData',
       'domManager',
       'states',
-      'element'
+      'element',
+      'targetObject'
     );
   }
 
