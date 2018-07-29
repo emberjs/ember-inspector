@@ -153,7 +153,8 @@ export default EmberObject.extend(PortMixin, {
     };
     window.addEventListener('resize', this.resizeHandler);
 
-    if (this.isGlimmerTwo()) {
+    // We do not have an `owner` when testing, so check for an owner here before calling isGlimmerTwo
+    if (this.getOwner() && this.isGlimmerTwo()) {
       this.glimmerTree = new GlimmerTree({
         owner: this.getOwner(),
         retainObject: this.retainObject.bind(this),
@@ -356,7 +357,7 @@ export default EmberObject.extend(PortMixin, {
   },
 
   isGlimmerTwo() {
-    return this.get('namespace.owner').hasRegistration('service:-glimmer-environment');
+    return this.getOwner().hasRegistration('service:-glimmer-environment');
   },
 
   modelForView(view) {
