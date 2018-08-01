@@ -26,9 +26,13 @@
           {{/list.cell}}
           {{#list.cell}}
             &nbsp; &nbsp;
-            <span class="send-trace-to-console js-trace-deprecations-btn" {{action traceSource model source.model}} title="Trace deprecations in console">
-              Trace in the console
-            </span>
+            <button
+              {{action traceSource model source.model}}
+              class="send-to-console send-to-console--chevron-only js-trace-deprecations-btn"
+              title="Trace deprecations in console">
+              {{svg-jar "send-with-chevron" width="6px" height="9px"}}
+              Trace in the Console
+            </button>
           {{/list.cell}}
         </tr>
       {{/deprecation-item-source}}
@@ -36,9 +40,13 @@
   {{else}}
     <tr class="list__row js-deprecation-full-trace">
       {{#list.cell class="list__cell_main" clickable=true style="padding-left:48px"}}
-        <div class="send-trace-to-console js-full-trace-deprecations-btn" {{action traceDeprecations model}} title="Trace deprecations in console">
-          Trace in the console
-        </div>
+        <button
+          {{action traceDeprecations model}}
+          class="send-to-console send-to-console--chevron-only js-full-trace-deprecations-btn"
+          title="Trace deprecations in console">
+          {{svg-jar "send-with-chevron" width="6px" height="9px"}}
+          Trace in the Console
+        </button>
       {{/list.cell}}
     </tr>
   {{/if}}
