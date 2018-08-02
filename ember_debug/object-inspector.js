@@ -172,7 +172,9 @@ export default EmberObject.extend(PortMixin, {
     },
     inspectById(message) {
       const obj = this.sentObjects[message.objectId];
-      this.sendObject(obj);
+      if (obj) {
+        this.sendObject(obj);
+      }
     },
     inspectByContainerLookup(message) {
       const container = this.get('namespace.owner');
@@ -726,8 +728,9 @@ function twoTenfilterHack(itemName, skipProperties) {
 
 function getDebugInfo(object) {
   let debugInfo = null;
-  if (object._debugInfo && typeof object._debugInfo === 'function') {
-    debugInfo = object._debugInfo();
+  const objectDebugInfo = get(object, '_debugInfo');
+  if (objectDebugInfo && typeof objectDebugInfo === 'function') {
+    debugInfo = objectDebugInfo();
   }
   debugInfo = debugInfo || {};
   let propertyInfo = debugInfo.propertyInfo || (debugInfo.propertyInfo = {});
@@ -749,7 +752,8 @@ function getDebugInfo(object) {
       'templateData',
       'domManager',
       'states',
-      'element'
+      'element',
+      'targetObject'
     );
   }
 

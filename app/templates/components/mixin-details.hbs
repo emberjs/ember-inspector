@@ -2,9 +2,10 @@
   <div class="mixin mixin_props_no js-object-inspector-errors">
     <h2 class="mixin__name mixin__name--errors">
       Errors
-      <span {{action "traceErrors"}} class="send-trace-to-console js-send-errors-to-console">
-        Trace in the console
-      </span>
+      <button {{action "traceErrors"}} class="send-to-console send-to-console--chevron-only js-send-errors-to-console">
+        {{svg-jar "send-with-chevron" width="6px" height="9px"}}
+        Trace in the Console
+      </button>
     </h2>
     <div class="mixin__properties">
     {{#each model.errors as |error|}}
@@ -121,8 +122,9 @@
 
                <button
                  class="mixin__send-btn send-to-console js-send-to-console-btn"
+                 title="Send to console"
                  {{action "sendToConsole" property.model target=mixin}}>
-                 <img src="assets/images/send.png" title="Send to console">
+                 {{svg-jar "send-with-text" width="20px" height="10px"}}
                </button>
              </li>
              

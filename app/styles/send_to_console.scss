@@ -10,41 +10,27 @@
   background: none;
   margin: 0;
   padding: 0;
-  width: 23px;
-  opacity: 1;
+  border-bottom: 1px solid transparent;
   cursor: pointer;
   outline: none;
-}
+  color: var(--base15);
 
-.send-to-console img {
-  margin-right: 3px;
-  width: 20px;
-  vertical-align: top;
+  svg { vertical-align: middle; }
+  .send-chevron { fill: var(--spec04); }
+  .send-text    { fill: var(--base12); }
 }
 
 .send-to-console:hover {
-  border-bottom: 1px solid var(--spec04);
+  border-bottom-color: var(--spec04);
 }
 
 .send-to-console:active {
-  opacity: 0.5;
+  transform: translateY(1px);
 }
 
-.send-trace-to-console {
-  background: url("images/send_arrow.png") left center no-repeat;
-  background-size: 6px 6px;
-  padding-left: 9px;
-  font-size: 9px;
-  cursor: pointer;
-  margin-right: 10px;
-  user-select: none;
-}
-
-
-.send-trace-to-console:hover {
-  color: var(--base15);
-}
-
-.send-trace-to-console:active {
-  opacity: 0.5;
+.send-to-console--chevron-only {
+  svg {
+    position: relative;
+    top: -1px;
+  }
 }

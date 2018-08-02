@@ -7,8 +7,6 @@
 import { set } from '@ember/object';
 
 import { isNone } from '@ember/utils';
-import { copy } from '@ember/object/internals';
-import { merge } from '@ember/polyfills';
 import compareArrays from 'ember-inspector/utils/compare-arrays';
 
 const { floor } = Math;
@@ -193,7 +191,7 @@ export default class {
     if (this._columnVisibility) {
       return this._columnVisibility;
     }
-    this._columnVisibility = this.columnSchema.map(column => merge(copy(column), {
+    this._columnVisibility = this.columnSchema.map(column => Object.assign({}, column, {
       visible: this.isColumnVisible(column.id)
     }));
   }

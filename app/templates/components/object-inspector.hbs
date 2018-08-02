@@ -11,8 +11,11 @@ isExpanded=true class="toolbar__icon-button sidebar-toggle--far-left"}}
 
       <code class="toolbar__title js-object-name">{{model.firstObject.name}}</code>
 
-      <button class="send-to-console js-send-object-to-console-btn" {{action "sendObjectToConsole" model.firstObject}}>
-        <img src="assets/images/send.png" title="Send object to console">
+      <button
+        {{action "sendObjectToConsole" model.firstObject}}
+        class="send-to-console js-send-object-to-console-btn"
+        title="Send to Console">
+        {{svg-jar "send-with-text" width="20px" height="10px"}}
       </button>
     </div>
 

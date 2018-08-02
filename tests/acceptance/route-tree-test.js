@@ -83,29 +83,35 @@ module('Route Tree Tab', function(hooks) {
     let routeNodes = findAll('.js-route-tree-item');
     assert.equal(routeNodes.length, 4);
 
-    let routeNames = [...findAll('.js-route-name')].map(function(item) {
+    let routeNames = findAll('.js-route-name').map(function(item) {
       return item.textContent.trim();
     });
     assert.deepEqual(routeNames, ['application', 'post', 'post.new', 'post.edit']);
 
-    let routeHandlers = [...findAll('.js-route-handler')].map(function(item) {
+    let routeHandlers = findAll('.js-route-handler').map(function(item) {
       return item.textContent.trim();
     });
     assert.deepEqual(routeHandlers, ['ApplicationRoute', 'PostRoute', 'PostNewRoute', 'PostEditRoute']);
 
-    let controllers = [...findAll('.js-route-controller')].map(function(item) {
+    let controllers = findAll('.js-route-controller').map(function(item) {
       return item.textContent.trim();
     });
 
     assert.deepEqual(controllers, ['ApplicationController', 'PostController', 'PostNewController', 'PostEditController']);
 
-    let templates = [...findAll('.js-route-template')].map(function(item) {
+    let templates = findAll('.js-route-template').map(function(item) {
       return item.textContent.trim();
     });
 
     assert.deepEqual(templates, ['application', 'post', 'post/new', 'post/edit']);
 
-    let titleTips = [...findAll('span[title]', routeNodes)].map((n) => n.getAttribute('title')).sort();
+    let titleTips = [];
+
+    routeNodes.forEach((node) => {
+      titleTips = [...node.querySelectorAll('span[title]'), ...titleTips];
+    });
+
+    titleTips = titleTips.map((span) => span.getAttribute('title')).sort();
 
     assert.deepEqual(titleTips, [
       "ApplicationController",
