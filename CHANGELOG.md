@@ -1,14 +1,101 @@
-# Change Log
+# Changelog
 
 ## [Unreleased](https://github.com/emberjs/ember-inspector/tree/HEAD)
 
-[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.1.0...HEAD)
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.3.0...HEAD)
 
 **Merged pull requests:**
 
+- Bump minor version to 3.4.0 [\#849](https://github.com/emberjs/ember-inspector/pull/849) ([teddyzeenny](https://github.com/teddyzeenny))
+
+## [v3.3.0](https://github.com/emberjs/ember-inspector/tree/v3.3.0) (2018-08-02)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.2.0...v3.3.0)
+
+**Implemented enhancements:**
+
+- explore removing sync XHR [\#820](https://github.com/emberjs/ember-inspector/issues/820)
+- Implement "Inspect component" contextual menu [\#689](https://github.com/emberjs/ember-inspector/issues/689)
+- Context menu item for inspecting components [\#843](https://github.com/emberjs/ember-inspector/pull/843) ([Bestra](https://github.com/Bestra))
+- Fix vertical-collection background colors [\#841](https://github.com/emberjs/ember-inspector/pull/841) ([rwwagner90](https://github.com/rwwagner90))
+
+**Fixed bugs:**
+
+- Ember.copy deprecation warnings [\#834](https://github.com/emberjs/ember-inspector/issues/834)
+- Inspector is not detecting Ember deprecations [\#833](https://github.com/emberjs/ember-inspector/issues/833)
+- Inspector triggers targetObject deprecation [\#829](https://github.com/emberjs/ember-inspector/issues/829)
+- Unable to traverse some ember data relationships in the Inspector [\#791](https://github.com/emberjs/ember-inspector/issues/791)
+
+**Closed issues:**
+
+- Can't select the Ember inspector tab in Firefox [\#819](https://github.com/emberjs/ember-inspector/issues/819)
+- Deprecation Overload And UI Thread Locking [\#422](https://github.com/emberjs/ember-inspector/issues/422)
+
+**Merged pull requests:**
+
+- Use Ember.get to get \_debugInfo [\#847](https://github.com/emberjs/ember-inspector/pull/847) ([rwwagner90](https://github.com/rwwagner90))
+- Handle deprecations with registerDeprecationHandler [\#845](https://github.com/emberjs/ember-inspector/pull/845) ([rwwagner90](https://github.com/rwwagner90))
+- Add targetObject to skipProperties [\#844](https://github.com/emberjs/ember-inspector/pull/844) ([rwwagner90](https://github.com/rwwagner90))
+- Bump some deps [\#840](https://github.com/emberjs/ember-inspector/pull/840) ([rwwagner90](https://github.com/rwwagner90))
+- Convert to async xhr [\#839](https://github.com/emberjs/ember-inspector/pull/839) ([rwwagner90](https://github.com/rwwagner90))
+- Bump ember-svg-jar to silence deprecations, fix tests [\#838](https://github.com/emberjs/ember-inspector/pull/838) ([rwwagner90](https://github.com/rwwagner90))
+- Bump Ember, fix inspect issues [\#837](https://github.com/emberjs/ember-inspector/pull/837) ([rwwagner90](https://github.com/rwwagner90))
+- replace all uses of Ember.copy, Ember.merge w/ Object.assign [\#835](https://github.com/emberjs/ember-inspector/pull/835) ([bgentry](https://github.com/bgentry))
+- Avoid publishing secrets file to npm [\#830](https://github.com/emberjs/ember-inspector/pull/830) ([teddyzeenny](https://github.com/teddyzeenny))
+- Bump minor version to 3.3.0 [\#824](https://github.com/emberjs/ember-inspector/pull/824) ([teddyzeenny](https://github.com/teddyzeenny))
+- Send to Console Buttons to SVG [\#822](https://github.com/emberjs/ember-inspector/pull/822) ([nummi](https://github.com/nummi))
+
+## [v3.2.0](https://github.com/emberjs/ember-inspector/tree/v3.2.0) (2018-07-03)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.1.3...v3.2.0)
+
+**Fixed bugs:**
+
+- Data - column Model Types is not resizable [\#813](https://github.com/emberjs/ember-inspector/issues/813)
+- Data tab - change visible columns not working [\#803](https://github.com/emberjs/ember-inspector/issues/803)
+- \[Error\] - `rootElement.getAttribute is not a function` when using 3.1.0-beta [\#775](https://github.com/emberjs/ember-inspector/issues/775)
+- Fix toggling and resizing table columns [\#815](https://github.com/emberjs/ember-inspector/pull/815) ([teddyzeenny](https://github.com/teddyzeenny))
+- Fix rootElement.getAttribute error [\#812](https://github.com/emberjs/ember-inspector/pull/812) ([rwwagner90](https://github.com/rwwagner90))
+
+**Closed issues:**
+
+- CPU spiking [\#817](https://github.com/emberjs/ember-inspector/issues/817)
+
+**Merged pull requests:**
+
+- \[BUGFIX\] remove usage of `Ember.EXTEND\_PROTOTYPES` [\#810](https://github.com/emberjs/ember-inspector/pull/810) ([bekzod](https://github.com/bekzod))
+- Remove application key from manifest [\#809](https://github.com/emberjs/ember-inspector/pull/809) ([teddyzeenny](https://github.com/teddyzeenny))
+- Bump minor version to 3.2.0 [\#807](https://github.com/emberjs/ember-inspector/pull/807) ([teddyzeenny](https://github.com/teddyzeenny))
+- Color Variables Cleanup [\#806](https://github.com/emberjs/ember-inspector/pull/806) ([nummi](https://github.com/nummi))
+- Fix Inspector tab display in Firefox Developer Edition [\#804](https://github.com/emberjs/ember-inspector/pull/804) ([pbishop16](https://github.com/pbishop16))
+- Object Inspector Large Key Name Fix [\#801](https://github.com/emberjs/ember-inspector/pull/801) ([nummi](https://github.com/nummi))
+- Search Routes [\#799](https://github.com/emberjs/ember-inspector/pull/799) ([nummi](https://github.com/nummi))
+- Update changelog and add instructions [\#796](https://github.com/emberjs/ember-inspector/pull/796) ([rwwagner90](https://github.com/rwwagner90))
 - Refactor duplication [\#792](https://github.com/emberjs/ember-inspector/pull/792) ([rwwagner90](https://github.com/rwwagner90))
 
+## [v3.1.3](https://github.com/emberjs/ember-inspector/tree/v3.1.3) (2018-05-26)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.1.2...v3.1.3)
+
+## [v3.1.2](https://github.com/emberjs/ember-inspector/tree/v3.1.2) (2018-05-25)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.1.1...v3.1.2)
+
+## [v3.1.1](https://github.com/emberjs/ember-inspector/tree/v3.1.1) (2018-05-25)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.1.0...v3.1.1)
+
+**Fixed bugs:**
+
+- Tab does not display in Firefox Developer Edition [\#802](https://github.com/emberjs/ember-inspector/issues/802)
+
+**Closed issues:**
+
+- Property icon floating issue [\#800](https://github.com/emberjs/ember-inspector/issues/800)
+- Feature request: route search  [\#129](https://github.com/emberjs/ember-inspector/issues/129)
+
 ## [v3.1.0](https://github.com/emberjs/ember-inspector/tree/v3.1.0) (2018-05-01)
+
 [Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.0.0...v3.1.0)
 
 **Implemented enhancements:**
@@ -30,7 +117,6 @@
 - \[Quest\] - Implement Component Tree [\#774](https://github.com/emberjs/ember-inspector/issues/774)
 - Cannot read property 'getAttribute' of undefined [\#727](https://github.com/emberjs/ember-inspector/issues/727)
 - Stack trace: TypeError: definedControllerClass.proto is not a function [\#629](https://github.com/emberjs/ember-inspector/issues/629)
-- Remove jQuery [\#590](https://github.com/emberjs/ember-inspector/issues/590)
 - Error: You must use Ember.set\(\) to set the `scheduledRevalidation` property [\#559](https://github.com/emberjs/ember-inspector/issues/559)
 - Erro when i click ViewTree and any Controller. [\#523](https://github.com/emberjs/ember-inspector/issues/523)
 - \[IDEA\] Component Hierarchy Tab [\#465](https://github.com/emberjs/ember-inspector/issues/465)
@@ -53,6 +139,7 @@
 - Remove jQuery from app [\#768](https://github.com/emberjs/ember-inspector/pull/768) ([rwwagner90](https://github.com/rwwagner90))
 
 ## [v3.0.0](https://github.com/emberjs/ember-inspector/tree/v3.0.0) (2018-03-08)
+
 [Full Changelog](https://github.com/emberjs/ember-inspector/compare/v2.3.1...v3.0.0)
 
 **Implemented enhancements:**
@@ -84,7 +171,6 @@
 - Ember 3.0, dep updates, testing updates, and codemods [\#762](https://github.com/emberjs/ember-inspector/pull/762) ([rwwagner90](https://github.com/rwwagner90))
 - Remove computedPolyfill [\#761](https://github.com/emberjs/ember-inspector/pull/761) ([rwwagner90](https://github.com/rwwagner90))
 - Remove getTemplate stuff [\#760](https://github.com/emberjs/ember-inspector/pull/760) ([rwwagner90](https://github.com/rwwagner90))
-- WIP [\#759](https://github.com/emberjs/ember-inspector/pull/759) ([rwwagner90](https://github.com/rwwagner90))
 - Fix file paths displayed in the Routes tab [\#757](https://github.com/emberjs/ember-inspector/pull/757) ([omarhamdan](https://github.com/omarhamdan))
 - Add Documentation + Minor Cleanup [\#755](https://github.com/emberjs/ember-inspector/pull/755) ([omarhamdan](https://github.com/omarhamdan))
 - Allow for empty mixins [\#753](https://github.com/emberjs/ember-inspector/pull/753) ([XuluWarrior](https://github.com/XuluWarrior))
@@ -96,6 +182,8 @@
 - Update Inspect Views Icon [\#743](https://github.com/emberjs/ember-inspector/pull/743) ([nummi](https://github.com/nummi))
 - preserve model type hiding [\#742](https://github.com/emberjs/ember-inspector/pull/742) ([efx](https://github.com/efx))
 - Bump patch version to 2.3.1 [\#738](https://github.com/emberjs/ember-inspector/pull/738) ([teddyzeenny](https://github.com/teddyzeenny))
+- Remove unsafe-eval from the csp [\#737](https://github.com/emberjs/ember-inspector/pull/737) ([teddyzeenny](https://github.com/teddyzeenny))
+- prevent undefined options error [\#732](https://github.com/emberjs/ember-inspector/pull/732) ([lifeart](https://github.com/lifeart))
 - Avoid error in some environments [\#638](https://github.com/emberjs/ember-inspector/pull/638) ([pablobm](https://github.com/pablobm))
 
 # Ember Inspector Changelog
@@ -387,4 +475,4 @@
 * [BUGFIX] Add missing ember.prod.js file in vendors
 
 
-\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
