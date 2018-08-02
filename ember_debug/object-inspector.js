@@ -730,7 +730,8 @@ function getDebugInfo(object) {
   let debugInfo = null;
   const objectDebugInfo = get(object, '_debugInfo');
   if (objectDebugInfo && typeof objectDebugInfo === 'function') {
-    debugInfo = objectDebugInfo();
+    // We have to bind to object here to make sure the `this` context is correct inside _debugInfo when we call it
+    debugInfo = objectDebugInfo.bind(object)();
   }
   debugInfo = debugInfo || {};
   let propertyInfo = debugInfo.propertyInfo || (debugInfo.propertyInfo = {});
