@@ -49,24 +49,36 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       window.EmberInspector = Ember.EmberInspectorDebugger = requireModule('ember-debug/main')['default'];
       Ember.EmberInspectorDebugger.Adapter = requireModule('ember-debug/adapters/' + adapter)['default'];
 
-      onApplicationStart(function appStarted(app) {
-        var isFirstBoot = !('__inspector__booted' in app);
-        app.__inspector__booted = true;
-        Ember.EmberInspectorDebugger.set('application', app);
-        Ember.EmberInspectorDebugger.start(true);
-        if (isFirstBoot) {
+      onApplicationStart(function appStarted(instance) {
+        let app = instance.application;
+        if (!('__inspector__booted' in app)) {
+          app.__inspector__booted = true;
           // Watch for app reset/destroy
           app.reopen({
             reset: function() {
               this.__inspector__booted = false;
               this._super.apply(this, arguments);
-            },
-            willDestroy: function() {
-              Ember.EmberInspectorDebugger.destroyContainer();
-              Ember.EmberInspectorDebugger.clear();
-              this._super.apply(this, arguments);
             }
           });
+        }
+
+        if (instance && !('__inspector__booted' in instance)) {
+          instance.__inspector__booted = true;
+
+          instance.reopen({
+            // Clean up on instance destruction
+            willDestroy() {
+              if (Ember.EmberInspectorDebugger.get('owner') === instance) {
+                Ember.EmberInspectorDebugger.destroyContainer();
+                Ember.EmberInspectorDebugger.clear();
+              }
+              return this._super.apply(this, arguments);
+            }
+          });
+          // Boot the inspector (or re-boot if already booted, for example in tests)
+          Ember.EmberInspectorDebugger.set('_application', app);
+          Ember.EmberInspectorDebugger.set('owner', instance);
+          Ember.EmberInspectorDebugger.start(true);
         }
       });
     }
@@ -109,32 +121,40 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     var app;
     for (var i = 0, l = apps.length; i < l; i++) {
       app = apps[i];
+      // We check for the existance of an application instance because
+      // in Ember > 3 tests don't destroy the app when they're done but the app has no booted instances.
       if (app._readinessDeferrals === 0) {
-        // App started
-        callback(app);
-        break;
+        let instance =  app.__deprecatedInstance__ || (app._applicationInstances && app._applicationInstances[0]);
+        if (instance) {
+          // App started
+          setupInstanceInitializer(app, callback);
+          callback(instance);
+          break;
+        }
       }
     }
     Ember.Application.initializer({
       name: 'ember-inspector-booted',
-      initialize: function() {
-        // If 2 arguments are passed, we are on Ember < 2.1 (app is second arg)
-        // If 1 argument is passed, we are on Ember 2.1+ (app is only arg)
-        var app = arguments[1] || arguments[0];
-        if (!app.__inspector__setup) {
-          app.__inspector__setup = true;
-          app.reopen({
-            didBecomeReady: function() {
-              // _super will get reset when we reopen the app
-              // so we store it in this variable to call it later.
-              var _super = this._super;
-              callback(app);
-              return _super.apply(this, arguments);
-            }
-          });
-        }
+      initialize: function(app) {
+        setupInstanceInitializer(app, callback);
       }
     });
+  }
+
+  function setupInstanceInitializer(app, callback) {
+    if (!app.__inspector__setup) {
+      app.__inspector__setup = true;
+
+      // We include the app's guid in the initializer name because in Ember versions < 3
+      // registering an instance initializer with the same name, even if on a different app,
+      // triggers an error because instance initializers seem to be global instead of per app.
+      app.instanceInitializer({
+        name: 'ember-inspector-app-instance-booted-' + Ember.guidFor(app),
+        initialize: function(instance) {
+          callback(instance);
+        }
+      });
+    }
   }
 
   function getApplications() {
