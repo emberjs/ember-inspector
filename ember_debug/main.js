@@ -104,7 +104,7 @@ const EmberDebug = EmberObject.extend({
   },
 
   reset($keepAdapter) {
-    if (!this.get('isTesting')) {
+    if (!this.get('isTesting') && !this.get('owner')) {
       this.set('owner', getOwner(this.get('_application')));
     }
     this.destroyContainer();
@@ -164,7 +164,11 @@ function getApplication() {
 }
 
 function getOwner(application) {
-  return application.__deprecatedInstance__;
+  if (application.autoboot) {
+    return application.__deprecatedInstance__;
+  } else if (application._applicationInstances /* Ember 3.1+ */) {
+    return application._applicationInstances[0];
+  }
 }
 
 export default EmberDebug;
