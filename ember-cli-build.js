@@ -40,8 +40,7 @@ module.exports = function(defaults) {
   let checker = new VersionChecker(defaults);
   let emberChecker = checker.forEmber();
 
-  const hasDispatcher = project.findAddonByName('ember-native-dom-event-dispatcher');
-  if (hasDispatcher || emberChecker.isAbove('3.0.0')) {
+  if (emberChecker.isAbove('3.0.0')) {
     options.vendorFiles = { 'jquery.js': null };
   }
 
