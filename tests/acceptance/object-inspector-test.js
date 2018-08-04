@@ -559,7 +559,9 @@ module('Object Inspector', function(hooks) {
 
     let field = find('.js-object-property-value-date');
     assert.ok(field);
+    await click(field);
     await fillIn(field, '2015-01-01');
+    await triggerKeyEvent(field, 'keydown', 13);
 
     assert.equal(name, 'objectInspector:saveProperty');
     assert.equal(message.property, 'dateProperty');
