@@ -66,11 +66,6 @@ export default EmberObject.extend(PortMixin, {
   port: readOnly('namespace.port'),
 
   /**
-   * @type {Application}
-   */
-  application: readOnly('namespace.owner.application'),
-
-  /**
    * Sends a reply back indicating if the app has been booted.
    *
    * `__inspector__booted` is a property set on the application instance
@@ -79,7 +74,7 @@ export default EmberObject.extend(PortMixin, {
    */
   sendBooted() {
     this.sendMessage('applicationBooted', {
-      booted: this.get('application.__inspector__booted')
+      booted: this.get('namespace.owner.__inspector__booted')
     });
   },
 

@@ -6,9 +6,13 @@
   </div>
   <div class="list__cell-helper">
     {{#if model.hasStack}}
-      <div class="send-trace-to-console js-trace-promise-btn" {{action tracePromise model}} title="Trace promise in console">
+      <button
+        {{action tracePromise model}}
+        class="send-to-console send-to-console--chevron-only js-trace-promise-btn"
+        title="Trace promise in console">
+        {{svg-jar "send-with-chevron" width="6px" height="9px"}}
         Trace
-      </div>
+      </button>
     {{/if}}
   </div>
 {{/list.cell}}
@@ -26,9 +30,13 @@
     </div>
     <div class="list__cell-helper">
       {{#if isError}}
-        <div class="send-trace-to-console js-send-to-console-btn" {{action sendValueToConsole model}} title="Send stack trace to the console">
-          Stack trace
-        </div>
+        <button
+          {{action sendValueToConsole model}}
+          class="send-to-console send-to-console--chevron-only js-send-to-console-btn"
+          title="Send stack trace to the console">
+          {{svg-jar "send-with-chevron" width="6px" height="9px"}}
+          Stack Trace
+        </button>
       {{else}}
         {{send-to-console action=sendValueToConsole param=model}}
       {{/if}}
