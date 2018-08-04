@@ -4,6 +4,7 @@
 /* global require, module */
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+const VersionChecker = require('ember-cli-version-checker');
 const mergeTrees = require('broccoli-merge-trees');
 const concatFiles = require('broccoli-concat');
 const stew = require('broccoli-stew');
@@ -27,8 +28,7 @@ const options = {
     sourceDirs: [
       'public/assets/svg'
     ]
-  },
-  vendorFiles: { 'jquery.js': null }
+  }
 };
 
 // Firefox requires non-minified assets for review :(
@@ -36,6 +36,15 @@ options.minifyJS = { enabled: false };
 options.minifyCSS = { enabled: false };
 
 module.exports = function(defaults) {
+  let project = defaults.project;
+  let checker = new VersionChecker(defaults);
+  let emberChecker = checker.forEmber();
+
+  const hasDispatcher = project.findAddonByName('ember-native-dom-event-dispatcher');
+  if (hasDispatcher || emberChecker.isAbove('3.0.0')) {
+    options.vendorFiles = { 'jquery.js': null };
+  }
+
   let app = new EmberApp(defaults, options);
 
   // Use `app.import` to add additional libraries to the generated

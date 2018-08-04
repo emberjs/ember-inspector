@@ -111,7 +111,7 @@ module.exports = function() {
           npm: {
             devDependencies: {
               'ember-source': '~2.16.0',
-              'ember-native-dom-event-dispatcher': null
+              'ember-native-dom-event-dispatcher': '^0.6.4'
             }
           }
         },
