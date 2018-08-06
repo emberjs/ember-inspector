@@ -110,11 +110,12 @@
                       class="mixin__property-value-txt js-object-property-value-txt"}}
                   {{else}}
                     {{date-property-field
-                      value=property.dateValue
-                      format="YYYY-MM-DD"
+                      allowInput=true
+                      date=(readonly property.dateValue)
+                      dateFormat="Y-m-d"
                       class="mixin__property-value-txt js-object-property-value-date"
-                      onSelection=(action "dateSelected" target=property)
-                      cancel=(action "finishedEditing" target=property)}}
+                      onChange=(action "dateSelected" target=property)
+                      onClose=(action "finishedEditing" target=property)}}
                   {{/unless}}
                 {{/unless}}
 

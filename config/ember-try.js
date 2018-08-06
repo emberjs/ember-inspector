@@ -110,8 +110,7 @@ module.exports = function() {
           name: 'ember-lts-2.16',
           npm: {
             devDependencies: {
-              'ember-source': '~2.16.0',
-              'ember-native-dom-event-dispatcher': null
+              'ember-source': '~2.16.0'
             }
           }
         },

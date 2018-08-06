@@ -1,27 +1,20 @@
 import { on } from '@ember/object/evented';
-import { once } from '@ember/runloop';
-import DatePicker from "ember-inspector/components/pikaday-input";
+import { scheduleOnce } from '@ember/runloop';
+import DatePicker from "ember-inspector/components/ember-flatpickr";
 const KEY_EVENTS = {
   escape: 27
 };
 
 export default DatePicker.extend({
-  /**
-   * Workaround bug of `onPikadayClose` being called
-   * on a destroyed component.
-   */
-  onPikadayClose() {
-    if (!this.element) { return; }
-    return this._super(...arguments);
-  },
-
   openDatePicker: on('didInsertElement', function() {
-    once(this.element, 'click');
+    scheduleOnce('afterRender', this, function() {
+      this.flatpickrRef.open();
+    });
   }),
 
   keyUp(e) {
     if (e.keyCode === KEY_EVENTS.escape) {
-      this.sendAction('cancel');
+      this.flatpickrRef.close();
     }
     return this._super(...arguments);
   }
