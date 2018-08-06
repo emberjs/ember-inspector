@@ -36,7 +36,6 @@ options.minifyJS = { enabled: false };
 options.minifyCSS = { enabled: false };
 
 module.exports = function(defaults) {
-  let project = defaults.project;
   let checker = new VersionChecker(defaults);
   let emberChecker = checker.forEmber();
 
