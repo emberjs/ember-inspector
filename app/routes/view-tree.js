@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import { assign } from '@ember/polyfills';
 import TabRoute from "ember-inspector/routes/tab";
 
 export default TabRoute.extend({
@@ -43,7 +43,7 @@ export default TabRoute.extend({
 
 function topSort(tree, list) {
   list = list || [];
-  let view = $.extend({}, tree);
+  let view = assign({}, tree);
   view.parentCount = view.parentCount || 0;
   delete view.children;
   list.push(view);

@@ -4,6 +4,7 @@
 /* global require, module */
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+const VersionChecker = require('ember-cli-version-checker');
 const mergeTrees = require('broccoli-merge-trees');
 const concatFiles = require('broccoli-concat');
 const stew = require('broccoli-stew');
@@ -23,7 +24,6 @@ const options = {
   fingerprint: {
     enabled: false
   },
-
   svgJar: {
     sourceDirs: [
       'public/assets/svg'
@@ -36,6 +36,13 @@ options.minifyJS = { enabled: false };
 options.minifyCSS = { enabled: false };
 
 module.exports = function(defaults) {
+  let checker = new VersionChecker(defaults);
+  let emberChecker = checker.forEmber();
+
+  if (emberChecker.isAbove('3.0.0')) {
+    options.vendorFiles = { 'jquery.js': null };
+  }
+
   let app = new EmberApp(defaults, options);
 
   // Use `app.import` to add additional libraries to the generated

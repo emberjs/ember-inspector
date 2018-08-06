@@ -1,5 +1,5 @@
-import $ from 'jquery';
-import TabRoute from "ember-inspector/routes/tab";
+import { assign } from '@ember/polyfills';
+import TabRoute from 'ember-inspector/routes/tab';
 
 export default TabRoute.extend({
   setupController() {
@@ -27,7 +27,7 @@ export default TabRoute.extend({
 
 function topSort(tree, list) {
   list = list || [];
-  let route = $.extend({}, tree);
+  let route = assign({}, tree);
   delete route.children;
   // Firt node in the tree doesn't have a value
   if (route.value) {
