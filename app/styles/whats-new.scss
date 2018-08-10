@@ -1,0 +1,31 @@
+.whats-new {
+  padding: 30px 40px;
+
+  h1 {
+    margin-bottom: 0.25rem;
+    font-size: 34px;
+    font-weight: 700;
+  }
+
+  h2 {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--base02);
+    padding-bottom: 1rem;
+    font-size: 21px;
+  }
+
+  ul {
+    padding: 0;
+    list-style-type: circle;
+  }
+
+  li, p {
+    margin-bottom: 0.5rem;
+    font-size: 14px;
+    line-height: 120%;
+  }
+
+  a {
+    color: var(--spec04);
+  }
+}
