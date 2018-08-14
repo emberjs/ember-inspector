@@ -21,14 +21,14 @@ export default Controller.extend({
 
   model: computed(() => []),
 
-  filtered: computed('model.[]', 'options.hideRoutes', 'options.hideSubstates', 'currentRoute', 'searchValue', function() {
+  filtered: computed('model.[]', 'options.hideRoutes', 'options.hideSubstates', 'currentRoute.{name,url}', 'searchValue', function() {
     return this.get('model').filter(routeItem => {
       let currentRoute = this.get('currentRoute');
       let hideRoutes = this.get('options.hideRoutes');
       let hideSubstates = this.get('options.hideSubstates');
 
       if (hideRoutes && currentRoute) {
-        return checkCurrentRoute(currentRoute, routeItem.value.name);
+        return checkCurrentRoute(currentRoute, routeItem.value);
       }
 
       if (hideSubstates && isRouteSubstate(routeItem.value.name)) {

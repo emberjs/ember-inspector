@@ -1,14 +1,29 @@
-export default function(currentRouteName, routeName) {
-  let regName, match;
+export default function(currentRoute, routeValue) {
+  const {
+    name: currentRouteName,
+    url: currentRouteURL,
+  } = currentRoute;
+  const {
+    url: routeURL,
+    name: routeName,
+  } = routeValue;
 
   if (routeName === 'application') {
     return true;
   }
 
-  regName = routeName.replace('.', '\\.');
-  match = currentRouteName.match(new RegExp(`(^|\\.)${regName}(\\.|$)`));
-  if (match && match[0].match(/^\.[^.]+$/)) {
-    match = false;
+  const regName = routeName.replace(/\./g, '\\.');
+  let match = currentRouteName.match(new RegExp(`(^|\\.)${regName}(\\.|$)`));
+
+  const invalidMatch = match && match[0].match(/^\.[^.]+$/);
+  const isResetNamespacedRoute = invalidMatch && invalidMatch[0] === `.${routeName}`;
+  const hasMatchingURL = routeURL === currentRouteURL;
+
+  if (routeName !== 'index' && isResetNamespacedRoute && hasMatchingURL) {
+    return true;
+  } else if (invalidMatch) {
+    return false;
   }
+
   return !!match;
 }

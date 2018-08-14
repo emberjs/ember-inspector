@@ -3,14 +3,130 @@ import { module, test } from 'qunit';
 
 module("Unit | Helper | checkCurrentRoute", function() {
   test("matches the correct routes", function(assert) {
-    assert.ok(checkCurrentRoute('whatever', 'application'), 'application is always current');
-    assert.ok(checkCurrentRoute('index', 'index'), 'index route matches correctly');
-    assert.ok(!checkCurrentRoute('posts.index', 'index'), 'resource match fails even when route name same as resource name');
+    const testSet = [
+      {
+        currentRoute: {
+          url: '/users',
+          name: 'users',
+        },
+        routeValue: {
+          url: '',
+          name: 'application',
+        },
+        message: 'application is always current',
+      },
+      {
+        currentRoute: {
+          url: '/',
+          name: 'index',
+        },
+        routeValue: {
+          url: '/',
+          name: 'index',
+        },
+        message: 'index route matches correctly',
+      },
+      {
+        currentRoute: {
+          url: '/posts',
+          name: 'posts.index',
+        },
+        routeValue: {
+          url: '/posts',
+          name: 'posts.index',
+        },
+        message: 'resource matches correctly',
+      },
+      {
+        currentRoute: {
+          url: '/posts/comments/show',
+          name: 'posts.comments.show',
+        },
+        routeValue: {
+          url: '/posts/comments/show',
+          name: 'posts',
+        },
+        message: 'parent resource of nested resources matches correctly',
+      },
+      {
+        currentRoute: {
+          url: '/comments/show',
+          name: 'comments.show',
+        },
+        routeValue: {
+          url: '/comments/show',
+          name: 'comments.show',
+        },
+        message: 'exact resource and route matches correctly',
+      },
+      {
+        currentRoute: {
+          url: '/posts/comments/show',
+          name: 'posts.comments.show',
+        },
+        routeValue: {
+          url: '/posts/comments/show',
+          name: 'comments.show',
+        },
+        message: 'child resource and route matches correctly',
+      },
+      {
+        currentRoute: {
+          url: '/comments',
+          name: 'comments',
+        },
+        routeValue: {
+          url: '/comments',
+          name: 'comments',
+        },
+        message: 'route w/ resetNamespace matches correctly',
+      },
+      {
+        currentRoute: {
+          url: '/company/department/employees',
+          name: 'company.department.employees',
+        },
+        routeValue: {
+          url: '/company/department/employees',
+          name: 'employees',
+        },
+        message: 'nested route w/ resetNamespace matches correctly',
+      }
+    ];
 
-    assert.ok(checkCurrentRoute('posts.show', 'posts'), 'resource matches correctly');
-    assert.ok(!checkCurrentRoute('posts.show', 'comments'), 'resource matches correctly');
-    assert.ok(checkCurrentRoute('posts.comments.show', 'posts'), 'parent resource of nested resources matches correctly');
-    assert.ok(checkCurrentRoute('comments.show', 'comments.show'), 'exact resource and route matches correctly');
-    assert.ok(checkCurrentRoute('posts.comments.show', 'comments.show'), 'child resource and route matches correctly');
+    testSet.forEach(({ currentRoute, routeValue, message }) => {
+      assert.ok(checkCurrentRoute(currentRoute, routeValue), message);
+    });
+  });
+
+  test('does not match incorrct routes', function(assert) {
+    const testSet = [
+      {
+        currentRoute: {
+          url: '/posts/show',
+          name: 'posts.show',
+        },
+        routeValue: {
+          url: '/posts',
+          name: 'index',
+        },
+        message: 'resource match fails even when route name same as resource name',
+      },
+      {
+        currentRoute: {
+          url: '/posts/show',
+          name: 'posts.show',
+        },
+        routeValue: {
+          url: '/comments/show',
+          name: 'comments',
+        },
+        message: 'resource match fails when current route does not match url',
+      },
+    ];
+
+    testSet.forEach(({ currentRoute, routeValue, message }) => {
+      assert.notOk(checkCurrentRoute(currentRoute, routeValue), message);
+    });
   });
 });
