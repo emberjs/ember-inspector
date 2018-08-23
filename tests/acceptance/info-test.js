@@ -25,7 +25,7 @@ module('Info Tab', function(hooks) {
   });
 
   test("Libraries are displayed correctly", async function t(assert) {
-    await visit('/info');
+    await visit('/info/libraries');
 
     let libraries = findAll('.js-library-row');
     assert.equal(libraries.length, 3, "The correct number of libraries is displayed");

@@ -1,17 +1,22 @@
-{{#x-list
-  name="info-list"
-  schema=(schema-for "info-list")
-  setIsDragging=(route-action 'setIsDragging') as |list|}}
-  <tbody>
-    {{#each model as |library|}}
-      <tr class="list__row js-library-row">
-        {{#list.cell class="list__cell_main"}}
-          <span class="js-lib-name">{{library.name}}</span>
-        {{/list.cell}}
-        {{#list.cell}}
-          <span class="js-lib-version">{{library.version}}</span>
-        {{/list.cell}}
-      </tr>
-    {{/each}}
-  </tbody>
-{{/x-list}}
+<div class="split">
+  {{#draggable-column
+    classes="split__panel split__panel--sidebar-2 nav"
+    setIsDragging=(route-action 'setIsDragging')
+    width=180}}
+    <div class="split__panel__bd">
+      <div class="nav__title">
+        <h1>Info</h1>
+      </div>
+      <ul>
+        <li>{{#link-to "libraries"}}Libraries{{/link-to}}</li>
+        <li>{{#link-to "whats-new"}}What's New{{/link-to}}</li>
+      </ul>
+    </div>
+  {{/draggable-column}}
+
+  <div class="split__panel">
+    <div class="split__panel__bd">
+      {{outlet}}
+    </div>
+  </div>
+</div>

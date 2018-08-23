@@ -64,6 +64,7 @@ module.exports = function(defaults) {
   app.import('node_modules/basiccontext/dist/basicContext.min.css');
   app.import('node_modules/basiccontext/dist/themes/default.min.css');
   app.import('node_modules/basiccontext/dist/basicContext.min.js');
+  app.import('node_modules/compare-versions/index.js');
 
   // Ember Debug
 
