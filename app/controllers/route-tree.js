@@ -3,6 +3,7 @@ import { computed } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import checkCurrentRoute from "ember-inspector/utils/check-current-route";
 import searchMatch from 'ember-inspector/utils/search-match';
+import isRouteSubstate from 'ember-inspector/utils/is-route-substate';
 
 export default Controller.extend({
   application: controller(),
@@ -14,22 +15,28 @@ export default Controller.extend({
   searchValue: '',
 
   options: {
-    hideRoutes: false
+    hideRoutes: false,
+    hideSubstates: false
   },
 
   model: computed(() => []),
 
-  filtered: computed('model.[]', 'options.hideRoutes', 'currentRoute', 'searchValue', function() {
+  filtered: computed('model.[]', 'options.hideRoutes', 'options.hideSubstates', 'currentRoute', 'searchValue', function() {
     return this.get('model').filter(routeItem => {
       let currentRoute = this.get('currentRoute');
       let hideRoutes = this.get('options.hideRoutes');
-
-      if (!searchMatch(routeItem.value.name, this.get('searchValue'))) {
-        return false;
-      }
+      let hideSubstates = this.get('options.hideSubstates');
 
       if (hideRoutes && currentRoute) {
         return checkCurrentRoute(currentRoute, routeItem.value.name);
+      }
+
+      if (hideSubstates && isRouteSubstate(routeItem.value.name)) {
+        return false;
+      }
+
+      if (!searchMatch(routeItem.value.name, this.get('searchValue'))) {
+        return false;
       }
 
       return true;
