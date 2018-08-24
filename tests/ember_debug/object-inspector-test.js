@@ -382,6 +382,24 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(serializedServiceProperty.isService, true);
   });
 
+  test("Proxy Service should be successfully tagged as service on serialization", function(assert) {
+    let inspectedService = Service.extend({
+      unknownProperty() {
+        return true;
+      }
+    }).create();
+
+    let inspected = EmberObject.extend({
+      service: inspectedService
+    }).create();
+
+    objectInspector.sendObject(inspected);
+
+    let serializedServiceProperty = message.details[1].properties[0];
+
+    assert.equal(serializedServiceProperty.isService, true);
+  });
+
   test("Computed property dependent keys and code should be successfully serialized", function(assert) {
     let compuedFn = function() {
       return this.get("foo") + this.get("bar");
