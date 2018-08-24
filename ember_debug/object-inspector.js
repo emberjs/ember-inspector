@@ -475,7 +475,10 @@ function addProperties(properties, hash) {
     let options = { isMandatorySetter: isMandatorySetter(hash, prop) };
 
     if (typeof hash[prop] === 'object' && hash[prop] !== null) {
-      options.isService = hash[prop].type === 'service';
+      options.isService = !('type' in hash[prop]) && typeof hash[prop].unknownProperty === 'function' ?
+        get(hash[prop], 'type') === 'service' :
+        hash[prop].type === 'service';
+
       if (!options.isService) {
         if (hash[prop].constructor) {
           options.isService = hash[prop].constructor.isServiceFactory;
