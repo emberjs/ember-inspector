@@ -60,6 +60,9 @@ module('Route Tree Tab', function(hooks) {
     children: [{
       value: routeValue('post', { controller: { exists: false } }),
       children: [{
+        value: routeValue('post.loading', { url: 'post/loading' }),
+        children: []
+      }, {
         value: routeValue('post.new', { url: 'post/new' }),
         children: []
       }, {
@@ -81,29 +84,29 @@ module('Route Tree Tab', function(hooks) {
     await visit('route-tree');
 
     let routeNodes = findAll('.js-route-tree-item');
-    assert.equal(routeNodes.length, 4);
+    assert.equal(routeNodes.length, 5);
 
     let routeNames = findAll('.js-route-name').map(function(item) {
       return item.textContent.trim();
     });
-    assert.deepEqual(routeNames, ['application', 'post', 'post.new', 'post.edit']);
+    assert.deepEqual(routeNames, ['application', 'post', 'post.loading', 'post.new', 'post.edit']);
 
     let routeHandlers = findAll('.js-route-handler').map(function(item) {
       return item.textContent.trim();
     });
-    assert.deepEqual(routeHandlers, ['ApplicationRoute', 'PostRoute', 'PostNewRoute', 'PostEditRoute']);
+    assert.deepEqual(routeHandlers, ['ApplicationRoute', 'PostRoute', 'PostLoadingRoute', 'PostNewRoute', 'PostEditRoute']);
 
     let controllers = findAll('.js-route-controller').map(function(item) {
       return item.textContent.trim();
     });
 
-    assert.deepEqual(controllers, ['ApplicationController', 'PostController', 'PostNewController', 'PostEditController']);
+    assert.deepEqual(controllers, ['ApplicationController', 'PostController', 'PostLoadingController', 'PostNewController', 'PostEditController']);
 
     let templates = findAll('.js-route-template').map(function(item) {
       return item.textContent.trim();
     });
 
-    assert.deepEqual(templates, ['application', 'post', 'post/new', 'post/edit']);
+    assert.deepEqual(templates, ['application', 'post', 'post/loading', 'post/new', 'post/edit']);
 
     let titleTips = [];
 
@@ -119,6 +122,8 @@ module('Route Tree Tab', function(hooks) {
       "PostController",
       "PostEditController",
       "PostEditRoute",
+      "PostLoadingController",
+      "PostLoadingRoute",
       "PostNewController",
       "PostNewRoute",
       "PostRoute",
@@ -127,9 +132,12 @@ module('Route Tree Tab', function(hooks) {
       "post",
       "post",
       "post.edit",
+      "post.loading",
       "post.new",
       "post/edit",
       "post/edit",
+      "post/loading",
+      "post/loading",
       "post/new",
       "post/new"
     ], 'expected title tips');
@@ -188,13 +196,13 @@ module('Route Tree Tab', function(hooks) {
     await visit('route-tree');
     routeNodes = findAll('.js-route-tree-item .js-route-name');
     let isCurrent = [...routeNodes].map(item => item.classList.contains('list__cell_highlight'));
-    assert.deepEqual(isCurrent, [true, true, false, true]);
+    assert.deepEqual(isCurrent, [true, true, false, false, true]);
 
     run(() => port.trigger('route:currentRoute', { name: 'post.new' }));
     await wait();
     routeNodes = findAll('.js-route-tree-item .js-route-name');
     isCurrent = [...routeNodes].map(item => item.classList.contains('list__cell_highlight'));
-    assert.deepEqual(isCurrent, [true, true, true, false], 'Current route is bound');
+    assert.deepEqual(isCurrent, [true, true, false, true, false], 'Current route is bound');
   });
 
   test("It should filter the tree using the search text", async function(assert) {
@@ -210,7 +218,7 @@ module('Route Tree Tab', function(hooks) {
 
     await visit('route-tree');
     let routeNodes = findAll('.js-route-tree-item');
-    assert.equal(routeNodes.length, 4);
+    assert.equal(routeNodes.length, 5);
 
     await fillIn('.js-filter-views input', 'edit');
     routeNodes = findAll('.js-route-tree-item');
@@ -218,7 +226,7 @@ module('Route Tree Tab', function(hooks) {
 
     await click('.js-search-field-clear-button');
     routeNodes = findAll('.js-route-tree-item');
-    assert.equal(routeNodes.length, 4);
+    assert.equal(routeNodes.length, 5);
   });
 
   test("Hiding non current route", async function(assert) {
@@ -234,11 +242,30 @@ module('Route Tree Tab', function(hooks) {
 
     await visit('route-tree');
     let routeNodes = findAll('.js-route-tree-item');
-    assert.equal(routeNodes.length, 4);
+    assert.equal(routeNodes.length, 5);
     let checkbox = find('.js-filter-hide-routes input');
     checkbox.checked = true;
     await triggerEvent(checkbox, 'change');
     routeNodes = findAll('.js-route-tree-item');
     assert.equal(routeNodes.length, 3);
+  });
+
+  test("Hiding substates", async function(assert) {
+    port.reopen({
+      send(name/*, message*/) {
+        if (name === 'route:getTree') {
+          this.trigger('route:routeTree', { tree: routeTree });
+        }
+      }
+    });
+
+    await visit('route-tree');
+    let routeNodes = findAll('.js-route-tree-item');
+    assert.equal(routeNodes.length, 5);
+    let checkbox = find('.js-filter-hide-substates input');
+    checkbox.checked = true;
+    await triggerEvent(checkbox, 'change');
+    routeNodes = findAll('.js-route-tree-item');
+    assert.equal(routeNodes.length, 4);
   });
 });
