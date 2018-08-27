@@ -1,4 +1,6 @@
 # Ember Inspector [![Build Status](https://secure.travis-ci.org/emberjs/ember-inspector.svg?branch=master)](https://travis-ci.org/emberjs/ember-inspector)
+[![Code Quality: Javascript](https://img.shields.io/lgtm/grade/javascript/g/emberjs/ember-inspector.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/emberjs/ember-inspector/context:javascript)
+[![Total Alerts](https://img.shields.io/lgtm/alerts/g/emberjs/ember-inspector.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/emberjs/ember-inspector/alerts)
 
 Adds an Ember tab to the browser's Developer Tools that allows you to inspect
 Ember objects in your application.
