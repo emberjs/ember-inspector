@@ -134,6 +134,17 @@ module("Unit | Helper | checkCurrentRoute", function() {
         },
         message: 'resource match fails when current route does not match full url path',
       },
+      {
+        currentRoute: {
+          url: '/posts/show/comments',
+          name: 'posts.show.comments',
+        },
+        routeValue: {
+          url: '/comments',
+          name: 'comments',
+        },
+        message: 'resource match fails when current route does not match the root route',
+      },
     ];
 
     testSet.forEach(({ currentRoute, routeValue, message }) => {
