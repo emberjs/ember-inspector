@@ -12,8 +12,8 @@ export default function(currentRoute, routeValue) {
     return true;
   }
 
-  const regName = routeName.replace(/\./g, '\\.');
-  let match = currentRouteName.match(new RegExp(`(^|\\.)${regName}(\\.|$)`));
+  const regName = routeName && routeName.replace(/\./g, '\\.');
+  let match = currentRouteName && currentRouteName.match(new RegExp(`(^|\\.)${regName}(\\.|$)`));
 
   const invalidMatch = match && match[0].match(/^\.[^.]+$/);
   const isResetNamespacedRoute = invalidMatch && invalidMatch[0] === `.${routeName}`;

@@ -35,6 +35,6 @@ export default Component.extend({
       return false;
     }
 
-    return checkCurrentRoute(currentRoute, model);
+    return checkCurrentRoute(currentRoute, model.value);
   })
 });

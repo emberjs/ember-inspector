@@ -99,7 +99,7 @@ module("Unit | Helper | checkCurrentRoute", function() {
     });
   });
 
-  test('does not match incorrct routes', function(assert) {
+  test('does not match incorrect routes', function(assert) {
     const testSet = [
       {
         currentRoute: {
@@ -122,6 +122,17 @@ module("Unit | Helper | checkCurrentRoute", function() {
           name: 'comments',
         },
         message: 'resource match fails when current route does not match url',
+      },
+      {
+        currentRoute: {
+          url: '/posts/show/comments',
+          name: 'posts.show.comments',
+        },
+        routeValue: {
+          url: '/users/comments',
+          name: 'comments',
+        },
+        message: 'resource match fails when current route does not match full url path',
       },
     ];
 
