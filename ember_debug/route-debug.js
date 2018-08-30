@@ -20,6 +20,7 @@ export default EmberObject.extend(PortMixin, {
   }),
 
   currentPath: oneWay('applicationController.currentPath').readOnly(),
+  currentURL: oneWay('namespace.owner.router.currentURL').readOnly(),
 
   portNamespace: 'route',
 
@@ -34,9 +35,17 @@ export default EmberObject.extend(PortMixin, {
     }
   },
 
-  sendCurrentRoute: observer('currentPath', function() {
+  sendCurrentRoute: observer('currentURL', function() {
+    const {
+      currentPath: name,
+      currentURL: url,
+    } = this.getProperties(
+      'currentPath',
+      'currentURL',
+    );
+
     later(() => {
-      this.sendMessage('currentRoute', { name: this.get('currentPath') });
+      this.sendMessage('currentRoute', { name, url });
     }, 50);
   }),
 
