@@ -1,7 +1,7 @@
 {{item-types
   header='Model Types'
   setIsDragging=(route-action 'setIsDragging')
-  sorted=(readonly sorted)
+  sorted=(readonly (if orderByRecordCount sortByDescCount sortByName))
   type='model'
   width=navWidth
 }}
