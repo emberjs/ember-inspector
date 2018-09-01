@@ -5,6 +5,7 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { triggerPort } from '../helpers/trigger-port';
 import wait from 'ember-test-helpers/wait';
+import LocalStorageService from 'ember-inspector/services/storage/local';
 
 let port, name;
 
@@ -32,6 +33,10 @@ module('Data Tab', function(hooks) {
 
   hooks.afterEach(function() {
     name = null;
+    // This is to ensure the hiding empty models setting does not persist across multiple test runs.
+    let storageServiceToUse = LocalStorageService.SUPPORTED ? 'local' : 'memory';
+    let storageService = this.owner.lookup(`service:storage/${storageServiceToUse}`);
+    storageService.removeItem('are-model-types-hidden');
   });
 
   function modelTypeFactory(options) {
@@ -166,6 +171,29 @@ module('Data Tab', function(hooks) {
     let lastRow = rows[rows.length - 1];
     let lastRowColumns = lastRow.querySelectorAll('.js-record-column');
     assert.dom(lastRowColumns[0]).hasText('2', 'Records successfully removed.');
+  });
+
+  test('Hiding empty model types', async function(assert) {
+    assert.expect(3);
+
+    await visit('/data/model-types');
+
+    // Make one model type have a count of 0
+    await triggerPort(this, 'data:modelTypesUpdated', {
+      modelTypes: [
+        modelTypeFactory({ name: 'App.Post', count: 0 })
+      ]
+    });
+
+    assert.dom('.js-model-type').exists({ count: 2 }, 'All models are present');
+
+    // Hide empty models
+    await click('#options-hideEmptyModelTypes');
+    assert.dom('.js-model-type').exists({ count: 1 }, 'Only non-empty models are present');
+
+    // Show empty models
+    await click('#options-hideEmptyModelTypes');
+    assert.dom('.js-model-type').exists({ count: 2 }, 'All models are present again');
   });
 
   test('Filtering records', async function t(assert) {
