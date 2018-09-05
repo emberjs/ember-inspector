@@ -6,6 +6,7 @@ import { setupApplicationTest } from 'ember-qunit';
 import { triggerPort } from '../helpers/trigger-port';
 import wait from 'ember-test-helpers/wait';
 import LocalStorageService from 'ember-inspector/services/storage/local';
+import { HIDE_EMPTY_MODELS_KEY, ORDER_MODELS_BY_COUNT_KEY } from 'ember-inspector/utils/local-storage-keys';
 
 let port, name;
 
@@ -33,10 +34,12 @@ module('Data Tab', function(hooks) {
 
   hooks.afterEach(function() {
     name = null;
-    // This is to ensure the hiding empty models setting does not persist across multiple test runs.
+    // This is to ensure settings in Storage do not persist across multiple test runs.
     let storageServiceToUse = LocalStorageService.SUPPORTED ? 'local' : 'memory';
     let storageService = this.owner.lookup(`service:storage/${storageServiceToUse}`);
-    storageService.removeItem('are-model-types-hidden');
+
+    storageService.removeItem(HIDE_EMPTY_MODELS_KEY);
+    storageService.removeItem(ORDER_MODELS_BY_COUNT_KEY);
   });
 
   function modelTypeFactory(options) {
@@ -194,6 +197,26 @@ module('Data Tab', function(hooks) {
     // Show empty models
     await click('#options-hideEmptyModelTypes');
     assert.dom('.js-model-type').exists({ count: 2 }, 'All models are present again');
+  });
+
+  test('Order by record count', async function(assert) {
+    assert.expect(6);
+
+    await visit('/data/model-types');
+
+    assert.dom(findAll('.js-model-type-name')[0]).hasText('App.Comment');
+    assert.dom(findAll('.js-model-type-name')[1]).hasText('App.Post');
+
+    // Order models by record count.
+    await click('#options-orderByRecordCount');
+
+    assert.dom(findAll('.js-model-type-name')[0]).hasText('App.Post');
+    assert.dom(findAll('.js-model-type-name')[1]).hasText('App.Comment');
+
+    // Don't order models by record count.
+    await click('#options-orderByRecordCount');
+    assert.dom(findAll('.js-model-type-name')[0]).hasText('App.Comment');
+    assert.dom(findAll('.js-model-type-name')[1]).hasText('App.Post');
   });
 
   test('Filtering records', async function t(assert) {

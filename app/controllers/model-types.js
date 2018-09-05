@@ -3,27 +3,40 @@ import { get, computed } from '@ember/object';
 import LocalStorageService from 'ember-inspector/services/storage/local';
 import { sort } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
+import { HIDE_EMPTY_MODELS_KEY, ORDER_MODELS_BY_COUNT_KEY } from 'ember-inspector/utils/local-storage-keys';
 
 export default Controller.extend({
   application: controller(),
   navWidth: 180,
-  sortProperties: ['name'],
   storage: service(`storage/${LocalStorageService.SUPPORTED ? 'local' : 'memory'}`),
+
+  init() {
+    this._super(...arguments);
+    this.sortByNameProp = ['name'];
+    this.sortByDescCountProp = ['count:desc'];
+  },
+
   hideEmptyModelTypes: computed({
     get() {
-      return !!this.get('storage').getItem('are-model-types-hidden');
+      return getStoredPropertyValue(this.get('storage'), HIDE_EMPTY_MODELS_KEY);
     },
     set(key, value) {
-      if (!value) {
-        this.get('storage').removeItem('are-model-types-hidden');
-      } else {
-        this.get('storage').setItem('are-model-types-hidden', value);
-      }
-      return value;
+      return handleSettingProperty(this.get('storage'), HIDE_EMPTY_MODELS_KEY, value);
     }
   }),
 
-  sorted: sort('filtered', 'sortProperties'),
+  orderByRecordCount: computed({
+    get() {
+      return getStoredPropertyValue(this.get('storage'), ORDER_MODELS_BY_COUNT_KEY);
+    },
+    set(key, value) {
+      return handleSettingProperty(this.get('storage'), ORDER_MODELS_BY_COUNT_KEY, value);
+    }
+  }),
+
+  sortByName: sort('filtered', 'sortByNameProp'),
+
+  sortByDescCount: sort('filtered', 'sortByDescCountProp'),
 
   filtered: computed('model.@each.count', 'hideEmptyModelTypes', function() {
     return this.get('model').filter(item => {
@@ -37,3 +50,22 @@ export default Controller.extend({
     });
   })
 });
+
+/**
+ * Returns whether or not a given key has been set in storage.
+ * @param {*} storage
+ * @param {string} key
+ * @returns {boolean}
+ */
+function getStoredPropertyValue(storage, key) {
+  return !!storage.getItem(key);
+}
+
+function handleSettingProperty(storage, key, value) {
+  if (!value) {
+    storage.removeItem(key);
+  } else {
+    storage.setItem(key, value);
+  }
+  return value;
+}
