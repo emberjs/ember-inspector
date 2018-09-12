@@ -35,8 +35,7 @@ module('Data Tab', function(hooks) {
   hooks.afterEach(function() {
     name = null;
     // This is to ensure settings in Storage do not persist across multiple test runs.
-    let storageServiceToUse = LocalStorageService.SUPPORTED ? 'local' : 'memory';
-    let storageService = this.owner.lookup(`service:storage/${storageServiceToUse}`);
+    let storageService = this.owner.lookup(`service:storage/${LocalStorageService.STORAGE_TYPE_TO_USE}`);
 
     storageService.removeItem(HIDE_EMPTY_MODELS_KEY);
     storageService.removeItem(ORDER_MODELS_BY_COUNT_KEY);
