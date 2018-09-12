@@ -8,7 +8,7 @@ import { HIDE_EMPTY_MODELS_KEY, ORDER_MODELS_BY_COUNT_KEY } from 'ember-inspecto
 export default Controller.extend({
   application: controller(),
   navWidth: 180,
-  storage: service(`storage/${LocalStorageService.SUPPORTED ? 'local' : 'memory'}`),
+  storage: service(`storage/${LocalStorageService.STORAGE_TYPE_TO_USE}`),
 
   init() {
     this._super(...arguments);

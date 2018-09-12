@@ -83,7 +83,15 @@ LocalStorage.reopenClass({
    * @property SUPPORTED
    * @type {Boolean}
    */
-  SUPPORTED: LOCAL_STORAGE_SUPPORTED
+  SUPPORTED: LOCAL_STORAGE_SUPPORTED,
+
+  /**
+   * The type of storage to use based on the browser's feature support. Will be 'local' or 'memory'.
+   *
+   * @property STORAGE_TYPE_TO_USE
+   * @type {String}
+   */
+  STORAGE_TYPE_TO_USE: LOCAL_STORAGE_SUPPORTED ? 'local' : 'memory'
 });
 
 export default LocalStorage;
