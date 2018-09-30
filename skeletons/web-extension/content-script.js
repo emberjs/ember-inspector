@@ -10,7 +10,7 @@
  * to inject the in-page-script to determine the ClientApp version onLoad.
  */
 (function() {
-  "use strict";
+  'use strict';
 
   /**
    * Add an event listener for window.messages.
@@ -62,7 +62,6 @@
   }
 
 
-
   // Iframes should not reset the icon so we make sure
   // it's the top level window before resetting.
   if (window.top === window) {
@@ -76,12 +75,12 @@
    * is used by all variants of ember-inspector (Chrome, FF, Bookmarklet) to get
    * the libraries running in the ClientApp
    */
-  var script = document.createElement('script');
-  script.type = "text/javascript";
-  script.src = chrome.runtime.getURL("scripts/in-page-script.js");
-  if (document.body && document.contentType !== "application/pdf") {
+  const script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = chrome.runtime.getURL('scripts/in-page-script.js');
+  if (document.body && document.contentType !== 'application/pdf') {
     document.body.appendChild(script);
-    script.onload = function() {
+    script.onload = () => {
       document.body.removeChild(script);
     };
   }
@@ -89,20 +88,17 @@
   /**
    * Gather the iframes running in the ClientApp
    */
-  var iframes = document.getElementsByTagName('iframe');
-  var urls = [];
-  for (var i = 0, l = iframes.length; i < l; i ++) {
-    urls.push(iframes[i].src);
-  }
-
-  /**
-   * Send the iframes to EmberInspector so that it can run
-   * EmberDebug in the context of the iframe.
-   */
-  //FIX ME
-  setTimeout(function() {
-    chrome.runtime.sendMessage({type: 'iframes', urls: urls});
-  }, 500);
-
-
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      [].filter.call(mutation.addedNodes, (node) => {
+        return node.nodeName === 'IFRAME';
+      }).forEach((node) => {
+        node.addEventListener('load', () => {
+          const urls = node.src ? [node.src] : [];
+          chrome.runtime.sendMessage({ type: 'iframes', urls });
+        });
+      });
+    });
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
 }());
