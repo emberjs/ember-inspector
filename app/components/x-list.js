@@ -63,7 +63,8 @@ export default Component.extend({
    * @property storage
    * @return {Service}
    */
-  storage: service(`storage/${LocalStorageService.SUPPORTED ? 'local' : 'memory'}`),
+  storage: service(`storage/${LocalStorageService.STORAGE_TYPE_TO_USE}`),
+
 
   /**
    * The key used to cache the current schema. Defaults

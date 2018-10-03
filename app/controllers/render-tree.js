@@ -25,7 +25,8 @@ export default Controller.extend({
    * @property storage
    * @type {Service}
    */
-  storage: service(`storage/${LocalStorageService.SUPPORTED ? 'local' : 'memory'}`),
+  storage: service(`storage/${LocalStorageService.STORAGE_TYPE_TO_USE}`),
+
 
   /**
    * Checks if the user previously closed the warning by referencing localStorage
