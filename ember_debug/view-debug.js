@@ -252,7 +252,7 @@ export default EmberObject.extend(PortMixin, {
       return false;
     }
 
-    const applicationViewId = $(emberApp.rootElement).find('> .ember-view').attr('id');
+    const applicationViewId = $(emberApp.rootElement).find('> [class='ember-view']').attr('id');
     let rootView = this.get('viewRegistry')[applicationViewId];
     // In case of App.reset view is destroyed
     if (!rootView) {
