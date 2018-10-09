@@ -334,7 +334,7 @@ export default EmberObject.extend(PortMixin, {
     if (!emberApp) {
       return false;
     }
-    let applicationView = document.querySelector(`${emberApp.rootElement} > .ember-view`);
+    let applicationView = document.querySelector(`${emberApp.rootElement} > [class='ember-view']`);
     let applicationViewId = applicationView ? applicationView.id : undefined;
     let rootView = this.get('viewRegistry')[applicationViewId];
     // In case of App.reset view is destroyed
