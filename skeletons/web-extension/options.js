@@ -2,7 +2,7 @@
 
 /**
  * Extension options for Chrome.
- * This allows the user to decide if the Tomster icon should show when visiting
+ * This allows the user to decide if the Ember icon should show when visiting
  * a webpage that has Ember running.
  *
  * see:
