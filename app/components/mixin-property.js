@@ -4,6 +4,7 @@ import { equal, alias, and } from '@ember/object/computed';
 import { next } from '@ember/runloop';
 
 export default Component.extend({
+  tagName: '',
   isEdit: false,
 
   /**

@@ -11,6 +11,17 @@
   word-break: break-all;
 }
 
+.object-inspector-toolbar.toolbar {
+  // override default .toolbar height
+  // based on table view header height
+  min-height: 30px;
+  border-bottom: 1px solid var(--base03);
+
+  .toolbar__radio--first {
+    margin-left: 7px;
+  }
+}
+
 .mixin__property-dependency-list {
   position: relative;
   margin-bottom: 5px;
