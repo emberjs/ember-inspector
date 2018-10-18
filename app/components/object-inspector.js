@@ -12,6 +12,8 @@ export default Component.extend({
    */
   application: null,
 
+  propDisplayType: 'grouped',
+
   trail: computed('model.[]', function() {
     let nested = this.get('model').slice(1);
     if (nested.length === 0) { return ""; }
@@ -38,6 +40,10 @@ export default Component.extend({
 
     toggleInspector() {
       this.sendAction('toggleInspector', ...arguments);
+    },
+
+    setPropDisplay(type) {
+      this.set('propDisplayType', type);
     }
   }
 });

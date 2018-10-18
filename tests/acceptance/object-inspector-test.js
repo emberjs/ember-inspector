@@ -341,6 +341,15 @@ module('Object Inspector', function(hooks) {
     assert.equal(findAll('.mixin__property-dependency-list').length, 0);
     assert.equal(findAll('.mixin__property-dependency-item').length, 0);
     assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 0);
+
+    // All View
+
+    await click('.js-object-display-type-all');
+    await click('.mixin__property-icon--computed');
+
+    assert.equal(findAll('.mixin__property-dependency-list').length, 1);
+    assert.equal(findAll('.mixin__property-dependency-item').length, 1);
+    assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 1);
   });
 
   test("Properties are bound to the application properties", async function (assert) {
@@ -387,7 +396,6 @@ module('Object Inspector', function(hooks) {
     assert.equal(name, 'objectInspector:saveProperty');
     assert.equal(message.property, 'boundProp');
     assert.equal(message.value, 'Joey');
-    assert.equal(message.mixinIndex, 0);
 
     await triggerPort(this, 'objectInspector:updateProperty', {
       objectId: 'object-id',
@@ -435,7 +443,6 @@ module('Object Inspector', function(hooks) {
     assert.equal(name, 'objectInspector:saveProperty');
     assert.equal(message.property, 'boundProp');
     assert.equal(message.value, '{"name":"joey"}');
-    assert.equal(message.mixinIndex, 0);
   });
 
   test("Send to console", async function (assert) {
@@ -460,6 +467,7 @@ module('Object Inspector', function(hooks) {
     };
     await triggerPort(this, 'objectInspector:updateObject', obj);
 
+    // Grouped View
     await click('.js-send-to-console-btn');
 
     assert.equal(name, 'objectInspector:sendToConsole');
@@ -468,6 +476,14 @@ module('Object Inspector', function(hooks) {
 
     await click('.js-send-object-to-console-btn');
 
+    assert.equal(name, 'objectInspector:sendToConsole');
+    assert.equal(message.objectId, 'object-id');
+    assert.equal(message.property, undefined);
+
+    // All View
+
+    await click('.js-object-display-type-all');
+    await click('.js-send-object-to-console-btn');
     assert.equal(name, 'objectInspector:sendToConsole');
     assert.equal(message.objectId, 'object-id');
     assert.equal(message.property, undefined);
