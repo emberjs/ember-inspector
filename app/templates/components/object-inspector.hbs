@@ -26,5 +26,18 @@ isExpanded=true class="toolbar__icon-button sidebar-toggle--far-left"}}
 {{/if}}
 
 <div class="split__panel__bd">
-  {{mixin-details model=mixinDetails}}
+  <div class="toolbar object-inspector-toolbar">
+    <button
+      class="toolbar__radio toolbar__radio--first js-object-display-type-grouped {{if (eq propDisplayType 'grouped') 'active'}}"
+      {{action "setPropDisplay" "grouped"}}>
+      Grouped
+    </button>
+    <button
+      class="toolbar__radio js-object-display-type-all {{if (eq propDisplayType 'all') 'active'}}"
+      {{action "setPropDisplay" "all"}}>
+      All
+    </button>
+  </div>
+
+  {{mixin-details model=mixinDetails displayType=propDisplayType}}
 </div>
