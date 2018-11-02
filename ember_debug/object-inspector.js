@@ -147,7 +147,7 @@ export default EmberObject.extend(PortMixin, {
       if (message.dataType && message.dataType === 'date') {
         value = new Date(value);
       }
-      this.saveProperty(message.objectId, message.mixinIndex, message.property, value);
+      this.saveProperty(message.objectId, message.property, value);
     },
     sendToConsole(message) {
       this.sendToConsole(message.objectId, message.property);
@@ -198,7 +198,7 @@ export default EmberObject.extend(PortMixin, {
     return (val instanceof EmberObject) || typeOf(val) === 'array';
   },
 
-  saveProperty(objectId, mixinIndex, prop, val) {
+  saveProperty(objectId, prop, val) {
     let object = this.sentObjects[objectId];
     set(object, prop, val);
   },
