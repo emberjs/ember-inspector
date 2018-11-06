@@ -20,7 +20,6 @@ env:
 jobs:
   fail_fast: true
   allow_failures:
-    - env: EMBER_TRY_SCENARIO=ember-beta
     - env: EMBER_TRY_SCENARIO=ember-canary
 
   include:

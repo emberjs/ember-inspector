@@ -108,19 +108,19 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
     let parent;
     let child;
 
-    assembler.on('created', function(e) {
+    function captureParent(e) {
       parent = e.promise;
-    });
+    }
+
+    assembler.on('created', captureParent);
 
     fakeRSVP.trigger('created', {
       guid: 1
     });
 
-    assembler.off('created');
+    assembler.off('created', captureParent);
 
-    assembler.on('created', function(e) {
-      child = e.promise;
-    });
+    assembler.on('created', captureParent);
 
     fakeRSVP.trigger('created', {
       guid: 2
@@ -161,15 +161,17 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
     let event;
     let promise;
 
-    assembler.on('created', function(e) {
+    function capturePromise(e) {
       promise = e.promise;
-    });
+    }
+
+    assembler.on('created', capturePromise);
 
     fakeRSVP.trigger('created', {
       guid: 1
     });
 
-    assembler.off('created');
+    assembler.off('created', capturePromise);
 
     assert.equal(promise.get('state'), 'created');
 
@@ -196,15 +198,17 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
     let event;
     let promise;
 
-    assembler.on('created', function(e) {
+    function capturePromise(e) {
       promise = e.promise;
-    });
+    }
+
+    assembler.on('created', capturePromise);
 
     fakeRSVP.trigger('created', {
       guid: 1
     });
 
-    assembler.off('created');
+    assembler.off('created', capturePromise);
 
     assert.equal(promise.get('state'), 'created');
 
