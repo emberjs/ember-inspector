@@ -3642,10 +3642,10 @@ ember-svg-jar@^1.2.1:
     mkdirp "^0.5.1"
     path-posix "^1.0.0"
 
-ember-table@^2.0.0-beta.4:
-  version "2.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/ember-table/-/ember-table-2.0.0-beta.4.tgz#28118098d45b53e38620efae21be8c65077460c4"
-  integrity sha512-hXO52A7WwKAunVOcgdLxbvOnntSjuD2KrNyo5kV1ItPIFgNHT8JHnscmwfEhORDEYRDTBU72MaJBAWajydt80A==
+ember-table@^2.0.0-beta.6:
+  version "2.0.0-beta.6"
+  resolved "https://registry.yarnpkg.com/ember-table/-/ember-table-2.0.0-beta.6.tgz#019c2e482985dea3432f6529b75e3f1d53654932"
+  integrity sha512-uMRtuuLJ4sDIVXncKDxzTQn8I996JMe68FMiCIdq989yi/iDex/c6bUfkGY+WBcxNXUiX0DRj3Da5lht/NpXKA==
   dependencies:
     "@ember-decorators/argument" "^0.8.16"
     "@ember-decorators/babel-transforms" "^0.1.1"
