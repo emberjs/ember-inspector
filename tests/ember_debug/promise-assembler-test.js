@@ -72,9 +72,11 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
     let date = new Date();
     let event;
 
-    assembler.on('chained', function(e) {
+    function captureEvent(e) {
       event = e;
-    });
+    }
+
+    assembler.on('chained', captureEvent);
 
     fakeRSVP.trigger('chained', {
       guid: 1,
@@ -97,7 +99,7 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
     assert.equal(parent.get('children.length'), 1);
     assert.equal(child.get('guid'), 2);
     assert.equal(child.get('parent'), parent);
-
+    assembler.off('chained', captureEvent);
   });
 
   test('Chains a promise correctly (parent and child existing)', function(assert) {
@@ -120,16 +122,21 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
 
     assembler.off('created', captureParent);
 
-    assembler.on('created', captureParent);
+    function captureChild(e) {
+      child = e.promise;
+    }
+
+    assembler.on('created', captureChild);
 
     fakeRSVP.trigger('created', {
       guid: 2
     });
 
-
-    assembler.on('chained', function(e) {
+    function captureEvent(e) {
       event = e;
-    });
+    }
+
+    assembler.on('chained', captureEvent);
 
     fakeRSVP.trigger('chained', {
       guid: 1,
@@ -152,7 +159,8 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
     assert.equal(parent.get('children.length'), 1);
     assert.equal(child.get('guid'), 2);
     assert.equal(child.get('parent'), parent);
-
+    assembler.off('chained', captureEvent);
+    assembler.off('created', captureChild);
   });
 
   test('Fulfills a promise correctly', function(assert) {
