@@ -7,6 +7,7 @@
 
   "icons": {
     "16":  "{{PANE_ROOT}}/assets/images/icon16.png",
+    "32": "{{PANE_ROOT}}/assets/images/icon38.png",
     "48":  "{{PANE_ROOT}}/assets/images/icon48.png",
     "128": "{{PANE_ROOT}}/assets/images/icon128.png"
   },

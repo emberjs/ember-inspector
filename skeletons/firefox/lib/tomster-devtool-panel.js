@@ -30,7 +30,7 @@ exports.openEmberInspector = function () {
 exports.devtoolTabDefinition = {
   id: "ember-inspector",
   ordinal: 7,
-  icon: self.data.url("{{PANE_ROOT}}/assets/images/icon19.png"),
+  icon: self.data.url("{{PANE_ROOT}}/assets/svg/ember-icon.svg"),
   url: self.data.url("devtool-panel.html"),
   label: "Ember{{env}}",
   tooltip: "Ember Inspector",
@@ -102,7 +102,7 @@ let EmberInspector = Class({
 
   /**
    * Keep track of the last version.
-   * 
+   *
    * @propery _lastVersion
    * @type {String}
    */
