@@ -6,7 +6,7 @@
  * ClientApp.  The background-script serves as a proxy between the EmberInspector
  * and the content-script.
  *
- * It is also responsible for showing the Tomster icon and tooltip in the url bar.
+ * It is also responsible for showing the Ember icon and tooltip in the url bar.
  *
  * See:
  *     https://developer.chrome.com/extensions/background_pages
@@ -57,7 +57,7 @@
   }
 
   /**
-   * Remove the curent tab's Tomster.
+   * Remove the curent tab's Ember icon.
    * Typically used to clearout the icon after reload.
    * @param {Number} tabId - the current tab
    */
@@ -152,7 +152,7 @@
       updateTabAction(sender.tab.id);
       updateContextMenu();
     } else if (request && request.type === 'resetEmberIcon') {
-      // hide the Tomster icon
+      // hide the Ember icon
       hideAction(sender.tab.id);
     } else if (request && request.type === 'inspectorLoaded') {
       updateContextMenu(true);
