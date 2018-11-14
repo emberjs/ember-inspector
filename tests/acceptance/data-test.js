@@ -286,4 +286,35 @@ module('Data Tab', function(hooks) {
     columns = findAll('.js-header-column');
     assert.dom(columns[columns.length - 1]).hasText('Content');
   });
+
+  test("Reload", async function(assert) {
+    let types = [], getRecords = [], filters = [];
+
+    port.reopen({
+      init() {},
+      send(n) {
+        name = n;
+        if (name === 'data:getModelTypes') {
+          this.trigger('data:modelTypesAdded', { modelTypes: types });
+        }
+        if (name === 'data:getRecords') {
+          this.trigger('data:recordsAdded', { records: getRecords });
+        }
+        if (name === 'data:getFilters') {
+          this.trigger('data:filters', { filters });
+        }
+      }
+    });
+
+    await visit('/data/model-types');
+
+    assert.dom('.js-model-type').doesNotExist();
+    types = modelTypes();
+    getRecords = records('App.Post');
+    filters = getFilters();
+
+    await click('.js-reload-container-btn');
+
+    assert.dom('.js-model-type').exists({ count: 2 });
+  });
 });

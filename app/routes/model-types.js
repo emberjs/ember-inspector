@@ -35,5 +35,11 @@ export default TabRoute.extend({
       const currentType = route.get('currentModel').findBy('objectId', modelType.objectId);
       set(currentType, 'count', modelType.count);
     });
+  },
+
+  actions: {
+    reload() {
+      this.refresh();
+    }
   }
 });
