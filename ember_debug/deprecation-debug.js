@@ -62,6 +62,10 @@ export default EmberObject.extend(PortMixin, {
   },
 
   sendPending() {
+    if (this.isDestroyed) {
+      return;
+    }
+
     let deprecations = A();
 
     let promises = all(this.get('deprecationsToSend').map(deprecation => {
@@ -105,6 +109,10 @@ export default EmberObject.extend(PortMixin, {
   },
 
   sendCount() {
+    if (this.isDestroyed) {
+      return;
+    }
+
     this.sendMessage('count', {
       count: this.get('deprecations.length') + this.get('deprecationsToSend.length')
     });
