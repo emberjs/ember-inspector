@@ -49,7 +49,6 @@ module('Container Tab', function(hooks) {
     message = null;
   });
 
-
   test("Container types are successfully listed", async function(assert) {
     port.reopen({
       send(name) {
@@ -67,7 +66,6 @@ module('Container Tab', function(hooks) {
     assert.dom(findAll('.js-container-type-name')[1]).hasText('route');
     assert.dom(findAll('.js-container-type-count')[1]).hasText('5');
   });
-
 
   test("Container instances are successfully listed", async function(assert) {
     let instances = getInstances();

@@ -8,8 +8,8 @@
   "main": "lib/main.js",
   "preferences": [{
     "name": "tomsterLocationbarButtonToggle",
-        "title": "Display The Tomster icon when a site runs Ember.js",
-        "description": "Display The Tomster icon when a site runs Ember.js",
+        "title": "Display The Ember icon when a site runs Ember.js",
+        "description": "Display The Ember icon when a site runs Ember.js",
         "type": "bool",
         "value": false
   }]

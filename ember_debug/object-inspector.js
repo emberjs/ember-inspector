@@ -160,6 +160,10 @@ export default EmberObject.extend(PortMixin, {
       const container = this.get('namespace.owner');
       this.sendValueToConsole(container.lookup(`route:${message.name}`));
     },
+    sendContainerToConsole() {
+      const container = this.get('namespace.owner');
+      this.sendValueToConsole(container);
+    },
     inspectRoute(message) {
       const container = this.get('namespace.owner');
       const router = container.lookup('router:main');
