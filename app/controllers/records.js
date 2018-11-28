@@ -48,8 +48,8 @@ export default Controller.extend({
    * @type {Object}
    */
   columns: computed('modelType.columns', function() {
-    return this.get('modelType.columns').map(({ desc }) => ({
-      valuePath: `columnValues.${dasherize(desc)}`,
+    return this.get('modelType.columns').map(({ desc, name }) => ({
+      valuePath: `columnValues.${name}`,
       name: desc
     }));
   }),
