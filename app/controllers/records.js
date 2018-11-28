@@ -3,7 +3,6 @@ import { observer, computed, get, set } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
 import { none } from '@ember/object/computed';
-import { dasherize } from '@ember/string';
 
 export default Controller.extend({
   application: controller(),
