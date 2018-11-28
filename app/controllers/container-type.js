@@ -30,6 +30,9 @@ export default Controller.extend({
         return;
       }
       this.get('port').send('objectInspector:inspectByContainerLookup', { name: get(obj, 'fullName') });
+    },
+    sendContainerToConsole() {
+      this.get('port').send('objectInspector:sendContainerToConsole');
     }
   }
 });
