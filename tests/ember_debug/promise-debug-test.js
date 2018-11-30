@@ -1,7 +1,7 @@
 import { run, later } from '@ember/runloop';
 import { A as emberA } from '@ember/array';
 import RSVP from 'rsvp';
-import { module, test } from 'qunit';
+import { module, skip, test } from 'qunit';
 import require from 'require';
 import wait from 'ember-test-helpers/wait';
 import { setupEIApp, destroyEIApp } from '../helpers/setup-destroy-ei-app';
@@ -159,7 +159,7 @@ module('Ember Debug - Promise Debug', function(hooks) {
     assert.equal(withStack, false, 'persisted');
   });
 
-  test('Responds even if no promises detected', function(assert) {
+  skip('Responds even if no promises detected', function(assert) {
     port.trigger('promise:getAndObservePromises');
     assert.equal(name, 'promise:promisesUpdated');
     assert.equal(message.promises.length, 0);
