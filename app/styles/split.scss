@@ -10,7 +10,6 @@
   display: flex;
   flex: auto;
   flex-direction: row;
-  overflow: hidden;
   position: absolute;
   top: 0;
   right: 0;
@@ -63,12 +62,8 @@
   background: var(--base01);
 }
 
-/* Fix visibility issue with phantomjs test runner
-   https://github.com/emberjs/ember-inspector/pull/206#issuecomment-55292354 */
-
 .split__panel,
 .split__panel__bd {
-  z-index: 1; /* Fixes bug where empty list-view appears over the top */
   height: 100%;
 }
 

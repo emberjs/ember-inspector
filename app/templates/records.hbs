@@ -1,17 +1,12 @@
-{{#x-list
-  name="record-list"
-  schema=schema
-  setIsDragging=(route-action 'setIsDragging')
-  storageKey=(concat "record-list-" modelType.name)
-  itemClass="list__row_highlight" as |list|}}
-
-  {{#list.vertical-collection filtered as |content index|}}
-    <tr class="list__row js-record-list-item {{if (mod index 2) 'striped'}}" onclick={{action "inspectModel" content}}>
-      {{record-item
-        model=content
-        modelTypeColumns=columns
-        list=list
-      }}
-    </tr>
-  {{/list.vertical-collection}}
-{{/x-list}}
+{{#ember-table as |t|}}
+  {{#t.head columns=columns sorts=sorts onUpdateSorts=(action (mut sorts)) as |h|}}
+    {{#h.row as |r|}}
+      {{r.cell data-test-table-header-column=""}}
+    {{/h.row}}
+  {{/t.head}}
+  {{#t.body rows=filtered checkboxSelectionMode="none" selection=selection onSelect=(action "inspectModel") as |b|}}
+    {{#b.row class=(if (mod b.rowMeta.index 2) "striped") data-test-table-row="" as |r|}}
+      {{r.cell data-test-table-cell=""}}
+    {{/b.row}}
+  {{/t.body}}
+{{/ember-table}}
