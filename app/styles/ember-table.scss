@@ -43,10 +43,22 @@
     border-right: 1px solid var(--base03);
   }
 
+  .blue {
+    color: #174fff
+  }
+
+  .green {
+    color: #009900;
+  }
+
+  .red {
+    color: #ff2717;
+  }
+
   th.is-sortable:hover {
     background: #e9f4fc
   }
-  
+
 
   .et-sort-indicator:before {
     display: inline-block;
@@ -66,7 +78,7 @@
   }
 
   &.is-resizing * {
-    cursor: col-resize!important;
+    cursor: col-resize !important;
     user-select: none
   }
 
@@ -81,7 +93,7 @@
     border-right: none;
     opacity: .8;
     z-index: 10;
-    
+
     th {
       background: #e9f4fc
     }
@@ -98,7 +110,7 @@
   }
 
   &.is-reordering * {
-    cursor: grabbing!important;
+    cursor: grabbing !important;
     user-select: none
   }
 
