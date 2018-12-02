@@ -1,0 +1,165 @@
+.ember-table {
+  background: var(--base00);
+
+  table {
+    min-width: 100%;
+  }
+
+  th,
+  td {
+    border-right: 1px solid var(--base02);
+  }
+
+  th {
+    background: #fff;
+    border-bottom: 1px solid var(--base05);
+    box-sizing: border-box;
+    color: inherit;
+    font-weight: normal;
+    line-height: 30px;
+    min-height: 30px;
+    opacity: 1;
+    overflow: hidden;
+    padding: 3px 6px;
+    position: relative;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  td,
+  .et-cell-content {
+    box-sizing: border-box;
+    line-height: 30px;
+    min-height: 30px;
+    overflow: hidden;
+    padding: 3px 6px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .striped {
+    background-color: var(--base01);
+    border-right: 1px solid var(--base03);
+  }
+
+  .blue {
+    color: #174fff
+  }
+
+  .green {
+    color: #009900;
+  }
+
+  .red {
+    color: #ff2717;
+  }
+
+  th.is-sortable:hover {
+    background: #e9f4fc
+  }
+
+
+  .et-sort-indicator:before {
+    display: inline-block;
+    font-size: 1rem;
+    line-height: 1;
+    transform: rotate(0);
+    content: '\25be'
+  }
+
+  .et-sort-indicator.is-ascending:before {
+    transform: rotate(180deg)
+  }
+
+  .et-header-resize-area {
+    cursor: col-resize;
+    width: 12px
+  }
+
+  &.is-resizing * {
+    cursor: col-resize !important;
+    user-select: none
+  }
+
+  th.is-reorderable {
+    cursor: grab
+  }
+
+  .et-reorder-main-indicator {
+    position: absolute;
+    background: 0 0;
+    border-left: none;
+    border-right: none;
+    opacity: .8;
+    z-index: 10;
+
+    th {
+      background: #e9f4fc
+    }
+  }
+
+  .et-reorder-drop-indicator {
+    position: absolute;
+    background: 0 0;
+    border-left: none;
+    border-right: #27618a solid 1px;
+    opacity: .8;
+    z-index: 10;
+    height: 100%
+  }
+
+  &.is-reordering * {
+    cursor: grabbing !important;
+    user-select: none
+  }
+
+  td.is-first-column {
+    padding: 0
+  }
+
+  .et-cell-container {
+    display: flex
+  }
+
+  .et-toggle-collapse, .et-toggle-select {
+    display: flex;
+    align-items: center
+  }
+
+  .et-toggle-select {
+    padding: 4px
+  }
+
+  .et-toggle-collapse {
+    box-sizing: content-box;
+    width: 24px;
+    padding: 0
+  }
+
+  .et-depth-placeholder:not(.depth-0) {
+    box-sizing: content-box;
+    width: 24px;
+    height: 100%
+  }
+
+  .et-depth-indent.depth-1 {
+    padding-left: 16px
+  }
+
+  .et-cell-content {
+    flex: 1;
+  }
+
+  tr.is-selected td {
+    background: #d7ebfa
+  }
+
+  tr.is-selectable {
+    cursor: pointer
+  }
+
+  tr.is-selectable:hover td {
+    background: #e9f4fc
+  }
+}
