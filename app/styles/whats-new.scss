@@ -2,27 +2,28 @@
   padding: 30px 40px;
 
   h1 {
-    margin-bottom: 0.25rem;
     font-size: 34px;
     font-weight: 700;
+    margin-bottom: 0.25rem;
   }
 
   h2 {
-    margin-bottom: 1rem;
     border-bottom: 1px solid var(--base02);
-    padding-bottom: 1rem;
     font-size: 21px;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
   }
 
   ul {
-    padding: 0;
     list-style-type: circle;
+    padding: 0;
   }
 
-  li, p {
-    margin-bottom: 0.5rem;
+  li,
+  p {
     font-size: 14px;
     line-height: 120%;
+    margin-bottom: 0.5rem;
   }
 
   a {

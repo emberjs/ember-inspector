@@ -3,30 +3,38 @@
   --font-monospace: 'SF Mono', Menlo, Monaco, monospace;
 }
 
-
-h1, h2, h3, h4, h5, h6 {
-  margin: 0;
-  padding: 0;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-size: 12px;
   font-weight: normal;
+  margin: 0;
+  padding: 0;
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
-body, input {
-  font-family: var(--font-sans-serif);
+body,
+input {
   color: var(--base14);
+  font-family: var(--font-sans-serif);
 }
 
-body, div, nav {
+body,
+div,
+nav {
   margin: 0;
   padding: 0;
 }
 
 a {
-  color: inherit;
+  color: var(--inherit);
 }
 
 code {

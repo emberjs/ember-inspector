@@ -60,6 +60,7 @@
     "ember-cli-sass": "^7.1.7",
     "ember-cli-shims": "^1.2.0",
     "ember-cli-showdown": "^4.4.4",
+    "ember-cli-stylelint": "^2.2.0",
     "ember-cli-uglify": "^2.1.0",
     "ember-cli-version-checker": "^2.1.2",
     "ember-concurrency": "^0.8.19",
@@ -90,6 +91,8 @@
     "mkdirp": "^0.5.1",
     "qunit-dom": "^0.6.2",
     "rimraf": "^2.5.2",
+    "stylelint-config-ship-shape": "^0.4.0",
+    "stylelint-config-standard": "^18.2.0",
     "yauzl": "^2.10.0"
   },
   "engines": {

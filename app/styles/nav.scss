@@ -5,14 +5,14 @@
 */
 
 .nav__title h1 {
-  white-space: nowrap;
-  height: 22px;
-  text-overflow: ellipsis;
-  overflow: hidden;
   color: var(--base11);
+  height: 22px;
   line-height: 22px;
+  margin: 2px 0 0;
+  overflow: hidden;
   padding: 0 5px;
-  margin: 2px 0 0 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* List */
@@ -20,8 +20,8 @@
 .nav ul {
   clear: both;
   list-style-type: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
   user-select: none;
 }
 
@@ -31,23 +31,23 @@
 
 .nav li svg {
   flex-shrink: 0;
+  height: 22px;
   margin-right: 7px;
   width: 22px;
-  height: 22px;
 }
 
 /* List anchor */
 
 .nav li > a {
+  cursor: default;
   display: block;
   height: 22px;
   line-height: 22px;
-  padding: 0 5px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   overflow: hidden;
+  padding: 0 5px;
   text-decoration: none;
-  cursor: default;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .app.is-dragging .nav li > a {
@@ -66,8 +66,8 @@
 }
 
 .nav li > a.active {
-  color: var(--base00);
   background: var(--spec04);
+  color: var(--base00);
 }
 
 .nav li > a.active polygon,
@@ -84,12 +84,12 @@
 /* Custom navs */
 
 .nav--main li > a {
-  display: flex;
   align-items: center;
-  height: 38px;
-  padding-left: 12px;
   color: var(--base14);
+  display: flex;
+  height: 38px;
   line-height: 38px;
+  padding-left: 12px;
 }
 
 .nav--main .pill {
