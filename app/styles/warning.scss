@@ -1,18 +1,18 @@
 .warning {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
   background: var(--spec00);
   color: var(--base13);
+  display: flex;
+  flex-direction: row;
   font-size: 11px;
+  justify-content: flex-start;
   padding: 0;
 }
 
 .warning__image {
   display: inline;
-  max-width:15px;
-  max-height:15px;
   margin: 5px;
+  max-height: 15px;
+  max-width: 15px;
 }
 
 .warning__text {
@@ -21,12 +21,12 @@
 }
 
 .warning__close {
-  font-weight: 200;
-  color: var(--base13);
-  text-decoration: underline;
   background: var(--spec00);
   border: hidden;
+  color: var(--base13);
   cursor: pointer;
-  padding: 0;
+  font-weight: 200;
   margin: 5px 10px 5px auto;
+  padding: 0;
+  text-decoration: underline;
 }

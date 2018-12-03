@@ -1,4 +1,5 @@
 .theme--light {
+  // Base
   --base00: #ffffff;
   --base01: #f3f3f3;
   --base02: #ededed;
@@ -15,7 +16,7 @@
   --base13: #404040;
   --base14: #333333;
   --base15: #222222;
-
+  // Spec
   --spec00: #fffec2;
   --spec01: #ff0000;
   --spec02: #990000;
@@ -26,9 +27,12 @@
   --spec07: #cd61a7;
   --spec08: #7fb56d;
   --spec09: #328509;
+  --inherit: inherit;
+  --transparent: transparent;
 }
 
 .theme--dark {
+  // Base
   --base00: #242424;
   --base01: #242424;
   --base02: #121212;
@@ -45,7 +49,7 @@
   --base13: #BFBFBF;
   --base14: #CCCCCC;
   --base15: #DDDDDD;
-
+  // Spec
   --spec00: #00013D;
   --spec01: #00FFFF;
   --spec02: #66FFFF;
@@ -56,4 +60,6 @@
   --spec07: #cd61a7;
   --spec08: #7fb56d;
   --spec09: #328509;
+  --inherit: inherit;
+  --transparent: transparent;
 }

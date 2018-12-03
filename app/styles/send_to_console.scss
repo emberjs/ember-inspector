@@ -6,18 +6,26 @@
 */
 
 .send-to-console {
-  border: none;
   background: none;
-  margin: 0;
-  padding: 0;
+  border: none;
   border-bottom: 1px solid transparent;
-  cursor: pointer;
-  outline: none;
   color: var(--base15);
+  cursor: pointer;
+  margin: 0;
+  outline: none;
+  padding: 0;
 
-  svg { vertical-align: middle; }
-  .send-chevron { fill: var(--spec04); }
-  .send-text    { fill: var(--base12); }
+  svg {
+    vertical-align: middle;
+  }
+
+  .send-chevron {
+    fill: var(--spec04);
+  }
+
+  .send-text {
+    fill: var(--base12);
+  }
 }
 
 .send-to-console:hover {

@@ -4,17 +4,17 @@
 */
 
 .pill {
-  font-size: 12;
-  position: relative;
+  background: transparent;
+  background: var(--base06);
+  border-radius: 8px;
   cursor: default;
   display: inline-block;
+  font-size: 12px;
+  line-height: 12px;
   margin: 0 2px;
   padding: 2px 6px;
-  line-height: 12px;
-  background: transparent;
-  border-radius: 8px;
+  position: relative;
   vertical-align: middle;
-  background: var(--base06);
 }
 
 a.active > .pill {
@@ -26,8 +26,8 @@ a.active > .pill {
 }
 
 .pill--small {
-  padding: 2px 4px;
   font-size: 10px;
+  padding: 2px 4px;
 }
 
 .pill--bold {

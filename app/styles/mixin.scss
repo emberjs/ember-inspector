@@ -9,18 +9,18 @@
 $mixin-left-padding: 22px;
 
 .mixin__name {
+  background-color: var(--base01);
+  border-bottom: 1px solid var(--base03);
+  color: var(--base15);
+  cursor: default;
+  overflow: hidden;
+  padding: 4px 2px 4px $mixin-left-padding;
   position: -webkit-sticky;
   position: sticky;
-  top: 0;
-  padding: 4px 2px 4px $mixin-left-padding;
-  border-bottom: 1px solid var(--base03);
-  background-color: var(--base01);
-  cursor: default;
-  user-select: none;
-  color: var(--base15);
-  white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
+  top: 0;
+  user-select: none;
+  white-space: nowrap;
   z-index: 1;
 }
 
@@ -37,53 +37,52 @@ $mixin-left-padding: 22px;
 }
 
 .mixin__name:before {
+  color: var(--base10);
+  content: "\25B6";
+  font-size: 90%;
+  left: 6px;
+  margin-right: 5px;
   position: absolute;
   top: 5px;
-  left: 6px;
-  content: "\25B6";
-  color: var(--base10);
-  margin-right: 5px;
-  font-size: 90%;
   transform: rotate(0deg);
   transition: all 0.1s;
 }
 
-  .mixin_state_expanded .mixin__name:before {
-    transform: rotate(90deg);
-  }
+.mixin_state_expanded .mixin__name:before {
+  transform: rotate(90deg);
+}
 
 .mixin__properties {
-  list-style-type: none;
   border-bottom: 1px solid var(--base03);
-  margin: 0;
-  padding: 3px 0 5px 0;
-  font-size: 12px;
   font-family: var(--font-monospace);
+  font-size: 12px;
+  list-style-type: none;
+  margin: 0;
+  padding: 3px 0 5px;
 }
 
 .mixin__property {
-  position: relative;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  align-items: center;
   display: flex;
   flex-direction: row;
-  align-items: center;
   min-height: 19px;
-  padding-top: 1px;
+  overflow: hidden;
   padding-bottom: 1px;
+  padding-top: 1px;
+  position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   .mixin__cp-toggle {
-    width: $mixin-left-padding;
     outline: none;
+    width: $mixin-left-padding;
 
     svg {
+      transform: rotate(-90deg) translateY(1px);
       transition: all 0.2s;
-      transform:
-        rotate(-90deg)
-        translateY(1px);
     }
   }
+
   .mixin__cp-toggle--expanded {
     svg {
       transform: rotate(0deg);
@@ -94,15 +93,15 @@ $mixin-left-padding: 22px;
 /* Errors */
 
 .mixin__error {
-  margin-right: 3px;
-  padding: 0px 20px;
   color: var(--spec01);
+  margin-right: 3px;
+  padding: 0 20px;
 }
 
 .mixin__name--errors {
   background-color: var(--base00);
 
-  &:active{
+  &:active {
     background-color: var(--base00);
   }
 
@@ -115,8 +114,8 @@ $mixin-left-padding: 22px;
 
 .mixin__property {
   button {
-    border: none;
     background: none;
+    border: none;
     margin: 0;
     padding: 0;
   }
@@ -127,7 +126,10 @@ $mixin-left-padding: 22px;
   }
 
   .mixin__calc-btn svg {
-    path, circle { fill: var(--spec07); }
+    path,
+    circle {
+      fill: var(--spec07);
+    }
   }
 
   .mixin__send-btn {
@@ -142,28 +144,28 @@ $mixin-left-padding: 22px;
 }
 
 .mixin__property-name {
+  color: var(--base14);
   max-width: 50%;
   overflow: hidden;
-  white-space: nowrap;
   text-overflow: ellipsis;
-  color: var(--base14);
+  white-space: nowrap;
 }
 
 .mixin__property-value {
   flex: 1;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   min-height: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mixin__property-value-txt {
-  flex: 1;
-  border: 1px solid var(--base09);
-  outline: none;
-  color: var(--base14);
-  font-size: 12px;
   background: var(--base01);
+  border: 1px solid var(--base09);
+  color: var(--base14);
+  flex: 1;
+  font-size: 12px;
+  outline: none;
 }
 
 .mixin__property-value-separator {
@@ -189,30 +191,27 @@ $mixin-left-padding: 22px;
 }
 
 .mixin__property .type-descriptor {
-  cursor: pointer;
   color: var(--spec02);
+  cursor: pointer;
 }
 
 .mixin__property .type-service {
   color: var(--spec09);
 }
 
-
 .mixin__property_state_overridden {
   text-decoration: line-through;
 }
-
 
 .mixin__property:not(.mixin__property_state_overridden):hover {
   background-color: var(--base01);
 }
 
-
 .mixin__property_state_overridden:hover .mixin__property-overridden-by {
-  position: absolute;
   background-color: var(--spec00);
-  right: 0;
   display: inline;
+  position: absolute;
+  right: 0;
   text-decoration: none;
 }
 
