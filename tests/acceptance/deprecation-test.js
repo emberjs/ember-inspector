@@ -71,6 +71,8 @@ module('Deprecation Tab', function(hooks) {
 
     await visit('/deprecations');
 
+    await click('.js-deprecation-item');
+
     assert.dom('.js-deprecation-source').doesNotExist('no sources');
     assert.dom(findAll('.js-deprecation-message')[0]).hasText('Deprecation 1', 'message shown');
     assert.dom(findAll('.js-deprecation-count')[0]).hasText('2', 'Count correct');
@@ -95,6 +97,8 @@ module('Deprecation Tab', function(hooks) {
     });
 
     await visit('/deprecations');
+
+    await click('.js-deprecation-item');
 
     assert.dom('.js-deprecation-message').hasText('Deprecation 1', 'message shown');
     assert.dom('.js-deprecation-count').hasText('2', 'Count correct');
@@ -141,6 +145,8 @@ module('Deprecation Tab', function(hooks) {
     });
 
     await visit('/deprecations');
+
+    await click('.js-deprecation-item');
 
     assert.dom('.js-deprecation-message').hasText('Deprecation 1', 'message shown');
     assert.dom('.js-deprecation-count').hasText('2', 'Count correct');
@@ -189,6 +195,8 @@ module('Deprecation Tab', function(hooks) {
 
     await visit('/deprecations');
 
+    await click('.js-deprecation-item');
+
     let sources = findAll('.js-deprecation-source');
     assert.equal(sources.length, 2, 'shows all sources');
 
@@ -197,6 +205,7 @@ module('Deprecation Tab', function(hooks) {
     assert.equal(sources.length, 0, 'sources filtered');
 
     await click('.js-search-field-clear-button');
+    await click('.js-deprecation-item');
     sources = findAll('.js-deprecation-source');
     assert.equal(sources.length, 2, 'show all sources');
   });
