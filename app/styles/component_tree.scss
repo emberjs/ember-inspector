@@ -1,13 +1,12 @@
 .component-tree-item {
-  position: relative;
-  display: flex;
-  min-height: 18px;
   align-items: center;
-  margin: 3px 3px 0 3px;
   border-radius: 4px;
-  font-size: 12px;
   color: var(--base12);
-
+  display: flex;
+  font-size: 12px;
+  margin: 3px 3px 0;
+  min-height: 18px;
+  position: relative;
 }
 
 .component-tree-item--component {
@@ -16,50 +15,58 @@
   &:hover {
     background-color: var(--spec06);
 
-    .component-tree-item__view-element { opacity: 1; }
+    .component-tree-item__view-element {
+      opacity: 1;
+    }
   }
 }
 
 .component-tree-item__view-element {
-  display: flex;
   align-items: center;
+  background: transparent;
+  border: 0;
+  display: flex;
   height: 100%;
   padding: 0;
-  border: 0;
-  background: transparent;
 
-  &:focus { outline: none; }
+  &:focus {
+    outline: none;
+  }
 }
 
 .component-tree-item__tag {
-  display: flex;
   cursor: default;
+  display: flex;
 }
-  .component-tree-item--component .component-tree-item__tag {
-    cursor: pointer;
-  }
 
-.component-tree-item__bracket::before {
-  content: '{{';
-  color: var(--base07);
+.component-tree-item--component .component-tree-item__tag {
+  cursor: pointer;
 }
-.component-tree-item__bracket::after {
-  content: '}}';
+
+.component-tree-item__bracket:before {
   color: var(--base07);
+  content: '{{';
+}
+
+.component-tree-item__bracket:after {
+  color: var(--base07);
+  content: '}}';
 }
 
 .component-tree-item__expand {
-  display: inline-block;
-  border: 0;
-  padding: 0 2px;
-  cursor: pointer;
   background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: inline-block;
+  padding: 0 2px;
 
-  &:focus { outline: none; }
+  &:focus {
+    outline: none;
+  }
 
   svg {
-    transition-property: transform;
     transition-duration: 0.1s;
+    transition-property: transform;
   }
 
   &.collapsed svg {
@@ -68,32 +75,43 @@
 }
 
 .component-tree-item__view-element {
+  cursor: pointer;
   display: inline-block;
   margin-left: 10px;
   opacity: 0;
-  cursor: pointer;
 
-  polygon, rect, path { fill: var(--base15); }
+  polygon,
+  rect,
+  path {
+    fill: var(--base15);
+  }
 }
-
 
 /**
  * Modifier
  */
 
 .component-tree-item--selected {
-  color: var(--base00);
   background: var(--spec04);
-  &:hover { background: var(--spec04); }
+  color: var(--base00);
 
-  .component-tree-item__bracket::before,
-  .component-tree-item__bracket::after {
+  &:hover {
+    background: var(--spec04);
+  }
+
+  .component-tree-item__bracket:before,
+  .component-tree-item__bracket:after {
     color: var(--base07);
   }
 
   .component-tree-item__expand,
   .component-tree-item__view-element {
     opacity: 1;
-    polygon, rect, path { fill: var(--base00); }
+
+    polygon,
+    rect,
+    path {
+      fill: var(--base00);
+    }
   }
 }

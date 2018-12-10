@@ -5,6 +5,8 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { triggerPort } from '../helpers/trigger-port';
 import wait from 'ember-test-helpers/wait';
+import LocalStorageService from 'ember-inspector/services/storage/local';
+import { HIDE_EMPTY_MODELS_KEY, ORDER_MODELS_BY_COUNT_KEY } from 'ember-inspector/utils/local-storage-keys';
 
 let port, name;
 
@@ -32,6 +34,11 @@ module('Data Tab', function(hooks) {
 
   hooks.afterEach(function() {
     name = null;
+    // This is to ensure settings in Storage do not persist across multiple test runs.
+    let storageService = this.owner.lookup(`service:storage/${LocalStorageService.STORAGE_TYPE_TO_USE}`);
+
+    storageService.removeItem(HIDE_EMPTY_MODELS_KEY);
+    storageService.removeItem(ORDER_MODELS_BY_COUNT_KEY);
   });
 
   function modelTypeFactory(options) {
@@ -114,22 +121,22 @@ module('Data Tab', function(hooks) {
 
     await click(findAll('.js-model-type a')[1]);
 
-    let columns = findAll('.js-header-column');
-    assert.dom(columns[0]).hasText('Id');
-    assert.dom(columns[1]).hasText('Title');
-    assert.dom(columns[2]).hasText('Body');
+    let columns = findAll('[data-test-table-header-column]');
+    assert.dom(columns[0]).includesText('Id');
+    assert.dom(columns[1]).includesText('Title');
+    assert.dom(columns[2]).includesText('Body');
 
-    let recordRows = findAll('.js-record-list-item');
+    let recordRows = findAll('[data-test-table-row]');
     assert.equal(recordRows.length, 2);
 
     let firstRow = recordRows[0];
-    let firstRowColumns = firstRow.querySelectorAll('.js-record-column');
+    let firstRowColumns = firstRow.querySelectorAll('[data-test-table-cell]');
     assert.dom(firstRowColumns[0]).hasText('1');
     assert.dom(firstRowColumns[1]).hasText('My Post');
     assert.dom(firstRowColumns[2]).hasText('This is my first post');
 
     let secondRow = recordRows[1];
-    let secondRowColumns = secondRow.querySelectorAll('.js-record-column');
+    let secondRowColumns = secondRow.querySelectorAll('[data-test-table-cell]');
     assert.dom(secondRowColumns[0]).hasText('2');
     assert.dom(secondRowColumns[1]).hasText('Hello');
     assert.dom(secondRowColumns[2]).hasText('');
@@ -138,8 +145,8 @@ module('Data Tab', function(hooks) {
       records: [recordFactory({ objectId: 'new-post', id: 3, title: 'Added Post', body: 'I am new here' })]
     });
 
-    let addedRow = findAll('.js-record-list-item')[2];
-    let addedRowColumns = addedRow.querySelectorAll('.js-record-column');
+    let addedRow = findAll('[data-test-table-row]')[2];
+    let addedRowColumns = addedRow.querySelectorAll('[data-test-table-cell]');
     assert.dom(addedRowColumns[0]).hasText('3');
     assert.dom(addedRowColumns[1]).hasText('Added Post');
     assert.dom(addedRowColumns[2]).hasText('I am new here');
@@ -148,9 +155,9 @@ module('Data Tab', function(hooks) {
       records: [recordFactory({ objectId: 'new-post', id: 3, title: 'Modified Post', body: 'I am no longer new' })]
     });
 
-    let rows = findAll('.js-record-list-item');
+    let rows = findAll('[data-test-table-row]');
     let modifiedRow = rows[rows.length - 1];
-    let modifiedRowColumns = modifiedRow.querySelectorAll('.js-record-column');
+    let modifiedRowColumns = modifiedRow.querySelectorAll('[data-test-table-cell]');
     assert.dom(modifiedRowColumns[0]).hasText('3');
     assert.dom(modifiedRowColumns[1]).hasText('Modified Post');
     assert.dom(modifiedRowColumns[2]).hasText('I am no longer new');
@@ -161,11 +168,54 @@ module('Data Tab', function(hooks) {
     });
     await wait();
 
-    assert.dom('.js-record-list-item').exists({ count: 2 });
-    rows = findAll('.js-record-list-item');
+    assert.dom('[data-test-table-row]').exists({ count: 2 });
+    rows = findAll('[data-test-table-row]');
     let lastRow = rows[rows.length - 1];
-    let lastRowColumns = lastRow.querySelectorAll('.js-record-column');
+    let lastRowColumns = lastRow.querySelectorAll('[data-test-table-cell]');
     assert.dom(lastRowColumns[0]).hasText('2', 'Records successfully removed.');
+  });
+
+  test('Hiding empty model types', async function(assert) {
+    assert.expect(3);
+
+    await visit('/data/model-types');
+
+    // Make one model type have a count of 0
+    await triggerPort(this, 'data:modelTypesUpdated', {
+      modelTypes: [
+        modelTypeFactory({ name: 'App.Post', count: 0 })
+      ]
+    });
+
+    assert.dom('.js-model-type').exists({ count: 2 }, 'All models are present');
+
+    // Hide empty models
+    await click('#options-hideEmptyModelTypes');
+    assert.dom('.js-model-type').exists({ count: 1 }, 'Only non-empty models are present');
+
+    // Show empty models
+    await click('#options-hideEmptyModelTypes');
+    assert.dom('.js-model-type').exists({ count: 2 }, 'All models are present again');
+  });
+
+  test('Order by record count', async function(assert) {
+    assert.expect(6);
+
+    await visit('/data/model-types');
+
+    assert.dom(findAll('.js-model-type-name')[0]).hasText('App.Comment');
+    assert.dom(findAll('.js-model-type-name')[1]).hasText('App.Post');
+
+    // Order models by record count.
+    await click('#options-orderByRecordCount');
+
+    assert.dom(findAll('.js-model-type-name')[0]).hasText('App.Post');
+    assert.dom(findAll('.js-model-type-name')[1]).hasText('App.Comment');
+
+    // Don't order models by record count.
+    await click('#options-orderByRecordCount');
+    assert.dom(findAll('.js-model-type-name')[0]).hasText('App.Comment');
+    assert.dom(findAll('.js-model-type-name')[1]).hasText('App.Post');
   });
 
   test('Filtering records', async function t(assert) {
@@ -173,16 +223,16 @@ module('Data Tab', function(hooks) {
 
     await click(findAll('.js-model-type a')[1]);
 
-    let rows = findAll('.js-record-list-item');
+    let rows = findAll('[data-test-table-row]');
     assert.equal(rows.length, 2);
     let filters = findAll('.js-filter');
     assert.equal(filters.length, 2);
     let newFilter = [...filters].find((e) => e.textContent.indexOf('New') > -1);
     await click(newFilter);
 
-    rows = findAll('.js-record-list-item');
+    rows = findAll('[data-test-table-row]');
     assert.equal(rows.length, 1);
-    assert.dom(rows[0].querySelector('.js-record-column')).hasText('2');
+    assert.dom(rows[0].querySelector('[data-test-table-cell]')).hasText('2');
   });
 
   test('Searching records', async function t(assert) {
@@ -190,24 +240,24 @@ module('Data Tab', function(hooks) {
 
     await click(findAll('.js-model-type a')[1]);
 
-    let rows = findAll('.js-record-list-item');
+    let rows = findAll('[data-test-table-row]');
     assert.equal(rows.length, 2);
 
     await fillIn('.js-records-search input', 'Hello');
 
-    rows = findAll('.js-record-list-item');
+    rows = findAll('[data-test-table-row]');
     assert.equal(rows.length, 1);
-    assert.dom(rows[0].querySelector('.js-record-column')).hasText('2');
+    assert.dom(rows[0].querySelector('[data-test-table-cell]')).hasText('2');
 
     await fillIn('.js-records-search input', 'my first post');
 
-    rows = findAll('.js-record-list-item');
+    rows = findAll('[data-test-table-row]');
     assert.equal(rows.length, 1);
-    assert.dom(rows[0].querySelector('.js-record-column')).hasText('1');
+    assert.dom(rows[0].querySelector('[data-test-table-cell]')).hasText('1');
 
     await fillIn('.js-records-search input', '');
 
-    rows = findAll('.js-record-list-item');
+    rows = findAll('[data-test-table-row]');
     assert.equal(rows.length, 2);
   });
 
@@ -215,25 +265,56 @@ module('Data Tab', function(hooks) {
     await visit('/data/model-types');
     await click(findAll('.js-model-type a')[1]);
 
-    let rows = findAll('.js-record-list-item');
+    let rows = findAll('[data-test-table-row]');
     assert.equal(rows.length, 2);
 
     await fillIn('.js-records-search input', 'Hello');
 
-    rows = findAll('.js-record-list-item');
+    rows = findAll('[data-test-table-row]');
     assert.equal(rows.length, 1);
 
     await click('.js-search-field-clear-button');
-    rows = findAll('.js-record-list-item');
+    rows = findAll('[data-test-table-row]');
     assert.equal(rows.length, 2);
   });
 
   test('Columns successfully updated when switching model types', async function t(assert) {
     await visit('/data/model-types/App.Post/records');
-    let columns = findAll('.js-header-column');
-    assert.dom(columns[columns.length - 1]).hasText('Body');
+    let columns = findAll('[data-test-table-header-column]');
+    assert.dom(columns[columns.length - 1]).includesText('Body');
     await visit('/data/model-types/App.Comment/records');
-    columns = findAll('.js-header-column');
-    assert.dom(columns[columns.length - 1]).hasText('Content');
+    columns = findAll('[data-test-table-header-column]');
+    assert.dom(columns[columns.length - 1]).includesText('Content');
+  });
+
+  test("Reload", async function(assert) {
+    let types = [], getRecords = [], filters = [];
+
+    port.reopen({
+      init() {},
+      send(n) {
+        name = n;
+        if (name === 'data:getModelTypes') {
+          this.trigger('data:modelTypesAdded', { modelTypes: types });
+        }
+        if (name === 'data:getRecords') {
+          this.trigger('data:recordsAdded', { records: getRecords });
+        }
+        if (name === 'data:getFilters') {
+          this.trigger('data:filters', { filters });
+        }
+      }
+    });
+
+    await visit('/data/model-types');
+
+    assert.dom('.js-model-type').doesNotExist();
+    types = modelTypes();
+    getRecords = records('App.Post');
+    filters = getFilters();
+
+    await click('.js-reload-container-btn');
+
+    assert.dom('.js-model-type').exists({ count: 2 });
   });
 });

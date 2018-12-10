@@ -15,7 +15,7 @@ export default TabRoute.extend({
   },
 
   setCurrentRoute(message) {
-    this.get('controller').set('currentRoute', message.name);
+    this.get('controller').set('currentRoute', message);
   },
 
   setTree(options) {

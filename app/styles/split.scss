@@ -7,23 +7,22 @@
 /* .split: The container for one or more panels */
 
 .split {
+  bottom: 0;
   display: flex;
   flex: auto;
   flex-direction: row;
-  overflow: hidden;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
   left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 /* .split__panel: Contains a body, and optional header and footer elements */
 
 .split__panel {
   display: flex;
-  flex-direction: column;
   flex: auto;
+  flex-direction: column;
   position: relative;
 }
 
@@ -35,18 +34,18 @@
 
 .split__panel__hd,
 .split__panel__ft {
+  border-color: var(--base03);
+  box-sizing: border-box;
   display: flex;
   flex: none;
   flex-direction: column;
-  box-sizing: border-box;
-  border-color: var(--base03);
 }
 
 .split__panel__hd {
-  min-height: 29px;
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
   background: var(--base00);
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  min-height: 29px;
 }
 
 .split__panel__bd {
@@ -56,19 +55,15 @@
 }
 
 .split__panel__ft {
-  justify-content: center;
-  height: 23px;
-  border-top-width: 1px;
-  border-top-style: solid;
   background: var(--base01);
+  border-top-style: solid;
+  border-top-width: 1px;
+  height: 23px;
+  justify-content: center;
 }
-
-/* Fix visibility issue with phantomjs test runner
-   https://github.com/emberjs/ember-inspector/pull/206#issuecomment-55292354 */
 
 .split__panel,
 .split__panel__bd {
-  z-index: 1; /* Fixes bug where empty list-view appears over the top */
   height: 100%;
 }
 

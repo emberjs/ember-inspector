@@ -170,10 +170,19 @@ export default Controller.extend({
   scrollTreeToItem(objectId) {
     let selectedItemIndex = this.get('displayedList').findIndex(item => item.view.objectId === objectId);
 
-    if (selectedItemIndex) {
-      const averageItemHeight = 22;
+    if (!selectedItemIndex) {
+      return;
+    }
+
+    const averageItemHeight = 25;
+    const targetScrollTop = averageItemHeight * selectedItemIndex;
+    const componentTreeEl = document.querySelector('.js-component-tree');
+    const height = componentTreeEl.offsetHeight;
+
+    // Only scroll to item if not already in view
+    if (targetScrollTop < componentTreeEl.scrollTop || targetScrollTop > componentTreeEl.scrollTop + height) {
       schedule('afterRender', () => {
-        document.querySelector('.js-component-tree').scrollTop = averageItemHeight * selectedItemIndex;
+        componentTreeEl.scrollTop = targetScrollTop - (height / 2);
       });
     }
   },

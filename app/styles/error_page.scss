@@ -8,34 +8,34 @@
 */
 
 .data-error-page-container {
-  position: relative;
   min-height: 100%;
   padding: 10px;
+  position: relative;
 }
 
 .error-page {
-  padding: 10px;
   background: var(--base02);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  min-height: 100%;
-  color: var(--base13);
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  color: var(--base13);
+  left: 0;
+  min-height: 100%;
+  padding: 10px;
+  position: absolute;
+  top: 0;
+  width: 100%;
 }
 
 .error-page__content {
-  position: relative;
-  width: 530px;
-  padding: 25px;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
   background: var(--base00);
   border: 1px solid var(--base04);
   border-radius: 5px;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   margin: auto;
+  padding: 25px;
+  position: relative;
+  width: 530px;
 }
 
 .error-page__content a {
@@ -44,24 +44,24 @@
 }
 
 .error-page__header {
-  font-weight: bold;
-  font-size: 19px;
-  padding-top: 15px;
-  padding-bottom: 30px;
-  margin-bottom: 10px;
   border-bottom: 1px solid var(--base04);
+  font-size: 19px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  padding-bottom: 30px;
+  padding-top: 15px;
   position: relative;
 }
 
 .error-page__header:after {
-  content: ' ';
-  width: 128px;
-  height: 89px;
   background: url("images/fishy_tomster.png") left center no-repeat;
   background-size: 128px 89px;
+  bottom: 0;
+  content: ' ';
+  height: 89px;
   position: absolute;
-  right: 0px;
-  bottom: 0px;
+  right: 0;
+  width: 128px;
 }
 
 .error-page__title {
@@ -81,9 +81,9 @@
 }
 
 .error-page__list {
-  padding-left: 16px;
-  padding-bottom: 5px;
   border-bottom: 1px solid var(--base04);
+  padding-bottom: 5px;
+  padding-left: 16px;
 }
 
 .error-page__list li {

@@ -5,16 +5,16 @@
 */
 
 .sidebar-toggle {
+  max-height: 27px;
   position: absolute;
   top: 0;
-  max-height: 27px;
 }
 
-  .toolbar__icon-button.sidebar-toggle {
-    margin-right: 0;
-    padding-right: 6px;
-    background: var(--base00);
-  }
+.toolbar__icon-button.sidebar-toggle {
+  background: var(--base00);
+  margin-right: 0;
+  padding-right: 6px;
+}
 
 .sidebar-toggle--right {
   right: 0;

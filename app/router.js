@@ -8,7 +8,8 @@ const Router = EmberRouter.extend({
 
 Router.map(function() {
   this.route('app-detected', { path: '/', resetNamespace: true }, function() {
-    this.route('view-tree', { path: '/', resetNamespace: true });
+    this.route('launch', { path: '/', resetNamespace: true });
+    this.route('view-tree', { resetNamespace: true });
     this.route('component-tree', { resetNamespace: true });
     this.route('route-tree', { resetNamespace: true });
 
@@ -22,7 +23,12 @@ Router.map(function() {
 
     this.route('promise-tree', { resetNamespace: true });
 
-    this.route('info', { resetNamespace: true });
+    this.route('info', { resetNamespace: true }, function() {
+      this.route('info-index', { path: '/', resetNamespace: true });
+      this.route('libraries', { path: '/libraries', resetNamespace: true });
+      this.route('whats-new', { path: '/whats-new', resetNamespace: true });
+    });
+
     this.route('render-tree', { resetNamespace: true });
     this.route('container-types', { resetNamespace: true }, function() {
       this.route('container-type', { path: '/:type_id', resetNamespace: true });

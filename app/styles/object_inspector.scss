@@ -5,24 +5,37 @@
  at the far right of the screen
 */
 
+$white: #ffffff;
+
 .object-trail {
   margin-bottom: 4px;
   margin-left: 39px;
   word-break: break-all;
 }
 
+.object-inspector-toolbar.toolbar {
+  border-bottom: 1px solid var(--base03);
+  // override default .toolbar height
+  // based on table view header height
+  min-height: 30px;
+
+  .toolbar__radio--first {
+    margin-left: 7px;
+  }
+}
+
 .mixin__property-dependency-list {
-  position: relative;
   margin-bottom: 5px;
   margin-top: 2px;
   padding-top: 2px;
+  position: relative;
 
   & > svg {
+    height: 10px;
+    left: 28px;
     position: absolute;
     top: -4px;
-    left: 28px;
     width: 19px;
-    height: 10px;
   }
 
   ul {
@@ -33,35 +46,37 @@
 }
 
 .mixin__property-dependency-item {
-  position: relative;
+  color: var(--base12);
+  font-size: 11px;
   margin-bottom: 2px;
   margin-left: 55px;
-  font-size: 11px;
-  color: var(--base12);
+  position: relative;
 
-  &::before {
+  &:before {
+    background-color: var(--base08);
     content: '';
+    height: 8px;
+    left: -9px;
     position: absolute;
     top: -5px;
-    left: -9px;
     width: 1px;
-    height: 8px;
-    background-color: var(--base08);
   }
 
   svg {
-    position: absolute;
     bottom: 2px;
     left: -13px;
-    
+    position: absolute;
+
     ellipse {
-      stroke: var(--base08);
       fill: var(--base00);
+      stroke: var(--base08);
     }
   }
 }
 
-.mixin__property-dependency-item:first-child::before { display: none; }
+.mixin__property-dependency-item:first-child:before {
+  display: none;
+}
 
 .mixin__property-icon-container {
   flex-shrink: 0;
@@ -69,36 +84,39 @@
 }
 
 .mixin__property-icon {
-  display: inline-block;
-  width: 17px;
-  height: 17px;
   border-radius: 3px;
-  color: #fff;
-  font-size: 13px;
-  line-height: 17px;
+  color: $white;
+  display: inline-block;
   font-family: var(--font-monospace);
+  font-size: 13px;
+  height: 17px;
+  line-height: 17px;
   text-align: center;
-  user-select: none;
   -webkit-user-select: none;
+  user-select: none;
+  width: 17px;
 }
 
 .mixin__property-icon--service {
   background-color: var(--spec08);
-  &::before {
+
+  &:before {
     content: "S";
   }
 }
 
 .mixin__property-icon--computed {
   background-color: var(--spec07);
-  &::before {
+
+  &:before {
     content: "C";
   }
 }
 
 .mixin__property-icon--property {
   background-color: var(--base06);
-  &::before {
+
+  &:before {
     content: "P";
   }
 }

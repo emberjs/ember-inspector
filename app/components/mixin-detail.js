@@ -68,13 +68,10 @@ export default Component.extend({
     },
 
     saveProperty(property, value, dataType) {
-      let mixinIndex = this.get('mixinDetails.model.mixins').indexOf(this.get('model'));
-
       this.get('port').send('objectInspector:saveProperty', {
         objectId: this.get('objectId'),
         property,
         value,
-        mixinIndex,
         dataType
       });
     }

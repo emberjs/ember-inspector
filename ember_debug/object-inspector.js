@@ -147,7 +147,7 @@ export default EmberObject.extend(PortMixin, {
       if (message.dataType && message.dataType === 'date') {
         value = new Date(value);
       }
-      this.saveProperty(message.objectId, message.mixinIndex, message.property, value);
+      this.saveProperty(message.objectId, message.property, value);
     },
     sendToConsole(message) {
       this.sendToConsole(message.objectId, message.property);
@@ -159,6 +159,10 @@ export default EmberObject.extend(PortMixin, {
     sendRouteHandlerToConsole(message) {
       const container = this.get('namespace.owner');
       this.sendValueToConsole(container.lookup(`route:${message.name}`));
+    },
+    sendContainerToConsole() {
+      const container = this.get('namespace.owner');
+      this.sendValueToConsole(container);
     },
     inspectRoute(message) {
       const container = this.get('namespace.owner');
@@ -198,7 +202,7 @@ export default EmberObject.extend(PortMixin, {
     return (val instanceof EmberObject) || typeOf(val) === 'array';
   },
 
-  saveProperty(objectId, mixinIndex, prop, val) {
+  saveProperty(objectId, prop, val) {
     let object = this.sentObjects[objectId];
     set(object, prop, val);
   },
@@ -475,7 +479,10 @@ function addProperties(properties, hash) {
     let options = { isMandatorySetter: isMandatorySetter(hash, prop) };
 
     if (typeof hash[prop] === 'object' && hash[prop] !== null) {
-      options.isService = hash[prop].type === 'service';
+      options.isService = !('type' in hash[prop]) && typeof hash[prop].unknownProperty === 'function' ?
+        get(hash[prop], 'type') === 'service' :
+        hash[prop].type === 'service';
+
       if (!options.isService) {
         if (hash[prop].constructor) {
           options.isService = hash[prop].constructor.isServiceFactory;

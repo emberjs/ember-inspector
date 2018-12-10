@@ -1,0 +1,17 @@
+{{#x-list
+  name="info-list"
+  schema=(schema-for "info-list")
+  setIsDragging=(route-action 'setIsDragging') as |list|}}
+  <tbody>
+    {{#each model as |library index|}}
+      <tr class="list__row js-library-row {{if (mod index 2) 'striped'}}">
+        {{#list.cell class="list__cell_main"}}
+          <span class="js-lib-name">{{library.name}}</span>
+        {{/list.cell}}
+        {{#list.cell}}
+          <span class="js-lib-version">{{library.version}}</span>
+        {{/list.cell}}
+      </tr>
+    {{/each}}
+  </tbody>
+{{/x-list}}
