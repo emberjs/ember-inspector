@@ -1,26 +1,38 @@
-<div {{action inspect item.view.objectId}}
+<div
   style={{labelStyle}}
-  class="component-tree-item {{if item.view.isComponent "component-tree-item--component"}} {{if (eq pinnedObjectId item.view.objectId) "component-tree-item--selected"}}">
+  class="component-tree-item {{if item.view.isComponent "component-tree-item--component"}} {{if (eq pinnedObjectId item.view.objectId)"component-tree-item--selected"}}"
+  {{action inspect item.view.objectId}}
+>
   {{#if item.hasChildren}}
-    <button {{action toggleExpanded bubbles=false}}
-      class="component-tree-item__expand {{if item.expanded "expanded" "collapsed"}}">
-      {{svg-jar "disclosure-triangle"
+    <button
+      class="component-tree-item__expand {{if item.expanded "expanded" "collapsed"}}"
+      {{action toggleExpanded bubbles=false}}
+    >
+      {{svg-jar
+        "disclosure-triangle"
         title="Toggle visibility"
-        width="9px" height="9px"
+        width="9px"
+        height="9px"
       }}
     </button>
   {{/if}}
 
-  <code class="component-tree-item__tag {{if item.view.isComponent "component-tree-item__bracket"}}">
+  <code
+    class="component-tree-item__tag {{if item.view.isComponent "component-tree-item__bracket"}}"
+  >
     {{item.view.name}}
   </code>
 
   {{#if item.view.isComponent}}
-    <button {{action scrollToElement item.view.objectId bubbles=false}}
-      class="component-tree-item__view-element">
-      {{svg-jar "eye"
+    <button
+      class="component-tree-item__view-element"
+      {{action scrollToElement item.view.objectId bubbles=false}}
+    >
+      {{svg-jar
+        "eye"
         title="Scroll into view"
-        width="20px" height="20px"
+        width="20px"
+        height="20px"
       }}
     </button>
   {{/if}}

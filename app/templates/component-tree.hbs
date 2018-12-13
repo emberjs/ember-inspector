@@ -1,14 +1,21 @@
 <div class="list__content js-component-tree" style="height: 100%;">
-  {{#vertical-collection displayedList estimateHeight=20 as |item i|}}
-    <div onmouseenter={{action "previewLayer" item}}
-      onmouseleave={{action "hidePreview"}}>
+  {{#vertical-collection
+    displayedList
+    estimateHeight=20
+  as |item|
+  }}
+    <div
+      onmouseenter={{action "previewLayer" item}}
+      onmouseleave={{action "hidePreview"}}
+    >
       {{component-tree-item
         item=item
         pinnedObjectId=pinnedObjectId
         toggleExpanded=(action "toggleExpanded" item)
         inspect=(action "inspect")
         scrollToElement=(action "scrollToElement")
-        sendObjectToConsole=(action "sendObjectToConsole")}}
+        sendObjectToConsole=(action "sendObjectToConsole")
+      }}
     </div>
   {{/vertical-collection}}
 </div>
