@@ -1,13 +1,28 @@
 {{#ember-table as |t|}}
-  {{#t.head columns=columns sorts=sorts onUpdateSorts=(action (mut sorts)) as |h|}}
+  {{#t.head
+    columns=columns
+    sorts=sorts
+    onUpdateSorts=(action (mut sorts))
+  as |h|
+  }}
     {{#h.row as |r|}}
       {{r.cell data-test-table-header-column=""}}
     {{/h.row}}
   {{/t.head}}
-  {{#t.body rows=filtered checkboxSelectionMode="none" selection=selection onSelect=(action "inspectModel") as |b|}}
-    {{#b.row class=(if (mod b.rowMeta.index 2) "striped") data-test-table-row="" as |r|}}
+  {{#t.body
+    rows=filtered
+    checkboxSelectionMode="none"
+    selection=selection
+    onSelect=(action "inspectModel")
+  as |b|
+  }}
+    {{#b.row
+      class=(if (mod b.rowMeta.index 2) "striped")
+      data-test-table-row=""
+    as |r|
+    }}
       {{#r.cell data-test-table-cell="" as |value column row|}}
-        <span class="{{row.color}}">
+        <span class={{row.color}}>
           {{value}}
         </span>
       {{/r.cell}}

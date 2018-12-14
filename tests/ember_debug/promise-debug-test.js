@@ -130,8 +130,6 @@ module('Ember Debug - Promise Debug', function(hooks) {
         }
       }
     });
-    // Clear CP cache
-    EmberDebug.get('promiseDebug').propertyDidChange('instrumentWithStack');
 
     await wait();
     port.trigger('promise:getInstrumentWithStack');

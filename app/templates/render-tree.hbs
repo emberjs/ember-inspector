@@ -14,7 +14,9 @@
     headerHeight=headerHeight
     name="render-tree"
     schema=(schema-for "render-tree")
-    setIsDragging=(route-action 'setIsDragging') as |list|}}
+    setIsDragging=(route-action "setIsDragging")
+  as |list|
+  }}
     <tbody>
       {{#each filtered as |item|}}
         {{render-item model=item search=search list=list}}

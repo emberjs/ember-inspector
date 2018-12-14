@@ -1,9 +1,17 @@
-{{sidebar-toggle action="toggleInspector" side="right"
-isExpanded=true class="toolbar__icon-button sidebar-toggle--far-left"}}
+{{sidebar-toggle
+  action="toggleInspector"
+  side="right"
+  isExpanded=true
+  class="toolbar__icon-button sidebar-toggle--far-left"
+}}
+
 {{#if model.length}}
   <div class="split__panel__hd">
     <div class="toolbar">
-      <button {{action "popStack"}} class="toolbar__icon-button {{if isNested 'enabled' 'disabled'}} js-object-inspector-back">
+      <button
+        class="toolbar__icon-button {{if isNested "enabled" "disabled"}} js-object-inspector-back"
+        {{action "popStack"}}
+      >
         {{svg-jar "arrow-back" width="21px" height="21px"}}
       </button>
 
@@ -12,9 +20,10 @@ isExpanded=true class="toolbar__icon-button sidebar-toggle--far-left"}}
       <code class="toolbar__title js-object-name">{{model.firstObject.name}}</code>
 
       <button
-        {{action "sendObjectToConsole" model.firstObject}}
         class="send-to-console js-send-object-to-console-btn"
-        title="Send to Console">
+        title="Send to Console"
+        {{action "sendObjectToConsole" model.firstObject}}
+      >
         {{svg-jar "send-with-text" width="20px" height="10px"}}
       </button>
     </div>
@@ -28,13 +37,15 @@ isExpanded=true class="toolbar__icon-button sidebar-toggle--far-left"}}
 <div class="split__panel__bd">
   <div class="toolbar object-inspector-toolbar">
     <button
-      class="toolbar__radio toolbar__radio--first js-object-display-type-grouped {{if (eq propDisplayType 'grouped') 'active'}}"
-      {{action "setPropDisplay" "grouped"}}>
+      class="toolbar__radio toolbar__radio--first js-object-display-type-grouped {{if (eq propDisplayType "grouped") "active"}}"
+      {{action "setPropDisplay" "grouped"}}
+    >
       Grouped
     </button>
     <button
-      class="toolbar__radio js-object-display-type-all {{if (eq propDisplayType 'all') 'active'}}"
-      {{action "setPropDisplay" "all"}}>
+      class="toolbar__radio js-object-display-type-all {{if (eq propDisplayType "all") "active"}}"
+      {{action "setPropDisplay" "all"}}
+    >
       All
     </button>
   </div>

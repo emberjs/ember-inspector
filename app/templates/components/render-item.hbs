@@ -1,17 +1,30 @@
-<tr style={{nodeStyle}} class="list__row js-render-profile-item">
-  {{#list.cell class=(concat "list__cell_main " expandedClass " js-render-main-cell") on-click=(action "toggleExpand") style=nameStyle}}
+<tr
+  style={{nodeStyle}}
+  class="list__row js-render-profile-item"
+>
+  {{#list.cell
+    class=(concat "list__cell_main " expandedClass " js-render-main-cell")
+    on-click=(action "toggleExpand")
+    style=nameStyle
+  }}
     <span class="list__cell-arrow"></span>
-    <span title="{{model.name}}">
+
+    <span title={{model.name}}>
       <span class="js-render-profile-name">{{model.name}}</span>
     </span>
   {{/list.cell}}
+
   {{#list.cell class="list__cell_value_numeric"}}
-    <span class="pill pill--not-clickable js-render-profile-duration">{{ms-to-time model.duration}}</span>
+    <span class="pill pill--not-clickable js-render-profile-duration">
+      {{ms-to-time model.duration}}
+    </span>
   {{/list.cell}}
+
   {{#list.cell class="list__cell_value_numeric js-render-profile-timestamp"}}
     {{readableTime}}
   {{/list.cell}}
 </tr>
+
 {{#if isExpanded}}
   {{#each model.children as |child|}}
     {{render-item model=child target=this list=list}}

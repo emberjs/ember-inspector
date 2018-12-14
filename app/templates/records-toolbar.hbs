@@ -5,13 +5,23 @@
 
   <div class="divider" aria-hidden="true"></div>
 
-  <button class="{{if noFilterValue 'active'}} toolbar__radio js-filter" {{action "setFilter"}}>
+  <button
+    class="{{if noFilterValue "active"}} toolbar__radio js-filter"
+    {{action "setFilter"}}
+  >
     All
   </button>
 
   {{#each filters as |item|}}
-    {{#record-filter model=item filterValue=filterValue as |filter|}}
-      <button class="{{if filter.checked 'active'}} toolbar__radio js-filter" {{action "setFilter" filter.model.name}} >
+    {{#record-filter
+      model=item
+      filterValue=filterValue
+    as |filter|
+    }}
+      <button
+        class="{{if filter.checked "active"}} toolbar__radio js-filter"
+        {{action "setFilter" filter.model.name}}
+      >
         {{filter.model.desc}}
       </button>
     {{/record-filter}}

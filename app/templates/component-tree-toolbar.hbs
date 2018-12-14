@@ -1,16 +1,39 @@
 <div class="toolbar">
-  <button class="{{if inspectingViews 'active'}} toolbar__icon-button js-inspect-views" {{action "toggleViewInspection"}}>
-    {{svg-jar "inspect" width="16px" height="17px"}}
+  <button
+    class="{{if inspectingViews "active"}} toolbar__icon-button js-inspect-views"
+    {{action "toggleViewInspection"}}
+  >
+    {{svg-jar
+      "inspect"
+      width="16px"
+      height="17px"
+    }}
   </button>
 
   <div class="divider"></div>
 
-  <button class="toolbar__icon-button" title="expand all" {{action "expandOrCollapseAll" true}}>
-    {{svg-jar "chevron-down" width="16px" height="16px"}}
+  <button
+    class="toolbar__icon-button"
+    title="expand all"
+    {{action "expandOrCollapseAll" true}}
+  >
+    {{svg-jar
+      "chevron-down"
+      width="16px"
+      height="16px"
+    }}
   </button>
 
-  <button class="toolbar__icon-button" title="collapse all" {{action "expandOrCollapseAll" false}}>
-    {{svg-jar "chevron-right" width="16px" height="16px"}}
+  <button
+    class="toolbar__icon-button"
+    title="collapse all"
+    {{action "expandOrCollapseAll" false}}
+  >
+    {{svg-jar
+      "chevron-right"
+      width="16px"
+      height="16px"
+    }}
   </button>
 
   <div class="divider"></div>

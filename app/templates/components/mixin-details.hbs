@@ -2,17 +2,20 @@
   <div class="mixin mixin_props_no js-object-inspector-errors">
     <h2 class="mixin__name mixin__name--errors">
       Errors
-      <button {{action "traceErrors"}} class="send-to-console send-to-console--chevron-only js-send-errors-to-console">
+      <button
+        class="send-to-console send-to-console--chevron-only js-send-errors-to-console"
+        {{action "traceErrors"}}
+      >
         {{svg-jar "send-with-chevron" width="6px" height="9px"}}
         Trace in the Console
       </button>
     </h2>
     <div class="mixin__properties">
-    {{#each model.errors as |error|}}
-      <div class="mixin__error js-object-inspector-error">
-        Error while computing: {{error.property}}
-      </div>
-    {{/each}}
+      {{#each model.errors as |error|}}
+        <div class="mixin__error js-object-inspector-error">
+          Error while computing: {{error.property}}
+        </div>
+      {{/each}}
     </div>
   </div>
 {{/if}}
@@ -20,11 +23,20 @@
 {{#if (eq displayType "grouped")}}
   {{#each model.mixins as |item|}}
     {{#mixin-detail model=item mixinDetails=this as |mixin|}}
-      <div class="mixin {{mixin.model.type}} {{if mixin.isExpanded 'mixin_state_expanded'}} {{if mixin.model.properties.length 'mixin_props_yes' 'mixin_props_no'}} js-object-detail">
+      <div
+        class="mixin {{mixin.model.type}} {{if mixin.isExpanded "mixin_state_expanded"}} {{if mixin.model.properties.length "mixin_props_yes" "mixin_props_no"}} js-object-detail"
+      >
         {{#if mixin.model.properties.length}}
-          <h2 class="mixin__name js-object-detail-name" {{action "toggleExpanded" target=mixin}}>{{mixin.model.name}}</h2>
+          <h2
+            class="mixin__name js-object-detail-name"
+            {{action "toggleExpanded" target=mixin}}
+          >
+            {{mixin.model.name}}
+          </h2>
         {{else}}
-          <h2 class="mixin__name mixin__name--no-props js-object-detail-name">{{mixin.model.name}}</h2>
+          <h2 class="mixin__name mixin__name--no-props js-object-detail-name">
+            {{mixin.model.name}}
+          </h2>
         {{/if}}
         {{#if mixin.isExpanded}}
           <ul class="mixin__properties">

@@ -41,6 +41,7 @@ jobs:
     # runs tests with current locked deps and linting
     - stage: test
       script:
+        - yarn lint:hbs
         - yarn lint:js
         - yarn test
 
@@ -52,7 +53,7 @@ install:
   - travis_retry yarn install --ignore-engines
 
 script:
-  - travis_retry node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO --skip-cleanup=true --- node_modules/.bin/ember test --filter="Ember Debug"
+  - travis_retry node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO --- node_modules/.bin/ember test --filter="Ember Debug"
 
 after_success:
   - travis_retry test $TRAVIS_BRANCH == "stable" && yarn run upload

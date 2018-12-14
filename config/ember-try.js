@@ -14,6 +14,9 @@ module.exports = function() {
       scenarios: [
         {
           name: 'ember-2.7',
+          env: {
+            EMBER_OPTIONAL_FEATURES: JSON.stringify({ 'jquery-integration': true })
+          },
           bower: {
             dependencies: {
               'ember': '2.7.0'
@@ -24,8 +27,10 @@ module.exports = function() {
           },
           npm: {
             devDependencies: {
+              '@ember/jquery': '^0.5.1',
               'ember-source': null,
-              'ember-native-dom-event-dispatcher': null
+              'ember-native-dom-event-dispatcher': null,
+              'jquery': '^2.2.4'
             }
           }
         },
