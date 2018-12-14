@@ -17,6 +17,7 @@ export default EmberObject.extend(PortMixin, {
   releaseTypesMethod: null,
   releaseRecordsMethod: null,
 
+  /* eslint-disable ember/no-side-effects */
   adapter: computed('namespace.owner', function() {
     const owner = this.get('namespace.owner');
 
@@ -28,6 +29,7 @@ export default EmberObject.extend(PortMixin, {
       return adapter;
     }
   }),
+  /* eslint-enable ember/no-side-effects */
 
   _resolve(name) {
     const owner = this.get('namespace.owner');
