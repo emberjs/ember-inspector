@@ -1,39 +1,64 @@
-{{#list.cell class=(concat "list__cell_main " expandedClass) style=labelStyle on-click=(action toggleExpand model)}}
+{{#list.cell
+  class=(concat "list__cell_main " expandedClass)
+  style=labelStyle
+  on-click=(action toggleExpand model)
+}}
   <div class="list__cell-partial list__cell-partial_size_medium">
-    <span title="{{label}}" class="js-promise-label">
+    <span
+      title={{label}}
+      class="js-promise-label"
+    >
       <span class="list__cell-arrow"></span> {{label}}
     </span>
   </div>
   <div class="list__cell-helper">
     {{#if model.hasStack}}
       <button
-        {{action tracePromise model}}
         class="send-to-console send-to-console--chevron-only js-trace-promise-btn"
-        title="Trace promise in console">
+        title="Trace promise in console"
+        {{action tracePromise model}}
+      >
         {{svg-jar "send-with-chevron" width="6px" height="9px"}}
         Trace
       </button>
     {{/if}}
   </div>
 {{/list.cell}}
+
 {{#list.cell}}
-  <div class="pill pill--bold js-promise-state" style={{style}}>{{state}}</div>
+  <div
+    class="pill pill--bold js-promise-state"
+    style={{style}}
+  >
+    {{state}}
+  </div>
 {{/list.cell}}
+
 {{#list.cell class="js-promise-value"}}
   {{#if hasValue}}
-    <div class="list__cell-partial list__cell-partial_size_medium"  title="{{settledValue.inspect}}">
+    <div
+      class="list__cell-partial list__cell-partial_size_medium"
+      title={{settledValue.inspect}}
+    >
       {{#if isValueInspectable}}
-        <span class="list__link js-promise-object-value" {{action inspectObject settledValue.objectId}}>{{settledValue.inspect}}</span>
+        <span
+          class="list__link js-promise-object-value"
+          {{action inspectObject settledValue.objectId}}
+        >
+          {{settledValue.inspect}}
+        </span>
       {{else}}
         {{settledValue.inspect}}
       {{/if}}
     </div>
+
     <div class="list__cell-helper">
       {{#if isError}}
         <button
-          {{action sendValueToConsole model}}
           class="send-to-console send-to-console--chevron-only js-send-to-console-btn"
-          title="Send stack trace to the console">
+          title="Send stack trace to the console"
+          {{action sendValueToConsole model}}
+        >
           {{svg-jar "send-with-chevron" width="6px" height="9px"}}
           Stack Trace
         </button>
@@ -42,9 +67,10 @@
       {{/if}}
     </div>
   {{else}}
-  --
+    --
   {{/if}}
 {{/list.cell}}
+
 {{#list.cell class="list__cell list__cell_value_numeric js-promise-time"}}
   {{ms-to-time timeToSettle}}
 {{/list.cell}}

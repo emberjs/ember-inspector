@@ -1,8 +1,11 @@
-{{#x-app active=active isDragging=isDragging}}
+{{#x-app
+  active=active
+  isDragging=isDragging
+}}
   {{#if isEmberApplication}}
     <div class="split">
       <div class="split__panel">
-        {{partial 'main'}}
+        {{partial "main"}}
       </div>
 
       {{#if inspectorExpanded}}
@@ -10,9 +13,14 @@
           side="right"
           width=inspectorWidth
           classes="split__panel"
-          setIsDragging=(route-action 'setIsDragging')}}
-          {{object-inspector application=this model=mixinStack mixinDetails=mixinDetails
-                             toggleInspector="toggleInspector"}}
+          setIsDragging=(route-action "setIsDragging")
+        }}
+          {{object-inspector
+            application=this
+            model=mixinStack
+            mixinDetails=mixinDetails
+            toggleInspector="toggleInspector"
+          }}
         {{/draggable-column}}
       {{/if}}
     </div>
@@ -22,7 +30,9 @@
       <li>This is not an Ember application.</li>
       <li>You are using an old version of Ember (&lt; rc5).</li>
       {{#if isChrome}}
-        <li>You are using the file:// protocol (instead of http://), in which case:
+        <li>
+          You are using the file:// protocol (instead of http://), in which case:
+
           <ul>
             <li>Visit the URL: chrome://extensions.</li>
             <li>Find the Ember Inspector.</li>

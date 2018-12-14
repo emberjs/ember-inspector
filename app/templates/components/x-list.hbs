@@ -4,26 +4,31 @@
       <table>
         <colgroup>
           {{#each columns key="id" as |column|}}
-            <col style={{build-style width=(concat column.width 'px')}}>
+            <col style={{build-style width=(concat column.width "px")}}>
           {{/each}}
         </colgroup>
         <tbody>
-        <tr class="list__row">
-          {{#each columns key="id" as |column|}}
-            {{#x-list-cell
-              tagName="th"
-              class="js-header-column"}}
-              {{column.name}}
-            {{/x-list-cell}}
-          {{/each}}
-        </tr>
+          <tr class="list__row">
+            {{#each columns key="id" as |column|}}
+              {{#x-list-cell
+                tagName="th"
+                class="js-header-column"
+              }}
+                {{column.name}}
+              {{/x-list-cell}}
+            {{/each}}
+          </tr>
         </tbody>
       </table>
     </div>
   </div>
 {{/if}}
 
-{{#x-list-content headerHeight=headerHeight columns=columns as |content|}}
+{{#x-list-content
+  headerHeight=headerHeight
+  columns=columns
+as |content|
+}}
   {{yield
     (hash
       cell=(component "x-list-cell" tagName="td")
@@ -46,6 +51,7 @@
       on-drag=(action "didResize" column.id)
       position=(one-way column.width)
       setIsDragging=setIsDragging
-      side="left"}}
+      side="left"
+    }}
   {{/unless}}
 {{/each}}

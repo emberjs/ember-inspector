@@ -2,7 +2,8 @@
   {{#draggable-column
     classes="split__panel split__panel--sidebar-2 nav"
     setIsDragging=setIsDragging
-    width=width}}
+    width=width
+  }}
     <div class="split__panel__bd">
       <div class="nav__title">
         <h1>{{header}}</h1>
@@ -10,10 +11,15 @@
 
       <ul>
         {{#each sorted as |itemType|}}
-          <li class="{{typeClass}}">
-            {{#link-to (if (eq type "model") "records" "container-type") (escape-url itemType.name)}}
-              <span class="{{concat typeClass "-name"}}">{{itemType.name}}</span>
-              (<span class="{{concat typeClass "-count"}}">{{itemType.count}}</span>)
+          <li class={{typeClass}}>
+            {{#link-to
+              (if (eq type "model") "records" "container-type")
+              (escape-url itemType.name)
+            }}
+              <span class={{concat typeClass "-name"}}>
+                {{itemType.name}}
+              </span>
+              (<span class={{concat typeClass "-count"}}>{{itemType.count}}</span>)
             {{/link-to}}
           </li>
         {{/each}}

@@ -1,13 +1,24 @@
 <div class="toolbar">
-  <button class="{{if inspectingViews 'active'}} toolbar__icon-button js-inspect-views" {{action "toggleViewInspection"}}>
-    {{svg-jar "inspect" width="16px" height="17px"}}
+  <button
+    class="{{if inspectingViews "active"}} toolbar__icon-button js-inspect-views"
+    {{action "toggleViewInspection"}}
+  >
+    {{svg-jar
+      "inspect"
+      width="16px"
+      height="17px"
+    }}
   </button>
 
   <div class="divider" aria-hidden="true"></div>
 
   <div class="toolbar__checkbox js-filter-components">
     <label for="options-components">
-      {{input type="checkbox" checked=options.components id="options-components"}}
+      {{input
+        type="checkbox"
+        checked=options.components
+        id="options-components"
+      }}
       Components
     </label>
   </div>
