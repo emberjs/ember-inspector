@@ -18,7 +18,7 @@
     chrome.storage.sync.get('options', function(data) {
       var options = data.options;
 
-      document.querySelector('[data-settings=tomster]').checked = options.showTomster;
+      document.querySelector('[data-settings=tomster]').checked = options && options.showTomster;
     });
   }
 
