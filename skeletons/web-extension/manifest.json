@@ -45,7 +45,6 @@
   ],
 
   "options_ui": {
-    "page": "options-dialog.html",
-    "browser_style": true
+    "page": "options-dialog.html"
   }
 }
