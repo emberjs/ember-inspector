@@ -212,13 +212,13 @@ module('Route Tree Tab', function(hooks) {
 
     await visit('route-tree');
     routeNodes = findAll('.js-route-tree-item .js-route-name');
-    let isCurrent = [...routeNodes].map(item => item.classList.contains('list__cell_highlight'));
+    let isCurrent = [...routeNodes].map(item => item.classList.contains('pill'));
     assert.deepEqual(isCurrent, [true, true, false, false, true, false]);
 
     run(() => port.trigger('route:currentRoute', { name: 'post.new' }));
     await wait();
     routeNodes = findAll('.js-route-tree-item .js-route-name');
-    isCurrent = [...routeNodes].map(item => item.classList.contains('list__cell_highlight'));
+    isCurrent = [...routeNodes].map(item => item.classList.contains('pill'));
     assert.deepEqual(isCurrent, [true, true, false, true, false, false], 'Current route is bound');
   });
 

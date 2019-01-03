@@ -43,6 +43,18 @@ export default Controller.extend({
     });
   }),
 
+  rows: computed('filtered.[]', function() {
+    return this.get('filtered').map(function(route) {
+      return {
+        controller: route,
+        name: route,
+        route,
+        template: route,
+        url: route
+      };
+    });
+  }),
+
   actions: {
     inspectRoute(name) {
       this.get('port').send('objectInspector:inspectRoute', { name });
