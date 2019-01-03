@@ -4,7 +4,6 @@
 */
 
 .pill {
-  background: transparent;
   background: var(--base06);
   border-radius: 8px;
   cursor: default;
@@ -32,4 +31,9 @@ a.active > .pill {
 
 .pill--bold {
   font-weight: bold;
+}
+
+.pill--blue {
+  background: var(--focus);
+  color: var(--focus-text);
 }

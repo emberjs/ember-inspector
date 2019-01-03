@@ -1,0 +1,13 @@
+<div
+  class="list__cell-partial list__cell-partial_clickable js-route-handler"
+  {{action inspectRoute route.value.routeHandler.name}}
+>
+  <span title={{route.value.routeHandler.className}}>{{route.value.routeHandler.className}}</span>
+</div>
+
+<div class="list__cell-helper">
+  {{send-to-console
+    action=sendRouteHandlerToConsole
+    param=route.value.routeHandler.name
+  }}
+</div>
