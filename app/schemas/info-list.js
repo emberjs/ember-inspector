@@ -1,14 +1,12 @@
 /**
  * Info list schema.
  */
-export default {
-  columns: [{
-    id: 'library',
-    name: 'Library',
-    visible: true
+export default [
+  {
+    valuePath: 'library',
+    name: 'Library'
   }, {
-    id: 'version',
-    name: 'Version',
-    visible: true
-  }]
-};
+    valuePath: 'version',
+    name: 'Version'
+  }
+];
