@@ -124,6 +124,11 @@ $white: #ffffff;
     padding: 0;
   }
 
+  .is-link {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
   .et-cell-container {
     display: flex;
   }
