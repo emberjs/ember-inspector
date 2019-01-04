@@ -1,7 +1,7 @@
 {{#x-list
   name="view-tree"
   schema=(schema-for "view-tree")
-  setIsDragging=(route-action "setIsDragging")
+  setIsDragging=(action "setIsDragging" target=application)
 as |list|
 }}
   {{#list.vertical-collection

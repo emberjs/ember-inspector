@@ -74,5 +74,11 @@ export default Controller.extend({
       this.set('mixinDetails', null);
     }
 
+  },
+
+  actions: {
+    setIsDragging(isDragging) {
+      this.set('isDragging', isDragging);
+    }
   }
 });
