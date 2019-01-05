@@ -5,7 +5,7 @@
     class="js-promise-tree"
     name="promise-tree"
     schema=(schema-for "promise-tree")
-    setIsDragging=(route-action "setIsDragging")
+    setIsDragging=(action "setIsDragging" target=application)
   as |list|
   }}
     {{#list.vertical-collection

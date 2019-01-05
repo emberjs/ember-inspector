@@ -1,7 +1,7 @@
 <div class="split">
   {{#draggable-column
     classes="split__panel split__panel--sidebar-2 nav"
-    setIsDragging=(route-action "setIsDragging")
+    setIsDragging=(action "setIsDragging" target=application)
     width=180
   }}
     <div class="split__panel__bd">

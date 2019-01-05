@@ -113,9 +113,6 @@ export default Route.extend({
         this.get('port').send('objectInspector:inspectById', { objectId });
       }
     },
-    setIsDragging(isDragging) {
-      this.set('controller.isDragging', isDragging);
-    },
     refreshPage() {
       // If the adapter defined a `reloadTab` method, it means
       // they prefer to handle the reload themselves
