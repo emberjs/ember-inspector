@@ -15,7 +15,11 @@ export default Component.extend({
   layoutService: service('layout'),
 
   didInsertElement() {
-    window.addEventListener(`resize.view-${this.elementId}`, this._performUpdateHeight);
+    this._performUpdateHeight = () => {
+      this.get('updateHeightDebounce').perform();
+    };
+
+    window.addEventListener('resize', this._performUpdateHeight);
     schedule('afterRender', this, this.updateHeight);
     return this._super(...arguments);
   },
@@ -31,10 +35,6 @@ export default Component.extend({
     yield timeout(100);
     this.updateHeight();
   }).restartable(),
-
-  _performUpdateHeight() {
-    this.get('updateHeightDebounce').perform();
-  },
 
   /**
    * Update the layout's `contentHeight` property.
@@ -52,7 +52,7 @@ export default Component.extend({
   },
 
   willDestroyElement() {
-    window.removeEventListener(`.view-${this.elementId}`, this._performUpdateHeight);
+    window.removeEventListener('resize', this._performUpdateHeight);
     return this._super(...arguments);
   }
 });

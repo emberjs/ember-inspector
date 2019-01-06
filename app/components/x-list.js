@@ -140,8 +140,7 @@ export default Component.extend({
     this.onResize = () => {
       this.get('debounceColumnWidths').perform();
     };
-    window.addEventListener(`resize.${this.get('elementId')}`, this.onResize);
-    this.get('layoutService').on('resize', this.onResize);
+    this.get('layoutService').on('content-height-update', this.onResize);
     return this._super(...arguments);
   },
 
@@ -217,12 +216,11 @@ export default Component.extend({
    * @method willDestroyElement
    */
   willDestroyElement() {
-    window.removeEventListener(`.${this.elementId}`, this.onResize);
     const listHeader = this.element.querySelector('.list__header');
     if (listHeader) {
       listHeader.removeEventListener('contextmenu', this.showBasicContext);
     }
-    this.get('layoutService').off('resize', this.onResize);
+    this.get('layoutService').off('content-height-update', this.onResize);
     return this._super(...arguments);
   },
 
