@@ -258,14 +258,19 @@ export default Controller.extend({
       });
     },
 
-    inspectElement({
-      objectId,
-      elementId
-    }) {
-      this.get('port').send('view:inspectElement', {
-        objectId,
-        elementId,
-      });
-    },
+    inspectElement(item) {
+      let elementId;
+      let objectId = item.get('view.objectId');
+
+      if (!objectId) {
+        elementId = item.get('view.elementId');
+      }
+      if (objectId || elementId) {
+        this.get('port').send('view:inspectElement', {
+          objectId,
+          elementId,
+        });
+      }
+    }
   },
 });

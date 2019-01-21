@@ -15,22 +15,39 @@
   &:hover {
     background-color: var(--spec06);
 
-    .component-tree-item__view-element {
+    .component-tree-item__action {
       opacity: 1;
+    }
+
+    .component-tree-item__action.disabled {
+      opacity: 0.65;
     }
   }
 }
 
-.component-tree-item__view-element {
+.component-tree-item__action {
   align-items: center;
   background: transparent;
   border: 0;
-  display: flex;
+  cursor: pointer;
+  display: inline-flex;
   height: 100%;
+  margin-left: 10px;
+  opacity: 0;
   padding: 0;
 
   &:focus {
     outline: none;
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+  }
+
+  polygon,
+  rect,
+  path {
+    fill: var(--base15);
   }
 }
 
@@ -74,19 +91,6 @@
   }
 }
 
-.component-tree-item__view-element {
-  cursor: pointer;
-  display: inline-block;
-  margin-left: 10px;
-  opacity: 0;
-
-  polygon,
-  rect,
-  path {
-    fill: var(--base15);
-  }
-}
-
 /**
  * Modifier
  */
@@ -105,7 +109,7 @@
   }
 
   .component-tree-item__expand,
-  .component-tree-item__view-element {
+  .component-tree-item__action {
     opacity: 1;
 
     polygon,
@@ -113,5 +117,9 @@
     path {
       fill: var(--focus-text);
     }
+  }
+
+  .component-tree-item__action.disabled {
+    opacity: 0.65;
   }
 }
