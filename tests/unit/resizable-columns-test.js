@@ -107,7 +107,7 @@ module('Unit | Lib | ResizableColumns', function(hooks) {
     let resizableColumns = new ResizableColumns(this.options);
     resizableColumns.build();
     assert.equal(this.options.storage.keys().length, 1, "Only uses one key");
-    assert.equal(this.options.storage.keys()[0], 'x-list__my-key', "Uses the correct key");
+    assert.equal(this.options.storage.keys()[0], 'list__my-key', "Uses the correct key");
   });
 
   test('shows/hides the correct columns', function(assert) {
@@ -136,7 +136,7 @@ module('Unit | Lib | ResizableColumns', function(hooks) {
   test("resets cache correctly if schema doesn't match cache", function(assert) {
     assert.expect(1);
     this.options.storage.removeItem = (key) => {
-      assert.equal(key, 'x-list__my-key', "cache was cleared");
+      assert.equal(key, 'list__my-key', "cache was cleared");
     };
     let resizableColumns = new ResizableColumns(this.options);
     resizableColumns.build();
@@ -151,10 +151,10 @@ module('Unit | Lib | ResizableColumns', function(hooks) {
 
   test("clears expired cache", function(assert) {
     let sixtyDaysAgo = 1000 * 60 * 60 * 24 * 30 * 2;
-    storage['x-list__my-key'] = { updatedAt: Date.now() - sixtyDaysAgo };
+    storage['list__my-key'] = { updatedAt: Date.now() - sixtyDaysAgo };
     assert.expect(1);
     this.options.storage.removeItem = (key) => {
-      assert.equal(key, 'x-list__my-key', "cache was cleared");
+      assert.equal(key, 'list__my-key', "cache was cleared");
     };
     let resizableColumns = new ResizableColumns(this.options);
     resizableColumns.build();

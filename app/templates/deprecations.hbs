@@ -1,28 +1,24 @@
 {{#if filtered.length}}
-  {{#x-list
+  <List
     class="js-deprecations list_no-alternate-color"
-    headerHeight=0
-    name="deprecation-list"
-    schema=(hash columns=null)
-    setIsDragging=(action "setIsDragging" target=application)
-  as |list|
-  }}
+    @headerHeight="0"
+    @name="deprecation-list"
+    @schema={{hash columns=null}}
+    @setIsDragging={{action "setIsDragging" target=this.application}} as |list|
+  >
     <tbody>
-      {{#each
-        filtered
-      as |content|
+    {{#each filtered as |content|}}
+      {{deprecation-item
+        model=content
+        openResource=(action "openResource")
+        traceSource=(action "traceSource")
+        traceDeprecations=(action "traceDeprecations")
+        class="deprecation-item"
+        list=list
       }}
-        {{deprecation-item
-          model=content
-          openResource=(action "openResource")
-          traceSource=(action "traceSource")
-          traceDeprecations=(action "traceDeprecations")
-          class="deprecation-item"
-          list=list
-        }}
-      {{/each}}
+    {{/each}}
     </tbody>
-  {{/x-list}}
+  </List>
 {{else}}
   {{#ui/empty-message class="js-page-refresh"}}
     <p>

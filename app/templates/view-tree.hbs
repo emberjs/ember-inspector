@@ -1,13 +1,9 @@
-{{#x-list
-  name="view-tree"
-  schema=(schema-for "view-tree")
-  setIsDragging=(action "setIsDragging" target=application)
-as |list|
-}}
-  {{#list.vertical-collection
-    filteredList
-  as |content index|
-  }}
+<List
+  class="js-view-tree"
+  @schema={{schema-for "view-tree"}}
+  @setIsDragging={{action "setIsDragging" target=this.application}} as |list|
+>
+  {{#list.vertical-collection filteredList as |content index|}}
     <tr
       class="list__row js-view-tree-item {{if (mod index 2) "striped"}}"
       onmouseenter={{action "previewLayer" content}}
@@ -23,4 +19,4 @@ as |list|
       }}
     </tr>
   {{/list.vertical-collection}}
-{{/x-list}}
+</List>

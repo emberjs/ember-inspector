@@ -11,18 +11,16 @@
     <button class="js-toolbar-page-refresh-btn" {{action "refreshPage"}}>Reload</button>
   {{/ui/empty-message}}
 {{else}}
-  {{#x-list
+  <List
     class="js-render-tree"
-    headerHeight=headerHeight
-    name="render-tree"
-    schema=(schema-for "render-tree")
-    setIsDragging=(action "setIsDragging" target=application)
-  as |list|
-  }}
+    @headerHeight={{this.headerHeight}}
+    @schema={{schema-for "render-tree"}}
+    @setIsDragging={{action "setIsDragging" target=this.application}} as |list|
+  >
     <tbody>
       {{#each filtered as |item|}}
         {{render-item model=item search=search list=list}}
       {{/each}}
     </tbody>
-  {{/x-list}}
+  </List>
 {{/if}}

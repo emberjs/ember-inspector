@@ -97,7 +97,7 @@ export default Component.extend({
   /**
    * Hook called whenever attributes are updated.
    * We use this to listen to changes to the schema.
-   * If the schema changes for an existing `x-list` component
+   * If the schema changes for an existing `list` component
    * (happens when switching model types for example), we need
    * to rebuild the columns from scratch.
    *
