@@ -65,7 +65,7 @@
   <div class="toolbar__checkbox js-with-stack">
     <label for="instrument-with-stack">
       {{action-checkbox
-        on-update="updateInstrumentWithStack"
+        onUpdate=(action "updateInstrumentWithStack")
         checked=instrumentWithStack
         id="instrument-with-stack"
       }}
