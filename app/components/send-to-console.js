@@ -6,6 +6,6 @@ export default Component.extend({
   title: 'Send to Console',
   action: 'sendValueToConsole',
   click() {
-    this.sendAction('action', this.get('param'));
+    this.action(this.get('param'));
   }
 });

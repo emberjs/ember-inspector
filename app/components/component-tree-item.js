@@ -10,5 +10,9 @@ export default Component.extend({
     let expanderOffset = this.get('item.hasChildren') ? 12 : 0;
     let padding = this.get('item.parentCount') * 20 - expanderOffset + 25;
     return htmlSafe(`padding-left: ${padding}px;`);
+  }),
+
+  hasElement: computed('item', function() {
+    return this.get('item.view.tagName') !== '';
   })
 });

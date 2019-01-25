@@ -541,7 +541,7 @@ export default class {
    * @return {Controller}           The target controller.
    */
   controllerForComponent(component) {
-    let controller = component.get('_targetObject');
+    let controller = component.get('_target') || component.get('_targetObject');
     if (!controller) {
       return null;
     }

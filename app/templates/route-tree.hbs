@@ -1,19 +1,29 @@
-{{#x-list
-  name="route-tree"
-  schema=(schema-for "route-tree")
-  setIsDragging=(route-action 'setIsDragging')
-as |list|}}
-  {{#list.vertical-collection filtered as |content index|}}
-    <tr class="list__row js-route-tree-item {{if (mod index 2) 'striped'}}">
-      {{route-item
-        model=content
-        currentRoute=currentRoute
-        inspectRoute=(action "inspectRoute")
-        sendRouteHandlerToConsole=(action "sendRouteHandlerToConsole")
-        inspectController=(action "inspectController")
-        sendControllerToConsole=(action "sendControllerToConsole")
-        list=list
-      }}
-    </tr>
-  {{/list.vertical-collection}}
-{{/x-list}}
+{{#ember-table as |t|}}
+  {{t.head
+    columns=(schema-for "route-tree")
+    enableReorder=false
+  }}
+
+  {{#t.body
+    rows=rows
+    checkboxSelectionMode="none"
+  as |b|
+  }}
+    {{#b.row
+      class=(concat "list__row js-route-tree-item" (if (mod b.rowMeta.index 2) " striped"))
+    as |r|
+    }}
+      {{#r.cell as |route|}}
+        {{component
+          (concat "route-cell-" r.columnValue.valuePath)
+          route=route
+          currentRoute=currentRoute
+          inspectRoute=(action "inspectRoute")
+          sendRouteHandlerToConsole=(action "sendRouteHandlerToConsole")
+          inspectController=(action "inspectController")
+          sendControllerToConsole=(action "sendControllerToConsole")
+        }}
+      {{/r.cell}}
+    {{/b.row}}
+  {{/t.body}}
+{{/ember-table}}

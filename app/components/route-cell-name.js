@@ -6,7 +6,7 @@ import checkCurrentRoute from "ember-inspector/utils/check-current-route";
 export default Component.extend({
   // passed as an attribute to the component
   currentRoute: null,
-  model: null,
+  route: null,
 
   /**
    * No tag. This component should not affect
@@ -18,23 +18,23 @@ export default Component.extend({
    */
   tagName: '',
 
-  labelStyle: computed('model.parentCount', function() {
-    return htmlSafe(`padding-left: ${+this.get('model.parentCount') * 20 + 5}px;`);
+  labelStyle: computed('route.parentCount', function() {
+    return htmlSafe(`padding-left: ${+this.get('route.parentCount') * 20 + 5}px;`);
   }),
 
-  isCurrent: computed('currentRoute.{name,url}', 'model.value.{name,url}', function() {
+  isCurrent: computed('currentRoute.{name,url}', 'route.value.{name,url}', function() {
     const {
       currentRoute,
-      model,
+      route,
     } = this.getProperties(
       'currentRoute',
-      'model',
+      'route',
     );
 
     if (!currentRoute) {
       return false;
     }
 
-    return checkCurrentRoute(currentRoute, model.value);
+    return checkCurrentRoute(currentRoute, route.value);
   })
 });

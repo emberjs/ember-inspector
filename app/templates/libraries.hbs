@@ -1,17 +1,23 @@
-{{#x-list
-  name="info-list"
-  schema=(schema-for "info-list")
-  setIsDragging=(route-action 'setIsDragging') as |list|}}
-  <tbody>
-    {{#each model as |library index|}}
-      <tr class="list__row js-library-row {{if (mod index 2) 'striped'}}">
-        {{#list.cell class="list__cell_main"}}
-          <span class="js-lib-name">{{library.name}}</span>
-        {{/list.cell}}
-        {{#list.cell}}
-          <span class="js-lib-version">{{library.version}}</span>
-        {{/list.cell}}
-      </tr>
-    {{/each}}
-  </tbody>
-{{/x-list}}
+{{#ember-table as |t|}}
+  {{t.head
+    columns=(schema-for "info-list")
+    enableReorder=false
+  }}
+
+  {{#t.body
+    rows=rows
+  as |b|
+  }}
+    {{#b.row
+      class=(concat "js-library-row" (if (mod b.rowMeta.index 2) " striped"))
+    as |r|
+    }}
+      {{#r.cell
+        class=(concat "js-lib-" r.columnValue.valuePath)
+      as |value|
+      }}
+        {{value}}
+      {{/r.cell}}
+    {{/b.row}}
+  {{/t.body}}
+{{/ember-table}}

@@ -274,11 +274,33 @@ module('Component Tab', function(hooks) {
     run(() => port.trigger('view:viewTree', { tree: viewTree }));
     await wait();
 
-    await click('.component-tree-item__view-element');
+    await click('.js-scroll-into-view');
     assert.equal(
       messageSent.name,
       'view:scrollToElement',
       'Client asked to scroll element into view'
+    );
+  });
+
+  test('View DOM element in Elements panel', async function(assert) {
+    let messageSent = null;
+    port.reopen({
+      send(name, message) {
+        messageSent = { name, message };
+      },
+    });
+
+    await visit('/component-tree');
+
+    let viewTree = defaultViewTree();
+    run(() => port.trigger('view:viewTree', { tree: viewTree }));
+    await wait();
+
+    await click('.js-view-dom-element');
+    assert.equal(
+      messageSent.name,
+      'view:inspectElement',
+      'Client asked to view DOM element'
     );
   });
 

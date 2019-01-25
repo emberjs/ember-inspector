@@ -3,25 +3,37 @@
   headerHeight=0
   name="deprecation-list"
   schema=(hash columns=null)
-  setIsDragging=(route-action 'setIsDragging') as |list|}}
+  setIsDragging=(action "setIsDragging" target=application)
+as |list|
+}}
   {{#if filtered.length}}
     <tbody>
-    {{#each filtered as |content|}}
-      {{deprecation-item
-        model=content
-        openResource=(action "openResource")
-        traceSource=(action "traceSource")
-        traceDeprecations=(action "traceDeprecations")
-        class="deprecation-item"
-        list=list
+      {{#each
+        filtered
+      as |content|
       }}
-    {{/each}}
+        {{deprecation-item
+          model=content
+          openResource=(action "openResource")
+          traceSource=(action "traceSource")
+          traceDeprecations=(action "traceDeprecations")
+          class="deprecation-item"
+          list=list
+        }}
+      {{/each}}
     </tbody>
   {{else}}
     <div class="notice js-page-refresh">
-      <p>No deprecations have been detected. Try reloading to catch the deprecations that were logged before you opened
-        the inspector.</p>
-      <button class="js-page-refresh-btn" {{action "refreshPage"}}>Reload</button>
+      <p>
+        No deprecations have been detected. Try reloading to catch the deprecations that were logged before you opened
+        the inspector.
+      </p>
+      <button
+        class="js-page-refresh-btn"
+        {{action "refreshPage"}}
+      >
+        Reload
+      </button>
     </div>
   {{/if}}
 {{/x-list}}

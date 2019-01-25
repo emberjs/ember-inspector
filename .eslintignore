@@ -8,14 +8,19 @@
 
 # dependencies
 /bower_components/
+/node_modules/
 
 # misc
 /coverage/
+!.*
 
 # ember-try
 /.node_modules.ember-try/
+/bower.json.ember-try
+/package.json.ember-try
 
 # ember-inspector specific
-/scripts
-/skeletons
+/dist_prev/
+/scripts/
+/skeletons/
 /ember_debug/vendor/startup-wrapper.js

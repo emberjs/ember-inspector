@@ -52,7 +52,6 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       onApplicationStart(function appStarted(instance) {
         let app = instance.application;
         if (!('__inspector__booted' in app)) {
-          app.__inspector__booted = true;
           // Watch for app reset/destroy
           app.reopen({
             reset: function() {
@@ -63,8 +62,6 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
         }
 
         if (instance && !('__inspector__booted' in instance)) {
-          instance.__inspector__booted = true;
-
           instance.reopen({
             // Clean up on instance destruction
             willDestroy() {
@@ -75,14 +72,24 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
               return this._super.apply(this, arguments);
             }
           });
-          // Boot the inspector (or re-boot if already booted, for example in tests)
-          Ember.EmberInspectorDebugger.set('_application', app);
-          Ember.EmberInspectorDebugger.set('owner', instance);
-          Ember.EmberInspectorDebugger.start(true);
+
+          if (!Ember.EmberInspectorDebugger._application) {
+            bootEmberInspector(instance);
+          }
         }
       });
     }
   });
+
+  function bootEmberInspector(appInstance) {
+    appInstance.application.__inspector__booted = true;
+    appInstance.__inspector__booted = true;
+
+    // Boot the inspector (or re-boot if already booted, for example in tests)
+    Ember.EmberInspectorDebugger.set('_application', appInstance.application);
+    Ember.EmberInspectorDebugger.set('owner', appInstance);
+    Ember.EmberInspectorDebugger.start(true);
+  }
 
   function onEmberReady(callback) {
     var triggered = false;
@@ -117,6 +124,29 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     if (typeof Ember === 'undefined') {
       return;
     }
+
+    const adapterInstance = requireModule('ember-debug/adapters/' + currentAdapter)['default'].create();
+
+    adapterInstance.onMessageReceived(function(message) {
+      if (message.type !== 'app-picker-loaded') {
+        return;
+      }
+
+      sendAppList(adapterInstance, getApplications().mapBy('name'));
+    });
+
+    adapterInstance.onMessageReceived(function(message) {
+      if (message.type !== 'app-selected') {
+        return;
+      }
+
+      const appInstance = getApplications().find(app => app.name === message.appName);
+
+      if (appInstance && appInstance.__deprecatedInstance__) {
+        bootEmberInspector(appInstance.__deprecatedInstance__);
+      }
+    });
+
     var apps = getApplications();
     var app;
     for (var i = 0, l = apps.length; i < l; i++) {
@@ -188,6 +218,14 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
         from: 'inspectedWindow'
       });
     }
+  }
+
+  function sendAppList(adapter, appList) {
+    adapter.sendMessage({
+      type: 'app-list',
+      appList,
+      from: 'inspectedWindow'
+    });
   }
 
   /**

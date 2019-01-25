@@ -1,48 +1,63 @@
-<li class="{{if isOverridden 'mixin__property_state_overridden'}} mixin__property js-object-property">
-  <!-- Disclosure Triangle -->
+<li
+  class="{{if isOverridden "mixin__property_state_overridden"}} mixin__property js-object-property"
+>
+  {{!-- Disclosure Triangle --}}
   {{#if hasDependentKeys}}
     <button
       class="mixin__cp-toggle {{if showDependentKeys "mixin__cp-toggle--expanded"}}"
-      {{action "toggleDeps"}}>
-      {{svg-jar "disclosure-triangle"
+      {{action "toggleDeps"}}
+    >
+      {{svg-jar
+        "disclosure-triangle"
         title="Toggle dependent keys"
-        width="9px" height="9px"}}
+        width="9px"
+        height="9px"
+      }}
     </button>
   {{else}}
     <span class="pad"></span>
   {{/if}}
 
-  <!-- Property Icon -->
+  {{!-- Property Icon --}}
   {{#if isService}}
-    <span class="mixin__property-icon-container" title="Service">
+    <span
+      class="mixin__property-icon-container"
+      title="Service"
+    >
       <span class="mixin__property-icon mixin__property-icon--service"></span>
     </span>
   {{else if isComputedProperty}}
     <span
       class="mixin__property-icon-container"
-      title="{{if model.code model.code 'code not avaliable' }}"
-      {{action "toggleDeps"}}>
+      title={{if model.code model.code "code not avaliable"}}
+      {{action "toggleDeps"}}
+    >
       <span class="mixin__property-icon mixin__property-icon--computed"></span>
     </span>
   {{else}}
-    <span class="mixin__property-icon-container" title="Property">
+    <span
+      class="mixin__property-icon-container"
+      title="Property"
+    >
       <span class="mixin__property-icon mixin__property-icon--property"></span>
     </span>
   {{/if}}
 
-  <!-- Property Name -->
+  {{!-- Property Name --}}
   <span class="mixin__property-name js-object-property-name">
     {{#if isService}}
       <span
         title="service"
-        class="js-property-name-service mixin__property--group">
+        class="js-property-name-service mixin__property--group"
+      >
         {{model.name}}
       </span>
     {{else}}
       {{#if hasDependentKeys}}
         <span
           title="computed"
-          class="js-property-name-computed mixin__property--group">
+          class="js-property-name-computed mixin__property--group"
+        >
           {{model.name}}
         </span>
       {{else}}
@@ -53,19 +68,21 @@
 
   <span class="mixin__property-value-separator">: </span>
 
-  <!-- Property Value -->
+  {{!-- Property Value --}}
   {{#unless isEdit}}
     {{#if (and isComputedProperty (not isCalculated))}}
       <button
         class="mixin__calc-btn js-calculate"
         title="compute property"
-        {{action "calculate" model bubbles=false target=mixin}}>
+        {{action "calculate" model bubbles=false target=mixin}}
+      >
         {{svg-jar "calculate" width="16px" height="16px"}}
       </button>
     {{else}}
       <span
+        class="{{model.value.type}} {{if isService "type-service"}} mixin__property-value js-object-property-value"
         {{action "valueClick" model}}
-        class="{{model.value.type}} {{if isService "type-service"}} mixin__property-value js-object-property-value">
+      >
         {{model.value.inspect}}
       </span>
     {{/if}}
@@ -76,7 +93,8 @@
         finished-editing="finishedEditing"
         save-property="saveProperty"
         propertyComponent=this
-        class="mixin__property-value-txt js-object-property-value-txt"}}
+        class="mixin__property-value-txt js-object-property-value-txt"
+      }}
     {{else}}
       {{date-property-field
         allowInput=true
@@ -84,7 +102,8 @@
         dateFormat="Y-m-d"
         class="mixin__property-value-txt js-object-property-value-date"
         onChange=(action "dateSelected")
-        onClose=(action "finishedEditing")}}
+        onClose=(action "finishedEditing")
+      }}
     {{/unless}}
   {{/unless}}
 
@@ -93,7 +112,8 @@
   <button
     class="mixin__send-btn send-to-console js-send-to-console-btn"
     title="Send to console"
-    {{action "sendToConsole" model target=mixin}}>
+    {{action "sendToConsole" model target=mixin}}
+  >
     {{svg-jar "send-with-text" width="20px" height="10px"}}
   </button>
 </li>
@@ -102,10 +122,18 @@
   <li class="mixin__property-dependency-list">
     {{svg-jar "dependent-key-connection" width="20px" height="10px"}}
     <ul>
-      {{#each model.dependentKeys as |depKey index|}}
+      {{#each model.dependentKeys as |depKey|}}
         <li class="mixin__property-dependency-item">
-          {{svg-jar "dependent-key-bullet" width="9px" height="9px"}}
-          <span class="mixin__property-dependency-name" data-label="object-property-name">
+          {{svg-jar
+            "dependent-key-bullet"
+            width="9px"
+            height="9px"
+          }}
+
+          <span
+            class="mixin__property-dependency-name"
+            data-label="object-property-name"
+          >
             {{depKey}}
           </span>
         </li>

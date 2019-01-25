@@ -20,7 +20,7 @@
   }
 
   .send-chevron {
-    fill: var(--spec04);
+    fill: var(--focus);
   }
 
   .send-text {
@@ -29,7 +29,7 @@
 }
 
 .send-to-console:hover {
-  border-bottom-color: var(--spec04);
+  border-bottom-color: var(--focus);
 }
 
 .send-to-console:active {

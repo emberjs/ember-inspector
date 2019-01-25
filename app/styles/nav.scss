@@ -66,15 +66,15 @@
 }
 
 .nav li > a.active {
-  background: var(--spec04);
-  color: var(--base00);
+  background: var(--focus);
+  color: var(--focus-text);
 }
 
 .nav li > a.active polygon,
 .nav li > a.active path,
 .nav li > a.active rect,
 .nav li > a.active circle {
-  fill: var(--base00);
+  fill: var(--focus-text);
 }
 
 .app.inactive .nav li > a.active {

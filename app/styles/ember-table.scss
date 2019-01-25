@@ -12,11 +12,11 @@ $white: #ffffff;
 
   th,
   td {
-    border-right: 1px solid var(--base02);
+    border-right: 1px solid var(--base04);
   }
 
   th {
-    background: $white;
+    background: var(--base00);
     border-bottom: 1px solid var(--base05);
     box-sizing: border-box;
     color: var(--inherit);
@@ -32,6 +32,14 @@ $white: #ffffff;
     white-space: nowrap;
   }
 
+  td {
+    background: var(--base02);
+  }
+
+  .striped td {
+    background-color: var(--base00);
+  }
+
   td,
   .et-cell-content {
     box-sizing: border-box;
@@ -41,11 +49,6 @@ $white: #ffffff;
     padding: 3px 6px;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  .striped {
-    background-color: var(--base01);
-    border-right: 1px solid var(--base03);
   }
 
   .blue {
@@ -61,7 +64,7 @@ $white: #ffffff;
   }
 
   th.is-sortable:hover {
-    background: #e9f4fc;
+    background: var(--base04);
   }
 
   .et-sort-indicator:before {
@@ -121,6 +124,11 @@ $white: #ffffff;
     padding: 0;
   }
 
+  .is-link {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
   .et-cell-container {
     display: flex;
   }
@@ -155,8 +163,10 @@ $white: #ffffff;
     flex: 1;
   }
 
-  tr.is-selected td {
-    background: #d7ebfa;
+  tr.is-selected td,
+  tr.is-selected.is-selectable:hover td {
+    background: var(--focus);
+    color: var(--focus-text);
   }
 
   tr.is-selectable {
@@ -164,6 +174,6 @@ $white: #ffffff;
   }
 
   tr.is-selectable:hover td {
-    background: #e9f4fc;
+    background: var(--base04);
   }
 }

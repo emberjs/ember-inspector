@@ -94,10 +94,10 @@ module('Container Tab', function(hooks) {
     name = null;
     message = null;
 
-    await click(rows[0]);
+    await click(rows[0].querySelector('.js-instance-name'));
 
     assert.equal(name, null);
-    await click(rows[1]);
+    await click(rows[1].querySelector('.js-instance-name'));
 
     assert.equal(name, 'objectInspector:inspectByContainerLookup');
 

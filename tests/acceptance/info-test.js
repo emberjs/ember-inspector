@@ -29,11 +29,11 @@ module('Info Tab', function(hooks) {
 
     let libraries = findAll('.js-library-row');
     assert.equal(libraries.length, 3, "The correct number of libraries is displayed");
-    assert.dom(libraries[0].querySelector('.js-lib-name')).hasText('Ember Inspector', 'Ember Inspector is added automatically');
+    assert.dom(libraries[0].querySelector('.js-lib-library')).hasText('Ember Inspector', 'Ember Inspector is added automatically');
     assert.dom(libraries[0].querySelector('.js-lib-version')).hasText('9.9.9');
-    assert.dom(libraries[1].querySelector('.js-lib-name')).hasText('Ember');
+    assert.dom(libraries[1].querySelector('.js-lib-library')).hasText('Ember');
     assert.dom(libraries[1].querySelector('.js-lib-version')).hasText('1.0');
-    assert.dom(libraries[2].querySelector('.js-lib-name')).hasText('Handlebars');
+    assert.dom(libraries[2].querySelector('.js-lib-library')).hasText('Handlebars');
     assert.dom(libraries[2].querySelector('.js-lib-version')).hasText('2.1');
   });
 });

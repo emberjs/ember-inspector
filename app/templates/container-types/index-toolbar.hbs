@@ -1,7 +1,12 @@
 <div class="toolbar">
-  {{reload-button action="reload" classNames="toolbar__icon-button js-reload-container-btn"}}
+  {{reload-button
+    action="reload"
+    classNames="toolbar__icon-button js-reload-container-btn"
+  }}
 
   <div class="divider" aria-hidden="true"></div>
 
-  {{send-to-console action=(action 'sendContainerToConsole')}}
+  {{send-to-console
+    action=(action "sendContainerToConsole")
+  }}
 </div>

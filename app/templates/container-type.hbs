@@ -1,13 +1,22 @@
-{{#x-list
-  headerHeight=0
-  name="container-instance-list"
-  schema=(hash columns=null)
-  setIsDragging=(route-action 'setIsDragging') as |list|}}
-  {{#list.vertical-collection filtered estimateHeight=30 itemClass="js-instance-row" as |content index|}}
-    <tr class="list__row js-container-instance-list-item {{if (mod index 2) 'striped'}}" {{action "inspectInstance" content}}>
-      {{#list.cell class="list__cell_main" clickable=content.inspectable}}
-        {{content.name}}
-      {{/list.cell}}
-    </tr>
-  {{/list.vertical-collection}}
-{{/x-list}}
+{{#ember-table as |t|}}
+  {{t.head columns=columns enableReorder=false}}
+  {{#t.body
+    rows=rows
+  as |b|
+  }}
+    {{#b.row
+      class=(concat "js-container-instance-list-item" (if (mod b.rowMeta.index 2) " striped"))
+    as |r|
+    }}
+      {{#r.cell as |value|}}
+        {{#if value.inspectable}}
+          <div class="is-link js-instance-name" {{action "inspectInstance" value}}>
+            {{value.name}}
+          </div>
+        {{else}}
+          <span class="js-instance-name">{{value.name}}</span>
+        {{/if}}
+      {{/r.cell}}
+    {{/b.row}}
+  {{/t.body}}
+{{/ember-table}}

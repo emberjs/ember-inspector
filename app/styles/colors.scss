@@ -29,6 +29,10 @@
   --spec09: #328509;
   --inherit: inherit;
   --transparent: transparent;
+  --focus: #3F81EE;
+  --focus-text: #ffffff;
+  --component-text: #7c027c;
+  --component-brackets-selected: rgba(255, 255, 255, 0.4);
 }
 
 .theme--dark {
@@ -62,4 +66,8 @@
   --spec09: #328509;
   --inherit: inherit;
   --transparent: transparent;
+  --focus: #2270EC;
+  --focus-text: #ffffff;
+  --component-text: #FF8BC9;
+  --component-brackets-selected: rgba(255, 255, 255, 0.4);
 }
