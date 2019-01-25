@@ -25,15 +25,32 @@
 
   {{#if item.view.isComponent}}
     <button
-      class="component-tree-item__view-element"
+      class="component-tree-item__action js-scroll-into-view"
+      title="Scroll into view"
       {{action scrollToElement item.view.objectId bubbles=false}}
     >
       {{svg-jar
         "eye"
-        title="Scroll into view"
         width="20px"
         height="20px"
       }}
     </button>
+
+    {{#if hasElement}}
+      <button
+        class="component-tree-item__action js-view-dom-element"
+        title="View in Elements panel"
+        {{action inspectElement item bubbles=false}}
+      >
+        {{svg-jar "code-line" width="20px" height="20px"}}
+      </button>
+    {{else}}
+      <button
+        title="Tagless components cannot be viewed"
+        class="component-tree-item__action disabled"
+      >
+        {{svg-jar "code-line" width="20px" height="20px"}}
+      </button>
+    {{/if}}
   {{/if}}
 </div>
