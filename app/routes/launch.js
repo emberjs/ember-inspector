@@ -54,7 +54,7 @@ export default Route.extend({
   },
 
   beforeModel() {
-    let targetRoute = 'view-tree';
+    let targetRoute = 'component-tree';
     const currentVersion = this.get('version');
 
     return this.lastVersionOpened().then((lastVersion) => {
