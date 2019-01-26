@@ -106,7 +106,7 @@ module('View Tree Tab', function(hooks) {
   test("It should correctly display the view tree", async function(assert) {
     let viewTree = defaultViewTree();
 
-    await visit('/');
+    await visit('/view-tree');
     run(() => {
       port.trigger('view:viewTree', { tree: viewTree });
     });
@@ -182,7 +182,7 @@ module('View Tree Tab', function(hooks) {
   test("It should filter the view tree using the search text", async function(assert) {
     let viewTree = defaultViewTree();
 
-    await visit('/');
+    await visit('/view-tree');
     run(() => {
       port.trigger('view:viewTree', { tree: viewTree });
     });
@@ -243,7 +243,7 @@ module('View Tree Tab', function(hooks) {
   test("It should clear the search filter when the clear button is clicked", async function(assert) {
     let viewTree = defaultViewTree();
 
-    await visit('/');
+    await visit('/view-tree');
     run(() => {
       port.trigger('view:viewTree', { tree: viewTree });
     });
@@ -265,7 +265,7 @@ module('View Tree Tab', function(hooks) {
     assert.expect(4);
     let treeNodes, viewTree = defaultViewTree();
 
-    await visit('/');
+    await visit('/view-tree');
     run(() => port.trigger('view:viewTree', { tree: viewTree }));
     await wait();
 
@@ -293,7 +293,7 @@ module('View Tree Tab', function(hooks) {
       }
     });
 
-    await visit('/');
+    await visit('/view-tree');
     let viewTree = defaultViewTree();
     viewTree.children = [];
     run(() => port.trigger('view:viewTree', { tree: viewTree }));
@@ -313,7 +313,7 @@ module('View Tree Tab', function(hooks) {
       }
     });
 
-    await visit('/');
+    await visit('/view-tree');
     await click('.js-inspect-views');
     assert.equal(messageSent.name, 'view:inspectViews');
     assert.deepEqual(messageSent.message, { inspect: true });
@@ -332,7 +332,7 @@ module('View Tree Tab', function(hooks) {
       }
     });
 
-    await visit('/');
+    await visit('/view-tree');
     await click('.js-filter-components input');
     assert.equal(messageSent.name, 'view:setOptions');
     assert.deepEqual(messageSent.message.options, { components: true });
@@ -348,7 +348,7 @@ module('View Tree Tab', function(hooks) {
       }
     });
 
-    await visit('/');
+    await visit('/view-tree');
     let tree = defaultViewTree();
     run(() => {
       port.trigger('view:viewTree', { tree });
