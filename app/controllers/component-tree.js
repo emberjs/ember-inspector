@@ -19,6 +19,19 @@ import {
 
 import ComponentViewItem from 'ember-inspector/models/component-view-item';
 
+const buildObjectIdList = function(children, list) {
+  children.forEach(function(child) {
+    if (child.children.length) {
+      list.push(child.value.objectId);
+      buildObjectIdList(child.children, list);
+    }
+  });
+};
+
+const getIdFromObj = function(obj) {
+  return get(obj, 'view.objectId') || get(obj, 'view.controller.objectId') || get(obj, 'view.elementId');
+};
+
 /**
  * Takes the `viewTree` from `view-debug`'s `sendTree()` method, and recursively
  * flattens it into an array of `ComponentViewItem` objects
@@ -50,6 +63,7 @@ const flattenSearchTree = (
     activeSearch,
     expanded: !activeSearch,
     hasChildren: treeNode.children.length > 0,
+    children: treeNode.children
   });
 
   // remember if there is no active search, searchMatched will be true
@@ -123,11 +137,11 @@ export default Controller.extend({
     let viewArray = this.get('viewArray');
     let expandedStateCache = this.get('expandedStateCache');
     viewArray.forEach(viewItem => {
-      let cachedExpansion = expandedStateCache[viewItem.view.objectId];
+      let cachedExpansion = expandedStateCache[getIdFromObj(viewItem)];
       if (cachedExpansion !== undefined) {
         viewItem.set('expanded', cachedExpansion);
       } else {
-        expandedStateCache[viewItem.view.objectId] = viewItem.expanded;
+        expandedStateCache[getIdFromObj(viewItem)] = viewItem.expanded;
       }
     });
 
@@ -187,6 +201,33 @@ export default Controller.extend({
     }
   },
 
+  /**
+   * @param {array} objects Array of objectids
+   * @param {boolean} state expanded state for objects
+   */
+  setExpandedStateForObjects(objects, state) {
+    this.get('filteredArray').forEach((item) => {
+      const id = getIdFromObj(item);
+      if (objects.includes(id)) {
+        item.set('expanded', state);
+        this.expandedStateCache[id] = state;
+      }
+    });
+  },
+
+  /**
+   * Builds array of objectids and the expanded state they should be set to
+   * @param {ComponentViewItem} item
+   */
+  toggleWithChildren(item) {
+    const newState = !item.get('expanded');
+    const list = [];
+    const clickedId = getIdFromObj(item);
+
+    list.push(clickedId);
+    buildObjectIdList(item.children, list);
+    this.setExpandedStateForObjects(list, newState);
+  },
 
   actions: {
     previewLayer({
@@ -229,13 +270,17 @@ export default Controller.extend({
       this.expandedStateCache = {};
       this.get('filteredArray').forEach((item) => {
         item.set('expanded', expanded);
-        this.expandedStateCache[item.view.objectId] = expanded;
+        this.expandedStateCache[getIdFromObj(item)] = expanded;
       });
     },
 
-    toggleExpanded(item) {
-      item.toggleProperty('expanded');
-      this.expandedStateCache[item.view.objectId] = item.get('expanded');
+    toggleExpanded(item, toggleChildren) {
+      if (toggleChildren) {
+        this.toggleWithChildren(item);
+      } else {
+        item.toggleProperty('expanded');
+        this.expandedStateCache[getIdFromObj(item)] = item.get('expanded');
+      }
     },
 
     inspect(objectId) {
