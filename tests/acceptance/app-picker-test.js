@@ -19,7 +19,7 @@ module('App Picker', function(hooks) {
     });
   });
 
-  test("Both apps show up in picker", async function(assert) {
+  test('Both apps show up in picker', async function(assert) {
     await visit('/component-tree');
 
     assert.dom('.app-picker').exists('App Picker is shown');
@@ -27,7 +27,7 @@ module('App Picker', function(hooks) {
     assert.dom(findAll('.app-picker option')[1]).hasText('app-two');
   });
 
-  test("Clicking each app in the picker switches between them", async function(assert) {
+  test('Clicking each app in the picker switches between them', async function(assert) {
     await visit('/component-tree');
 
     await fillIn('.app-picker select', 'app-two');

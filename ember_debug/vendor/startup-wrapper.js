@@ -132,7 +132,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
         return;
       }
 
-      sendAppList(adapterInstance, getApplications().mapBy('name'));
+      sendAppList(adapterInstance, getApplications().map(app => app && app.name));
     });
 
     adapterInstance.onMessageReceived(function(message) {
