@@ -1,13 +1,13 @@
 /* eslint camelcase:0 */
 /**
-  This is a wrapper for `ember-debug.js`
-  Wraps the script in a function,
-  and ensures that the script is executed
-  only after the dom is ready
-  and the application has initialized.
+ This is a wrapper for `ember-debug.js`
+ Wraps the script in a function,
+ and ensures that the script is executed
+ only after the dom is ready
+ and the application has initialized.
 
-  Also responsible for sending the first tree.
-**/
+ Also responsible for sending the first tree.
+ **/
 /*eslint prefer-spread: 0 */
 /* globals Ember, adapter, env, requireModule */
 var currentAdapter = 'basic';
@@ -52,7 +52,6 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       onApplicationStart(function appStarted(instance) {
         let app = instance.application;
         if (!('__inspector__booted' in app)) {
-          app.__inspector__booted = true;
           // Watch for app reset/destroy
           app.reopen({
             reset: function() {
@@ -63,8 +62,6 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
         }
 
         if (instance && !('__inspector__booted' in instance)) {
-          instance.__inspector__booted = true;
-
           instance.reopen({
             // Clean up on instance destruction
             willDestroy() {
@@ -75,23 +72,39 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
               return this._super.apply(this, arguments);
             }
           });
-          // Boot the inspector (or re-boot if already booted, for example in tests)
-          Ember.EmberInspectorDebugger.set('_application', app);
-          Ember.EmberInspectorDebugger.set('owner', instance);
-          Ember.EmberInspectorDebugger.start(true);
+
+          if (!Ember.EmberInspectorDebugger._application) {
+            bootEmberInspector(instance);
+          }
         }
       });
     }
   });
 
+  function bootEmberInspector(appInstance) {
+    appInstance.application.__inspector__booted = true;
+    appInstance.__inspector__booted = true;
+
+    // Boot the inspector (or re-boot if already booted, for example in tests)
+    Ember.EmberInspectorDebugger.set('_application', appInstance.application);
+    Ember.EmberInspectorDebugger.set('owner', appInstance);
+    Ember.EmberInspectorDebugger.start(true);
+  }
+
   function onEmberReady(callback) {
     var triggered = false;
     var triggerOnce = function(string) {
-      if (triggered) { return; }
-      if (!window.Ember) { return; }
+      if (triggered) {
+        return;
+      }
+      if (!window.Ember) {
+        return;
+      }
       // `Ember.Application` load hook triggers before all of Ember is ready.
       // In this case we ignore and wait for the `Ember` load hook.
-      if (!window.Ember.RSVP) { return; }
+      if (!window.Ember.RSVP) {
+        return;
+      }
       triggered = true;
       callback();
     };
@@ -117,6 +130,19 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     if (typeof Ember === 'undefined') {
       return;
     }
+
+    const adapterInstance = requireModule('ember-debug/adapters/' + currentAdapter)['default'].create();
+
+    adapterInstance.onMessageReceived(function(message) {
+      if (message.type === 'app-selected') {
+        const appInstance = getApplications().find(app => app.name === message.applicationId);
+
+        if (appInstance && appInstance.__deprecatedInstance__) {
+          bootEmberInspector(appInstance.__deprecatedInstance__);
+        }
+      }
+    });
+
     var apps = getApplications();
     var app;
     for (var i = 0, l = apps.length; i < l; i++) {
@@ -124,7 +150,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       // We check for the existance of an application instance because
       // in Ember > 3 tests don't destroy the app when they're done but the app has no booted instances.
       if (app._readinessDeferrals === 0) {
-        let instance =  app.__deprecatedInstance__ || (app._applicationInstances && app._applicationInstances[0]);
+        let instance = app.__deprecatedInstance__ || (app._applicationInstances && app._applicationInstances[0]);
         if (instance) {
           // App started
           setupInstanceInitializer(app, callback);
