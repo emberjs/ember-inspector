@@ -225,7 +225,6 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     }
   }
 
-
   function sendApps(adapter, apps) {
     const serializedApps = apps.map(app => {
       return {
