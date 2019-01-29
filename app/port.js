@@ -28,7 +28,6 @@ export default EmberObject.extend(Evented, {
 
       const { applicationId, applicationName } = message;
 
-      debugger;
       if (!applicationId) {
         return;
       }

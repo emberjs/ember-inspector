@@ -139,7 +139,7 @@ var EMBER_VERSIONS_SUPPORTED = {
     const adapterInstance = requireModule('ember-debug/adapters/' + currentAdapter)['default'].create();
 
     adapterInstance.onMessageReceived(function(message) {
-      if (message.type !== 'app-picker-loaded') {
+      if (message.type === 'app-picker-loaded') {
         const apps = getApplications().map((app) => {
           if (app && app.name) {
             return {
@@ -155,14 +155,12 @@ var EMBER_VERSIONS_SUPPORTED = {
     });
 
     adapterInstance.onMessageReceived(function(message) {
-      if (message.type !== 'app-selected') {
-        return;
-      }
+      if (message.type === 'app-selected') {
+        const appInstance = getApplications().find(app => app.name === message.applicationId);
 
-      const appInstance = getApplications().find(app => app.name === message.appName);
-
-      if (appInstance && appInstance.__deprecatedInstance__) {
-        bootEmberInspector(appInstance.__deprecatedInstance__);
+        if (appInstance && appInstance.__deprecatedInstance__) {
+          bootEmberInspector(appInstance.__deprecatedInstance__);
+        }
       }
     });
 
@@ -209,7 +207,6 @@ var EMBER_VERSIONS_SUPPORTED = {
   function getApplications() {
     var namespaces = Ember.A(Ember.Namespace.NAMESPACES);
 
-    debugger;
     return namespaces.filter(function(namespace) {
       return namespace instanceof Ember.Application;
     });
@@ -241,7 +238,6 @@ var EMBER_VERSIONS_SUPPORTED = {
   }
 
   function sendAppList(adapter, appList) {
-    debugger;
     adapter.sendMessage({
       type: 'app-list',
       appList,
