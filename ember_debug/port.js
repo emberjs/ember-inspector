@@ -4,6 +4,8 @@ const { readOnly } = computed;
 
 export default EmberObject.extend(Ember.Evented, {
   adapter: readOnly('namespace.adapter'),
+  applicationId: readOnly('namespace.applicationId'),
+  applicationName: readOnly('namespace.applicationName'),
 
   /**
    * Unique id per applciation (not application instance). It's very important
@@ -13,8 +15,8 @@ export default EmberObject.extend(Ember.Evented, {
    * @property uniqueId
    * @type {String}
    */
-  uniqueId: computed('namespace.applicationId', 'now', function() {
-    return `${this.get('namespace.applicationId')}__${window.location.href}__${this.get('now')}`;
+  uniqueId: computed('applicationId', 'now', function() {
+    return `${this.get('applicationId')}__${window.location.href}__${this.get('now')}`;
   }),
 
   init() {
@@ -43,6 +45,7 @@ export default EmberObject.extend(Ember.Evented, {
     options.type = messageType;
     options.from = 'inspectedWindow';
     options.applicationId = this.get('uniqueId');
+    options.applicationName = this.get('applicationName');
     this.get('adapter').send(options);
   },
 
@@ -66,7 +69,7 @@ export default EmberObject.extend(Ember.Evented, {
     return run(this, function() {
       try {
         return fn();
-      } catch (error) {
+      } catch(error) {
         this.get('adapter').handleError(error);
       }
     });
