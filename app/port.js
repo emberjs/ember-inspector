@@ -15,17 +15,6 @@ export default EmberObject.extend(Evented, {
     this.detectedApplications = [];
 
     this.get('adapter').onMessageReceived(message => {
-      if (message.type === 'app-list') {
-        const apps = JSON.parse(message.appList);
-        apps.forEach((app) => {
-          if (!this.detectedApplications.mapBy('applicationId').includes(app.applicationId)) {
-            this.detectedApplications.push(app);
-          }
-        });
-
-        return;
-      }
-
       const { applicationId, applicationName } = message;
 
       if (!applicationId) {

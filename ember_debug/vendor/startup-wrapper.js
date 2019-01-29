@@ -134,22 +134,6 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     const adapterInstance = requireModule('ember-debug/adapters/' + currentAdapter)['default'].create();
 
     adapterInstance.onMessageReceived(function(message) {
-      if (message.type === 'app-picker-loaded') {
-        const apps = getApplications().map((app) => {
-          if (app && app.name) {
-            return {
-              // TODO figure out how to determine applicationId here, not sure how to get port.uniqueId here
-              applicationId: 'foo',
-              applicationName: name
-            };
-          }
-        });
-
-        sendAppList(adapterInstance, JSON.stringify(apps));
-      }
-    });
-
-    adapterInstance.onMessageReceived(function(message) {
       if (message.type === 'app-selected') {
         const appInstance = getApplications().find(app => app.name === message.applicationId);
 
@@ -230,14 +214,6 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
         from: 'inspectedWindow'
       });
     }
-  }
-
-  function sendAppList(adapter, appList) {
-    adapter.sendMessage({
-      type: 'app-list',
-      appList,
-      from: 'inspectedWindow'
-    });
   }
 
   /**
