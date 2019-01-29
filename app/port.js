@@ -38,7 +38,7 @@ export default EmberObject.extend(Evented, {
       }
 
       // save list of application ids
-      if (!this.detectedApplications..mapBy('applicationId').includes(applicationId)) {
+      if (!this.detectedApplications.mapBy('applicationId').includes(applicationId)) {
         this.detectedApplications.push({ applicationId, applicationName });
       }
 
