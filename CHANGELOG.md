@@ -1,5 +1,44 @@
 # Changelog
 
+## [v3.5.0](https://github.com/emberjs/ember-inspector/tree/v3.5.0) (2019-01-25)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.4.0...v3.5.0)
+
+**Implemented enhancements:**
+
+- Chrome Store Extension page refers to old repo. [\#893](https://github.com/emberjs/ember-inspector/issues/893)
+- Button to view element in browser Elements panel [\#917](https://github.com/emberjs/ember-inspector/pull/917) ([nummi](https://github.com/nummi))
+- Ember 3.7 beta, bump other deps [\#911](https://github.com/emberjs/ember-inspector/pull/911) ([rwwagner90](https://github.com/rwwagner90))
+- Use ember-table for Container [\#910](https://github.com/emberjs/ember-inspector/pull/910) ([nummi](https://github.com/nummi))
+- Use ember-table for Libraries Tab [\#907](https://github.com/emberjs/ember-inspector/pull/907) ([nummi](https://github.com/nummi))
+- Use ember-table for Routes Tab [\#906](https://github.com/emberjs/ember-inspector/pull/906) ([nummi](https://github.com/nummi))
+- Data Table Colors Fixens [\#904](https://github.com/emberjs/ember-inspector/pull/904) ([nummi](https://github.com/nummi))
+- Fix dropdown arrow in dark mode [\#902](https://github.com/emberjs/ember-inspector/pull/902) ([nummi](https://github.com/nummi))
+- \[multiple apps\] Support multiple apps on the same page and toggling between them [\#898](https://github.com/emberjs/ember-inspector/pull/898) ([alexhancock](https://github.com/alexhancock))
+- Remove Orange from Dark Theme [\#894](https://github.com/emberjs/ember-inspector/pull/894) ([nummi](https://github.com/nummi))
+
+**Fixed bugs:**
+
+- Components in view tree test failing Ember 3.8+ [\#915](https://github.com/emberjs/ember-inspector/issues/915)
+- Error retrieving/parsing sourcemaps with absolute sourcemap URLs [\#908](https://github.com/emberjs/ember-inspector/issues/908)
+- Table's area sizing issue [\#892](https://github.com/emberjs/ember-inspector/issues/892)
+
+**Closed issues:**
+
+- Data Table Heading Colors [\#900](https://github.com/emberjs/ember-inspector/issues/900)
+
+**Merged pull requests:**
+
+- Remove 2 uses of sendAction [\#920](https://github.com/emberjs/ember-inspector/pull/920) ([nlfurniss](https://github.com/nlfurniss))
+- Use `\_target`, remove some duplication [\#919](https://github.com/emberjs/ember-inspector/pull/919) ([rwwagner90](https://github.com/rwwagner90))
+- Fix SVG viewBox warning for ember-icon [\#913](https://github.com/emberjs/ember-inspector/pull/913) ([nummi](https://github.com/nummi))
+- Fix x-list height and column width on window resize [\#912](https://github.com/emberjs/ember-inspector/pull/912) ([nummi](https://github.com/nummi))
+- When forming the URL to retrieve a source map, if it is already an absolute URL then use it as is [\#909](https://github.com/emberjs/ember-inspector/pull/909) ([fusion2004](https://github.com/fusion2004))
+- Bump minor version to 3.5.0 [\#905](https://github.com/emberjs/ember-inspector/pull/905) ([rwwagner90](https://github.com/rwwagner90))
+- Clean up unused manifest property + prevent error in storage lookup [\#899](https://github.com/emberjs/ember-inspector/pull/899) ([22a](https://github.com/22a))
+- Ember 3.5.1, lots of template lint fixes [\#896](https://github.com/emberjs/ember-inspector/pull/896) ([rwwagner90](https://github.com/rwwagner90))
+- Update changelog for 3.4.0 [\#891](https://github.com/emberjs/ember-inspector/pull/891) ([rwwagner90](https://github.com/rwwagner90))
+
 ## [v3.4.0](https://github.com/emberjs/ember-inspector/tree/v3.4.0) (2018-12-03)
 
 [Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.3.2...v3.4.0)
