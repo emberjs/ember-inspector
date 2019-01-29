@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { observer } from '@ember/object';
-import { readOnly, reads } from '@ember/object/computed';
+import { map, reads } from '@ember/object/computed';
 import { getOwner } from '@ember/application';
 
 export default Component.extend({
@@ -11,7 +11,18 @@ export default Component.extend({
 
   classNames: ['app-picker'],
 
-  apps: readOnly('port.detectedApplications'),
+  apps: map('port.detectedApplications.[]', function({ applicationName, applicationId }) {
+    // If we already have both a name and an id, use them as is
+    if (applicationId && applicationName) {
+      return { applicationId, applicationName };
+    } else {
+      // Otherwise, default to old behavior of splitting uniqueId to get the url from the middle
+      if (applicationId) {
+        const applicationName = applicationId.split('__')[1];
+        return { applicationId, applicationName };
+      }
+    }
+  }),
 
   selectedApp: reads('port.applicationId'),
 
@@ -25,6 +36,7 @@ export default Component.extend({
   actions: {
     selectApp(appName) {
       this.set('selectedApp', appName);
+      debugger;
       this.port.send('app-selected', { appName });
     }
   }

@@ -5,10 +5,10 @@
   >
     {{#each apps as |app|}}
       <option
-        value={{app}}
-        selected={{eq app selectedApp}}
+        value={{app.applicationId}}
+        selected={{eq app.applicationId selectedApp}}
       >
-        {{app}}
+        {{app.applicationName}}
       </option>
     {{/each}}
   </select>

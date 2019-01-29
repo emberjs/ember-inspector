@@ -4,6 +4,15 @@ const { oneWay } = computed;
 
 export default EmberObject.extend(Ember.Evented, {
   adapter: oneWay('namespace.adapter').readOnly(),
+  applicationName: oneWay('namespace._application.name').readOnly(),
+
+  /**
+   * Stores the timestamp when it was first accessed.
+   *
+   * @property now
+   * @type {Number}
+   */
+  now: computed(() => Date.now()),
 
   /**
    * Unique id per applciation (not application instance). It's very important
@@ -13,8 +22,8 @@ export default EmberObject.extend(Ember.Evented, {
    * @property uniqueId
    * @type {String}
    */
-  uniqueId: computed('namespace._application.name', function() {
-    return this.get('namespace._application.name');
+  uniqueId: computed('namespace.applicationId', 'now',  function() {
+    return `${this.get('namespace.applicationId')}__${window.location.href}__${this.get('now')}`;
   }),
 
   init() {
@@ -35,6 +44,7 @@ export default EmberObject.extend(Ember.Evented, {
     options.type = messageType;
     options.from = 'inspectedWindow';
     options.applicationId = this.get('uniqueId');
+    options.applicationName = this.get('applicationName'),
     this.get('adapter').send(options);
   },
 

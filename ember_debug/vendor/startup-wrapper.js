@@ -1,13 +1,13 @@
 /* eslint camelcase:0 */
 /**
-  This is a wrapper for `ember-debug.js`
-  Wraps the script in a function,
-  and ensures that the script is executed
-  only after the dom is ready
-  and the application has initialized.
+ This is a wrapper for `ember-debug.js`
+ Wraps the script in a function,
+ and ensures that the script is executed
+ only after the dom is ready
+ and the application has initialized.
 
-  Also responsible for sending the first tree.
-**/
+ Also responsible for sending the first tree.
+ **/
 /*eslint prefer-spread: 0 */
 /* globals Ember, adapter, env, requireModule */
 var currentAdapter = 'basic';
@@ -19,7 +19,12 @@ if (typeof env !== 'undefined') {
   currentEnv = env;
 }
 
-var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
+var EMBER_VERSIONS_SUPPORTED = {
+{
+  EMBER_VERSIONS_SUPPORTED;
+}
+}
+;
 
 (function(adapter) {
   var onReady = requireModule('ember-debug/utils/on-ready').onReady;
@@ -94,11 +99,17 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
   function onEmberReady(callback) {
     var triggered = false;
     var triggerOnce = function(string) {
-      if (triggered) { return; }
-      if (!window.Ember) { return; }
+      if (triggered) {
+        return;
+      }
+      if (!window.Ember) {
+        return;
+      }
       // `Ember.Application` load hook triggers before all of Ember is ready.
       // In this case we ignore and wait for the `Ember` load hook.
-      if (!window.Ember.RSVP) { return; }
+      if (!window.Ember.RSVP) {
+        return;
+      }
       triggered = true;
       callback();
     };
@@ -129,10 +140,18 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
 
     adapterInstance.onMessageReceived(function(message) {
       if (message.type !== 'app-picker-loaded') {
-        return;
-      }
+        const apps = getApplications().map((app) => {
+          if (app && app.name) {
+            return {
+              // TODO figure out how to determine applicationId here, not sure how to get port.uniqueId here
+              applicationId: 'foo',
+              applicationName: name
+            };
+          }
+        });
 
-      sendAppList(adapterInstance, getApplications().map(app => app && app.name));
+        sendAppList(adapterInstance, JSON.stringify(apps));
+      }
     });
 
     adapterInstance.onMessageReceived(function(message) {
@@ -154,7 +173,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       // We check for the existance of an application instance because
       // in Ember > 3 tests don't destroy the app when they're done but the app has no booted instances.
       if (app._readinessDeferrals === 0) {
-        let instance =  app.__deprecatedInstance__ || (app._applicationInstances && app._applicationInstances[0]);
+        let instance = app.__deprecatedInstance__ || (app._applicationInstances && app._applicationInstances[0]);
         if (instance) {
           // App started
           setupInstanceInitializer(app, callback);
@@ -190,6 +209,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
   function getApplications() {
     var namespaces = Ember.A(Ember.Namespace.NAMESPACES);
 
+    debugger;
     return namespaces.filter(function(namespace) {
       return namespace instanceof Ember.Application;
     });
@@ -221,6 +241,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
   }
 
   function sendAppList(adapter, appList) {
+    debugger;
     adapter.sendMessage({
       type: 'app-list',
       appList,

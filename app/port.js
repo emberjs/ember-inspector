@@ -3,39 +3,46 @@ import EmberObject, { computed } from '@ember/object';
 
 export default EmberObject.extend(Evented, {
   applicationId: undefined,
-
-  detectedApplications: computed(function() {
-    return [];
-  }),
+  applicationName: undefined,
 
   init() {
-    const addIfNotPresent = (list, value) => {
-      if (list.indexOf(value) === -1) {
-        list.pushObject(value);
-      }
-    };
+    this._super(...arguments);
 
-    const detectedApplications = this.get('detectedApplications');
+    /*
+     * An array of objects of the form:
+     * { applicationId, applicationName }
+     */
+    this.detectedApplications = [];
 
     this.get('adapter').onMessageReceived(message => {
       if (message.type === 'app-list') {
-        message.appList.forEach(applicationId => addIfNotPresent(detectedApplications, applicationId));
+        const apps = JSON.parse(message.appList);
+        apps.forEach((app) => {
+          if (!this.detectedApplications.mapBy('applicationId').includes(app.applicationId)) {
+            this.detectedApplications.push(app);
+          }
+        });
+
         return;
       }
 
-      if (!message.applicationId) {
+      const { applicationId, applicationName } = message;
+
+      debugger;
+      if (!applicationId) {
         return;
       }
 
-      if (!this.get('applicationId')) {
-        this.set('applicationId', message.applicationId);
+      if (!this.applicationId) {
+        this.set('applicationId', applicationId);
       }
 
       // save list of application ids
-      addIfNotPresent(detectedApplications, message.applicationId);
+      if (!this.detectedApplications..mapBy('applicationId').includes(applicationId)) {
+        this.detectedApplications.push({ applicationId, applicationName });
+      }
 
-      const applicationId = this.get('applicationId');
-      if (applicationId === message.applicationId) {
+      if (this.applicationId === applicationId) {
         this.trigger(message.type, message, applicationId);
       }
     });
@@ -44,7 +51,8 @@ export default EmberObject.extend(Evented, {
     message = message || {};
     message.type = type;
     message.from = 'devtools';
-    message.applicationId = this.get('applicationId');
+    message.applicationId = this.applicationId;
+    message.applicationName = this.applicationName;
     this.get('adapter').sendMessage(message);
   }
 });
