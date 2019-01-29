@@ -28,8 +28,8 @@ export default Component.extend({
     port.set('applicationId', applicationId);
   }),
 
-  init(...args) {
-    this._super(...args);
+  init() {
+    this._super(...arguments);
     this.port.send('app-picker-loaded');
   },
 
