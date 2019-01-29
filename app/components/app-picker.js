@@ -35,6 +35,7 @@ export default Component.extend({
 
   actions: {
     selectApp(applicationId) {
+      console.log({ applicationId });
       this.set('selectedApp', applicationId);
       this.port.send('app-selected', { applicationId });
     }
