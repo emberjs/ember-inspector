@@ -34,10 +34,9 @@ export default Component.extend({
   }),
 
   actions: {
-    selectApp(appName) {
-      this.set('selectedApp', appName);
-      debugger;
-      this.port.send('app-selected', { appName });
+    selectApp(applicationId) {
+      this.set('selectedApp', applicationId);
+      this.port.send('app-selected', { applicationId });
     }
   }
 });
