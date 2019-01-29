@@ -19,12 +19,7 @@ if (typeof env !== 'undefined') {
   currentEnv = env;
 }
 
-var EMBER_VERSIONS_SUPPORTED = {
-{
-  EMBER_VERSIONS_SUPPORTED;
-}
-}
-;
+var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
 
 (function(adapter) {
   var onReady = requireModule('ember-debug/utils/on-ready').onReady;
