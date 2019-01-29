@@ -1,7 +1,7 @@
 /* globals chrome */
 import { computed } from '@ember/object';
 
-import BasicAdapter from './basic';
+import BasicAdapter from "./basic";
 import config from 'ember-inspector/config/environment';
 
 let emberDebug = null;
@@ -36,7 +36,7 @@ export default BasicAdapter.extend({
     let chromePort = this.get('_chromePort');
     chromePort.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
 
-    chromePort.onMessage.addListener((message, sender) => {
+    chromePort.onMessage.addListener(message => {
       if (typeof message.type === 'string' && message.type === 'iframes') {
         this.sendIframes(message.urls);
       }
@@ -97,9 +97,9 @@ export default BasicAdapter.extend({
   },
 
   /**
-   We handle the reload here so we can inject
-   scripts as soon as possible into the new page.
-   */
+    We handle the reload here so we can inject
+    scripts as soon as possible into the new page.
+  */
   reloadTab() {
     loadEmberDebug().then((emberDebug) => {
       chrome.devtools.inspectedWindow.reload({ injectedScript: emberDebug });
@@ -111,20 +111,6 @@ export default BasicAdapter.extend({
 
   sendIframes(urls) {
     loadEmberDebug().then((emberDebug) => {
-      const { tabId } = chrome.devtools.inspectedWindow;
-      chrome.webNavigation.getAllFrames({ tabId }, (frames) => {
-        frames.forEach((frame) => {
-          if (frame.frameId !== 0) {
-            chrome.tabs.executeScript(tabId, {
-              code: emberDebug,
-              frameId: frame.frameId,
-              matchAboutBlank: true,
-              runAt: 'document_end'
-            });
-          }
-        });
-      });
-
       urls.forEach(url => {
         chrome.devtools.inspectedWindow.eval(emberDebug, { frameURL: url });
       });
@@ -138,7 +124,7 @@ function loadEmberDebug() {
   return new Promise((resolve) => {
     if (!emberDebug) {
       xhr = new XMLHttpRequest();
-      xhr.open('GET', chrome.runtime.getURL(`/panes-${minimumVersion}/ember_debug.js`));
+      xhr.open("GET", chrome.runtime.getURL(`/panes-${minimumVersion}/ember_debug.js`));
       xhr.onload = function() {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {

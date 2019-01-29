@@ -14,20 +14,16 @@
 
   "permissions": [
     "<all_urls>",
-    "activeTab",
-    "contextMenus",
     "storage",
-    "tabs",
-    "webNavigation"
+    "contextMenus"
   ],
 
   "content_security_policy": "script-src 'self'; object-src 'self'",
   "devtools_page": "devtools.html",
 
   "content_scripts": [{
-    "js": ["content-script.js"],
     "matches": ["<all_urls>"],
-    "match_about_blank": true,
+    "js": ["content-script.js"],
     "run_at": "document_end",
     "all_frames": true
   }],
