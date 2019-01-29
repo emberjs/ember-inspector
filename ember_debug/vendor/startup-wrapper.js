@@ -19,7 +19,9 @@ if (typeof env !== 'undefined') {
   currentEnv = env;
 }
 
+// @formatter:off
 var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
+// @formatter:on
 
 (function(adapter) {
   var onReady = requireModule('ember-debug/utils/on-ready').onReady;
@@ -134,8 +136,12 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     const adapterInstance = requireModule('ember-debug/adapters/' + currentAdapter)['default'].create();
 
     adapterInstance.onMessageReceived(function(message) {
+      if (message.type === 'app-picker-loaded') {
+        sendApps(adapterInstance, getApplications());
+      }
+
       if (message.type === 'app-selected') {
-        const appInstance = getApplications().find(app => app.name === message.applicationId);
+        const appInstance = getApplications().find(app => Ember.guidFor(app) === message.applicationId);
 
         if (appInstance && appInstance.__deprecatedInstance__) {
           bootEmberInspector(appInstance.__deprecatedInstance__);
@@ -144,6 +150,9 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     });
 
     var apps = getApplications();
+
+    sendApps(adapterInstance, apps);
+
     var app;
     for (var i = 0, l = apps.length; i < l; i++) {
       app = apps[i];
@@ -216,8 +225,24 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     }
   }
 
+
+  function sendApps(adapter, apps) {
+    const serializedApps = apps.map(app => {
+      return {
+        applicationName: app.name || 'Application',
+        applicationId: Ember.guidFor(app)
+      }
+    });
+
+    adapter.sendMessage({
+      type: 'apps-loaded',
+      apps: serializedApps,
+      from: 'inspectedWindow'
+    });
+  }
+
   /**
-   * Checksi if a version is between two different versions.
+   * Checks if a version is between two different versions.
    * version should be >= left side, < right side
    *
    * @param {String} version1
