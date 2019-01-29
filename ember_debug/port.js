@@ -1,11 +1,11 @@
 const Ember = window.Ember;
 const { Object: EmberObject, computed, run } = Ember;
-const { readOnly } = computed;
+const { or, readOnly } = computed;
 
 export default EmberObject.extend(Ember.Evented, {
   adapter: readOnly('namespace.adapter'),
   applicationId: readOnly('namespace.applicationId'),
-  applicationName: readOnly('namespace.applicationName'),
+  applicationName: or('namespace._application.name', 'namespace._application.modulePrefix').readOnly(),
 
   /**
    * Unique id per applciation (not application instance). It's very important
