@@ -15,6 +15,16 @@ export default EmberObject.extend(Evented, {
     this.detectedApplications = [];
 
     this.get('adapter').onMessageReceived(message => {
+      if (message.type === 'apps-loaded') {
+        message.apps.forEach(app => {
+          if (!this.detectedApplications.mapBy('applicationId').includes(app.applicationId)) {
+            this.detectedApplications.pushObject(app);
+          }
+        });
+      }
+    });
+
+    this.get('adapter').onMessageReceived(message => {
       const { applicationId, applicationName } = message;
 
       if (message.type === 'app-list') {
@@ -38,7 +48,7 @@ export default EmberObject.extend(Evented, {
 
       // save list of application ids
       if (!this.detectedApplications.mapBy('applicationId').includes(applicationId)) {
-        this.detectedApplications.push({ applicationId, applicationName });
+        this.detectedApplications.pushObject({ applicationId, applicationName });
       }
 
       if (this.applicationId === applicationId) {
