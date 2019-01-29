@@ -15,15 +15,22 @@ export default EmberObject.extend(Ember.Evented, {
   now: computed(() => Date.now()),
 
   /**
-   * Unique id per applciation (not application instance). It's very important
+   * Unique id per application (not application instance). It's very important
    * that this id doesn't change when the app is reset otherwise the inspector
    * will no longer recognize the app.
    *
    * @property uniqueId
    * @type {String}
    */
-  uniqueId: computed('namespace.applicationId', 'now', function() {
-    return `${this.get('namespace.applicationId')}__${window.location.href}__${this.get('now')}`;
+  uniqueId: computed('namespace._application', function() {
+    // No idea if this will be a stable id generation strategy.
+    // Could it change each time an app boots?
+    //
+    // In the original strategy why was the timestamp important?
+    //
+    // @rwwagner90
+    return Ember.guidFor(this.get('namespace._application'));
+    // return `${this.get('namespace.applicationId')}__${window.location.href}__${this.get('now')}`;
   }),
 
   init() {
