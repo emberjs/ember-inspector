@@ -31,6 +31,9 @@ const EmberDebug = EmberObject.extend({
   _application: null,
 
   owner: null,
+  started: false,
+
+  applicationName: computed.or('_application.name', '_application.modulePrefix').readOnly(),
 
   /**
    * We use the application's id instead of the owner's id so that we use the same inspector
@@ -45,8 +48,6 @@ const EmberDebug = EmberObject.extend({
     }
     return guidFor(this.get('owner'));
   }),
-
-  started: false,
 
   // Using object shorthand syntax here is somehow having strange side effects.
   // eslint-disable-next-line object-shorthand
