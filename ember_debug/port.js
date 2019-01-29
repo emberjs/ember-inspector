@@ -22,7 +22,7 @@ export default EmberObject.extend(Ember.Evented, {
    * @property uniqueId
    * @type {String}
    */
-  uniqueId: computed('namespace.applicationId', 'now',  function() {
+  uniqueId: computed('namespace.applicationId', 'now', function() {
     return `${this.get('namespace.applicationId')}__${window.location.href}__${this.get('now')}`;
   }),
 
@@ -44,7 +44,7 @@ export default EmberObject.extend(Ember.Evented, {
     options.type = messageType;
     options.from = 'inspectedWindow';
     options.applicationId = this.get('uniqueId');
-    options.applicationName = this.get('applicationName'),
+    options.applicationName = this.get('applicationName');
     this.get('adapter').send(options);
   },
 

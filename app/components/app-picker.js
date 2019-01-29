@@ -4,12 +4,9 @@ import { map, reads } from '@ember/object/computed';
 import { getOwner } from '@ember/application';
 
 export default Component.extend({
-  init(...args) {
-    this._super(...args);
-    this.port.send('app-picker-loaded');
-  },
-
   classNames: ['app-picker'],
+
+  selectedApp: reads('port.applicationId'),
 
   apps: map('port.detectedApplications.[]', function({ applicationName, applicationId }) {
     // If we already have both a name and an id, use them as is
@@ -24,14 +21,17 @@ export default Component.extend({
     }
   }),
 
-  selectedApp: reads('port.applicationId'),
-
   selectedDidChange: observer('selectedApp', function() {
     // Change app being debugged
     const applicationId = this.get('selectedApp');
     const port = getOwner(this).lookup('port:main');
     port.set('applicationId', applicationId);
   }),
+
+  init(...args) {
+    this._super(...args);
+    this.port.send('app-picker-loaded');
+  },
 
   actions: {
     selectApp(applicationId) {
