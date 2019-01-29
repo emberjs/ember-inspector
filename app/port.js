@@ -9,30 +9,18 @@ export default EmberObject.extend(Evented, {
   }),
 
   init() {
-    const addIfNotPresent = (list, value) => {
-      if (list.indexOf(value) === -1) {
-        list.pushObject(value);
-      }
-    };
-
     const detectedApplications = this.get('detectedApplications');
-
     this.get('adapter').onMessageReceived(message => {
-      if (message.type === 'app-list') {
-        message.appList.forEach(applicationId => addIfNotPresent(detectedApplications, applicationId));
-        return;
-      }
-
       if (!message.applicationId) {
         return;
       }
-
       if (!this.get('applicationId')) {
         this.set('applicationId', message.applicationId);
       }
-
       // save list of application ids
-      addIfNotPresent(detectedApplications, message.applicationId);
+      if (detectedApplications.indexOf(message.applicationId) === -1) {
+        detectedApplications.pushObject(message.applicationId);
+      }
 
       const applicationId = this.get('applicationId');
       if (applicationId === message.applicationId) {
