@@ -192,11 +192,29 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     }
   }
 
+  /**
+   * Get all the Ember.Application instances from Ember.Namespace.NAMESPACES
+   * and add our own applicationId and applicationName to them
+   * @return {*}
+   */
   function getApplications() {
     var namespaces = Ember.A(Ember.Namespace.NAMESPACES);
 
-    return namespaces.filter(function(namespace) {
+    var apps = namespaces.filter(function(namespace) {
       return namespace instanceof Ember.Application;
+    });
+
+    return apps.map(function(app) {
+      // Add applicationId and applicationName to the app
+      var applicationId = Ember.guidFor(app);
+      var applicationName = app.name || app.modulePrefix || `(unknown app - ${applicationId})`;
+
+      Object.assign(app, {
+        applicationId,
+        applicationName
+      });
+
+      return app;
     });
   }
 
@@ -228,8 +246,8 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
   function sendApps(adapter, apps) {
     const serializedApps = apps.map(app => {
       return {
-        applicationName: app.name || app.modulePrefix || 'Application',
-        applicationId: Ember.guidFor(app)
+        applicationName: app.applicationName,
+        applicationId: app.applicationId
       }
     });
 
