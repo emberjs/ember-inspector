@@ -96,68 +96,36 @@ module('Route Tree Tab', function(hooks) {
     await visit('route-tree');
 
     let routeNodes = findAll('.js-route-tree-item');
-    assert.equal(routeNodes.length, 6);
+    assert.equal(routeNodes.length, 6, 'correct number of nodes');
 
     let routeNames = findAll('.js-route-name').map(function(item) {
       return item.textContent.trim();
     });
-    assert.deepEqual(routeNames, ['application', 'post', 'post.loading', 'post.new', 'post.edit', 'comments']);
+    assert.deepEqual(
+      routeNames,
+      ['application', 'post', 'post.loading', 'post.new', 'post.edit', 'comments'],
+      'route name displayed'
+    );
 
     let routeHandlers = findAll('.js-route-handler').map(function(item) {
-      return item.textContent.trim();
+      return item.getAttribute('title').trim();
     });
-    assert.deepEqual(routeHandlers, ['ApplicationRoute', 'PostRoute', 'PostLoadingRoute', 'PostNewRoute', 'PostEditRoute', 'CommentsRoute']);
+    assert.deepEqual(
+      routeHandlers,
+      ['ApplicationRoute', 'PostRoute', 'PostLoadingRoute', 'PostNewRoute', 'PostEditRoute', 'CommentsRoute'],
+      'route class name in title attribute'
+    );
 
     let controllers = findAll('.js-route-controller').map(function(item) {
-      return item.textContent.trim();
+      return item.getAttribute('title').trim();
     });
 
-    assert.deepEqual(controllers, ['ApplicationController', 'PostController', 'PostLoadingController', 'PostNewController', 'PostEditController', 'CommentsController']);
-
-    let templates = findAll('.js-route-template').map(function(item) {
-      return item.textContent.trim();
-    });
-
-    assert.deepEqual(templates, ['application', 'post', 'post/loading', 'post/new', 'post/edit', 'comments']);
-
-    let titleTips = [];
-
-    routeNodes.forEach((node) => {
-      titleTips = [...node.querySelectorAll('span[title]'), ...titleTips];
-    });
-
-    titleTips = titleTips.map((span) => span.getAttribute('title')).sort();
-
-    assert.deepEqual(titleTips, [
-      "ApplicationController",
-      "ApplicationRoute",
-      "CommentsController",
-      "CommentsRoute",
-      "PostController",
-      "PostEditController",
-      "PostEditRoute",
-      "PostLoadingController",
-      "PostLoadingRoute",
-      "PostNewController",
-      "PostNewRoute",
-      "PostRoute",
-      "application",
-      "application",
-      "comments",
-      "comments",
-      "post",
-      "post",
-      "post.edit",
-      "post.loading",
-      "post.new",
-      "post/edit",
-      "post/edit",
-      "post/edit/comments",
-      "post/loading",
-      "post/loading",
-      "post/new",
-      "post/new"
-    ], 'expected title tips');
+    // "PostController" not listed because a file for it was not created on the filesystem
+    assert.deepEqual(
+      controllers,
+      ['ApplicationController', 'PostLoadingController', 'PostNewController', 'PostEditController', 'CommentsController'],
+      'controller class name in title attribute'
+    );
   });
 
   test("Clicking on route handlers and controller sends an inspection message", async function(assert) {
@@ -187,13 +155,6 @@ module('Route Tree Tab', function(hooks) {
     await click(applicationRow.querySelector('.js-route-controller'));
     assert.equal(name, 'objectInspector:inspectController');
     assert.equal(message.name, 'application');
-
-    name = null;
-    message = null;
-    let postRow = findAll('.js-route-tree-item')[1];
-    await click(postRow.querySelector('.js-route-controller'));
-    assert.equal(name, null, "If controller does not exist, clicking should have no effect.");
-    assert.equal(message, null);
   });
 
   test("Current Route is highlighted", async function(assert) {
