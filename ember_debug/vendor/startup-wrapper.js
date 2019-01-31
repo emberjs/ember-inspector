@@ -228,7 +228,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
   function sendApps(adapter, apps) {
     const serializedApps = apps.map(app => {
       return {
-        applicationName: app.name || 'Application',
+        applicationName: app.name || app.modulePrefix || 'Application',
         applicationId: Ember.guidFor(app)
       }
     });
