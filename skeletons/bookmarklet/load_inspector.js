@@ -53,7 +53,7 @@
     if (e.data.name === 'version-mismatch') {
       injectEmberDebug('panes-' + e.data.version.replace(/\./g, '-') + '/ember_debug.js');
     }
-  });  
+  });
 
   if (!window.emberInspector) {
     alert('Unable to open the inspector in a popup.  Please enable popups and retry.');
