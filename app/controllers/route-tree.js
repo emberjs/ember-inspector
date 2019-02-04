@@ -46,10 +46,8 @@ export default Controller.extend({
   rows: computed('filtered.[]', function() {
     return this.get('filtered').map(function(route) {
       return {
-        controller: route,
         name: route,
-        route,
-        template: route,
+        objects: route,
         url: route
       };
     });
