@@ -20,6 +20,7 @@ export default EmberObject.extend({
    */
   parentCount: 0,
   expanded: true,
+  children: null,
   hasChildren: true,
   searchMatched: false,
 
