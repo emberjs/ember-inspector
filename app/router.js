@@ -9,7 +9,6 @@ const Router = EmberRouter.extend({
 Router.map(function() {
   this.route('app-detected', { path: '/', resetNamespace: true }, function() {
     this.route('launch', { path: '/', resetNamespace: true });
-    this.route('view-tree', { resetNamespace: true });
     this.route('component-tree', { resetNamespace: true });
     this.route('route-tree', { resetNamespace: true });
 
