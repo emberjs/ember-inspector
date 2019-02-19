@@ -99,5 +99,10 @@
   },
   "engines": {
     "node": "6.* || 8.* || >= 10.*"
+  },
+  "ember-addon": {
+    "paths": [
+      "lib/ui"
+    ]
   }
 }

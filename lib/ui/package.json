@@ -1,0 +1,11 @@
+{
+  "name": "ui",
+  "keywords": [
+    "ember-addon"
+  ],
+  "dependencies": {
+    "ember-cli-babel": "^7.1.2",
+    "ember-cli-htmlbars": "^3.0.0",
+    "ember-cli-htmlbars-inline-precompile": "^1.0.3"
+  }
+}
