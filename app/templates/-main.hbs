@@ -21,7 +21,7 @@
     <div class="split__panel__hd">
       {{outlet "toolbar"}}
       {{#unless inspectorExpanded}}
-        {{sidebar-toggle
+        {{ui/sidebar-toggle
           action="toggleInspector"
           side="right"
           isExpanded=false
