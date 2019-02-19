@@ -20,7 +20,7 @@
       <span title={{model.value.model.completeName}}>{{model.value.model.name}}</span>
     </div>
     <div class="list__cell-helper">
-      {{send-to-console action=sendModelToConsole param=model.value}}
+      {{ui/send-to-console action=sendModelToConsole param=model.value}}
     </div>
   {{else}}
     --
@@ -36,7 +36,7 @@
       <span title={{model.value.controller.completeName}}>{{model.value.controller.name}}</span>
     </div>
     <div class="list__cell-helper">
-      {{send-to-console
+      {{ui/send-to-console
         action=sendObjectToConsole
         param=model.value.controller.objectId
       }}
@@ -53,7 +53,7 @@
       <span title={{model.value.completeViewClass}}>{{model.value.viewClass}}</span>
     </div>
     <div class="list__cell-helper">
-      {{send-to-console action=sendObjectToConsole param=model.value.objectId}}
+      {{ui/send-to-console action=sendObjectToConsole param=model.value.objectId}}
     </div>
   {{else}}
     --
