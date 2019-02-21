@@ -1,29 +1,18 @@
-/**
- SIDEBAR TOGGLE
- ==============
- Button that expands or collapses sidebars
-*/
-
 .sidebar-toggle {
-  max-height: 27px;
+  margin-right: 0; // .toolbar__icon-button override
+  max-height: var(--toolbar-height);
+  padding-right: 6px; // .toolbar__icon-button override
+
+  /*
+    Absolute positioning used because this button is not
+    a child of .toolbar
+  */
   position: absolute;
-  top: 0;
-}
-
-.toolbar__icon-button.sidebar-toggle {
-  background: var(--base00);
-  margin-right: 0;
-  padding-right: 6px;
-}
-
-.sidebar-toggle--right {
   right: 0;
-}
+  top: 0;
 
-.sidebar-toggle--left {
-  left: -5px;
-}
-
-.sidebar-toggle--far-left {
-  left: -30px;
+  &.flip .sidebar-toggle-triangle {
+    transform: rotate(180deg) translateX(3px);
+    transform-origin: center;
+  }
 }
