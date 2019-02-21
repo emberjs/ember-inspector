@@ -1,0 +1,25 @@
+:root {
+  --toolbar-height: 28px;
+}
+
+.toolbar {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  min-height: var(--toolbar-height);
+}
+
+.toolbar > * {
+  flex: none;
+}
+
+.toolbar .send-to-console {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+@import 'checkbox';
+@import 'divider';
+@import 'icon-button';
+@import 'radio';
+@import 'search';

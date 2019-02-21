@@ -5,7 +5,13 @@
  at the far right of the screen
 */
 
-$white: #ffffff;
+.object-inspector-object-name {
+  flex: auto;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .object-trail {
   margin-bottom: 4px;
@@ -85,7 +91,7 @@ $white: #ffffff;
 
 .mixin__property-icon {
   border-radius: 3px;
-  color: $white;
+  color: var(--white);
   display: inline-block;
   font-family: var(--font-monospace);
   font-size: 13px;
