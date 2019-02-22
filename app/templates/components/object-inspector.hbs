@@ -44,4 +44,10 @@
 
     {{mixin-details model=mixinDetails displayType=propDisplayType}}
   </div>
+{{else}}
+  <div class="split__panel__bd">
+    {{#ui/empty-message}}
+      No object selected
+    {{/ui/empty-message}}
+  </div>
 {{/if}}
