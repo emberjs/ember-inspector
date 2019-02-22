@@ -1,5 +1,5 @@
 <div class="toolbar">
-  {{ui/clear-button
+  {{ui/toolbar-clear-button
     action="clear"
     classNames="toolbar__icon-button js-clear-promises-btn"
   }}
@@ -12,7 +12,7 @@
     >
 
     </div>
-    {{ui/reload-button
+    {{ui/toolbar-reload-button
       action="refreshPage"
       classNames="toolbar__icon-button js-toolbar-page-refresh-btn"
     }}
@@ -25,7 +25,7 @@
   </div>
 
   <div class="toolbar__search js-promise-search">
-    {{ui/search-field value=searchValue}}
+    {{ui/toolbar-search-field value=searchValue}}
   </div>
 
   <div
