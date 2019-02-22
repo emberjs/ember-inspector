@@ -1,10 +1,5 @@
-/**
- PILL
- ====
-*/
-
 .pill {
-  background: var(--base06);
+  background: var(--pill-bg);
   border-radius: 8px;
   cursor: default;
   display: inline-block;
@@ -17,7 +12,7 @@
 }
 
 a.active > .pill {
-  background: var(--base12);
+  background: var(--pill-bg-active);
 }
 
 .pill--not-clickable {
