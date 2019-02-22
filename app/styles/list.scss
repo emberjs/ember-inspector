@@ -98,6 +98,7 @@
   }
 
   &_value_numeric {
+    font-family: var(--font-monospace);
     min-width: 65px;
     padding-right: 10px;
     text-align: right;

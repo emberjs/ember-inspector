@@ -1,22 +1,29 @@
 .warning {
+  align-items: center;
   background: var(--spec00);
-  color: var(--base13);
+  color: var(--warning-text);
   display: flex;
   flex-direction: row;
-  font-size: 11px;
+  font-size: 12px;
   justify-content: flex-start;
-  padding: 0;
+  line-height: 1;
+  padding: 4px 8px;
 }
 
-.warning__image {
-  display: inline;
-  margin: 5px;
-  max-height: 15px;
-  max-width: 15px;
+.warning__icon {
+  display: inline-block;
+  height: 18px;
+  margin-right: 5px;
+  width: 18px;
+
+  path {
+    fill: var(--warning-text);
+  }
 }
 
 .warning__text {
-  margin: 5px 0;
+  flex-grow: 1;
+  margin: 0;
   padding: 0;
 }
 
@@ -26,7 +33,6 @@
   color: var(--base13);
   cursor: pointer;
   font-weight: 200;
-  margin: 5px 10px 5px auto;
   padding: 0;
   text-decoration: underline;
 }
