@@ -12,17 +12,17 @@
   vertical-align: middle;
 }
 
-a.active > .pill {
+.active > .pill {
   background: var(--pill-bg-active);
-}
-
-.pill--not-clickable {
-  cursor: inherit;
 }
 
 .pill--small {
   font-size: 10px;
   padding: 2px 4px;
+}
+
+.pill--text {
+  font-family: var(--font-sans-serif);
 }
 
 .pill--bold {

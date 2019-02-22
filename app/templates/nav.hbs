@@ -1,61 +1,68 @@
 <nav class="nav nav--main">
   <ul>
     <li>
-      {{#link-to "component-tree"}}
-        {{svg-jar "nav-components" width="20px" height="20px"}}
-        Components
+      {{#link-to "component-tree" class="nav__item"}}
+        {{svg-jar "nav-components" width="20px" height="20px" class="nav__item-icon"}}
+        <span class="nav__item-label">Components</span>
       {{/link-to}}
     </li>
     <li>
-      {{#link-to "view-tree"}}
-        {{svg-jar "nav-view-tree" width="20px" height="20px"}}
-        View Tree
+      {{#link-to "view-tree" class="nav__item"}}
+        {{svg-jar "nav-view-tree" width="20px" height="20px" class="nav__item-icon"}}
+        <span class="nav__item-label">View Tree</span>
       {{/link-to}}
     </li>
     <li>
-      {{#link-to "route-tree"}}
-        {{svg-jar "nav-route-tree" width="20px" height="20px"}}
-        Routes
+      {{#link-to "route-tree" class="nav__item"}}
+        {{svg-jar "nav-route-tree" width="20px" height="20px" class="nav__item-icon"}}
+        <span class="nav__item-label">Routes</span>
       {{/link-to}}
     </li>
     <li>
-      {{#link-to "data"}}
-        {{svg-jar "nav-data" width="20px" height="20px"}}
-        Data
+      {{#link-to "data" class="nav__item"}}
+        {{svg-jar "nav-data" width="20px" height="20px" class="nav__item-icon"}}
+        <span class="nav__item-label">Data</span>
       {{/link-to}}
     </li>
     <li>
-      {{#link-to "deprecations"}}
-        {{svg-jar "nav-deprecations" width="20px" height="20px"}}
-        Deprecations
-        <span class="pill pill--not-clickable">{{deprecationCount}}</span>
+      {{#link-to "deprecations" class="nav__item"}}
+        {{svg-jar "nav-deprecations" width="20px" height="20px" class="nav__item-icon"}}
+        <span class="nav__item-label">Deprecations</span>
+        <span class="pill">{{deprecationCount}}</span>
       {{/link-to}}
     </li>
     <li>
-      {{#link-to "info"}}
-        {{svg-jar "nav-info" width="20px" height="20px"}}
-        Info
+      {{#link-to "info" class="nav__item"}}
+        {{svg-jar "nav-info" width="20px" height="20px" class="nav__item-icon"}}
+        <span class="nav__item-label">Info</span>
       {{/link-to}}
     </li>
   </ul>
-  <div class="nav__title"><h1>Advanced</h1></div>
+
+  <h1 class="nav__title">Advanced</h1>
+
   <ul>
     <li>
-      {{#link-to "promise-tree"}}
-        {{svg-jar "nav-promises" width="20px" height="20px"}}
-        Promises
+      {{#link-to "promise-tree" class="nav__item"}}
+        {{svg-jar "nav-promises" width="20px" height="20px" class="nav__item-icon"}}
+        <span class="nav__item-label">Promises</span>
       {{/link-to}}
     </li>
     <li>
-      {{#link-to "container-types"}}
-        {{svg-jar "nav-container" width="20px" height="20px"}}
-        Container
+      {{#link-to "container-types" class="nav__item"}}
+        {{svg-jar "nav-container" width="20px" height="20px" class="nav__item-icon"}}
+        <span class="nav__item-label">Container</span>
       {{/link-to}}
     </li>
     <li>
-      {{#link-to "render-tree"}}
-        {{svg-jar "nav-render-performance" width="20px" height="20px"}}
-        Render Performance
+      {{#link-to "render-tree" class="nav__item"}}
+        {{svg-jar
+          "nav-render-performance"
+          width="20px"
+          height="20px"
+          class="nav__item-icon"
+        }}
+        <span class="nav__item-label">Render Performance</span>
       {{/link-to}}
     </li>
   </ul>
