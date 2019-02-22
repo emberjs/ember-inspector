@@ -1,12 +1,12 @@
-{{#x-list
-  class="js-deprecations list_no-alternate-color"
-  headerHeight=0
-  name="deprecation-list"
-  schema=(hash columns=null)
-  setIsDragging=(action "setIsDragging" target=application)
-as |list|
-}}
-  {{#if filtered.length}}
+{{#if filtered.length}}
+  {{#x-list
+    class="js-deprecations list_no-alternate-color"
+    headerHeight=0
+    name="deprecation-list"
+    schema=(hash columns=null)
+    setIsDragging=(action "setIsDragging" target=application)
+  as |list|
+  }}
     <tbody>
       {{#each
         filtered
@@ -22,18 +22,18 @@ as |list|
         }}
       {{/each}}
     </tbody>
-  {{else}}
-    <div class="notice js-page-refresh">
-      <p>
-        No deprecations have been detected. Try reloading to catch the deprecations that were logged before you opened
-        the inspector.
-      </p>
-      <button
-        class="js-page-refresh-btn"
-        {{action "refreshPage"}}
-      >
-        Reload
-      </button>
-    </div>
-  {{/if}}
-{{/x-list}}
+  {{/x-list}}
+{{else}}
+  {{#ui/empty-message class="js-page-refresh"}}
+    <p>
+      No deprecations have been detected. Try reloading to catch the deprecations that were logged before you opened
+      the inspector.
+    </p>
+    <button
+      class="js-page-refresh-btn"
+      {{action "refreshPage"}}
+    >
+      Reload
+    </button>
+  {{/ui/empty-message}}
+{{/if}}
