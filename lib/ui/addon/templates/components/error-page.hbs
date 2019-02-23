@@ -2,8 +2,9 @@
   <div class="error-page__content">
     <div class="error-page__header">
       <div class="error-page__title js-error-page-title">
-        {{description}} not detected!
+        {{description}}
       </div>
+      <img class="tomster" src="assets/images/fishy_tomster.png">
     </div>
 
     <div class="error-page__reasons">
@@ -18,7 +19,9 @@
       <ul class="error-page__list">
         {{yield}}
       </ul>
+    </div>
 
+    <div class="error-page__footer">
       If you're still having trouble, please file an issue on the Ember Inspector's
       <a href="https://github.com/emberjs/ember-inspector/issues" target="_blank">GitHub page.</a>
     </div>

@@ -26,7 +26,7 @@
     </div>
 
   {{else}}
-    {{#not-detected description="Ember application"}}
+    {{#ui/error-page description="Ember application not detected!"}}
       <li>This is not an Ember application.</li>
       <li>You are using an old version of Ember (&lt; rc5).</li>
       {{#if isChrome}}
@@ -40,6 +40,6 @@
           </ul>
         </li>
       {{/if}}
-    {{/not-detected}}
+    {{/ui/error-page}}
   {{/if}}
 {{/x-app}}

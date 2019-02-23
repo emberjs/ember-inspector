@@ -7,17 +7,13 @@
   is not detected.
 */
 
-.data-error-page-container {
-  min-height: 100%;
-  padding: 10px;
-  position: relative;
-}
-
 .error-page {
   background: var(--base02);
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   color: var(--base13);
+  display: flex;
+  font-size: 13px;
   left: 0;
   min-height: 100%;
   padding: 10px;
@@ -33,7 +29,7 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   margin: auto;
-  padding: 25px;
+  padding: 0 25px 25px 25px;
   position: relative;
   width: 530px;
 }
@@ -44,32 +40,36 @@
 }
 
 .error-page__header {
+  align-items: center;
   border-bottom: 1px solid var(--base04);
+  display: flex;
   font-size: 19px;
   font-weight: bold;
-  margin-bottom: 10px;
-  padding-bottom: 30px;
-  padding-top: 15px;
+  overflow: hidden;
   position: relative;
-}
+  top: -25px;
 
-.error-page__header:after {
-  background: url("images/fishy_tomster.png") left center no-repeat;
-  background-size: 128px 89px;
-  bottom: 0;
-  content: ' ';
-  height: 89px;
-  position: absolute;
-  right: 0;
-  width: 128px;
+  .tomster {
+    flex-shrink: 0;
+    height: 89px;
+    width: 128px;
+    transform: translateY(90px);
+    transition: all 0.4s cubic-bezier(0.190, 1.000, 0.220, 1.000);
+  }
+
+  .tomster.hello {
+    transform: translateY(0px);
+  }
 }
 
 .error-page__title {
-  width: 345px;
+  flex-grow: 1;
+  padding-top: 25px;
 }
 
 .error-page__reasons {
-  font-size: 13px;
+  border-bottom: 1px solid var(--base04);
+  padding-bottom: 10px;
 }
 
 .error-page__reasons-title {
@@ -81,11 +81,13 @@
 }
 
 .error-page__list {
-  border-bottom: 1px solid var(--base04);
-  padding-bottom: 5px;
   padding-left: 16px;
 }
 
 .error-page__list li {
   padding: 2px 0;
+}
+
+.error-page__footer {
+  padding-top: 10px;
 }
