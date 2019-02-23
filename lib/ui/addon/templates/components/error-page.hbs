@@ -7,18 +7,16 @@
       <img class="tomster" src="assets/images/fishy_tomster.png" alt="Fishy Tomster">
     </div>
 
-    <div class="error-page__reasons">
-      <div class="error-page__reasons-title">
-        {{#if reasonsTitle}}
-          {{reasonsTitle}}
+    <div class="error-page__body">
+      <div class="error-page__body-title">
+        {{#if bodyTitle}}
+          {{bodyTitle}}
         {{else}}
           Here are some common reasons this happens:
         {{/if}}
       </div>
 
-      <ul class="error-page__list">
-        {{yield}}
-      </ul>
+      {{yield}}
     </div>
 
     <div class="error-page__footer">

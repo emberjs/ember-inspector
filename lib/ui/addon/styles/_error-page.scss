@@ -67,24 +67,21 @@
   padding-top: 25px;
 }
 
-.error-page__reasons {
+.error-page__body {
   border-bottom: 1px solid var(--base04);
   padding-bottom: 10px;
 }
 
-.error-page__reasons-title {
+.error-page__body-title {
   font-weight: bold;
 }
 
-.error-page__reasons ul {
+.error-page__body ul {
   list-style-type: disc;
-}
-
-.error-page__list {
   padding-left: 16px;
 }
 
-.error-page__list li {
+.error-page__body li {
   padding: 2px 0;
 }
 
