@@ -1,7 +1,7 @@
 .pill {
   background: var(--pill-bg);
   border-radius: 8px;
-  cursor: default;
+  cursor: inherit;
   display: inline-block;
   font-family: var(--font-monospace);
   font-size: 12px;
