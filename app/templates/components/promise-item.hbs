@@ -27,7 +27,7 @@
 
 {{#list.cell}}
   <div
-    class="pill pill--bold js-promise-state"
+    class="pill pill--bold pill--text js-promise-state"
     style={{style}}
   >
     {{state}}
@@ -63,7 +63,7 @@
           Stack Trace
         </button>
       {{else}}
-        {{send-to-console action=sendValueToConsole param=model}}
+        {{ui/send-to-console action=sendValueToConsole param=model}}
       {{/if}}
     </div>
   {{else}}

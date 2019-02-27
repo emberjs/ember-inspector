@@ -6,8 +6,16 @@
   }}
     <div class="split__panel__bd">
       <ul>
-        <li>{{#link-to "libraries"}}Libraries{{/link-to}}</li>
-        <li>{{#link-to "whats-new"}}What's New{{/link-to}}</li>
+        <li>
+          {{#link-to "libraries" class="nav__item"}}
+            <span class="nav__item-label">Libraries</span>
+          {{/link-to}}
+        </li>
+        <li>
+          {{#link-to "whats-new" class="nav__item"}}
+            <span class="nav__item-label">What's New</span>
+          {{/link-to}}
+        </li>
       </ul>
     </div>
   {{/draggable-column}}

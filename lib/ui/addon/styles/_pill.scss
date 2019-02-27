@@ -1,0 +1,35 @@
+.pill {
+  background: var(--pill-bg);
+  border-radius: 8px;
+  cursor: inherit;
+  display: inline-block;
+  font-family: var(--font-monospace);
+  font-size: 12px;
+  line-height: 12px;
+  margin: 0 2px;
+  padding: 2px 6px;
+  position: relative;
+  vertical-align: middle;
+}
+
+.active > .pill {
+  background: var(--pill-bg-active);
+}
+
+.pill--small {
+  font-size: 10px;
+  padding: 2px 4px;
+}
+
+.pill--text {
+  font-family: var(--font-sans-serif);
+}
+
+.pill--bold {
+  font-weight: bold;
+}
+
+.pill--blue {
+  background: var(--focus);
+  color: var(--focus-text);
+}

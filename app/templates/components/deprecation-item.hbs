@@ -7,16 +7,17 @@
     title=model.message
   }}
     <div class="list__cell-arrow"></div>
-    <span class="pill pill--not-clickable js-deprecation-count">{{model.count}}</span>
+    <span class="pill js-deprecation-count">{{model.count}}</span>
     <span class="js-deprecation-message">{{model.message}}</span>
     {{#if model.url}}
       <a
         href={{model.url}}
-        class="external-link js-deprecation-url"
+        class="js-deprecation-url"
         target="_blank"
         title="Transition Plan"
       >
         Transition Plan
+        {{svg-jar "external-link" width="12px" height="12px"}}
       </a>
     {{/if}}
   {{/list.cell}}

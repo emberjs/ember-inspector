@@ -1,5 +1,5 @@
-<div class="data-error-page-container">
-  {{#not-detected description="Data adapter"}}
+{{#ui/error-page description="Data adapter not detected!"}}
+  <ul>
     <li>You are using an old version of Ember (&lt; rc7).</li>
     <li>You are using an old version of Ember Data (&lt; 0.14).</li>
     <li>
@@ -8,5 +8,5 @@
         <li>Make sure the library has a data adapter.</li>
       </ul>
     </li>
-  {{/not-detected}}
-</div>
+  </ul>
+{{/ui/error-page}}

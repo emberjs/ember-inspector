@@ -5,9 +5,7 @@
     width=width
   }}
     <div class="split__panel__bd">
-      <div class="nav__title">
-        <h1>{{header}}</h1>
-      </div>
+      <h1 class="nav__title">{{header}}</h1>
 
       <ul>
         {{#each sorted as |itemType|}}
@@ -15,11 +13,13 @@
             {{#link-to
               (if (eq type "model") "records" "container-type")
               (escape-url itemType.name)
+              class="nav__item"
             }}
-              <span class={{concat typeClass "-name"}}>
+              <span class={{concat typeClass "-name" " nav__item-label"}}>
                 {{itemType.name}}
               </span>
-              (<span class={{concat typeClass "-count"}}>{{itemType.count}}</span>)
+
+              <span class={{concat typeClass "-count" " pill"}}>{{itemType.count}}</span>
             {{/link-to}}
           </li>
         {{/each}}

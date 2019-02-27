@@ -20,14 +20,11 @@
   <div class="split__panel">
     <div class="split__panel__hd">
       {{outlet "toolbar"}}
-      {{#unless inspectorExpanded}}
-        {{sidebar-toggle
-          action="toggleInspector"
-          side="right"
-          isExpanded=false
-          classNames="toolbar__icon-button"
-        }}
-      {{/unless}}
+      {{ui/sidebar-toggle
+        action="toggleInspector"
+        isExpanded=inspectorExpanded
+        classNames="toolbar__icon-button"
+      }}
     </div>
 
     {{#main-content class="split__panel__bd"}}

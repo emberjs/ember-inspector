@@ -1,5 +1,5 @@
 <div class="toolbar">
-  {{clear-button
+  {{ui/toolbar-clear-button
     action="clearProfiles"
     classNames="toolbar__icon-button"
   }}
@@ -10,7 +10,7 @@
       aria-hidden="true"
     >
     </div>
-    {{reload-button
+    {{ui/toolbar-reload-button
       action="refreshPage"
       classNames="toolbar__icon-button js-toolbar-page-refresh-btn"
     }}
@@ -23,6 +23,6 @@
   </div>
 
   <div class="toolbar__search js-render-profiles-search">
-    {{search-field value=searchValue}}
+    {{ui/toolbar-search-field value=searchValue}}
   </div>
 </div>

@@ -1,0 +1,104 @@
+.nav__title {
+  color: var(--base09);
+  cursor: default;
+  font-size: 12px;
+  height: 22px;
+  line-height: 22px;
+  margin: 2px 0 0;
+  overflow: hidden;
+  padding: 0 5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+/**
+  Nav Item
+  ===========
+  Anchor tag
+*/
+
+.nav__item {
+  align-items: center;
+  color: var(--base12);
+  cursor: default;
+  display: flex;
+  height: 24px;
+  line-height: 24px;
+  overflow: hidden;
+  padding: 0 5px;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:focus { outline: none; }
+}
+
+.app.is-dragging .nav__item {
+  cursor: col-resize;
+}
+
+.nav__item.active {
+  background: var(--focus);
+  color: var(--focus-text);
+}
+
+.app.inactive .nav__item.active {
+  background: var(--base06);
+}
+
+/**
+  Nav Item Label
+  ===========
+  Main text of Nav Item
+*/
+
+.nav__item-label {
+  flex-grow: 1;
+  font-size: 13px;
+}
+
+.nav__item-icon {
+  flex-shrink: 0;
+  height: 22px;
+  margin-right: 7px;
+  width: 22px;
+}
+
+.nav__icon-stroke {
+  fill: var(--base15);
+}
+
+.nav__item.active .nav__icon-stroke {
+  fill: var(--focus-text);
+}
+
+/* Custom navs */
+
+.nav--main .nav__item {
+  height: 38px;
+  line-height: 38px;
+  padding-left: 12px;
+}
+
+.nav--main .pill {
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.nav.nav--main .nav__title {
+  padding-left: 14px;
+}
+
+/* Flip path on Promises icon */
+
+.promises-icon-circle {
+  transform: scaleX(-1);
+  transform-origin: 18px;
+}
