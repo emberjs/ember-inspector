@@ -4,6 +4,17 @@
     classNames="toolbar__icon-button js-clear-deprecations-btn"
   }}
 
+  <div class="toolbar__checkbox js-toggle-flush-deprecations">
+    <label for="options-toggle-deprecations" title="Deprecation workflow">
+      {{input
+        type="checkbox"
+        checked=options.toggleDeprecationWorkflow
+        id="options-toggle-deprecations"
+      }}
+      Toggle for Deprecation Workflow
+    </label>
+  </div>
+
   <div class="divider" aria-hidden="true"></div>
 
   <div class="toolbar__search js-deprecations-search">

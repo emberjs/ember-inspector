@@ -1,4 +1,4 @@
-import { get } from '@ember/object';
+import { get, observer } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import debounceComputed from "ember-inspector/computed/debounce";
 import searchMatch from "ember-inspector/utils/search-match";
@@ -14,10 +14,17 @@ export default Controller.extend({
   application: controller(),
   search: null,
   searchValue: debounceComputed('search', 300),
+  options: {
+    toggleDeprecationWorkflow: false
+  },
 
   filtered: filter('model', function(item) {
     return searchMatch(get(item, 'message'), this.get('search'));
   }).property('model.@each.message', 'search'),
+
+  optionsChanged: observer('options.toggleDeprecationWorkflow', function() {
+    this.port.send('deprecation:setOptions', { options: this.get('options') });
+  }),
 
   actions: {
     openResource(item) {
