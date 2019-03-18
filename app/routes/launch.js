@@ -1,7 +1,7 @@
 import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
 const { Promise } = RSVP;
-import { oneWay } from '@ember/object/computed';
+import { readOnly } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import LocalStorageService from 'ember-inspector/services/storage/local';
 
@@ -11,7 +11,7 @@ const storageSupported = chromeStoreSupported || localStoreSupported;
 const STORE_KEY = 'last-version-opened';
 
 export default Route.extend({
-  version: oneWay('config.VERSION').readOnly(),
+  version: readOnly('config.VERSION'),
   storage: service(`storage/${LocalStorageService.STORAGE_TYPE_TO_USE}`),
 
 

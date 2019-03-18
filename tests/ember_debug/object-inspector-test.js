@@ -419,20 +419,6 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(serializedComputedProperty.dependentKeys[1], "bar");
   });
 
-  test('Read Only Computed properties mush have a readOnly property', function(assert) {
-    let inspected = EmberObject.extend({
-      readCP: computed(function() {}).readOnly(),
-      writeCP: computed(function() {})
-    }).create();
-
-    objectInspector.sendObject(inspected);
-
-    let properties = message.details[1].properties;
-
-    assert.ok(properties[0].readOnly);
-    assert.ok(!properties[1].readOnly);
-  });
-
   test('Views are correctly handled when destroyed during transitions', async function(assert) {
     let objectId = null;
 

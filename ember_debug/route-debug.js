@@ -2,13 +2,13 @@ import PortMixin from 'ember-debug/mixins/port-mixin';
 
 const Ember = window.Ember;
 const { String: { classify, dasherize }, computed, observer, run: { later }, Object: EmberObject } = Ember;
-const { oneWay, readOnly } = computed;
+const { readOnly } = computed;
 
 const { hasOwnProperty } = Object.prototype;
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,
-  port: oneWay('namespace.port').readOnly(),
+  port: readOnly('namespace.port'),
 
   router: computed('namespace.owner', function() {
     return this.get('namespace.owner').lookup('router:main');
@@ -19,8 +19,8 @@ export default EmberObject.extend(PortMixin, {
     return container.lookup('controller:application');
   }),
 
-  currentPath: oneWay('applicationController.currentPath').readOnly(),
-  currentURL: oneWay('namespace.owner.router.currentURL').readOnly(),
+  currentPath: readOnly('applicationController.currentPath'),
+  currentURL: readOnly('namespace.owner.router.currentURL'),
 
   portNamespace: 'route',
 
