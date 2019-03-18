@@ -1,9 +1,9 @@
 import { Promise } from 'rsvp';
 import TabRoute from "ember-inspector/routes/tab";
-import { oneWay } from '@ember/object/computed';
+import { readOnly } from '@ember/object/computed';
 
 export default TabRoute.extend({
-  version: oneWay('config.VERSION').readOnly(),
+  version: readOnly('config.VERSION'),
 
   model() {
     const version = this.get('version');

@@ -1,9 +1,9 @@
 const Ember = window.Ember;
 const { Object: EmberObject, computed, run } = Ember;
-const { oneWay } = computed;
+const { readOnly } = computed;
 
 export default EmberObject.extend(Ember.Evented, {
-  adapter: oneWay('namespace.adapter').readOnly(),
+  adapter: readOnly('namespace.adapter'),
 
   /**
    * Stores the timestamp when it was first accessed.
