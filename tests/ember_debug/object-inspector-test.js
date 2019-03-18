@@ -125,7 +125,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
       hi: computed(function() {
         assert.step('calculating computed');
         return 'Hello';
-      }).property(),
+      }),
       _debugInfo() {
         return {
           propertyInfo: {
@@ -173,7 +173,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     let inspected = EmberObject.extend({
       hi: computed(function() {
         return 'Hello';
-      }).property()
+      })
     }).create();
 
     // pre-calculate CP
@@ -309,7 +309,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
       name: 'Teddy',
       gender: 'Male',
       hasChildren: false,
-      expensiveProperty: computed(function() { return ''; }).property(),
+      expensiveProperty: computed(function() { return ''; }),
       _debugInfo() {
         return {
           propertyInfo: {
@@ -421,8 +421,8 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
   test('Read Only Computed properties mush have a readOnly property', function(assert) {
     let inspected = EmberObject.extend({
-      readCP: computed(function() {}).property().readOnly(),
-      writeCP: computed(function() {}).property()
+      readCP: computed(function() {}).readOnly(),
+      writeCP: computed(function() {})
     }).create();
 
     objectInspector.sendObject(inspected);

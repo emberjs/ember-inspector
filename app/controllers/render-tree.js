@@ -5,7 +5,7 @@ import { inject as service } from '@ember/service';
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
 import debounceComputed from "ember-inspector/computed/debounce";
 import LocalStorageService from "ember-inspector/services/storage/local";
-import { and, equal, filter } from '@ember/object/computed';
+import { and, equal } from '@ember/object/computed';
 
 export default Controller.extend({
   application: controller(),
@@ -78,14 +78,16 @@ export default Controller.extend({
     return escapeRegExp(this.get('search').toLowerCase());
   }),
 
-  filtered: filter('model', function(item) {
-    let search = this.get('escapedSearch');
-    if (isEmpty(search)) {
-      return true;
-    }
-    let regExp = new RegExp(search);
-    return !!recursiveMatch(item, regExp);
-  }).property('model.@each.name', 'search')
+  filtered: computed('model.@each.name', 'search', function() {
+    return get(this, 'model').filter((item) => {
+      let search = this.get('escapedSearch');
+      if (isEmpty(search)) {
+        return true;
+      }
+      let regExp = new RegExp(search);
+      return !!recursiveMatch(item, regExp);
+    });
+  }),
 });
 
 function recursiveMatch(item, regExp) {

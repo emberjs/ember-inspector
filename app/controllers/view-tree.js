@@ -1,7 +1,7 @@
-import { observer, get } from '@ember/object';
+import { observer, get, computed } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import searchMatch from 'ember-inspector/utils/search-match';
-import { alias, filter } from '@ember/object/computed';
+import { alias, } from '@ember/object/computed';
 
 export default Controller.extend({
   application: controller(),
@@ -28,9 +28,10 @@ export default Controller.extend({
    * @property filteredList
    * @type {Array<Object>}
    */
-  filteredList: filter('model', function(item) {
-    return searchMatch(get(item, 'value.name'), this.get('searchValue'));
-  }).property('model.[]', 'searchValue'),
+  filteredList: computed('model.[]', 'searchValue', function() {
+    return get(this, 'model')
+      .filter((item) => searchMatch(get(item, 'value.name'), this.get('searchValue')));
+  }),
 
   optionsChanged: observer('options.components', function() {
     this.port.send('view:setOptions', { options: this.get('options') });
