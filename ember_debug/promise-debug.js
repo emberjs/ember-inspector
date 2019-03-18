@@ -87,7 +87,7 @@ export default EmberObject.extend(PortMixin, {
       this.get('session').setItem('promise:stack', value);
       return value;
     }
-  }).property(),
+  }),
 
   sendInstrumentWithStack() {
     this.sendMessage('instrumentWithStack', {
