@@ -31,6 +31,10 @@ export default EmberObject.extend(PortMixin, {
 
   emberCliConfig: readOnly('namespace.generalDebug.emberCliConfig'),
 
+  options: {
+    toggleDeprecationWorkflow: false
+  },
+
   init() {
     this._super();
     this.handleDeprecations();
@@ -158,7 +162,11 @@ export default EmberObject.extend(PortMixin, {
 
     release() {
       this._watching = false;
-    }
+    },
+
+    setOptions({ options }) {
+      this.options.toggleDeprecationWorkflow = options.toggleDeprecationWorkflow;
+    },
   },
 
   willDestroy() {
@@ -167,7 +175,8 @@ export default EmberObject.extend(PortMixin, {
   },
 
   handleDeprecations() {
-    registerDeprecationHandler((message, options) => {
+    registerDeprecationHandler((message, options, next) => {
+
       /* global __fail__*/
 
       let error;
@@ -216,6 +225,10 @@ export default EmberObject.extend(PortMixin, {
           this.get("adapter").warn("Deprecations were detected, see the Ember Inspector deprecations tab for more details.");
           this._warned = true;
         }
+      }
+
+      if (this.options.toggleDeprecationWorkflow) {
+        next(message, options);
       }
     });
   }
