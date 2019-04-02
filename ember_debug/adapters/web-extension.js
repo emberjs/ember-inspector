@@ -1,4 +1,5 @@
-import BasicAdapter from "./basic";
+import BasicAdapter from './basic';
+
 const Ember = window.Ember;
 const { run, typeOf } = Ember;
 const { isArray } = Array;
@@ -6,9 +7,10 @@ const { keys } = Object;
 
 export default BasicAdapter.extend({
   init() {
-    this._super(...arguments);
     this.set('_channel', new MessageChannel());
     this.set('_chromePort', this.get('_channel.port1'));
+
+    this._super(...arguments);
   },
 
   connect() {
