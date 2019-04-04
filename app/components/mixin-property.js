@@ -81,6 +81,10 @@ export default Component.extend({
       }
 
       let value = this.get('model.value.inspect');
+      let type = this.get('valueType');
+      if (type === 'type-string') {
+        value = `"${value}"`;
+      }
       if (!this.get('isDate')) {
         this.set('txtValue', value);
       } else {
