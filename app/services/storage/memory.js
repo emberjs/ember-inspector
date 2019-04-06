@@ -7,17 +7,20 @@
  */
 import Service from '@ember/service';
 
-import { computed } from '@ember/object';
 const { keys } = Object;
 
 export default Service.extend({
-  /**
-   * Where data is stored.
-   *
-   * @property hash
-   * @type {Object}
-   */
-  hash: computed(() => ({})),
+  init() {
+    this._super(...arguments);
+
+    /**
+     * Where data is stored.
+     *
+     * @property hash
+     * @type {Object}
+     */
+    this.hash = {};
+  },
 
   /**
    * Reads a stored item.

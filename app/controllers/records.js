@@ -11,8 +11,6 @@ export default Controller.extend({
 
   searchValue: '',
 
-  filters: computed(() => []),
-
   filterValue: null,
 
   noFilterValue: none('filterValue'),
@@ -71,6 +69,12 @@ export default Controller.extend({
       return true;
     });
   }),
+
+  init() {
+    this._super(...arguments);
+
+    this.filters = [];
+  },
 
   actions: {
     /**

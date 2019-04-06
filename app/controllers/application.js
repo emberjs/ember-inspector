@@ -1,5 +1,4 @@
 import Controller from '@ember/controller';
-import { computed } from '@ember/object';
 import { equal } from '@ember/object/computed';
 
 export default Controller.extend({
@@ -15,8 +14,6 @@ export default Controller.extend({
 
   navWidth: 180,
   inspectorWidth: 360,
-  mixinStack: computed(() => []),
-  mixinDetails: computed(() => []),
   isChrome: equal('port.adapter.name', 'chrome'),
 
   deprecationCount: 0,
@@ -25,6 +22,13 @@ export default Controller.extend({
   active: true,
 
   inspectorExpanded: false,
+
+  init() {
+    this._super(...arguments);
+
+    this.mixinStack = [];
+    this.mixinDetails = [];
+  },
 
   pushMixinDetails(name, property, objectId, details, errors) {
     details = {

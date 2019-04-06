@@ -1,7 +1,7 @@
 import { alias } from '@ember/object/computed';
 import { computed } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
-import checkCurrentRoute from "ember-inspector/utils/check-current-route";
+import checkCurrentRoute from 'ember-inspector/utils/check-current-route';
 import searchMatch from 'ember-inspector/utils/search-match';
 import isRouteSubstate from 'ember-inspector/utils/is-route-substate';
 
@@ -18,8 +18,6 @@ export default Controller.extend({
     hideRoutes: false,
     hideSubstates: false
   },
-
-  model: computed(() => []),
 
   filtered: computed('model.[]', 'options.hideRoutes', 'options.hideSubstates', 'currentRoute.{name,url}', 'searchValue', function() {
     return this.get('model').filter(routeItem => {
@@ -52,6 +50,12 @@ export default Controller.extend({
       };
     });
   }),
+
+  init() {
+    this._super(...arguments);
+
+    this.model = [];
+  },
 
   actions: {
     inspectRoute(name) {
