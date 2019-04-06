@@ -15,9 +15,9 @@ export default Route.extend({
   model() {
     let port = this.get('port');
     return new Promise(resolve => {
-      port.on('general:applicationBooted', ({ booted }) => {
+      port.on('general:applicationBooted', function applicationBooted({ booted }) {
         if (booted) {
-          port.off('general:applicationBooted');
+          port.off('general:applicationBooted', applicationBooted);
           resolve();
         }
       });

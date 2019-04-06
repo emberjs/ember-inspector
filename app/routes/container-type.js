@@ -15,6 +15,7 @@ export default TabRoute.extend({
     const port = this.get('port');
     return new Promise((resolve, reject) => {
       port.one('container:instances', message => {
+        debugger;
         if (message.status === 200) {
           resolve(message.instances);
         } else {

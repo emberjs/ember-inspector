@@ -10,7 +10,7 @@ export default TabRoute.extend({
   },
 
   deactivate() {
-    this.get('port').off('route:currentRoute');
+    this.get('port').off('route:currentRoute', this, this.setCurrentRoute);
     this.get('port').off('route:routeTree', this, this.setTree);
   },
 

@@ -220,7 +220,7 @@ export default Component.extend({
     if (listHeader) {
       listHeader.removeEventListener('contextmenu', this.showBasicContext);
     }
-    this.get('layoutService').off('content-height-update', this.onResize);
+    this.get('layoutService').off('content-height-update', this, this.onResize);
     return this._super(...arguments);
   },
 
