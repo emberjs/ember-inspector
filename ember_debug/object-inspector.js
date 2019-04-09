@@ -4,7 +4,7 @@ import { compareVersion } from 'ember-debug/utils/version';
 const Ember = window.Ember;
 const {
   Object: EmberObject, inspect: emberInspect, meta: emberMeta, typeOf,
-  Descriptor, computed, get, set, ComputedProperty, guidFor, isNone, removeObserver,
+  computed, get, set, ComputedProperty, guidFor, isNone, removeObserver,
   Mixin, addObserver, cacheFor, VERSION
 } = Ember;
 const { oneWay } = computed;
@@ -26,10 +26,6 @@ function inspectValue(value) {
 }
 
 function isDescriptor(value) {
-  // Ember < 1.11
-  if (Descriptor !== undefined) {
-    return value instanceof Descriptor;
-  }
   // Ember >= 1.11
   return value && typeof value === 'object' && value.isDescriptor;
 }
@@ -164,11 +160,27 @@ export default EmberObject.extend(PortMixin, {
       const container = this.get('namespace.owner');
       this.sendValueToConsole(container);
     },
+    /**
+     * Lookup the router instance, and find the route with the given name
+     * @param message The message sent
+     * @param {string} messsage.name The name of the route to lookup
+     */
     inspectRoute(message) {
       const container = this.get('namespace.owner');
       const router = container.lookup('router:main');
       const routerLib = router._routerMicrolib || router.router;
-      this.sendObject(routerLib.getHandler(message.name));
+      debugger;
+      // 3.9.0 removed intimate APIs from router
+      // https://github.com/emberjs/ember.js/pull/17843
+      // https://deprecations.emberjs.com/v3.x/#toc_remove-handler-infos
+      if (compareVersion(VERSION, '3.9.0') !== -1) {
+        // Ember >= 3.9.0
+        this.sendObject(routerLib.getRoute(message.name));
+      } else {
+        // Ember < 3.9.0
+        this.sendObject(routerLib.getHandler(message.name));
+      }
+
     },
     inspectController(message) {
       const container = this.get('namespace.owner');

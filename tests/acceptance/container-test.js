@@ -78,7 +78,9 @@ module('Container Tab', function(hooks) {
           this.trigger('container:types', { types: getTypes() });
         }
 
+        debugger;
         if (name === 'container:getInstances' && message.containerType === 'controller') {
+          //TODO: these instances are getting no names
           this.trigger('container:instances', { instances, status: 200 });
         }
       }

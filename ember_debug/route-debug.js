@@ -1,7 +1,15 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
+import { compareVersion } from 'ember-debug/utils/version';
 
 const Ember = window.Ember;
-const { String: { classify, dasherize }, computed, observer, run: { later }, Object: EmberObject } = Ember;
+const {
+  String: { classify, dasherize },
+  computed,
+  observer,
+  run: { later },
+  Object: EmberObject,
+  VERSION
+} = Ember;
 const { readOnly } = computed;
 
 const { hasOwnProperty } = Object.prototype;
@@ -38,10 +46,10 @@ export default EmberObject.extend(PortMixin, {
   sendCurrentRoute: observer('currentURL', function() {
     const {
       currentPath: name,
-      currentURL: url,
+      currentURL: url
     } = this.getProperties(
       'currentPath',
-      'currentURL',
+      'currentURL'
     );
 
     later(() => {
@@ -50,11 +58,14 @@ export default EmberObject.extend(PortMixin, {
   }),
 
   routeTree: computed('router', function() {
+    debugger;
     const router = this.get('router');
     const routerLib = router._routerMicrolib || router.router;
     let routeNames = routerLib.recognizer.names;
     let routeTree = {};
+    debugger;
     for (let routeName in routeNames) {
+      debugger;
       if (!hasOwnProperty.call(routeNames, routeName)) {
         continue;
       }
@@ -125,7 +136,7 @@ function buildSubTree(routeTree, route) {
   let owner = this.get('namespace.owner');
   let subTree = routeTree;
   let item, routeClassName, routeHandler, controllerName,
-      controllerClassName, templateName, controllerFactory;
+    controllerClassName, templateName, controllerFactory;
 
   for (let i = 0; i < handlers.length; i++) {
     item = handlers[i];
@@ -143,7 +154,16 @@ function buildSubTree(routeTree, route) {
 
       const router = this.get('router');
       const routerLib = router._routerMicrolib || router.router;
-      routeHandler = routerLib.getHandler(handler);
+      // 3.9.0 removed intimate APIs from router
+      // https://github.com/emberjs/ember.js/pull/17843
+      // https://deprecations.emberjs.com/v3.x/#toc_remove-handler-infos
+      if (compareVersion(VERSION, '3.9.0') !== -1) {
+        // Ember >= 3.9.0
+        routeHandler = routerLib.getRoute(handler);
+      } else {
+        // Ember < 3.9.0
+        routeHandler = routerLib.getHandler(handler);
+      }
       controllerName = routeHandler.get('controllerName') || routeHandler.get('routeName');
       controllerFactory = owner.factoryFor ? owner.factoryFor(`controller:${controllerName}`) : owner._lookupFactory(`controller:${controllerName}`);
       controllerClassName = this.getClassName(controllerName, 'controller');
@@ -220,7 +240,7 @@ function getURL(container, segments) {
       // 2.11 and before
       try {
         name = segments[i].generate();
-      } catch (e) { // is dynamic
+      } catch(e) { // is dynamic
         name = `:${segments[i].name}`;
       }
     }
