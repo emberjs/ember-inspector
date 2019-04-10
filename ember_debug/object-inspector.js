@@ -169,7 +169,6 @@ export default EmberObject.extend(PortMixin, {
       const container = this.get('namespace.owner');
       const router = container.lookup('router:main');
       const routerLib = router._routerMicrolib || router.router;
-      debugger;
       // 3.9.0 removed intimate APIs from router
       // https://github.com/emberjs/ember.js/pull/17843
       // https://deprecations.emberjs.com/v3.x/#toc_remove-handler-infos

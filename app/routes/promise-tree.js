@@ -25,6 +25,6 @@ export default TabRoute.extend({
 
   deactivate() {
     this.get('assembler').stop();
-    this.get('port').off('promse:getInstrumentWithStack', this, this.setInstrumentWithStack);
+    this.get('port').off('promise:instrumentWithStack', this, this.setInstrumentWithStack);
   }
 });

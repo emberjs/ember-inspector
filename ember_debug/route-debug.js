@@ -58,14 +58,11 @@ export default EmberObject.extend(PortMixin, {
   }),
 
   routeTree: computed('router', function() {
-    debugger;
     const router = this.get('router');
     const routerLib = router._routerMicrolib || router.router;
     let routeNames = routerLib.recognizer.names;
     let routeTree = {};
-    debugger;
     for (let routeName in routeNames) {
-      debugger;
       if (!hasOwnProperty.call(routeNames, routeName)) {
         continue;
       }
