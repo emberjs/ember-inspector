@@ -31,7 +31,6 @@
     "0.0.0"
   ],
   "devDependencies": {
-    "@ember/jquery": "^0.5.2",
     "@ember/optional-features": "^0.7.0",
     "@html-next/vertical-collection": "^1.0.0-beta.13",
     "amd-name-resolver": "^1.2.1",

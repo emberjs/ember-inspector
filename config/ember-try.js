@@ -27,7 +27,7 @@ module.exports = function() {
           },
           npm: {
             devDependencies: {
-              '@ember/jquery': '^0.5.1',
+              '@ember/jquery': '^0.6.0',
               'ember-source': null,
               'ember-native-dom-event-dispatcher': null,
               'jquery': '^2.2.4'
@@ -46,6 +46,7 @@ module.exports = function() {
           },
           npm: {
             devDependencies: {
+              '@ember/jquery': '^0.6.0',
               'ember-source': null,
               'ember-native-dom-event-dispatcher': null
             }
@@ -63,6 +64,7 @@ module.exports = function() {
           },
           npm: {
             devDependencies: {
+              '@ember/jquery': '^0.6.0',
               'ember-source': null,
               'ember-native-dom-event-dispatcher': null
             }
@@ -80,6 +82,7 @@ module.exports = function() {
           },
           npm: {
             devDependencies: {
+              '@ember/jquery': '^0.6.0',
               'ember-source': null,
               'ember-native-dom-event-dispatcher': null
             }
@@ -97,6 +100,7 @@ module.exports = function() {
           },
           npm: {
             devDependencies: {
+              '@ember/jquery': '^0.6.0',
               'ember-source': null,
               'ember-native-dom-event-dispatcher': null
             }
@@ -106,6 +110,7 @@ module.exports = function() {
           name: 'ember-lts-2.12',
           npm: {
             devDependencies: {
+              '@ember/jquery': '^0.6.0',
               'ember-source': '~2.12.0',
               'ember-native-dom-event-dispatcher': null
             }
