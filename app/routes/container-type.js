@@ -12,18 +12,15 @@ export default TabRoute.extend({
   },
   model(params) {
     const type = params.type_id;
-    debugger;
     const port = this.get('port');
     return new Promise((resolve, reject) => {
       port.one('container:instances', message => {
         if (message.status === 200) {
-          debugger;
           resolve(message.instances);
         } else {
           reject(message);
         }
       });
-      debugger;
       port.send('container:getInstances', { containerType: type });
     });
   },

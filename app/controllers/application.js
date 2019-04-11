@@ -1,7 +1,7 @@
 import Controller from '@ember/controller';
 import { equal } from '@ember/object/computed';
 import { schedule } from '@ember/runloop';
-import { inject  as service } from '@ember/service';
+import { inject as service } from '@ember/service';
 
 export default Controller.extend({
   /**

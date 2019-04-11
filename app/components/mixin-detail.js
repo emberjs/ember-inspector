@@ -55,7 +55,7 @@ export default Component.extend({
     },
 
     toggleExpanded() {
-      this.toggleProperty('isExpanded');
+      this.toggleProperty('model.expand');
     },
 
     digDeeper({ name }) {

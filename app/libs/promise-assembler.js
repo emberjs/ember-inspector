@@ -1,27 +1,23 @@
 import { assert } from '@ember/debug';
 import { later } from '@ember/runloop';
-import EmberObject, { computed } from '@ember/object';
+import EmberObject from '@ember/object';
 import EventedMixin from '@ember/object/evented';
-import Promise from "ember-inspector/models/promise";
-
-let arrayComputed = computed(function() {
-  return [];
-});
-
-let objectComputed = computed(function() {
-  return {};
-});
+import Promise from 'ember-inspector/models/promise';
 
 export default EmberObject.extend(EventedMixin, {
-  all: arrayComputed,
-  topSort: arrayComputed,
-  topSortMeta: objectComputed,
-  promiseIndex: objectComputed,
-
   // Used to track whether current message received
   // is the first in the request
   // Mainly helps in triggering 'firstMessageReceived' event
   firstMessageReceived: false,
+
+  init() {
+    this._super(...arguments);
+
+    this.all = [];
+    this.topSort = [];
+    this.topSortMeta = {};
+    this.promiseIndex = {};
+  },
 
   start() {
     this.get('port').on('promise:promisesUpdated', this, this.addOrUpdatePromises);
