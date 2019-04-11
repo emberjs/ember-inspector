@@ -1,7 +1,18 @@
 import Controller from '@ember/controller';
 import { equal } from '@ember/object/computed';
+import { schedule } from '@ember/runloop';
+import { inject  as service } from '@ember/service';
 
 export default Controller.extend({
+  /**
+   * Service used to broadcast changes to the application's layout
+   * such as toggling of the object inspector.
+   *
+   * @property layoutService
+   * @type {Service}
+   */
+  layoutService: service('layout'),
+
   isDragging: false,
   contentHeight: null,
 
@@ -83,6 +94,14 @@ export default Controller.extend({
   actions: {
     setIsDragging(isDragging) {
       this.set('isDragging', isDragging);
+    },
+
+    toggleInspector() {
+      this.toggleProperty('inspectorExpanded');
+      // Broadcast that tables have been resized (used by `x-list`).
+      schedule('afterRender', () => {
+        this.get('layoutService').trigger('resize', { source: 'object-inspector' });
+      });
     }
   }
 });

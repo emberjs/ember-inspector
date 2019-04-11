@@ -5,7 +5,43 @@
   {{#if isEmberApplication}}
     <div class="split">
       <div class="split__panel">
-        {{partial "main"}}
+        {{!-- Begin main --}}
+        <div class="split split--main">
+          {{#draggable-column
+            width=navWidth
+            classes="split__panel split__panel--sidebar-1"
+            setIsDragging=(action "setIsDragging")
+          }}
+            <div class="split__panel__hd">
+              {{iframe-picker}}
+            </div>
+            <div class="split__panel__bd">
+              {{side-nav}}
+            </div>
+            <div class="split__panel__ft">
+              <a target="_blank" href="https://github.com/emberjs/ember-inspector/issues">
+                Submit an Issue
+              </a>
+            </div>
+          {{/draggable-column}}
+
+          <div class="split__panel">
+            <div class="split__panel__hd">
+              {{outlet "toolbar"}}
+              {{ui/sidebar-toggle
+                classNames="toolbar__icon-button"
+                isExpanded=inspectorExpanded
+                toggleInspector=(action "toggleInspector")
+              }}
+            </div>
+
+            {{#main-content class="split__panel__bd"}}
+              {{outlet}}
+            {{/main-content}}
+          </div>
+        </div>
+
+        {{!-- End main --}}
       </div>
 
       {{#if inspectorExpanded}}
@@ -19,7 +55,7 @@
             application=this
             model=mixinStack
             mixinDetails=mixinDetails
-            toggleInspector="toggleInspector"
+            toggleInspector=(action "toggleInspector")
           }}
         {{/draggable-column}}
       {{/if}}
