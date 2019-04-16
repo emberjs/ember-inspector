@@ -51,7 +51,7 @@ export default Controller.extend({
     }));
   }),
 
-  filtered: computed('searchValue', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValue', function() {
+  filtered: computed('searchValue', 'model.@each.{columnValues,filterValues}', 'filterValue', function() {
     let search = this.get('searchValue');
     let filter = this.get('filterValue');
 
