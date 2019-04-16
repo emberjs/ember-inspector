@@ -9,9 +9,6 @@ export default Controller.extend({
   inspectingViews: false,
   queryParams: ['components'],
   components: alias('options.components'),
-  options: {
-    components: false
-  },
 
   /**
    * Bound to the search field to filter the component list.
@@ -36,6 +33,14 @@ export default Controller.extend({
   optionsChanged: observer('options.components', function() {
     this.port.send('view:setOptions', { options: this.get('options') });
   }),
+
+  init() {
+    this._super(...arguments);
+
+    this.options = {
+      components: false
+    };
+  },
 
   actions: {
     hidePreview() {

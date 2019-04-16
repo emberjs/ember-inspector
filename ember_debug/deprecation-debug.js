@@ -1,5 +1,6 @@
-import PortMixin from "ember-debug/mixins/port-mixin";
-import SourceMap from "ember-debug/libs/source-map";
+import PortMixin from 'ember-debug/mixins/port-mixin';
+import SourceMap from 'ember-debug/libs/source-map';
+
 const Ember = window.Ember;
 const { Debug, Object: EmberObject, computed, guidFor, run, RSVP, A } = Ember;
 const { resolve, all } = RSVP;
@@ -13,30 +14,22 @@ export default EmberObject.extend(PortMixin, {
 
   adapter: readOnly('port.adapter'),
 
-  deprecations: computed(function() {
-    return A();
-  }),
-
-  groupedDeprecations: computed(function() {
-    return {};
-  }),
-
-  deprecationsToSend: computed(function() {
-    return A();
-  }),
-
   sourceMap: computed(function() {
     return SourceMap.create();
   }),
 
   emberCliConfig: readOnly('namespace.generalDebug.emberCliConfig'),
 
-  options: {
-    toggleDeprecationWorkflow: false
-  },
-
   init() {
     this._super();
+
+    this.deprecations = A();
+    this.deprecationsToSend = A();
+    this.groupedDeprecations = {};
+    this.options = {
+      toggleDeprecationWorkflow: false
+    };
+
     this.handleDeprecations();
   },
 
@@ -166,7 +159,7 @@ export default EmberObject.extend(PortMixin, {
 
     setOptions({ options }) {
       this.options.toggleDeprecationWorkflow = options.toggleDeprecationWorkflow;
-    },
+    }
   },
 
   willDestroy() {
@@ -182,7 +175,11 @@ export default EmberObject.extend(PortMixin, {
       let error;
 
       // When using new Error, we can't do the arguments check for Chrome. Alternatives are welcome
-      try { __fail__.fail(); } catch (e) { error = e; }
+      try {
+        __fail__.fail();
+      } catch (e) {
+        error = e;
+      }
 
       let stack;
       let stackStr = '';
@@ -191,17 +188,14 @@ export default EmberObject.extend(PortMixin, {
         // var stack;
         if (error['arguments']) {
           // Chrome
-          stack = error.stack.replace(/^\s+at\s+/gm, '').
-            replace(/^([^\(]+?)([\n$])/gm, '{anonymous}($1)$2').
-            replace(/^Object.<anonymous>\s*\(([^\)]+)\)/gm, '{anonymous}($1)').split('\n');
+          stack = error.stack.replace(/^\s+at\s+/gm, '').replace(/^([^\(]+?)([\n$])/gm, '{anonymous}($1)$2').replace(/^Object.<anonymous>\s*\(([^\)]+)\)/gm, '{anonymous}($1)').split('\n');
           stack.shift();
         } else {
           // Firefox
-          stack = error.stack.replace(/(?:\n@:0)?\s+$/m, '').
-            replace(/^\(/gm, '{anonymous}(').split('\n');
+          stack = error.stack.replace(/(?:\n@:0)?\s+$/m, '').replace(/^\(/gm, '{anonymous}(').split('\n');
         }
 
-        stackStr = `\n    ${stack.slice(2).join("\n    ")}`;
+        stackStr = `\n    ${stack.slice(2).join('\n    ')}`;
       }
 
       let url;
@@ -222,7 +216,7 @@ export default EmberObject.extend(PortMixin, {
           this.debounce = run.debounce(this, 'sendCount', 100);
         }
         if (!this._warned) {
-          this.get("adapter").warn("Deprecations were detected, see the Ember Inspector deprecations tab for more details.");
+          this.get('adapter').warn('Deprecations were detected, see the Ember Inspector deprecations tab for more details.');
           this._warned = true;
         }
       }

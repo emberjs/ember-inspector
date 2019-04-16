@@ -14,11 +14,6 @@ export default Controller.extend({
   hideRoutes: alias('options.hideRoutes'),
   searchValue: '',
 
-  options: {
-    hideRoutes: false,
-    hideSubstates: false
-  },
-
   filtered: computed('model.[]', 'options.{hideRoutes,hideSubstates}', 'currentRoute.{name,url}', 'searchValue', function() {
     return this.get('model').filter(routeItem => {
       let currentRoute = this.get('currentRoute');
@@ -55,6 +50,10 @@ export default Controller.extend({
     this._super(...arguments);
 
     this.model = [];
+    this.options = {
+      hideRoutes: false,
+      hideSubstates: false
+    };
   },
 
   actions: {

@@ -11,9 +11,6 @@ export default EmberObject.extend(PortMixin, {
     this.sentRecords = {};
   },
 
-  sentTypes: {},
-  sentRecords: {},
-
   releaseTypesMethod: null,
   releaseRecordsMethod: null,
 

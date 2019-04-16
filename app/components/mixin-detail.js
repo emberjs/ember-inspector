@@ -18,20 +18,24 @@ export default Component.extend({
   }),
 
   /**
-   * Used by the `sort` computed macro.
-   *
-   * @property sortProperties
-   * @type {Array<String>}
-   */
-  sortProperties: ['name'],
-
-  /**
    * Sort the properties by name to make them easier to find in the object inspector.
    *
    * @property sortedProperties
    * @type {Array<Object>}
    */
   sortedProperties: sort('model.properties', 'sortProperties'),
+
+  init() {
+    this._super(...arguments);
+
+    /**
+     * Used by the `sort` computed macro.
+     *
+     * @property sortProperties
+     * @type {Array<String>}
+     */
+    this.sortProperties = ['name'];
+  },
 
   actions: {
     calculate({ name }) {

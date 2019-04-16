@@ -7,7 +7,7 @@ import Controller, {
 } from '@ember/controller';
 import searchMatch from 'ember-inspector/utils/search-match';
 import {
-  notEmpty,
+  notEmpty
 } from '@ember/object/computed';
 import {
   isEmpty
@@ -98,9 +98,6 @@ export default Controller.extend({
   pinnedObjectId: null,
   inspectingViews: false,
   components: true,
-  options: {
-    components: true,
-  },
   viewTreeLoaded: false,
 
   /**
@@ -129,11 +126,11 @@ export default Controller.extend({
    * interest of clarity rather than performance (even if the extra CPs might avoid doing some extra
    * work when users expand/contract tree nodes)
    */
-  displayedList: computed('filteredArray.@each.visible', function () {
+  displayedList: computed('filteredArray.@each.visible', function() {
     return this.get('filteredArray').filterBy('visible');
   }),
 
-  filteredArray: computed('viewArray.[]', function () {
+  filteredArray: computed('viewArray.[]', function() {
     let viewArray = this.get('viewArray');
     let expandedStateCache = this.get('expandedStateCache');
     viewArray.forEach(viewItem => {
@@ -148,7 +145,7 @@ export default Controller.extend({
     return viewArray;
   }),
 
-  viewArray: computed('viewTree', 'searchValue', function () {
+  viewArray: computed('viewTree', 'searchValue', function() {
     let tree = this.get('viewTree');
     if (!tree) {
       return [];
@@ -161,6 +158,9 @@ export default Controller.extend({
   init() {
     this._super(...arguments);
     this.set('expandedStateCache', {});
+    this.options = {
+      components: true
+    };
   },
 
   /**
@@ -230,19 +230,20 @@ export default Controller.extend({
   },
 
   actions: {
-    previewLayer({
-      view: {
-        objectId,
-        elementId,
-        renderNodeId
-      }
-    }) {
+    previewLayer(
+      {
+        view: {
+          objectId,
+          elementId,
+          renderNodeId
+        }
+      }) {
       // We are passing all of objectId, elementId, and renderNodeId to support post-glimmer 1, post-glimmer 2, and root for
       // post-glimmer 2
       this.get('port').send('view:previewLayer', {
         objectId,
         renderNodeId,
-        elementId,
+        elementId
       });
     },
 
@@ -252,13 +253,13 @@ export default Controller.extend({
 
     toggleViewInspection() {
       this.get('port').send('view:inspectViews', {
-        inspect: !this.get('inspectingViews'),
+        inspect: !this.get('inspectingViews')
       });
     },
 
     sendObjectToConsole(objectId) {
       this.get('port').send('objectInspector:sendToConsole', {
-        objectId,
+        objectId
       });
     },
 
@@ -289,7 +290,7 @@ export default Controller.extend({
         this.expandToNode(objectId);
         this.scrollTreeToItem(objectId);
         this.get('port').send('objectInspector:inspectById', {
-          objectId,
+          objectId
         });
       }
     },
@@ -313,9 +314,9 @@ export default Controller.extend({
       if (objectId || elementId) {
         this.get('port').send('view:inspectElement', {
           objectId,
-          elementId,
+          elementId
         });
       }
     }
-  },
+  }
 });

@@ -4,6 +4,11 @@ import { sort } from '@ember/object/computed';
 export default Controller.extend({
   application: controller(),
 
-  sortProperties: ['name'],
-  sorted: sort('model', 'sortProperties')
+  sorted: sort('model', 'sortProperties'),
+
+  init() {
+    this._super(...arguments);
+
+    this.sortProperties = ['name'];
+  }
 });
