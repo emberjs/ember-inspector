@@ -1,6 +1,6 @@
 <div class="toolbar">
   {{ui/toolbar-clear-button
-    action="clear"
+    action=(action send "clear")
     classNames="toolbar__icon-button js-clear-promises-btn"
   }}
 
@@ -13,7 +13,7 @@
 
     </div>
     {{ui/toolbar-reload-button
-      action="refreshPage"
+      action=(action send "refreshPage")
       classNames="toolbar__icon-button js-toolbar-page-refresh-btn"
     }}
   {{/unless}}

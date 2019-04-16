@@ -129,7 +129,6 @@ module.exports = {
 
     // Temporarily turn these off
     'ember/avoid-leaking-state-in-ember-objects': 'off',
-    'ember/closure-actions': 'off',
     'ember/no-observers': 'off',
     'ember/no-on-calls-in-components': 'off',
     'ember/jquery-ember-run': 'off',

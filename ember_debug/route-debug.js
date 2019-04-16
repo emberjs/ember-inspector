@@ -132,8 +132,13 @@ function buildSubTree(routeTree, route) {
   let handlers = route.handlers;
   let owner = this.get('namespace.owner');
   let subTree = routeTree;
-  let item, routeClassName, routeHandler, controllerName,
-    controllerClassName, templateName, controllerFactory;
+  let item;
+  let routeClassName;
+  let routeHandler;
+  let controllerName;
+  let controllerClassName;
+  let templateName;
+  let controllerFactory;
 
   for (let i = 0; i < handlers.length; i++) {
     item = handlers[i];
@@ -237,7 +242,7 @@ function getURL(container, segments) {
       // 2.11 and before
       try {
         name = segments[i].generate();
-      } catch(e) { // is dynamic
+      } catch (e) { // is dynamic
         name = `:${segments[i].name}`;
       }
     }
