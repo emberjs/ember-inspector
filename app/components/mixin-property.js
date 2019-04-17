@@ -2,6 +2,7 @@ import { computed } from '@ember/object';
 import Component from '@ember/component';
 import { equal, alias, and } from '@ember/object/computed';
 import { next } from '@ember/runloop';
+import parseText from 'ember-inspector/utils/parse-text';
 
 export default Component.extend({
   tagName: '',
@@ -45,22 +46,6 @@ export default Component.extend({
 
   showDependentKeys: and('isDepsExpanded', 'hasDependentKeys'),
 
-  _parseTextValue(value) {
-    let parsedValue;
-    try {
-      parsedValue = JSON.parse(value);
-    } catch (e) {
-      // if surrounded by quotes, remove quotes
-      let match = value.match(/^"(.*)"$/);
-      if (match && match.length > 1) {
-        parsedValue = match[1];
-      } else {
-        parsedValue = value;
-      }
-    }
-    return parsedValue;
-  },
-
   actions: {
     toggleDeps() {
       this.toggleProperty('isDepsExpanded');
@@ -83,8 +68,10 @@ export default Component.extend({
       let value = this.get('model.value.inspect');
       let type = this.get('valueType');
       if (type === 'type-string') {
-        value = value.replace(/['"]+/g, '');
-        value = `"${value}"`;
+        // If the value is not already wrapped in quotes, wrap it
+        if (!value.startsWith('"') && !value.endsWith('"')) {
+          value = `"${value}"`;
+        }
       }
       if (!this.get('isDate')) {
         this.set('txtValue', value);
@@ -97,7 +84,7 @@ export default Component.extend({
     saveProperty() {
       let realValue, dataType;
       if (!this.get('isDate')) {
-        realValue = this._parseTextValue(this.get('txtValue'));
+        realValue = parseText(this.get('txtValue'));
       } else {
         realValue = this.get('dateValue').getTime();
         dataType = 'date';
