@@ -76,7 +76,7 @@
     "ember-source": "~3.9.0",
     "ember-source-channel-url": "^1.1.0",
     "ember-svg-jar": "^1.2.2",
-    "ember-table": "Addepar/ember-table#master",
+    "ember-table": "rwwagner90/ember-table#move-deps",
     "ember-test-selectors": "^2.1.0",
     "ember-truth-helpers": "^2.1.0",
     "ember-try": "^1.1.0",
