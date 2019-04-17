@@ -101,13 +101,6 @@ export default Route.extend({
         this.get('layoutService').trigger('resize', { source: 'object-inspector' });
       });
     },
-    toggleInspector() {
-      this.toggleProperty("controller.inspectorExpanded");
-      // Broadcast that tables have been resized (used by `x-list`).
-      schedule('afterRender', () => {
-        this.get('layoutService').trigger('resize', { source: 'object-inspector' });
-      });
-    },
     inspectObject(objectId) {
       if (objectId) {
         this.get('port').send('objectInspector:inspectById', { objectId });

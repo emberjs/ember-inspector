@@ -32,18 +32,11 @@ const keys = Object.keys || Ember.keys;
 let layerDiv, previewDiv, highlightedElement;
 
 export default EmberObject.extend(PortMixin, {
-
   namespace: null,
 
   adapter: readOnly('namespace.adapter'),
   port: readOnly('namespace.port'),
   objectInspector: readOnly('namespace.objectInspector'),
-
-  retainedObjects: [],
-
-  _durations: {},
-
-  options: {},
 
   portNamespace: 'view',
 
@@ -123,6 +116,7 @@ export default EmberObject.extend(PortMixin, {
     this.viewListener();
     this.retainedObjects = [];
     this.options = {};
+    this._durations = {};
     layerDiv = document.createElement('div');
     layerDiv.setAttribute('data-label', 'layer-div');
     layerDiv.style.display = 'none';

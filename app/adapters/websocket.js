@@ -1,10 +1,10 @@
 import { run } from '@ember/runloop';
-import { computed } from '@ember/object';
-import BasicAdapter from "./basic";
+import BasicAdapter from './basic';
 
 export default BasicAdapter.extend({
   init() {
     this._super();
+    this.socket = window.EMBER_INSPECTOR_CONFIG.remoteDebugSocket;
     this._connect();
   },
 
@@ -12,8 +12,6 @@ export default BasicAdapter.extend({
     options = options || {};
     this.get('socket').emit('emberInspectorMessage', options);
   },
-
-  socket: computed(() => window.EMBER_INSPECTOR_CONFIG.remoteDebugSocket),
 
   _connect() {
     this.get('socket').on('emberInspectorMessage', message => {
@@ -24,7 +22,7 @@ export default BasicAdapter.extend({
   },
 
   _disconnect() {
-    this.get('socket').removeAllListeners("emberInspectorMessage");
+    this.get('socket').removeAllListeners('emberInspectorMessage');
   },
 
   willDestroy() {

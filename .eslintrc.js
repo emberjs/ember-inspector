@@ -129,9 +129,7 @@ module.exports = {
 
     // Temporarily turn these off
     'ember/avoid-leaking-state-in-ember-objects': 'off',
-    'ember/closure-actions': 'off',
-    'ember/no-on-calls-in-components': 'off',
-    'ember/jquery-ember-run': 'off',
+    'ember/no-observers': 'off',
     'ember/use-brace-expansion': 'off'
   },
   overrides: [
@@ -146,6 +144,7 @@ module.exports = {
         'blueprints/*/index.js',
         'config/**/*.js',
         'lib/*/index.js',
+        'server/**/*.js',
         'Gruntfile.js'
       ],
       parserOptions: {

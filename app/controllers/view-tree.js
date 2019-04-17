@@ -1,7 +1,7 @@
 import { observer, get, computed } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import searchMatch from 'ember-inspector/utils/search-match';
-import { alias, } from '@ember/object/computed';
+import { alias } from '@ember/object/computed';
 
 export default Controller.extend({
   application: controller(),
@@ -9,9 +9,6 @@ export default Controller.extend({
   inspectingViews: false,
   queryParams: ['components'],
   components: alias('options.components'),
-  options: {
-    components: false
-  },
 
   /**
    * Bound to the search field to filter the component list.
@@ -37,19 +34,33 @@ export default Controller.extend({
     this.port.send('view:setOptions', { options: this.get('options') });
   }),
 
-  actions: {
-    previewLayer({ value: { objectId, elementId, renderNodeId } }) {
-      // We are passing all of objectId, elementId, and renderNodeId to support post-glimmer 1, post-glimmer 2, and root for
-      // post-glimmer 2
-      this.get('port').send('view:previewLayer', { objectId, renderNodeId, elementId });
-    },
+  init() {
+    this._super(...arguments);
 
+    this.options = {
+      components: false
+    };
+  },
+
+  actions: {
     hidePreview() {
       this.get('port').send('view:hidePreview');
     },
 
-    toggleViewInspection() {
-      this.get('port').send('view:inspectViews', { inspect: !this.get('inspectingViews') });
+    inspect(objectId) {
+      if (objectId) {
+        this.get('port').send('objectInspector:inspectById', { objectId });
+      }
+    },
+
+    inspectElement({ objectId, elementId }) {
+      this.get('port').send('view:inspectElement', { objectId, elementId });
+    },
+
+    previewLayer({ value: { objectId, elementId, renderNodeId } }) {
+      // We are passing all of objectId, elementId, and renderNodeId to support post-glimmer 1, post-glimmer 2, and root for
+      // post-glimmer 2
+      this.get('port').send('view:previewLayer', { objectId, renderNodeId, elementId });
     },
 
     sendModelToConsole(value) {
@@ -61,14 +72,8 @@ export default Controller.extend({
       this.get('port').send('objectInspector:sendToConsole', { objectId });
     },
 
-    inspect(objectId) {
-      if (objectId) {
-        this.get('port').send('objectInspector:inspectById', { objectId });
-      }
-    },
-
-    inspectElement({ objectId, elementId }) {
-      this.get('port').send('view:inspectElement', { objectId, elementId });
+    toggleViewInspection() {
+      this.get('port').send('view:inspectViews', { inspect: !this.get('inspectingViews') });
     }
   }
 });

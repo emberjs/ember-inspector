@@ -172,7 +172,7 @@ export default EmberObject.extend({
     return isExpanded;
   },
 
-  isVisible: computed('parent.isExpanded', 'parent', 'parent.isVisible', function() {
+  isVisible: computed('parent.{isExpanded,isVisible}', 'parent', function() {
     if (this.get('parent')) {
       return this.get('parent.isExpanded') && this.get('parent.isVisible');
     }

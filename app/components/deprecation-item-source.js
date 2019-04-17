@@ -13,7 +13,7 @@ export default Component.extend({
 
   known: bool('model.map.source'),
 
-  url: computed('model.map.source', 'model.map.line', 'known', function() {
+  url: computed('model.map.{line,source}', 'known', function() {
     let source = this.get('model.map.source');
     if (this.get('known')) {
       return `${source}:${this.get('model.map.line')}`;

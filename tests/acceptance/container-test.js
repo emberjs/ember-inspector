@@ -79,6 +79,7 @@ module('Container Tab', function(hooks) {
         }
 
         if (name === 'container:getInstances' && message.containerType === 'controller') {
+          //TODO: these instances are getting no names
           this.trigger('container:instances', { instances, status: 200 });
         }
       }

@@ -6,14 +6,6 @@ export default EmberObject.extend(Ember.Evented, {
   adapter: readOnly('namespace.adapter'),
 
   /**
-   * Stores the timestamp when it was first accessed.
-   *
-   * @property now
-   * @type {Number}
-   */
-  now: computed(() => Date.now()),
-
-  /**
    * Unique id per applciation (not application instance). It's very important
    * that this id doesn't change when the app is reset otherwise the inspector
    * will no longer recognize the app.
@@ -26,6 +18,14 @@ export default EmberObject.extend(Ember.Evented, {
   }),
 
   init() {
+    /**
+     * Stores the timestamp when it was first accessed.
+     *
+     * @property now
+     * @type {Number}
+     */
+    this.now = Date.now();
+
     this.get('adapter').onMessageReceived(message => {
       if (this.get('uniqueId') === message.applicationId || !message.applicationId) {
         this.messageReceived(message.type, message);
