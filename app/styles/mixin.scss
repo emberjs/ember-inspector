@@ -32,10 +32,6 @@ $mixin-left-padding: 22px;
   color: var(--base09);
 }
 
-.mixin_props_no .mixin__name:before {
-  opacity: 0;
-}
-
 .mixin__name:before {
   color: var(--base10);
   content: "\25B6";
@@ -46,6 +42,10 @@ $mixin-left-padding: 22px;
   top: 5px;
   transform: rotate(0deg);
   transition: all 0.1s;
+}
+
+.mixin_props_no .mixin__name:before {
+  opacity: 0;
 }
 
 .mixin_state_expanded .mixin__name:before {
@@ -72,6 +72,31 @@ $mixin-left-padding: 22px;
   position: relative;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  button {
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .pad {
+    flex-shrink: 0;
+    width: $mixin-left-padding;
+  }
+
+  .mixin__calc-btn svg {
+    path,
+    circle {
+      fill: var(--spec07);
+    }
+  }
+
+  .mixin__send-btn {
+    flex-shrink: 0;
+    opacity: 0;
+    padding-right: 6px;
+  }
 
   .mixin__cp-toggle {
     outline: none;
@@ -111,33 +136,6 @@ $mixin-left-padding: 22px;
 }
 
 /* Buttons */
-
-.mixin__property {
-  button {
-    background: none;
-    border: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .pad {
-    flex-shrink: 0;
-    width: $mixin-left-padding;
-  }
-
-  .mixin__calc-btn svg {
-    path,
-    circle {
-      fill: var(--spec07);
-    }
-  }
-
-  .mixin__send-btn {
-    flex-shrink: 0;
-    opacity: 0;
-    padding-right: 6px;
-  }
-}
 
 .mixin__property-overridden-by {
   display: none;
