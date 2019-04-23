@@ -35,10 +35,6 @@ $red: #ff2717;
     background: var(--base02);
   }
 
-  .striped td {
-    background-color: var(--base00);
-  }
-
   td,
   .et-cell-content {
     box-sizing: border-box;
@@ -48,6 +44,10 @@ $red: #ff2717;
     padding: 3px 6px;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .striped td {
+    background-color: var(--base00);
   }
 
   .blue {
@@ -162,17 +162,21 @@ $red: #ff2717;
     flex: 1;
   }
 
-  tr.is-selected td,
-  tr.is-selected.is-selectable:hover td {
-    background: var(--focus);
-    color: var(--focus-text);
-  }
-
   tr.is-selectable {
     cursor: pointer;
   }
 
+  tr.is-selected td {
+    background: var(--focus);
+    color: var(--focus-text);
+  }
+
   tr.is-selectable:hover td {
     background: var(--base04);
+  }
+
+  tr.is-selected.is-selectable:hover td {
+    background: var(--focus);
+    color: var(--focus-text);
   }
 }
