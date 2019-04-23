@@ -85,7 +85,6 @@
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
     "grunt-contrib-compress": "^0.12.0",
-    "grunt-jpm": "~0.1.3",
     "grunt-s3": "^0.2.0-alpha.3",
     "js-string-escape": "^1.0.0",
     "loader.js": "^4.7.0",
