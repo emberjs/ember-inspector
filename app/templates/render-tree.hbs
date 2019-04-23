@@ -1,13 +1,15 @@
 {{#unless isWarningClosed}}
-  {{warning-message close=(action "closeWarning")}}
+  {{#warning-message close=(action "closeWarning")}}
+    Render times may be inaccurate due to instrumentation and environment
+  {{/warning-message}}
 {{/unless}}
 
 {{#if showEmpty}}
-  <div class="notice js-render-tree-empty">
+  {{#ui/empty-message class="js-render-tree-empty"}}
     <p>No rendering metrics have been collected. Try reloading or navigating around your application.</p>
     <p><strong>Note:</strong> Very fast rendering times (&lt;1ms) are excluded.</p>
     <button class="js-toolbar-page-refresh-btn" {{action "refreshPage"}}>Reload</button>
-  </div>
+  {{/ui/empty-message}}
 {{else}}
   {{#x-list
     class="js-render-tree"

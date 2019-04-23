@@ -2,15 +2,15 @@ import PortMixin from 'ember-debug/mixins/port-mixin';
 import PromiseAssembler from 'ember-debug/libs/promise-assembler';
 const Ember = window.Ember;
 const { computed, Object: EmberObject, RSVP, A, run } = Ember;
-const { oneWay } = computed;
+const { readOnly } = computed;
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,
-  port: oneWay('namespace.port').readOnly(),
-  objectInspector: oneWay('namespace.objectInspector').readOnly(),
-  adapter: oneWay('namespace.adapter').readOnly(),
+  port: readOnly('namespace.port'),
+  objectInspector: readOnly('namespace.objectInspector'),
+  adapter: readOnly('namespace.adapter'),
   portNamespace: 'promise',
-  session: oneWay('namespace.session').readOnly(),
+  session: readOnly('namespace.session'),
 
   // created on init
   promiseAssembler: null,
@@ -87,7 +87,7 @@ export default EmberObject.extend(PortMixin, {
       this.get('session').setItem('promise:stack', value);
       return value;
     }
-  }).property(),
+  }),
 
   sendInstrumentWithStack() {
     this.sendMessage('instrumentWithStack', {

@@ -1,0 +1,29 @@
+<div class="route-cell-objects">
+  <span
+    class="is-link js-route-handler"
+    title={{route.value.routeHandler.className}}
+    {{action inspectRoute route.value.routeHandler.name}}
+  >
+    Route
+  </span>
+
+  {{ui/send-to-console
+    action=sendRouteHandlerToConsole
+    param=route.value.routeHandler.name
+  }}
+
+  {{#if route.value.controller.exists}}
+    <span
+      class="is-link js-route-controller"
+      title={{route.value.controller.className}}
+      {{action inspectController route.value.controller}}
+    >
+      Controller
+    </span>
+
+    {{ui/send-to-console
+      action=sendControllerToConsole
+      param=route.value.controller.name
+    }}
+  {{/if}}
+</div>

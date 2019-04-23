@@ -1,0 +1,5 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path class="svg-stroke" d="M14.5 1.5H2.5C1.94772 1.5 1.5 1.94772 1.5 2.5V13.5C1.5 14.0523 1.94772 14.5 2.5 14.5H14.5C15.0523 14.5 15.5 14.0523 15.5 13.5V2.5C15.5 1.94772 15.0523 1.5 14.5 1.5Z" stroke="#676767"/>
+  <path class="svg-stroke" d="M11.5 2V14" stroke="#676767"/>
+  <path class="svg-fill sidebar-toggle-triangle" d="M3.75 8L9 5V11L3.75 8Z" fill="#676767"/>
+</svg>

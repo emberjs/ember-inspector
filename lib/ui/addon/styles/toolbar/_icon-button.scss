@@ -1,0 +1,61 @@
+.toolbar__icon-button {
+  align-items: center;
+  background: transparent;
+  border: 0 transparent none;
+  display: flex;
+  height: var(--toolbar-height);
+  margin-left: 2px;
+  margin-right: 2px;
+  padding: 0 2px;
+  vertical-align: top;
+
+  /* if first item in toolbar, create extra clickable space on left side */
+  &:first-child {
+    margin-left: 0;
+    padding-left: 10px;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:active {
+    transform: translate(1px, 1px);
+  }
+}
+
+
+/*
+  SVG colors
+*/
+.toolbar__icon-button {
+  .svg-stroke { stroke: var(--base11); }
+  .svg-fill { fill: var(--base11); }
+
+  &:hover {
+    .svg-stroke { stroke: var(--base13); }
+    .svg-fill { fill: var(--base13); }
+  }
+}
+
+
+/*
+  Modifier:
+  .active (highlighted)
+*/
+.toolbar__icon-button {
+  &.active .svg-stroke { stroke: var(--focus); }
+  &.active .svg-fill { fill: var(--focus); }
+}
+
+
+/*
+  Modifier
+  .disabled
+*/
+.toolbar__icon-button {
+  &.disabled { pointer-events: none; }
+  &.disabled:active { transform: none; }
+  &.disabled .svg-stroke { stroke: var(--base05); }
+  &.disabled .svg-fill { fill: var(--base05); }
+}

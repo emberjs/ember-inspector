@@ -1,6 +1,6 @@
 <div class="toolbar">
-  {{clear-button
-    action="clear"
+  {{ui/toolbar-clear-button
+    action=(action send "clear")
     classNames="toolbar__icon-button js-clear-promises-btn"
   }}
 
@@ -12,8 +12,8 @@
     >
 
     </div>
-    {{reload-button
-      action="refreshPage"
+    {{ui/toolbar-reload-button
+      action=(action send "refreshPage")
       classNames="toolbar__icon-button js-toolbar-page-refresh-btn"
     }}
   {{/unless}}
@@ -25,7 +25,7 @@
   </div>
 
   <div class="toolbar__search js-promise-search">
-    {{search-field value=searchValue}}
+    {{ui/toolbar-search-field value=searchValue}}
   </div>
 
   <div
@@ -64,7 +64,7 @@
 
   <div class="toolbar__checkbox js-with-stack">
     <label for="instrument-with-stack">
-      {{action-checkbox
+      {{ui/action-checkbox
         onUpdate=(action "updateInstrumentWithStack")
         checked=instrumentWithStack
         id="instrument-with-stack"

@@ -1,26 +1,19 @@
 import { get, computed } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
-import debounceComputed from "ember-inspector/computed/debounce";
-import searchMatch from "ember-inspector/utils/search-match";
-import { filter } from '@ember/object/computed';
+import debounceComputed from 'ember-inspector/computed/debounce';
+import searchMatch from 'ember-inspector/utils/search-match';
 
 export default Controller.extend({
   application: controller(),
-
-  sortProperties: ['name'],
 
   searchValue: debounceComputed('search', 300),
 
   search: null,
 
-  columns: [{
-    valuePath: 'name',
-    name: 'Name'
-  }],
-
-  filtered: filter('model', function(item) {
-    return searchMatch(get(item, 'name'), this.get('search'));
-  }).property('model.@each.name', 'search'),
+  filtered: computed('model.@each.name', 'search', function() {
+    return get(this, 'model')
+      .filter((item) => searchMatch(get(item, 'name'), get(this, 'search')));
+  }),
 
   rows: computed('filtered.[]', function() {
     return this.get('filtered').map(function(item) {
@@ -29,6 +22,17 @@ export default Controller.extend({
       };
     });
   }),
+
+  init() {
+    this._super(...arguments);
+
+    this.columns = [{
+      valuePath: 'name',
+      name: 'Name'
+    }];
+
+    this.sortProperties = ['name'];
+  },
 
   actions: {
     /**

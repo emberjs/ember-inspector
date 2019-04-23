@@ -5,7 +5,43 @@
   {{#if isEmberApplication}}
     <div class="split">
       <div class="split__panel">
-        {{partial "main"}}
+        {{!-- Begin main --}}
+        <div class="split split--main">
+          {{#draggable-column
+            width=navWidth
+            classes="split__panel split__panel--sidebar-1"
+            setIsDragging=(action "setIsDragging")
+          }}
+            <div class="split__panel__hd">
+              {{iframe-picker}}
+            </div>
+            <div class="split__panel__bd">
+              {{side-nav deprecationCount=deprecationCount}}
+            </div>
+            <div class="split__panel__ft">
+              <a target="_blank" href="https://github.com/emberjs/ember-inspector/issues">
+                Submit an Issue
+              </a>
+            </div>
+          {{/draggable-column}}
+
+          <div class="split__panel">
+            <div class="split__panel__hd">
+              {{outlet "toolbar"}}
+              {{ui/sidebar-toggle
+                classNames="toolbar__icon-button"
+                isExpanded=inspectorExpanded
+                toggleInspector=(action "toggleInspector")
+              }}
+            </div>
+
+            {{#main-content class="split__panel__bd"}}
+              {{outlet}}
+            {{/main-content}}
+          </div>
+        </div>
+
+        {{!-- End main --}}
       </div>
 
       {{#if inspectorExpanded}}
@@ -19,27 +55,29 @@
             application=this
             model=mixinStack
             mixinDetails=mixinDetails
-            toggleInspector="toggleInspector"
+            toggleInspector=(action "toggleInspector")
           }}
         {{/draggable-column}}
       {{/if}}
     </div>
 
   {{else}}
-    {{#not-detected description="Ember application"}}
-      <li>This is not an Ember application.</li>
-      <li>You are using an old version of Ember (&lt; rc5).</li>
-      {{#if isChrome}}
-        <li>
-          You are using the file:// protocol (instead of http://), in which case:
+    {{#ui/error-page description="Ember application not detected!"}}
+      <ul>
+        <li>This is not an Ember application.</li>
+        <li>You are using an old version of Ember (&lt; rc5).</li>
+        {{#if isChrome}}
+          <li>
+            You are using the file:// protocol (instead of http://), in which case:
 
-          <ul>
-            <li>Visit the URL: chrome://extensions.</li>
-            <li>Find the Ember Inspector.</li>
-            <li>Make sure "Allow access to file URLs" is checked.</li>
-          </ul>
-        </li>
-      {{/if}}
-    {{/not-detected}}
+            <ul>
+              <li>Visit the URL: chrome://extensions.</li>
+              <li>Find the Ember Inspector.</li>
+              <li>Make sure "Allow access to file URLs" is checked.</li>
+            </ul>
+          </li>
+        {{/if}}
+      </ul>
+    {{/ui/error-page}}
   {{/if}}
 {{/x-app}}

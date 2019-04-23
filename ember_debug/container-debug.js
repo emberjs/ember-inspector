@@ -1,13 +1,13 @@
 import PortMixin from "ember-debug/mixins/port-mixin";
 const Ember = window.Ember;
 const { Object: EmberObject, computed } = Ember;
-const { oneWay } = computed;
+const { readOnly } = computed;
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,
 
-  port: oneWay('namespace.port').readOnly(),
-  objectInspector: oneWay('namespace.objectInspector').readOnly(),
+  port: readOnly('namespace.port'),
+  objectInspector: readOnly('namespace.objectInspector'),
 
   container: computed('namespace.owner', function() {
     // should update this to use real owner API

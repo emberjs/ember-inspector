@@ -4,17 +4,12 @@
   {{action inspect item.view.objectId}}
 >
   {{#if item.hasChildren}}
-    <button
-      class="component-tree-item__expand {{if item.expanded "expanded" "collapsed"}}"
-      {{action toggleExpanded bubbles=false}}
-    >
-      {{svg-jar
-        "disclosure-triangle"
-        title="Toggle visibility"
-        width="9px"
-        height="9px"
-      }}
-    </button>
+    {{ui/disclosure-triangle
+      class="component-tree-item__expand"
+      title="Click to toggle (alt/option click to toggle with children)"
+      expanded=item.expanded
+      toggle=(action toggleExpanded)
+    }}
   {{/if}}
 
   <code

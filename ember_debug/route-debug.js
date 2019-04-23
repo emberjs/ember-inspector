@@ -1,14 +1,22 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
+import { compareVersion } from 'ember-debug/utils/version';
 
 const Ember = window.Ember;
-const { String: { classify, dasherize }, computed, observer, run: { later }, Object: EmberObject } = Ember;
-const { oneWay, readOnly } = computed;
+const {
+  String: { classify, dasherize },
+  computed,
+  observer,
+  run: { later },
+  Object: EmberObject,
+  VERSION
+} = Ember;
+const { readOnly } = computed;
 
 const { hasOwnProperty } = Object.prototype;
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,
-  port: oneWay('namespace.port').readOnly(),
+  port: readOnly('namespace.port'),
 
   router: computed('namespace.owner', function() {
     return this.get('namespace.owner').lookup('router:main');
@@ -19,8 +27,8 @@ export default EmberObject.extend(PortMixin, {
     return container.lookup('controller:application');
   }),
 
-  currentPath: oneWay('applicationController.currentPath').readOnly(),
-  currentURL: oneWay('namespace.owner.router.currentURL').readOnly(),
+  currentPath: readOnly('applicationController.currentPath'),
+  currentURL: readOnly('namespace.owner.router.currentURL'),
 
   portNamespace: 'route',
 
@@ -38,10 +46,10 @@ export default EmberObject.extend(PortMixin, {
   sendCurrentRoute: observer('currentURL', function() {
     const {
       currentPath: name,
-      currentURL: url,
+      currentURL: url
     } = this.getProperties(
       'currentPath',
-      'currentURL',
+      'currentURL'
     );
 
     later(() => {
@@ -124,8 +132,13 @@ function buildSubTree(routeTree, route) {
   let handlers = route.handlers;
   let owner = this.get('namespace.owner');
   let subTree = routeTree;
-  let item, routeClassName, routeHandler, controllerName,
-      controllerClassName, templateName, controllerFactory;
+  let item;
+  let routeClassName;
+  let routeHandler;
+  let controllerName;
+  let controllerClassName;
+  let templateName;
+  let controllerFactory;
 
   for (let i = 0; i < handlers.length; i++) {
     item = handlers[i];
@@ -143,7 +156,16 @@ function buildSubTree(routeTree, route) {
 
       const router = this.get('router');
       const routerLib = router._routerMicrolib || router.router;
-      routeHandler = routerLib.getHandler(handler);
+      // 3.9.0 removed intimate APIs from router
+      // https://github.com/emberjs/ember.js/pull/17843
+      // https://deprecations.emberjs.com/v3.x/#toc_remove-handler-infos
+      if (compareVersion(VERSION, '3.9.0') !== -1) {
+        // Ember >= 3.9.0
+        routeHandler = routerLib.getRoute(handler);
+      } else {
+        // Ember < 3.9.0
+        routeHandler = routerLib.getHandler(handler);
+      }
       controllerName = routeHandler.get('controllerName') || routeHandler.get('routeName');
       controllerFactory = owner.factoryFor ? owner.factoryFor(`controller:${controllerName}`) : owner._lookupFactory(`controller:${controllerName}`);
       controllerClassName = this.getClassName(controllerName, 'controller');

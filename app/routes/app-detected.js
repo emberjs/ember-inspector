@@ -14,13 +14,15 @@ export default Route.extend({
    */
   model() {
     let port = this.get('port');
+
     return new Promise(resolve => {
-      port.on('general:applicationBooted', ({ booted }) => {
+      this.applicationBooted = ({ booted }) => {
         if (booted) {
-          port.off('general:applicationBooted');
+          port.off('general:applicationBooted', this.applicationBooted);
           resolve();
         }
-      });
+      };
+      port.on('general:applicationBooted', this.applicationBooted);
       port.send('general:applicationBooted');
     });
   },
@@ -45,7 +47,11 @@ export default Route.extend({
    * Makes sure the listeners are turned off.
    */
   deactivate() {
-    this.get('port').off('general:applicationBooted');
+    // We wrapped this in an if because deactivate is being called before this.applicationBooted is defined in the model hook
+    if (this.applicationBooted) {
+      this.get('port').off('general:applicationBooted', this.applicationBooted);
+    }
+
     this.get('port').off('general:reset', this, this.reset);
   }
 });

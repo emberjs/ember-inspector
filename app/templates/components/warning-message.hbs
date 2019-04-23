@@ -1,5 +1,7 @@
 <div class="warning">
-  <img class="warning__image" src="assets/images/warning.png" alt="warning icon">
-  <p class="warning__text">Render times may be inaccurate due to instrumentation and environment</p>
+  {{svg-jar "warning" class="warning__icon" width="18px" height="18px"}}
+  <p class="warning__text">
+    {{yield}}
+  </p>
   <button class="warning__close" {{action close}}> hide</button>
 </div>

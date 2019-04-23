@@ -1,10 +1,18 @@
-import BasicAdapter from "./basic";
+import BasicAdapter from './basic';
+
 const Ember = window.Ember;
-const { computed, run, typeOf } = Ember;
+const { run, typeOf } = Ember;
 const { isArray } = Array;
 const { keys } = Object;
 
 export default BasicAdapter.extend({
+  init() {
+    this.set('_channel', new MessageChannel());
+    this.set('_chromePort', this.get('_channel.port1'));
+
+    this._super(...arguments);
+  },
+
   connect() {
     const channel = this.get('_channel');
     return this._super(...arguments).then(() => {
@@ -42,14 +50,6 @@ export default BasicAdapter.extend({
       elementSelector: `#${elem.getAttribute('id')}`
     });
   },
-
-  _channel: computed(function() {
-    return new MessageChannel();
-  }).readOnly(),
-
-  _chromePort: computed(function() {
-    return this.get('_channel.port1');
-  }).readOnly(),
 
   _listen() {
     let chromePort = this.get('_chromePort');

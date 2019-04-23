@@ -61,7 +61,7 @@ export default Component.extend({
   actions: {
     inspectView() {
       if (this.get('hasView')) {
-        this.sendAction('inspect', this.get('model.value.objectId'));
+        this.inspect(this.get('model.value.objectId'));
       }
     },
     inspectElement(objectId) {
@@ -73,12 +73,12 @@ export default Component.extend({
         elementId = this.get('model.value.elementId');
       }
       if (objectId || elementId) {
-        this.sendAction('inspectElement', { objectId, elementId });
+        this.inspectElement({ objectId, elementId });
       }
     },
     inspectModel(objectId) {
       if (this.get('modelInspectable')) {
-        this.sendAction('inspect', objectId);
+        this.inspect(objectId);
       }
     }
   }

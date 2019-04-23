@@ -28,6 +28,22 @@ export default Component.extend(Evented, {
    */
   classNames: ["list__content", "js-list-content"],
 
+  init() {
+    this._super(...arguments);
+
+    /**
+     * Array of objects representing the columns to render
+     * and their corresponding widths. This array is passed
+     * through the template.
+     *
+     * Each item in the array has `width` and `id` properties.
+     *
+     * @property columns
+     * @type {Array}
+     */
+    this.columns = [];
+  },
+
   /**
    * Hook called when content element is inserted.
    *
@@ -83,19 +99,6 @@ export default Component.extend(Evented, {
   style: computed('height', function() {
     return htmlSafe(`height:${this.get('height')}px`);
   }),
-
-
-  /**
-   * Array of objects representing the columns to render
-   * and their corresponding widths. This array is passed
-   * through the template.
-   *
-   * Each item in the array has `width` and `id` properties.
-   *
-   * @property columns
-   * @type {Array}
-   */
-  columns: computed(() => []),
 
   /**
    * Number passed from `x-list`. Indicates the header height

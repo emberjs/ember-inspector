@@ -7,7 +7,7 @@ import Controller, {
 } from '@ember/controller';
 import searchMatch from 'ember-inspector/utils/search-match';
 import {
-  notEmpty,
+  notEmpty
 } from '@ember/object/computed';
 import {
   isEmpty
@@ -18,6 +18,19 @@ import {
 } from '@ember/runloop';
 
 import ComponentViewItem from 'ember-inspector/models/component-view-item';
+
+const buildObjectIdList = function(children, list) {
+  children.forEach(function(child) {
+    if (child.children.length) {
+      list.push(child.value.objectId);
+      buildObjectIdList(child.children, list);
+    }
+  });
+};
+
+const getIdFromObj = function(obj) {
+  return get(obj, 'view.objectId') || get(obj, 'view.controller.objectId') || get(obj, 'view.elementId');
+};
 
 /**
  * Takes the `viewTree` from `view-debug`'s `sendTree()` method, and recursively
@@ -50,6 +63,7 @@ const flattenSearchTree = (
     activeSearch,
     expanded: !activeSearch,
     hasChildren: treeNode.children.length > 0,
+    children: treeNode.children
   });
 
   // remember if there is no active search, searchMatched will be true
@@ -84,9 +98,6 @@ export default Controller.extend({
   pinnedObjectId: null,
   inspectingViews: false,
   components: true,
-  options: {
-    components: true,
-  },
   viewTreeLoaded: false,
 
   /**
@@ -115,26 +126,26 @@ export default Controller.extend({
    * interest of clarity rather than performance (even if the extra CPs might avoid doing some extra
    * work when users expand/contract tree nodes)
    */
-  displayedList: computed('filteredArray.@each.visible', function () {
+  displayedList: computed('filteredArray.@each.visible', function() {
     return this.get('filteredArray').filterBy('visible');
   }),
 
-  filteredArray: computed('viewArray.[]', function () {
+  filteredArray: computed('viewArray.[]', function() {
     let viewArray = this.get('viewArray');
     let expandedStateCache = this.get('expandedStateCache');
     viewArray.forEach(viewItem => {
-      let cachedExpansion = expandedStateCache[viewItem.view.objectId];
+      let cachedExpansion = expandedStateCache[getIdFromObj(viewItem)];
       if (cachedExpansion !== undefined) {
         viewItem.set('expanded', cachedExpansion);
       } else {
-        expandedStateCache[viewItem.view.objectId] = viewItem.expanded;
+        expandedStateCache[getIdFromObj(viewItem)] = viewItem.expanded;
       }
     });
 
     return viewArray;
   }),
 
-  viewArray: computed('viewTree', 'searchValue', function () {
+  viewArray: computed('viewTree', 'searchValue', function() {
     let tree = this.get('viewTree');
     if (!tree) {
       return [];
@@ -147,6 +158,9 @@ export default Controller.extend({
   init() {
     this._super(...arguments);
     this.set('expandedStateCache', {});
+    this.options = {
+      components: true
+    };
   },
 
   /**
@@ -187,21 +201,49 @@ export default Controller.extend({
     }
   },
 
+  /**
+   * @param {array} objects Array of objectids
+   * @param {boolean} state expanded state for objects
+   */
+  setExpandedStateForObjects(objects, state) {
+    this.get('filteredArray').forEach((item) => {
+      const id = getIdFromObj(item);
+      if (objects.includes(id)) {
+        item.set('expanded', state);
+        this.expandedStateCache[id] = state;
+      }
+    });
+  },
+
+  /**
+   * Builds array of objectids and the expanded state they should be set to
+   * @param {ComponentViewItem} item
+   */
+  toggleWithChildren(item) {
+    const newState = !item.get('expanded');
+    const list = [];
+    const clickedId = getIdFromObj(item);
+
+    list.push(clickedId);
+    buildObjectIdList(item.children, list);
+    this.setExpandedStateForObjects(list, newState);
+  },
 
   actions: {
-    previewLayer({
-      view: {
-        objectId,
-        elementId,
-        renderNodeId
-      }
-    }) {
+    previewLayer(
+      {
+        view: {
+          objectId,
+          elementId,
+          renderNodeId
+        }
+      }) {
       // We are passing all of objectId, elementId, and renderNodeId to support post-glimmer 1, post-glimmer 2, and root for
       // post-glimmer 2
       this.get('port').send('view:previewLayer', {
         objectId,
         renderNodeId,
-        elementId,
+        elementId
       });
     },
 
@@ -211,13 +253,13 @@ export default Controller.extend({
 
     toggleViewInspection() {
       this.get('port').send('view:inspectViews', {
-        inspect: !this.get('inspectingViews'),
+        inspect: !this.get('inspectingViews')
       });
     },
 
     sendObjectToConsole(objectId) {
       this.get('port').send('objectInspector:sendToConsole', {
-        objectId,
+        objectId
       });
     },
 
@@ -229,13 +271,17 @@ export default Controller.extend({
       this.expandedStateCache = {};
       this.get('filteredArray').forEach((item) => {
         item.set('expanded', expanded);
-        this.expandedStateCache[item.view.objectId] = expanded;
+        this.expandedStateCache[getIdFromObj(item)] = expanded;
       });
     },
 
-    toggleExpanded(item) {
-      item.toggleProperty('expanded');
-      this.expandedStateCache[item.view.objectId] = item.get('expanded');
+    toggleExpanded(item, toggleChildren) {
+      if (toggleChildren) {
+        this.toggleWithChildren(item);
+      } else {
+        item.toggleProperty('expanded');
+        this.expandedStateCache[getIdFromObj(item)] = item.get('expanded');
+      }
     },
 
     inspect(objectId) {
@@ -244,7 +290,7 @@ export default Controller.extend({
         this.expandToNode(objectId);
         this.scrollTreeToItem(objectId);
         this.get('port').send('objectInspector:inspectById', {
-          objectId,
+          objectId
         });
       }
     },
@@ -268,9 +314,9 @@ export default Controller.extend({
       if (objectId || elementId) {
         this.get('port').send('view:inspectElement', {
           objectId,
-          elementId,
+          elementId
         });
       }
     }
-  },
+  }
 });

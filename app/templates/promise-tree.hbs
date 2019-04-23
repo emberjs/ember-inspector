@@ -1,5 +1,8 @@
 {{#if shouldRefresh}}
-  {{partial "page_refresh"}}
+  {{#ui/empty-message class="js-page-refresh"}}
+    <p>Reload the page to see promises created before you opened the inspector.</p>
+    <button class="js-page-refresh-btn" {{action "refreshPage"}}>Reload</button>
+  {{/ui/empty-message}}
 {{else}}
   {{#x-list
     class="js-promise-tree"

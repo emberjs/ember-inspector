@@ -9,22 +9,6 @@
   position: relative;
 }
 
-.component-tree-item--component {
-  color: var(--component-text);
-
-  &:hover {
-    background-color: var(--spec06);
-
-    .component-tree-item__action {
-      opacity: 1;
-    }
-
-    .component-tree-item__action.disabled {
-      opacity: 0.65;
-    }
-  }
-}
-
 .component-tree-item__action {
   align-items: center;
   background: transparent;
@@ -70,27 +54,6 @@
   content: '}}';
 }
 
-.component-tree-item__expand {
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  display: inline-block;
-  padding: 0 2px;
-
-  &:focus {
-    outline: none;
-  }
-
-  svg {
-    transition-duration: 0.1s;
-    transition-property: transform;
-  }
-
-  &.collapsed svg {
-    transform: rotate(-90deg);
-  }
-}
-
 /**
  * Modifier
  */
@@ -121,5 +84,21 @@
 
   .component-tree-item__action.disabled {
     opacity: 0.65;
+  }
+}
+
+.component-tree-item--component {
+  color: var(--component-text);
+
+  &:hover {
+    background-color: var(--spec06);
+
+    .component-tree-item__action {
+      opacity: 1;
+    }
+
+    .component-tree-item__action.disabled {
+      opacity: 0.65;
+    }
   }
 }

@@ -11,8 +11,6 @@ export default Controller.extend({
 
   searchValue: '',
 
-  filters: computed(() => []),
-
   filterValue: null,
 
   noFilterValue: none('filterValue'),
@@ -53,7 +51,7 @@ export default Controller.extend({
     }));
   }),
 
-  filtered: computed('searchValue', 'model.@each.columnValues', 'model.@each.filterValues', 'filterValue', function() {
+  filtered: computed('searchValue', 'model.@each.{columnValues,filterValues}', 'filterValue', function() {
     let search = this.get('searchValue');
     let filter = this.get('filterValue');
 
@@ -71,6 +69,12 @@ export default Controller.extend({
       return true;
     });
   }),
+
+  init() {
+    this._super(...arguments);
+
+    this.filters = [];
+  },
 
   actions: {
     /**

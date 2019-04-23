@@ -1,17 +1,9 @@
 const Ember = window.Ember;
 const { Object: EmberObject, computed, run } = Ember;
-const { oneWay } = computed;
+const { readOnly } = computed;
 
 export default EmberObject.extend(Ember.Evented, {
-  adapter: oneWay('namespace.adapter').readOnly(),
-
-  /**
-   * Stores the timestamp when it was first accessed.
-   *
-   * @property now
-   * @type {Number}
-   */
-  now: computed(() => Date.now()),
+  adapter: readOnly('namespace.adapter'),
 
   /**
    * Unique id per applciation (not application instance). It's very important
@@ -26,6 +18,14 @@ export default EmberObject.extend(Ember.Evented, {
   }),
 
   init() {
+    /**
+     * Stores the timestamp when it was first accessed.
+     *
+     * @property now
+     * @type {Number}
+     */
+    this.now = Date.now();
+
     this.get('adapter').onMessageReceived(message => {
       if (this.get('uniqueId') === message.applicationId || !message.applicationId) {
         this.messageReceived(message.type, message);

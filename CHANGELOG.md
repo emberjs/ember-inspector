@@ -1,5 +1,32 @@
 # Changelog
 
+## [Unreleased](https://github.com/emberjs/ember-inspector/tree/HEAD)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.6.0...HEAD)
+
+**Fixed bugs:**
+
+- \[v3.5\] No longer detects my ember-app [\#927](https://github.com/emberjs/ember-inspector/issues/927)
+
+## [v3.6.0](https://github.com/emberjs/ember-inspector/tree/v3.6.0) (2019-01-29)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.5.0...v3.6.0)
+
+**Implemented enhancements:**
+
+- Default to Components Route [\#924](https://github.com/emberjs/ember-inspector/pull/924) ([nummi](https://github.com/nummi))
+
+**Closed issues:**
+
+- getApplications\(...\).mapBy is not a function [\#926](https://github.com/emberjs/ember-inspector/issues/926)
+
+**Merged pull requests:**
+
+- Revert the things [\#932](https://github.com/emberjs/ember-inspector/pull/932) ([rwwagner90](https://github.com/rwwagner90))
+- use map for broader compatibility [\#928](https://github.com/emberjs/ember-inspector/pull/928) ([efx](https://github.com/efx))
+- Bump minor version to 3.6.0 [\#922](https://github.com/emberjs/ember-inspector/pull/922) ([rwwagner90](https://github.com/rwwagner90))
+- Update CHANGELOG.md [\#921](https://github.com/emberjs/ember-inspector/pull/921) ([rwwagner90](https://github.com/rwwagner90))
+
 ## [v3.5.0](https://github.com/emberjs/ember-inspector/tree/v3.5.0) (2019-01-25)
 
 [Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.4.0...v3.5.0)

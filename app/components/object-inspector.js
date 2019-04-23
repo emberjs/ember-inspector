@@ -38,10 +38,6 @@ export default Component.extend({
       });
     },
 
-    toggleInspector() {
-      this.sendAction('toggleInspector', ...arguments);
-    },
-
     setPropDisplay(type) {
       this.set('propDisplayType', type);
     }

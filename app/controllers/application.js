@@ -1,8 +1,18 @@
 import Controller from '@ember/controller';
-import { computed } from '@ember/object';
 import { equal } from '@ember/object/computed';
+import { schedule } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 
 export default Controller.extend({
+  /**
+   * Service used to broadcast changes to the application's layout
+   * such as toggling of the object inspector.
+   *
+   * @property layoutService
+   * @type {Service}
+   */
+  layoutService: service('layout'),
+
   isDragging: false,
   contentHeight: null,
 
@@ -15,8 +25,6 @@ export default Controller.extend({
 
   navWidth: 180,
   inspectorWidth: 360,
-  mixinStack: computed(() => []),
-  mixinDetails: computed(() => []),
   isChrome: equal('port.adapter.name', 'chrome'),
 
   deprecationCount: 0,
@@ -25,6 +33,13 @@ export default Controller.extend({
   active: true,
 
   inspectorExpanded: false,
+
+  init() {
+    this._super(...arguments);
+
+    this.mixinStack = [];
+    this.mixinDetails = [];
+  },
 
   pushMixinDetails(name, property, objectId, details, errors) {
     details = {
@@ -79,6 +94,14 @@ export default Controller.extend({
   actions: {
     setIsDragging(isDragging) {
       this.set('isDragging', isDragging);
+    },
+
+    toggleInspector() {
+      this.toggleProperty('inspectorExpanded');
+      // Broadcast that tables have been resized (used by `x-list`).
+      schedule('afterRender', () => {
+        this.get('layoutService').trigger('resize', { source: 'object-inspector' });
+      });
     }
   }
 });

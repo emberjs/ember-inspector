@@ -2,7 +2,7 @@ import PortMixin from "ember-debug/mixins/port-mixin";
 import ProfileManager from "ember-debug/models/profile-manager";
 
 const Ember = window.Ember;
-const { computed: { oneWay }, run: { later }, subscribe, Object: EmberObject } = Ember;
+const { computed: { readOnly }, run: { later }, subscribe, Object: EmberObject } = Ember;
 
 let profileManager = new ProfileManager();
 let queue = [];
@@ -57,8 +57,8 @@ subscribe("render", {
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,
-  port: oneWay('namespace.port').readOnly(),
-  viewDebug: oneWay('namespace.viewDebug').readOnly(),
+  port: readOnly('namespace.port'),
+  viewDebug: readOnly('namespace.viewDebug'),
   portNamespace: 'render',
 
   profileManager,

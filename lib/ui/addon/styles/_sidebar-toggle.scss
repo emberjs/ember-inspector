@@ -1,0 +1,18 @@
+.sidebar-toggle {
+  margin-right: 0; // .toolbar__icon-button override
+  max-height: var(--toolbar-height);
+  padding-right: 6px; // .toolbar__icon-button override
+
+  /*
+    Absolute positioning used because this button is not
+    a child of .toolbar
+  */
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  &.flip .sidebar-toggle-triangle {
+    transform: rotate(180deg) translateX(3px);
+    transform-origin: center;
+  }
+}
