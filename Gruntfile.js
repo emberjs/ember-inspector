@@ -26,8 +26,4 @@ module.exports = function(grunt) {
 
   grunt.initConfig(config);
   grunt.loadNpmTasks('grunt-s3');
-
-  grunt.registerTask('clean-tmp', function() {
-    grunt.file.delete('./tmp');
-  });
 };
