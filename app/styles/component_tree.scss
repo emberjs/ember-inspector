@@ -9,22 +9,6 @@
   position: relative;
 }
 
-.component-tree-item--component {
-  color: var(--component-text);
-
-  &:hover {
-    background-color: var(--spec06);
-
-    .component-tree-item__action {
-      opacity: 1;
-    }
-
-    .component-tree-item__action.disabled {
-      opacity: 0.65;
-    }
-  }
-}
-
 .component-tree-item__action {
   align-items: center;
   background: transparent;
@@ -100,5 +84,21 @@
 
   .component-tree-item__action.disabled {
     opacity: 0.65;
+  }
+}
+
+.component-tree-item--component {
+  color: var(--component-text);
+
+  &:hover {
+    background-color: var(--spec06);
+
+    .component-tree-item__action {
+      opacity: 1;
+    }
+
+    .component-tree-item__action.disabled {
+      opacity: 0.65;
+    }
   }
 }
