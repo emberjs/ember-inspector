@@ -1,6 +1,5 @@
 module.exports = function(grunt) {
   let packageJson = grunt.file.readJSON('package.json');
-  let versionedPane = `panes-${packageJson.emberVersionsSupported[0].replace(/\./g, '-')}`;
   let config = {
     pkg: packageJson,
     env: process.env,
