@@ -360,7 +360,7 @@ export default EmberObject.extend(PortMixin, {
         if (!name && typeof mixin.toString === 'function') {
           try {
             name = mixin.toString();
-          } catch (e) {
+          } catch(e) {
             name = '(Unable to convert Object to string)';
           }
         }
@@ -799,6 +799,12 @@ function getDebugInfo(object) {
 }
 
 function isComputed(value) {
+  // Ember > 3.10
+  if (Ember.isComputed) {
+    return Ember.isComputed(value);
+  }
+
+  // Ember < 3.10
   return value instanceof ComputedProperty;
 }
 
@@ -810,7 +816,7 @@ function calculateCP(object, property, errorsForObject) {
   delete errorsForObject[property];
   try {
     return get(object, property);
-  } catch (error) {
+  } catch(error) {
     errorsForObject[property] = { property, error };
     return new CalculateCPError();
   }
