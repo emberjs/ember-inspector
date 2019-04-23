@@ -21,59 +21,11 @@ module.exports = function(grunt) {
           options: { verify: true }
         }]
       }
-    },
-    "compress": {
-      chrome: {
-        options: {
-          archive: 'dist/chrome/ember-inspector.zip'
-        },
-        expand: true,
-        pretty: true,
-        src: '**/*',
-        cwd: 'dist/chrome'
-      },
-      firefox: {
-        options: {
-          archive: 'dist/firefox/ember-inspector.zip'
-        },
-        expand: true,
-        pretty: true,
-        src: '**/*',
-        cwd: 'dist/firefox'
-      },
-      "chrome-pane": {
-        options: {
-          archive: 'dist/chrome-pane.zip'
-        },
-        expand: true,
-        pretty: true,
-        cwd: `dist/chrome/${versionedPane}`,
-        src: ['**/*']
-      },
-      "firefox-pane": {
-        options: {
-          archive: 'dist/firefox-pane.zip'
-        },
-        expand: true,
-        pretty: true,
-        cwd: `dist/firefox/${versionedPane}`,
-        src: ['**/*']
-      },
-      "bookmarklet-pane": {
-        options: {
-          archive: 'dist/bookmarklet-pane.zip'
-        },
-        expand: true,
-        pretty: true,
-        cwd: `dist/bookmarklet/${versionedPane}`,
-        src: ['**/*']
-      }
     }
   };
 
   grunt.initConfig(config);
   grunt.loadNpmTasks('grunt-s3');
-  grunt.loadNpmTasks('grunt-contrib-compress');
 
   grunt.registerTask('clean-tmp', function() {
     grunt.file.delete('./tmp');
