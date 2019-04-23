@@ -1,6 +1,7 @@
 /* eslint-env node */
 const gulp = require("gulp");
 const zip = require("gulp-zip");
+const del = require("del");
 const pkg = require('./package.json');
 let versionedPane = `panes-${pkg.emberVersionsSupported[0].replace(/\./g, '-')}`;
 
@@ -15,3 +16,5 @@ exports["compress:firefox"] = () => compress("dist/firefox", "firefox/ember-insp
 exports["compress:chrome-pane"] = () => compress(`dist/chrome/${versionedPane}`, "chrome-pane.zip");
 exports["compress:firefox-pane"] = () => compress(`dist/firefox/${versionedPane}`, "firefox-pane.zip");
 exports["compress:bookmarklet-pane"] = () => compress(`dist/bookmarklet/${versionedPane}`, "bookmarklet-pane.zip");
+
+exports["clean-tmp"] = () => del("./tmp");
