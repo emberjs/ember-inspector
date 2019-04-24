@@ -77,7 +77,7 @@
     "ember-source": "https://s3.amazonaws.com/builds.emberjs.com/canary/shas/2cc35738f2938e6b9735d0d641214b0721d53a4b.tgz",
     "ember-source-channel-url": "^1.1.0",
     "ember-svg-jar": "^1.2.2",
-    "ember-table": "rwwagner90/ember-table#move-deps",
+    "ember-table": "Addepar/ember-table#master",
     "ember-test-selectors": "^2.1.0",
     "ember-truth-helpers": "^2.1.0",
     "ember-try": "^1.1.0",

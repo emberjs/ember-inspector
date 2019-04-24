@@ -4540,9 +4540,9 @@ ember-svg-jar@^1.2.2:
     mkdirp "^0.5.1"
     path-posix "^1.0.0"
 
-ember-table@rwwagner90/ember-table#move-deps:
+ember-table@Addepar/ember-table#master:
   version "2.0.0-beta.7"
-  resolved "https://codeload.github.com/rwwagner90/ember-table/tar.gz/a381743876d99de38794af1188f635f9afafcf26"
+  resolved "https://codeload.github.com/Addepar/ember-table/tar.gz/a1d5122a902efe176d9740f04dc26a06247792b9"
   dependencies:
     "@ember-decorators/babel-transforms" "^0.1.1"
     "@html-next/vertical-collection" "1.0.0-beta.13"
