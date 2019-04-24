@@ -11,11 +11,17 @@ const { oneWay } = computed;
 
 const keys = Object.keys || Ember.keys;
 
-function inspectValue(value) {
+/**
+ * Determine the type and get the value of the passed property
+ * @param {EmberObject|computed|*} value The object, computed, or other property to inspect
+ * @param {string} key The key for the property
+ * @return {{inspect: (string|*), type: string}|{computed: boolean, inspect: string, type: string}|{inspect: string, type: string}}
+ */
+function inspectValue(value, key) {
   let string;
   if (value instanceof EmberObject) {
     return { type: 'type-ember-object', inspect: value.toString() };
-  } else if (isComputed(value)) {
+  } else if (isComputed(value, key)) {
     string = '<computed>';
     return { type: 'type-descriptor', inspect: string, computed: true };
   } else if (isDescriptor(value)) {
@@ -407,7 +413,7 @@ export default EmberObject.extend(PortMixin, {
     }
 
     if (!value || !(value instanceof CalculateCPError)) {
-      value = inspectValue(value);
+      value = inspectValue(object, property);
       value.computed = true;
 
 
@@ -423,8 +429,7 @@ export default EmberObject.extend(PortMixin, {
     let object = this.sentObjects[objectId];
 
     let handler = () => {
-      let value = get(object, property);
-      value = inspectValue(value);
+      const value = inspectValue(object, property);
       value.computed = computed;
 
       this.sendMessage('updateProperty', { objectId, property, value, mixinIndex });
@@ -501,7 +506,7 @@ function addProperties(properties, hash) {
       }
     }
 
-    if (isComputed(hash[prop])) {
+    if (isComputed(hash, prop)) {
       options.dependentKeys = (hash[prop]._dependentKeys || []).map((key) => key.toString());
       if (!options.isService) {
         if (typeof hash[prop]._getter === 'function') {
@@ -512,7 +517,7 @@ function addProperties(properties, hash) {
       }
       options.readOnly = hash[prop]._readOnly;
     }
-    replaceProperty(properties, prop, hash[prop], options);
+    replaceProperty(properties, prop, inspectValue(hash, prop), options);
   }
 }
 
@@ -531,7 +536,7 @@ function replaceProperty(properties, name, value, options) {
     properties.splice(i, 1);
   }
 
-  let prop = { name, value: inspectValue(value) };
+  let prop = { name, value };
   prop.isMandatorySetter = options.isMandatorySetter;
   prop.readOnly = options.readOnly;
   prop.dependentKeys = options.dependentKeys || [];
@@ -611,7 +616,7 @@ function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties
         if (cache !== undefined || expensiveProperties.indexOf(item.name) === -1) {
           let value = calculateCP(object, item.name, errorsForObject);
           if (!value || !(value instanceof CalculateCPError)) {
-            item.value = inspectValue(value);
+            item.value = inspectValue(object, item.name);
             item.value.computed = true;
           }
         }
@@ -798,14 +803,20 @@ function getDebugInfo(object) {
   return debugInfo;
 }
 
-function isComputed(value) {
+/**
+ * Check if given key on the passed object is a computed property
+ * @param object
+ * @param key
+ * @return {boolean|*}
+ */
+function isComputed(object, key) {
   // Ember > 3.10
   if (Ember.Debug.isComputed) {
-    return Ember.Debug.isComputed(value);
+    return Ember.Debug.isComputed(object, key);
   }
 
   // Ember < 3.10
-  return value instanceof ComputedProperty;
+  return object[key] instanceof ComputedProperty;
 }
 
 function toArray(errors) {
