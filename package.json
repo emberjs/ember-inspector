@@ -73,7 +73,7 @@
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-qunit": "^4.4.1",
     "ember-resolver": "^5.0.1",
-    "ember-source": "~3.9.1",
+    "ember-source": "https://s3.amazonaws.com/builds.emberjs.com/canary/shas/a7d861b950d31fe8e7f103b0cb678b2c2bc34b88.tgz",
     "ember-source-channel-url": "^1.1.0",
     "ember-svg-jar": "^1.2.2",
     "ember-table": "Addepar/ember-table#master",
