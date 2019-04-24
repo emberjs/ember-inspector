@@ -60,10 +60,8 @@ before_deploy:
   - yarn run build:production
 
 deploy:
-  access_key_id:
-    secure: rItdIXR63Z51sTmZb3+Jy+Z236aSW9S3I6sjjJUaDAl0vXotGVCO7CYmu1uuvv61/0ofuiFRAFsUwi/6xGgOYNXzkMm6D7KHkSNqhnPHlOiIEh25k78OflpIm0PhpgCKiktlNJpgfM1WLZ+VAs4KFeTAeiBw4kJnCsnyKY4Ok4Y=
-  secret_access_key:
-    secure: U0rqBVBq3/pq1iMHa5hwqSWKXF0xgNCtuRtqoQ46hV3oiDnZJE5ZZc5B8PTlocekqmsbLCUAdC0Qjdco98tBSbRDgVqVeryIUxtBNQj8cWpsYXyHnJ6guY7VDaeGsVuiuRZTKqSitsEHg432CdQlPW+N3DvEL/esTLlYgFS7CxA=
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
   provider: s3
   bucket: "ember-extension"
   access: public_read
