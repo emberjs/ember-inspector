@@ -64,6 +64,7 @@ deploy:
   bucket: "ember-extension"
   access: public_read
   cache_control: "max-age=86400000, public"
+  skip_cleanup: true
   on:
     branch: stable
 
