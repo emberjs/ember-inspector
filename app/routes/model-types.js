@@ -12,7 +12,7 @@ export default TabRoute.extend({
   model() {
     const port = this.get('port');
     return new Promise(function(resolve) {
-      port.one('data:modelTypesAdded', this, function(message) {
+      port.one('data:modelTypesAdded', function(message) {
         resolve(message.modelTypes);
       });
       port.send('data:getModelTypes');
