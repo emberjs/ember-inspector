@@ -13,15 +13,17 @@ const keys = Object.keys || Ember.keys;
 
 /**
  * Determine the type and get the value of the passed property
- * @param {EmberObject|computed|*} value The object, computed, or other property to inspect
- * @param {string} key The key for the property
+ * @param {*} object The parent object we will look for `key` on
+ * @param {string} key The key for the property which points to a computed, EmberObject, etc
  * @return {{inspect: (string|*), type: string}|{computed: boolean, inspect: string, type: string}|{inspect: string, type: string}}
  */
-function inspectValue(value, key) {
+function inspectValue(object, key) {
   let string;
+  const value = get(object, key);
+
   if (value instanceof EmberObject) {
     return { type: 'type-ember-object', inspect: value.toString() };
-  } else if (isComputed(value, key)) {
+  } else if (isComputed(object, key)) {
     string = '<computed>';
     return { type: 'type-descriptor', inspect: string, computed: true };
   } else if (isDescriptor(value)) {
