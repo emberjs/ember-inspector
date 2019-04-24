@@ -65,6 +65,8 @@ deploy:
   access: public_read
   cache_control: "max-age=86400000, public"
   skip_cleanup: true
+  local_dir: dist/bookmarklet
+  upload-dir: dist_bookmarklet
   on:
     branch: stable
 
