@@ -800,8 +800,8 @@ function getDebugInfo(object) {
 
 function isComputed(value) {
   // Ember > 3.10
-  if (Ember.isComputed) {
-    return Ember.isComputed(value);
+  if (Ember.Debug.isComputed) {
+    return Ember.Debug.isComputed(value);
   }
 
   // Ember < 3.10
