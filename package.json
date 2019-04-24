@@ -18,7 +18,6 @@
     "watch": "ember build --watch",
     "serve:bookmarklet": "ember serve --port 9191",
     "build:production": "EMBER_ENV=production node scripts/download-panes.js && ember build --environment production && gulp compress:chrome && gulp compress:firefox && gulp clean-tmp",
-    "upload": "yarn build:production && grunt s3:bookmarklet",
     "compress:panes": "gulp compress:chrome-pane && gulp compress:firefox-pane && gulp compress:bookmarklet-pane",
     "upload:panes": "yarn build && yarn compress:panes && node scripts/upload-panes.js",
     "lock-version": "yarn build:production && yarn compress:panes && EMBER_ENV=production node scripts/upload-panes.js"
@@ -83,9 +82,6 @@
     "ember-try": "^1.1.0",
     "eslint-plugin-ember": "^6.3.0",
     "fstream": "^1.0.8",
-    "grunt": "^0.4.5",
-    "grunt-cli": "^0.1.13",
-    "grunt-s3": "^0.2.0-alpha.3",
     "gulp": "4.0.1",
     "gulp-zip": "4.2.0",
     "js-string-escape": "^1.0.0",
