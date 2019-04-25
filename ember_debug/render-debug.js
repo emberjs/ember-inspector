@@ -57,7 +57,6 @@ subscribe("render", {
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,
-  port: readOnly('namespace.port'),
   viewDebug: readOnly('namespace.viewDebug'),
   portNamespace: 'render',
 

@@ -6,7 +6,6 @@ const { readOnly } = computed;
 export default EmberObject.extend(PortMixin, {
   namespace: null,
 
-  port: readOnly('namespace.port'),
   objectInspector: readOnly('namespace.objectInspector'),
 
   container: computed('namespace.owner', function() {

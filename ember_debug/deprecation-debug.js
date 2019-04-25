@@ -10,8 +10,6 @@ const { registerDeprecationHandler } = Debug;
 export default EmberObject.extend(PortMixin, {
   portNamespace: 'deprecation',
 
-  port: readOnly('namespace.port'),
-
   adapter: readOnly('port.adapter'),
 
   sourceMap: computed(function() {
