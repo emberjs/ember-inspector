@@ -19,7 +19,7 @@ const keys = Object.keys || Ember.keys;
  */
 function inspectValue(object, key) {
   let string;
-  const value = get(object, key);
+  const value = object[key];
 
   if (value instanceof EmberObject) {
     return { type: 'type-ember-object', inspect: value.toString() };
