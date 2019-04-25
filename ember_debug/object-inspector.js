@@ -1,10 +1,11 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import { compareVersion } from 'ember-debug/utils/version';
+import { isComputed, isDescriptor } from 'ember-debug/utils/type-check';
 
 const Ember = window.Ember;
 const {
   Object: EmberObject, inspect: emberInspect, meta: emberMeta, typeOf,
-  computed, get, set, ComputedProperty, guidFor, isNone, removeObserver,
+  computed, get, set, guidFor, isNone, removeObserver,
   Mixin, addObserver, cacheFor, VERSION
 } = Ember;
 const { oneWay } = computed;
@@ -15,11 +16,17 @@ const keys = Object.keys || Ember.keys;
  * Determine the type and get the value of the passed property
  * @param {*} object The parent object we will look for `key` on
  * @param {string} key The key for the property which points to a computed, EmberObject, etc
+ * @param {*} computedValue A value that has already been computed with calculateCP
  * @return {{inspect: (string|*), type: string}|{computed: boolean, inspect: string, type: string}|{inspect: string, type: string}}
  */
-function inspectValue(object, key) {
+function inspectValue(object, key, computedValue) {
   let string;
-  const value = object[key];
+  const value = computedValue ? computedValue : object[key];
+
+  // TODO: this is not very clean. We should refactor calculateCP, etc, rather than passing computedValue
+  if (computedValue) {
+    return { type: `type-${typeOf(value)}`, inspect: inspect(value) };
+  }
 
   if (value instanceof EmberObject) {
     return { type: 'type-ember-object', inspect: value.toString() };
@@ -31,11 +38,6 @@ function inspectValue(object, key) {
   } else {
     return { type: `type-${typeOf(value)}`, inspect: inspect(value) };
   }
-}
-
-function isDescriptor(value) {
-  // Ember >= 1.11
-  return value && typeof value === 'object' && value.isDescriptor;
 }
 
 function inspect(value) {
@@ -415,7 +417,7 @@ export default EmberObject.extend(PortMixin, {
     }
 
     if (!value || !(value instanceof CalculateCPError)) {
-      value = inspectValue(object, property);
+      value = inspectValue(object, property, value);
       value.computed = true;
 
 
@@ -431,7 +433,8 @@ export default EmberObject.extend(PortMixin, {
     let object = this.sentObjects[objectId];
 
     let handler = () => {
-      const value = inspectValue(object, property);
+      let value = get(object, property);
+      value = inspectValue(object, property, value);
       value.computed = computed;
 
       this.sendMessage('updateProperty', { objectId, property, value, mixinIndex });
@@ -618,7 +621,7 @@ function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties
         if (cache !== undefined || expensiveProperties.indexOf(item.name) === -1) {
           let value = calculateCP(object, item.name, errorsForObject);
           if (!value || !(value instanceof CalculateCPError)) {
-            item.value = inspectValue(object, item.name);
+            item.value = inspectValue(object, item.name, value);
             item.value.computed = true;
           }
         }
@@ -785,7 +788,6 @@ function getDebugInfo(object) {
 
   let meta = Ember.meta(object);
   for (let prop in object) {
-
     // when in Ember 3.1
     if (compareVersion(VERSION, '3.1.0') !== -1) {
       // in Ember 3.1+ CP's are eagerly invoked via a normal
@@ -805,21 +807,7 @@ function getDebugInfo(object) {
   return debugInfo;
 }
 
-/**
- * Check if given key on the passed object is a computed property
- * @param object
- * @param key
- * @return {boolean|*}
- */
-function isComputed(object, key) {
-  // Ember > 3.10
-  if (Ember.Debug.isComputed) {
-    return Ember.Debug.isComputed(object, key);
-  }
 
-  // Ember < 3.10
-  return object[key] instanceof ComputedProperty;
-}
 
 function toArray(errors) {
   return keys(errors).map(key => errors[key]);
