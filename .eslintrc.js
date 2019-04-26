@@ -79,7 +79,6 @@ module.exports = {
       'beforeColon': false,
       'afterColon': true
     }],
-    'keyword-spacing': 2,
     'linebreak-style': [2, 'unix'],
     'max-len': [2, 250],
     'max-nested-callbacks': [2, 5],

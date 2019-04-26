@@ -7,7 +7,6 @@ module.exports = {
     'no-inline-styles': false,
     'no-invalid-interactive': false,
     'no-outlet-outside-routes': false,
-    'no-partial': false,
     'no-unbound': false,
     'simple-unless': false,
     'table-groups': false
