@@ -1,13 +1,17 @@
 const Ember = window.Ember;
 const { Mixin } = Ember;
+
 export default Mixin.create({
   port: null,
+
   messages: {},
 
   portNamespace: null,
 
   init() {
     this._super(...arguments);
+
+    this.set('port', this.get('namespace.port'));
 
     this.setupOrRemovePortListeners('on');
   },

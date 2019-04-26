@@ -35,7 +35,6 @@ export default EmberObject.extend(PortMixin, {
   namespace: null,
 
   adapter: readOnly('namespace.adapter'),
-  port: readOnly('namespace.port'),
   objectInspector: readOnly('namespace.objectInspector'),
 
   portNamespace: 'view',

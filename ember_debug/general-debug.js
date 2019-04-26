@@ -59,13 +59,6 @@ export default EmberObject.extend(PortMixin, {
   emberCliConfig: null,
 
   /**
-  * Used by PortMixin.
-  *
-  * @type {Port}
-  */
-  port: readOnly('namespace.port'),
-
-  /**
    * Sends a reply back indicating if the app has been booted.
    *
    * `__inspector__booted` is a property set on the application instance
