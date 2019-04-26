@@ -56,8 +56,21 @@ install:
 script:
   - travis_retry node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO --- node_modules/.bin/ember test --filter="Ember Debug"
 
-after_success:
-  - travis_retry test $TRAVIS_BRANCH == "stable" && yarn run upload
+before_deploy:
+  - yarn run build:production
+
+deploy:
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+  provider: s3
+  bucket: "ember-extension"
+  access: public_read
+  cache_control: "max-age=86400000, public"
+  skip_cleanup: true
+  local_dir: dist/bookmarklet
+  upload-dir: dist_bookmarklet
+  on:
+    branch: stable
 
 branches:
   only:
