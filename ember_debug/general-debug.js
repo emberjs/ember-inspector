@@ -1,9 +1,8 @@
 /* eslint no-empty:0 */
 import PortMixin from "ember-debug/mixins/port-mixin";
 const Ember = window.Ember;
-const { computed, Object: EmberObject } = Ember;
+const { Object: EmberObject } = Ember;
 let { libraries } = Ember;
-const { readOnly } = computed;
 
 /**
  * Class that handles gathering general information of the inspected app.
@@ -57,13 +56,6 @@ export default EmberObject.extend(PortMixin, {
    *  {Boolean} usePodsByDefault
    */
   emberCliConfig: null,
-
-  /**
-  * Used by PortMixin.
-  *
-  * @type {Port}
-  */
-  port: readOnly('namespace.port'),
 
   /**
    * Sends a reply back indicating if the app has been booted.
