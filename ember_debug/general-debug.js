@@ -3,7 +3,6 @@ import PortMixin from "ember-debug/mixins/port-mixin";
 const Ember = window.Ember;
 const { computed, Object: EmberObject } = Ember;
 let { libraries } = Ember;
-const { readOnly } = computed;
 
 /**
  * Class that handles gathering general information of the inspected app.
