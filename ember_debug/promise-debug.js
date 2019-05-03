@@ -113,12 +113,10 @@ export default EmberObject.extend(PortMixin, {
     this.get('promiseAssembler').on('chained', this, this.promiseChained);
 
     this.get('releaseMethods').pushObject(() => {
-
       this.get('promiseAssembler').off('created', this, this.promiseUpdated);
       this.get('promiseAssembler').off('fulfilled', this, this.promiseUpdated);
       this.get('promiseAssembler').off('rejected', this, this.promiseUpdated);
-      this.get('promiseAssembler').off('fulfilled', this, this.promiseChained);
-
+      this.get('promiseAssembler').off('chained', this, this.promiseChained);
     });
 
     this.promisesUpdated(this.get('promiseAssembler').find());
