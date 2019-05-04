@@ -1,5 +1,5 @@
 const Ember = window.Ember;
-const { ComputedProperty } = Ember;
+const { ComputedProperty, get } = Ember;
 
 /**
  * Check if given key on the passed object is a computed property
@@ -10,7 +10,8 @@ const { ComputedProperty } = Ember;
 export function isComputed(object, key) {
   // Ember > 3.10
   if (Ember.Debug.isComputed) {
-    return Ember.Debug.isComputed(object, key);
+    // TODO: This is a hack, we should not need to check the function name, this should be flagged as computed by `isComputed`.
+    return Ember.Debug.isComputed(object, key) || (object[key] && get(object[key], 'name') === 'COMPUTED_DECORATOR');
   }
 
   // Ember < 3.10
