@@ -1,6 +1,6 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import { compareVersion } from 'ember-debug/utils/version';
-import { isComputed, isDescriptor } from 'ember-debug/utils/type-check';
+import { isComputed, isDescriptor, getDescriptorFor } from 'ember-debug/utils/type-check';
 
 const Ember = window.Ember;
 const {
@@ -512,7 +512,7 @@ function addProperties(properties, hash) {
     }
 
     if (isComputed(hash, prop)) {
-      options.dependentKeys = (hash[prop]._dependentKeys || []).map((key) => key.toString());
+      options.dependentKeys = (getDescriptorFor(hash, prop)._dependentKeys || []).map((key) => key.toString());
       if (!options.isService) {
         if (typeof hash[prop]._getter === 'function') {
           options.code = Function.prototype.toString.call(hash[prop]._getter);
