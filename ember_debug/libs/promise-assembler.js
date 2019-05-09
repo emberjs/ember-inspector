@@ -1,17 +1,20 @@
 /**
-  Original implementation and the idea behind the `PromiseAssembler`,
-  `Promise` model, and other work related to promise inspection was done
-  by Stefan Penner (@stefanpenner) thanks to McGraw Hill Education (@mhelabs)
-  and Yapp Labs (@yapplabs).
+ Original implementation and the idea behind the `PromiseAssembler`,
+ `Promise` model, and other work related to promise inspection was done
+ by Stefan Penner (@stefanpenner) thanks to McGraw Hill Education (@mhelabs)
+ and Yapp Labs (@yapplabs).
  */
 
 import Promise from 'ember-debug/models/promise';
+
 const Ember = window.Ember;
 const { Object: EmberObject, Evented, A, computed, RSVP, isNone } = Ember;
 
 let PromiseAssembler = EmberObject.extend(Evented, {
   // RSVP lib to debug
   RSVP,
+
+  isStarted: false,
 
   all: computed(function() { return A(); }),
 
@@ -40,25 +43,30 @@ let PromiseAssembler = EmberObject.extend(Evented, {
     this.RSVP.on('rejected', this.promiseRejected);
     this.RSVP.on('fulfilled', this.promiseFulfilled);
     this.RSVP.on('created', this.promiseCreated);
+
+    this.isStarted = true;
   },
 
   stop() {
-    this.RSVP.configure('instrument', false);
-    this.RSVP.off('chained', this.promiseChained);
-    this.RSVP.off('rejected', this.promiseRejected);
-    this.RSVP.off('fulfilled', this.promiseFulfilled);
-    this.RSVP.off('created', this.promiseCreated);
+    if (this.isStarted) {
+      this.RSVP.configure('instrument', false);
+      this.RSVP.off('chained', this.promiseChained);
+      this.RSVP.off('rejected', this.promiseRejected);
+      this.RSVP.off('fulfilled', this.promiseFulfilled);
+      this.RSVP.off('created', this.promiseCreated);
 
-    this.get('all').forEach(item => {
-      item.destroy();
-    });
-    this.set('all', A());
-    this.set('promiseIndex', {});
+      this.get('all').forEach(item => {
+        item.destroy();
+      });
+      this.set('all', A());
+      this.set('promiseIndex', {});
 
-    this.promiseChained = null;
-    this.promiseRejected = null;
-    this.promiseFulfilled = null;
-    this.promiseCreated = null;
+      this.promiseChained = null;
+      this.promiseRejected = null;
+      this.promiseFulfilled = null;
+      this.promiseCreated = null;
+      this.isStarted = false;
+    }
   },
 
   willDestroy() {

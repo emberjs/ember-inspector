@@ -113,12 +113,10 @@ export default EmberObject.extend(PortMixin, {
     this.get('promiseAssembler').on('chained', this, this.promiseChained);
 
     this.get('releaseMethods').pushObject(() => {
-
       this.get('promiseAssembler').off('created', this, this.promiseUpdated);
       this.get('promiseAssembler').off('fulfilled', this, this.promiseUpdated);
       this.get('promiseAssembler').off('rejected', this, this.promiseUpdated);
-      this.get('promiseAssembler').off('fulfilled', this, this.promiseChained);
-
+      this.get('promiseAssembler').off('chained', this, this.promiseChained);
     });
 
     this.promisesUpdated(this.get('promiseAssembler').find());
@@ -166,8 +164,8 @@ export default EmberObject.extend(PortMixin, {
       serialized.children = this.promiseIds(promise.get('children'));
     }
     serialized.parent = promise.get('parent.guid');
-    serialized.value = this.inspectValue(promise.get('value'));
-    serialized.reason = this.inspectValue(promise.get('reason'));
+    serialized.value = this.inspectValue(promise, 'value');
+    serialized.reason = this.inspectValue(promise, 'reason');
     if (promise.get('createdAt')) {
       serialized.createdAt = promise.get('createdAt').getTime();
     }
@@ -182,12 +180,18 @@ export default EmberObject.extend(PortMixin, {
     return promises.map(promise => promise.get('guid'));
   },
 
-  inspectValue(value) {
+  /**
+   * Inspect the promise and pass to object inspector
+   * @param {Promise} promise The promise object
+   * @param {string} key The key for the property on the promise
+   * @return {*|{inspect: (string|*), type: string}|{computed: boolean, inspect: string, type: string}|{inspect: string, type: string}}
+   */
+  inspectValue(promise, key) {
     let objectInspector = this.get('objectInspector');
-    let inspected = objectInspector.inspectValue(value);
+    let inspected = objectInspector.inspectValue(promise, key);
 
     if (inspected.type === 'type-ember-object' || inspected.type === "type-array") {
-      inspected.objectId = objectInspector.retainObject(value);
+      inspected.objectId = objectInspector.retainObject(promise.get(key));
       this.get('releaseMethods').pushObject(function() {
         objectInspector.releaseObject(inspected.objectId);
       });

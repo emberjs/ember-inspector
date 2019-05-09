@@ -21,7 +21,7 @@ function startAssembler() {
 }
 
 module('Ember Debug - PromiseAssembler', function(hooks) {
-  hooks.beforeEach(function() {
+  hooks.beforeEach(() => {
     stubRSVP();
     run(function() {
       assembler = PromiseAssembler.create({
@@ -31,7 +31,7 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
 
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(() => {
     if (assembler) {
       run(assembler, 'destroy');
       assembler = null;
