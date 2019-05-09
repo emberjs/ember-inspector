@@ -364,7 +364,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
   });
 
 
-  test("Service should be successfully tagged as service on serialization", function(assert) {
+  test('Service should be successfully tagged as service on serialization', function(assert) {
     let inspectedService = Service.extend({
       fooBoo() {
         return true;
@@ -382,7 +382,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(serializedServiceProperty.isService, true);
   });
 
-  test("Proxy Service should be successfully tagged as service on serialization", function(assert) {
+  test('Proxy Service should be successfully tagged as service on serialization', function(assert) {
     let inspectedService = Service.extend({
       unknownProperty() {
         return true;
@@ -400,23 +400,23 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(serializedServiceProperty.isService, true);
   });
 
-  test("Computed property dependent keys and code should be successfully serialized", function(assert) {
-    let compuedFn = function() {
-      return this.get("foo") + this.get("bar");
+  test('Computed property dependent keys and code should be successfully serialized', function(assert) {
+    let computedFn = function() {
+      return this.get('foo') + this.get('bar');
     };
 
     let inspected = EmberObject.extend({
       foo: true,
       bar: false,
-      fooAndBar: computed("foo", "bar", compuedFn)
+      fooAndBar: computed('foo', 'bar', computedFn)
     }).create();
 
     objectInspector.sendObject(inspected);
     let serializedComputedProperty = message.details[1].properties[2];
 
-    assert.equal(serializedComputedProperty.code, compuedFn.toString());
-    assert.equal(serializedComputedProperty.dependentKeys[0], "foo");
-    assert.equal(serializedComputedProperty.dependentKeys[1], "bar");
+    assert.equal(serializedComputedProperty.code, computedFn.toString());
+    assert.equal(serializedComputedProperty.dependentKeys[0], 'foo');
+    assert.equal(serializedComputedProperty.dependentKeys[1], 'bar');
   });
 
   test('Views are correctly handled when destroyed during transitions', async function(assert) {

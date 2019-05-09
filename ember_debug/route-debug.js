@@ -16,7 +16,6 @@ const { hasOwnProperty } = Object.prototype;
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,
-  port: readOnly('namespace.port'),
 
   router: computed('namespace.owner', function() {
     return this.get('namespace.owner').lookup('router:main');

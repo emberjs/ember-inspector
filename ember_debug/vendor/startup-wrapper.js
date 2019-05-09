@@ -1,13 +1,13 @@
 /* eslint camelcase:0 */
 /**
-  This is a wrapper for `ember-debug.js`
-  Wraps the script in a function,
-  and ensures that the script is executed
-  only after the dom is ready
-  and the application has initialized.
+ This is a wrapper for `ember-debug.js`
+ Wraps the script in a function,
+ and ensures that the script is executed
+ only after the dom is ready
+ and the application has initialized.
 
-  Also responsible for sending the first tree.
-**/
+ Also responsible for sending the first tree.
+ **/
 /*eslint prefer-spread: 0 */
 /* globals Ember, adapter, env, requireModule */
 var currentAdapter = 'basic';
@@ -19,7 +19,9 @@ if (typeof env !== 'undefined') {
   currentEnv = env;
 }
 
+// @formatter:off
 var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
+// @formatter:on
 
 (function(adapter) {
   var onReady = requireModule('ember-debug/utils/on-ready').onReady;
@@ -52,7 +54,6 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       onApplicationStart(function appStarted(instance) {
         let app = instance.application;
         if (!('__inspector__booted' in app)) {
-          app.__inspector__booted = true;
           // Watch for app reset/destroy
           app.reopen({
             reset: function() {
@@ -63,8 +64,6 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
         }
 
         if (instance && !('__inspector__booted' in instance)) {
-          instance.__inspector__booted = true;
-
           instance.reopen({
             // Clean up on instance destruction
             willDestroy() {
@@ -75,23 +74,39 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
               return this._super.apply(this, arguments);
             }
           });
-          // Boot the inspector (or re-boot if already booted, for example in tests)
-          Ember.EmberInspectorDebugger.set('_application', app);
-          Ember.EmberInspectorDebugger.set('owner', instance);
-          Ember.EmberInspectorDebugger.start(true);
+
+          if (!Ember.EmberInspectorDebugger._application) {
+            bootEmberInspector(instance);
+          }
         }
       });
     }
   });
 
+  function bootEmberInspector(appInstance) {
+    appInstance.application.__inspector__booted = true;
+    appInstance.__inspector__booted = true;
+
+    // Boot the inspector (or re-boot if already booted, for example in tests)
+    Ember.EmberInspectorDebugger.set('_application', appInstance.application);
+    Ember.EmberInspectorDebugger.set('owner', appInstance);
+    Ember.EmberInspectorDebugger.start(true);
+  }
+
   function onEmberReady(callback) {
     var triggered = false;
     var triggerOnce = function(string) {
-      if (triggered) { return; }
-      if (!window.Ember) { return; }
+      if (triggered) {
+        return;
+      }
+      if (!window.Ember) {
+        return;
+      }
       // `Ember.Application` load hook triggers before all of Ember is ready.
       // In this case we ignore and wait for the `Ember` load hook.
-      if (!window.Ember.RSVP) { return; }
+      if (!window.Ember.RSVP) {
+        return;
+      }
       triggered = true;
       callback();
     };
@@ -117,14 +132,34 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     if (typeof Ember === 'undefined') {
       return;
     }
+
+    const adapterInstance = requireModule('ember-debug/adapters/' + currentAdapter)['default'].create();
+
+    adapterInstance.onMessageReceived(function(message) {
+      if (message.type === 'app-picker-loaded') {
+        sendApps(adapterInstance, getApplications());
+      }
+
+      if (message.type === 'app-selected') {
+        const appInstance = getApplications().find(app => Ember.guidFor(app) === message.applicationId);
+
+        if (appInstance && appInstance.__deprecatedInstance__) {
+          bootEmberInspector(appInstance.__deprecatedInstance__);
+        }
+      }
+    });
+
     var apps = getApplications();
+
+    sendApps(adapterInstance, apps);
+
     var app;
     for (var i = 0, l = apps.length; i < l; i++) {
       app = apps[i];
       // We check for the existance of an application instance because
       // in Ember > 3 tests don't destroy the app when they're done but the app has no booted instances.
       if (app._readinessDeferrals === 0) {
-        let instance =  app.__deprecatedInstance__ || (app._applicationInstances && app._applicationInstances[0]);
+        let instance = app.__deprecatedInstance__ || (app._applicationInstances && app._applicationInstances[0]);
         if (instance) {
           // App started
           setupInstanceInitializer(app, callback);
@@ -157,11 +192,29 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     }
   }
 
+  /**
+   * Get all the Ember.Application instances from Ember.Namespace.NAMESPACES
+   * and add our own applicationId and applicationName to them
+   * @return {*}
+   */
   function getApplications() {
     var namespaces = Ember.A(Ember.Namespace.NAMESPACES);
 
-    return namespaces.filter(function(namespace) {
+    var apps = namespaces.filter(function(namespace) {
       return namespace instanceof Ember.Application;
+    });
+
+    return apps.map(function(app) {
+      // Add applicationId and applicationName to the app
+      var applicationId = Ember.guidFor(app);
+      var applicationName = app.name || app.modulePrefix || `(unknown app - ${applicationId})`;
+
+      Object.assign(app, {
+        applicationId,
+        applicationName
+      });
+
+      return app;
     });
   }
 
@@ -190,8 +243,23 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     }
   }
 
+  function sendApps(adapter, apps) {
+    const serializedApps = apps.map(app => {
+      return {
+        applicationName: app.applicationName,
+        applicationId: app.applicationId
+      }
+    });
+
+    adapter.sendMessage({
+      type: 'apps-loaded',
+      apps: serializedApps,
+      from: 'inspectedWindow'
+    });
+  }
+
   /**
-   * Checksi if a version is between two different versions.
+   * Checks if a version is between two different versions.
    * version should be >= left side, < right side
    *
    * @param {String} version1

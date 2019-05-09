@@ -1,6 +1,7 @@
 import { visit, find, click, triggerEvent } from '@ember/test-helpers';
 import { A } from '@ember/array';
 import { run } from '@ember/runloop';
+import Component from '@ember/component';
 import Route from '@ember/routing/route';
 import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
@@ -70,8 +71,14 @@ function setupApp() {
     }
   }));
 
+  this.owner.register('component:test-foo', Component.extend({
+    toString() {
+      return 'App.TestFooComponent';
+    }
+  }));
+
   setTemplate.call(this, 'application', hbs`<div class="application">{{outlet}}</div>`);
-  setTemplate.call(this, 'simple', hbs`Simple {{input class="simple-input"}}`);
+  setTemplate.call(this, 'simple', hbs`Simple {{test-foo class="simple-component"}}`);
   setTemplate.call(this, 'comments/index', hbs`{{#each}}{{this}}{{/each}}`);
   setTemplate.call(this, 'posts', hbs`Posts`);
 }
@@ -147,13 +154,7 @@ module('Ember Debug - View', function(hooks) {
     simple = tree.children[0];
     assert.equal(simple.children.length, 1, 'Components can be configured to show.');
     let component = simple.children[0];
-    // Less than 3.1
-    if (!hasEmberVersion(3, 1)) {
-      assert.equal(component.value.viewClass, 'Ember.TextField');
-    } else {
-      // 3.2+
-      assert.equal(component.value.viewClass, '@ember/component/text-field');
-    }
+    assert.equal(component.value.viewClass, 'App.TestFooComponent');
   });
 
   test('Highlighting Views on hover', async function t(assert) {
@@ -203,7 +204,7 @@ module('Ember Debug - View', function(hooks) {
     run(() => port.trigger('view:inspectViews', { inspect: true }));
     await wait();
 
-    await triggerEvent('.simple-input', 'mousemove');
+    await triggerEvent('.simple-component', 'mousemove');
 
     previewDiv = find('[data-label=preview-div]');
     assert.ok(isVisible(previewDiv));

@@ -79,7 +79,6 @@ module.exports = {
       'beforeColon': false,
       'afterColon': true
     }],
-    'keyword-spacing': 2,
     'linebreak-style': [2, 'unix'],
     'max-len': [2, 250],
     'max-nested-callbacks': [2, 5],
@@ -144,8 +143,7 @@ module.exports = {
         'blueprints/*/index.js',
         'config/**/*.js',
         'lib/*/index.js',
-        'server/**/*.js',
-        'Gruntfile.js'
+        'server/**/*.js'
       ],
       parserOptions: {
         sourceType: 'script',

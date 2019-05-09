@@ -69,7 +69,7 @@ javascript: (function() { var s = document.createElement('script'); s.src = 'htt
 
 ## Building and Testing:
 
-Run `yarn install && yarn global add ember-cli && grunt-cli` to install the required modules.
+Run `yarn install && yarn global add ember-cli to install the required modules.
 
 - `yarn build` to build the files in the `dist` directory
 - `yarn watch` To watch the files and re-build in `dist` when anything changes (useful during development).
