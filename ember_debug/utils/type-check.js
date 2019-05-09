@@ -1,5 +1,5 @@
 const Ember = window.Ember;
-const { ComputedProperty, get } = Ember;
+const { ComputedProperty } = Ember;
 
 /**
  * Check if given key on the passed object is a computed property
