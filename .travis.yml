@@ -1,7 +1,7 @@
 ---
 language: node_js
 node_js:
-  - "6"
+  - "8"
 
 sudo: false
 dist: trusty
@@ -65,7 +65,7 @@ deploy:
   secret_access_key: $AWS_SECRET_ACCESS_KEY
   provider: s3
   bucket: "ember-extension"
-  access: public_read
+  acl: public_read
   cache_control: "max-age=86400000, public"
   skip_cleanup: true
   local_dir: dist/bookmarklet
