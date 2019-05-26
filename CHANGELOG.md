@@ -1,12 +1,60 @@
 # Changelog
 
-## [Unreleased](https://github.com/emberjs/ember-inspector/tree/HEAD)
+## [v3.8.0](https://github.com/emberjs/ember-inspector/tree/v3.8.0) (2019-05-09)
 
-[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.6.0...HEAD)
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.7.0...v3.8.0)
+
+**Implemented enhancements:**
+
+- Remove grunt for compress tasks [\#958](https://github.com/emberjs/ember-inspector/issues/958)
+- Add encrypted S3 keys in Travis [\#968](https://github.com/emberjs/ember-inspector/pull/968) ([rwwagner90](https://github.com/rwwagner90))
+- Use isComputed when available [\#966](https://github.com/emberjs/ember-inspector/pull/966) ([rwwagner90](https://github.com/rwwagner90))
+- Replace grunt with gulp [\#964](https://github.com/emberjs/ember-inspector/pull/964) ([KamiKillertO](https://github.com/KamiKillertO))
+- Add back support for multiple apps [\#930](https://github.com/emberjs/ember-inspector/pull/930) ([rwwagner90](https://github.com/rwwagner90))
+
+**Merged pull requests:**
+
+- Use Travis for S3 Uploads [\#967](https://github.com/emberjs/ember-inspector/pull/967) ([KamiKillertO](https://github.com/KamiKillertO))
+- Update minor version to 3.8.0 [\#963](https://github.com/emberjs/ember-inspector/pull/963) ([rwwagner90](https://github.com/rwwagner90))
+
+## [v3.7.0](https://github.com/emberjs/ember-inspector/tree/v3.7.0) (2019-04-23)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.6.0...v3.7.0)
+
+**Implemented enhancements:**
+
+- Bump some deps, fix stylelint issues [\#960](https://github.com/emberjs/ember-inspector/pull/960) ([rwwagner90](https://github.com/rwwagner90))
+- Update Ember and CLI, bump deps, fix some deprecations, general cleanup [\#955](https://github.com/emberjs/ember-inspector/pull/955) ([rwwagner90](https://github.com/rwwagner90))
+- Remove usage of chainable functions .readOnly\(\) [\#951](https://github.com/emberjs/ember-inspector/pull/951) ([gabz75](https://github.com/gabz75))
+- UI Components Add-On [\#942](https://github.com/emberjs/ember-inspector/pull/942) ([nummi](https://github.com/nummi))
+- Default theme for bookmarklet and tests [\#939](https://github.com/emberjs/ember-inspector/pull/939) ([nummi](https://github.com/nummi))
+- Simplify layout of Routes Tree [\#938](https://github.com/emberjs/ember-inspector/pull/938) ([nummi](https://github.com/nummi))
+- Remove "info" nav title [\#935](https://github.com/emberjs/ember-inspector/pull/935) ([nlfurniss](https://github.com/nlfurniss))
+- alt/option click to toggle children in component tree [\#925](https://github.com/emberjs/ember-inspector/pull/925) ([nummi](https://github.com/nummi))
 
 **Fixed bugs:**
 
+- Editing an attributes adds quotes to the value [\#952](https://github.com/emberjs/ember-inspector/issues/952)
+- Setting dependency keys using the `.property\(\)` modifier has been deprecated [\#944](https://github.com/emberjs/ember-inspector/issues/944)
 - \[v3.5\] No longer detects my ember-app [\#927](https://github.com/emberjs/ember-inspector/issues/927)
+- Ensure we do not add quotes twice to strings when edited [\#954](https://github.com/emberjs/ember-inspector/pull/954) ([rwwagner90](https://github.com/rwwagner90))
+- Fix setting \_channel by moving before super call [\#953](https://github.com/emberjs/ember-inspector/pull/953) ([rwwagner90](https://github.com/rwwagner90))
+- Remove usage of .property\(\) syntax for setting CP keys [\#948](https://github.com/emberjs/ember-inspector/pull/948) ([gabz75](https://github.com/gabz75))
+- Fix Error Page Console Error [\#945](https://github.com/emberjs/ember-inspector/pull/945) ([nummi](https://github.com/nummi))
+
+**Closed issues:**
+
+- Remove usage of .readOnly\(\) [\#950](https://github.com/emberjs/ember-inspector/issues/950)
+- Ember inspector crashes in Data tab [\#946](https://github.com/emberjs/ember-inspector/issues/946)
+- Removal of View Tab [\#923](https://github.com/emberjs/ember-inspector/issues/923)
+- routeHandler.get is not a function [\#895](https://github.com/emberjs/ember-inspector/issues/895)
+- Problems with ember-cli-deprecation-workflow [\#857](https://github.com/emberjs/ember-inspector/issues/857)
+
+**Merged pull requests:**
+
+- Bubble up deprecations for ember-deprecation-workflow \(\#857\) [\#949](https://github.com/emberjs/ember-inspector/pull/949) ([robustdj](https://github.com/robustdj))
+- Bump minor version to 3.7.0 [\#934](https://github.com/emberjs/ember-inspector/pull/934) ([rwwagner90](https://github.com/rwwagner90))
+- Changelog for 3.6 [\#933](https://github.com/emberjs/ember-inspector/pull/933) ([rwwagner90](https://github.com/rwwagner90))
 
 ## [v3.6.0](https://github.com/emberjs/ember-inspector/tree/v3.6.0) (2019-01-29)
 
