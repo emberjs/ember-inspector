@@ -26,7 +26,7 @@ export default EmberObject.extend(PortMixin, {
     return container.lookup('controller:application');
   }),
 
-  currentPath: readOnly('applicationController.currentPath'),
+  currentPath: readOnly('namespace.owner.router.currentPath'),
   currentURL: readOnly('namespace.owner.router.currentURL'),
 
   portNamespace: 'route',
