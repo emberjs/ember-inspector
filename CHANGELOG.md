@@ -1,5 +1,31 @@
 # Changelog
 
+## [Unreleased](https://github.com/emberjs/ember-inspector/tree/HEAD)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.9.0...HEAD)
+
+**Fixed bugs:**
+
+- accessing currentPath from application controller has been deprecated [\#973](https://github.com/emberjs/ember-inspector/issues/973)
+
+## [v3.9.0](https://github.com/emberjs/ember-inspector/tree/v3.9.0) (2019-05-26)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.8.0...v3.9.0)
+
+**Implemented enhancements:**
+
+- Ember 3.10 [\#974](https://github.com/emberjs/ember-inspector/pull/974) ([rwwagner90](https://github.com/rwwagner90))
+
+**Fixed bugs:**
+
+- Use router.currentPath instead of applicationController [\#975](https://github.com/emberjs/ember-inspector/pull/975) ([rwwagner90](https://github.com/rwwagner90))
+
+**Merged pull requests:**
+
+- access -\> acl [\#976](https://github.com/emberjs/ember-inspector/pull/976) ([rwwagner90](https://github.com/rwwagner90))
+- Bump version to 3.9.0 [\#971](https://github.com/emberjs/ember-inspector/pull/971) ([rwwagner90](https://github.com/rwwagner90))
+- Update CHANGELOG.md [\#970](https://github.com/emberjs/ember-inspector/pull/970) ([rwwagner90](https://github.com/rwwagner90))
+
 ## [v3.8.0](https://github.com/emberjs/ember-inspector/tree/v3.8.0) (2019-05-09)
 
 [Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.7.0...v3.8.0)
