@@ -24,7 +24,7 @@
   },
   "emberVersionsSupported": [
     "2.7.0",
-    ""
+    "3.4.0"
   ],
   "previousEmberVersionsSupported": [
     "0.0.0"
