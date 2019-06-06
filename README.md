@@ -142,12 +142,31 @@ The Ember versions supported by the current inspector are indicated in the `embe
 
 Here are the steps to lock an inspector version:
 
-- Update `package.json`'s `emberVersionsSupported`: add a second element that indicates the minimum Ember version this inspector *does not* support.
-- Release a new version (See "Minor and major versions"). Create a branch for this version.
+- Release a new version (See "Minor and major versions") if there are unreleased commits in `master`. Skip this step if there are not new commits after the last release.
+- Makes sure you have a `config/secrets.json` file with the correct AWS credentials to push to S3. You can use `config/secrets.json.sample` as a starting point.
+- Create a new branch (from `stable`) named after the Ember version range that will be supported by this branch. The min version in the range is the first element in the `emberVersionsSupported` array in `package.json`. The max version in the range is the first version that will *not* be supported. For example, a branch named `ember-0.0.0-2.7.0` means it supports Ember 0.0.0 -> 2.6.0, and a branch named `ember-2.7.0-3.4.0` means it supports Ember 2.7.0 -> Ember 3.3.2.
+- Update `package.json`'s `emberVersionsSupported`: add a second element that indicates the minimum Ember version the `master` branch *will not* support.
+- Commit the branch.
 - Run `yarn lock-version`. This will build, compress, and upload this version to S3.
-- Update `package.json`'s `previousEmberVersionsSupported`: add the first Ember version supported by the recently locked version (the first element in the `emberVersionsSupported` array).
-- Update `package.json`'s `emberVersionsSupported`: Move the second element in the array to the first position. Add an empty string as the second element to indicate there's currently no maximum Ember version supported yet.
+- Checkout the `master` branch.
+- Update `package.json`'s `previousEmberVersionsSupported`: add the first Ember version supported by the recently locked snapshot (the first element in the `emberVersionsSupported` array).
+- Update `package.json`'s `emberVersionsSupported`: Take the last element from `previousEmberVersionsSupported` and set it as the first element in this array. Set an empty string as the second element to indicate there's currently no maximum Ember version supported yet. `emberVersionsSupported` array length should always be `2` indicating a [min, max] range.
 - Commit.
+
+##### Example scenario
+
+Below is an example scenario that assumes the current `master` branch supports Ember version 2.7.0+ and we want to lock the version such that `master` will support 3.4.0+. It also assumes the last Ember Inspector version released was 3.9.0.
+
+- Release a new inspector version `3.10.0` if there are unreleased commits in `master`.
+- Create a new branch from `stable` called `ember-2.7.0-3.4.0`.
+- Update `package.json`'s `emberVersionsSupported` from `["2.7.0", ""]` to `["2.7.0", "3.4.0"]`.
+- Commit with message "Lock Ember version at 2.7.0-3.4.0" and push the branch.
+- Run `yarn lock-version`.
+- Checkout the `master` branch.
+- Create a new branch *from master* called `lock-3.4.0` (branch name here is not important).
+- Update `package.json`'s `previousEmberVersionsSupported` from `["0.0.0"]` to `["0.0.0", "2.7.0"]`.
+- Update `package.json`'s `emberVersionsSupported` from `["2.7.0", ""]` to `["3.4.0", ""]`.
+- Commit and open a PR against `master`.
 
 ### Window Messages
 
