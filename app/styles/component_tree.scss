@@ -9,6 +9,13 @@
   position: relative;
 }
 
+.component-tree-item__expand {
+  align-self: stretch;
+  cursor: pointer;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
 .component-tree-item__action {
   align-items: center;
   background: transparent;
@@ -58,7 +65,7 @@
  * Modifier
  */
 
-.component-tree-item--selected {
+.component-tree-item--selected.component-tree-item--component {
   background: var(--focus);
   color: var(--focus-text);
 
