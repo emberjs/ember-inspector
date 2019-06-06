@@ -4,8 +4,8 @@
   color: var(--base12);
   display: flex;
   font-size: 12px;
-  margin: 3px 3px 0;
-  min-height: 18px;
+  margin: 0 3px;
+  min-height: 22px;
   position: relative;
 }
 
@@ -63,9 +63,20 @@
 
 /**
  * Modifier
+ * highlighted - children of selected component
  */
 
-.component-tree-item--selected.component-tree-item--component {
+.component-tree-item.component-tree-item--highlighted {
+  background-color: var(--spec06);
+  border-radius: 0;
+}
+
+/**
+ * Modifier
+ * selected
+ */
+
+.component-tree-item.component-tree-item--selected {
   background: var(--focus);
   color: var(--focus-text);
 
