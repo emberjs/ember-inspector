@@ -33,15 +33,8 @@ jobs:
 
     # runs tests for ember_debug against each supported Ember version
     - stage: ember debug test
-      env: EMBER_TRY_SCENARIO=ember-2.7
-    - env: EMBER_TRY_SCENARIO=ember-lts-2.8
-    - env: EMBER_TRY_SCENARIO=ember-2.9
-    - env: EMBER_TRY_SCENARIO=ember-2.10
-    - env: EMBER_TRY_SCENARIO=ember-2.11
-    - env: EMBER_TRY_SCENARIO=ember-lts-2.12
-    - env: EMBER_TRY_SCENARIO=ember-lts-2.16
-    - env: EMBER_TRY_SCENARIO=ember-lts-2.18
-    - env: EMBER_TRY_SCENARIO=ember-lts-3.4
+      env: EMBER_TRY_SCENARIO=ember-lts-3.4
+    - env: EMBER_TRY_SCENARIO=ember-lts-3.8
     - env: EMBER_TRY_SCENARIO=ember-release
     - env: EMBER_TRY_SCENARIO=ember-beta
     - env: EMBER_TRY_SCENARIO=ember-canary
@@ -78,3 +71,4 @@ branches:
     - "master"
     - "stable"
     - "ember-0.0.0-2.7.0"
+    - "ember-2.7.0-3.4.0"
