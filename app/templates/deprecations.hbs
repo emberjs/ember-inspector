@@ -7,16 +7,16 @@
     @setIsDragging={{action "setIsDragging" target=this.application}} as |list|
   >
     <tbody>
-    {{#each filtered as |content|}}
-      {{deprecation-item
-        model=content
-        openResource=(action "openResource")
-        traceSource=(action "traceSource")
-        traceDeprecations=(action "traceDeprecations")
-        class="deprecation-item"
-        list=list
-      }}
-    {{/each}}
+      {{#each filtered as |content|}}
+        {{deprecation-item
+          model=content
+          openResource=(action "openResource")
+          traceSource=(action "traceSource")
+          traceDeprecations=(action "traceDeprecations")
+          class="deprecation-item"
+          list=list
+        }}
+      {{/each}}
     </tbody>
   </List>
 {{else}}
