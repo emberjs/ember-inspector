@@ -5,7 +5,7 @@
  * Whenever something resizes it triggers an event on this service. For example
  * when the main nav is resized.
  * Elements dependant on the app's layout listen to events on this service. For
- * example the `x-list` component.
+ * example the `list` component.
  *
  * @class Layout
  * @extends Service
