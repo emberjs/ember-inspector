@@ -50,13 +50,6 @@ export default EmberObject.extend(PortMixin, {
       if (this.glimmerTree) {
         // >= Ember 2.9
         this.glimmerTree.highlightLayer(message.objectId || message.elementId, true);
-      } else {
-        // 1.13 >= Ember <= 2.8
-        if (message.renderNodeId !== undefined) {
-          this._highlightNode(this.get('_lastNodes').objectAt(message.renderNodeId), true);
-        } else if (message.objectId) {
-          this.highlightView(this.get('objectInspector').sentObjects[message.objectId], true);
-        }
       }
     },
     hidePreview() {
@@ -892,61 +885,6 @@ export default EmberObject.extend(PortMixin, {
   _nodeIsEmberComponent(renderNode) {
     let viewInstance = this._viewInstanceForNode(renderNode);
     return !!(viewInstance && (viewInstance instanceof Component));
-  },
-
-  /**
-   * Highlight a render node on the screen.
-   *
-   * @param  {Object} renderNode
-   * @param  {Boolean} isPreview (whether to pin the layer or not)
-   */
-  _highlightNode(renderNode, isPreview) {
-    let modelName;
-    // Todo: should be in Ember core
-    let range = document.createRange();
-    range.setStartBefore(renderNode.firstNode);
-    range.setEndAfter(renderNode.lastNode);
-    let rect = range.getBoundingClientRect();
-
-    let options = { isPreview };
-
-    let controller = this._controllerForNode(renderNode);
-    if (controller) {
-      options.controller = {
-        name: getControllerName(controller),
-        object: controller
-      };
-    }
-
-    let templateName = this._nodeTemplateName(renderNode);
-    if (templateName) {
-      options.template = {
-        name: templateName
-      };
-    }
-
-    let model;
-    if (controller) {
-      model = controller.get('model');
-    }
-    if (model) {
-      modelName = this.get('objectInspector').inspect(model);
-      options.model = {
-        name: modelName,
-        object: model
-      };
-    }
-
-    let view = this._viewInstanceForNode(renderNode);
-
-    if (view) {
-      options.view = {
-        name: getViewName(view),
-        object: view
-      };
-    }
-
-    this._highlightRange(rect, options);
   }
 });
 
