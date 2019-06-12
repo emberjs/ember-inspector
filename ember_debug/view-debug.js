@@ -20,16 +20,14 @@ const {
   typeOf,
   Component,
   Controller,
-  ViewUtils,
   A
 } = Ember;
 const { later } = run;
 const { readOnly } = computed;
-const { getViewBoundingClientRect } = ViewUtils;
 
 const keys = Object.keys || Ember.keys;
 
-let layerDiv, previewDiv, highlightedElement;
+let layerDiv, previewDiv;
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,
@@ -470,7 +468,6 @@ export default EmberObject.extend(PortMixin, {
 
   hideLayer() {
     layerDiv.style.display = 'none';
-    highlightedElement = null;
   },
 
   hidePreview() {
