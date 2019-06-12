@@ -8,6 +8,9 @@ dist: trusty
 
 addons:
   chrome: stable
+  code_climate:
+    repo_token:
+      secure: "c6plog6XM1LZXQlitlMbmH4p0FbFnBMDZmGRndMLXxvEYfKiUcoBWvtuWJtetO0uUCZlp3DyBmk6hU1joeaQxn13DUjQeZNYC1VGVO0HmzBDH+9t+o+PAekBmG01hP2CWyem2OYb2PemHAln98wsxQTCUJmqrSblAxdty2qNrR4="
 
 cache:
   yarn: true
@@ -49,6 +52,9 @@ install:
 
 script:
   - travis_retry node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO --- node_modules/.bin/ember test --filter="Ember Debug"
+
+after_script:
+  - codeclimate-test-reporter < coverage/lcov.info
 
 before_deploy:
   - yarn run build:production
