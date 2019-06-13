@@ -265,7 +265,7 @@ export default Controller.extend({
 
     /**
      * Expand or collapse all component nodes
-     * @param {Boolean} expanded If true, expanded, if false, collapsed
+     * @param {Boolean} expanded if true, expanded, if false, collapsed
      */
     expandOrCollapseAll(expanded) {
       this.expandedStateCache = {};
@@ -284,6 +284,9 @@ export default Controller.extend({
       }
     },
 
+    /**
+     * Select component in Ember Inspector
+     */
     inspect(objectId) {
       if (objectId) {
         this.set('pinnedObjectId', objectId);
@@ -298,19 +301,19 @@ export default Controller.extend({
     /**
      * Scrolls the main page to put the selected element into view
      */
-    scrollToElement(elementId) {
+    scrollToElement(objectId) {
       this.get('port').send('view:scrollToElement', {
-        elementId
+        elementId: objectId // TODO: what?
       });
     },
 
-    inspectElement(item) {
-      let elementId;
-      let objectId = item.get('view.objectId');
+    /**
+     * View DOM node in browser Elements panel
+     */
+    viewInElementsPanel(item) {
+      const objectId = item.get('view.objectId');
+      const elementId = item.get('view.elementId');
 
-      if (!objectId) {
-        elementId = item.get('view.elementId');
-      }
       if (objectId || elementId) {
         this.get('port').send('view:inspectElement', {
           objectId,

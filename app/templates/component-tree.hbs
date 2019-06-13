@@ -4,19 +4,16 @@
     estimateHeight=20
   as |item|
   }}
-    <div
-      onmouseenter={{action "previewLayer" item}}
-      onmouseleave={{action "hidePreview"}}
-    >
-      {{component-tree-item
-        item=item
-        pinnedObjectId=pinnedObjectId
-        toggleExpanded=(action "toggleExpanded" item)
-        inspect=(action "inspect")
-        inspectElement=(action "inspectElement")
-        scrollToElement=(action "scrollToElement")
-        sendObjectToConsole=(action "sendObjectToConsole")
-      }}
-    </div>
+    <ComponentTreeItem
+      @highlighted={{component-parent-selected item pinnedObjectId}}
+      @item={{item}}
+      @selected={{eq pinnedObjectId item.view.objectId}}
+      @eventMouseEnter={{action "previewLayer" item}}
+      @eventMouseLeave={{action "hidePreview"}}
+      @inspect={{action "inspect" item.view.objectId}}
+      @scrollToElement={{action "scrollToElement" item.view.objectId}}
+      @toggleExpanded={{action "toggleExpanded" item}}
+      @viewInElementsPanel={{action "viewInElementsPanel" item}}
+    />
   {{/vertical-collection}}
 </div>
