@@ -68,8 +68,26 @@
 
   <span class="mixin__property-value-separator">: </span>
 
-  {{!-- Property Value --}}
-  {{#unless isEdit}}
+  {{#if isEdit}}
+    {{#if isDate}}
+      {{date-property-field
+        allowInput=true
+        date=(readonly dateValue)
+        dateFormat="Y-m-d"
+        class="mixin__property-value-txt js-object-property-value-date"
+        onChange=(action "dateSelected")
+        onClose=(action "finishedEditing")
+      }}
+    {{else}}
+      {{property-field
+        value=txtValue
+        finished-editing="finishedEditing"
+        save-property="saveProperty"
+        propertyComponent=this
+        class="mixin__property-value-txt js-object-property-value-txt"
+      }}
+    {{/if}}
+  {{else}}
     {{#if (and isComputedProperty (not isCalculated))}}
       <button
         class="mixin__calc-btn js-calculate"
@@ -86,26 +104,7 @@
         {{model.value.inspect}}
       </span>
     {{/if}}
-  {{else}}
-    {{#unless isDate}}
-      {{property-field
-        value=txtValue
-        finished-editing="finishedEditing"
-        save-property="saveProperty"
-        propertyComponent=this
-        class="mixin__property-value-txt js-object-property-value-txt"
-      }}
-    {{else}}
-      {{date-property-field
-        allowInput=true
-        date=(readonly dateValue)
-        dateFormat="Y-m-d"
-        class="mixin__property-value-txt js-object-property-value-date"
-        onChange=(action "dateSelected")
-        onClose=(action "finishedEditing")
-      }}
-    {{/unless}}
-  {{/unless}}
+  {{/if}}
 
   <span class="mixin__property-overridden-by">(Overridden by {{model.overridden}})</span>
 

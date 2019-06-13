@@ -1,7 +1,9 @@
-{{item-types
+{{#item-types
   header="Types"
   setIsDragging=(action "setIsDragging" target=application)
   sorted=(readonly sorted)
   type="container"
   width=180
 }}
+  {{outlet}}
+{{/item-types}}
