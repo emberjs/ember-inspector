@@ -41,7 +41,7 @@
 </ListContent>
 
 {{#each columns key="id" as |column|}}
-  {{#unless (or (not column.visible) (eq column columns.lastObject))}}
+  {{#if (and column.visible (not-eq column columns.lastObject))}}
     {{drag-handle
       faded=true
       left=column.left
@@ -52,5 +52,5 @@
       setIsDragging=@setIsDragging
       side="left"
     }}
-  {{/unless}}
+  {{/if}}
 {{/each}}
