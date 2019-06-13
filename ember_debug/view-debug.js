@@ -20,16 +20,14 @@ const {
   typeOf,
   Component,
   Controller,
-  ViewUtils,
   A
 } = Ember;
 const { later } = run;
 const { readOnly } = computed;
-const { getViewBoundingClientRect } = ViewUtils;
 
 const keys = Object.keys || Ember.keys;
 
-let layerDiv, previewDiv, highlightedElement;
+let layerDiv, previewDiv;
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,
@@ -47,10 +45,7 @@ export default EmberObject.extend(PortMixin, {
       this.hideLayer();
     },
     previewLayer(message) {
-      if (this.glimmerTree) {
-        // >= Ember 2.9
-        this.glimmerTree.highlightLayer(message.objectId || message.elementId, true);
-      }
+      this.glimmerTree.highlightLayer(message.objectId || message.elementId, true);
     },
     hidePreview() {
       this.hidePreview();
@@ -80,19 +75,12 @@ export default EmberObject.extend(PortMixin, {
     },
     setOptions({ options }) {
       this.set('options', options);
-      if (this.glimmerTree) {
-        this.glimmerTree.updateOptions(options);
-      }
+      this.glimmerTree.updateOptions(options);
       this.sendTree();
     },
     sendModelToConsole(message) {
-      let model;
-      if (this.glimmerTree) {
-        model = this.glimmerTree.modelForViewNodeValue(message);
-      } else {
-        let renderNode = this.get('_lastNodes').objectAt(message.renderNodeId);
-        model = this._modelForNode(renderNode);
-      }
+      const model = this.glimmerTree.modelForViewNodeValue(message);
+
       if (model) {
         this.get('objectInspector').sendValueToConsole(model);
       }
@@ -129,27 +117,19 @@ export default EmberObject.extend(PortMixin, {
     window.addEventListener('mousedown', this.lastClickedHandler);
 
     this.resizeHandler = () => {
-      if (this.glimmerTree) {
-        this.hideLayer();
-      } else {
-        if (highlightedElement) {
-          this.highlightView(highlightedElement);
-        }
-      }
+      this.hideLayer();
     };
     window.addEventListener('resize', this.resizeHandler);
 
-    if (this.isGlimmerTwo()) {
-      this.glimmerTree = new GlimmerTree({
-        owner: this.getOwner(),
-        retainObject: this.retainObject.bind(this),
-        highlightRange: this._highlightRange.bind(this),
-        options: this.get('options'),
-        objectInspector: this.get('objectInspector'),
-        durations: this._durations,
-        viewRegistry: this.get('viewRegistry')
-      });
-    }
+    this.glimmerTree = new GlimmerTree({
+      owner: this.getOwner(),
+      retainObject: this.retainObject.bind(this),
+      highlightRange: this._highlightRange.bind(this),
+      options: this.get('options'),
+      objectInspector: this.get('objectInspector'),
+      durations: this._durations,
+      viewRegistry: this.get('viewRegistry')
+    });
   },
 
   inspectComponentForNode(domNode) {
@@ -171,9 +151,8 @@ export default EmberObject.extend(PortMixin, {
       }
       this._durations[guid] = durations[guid];
     }
-    if (this.glimmerTree) {
-      this.glimmerTree.updateDurations(this._durations);
-    }
+
+    this.glimmerTree.updateDurations(this._durations);
     this.sendTree();
   },
 
@@ -235,11 +214,7 @@ export default EmberObject.extend(PortMixin, {
 
     let pinView = () => {
       if (viewElem) {
-        if (this.glimmerTree) {
-          this.glimmerTree.highlightLayer(viewElem.id);
-        } else {
-          this.highlightView(viewElem);
-        }
+        this.glimmerTree.highlightLayer(viewElem.id);
 
         let view = this.get('objectInspector').sentObjects[viewElem.id];
         if (view instanceof Component) {
@@ -255,11 +230,7 @@ export default EmberObject.extend(PortMixin, {
       viewElem = this.findNearestView(e.target);
 
       if (viewElem) {
-        if (this.glimmerTree) {
-          this.glimmerTree.highlightLayer(viewElem.id, true);
-        } else {
-          this.highlightView(viewElem, true);
-        }
+        this.glimmerTree.highlightLayer(viewElem.id, true);
       }
     };
     this.mousedownHandler = () => {
@@ -315,34 +286,16 @@ export default EmberObject.extend(PortMixin, {
   },
 
   viewTree() {
-    let tree;
     let emberApp = this.get('namespace.owner');
     if (!emberApp) {
       return false;
     }
-    let applicationView = document.querySelector(`${emberApp.rootElement} > [class='ember-view']`);
-    let applicationViewId = applicationView ? applicationView.id : undefined;
-    let rootView = this.get('viewRegistry')[applicationViewId];
-    // In case of App.reset view is destroyed
-    if (this.glimmerTree) {
-      // Glimmer 2
-      tree = this.glimmerTree.build();
-    } else if (rootView) {
-      let children = [];
-      this.get('_lastNodes').clear();
-      let renderNode = rootView._renderNode;
-      tree = { value: this._inspectNode(renderNode), children };
-      this._appendNodeChildren(renderNode, children);
-    }
-    return tree;
+
+    return this.glimmerTree.build();
   },
 
   getOwner() {
     return this.get('namespace.owner');
-  },
-
-  isGlimmerTwo() {
-    return this.get('namespace.owner').hasRegistration('service:-glimmer-environment');
   },
 
   modelForView(view) {
@@ -372,63 +325,6 @@ export default EmberObject.extend(PortMixin, {
     return view.get('context') !== view.get('_parentView.context') &&
       // make sure not a view inside a component, like `{{yield}}` for example.
       !(view.get('_parentView.context') instanceof Component);
-  },
-
-  highlightView(element, isPreview) {
-    let view, rect;
-
-    if (!isPreview) {
-      highlightedElement = element;
-    }
-
-    if (!element) {
-      return;
-    }
-
-    // element && element._renderNode to detect top view (application)
-    if (element instanceof Component || (element && element._renderNode)) {
-      view = element;
-    } else {
-      view = this.get('viewRegistry')[element.id];
-    }
-
-    rect = getViewBoundingClientRect(view);
-
-    let templateName = view.get('templateName') || view.get('_debugTemplateName');
-    let controller = view.get('controller');
-    let model = controller && controller.get('model');
-    let modelName;
-
-    let options = {
-      isPreview,
-      view: {
-        name: getShortViewName(view),
-        object: view
-      }
-    };
-
-    if (controller) {
-      options.controller = {
-        name: getControllerName(controller),
-        object: controller
-      };
-    }
-
-    if (templateName) {
-      options.template = {
-        name: templateName
-      };
-    }
-
-    if (model) {
-      modelName = this.get('objectInspector').inspect(model);
-      options.model = {
-        name: modelName,
-        object: model
-      };
-    }
-
-    this._highlightRange(rect, options);
   },
 
   // TODO: This method needs a serious refactor/cleanup
@@ -572,7 +468,6 @@ export default EmberObject.extend(PortMixin, {
 
   hideLayer() {
     layerDiv.style.display = 'none';
-    highlightedElement = null;
   },
 
   hidePreview() {
