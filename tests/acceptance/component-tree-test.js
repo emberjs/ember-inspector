@@ -13,10 +13,10 @@ import wait from 'ember-test-helpers/wait';
 
 let port;
 
-module('Component Tab', function(hooks) {
+module('Component Tab', function (hooks) {
   setupApplicationTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     port = this.owner.lookup('port:main');
   });
 
@@ -110,7 +110,7 @@ module('Component Tab', function(hooks) {
     });
   }
 
-  test('It should correctly display the component tree', async function(assert) {
+  test('It should correctly display the component tree', async function (assert) {
     let viewTree = defaultViewTree();
 
     await visit('/component-tree');
@@ -127,18 +127,18 @@ module('Component Tab', function(hooks) {
 
     let templateNames = [];
 
-    [...treeNodes].forEach(function(node) {
+    [...treeNodes].forEach(function (node) {
       templateNames.push(textFor('code', node));
     });
 
     assert.deepEqual(
       templateNames,
-      ['application', 'todos', 'todo-list', 'todo-item'],
+      ['application', 'todos', 'TodoList', 'TodoItem'],
       'expected names for all views/components'
     );
   });
 
-  test('It allows users to expand and collapse nodes', async function(assert) {
+  test('It allows users to expand and collapse nodes', async function (assert) {
     let viewTree = defaultViewTree();
 
     await visit('/component-tree');
@@ -158,7 +158,7 @@ module('Component Tab', function(hooks) {
     assert.equal(treeNodes.length, 3, 'the last node should be hidden');
   });
 
-  test('It allows users to expand and collapse children with alt key', async function(assert) {
+  test('It allows users to expand and collapse children with alt key', async function (assert) {
     let viewTree = defaultViewTree();
 
     await visit('/component-tree');
@@ -188,7 +188,7 @@ module('Component Tab', function(hooks) {
     assert.ok(expanderEl.classList.contains('collapsed'), 'child component was collapsed');
   });
 
-  test('It should filter the view tree using the search text', async function(assert) {
+  test('It should filter the view tree using the search text', async function (assert) {
     let viewTree = defaultViewTree();
 
     await visit('/component-tree');
@@ -205,18 +205,18 @@ module('Component Tab', function(hooks) {
     assert.equal(treeNodes.length, 2, 'expected filtered tree nodes');
 
     let visibleComponentNames = [];
-    [...treeNodes].forEach(function(node) {
+    [...treeNodes].forEach(function (node) {
       visibleComponentNames.push(textFor('code', node));
     });
 
     assert.deepEqual(
       visibleComponentNames,
-      ['todo-list', 'todo-item'],
+      ['TodoList', 'TodoItem'],
       'expected names for all views/components'
     );
   });
 
-  test("It should clear the search filter when the clear button is clicked", async function(assert) {
+  test("It should clear the search filter when the clear button is clicked", async function (assert) {
     let viewTree = defaultViewTree();
 
     await visit('/component-tree');
@@ -237,7 +237,7 @@ module('Component Tab', function(hooks) {
     assert.equal(treeNodes.length, 4, 'expected all tree nodes');
   });
 
-  test('It should update the view tree when the port triggers a change, preserving the expanded state of existing nodes', async function(assert) {
+  test('It should update the view tree when the port triggers a change, preserving the expanded state of existing nodes', async function (assert) {
     let viewTree = defaultViewTree();
 
     await visit('/component-tree');
@@ -258,7 +258,7 @@ module('Component Tab', function(hooks) {
     assert.dom('.component-tree-item').exists({ count: 3 }, 'the last node should still be hidden');
   });
 
-  test('Previewing / showing a view on the client', async function(assert) {
+  test('Previewing / showing a view on the client', async function (assert) {
     let messageSent = null;
     port.reopen({
       send(name, message) {
@@ -290,7 +290,7 @@ module('Component Tab', function(hooks) {
     );
   });
 
-  test('Scrolling an element into view', async function(assert) {
+  test('Scrolling an element into view', async function (assert) {
     let messageSent = null;
     port.reopen({
       send(name, message) {
@@ -311,7 +311,7 @@ module('Component Tab', function(hooks) {
     );
   });
 
-  test('View DOM element in Elements panel', async function(assert) {
+  test('View DOM element in Elements panel', async function (assert) {
     let messageSent = null;
     port.reopen({
       send(name, message) {
@@ -333,7 +333,7 @@ module('Component Tab', function(hooks) {
     );
   });
 
-  test('Inspects the component in the object inspector on click', async function(assert) {
+  test('Inspects the component in the object inspector on click', async function (assert) {
     let messageSent = null;
     port.reopen({
       send(name, message) {
@@ -353,7 +353,7 @@ module('Component Tab', function(hooks) {
     assert.equal(messageSent.message.objectId, 'ember392');
   });
 
-  test('Selects a component in the tree in response to a message from the context menu', async function(assert) {
+  test('Selects a component in the tree in response to a message from the context menu', async function (assert) {
     // Go to the component tree and populate it before sending the message from the context menu
     let viewTree = defaultViewTree();
     await visit('/component-tree');
@@ -367,6 +367,6 @@ module('Component Tab', function(hooks) {
     });
     await wait();
     assert.equal(currentURL(), '/component-tree?pinnedObjectId=ember267', 'It pins the element id as a query param');
-    assert.dom('.component-tree-item--selected').hasText('todo-item', 'It selects the item in the tree corresponding to the element');
+    assert.dom('.component-tree-item--selected').hasText('TodoItem', 'It selects the item in the tree corresponding to the element');
   });
 });
