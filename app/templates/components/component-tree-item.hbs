@@ -15,9 +15,9 @@
   {{/if}}
 
   <code
-    class="component-tree-item__tag {{if @item.view.isComponent "component-tree-item__bracket"}}"
+    class="component-tree-item__tag {{if @item.view.isComponent "component-tree-item__bracket"}} {{if (not @item.hasChildren) "component-tree-item__bracket--self-closing"}}"
   >
-    {{@item.view.name}}
+    {{if @item.view.isComponent (classify @item.view.name) @item.view.name}}
   </code>
 
   {{#if @item.view.isComponent}}
