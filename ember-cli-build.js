@@ -15,8 +15,7 @@ const moduleResolver = require('amd-name-resolver').resolveModules({ throwOnRoot
 const Funnel = require('broccoli-funnel');
 const packageJson = require('./package.json');
 const modulesBabelPlugin = require('babel-plugin-transform-es2015-modules-amd');
-const mv = stew.mv;
-const map = stew.map;
+const { map, mv } = stew;
 
 /*global process */
 
@@ -76,7 +75,7 @@ module.exports = function(defaults) {
     exclude: [
       'vendor/loader.js',
       'vendor/source-map.js',
-      'vendor/startup-wrapper.js',
+      'vendor/startup-wrapper.js'
     ]
   });
 
@@ -95,7 +94,7 @@ module.exports = function(defaults) {
 
   let startupWrapper = new Funnel('ember_debug', {
     srcDir: 'vendor',
-    files: ['startup-wrapper.js'],
+    files: ['startup-wrapper.js']
   });
 
   startupWrapper = replace(startupWrapper, {
@@ -108,12 +107,12 @@ module.exports = function(defaults) {
 
   let sourceMap = new Funnel('ember_debug', {
     srcDir: 'vendor',
-    files: ['source-map.js'],
+    files: ['source-map.js']
   });
 
   const loader = new Funnel('ember_debug', {
     srcDir: 'vendor',
-    files: ['loader.js'],
+    files: ['loader.js']
   });
 
   sourceMap = map(sourceMap, '**/*.js', function(content) {
@@ -210,7 +209,7 @@ module.exports = function(defaults) {
         chrome
       ]);
     } else {
-      const file = writeFile('index.html', "This Ember version is not supported in development environment.");
+      const file = writeFile('index.html', 'This Ember version is not supported in development environment.');
       const emberDebugFile = writeFile('ember_debug.js', 'void(0);');
       chrome = mergeTrees([mv(file, `panes-${version}`), chrome]);
       firefox = mergeTrees([mv(file, `panes-${version}`), firefox]);
