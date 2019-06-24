@@ -1,5 +1,5 @@
-import PortMixin from "ember-debug/mixins/port-mixin";
-import ProfileManager from "ember-debug/models/profile-manager";
+import PortMixin from 'ember-debug/mixins/port-mixin';
+import ProfileManager from 'ember-debug/models/profile-manager';
 
 const Ember = window.Ember;
 const { computed: { readOnly }, run: { later }, subscribe, Object: EmberObject } = Ember;
@@ -32,7 +32,7 @@ function flush() {
   queue.length = 0;
 }
 
-subscribe("render", {
+subscribe('render', {
   before(name, timestamp, payload) {
     const info = {
       type: 'began',

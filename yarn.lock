@@ -4003,7 +4003,7 @@ ember-cli-broccoli-sane-watcher@^3.0.0:
     rsvp "^3.0.18"
     sane "^4.0.0"
 
-ember-cli-code-coverage@1.0.0-beta.8:
+ember-cli-code-coverage@^1.0.0-beta.8:
   version "1.0.0-beta.8"
   resolved "https://registry.yarnpkg.com/ember-cli-code-coverage/-/ember-cli-code-coverage-1.0.0-beta.8.tgz#e24abd751be5abababb29400f4ad61ef5fb1c385"
   integrity sha512-9MXbaM0iIfTJT5HFrT9v0XouykZu3EKnrz7YiZNRd6JPMr7aBbZTX7ScHUD9OnsuCfuuzgeHE0nUNoU/NGoNDg==
