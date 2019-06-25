@@ -457,12 +457,7 @@ export default EmberObject.extend(PortMixin, {
 
 
     if (model && model.object && ((model.object instanceof EmberObject) || typeOf(model.object) === 'array')) {
-      for (let span of div.querySelectorAll('p.model span:last-child')) {
-        span.style.cursor = 'pointer';
-        span.addEventListener('click', () => {
-          this.get('objectInspector').sendObject(model.object);
-        });
-      }
+      this._addClickListeners(div, model, 'model');
     }
   },
 
