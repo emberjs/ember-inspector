@@ -1,36 +1,12 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import ProfileManager from 'ember-debug/models/profile-manager';
+import { addToQueue, flatten } from './utils/render-utils';
 
 const Ember = window.Ember;
-const { computed: { readOnly }, run: { later }, subscribe, Object: EmberObject } = Ember;
+const { computed: { readOnly }, subscribe, Object: EmberObject } = Ember;
 
 let profileManager = new ProfileManager();
 let queue = [];
-
-function push(info) {
-  const index = queue.push(info);
-  if (index === 1) {
-    later(flush, 50);
-  }
-  return index - 1;
-}
-
-function flush() {
-  let entry, i;
-  for (i = 0; i < queue.length; i++) {
-    entry = queue[i];
-    if (entry.type === 'began') {
-      // If there was an error during rendering `entry.endedIndex` never gets set.
-      if (entry.endedIndex) {
-        queue[entry.endedIndex].profileNode = profileManager.began(entry.timestamp, entry.payload, entry.now);
-      }
-    } else {
-      profileManager.ended(entry.timestamp, entry.payload, entry.profileNode);
-    }
-
-  }
-  queue.length = 0;
-}
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,
@@ -49,11 +25,16 @@ export default EmberObject.extend(PortMixin, {
 
   willDestroy() {
     this._super();
+
     this.profileManager.wrapForErrors = function(context, callback) {
       return callback.call(context);
     };
     this.profileManager.offProfilesAdded(this, this.sendAdded);
     this.profileManager.offProfilesAdded(this, this._updateViewRenderPerformance);
+  },
+
+  sendAdded(profiles) {
+    this.sendMessage('profilesAdded', { profiles });
   },
 
   /**
@@ -71,7 +52,7 @@ export default EmberObject.extend(PortMixin, {
           now: Date.now()
         };
 
-        return push(info);
+        return addToQueue(info, queue, this.profileManager);
       },
 
       after: (name, timestamp, payload, beganIndex) => {
@@ -81,8 +62,7 @@ export default EmberObject.extend(PortMixin, {
           payload
         };
 
-        const index = push(endedInfo);
-        queue[beganIndex].endedIndex = index;
+        queue[beganIndex].endedIndex = addToQueue(endedInfo, queue, this.profileManager);
 
         // If rendering a component, update the component tree
         if (name === 'render.component') {
@@ -99,7 +79,7 @@ export default EmberObject.extend(PortMixin, {
    */
   _updateViewRenderPerformance(profiles) {
     let viewDurations = {};
-    this._flatten(profiles).forEach(node => {
+    flatten(profiles).forEach(node => {
       if (node.viewGuid) {
         viewDurations[node.viewGuid] = node.duration;
       }
@@ -115,32 +95,19 @@ export default EmberObject.extend(PortMixin, {
     this.get('viewDebug').sendTree();
   },
 
-  _flatten(profiles, array) {
-    array = array || [];
-    profiles.forEach(profile => {
-      array.push(profile);
-      this._flatten(profile.children, array);
-    });
-    return array;
-  },
-
-  sendAdded(profiles) {
-    this.sendMessage('profilesAdded', { profiles });
-  },
-
   messages: {
-    watchProfiles() {
-      this.sendMessage('profilesAdded', { profiles: this.profileManager.profiles });
-      this.profileManager.onProfilesAdded(this, this.sendAdded);
+    clear() {
+      this.profileManager.clearProfiles();
+      this.sendMessage('profilesUpdated', { profiles: [] });
     },
 
     releaseProfiles() {
       this.profileManager.offProfilesAdded(this, this.sendAdded);
     },
 
-    clear() {
-      this.profileManager.clearProfiles();
-      this.sendMessage('profilesUpdated', { profiles: [] });
+    watchProfiles() {
+      this.sendMessage('profilesAdded', { profiles: this.profileManager.profiles });
+      this.profileManager.onProfilesAdded(this, this.sendAdded);
     }
   }
 });
