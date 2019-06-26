@@ -1,5 +1,16 @@
+import ProfileManager from 'ember-debug/models/profile-manager';
+
 const Ember = window.Ember;
 const { run: { later } } = Ember;
+
+let profileManager, queue;
+
+export function setupQueue() {
+  profileManager = new ProfileManager();
+  queue = [];
+
+  return { profileManager, queue };
+}
 
 /**
  * Recursively flatten all profiles and their children
@@ -18,21 +29,17 @@ export function flatten(profiles, array = []) {
 /**
  * Push a new profile into the queue
  * @param info
- * @param queue
- * @param {ProfileManager} profileManager
  * @return {number}
  */
-export function addToQueue(info, queue, profileManager) {
+export function addToQueue(info) {
   const index = queue.push(info);
   if (index === 1) {
-    later(() => {
-      _flush(queue, profileManager);
-    }, 50);
+    later(_flush, 50);
   }
   return index - 1;
 }
 
-function _flush(queue, profileManager) {
+function _flush() {
   let entry, i;
   for (i = 0; i < queue.length; i++) {
     entry = queue[i];

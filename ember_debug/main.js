@@ -132,6 +132,7 @@ const EmberDebug = EmberObject.extend({
       this.startModule('deprecationDebug', DeprecationDebug);
 
       this.generalDebug.sendBooted();
+      this.viewDebug.sendTree();
     });
   },
 
