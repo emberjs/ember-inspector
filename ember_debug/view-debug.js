@@ -93,7 +93,6 @@ export default EmberObject.extend(PortMixin, {
   init() {
     this._super(...arguments);
 
-    this.viewListener();
     this.retainedObjects = [];
     this.options = {};
     this._durations = {};
@@ -153,7 +152,6 @@ export default EmberObject.extend(PortMixin, {
     }
 
     this.glimmerTree.updateDurations(this._durations);
-    this.sendTree();
   },
 
   retainObject(object) {
@@ -276,13 +274,6 @@ export default EmberObject.extend(PortMixin, {
         this.sendMessage('viewTree', { tree });
       }
     }, 50);
-  },
-
-  viewListener() {
-    this.viewTreeChanged = () => {
-      this.sendTree();
-      this.hideLayer();
-    };
   },
 
   viewTree() {

@@ -1,5 +1,5 @@
-import PortMixin from "ember-debug/mixins/port-mixin";
-import ProfileManager from "ember-debug/models/profile-manager";
+import PortMixin from 'ember-debug/mixins/port-mixin';
+import ProfileManager from 'ember-debug/models/profile-manager';
 
 const Ember = window.Ember;
 const { computed: { readOnly }, run: { later }, subscribe, Object: EmberObject } = Ember;
@@ -32,29 +32,6 @@ function flush() {
   queue.length = 0;
 }
 
-subscribe("render", {
-  before(name, timestamp, payload) {
-    const info = {
-      type: 'began',
-      timestamp,
-      payload,
-      now: Date.now()
-    };
-    return push(info);
-  },
-
-  after(name, timestamp, payload, beganIndex) {
-    const endedInfo = {
-      type: 'ended',
-      timestamp,
-      payload
-    };
-
-    const index = push(endedInfo);
-    queue[beganIndex].endedIndex = index;
-  }
-});
-
 export default EmberObject.extend(PortMixin, {
   namespace: null,
   viewDebug: readOnly('namespace.viewDebug'),
@@ -64,8 +41,10 @@ export default EmberObject.extend(PortMixin, {
 
   init() {
     this._super();
+
+    this._subscribeToRenderEvents();
     this.profileManager.wrapForErrors = (context, callback) => this.get('port').wrap(() => callback.call(context));
-    this._subscribeForViewTrees();
+    this.profileManager.onProfilesAdded(this, this._updateViewRenderPerformance);
   },
 
   willDestroy() {
@@ -74,14 +53,51 @@ export default EmberObject.extend(PortMixin, {
       return callback.call(context);
     };
     this.profileManager.offProfilesAdded(this, this.sendAdded);
-    this.profileManager.offProfilesAdded(this, this._updateViewTree);
+    this.profileManager.offProfilesAdded(this, this._updateViewRenderPerformance);
   },
 
-  _subscribeForViewTrees() {
-    this.profileManager.onProfilesAdded(this, this._updateViewTree);
+  /**
+   * This subscribes to render events, so every time the page rerenders, it will push a new profile
+   * @return {*}
+   * @private
+   */
+  _subscribeToRenderEvents() {
+    subscribe('render', {
+      before: (name, timestamp, payload) => {
+        const info = {
+          type: 'began',
+          timestamp,
+          payload,
+          now: Date.now()
+        };
+
+        return push(info);
+      },
+
+      after: (name, timestamp, payload, beganIndex) => {
+        const endedInfo = {
+          type: 'ended',
+          timestamp,
+          payload
+        };
+
+        const index = push(endedInfo);
+        queue[beganIndex].endedIndex = index;
+
+        // If rendering a component, update the component tree
+        if (name === 'render.component') {
+          this._updateComponentTree();
+        }
+      }
+    });
   },
 
-  _updateViewTree(profiles) {
+  /**
+   * Updates Render Performance tab durations
+   * @param profiles
+   * @private
+   */
+  _updateViewRenderPerformance(profiles) {
     let viewDurations = {};
     this._flatten(profiles).forEach(node => {
       if (node.viewGuid) {
@@ -89,6 +105,14 @@ export default EmberObject.extend(PortMixin, {
       }
     });
     this.get('viewDebug').updateDurations(viewDurations);
+  },
+
+  /**
+   * Update the components tree. Called on each `render.component` event.
+   * @private
+   */
+  _updateComponentTree() {
+    this.get('viewDebug').sendTree();
   },
 
   _flatten(profiles, array) {
