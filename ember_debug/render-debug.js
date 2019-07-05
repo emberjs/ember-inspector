@@ -1,11 +1,12 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
-import { addToQueue, flatten, setupQueue } from './utils/render-utils';
+import { flatten } from './utils/render-utils';
+import ProfileManager from './models/profile-manager';
 
 const Ember = window.Ember;
 const { computed: { readOnly }, subscribe, Object: EmberObject } = Ember;
 
 // Initial setup, that has to occur before the EmberObject init for some reason
-let { profileManager, queue } = setupQueue();
+let profileManager = new ProfileManager();
 _subscribeToRenderEvents();
 
 export default EmberObject.extend(PortMixin, {
@@ -92,7 +93,7 @@ function _subscribeToRenderEvents() {
         now: Date.now()
       };
 
-      return addToQueue(info);
+      return profileManager.addToQueue(info);
     },
 
     after(name, timestamp, payload, beganIndex) {
@@ -102,8 +103,8 @@ function _subscribeToRenderEvents() {
         payload
       };
 
-      const index = addToQueue(endedInfo);
-      queue[beganIndex].endedIndex = index;
+      const index = profileManager.addToQueue(endedInfo);
+      profileManager.queue[beganIndex].endedIndex = index;
     }
   });
 }
