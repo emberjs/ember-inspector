@@ -1,4 +1,4 @@
-import { computed } from '@ember/object';
+import { action, computed } from '@ember/object';
 import Component from '@ember/component';
 import { readOnly, sort } from '@ember/object/computed';
 
@@ -13,7 +13,7 @@ export default Component.extend({
 
   objectId: readOnly('mixinDetails.model.objectId'),
 
-  isExpanded: computed('model.expand', 'model.properties.length', function() {
+  isExpanded: computed('model.expand', 'model.properties.length', function () {
     return this.get('model.expand') && this.get('model.properties.length') > 0;
   }),
 
@@ -37,31 +37,31 @@ export default Component.extend({
     this.sortProperties = ['name'];
   },
 
+  toggleExpanded: action(function () {
+    this.toggleProperty('model.expand');
+  }),
+
+  sendToConsole: action(function ({ name }) {
+    let objectId = this.get('objectId');
+
+    this.get('port').send('objectInspector:sendToConsole', {
+      objectId,
+      property: name
+    });
+  }),
+
+  calculate: action(function ({ name }) {
+    let objectId = this.get('objectId');
+    let mixinIndex = this.get('mixinDetails.model.mixins').indexOf(this.get('model'));
+
+    this.get('port').send('objectInspector:calculate', {
+      objectId,
+      mixinIndex,
+      property: name
+    });
+  }),
+
   actions: {
-    calculate({ name }) {
-      let objectId = this.get('objectId');
-      let mixinIndex = this.get('mixinDetails.model.mixins').indexOf(this.get('model'));
-
-      this.get('port').send('objectInspector:calculate', {
-        objectId,
-        mixinIndex,
-        property: name
-      });
-    },
-
-    sendToConsole({ name }) {
-      let objectId = this.get('objectId');
-
-      this.get('port').send('objectInspector:sendToConsole', {
-        objectId,
-        property: name
-      });
-    },
-
-    toggleExpanded() {
-      this.toggleProperty('model.expand');
-    },
-
     digDeeper({ name }) {
       let objectId = this.get('objectId');
 

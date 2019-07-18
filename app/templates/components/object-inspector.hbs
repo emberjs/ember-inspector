@@ -3,7 +3,7 @@
     <div class="toolbar">
       <button
         class="toolbar__icon-button {{if isNested "enabled" "disabled"}} js-object-inspector-back"
-        {{action "popStack"}}
+        {{on "click" this.popStack}}
       >
         {{svg-jar "arrow-back" width="21px" height="21px"}}
       </button>
@@ -15,7 +15,7 @@
       <button
         class="send-to-console js-send-object-to-console-btn"
         title="Send to Console"
-        {{action "sendObjectToConsole" model.firstObject}}
+        {{on "click" (fn this.sendObjectToConsole model.firstObject)}}
       >
         {{svg-jar "send-with-text" width="20px" height="10px"}}
       </button>
@@ -30,13 +30,13 @@
     <div class="toolbar object-inspector-toolbar">
       <button
         class="toolbar__radio toolbar__radio--first js-object-display-type-grouped {{if (eq propDisplayType "grouped") "active"}}"
-        {{action "setPropDisplay" "grouped"}}
+        {{on "click" (fn this.setPropDisplay "grouped")}}
       >
         Grouped
       </button>
       <button
         class="toolbar__radio js-object-display-type-all {{if (eq propDisplayType "all") "active"}}"
-        {{action "setPropDisplay" "all"}}
+        {{on "click" (fn this.setPropDisplay "all")}}
       >
         All
       </button>
