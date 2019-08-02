@@ -302,8 +302,9 @@ module('Ember Debug - Object Inspector', function(hooks) {
   });
 
   test('Property grouping can be customized using _debugInfo', function(assert) {
-    let mixinToSkip = Mixin.create({});
-    mixinToSkip[Ember.NAME_KEY] = 'MixinToSkip';
+    let mixinToSkip = Mixin.create({
+      [Ember.NAME_KEY]: 'MixinToSkip'
+    });
 
     let Inspected = EmberObject.extend(mixinToSkip, {
       name: 'Teddy',
