@@ -119,6 +119,80 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(nameProperty.value.inspect, inspect('My Object'));
   });
 
+  test('An ES6 Class is correctly transformed into an inspection hash', function(assert) {
+    let date = new Date();
+
+    class Parent {
+      // eslint-disable-next-line constructor-super
+      constructor(param) {
+        Object.assign(this, param);
+      }
+
+      id = null;
+      name = 'My Object';
+      toString() {
+        return 'Parent Object';
+      }
+
+      get(k) {
+        return this[k];
+      }
+
+      @computed
+      get aCP() {
+        return true;
+      }
+    }
+
+    let inspected = new Parent({
+      id: 1,
+      toString() {
+        return `Object:${this.get('name')}`;
+      },
+      nullVal: null,
+      dateVal: date
+    });
+
+    objectInspector.sendObject(inspected);
+
+    assert.equal(name, 'objectInspector:updateObject');
+
+    assert.equal(message.name, 'Object:My Object');
+
+    let firstDetail = message.details[0];
+    assert.equal(firstDetail.name, 'Own Properties');
+
+    assert.equal(firstDetail.properties.length, 4, 'methods are not included');
+
+
+    let idProperty = firstDetail.properties[0];
+    assert.equal(idProperty.name, 'id');
+    assert.equal(idProperty.value.type, 'type-number');
+    assert.equal(idProperty.value.inspect, '1');
+
+    let nullProperty = firstDetail.properties[1];
+    assert.equal(nullProperty.name, 'name');
+    assert.equal(nullProperty.value.type, 'type-string');
+    assert.equal(nullProperty.value.inspect, '"My Object"');
+
+    let prop = firstDetail.properties[2];
+    assert.equal(prop.name, 'nullVal');
+    assert.equal(prop.value.type, 'type-null');
+    assert.equal(prop.value.inspect, 'null');
+
+    prop = firstDetail.properties[3];
+    assert.equal(prop.name, 'dateVal');
+    assert.equal(prop.value.type, 'type-date');
+    assert.equal(prop.value.inspect, date.toString());
+
+    let secondDetail = message.details[1];
+    assert.equal(secondDetail.name, 'Parent Object');
+
+    let CPProperty = secondDetail.properties[0];
+    assert.equal(CPProperty.name, 'aCP');
+    assert.equal(CPProperty.value.type, 'type-boolean');
+  });
+
   test('Computed properties are correctly calculated', function(assert) {
 
     let inspected = EmberObject.extend({
