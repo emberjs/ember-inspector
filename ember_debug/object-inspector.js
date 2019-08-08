@@ -360,6 +360,7 @@ export default EmberObject.extend(PortMixin, {
 
     const mixins = {
       mixins: [],
+      expand: true,
       toString() {
         const name = object.constructor.name;
         if (proto.hasOwnProperty('toString')) {
@@ -371,7 +372,6 @@ export default EmberObject.extend(PortMixin, {
     };
 
     const mix = {
-      expand: true,
       properties: Object.assign({}, Object.getOwnPropertyDescriptors(proto))
     };
 
@@ -411,7 +411,7 @@ export default EmberObject.extend(PortMixin, {
         name = 'Unknown mixin';
       }
 
-      mixinDetails.push({ name: name.toString(), properties: propertiesForMixin(mixin) });
+      mixinDetails.push({ name: name.toString(), properties: propertiesForMixin(mixin), expand: mixin.expand });
     });
 
     fixMandatorySetters(mixinDetails);
