@@ -30,7 +30,8 @@ export function isDescriptor(value) {
  */
 export function getDescriptorFor(object, key) {
   if (Ember.Debug.isComputed) {
-    return Ember.__loader.require('@ember/-internals/metal').descriptorForDecorator(object[key]);
+    const { descriptorForDecorator, descriptorForProperty } = Ember.__loader.require('@ember/-internals/metal');
+    return descriptorForDecorator(object[key]) || descriptorForProperty(object, key);
   }
 
   return object[key];

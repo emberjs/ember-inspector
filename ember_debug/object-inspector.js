@@ -328,7 +328,7 @@ export default EmberObject.extend(PortMixin, {
   dropObject(objectId) {
     let object = this.sentObjects[objectId];
 
-    if (object.reopen) {
+    if (object && object.reopen) {
       object.reopen({ willDestroy: object._oldWillDestroy });
       delete object._oldWillDestroy;
     }

@@ -79,7 +79,7 @@
     "ember-source": "~3.10.0",
     "ember-source-channel-url": "^1.1.0",
     "ember-svg-jar": "^1.2.2",
-    "ember-table": "Addepar/ember-table#a1d5122a902efe176d9740f04dc26a06247792b9",
+    "ember-table": "^2.1.0",
     "ember-test-selectors": "^2.1.0",
     "ember-truth-helpers": "^2.1.0",
     "ember-try": "^1.1.0",
