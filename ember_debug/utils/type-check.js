@@ -1,5 +1,4 @@
 const Ember = window.Ember;
-const { descriptorForDecorator, descriptorForProperty } = Ember.__loader.require('@ember/-internals/metal');
 const { ComputedProperty } = Ember;
 
 /**
@@ -31,6 +30,7 @@ export function isDescriptor(value) {
  */
 export function getDescriptorFor(object, key) {
   if (Ember.Debug.isComputed) {
+    const { descriptorForDecorator, descriptorForProperty } = Ember.__loader.require('@ember/-internals/metal');
     return descriptorForDecorator(object[key]) || descriptorForProperty(object, key);
   }
 
