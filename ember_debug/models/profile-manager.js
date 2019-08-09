@@ -1,6 +1,6 @@
 import ProfileNode from './profile-node';
 const Ember = window.Ember;
-const { run: { scheduleOnce } } = Ember;
+const { run: { later,  scheduleOnce } } = Ember;
 
 /**
  * A class for keeping track of active rendering profiles as a list.
@@ -11,6 +11,7 @@ export default class ProfileManager {
     this.current = null;
     this.currentSet = [];
     this._profilesAddedCallbacks = [];
+    this.queue = [];
   }
 
   began(timestamp, payload, now) {
@@ -39,6 +40,19 @@ export default class ProfileManager {
     return callback.call(context);
   }
 
+  /**
+   * Push a new profile into the queue
+   * @param info
+   * @return {number}
+   */
+  addToQueue(info) {
+    const index = this.queue.push(info);
+    if (index === 1) {
+      later(this._flush.bind(this), 50);
+    }
+    return index - 1;
+  }
+
   clearProfiles() {
     this.profiles.length = 0;
   }
@@ -58,6 +72,23 @@ export default class ProfileManager {
     if (index > -1) {
       this._profilesAddedCallbacks.splice(index, 1);
     }
+  }
+
+  _flush() {
+    let entry, i;
+    for (i = 0; i < this.queue.length; i++) {
+      entry = this.queue[i];
+      if (entry.type === 'began') {
+        // If there was an error during rendering `entry.endedIndex` never gets set.
+        if (entry.endedIndex) {
+          this.queue[entry.endedIndex].profileNode = this.began(entry.timestamp, entry.payload, entry.now);
+        }
+      } else {
+        this.ended(entry.timestamp, entry.payload, entry.profileNode);
+      }
+
+    }
+    this.queue.length = 0;
   }
 
   _profilesFinished() {
