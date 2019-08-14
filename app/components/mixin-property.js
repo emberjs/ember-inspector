@@ -32,6 +32,8 @@ export default Component.extend({
 
   isEmberObject: equal('valueType', 'type-ember-object'),
 
+  isObject: equal('valueType', 'type-object'),
+
   isComputedProperty: alias('model.value.computed'),
 
   isFunction: equal('valueType', 'type-function'),
@@ -51,7 +53,7 @@ export default Component.extend({
       this.toggleProperty('isDepsExpanded');
     },
     valueClick() {
-      if (this.get('isEmberObject') || this.get('isArray')) {
+      if (this.get('isObject') || this.get('isEmberObject') || this.get('isArray')) {
         this.get('mixin').send('digDeeper', this.get('model'));
         return;
       }
