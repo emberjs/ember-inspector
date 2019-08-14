@@ -14,7 +14,6 @@ import require from 'require';
 import wait from 'ember-test-helpers/wait';
 import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
 import hasEmberVersion from '@ember/test-helpers/has-ember-version';
-import { compareVersion } from "../../ember_debug/utils/version";
 
 let EmberDebug;
 let port, name, message;
@@ -121,82 +120,85 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(nameProperty.value.inspect, inspect('My Object'));
   });
 
-  if (compareVersion(VERSION, '3.9.0') !== -1) {
-    test('An ES6 Class is correctly transformed into an inspection hash', function (assert) {
-      let date = new Date();
 
-      class Parent {
-        // eslint-disable-next-line constructor-super
-        constructor(param) {
-          Object.assign(this, param);
-        }
+  test('An ES6 Class is correctly transformed into an inspection hash', function (assert) {
+    const compareVersion = require('ember-debug/utils/version').compareVersion;
+    if (compareVersion(VERSION, '3.9.0') !== -1) {
+      return;
+    }
+    let date = new Date();
 
-        id = null;
-        name = 'My Object';
-
-        toString() {
-          return 'Parent Object';
-        }
-
-        get(k) {
-          return this[k];
-        }
-
-        @computed
-        get aCP() {
-          return true;
-        }
+    class Parent {
+      // eslint-disable-next-line constructor-super
+      constructor(param) {
+        Object.assign(this, param);
       }
 
-      let inspected = new Parent({
-        id: 1,
-        toString() {
-          return `Object:${this.get('name')}`;
-        },
-        nullVal: null,
-        dateVal: date
-      });
+      id = null;
+      name = 'My Object';
 
-      objectInspector.sendObject(inspected);
+      toString() {
+        return 'Parent Object';
+      }
 
-      assert.equal(name, 'objectInspector:updateObject');
+      get(k) {
+        return this[k];
+      }
 
-      assert.equal(message.name, 'Object:My Object');
+      @computed
+      get aCP() {
+        return true;
+      }
+    }
 
-      let firstDetail = message.details[0];
-      assert.equal(firstDetail.name, 'Own Properties');
-
-      assert.equal(firstDetail.properties.length, 4, 'methods are not included');
-
-
-      let idProperty = firstDetail.properties[0];
-      assert.equal(idProperty.name, 'id');
-      assert.equal(idProperty.value.type, 'type-number');
-      assert.equal(idProperty.value.inspect, '1');
-
-      let nullProperty = firstDetail.properties[1];
-      assert.equal(nullProperty.name, 'name');
-      assert.equal(nullProperty.value.type, 'type-string');
-      assert.equal(nullProperty.value.inspect, '"My Object"');
-
-      let prop = firstDetail.properties[2];
-      assert.equal(prop.name, 'nullVal');
-      assert.equal(prop.value.type, 'type-null');
-      assert.equal(prop.value.inspect, 'null');
-
-      prop = firstDetail.properties[3];
-      assert.equal(prop.name, 'dateVal');
-      assert.equal(prop.value.type, 'type-date');
-      assert.equal(prop.value.inspect, date.toString());
-
-      let secondDetail = message.details[1];
-      assert.equal(secondDetail.name, 'Parent Object');
-
-      let CPProperty = secondDetail.properties[0];
-      assert.equal(CPProperty.name, 'aCP');
-      assert.equal(CPProperty.value.type, 'type-boolean');
+    let inspected = new Parent({
+      id: 1,
+      toString() {
+        return `Object:${this.get('name')}`;
+      },
+      nullVal: null,
+      dateVal: date
     });
-  }
+
+    objectInspector.sendObject(inspected);
+
+    assert.equal(name, 'objectInspector:updateObject');
+
+    assert.equal(message.name, 'Object:My Object');
+
+    let firstDetail = message.details[0];
+    assert.equal(firstDetail.name, 'Own Properties');
+
+    assert.equal(firstDetail.properties.length, 4, 'methods are not included');
+
+
+    let idProperty = firstDetail.properties[0];
+    assert.equal(idProperty.name, 'id');
+    assert.equal(idProperty.value.type, 'type-number');
+    assert.equal(idProperty.value.inspect, '1');
+
+    let nullProperty = firstDetail.properties[1];
+    assert.equal(nullProperty.name, 'name');
+    assert.equal(nullProperty.value.type, 'type-string');
+    assert.equal(nullProperty.value.inspect, '"My Object"');
+
+    let prop = firstDetail.properties[2];
+    assert.equal(prop.name, 'nullVal');
+    assert.equal(prop.value.type, 'type-null');
+    assert.equal(prop.value.inspect, 'null');
+
+    prop = firstDetail.properties[3];
+    assert.equal(prop.name, 'dateVal');
+    assert.equal(prop.value.type, 'type-date');
+    assert.equal(prop.value.inspect, date.toString());
+
+    let secondDetail = message.details[1];
+    assert.equal(secondDetail.name, 'Parent Object');
+
+    let CPProperty = secondDetail.properties[0];
+    assert.equal(CPProperty.name, 'aCP');
+    assert.equal(CPProperty.value.type, 'type-boolean');
+  });
 
   test('Computed properties are correctly calculated', function(assert) {
 
