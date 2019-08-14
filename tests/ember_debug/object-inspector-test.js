@@ -123,7 +123,8 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
   test('An ES6 Class is correctly transformed into an inspection hash', function (assert) {
     const compareVersion = require('ember-debug/utils/version').compareVersion;
-    if (compareVersion(VERSION, '3.9.0') !== -1) {
+    if (compareVersion(VERSION, '3.9.0') === -1) {
+      assert.expect(0);
       return;
     }
     let date = new Date();
