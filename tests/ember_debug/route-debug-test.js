@@ -1,10 +1,9 @@
-import { visit } from '@ember/test-helpers';
+import { settled, visit } from '@ember/test-helpers';
 import { get } from '@ember/object';
 import { run } from '@ember/runloop';
 import Route from '@ember/routing/route';
 import { module, test } from 'qunit';
 import require from 'require';
-import wait from 'ember-test-helpers/wait';
 import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
 
 const EmberDebug = require('ember-debug/main').default;
@@ -58,7 +57,7 @@ module('Ember Debug - Route Tree', function(hooks) {
     await visit('/');
 
     run(port, 'trigger', 'route:getTree');
-    await wait();
+    await settled();
 
     assert.equal(name, 'route:routeTree');
 

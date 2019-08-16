@@ -234,12 +234,12 @@ module('Object Inspector', function(hooks) {
     await triggerPort(this, 'objectInspector:updateObject', obj);
     await click('.js-object-detail-name');
 
-    assert.equal(findAll('.mixin__property--group').length, 1);
-    assert.equal(findAll('.mixin__property-icon--service').length, 1);
-    assert.equal(findAll('.js-property-name-service').length, 1);
-    assert.equal(findAll('.mixin__property-dependency-list').length, 0);
-    assert.equal(findAll('.mixin__property-dependency-item').length, 0);
-    assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 0);
+    assert.dom('.mixin__property--group').exists({ count: 1 });
+    assert.dom('.mixin__property-icon--service').exists({ count: 1 });
+    assert.dom('.js-property-name-service').exists({ count: 1 });
+    assert.dom('.mixin__property-dependency-list').doesNotExist();
+    assert.dom('.mixin__property-dependency-item').doesNotExist();
+    assert.dom('.mixin__property-dependency-item > .mixin__property-dependency-name').doesNotExist();
   });
 
   test("Computed properties no dependency", async function (assert) {
@@ -278,19 +278,19 @@ module('Object Inspector', function(hooks) {
       mixinIndex: 0
     });
 
-    assert.equal(findAll('.mixin__property--group').length, 0);
+    assert.dom('.mixin__property--group').doesNotExist();
 
     await click('.mixin__property-icon--computed');
 
-    assert.equal(findAll('.mixin__property-dependency-list').length, 0);
-    assert.equal(findAll('.mixin__property-dependency-item').length, 0);
-    assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 0);
+    assert.dom('.mixin__property-dependency-list').doesNotExist();
+    assert.dom('.mixin__property-dependency-item').doesNotExist();
+    assert.dom('.mixin__property-dependency-item > .mixin__property-dependency-name').doesNotExist();
 
     await click('.mixin__property-icon--computed');
 
-    assert.equal(findAll('.mixin__property-dependency-list').length, 0);
-    assert.equal(findAll('.mixin__property-dependency-item').length, 0);
-    assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 0);
+    assert.dom('.mixin__property-dependency-list').doesNotExist();
+    assert.dom('.mixin__property-dependency-item').doesNotExist();
+    assert.dom('.mixin__property-dependency-item > .mixin__property-dependency-name').doesNotExist();
   });
 
   test("Computed properties dependency expand", async function (assert) {
@@ -328,28 +328,28 @@ module('Object Inspector', function(hooks) {
       mixinIndex: 0
     });
 
-    assert.equal(findAll('.mixin__property--group').length, 1);
+    assert.dom('.mixin__property--group').exists({ count: 1 });
 
     await click('.mixin__property-icon--computed');
 
-    assert.equal(findAll('.mixin__property-dependency-list').length, 1);
-    assert.equal(findAll('.mixin__property-dependency-item').length, 1);
-    assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 1);
+    assert.dom('.mixin__property-dependency-list').exists({ count: 1 });
+    assert.dom('.mixin__property-dependency-item').exists({ count: 1 });
+    assert.dom('.mixin__property-dependency-item > .mixin__property-dependency-name').exists({ count: 1 });
 
     await click('.mixin__property-icon--computed');
 
-    assert.equal(findAll('.mixin__property-dependency-list').length, 0);
-    assert.equal(findAll('.mixin__property-dependency-item').length, 0);
-    assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 0);
+    assert.dom('.mixin__property-dependency-list').doesNotExist();
+    assert.dom('.mixin__property-dependency-item').doesNotExist();
+    assert.dom('.mixin__property-dependency-item > .mixin__property-dependency-name').doesNotExist();
 
     // All View
 
     await click('.js-object-display-type-all');
     await click('.mixin__property-icon--computed');
 
-    assert.equal(findAll('.mixin__property-dependency-list').length, 1);
-    assert.equal(findAll('.mixin__property-dependency-item').length, 1);
-    assert.equal(findAll('.mixin__property-dependency-item > .mixin__property-dependency-name').length, 1);
+    assert.dom('.mixin__property-dependency-list').exists({ count: 1 });
+    assert.dom('.mixin__property-dependency-item').exists({ count: 1 });
+    assert.dom('.mixin__property-dependency-item > .mixin__property-dependency-name').exists({ count: 1 });
   });
 
   test("Properties are bound to the application properties", async function (assert) {

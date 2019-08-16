@@ -38,11 +38,7 @@ module('Whats New', function(hooks) {
 
     await visit('/info/whats-new');
 
-    assert.equal(
-      findAll('.whats-new h2').length,
-      1,
-      'correct section of markdown is rendered'
-    );
+    assert.dom('.whats-new h2').exists({ count: 1 }, 'correct section of markdown is rendered');
 
     assert.equal(
       find('.whats-new h2 a').text,
@@ -60,11 +56,7 @@ module('Whats New', function(hooks) {
 
     await visit('/info/whats-new');
 
-    assert.equal(
-      findAll('.whats-new p').length,
-      1,
-      'Changelog could not be loaded'
-    );
+    assert.dom('.whats-new p').exists({ count: 1 }, 'Changelog could not be loaded');
 
     server.shutdown();
   });

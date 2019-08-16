@@ -1,8 +1,7 @@
-import { visit, find, findAll, fillIn, click } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, settled, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { triggerPort } from '../helpers/trigger-port';
-import wait from 'ember-test-helpers/wait';
 
 let port, message, name;
 
@@ -92,7 +91,7 @@ module('Promise Tab', function(hooks) {
         })
       ]
     });
-    await wait();
+    await settled();
 
     assert.dom('.js-promise-tree-item').exists({ count: 1 });
     let row = find('.js-promise-tree-item');
@@ -121,7 +120,7 @@ module('Promise Tab', function(hooks) {
         })
       ]
     });
-    await wait();
+    await settled();
 
     assert.dom('.js-promise-tree-item').exists({ count: 1 });
     let row = find('.js-promise-tree-item');
@@ -304,7 +303,7 @@ module('Promise Tab', function(hooks) {
         })
       ]
     });
-    await wait();
+    await settled();
 
     assert.dom('.js-promise-tree-item').exists({ count: 1 });
     await fillIn('.js-promise-search input', 'xxxxx');

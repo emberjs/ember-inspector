@@ -1,8 +1,7 @@
-import { visit, fillIn, find, findAll, click, triggerEvent } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, settled, triggerEvent, visit } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import wait from 'ember-test-helpers/wait';
 
 export function isObject(item) {
   return (item && typeof item === 'object' && !Array.isArray(item));
@@ -177,7 +176,7 @@ module('Route Tree Tab', function(hooks) {
     assert.deepEqual(isCurrent, [true, true, false, false, true, false]);
 
     run(() => port.trigger('route:currentRoute', { name: 'post.new' }));
-    await wait();
+    await settled();
     routeNodes = findAll('.js-route-tree-item .js-route-name');
     isCurrent = [...routeNodes].map(item => item.classList.contains('pill'));
     assert.deepEqual(isCurrent, [true, true, false, true, false, false], 'Current route is bound');

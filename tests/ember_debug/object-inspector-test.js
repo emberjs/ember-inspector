@@ -1,4 +1,4 @@
-import { visit, find } from '@ember/test-helpers';
+import { find, settled, visit } from '@ember/test-helpers';
 import Mixin from '@ember/object/mixin';
 import Component from '@ember/component';
 import { inspect } from '@ember/debug';
@@ -9,7 +9,6 @@ import Service from '@ember/service';
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
-import wait from 'ember-test-helpers/wait';
 import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
 import hasEmberVersion from '@ember/test-helpers/has-ember-version';
 
@@ -46,7 +45,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
 
     setupApp.call(this);
 
-    await wait();
+    await settled();
     objectInspector = EmberDebug.get('objectInspector');
     port = EmberDebug.port;
   });
@@ -429,7 +428,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
     objectId = find('.simple-view').id;
     let view = this.owner.lookup('-view-registry:main')[objectId];
     objectInspector.sendObject(view);
-    await wait();
+    await settled();
 
     assert.ok(!!objectInspector.sentObjects[objectId], 'Object successfully retained.');
 
@@ -447,14 +446,14 @@ module('Ember Debug - Object Inspector', function (hooks) {
     });
     let objectId = guidFor(object);
 
-    await wait();
+    await settled();
 
     objectInspector.sendObject(object);
-    await wait();
+    await settled();
 
     assert.ok(!!objectInspector.sentObjects[objectId]);
     run(object, 'destroy');
-    await wait();
+    await settled();
 
     assert.ok(didDestroy, 'Original willDestroy is preserved.');
     assert.ok(!objectInspector.sentObjects[objectId], 'Object is dropped');
@@ -469,10 +468,10 @@ module('Ember Debug - Object Inspector', function (hooks) {
       fooBinding: 'bar'
     });
 
-    await wait();
+    await settled();
 
     objectInspector.sendObject(object);
-    await wait();
+    await settled();
 
     let props = message.details[0].properties;
     if (!hasEmberVersion(3, 0)) {
@@ -499,10 +498,10 @@ module('Ember Debug - Object Inspector', function (hooks) {
 
     });
 
-    await wait();
+    await settled();
 
     run(objectInspector, 'sendObject', object);
-    await wait();
+    await settled();
 
     let props = message.details[0].properties;
     assert.equal(props.length, 1, 'bar should be silently skipped');
@@ -527,7 +526,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
     });
 
     run(objectInspector, 'sendObject', object);
-    await wait();
+    await settled();
 
     let errors = message.errors;
     assert.equal(errors.length, 1);
@@ -542,7 +541,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
         mixinIndex: 1
       });
     });
-    await wait();
+    await settled();
     ignoreErrors = true;
     assert.equal(name, 'objectInspector:updateErrors');
     assert.equal(errors.length, 1);
@@ -556,7 +555,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
         mixinIndex: 1
       });
     });
-    await wait();
+    await settled();
     assert.equal(name, 'objectInspector:updateProperty');
     assert.equal(message.value.inspect, inspect('bar'));
 
