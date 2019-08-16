@@ -21,14 +21,14 @@ export default Component.extend({
   },
 
   searchChanged: observer('search', function() {
-    let search = this.get('search');
+    let search = this.search;
     if (!isEmpty(search)) {
       once(this, 'expand');
     }
   }),
 
   searchMatch: computed('search', 'name', function() {
-    let search = this.get('search');
+    let search = this.search;
     if (isEmpty(search)) {
       return true;
     }
@@ -39,7 +39,7 @@ export default Component.extend({
 
   nodeStyle: computed('searchMatch', function() {
     let style = '';
-    if (!this.get('searchMatch')) {
+    if (!this.searchMatch) {
       style = 'opacity: 0.5;';
     }
     return htmlSafe(style);
@@ -54,17 +54,17 @@ export default Component.extend({
   }),
 
   nameStyle: computed('level', function() {
-    return htmlSafe(`padding-left: ${+this.get('level') * 20 + 5}px;`);
+    return htmlSafe(`padding-left: ${+this.level * 20 + 5}px;`);
   }),
 
   hasChildren: gt('model.children.length', 0),
 
   expandedClass: computed('hasChildren', 'isExpanded', function() {
-    if (!this.get('hasChildren')) {
+    if (!this.hasChildren) {
       return;
     }
 
-    if (this.get('isExpanded')) {
+    if (this.isExpanded) {
       return 'list__cell_arrow_expanded';
     } else {
       return 'list__cell_arrow_collapsed';

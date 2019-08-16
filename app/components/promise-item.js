@@ -32,7 +32,7 @@ export default Component.extend({
 
   nodeStyle: computed('model.state', 'filter', 'effectiveSearch', function() {
     let relevant;
-    switch (this.get('filter')) {
+    switch (this.filter) {
     case 'pending':
       relevant = this.get('model.isPending');
       break;
@@ -45,8 +45,8 @@ export default Component.extend({
     default:
       relevant = true;
     }
-    if (relevant && !isEmpty(this.get('effectiveSearch'))) {
-      relevant = this.get('model').matchesExactly(this.get('effectiveSearch'));
+    if (relevant && !isEmpty(this.effectiveSearch)) {
+      relevant = this.model.matchesExactly(this.effectiveSearch);
     }
     if (!relevant) {
       return 'opacity: 0.3;';
@@ -56,11 +56,11 @@ export default Component.extend({
   }),
 
   labelStyle: computed('model.level', 'nodeStyle', function() {
-    return htmlSafe(`padding-left: ${+this.get('model.level') * 20 + 5}px;${this.get('nodeStyle')}`);
+    return htmlSafe(`padding-left: ${+this.get('model.level') * 20 + 5}px;${this.nodeStyle}`);
   }),
 
   expandedClass: computed('hasChildren', 'model.isExpanded', function() {
-    if (!this.get('hasChildren')) { return; }
+    if (!this.hasChildren) { return; }
 
     if (this.get('model.isExpanded')) {
       return 'list__cell_arrow_expanded';

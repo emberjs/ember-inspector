@@ -30,6 +30,6 @@ export default TabRoute.extend({
 
   setupController(controller, model) {
     this._super(controller, model);
-    controller.set('error', this.get('error'));
+    controller.set('error', this.error);
   }
 });

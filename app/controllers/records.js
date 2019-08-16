@@ -52,10 +52,10 @@ export default Controller.extend({
   }),
 
   filtered: computed('searchValue', 'model.@each.{columnValues,filterValues}', 'filterValue', function() {
-    let search = this.get('searchValue');
-    let filter = this.get('filterValue');
+    let search = this.searchValue;
+    let filter = this.filterValue;
 
-    return this.get('model').filter(item => {
+    return this.model.filter(item => {
       // check filters
       if (filter && !get(item, `filterValues.${filter}`)) {
         return false;
@@ -97,7 +97,7 @@ export default Controller.extend({
      */
     inspectModel([record]) {
       set(this, 'selection', record);
-      this.get('port').send('data:inspectModel', { objectId: get(record, 'objectId') });
+      this.port.send('data:inspectModel', { objectId: get(record, 'objectId') });
     }
   }
 });

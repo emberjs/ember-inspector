@@ -62,7 +62,7 @@ export default Component.extend({
    * @type {SafeString}
    */
   safeStyle: computed('style', function() {
-    return htmlSafe(this.get('style'));
+    return htmlSafe(this.style);
   }),
 
   /**
@@ -121,6 +121,6 @@ export default Component.extend({
    * @method click
    */
   click() {
-    this.get('on-click')();
+    this['on-click']();
   }
 });

@@ -21,7 +21,7 @@ export default Component.extend({
   dateValue: null,
 
   isCalculated: computed('valueType', function () {
-    return this.get('valueType') !== 'type-descriptor';
+    return this.valueType !== 'type-descriptor';
   }),
 
   valueType: alias('model.value.type'),
@@ -51,29 +51,29 @@ export default Component.extend({
   }),
 
   valueClick: action(function () {
-    if (this.get('isEmberObject') || this.get('isArray')) {
-      this.get('mixin').send('digDeeper', this.get('model'));
+    if (this.isEmberObject || this.isArray) {
+      this.mixin.send('digDeeper', this.model);
       return;
     }
 
-    if (this.get('isComputedProperty') && !this.get('isCalculated')) {
-      this.get('mixin').send('calculate', this.get('model'));
+    if (this.isComputedProperty && !this.isCalculated) {
+      this.mixin.send('calculate', this.model);
       return;
     }
 
-    if (this.get('isFunction') || this.get('model.overridden') || this.get('model.readOnly')) {
+    if (this.isFunction || this.get('model.overridden') || this.get('model.readOnly')) {
       return;
     }
 
     let value = this.get('model.value.inspect');
-    let type = this.get('valueType');
+    let type = this.valueType;
     if (type === 'type-string') {
       // If the value is not already wrapped in quotes, wrap it
       if (!value.startsWith('"') && !value.endsWith('"')) {
         value = `"${value}"`;
       }
     }
-    if (!this.get('isDate')) {
+    if (!this.isDate) {
       this.set('txtValue', value);
     } else {
       this.set('dateValue', new Date(value));
@@ -84,13 +84,13 @@ export default Component.extend({
   actions: {
     saveProperty() {
       let realValue, dataType;
-      if (!this.get('isDate')) {
-        realValue = parseText(this.get('txtValue'));
+      if (!this.isDate) {
+        realValue = parseText(this.txtValue);
       } else {
-        realValue = this.get('dateValue').getTime();
+        realValue = this.dateValue.getTime();
         dataType = 'date';
       }
-      this.get('mixin').send('saveProperty', this.get('model.name'), realValue, dataType);
+      this.mixin.send('saveProperty', this.get('model.name'), realValue, dataType);
     },
 
     finishedEditing() {

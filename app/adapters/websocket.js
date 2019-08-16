@@ -10,11 +10,11 @@ export default BasicAdapter.extend({
 
   sendMessage(options) {
     options = options || {};
-    this.get('socket').emit('emberInspectorMessage', options);
+    this.socket.emit('emberInspectorMessage', options);
   },
 
   _connect() {
-    this.get('socket').on('emberInspectorMessage', message => {
+    this.socket.on('emberInspectorMessage', message => {
       run(() => {
         this._messageReceived(message);
       });
@@ -22,7 +22,7 @@ export default BasicAdapter.extend({
   },
 
   _disconnect() {
-    this.get('socket').removeAllListeners('emberInspectorMessage');
+    this.socket.removeAllListeners('emberInspectorMessage');
   },
 
   willDestroy() {

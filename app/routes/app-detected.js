@@ -13,7 +13,7 @@ export default Route.extend({
    * @return {Promise}
    */
   model() {
-    let port = this.get('port');
+    let port = this.port;
 
     return new Promise(resolve => {
       this.applicationBooted = ({ booted }) => {
@@ -33,7 +33,7 @@ export default Route.extend({
    */
   setupController() {
     this.controllerFor('application').set('isEmberApplication', true);
-    this.get('port').one('general:reset', this, this.reset);
+    this.port.one('general:reset', this, this.reset);
   },
 
   /**
@@ -49,9 +49,9 @@ export default Route.extend({
   deactivate() {
     // We wrapped this in an if because deactivate is being called before this.applicationBooted is defined in the model hook
     if (this.applicationBooted) {
-      this.get('port').off('general:applicationBooted', this.applicationBooted);
+      this.port.off('general:applicationBooted', this.applicationBooted);
     }
 
-    this.get('port').off('general:reset', this, this.reset);
+    this.port.off('general:reset', this, this.reset);
   }
 });

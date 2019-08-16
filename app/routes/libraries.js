@@ -6,8 +6,8 @@ export default TabRoute.extend({
   version: readOnly('config.VERSION'),
 
   model() {
-    const version = this.get('version');
-    const port = this.get('port');
+    const version = this.version;
+    const port = this.port;
     return new Promise(resolve => {
       port.one('general:libraries', message => {
         message.libraries.insertAt(0, {
