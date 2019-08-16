@@ -88,17 +88,17 @@ function setupApp() {
   setTemplate.call(this, 'posts', hbs`Posts`);
 }
 
-module('Ember Debug - View', function(hooks) {
-  hooks.beforeEach(async function() {
+module('Ember Debug - View', function (hooks) {
+  hooks.beforeEach(async function () {
     EmberDebug.Port = EmberDebug.Port.extend({
-      init() {},
-      send() {}
+      init() { },
+      send() { }
     });
     EmberDebug.IGNORE_DEPRECATIONS = true;
 
-    App = await setupEIApp.call(this, EmberDebug, function() {
+    App = await setupEIApp.call(this, EmberDebug, function () {
       this.route('simple');
-      this.route('comments', { resetNamespace: true }, function() {});
+      this.route('comments', { resetNamespace: true }, function () { });
       this.route('posts', { resetNamespace: true });
     });
 
@@ -107,7 +107,7 @@ module('Ember Debug - View', function(hooks) {
     port = EmberDebug.port;
   });
 
-  hooks.afterEach(async function() {
+  hooks.afterEach(async function () {
     await destroyEIApp.call(this, EmberDebug, App);
   });
 

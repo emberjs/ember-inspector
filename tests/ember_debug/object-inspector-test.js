@@ -6,10 +6,7 @@ import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import EmberObject, { computed } from '@ember/object';
 import Service from '@ember/service';
-<<<<<<< HEAD
 import { VERSION } from '@ember/version';
-=======
->>>>>>> es5-getter-ember-codemod
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
@@ -201,7 +198,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.equal(CPProperty.value.type, 'type-boolean');
   });
 
-  test('Computed properties are correctly calculated', function(assert) {
+  test('Computed properties are correctly calculated', function (assert) {
     let inspected = EmberObject.extend({
       hi: computed(function () {
         assert.step('calculating computed');

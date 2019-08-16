@@ -12,10 +12,10 @@ import { triggerPort } from '../helpers/trigger-port';
 
 let port, message, name;
 
-module('Promise Tab', function(hooks) {
+module('Promise Tab', function (hooks) {
   setupApplicationTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     port = this.owner.lookup('port:main');
     port.reopen({
       send(n, m) {
@@ -30,7 +30,7 @@ module('Promise Tab', function(hooks) {
     });
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     name = null;
     message = null;
   });
@@ -50,7 +50,7 @@ module('Promise Tab', function(hooks) {
     }, props);
   }
 
-  test("Shows page refresh hint if no promises", async function(assert) {
+  test("Shows page refresh hint if no promises", async function (assert) {
     await visit('/promise-tree');
 
     await triggerPort(this, 'promise:promisesUpdated', {
@@ -86,7 +86,7 @@ module('Promise Tab', function(hooks) {
     assert.dom('.js-page-refresh').doesNotExist('page refresh hint hidden');
   });
 
-  test("Pending promise", async function(assert) {
+  test("Pending promise", async function (assert) {
     await visit('/promise-tree');
 
     await triggerPort(this, 'promise:promisesUpdated', {
@@ -107,7 +107,7 @@ module('Promise Tab', function(hooks) {
   });
 
 
-  test("Fulfilled promise", async function(assert) {
+  test("Fulfilled promise", async function (assert) {
     await visit('/promise-tree');
 
     let now = Date.now();
@@ -138,7 +138,7 @@ module('Promise Tab', function(hooks) {
   });
 
 
-  test("Rejected promise", async function(assert) {
+  test("Rejected promise", async function (assert) {
     await visit('/promise-tree');
 
     let now = Date.now();
@@ -167,7 +167,7 @@ module('Promise Tab', function(hooks) {
     assert.dom(row.querySelector('.js-promise-time')).hasText('20.00ms');
   });
 
-  test("Chained promises", async function(assert) {
+  test("Chained promises", async function (assert) {
     await visit('/promise-tree');
 
     await triggerPort(this, 'promise:promisesUpdated', {
@@ -195,7 +195,7 @@ module('Promise Tab', function(hooks) {
     assert.dom(rows[1].querySelector('.js-promise-label')).hasText('Child');
   });
 
-  test("Can trace promise when there is a stack", async function(assert) {
+  test("Can trace promise when there is a stack", async function (assert) {
     await visit('/promise-tree');
 
     await triggerPort(this, 'promise:promisesUpdated', {
@@ -209,7 +209,7 @@ module('Promise Tab', function(hooks) {
   });
 
 
-  test("Trace button hidden if promise has no stack", async function(assert) {
+  test("Trace button hidden if promise has no stack", async function (assert) {
     await visit('/promise-tree');
 
     await triggerPort(this, 'promise:promisesUpdated', {
@@ -219,7 +219,7 @@ module('Promise Tab', function(hooks) {
     assert.dom('.js-trace-promise-btn').doesNotExist();
   });
 
-  test("Toggling promise trace option", async function(assert) {
+  test("Toggling promise trace option", async function (assert) {
     assert.expect(3);
 
     await visit('/promise-tree');
@@ -232,7 +232,7 @@ module('Promise Tab', function(hooks) {
     assert.equal(message.instrumentWithStack, true);
   });
 
-  test("Logging error stack trace in the console", async function(assert) {
+  test("Logging error stack trace in the console", async function (assert) {
     await visit('/promise-tree');
 
     await triggerPort(this, 'promise:promisesUpdated', {
@@ -255,7 +255,7 @@ module('Promise Tab', function(hooks) {
   });
 
 
-  test("Send fulfillment value to console", async function(assert) {
+  test("Send fulfillment value to console", async function (assert) {
     await visit('/promise-tree');
 
     await triggerPort(this, 'promise:promisesUpdated', {
@@ -276,7 +276,7 @@ module('Promise Tab', function(hooks) {
     assert.deepEqual(message, { promiseId: 1 });
   });
 
-  test("Sending objects to the object inspector", async function(assert) {
+  test("Sending objects to the object inspector", async function (assert) {
     await visit('/promise-tree');
 
     await triggerPort(this, 'promise:promisesUpdated', {
@@ -298,7 +298,7 @@ module('Promise Tab', function(hooks) {
     assert.deepEqual(message, { objectId: 100 });
   });
 
-  test("It should clear the search filter when the clear button is clicked", async function(assert) {
+  test("It should clear the search filter when the clear button is clicked", async function (assert) {
     await visit('/promise-tree');
 
     await triggerPort(this, 'promise:promisesUpdated', {
