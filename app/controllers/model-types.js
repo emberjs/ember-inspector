@@ -3,7 +3,10 @@ import { get, computed } from '@ember/object';
 import LocalStorageService from 'ember-inspector/services/storage/local';
 import { sort } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
-import { HIDE_EMPTY_MODELS_KEY, ORDER_MODELS_BY_COUNT_KEY } from 'ember-inspector/utils/local-storage-keys';
+import {
+  HIDE_EMPTY_MODELS_KEY,
+  ORDER_MODELS_BY_COUNT_KEY
+} from 'ember-inspector/utils/local-storage-keys';
 
 export default Controller.extend({
   application: controller(),

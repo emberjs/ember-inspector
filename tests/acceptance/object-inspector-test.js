@@ -1,4 +1,11 @@
-import { visit, find, findAll, click, fillIn, triggerKeyEvent } from '@ember/test-helpers';
+import {
+  visit,
+  find,
+  findAll,
+  click,
+  fillIn,
+  triggerKeyEvent
+} from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { triggerPort } from '../helpers/trigger-port';

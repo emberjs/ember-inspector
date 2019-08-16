@@ -1,4 +1,4 @@
-import { visit, find, findAll } from '@ember/test-helpers';
+import { visit, find } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import Pretender from 'pretender';
@@ -28,11 +28,11 @@ const response = `
 - Data
 `;
 
-module('Whats New', function(hooks) {
+module('Whats New', function (hooks) {
   setupApplicationTest(hooks);
 
   test('Changelog is parsed and displayed', async function t(assert) {
-    const server = new Pretender(function() {
+    const server = new Pretender(function () {
       this.get(url, () => [200, { 'Content-Type': 'text/plain' }, response]);
     });
 
@@ -50,7 +50,7 @@ module('Whats New', function(hooks) {
   });
 
   test('Error message is displayed on request failure', async function t(assert) {
-    const server = new Pretender(function() {
+    const server = new Pretender(function () {
       this.get(url, () => [404, {}, '']);
     });
 

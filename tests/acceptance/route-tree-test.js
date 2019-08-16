@@ -1,4 +1,12 @@
-import { click, fillIn, find, findAll, settled, triggerEvent, visit } from '@ember/test-helpers';
+import {
+  click,
+  fillIn,
+  find,
+  findAll,
+  settled,
+  triggerEvent,
+  visit
+} from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';

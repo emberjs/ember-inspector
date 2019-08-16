@@ -1,11 +1,20 @@
-import { click, fillIn, findAll, settled, visit } from '@ember/test-helpers';
+import {
+  click,
+  fillIn,
+  findAll,
+  settled,
+  visit
+} from '@ember/test-helpers';
 import { guidFor } from '@ember/object/internals';
 import EmberObject from '@ember/object';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { triggerPort } from '../helpers/trigger-port';
 import LocalStorageService from 'ember-inspector/services/storage/local';
-import { HIDE_EMPTY_MODELS_KEY, ORDER_MODELS_BY_COUNT_KEY } from 'ember-inspector/utils/local-storage-keys';
+import {
+  HIDE_EMPTY_MODELS_KEY,
+  ORDER_MODELS_BY_COUNT_KEY
+} from 'ember-inspector/utils/local-storage-keys';
 
 let port, name;
 

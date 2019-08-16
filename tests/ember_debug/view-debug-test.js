@@ -1,4 +1,10 @@
-import { click, find, settled, triggerEvent, visit } from '@ember/test-helpers';
+import {
+  click,
+  find,
+  settled,
+  triggerEvent,
+  visit
+} from '@ember/test-helpers';
 import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 import Component from '@ember/component';
