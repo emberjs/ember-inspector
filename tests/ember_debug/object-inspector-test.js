@@ -6,7 +6,10 @@ import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import EmberObject, { computed } from '@ember/object';
 import Service from '@ember/service';
+<<<<<<< HEAD
 import { VERSION } from '@ember/version';
+=======
+>>>>>>> es5-getter-ember-codemod
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
