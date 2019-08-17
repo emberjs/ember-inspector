@@ -9,7 +9,7 @@ export default TextField.extend({
    * @property propertyComponent
    * @type {Ember.Component}
    */
-  properyComponent: null,
+  propertyComponent: null,
 
   didInsertElement() {
     this.element.select();

@@ -1,4 +1,4 @@
-import { computed } from '@ember/object';
+import { action, computed } from '@ember/object';
 import Component from '@ember/component';
 import { equal, alias, and } from '@ember/object/computed';
 import { next } from '@ember/runloop';
@@ -20,7 +20,7 @@ export default Component.extend({
   txtValue: null,
   dateValue: null,
 
-  isCalculated: computed('valueType', function() {
+  isCalculated: computed('valueType', function () {
     return this.get('valueType') !== 'type-descriptor';
   }),
 
@@ -57,41 +57,42 @@ export default Component.extend({
       || this.get('isArray')
   },
 
+  toggleDeps: action(function () {
+    this.toggleProperty('isDepsExpanded');
+  }),
+
+  valueClick: action(function () {
+    if (this.canDig()) {
+      this.get('mixin').send('digDeeper', this.get('model'));
+      return;
+    }
+
+    if (this.get('isComputedProperty') && !this.get('isCalculated')) {
+      this.get('mixin').send('calculate', this.get('model'));
+      return;
+    }
+
+    if (this.get('isFunction') || this.get('model.overridden') || this.get('model.readOnly')) {
+      return;
+    }
+
+    let value = this.get('model.value.inspect');
+    let type = this.get('valueType');
+    if (type === 'type-string') {
+      // If the value is not already wrapped in quotes, wrap it
+      if (!value.startsWith('"') && !value.endsWith('"')) {
+        value = `"${value}"`;
+      }
+    }
+    if (!this.get('isDate')) {
+      this.set('txtValue', value);
+    } else {
+      this.set('dateValue', new Date(value));
+    }
+    this.set('isEdit', true);
+  }),
+
   actions: {
-    toggleDeps() {
-      this.toggleProperty('isDepsExpanded');
-    },
-    valueClick() {
-      if (this.canDig()) {
-        this.get('mixin').send('digDeeper', this.get('model'));
-        return;
-      }
-
-      if (this.get('isComputedProperty') && !this.get('isCalculated')) {
-        this.get('mixin').send('calculate', this.get('model'));
-        return;
-      }
-
-      if (this.get('isFunction') || this.get('model.overridden') || this.get('model.readOnly')) {
-        return;
-      }
-
-      let value = this.get('model.value.inspect');
-      let type = this.get('valueType');
-      if (type === 'type-string') {
-        // If the value is not already wrapped in quotes, wrap it
-        if (!value.startsWith('"') && !value.endsWith('"')) {
-          value = `"${value}"`;
-        }
-      }
-      if (!this.get('isDate')) {
-        this.set('txtValue', value);
-      } else {
-        this.set('dateValue', new Date(value));
-      }
-      this.set('isEdit', true);
-    },
-
     saveProperty() {
       let realValue, dataType;
       if (!this.get('isDate')) {
