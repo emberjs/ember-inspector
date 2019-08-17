@@ -5,15 +5,15 @@
   as |item|
   }}
     <ComponentTreeItem
-      @highlighted={{component-parent-selected item pinnedObjectId}}
       @item={{item}}
-      @selected={{eq pinnedObjectId item.view.objectId}}
-      @eventMouseEnter={{action "previewLayer" item}}
-      @eventMouseLeave={{action "hidePreview"}}
-      @inspect={{action "inspect" item.view.objectId}}
-      @scrollToElement={{action "scrollToElement" item.view.objectId}}
-      @toggleExpanded={{action "toggleExpanded" item}}
-      @viewInElementsPanel={{action "viewInElementsPanel" item}}
+      @highlighted={{component-parent-selected item this.pinnedObjectId}}
+      @selected={{eq item.view.objectId this.pinnedObjectId}}
+      @eventMouseEnter={{fn this.showPreviewLayer item}}
+      @eventMouseLeave={{this.hidePreviewLayer}}
+      @inspect={{fn this.inspect item.view.objectId}}
+      @scrollToElement={{fn this.scrollToElement item.view.objectId}}
+      @toggleExpanded={{fn this.toggleExpanded item}}
+      @viewInElementsPanel={{fn this.viewInElementsPanel item}}
     />
   {{/vertical-collection}}
 </div>

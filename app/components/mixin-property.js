@@ -1,11 +1,11 @@
-import { action, computed } from "@ember/object";
-import Component from "@ember/component";
-import { equal, alias, and } from "@ember/object/computed";
-import { next } from "@ember/runloop";
-import parseText from "ember-inspector/utils/parse-text";
+import { action, computed } from '@ember/object';
+import Component from '@ember/component';
+import { equal, alias, and } from '@ember/object/computed';
+import { next } from '@ember/runloop';
+import parseText from 'ember-inspector/utils/parse-text';
 
 export default Component.extend({
-  tagName: "",
+  tagName: '',
   isEdit: false,
 
   /**
@@ -20,82 +20,76 @@ export default Component.extend({
   txtValue: null,
   dateValue: null,
 
-  isCalculated: computed("valueType", function() {
-    return this.valueType !== "type-descriptor";
+  isCalculated: computed('valueType', function () {
+    return this.valueType !== 'type-descriptor';
   }),
 
-  valueType: alias("model.value.type"),
+  valueType: alias('model.value.type'),
 
-  isService: alias("model.isService"),
+  isService: alias('model.isService'),
 
-  isOverridden: alias("model.overridden"),
+  isOverridden: alias('model.overridden'),
 
-  isEmberObject: equal("valueType", "type-ember-object"),
+  isEmberObject: equal('valueType', 'type-ember-object'),
 
-  isObject: equal("valueType", "type-object"),
+  isObject: equal('valueType', 'type-object'),
 
-  isInstance: equal("valueType", "type-instance"),
+  isInstance: equal('valueType', 'type-instance'),
 
-  isComputedProperty: alias("model.value.computed"),
+  isComputedProperty: alias('model.value.computed'),
 
-  isFunction: equal("valueType", "type-function"),
+  isFunction: equal('valueType', 'type-function'),
 
-  isArray: equal("valueType", "type-array"),
+  isArray: equal('valueType', 'type-array'),
 
-  isDate: equal("valueType", "type-date"),
+  isDate: equal('valueType', 'type-date'),
 
   isDepsExpanded: false,
 
-  hasDependentKeys: and("model.dependentKeys.length", "isCalculated"),
+  hasDependentKeys: and('model.dependentKeys.length', 'isCalculated'),
 
-  showDependentKeys: and("isDepsExpanded", "hasDependentKeys"),
+  showDependentKeys: and('isDepsExpanded', 'hasDependentKeys'),
 
   canDig() {
-    return (
-      this.get("isInstance") ||
-      this.get("isObject") ||
-      this.get("isEmberObject") ||
-      this.get("isArray")
-    );
+    return this.get('isInstance')
+      || this.get('isObject')
+      || this.get('isEmberObject')
+      || this.get('isArray')
   },
 
-  toggleDeps: action(function() {
-    this.toggleProperty("isDepsExpanded");
+  toggleDeps: action(function () {
+    this.toggleProperty('isDepsExpanded');
   }),
 
-  valueClick: action(function() {
+  valueClick: action(function () {
     if (this.canDig()) {
-      this.mixin.send("digDeeper", this.model);
+      this.mixin.send('digDeeper', this.model);
       return;
     }
 
     if (this.isComputedProperty && !this.isCalculated) {
-      this.mixin.send("calculate", this.model);
+      this.mixin.send('calculate', this.model);
       return;
     }
 
-    if (
-      this.isFunction ||
-      this.get("model.overridden") ||
-      this.get("model.readOnly")
-    ) {
+    if (this.isFunction || this.get('model.overridden') || this.get('model.readOnly')) {
       return;
     }
 
-    let value = this.get("model.value.inspect");
+    let value = this.get('model.value.inspect');
     let type = this.valueType;
-    if (type === "type-string") {
+    if (type === 'type-string') {
       // If the value is not already wrapped in quotes, wrap it
       if (!value.startsWith('"') && !value.endsWith('"')) {
         value = `"${value}"`;
       }
     }
     if (!this.isDate) {
-      this.set("txtValue", value);
+      this.set('txtValue', value);
     } else {
-      this.set("dateValue", new Date(value));
+      this.set('dateValue', new Date(value));
     }
-    this.set("isEdit", true);
+    this.set('isEdit', true);
   }),
 
   actions: {
@@ -105,26 +99,21 @@ export default Component.extend({
         realValue = parseText(this.txtValue);
       } else {
         realValue = this.dateValue.getTime();
-        dataType = "date";
+        dataType = 'date';
       }
-      this.mixin.send(
-        "saveProperty",
-        this.get("model.name"),
-        realValue,
-        dataType
-      );
+      this.mixin.send('saveProperty', this.get('model.name'), realValue, dataType);
     },
 
     finishedEditing() {
       next(() => {
-        this.set("isEdit", false);
+        this.set('isEdit', false);
       });
     },
 
     dateSelected([val]) {
-      this.set("dateValue", val);
-      this.send("saveProperty");
-      this.send("finishedEditing");
+      this.set('dateValue', val);
+      this.send('saveProperty');
+      this.send('finishedEditing');
     }
   }
 });

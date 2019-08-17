@@ -198,7 +198,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.equal(CPProperty.value.type, 'type-boolean');
   });
 
-  test('Computed properties are correctly calculated', function (assert) {
+  test('Computed properties are correctly calculated', function(assert) {
     let inspected = EmberObject.extend({
       hi: computed(function () {
         assert.step('calculating computed');

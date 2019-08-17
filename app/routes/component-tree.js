@@ -46,7 +46,7 @@ export default TabRoute.extend({
       return;
     }
 
-    this.controller.send('inspect', viewId);
+    this.controller.inspect(viewId);
   },
 
   startInspecting() {

@@ -3,15 +3,15 @@
   onmouseenter={{@eventMouseEnter}}
   onmouseleave={{@eventMouseLeave}}
   style={{component-indentation @item.hasChildren @item.parentCount}}
-  {{action inspect}}
+  {{on "click" @inspect}}
 >
   {{#if @item.hasChildren}}
-    {{ui/disclosure-triangle
+    <Ui::DisclosureTriangle
       class="component-tree-item__expand"
-      expanded=@item.expanded
       title="Click to toggle (alt/option click to toggle with children)"
-      toggle=(action @toggleExpanded)
-    }}
+      @toggle={{@toggleExpanded}}
+      @expanded={{@item.expanded}}
+    />
   {{/if}}
 
   <code
@@ -24,7 +24,7 @@
     <button
       class="component-tree-item__action js-scroll-into-view"
       title="Scroll into view"
-      {{action @scrollToElement bubbles=false}}
+      {{on "click" @scrollToElement}}
     >
       {{svg-jar
         "eye"
@@ -37,7 +37,7 @@
       <button
         class="component-tree-item__action js-view-dom-element"
         title="View in Elements panel"
-        {{action @viewInElementsPanel bubbles=false}}
+        {{on "click" @viewInElementsPanel}}
       >
         {{svg-jar "code-line" width="20px" height="20px"}}
       </button>

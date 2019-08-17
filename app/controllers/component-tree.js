@@ -1,4 +1,5 @@
 import {
+  action,
   get,
   computed
 } from '@ember/object';
@@ -229,97 +230,89 @@ export default Controller.extend({
     this.setExpandedStateForObjects(list, newState);
   },
 
-  actions: {
-    previewLayer(
-      {
-        view: {
-          objectId,
-          elementId,
-          renderNodeId
-        }
-      }) {
-      // We are passing all of objectId, elementId, and renderNodeId to support post-glimmer 1, post-glimmer 2, and root for
-      // post-glimmer 2
-      this.port.send('view:previewLayer', {
+  /**
+   * Scrolls the main page to put the selected element into view
+   */
+  scrollToElement: action(function(objectId, event) {
+    event.stopPropagation();
+
+    this.port.send('view:scrollToElement', {
+      elementId: objectId // TODO: what?
+    });
+  }),
+
+  showPreviewLayer: action(function(
+    {
+      view: {
         objectId,
-        renderNodeId,
+        elementId,
+        renderNodeId
+      }
+    }) {
+    // We are passing all of objectId, elementId, and renderNodeId to support post-glimmer 1, post-glimmer 2, and root for
+    // post-glimmer 2
+    this.port.send('view:previewLayer', {
+      objectId,
+      renderNodeId,
+      elementId
+    });
+  }),
+
+  hidePreviewLayer: action(function() {
+    this.port.send('view:hidePreview');
+  }),
+
+  toggleExpanded: action(function(item, event) {
+    event.stopPropagation();
+
+    if (event.altKey) {
+      this.toggleWithChildren(item);
+    } else {
+      item.toggleProperty('expanded');
+      this.expandedStateCache[getIdFromObj(item)] = item.get('expanded');
+    }
+  }),
+
+  viewInElementsPanel: action(function(item, event) {
+    event.stopPropagation();
+
+    const objectId = item.get('view.objectId');
+    const elementId = item.get('view.elementId');
+
+    if (objectId || elementId) {
+      this.port.send('view:inspectElement', {
+        objectId,
         elementId
       });
-    },
+    }
+  }),
 
-    hidePreview() {
-      this.port.send('view:hidePreview');
-    },
+  /**
+   * Expand or collapse all component nodes
+   * @param {Boolean} expanded if true, expanded, if false, collapsed
+   */
+  expandOrCollapseAll: action(function(expanded) {
+    this.expandedStateCache = {};
+    this.filteredArray.forEach((item) => {
+      item.set('expanded', expanded);
+      this.expandedStateCache[getIdFromObj(item)] = expanded;
+    });
+  }),
 
-    toggleViewInspection() {
-      this.port.send('view:inspectViews', {
-        inspect: !this.inspectingViews
-      });
-    },
+  toggleViewInspection: action(function() {
+    this.port.send('view:inspectViews', {
+      inspect: !this.inspectingViews
+    });
+  }),
 
-    sendObjectToConsole(objectId) {
-      this.port.send('objectInspector:sendToConsole', {
+  inspect: action(function(objectId) {
+    if (objectId) {
+      this.set('pinnedObjectId', objectId);
+      this.expandToNode(objectId);
+      this.scrollTreeToItem(objectId);
+      this.port.send('objectInspector:inspectById', {
         objectId
       });
-    },
-
-    /**
-     * Expand or collapse all component nodes
-     * @param {Boolean} expanded if true, expanded, if false, collapsed
-     */
-    expandOrCollapseAll(expanded) {
-      this.expandedStateCache = {};
-      this.filteredArray.forEach((item) => {
-        item.set('expanded', expanded);
-        this.expandedStateCache[getIdFromObj(item)] = expanded;
-      });
-    },
-
-    toggleExpanded(item, toggleChildren) {
-      if (toggleChildren) {
-        this.toggleWithChildren(item);
-      } else {
-        item.toggleProperty('expanded');
-        this.expandedStateCache[getIdFromObj(item)] = item.get('expanded');
-      }
-    },
-
-    /**
-     * Select component in Ember Inspector
-     */
-    inspect(objectId) {
-      if (objectId) {
-        this.set('pinnedObjectId', objectId);
-        this.expandToNode(objectId);
-        this.scrollTreeToItem(objectId);
-        this.port.send('objectInspector:inspectById', {
-          objectId
-        });
-      }
-    },
-
-    /**
-     * Scrolls the main page to put the selected element into view
-     */
-    scrollToElement(objectId) {
-      this.port.send('view:scrollToElement', {
-        elementId: objectId // TODO: what?
-      });
-    },
-
-    /**
-     * View DOM node in browser Elements panel
-     */
-    viewInElementsPanel(item) {
-      const objectId = item.get('view.objectId');
-      const elementId = item.get('view.elementId');
-
-      if (objectId || elementId) {
-        this.port.send('view:inspectElement', {
-          objectId,
-          elementId
-        });
-      }
     }
-  }
+  })
 });

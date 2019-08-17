@@ -1,7 +1,7 @@
 <div class="toolbar">
   <button
     class="{{if inspectingViews "active"}} toolbar__icon-button js-inspect-views"
-    {{action "toggleViewInspection"}}
+    {{on "click" this.toggleViewInspection}}
   >
     {{svg-jar
       "inspect"
@@ -15,7 +15,7 @@
   <button
     class="toolbar__icon-button"
     title="expand all"
-    {{action "expandOrCollapseAll" true}}
+    {{on "click" (fn this.expandOrCollapseAll true)}}
   >
     {{svg-jar
       "chevron-down"
@@ -27,7 +27,7 @@
   <button
     class="toolbar__icon-button"
     title="collapse all"
-    {{action "expandOrCollapseAll" false}}
+    {{on "click" (fn this.expandOrCollapseAll false)}}
   >
     {{svg-jar
       "chevron-right"

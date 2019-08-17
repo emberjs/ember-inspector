@@ -18,13 +18,13 @@ import {
 
 let port, name;
 
-module('Data Tab', function (hooks) {
+module('Data Tab', function(hooks) {
   setupApplicationTest(hooks);
 
-  hooks.beforeEach(function () {
+  hooks.beforeEach(function() {
     port = this.owner.lookup('port:main');
     port.reopen({
-      init() { },
+      init() {},
       send(n, m) {
         name = n;
         if (name === 'data:getModelTypes') {
@@ -40,7 +40,7 @@ module('Data Tab', function (hooks) {
     });
   });
 
-  hooks.afterEach(function () {
+  hooks.afterEach(function() {
     name = null;
     // This is to ensure settings in Storage do not persist across multiple test runs.
     let storageService = this.owner.lookup(`service:storage/${LocalStorageService.STORAGE_TYPE_TO_USE}`);
@@ -183,7 +183,7 @@ module('Data Tab', function (hooks) {
     assert.dom(lastRowColumns[0]).hasText('2', 'Records successfully removed.');
   });
 
-  test('Hiding empty model types', async function (assert) {
+  test('Hiding empty model types', async function(assert) {
     assert.expect(3);
 
     await visit('/data/model-types');
@@ -206,7 +206,7 @@ module('Data Tab', function (hooks) {
     assert.dom('.js-model-type').exists({ count: 2 }, 'All models are present again');
   });
 
-  test('Order by record count', async function (assert) {
+  test('Order by record count', async function(assert) {
     assert.expect(6);
 
     await visit('/data/model-types');
@@ -269,7 +269,7 @@ module('Data Tab', function (hooks) {
     assert.equal(rows.length, 2);
   });
 
-  test("It should clear the search filter when the clear button is clicked", async function (assert) {
+  test("It should clear the search filter when the clear button is clicked", async function(assert) {
     await visit('/data/model-types');
     await click(findAll('.js-model-type a')[1]);
 
@@ -295,11 +295,11 @@ module('Data Tab', function (hooks) {
     assert.dom(columns[columns.length - 1]).includesText('Content');
   });
 
-  test("Reload", async function (assert) {
+  test("Reload", async function(assert) {
     let types = [], getRecords = [], filters = [];
 
     port.reopen({
-      init() { },
+      init() {},
       send(n) {
         name = n;
         if (name === 'data:getModelTypes') {
