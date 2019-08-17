@@ -5,11 +5,11 @@
 {{/unless}}
 
 {{#if showEmpty}}
-  {{#ui/empty-message class="js-render-tree-empty"}}
+  <Ui::EmptyMessage class="js-render-tree-empty">
     <p>No rendering metrics have been collected. Try reloading or navigating around your application.</p>
     <p><strong>Note:</strong> Very fast rendering times (&lt;1ms) are excluded.</p>
     <button class="js-toolbar-page-refresh-btn" {{action "refreshPage"}}>Reload</button>
-  {{/ui/empty-message}}
+  </Ui::EmptyMessage>
 {{else}}
   <List
     class="js-render-tree"

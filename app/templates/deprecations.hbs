@@ -20,7 +20,7 @@
     </tbody>
   </List>
 {{else}}
-  {{#ui/empty-message class="js-page-refresh"}}
+  <Ui::EmptyMessage class="js-page-refresh">
     <p>
       No deprecations have been detected. Try reloading to catch the deprecations that were logged before you opened
       the inspector.
@@ -31,5 +31,5 @@
     >
       Reload
     </button>
-  {{/ui/empty-message}}
+  </Ui::EmptyMessage>
 {{/if}}
