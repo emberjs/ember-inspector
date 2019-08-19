@@ -32,7 +32,7 @@
   ],
   "devDependencies": {
     "@ember/optional-features": "^0.7.0",
-    "@html-next/vertical-collection": "^1.0.0-beta.13",
+    "@html-next/vertical-collection": "^1.0.0",
     "amd-name-resolver": "^1.2.1",
     "aws-sdk": "^2.512.0",
     "babel-eslint": "^10.0.2",
