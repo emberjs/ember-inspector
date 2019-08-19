@@ -32,6 +32,10 @@ export default Component.extend({
 
   isEmberObject: equal('valueType', 'type-ember-object'),
 
+  isObject: equal('valueType', 'type-object'),
+
+  isInstance: equal('valueType', 'type-instance'),
+
   isComputedProperty: alias('model.value.computed'),
 
   isFunction: equal('valueType', 'type-function'),
@@ -46,12 +50,19 @@ export default Component.extend({
 
   showDependentKeys: and('isDepsExpanded', 'hasDependentKeys'),
 
+  canDig() {
+    return this.get('isInstance')
+      || this.get('isObject')
+      || this.get('isEmberObject')
+      || this.get('isArray')
+  },
+
   toggleDeps: action(function () {
     this.toggleProperty('isDepsExpanded');
   }),
 
   valueClick: action(function () {
-    if (this.get('isEmberObject') || this.get('isArray')) {
+    if (this.canDig()) {
       this.get('mixin').send('digDeeper', this.get('model'));
       return;
     }
