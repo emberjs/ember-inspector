@@ -6,7 +6,6 @@ import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import EmberObject, { computed } from '@ember/object';
 import Service from '@ember/service';
-import Ember from 'ember';
 import { VERSION } from '@ember/version';
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
