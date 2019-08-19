@@ -220,7 +220,7 @@ export default EmberObject.extend(PortMixin, {
   },
 
   canSend(val) {
-    return (val instanceof EmberObject) || typeOf(val) === 'array';
+    return val && ((val instanceof EmberObject) || (val instanceof Object) || typeOf(val) === 'array');
   },
 
   saveProperty(objectId, prop, val) {
@@ -354,6 +354,38 @@ export default EmberObject.extend(PortMixin, {
     delete this.boundObservers[objectId];
   },
 
+  es6ClassMixinForObject(object) {
+
+    const proto = Object.getPrototypeOf(object);
+
+    const mixins = {
+      mixins: [],
+      expand: true,
+      toString() {
+        const name = object.constructor.name;
+        if (proto.hasOwnProperty('toString')) {
+          return proto.toString();
+        }
+        if (name === 'Class') return object.toString();
+        return name;
+      }
+    };
+
+    const mix = {
+      properties: Object.assign({}, Object.getOwnPropertyDescriptors(proto))
+    };
+
+    Object.keys(mix.properties).forEach(k => {
+      mix.properties[k].isDescriptor = true;
+      if (typeof mix.properties[k].value === 'function') {
+        delete mix.properties[k];
+      }
+    });
+
+    mixins.mixins.push(mix);
+    return mixins;
+  },
+
   mixinsForObject(object) {
     let mixins = Mixin.mixins(object);
     let mixinDetails = [];
@@ -361,6 +393,9 @@ export default EmberObject.extend(PortMixin, {
     let ownProps = propertiesForMixin({ mixins: [{ properties: object }] });
     mixinDetails.push({ name: 'Own Properties', properties: ownProps, expand: true });
 
+    if (!Object.getPrototypeOf(object).hasOwnProperty('_super')) {
+      mixins.splice(0, 0, this.es6ClassMixinForObject(object));
+    }
     mixins.forEach(mixin => {
       let name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor;
 
@@ -376,7 +411,7 @@ export default EmberObject.extend(PortMixin, {
         name = 'Unknown mixin';
       }
 
-      mixinDetails.push({ name: name.toString(), properties: propertiesForMixin(mixin) });
+      mixinDetails.push({ name: name.toString(), properties: propertiesForMixin(mixin), expand: mixin.expand });
     });
 
     fixMandatorySetters(mixinDetails);
@@ -492,7 +527,8 @@ function addProperties(properties, hash) {
     }
 
     // when mandatory setter is removed, an `undefined` value may be set
-    if (hash[prop] === undefined) {
+    const desc = Object.getOwnPropertyDescriptor(hash, prop);
+    if (hash[prop] === undefined && desc.value === undefined && !desc.get && !desc._getter) {
       continue;
     }
     let options = { isMandatorySetter: isMandatorySetter(hash, prop) };

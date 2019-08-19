@@ -51,7 +51,6 @@ module("Ember Debug", function(hooks) {
     EmberInspector.inspect(obj);
     assert.equal(name, "objectInspector:updateObject");
     cantSend(1, assert);
-    cantSend({}, assert);
     cantSend("a", assert);
     cantSend(null, assert);
   });
