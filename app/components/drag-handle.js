@@ -79,8 +79,8 @@ export default Component.extend({
 
   style: computed('side', 'position', 'left', function() {
     let string;
-    if (this.get('side')) {
-      string = `${this.get('side')}: ${(this.get('position') + this.get('left'))}px;`;
+    if (this.side) {
+      string = `${this.side}: ${(this.position + this.left)}px;`;
     } else {
       string = '';
     }
@@ -92,14 +92,14 @@ export default Component.extend({
     let containerOffsetLeft = getOffsetLeft(container);
     let containerOffsetRight = containerOffsetLeft + container.offsetWidth;
 
-    let position = this.get('isLeft') ?
+    let position = this.isLeft ?
       e.pageX - containerOffsetLeft :
       containerOffsetRight - e.pageX;
 
-    position -= this.get('left');
-    if (position >= this.get('minWidth') && position <= this.get('maxWidth')) {
+    position -= this.left;
+    if (position >= this.minWidth && position <= this.maxWidth) {
       this.set('position', position);
-      this.get('on-drag')(position);
+      this['on-drag'](position);
     }
   }
 });

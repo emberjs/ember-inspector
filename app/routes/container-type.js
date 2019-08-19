@@ -12,7 +12,7 @@ export default TabRoute.extend({
   },
   model(params) {
     const type = params.type_id;
-    const port = this.get('port');
+    const port = this.port;
     return new Promise((resolve, reject) => {
       port.one('container:instances', message => {
         if (message.status === 200) {
@@ -34,7 +34,7 @@ export default TabRoute.extend({
       }
     },
     sendInstanceToConsole(obj) {
-      this.get('port').send('container:sendInstanceToConsole', { name: get(obj, 'fullName') });
+      this.port.send('container:sendInstanceToConsole', { name: get(obj, 'fullName') });
     }
   }
 });

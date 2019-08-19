@@ -28,7 +28,7 @@ export default EmberObject.extend({
   parent: null,
 
   level: computed('parent.level', function() {
-    let parent = this.get('parent');
+    let parent = this.parent;
     if (!parent) {
       return 0;
     }
@@ -64,7 +64,7 @@ export default EmberObject.extend({
       return true;
     }
     for (let i = 0; i < this.get('children.length'); i++) {
-      if (this.get('children').objectAt(i).get(cp)) {
+      if (this.children.objectAt(i).get(cp)) {
         return true;
       }
     }
@@ -74,22 +74,22 @@ export default EmberObject.extend({
   // Need this observer because CP dependent keys do not support nested arrays
   // TODO: This can be so much better
   stateChanged: observer('pendingBranch', 'fulfilledBranch', 'rejectedBranch', function() {
-    if (!this.get('parent')) {
+    if (!this.parent) {
       return;
     }
     if (
-      (this.get('pendingBranch') && !this.get('parent.pendingBranch')) ||
-      (this.get('fulfilledBranch') && !this.get('parent.fulfilledBranch')) ||
-      (this.get('rejectedBranch') && !this.get('parent.rejectedBranch'))
+      (this.pendingBranch && !this.get('parent.pendingBranch')) ||
+      (this.fulfilledBranch && !this.get('parent.fulfilledBranch')) ||
+      (this.rejectedBranch && !this.get('parent.rejectedBranch'))
     ) {
-      this.get('parent').notifyPropertyChange('fulfilledBranch');
-      this.get('parent').notifyPropertyChange('rejectedBranch');
-      this.get('parent').notifyPropertyChange('pendingBranch');
+      this.parent.notifyPropertyChange('fulfilledBranch');
+      this.parent.notifyPropertyChange('rejectedBranch');
+      this.parent.notifyPropertyChange('pendingBranch');
     }
   }),
 
   updateParentLabel: observer('label', 'parent', function() {
-    this.addBranchLabel(this.get('label'), true);
+    this.addBranchLabel(this.label, true);
   }),
 
   addBranchLabel(label, replace) {
@@ -99,10 +99,10 @@ export default EmberObject.extend({
     if (replace) {
       this.set('branchLabel', label);
     } else {
-      this.set('branchLabel', `${this.get('branchLabel')} ${label}`);
+      this.set('branchLabel', `${this.branchLabel} ${label}`);
     }
 
-    let parent = this.get('parent');
+    let parent = this.parent;
     if (parent) {
       parent.addBranchLabel(label);
     }
@@ -111,11 +111,11 @@ export default EmberObject.extend({
   branchLabel: '',
 
   matches(val) {
-    return !!this.get('branchLabel').toLowerCase().match(new RegExp(`.*${escapeRegExp(val.toLowerCase())}.*`));
+    return !!this.branchLabel.toLowerCase().match(new RegExp(`.*${escapeRegExp(val.toLowerCase())}.*`));
   },
 
   matchesExactly(val) {
-    return !!((this.get('label') || '').toLowerCase().match(new RegExp(`.*${escapeRegExp(val.toLowerCase())}.*`)));
+    return !!((this.label || '').toLowerCase().match(new RegExp(`.*${escapeRegExp(val.toLowerCase())}.*`)));
   },
 
 
@@ -126,14 +126,14 @@ export default EmberObject.extend({
   isManuallyExpanded: undefined,
 
   stateOrParentChanged: observer('isPending', 'isFulfilled', 'isRejected', 'parent', function() {
-    let parent = this.get('parent');
+    let parent = this.parent;
     if (parent) {
       once(parent, 'recalculateExpanded');
     }
   }),
 
   _findTopParent() {
-    let parent = this.get('parent');
+    let parent = this.parent;
     if (!parent) {
       return this;
     } else {
@@ -143,8 +143,8 @@ export default EmberObject.extend({
 
   recalculateExpanded() {
     let isExpanded = false;
-    if (this.get('isManuallyExpanded') !== undefined) {
-      isExpanded = this.get('isManuallyExpanded');
+    if (this.isManuallyExpanded !== undefined) {
+      isExpanded = this.isManuallyExpanded;
     } else {
       let children = this._allChildren();
       for (let i = 0, l = children.length; i < l; i++) {
@@ -165,7 +165,7 @@ export default EmberObject.extend({
           parent.set('isExpanded', true);
         });
       } else if (this.get('parent.isExpanded')) {
-        this.get('parent').recalculateExpanded();
+        this.parent.recalculateExpanded();
       }
     }
     this.set('isExpanded', isExpanded);
@@ -173,14 +173,14 @@ export default EmberObject.extend({
   },
 
   isVisible: computed('parent.{isExpanded,isVisible}', 'parent', function() {
-    if (this.get('parent')) {
+    if (this.parent) {
       return this.get('parent.isExpanded') && this.get('parent.isVisible');
     }
     return true;
   }),
 
   _allChildren() {
-    let children = assign([], this.get('children'));
+    let children = assign([], this.children);
     children.forEach(item => {
       children = assign(children, item._allChildren());
     });
@@ -188,7 +188,7 @@ export default EmberObject.extend({
   },
 
   _allParents() {
-    let parent = this.get('parent');
+    let parent = this.parent;
     if (parent) {
       return assign([parent], parent._allParents());
     } else {

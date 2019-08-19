@@ -127,12 +127,12 @@ export default Controller.extend({
    * work when users expand/contract tree nodes)
    */
   displayedList: computed('filteredArray.@each.visible', function() {
-    return this.get('filteredArray').filterBy('visible');
+    return this.filteredArray.filterBy('visible');
   }),
 
   filteredArray: computed('viewArray.[]', function() {
-    let viewArray = this.get('viewArray');
-    let expandedStateCache = this.get('expandedStateCache');
+    let viewArray = this.viewArray;
+    let expandedStateCache = this.expandedStateCache;
     viewArray.forEach(viewItem => {
       let cachedExpansion = expandedStateCache[getIdFromObj(viewItem)];
       if (cachedExpansion !== undefined) {
@@ -146,11 +146,11 @@ export default Controller.extend({
   }),
 
   viewArray: computed('viewTree', 'searchValue', function() {
-    let tree = this.get('viewTree');
+    let tree = this.viewTree;
     if (!tree) {
       return [];
     }
-    return flattenSearchTree(this.get('searchValue'), tree, null, 0, false, []);
+    return flattenSearchTree(this.searchValue, tree, null, 0, false, []);
   }),
 
   expandedStateCache: null, //set on init
@@ -169,7 +169,7 @@ export default Controller.extend({
    * @param {*} objectId The id of the ember view to show
    */
   expandToNode(objectId) {
-    let node = this.get('filteredArray').find(item => item.get('id') === objectId);
+    let node = this.filteredArray.find(item => item.get('id') === objectId);
     if (node) {
       node.expandParents();
     }
@@ -182,7 +182,7 @@ export default Controller.extend({
    * of the virtual scroll.
    */
   scrollTreeToItem(objectId) {
-    let selectedItemIndex = this.get('displayedList').findIndex(item => item.view.objectId === objectId);
+    let selectedItemIndex = this.displayedList.findIndex(item => item.view.objectId === objectId);
 
     if (!selectedItemIndex) {
       return;
@@ -206,7 +206,7 @@ export default Controller.extend({
    * @param {boolean} state expanded state for objects
    */
   setExpandedStateForObjects(objects, state) {
-    this.get('filteredArray').forEach((item) => {
+    this.filteredArray.forEach((item) => {
       const id = getIdFromObj(item);
       if (objects.includes(id)) {
         item.set('expanded', state);
@@ -240,7 +240,7 @@ export default Controller.extend({
       }) {
       // We are passing all of objectId, elementId, and renderNodeId to support post-glimmer 1, post-glimmer 2, and root for
       // post-glimmer 2
-      this.get('port').send('view:previewLayer', {
+      this.port.send('view:previewLayer', {
         objectId,
         renderNodeId,
         elementId
@@ -248,17 +248,17 @@ export default Controller.extend({
     },
 
     hidePreview() {
-      this.get('port').send('view:hidePreview');
+      this.port.send('view:hidePreview');
     },
 
     toggleViewInspection() {
-      this.get('port').send('view:inspectViews', {
-        inspect: !this.get('inspectingViews')
+      this.port.send('view:inspectViews', {
+        inspect: !this.inspectingViews
       });
     },
 
     sendObjectToConsole(objectId) {
-      this.get('port').send('objectInspector:sendToConsole', {
+      this.port.send('objectInspector:sendToConsole', {
         objectId
       });
     },
@@ -269,7 +269,7 @@ export default Controller.extend({
      */
     expandOrCollapseAll(expanded) {
       this.expandedStateCache = {};
-      this.get('filteredArray').forEach((item) => {
+      this.filteredArray.forEach((item) => {
         item.set('expanded', expanded);
         this.expandedStateCache[getIdFromObj(item)] = expanded;
       });
@@ -292,7 +292,7 @@ export default Controller.extend({
         this.set('pinnedObjectId', objectId);
         this.expandToNode(objectId);
         this.scrollTreeToItem(objectId);
-        this.get('port').send('objectInspector:inspectById', {
+        this.port.send('objectInspector:inspectById', {
           objectId
         });
       }
@@ -302,7 +302,7 @@ export default Controller.extend({
      * Scrolls the main page to put the selected element into view
      */
     scrollToElement(objectId) {
-      this.get('port').send('view:scrollToElement', {
+      this.port.send('view:scrollToElement', {
         elementId: objectId // TODO: what?
       });
     },
@@ -315,7 +315,7 @@ export default Controller.extend({
       const elementId = item.get('view.elementId');
 
       if (objectId || elementId) {
-        this.get('port').send('view:inspectElement', {
+        this.port.send('view:inspectElement', {
           objectId,
           elementId
         });

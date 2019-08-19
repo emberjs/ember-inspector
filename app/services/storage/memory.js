@@ -30,7 +30,7 @@ export default Service.extend({
    * @return {Object}     The stored value
    */
   getItem(key) {
-    return this.get('hash')[key];
+    return this.hash[key];
   },
 
   /**
@@ -41,7 +41,7 @@ export default Service.extend({
    * @param {Object} value The item
    */
   setItem(key, value) {
-    this.get('hash')[key] = value;
+    this.hash[key] = value;
   },
 
   /**
@@ -51,7 +51,7 @@ export default Service.extend({
    * @param  {String} key The cache key
    */
   removeItem(key) {
-    delete this.get('hash')[key];
+    delete this.hash[key];
   },
 
   /**
@@ -61,6 +61,6 @@ export default Service.extend({
    * @return {Array}  The array of keys
    */
   keys() {
-    return keys(this.get('hash'));
+    return keys(this.hash);
   }
 });

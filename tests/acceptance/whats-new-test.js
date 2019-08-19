@@ -1,4 +1,4 @@
-import { visit, find, findAll } from '@ember/test-helpers';
+import { visit, find } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import Pretender from 'pretender';
@@ -28,21 +28,17 @@ const response = `
 - Data
 `;
 
-module('Whats New', function(hooks) {
+module('Whats New', function (hooks) {
   setupApplicationTest(hooks);
 
   test('Changelog is parsed and displayed', async function t(assert) {
-    const server = new Pretender(function() {
+    const server = new Pretender(function () {
       this.get(url, () => [200, { 'Content-Type': 'text/plain' }, response]);
     });
 
     await visit('/info/whats-new');
 
-    assert.equal(
-      findAll('.whats-new h2').length,
-      1,
-      'correct section of markdown is rendered'
-    );
+    assert.dom('.whats-new h2').exists({ count: 1 }, 'correct section of markdown is rendered');
 
     assert.equal(
       find('.whats-new h2 a').text,
@@ -54,17 +50,13 @@ module('Whats New', function(hooks) {
   });
 
   test('Error message is displayed on request failure', async function t(assert) {
-    const server = new Pretender(function() {
+    const server = new Pretender(function () {
       this.get(url, () => [404, {}, '']);
     });
 
     await visit('/info/whats-new');
 
-    assert.equal(
-      findAll('.whats-new p').length,
-      1,
-      'Changelog could not be loaded'
-    );
+    assert.dom('.whats-new p').exists({ count: 1 }, 'Changelog could not be loaded');
 
     server.shutdown();
   });

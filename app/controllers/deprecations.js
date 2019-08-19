@@ -15,12 +15,12 @@ export default Controller.extend({
   searchValue: debounceComputed('search', 300),
 
   filtered: computed('model.@each.message', 'search', function() {
-    return get(this, 'model')
-      .filter((item) => searchMatch(get(item, 'message'), this.get('search')));
+    return this.model
+      .filter((item) => searchMatch(get(item, 'message'), this.search));
   }),
 
   optionsChanged: observer('options.toggleDeprecationWorkflow', function() {
-    this.port.send('deprecation:setOptions', { options: this.get('options') });
+    this.port.send('deprecation:setOptions', { options: this.options });
   }),
 
   init() {
@@ -33,11 +33,11 @@ export default Controller.extend({
 
   actions: {
     openResource(item) {
-      this.get('adapter').openResource(item.fullSource, item.line);
+      this.adapter.openResource(item.fullSource, item.line);
     },
 
     traceSource(deprecation, source) {
-      this.get('port').send('deprecation:sendStackTraces', {
+      this.port.send('deprecation:sendStackTraces', {
         deprecation: {
           message: deprecation.message,
           sources: [source]
@@ -46,7 +46,7 @@ export default Controller.extend({
     },
 
     traceDeprecations(deprecation) {
-      this.get('port').send('deprecation:sendStackTraces', {
+      this.port.send('deprecation:sendStackTraces', {
         deprecation
       });
     }

@@ -4,7 +4,7 @@ export default Route.extend({
   renderTemplate() {
     this.render();
     try {
-      this.render(`${this.get('routeName').replace(/\./g, '/')}-toolbar`, {
+      this.render(`${this.routeName.replace(/\./g, '/')}-toolbar`, {
         into: 'application',
         outlet: 'toolbar'
       });

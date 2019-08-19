@@ -11,12 +11,12 @@ export default Controller.extend({
   search: null,
 
   filtered: computed('model.@each.name', 'search', function() {
-    return get(this, 'model')
-      .filter((item) => searchMatch(get(item, 'name'), get(this, 'search')));
+    return this.model
+      .filter((item) => searchMatch(get(item, 'name'), this.search));
   }),
 
   rows: computed('filtered.[]', function() {
-    return this.get('filtered').map(function(item) {
+    return this.filtered.map(function(item) {
       return {
         name: item
       };
@@ -46,10 +46,10 @@ export default Controller.extend({
       if (!get(obj, 'inspectable')) {
         return;
       }
-      this.get('port').send('objectInspector:inspectByContainerLookup', { name: get(obj, 'fullName') });
+      this.port.send('objectInspector:inspectByContainerLookup', { name: get(obj, 'fullName') });
     },
     sendContainerToConsole() {
-      this.get('port').send('objectInspector:sendContainerToConsole');
+      this.port.send('objectInspector:sendContainerToConsole');
     }
   }
 });

@@ -25,7 +25,7 @@ export default BasicAdapter.extend({
 
   sendMessage(options) {
     options = options || {};
-    this.get('_chromePort').postMessage(options);
+    this._chromePort.postMessage(options);
   },
 
   _chromePort: computed(function() {
@@ -33,7 +33,7 @@ export default BasicAdapter.extend({
   }),
 
   _connect() {
-    let chromePort = this.get('_chromePort');
+    let chromePort = this._chromePort;
     chromePort.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
 
     chromePort.onMessage.addListener(message => {

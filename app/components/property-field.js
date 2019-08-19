@@ -17,15 +17,15 @@ export default TextField.extend({
   },
 
   insertNewline() {
-    this.get('propertyComponent').send(this.get('save-property'));
-    this.get('propertyComponent').send(this.get('finished-editing'));
+    this.propertyComponent.send(this['save-property']);
+    this.propertyComponent.send(this['finished-editing']);
   },
 
   cancel() {
-    this.get('propertyComponent').send(this.get('finished-editing'));
+    this.propertyComponent.send(this['finished-editing']);
   },
 
   focusOut() {
-    this.get('propertyComponent').send(this.get('finished-editing'));
+    this.propertyComponent.send(this['finished-editing']);
   }
 });

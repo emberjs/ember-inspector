@@ -85,13 +85,13 @@ export default EmberObject.extend({
     when a message from EmberDebug is received
   **/
   onMessageReceived(callback) {
-    this.get('_messageCallbacks').pushObject(callback);
+    this._messageCallbacks.pushObject(callback);
   },
 
   _messageCallbacks: computed(function() { return []; }),
 
   _messageReceived(message) {
-    this.get('_messageCallbacks').forEach(callback => {
+    this._messageCallbacks.forEach(callback => {
       callback(message);
     });
   },

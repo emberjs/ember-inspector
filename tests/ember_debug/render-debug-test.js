@@ -1,9 +1,8 @@
-import { visit } from '@ember/test-helpers';
+import { settled, visit } from '@ember/test-helpers';
 import Ember from 'ember';
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
-import wait from 'ember-test-helpers/wait';
 import { setupEIApp, destroyEIApp } from '../helpers/setup-destroy-ei-app';
 
 const EmberDebug = require('ember-debug/main').default;
@@ -65,7 +64,7 @@ module('Ember Debug - Render Debug', function(hooks) {
 
     assert.ok(profiles.length > 0, 'it has created profiles');
     port.trigger('render:clear');
-    await wait();
+    await settled();
 
     assert.ok(profiles.length === 0, 'it has cleared the profiles');
 

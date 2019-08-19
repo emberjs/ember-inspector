@@ -105,8 +105,8 @@ export default Component.extend({
    * @param  {Object} newAttrs and oldAttrs
    */
   didUpdateAttrs() {
-    let oldSchema = this.get('oldSchema');
-    let newSchema = this.get('schema');
+    let oldSchema = this.oldSchema;
+    let newSchema = this.schema;
     if (newSchema && newSchema !== oldSchema) {
       scheduleOnce('actions', this, this.setupColumns);
     }
@@ -138,9 +138,9 @@ export default Component.extend({
   didInsertElement() {
     scheduleOnce('afterRender', this, this.setupColumns);
     this.onResize = () => {
-      this.get('debounceColumnWidths').perform();
+      this.debounceColumnWidths.perform();
     };
-    this.get('layoutService').on('content-height-update', this.onResize);
+    this.layoutService.on('content-height-update', this.onResize);
     return this._super(...arguments);
   },
 
@@ -220,7 +220,7 @@ export default Component.extend({
     if (listHeader) {
       listHeader.removeEventListener('contextmenu', this.showBasicContext);
     }
-    this.get('layoutService').off('content-height-update', this.onResize);
+    this.layoutService.off('content-height-update', this.onResize);
     return this._super(...arguments);
   },
 
@@ -242,10 +242,10 @@ export default Component.extend({
    */
   setupColumns() {
     let resizableColumns = new ResizableColumns({
-      key: this.get('storageKey'),
+      key: this.storageKey,
       tableWidth: this.getTableWidth(),
-      minWidth: this.get('minWidth'),
-      storage: this.get('storage'),
+      minWidth: this.minWidth,
+      storage: this.storage,
       columnSchema: this.get('schema.columns') || []
     });
     resizableColumns.build();

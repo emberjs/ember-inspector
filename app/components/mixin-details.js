@@ -34,7 +34,7 @@ export default Component.extend({
   },
 
   traceErrors: action(function () {
-    this.get('port').send('objectInspector:traceErrors', {
+    this.port.send('objectInspector:traceErrors', {
       objectId: this.get('model.objectId')
     });
   }),

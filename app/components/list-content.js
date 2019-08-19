@@ -60,7 +60,7 @@ export default Component.extend(Evented, {
    */
   setupHeight() {
     this.set('contentHeight', this.get('layoutService.contentHeight'));
-    this.get('layoutService').on('content-height-update', this, this.updateContentHeight);
+    this.layoutService.on('content-height-update', this, this.updateContentHeight);
   },
 
   /**
@@ -76,7 +76,7 @@ export default Component.extend(Evented, {
    * @param  {Number} height The app's new content height
    */
   updateContentHeight(height) {
-    let previousHeight = this.get('contentHeight');
+    let previousHeight = this.contentHeight;
     this.set('contentHeight', height);
     if (previousHeight === 0 && height > 0) {
       this.rerender();
@@ -90,14 +90,14 @@ export default Component.extend(Evented, {
    * @method willDestroyElement
    */
   willDestroyElement() {
-    this.get('layoutService').off('content-height-update', this, this.updateContentHeight);
+    this.layoutService.off('content-height-update', this, this.updateContentHeight);
     return this._super(...arguments);
   },
 
   attributeBindings: ['style'],
 
   style: computed('height', function() {
-    return htmlSafe(`height:${this.get('height')}px`);
+    return htmlSafe(`height:${this.height}px`);
   }),
 
   /**
@@ -114,8 +114,8 @@ export default Component.extend(Evented, {
    * @type {Integer}
    */
   height: computed('contentHeight', 'headerHeight', function() {
-    let headerHeight = this.get('headerHeight');
-    let contentHeight = this.get('contentHeight');
+    let headerHeight = this.headerHeight;
+    let contentHeight = this.contentHeight;
 
     // In testing list-view is created before `contentHeight` is set
     // which will trigger an exception

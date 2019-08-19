@@ -26,7 +26,7 @@ export default Controller.extend({
     'model.@each.{createdAt,fulfilledBranch,rejectedBranch,pendingBranch,isVisible}', function(item) {
 
       // exclude cleared promises
-      if (this.get('createdAfter') && item.get('createdAt') < this.get('createdAfter')) {
+      if (this.createdAfter && item.get('createdAt') < this.createdAfter) {
         return false;
       }
 
@@ -38,11 +38,11 @@ export default Controller.extend({
       // If at least one of their children passes the filter,
       // then they pass
       let include = true;
-      if (this.get('filter') === 'pending') {
+      if (this.filter === 'pending') {
         include = item.get('pendingBranch');
-      } else if (this.get('filter') === 'rejected') {
+      } else if (this.filter === 'rejected') {
         include = item.get('rejectedBranch');
-      } else if (this.get('filter') === 'fulfilled') {
+      } else if (this.filter === 'fulfilled') {
         include = item.get('fulfilledBranch');
       }
       if (!include) {
@@ -52,7 +52,7 @@ export default Controller.extend({
       // Search filter
       // If they or at least one of their children
       // match the search, then include them
-      let search = this.get('effectiveSearch');
+      let search = this.effectiveSearch;
       if (!isEmpty(search)) {
         return item.matches(search);
       }
@@ -78,7 +78,7 @@ export default Controller.extend({
   }),
 
   notifyChange() {
-    this.set('effectiveSearch', this.get('searchValue'));
+    this.set('effectiveSearch', this.searchValue);
     next(() => {
       this.notifyPropertyChange('model');
     });
@@ -96,7 +96,7 @@ export default Controller.extend({
       once(this, this.notifyChange);
     },
     tracePromise(promise) {
-      this.get('port').send('promise:tracePromise', { promiseId: promise.get('guid') });
+      this.port.send('promise:tracePromise', { promiseId: promise.get('guid') });
     },
     updateInstrumentWithStack(bool) {
       this.port.send('promise:setInstrumentWithStack', { instrumentWithStack: bool });
@@ -117,10 +117,10 @@ export default Controller.extend({
       }
     },
     inspectObject() {
-      this.get('target').send('inspectObject', ...arguments);
+      this.target.send('inspectObject', ...arguments);
     },
     sendValueToConsole(promise) {
-      this.get('port').send('promise:sendValueToConsole', { promiseId: promise.get('guid') });
+      this.port.send('promise:sendValueToConsole', { promiseId: promise.get('guid') });
     }
   }
 });

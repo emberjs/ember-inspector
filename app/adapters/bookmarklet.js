@@ -26,7 +26,7 @@ export default BasicAdapter.extend({
 
   sendMessage(options) {
     options = options || {};
-    this.get('inspectedWindow').postMessage(options, this.get('inspectedWindowURL'));
+    this.inspectedWindow.postMessage(options, this.inspectedWindowURL);
   },
 
   /**
@@ -43,7 +43,7 @@ export default BasicAdapter.extend({
   _connect() {
     window.addEventListener('message', e => {
       let message = e.data;
-      if (e.origin !== this.get('inspectedWindowURL')) {
+      if (e.origin !== this.inspectedWindowURL) {
         return;
       }
       // close inspector if inspected window is unloading

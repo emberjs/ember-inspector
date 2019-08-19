@@ -26,10 +26,7 @@ export default Component.extend({
     const {
       currentRoute,
       route,
-    } = this.getProperties(
-      'currentRoute',
-      'route',
-    );
+    } = this;
 
     if (!currentRoute) {
       return false;

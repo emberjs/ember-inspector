@@ -1,4 +1,10 @@
-import { visit, find, click, triggerEvent } from '@ember/test-helpers';
+import {
+  click,
+  find,
+  settled,
+  triggerEvent,
+  visit
+} from '@ember/test-helpers';
 import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 import Component from '@ember/component';
@@ -9,7 +15,6 @@ import { inspect } from '@ember/debug';
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
-import wait from 'ember-test-helpers/wait';
 import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
 import hasEmberVersion from '@ember/test-helpers/has-ember-version';
 
@@ -148,7 +153,7 @@ module('Ember Debug - View', function(hooks) {
       port.trigger('view:setOptions', { options: { components: true } });
     });
 
-    await wait();
+    await settled();
 
     tree = message.tree;
     simple = tree.children[0];
@@ -169,7 +174,7 @@ module('Ember Debug - View', function(hooks) {
     await visit('/simple');
 
     run(() => port.trigger('view:inspectViews', { inspect: true }));
-    await wait();
+    await settled();
 
     await triggerEvent('.application', 'mousemove');
 
@@ -202,7 +207,7 @@ module('Ember Debug - View', function(hooks) {
     assert.notOk(isVisible(layerDiv));
 
     run(() => port.trigger('view:inspectViews', { inspect: true }));
-    await wait();
+    await settled();
 
     await triggerEvent('.simple-component', 'mousemove');
 
@@ -226,7 +231,7 @@ module('Ember Debug - View', function(hooks) {
     let tree = message.tree;
     let postsView = tree.children[0];
     port.trigger('view:previewLayer', { objectId: postsView.value.objectId });
-    await wait();
+    await settled();
 
     assert.ok(true, 'Does not throw an error.');
   });

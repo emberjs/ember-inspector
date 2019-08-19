@@ -1,15 +1,15 @@
 import {
-  visit,
+  click,
+  currentURL,
   fillIn,
   findAll,
-  click,
+  settled,
   triggerEvent,
-  currentURL,
+  visit
 } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import wait from 'ember-test-helpers/wait';
 
 let port;
 
@@ -117,7 +117,7 @@ module('Component Tab', function (hooks) {
     run(() => {
       port.trigger('view:viewTree', { tree: viewTree });
     });
-    await wait();
+    await settled();
 
     let treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 4, 'expected some tree nodes');
@@ -145,7 +145,7 @@ module('Component Tab', function (hooks) {
     run(() => {
       port.trigger('view:viewTree', { tree: viewTree });
     });
-    await wait();
+    await settled();
 
     let treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 4, 'expected some tree nodes');
@@ -165,7 +165,7 @@ module('Component Tab', function (hooks) {
     run(() => {
       port.trigger('view:viewTree', { tree: viewTree });
     });
-    await wait();
+    await settled();
 
     let expanders = findAll('.component-tree-item__expand.expanded');
     assert.equal(expanders.length, 3, 'disclosure triangles all in expanded state');
@@ -185,7 +185,7 @@ module('Component Tab', function (hooks) {
     // the children should be collapsed
     expanders = findAll('.component-tree-item__expand');
     expanderEl = expanders[2];
-    assert.ok(expanderEl.classList.contains('collapsed'), 'child component was collapsed');
+    assert.dom(expanderEl).hasClass('collapsed', 'child component was collapsed');
   });
 
   test('It should filter the view tree using the search text', async function (assert) {
@@ -195,7 +195,7 @@ module('Component Tab', function (hooks) {
     run(() => {
       port.trigger('view:viewTree', { tree: viewTree });
     });
-    await wait();
+    await settled();
 
     let treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 4, 'expected some tree nodes');
@@ -223,7 +223,7 @@ module('Component Tab', function (hooks) {
     run(() => {
       port.trigger('view:viewTree', { tree: viewTree });
     });
-    await wait();
+    await settled();
 
     let treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 4, 'expected all tree nodes');
@@ -242,7 +242,7 @@ module('Component Tab', function (hooks) {
 
     await visit('/component-tree');
     run(() => port.trigger('view:viewTree', { tree: viewTree }));
-    await wait();
+    await settled();
 
     let expanders = findAll('.component-tree-item__expand');
     let expanderEl = expanders[expanders.length - 1];
@@ -253,7 +253,7 @@ module('Component Tab', function (hooks) {
 
     viewTree = defaultViewTree(); // resend the same view tree
     run(() => port.trigger('view:viewTree', { tree: viewTree }));
-    await wait();
+    await settled();
 
     assert.dom('.component-tree-item').exists({ count: 3 }, 'the last node should still be hidden');
   });
@@ -270,7 +270,7 @@ module('Component Tab', function (hooks) {
     let viewTree = defaultViewTree();
     viewTree.children = [];
     run(() => port.trigger('view:viewTree', { tree: viewTree }));
-    await wait();
+    await settled();
     await triggerEvent('.component-tree-item', 'mouseenter');
     assert.equal(
       messageSent.name,
@@ -301,7 +301,7 @@ module('Component Tab', function (hooks) {
     await visit('/component-tree');
     let viewTree = defaultViewTree();
     run(() => port.trigger('view:viewTree', { tree: viewTree }));
-    await wait();
+    await settled();
 
     await click('.js-scroll-into-view');
     assert.equal(
@@ -323,7 +323,7 @@ module('Component Tab', function (hooks) {
 
     let viewTree = defaultViewTree();
     run(() => port.trigger('view:viewTree', { tree: viewTree }));
-    await wait();
+    await settled();
 
     await click('.js-view-dom-element');
     assert.equal(
@@ -346,7 +346,7 @@ module('Component Tab', function (hooks) {
     run(() => {
       port.trigger('view:viewTree', { tree });
     });
-    await wait();
+    await settled();
 
     await click('.component-tree-item--component code');
     assert.equal(messageSent.name, 'objectInspector:inspectById');
@@ -360,12 +360,12 @@ module('Component Tab', function (hooks) {
     run(() => {
       port.trigger('view:viewTree', { tree: viewTree });
     });
-    await wait();
+    await settled();
 
     run(() => {
       port.trigger('view:inspectComponent', { viewId: 'ember267' });
     });
-    await wait();
+    await settled();
     assert.equal(currentURL(), '/component-tree?pinnedObjectId=ember267', 'It pins the element id as a query param');
     assert.dom('.component-tree-item--selected').hasText('TodoItem', 'It selects the item in the tree corresponding to the element');
   });

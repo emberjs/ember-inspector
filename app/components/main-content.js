@@ -16,7 +16,7 @@ export default Component.extend({
 
   didInsertElement() {
     this._performUpdateHeight = () => {
-      this.get('updateHeightDebounce').perform();
+      this.updateHeightDebounce.perform();
     };
 
     window.addEventListener('resize', this._performUpdateHeight);
@@ -48,7 +48,7 @@ export default Component.extend({
    * @method updateHeight
    */
   updateHeight() {
-    this.get('layoutService').updateContentHeight(this.element.clientHeight);
+    this.layoutService.updateContentHeight(this.element.clientHeight);
   },
 
   willDestroyElement() {

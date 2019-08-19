@@ -42,19 +42,19 @@ export default Component.extend({
   }),
 
   sendToConsole: action(function ({ name }) {
-    let objectId = this.get('objectId');
+    let objectId = this.objectId;
 
-    this.get('port').send('objectInspector:sendToConsole', {
+    this.port.send('objectInspector:sendToConsole', {
       objectId,
       property: name
     });
   }),
 
   calculate: action(function ({ name }) {
-    let objectId = this.get('objectId');
-    let mixinIndex = this.get('mixinDetails.model.mixins').indexOf(this.get('model'));
+    let objectId = this.objectId;
+    let mixinIndex = this.get('mixinDetails.model.mixins').indexOf(this.model);
 
-    this.get('port').send('objectInspector:calculate', {
+    this.port.send('objectInspector:calculate', {
       objectId,
       mixinIndex,
       property: name
@@ -63,17 +63,17 @@ export default Component.extend({
 
   actions: {
     digDeeper({ name }) {
-      let objectId = this.get('objectId');
+      let objectId = this.objectId;
 
-      this.get('port').send('objectInspector:digDeeper', {
+      this.port.send('objectInspector:digDeeper', {
         objectId,
         property: name
       });
     },
 
     saveProperty(property, value, dataType) {
-      this.get('port').send('objectInspector:saveProperty', {
-        objectId: this.get('objectId'),
+      this.port.send('objectInspector:saveProperty', {
+        objectId: this.objectId,
         property,
         value,
         dataType

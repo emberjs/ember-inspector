@@ -27,7 +27,7 @@ export default Route.extend({
     }
     else if (localStoreSupported) {
       return RSVP.resolve(
-        (this.get('storage').getItem(STORE_KEY) || 0).toString()
+        (this.storage.getItem(STORE_KEY) || 0).toString()
       );
     }
 
@@ -48,14 +48,14 @@ export default Route.extend({
     }
 
     else if (localStoreSupported) {
-      this.get('storage').setItem(STORE_KEY, version);
+      this.storage.setItem(STORE_KEY, version);
       return RSVP.resolve();
     }
   },
 
   beforeModel() {
     let targetRoute = 'component-tree';
-    const currentVersion = this.get('version');
+    const currentVersion = this.version;
 
     return this.lastVersionOpened().then((lastVersion) => {
       this.setLastVersionOpened(currentVersion);

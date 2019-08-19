@@ -3,19 +3,19 @@ import TabRoute from 'ember-inspector/routes/tab';
 
 export default TabRoute.extend({
   setupController() {
-    this.get('port').on('route:currentRoute', this, this.setCurrentRoute);
-    this.get('port').send('route:getCurrentRoute');
-    this.get('port').on('route:routeTree', this, this.setTree);
-    this.get('port').send('route:getTree');
+    this.port.on('route:currentRoute', this, this.setCurrentRoute);
+    this.port.send('route:getCurrentRoute');
+    this.port.on('route:routeTree', this, this.setTree);
+    this.port.send('route:getTree');
   },
 
   deactivate() {
-    this.get('port').off('route:currentRoute', this, this.setCurrentRoute);
-    this.get('port').off('route:routeTree', this, this.setTree);
+    this.port.off('route:currentRoute', this, this.setCurrentRoute);
+    this.port.off('route:routeTree', this, this.setTree);
   },
 
   setCurrentRoute(message) {
-    this.get('controller').set('currentRoute', message);
+    this.controller.set('currentRoute', message);
   },
 
   setTree(options) {

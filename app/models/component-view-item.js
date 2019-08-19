@@ -32,7 +32,7 @@ export default EmberObject.extend({
   id: reads('view.objectId'),
 
   expandParents() {
-    let parent = this.get('parent');
+    let parent = this.parent;
     if (parent) {
       parent.set('expanded', true);
       parent.expandParents();
@@ -44,11 +44,11 @@ export default EmberObject.extend({
     'searchMatched',
     'activeSearch',
     function() {
-      let parent = this.get('parent');
+      let parent = this.parent;
       let showNodeInHierarchy =
         parent && parent.get('expanded') && parent.get('visible');
-      if (this.get('activeSearch')) {
-        return this.get('searchMatched') || showNodeInHierarchy;
+      if (this.activeSearch) {
+        return this.searchMatched || showNodeInHierarchy;
       } else {
         return !parent || showNodeInHierarchy;
       }
