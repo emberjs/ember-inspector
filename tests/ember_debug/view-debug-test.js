@@ -23,7 +23,6 @@ let port;
 let App;
 
 function setTemplate(name, template) {
-  template.meta.moduleName = name;
   this.owner.register(`template:${name}`, template);
 }
 
