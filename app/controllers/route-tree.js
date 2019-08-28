@@ -1,5 +1,5 @@
 import { alias } from '@ember/object/computed';
-import { computed } from '@ember/object';
+import { action, computed } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import checkCurrentRoute from 'ember-inspector/utils/check-current-route';
 import searchMatch from 'ember-inspector/utils/search-match';
@@ -56,21 +56,22 @@ export default Controller.extend({
     };
   },
 
-  actions: {
-    inspectRoute(name) {
-      this.port.send('objectInspector:inspectRoute', { name });
-    },
-    sendRouteHandlerToConsole(name) {
-      this.port.send('objectInspector:sendRouteHandlerToConsole', { name });
-    },
-    inspectController(controller) {
-      if (!controller.exists) {
-        return;
-      }
-      this.port.send('objectInspector:inspectController', { name: controller.name });
-    },
-    sendControllerToConsole(name) {
-      this.port.send('objectInspector:sendControllerToConsole', { name });
+  inspectRoute: action(function(name) {
+    this.port.send('objectInspector:inspectRoute', { name });
+  }),
+
+  sendRouteHandlerToConsole: action(function(name) {
+    this.port.send('objectInspector:sendRouteHandlerToConsole', { name });
+  }),
+
+  inspectController: action(function(controller) {
+    if (!controller.exists) {
+      return;
     }
-  }
+    this.port.send('objectInspector:inspectController', { name: controller.name });
+  }),
+
+  sendControllerToConsole: action(function(name) {
+    this.port.send('objectInspector:sendControllerToConsole', { name });
+  }),
 });
