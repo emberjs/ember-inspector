@@ -387,6 +387,7 @@ export default EmberObject.extend(PortMixin, {
   },
 
   mixinsForObject(object) {
+    // eslint-disable-next-line ember/no-new-mixins
     let mixins = Mixin.mixins(object);
     let mixinDetails = [];
 

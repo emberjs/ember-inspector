@@ -1,5 +1,6 @@
 import { run } from '@ember/runloop';
 import { computed } from '@ember/object';
+
 const { debounce } = run;
 
 // Use this if you want a property to debounce
@@ -17,6 +18,7 @@ export default function(prop, delay, callback) {
   };
 
   return computed({
+    // eslint-disable-next-line ember/require-return-from-computed
     get() {},
     set(key, val) {
       value = val;
