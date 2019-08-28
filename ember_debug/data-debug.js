@@ -25,6 +25,8 @@ export default EmberObject.extend(PortMixin, {
       set(adapter, 'attributeLimit', 100);
       return adapter;
     }
+
+    return null;
   }),
   /* eslint-enable ember/no-side-effects */
 
