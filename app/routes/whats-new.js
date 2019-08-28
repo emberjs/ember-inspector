@@ -1,4 +1,4 @@
-import TabRoute from "ember-inspector/routes/tab";
+import TabRoute from 'ember-inspector/routes/tab';
 import fetch from 'fetch';
 
 const checkStatus = function(response) {
