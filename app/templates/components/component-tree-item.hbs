@@ -1,9 +1,9 @@
 <div
   class="component-tree-item {{if @item.view.isComponent "component-tree-item--component"}} {{if @selected "component-tree-item--selected"}} {{if @highlighted "component-tree-item--highlighted"}}"
-  onmouseenter={{@eventMouseEnter}}
-  onmouseleave={{@eventMouseLeave}}
   style={{component-indentation @item.hasChildren @item.parentCount}}
   {{on "click" @inspect}}
+  {{on "mouseenter" @eventMouseEnter}}
+  {{on "mouseleave" @eventMouseLeave}}
 >
   {{#if @item.hasChildren}}
     <Ui::DisclosureTriangle
