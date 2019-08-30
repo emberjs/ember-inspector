@@ -1,11 +1,11 @@
-<div style={{labelStyle}}>
+<div style={{this.labelStyle}}>
   <span
-    title={{route.value.name}}
+    title={{@route.value.name}}
     class={{concat
       "js-route-name"
-      (if isCurrent " pill pill--bold pill--blue pill--text")
+      (if this.isCurrent " pill pill--bold pill--blue pill--text")
     }}
   >
-    {{route.value.name}}
+    {{@route.value.name}}
   </span>
 </div>

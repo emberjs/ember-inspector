@@ -1,21 +1,9 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { htmlSafe } from '@ember/string';
-import checkCurrentRoute from "ember-inspector/utils/check-current-route";
+import checkCurrentRoute from 'ember-inspector/utils/check-current-route';
 
 export default Component.extend({
-  // passed as an attribute to the component
-  currentRoute: null,
-  route: null,
-
-  /**
-   * No tag. This component should not affect
-   * the DOM.
-   *
-   * @property tagName
-   * @type {String}
-   * @default ''
-   */
   tagName: '',
 
   labelStyle: computed('route.parentCount', function() {
