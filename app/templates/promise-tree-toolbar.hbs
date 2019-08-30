@@ -6,33 +6,20 @@
 
   {{! if should refresh the refresh button will be in the middle of the of the tab }}
   {{#unless shouldRefresh}}
-    <div
-      class="divider"
-      aria-hidden="true"
-    >
-
-    </div>
+    <Ui::ToolbarDivider />
     {{ui/toolbar-reload-button
       action=(action send "refreshPage")
       classNames="toolbar__icon-button js-toolbar-page-refresh-btn"
     }}
   {{/unless}}
 
-  <div
-    class="divider"
-    aria-hidden="true"
-  >
-  </div>
+  <Ui::ToolbarDivider />
 
   <div class="toolbar__search js-promise-search">
     {{ui/toolbar-search-field value=searchValue}}
   </div>
 
-  <div
-    class="divider"
-    aria-hidden="true"
-  >
-  </div>
+  <Ui::ToolbarDivider />
 
   <button
     class="{{if noFilter "active"}} toolbar__radio toolbar__radio--first js-filter"
@@ -60,7 +47,7 @@
     Fulfilled
   </button>
 
-  <div class="divider" aria-hidden="true"></div>
+  <Ui::ToolbarDivider />
 
   <div class="toolbar__checkbox js-with-stack">
     <label for="instrument-with-stack">
