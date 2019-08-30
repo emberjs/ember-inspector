@@ -11,16 +11,17 @@
   "repository": "https://github.com/emberjs/ember-inspector",
   "scripts": {
     "build": "ember build",
+    "build:production": "EMBER_ENV=production node scripts/download-panes.js && ember build --environment production && gulp compress:chrome && gulp compress:firefox && gulp clean-tmp",
+    "changelog": "github_changelog_generator -u emberjs -p ember-inspector --since-tag v3.8.0",
+    "compress:panes": "gulp compress:chrome-pane && gulp compress:firefox-pane && gulp compress:bookmarklet-pane",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
+    "lock-version": "yarn build:production && yarn compress:panes && EMBER_ENV=production node scripts/upload-panes.js",
+    "serve:bookmarklet": "ember serve --port 9191",
     "start": "ember serve",
     "test": "COVERAGE=true ember test",
-    "watch": "ember build --watch",
-    "serve:bookmarklet": "ember serve --port 9191",
-    "build:production": "EMBER_ENV=production node scripts/download-panes.js && ember build --environment production && gulp compress:chrome && gulp compress:firefox && gulp clean-tmp",
-    "compress:panes": "gulp compress:chrome-pane && gulp compress:firefox-pane && gulp compress:bookmarklet-pane",
     "upload:panes": "yarn build && yarn compress:panes && node scripts/upload-panes.js",
-    "lock-version": "yarn build:production && yarn compress:panes && EMBER_ENV=production node scripts/upload-panes.js"
+    "watch": "ember build --watch"
   },
   "emberVersionsSupported": [
     "3.4.0",
