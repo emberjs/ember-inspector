@@ -62,7 +62,7 @@
     </div>
 
   {{else}}
-    {{#ui/error-page description="Ember application not detected!"}}
+    <Ui::ErrorPage @description="Ember application not detected!">
       <ul>
         <li>This is not an Ember application.</li>
         <li>You are using an old version of Ember (&lt; rc5).</li>
@@ -78,6 +78,6 @@
           </li>
         {{/if}}
       </ul>
-    {{/ui/error-page}}
+    </Ui::ErrorPage>
   {{/if}}
 {{/x-app}}
