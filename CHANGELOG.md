@@ -1,12 +1,71 @@
 # Changelog
 
-## [Unreleased](https://github.com/emberjs/ember-inspector/tree/HEAD)
+## [v3.11.0](https://github.com/emberjs/ember-inspector/tree/v3.11.0) (2019-08-30)
 
-[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.9.0...HEAD)
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.10.0...v3.11.0)
+
+**Implemented enhancements:**
+
+- Use Travis for S3 Uploads [\#965](https://github.com/emberjs/ember-inspector/issues/965)
+- Modernize Info Tab [\#1014](https://github.com/emberjs/ember-inspector/pull/1014) ([nummi](https://github.com/nummi))
+- Bump some deps [\#1010](https://github.com/emberjs/ember-inspector/pull/1010) ([rwwagner90](https://github.com/rwwagner90))
+- Ember 3.12 [\#1008](https://github.com/emberjs/ember-inspector/pull/1008) ([nummi](https://github.com/nummi))
+- Add ES6 Class support [\#1006](https://github.com/emberjs/ember-inspector/pull/1006) ([patricklx](https://github.com/patricklx))
+- Upgrade to Ember Table 2.1.0 [\#1003](https://github.com/emberjs/ember-inspector/pull/1003) ([mixonic](https://github.com/mixonic))
+- Move queue to ProfileManager [\#997](https://github.com/emberjs/ember-inspector/pull/997) ([rwwagner90](https://github.com/rwwagner90))
+- Component Tree: Angle Brackets and Classified Names [\#992](https://github.com/emberjs/ember-inspector/pull/992) ([nummi](https://github.com/nummi))
+- Remove glimmer 2 checks [\#990](https://github.com/emberjs/ember-inspector/pull/990) ([rwwagner90](https://github.com/rwwagner90))
+- Add CodeClimate code coverage reporting [\#989](https://github.com/emberjs/ember-inspector/pull/989) ([rwwagner90](https://github.com/rwwagner90))
+- Start removing Ember \< 3.4 cruft [\#987](https://github.com/emberjs/ember-inspector/pull/987) ([rwwagner90](https://github.com/rwwagner90))
+- Highlight children of selected component [\#984](https://github.com/emberjs/ember-inspector/pull/984) ([nummi](https://github.com/nummi))
+- Drop support for Ember versions \< 3.4.0 in master [\#983](https://github.com/emberjs/ember-inspector/pull/983) ([teddyzeenny](https://github.com/teddyzeenny))
+- Remove View Tree [\#941](https://github.com/emberjs/ember-inspector/pull/941) ([nummi](https://github.com/nummi))
+- x-list -\> list angle bracket component [\#918](https://github.com/emberjs/ember-inspector/pull/918) ([rwwagner90](https://github.com/rwwagner90))
+
+**Fixed bugs:**
+
+- ember inspector fails to inspect certain components [\#999](https://github.com/emberjs/ember-inspector/issues/999)
+- Ember-data 3.7 + Pure Class models \(properties inspector issue\) [\#943](https://github.com/emberjs/ember-inspector/issues/943)
+- Decorated model properties don't show in object-inspector column [\#903](https://github.com/emberjs/ember-inspector/issues/903)
+- Use descriptorForDecorator || descriptorForProperty [\#1002](https://github.com/emberjs/ember-inspector/pull/1002) ([AbhinavVishak](https://github.com/AbhinavVishak))
+
+**Closed issues:**
+
+- Cannot read property 'reopen' of undefined [\#1004](https://github.com/emberjs/ember-inspector/issues/1004)
+
+**Merged pull requests:**
+
+- Modernize Route Tab [\#1016](https://github.com/emberjs/ember-inspector/pull/1016) ([nummi](https://github.com/nummi))
+- Fix lint, bump deps [\#1015](https://github.com/emberjs/ember-inspector/pull/1015) ([rwwagner90](https://github.com/rwwagner90))
+- Fix beta and canary [\#1013](https://github.com/emberjs/ember-inspector/pull/1013) ([rwwagner90](https://github.com/rwwagner90))
+- Modernize Syntax: Component Tree [\#1011](https://github.com/emberjs/ember-inspector/pull/1011) ([nummi](https://github.com/nummi))
+- Guard against reading a property on undefined, fixes \#1004 [\#1005](https://github.com/emberjs/ember-inspector/pull/1005) ([lolmaus](https://github.com/lolmaus))
+- 3.11 [\#1000](https://github.com/emberjs/ember-inspector/pull/1000) ([nummi](https://github.com/nummi))
+- Refactor render debug [\#996](https://github.com/emberjs/ember-inspector/pull/996) ([rwwagner90](https://github.com/rwwagner90))
+- Convert ProfileManager to class, cleanup [\#994](https://github.com/emberjs/ember-inspector/pull/994) ([rwwagner90](https://github.com/rwwagner90))
+- Update a bunch of deps [\#993](https://github.com/emberjs/ember-inspector/pull/993) ([rwwagner90](https://github.com/rwwagner90))
+- Enable 3 template lint rules and fix templates [\#991](https://github.com/emberjs/ember-inspector/pull/991) ([rwwagner90](https://github.com/rwwagner90))
+- Remove custom linting rules [\#986](https://github.com/emberjs/ember-inspector/pull/986) ([rwwagner90](https://github.com/rwwagner90))
+- Only test 3.4+ in travis [\#985](https://github.com/emberjs/ember-inspector/pull/985) ([rwwagner90](https://github.com/rwwagner90))
+
+## [v3.10.0](https://github.com/emberjs/ember-inspector/tree/v3.10.0) (2019-06-06)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.9.0...v3.10.0)
+
+**Implemented enhancements:**
+
+- Increase size of click area of component tree disclosure triangle [\#981](https://github.com/emberjs/ember-inspector/pull/981) ([nummi](https://github.com/nummi))
 
 **Fixed bugs:**
 
 - accessing currentPath from application controller has been deprecated [\#973](https://github.com/emberjs/ember-inspector/issues/973)
+- Fix hover colors of selected component [\#980](https://github.com/emberjs/ember-inspector/pull/980) ([nummi](https://github.com/nummi))
+
+**Merged pull requests:**
+
+- Update README instructions to lock an Ember version range [\#982](https://github.com/emberjs/ember-inspector/pull/982) ([teddyzeenny](https://github.com/teddyzeenny))
+- 3.9 Changelog [\#978](https://github.com/emberjs/ember-inspector/pull/978) ([rwwagner90](https://github.com/rwwagner90))
+- Bump minor version to 3.10 [\#977](https://github.com/emberjs/ember-inspector/pull/977) ([rwwagner90](https://github.com/rwwagner90))
 
 ## [v3.9.0](https://github.com/emberjs/ember-inspector/tree/v3.9.0) (2019-05-26)
 
@@ -18,11 +77,11 @@
 
 **Fixed bugs:**
 
+- access -\> acl [\#976](https://github.com/emberjs/ember-inspector/pull/976) ([rwwagner90](https://github.com/rwwagner90))
 - Use router.currentPath instead of applicationController [\#975](https://github.com/emberjs/ember-inspector/pull/975) ([rwwagner90](https://github.com/rwwagner90))
 
 **Merged pull requests:**
 
-- access -\> acl [\#976](https://github.com/emberjs/ember-inspector/pull/976) ([rwwagner90](https://github.com/rwwagner90))
 - Bump version to 3.9.0 [\#971](https://github.com/emberjs/ember-inspector/pull/971) ([rwwagner90](https://github.com/rwwagner90))
 - Update CHANGELOG.md [\#970](https://github.com/emberjs/ember-inspector/pull/970) ([rwwagner90](https://github.com/rwwagner90))
 
