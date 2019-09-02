@@ -37,10 +37,10 @@ export default Controller.extend({
    */
   isWarningClosed: computed({
     get() {
-      return !!this.get('storage').getItem('is-render-tree-warning-closed');
+      return !!this.storage.getItem('is-render-tree-warning-closed');
     },
     set(key, value) {
-      this.get('storage').setItem('is-render-tree-warning-closed', value);
+      this.storage.setItem('is-render-tree-warning-closed', value);
       return value;
     }
   }),
@@ -52,7 +52,7 @@ export default Controller.extend({
    * @type {Number}
    */
   headerHeight: computed('isWarningClosed', function() {
-    return this.get('isWarningClosed') ? 31 : 56;
+    return this.isWarningClosed ? 31 : 56;
   }),
 
   actions: {
@@ -75,12 +75,12 @@ export default Controller.extend({
   search: '',
 
   escapedSearch: computed('search', function() {
-    return escapeRegExp(this.get('search').toLowerCase());
+    return escapeRegExp(this.search.toLowerCase());
   }),
 
   filtered: computed('model.@each.name', 'search', function() {
     return get(this, 'model').filter((item) => {
-      let search = this.get('escapedSearch');
+      let search = this.escapedSearch;
       if (isEmpty(search)) {
         return true;
       }

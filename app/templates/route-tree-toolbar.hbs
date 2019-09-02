@@ -1,22 +1,22 @@
 <div class="toolbar">
   <div class="toolbar__checkbox js-filter-hide-routes">
     <label for="options-hideRoutes">
-      {{input
-        type="checkbox"
-        checked=options.hideRoutes
-        id="options-hideRoutes"
-      }}
+      <Input
+        @id="options-hideRoutes"
+        @type="checkbox"
+        @checked={{this.options.hideRoutes}}
+      />
       Current Route only
     </label>
   </div>
 
   <div class="toolbar__checkbox js-filter-hide-substates">
     <label for="options-hideSubstates" title="Hide loading and error substates">
-      {{input
-        type="checkbox"
-        checked=options.hideSubstates
-        id="options-hideSubstates"
-      }}
+      <Input
+        @id="options-hideSubstates"
+        @type="checkbox"
+        @checked={{this.options.hideSubstates}}
+      />
       Hide Substates
     </label>
   </div>
@@ -24,6 +24,6 @@
   <div class="divider"></div>
 
   <div class="toolbar__search js-filter-views">
-    {{ui/toolbar-search-field value=searchValue}}
+    {{ui/toolbar-search-field value=this.searchValue}}
   </div>
 </div>

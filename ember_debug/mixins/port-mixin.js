@@ -1,6 +1,7 @@
 const Ember = window.Ember;
 const { Mixin } = Ember;
 
+// eslint-disable-next-line ember/no-new-mixins
 export default Mixin.create({
   port: null,
 

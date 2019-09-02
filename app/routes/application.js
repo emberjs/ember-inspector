@@ -12,7 +12,7 @@ export default Route.extend({
 
   setupController(controller) {
     controller.set('mixinStack', []);
-    let port = this.get('port');
+    let port = this.port;
     port.on('objectInspector:updateObject', this, this.updateObject);
     port.on('objectInspector:updateProperty', this, this.updateProperty);
     port.on('objectInspector:updateErrors', this, this.updateErrors);
@@ -23,7 +23,7 @@ export default Route.extend({
   },
 
   deactivate() {
-    let port = this.get('port');
+    let port = this.port;
     port.off('objectInspector:updateObject', this, this.updateObject);
     port.off('objectInspector:updateProperty', this, this.updateProperty);
     port.off('objectInspector:updateErrors', this, this.updateErrors);
@@ -50,7 +50,7 @@ export default Route.extend({
     NativeArray.apply(details);
     details.forEach(arrayize);
 
-    let controller = this.get('controller');
+    let controller = this.controller;
 
     if (options.parentObject) {
       controller.pushMixinDetails(name, property, objectId, details);
@@ -81,7 +81,7 @@ export default Route.extend({
   },
 
   droppedObject(message) {
-    this.get('controller').droppedObject(message.objectId);
+    this.controller.droppedObject(message.objectId);
   },
 
   /**
@@ -96,26 +96,26 @@ export default Route.extend({
   actions: {
     expandInspector() {
       this.set("controller.inspectorExpanded", true);
-      // Broadcast that tables have been resized (used by `x-list`).
+      // Broadcast that tables have been resized (used by `list`).
       schedule('afterRender', () => {
-        this.get('layoutService').trigger('resize', { source: 'object-inspector' });
+        this.layoutService.trigger('resize', { source: 'object-inspector' });
       });
     },
     inspectObject(objectId) {
       if (objectId) {
-        this.get('port').send('objectInspector:inspectById', { objectId });
+        this.port.send('objectInspector:inspectById', { objectId });
       }
     },
     refreshPage() {
       // If the adapter defined a `reloadTab` method, it means
       // they prefer to handle the reload themselves
-      if (typeof this.get('adapter').reloadTab === 'function') {
-        this.get('adapter').reloadTab();
+      if (typeof this.adapter.reloadTab === 'function') {
+        this.adapter.reloadTab();
       } else {
         // inject ember_debug as quickly as possible in chrome
         // so that promises created on dom ready are caught
-        this.get('port').send('general:refresh');
-        this.get('adapter').willReload();
+        this.port.send('general:refresh');
+        this.adapter.willReload();
       }
     }
   }

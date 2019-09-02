@@ -1,9 +1,8 @@
-import { visit } from '@ember/test-helpers';
+import { settled, visit } from '@ember/test-helpers';
 import { A as emberA } from '@ember/array';
 
 import { module, test } from 'qunit';
 import require from 'require';
-import wait from 'ember-test-helpers/wait';
 
 import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
 
@@ -39,7 +38,7 @@ module('Ember Debug - Container', function(hooks) {
     await visit('/simple');
 
     port.trigger('container:getTypes');
-    await wait();
+    await settled();
 
     assert.equal(name, 'container:types');
     let types = emberA(message.types);
@@ -51,7 +50,7 @@ module('Ember Debug - Container', function(hooks) {
     await visit('/simple');
 
     port.trigger('container:getInstances', { containerType: 'controller' });
-    await wait();
+    await settled();
 
     assert.equal(name, 'container:instances');
     let instances = emberA(message.instances);
@@ -62,7 +61,7 @@ module('Ember Debug - Container', function(hooks) {
     await visit('/simple');
 
     port.trigger('container:getInstances', { containerType: 'not-here' });
-    await wait();
+    await settled();
 
     assert.equal(name, 'container:instances');
     assert.equal(message.status, 404);

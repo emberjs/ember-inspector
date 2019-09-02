@@ -5,7 +5,7 @@
   {{#if hasDependentKeys}}
     <button
       class="mixin__cp-toggle {{if showDependentKeys "mixin__cp-toggle--expanded"}}"
-      {{action "toggleDeps"}}
+      {{on "click" this.toggleDeps}}
     >
       {{svg-jar
         "disclosure-triangle"
@@ -30,7 +30,7 @@
     <span
       class="mixin__property-icon-container"
       title={{if model.code model.code "code not avaliable"}}
-      {{action "toggleDeps"}}
+      {{on "click" this.toggleDeps}}
     >
       <span class="mixin__property-icon mixin__property-icon--computed"></span>
     </span>
@@ -68,34 +68,8 @@
 
   <span class="mixin__property-value-separator">: </span>
 
-  {{!-- Property Value --}}
-  {{#unless isEdit}}
-    {{#if (and isComputedProperty (not isCalculated))}}
-      <button
-        class="mixin__calc-btn js-calculate"
-        title="compute property"
-        {{action "calculate" model bubbles=false target=mixin}}
-      >
-        {{svg-jar "calculate" width="16px" height="16px"}}
-      </button>
-    {{else}}
-      <span
-        class="{{model.value.type}} {{if isService "type-service"}} mixin__property-value js-object-property-value"
-        {{action "valueClick" model}}
-      >
-        {{model.value.inspect}}
-      </span>
-    {{/if}}
-  {{else}}
-    {{#unless isDate}}
-      {{property-field
-        value=txtValue
-        finished-editing="finishedEditing"
-        save-property="saveProperty"
-        propertyComponent=this
-        class="mixin__property-value-txt js-object-property-value-txt"
-      }}
-    {{else}}
+  {{#if isEdit}}
+    {{#if isDate}}
       {{date-property-field
         allowInput=true
         date=(readonly dateValue)
@@ -104,15 +78,40 @@
         onChange=(action "dateSelected")
         onClose=(action "finishedEditing")
       }}
-    {{/unless}}
-  {{/unless}}
+    {{else}}
+      {{property-field
+        value=txtValue
+        finished-editing="finishedEditing"
+        save-property="saveProperty"
+        propertyComponent=this
+        class="mixin__property-value-txt js-object-property-value-txt"
+      }}
+    {{/if}}
+  {{else}}
+    {{#if (and isComputedProperty (not isCalculated))}}
+      <button
+        class="mixin__calc-btn js-calculate"
+        title="compute property"
+        {{on "click" (fn mixin.calculate model) bubbles=false}}
+      >
+        {{svg-jar "calculate" width="16px" height="16px"}}
+      </button>
+    {{else}}
+      <span
+        class="{{model.value.type}} {{if isService "type-service"}} mixin__property-value js-object-property-value"
+        {{on "click" (fn this.valueClick model)}}
+      >
+        {{model.value.inspect}}
+      </span>
+    {{/if}}
+  {{/if}}
 
   <span class="mixin__property-overridden-by">(Overridden by {{model.overridden}})</span>
 
   <button
     class="mixin__send-btn send-to-console js-send-to-console-btn"
     title="Send to console"
-    {{action "sendToConsole" model target=mixin}}
+    {{on "click" (fn mixin.sendToConsole model)}}
   >
     {{svg-jar "send-with-text" width="20px" height="10px"}}
   </button>

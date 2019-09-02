@@ -6,17 +6,17 @@ export default TabRoute.extend({
     // block rendering until first batch arrives
     // Helps prevent flashing of "please refresh the page"
     return new Promise(resolve => {
-      this.get('assembler').one('firstMessageReceived', () => {
+      this.assembler.one('firstMessageReceived', () => {
         resolve(this.get('assembler.topSort'));
       });
-      this.get('assembler').start();
+      this.assembler.start();
     });
   },
 
   setupController() {
     this._super(...arguments);
-    this.get('port').on('promise:instrumentWithStack', this, this.setInstrumentWithStack);
-    this.get('port').send('promise:getInstrumentWithStack');
+    this.port.on('promise:instrumentWithStack', this, this.setInstrumentWithStack);
+    this.port.send('promise:getInstrumentWithStack');
   },
 
   setInstrumentWithStack(message) {
@@ -24,7 +24,7 @@ export default TabRoute.extend({
   },
 
   deactivate() {
-    this.get('assembler').stop();
-    this.get('port').off('promise:instrumentWithStack', this, this.setInstrumentWithStack);
+    this.assembler.stop();
+    this.port.off('promise:instrumentWithStack', this, this.setInstrumentWithStack);
   }
 });

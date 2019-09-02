@@ -1,4 +1,4 @@
-import TabRoute from "ember-inspector/routes/tab";
+import TabRoute from 'ember-inspector/routes/tab';
 import fetch from 'fetch';
 
 const checkStatus = function(response) {
@@ -30,6 +30,6 @@ export default TabRoute.extend({
 
   setupController(controller, model) {
     this._super(controller, model);
-    controller.set('error', this.get('error'));
+    controller.set('error', this.error);
   }
 });

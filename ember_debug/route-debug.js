@@ -228,7 +228,6 @@ function getURL(container, segments) {
     let name = null;
 
     if (typeof segments[i].generate !== 'function') {
-      // After changes in RouteRecognizer in >= 2.12
       let { type, value } = segments[i];
       if (type === 1) { // dynamic
         name = `:${value}`;
@@ -237,14 +236,8 @@ function getURL(container, segments) {
       } else {
         name = value;
       }
-    } else {
-      // 2.11 and before
-      try {
-        name = segments[i].generate();
-      } catch (e) { // is dynamic
-        name = `:${segments[i].name}`;
-      }
     }
+
     if (name) {
       url.push(name);
     }

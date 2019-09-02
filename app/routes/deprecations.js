@@ -3,7 +3,7 @@ import TabRoute from "ember-inspector/routes/tab";
 
 export default TabRoute.extend({
   setupController() {
-    let port = this.get('port');
+    let port = this.port;
     port.on('deprecation:deprecationsAdded', this, this.deprecationsAdded);
     port.send('deprecation:watch');
     this._super(...arguments);
@@ -14,11 +14,11 @@ export default TabRoute.extend({
   },
 
   deactivate() {
-    this.get('port').off('deprecation:deprecationsAdded', this, this.deprecationsAdded);
+    this.port.off('deprecation:deprecationsAdded', this, this.deprecationsAdded);
   },
 
   deprecationsAdded(message) {
-    let model = this.get('currentModel');
+    let model = this.currentModel;
     message.deprecations.forEach(item => {
       let record = model.findBy('id', item.id);
       if (record) {
@@ -33,8 +33,8 @@ export default TabRoute.extend({
 
   actions: {
     clear() {
-      this.get('port').send('deprecation:clear');
-      this.get('currentModel').clear();
+      this.port.send('deprecation:clear');
+      this.currentModel.clear();
     }
 
   }

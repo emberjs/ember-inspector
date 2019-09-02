@@ -1,17 +1,17 @@
 /**
- * An individual cell for the `x-list` table.
+ * An individual cell for the `list` table.
  * Usually not called directly but as a contextual helper.
  *
  * For example:
  *
- * ```javascript
- * {{#x-list as |list|}}
+ * ```hbs
+ * <List as |list|>
  *   <tr>
  *     {{#each model as |item|}}
  *       {{list.cell}} {{item.name}} {{/list.cell}}
  *     {{/each}}
  *   </tr>
- * {{/xlist}}
+ * </List>
  * ```
  */
 import Component from '@ember/component';
@@ -62,7 +62,7 @@ export default Component.extend({
    * @type {SafeString}
    */
   safeStyle: computed('style', function() {
-    return htmlSafe(this.get('style'));
+    return htmlSafe(this.style);
   }),
 
   /**
@@ -121,6 +121,6 @@ export default Component.extend({
    * @method click
    */
   click() {
-    this.get('on-click')();
+    this['on-click']();
   }
 });

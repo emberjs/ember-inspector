@@ -1,20 +1,15 @@
 {{#if shouldRefresh}}
-  {{#ui/empty-message class="js-page-refresh"}}
+  <Ui::EmptyMessage class="js-page-refresh">
     <p>Reload the page to see promises created before you opened the inspector.</p>
     <button class="js-page-refresh-btn" {{action "refreshPage"}}>Reload</button>
-  {{/ui/empty-message}}
+  </Ui::EmptyMessage>
 {{else}}
-  {{#x-list
+  <List
     class="js-promise-tree"
-    name="promise-tree"
-    schema=(schema-for "promise-tree")
-    setIsDragging=(action "setIsDragging" target=application)
-  as |list|
-  }}
-    {{#list.vertical-collection
-      filtered
-    as |content index|
-    }}
+    @schema={{schema-for "promise-tree"}}
+    @setIsDragging={{action "setIsDragging" target=this.application}} as |list|
+  >
+    {{#list.vertical-collection filtered as |content index|}}
       <tr class="list__row js-promise-tree-item {{if (mod index 2) "striped"}}">
         {{promise-item
           model=content
@@ -28,5 +23,5 @@
         }}
       </tr>
     {{/list.vertical-collection}}
-  {{/x-list}}
+  </List>
 {{/if}}

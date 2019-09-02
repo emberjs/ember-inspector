@@ -1,5 +1,5 @@
 import { alias } from '@ember/object/computed';
-import { computed } from '@ember/object';
+import { action, computed } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import checkCurrentRoute from 'ember-inspector/utils/check-current-route';
 import searchMatch from 'ember-inspector/utils/search-match';
@@ -15,8 +15,8 @@ export default Controller.extend({
   searchValue: '',
 
   filtered: computed('model.[]', 'options.{hideRoutes,hideSubstates}', 'currentRoute.{name,url}', 'searchValue', function() {
-    return this.get('model').filter(routeItem => {
-      let currentRoute = this.get('currentRoute');
+    return this.model.filter(routeItem => {
+      let currentRoute = this.currentRoute;
       let hideRoutes = this.get('options.hideRoutes');
       let hideSubstates = this.get('options.hideSubstates');
 
@@ -28,7 +28,7 @@ export default Controller.extend({
         return false;
       }
 
-      if (!searchMatch(routeItem.value.name, this.get('searchValue'))) {
+      if (!searchMatch(routeItem.value.name, this.searchValue)) {
         return false;
       }
 
@@ -37,7 +37,7 @@ export default Controller.extend({
   }),
 
   rows: computed('filtered.[]', function() {
-    return this.get('filtered').map(function(route) {
+    return this.filtered.map(function(route) {
       return {
         name: route,
         objects: route,
@@ -56,21 +56,22 @@ export default Controller.extend({
     };
   },
 
-  actions: {
-    inspectRoute(name) {
-      this.get('port').send('objectInspector:inspectRoute', { name });
-    },
-    sendRouteHandlerToConsole(name) {
-      this.get('port').send('objectInspector:sendRouteHandlerToConsole', { name });
-    },
-    inspectController(controller) {
-      if (!controller.exists) {
-        return;
-      }
-      this.get('port').send('objectInspector:inspectController', { name: controller.name });
-    },
-    sendControllerToConsole(name) {
-      this.get('port').send('objectInspector:sendControllerToConsole', { name });
+  inspectRoute: action(function(name) {
+    this.port.send('objectInspector:inspectRoute', { name });
+  }),
+
+  sendRouteHandlerToConsole: action(function(name) {
+    this.port.send('objectInspector:sendRouteHandlerToConsole', { name });
+  }),
+
+  inspectController: action(function(controller) {
+    if (!controller.exists) {
+      return;
     }
-  }
+    this.port.send('objectInspector:inspectController', { name: controller.name });
+  }),
+
+  sendControllerToConsole: action(function(name) {
+    this.port.send('objectInspector:sendControllerToConsole', { name });
+  }),
 });

@@ -3,8 +3,8 @@ import { A as emberA } from '@ember/array';
 import RSVP from 'rsvp';
 import { module, skip, test } from 'qunit';
 import require from 'require';
-import wait from 'ember-test-helpers/wait';
 import { setupEIApp, destroyEIApp } from '../helpers/setup-destroy-ei-app';
+import { settled } from '@ember/test-helpers';
 
 const EmberDebug = require('ember-debug/main').default;
 
@@ -14,7 +14,7 @@ let App;
 // RSVP instrumentation is out of band (50 ms delay)
 async function rsvpDelay() {
   later(function() {}, 100);
-  await wait();
+  await settled();
 }
 
 module('Ember Debug - Promise Debug', function(hooks) {
@@ -131,11 +131,11 @@ module('Ember Debug - Promise Debug', function(hooks) {
       }
     });
 
-    await wait();
+    await settled();
     port.trigger('promise:getInstrumentWithStack');
 
 
-    await wait();
+    await settled();
     assert.equal(name, 'promise:instrumentWithStack');
     assert.equal(message.instrumentWithStack, false);
     port.trigger('promise:setInstrumentWithStack', {
@@ -143,7 +143,7 @@ module('Ember Debug - Promise Debug', function(hooks) {
     });
 
 
-    await wait();
+    await settled();
     assert.equal(name, 'promise:instrumentWithStack');
     assert.equal(message.instrumentWithStack, true);
     assert.equal(withStack, true, 'persisted');
@@ -151,7 +151,7 @@ module('Ember Debug - Promise Debug', function(hooks) {
       instrumentWithStack: false
     });
 
-    await wait();
+    await settled();
     assert.equal(name, 'promise:instrumentWithStack');
     assert.equal(message.instrumentWithStack, false);
     assert.equal(withStack, false, 'persisted');

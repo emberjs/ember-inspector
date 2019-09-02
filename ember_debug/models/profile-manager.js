@@ -1,24 +1,25 @@
 import ProfileNode from './profile-node';
 const Ember = window.Ember;
-const { run: { scheduleOnce } } = Ember;
+const { run: { later,  scheduleOnce } } = Ember;
 
 /**
  * A class for keeping track of active rendering profiles as a list.
  */
-const ProfileManager = function() {
-  this.profiles = [];
-  this.current = null;
-  this.currentSet = [];
-  this._profilesAddedCallbacks = [];
-};
+export default class ProfileManager {
+  constructor(){
+    this.profiles = [];
+    this.current = null;
+    this.currentSet = [];
+    this._profilesAddedCallbacks = [];
+    this.queue = [];
+  }
 
-ProfileManager.prototype = {
   began(timestamp, payload, now) {
     return this.wrapForErrors(this, function() {
       this.current = new ProfileNode(timestamp, payload, this.current, now);
       return this.current;
     });
-  },
+  }
 
   ended(timestamp, payload, profileNode) {
     if (payload.exception) { throw payload.exception; }
@@ -33,15 +34,62 @@ ProfileManager.prototype = {
         scheduleOnce('afterRender', this, this._profilesFinished);
       }
     });
-  },
+  }
 
   wrapForErrors(context, callback) {
     return callback.call(context);
-  },
+  }
+
+  /**
+   * Push a new profile into the queue
+   * @param info
+   * @return {number}
+   */
+  addToQueue(info) {
+    const index = this.queue.push(info);
+    if (index === 1) {
+      later(this._flush.bind(this), 50);
+    }
+    return index - 1;
+  }
 
   clearProfiles() {
     this.profiles.length = 0;
-  },
+  }
+
+  onProfilesAdded(context, callback) {
+    this._profilesAddedCallbacks.push({ context, callback });
+  }
+
+  offProfilesAdded(context, callback) {
+    let index = -1, item;
+    for (let i = 0, l = this._profilesAddedCallbacks.length; i < l; i++) {
+      item = this._profilesAddedCallbacks[i];
+      if (item.context === context && item.callback === callback) {
+        index = i;
+      }
+    }
+    if (index > -1) {
+      this._profilesAddedCallbacks.splice(index, 1);
+    }
+  }
+
+  _flush() {
+    let entry, i;
+    for (i = 0; i < this.queue.length; i++) {
+      entry = this.queue[i];
+      if (entry.type === 'began') {
+        // If there was an error during rendering `entry.endedIndex` never gets set.
+        if (entry.endedIndex) {
+          this.queue[entry.endedIndex].profileNode = this.began(entry.timestamp, entry.payload, entry.now);
+        }
+      } else {
+        this.ended(entry.timestamp, entry.payload, entry.profileNode);
+      }
+
+    }
+    this.queue.length = 0;
+  }
 
   _profilesFinished() {
     return this.wrapForErrors(this, function() {
@@ -59,32 +107,11 @@ ProfileManager.prototype = {
       this._triggerProfilesAdded([parentNode]);
       this.currentSet = [];
     });
-  },
-
-  _profilesAddedCallbacks: undefined, // set to array on init
-
-  onProfilesAdded(context, callback) {
-    this._profilesAddedCallbacks.push({ context, callback });
-  },
-
-  offProfilesAdded(context, callback) {
-    let index = -1, item;
-    for (let i = 0, l = this._profilesAddedCallbacks.length; i < l; i++) {
-      item = this._profilesAddedCallbacks[i];
-      if (item.context === context && item.callback === callback) {
-        index = i;
-      }
-    }
-    if (index > -1) {
-      this._profilesAddedCallbacks.splice(index, 1);
-    }
-  },
+  }
 
   _triggerProfilesAdded(profiles) {
     this._profilesAddedCallbacks.forEach(function(item) {
       item.callback.call(item.context, profiles);
     });
   }
-};
-
-export default ProfileManager;
+}

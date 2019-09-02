@@ -4,7 +4,7 @@
       Errors
       <button
         class="send-to-console send-to-console--chevron-only js-send-errors-to-console"
-        {{action "traceErrors"}}
+        {{on "click" this.traceErrors}}
       >
         {{svg-jar "send-with-chevron" width="6px" height="9px"}}
         Trace in the Console
@@ -29,7 +29,7 @@
         {{#if mixin.model.properties.length}}
           <h2
             class="mixin__name js-object-detail-name"
-            {{action "toggleExpanded" target=mixin}}
+            {{on "click" (fn mixin.toggleExpanded)}}
           >
             {{mixin.model.name}}
           </h2>

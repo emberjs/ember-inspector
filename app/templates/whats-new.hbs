@@ -1,10 +1,10 @@
 <div class="whats-new">
   <h1>What's New in Ember Inspector</h1>
-  {{#if error}}
+  {{#if this.error}}
     <p>Changelog could not be loaded</p>
   {{else}}
-    {{#ui/open-links-in-new-window}}
-      {{markdown-to-html model}}
-    {{/ui/open-links-in-new-window}}
+    <Ui::OpenLinksInNewWindow>
+      {{markdown-to-html this.model}}
+    </Ui::OpenLinksInNewWindow>
   {{/if}}
 </div>

@@ -10,12 +10,12 @@
         <tbody>
           <tr class="list__row">
             {{#each columns key="id" as |column|}}
-              {{#x-list-cell
-                tagName="th"
+              <ListCell
                 class="js-header-column"
-              }}
+                @tagName="th"
+              >
                 {{column.name}}
-              {{/x-list-cell}}
+              </ListCell>
             {{/each}}
           </tr>
         </tbody>
@@ -24,14 +24,13 @@
   </div>
 {{/if}}
 
-{{#x-list-content
-  headerHeight=headerHeight
-  columns=columns
-as |content|
-}}
+<ListContent
+  @columns={{this.columns}}
+  @headerHeight={{this.headerHeight}} as |content|
+>
   {{yield
     (hash
-      cell=(component "x-list-cell" tagName="td")
+      cell=(component "list-cell" tagName="td")
       rowEvents=content.rowEvents
       vertical-collection=(component "vertical-collection"
         estimateHeight=30
@@ -39,10 +38,10 @@ as |content|
         tagName="tbody")
     )
   }}
-{{/x-list-content}}
+</ListContent>
 
 {{#each columns key="id" as |column|}}
-  {{#unless (or (not column.visible) (eq column columns.lastObject))}}
+  {{#if (and column.visible (not-eq column columns.lastObject))}}
     {{drag-handle
       faded=true
       left=column.left
@@ -50,8 +49,8 @@ as |content|
       maxWidth=column.maxWidth
       on-drag=(action "didResize" column.id)
       position=(one-way column.width)
-      setIsDragging=setIsDragging
+      setIsDragging=@setIsDragging
       side="left"
     }}
-  {{/unless}}
+  {{/if}}
 {{/each}}

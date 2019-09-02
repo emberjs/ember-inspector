@@ -5,7 +5,7 @@
   }}
 
   {{#t.body
-    rows=rows
+    rows=this.rows
     checkboxSelectionMode="none"
   as |b|
   }}
@@ -14,15 +14,16 @@
     as |r|
     }}
       {{#r.cell as |route|}}
-        {{component
-          (concat "route-cell-" r.columnValue.valuePath)
-          route=route
-          currentRoute=currentRoute
-          inspectRoute=(action "inspectRoute")
-          sendRouteHandlerToConsole=(action "sendRouteHandlerToConsole")
-          inspectController=(action "inspectController")
-          sendControllerToConsole=(action "sendControllerToConsole")
-        }}
+        {{#let (component (concat "route-cell-" r.columnValue.valuePath)) as |Cell|}}
+          <Cell
+            @route={{route}}
+            @currentRoute={{this.currentRoute}}
+            @inspectController={{fn this.inspectController route.value.controller}}
+            @inspectRoute={{fn this.inspectRoute route.value.routeHandler.name}}
+            @sendControllerToConsole={{this.sendControllerToConsole}}
+            @sendRouteHandlerToConsole={{this.sendRouteHandlerToConsole}}
+          />
+        {{/let}}
       {{/r.cell}}
     {{/b.row}}
   {{/t.body}}

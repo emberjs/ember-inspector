@@ -11,7 +11,7 @@ export default Component.extend({
 
   selectedDidChange: observer('selectedApp', function() {
     // Change app being debugged
-    const applicationId = this.get('selectedApp');
+    const applicationId = this.selectedApp;
     const port = getOwner(this).lookup('port:main');
     port.set('applicationId', applicationId);
   }),

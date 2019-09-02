@@ -50,20 +50,20 @@ export default Controller.extend({
       errors
     };
 
-    this.get('mixinStack').pushObject(details);
+    this.mixinStack.pushObject(details);
     this.set('mixinDetails', details);
   },
 
   popMixinDetails() {
-    let mixinStack = this.get('mixinStack');
+    let mixinStack = this.mixinStack;
     let item = mixinStack.popObject();
     this.set('mixinDetails', mixinStack.get('lastObject'));
-    this.get('port').send('objectInspector:releaseObject', { objectId: item.objectId });
+    this.port.send('objectInspector:releaseObject', { objectId: item.objectId });
   },
 
   activateMixinDetails(name, objectId, details, errors) {
-    this.get('mixinStack').forEach(item => {
-      this.get('port').send('objectInspector:releaseObject', { objectId: item.objectId });
+    this.mixinStack.forEach(item => {
+      this.port.send('objectInspector:releaseObject', { objectId: item.objectId });
     });
 
     this.set('mixinStack', []);
@@ -71,7 +71,7 @@ export default Controller.extend({
   },
 
   droppedObject(objectId) {
-    let mixinStack = this.get('mixinStack');
+    let mixinStack = this.mixinStack;
     let obj = mixinStack.findBy('objectId', objectId);
     if (obj) {
       let index = mixinStack.indexOf(obj);
@@ -100,7 +100,7 @@ export default Controller.extend({
       this.toggleProperty('inspectorExpanded');
       // Broadcast that tables have been resized (used by `x-list`).
       schedule('afterRender', () => {
-        this.get('layoutService').trigger('resize', { source: 'object-inspector' });
+        this.layoutService.trigger('resize', { source: 'object-inspector' });
       });
     }
   }

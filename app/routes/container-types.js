@@ -3,7 +3,7 @@ import { Promise } from 'rsvp';
 
 export default Route.extend({
   model() {
-    const port = this.get('port');
+    const port = this.port;
     return new Promise(resolve => {
       port.one('container:types', function(message) {
         resolve(message.types);

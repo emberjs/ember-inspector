@@ -27,7 +27,7 @@ export default Component.extend({
    * @method triggerResize
    */
   triggerResize() {
-    this.get('layoutService').trigger('resize', { source: 'draggable-column' });
+    this.layoutService.trigger('resize', { source: 'draggable-column' });
   },
 
   actions: {

@@ -7,11 +7,11 @@ export default Component.extend({
   attributeBindings: ['style'],
 
   style: computed('width', function () {
-    return htmlSafe(`-webkit-flex: none; flex: none; width: ${this.get('width')}px;`);
+    return htmlSafe(`-webkit-flex: none; flex: none; width: ${this.width}px;`);
   }),
 
   didInsertElement() {
-    if (!this.get('width')) {
+    if (!this.width) {
       this.set('width', this.element.clientWidth);
     }
   }

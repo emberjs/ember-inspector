@@ -1,6 +1,6 @@
 /**
  * Class responsible for calculating column widths and visibility.
- * Used by the `x-list` component to manage its columns.
+ * Used by the `list` component to manage its columns.
  *
  * Uses local storage to cache a user's preferred settings.
  */
@@ -91,7 +91,7 @@ export default class {
   }
 
   /**
-   * Goes over all `x-list` caches and clears them if
+   * Goes over all `list` caches and clears them if
    * they haven't been used for up to 30 days. This prevents
    * old caches from taking over local storage. This could happen
    * in the Data tab where schemas are dynamic and could no longer
@@ -101,7 +101,7 @@ export default class {
    */
   clearExpiredCache() {
     let now = Date.now();
-    this.storage.keys().filter(key => key.match(/^x-list/))
+    this.storage.keys().filter(key => key.match(/^list/))
       .forEach(key => {
         if (now - this.storage.getItem(key).updatedAt > THIRTY_DAYS_FROM_NOW) {
           this.storage.removeItem(key);
@@ -354,7 +354,7 @@ export default class {
    * @method getStorageKey
    */
   getStorageKey() {
-    return `x-list__${this.key}`;
+    return `list__${this.key}`;
   }
 
   /**

@@ -1,17 +1,13 @@
 {{#if filtered.length}}
-  {{#x-list
+  <List
     class="js-deprecations list_no-alternate-color"
-    headerHeight=0
-    name="deprecation-list"
-    schema=(hash columns=null)
-    setIsDragging=(action "setIsDragging" target=application)
-  as |list|
-  }}
+    @headerHeight="0"
+    @name="deprecation-list"
+    @schema={{hash columns=null}}
+    @setIsDragging={{action "setIsDragging" target=this.application}} as |list|
+  >
     <tbody>
-      {{#each
-        filtered
-      as |content|
-      }}
+      {{#each filtered as |content|}}
         {{deprecation-item
           model=content
           openResource=(action "openResource")
@@ -22,9 +18,9 @@
         }}
       {{/each}}
     </tbody>
-  {{/x-list}}
+  </List>
 {{else}}
-  {{#ui/empty-message class="js-page-refresh"}}
+  <Ui::EmptyMessage class="js-page-refresh">
     <p>
       No deprecations have been detected. Try reloading to catch the deprecations that were logged before you opened
       the inspector.
@@ -35,5 +31,5 @@
     >
       Reload
     </button>
-  {{/ui/empty-message}}
+  </Ui::EmptyMessage>
 {{/if}}

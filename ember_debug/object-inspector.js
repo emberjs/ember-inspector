@@ -220,7 +220,7 @@ export default EmberObject.extend(PortMixin, {
   },
 
   canSend(val) {
-    return (val instanceof EmberObject) || typeOf(val) === 'array';
+    return val && ((val instanceof EmberObject) || (val instanceof Object) || typeOf(val) === 'array');
   },
 
   saveProperty(objectId, prop, val) {
@@ -328,7 +328,7 @@ export default EmberObject.extend(PortMixin, {
   dropObject(objectId) {
     let object = this.sentObjects[objectId];
 
-    if (object.reopen) {
+    if (object && object.reopen) {
       object.reopen({ willDestroy: object._oldWillDestroy });
       delete object._oldWillDestroy;
     }
@@ -354,31 +354,65 @@ export default EmberObject.extend(PortMixin, {
     delete this.boundObservers[objectId];
   },
 
+  es6ClassMixinForObject(object) {
+
+    const proto = Object.getPrototypeOf(object);
+
+    const mixins = {
+      mixins: [],
+      expand: true,
+      toString() {
+        const name = object.constructor.name;
+        if (proto.hasOwnProperty('toString')) {
+          return proto.toString();
+        }
+        if (name === 'Class') return object.toString();
+        return name;
+      }
+    };
+
+    const mix = {
+      properties: Object.assign({}, Object.getOwnPropertyDescriptors(proto))
+    };
+
+    Object.keys(mix.properties).forEach(k => {
+      mix.properties[k].isDescriptor = true;
+      if (typeof mix.properties[k].value === 'function') {
+        delete mix.properties[k];
+      }
+    });
+
+    mixins.mixins.push(mix);
+    return mixins;
+  },
+
   mixinsForObject(object) {
+    // eslint-disable-next-line ember/no-new-mixins
     let mixins = Mixin.mixins(object);
     let mixinDetails = [];
 
     let ownProps = propertiesForMixin({ mixins: [{ properties: object }] });
     mixinDetails.push({ name: 'Own Properties', properties: ownProps, expand: true });
 
+    if (!Object.getPrototypeOf(object).hasOwnProperty('_super')) {
+      mixins.splice(0, 0, this.es6ClassMixinForObject(object));
+    }
     mixins.forEach(mixin => {
       let name = mixin[Ember.NAME_KEY] || mixin.ownerConstructor;
-      // Only call `toString` on mixins in Ember >= 2.11
-      // See https://github.com/emberjs/ember-inspector/issues/706#issuecomment-325121494
-      // for more details.
-      if (compareVersion(VERSION, '2.11.0') !== -1) {
-        if (!name && typeof mixin.toString === 'function') {
-          try {
-            name = mixin.toString();
-          } catch(e) {
-            name = '(Unable to convert Object to string)';
-          }
+
+      if (!name && typeof mixin.toString === 'function') {
+        try {
+          name = mixin.toString();
+        } catch(e) {
+          name = '(Unable to convert Object to string)';
         }
       }
+
       if (!name) {
         name = 'Unknown mixin';
       }
-      mixinDetails.push({ name: name.toString(), properties: propertiesForMixin(mixin) });
+
+      mixinDetails.push({ name: name.toString(), properties: propertiesForMixin(mixin), expand: mixin.expand });
     });
 
     fixMandatorySetters(mixinDetails);
@@ -494,7 +528,8 @@ function addProperties(properties, hash) {
     }
 
     // when mandatory setter is removed, an `undefined` value may be set
-    if (hash[prop] === undefined) {
+    const desc = Object.getOwnPropertyDescriptor(hash, prop);
+    if (hash[prop] === undefined && desc.value === undefined && !desc.get && !desc._getter) {
       continue;
     }
     let options = { isMandatorySetter: isMandatorySetter(hash, prop) };
@@ -705,11 +740,6 @@ function customizeProperties(mixinDetails, propertyInfo) {
   mixinDetails.forEach(mixin => {
     let newProperties = [];
     mixin.properties.forEach(item => {
-      // If 2.10.0 or 2.10.x but < 2.11
-      if (compareVersion(VERSION, '2.10.0') === 0 ||
-        (compareVersion(VERSION, '2.10.0') === 1 && compareVersion(VERSION, '2.11.0') === -1)) {
-        skipProperties = twoTenfilterHack(item.name, skipProperties);
-      }
       if (skipProperties.indexOf(item.name) !== -1) {
         return true;
       }
@@ -738,20 +768,6 @@ function customizeProperties(mixinDetails, propertyInfo) {
   });
 
   return newMixinDetails;
-}
-
-/**
- * There are a bunch of const cased values in Ember 2.10 we end up observing, but they are removed in 2.11+
- * Only for 2.10 we want to filter out these values. We are checking if `__ember` is in the value to exclude.
- * @param {String} itemName The name to check against exlusion values
- * @param {[String]} skipProperties The array of properties to skip
- */
-function twoTenfilterHack(itemName, skipProperties) {
-  if (itemName.includes('__ember')) {
-    skipProperties.push(itemName);
-  }
-
-  return skipProperties;
 }
 
 function getDebugInfo(object) {
@@ -788,15 +804,12 @@ function getDebugInfo(object) {
 
   let meta = Ember.meta(object);
   for (let prop in object) {
-    // when in Ember 3.1
-    if (compareVersion(VERSION, '3.1.0') !== -1) {
-      // in Ember 3.1+ CP's are eagerly invoked via a normal
-      // JS getter, this avoids invoking the computed property
-      // _just_ to determine if it was a function
-      let descriptor = meta.peekDescriptors(prop);
-      if (descriptor) {
-        continue;
-      }
+    // in Ember 3.1+ CP's are eagerly invoked via a normal
+    // JS getter, this avoids invoking the computed property
+    // _just_ to determine if it was a function
+    let descriptor = meta.peekDescriptors(prop);
+    if (descriptor) {
+      continue;
     }
 
     // remove methods
@@ -806,7 +819,6 @@ function getDebugInfo(object) {
   }
   return debugInfo;
 }
-
 
 
 function toArray(errors) {

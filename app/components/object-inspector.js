@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { computed, get } from '@ember/object';
+import { action, computed, get } from '@ember/object';
 export default Component.extend({
   tagName: '',
 
@@ -14,32 +14,30 @@ export default Component.extend({
 
   propDisplayType: 'grouped',
 
-  trail: computed('model.[]', function() {
-    let nested = this.get('model').slice(1);
+  trail: computed('model.[]', function () {
+    let nested = this.model.slice(1);
     if (nested.length === 0) { return ""; }
     return `.${nested.mapBy('property').join(".")}`;
   }),
 
-  isNested: computed('model.[]', function() {
+  isNested: computed('model.[]', function () {
     return this.get('model.length') > 1;
   }),
 
-  actions: {
-    popStack() {
-      if (this.get('isNested')) {
-        this.get('application').popMixinDetails();
-      }
-    },
+  setPropDisplay: action(function (type) {
+    this.set('propDisplayType', type);
+  }),
 
-    sendObjectToConsole(obj) {
-      let objectId = get(obj, 'objectId');
-      this.get('port').send('objectInspector:sendToConsole', {
-        objectId
-      });
-    },
+  sendObjectToConsole: action(function (obj) {
+    let objectId = get(obj, 'objectId');
+    this.port.send('objectInspector:sendToConsole', {
+      objectId
+    });
+  }),
 
-    setPropDisplay(type) {
-      this.set('propDisplayType', type);
+  popStack: action(function () {
+    if (this.isNested) {
+      this.application.popMixinDetails();
     }
-  }
+  }),
 });

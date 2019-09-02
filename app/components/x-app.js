@@ -25,13 +25,13 @@ export default Component.extend({
   inactive: not('active'),
 
   focusIn() {
-    if (!this.get('active')) {
+    if (!this.active) {
       this.set('active', true);
     }
   },
 
   focusOut() {
-    if (this.get('active')) {
+    if (this.active) {
       this.set('active', false);
     }
   }

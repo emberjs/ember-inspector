@@ -9,9 +9,7 @@ export default DatePicker.extend({
   didInsertElement() {
     this._super(...arguments);
 
-    scheduleOnce('afterRender', this, function() {
-      this.flatpickrRef.open();
-    });
+    scheduleOnce('afterRender', this, this._openFlatpickr);
   },
 
   keyUp(e) {
@@ -19,5 +17,9 @@ export default DatePicker.extend({
       this.flatpickrRef.close();
     }
     return this._super(...arguments);
+  },
+
+  _openFlatpickr() {
+    this.flatpickrRef.open();
   }
 });

@@ -5,24 +5,22 @@
 {{/unless}}
 
 {{#if showEmpty}}
-  {{#ui/empty-message class="js-render-tree-empty"}}
+  <Ui::EmptyMessage class="js-render-tree-empty">
     <p>No rendering metrics have been collected. Try reloading or navigating around your application.</p>
     <p><strong>Note:</strong> Very fast rendering times (&lt;1ms) are excluded.</p>
     <button class="js-toolbar-page-refresh-btn" {{action "refreshPage"}}>Reload</button>
-  {{/ui/empty-message}}
+  </Ui::EmptyMessage>
 {{else}}
-  {{#x-list
+  <List
     class="js-render-tree"
-    headerHeight=headerHeight
-    name="render-tree"
-    schema=(schema-for "render-tree")
-    setIsDragging=(action "setIsDragging" target=application)
-  as |list|
-  }}
+    @headerHeight={{this.headerHeight}}
+    @schema={{schema-for "render-tree"}}
+    @setIsDragging={{action "setIsDragging" target=this.application}} as |list|
+  >
     <tbody>
       {{#each filtered as |item|}}
         {{render-item model=item search=search list=list}}
       {{/each}}
     </tbody>
-  {{/x-list}}
+  </List>
 {{/if}}

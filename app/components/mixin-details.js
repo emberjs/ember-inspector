@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
+import { action, computed } from '@ember/object';
 import { sort } from '@ember/object/computed';
 
 export default Component.extend({
@@ -11,9 +11,9 @@ export default Component.extend({
    */
   sortedAllProperties: sort('allProperties', 'sortProperties'),
 
-  allProperties: computed('model', function() {
-    const props = this.get('model.mixins').map(function(mixin) {
-      return mixin.properties.filter(function(p) {
+  allProperties: computed('model', function () {
+    const props = this.get('model.mixins').map(function (mixin) {
+      return mixin.properties.filter(function (p) {
         return !p.hasOwnProperty('overridden');
       });
     });
@@ -33,11 +33,9 @@ export default Component.extend({
     this.sortProperties = ['name'];
   },
 
-  actions: {
-    traceErrors() {
-      this.get('port').send('objectInspector:traceErrors', {
-        objectId: this.get('model.objectId')
-      });
-    }
-  }
+  traceErrors: action(function () {
+    this.port.send('objectInspector:traceErrors', {
+      objectId: this.get('model.objectId')
+    });
+  }),
 });

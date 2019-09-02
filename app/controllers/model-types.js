@@ -3,7 +3,10 @@ import { get, computed } from '@ember/object';
 import LocalStorageService from 'ember-inspector/services/storage/local';
 import { sort } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
-import { HIDE_EMPTY_MODELS_KEY, ORDER_MODELS_BY_COUNT_KEY } from 'ember-inspector/utils/local-storage-keys';
+import {
+  HIDE_EMPTY_MODELS_KEY,
+  ORDER_MODELS_BY_COUNT_KEY
+} from 'ember-inspector/utils/local-storage-keys';
 
 export default Controller.extend({
   application: controller(),
@@ -18,19 +21,19 @@ export default Controller.extend({
 
   hideEmptyModelTypes: computed({
     get() {
-      return getStoredPropertyValue(this.get('storage'), HIDE_EMPTY_MODELS_KEY);
+      return getStoredPropertyValue(this.storage, HIDE_EMPTY_MODELS_KEY);
     },
     set(key, value) {
-      return handleSettingProperty(this.get('storage'), HIDE_EMPTY_MODELS_KEY, value);
+      return handleSettingProperty(this.storage, HIDE_EMPTY_MODELS_KEY, value);
     }
   }),
 
   orderByRecordCount: computed({
     get() {
-      return getStoredPropertyValue(this.get('storage'), ORDER_MODELS_BY_COUNT_KEY);
+      return getStoredPropertyValue(this.storage, ORDER_MODELS_BY_COUNT_KEY);
     },
     set(key, value) {
-      return handleSettingProperty(this.get('storage'), ORDER_MODELS_BY_COUNT_KEY, value);
+      return handleSettingProperty(this.storage, ORDER_MODELS_BY_COUNT_KEY, value);
     }
   }),
 
@@ -39,8 +42,8 @@ export default Controller.extend({
   sortByDescCount: sort('filtered', 'sortByDescCountProp'),
 
   filtered: computed('model.@each.count', 'hideEmptyModelTypes', function() {
-    return this.get('model').filter(item => {
-      let hideEmptyModels = get(this, 'hideEmptyModelTypes');
+    return this.model.filter(item => {
+      let hideEmptyModels = this.hideEmptyModelTypes;
 
       if (hideEmptyModels) {
         return !!get(item, 'count');

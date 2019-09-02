@@ -2,8 +2,8 @@ import EmberObject from '@ember/object';
 let name;
 import { module, test } from 'qunit';
 import require from 'require';
-import wait from 'ember-test-helpers/wait';
 import { setupEIApp, destroyEIApp } from '../helpers/setup-destroy-ei-app';
+import { settled } from '@ember/test-helpers';
 
 let EmberDebug;
 let port, adapter;
@@ -51,7 +51,6 @@ module("Ember Debug", function(hooks) {
     EmberInspector.inspect(obj);
     assert.equal(name, "objectInspector:updateObject");
     cantSend(1, assert);
-    cantSend({}, assert);
     cantSend("a", assert);
     cantSend(null, assert);
   });
@@ -72,7 +71,7 @@ module("Ember Debug", function(hooks) {
 
     port.messageReceived('test:errors', {});
 
-    await wait();
+    await settled();
     adapter.reopen({ handleError });
   });
 });
