@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { action, computed, get } from '@ember/object';
+
 export default Component.extend({
   tagName: '',
 
@@ -37,7 +38,8 @@ export default Component.extend({
 
   popStack: action(function () {
     if (this.isNested) {
-      this.application.popMixinDetails();
+      this.attrs.popMixinDetails();
     }
   }),
 });
+

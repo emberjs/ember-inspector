@@ -1,10 +1,10 @@
 <li
-  class="{{if isOverridden "mixin__property_state_overridden"}} mixin__property js-object-property"
+  class="{{if this.isOverridden "mixin__property_state_overridden"}} mixin__property js-object-property"
 >
   {{!-- Disclosure Triangle --}}
-  {{#if hasDependentKeys}}
+  {{#if this.hasDependentKeys}}
     <button
-      class="mixin__cp-toggle {{if showDependentKeys "mixin__cp-toggle--expanded"}}"
+      class="mixin__cp-toggle {{if this.showDependentKeys "mixin__cp-toggle--expanded"}}"
       {{on "click" this.toggleDeps}}
     >
       {{svg-jar
@@ -19,14 +19,14 @@
   {{/if}}
 
   {{!-- Property Icon --}}
-  {{#if isService}}
+  {{#if this.isService}}
     <span
       class="mixin__property-icon-container"
       title="Service"
     >
       <span class="mixin__property-icon mixin__property-icon--service"></span>
     </span>
-  {{else if isComputedProperty}}
+  {{else if this.isComputedProperty}}
     <span
       class="mixin__property-icon-container"
       title={{if model.code model.code "code not avaliable"}}
@@ -45,7 +45,7 @@
 
   {{!-- Property Name --}}
   <span class="mixin__property-name js-object-property-name">
-    {{#if isService}}
+    {{#if this.isService}}
       <span
         title="service"
         class="js-property-name-service mixin__property--group"
@@ -53,7 +53,7 @@
         {{model.name}}
       </span>
     {{else}}
-      {{#if hasDependentKeys}}
+      {{#if this.hasDependentKeys}}
         <span
           title="computed"
           class="js-property-name-computed mixin__property--group"
@@ -68,8 +68,8 @@
 
   <span class="mixin__property-value-separator">: </span>
 
-  {{#if isEdit}}
-    {{#if isDate}}
+  {{#if this.isEdit}}
+    {{#if this.isDate}}
       {{date-property-field
         allowInput=true
         date=(readonly dateValue)
@@ -80,7 +80,7 @@
       }}
     {{else}}
       {{property-field
-        value=txtValue
+        value=this.txtValue
         finished-editing="finishedEditing"
         save-property="saveProperty"
         propertyComponent=this
@@ -88,7 +88,7 @@
       }}
     {{/if}}
   {{else}}
-    {{#if (and isComputedProperty (not isCalculated))}}
+    {{#if (and this.isComputedProperty (not this.isCalculated))}}
       <button
         class="mixin__calc-btn js-calculate"
         title="compute property"
@@ -98,7 +98,7 @@
       </button>
     {{else}}
       <span
-        class="{{model.value.type}} {{if isService "type-service"}} mixin__property-value js-object-property-value"
+        class="{{model.value.type}} {{if this.isService "type-service"}} mixin__property-value js-object-property-value"
         {{on "click" (fn this.valueClick model)}}
       >
         {{model.value.inspect}}

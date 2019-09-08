@@ -1,6 +1,6 @@
 {{#x-app
-  active=active
-  isDragging=isDragging
+  active=this.active
+  isDragging=this.isDragging
 }}
   {{#if isEmberApplication}}
     <div class="split">
@@ -8,7 +8,7 @@
         {{!-- Begin main --}}
         <div class="split split--main">
           {{#draggable-column
-            width=navWidth
+            width=this.navWidth
             classes="split__panel split__panel--sidebar-1"
             setIsDragging=(action "setIsDragging")
           }}
@@ -16,7 +16,7 @@
               {{app-picker}}
             </div>
             <div class="split__panel__bd">
-              <SideNav @deprecationCount={{deprecationCount}} />
+              <SideNav @deprecationCount={{this.deprecationCount}} />
             </div>
             <div class="split__panel__ft">
               <a target="_blank" href="https://github.com/emberjs/ember-inspector/issues">
@@ -30,7 +30,7 @@
               {{outlet "toolbar"}}
               <button
                 class="sidebar-toggle toolbar__icon-button {{if this.inspectorExpanded "flip"}}"
-                {{on "click" (action "toggleInspector")}}
+                {{on "click" this.toggleInspector}}
               >
                 {{svg-jar "sidebar-toggle" width="16" height="16"}}
               </button>
@@ -45,29 +45,27 @@
         {{!-- End main --}}
       </div>
 
-      {{#if inspectorExpanded}}
+      {{#if this.inspectorExpanded}}
         {{#draggable-column
           side="right"
-          width=inspectorWidth
+          width=this.inspectorWidth
           classes="split__panel"
           setIsDragging=(action "setIsDragging")
         }}
-          {{object-inspector
-            application=this
-            model=mixinStack
-            mixinDetails=mixinDetails
-            toggleInspector=(action "toggleInspector")
-          }}
+          <ObjectInspector
+            @popMixinDetails={{fn this.popMixinDetails}}
+            @model={{this.mixinStack}}
+            @mixinDetails={{this.mixinDetails}}
+          />
         {{/draggable-column}}
       {{/if}}
     </div>
-
   {{else}}
     <Ui::ErrorPage @description="Ember application not detected!">
       <ul>
         <li>This is not an Ember application.</li>
         <li>You are using an old version of Ember (&lt; rc5).</li>
-        {{#if isChrome}}
+        {{#if this.isChrome}}
           <li>
             You are using the file:// protocol (instead of http://), in which case:
 
