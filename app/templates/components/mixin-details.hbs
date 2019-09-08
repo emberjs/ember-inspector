@@ -1,23 +1,8 @@
 {{#if model.errors.length}}
-  <div class="mixin mixin_props_no js-object-inspector-errors">
-    <h2 class="mixin__name mixin__name--errors">
-      Errors
-      <button
-        class="send-to-console send-to-console--chevron-only js-send-errors-to-console"
-        {{on "click" this.traceErrors}}
-      >
-        {{svg-jar "send-with-chevron" width="6px" height="9px"}}
-        Trace in the Console
-      </button>
-    </h2>
-    <div class="mixin__properties">
-      {{#each model.errors as |error|}}
-        <div class="mixin__error js-object-inspector-error">
-          Error while computing: {{error.property}}
-        </div>
-      {{/each}}
-    </div>
-  </div>
+  <ObjectInspector::Errors
+    @errors={{model.errors}}
+    @traceErrors={{this.traceErrors}}
+  />
 {{/if}}
 
 {{#if (eq displayType "grouped")}}
