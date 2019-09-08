@@ -28,11 +28,12 @@
           <div class="split__panel">
             <div class="split__panel__hd">
               {{outlet "toolbar"}}
-              {{ui/sidebar-toggle
-                classNames="toolbar__icon-button"
-                isExpanded=inspectorExpanded
-                toggleInspector=(action "toggleInspector")
-              }}
+              <button
+                class="sidebar-toggle toolbar__icon-button {{if this.inspectorExpanded "flip"}}"
+                {{on "click" (action "toggleInspector")}}
+              >
+                {{svg-jar "sidebar-toggle" width="16" height="16"}}
+              </button>
             </div>
 
             {{#main-content class="split__panel__bd"}}
