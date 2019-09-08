@@ -1,7 +1,8 @@
 <div class="toolbar">
-  <div class="toolbar__search js-records-search">
-    {{ui/toolbar-search-field value=searchValue}}
-  </div>
+  <Ui::ToolbarSearchField
+    @value={{this.searchValue}}
+    @wrapperClass="js-records-search"
+  />
 
   <Ui::ToolbarDivider />
 

@@ -10,9 +10,8 @@
 
   <Ui::ToolbarDivider />
 
-  <div
-    class="toolbar__search js-container-instance-search"
-  >
-    {{ui/toolbar-search-field value=searchValue}}
-  </div>
+  <Ui::ToolbarSearchField
+    @value={{this.searchValue}}
+    @wrapperClass="js-container-instance-search"
+  />
 </div>

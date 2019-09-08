@@ -15,9 +15,10 @@
 
   <Ui::ToolbarDivider />
 
-  <div class="toolbar__search js-promise-search">
-    {{ui/toolbar-search-field value=searchValue}}
-  </div>
+  <Ui::ToolbarSearchField
+    @value={{this.searchValue}}
+    @wrapperClass="js-promise-search"
+  />
 
   <Ui::ToolbarDivider />
 

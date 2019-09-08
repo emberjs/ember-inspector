@@ -13,7 +13,8 @@
 
   <Ui::ToolbarDivider />
 
-  <div class="toolbar__search js-render-profiles-search">
-    {{ui/toolbar-search-field value=searchValue}}
-  </div>
+  <Ui::ToolbarSearchField
+    @value={{this.searchValue}}
+    @wrapperClass="js-render-profiles-search"
+  />
 </div>

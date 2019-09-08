@@ -17,7 +17,8 @@
 
   <Ui::ToolbarDivider />
 
-  <div class="toolbar__search js-deprecations-search">
-    {{ui/toolbar-search-field value=searchValue}}
-  </div>
+  <Ui::ToolbarSearchField
+    @value={{this.searchValue}}
+    @wrapperClass="js-deprecations-search"
+  />
 </div>

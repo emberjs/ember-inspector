@@ -23,7 +23,8 @@
 
   <Ui::ToolbarDivider />
 
-  <div class="toolbar__search js-filter-views">
-    {{ui/toolbar-search-field value=this.searchValue}}
-  </div>
+  <Ui::ToolbarSearchField
+    @value={{this.searchValue}}
+    @wrapperClass="js-filter-views"
+  />
 </div>
