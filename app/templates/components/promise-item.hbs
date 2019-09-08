@@ -63,7 +63,7 @@
           Stack Trace
         </button>
       {{else}}
-        {{ui/send-to-console action=sendValueToConsole param=model}}
+        <Ui::SendToConsole @action={{sendValueToConsole}} @param={{model}} />
       {{/if}}
     </div>
   {{else}}
