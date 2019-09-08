@@ -52,12 +52,14 @@
 
   <div class="toolbar__checkbox js-with-stack">
     <label for="instrument-with-stack">
-      {{ui/action-checkbox
-        onUpdate=(action "updateInstrumentWithStack")
-        checked=instrumentWithStack
-        id="instrument-with-stack"
-      }}
+      <Input
+        @type="checkbox"
+        @checked={{this.instrumentWithStack}}
+        @id="instrument-with-stack"
+        @change={{action "updateInstrumentWithStack" (not this.instrumentWithStack)}}
+      />
       Trace promises
     </label>
+
   </div>
 </div>
