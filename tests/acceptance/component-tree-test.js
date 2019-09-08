@@ -202,7 +202,7 @@ module('Component Tab', function (hooks) {
 
     await fillIn('.js-filter-views input', 'todo-');
     treeNodes = findAll('.component-tree-item');
-    assert.equal(treeNodes.length, 2, 'expected filtered tree nodes');
+    assert.equal(treeNodes.length, 3, 'expected filtered tree nodes');
 
     let visibleComponentNames = [];
     [...treeNodes].forEach(function (node) {
@@ -211,7 +211,7 @@ module('Component Tab', function (hooks) {
 
     assert.deepEqual(
       visibleComponentNames,
-      ['TodoList', 'TodoItem'],
+      ['todos', 'TodoList', 'TodoItem'],
       'expected names for all views/components'
     );
   });
