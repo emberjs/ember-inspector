@@ -13,9 +13,6 @@ export default Component.extend({
 
   objectId: readOnly('mixinDetails.model.objectId'),
 
-  isExpanded: computed('model.expand', 'model.properties.length', function () {
-    return this.get('model.expand') && this.get('model.properties.length') > 0;
-  }),
 
   /**
    * Sort the properties by name to make them easier to find in the object inspector.
@@ -36,10 +33,6 @@ export default Component.extend({
      */
     this.sortProperties = ['name'];
   },
-
-  toggleExpanded: action(function () {
-    this.toggleProperty('model.expand');
-  }),
 
   sendToConsole: action(function ({ name }) {
     let objectId = this.objectId;
