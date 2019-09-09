@@ -1,10 +1,3 @@
-{{#if model.errors.length}}
-  <ObjectInspector::Errors
-    @errors={{model.errors}}
-    @traceErrors={{this.traceErrors}}
-  />
-{{/if}}
-
 {{#if (eq displayType "grouped")}}
   {{#each model.mixins as |mixin|}}
     {{#mixin-detail model=mixin mixinDetails=this as |detail|}}

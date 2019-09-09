@@ -1,8 +1,10 @@
 import Component from '@ember/component';
-import { action, computed } from '@ember/object';
+import { computed } from '@ember/object';
 import { sort } from '@ember/object/computed';
 
 export default Component.extend({
+  tagName: '',
+
   /**
    * Sort the properties by name to make them easier to find in the object inspector.
    *
@@ -33,3 +35,4 @@ export default Component.extend({
     this.sortProperties = ['name'];
   },
 });
+

@@ -2,7 +2,7 @@
   <div class="split__panel__hd">
     <div class="toolbar">
       <button
-        class="toolbar__icon-button {{if isNested "enabled" "disabled"}} js-object-inspector-back"
+        class="toolbar__icon-button {{if this.isNested "enabled" "disabled"}} js-object-inspector-back"
         {{on "click" this.popStack}}
       >
         {{svg-jar "arrow-back" width="21px" height="21px"}}
@@ -10,7 +10,9 @@
 
       <Ui::ToolbarDivider />
 
-      <code class="object-inspector-object-name js-object-name">{{@model.firstObject.name}}</code>
+      <code class="object-inspector-object-name js-object-name">
+        {{@model.firstObject.name}}
+      </code>
 
       <button
         class="send-to-console js-send-object-to-console-btn"
@@ -42,7 +44,18 @@
       </button>
     </div>
 
-    {{mixin-details model=@mixinDetails displayType=this.propDisplayType}}
+    {{#if @mixinDetails.errors.length}}
+      <ObjectInspector::Errors
+        @errors={{@mixinDetails.errors}}
+        @traceErrors={{fn this.traceErrors @mixinDetails.objectId}}
+      />
+    {{/if}}
+
+    {{#if (eq this.propDisplayType "all")}}
+      <ObjectInspector::PropertiesAll @model={{@mixinDetails}} />
+    {{else if (eq this.propDisplayType "grouped")}}
+      <ObjectInspector::PropertiesGrouped @model={{@mixinDetails}} />
+    {{/if}}
   </div>
 {{else}}
   <div class="split__panel__bd">

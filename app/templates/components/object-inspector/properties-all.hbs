@@ -1,0 +1,8 @@
+<div class="mixin__properties">
+  {{#mixin-detail model=this mixinDetails=this as |detail|}}
+    {{#each this.sortedAllProperties as |prop|}}
+      {{mixin-property model=prop mixin=detail}}
+    {{/each}}
+  {{/mixin-detail}}
+</div>
+
