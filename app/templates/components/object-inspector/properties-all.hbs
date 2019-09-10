@@ -1,8 +1,16 @@
-<div class="mixin__properties">
-  {{#mixin-detail model=this mixinDetails=this as |detail|}}
-    {{#each this.sortedAllProperties as |prop|}}
-      {{mixin-property model=prop mixin=detail}}
+<ul class="mixin__properties">
+  <ObjectInspector::SortProperties
+    @properties={{this.flatPropertyList}} as |sortedProperties|
+  >
+    {{#each sortedProperties as |prop|}}
+      <ObjectInspector::Property
+        @model={{prop}}
+        @calculate={{fn this.calculate prop}}
+        @digDeeper={{fn this.digDeeper prop}}
+        @saveProperty={{this.saveProperty}}
+        @sendToConsole={{fn this.sendToConsole prop}}
+      />
     {{/each}}
-  {{/mixin-detail}}
-</div>
+  </ObjectInspector::SortProperties>
+</ul>
 

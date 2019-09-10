@@ -1,19 +1,24 @@
-import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { sort } from '@ember/object/computed';
+import { action, computed } from '@ember/object';
+import PropertiesBase from 'ember-inspector/components/object-inspector/properties-base';
 
-export default Component.extend({
-  tagName: '',
+const findMixin = function(mixins, property) {
+  return mixins.find((m) => {
+    return m.properties.includes(property);
+  });
+};
 
-  /**
-   * Sort the properties by name to make them easier to find in the object inspector.
-   *
-   * @property sortedAllProperties
-   * @type {Array<Object>}
-   */
-  sortedAllProperties: sort('allProperties', 'sortProperties'),
+export default PropertiesBase.extend({
+  calculate: action(function(property) {
+    const mixin = findMixin(this.get('model.mixins'), property);
 
-  allProperties: computed('model', function () {
+    this.port.send('objectInspector:calculate', {
+      objectId: this.model.objectId,
+      mixinIndex: this.get('model.mixins').indexOf(mixin),
+      property: property.name
+    });
+  }),
+
+  flatPropertyList: computed('model', function () {
     const props = this.get('model.mixins').map(function (mixin) {
       return mixin.properties.filter(function (p) {
         return !p.hasOwnProperty('overridden');
@@ -22,17 +27,5 @@ export default Component.extend({
 
     return props.flat();
   }),
-
-  init() {
-    this._super(...arguments);
-
-    /**
-     * Used by the `sort` computed macro.
-     *
-     * @property sortProperties
-     * @type {Array<String>}
-     */
-    this.sortProperties = ['name'];
-  },
 });
 

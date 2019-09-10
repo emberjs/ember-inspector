@@ -1,32 +1,40 @@
 {{#each @model.mixins as |mixin|}}
-  {{#mixin-detail model=mixin mixinDetails=this as |detail|}}
-    <ObjectInspector::Accordion @mixin={{mixin}} as |accordion|>
-      <div
-        class="mixin {{mixin.type}} {{if accordion.isExpanded "mixin_state_expanded"}} {{if mixin.properties.length "mixin_props_yes" "mixin_props_no"}} js-object-detail"
-      >
-        {{#if mixin.properties.length}}
-          <h2
-            class="mixin__name js-object-detail-name"
-            {{on "click" accordion.toggle}}
+  <ObjectInspector::Accordion @mixin={{mixin}} as |accordion|>
+    <div
+      class="mixin {{mixin.type}} {{if accordion.isExpanded "mixin_state_expanded"}} {{if mixin.properties.length "mixin_props_yes" "mixin_props_no"}} js-object-detail"
+    >
+      {{#if mixin.properties.length}}
+        <h2
+          class="mixin__name js-object-detail-name"
+          {{on "click" accordion.toggle}}
+        >
+          {{mixin.name}}
+        </h2>
+      {{else}}
+        <h2 class="mixin__name mixin__name--no-props js-object-detail-name">
+          {{mixin.name}}
+        </h2>
+      {{/if}}
+      {{#if accordion.isExpanded}}
+        <ul class="mixin__properties">
+          <ObjectInspector::SortProperties
+            @properties={{mixin.properties}} as |sortedProperties|
           >
-            {{mixin.name}}
-          </h2>
-        {{else}}
-          <h2 class="mixin__name mixin__name--no-props js-object-detail-name">
-            {{mixin.name}}
-          </h2>
-        {{/if}}
-        {{#if accordion.isExpanded}}
-          <ul class="mixin__properties">
-            {{#each detail.sortedProperties as |prop|}}
-              {{mixin-property model=prop mixin=detail}}
+            {{#each sortedProperties as |prop|}}
+              <ObjectInspector::Property
+                @model={{prop}}
+                @calculate={{fn this.calculate prop mixin}}
+                @digDeeper={{fn this.digDeeper prop}}
+                @saveProperty={{this.saveProperty}}
+                @sendToConsole={{fn this.sendToConsole prop}}
+              />
             {{else}}
               <li class="mixin__property">No Properties</li>
             {{/each}}
-          </ul>
-        {{/if}}
-      </div>
-    </ObjectInspector::Accordion>
-  {{/mixin-detail}}
+          </ObjectInspector::SortProperties>
+        </ul>
+      {{/if}}
+    </div>
+  </ObjectInspector::Accordion>
 {{/each}}
 
