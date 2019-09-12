@@ -1,10 +1,10 @@
-{{#unless isWarningClosed}}
-  <WarningMessage @close={{action "closeWarning"}}>
+{{#unless this.isWarningClosed}}
+  <WarningMessage @close={{this.closeWarning}}>
     Render times may be inaccurate due to instrumentation and environment
   </WarningMessage>
 {{/unless}}
 
-{{#if showEmpty}}
+{{#if this.showEmpty}}
   <Ui::EmptyMessage class="js-render-tree-empty">
     <p>No rendering metrics have been collected. Try reloading or navigating around your application.</p>
     <p><strong>Note:</strong> Very fast rendering times (&lt;1ms) are excluded.</p>
@@ -12,14 +12,18 @@
   </Ui::EmptyMessage>
 {{else}}
   <List
-    class="js-render-tree"
+    class="js-render-tree list--css-striping"
     @headerHeight={{this.headerHeight}}
     @schema={{schema-for "render-tree"}}
     @setIsDragging={{action "setIsDragging" target=this.application}} as |list|
   >
     <tbody>
-      {{#each filtered as |item|}}
-        {{render-item model=item search=search list=list}}
+      {{#each this.filtered as |item|}}
+        <RenderItem
+          @model={{item}}
+          @search={{this.search}}
+          @list={{list}}
+        />
       {{/each}}
     </tbody>
   </List>
