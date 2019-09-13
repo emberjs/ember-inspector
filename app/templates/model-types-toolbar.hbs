@@ -1,10 +1,10 @@
 <div class="toolbar">
-  {{ui/toolbar-reload-button
-    action=(action send "reload")
-    classNames="toolbar__icon-button js-reload-container-btn"
-  }}
+  <Ui::ToolbarReloadButton
+    @action={{action send "reload"}}
+    class="js-reload-container-btn"
+  />
 
-  <div class="divider" aria-hidden="true"></div>
+  <Ui::ToolbarDivider />
 
   <div class="toolbar__checkbox js-filter-hide-empty-model-types">
     <label for="options-hideEmptyModelTypes">

@@ -1,9 +1,10 @@
 <div class="toolbar">
-  <div class="toolbar__search js-records-search">
-    {{ui/toolbar-search-field value=searchValue}}
-  </div>
+  <Ui::ToolbarSearchField
+    @value={{this.searchValue}}
+    class="js-records-search"
+  />
 
-  <div class="divider" aria-hidden="true"></div>
+  <Ui::ToolbarDivider />
 
   <button
     class="{{if noFilterValue "active"}} toolbar__radio js-filter"

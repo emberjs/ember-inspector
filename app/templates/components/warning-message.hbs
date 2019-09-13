@@ -3,5 +3,7 @@
   <p class="warning__text">
     {{yield}}
   </p>
-  <button class="warning__close" {{action close}}> hide</button>
+  <button class="warning__close" {{on "click" @close}}>
+    hide
+  </button>
 </div>

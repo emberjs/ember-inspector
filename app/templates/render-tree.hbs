@@ -1,7 +1,7 @@
 {{#unless isWarningClosed}}
-  {{#warning-message close=(action "closeWarning")}}
+  <WarningMessage @close={{action "closeWarning"}}>
     Render times may be inaccurate due to instrumentation and environment
-  {{/warning-message}}
+  </WarningMessage>
 {{/unless}}
 
 {{#if showEmpty}}

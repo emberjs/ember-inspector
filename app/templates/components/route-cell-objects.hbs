@@ -7,12 +7,12 @@
     Route
   </span>
 
-  {{ui/send-to-console
-    action=@sendRouteHandlerToConsole
-    param=@route.value.routeHandler.name
-  }}
+  <Ui::SendToConsole
+    @action={{@sendRouteHandlerToConsole}}
+    @param={{@route.value.routeHandler.name}}
+  />
 
-  {{#if route.value.controller.exists}}
+  {{#if @route.value.controller.exists}}
     <span
       class="is-link js-route-controller"
       title={{@route.value.controller.className}}
@@ -21,9 +21,9 @@
       Controller
     </span>
 
-    {{ui/send-to-console
-      action=@sendControllerToConsole
-      param=@route.value.controller.name
-    }}
+    <Ui::SendToConsole
+      @action={{@sendControllerToConsole}}
+      @param={{@route.value.controller.name}}
+    />
   {{/if}}
 </div>

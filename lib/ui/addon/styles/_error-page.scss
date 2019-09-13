@@ -50,14 +50,21 @@
   top: -25px;
 
   .tomster {
+    transform: translateY(90px);
     flex-shrink: 0;
     height: 89px;
     width: 128px;
-    transform: translateY(90px);
-    transition: all 0.4s cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    animation: tomsterReveal 0.4s cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    animation-delay: 0.75s;
+    animation-fill-mode: forwards;
   }
+}
 
-  .tomster.hello {
+@keyframes tomsterReveal {
+  from {
+    transform: translateY(90px);
+  }
+  to   {
     transform: translateY(0px);
   }
 }

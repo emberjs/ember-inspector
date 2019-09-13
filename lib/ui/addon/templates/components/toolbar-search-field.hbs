@@ -1,11 +1,19 @@
-{{input value=value type="text" placeholder="Search"}}
+<div class="toolbar__search" ...attributes>
+  <Input
+    @id={{this.inputId}}
+    @type="text"
+    @value={{@value}}
+    placeholder="Search"
+  />
 
-{{#if value}}
-  <button
-    class="toolbar__icon-button toolbar__search-clear-button js-search-field-clear-button"
-    title="clear"
-    {{action "clear"}}
-  >
-    {{svg-jar "clear" width="14px" height="14px"}}
-  </button>
-{{/if}}
+  {{#if @value}}
+    <button
+      class="toolbar__icon-button toolbar__search-clear-button js-search-field-clear-button"
+      title="clear"
+      {{on "click" this.clear}}
+    >
+      {{svg-jar "clear" width="14px" height="14px"}}
+    </button>
+  {{/if}}
+</div>
+

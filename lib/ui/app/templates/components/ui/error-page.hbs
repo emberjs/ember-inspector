@@ -2,18 +2,14 @@
   <div class="error-page__content">
     <div class="error-page__header">
       <div class="error-page__title js-error-page-title">
-        {{description}}
+        {{@description}}
       </div>
       <img class="tomster" src="assets/images/fishy_tomster.png" alt="Fishy Tomster">
     </div>
 
     <div class="error-page__body">
       <div class="error-page__body-title">
-        {{#if bodyTitle}}
-          {{bodyTitle}}
-        {{else}}
-          Here are some common reasons this happens:
-        {{/if}}
+        Here are some common reasons this happens:
       </div>
 
       {{yield}}
@@ -25,3 +21,4 @@
     </div>
   </div>
 </div>
+
