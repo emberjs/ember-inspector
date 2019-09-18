@@ -1,6 +1,19 @@
 :root {
   --font-sans-serif: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Cantarell', 'Oxygen', 'Ubuntu', 'Helvetica Neue', helvetica, arial, sans-serif;
   --font-monospace: 'SF Mono', Menlo, Monaco, monospace;
+  --unit0: 0;
+  --unit1: 4px;
+  --unit2: calc(var(--unit1) * 2);
+  --unit3: calc(var(--unit1) * 3);
+  --unit4: calc(var(--unit1) * 4);
+  --unit5: calc(var(--unit1) * 5);
+  --unit6: calc(var(--unit1) * 6);
+  --unit7: calc(var(--unit1) * 7);
+  --unit8: calc(var(--unit1) * 8);
+  --unit9: calc(var(--unit1) * 9);
+  --unit10: calc(var(--unit1) * 10);
+  --unit11: calc(var(--unit1) * 11);
+  --unit12: calc(var(--unit1) * 12);
 }
 
 h1,
