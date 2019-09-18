@@ -4,6 +4,14 @@ import { setupApplicationTest } from 'ember-qunit';
 
 let port, message, name;
 
+/*
+  Toggling the source can be done by clicking the
+  disclosure triangle, count, or message
+*/
+const toggleDeprecationSource = function() {
+  return click('[data-test="deprecation-count"]');
+};
+
 function deprecationsWithSource() {
   return [{
     count: 2,
@@ -71,13 +79,13 @@ module('Deprecation Tab', function(hooks) {
 
     await visit('/deprecations');
 
-    await click('.js-deprecation-item');
+    await toggleDeprecationSource();
 
-    assert.dom('.js-deprecation-source').doesNotExist('no sources');
-    assert.dom(findAll('.js-deprecation-message')[0]).hasText('Deprecation 1', 'message shown');
-    assert.dom(findAll('.js-deprecation-count')[0]).hasText('2', 'Count correct');
-    assert.dom('.js-deprecation-full-trace').exists('Full trace button shown');
-    await click('.js-full-trace-deprecations-btn');
+    assert.dom('[data-test="deprecation-source"]').doesNotExist('no sources');
+    assert.dom(findAll('[data-test="deprecation-message"]')[0]).hasText('Deprecation 1', 'message shown');
+    assert.dom(findAll('[data-test="deprecation-count"]')[0]).hasText('2', 'Count correct');
+    assert.dom('[data-test="full-trace-deprecations-btn"]').exists('Full trace button shown');
+    await click('[data-test="full-trace-deprecations-btn"]');
 
     assert.equal(name, 'deprecation:sendStackTraces');
     assert.equal(message.deprecation.message, 'Deprecation 1');
@@ -98,26 +106,26 @@ module('Deprecation Tab', function(hooks) {
 
     await visit('/deprecations');
 
-    await click('.js-deprecation-item');
+    await toggleDeprecationSource();
 
-    assert.dom('.js-deprecation-message').hasText('Deprecation 1', 'message shown');
-    assert.dom('.js-deprecation-count').hasText('2', 'Count correct');
-    assert.dom('.js-deprecation-full-trace').doesNotExist('Full trace button not shown');
+    assert.dom('[data-test="deprecation-message"]').hasText('Deprecation 1', 'message shown');
+    assert.dom('[data-test="deprecation-count"]').hasText('2', 'Count correct');
+    assert.dom('[data-test="full-trace-deprecations-btn"]').doesNotExist('Full trace button not shown');
 
-    let sources = findAll('.js-deprecation-source');
+    let sources = findAll('[data-test="deprecation-source"]');
     assert.equal(sources.length, 2, 'shows all sources');
-    assert.notOk(sources[0].querySelector('.js-deprecation-source-link'), 'source not clickable');
-    assert.dom(sources[0].querySelector('.js-deprecation-source-text')).hasText('path-to-file.js:1');
-    assert.notOk(sources[1].querySelector('.js-deprecation-source-link'), 'source not clickable');
-    assert.dom(sources[1].querySelector('.js-deprecation-source-text')).hasText('path-to-second-file.js:2');
+    assert.notOk(sources[0].querySelector('[data-test="deprecation-source-link"]'), 'source not clickable');
+    assert.dom(sources[0].querySelector('[data-test="deprecation-source-text"]')).hasText('path-to-file.js:1');
+    assert.notOk(sources[1].querySelector('[data-test="deprecation-source-link"]'), 'source not clickable');
+    assert.dom(sources[1].querySelector('[data-test="deprecation-source-text"]')).hasText('path-to-second-file.js:2');
 
-    await click('.js-trace-deprecations-btn', sources[0]);
+    await click('[data-test="trace-deprecations-btn"]', sources[0]);
 
     assert.equal(name, 'deprecation:sendStackTraces');
     assert.equal(message.deprecation.message, 'Deprecation 1');
     assert.equal(message.deprecation.sources.length, 1);
 
-    await click('.js-trace-deprecations-btn', sources[1]);
+    await click('[data-test="trace-deprecations-btn"]', sources[1]);
 
     assert.equal(name, 'deprecation:sendStackTraces');
     assert.equal(message.deprecation.message, 'Deprecation 1');
@@ -146,36 +154,36 @@ module('Deprecation Tab', function(hooks) {
 
     await visit('/deprecations');
 
-    await click('.js-deprecation-item');
+    await toggleDeprecationSource();
 
-    assert.dom('.js-deprecation-message').hasText('Deprecation 1', 'message shown');
-    assert.dom('.js-deprecation-count').hasText('2', 'Count correct');
-    assert.dom('.js-deprecation-full-trace').doesNotExist('Full trace button not shown');
+    assert.dom('[data-test="deprecation-message"]').hasText('Deprecation 1', 'message shown');
+    assert.dom('[data-test="deprecation-count"]').hasText('2', 'Count correct');
+    assert.dom('[data-test="full-trace-deprecations-btn"]').doesNotExist('Full trace button not shown');
 
-    let sources = findAll('.js-deprecation-source');
+    let sources = findAll('[data-test="deprecation-source"]');
     assert.equal(sources.length, 2, 'shows all sources');
-    assert.notOk(sources[0].querySelector('.js-deprecation-source-text'), 'source clickable');
-    assert.dom(sources[0].querySelector('.js-deprecation-source-link')).hasText('path-to-file.js:1');
-    assert.notOk(sources[1].querySelector('.js-deprecation-source-text'), 'source clickable');
-    assert.dom(sources[1].querySelector('.js-deprecation-source-link')).hasText('path-to-second-file.js:2');
+    assert.notOk(sources[0].querySelector('[data-test="deprecation-source-text"]'), 'source clickable');
+    assert.dom(sources[0].querySelector('[data-test="deprecation-source-link"]')).hasText('path-to-file.js:1');
+    assert.notOk(sources[1].querySelector('[data-test="deprecation-source-text"]'), 'source clickable');
+    assert.dom(sources[1].querySelector('[data-test="deprecation-source-link"]')).hasText('path-to-second-file.js:2');
 
     openResourceArgs = false;
-    await click('.js-deprecation-source-link', sources[0]);
+    await click('[data-test="deprecation-source-link"]', sources[0]);
 
     assert.ok(openResourceArgs);
     openResourceArgs = false;
 
-    await click('.js-deprecation-source-link', sources[1]);
+    await click('[data-test="deprecation-source-link"]', sources[1]);
 
     assert.ok(openResourceArgs);
     openResourceArgs = false;
 
-    await click('.js-trace-deprecations-btn', sources[0]);
+    await click('[data-test="trace-deprecations-btn"]', sources[0]);
 
     assert.equal(name, 'deprecation:sendStackTraces');
     assert.equal(message.deprecation.message, 'Deprecation 1');
     assert.equal(message.deprecation.sources.length, 1);
-    await click('.js-trace-deprecations-btn', sources[1]);
+    await click('[data-test="trace-deprecations-btn"]', sources[1]);
     assert.equal(name, 'deprecation:sendStackTraces');
     assert.equal(message.deprecation.message, 'Deprecation 1');
     assert.equal(message.deprecation.sources.length, 1);
@@ -195,18 +203,18 @@ module('Deprecation Tab', function(hooks) {
 
     await visit('/deprecations');
 
-    await click('.js-deprecation-item');
+    await toggleDeprecationSource();
 
-    let sources = findAll('.js-deprecation-source');
+    let sources = findAll('[data-test="deprecation-source"]');
     assert.equal(sources.length, 2, 'shows all sources');
 
-    await fillIn('.js-deprecations-search input', 'xxxx');
-    sources = findAll('.js-deprecation-source');
+    await fillIn('[data-test="deprecations-search"] input', 'xxxx');
+    sources = findAll('[data-test="deprecation-source"]');
     assert.equal(sources.length, 0, 'sources filtered');
 
     await click('.js-search-field-clear-button');
-    await click('.js-deprecation-item');
-    sources = findAll('.js-deprecation-source');
+    await click('[data-test="deprecation-item"] .disclosure-triangle');
+    sources = findAll('[data-test="deprecation-source"]');
     assert.equal(sources.length, 2, 'show all sources');
   });
 });

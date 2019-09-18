@@ -1,16 +1,16 @@
 <div class="toolbar">
-  <Ui::ToolbarClearButton
-    @action={{action send "clear"}}
-    class="js-clear-deprecations-btn"
-  />
+  <Ui::ToolbarClearButton @action={{action send "clear"}} />
 
-  <div class="toolbar__checkbox js-toggle-flush-deprecations">
+  <Ui::ToolbarDivider />
+
+  <div class="toolbar__checkbox">
     <label for="options-toggle-deprecations" title="Deprecation workflow">
-      {{input
-        type="checkbox"
-        checked=options.toggleDeprecationWorkflow
-        id="options-toggle-deprecations"
-      }}
+      <Input
+        @type="checkbox"
+        @checked={{this.toggleDeprecationWorkflow}}
+        @change={{this.changeDeprecationWorkflow}}
+        @id="options-toggle-deprecations"
+      />
       Toggle for Deprecation Workflow
     </label>
   </div>
@@ -19,6 +19,6 @@
 
   <Ui::ToolbarSearchField
     @value={{this.searchValue}}
-    class="js-deprecations-search"
+    data-test="deprecations-search"
   />
 </div>
