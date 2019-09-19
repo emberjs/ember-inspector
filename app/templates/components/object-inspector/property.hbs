@@ -96,6 +96,13 @@
       >
         {{svg-jar "calculate" width="16px" height="16px"}}
       </button>
+    {{else if this.isDate}}
+      <span
+        class="{{this.valueType}} mixin__property-value js-object-property-value"
+        {{on "click" this.dateClick}}
+      >
+        {{@model.value.inspect}}
+      </span>
     {{else}}
       <span
         class="{{this.valueType}} {{if this.isService "type-service"}} mixin__property-value js-object-property-value"

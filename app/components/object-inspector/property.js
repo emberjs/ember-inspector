@@ -38,6 +38,8 @@ export default Component.extend({
 
   isDate: equal('valueType', 'type-date'),
 
+  isString: equal('valueType', 'type-string'),
+
   isDepsExpanded: false,
 
   hasDependentKeys: and('model.dependentKeys.length', 'isCalculated'),
@@ -51,6 +53,10 @@ export default Component.extend({
       || this.isArray
   },
 
+  cannotEdit() {
+    return this.isFunction || this.isOverridden || this.readOnly;
+  },
+
   toggleDeps: action(function () {
     this.toggleProperty('isDepsExpanded');
   }),
@@ -61,30 +67,31 @@ export default Component.extend({
       return;
     }
 
-    if (this.isComputedProperty && !this.isCalculated) {
-      this.calculate();
-      return;
-    }
-
-    if (this.isFunction || this.isOverridden || this.readOnly) {
+    if (this.cannotEdit()) {
       return;
     }
 
     let value = this.get('model.value.inspect');
-    let type = this.valueType;
-    if (type === 'type-string') {
-      // If the value is not already wrapped in quotes, wrap it
-      if (!value.startsWith('"') && !value.endsWith('"')) {
-        value = `"${value}"`;
-      }
+
+    if (this.isString) {
+      value = this._quotedString(value);
     }
-    if (!this.isDate) {
-      this.set('txtValue', value);
-    } else {
-      this.set('dateValue', new Date(value));
-    }
+
+    this.set('txtValue', value);
     this.set('isEdit', true);
   }),
+
+  dateClick: action(function() {
+    this.set('dateValue', new Date(
+      this.get('model.value.inspect')
+    ));
+
+    this.set('isEdit', true);
+  }),
+
+  _quotedString(value) {
+    return (!value.startsWith('"') && !value.endsWith('"')) ? `"${value}"` : value;
+  },
 
   save: action(function() {
     let realValue, dataType;
