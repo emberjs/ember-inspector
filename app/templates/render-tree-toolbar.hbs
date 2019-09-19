@@ -3,7 +3,7 @@
     @action={{action send "clearProfiles"}}
   />
 
-  {{#unless showEmpty}}
+  {{#unless this.showEmpty}}
     <Ui::ToolbarDivider />
     <Ui::ToolbarReloadButton
       @action={{action send "refreshPage"}}

@@ -58,6 +58,12 @@
   }
 }
 
+.list.list--css-striping {
+  .list__row:nth-child(even) {
+    background: var(--base00);
+  }
+}
+
 .list__cell-content {
   width: 100%;
 }

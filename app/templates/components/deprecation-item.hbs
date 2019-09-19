@@ -1,15 +1,13 @@
-<Ui::Accordion as |accordion|>
+<Ui::Disclosure as |disclosure|>
   <div class="deprecation-item px-3" data-test="deprecation-item">
     <div class="flex items-center">
       <div
         class="flex items-center flex-grow py-2"
-        {{on "click" accordion.toggle}}
+        {{on "click" disclosure.toggle}}
       >
         {{#if @model.hasSourceMap}}
           <div class="flex-shrink-0 w-3">
-            <span class="disclosure-triangle {{if accordion.isExpanded "expanded" "collapsed"}}">
-              {{svg-jar "disclosure-triangle" width="9px" height="9px"}}
-            </span>
+            <disclosure.triangleIcon />
           </div>
         {{/if}}
 
@@ -49,7 +47,7 @@
       {{/if}}
     </div>
 
-    {{#if (and @model.hasSourceMap accordion.isExpanded)}}
+    {{#if (and @model.hasSourceMap disclosure.isExpanded)}}
       {{#each @model.sources as |single|}}
         <DeprecationItemSource @model={{single}} as |source|>
           <div class="deprecation-source pb-2" data-test="deprecation-source">
@@ -83,4 +81,4 @@
       {{/each}}
     {{/if}}
   </div>
-</Ui::Accordion>
+</Ui::Disclosure>

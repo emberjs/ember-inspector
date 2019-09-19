@@ -1,31 +1,13 @@
 import Component from '@ember/component';
 import { isNone, isEmpty } from '@ember/utils';
-import { run } from '@ember/runloop';
-import { observer, computed } from '@ember/object';
+import { computed } from '@ember/object';
 import { htmlSafe } from '@ember/string';
 import escapeRegExp from 'ember-inspector/utils/escape-reg-exp';
 
 import { gt } from '@ember/object/computed';
 
-const { once } = run;
-
 export default Component.extend({
   tagName: '',
-
-  search: null,
-
-  isExpanded: false,
-
-  expand() {
-    this.set('isExpanded', true);
-  },
-
-  searchChanged: observer('search', function() {
-    let search = this.search;
-    if (!isEmpty(search)) {
-      once(this, 'expand');
-    }
-  }),
 
   searchMatch: computed('search', 'name', function() {
     let search = this.search;
@@ -59,18 +41,6 @@ export default Component.extend({
 
   hasChildren: gt('model.children.length', 0),
 
-  expandedClass: computed('hasChildren', 'isExpanded', function() {
-    if (!this.hasChildren) {
-      return;
-    }
-
-    if (this.isExpanded) {
-      return 'list__cell_arrow_expanded';
-    } else {
-      return 'list__cell_arrow_collapsed';
-    }
-  }),
-
   readableTime: computed('model.timestamp', function() {
     let d = new Date(this.get('model.timestamp'));
     let ms = d.getMilliseconds();
@@ -79,17 +49,5 @@ export default Component.extend({
     let hours = d.getHours().toString().length === 1 ? `0${d.getHours()}` : d.getHours();
 
     return `${hours}:${minutes}:${seconds}:${ms}`;
-  }),
-
-  init() {
-    this._super(...arguments);
-
-    this.searchChanged();
-  },
-
-  actions: {
-    toggleExpand() {
-      this.toggleProperty('isExpanded');
-    }
-  }
+  })
 });
