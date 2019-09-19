@@ -1,8 +1,16 @@
-<button
-  class="disclosure-triangle {{if @expanded "expanded" "collapsed"}}"
-  {{on "click" @toggle}}
-  ...attributes
->
-  {{svg-jar "disclosure-triangle" width="9px" height="9px"}}
-</button>
-
+{{#if @toggle}}
+  <button
+    class="disclosure-triangle {{if @expanded "expanded" "collapsed"}}"
+    {{on "click" @toggle}}
+    ...attributes
+  >
+    {{svg-jar "disclosure-triangle" width="9px" height="9px"}}
+  </button>
+{{else}}
+  <span
+    class="disclosure-triangle {{if @expanded "expanded" "collapsed"}}"
+    ...attributes
+  >
+    {{svg-jar "disclosure-triangle" width="9px" height="9px"}}
+  </span>
+{{/if}}

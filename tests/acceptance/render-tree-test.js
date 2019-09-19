@@ -114,24 +114,6 @@ module('Render Tree Tab', function(hooks) {
     assert.dom(rows[0].querySelector('.js-render-profile-name')).hasText('First View Rendering');
     assert.dom(rows[1].querySelector('.js-render-profile-name')).hasText('Second View Rendering');
 
-    await fillIn('.js-render-profiles-search input', 'first');
-
-    rows = findAll('.js-render-profile-item');
-    assert.equal(rows.length, 2, "The first parent is rendered with the child");
-    assert.dom(rows[0].querySelector('.js-render-profile-name')).hasText('First View Rendering');
-    assert.dom(rows[1].querySelector('.js-render-profile-name')).hasText('Child view');
-
-    // Minimize to hide child view
-    await click('.js-render-main-cell');
-
-    await fillIn('.js-render-profiles-search input', '');
-
-    rows = findAll('.js-render-profile-item');
-    assert.equal(rows.length, 2, "filter is reset");
-
-    assert.dom(rows[0].querySelector('.js-render-profile-name')).hasText('First View Rendering');
-    assert.dom(rows[1].querySelector('.js-render-profile-name')).hasText('Second View Rendering');
-
     await fillIn('.js-render-profiles-search input', 'Second');
 
     rows = findAll('.js-render-profile-item');

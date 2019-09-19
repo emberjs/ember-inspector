@@ -1,4 +1,4 @@
-import { computed, get } from '@ember/object';
+import { action, computed, get } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import Controller, { inject as controller } from '@ember/controller';
 import { inject as service } from '@ember/service';
@@ -14,13 +14,7 @@ export default Controller.extend({
   showEmpty: and('initialEmpty', 'modelEmpty'),
 
   /**
-   * Service used for storage. Storage is
-   * needed for remembering if the user closed the warning
-   * as it might get mildly annoying for devs to see and close
-   * the trivial warning every time.
-   * The default storage service is local storage however we
-   * fall back to memory storage if local storage is disabled (For
-   * example as a security setting in Chrome).
+   * Storage is needed for remembering if the user closed the warning
    *
    * @property storage
    * @type {Service}
@@ -30,7 +24,6 @@ export default Controller.extend({
 
   /**
    * Checks if the user previously closed the warning by referencing localStorage
-   * it is a computed get/set property.
    *
    * @property isWarningClosed
    * @type {Boolean}
@@ -55,18 +48,6 @@ export default Controller.extend({
     return this.isWarningClosed ? 31 : 56;
   }),
 
-  actions: {
-    /**
-     * This action when triggered, closes the warning message for rendering times being inaccurate
-     * and sets `isWarningClosed` value to true, thus preventing the warning from being shown further.
-     *
-     * @method closeWarning
-     */
-    closeWarning() {
-      this.set('isWarningClosed', true);
-    }
-  },
-
   // bound to the input field, updates the `search` property
   // 300ms after changing
   searchValue: debounceComputed('search', 300),
@@ -79,15 +60,19 @@ export default Controller.extend({
   }),
 
   filtered: computed('model.@each.name', 'search', function() {
-    return get(this, 'model').filter((item) => {
-      let search = this.escapedSearch;
-      if (isEmpty(search)) {
-        return true;
-      }
-      let regExp = new RegExp(search);
-      return !!recursiveMatch(item, regExp);
+    if (isEmpty(this.escapedSearch)) {
+      return this.model;
+    }
+
+    return this.model.filter((item) => {
+      const regExp = new RegExp(this.escapedSearch);
+      return recursiveMatch(item, regExp);
     });
   }),
+
+  closeWarning: action(function() {
+    this.set('isWarningClosed', true);
+  })
 });
 
 function recursiveMatch(item, regExp) {
