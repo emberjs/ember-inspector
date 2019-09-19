@@ -10,7 +10,10 @@
     }}
       {{#r.cell as |value|}}
         {{#if value.inspectable}}
-          <div class="is-link js-instance-name" {{action "inspectInstance" value}}>
+          <div
+            class="is-link js-instance-name"
+            {{on "click" (fn this.inspectInstance value)}}
+          >
             {{value.name}}
           </div>
         {{else}}

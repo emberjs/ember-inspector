@@ -1,4 +1,4 @@
-import { get, computed } from '@ember/object';
+import { action, get, computed } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import debounceComputed from 'ember-inspector/computed/debounce';
 import searchMatch from 'ember-inspector/utils/search-match';
@@ -34,22 +34,23 @@ export default Controller.extend({
     this.sortProperties = ['name'];
   },
 
-  actions: {
-    /**
-     * Inspect an instance in the object inspector.
-     * Called whenever an item in the list is clicked.
-     *
-     * @method inspectInstance
-     * @param {Object} obj
-     */
-    inspectInstance(obj) {
-      if (!get(obj, 'inspectable')) {
-        return;
-      }
-      this.port.send('objectInspector:inspectByContainerLookup', { name: get(obj, 'fullName') });
-    },
-    sendContainerToConsole() {
-      this.port.send('objectInspector:sendContainerToConsole');
+  /**
+   * Inspect an instance in the object inspector.
+   * Called whenever an item in the list is clicked.
+   *
+   * @method inspectInstance
+   * @param {Object} obj
+   */
+  inspectInstance: action(function(obj) {
+    if (!get(obj, 'inspectable')) {
+      return;
     }
-  }
+    this.port.send('objectInspector:inspectByContainerLookup', {
+      name: get(obj, 'fullName')
+    });
+  }),
+
+  sendContainerToConsole: action(function() {
+    this.port.send('objectInspector:sendContainerToConsole');
+  }),
 });
