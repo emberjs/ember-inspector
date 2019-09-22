@@ -1,10 +1,10 @@
 <li
-  class="{{if isOverridden "mixin__property_state_overridden"}} mixin__property js-object-property"
+  class="{{if this.isOverridden "mixin__property_state_overridden"}} mixin__property js-object-property"
 >
   {{!-- Disclosure Triangle --}}
-  {{#if hasDependentKeys}}
+  {{#if this.hasDependentKeys}}
     <button
-      class="mixin__cp-toggle {{if showDependentKeys "mixin__cp-toggle--expanded"}}"
+      class="mixin__cp-toggle {{if this.showDependentKeys "mixin__cp-toggle--expanded"}}"
       {{on "click" this.toggleDeps}}
     >
       {{svg-jar
@@ -19,17 +19,17 @@
   {{/if}}
 
   {{!-- Property Icon --}}
-  {{#if isService}}
+  {{#if this.isService}}
     <span
       class="mixin__property-icon-container"
       title="Service"
     >
       <span class="mixin__property-icon mixin__property-icon--service"></span>
     </span>
-  {{else if isComputedProperty}}
+  {{else if this.isComputedProperty}}
     <span
       class="mixin__property-icon-container"
-      title={{if model.code model.code "code not avaliable"}}
+      title={{if @model.code @model.code "code not avaliable"}}
       {{on "click" this.toggleDeps}}
     >
       <span class="mixin__property-icon mixin__property-icon--computed"></span>
@@ -45,98 +45,86 @@
 
   {{!-- Property Name --}}
   <span class="mixin__property-name js-object-property-name">
-    {{#if isService}}
+    {{#if this.isService}}
       <span
         title="service"
         class="js-property-name-service mixin__property--group"
       >
-        {{model.name}}
+        {{@model.name}}
       </span>
     {{else}}
-      {{#if hasDependentKeys}}
+      {{#if this.hasDependentKeys}}
         <span
           title="computed"
           class="js-property-name-computed mixin__property--group"
         >
-          {{model.name}}
+          {{@model.name}}
         </span>
       {{else}}
-        {{model.name}}
+        {{@model.name}}
       {{/if}}
     {{/if}}
   </span>
 
   <span class="mixin__property-value-separator">: </span>
 
-  {{#if isEdit}}
-    {{#if isDate}}
+  {{#if this.isEdit}}
+    {{#if this.isDate}}
       {{date-property-field
         allowInput=true
-        date=(readonly dateValue)
+        date=(readonly this.dateValue)
         dateFormat="Y-m-d"
         class="mixin__property-value-txt js-object-property-value-date"
-        onChange=(action "dateSelected")
-        onClose=(action "finishedEditing")
+        onChange=this.dateSelected
+        onClose=this.finishedEditing
       }}
     {{else}}
-      {{property-field
-        value=txtValue
-        finished-editing="finishedEditing"
-        save-property="saveProperty"
-        propertyComponent=this
+      <ObjectInspector::PropertyField
         class="mixin__property-value-txt js-object-property-value-txt"
-      }}
+        @value={{this.txtValue}}
+        @insert-newline={{fn this.save}}
+        @escape-press={{fn this.finishedEditing}}
+        @focus-out={{fn this.finishedEditing}}
+      />
     {{/if}}
   {{else}}
-    {{#if (and isComputedProperty (not isCalculated))}}
+    {{#if (and this.isComputedProperty (not this.isCalculated))}}
       <button
         class="mixin__calc-btn js-calculate"
         title="compute property"
-        {{on "click" (fn mixin.calculate model) bubbles=false}}
+        {{on "click" @calculate bubbles=false}}
       >
         {{svg-jar "calculate" width="16px" height="16px"}}
       </button>
+    {{else if this.isDate}}
+      <span
+        class="{{this.valueType}} mixin__property-value js-object-property-value"
+        {{on "click" this.dateClick}}
+      >
+        {{@model.value.inspect}}
+      </span>
     {{else}}
       <span
-        class="{{model.value.type}} {{if isService "type-service"}} mixin__property-value js-object-property-value"
-        {{on "click" (fn this.valueClick model)}}
+        class="{{this.valueType}} {{if this.isService "type-service"}} mixin__property-value js-object-property-value"
+        {{on "click" this.valueClick}}
       >
-        {{model.value.inspect}}
+        {{@model.value.inspect}}
       </span>
     {{/if}}
   {{/if}}
 
-  <span class="mixin__property-overridden-by">(Overridden by {{model.overridden}})</span>
+  <span class="mixin__property-overridden-by">(Overridden by {{@model.overridden}})</span>
 
   <button
     class="mixin__send-btn send-to-console js-send-to-console-btn"
     title="Send to console"
-    {{on "click" (fn mixin.sendToConsole model)}}
+    {{on "click" @sendToConsole}}
   >
     {{svg-jar "send-with-text" width="20px" height="10px"}}
   </button>
 </li>
 
-{{#if showDependentKeys}}
-  <li class="mixin__property-dependency-list">
-    {{svg-jar "dependent-key-connection" width="20px" height="10px"}}
-    <ul>
-      {{#each model.dependentKeys as |depKey|}}
-        <li class="mixin__property-dependency-item">
-          {{svg-jar
-            "dependent-key-bullet"
-            width="9px"
-            height="9px"
-          }}
-
-          <span
-            class="mixin__property-dependency-name"
-            data-label="object-property-name"
-          >
-            {{depKey}}
-          </span>
-        </li>
-      {{/each}}
-    </ul>
-  </li>
+{{#if this.showDependentKeys}}
+  <ObjectInspector::DependentKeys @keys={{@model.dependentKeys}} />
 {{/if}}
+

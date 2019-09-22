@@ -8,14 +8,6 @@ export default Component.extend({
   tagName: '',
   isEdit: false,
 
-  /**
-   * Passed through the template.
-   *
-   * The mixin-detail component
-   * @type {Ember.Component}
-   */
-  mixin: null,
-
   // Bound to editing textbox
   txtValue: null,
   dateValue: null,
@@ -29,6 +21,8 @@ export default Component.extend({
   isService: alias('model.isService'),
 
   isOverridden: alias('model.overridden'),
+
+  readOnly: alias('model.readOnly'),
 
   isEmberObject: equal('valueType', 'type-ember-object'),
 
@@ -44,6 +38,8 @@ export default Component.extend({
 
   isDate: equal('valueType', 'type-date'),
 
+  isString: equal('valueType', 'type-string'),
+
   isDepsExpanded: false,
 
   hasDependentKeys: and('model.dependentKeys.length', 'isCalculated'),
@@ -51,10 +47,14 @@ export default Component.extend({
   showDependentKeys: and('isDepsExpanded', 'hasDependentKeys'),
 
   canDig() {
-    return this.get('isInstance')
-      || this.get('isObject')
-      || this.get('isEmberObject')
-      || this.get('isArray')
+    return this.isInstance
+      || this.isObject
+      || this.isEmberObject
+      || this.isArray
+  },
+
+  cannotEdit() {
+    return this.isFunction || this.isOverridden || this.readOnly;
   },
 
   toggleDeps: action(function () {
@@ -63,57 +63,58 @@ export default Component.extend({
 
   valueClick: action(function () {
     if (this.canDig()) {
-      this.mixin.send('digDeeper', this.model);
+      this.digDeeper();
       return;
     }
 
-    if (this.isComputedProperty && !this.isCalculated) {
-      this.mixin.send('calculate', this.model);
-      return;
-    }
-
-    if (this.isFunction || this.get('model.overridden') || this.get('model.readOnly')) {
+    if (this.cannotEdit()) {
       return;
     }
 
     let value = this.get('model.value.inspect');
-    let type = this.valueType;
-    if (type === 'type-string') {
-      // If the value is not already wrapped in quotes, wrap it
-      if (!value.startsWith('"') && !value.endsWith('"')) {
-        value = `"${value}"`;
-      }
+
+    if (this.isString) {
+      value = this._quotedString(value);
     }
-    if (!this.isDate) {
-      this.set('txtValue', value);
-    } else {
-      this.set('dateValue', new Date(value));
-    }
+
+    this.set('txtValue', value);
     this.set('isEdit', true);
   }),
 
-  actions: {
-    saveProperty() {
-      let realValue, dataType;
-      if (!this.isDate) {
-        realValue = parseText(this.txtValue);
-      } else {
-        realValue = this.dateValue.getTime();
-        dataType = 'date';
-      }
-      this.mixin.send('saveProperty', this.get('model.name'), realValue, dataType);
-    },
+  dateClick: action(function() {
+    this.set('dateValue', new Date(
+      this.get('model.value.inspect')
+    ));
 
-    finishedEditing() {
-      next(() => {
-        this.set('isEdit', false);
-      });
-    },
+    this.set('isEdit', true);
+  }),
 
-    dateSelected([val]) {
-      this.set('dateValue', val);
-      this.send('saveProperty');
-      this.send('finishedEditing');
+  _quotedString(value) {
+    return (!value.startsWith('"') && !value.endsWith('"')) ? `"${value}"` : value;
+  },
+
+  save: action(function() {
+    let realValue, dataType;
+    if (!this.isDate) {
+      realValue = parseText(this.txtValue);
+    } else {
+      realValue = this.dateValue.getTime();
+      dataType = 'date';
     }
-  }
+
+    this.saveProperty(this.get('model.name'), realValue, dataType);
+    this.finishedEditing();
+  }),
+
+  finishedEditing: action(function() {
+    next(() => {
+      this.set('isEdit', false);
+    });
+  }),
+
+  dateSelected: action(function([val]) {
+    this.set('dateValue', val);
+    this.save();
+  }),
 });
+
