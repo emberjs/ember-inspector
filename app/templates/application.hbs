@@ -1,82 +1,84 @@
-{{#x-app
-  active=this.active
-  isDragging=this.isDragging
-}}
-  {{#if isEmberApplication}}
-    <div class="split">
-      <div class="split__panel">
-        {{!-- Begin main --}}
-        <div class="split split--main">
-          {{#draggable-column
-            width=this.navWidth
-            classes="split__panel split__panel--sidebar-1"
-            setIsDragging=(action "setIsDragging")
-          }}
-            <div class="split__panel__hd">
-              {{app-picker}}
-            </div>
-            <div class="split__panel__bd">
-              <SideNav @deprecationCount={{this.deprecationCount}} />
-            </div>
-            <div class="split__panel__ft">
-              <a target="_blank" href="https://github.com/emberjs/ember-inspector/issues">
-                Submit an Issue
-              </a>
-            </div>
-          {{/draggable-column}}
+<div class="ember-view">
+  {{#x-app
+    active=this.active
+    isDragging=this.isDragging
+  }}
+    {{#if isEmberApplication}}
+      <div class="split">
+        <div class="split__panel">
+          {{!-- Begin main --}}
+          <div class="split split--main">
+            {{#draggable-column
+              width=this.navWidth
+              classes="split__panel split__panel--sidebar-1"
+              setIsDragging=(action "setIsDragging")
+            }}
+              <div class="split__panel__hd">
+                {{app-picker}}
+              </div>
+              <div class="split__panel__bd">
+                <SideNav @deprecationCount={{this.deprecationCount}} />
+              </div>
+              <div class="split__panel__ft">
+                <a target="_blank" href="https://github.com/emberjs/ember-inspector/issues">
+                  Submit an Issue
+                </a>
+              </div>
+            {{/draggable-column}}
 
-          <div class="split__panel">
-            <div class="split__panel__hd">
-              {{outlet "toolbar"}}
-              <button
-                class="sidebar-toggle toolbar__icon-button {{if this.inspectorExpanded "flip"}}"
-                {{on "click" this.toggleInspector}}
-              >
-                {{svg-jar "sidebar-toggle" width="16" height="16"}}
-              </button>
-            </div>
+            <div class="split__panel">
+              <div class="split__panel__hd">
+                {{outlet "toolbar"}}
+                <button
+                  class="sidebar-toggle toolbar__icon-button {{if this.inspectorExpanded "flip"}}"
+                  {{on "click" this.toggleInspector}}
+                >
+                  {{svg-jar "sidebar-toggle" width="16" height="16"}}
+                </button>
+              </div>
 
-            {{#main-content class="split__panel__bd"}}
-              {{outlet}}
-            {{/main-content}}
+              {{#main-content class="split__panel__bd"}}
+                {{outlet}}
+              {{/main-content}}
+            </div>
           </div>
+
+          {{!-- End main --}}
         </div>
 
-        {{!-- End main --}}
-      </div>
-
-      {{#if this.inspectorExpanded}}
-        {{#draggable-column
-          side="right"
-          width=this.inspectorWidth
-          classes="split__panel"
-          setIsDragging=(action "setIsDragging")
-        }}
-          <ObjectInspector
-            @popMixinDetails={{this.popMixinDetails}}
-            @model={{this.mixinStack}}
-            @mixinDetails={{this.mixinDetails}}
-          />
-        {{/draggable-column}}
-      {{/if}}
-    </div>
-  {{else}}
-    <Ui::ErrorPage @description="Ember application not detected!">
-      <ul>
-        <li>This is not an Ember application.</li>
-        <li>You are using an old version of Ember (&lt; rc5).</li>
-        {{#if this.isChrome}}
-          <li>
-            You are using the file:// protocol (instead of http://), in which case:
-
-            <ul>
-              <li>Visit the URL: chrome://extensions.</li>
-              <li>Find the Ember Inspector.</li>
-              <li>Make sure "Allow access to file URLs" is checked.</li>
-            </ul>
-          </li>
+        {{#if this.inspectorExpanded}}
+          {{#draggable-column
+            side="right"
+            width=this.inspectorWidth
+            classes="split__panel"
+            setIsDragging=(action "setIsDragging")
+          }}
+            <ObjectInspector
+              @popMixinDetails={{this.popMixinDetails}}
+              @model={{this.mixinStack}}
+              @mixinDetails={{this.mixinDetails}}
+            />
+          {{/draggable-column}}
         {{/if}}
-      </ul>
-    </Ui::ErrorPage>
-  {{/if}}
-{{/x-app}}
+      </div>
+    {{else}}
+      <Ui::ErrorPage @description="Ember application not detected!">
+        <ul>
+          <li>This is not an Ember application.</li>
+          <li>You are using an old version of Ember (&lt; rc5).</li>
+          {{#if this.isChrome}}
+            <li>
+              You are using the file:// protocol (instead of http://), in which case:
+
+              <ul>
+                <li>Visit the URL: chrome://extensions.</li>
+                <li>Find the Ember Inspector.</li>
+                <li>Make sure "Allow access to file URLs" is checked.</li>
+              </ul>
+            </li>
+          {{/if}}
+        </ul>
+      </Ui::ErrorPage>
+    {{/if}}
+  {{/x-app}}
+</div>
