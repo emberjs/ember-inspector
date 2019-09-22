@@ -2786,7 +2786,7 @@ broccoli-clean-css@^1.1.0:
     inline-source-map-comment "^1.0.5"
     json-stable-stringify "^1.0.0"
 
-broccoli-concat@^3.2.2, broccoli-concat@^3.7.3, broccoli-concat@^3.7.4:
+broccoli-concat@^3.2.2, broccoli-concat@^3.7.1, broccoli-concat@^3.7.3, broccoli-concat@^3.7.4:
   version "3.7.4"
   resolved "https://registry.yarnpkg.com/broccoli-concat/-/broccoli-concat-3.7.4.tgz#7371e846eb7a97cb44ccff10f68582bcadcafacd"
   integrity sha512-9gRv1tyCQuq2+48DT9DQyxRNLOuwDtHybDeYuWA3g26HFqZd0PGAOeXcLXHpKRhxzrEbU6Gm28dZ/KolMr04cQ==
@@ -5208,6 +5208,23 @@ ember-cli-stylelint@^3.0.1:
     ember-cli-version-checker "^3.1.3"
     js-string-escape "^1.0.1"
 
+ember-cli-template-lint@^1.0.0-beta.3:
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/ember-cli-template-lint/-/ember-cli-template-lint-1.0.0-beta.3.tgz#48f2fa43e7ad0172685fa171e5acd4d75b873792"
+  integrity sha512-ivrvYih+cx7VUlyyMQBmk61Ki+gT5axfppWrk6fSvHaoxHZadXU3zRJMT5DPkeRaayRu0y1dls4wqfrUhzQ1PA==
+  dependencies:
+    aot-test-generators "^0.1.0"
+    broccoli-concat "^3.7.1"
+    broccoli-persistent-filter "^2.1.0"
+    chalk "^2.4.1"
+    debug "^4.0.1"
+    ember-cli-version-checker "^3.0.1"
+    ember-template-lint "^1.1.0"
+    json-stable-stringify "^1.0.1"
+    md5-hex "^2.0.0"
+    strip-ansi "^4.0.0"
+    walk-sync "^1.1.3"
+
 ember-cli-test-loader@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/ember-cli-test-loader/-/ember-cli-test-loader-2.2.0.tgz#3fb8d5d1357e4460d3f0a092f5375e71b6f7c243"
@@ -5609,7 +5626,7 @@ ember-table@^2.1.3:
     ember-useragent "^0.6.0"
     hammerjs "^2.0.8"
 
-ember-template-lint@^1.5.0:
+ember-template-lint@^1.1.0, ember-template-lint@^1.5.0:
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/ember-template-lint/-/ember-template-lint-1.5.3.tgz#0ebcd9e48e0b9c385ebdce3b56a0d38de804e598"
   integrity sha512-t/Bm21UVQHYqeexQTUSqAf1xyJnimhLMCIhNPtysjbuI9y7g275AnrJvSGI8H+RiJlH/RpR59TEwvPPt4cA4Qw==

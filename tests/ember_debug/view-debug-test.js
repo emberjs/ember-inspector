@@ -12,7 +12,7 @@ import Route from '@ember/routing/route';
 import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
 import { inspect } from '@ember/debug';
-import { module, test } from 'qunit';
+import { module, skip, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
 import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
@@ -161,7 +161,7 @@ module('Ember Debug - View', function(hooks) {
     assert.equal(component.value.viewClass, 'App.TestFooComponent');
   });
 
-  test('Highlighting Views on hover', async function t(assert) {
+  skip('Highlighting Views on hover', async function t(assert) {
     let name, message;
     port.reopen({
       send(n, m) {
