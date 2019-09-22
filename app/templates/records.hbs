@@ -1,6 +1,6 @@
 {{#ember-table as |t|}}
   {{#t.head
-    columns=columns
+    columns=this.columns
     sorts=sorts
     onUpdateSorts=(action (mut sorts))
   as |h|
@@ -10,10 +10,10 @@
     {{/h.row}}
   {{/t.head}}
   {{#t.body
-    rows=filtered
+    rows=this.filteredRecords
     checkboxSelectionMode="none"
-    selection=selection
-    onSelect=(action "inspectModel")
+    selection=this.selection
+    onSelect=this.inspectModel
   as |b|
   }}
     {{#b.row

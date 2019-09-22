@@ -8,21 +8,21 @@
 
   <div class="toolbar__checkbox js-filter-hide-empty-model-types">
     <label for="options-hideEmptyModelTypes">
-      {{input
-        type="checkbox"
-        checked=hideEmptyModelTypes
-        id="options-hideEmptyModelTypes"
-      }}
+      <Input
+        @type="checkbox"
+        @checked={{this.hideEmptyModelTypes}}
+        @id="options-hideEmptyModelTypes"
+      />
       Hide Empty Model Types
     </label>
   </div>
   <div class="toolbar__checkbox js-filter-order-records-by-count">
     <label for="options-orderByRecordCount">
-      {{input
-        type="checkbox"
-        checked=orderByRecordCount
-        id="options-orderByRecordCount"
-      }}
+      <Input
+        @type="checkbox"
+        @checked={{this.orderByRecordCount}}
+        @id="options-orderByRecordCount"
+      />
       Order Models By Record Count
     </label>
   </div>
