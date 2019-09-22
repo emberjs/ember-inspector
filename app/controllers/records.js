@@ -1,8 +1,7 @@
 import { isEmpty } from '@ember/utils';
-import { observer, computed, get, set } from '@ember/object';
+import { action, observer, computed, get } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
-import { none } from '@ember/object/computed';
 
 export default Controller.extend({
   application: controller(),
@@ -13,19 +12,31 @@ export default Controller.extend({
 
   filterValue: null,
 
-  noFilterValue: none('filterValue'),
-
   modelChanged: observer('model', function() {
     this.set('searchValue', '');
   }),
 
   recordToString(record) {
-    let search = '';
-    let searchKeywords = get(record, 'searchKeywords');
-    if (searchKeywords) {
-      search = get(record, 'searchKeywords').join(' ');
+    return (
+      get(record, 'searchKeywords') || []
+    ).join(' ').toLowerCase();
+  },
+
+  passesFilter(record) {
+    if(!this.filterValue) {
+      return true;
     }
-    return search.toLowerCase();
+
+    return get(record, `filterValues.${this.filterValue}`);
+  },
+
+  passesSearch(record) {
+    if (isEmpty(this.searchValue)) {
+      return true;
+    }
+
+    const exp = `.*${escapeRegExp(this.searchValue.toLowerCase())}.*`;
+    return !!this.recordToString(record).match(new RegExp(exp));
   },
 
   /**
@@ -39,7 +50,6 @@ export default Controller.extend({
    *     valuePath: 'title',
    *     name: 'Title'
    *   }]
-   * ```
    *
    * @property schema
    * @type {Object}
@@ -51,22 +61,9 @@ export default Controller.extend({
     }));
   }),
 
-  filtered: computed('searchValue', 'model.@each.{columnValues,filterValues}', 'filterValue', function() {
-    let search = this.searchValue;
-    let filter = this.filterValue;
-
-    return this.model.filter(item => {
-      // check filters
-      if (filter && !get(item, `filterValues.${filter}`)) {
-        return false;
-      }
-
-      // check search
-      if (!isEmpty(search)) {
-        let searchString = this.recordToString(item);
-        return !!searchString.match(new RegExp(`.*${escapeRegExp(search.toLowerCase())}.*`));
-      }
-      return true;
+  filteredRecords: computed('searchValue', 'model.@each.{columnValues,filterValues}', 'filterValue', function() {
+    return this.model.filter((record) => {
+      return this.passesFilter(record) && this.passesSearch(record);
     });
   }),
 
@@ -76,28 +73,13 @@ export default Controller.extend({
     this.filters = [];
   },
 
-  actions: {
-    /**
-     * Called whenever the filter is updated.
-     *
-     * @method setFilter
-     * @param {String} val
-     */
-    setFilter(val) {
-      val = val || null;
-      this.set('filterValue', val);
-    },
+  setFilter: action(function(val) {
+    val = val || null;
+    this.set('filterValue', val);
+  }),
 
-    /**
-     * Inspect a specific record. Called when a row
-     * is clicked.
-     *
-     * @method inspectModel
-     * @property {Object}
-     */
-    inspectModel([record]) {
-      set(this, 'selection', record);
-      this.port.send('data:inspectModel', { objectId: get(record, 'objectId') });
-    }
-  }
+  inspectModel: action(function([record]) {
+    this.set('selection', record);
+    this.port.send('data:inspectModel', { objectId: get(record, 'objectId') });
+  }),
 });
