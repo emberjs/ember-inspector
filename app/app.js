@@ -5,15 +5,12 @@ import config from './config/environment';
 
 const version = '{{EMBER_INSPECTOR_VERSION}}';
 
-const App = Application.extend({
-  modulePrefix: config.modulePrefix,
-  podModulePrefix: config.podModulePrefix,
-  Resolver
-});
+export default class App extends Application {
+  modulePrefix = config.modulePrefix;
+  podModulePrefix = config.podModulePrefix;
+  Resolver = Resolver;
+}
 
 config.VERSION = version;
 
 loadInitializers(App, config.modulePrefix);
-
-
-export default App;
