@@ -7,24 +7,18 @@
   <Ui::ToolbarDivider />
 
   <button
-    class="{{if noFilterValue "active"}} toolbar__radio js-filter"
-    {{action "setFilter"}}
+    class="{{if (is-empty this.filterValue) "active"}} toolbar__radio js-filter"
+    {{on "click" (fn this.setFilter "")}}
   >
     All
   </button>
 
-  {{#each filters as |item|}}
-    {{#record-filter
-      model=item
-      filterValue=filterValue
-    as |filter|
-    }}
-      <button
-        class="{{if filter.checked "active"}} toolbar__radio js-filter"
-        {{action "setFilter" filter.model.name}}
-      >
-        {{filter.model.desc}}
-      </button>
-    {{/record-filter}}
+  {{#each this.filters as |filter|}}
+    <button
+      class="{{if (eq this.filterValue filter.name) "active"}} toolbar__radio js-filter"
+      {{on "click" (fn this.setFilter filter.name)}}
+    >
+      {{filter.desc}}
+    </button>
   {{/each}}
 </div>
