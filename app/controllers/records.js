@@ -22,23 +22,6 @@ export default Controller.extend({
     ).join(' ').toLowerCase();
   },
 
-  passesFilter(record) {
-    if(!this.filterValue) {
-      return true;
-    }
-
-    return get(record, `filterValues.${this.filterValue}`);
-  },
-
-  passesSearch(record) {
-    if (isEmpty(this.searchValue)) {
-      return true;
-    }
-
-    const exp = `.*${escapeRegExp(this.searchValue.toLowerCase())}.*`;
-    return !!this.recordToString(record).match(new RegExp(exp));
-  },
-
   /**
    * The lists's schema containing info about the list's columns.
    * This is usually a static object except in this case each model
@@ -62,8 +45,21 @@ export default Controller.extend({
   }),
 
   filteredRecords: computed('searchValue', 'model.@each.{columnValues,filterValues}', 'filterValue', function() {
-    return this.model.filter((record) => {
-      return this.passesFilter(record) && this.passesSearch(record);
+    let search = this.searchValue;
+    let filter = this.filterValue;
+
+    return this.model.filter(item => {
+      // check filters
+      if (filter && !get(item, `filterValues.${filter}`)) {
+        return false;
+      }
+
+      // check search
+      if (!isEmpty(search)) {
+        let searchString = this.recordToString(item);
+        return !!searchString.match(new RegExp(`.*${escapeRegExp(search.toLowerCase())}.*`));
+      }
+      return true;
     });
   }),
 
