@@ -1,8 +1,7 @@
 import { isEmpty } from '@ember/utils';
-import { observer, computed, get, set } from '@ember/object';
+import { action, observer, computed, get } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
-import { none } from '@ember/object/computed';
 
 export default Controller.extend({
   application: controller(),
@@ -13,19 +12,14 @@ export default Controller.extend({
 
   filterValue: null,
 
-  noFilterValue: none('filterValue'),
-
   modelChanged: observer('model', function() {
     this.set('searchValue', '');
   }),
 
   recordToString(record) {
-    let search = '';
-    let searchKeywords = get(record, 'searchKeywords');
-    if (searchKeywords) {
-      search = get(record, 'searchKeywords').join(' ');
-    }
-    return search.toLowerCase();
+    return (
+      get(record, 'searchKeywords') || []
+    ).join(' ').toLowerCase();
   },
 
   /**
@@ -39,7 +33,6 @@ export default Controller.extend({
    *     valuePath: 'title',
    *     name: 'Title'
    *   }]
-   * ```
    *
    * @property schema
    * @type {Object}
@@ -51,7 +44,7 @@ export default Controller.extend({
     }));
   }),
 
-  filtered: computed('searchValue', 'model.@each.{columnValues,filterValues}', 'filterValue', function() {
+  filteredRecords: computed('searchValue', 'model.@each.{columnValues,filterValues}', 'filterValue', function() {
     let search = this.searchValue;
     let filter = this.filterValue;
 
@@ -76,28 +69,13 @@ export default Controller.extend({
     this.filters = [];
   },
 
-  actions: {
-    /**
-     * Called whenever the filter is updated.
-     *
-     * @method setFilter
-     * @param {String} val
-     */
-    setFilter(val) {
-      val = val || null;
-      this.set('filterValue', val);
-    },
+  setFilter: action(function(val) {
+    val = val || null;
+    this.set('filterValue', val);
+  }),
 
-    /**
-     * Inspect a specific record. Called when a row
-     * is clicked.
-     *
-     * @method inspectModel
-     * @property {Object}
-     */
-    inspectModel([record]) {
-      set(this, 'selection', record);
-      this.port.send('data:inspectModel', { objectId: get(record, 'objectId') });
-    }
-  }
+  inspectModel: action(function([record]) {
+    this.set('selection', record);
+    this.port.send('data:inspectModel', { objectId: get(record, 'objectId') });
+  }),
 });
