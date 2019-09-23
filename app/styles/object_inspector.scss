@@ -126,3 +126,27 @@
     content: "P";
   }
 }
+
+.mixin__property-icon--getter {
+  background-color: var(--spec07);
+
+  &:before {
+    content: "G";
+  }
+}
+
+.mixin__property-icon--function {
+  background-color: var(--base08);
+
+  &:before {
+    content: "ƒ";
+  }
+}
+
+.mixin__property-icon--tracked {
+  background-color: var(--tracked-icon-bg);
+
+  &:before {
+    content: "T";
+  }
+}

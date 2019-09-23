@@ -19,29 +19,11 @@
   {{/if}}
 
   {{!-- Property Icon --}}
-  {{#if this.isService}}
-    <span
-      class="mixin__property-icon-container"
-      title="Service"
-    >
-      <span class="mixin__property-icon mixin__property-icon--service"></span>
-    </span>
-  {{else if this.isComputedProperty}}
-    <span
-      class="mixin__property-icon-container"
-      title={{if @model.code @model.code "code not avaliable"}}
-      {{on "click" this.toggleDeps}}
-    >
-      <span class="mixin__property-icon mixin__property-icon--computed"></span>
-    </span>
-  {{else}}
-    <span
-      class="mixin__property-icon-container"
-      title="Property"
-    >
-      <span class="mixin__property-icon mixin__property-icon--property"></span>
-    </span>
-  {{/if}}
+  <span class="mixin__property-icon-container" title={{if @model.code @model.code this.iconInfo.title}}
+    {{on "click" this.toggleDeps}}
+  >
+    <span class="mixin__property-icon mixin__property-icon--{{this.iconInfo.type}}"></span>
+  </span>
 
   {{!-- Property Name --}}
   <span class="mixin__property-name js-object-property-name">
@@ -88,7 +70,7 @@
       />
     {{/if}}
   {{else}}
-    {{#if (and this.isComputedProperty (not this.isCalculated))}}
+    {{#if this.canCalculate}}
       <button
         class="mixin__calc-btn js-calculate"
         title="compute property"
@@ -96,7 +78,8 @@
       >
         {{svg-jar "calculate" width="16px" height="16px"}}
       </button>
-    {{else if this.isDate}}
+    {{/if}}
+    {{#if this.isDate}}
       <span
         class="{{this.valueType}} mixin__property-value js-object-property-value"
         {{on "click" this.dateClick}}

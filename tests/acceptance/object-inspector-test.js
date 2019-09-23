@@ -191,10 +191,10 @@ module('Object Inspector', function(hooks) {
         name: 'Detail',
         properties: [{
           name: 'computedProp',
+          isComputed: true,
           value: {
             inspect: '<computed>',
             type: 'type-descriptor',
-            computed: true
           }
         }]
       }]
@@ -211,11 +211,11 @@ module('Object Inspector', function(hooks) {
       objectId: 'myObject',
       property: 'computedProp',
       value: {
-        inspect: 'Computed value'
+        inspect: 'Computed value',
+        isCalculated: true
       },
       mixinIndex: 0
     });
-
     assert.dom('.js-object-property-value').hasText('Computed value');
   });
 
@@ -231,8 +231,7 @@ module('Object Inspector', function(hooks) {
           name: 'serviceProp',
           isService: true,
           value: {
-            inspect: '<service>',
-            computed: true
+            inspect: '<service>'
           }
         }]
       }]
@@ -260,16 +259,18 @@ module('Object Inspector', function(hooks) {
         properties: [{
           name: 'computedProp',
           dependentKeys: [],
+          isComputed: true,
           value: {
             inspect: '<computed>',
             type: 'type-descriptor',
-            computed: true
+            isCalculated: false
           }
         }]
       }]
     };
 
     await triggerPort(this, 'objectInspector:updateObject', obj);
+
     await click('.js-object-detail-name');
     await click('.js-calculate');
 
@@ -311,10 +312,10 @@ module('Object Inspector', function(hooks) {
         properties: [{
           name: 'computedProp',
           dependentKeys: ['foo.@each.bar'],
+          isComputed: true,
           value: {
             inspect: '<computed>',
             type: 'type-descriptor',
-            computed: true
           }
         }]
       }]
@@ -330,7 +331,7 @@ module('Object Inspector', function(hooks) {
       property: 'computedProp',
       value: {
         inspect: 'Computed value',
-        computed: 'foo-bar'
+        isCalculated: true
       },
       mixinIndex: 0
     });
@@ -373,7 +374,7 @@ module('Object Inspector', function(hooks) {
           value: {
             inspect: 'Teddy',
             type: 'type-string',
-            computed: false
+            isCalculated: false
           }
         }]
 
@@ -389,7 +390,7 @@ module('Object Inspector', function(hooks) {
       value: {
         inspect: 'Alex',
         type: 'type-string',
-        computed: false
+        isCalculated: true
       }
     });
 
@@ -411,7 +412,7 @@ module('Object Inspector', function(hooks) {
       value: {
         inspect: 'Joey',
         type: 'type-string',
-        computed: false
+        isCalculated: false
       }
     });
 
@@ -432,7 +433,7 @@ module('Object Inspector', function(hooks) {
           value: {
             inspect: '{"name":"teddy"}',
             type: 'type-string',
-            computed: false
+            isCalculated: true
           }
         }]
 
@@ -466,7 +467,7 @@ module('Object Inspector', function(hooks) {
           value: {
             inspect: 'Teddy',
             type: 'type-string',
-            computed: false
+            isCalculated: true
           }
         }]
 
@@ -509,7 +510,7 @@ module('Object Inspector', function(hooks) {
           name: 'readCP',
           readOnly: true,
           value: {
-            computed: true,
+            isCalculated: true,
             inspect: 'Read',
             type: 'type-string'
           }
@@ -517,7 +518,7 @@ module('Object Inspector', function(hooks) {
           name: 'readCP',
           readOnly: false,
           value: {
-            computed: true,
+            isCalculated: true,
             inspect: 'Write',
             type: 'type-string'
           }
