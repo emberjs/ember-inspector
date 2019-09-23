@@ -2,16 +2,28 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import GlimmerTree from 'ember-debug/libs/glimmer-tree';
 import { typeOf } from './utils/type-check';
+import {
+  modelName as getModelName,
+  shortModelName as getShortModelName,
+  controllerName as getControllerName,
+  shortControllerName as getShortControllerName,
+  viewName as getViewName,
+  shortViewName as getShortViewName
+} from 'ember-debug/utils/name-functions';
+import { compareVersion } from 'ember-debug/utils/version';
+import { makeRenderNodeCloneable } from './libs/octane-tree';
 
 const Ember = window.Ember;
 
 const {
+  _captureRenderTree,
   guidFor,
   computed,
   run,
   Object: EmberObject,
   Component,
-  String
+  String,
+  VERSION
 } = Ember;
 const { throttle } = run;
 const { readOnly } = computed;
@@ -257,7 +269,12 @@ export default EmberObject.extend(PortMixin, {
       return false;
     }
 
-    return this.glimmerTree.build();
+    if (compareVersion(VERSION, '3.14.0') !== -1) {
+      const [renderNode] = _captureRenderTree(emberApp);
+      return makeRenderNodeCloneable(this.retainObject.bind(this), renderNode);
+    } else {
+      return this.glimmerTree.build();
+    }
   },
 
   getOwner() {

@@ -23,6 +23,11 @@ if (typeof env !== 'undefined') {
 var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
 // @formatter:on
 
+// Enable debug render tree
+
+window.EmberENV = window.EmberENV || {};
+window.EmberENV._DEBUG_RENDER_TREE = true;
+
 (function(adapter) {
   var onReady = requireModule('ember-debug/utils/on-ready').onReady;
   var compareVersion = requireModule('ember-debug/utils/version').compareVersion;
@@ -248,7 +253,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       return {
         applicationName: app.applicationName,
         applicationId: app.applicationId
-      }
+      };
     });
 
     adapter.sendMessage({
