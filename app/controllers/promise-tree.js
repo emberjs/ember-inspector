@@ -1,4 +1,4 @@
-import { observer } from '@ember/object';
+import { action, observer } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import { isEmpty } from '@ember/utils';
 import { equal, bool, and, not, filter } from '@ember/object/computed';
@@ -62,14 +62,7 @@ export default Controller.extend({
   ),
   /* jscs:enable validateIndentation */
 
-
   filter: 'all',
-
-  noFilter: equal('filter', 'all'),
-  isRejectedFilter: equal('filter', 'rejected'),
-  isPendingFilter: equal('filter', 'pending'),
-  isFulfilledFilter: equal('filter', 'fulfilled'),
-
   searchValue: null,
   effectiveSearch: null,
 
@@ -84,43 +77,51 @@ export default Controller.extend({
     });
   },
 
-  actions: {
-    setFilter(filter) {
-      this.set('filter', filter);
-      next(() => {
-        this.notifyPropertyChange('filtered');
+  toggleExpand: action(function(promise) {
+    let isExpanded = !promise.get('isExpanded');
+    promise.set('isManuallyExpanded', isExpanded);
+    promise.recalculateExpanded();
+    let children = promise._allChildren();
+    if (isExpanded) {
+      children.forEach(child => {
+        let isManuallyExpanded = child.get('isManuallyExpanded');
+        if (isManuallyExpanded === undefined) {
+          child.set('isManuallyExpanded', isExpanded);
+          child.recalculateExpanded();
+        }
       });
-    },
-    clear() {
-      this.set('createdAfter', new Date());
-      once(this, this.notifyChange);
-    },
-    tracePromise(promise) {
-      this.port.send('promise:tracePromise', { promiseId: promise.get('guid') });
-    },
-    updateInstrumentWithStack(bool) {
-      this.port.send('promise:setInstrumentWithStack', { instrumentWithStack: bool });
-    },
-    toggleExpand(promise) {
-      let isExpanded = !promise.get('isExpanded');
-      promise.set('isManuallyExpanded', isExpanded);
-      promise.recalculateExpanded();
-      let children = promise._allChildren();
-      if (isExpanded) {
-        children.forEach(child => {
-          let isManuallyExpanded = child.get('isManuallyExpanded');
-          if (isManuallyExpanded === undefined) {
-            child.set('isManuallyExpanded', isExpanded);
-            child.recalculateExpanded();
-          }
-        });
-      }
-    },
-    inspectObject() {
-      this.target.send('inspectObject', ...arguments);
-    },
-    sendValueToConsole(promise) {
-      this.port.send('promise:sendValueToConsole', { promiseId: promise.get('guid') });
     }
-  }
+  }),
+
+  tracePromise: action(function(promise) {
+    this.port.send('promise:tracePromise', { promiseId: promise.get('guid') });
+  }),
+
+  inspectObject: action(function() {
+    this.target.send('inspectObject', ...arguments);
+  }),
+
+  sendValueToConsole: action(function(promise) {
+    this.port.send('promise:sendValueToConsole', {
+      promiseId: promise.get('guid')
+    });
+  }),
+
+  setFilter: action(function(filter) {
+    this.set('filter', filter);
+    next(() => {
+      this.notifyPropertyChange('filtered');
+    });
+  }),
+
+  updateInstrumentWithStack: action(function(bool) {
+    this.port.send('promise:setInstrumentWithStack', {
+      instrumentWithStack: bool
+    });
+  }),
+
+  clear: action(function() {
+    this.set('createdAfter', new Date());
+    once(this, this.notifyChange);
+  }),
 });
