@@ -499,6 +499,11 @@ export default EmberObject.extend(PortMixin, {
       name: getName(),
     };
 
+    if (Array.isArray(object)) {
+      // slice to max 101, for performance and so that the object inspector will show a `more items` indicator above 100
+      object = object.slice(0, 101);
+    }
+
     mixin.properties = Object.getOwnPropertyDescriptors(object);
     delete mixin.properties.constructor;
 
@@ -523,7 +528,8 @@ export default EmberObject.extend(PortMixin, {
     }
 
     if (object instanceof Ember.ArrayProxy && object.content) {
-      mixins.push(...this.mixinDetailsForObject(object.content.toArray()));
+      // slice to max 101, for performance and so that the object inspector will show a `more items` indicator above 100
+      mixins.push(...this.mixinDetailsForObject(object.content.toArray().slice(0, 101)));
     }
 
     if (proto && !proto.hasOwnProperty('hasOwnProperty')) {

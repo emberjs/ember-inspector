@@ -306,6 +306,7 @@ export default Controller.extend({
   }),
 
   inspect: action(function(objectId) {
+    if (this.get('pinnedObjectId') === objectId) return;
     if (objectId) {
       this.set('pinnedObjectId', objectId);
       this.expandToNode(objectId);
