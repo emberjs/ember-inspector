@@ -1,7 +1,7 @@
 {{#@list.cell
   class=(concat "list__cell_main " this.expandedClass)
   style=this.labelStyle
-  on-click=(action @toggleExpand)
+  on-click=(action @toggleExpand @model)
 }}
   <div class="list__cell-partial list__cell-partial_size_medium">
     <span
@@ -16,7 +16,7 @@
       <button
         class="send-to-console send-to-console--chevron-only js-trace-promise-btn"
         title="Trace promise in console"
-        {{action @tracePromise}}
+        {{action @tracePromise @model}}
       >
         {{svg-jar "send-with-chevron" width="6px" height="9px"}}
         Trace
