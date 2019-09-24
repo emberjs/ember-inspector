@@ -1,8 +1,8 @@
-{{#@list.cell
-  class=(concat "list__cell_main " this.expandedClass)
-  style=this.labelStyle
-  on-click=(action @toggleExpand @model)
-}}
+<@list.cell
+  class={{concat "list__cell_main " this.expandedClass}}
+  style={{this.labelStyle}}
+  @on-click={{action @toggleExpand @model}}
+>
   <div class="list__cell-partial list__cell-partial_size_medium">
     <span
       title={{this.label}}
@@ -23,18 +23,18 @@
       </button>
     {{/if}}
   </div>
-{{/@list.cell}}
+</@list.cell>
 
-{{#@list.cell}}
+<@list.cell>
   <div
     class="pill pill--bold pill--text js-promise-state"
     style={{this.style}}
   >
     {{this.state}}
   </div>
-{{/@list.cell}}
+</@list.cell>
 
-{{#@list.cell class="js-promise-value"}}
+<@list.cell class="js-promise-value">
   {{#if this.hasValue}}
     <div
       class="list__cell-partial list__cell-partial_size_medium"
@@ -69,8 +69,8 @@
   {{else}}
     --
   {{/if}}
-{{/@list.cell}}
+</@list.cell>
 
-{{#list.cell class="list__cell list__cell_value_numeric js-promise-time"}}
+<@list.cell class="list__cell list__cell_value_numeric js-promise-time">
   {{ms-to-time this.timeToSettle}}
-{{/list.cell}}
+</@list.cell>
