@@ -1,6 +1,6 @@
 <div class="toolbar">
   <Ui::ToolbarClearButton
-    @action={{action send "clear"}}
+    @action={{this.clear}}
     class="js-clear-promises-btn"
   />
 
@@ -23,26 +23,26 @@
   <Ui::ToolbarDivider />
 
   <button
-    class="{{if noFilter "active"}} toolbar__radio toolbar__radio--first js-filter"
-    {{action "setFilter" "all"}}
+    class="{{if (eq this.filter "all") "active"}} toolbar__radio toolbar__radio--first js-filter"
+    {{on "click" (fn this.setFilter "all")}}
   >
     All
   </button>
 
   <button
-    class="{{if isRejectedFilter "active"}} toolbar__radio js-filter"
-    {{action "setFilter" "rejected"}}
+    class="{{if (eq this.filter "rejected") "active"}} toolbar__radio js-filter"
+    {{on "click" (fn this.setFilter "rejected")}}
   >
     Rejected
   </button>
   <button
-    class="{{if isPendingFilter "active"}} toolbar__radio js-filter"
-    {{action "setFilter" "pending"}}
+    class="{{if (eq this.filter "pending") "active"}} toolbar__radio js-filter"
+    {{on "click" (fn this.setFilter "pending")}}
   >
     Pending
   </button>
   <button
-    class="{{if isFulfilledFilter "active"}} toolbar__radio toolbar__radio--last js-filter"
+    class="{{if (eq this.filter "fulfilled") "active"}} toolbar__radio toolbar__radio--last js-filter"
     {{action "setFilter" "fulfilled"}}
   >
     Fulfilled
@@ -56,7 +56,7 @@
         @type="checkbox"
         @checked={{this.instrumentWithStack}}
         @id="instrument-with-stack"
-        @change={{action "updateInstrumentWithStack" (not this.instrumentWithStack)}}
+        @change={{fn this.updateInstrumentWithStack (not this.instrumentWithStack)}}
       />
       Trace promises
     </label>
