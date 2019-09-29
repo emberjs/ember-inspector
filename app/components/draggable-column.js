@@ -2,12 +2,12 @@
 // ===============
 // A wrapper for a resizable-column and a drag-handle component
 
+import { action } from '@ember/object';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 
 export default Component.extend({
-  tagName: '', // Prevent wrapping in a div
-  side: 'left',
+  tagName: '',
   minWidth: 60,
 
   /**
@@ -26,19 +26,7 @@ export default Component.extend({
    *
    * @method triggerResize
    */
-  triggerResize() {
+  triggerResize: action(function() {
     this.layoutService.trigger('resize', { source: 'draggable-column' });
-  },
-
-  actions: {
-    /**
-     * Action called whenever the draggable column has been
-     * resized.
-     *
-     * @method didDrag
-     */
-    didDrag() {
-      this.triggerResize();
-    }
-  }
+  }),
 });

@@ -1,9 +1,10 @@
 <div class="split">
-  {{#draggable-column
-    classes="split__panel split__panel--sidebar-2 nav"
-    setIsDragging=(action "setIsDragging" target=this.application)
-    width=180
-  }}
+  <DraggableColumn
+    @classes="split__panel split__panel--sidebar-2 nav"
+    @setIsDragging={{action "setIsDragging" target=this.application}}
+    @side="left"
+    @width={{this.navWidth}}
+  >
     <div class="split__panel__bd">
       <ul>
         <li>
@@ -18,7 +19,7 @@
         </li>
       </ul>
     </div>
-  {{/draggable-column}}
+  </DraggableColumn>
 
   <div class="split__panel">
     <div class="split__panel__bd">

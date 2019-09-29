@@ -1,14 +1,14 @@
 {{#resizable-column
-  class=classes
-  width=width
+  class=@classes
+  width=@width
 }}
   {{yield}}
 {{/resizable-column}}
 
 {{drag-handle
-  minWidth=minWidth
-  on-drag=(action "didDrag")
-  position=width
-  setIsDragging=setIsDragging
-  side=side
+  minWidth=this.minWidth
+  on-drag=this.triggerResize
+  position=@width
+  setIsDragging=@setIsDragging
+  side=@side
 }}

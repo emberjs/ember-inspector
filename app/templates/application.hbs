@@ -3,16 +3,17 @@
     active=this.active
     isDragging=this.isDragging
   }}
-    {{#if isEmberApplication}}
+    {{#if this.isEmberApplication}}
       <div class="split">
         <div class="split__panel">
           {{!-- Begin main --}}
           <div class="split split--main">
-            {{#draggable-column
-              width=this.navWidth
-              classes="split__panel split__panel--sidebar-1"
-              setIsDragging=(action "setIsDragging")
-            }}
+            <DraggableColumn
+              @classes="split__panel split__panel--sidebar-1"
+              @setIsDragging={{action "setIsDragging"}}
+              @side="left"
+              @width={{this.navWidth}}
+            >
               <div class="split__panel__hd">
                 {{app-picker}}
               </div>
@@ -24,7 +25,7 @@
                   Submit an Issue
                 </a>
               </div>
-            {{/draggable-column}}
+            </DraggableColumn>
 
             <div class="split__panel">
               <div class="split__panel__hd">
@@ -47,18 +48,18 @@
         </div>
 
         {{#if this.inspectorExpanded}}
-          {{#draggable-column
-            side="right"
-            width=this.inspectorWidth
-            classes="split__panel"
-            setIsDragging=(action "setIsDragging")
-          }}
+          <DraggableColumn
+            @classes="split__panel"
+            @setIsDragging={{action "setIsDragging"}}
+            @side="right"
+            @width={{this.inspectorWidth}}
+          >
             <ObjectInspector
               @popMixinDetails={{this.popMixinDetails}}
               @model={{this.mixinStack}}
               @mixinDetails={{this.mixinDetails}}
             />
-          {{/draggable-column}}
+          </DraggableColumn>
         {{/if}}
       </div>
     {{else}}
