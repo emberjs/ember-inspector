@@ -1,9 +1,9 @@
-{{#resizable-column
-  class=@classes
-  width=@width
-}}
+<ResizableColumn
+  class={{@classes}}
+  @width={{@width}}
+>
   {{yield}}
-{{/resizable-column}}
+</ResizableColumn>
 
 <DragHandle
   @minWidth={{this.minWidth}}
