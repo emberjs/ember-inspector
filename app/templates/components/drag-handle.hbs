@@ -1,1 +1,7 @@
-<div class="drag-handle__border"></div>
+<div
+  class="drag-handle {{if this.isLeft "drag-handle--left"}} {{if this.isRight "drag-handle--right"}} {{if @faded "drag-handle--faded"}}"
+  style={{this.style}}
+  {{on "mousedown" this.mouseDownHandler}}
+>
+  <div class="drag-handle__border"></div>
+</div>

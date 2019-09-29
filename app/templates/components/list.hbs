@@ -42,15 +42,15 @@
 
 {{#each columns key="id" as |column|}}
   {{#if (and column.visible (not-eq column columns.lastObject))}}
-    {{drag-handle
-      faded=true
-      left=column.left
-      minWidth=minWidth
-      maxWidth=column.maxWidth
-      on-drag=(action "didResize" column.id)
-      position=(one-way column.width)
-      setIsDragging=@setIsDragging
-      side="left"
-    }}
+    <DragHandle
+      @faded={{true}}
+      @left={{column.left}}
+      @minWidth={{this.minWidth}}
+      @maxWidth={{column.maxWidth}}
+      @on-drag={{action "didResize" column.id}}
+      @position={{one-way column.width}}
+      @setIsDragging={{@setIsDragging}}
+      @side="left"
+    />
   {{/if}}
 {{/each}}

@@ -5,10 +5,10 @@
   {{yield}}
 {{/resizable-column}}
 
-{{drag-handle
-  minWidth=this.minWidth
-  on-drag=this.triggerResize
-  position=@width
-  setIsDragging=@setIsDragging
-  side=@side
-}}
+<DragHandle
+  @minWidth={{this.minWidth}}
+  @on-drag={{this.triggerResize}}
+  @position={{@width}}
+  @setIsDragging={{@setIsDragging}}
+  @side={{@side}}
+/>
