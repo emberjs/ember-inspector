@@ -1,11 +1,11 @@
-<ResizableColumn
+<Ui::ResizableColumn
   class={{@classes}}
   @width={{@width}}
 >
   {{yield}}
-</ResizableColumn>
+</Ui::ResizableColumn>
 
-<DragHandle
+<Ui::DragHandle
   @minWidth={{this.minWidth}}
   @on-drag={{this.triggerResize}}
   @position={{@width}}

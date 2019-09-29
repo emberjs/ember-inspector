@@ -42,7 +42,7 @@
 
 {{#each columns key="id" as |column|}}
   {{#if (and column.visible (not-eq column columns.lastObject))}}
-    <DragHandle
+    <Ui::DragHandle
       @faded={{true}}
       @left={{column.left}}
       @minWidth={{this.minWidth}}
