@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { schedule } from '@ember/runloop';
+import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { task, timeout } from 'ember-concurrency';
 
@@ -14,15 +14,29 @@ export default Component.extend({
    */
   layoutService: service('layout'),
 
-  didInsertElement() {
+  /**
+   * Reference to drag-handle on mousedown
+   *
+   * @property el
+   * @type {DOMNode|null}
+   * @default null
+   */
+  el: null,
+
+  setupListeners: action(function(element) {
+    this.el = element;
+
     this._performUpdateHeight = () => {
       this.updateHeightDebounce.perform();
     };
 
     window.addEventListener('resize', this._performUpdateHeight);
-    schedule('afterRender', this, this.updateHeight);
-    return this._super(...arguments);
-  },
+    this.updateHeight();
+  }),
+
+  destroyListeners: action(function() {
+    window.removeEventListener('resize', this._performUpdateHeight);
+  }),
 
   /**
    * Restartable Ember Concurrency task that triggers
@@ -48,11 +62,6 @@ export default Component.extend({
    * @method updateHeight
    */
   updateHeight() {
-    this.layoutService.updateContentHeight(this.element.clientHeight);
+    this.layoutService.updateContentHeight(this.el.clientHeight);
   },
-
-  willDestroyElement() {
-    window.removeEventListener('resize', this._performUpdateHeight);
-    return this._super(...arguments);
-  }
 });
