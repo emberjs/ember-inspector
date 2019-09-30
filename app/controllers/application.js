@@ -74,6 +74,10 @@ export default Controller.extend({
     });
   }),
 
+  setActive: action(function(bool) {
+    this.set('active', bool);
+  }),
+
   /*
    * Called when inspecting an object from outside of the ObjectInspector
   */
