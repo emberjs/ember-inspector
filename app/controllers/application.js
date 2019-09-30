@@ -110,10 +110,4 @@ export default Controller.extend({
     }
 
   },
-
-  actions: {
-    setIsDragging(isDragging) {
-      this.set('isDragging', isDragging);
-    },
-  }
 });

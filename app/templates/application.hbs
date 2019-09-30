@@ -1,5 +1,5 @@
 <div
-  class="ember-view app {{if this.active "" "inactive"}} {{if this.isDragging "isDragging"}}"
+  class="ember-view app {{if this.active "" "inactive"}}"
   tabindex="1"
   {{on "focusin" (fn this.setActive true)}}
   {{on "focusout" (fn this.setActive false)}}
@@ -7,11 +7,9 @@
   {{#if this.isEmberApplication}}
     <div class="split">
       <div class="split__panel">
-        {{!-- Begin main --}}
         <div class="split split--main">
           <Ui::DraggableColumn
             @classes="split__panel split__panel--sidebar-1"
-            @setIsDragging={{action "setIsDragging"}}
             @side="left"
             @width={{this.navWidth}}
           >
@@ -44,14 +42,11 @@
             </MainContent>
           </div>
         </div>
-
-        {{!-- End main --}}
       </div>
 
       {{#if this.inspectorExpanded}}
         <Ui::DraggableColumn
           @classes="split__panel"
-          @setIsDragging={{action "setIsDragging"}}
           @side="right"
           @width={{this.inspectorWidth}}
         >

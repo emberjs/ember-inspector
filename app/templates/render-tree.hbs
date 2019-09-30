@@ -14,8 +14,7 @@
   <List
     class="js-render-tree list--css-striping"
     @headerHeight={{this.headerHeight}}
-    @schema={{schema-for "render-tree"}}
-    @setIsDragging={{action "setIsDragging" target=this.application}} as |list|
+    @schema={{schema-for "render-tree"}} as |list|
   >
     <tbody>
       {{#each this.filtered as |item|}}

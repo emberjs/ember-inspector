@@ -1,4 +1,4 @@
-import Controller, { inject as controller } from '@ember/controller';
+import Controller from '@ember/controller';
 import { get, computed } from '@ember/object';
 import LocalStorageService from 'ember-inspector/services/storage/local';
 import { sort } from '@ember/object/computed';
@@ -9,7 +9,6 @@ import {
 } from 'ember-inspector/utils/local-storage-keys';
 
 export default Controller.extend({
-  application: controller(),
   navWidth: 180,
   storage: service(`storage/${LocalStorageService.STORAGE_TYPE_TO_USE}`),
 

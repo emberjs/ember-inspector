@@ -1,6 +1,6 @@
 import { action, computed, get } from '@ember/object';
 import { isEmpty } from '@ember/utils';
-import Controller, { inject as controller } from '@ember/controller';
+import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
 import debounceComputed from "ember-inspector/computed/debounce";
@@ -8,7 +8,6 @@ import LocalStorageService from "ember-inspector/services/storage/local";
 import { and, equal } from '@ember/object/computed';
 
 export default Controller.extend({
-  application: controller(),
   initialEmpty: false,
   modelEmpty: equal('model.length', 0),
   showEmpty: and('initialEmpty', 'modelEmpty'),
