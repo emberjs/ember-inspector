@@ -5,6 +5,8 @@ import { task, timeout } from 'ember-concurrency';
 
 // Currently used to determine the height of list-views
 export default Component.extend({
+  tagName: '',
+
   /**
    * Layout service. We inject it to keep its `contentHeight` property
    * up-to-date.
