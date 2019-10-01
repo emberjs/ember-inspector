@@ -1,12 +1,10 @@
 import { action, observer } from '@ember/object';
-import Controller, { inject as controller } from '@ember/controller';
+import Controller from '@ember/controller';
 import { isEmpty } from '@ember/utils';
 import { equal, bool, and, not, filter } from '@ember/object/computed';
 import { debounce, next, once } from '@ember/runloop';
 
 export default Controller.extend({
-  application: controller(),
-
   queryParams: ['filter'],
 
   createdAfter: null,

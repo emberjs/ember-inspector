@@ -40,10 +40,6 @@
   &:focus { outline: none; }
 }
 
-.app.is-dragging .nav__item {
-  cursor: col-resize;
-}
-
 .nav__item.active {
   background: var(--focus);
   color: var(--focus-text);

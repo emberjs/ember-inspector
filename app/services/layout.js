@@ -16,7 +16,7 @@ import Evented from '@ember/object/evented';
 export default Service.extend(Evented, {
   /**
    * Stores the app's content height. This property is kept up-to-date
-   * by the `main-content` component.
+   * by the `monitor-content-height` component.
    *
    * @property contentHeight
    * @type {Number}
@@ -24,7 +24,7 @@ export default Service.extend(Evented, {
   contentHeight: null,
 
   /**
-   * This is called by `main-content` whenever a window resize is detected
+   * This is called by `monitor-content-height` whenever a window resize is detected
    * and the app's content height has changed. We therefore update the
    * `contentHeight` property and notify all listeners (mostly lists).
    *
