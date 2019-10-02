@@ -10,17 +10,17 @@
       <ul>
         {{#each @sorted as |itemType|}}
           <li class={{this.typeClass}}>
-            {{#link-to
-              (if (eq @type "model") "records" "container-type")
-              (escape-url itemType.name)
+            <LinkTo
+              @route={{if (eq @type "model") "records" "container-type"}}
+              @model={{escape-url itemType.name}}
               class="nav__item"
-            }}
+            >
               <span class={{concat this.typeClass "-name" " nav__item-label"}}>
                 {{itemType.name}}
               </span>
 
               <span class={{concat this.typeClass "-count" " pill"}}>{{itemType.count}}</span>
-            {{/link-to}}
+            </LinkTo>
           </li>
         {{/each}}
       </ul>
