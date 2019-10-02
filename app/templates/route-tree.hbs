@@ -1,19 +1,19 @@
-{{#ember-table as |t|}}
-  {{t.head
-    columns=(schema-for "route-tree")
-    enableReorder=false
-  }}
+<EmberTable as |t|>
+  <t.head
+    @columns={{schema-for "route-tree"}}
+    @enableReorder={{false}}
+  />
 
-  {{#t.body
-    rows=this.rows
-    checkboxSelectionMode="none"
+  <t.body
+    @rows={{this.rows}}
+    @checkboxSelectionMode="none"
   as |b|
-  }}
-    {{#b.row
-      class=(concat "list__row js-route-tree-item" (if (mod b.rowMeta.index 2) " striped"))
+  >
+    <b.row
+      class={{concat "list__row js-route-tree-item" (if (mod b.rowMeta.index 2) " striped")}}
     as |r|
-    }}
-      {{#r.cell as |route|}}
+    >
+      <r.cell as |route|>
         {{#let (component (concat "route-cell-" r.columnValue.valuePath)) as |Cell|}}
           <Cell
             @route={{route}}
@@ -24,7 +24,7 @@
             @sendRouteHandlerToConsole={{this.sendRouteHandlerToConsole}}
           />
         {{/let}}
-      {{/r.cell}}
-    {{/b.row}}
-  {{/t.body}}
-{{/ember-table}}
+      </r.cell>
+    </b.row>
+  </t.body>
+</EmberTable>
