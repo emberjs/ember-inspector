@@ -10,7 +10,6 @@ import {
   viewName as getViewName,
   shortViewName as getShortViewName
 } from 'ember-debug/utils/name-functions';
-import { compareVersion } from 'ember-debug/utils/version';
 import { makeRenderNodeCloneable } from './libs/octane-tree';
 
 const Ember = window.Ember;
@@ -19,11 +18,11 @@ const {
   _captureRenderTree,
   guidFor,
   computed,
+  get,
   run,
   Object: EmberObject,
   Component,
-  String,
-  VERSION
+  String
 } = Ember;
 const { throttle } = run;
 const { readOnly } = computed;
@@ -67,7 +66,10 @@ export default EmberObject.extend(PortMixin, {
       }
     },
 
-    inspectElement({ objectId, elementId }) {
+    /**
+     * Inspect the element in the Chrome inspector
+     */
+    inspectElement({ elementId, objectId }) {
       if (objectId) {
         this.inspectViewElement(objectId);
       } else {
@@ -167,8 +169,23 @@ export default EmberObject.extend(PortMixin, {
 
   inspectViewElement(objectId) {
     let view = this.get('objectInspector').sentObjects[objectId];
-    if (view && view.get('element')) {
-      this.inspectElement(view.get('element'));
+    if (view) {
+      // In Octane we have access to bounds from the tree
+      const bounds = get(view, 'bounds');
+      // Before Octane, components generally had an element
+      const element = get(view, 'element');
+
+      if (bounds) {
+        // Octane
+        if (bounds.firstNode) {
+          bounds.firstNode.setAttribute('data-inspector-selector', objectId);
+          this.inspectElement(bounds.firstNode);
+        }
+      } else if (element) {
+        // Pre-Octane
+        element.setAttribute('data-inspector-selector', objectId);
+        this.inspectElement(element);
+      }
     }
   },
 
@@ -269,7 +286,8 @@ export default EmberObject.extend(PortMixin, {
       return false;
     }
 
-    if (compareVersion(VERSION, '3.14.0') !== -1) {
+    // If we have the _captureRenderTree method, we should use it
+    if (_captureRenderTree) {
       const [renderNode] = _captureRenderTree(emberApp);
       return makeRenderNodeCloneable(this.retainObject.bind(this), renderNode);
     } else {

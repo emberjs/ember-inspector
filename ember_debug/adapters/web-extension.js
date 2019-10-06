@@ -46,9 +46,8 @@ export default BasicAdapter.extend({
    * @param  {HTMLElement} elem The element to select
    */
   inspectElement(elem) {
-    /* inspect(elem); */
     this.get('namespace.port').send('view:inspectDOMNode', {
-      selector: `//*[@id="${elem.getAttribute('id')}"]`
+      selector: `[data-inspector-selector="${elem.getAttribute('data-inspector-selector')}"]`
     });
   },
 
