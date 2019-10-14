@@ -4,7 +4,7 @@ import { isComputed, isDescriptor, getDescriptorFor } from 'ember-debug/utils/ty
 
 const Ember = window.Ember;
 const {
-  Object: EmberObject, inspect: emberInspect, meta: emberMeta, typeOf,
+  Object: EmberObject, inspect: emberInspect, meta: emberMeta, typeOf: emberTypeOf,
   computed, get, set, guidFor, isNone,
   Mixin, cacheFor, VERSION
 } = Ember;
@@ -21,6 +21,18 @@ try {
 }
 
 const keys = Object.keys || Ember.keys;
+
+/**
+ * workaround to support detection of `[object AsyncFunction]` as a function
+ * @param value
+ * @returns {string}
+ */
+function typeOf(value) {
+  if (typeof value === 'function') {
+    return 'function';
+  }
+  return emberTypeOf(value);
+}
 
 /**
  * Determine the type and get the value of the passed property
