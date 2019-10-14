@@ -318,7 +318,7 @@ export default class {
    * @return {OutletView}
    */
   getRoot() {
-    return this.getRouter().get('_toplevelView');
+    return get(this.getRouter(), '_toplevelView');
   }
 
   /**
@@ -352,12 +352,12 @@ export default class {
    * @return {String}              The template name
    */
   templateForComponent(component) {
-    let template = component.get('layoutName');
+    let template = get(component, 'layoutName');
 
     if (!template) {
-      let layout = component.get('layout');
+      let layout = get(component, 'layout');
       if (!layout) {
-        let componentName = component.get('_debugContainerKey');
+        let componentName = get(component, '_debugContainerKey');
         if (componentName) {
           let layoutName = componentName.replace(/component:/, 'template:components/');
           layout = this.owner.lookup(layoutName);
@@ -389,7 +389,7 @@ export default class {
       tagName: ''
     };
 
-    let model = controller.get('model');
+    let model = get(controller, 'model');
     if (model) {
       value.model = this.inspectModel(model);
     }
@@ -422,7 +422,7 @@ export default class {
   inspectComponent(component) {
     let viewClass = getShortViewName(component);
     let completeViewClass = viewClass;
-    let tagName = component.get('tagName');
+    let tagName = get(component, 'tagName');
     let objectId = this.retainObject(component);
     let duration = this.durations[objectId];
 
@@ -457,7 +457,7 @@ export default class {
    * @return {Any}            The model property
    */
   modelForComponent(component) {
-    return component.get('model');
+    return get(component, 'model');
   }
 
   /**
@@ -541,7 +541,7 @@ export default class {
    * @return {Controller}           The target controller.
    */
   controllerForComponent(component) {
-    let controller = component.get('_target') || component.get('_targetObject');
+    let controller = get(component, '_target') || get(component, '_targetObject');
     if (!controller) {
       return null;
     }
@@ -622,7 +622,7 @@ export default class {
         object: controller
       };
 
-      let model = controller.get('model');
+      let model = get(controller, 'model');
       if (model) {
         let modelName = this.objectInspector.inspect(model);
         options.model = {
@@ -744,7 +744,7 @@ export default class {
       return this.modelForComponent(this.componentById(objectId));
     } else {
       let { controller } = A(this.outletArray()).findBy('value.name', name);
-      return controller.get('model');
+      return get(controller, 'model');
     }
   }
 }
