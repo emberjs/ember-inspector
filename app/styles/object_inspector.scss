@@ -144,7 +144,7 @@
 }
 
 .mixin__property-icon--tracked {
-  background-color: var(--spec03);
+  background-color: var(--tracked-icon-bg);
 
   &:before {
     content: "T";
