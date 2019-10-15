@@ -1,10 +1,10 @@
 <EmberTable as |t|>
   <t.head
-    @columns={{columns}}
+    @columns={{this.columns}}
     @enableReorder={{false}}
   />
   <t.body
-    @rows={{rows}}
+    @rows={{this.rows}}
   as |b|
   >
     <b.row

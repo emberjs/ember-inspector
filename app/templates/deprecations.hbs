@@ -1,7 +1,7 @@
-{{#if filtered.length}}
+{{#if this.filtered.length}}
   <div class="list__content js-deprecations" style="height: 100%;">
     {{#vertical-collection
-      filtered
+      this.filtered
       estimateHeight=20
     as |content|
     }}

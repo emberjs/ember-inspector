@@ -3,10 +3,10 @@
     class="dropdown__select"
     onchange={{action "selectApp" value="target.value"}}
   >
-    {{#each apps as |app|}}
+    {{#each this.apps as |app|}}
       <option
         value={{app.applicationId}}
-        selected={{eq app.applicationId selectedApp}}
+        selected={{eq app.applicationId this.selectedApp}}
       >
         {{app.applicationName}}
       </option>

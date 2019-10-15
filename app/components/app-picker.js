@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { observer } from '@ember/object';
+import { action, observer } from '@ember/object';
 import { alias, reads } from '@ember/object/computed';
 import { getOwner } from '@ember/application';
 
@@ -21,10 +21,8 @@ export default Component.extend({
     this.port.send('app-picker-loaded');
   },
 
-  actions: {
-    selectApp(applicationId) {
-      this.set('selectedApp', applicationId);
-      this.port.send('app-selected', { applicationId });
-    }
-  }
+  selectApp: action(function(applicationId) {
+    this.set('selectedApp', applicationId);
+    this.port.send('app-selected', { applicationId });
+  })
 });

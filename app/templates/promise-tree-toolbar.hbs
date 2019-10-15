@@ -5,7 +5,7 @@
   />
 
   {{! if should refresh the refresh button will be in the middle of the of the tab }}
-  {{#unless shouldRefresh}}
+  {{#unless this.shouldRefresh}}
     <Ui::ToolbarDivider />
     <Ui::ToolbarReloadButton
       @action={{action send "refreshPage"}}
@@ -43,7 +43,7 @@
   </button>
   <button
     class="{{if (eq this.filter "fulfilled") "active"}} toolbar__radio toolbar__radio--last js-filter"
-    {{action "setFilter" "fulfilled"}}
+    {{on "click" (fn this.setFilter "fulfilled")}}
   >
     Fulfilled
   </button>

@@ -1,8 +1,8 @@
 <EmberTable as |t|>
   <t.head
     @columns={{this.columns}}
-    @sorts={{sorts}}
-    @onUpdateSorts={{action (mut sorts)}}
+    @sorts={{this.tableSorts}}
+    @onUpdateSorts={{action this.updateTableSorts}}
   as |h|
   >
     <h.row as |r|>
