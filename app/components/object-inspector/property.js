@@ -28,11 +28,11 @@ export default Component.extend({
 
   isObject: equal('valueType', 'type-object'),
 
-  isInstance: equal('valueType', 'type-instance'),
-
   isComputedProperty: alias('model.value.computed'),
 
-  isFunction: equal('valueType', 'type-function'),
+  isFunction: computed('valueType', function () {
+    return this.get('valueType') === 'type-function' || this.get('valueType') === 'type-asyncfunction';
+  }),
 
   isArray: equal('valueType', 'type-array'),
 
@@ -47,8 +47,7 @@ export default Component.extend({
   showDependentKeys: and('isDepsExpanded', 'hasDependentKeys'),
 
   canDig() {
-    return this.isInstance
-      || this.isObject
+    return this.isObject
       || this.isEmberObject
       || this.isArray
   },

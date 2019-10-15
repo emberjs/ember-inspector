@@ -178,9 +178,7 @@ $mixin-left-padding: 22px;
   color: var(--base11);
 }
 
-.mixin__property .type-ember-object,
 .mixin__property .type-object,
-.mixin__property .type-instance,
 .mixin__property .type-array {
   cursor: pointer;
 }

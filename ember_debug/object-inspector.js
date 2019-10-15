@@ -1,10 +1,11 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import { compareVersion } from 'ember-debug/utils/version';
 import { isComputed, isDescriptor, getDescriptorFor } from 'ember-debug/utils/type-check';
+import { typeOf } from "./utils/type-check";
 
 const Ember = window.Ember;
 const {
-  Object: EmberObject, inspect: emberInspect, meta: emberMeta, typeOf,
+  Object: EmberObject, inspect: emberInspect, meta: emberMeta,
   computed, get, set, guidFor, isNone, removeObserver,
   Mixin, addObserver, cacheFor, VERSION
 } = Ember;
@@ -78,7 +79,7 @@ function inspect(value) {
         if (v === 'toString') {
           continue;
         } // ignore useless items
-        if (typeOf(v) === 'function') {
+        if (typeOf(v).includes('function')) {
           v = 'function() { ... }';
         }
         if (typeOf(v) === 'array') {
