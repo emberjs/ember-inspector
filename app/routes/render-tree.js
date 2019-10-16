@@ -42,11 +42,4 @@ export default TabRoute.extend({
       this.set('controller.model', model.slice(0, 100));
     }
   },
-
-  actions: {
-    clearProfiles() {
-      this.port.send('render:clear');
-    }
-  }
-
 });

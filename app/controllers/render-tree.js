@@ -71,6 +71,10 @@ export default Controller.extend({
 
   closeWarning: action(function() {
     this.set('isWarningClosed', true);
+  }),
+
+  clearProfiles: action(function() {
+    this.port.send('render:clear');
   })
 });
 

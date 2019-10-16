@@ -1,4 +1,4 @@
-import { set } from '@ember/object';
+import { action, set } from '@ember/object';
 import TabRoute from "ember-inspector/routes/tab";
 
 export default TabRoute.extend({
@@ -31,11 +31,8 @@ export default TabRoute.extend({
     });
   },
 
-  actions: {
-    clear() {
-      this.port.send('deprecation:clear');
-      this.currentModel.clear();
-    }
-
-  }
+  clear: action(function() {
+    this.port.send('deprecation:clear');
+    this.currentModel.clear();
+  })
 });
