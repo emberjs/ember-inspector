@@ -9,7 +9,7 @@ import {
   viewName as getViewName,
   shortViewName as getShortViewName
 } from 'ember-debug/utils/name-functions';
-import { typeOf } from "./utils/type-check";
+import { typeOf } from './utils/type-check';
 
 const Ember = window.Ember;
 

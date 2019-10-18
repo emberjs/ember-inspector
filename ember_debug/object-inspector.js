@@ -1,7 +1,7 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import { compareVersion } from 'ember-debug/utils/version';
 import { isComputed, isDescriptor, getDescriptorFor } from 'ember-debug/utils/type-check';
-import { typeOf } from "./utils/type-check";
+import { typeOf } from './utils/type-check';
 
 const Ember = window.Ember;
 const {
