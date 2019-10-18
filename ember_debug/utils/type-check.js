@@ -44,5 +44,5 @@ export function getDescriptorFor(object, key) {
 
 
 export function typeOf(obj) {
-  return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
+  return Object.prototype.toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
 }
