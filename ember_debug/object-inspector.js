@@ -500,7 +500,7 @@ export default EmberObject.extend(PortMixin, {
       if (proto.hasOwnProperty('toString') && !proto.hasOwnProperty('hasOwnProperty')) {
         return proto.toString();
       }
-      if (name === 'Class' || name.startsWith('_')) {
+      if (name === 'Class' || name.startsWith('_') || name.length === 1) {
         name = object.toString();
       }
       return name;
@@ -734,6 +734,9 @@ function addProperties(properties, hash) {
       }
       options.isGetter = true;
       options.canTrack = true;
+      if (!desc.set) {
+        options.readOnly = true;
+      }
     }
     if (desc.hasOwnProperty('value') || options.isMandatorySetter) {
       delete options.isGetter;
@@ -842,6 +845,12 @@ function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties
             tagInfo.tag = metal.track(() => {
               value = calculateCP(object, item.name, errorsForObject);
             });
+            if (!tagInfo.tag.subtag && !tagInfo.tag.subtags && tagInfo.tag === metal.tagForProperty(object, item.name)) {
+              if (!item.isComputed && !item.isService) {
+                item.code = '';
+                item.isTracked = true;
+              }
+            }
             tagInfo.revision = glimmer.value(object, item.name);
             item.dependentKeys = getTrackedDependencies(object, item.name, tagInfo.tag);
           } else {
