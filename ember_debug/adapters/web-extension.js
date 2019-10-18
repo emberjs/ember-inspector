@@ -1,5 +1,5 @@
 import BasicAdapter from './basic';
-import { typeOf } from "../utils/type-check";
+import { typeOf } from '../utils/type-check';
 
 const Ember = window.Ember;
 const { run } = Ember;

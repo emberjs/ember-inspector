@@ -1,4 +1,4 @@
-import { typeOf } from "../utils/type-check";
+import { typeOf } from '../utils/type-check';
 
 const Ember = window.Ember;
 const { Object: EmberObject, computed, A } = Ember;

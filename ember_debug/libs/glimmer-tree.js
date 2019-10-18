@@ -26,7 +26,7 @@
  */
 
 const Ember = window.Ember;
-import { typeOf } from "../utils/type-check";
+import { typeOf } from '../utils/type-check';
 import {
   modelName as getModelName,
   shortModelName as getShortModelName,

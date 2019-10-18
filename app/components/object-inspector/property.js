@@ -31,7 +31,7 @@ export default Component.extend({
   isComputedProperty: alias('model.value.computed'),
 
   isFunction: computed('valueType', function () {
-    return this.get('valueType') === 'type-function' || this.get('valueType') === 'type-asyncfunction';
+    return this.valueType === 'type-function' || this.valueType === 'type-asyncfunction';
   }),
 
   isArray: equal('valueType', 'type-array'),
