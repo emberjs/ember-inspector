@@ -23,6 +23,10 @@ function setupApp() {
   this.owner.register('template:simple', hbs`Simple {{input class="simple-input"}} {{x-simple class="simple-view"}}`);
 }
 
+function waitTime(time) {
+  return new Promise(res => setTimeout(res, time));
+}
+
 let ignoreErrors = true;
 
 module('Ember Debug - Object Inspector', function(hooks) {
@@ -349,7 +353,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     inspected.set('name', 'Alex');
 
-    await new Promise(res => setTimeout(res, 400));
+    await waitTime(400);
 
     assert.equal(name, 'objectInspector:updateProperty');
 
@@ -366,7 +370,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     inspected.set('hi', 'Hey');
 
-    await new Promise(res => setTimeout(res, 400));
+    await waitTime(400);
 
     assert.equal(message.objectId, id);
     assert.equal(message.property, 'hi');
@@ -385,7 +389,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     inspected.set('hi', 'Hello!');
 
-    await new Promise(res => setTimeout(res, 500));
+    await waitTime(400);
 
     assert.equal(message.objectId, id);
     assert.equal(message.property, 'hi');
@@ -413,7 +417,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     assert.equal(inspected.get('name'), 'Alex');
 
-    await new Promise(res => setTimeout(res, 400));
+    await waitTime(400);
 
     // A property updated message is published
     assert.equal(name, 'objectInspector:updateProperty');
