@@ -115,7 +115,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(nameProperty.value.inspect, inspect('My Object'));
 
     let secondDetail = message.details[1];
-    assert.equal(secondDetail.name, '(unknown)');
+    assert.equal(secondDetail.name, 'EmberObject');
   });
 
   test('An ES6 Class is correctly transformed into an inspection hash', function(assert) {
@@ -203,6 +203,54 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(prop.name, 'get');
     assert.equal(prop.value.type, 'type-function');
 
+  });
+
+  test('Correct mixin order with es6 class', function (assert) {
+
+    // eslint-disable-next-line ember/no-new-mixins
+    const MyMixin = Mixin.create({
+      a: 'custom',
+      toString() {
+        return 'MyMixin';
+      }
+    });
+    // eslint-disable-next-line ember/no-new-mixins
+    const MyMixin2 = Mixin.create({
+      b: 'custom2',
+      toString() {
+        return 'MyMixin2';
+      }
+    });
+
+    class Baz extends EmberObject {}
+    class Bar extends Baz {}
+    class FooBar extends Bar.extend(MyMixin, MyMixin2) {}
+
+    class Foo extends FooBar {
+      foobar = 1
+    }
+
+    const instance = Foo.create({
+      ownProp: 'hi'
+    });
+
+    objectInspector.sendObject(instance);
+
+    const mixinNames = message.details.map(d => d.name);
+    const expectedMixinNames = [
+      'Own Properties',
+      'FooBar',
+      'MyMixin',
+      'MyMixin2',
+      'Bar',
+      'Baz',
+      'EmberObject',
+      'CoreObject'
+    ];
+
+    expectedMixinNames.forEach((expectedMixinName, i) => {
+      assert.equal(mixinNames[i], expectedMixinName);
+    });
   });
 
   test('Computed properties are correctly calculated', function(assert) {
@@ -410,6 +458,9 @@ module('Ember Debug - Object Inspector', function(hooks) {
       name: 'Teddy',
       gender: 'Male',
       hasChildren: false,
+      toString: function() {
+        return 'TestObject';
+      },
       expensiveProperty: computed(function() { return ''; }),
       _debugInfo() {
         return {
@@ -434,10 +485,6 @@ module('Ember Debug - Object Inspector', function(hooks) {
       }
     });
 
-    Inspected.toString = function() {
-      return 'TestObject';
-    };
-
     let inspected = Inspected.create({
       maritalStatus: 'Single',
       propertyToSkip: null
@@ -456,7 +503,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.details[1].properties[0].name, 'maritalStatus');
 
     assert.equal(message.details[2].name, 'Own Properties');
-    assert.equal(message.details[2].properties.length, 2, 'Correctly merges properties');
+    assert.equal(message.details[2].properties.length, 3, 'Correctly merges properties');
     assert.equal(message.details[2].properties[0].value.isCalculated, undefined, 'Does not calculate expensive properties');
     assert.equal(message.details[2].properties[1].name, 'hasChildren');
 
