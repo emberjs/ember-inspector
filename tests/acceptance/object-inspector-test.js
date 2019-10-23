@@ -634,4 +634,118 @@ module('Object Inspector', function(hooks) {
 
     assert.dom('.js-object-inspector-errors').doesNotExist();
   });
+
+  test("Tracked properties", async function (assert) {
+    await visit('/');
+
+    let obj = {
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [{
+        name: 'Detail',
+        properties: [{
+          name: 'trackedProp',
+          isTracked: true,
+          value: {
+            inspect: 123,
+            type: 'type-number',
+          }
+        }]
+      }]
+    };
+
+    await triggerPort(this, 'objectInspector:updateObject', obj);
+
+    await click('.js-object-detail-name');
+
+    assert.dom('.mixin__property-icon--tracked').exists();
+    assert.dom('.js-object-property-value').hasText('123');
+
+    await triggerPort(this, 'objectInspector:updateProperty', {
+      objectId: 'myObject',
+      property: 'trackedProp',
+      value: {
+        inspect: 456
+      },
+      mixinIndex: 0
+    });
+
+    assert.dom('.js-object-property-value').hasText('456');
+  });
+
+  test("Plain properties", async function (assert) {
+    await visit('/');
+
+    let obj = {
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [{
+        name: 'Detail',
+        properties: [{
+          name: 'plainProp',
+          isProperty: true,
+          value: {
+            inspect: 123,
+            type: 'type-number',
+          }
+        }]
+      }]
+    };
+
+    await triggerPort(this, 'objectInspector:updateObject', obj);
+
+    await click('.js-object-detail-name');
+
+    assert.dom('.mixin__property-icon--property').exists();
+    assert.dom('.js-object-property-value').hasText('123');
+
+    await triggerPort(this, 'objectInspector:updateProperty', {
+      objectId: 'myObject',
+      property: 'plainProp',
+      value: {
+        inspect: 456
+      },
+      mixinIndex: 0
+    });
+
+    assert.dom('.js-object-property-value').hasText('456');
+  });
+
+  test("Getters", async function (assert) {
+    await visit('/');
+
+    let obj = {
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [{
+        name: 'Detail',
+        properties: [{
+          name: 'getter',
+          isGetter: true,
+          value: {
+            inspect: 123,
+            type: 'type-number',
+          }
+        }]
+      }]
+    };
+
+    await triggerPort(this, 'objectInspector:updateObject', obj);
+
+    await click('.js-object-detail-name');
+
+    assert.dom('.mixin__property-icon--getter').exists();
+    assert.dom('.js-object-property-value').hasText('123');
+
+    await triggerPort(this, 'objectInspector:updateProperty', {
+      objectId: 'myObject',
+      property: 'getter',
+      value: {
+        inspect: 456
+      },
+      mixinIndex: 0
+    });
+
+    assert.dom('.js-object-property-value').hasText('456');
+  });
 });

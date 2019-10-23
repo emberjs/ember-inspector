@@ -7,6 +7,7 @@ import { guidFor } from '@ember/object/internals';
 import EmberObject, { computed } from '@ember/object';
 import Service from '@ember/service';
 import { VERSION } from '@ember/version';
+import { tracked } from '@glimmer/tracking';
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
@@ -722,4 +723,106 @@ module('Ember Debug - Object Inspector', function(hooks) {
     // teardown
     ignoreErrors = true;
   });
+
+  test('Plain properties work', function(assert) {
+    let inspected = EmberObject.create({ hi: 123 });
+
+    objectInspector.sendObject(inspected);
+    let plainProperty = message.details[0].properties[0];
+    assert.equal(plainProperty.name, 'hi');
+    assert.ok(plainProperty.isProperty);
+    assert.equal(plainProperty.value.type, 'type-number');
+    assert.equal(plainProperty.value.inspect, '123');
+  });
+
+  test('Getters work', function(assert) {
+    let inspected = EmberObject.extend({
+      get hi() { return 123 }
+    }).create();
+
+    objectInspector.sendObject(inspected);
+    let getter = message.details[1].properties[0];
+    assert.equal(getter.name, 'hi');
+    assert.ok(getter.isGetter);
+    assert.equal(getter.value.type, 'type-number');
+    assert.equal(getter.value.inspect, '123');
+  });
+
+  if (hasEmberVersion(3, 13)) {
+    test('Tracked properties work', async function(assert) {
+      class Foo {
+        @tracked hi = 123;
+      }
+
+      let inspected = new Foo();
+
+      assert.step('inspector: sendObject');
+      objectInspector.sendObject(inspected);
+      let trackedProp = message.details[1].properties[0];
+      assert.equal(trackedProp.name, 'hi');
+      assert.ok(trackedProp.isTracked);
+      assert.equal(trackedProp.value.type, 'type-number');
+      assert.equal(trackedProp.value.inspect, 123);
+
+      assert.step('inspector: update value');
+      inspected.hi++;
+
+      await waitTime(400);
+
+      assert.step('inspector: updateProperty');
+      assert.equal(message.property, 'hi');
+      assert.equal(message.mixinIndex, 1);
+      assert.equal(message.value.type, 'type-number');
+      assert.equal(message.value.inspect, inspect(124));
+      assert.ok(message.value.isCalculated);
+
+      assert.verifySteps([
+        'inspector: sendObject',
+        'inspector: update value',
+        'inspector: updateProperty',
+      ]);
+    });
+
+    test('Tracked getters update', async function(assert) {
+      class Foo {
+        @tracked hi = 123;
+      }
+
+      let dataSource = new Foo();
+
+      class Bar {
+        get hello() {
+          return dataSource.hi;
+        }
+      }
+
+      let inspected = new Bar();
+
+      assert.step('inspector: sendObject');
+      objectInspector.sendObject(inspected);
+      let trackedProp = message.details[1].properties[0];
+      assert.equal(trackedProp.name, 'hello');
+      assert.ok(trackedProp.isGetter);
+      assert.equal(trackedProp.value.type, 'type-number');
+      assert.equal(trackedProp.value.inspect, 123);
+
+      assert.step('inspector: update value');
+      dataSource.hi++;
+
+      await waitTime(400);
+
+      assert.step('inspector: updateProperty');
+      assert.equal(message.property, 'hello');
+      assert.equal(message.mixinIndex, 1);
+      assert.equal(message.value.type, 'type-number');
+      assert.equal(message.value.inspect, inspect(124));
+      assert.ok(message.value.isCalculated);
+
+      assert.verifySteps([
+        'inspector: sendObject',
+        'inspector: update value',
+        'inspector: updateProperty',
+      ]);
+    });
+  }
 });
