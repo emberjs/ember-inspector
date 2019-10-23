@@ -6,7 +6,7 @@ const Ember = window.Ember;
 const {
   Object: EmberObject, inspect: emberInspect, meta: emberMeta, typeOf: emberTypeOf,
   computed, get, set, guidFor, isNone,
-  Mixin, cacheFor, VERSION
+  cacheFor, VERSION
 } = Ember;
 const { oneWay } = computed;
 
@@ -402,7 +402,7 @@ export default EmberObject.extend(PortMixin, {
         parentObject: objectId,
         property,
         objectId: details.objectId,
-        name: details.objectName,
+        name: object.toString(),
         details: details.mixins,
         errors: details.errors
       });
@@ -416,7 +416,7 @@ export default EmberObject.extend(PortMixin, {
     let details = this.mixinsForObject(object);
     this.sendMessage('updateObject', {
       objectId: details.objectId,
-      name: details.objectName,
+      name: object.toString(),
       details: details.mixins,
       errors: details.errors
     });
@@ -487,121 +487,95 @@ export default EmberObject.extend(PortMixin, {
     this.sendMessage('droppedObject', { objectId });
   },
 
+  /**
+   * This function, and the rest of Ember Inspector, currently refer to the
+   * output entirely as mixins. However, this is no longer accurate! This has
+   * been refactored to return a list of objects that represent both the classes
+   * themselves and their mixins. For instance, the following class definitions:
+   *
+   * ```js
+   * class Foo extends EmberObject {}
+   *
+   * class Bar extends Foo {}
+   *
+   * class Baz extends Bar.extend(Mixin1, Mixin2) {}
+   *
+   * let obj = Baz.create();
+   * ```
+   *
+   * Will result in this in the inspector:
+   *
+   * ```
+   * - Own Properties
+   * - Baz
+   * - Mixin1
+   * - Mixin2
+   * - Bar
+   * - Foo
+   * - EmberObject
+   * ```
+   *
+   * The "mixins" returned by this function directly represent these things too.
+   * Each class object consists of the actual own properties of that class's
+   * prototype, and is followed by the mixins (if any) that belong to that
+   * class. Own Properties represents the actual own properties of the object
+   * itself.
+   *
+   * TODO: The rest of the Inspector should be updated to reflect this new data
+   * model, and these functions should be updated with new names. Mixins should
+   * likely be embedded _on_ the class definitions, but this was designed to be
+   * backwards compatible.
+   */
   mixinDetailsForObject(object) {
     const mixins = [];
-    const proto = Object.getPrototypeOf(object);
-    if (proto && !proto.hasOwnProperty('hasOwnProperty')) {
-      mixins.push(...this.mixinDetailsForObject(proto));
-    }
-    if (object instanceof Ember.ObjectProxy && object.content) {
-      mixins.push(...this.mixinDetailsForObject(object.content));
-    }
-    if (object instanceof Ember.ArrayProxy && object.content) {
-      mixins.push(...this.mixinDetailsForObject(object.content.toArray()));
-    }
-    // eslint-disable-next-line ember/no-new-mixins
-    const emberMixins = Mixin.mixins(object).slice(0, -1);
-
-    const getName = function() {
-      let name = object.constructor.name;
-      if (object.hasOwnProperty('toString')) {
-        const n = object.toString();
-        if (!n.startsWith('<') && !n.includes('unknown')) {
-          return n;
-        }
-      }
-      if (name === 'Class' || name.startsWith('_') || name.length === 1) {
-        name = object.toString();
-      }
-      return name;
-    };
 
     const mixin = {
-      properties: {},
       id: guidFor(object),
-      name: getName(object),
+      name: getClassName(object),
+      properties: ownProperties(object)
     };
 
-    mixin.properties = Object.getOwnPropertyDescriptors(object);
-    delete mixin.properties.constructor;
-
-    Ember.meta(object).forEachDescriptors((name, desc) => {
-      mixin.properties[name] = desc;
-    });
-
-    Object.keys(mixin.properties).forEach(k => {
-      if (typeof mixin.properties[k].value === 'function') {
-        return;
-      }
-      mixin.properties[k].isDescriptor = true;
-    });
+    mixins.push(mixin);
 
     // insert ember mixins
-    emberMixins.reverse().forEach((mixin) => {
+    for (let mixin of ownMixins(object)) {
       let name = (mixin[Ember.NAME_KEY] || mixin.ownerConstructor || '').toString();
 
       if (typeof mixin.toString === 'function') {
         try {
           name = mixin.toString();
+
           if (name === '(unknown)') {
-            name = '';
+            name = '(unknown mixin)';
           }
         } catch(e) {
           name = '(Unable to convert Object to string)';
         }
       }
 
-      if (!name && get(mixin, 'mixins.0.properties') && mixin.mixins[0].properties.hasOwnProperty('toString')) {
-        try {
-          name = mixin.mixins[0].properties.toString();
-        } catch (e) {
-          // skip
-        }
-      }
-
-      if (!name) {
-        name = 'Unknown mixin';
-      }
-
       const mix = {
         properties: propertiesForMixin(mixin),
-        name: name,
-        isEmberMixin: true,
+        name,
         id: guidFor(mixin)
       };
-      if (!mixins.find(m => m.id === mix.id)) {
-        mixins.push(mix);
-      }
-    });
 
-    // Clean the properties, removing private props and bindings, etc
-    const mixinProperties = [];
-    addProperties(mixinProperties, mixin.properties);
-    mixin.properties = mixinProperties;
-    mixin.isEmberExtended = object.hasOwnProperty('_super');
-    mixin.isEmberObject = object.constructor === EmberObject.prototype.constructor;
-
-    // skip merged mixin class (the class which represents A.extend(x, y))
-    if (object.hasOwnProperty('constructor') && object.constructor.PrototypeMixin && object.constructor.PrototypeMixin.mixins) {
-      return mixins;
+      mixins.push(mix);
     }
 
-    mixins.push(mixin);
+    const proto = Object.getPrototypeOf(object);
+
+    if (proto && proto !== Object.prototype) {
+      mixins.push(...this.mixinDetailsForObject(proto));
+    }
+
     return mixins;
   },
 
   mixinsForObject(object) {
-    // eslint-disable-next-line ember/no-new-mixins
-    let mixinDetails = this.mixinDetailsForObject(object).reverse();
-    const objectName = mixinDetails.find(m => !m.isEmberMixin).name;
+    let mixinDetails = this.mixinDetailsForObject(object);
+
     mixinDetails[0].name = 'Own Properties';
     mixinDetails[0].expand = true;
-    // merge first 2 into own properties, if its not created directly from EmberObject.create(...)
-    if (mixinDetails.length > 1 && !mixinDetails[1].isEmberObject) {
-      const allProperties = Ember.A(mixinDetails[0].properties.concat(...mixinDetails[1].properties));
-      mixinDetails[0].properties = allProperties.uniqBy('name').toArray();
-      mixinDetails.splice(1, 1);
-    }
 
     fixMandatorySetters(mixinDetails);
     applyMixinOverrides(mixinDetails);
@@ -627,7 +601,7 @@ export default EmberObject.extend(PortMixin, {
     this.currentObject = { object, mixinDetails, objectId };
 
     let errors = errorsToSend(errorsForObject);
-    return { objectName, objectId, mixins: mixinDetails, errors };
+    return { objectId, mixins: mixinDetails, errors };
   },
 
   valueForObjectProperty(objectId, property, mixinIndex) {
@@ -652,6 +626,66 @@ export default EmberObject.extend(PortMixin, {
   inspectValue
 });
 
+function getClassName(object) {
+  let name;
+
+  if ('toString' in object && object.toString !== Function.prototype.toString) {
+    name = object.toString();
+  }
+
+  return name ? name.replace('(unknown)', object.constructor.name) : object.constructor.name;
+}
+
+function ownMixins(object) {
+  // TODO: We need to expose an API for getting _just_ the own mixins directly
+  let meta = Ember.meta(object);
+  let parentMeta = meta.parent
+  let mixins = new Set();
+
+  // Filter out anonymous mixins that are directly in a `class.extend`
+  let baseMixins = object.constructor.PrototypeMixin && object.constructor.PrototypeMixin.mixins;
+
+  meta.forEachMixins(m => {
+    // Find mixins that:
+    // - Are not in the parent classes
+    // - Are not primitive (has mixins, doesn't have properties)
+    // - Don't include any of the base mixins from a class extend
+    if (
+      (!parentMeta || !parentMeta.hasMixin(m))
+      && (!m.properties && m.mixins)
+      && (!baseMixins || !m.mixins.some(m => baseMixins.includes(m)))
+    ) {
+      mixins.add(m);
+    }
+  });
+
+  return mixins;
+}
+
+function ownProperties(object) {
+  let meta = Ember.meta(object);
+  let parentMeta = meta.parent;
+
+  let props = Object.getOwnPropertyDescriptors(object);
+  delete props.constructor;
+
+  meta.forEachDescriptors((name, desc) => {
+    // TODO: Need to add a way to get own descriptors only from meta
+    if (!parentMeta || !parentMeta.peekDescriptors(name)) {
+      props[name] = desc;
+    }
+  });
+
+  Object.keys(props).forEach(k => {
+    if (typeof props[k].value === 'function') {
+      return;
+    }
+    props[k].isDescriptor = true;
+  });
+
+  // Clean the properties, removing private props and bindings, etc
+  return addProperties([], props);
+}
 
 function propertiesForMixin(mixin) {
   let properties = [];
@@ -705,10 +739,6 @@ function addProperties(properties, hash) {
       if (!options.isService) {
         options.isService = desc.value instanceof Ember.Service;
       }
-
-      if (!options.isService) {
-        options.isService = desc._getter && desc._getter.name === 'getInjection';
-      }
     }
     if (options.isService) {
       replaceProperty(properties, prop, inspectValue(hash, prop), options);
@@ -750,6 +780,8 @@ function addProperties(properties, hash) {
     }
     replaceProperty(properties, prop, inspectValue(hash, prop), options);
   }
+
+  return properties;
 }
 
 function replaceProperty(properties, name, value, options) {
@@ -985,14 +1017,6 @@ function customizeProperties(mixinDetails, propertyInfo) {
 function getDebugInfo(object) {
   let debugInfo = null;
   let objectDebugInfo = get(object, '_debugInfo');
-  if (object instanceof Ember.ObjectProxy) {
-    if (!object.content) {
-      objectDebugInfo = null;
-    }
-    if (object.content) {
-      object = object.content;
-    }
-  }
   if (objectDebugInfo && typeof objectDebugInfo === 'function') {
     // We have to bind to object here to make sure the `this` context is correct inside _debugInfo when we call it
     debugInfo = objectDebugInfo.bind(object)();
