@@ -253,7 +253,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
       '(unknown mixin)',
       'Bar',
       'Baz',
-      'Ember.Object',
+      'EmberObject',
       '(unknown mixin)',
       'CoreObject'
     ];

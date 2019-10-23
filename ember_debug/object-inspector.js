@@ -556,6 +556,7 @@ export default EmberObject.extend(PortMixin, {
       const mix = {
         properties: propertiesForMixin(mixin),
         name,
+        isEmberMixin: true,
         id: guidFor(mixin)
       };
 
@@ -576,6 +577,10 @@ export default EmberObject.extend(PortMixin, {
 
     mixinDetails[0].name = 'Own Properties';
     mixinDetails[0].expand = true;
+
+    if (mixinDetails[1] && !mixinDetails[1].isEmberMixin) {
+      mixinDetails[1].expand = true;
+    }
 
     fixMandatorySetters(mixinDetails);
     applyMixinOverrides(mixinDetails);
@@ -627,19 +632,27 @@ export default EmberObject.extend(PortMixin, {
 });
 
 function getClassName(object) {
-  let name;
+  let name = '';
 
   if ('toString' in object && object.toString !== Function.prototype.toString) {
     name = object.toString();
   }
 
-  return name ? name.replace('(unknown)', object.constructor.name) : object.constructor.name;
+  const className = object.constructor.name;
+
+  if (!name || name.startsWith('<')) {
+    if (!className.startsWith('_') && className.length > 1 && className !== 'Class') {
+      return className;
+    }
+  }
+
+  return name ? name.replace('(unknown)', className) : className;
 }
 
 function ownMixins(object) {
   // TODO: We need to expose an API for getting _just_ the own mixins directly
   let meta = Ember.meta(object);
-  let parentMeta = meta.parent
+  let parentMeta = meta.parent;
   let mixins = new Set();
 
   // Filter out anonymous mixins that are directly in a `class.extend`
