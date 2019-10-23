@@ -736,9 +736,11 @@ module('Ember Debug - Object Inspector', function(hooks) {
   });
 
   test('Getters work', function(assert) {
-    let inspected = EmberObject.extend({
+    class Foo {
       get hi() { return 123 }
-    }).create();
+    }
+
+    let inspected = new Foo();
 
     objectInspector.sendObject(inspected);
     let getter = message.details[1].properties[0];
