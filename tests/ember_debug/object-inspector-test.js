@@ -248,7 +248,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
       'Own Properties',
       'Foo',
       'FooBar',
-      'Class',
+      '(unknown)',
       '(unknown mixin)',
       '(unknown mixin)',
       'Bar',

@@ -633,20 +633,26 @@ export default EmberObject.extend(PortMixin, {
 
 function getClassName(object) {
   let name = '';
+  let className = object.constructor.name;
 
   if ('toString' in object && object.toString !== Function.prototype.toString) {
     name = object.toString();
   }
 
-  const className = object.constructor.name;
-
-  if (!name || name.startsWith('<')) {
-    if (!className.startsWith('_') && className.length > 1 && className !== 'Class') {
-      return className;
-    }
+  // If the class has a decent looking name, and the `toString` is one of the
+  // default Ember toStrings, replace the constructor portion of the toString
+  // with the class name. We check the length of the class name to prevent doing
+  // this when the value is minified.
+  if (
+    name.match(/<.*:ember\d+>/)
+    && !className.startsWith('_')
+    && className.length > 2
+    && className !== 'Class'
+  ) {
+    return name.replace(/<.*:/, `<${className}:`);
   }
 
-  return name ? name.replace('(unknown)', className) : className;
+  return name || className;
 }
 
 function ownMixins(object) {
