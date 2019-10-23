@@ -1,27 +1,55 @@
 import Component from '@ember/component';
-import { sort } from '@ember/object/computed';
+import { sort, map } from '@ember/object/computed';
+import { set, computed } from '@ember/object';
+import { A } from '@ember/array';
 
 export default Component.extend({
   tagName: '',
 
+  isArray: computed('properties', function () {
+    const props = A(this.get('properties') || []);
+    return props.findBy('name', 'length') && props.findBy('name', 0);
+  }),
+
   /**
-   * Sort the properties by name to make them easier to find in the object inspector.
+   * Sort the properties by name and group them by property type to make them easier to find in the object inspector.
    *
    * @property sortedProperties
    * @type {Array<Object>}
    */
-  sortedProperties: sort('properties', 'sortProperties'),
+  sortedProperties: sort('props', 'sortProperties'),
 
-  init() {
-    this._super(...arguments);
+  props: map('properties', function (p) {
+    set(p, 'isFunction', p.value.type === 'type-function');
+    if (p.name == parseInt(p.name)) {
+      set(p, 'name', parseInt(p.name));
+    }
+    return p;
+  }),
 
-    /**
-     * Used by the `sort` computed macro.
-     *
-     * @property sortProperties
-     * @type {Array<String>}
-     */
-    this.sortProperties = ['name'];
-  },
+  /**
+   * Used by the `sort` computed macro.
+   *
+   * @property sortProperties
+   * @type {Array<String>}
+   */
+  sortProperties: computed('isArray', function () {
+    const order = [
+      'isFunction',
+      'isService:desc',
+      'isProperty:desc',
+      'isTracked:desc',
+      'isComputed:desc',
+      'isGetter:desc',
+      'name'
+    ];
+    // change order for arrays, if the array doesnt have items, then the order does not need to be changed
+    if (this.get('isArray')) {
+      const i = order.indexOf('isProperty:desc');
+      order.splice(i, 1);
+      order.splice(order.length - 1, 0, 'isProperty:desc');
+    }
+    return order;
+  })
 });
 

@@ -17,7 +17,7 @@
       <button
         class="send-to-console js-send-object-to-console-btn"
         title="Send to Console"
-        {{on "click" (fn this.sendObjectToConsole @model.firstObject)}}
+        {{on "click" (fn this.sendObjectToConsole @model.lastObject)}}
       >
         {{svg-jar "send-with-text" width="20px" height="10px"}}
       </button>

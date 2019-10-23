@@ -137,7 +137,7 @@ export default EmberObject.extend(PortMixin, {
     this.sendMessage('promisesUpdated', {
       promises: serialized
     });
-    this.set('updatedPromises', A());
+    this.get('updatedPromises').clear();
   },
 
   promiseUpdated(event) {
