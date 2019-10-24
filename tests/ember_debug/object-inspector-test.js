@@ -178,8 +178,8 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     assert.equal(firstDetail.properties.length, 5, 'methods are included');
 
-    let idProperty = firstDetail.properties[0];
 
+    let idProperty = firstDetail.properties[0];
     assert.equal(idProperty.name, 'id');
     assert.equal(idProperty.value.type, 'type-number');
     assert.equal(idProperty.value.inspect, '1');
@@ -574,7 +574,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     }).create();
 
     objectInspector.sendObject(inspected);
-    let serializedComputedProperty = message.details[1].properties[0];
+    let serializedComputedProperty = message.details[1].properties[2];
 
     assert.equal(serializedComputedProperty.code, computedFn.toString());
     assert.equal(serializedComputedProperty.dependentKeys[0], 'foo');
