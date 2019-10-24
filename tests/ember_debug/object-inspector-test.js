@@ -125,9 +125,6 @@ module('Ember Debug - Object Inspector', function(hooks) {
     let nameProperty = secondDetail.properties[1];
     assert.equal(nameProperty.name, 'name');
     assert.equal(nameProperty.value.inspect, inspect('My Object'));
-
-    let secondDetail = message.details[1];
-    assert.equal(secondDetail.name, '(unknown)');
   });
 
   test('An ES6 Class is correctly transformed into an inspection hash', function(assert) {
@@ -182,6 +179,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(firstDetail.properties.length, 5, 'methods are included');
 
     let idProperty = firstDetail.properties[0];
+
     assert.equal(idProperty.name, 'id');
     assert.equal(idProperty.value.type, 'type-number');
     assert.equal(idProperty.value.inspect, '1');
@@ -325,7 +323,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     objectInspector.sendObject(inspected);
 
-    let computedProperty = message.details[0].properties[0];
+    let computedProperty = message.details[1].properties[0];
 
     assert.equal(computedProperty.name, 'hi');
     assert.ok(computedProperty.value.isCalculated);
@@ -541,7 +539,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     objectInspector.sendObject(inspected);
 
-    let serializedServiceProperty = message.details[0].properties[0];
+    let serializedServiceProperty = message.details[1].properties[0];
 
     assert.equal(serializedServiceProperty.isService, true);
   });
@@ -559,7 +557,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     objectInspector.sendObject(inspected);
 
-    let serializedServiceProperty = message.details[0].properties[0];
+    let serializedServiceProperty = message.details[1].properties[0];
 
     assert.equal(serializedServiceProperty.isService, true);
   });
@@ -576,7 +574,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     }).create();
 
     objectInspector.sendObject(inspected);
-    let serializedComputedProperty = message.details[0].properties[0];
+    let serializedComputedProperty = message.details[1].properties[0];
 
     assert.equal(serializedComputedProperty.code, computedFn.toString());
     assert.equal(serializedComputedProperty.dependentKeys[0], 'foo');
