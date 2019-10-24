@@ -9,8 +9,16 @@ const { ComputedProperty } = Ember;
  */
 export function isComputed(object, key) {
   // Ember > 3.10
-  if (Ember.Debug.isComputed) {
-    return Ember.Debug.isComputed(object, key) || getDescriptorFor(object, key);
+  if (Ember.Debug.isComputed && Ember.Debug.isComputed(object, key)) {
+    return true;
+  }
+
+  if (Ember.meta(object) && Ember.meta(object).peekDescriptors(key)) {
+    return !!Ember.meta(object).peekDescriptors(key)._getter;
+  }
+
+  if (getDescriptorFor(object, key) instanceof ComputedProperty) {
+    return true;
   }
 
   // Ember < 3.10

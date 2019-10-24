@@ -191,10 +191,10 @@ module('Object Inspector', function(hooks) {
         name: 'Detail',
         properties: [{
           name: 'computedProp',
+          isComputed: true,
           value: {
             inspect: '<computed>',
             type: 'type-descriptor',
-            computed: true
           }
         }]
       }]
@@ -211,11 +211,11 @@ module('Object Inspector', function(hooks) {
       objectId: 'myObject',
       property: 'computedProp',
       value: {
-        inspect: 'Computed value'
+        inspect: 'Computed value',
+        isCalculated: true
       },
       mixinIndex: 0
     });
-
     assert.dom('.js-object-property-value').hasText('Computed value');
   });
 
@@ -231,8 +231,7 @@ module('Object Inspector', function(hooks) {
           name: 'serviceProp',
           isService: true,
           value: {
-            inspect: '<service>',
-            computed: true
+            inspect: '<service>'
           }
         }]
       }]
@@ -260,16 +259,18 @@ module('Object Inspector', function(hooks) {
         properties: [{
           name: 'computedProp',
           dependentKeys: [],
+          isComputed: true,
           value: {
             inspect: '<computed>',
             type: 'type-descriptor',
-            computed: true
+            isCalculated: false
           }
         }]
       }]
     };
 
     await triggerPort(this, 'objectInspector:updateObject', obj);
+
     await click('.js-object-detail-name');
     await click('.js-calculate');
 
@@ -311,10 +312,10 @@ module('Object Inspector', function(hooks) {
         properties: [{
           name: 'computedProp',
           dependentKeys: ['foo.@each.bar'],
+          isComputed: true,
           value: {
             inspect: '<computed>',
             type: 'type-descriptor',
-            computed: true
           }
         }]
       }]
@@ -330,7 +331,7 @@ module('Object Inspector', function(hooks) {
       property: 'computedProp',
       value: {
         inspect: 'Computed value',
-        computed: 'foo-bar'
+        isCalculated: true
       },
       mixinIndex: 0
     });
@@ -373,7 +374,7 @@ module('Object Inspector', function(hooks) {
           value: {
             inspect: 'Teddy',
             type: 'type-string',
-            computed: false
+            isCalculated: false
           }
         }]
 
@@ -389,7 +390,7 @@ module('Object Inspector', function(hooks) {
       value: {
         inspect: 'Alex',
         type: 'type-string',
-        computed: false
+        isCalculated: true
       }
     });
 
@@ -411,7 +412,7 @@ module('Object Inspector', function(hooks) {
       value: {
         inspect: 'Joey',
         type: 'type-string',
-        computed: false
+        isCalculated: false
       }
     });
 
@@ -432,7 +433,7 @@ module('Object Inspector', function(hooks) {
           value: {
             inspect: '{"name":"teddy"}',
             type: 'type-string',
-            computed: false
+            isCalculated: true
           }
         }]
 
@@ -466,7 +467,7 @@ module('Object Inspector', function(hooks) {
           value: {
             inspect: 'Teddy',
             type: 'type-string',
-            computed: false
+            isCalculated: true
           }
         }]
 
@@ -509,7 +510,7 @@ module('Object Inspector', function(hooks) {
           name: 'readCP',
           readOnly: true,
           value: {
-            computed: true,
+            isCalculated: true,
             inspect: 'Read',
             type: 'type-string'
           }
@@ -517,7 +518,7 @@ module('Object Inspector', function(hooks) {
           name: 'readCP',
           readOnly: false,
           value: {
-            computed: true,
+            isCalculated: true,
             inspect: 'Write',
             type: 'type-string'
           }
@@ -632,5 +633,119 @@ module('Object Inspector', function(hooks) {
     });
 
     assert.dom('.js-object-inspector-errors').doesNotExist();
+  });
+
+  test("Tracked properties", async function (assert) {
+    await visit('/');
+
+    let obj = {
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [{
+        name: 'Detail',
+        properties: [{
+          name: 'trackedProp',
+          isTracked: true,
+          value: {
+            inspect: 123,
+            type: 'type-number',
+          }
+        }]
+      }]
+    };
+
+    await triggerPort(this, 'objectInspector:updateObject', obj);
+
+    await click('.js-object-detail-name');
+
+    assert.dom('.mixin__property-icon--tracked').exists();
+    assert.dom('.js-object-property-value').hasText('123');
+
+    await triggerPort(this, 'objectInspector:updateProperty', {
+      objectId: 'myObject',
+      property: 'trackedProp',
+      value: {
+        inspect: 456
+      },
+      mixinIndex: 0
+    });
+
+    assert.dom('.js-object-property-value').hasText('456');
+  });
+
+  test("Plain properties", async function (assert) {
+    await visit('/');
+
+    let obj = {
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [{
+        name: 'Detail',
+        properties: [{
+          name: 'plainProp',
+          isProperty: true,
+          value: {
+            inspect: 123,
+            type: 'type-number',
+          }
+        }]
+      }]
+    };
+
+    await triggerPort(this, 'objectInspector:updateObject', obj);
+
+    await click('.js-object-detail-name');
+
+    assert.dom('.mixin__property-icon--property').exists();
+    assert.dom('.js-object-property-value').hasText('123');
+
+    await triggerPort(this, 'objectInspector:updateProperty', {
+      objectId: 'myObject',
+      property: 'plainProp',
+      value: {
+        inspect: 456
+      },
+      mixinIndex: 0
+    });
+
+    assert.dom('.js-object-property-value').hasText('456');
+  });
+
+  test("Getters", async function (assert) {
+    await visit('/');
+
+    let obj = {
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [{
+        name: 'Detail',
+        properties: [{
+          name: 'getter',
+          isGetter: true,
+          value: {
+            inspect: 123,
+            type: 'type-number',
+          }
+        }]
+      }]
+    };
+
+    await triggerPort(this, 'objectInspector:updateObject', obj);
+
+    await click('.js-object-detail-name');
+
+    assert.dom('.mixin__property-icon--getter').exists();
+    assert.dom('.js-object-property-value').hasText('123');
+
+    await triggerPort(this, 'objectInspector:updateProperty', {
+      objectId: 'myObject',
+      property: 'getter',
+      value: {
+        inspect: 456
+      },
+      mixinIndex: 0
+    });
+
+    assert.dom('.js-object-property-value').hasText('456');
   });
 });

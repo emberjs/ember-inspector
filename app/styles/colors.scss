@@ -37,6 +37,7 @@
   --pill-bg: rgba(0, 0, 0, 0.1);
   --pill-bg-active: rgba(255, 255, 255, 0.3);
   --warning-text: #735c0f;
+  --tracked-icon-bg: var(--spec03);
 }
 
 .theme--dark {
@@ -78,4 +79,5 @@
   --pill-bg: rgba(255, 255, 255, 0.2);
   --pill-bg-active: rgba(255, 255, 255, 0.3);
   --warning-text: #8ca3f0;
+  --tracked-icon-bg: #5e5eb5;
 }
