@@ -18,6 +18,10 @@
     class="component-tree-item__tag {{if @item.view.isComponent "component-tree-item__bracket"}} {{if (not @item.hasChildren) "component-tree-item__bracket--self-closing"}}"
   >
     {{if @item.view.isComponent (classify @item.view.name) @item.view.name}}
+
+    {{#each-in @item.view.args.named as |name value|}}
+      @{{name}}={{component-argument value}}
+    {{/each-in}}
   </code>
 
   {{#if @item.view.isComponent}}

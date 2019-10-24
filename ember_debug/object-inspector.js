@@ -364,7 +364,7 @@ export default EmberObject.extend(PortMixin, {
     inspectById(message) {
       const obj = this.sentObjects[message.objectId];
       if (obj) {
-        this.sendObject(obj);
+        this.sendObject(obj.instance || obj);
       }
     },
     inspectByContainerLookup(message) {
