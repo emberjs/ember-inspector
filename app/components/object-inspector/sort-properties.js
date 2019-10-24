@@ -20,7 +20,7 @@ export default Component.extend({
   sortedProperties: sort('props', 'sortProperties'),
 
   props: map('properties', function (p) {
-    set(p, 'isFunction', p.value.type === 'type-function' || p.value.type === 'type-asyncfunction'));
+    set(p, 'isFunction', p.value.type === 'type-function' || p.value.type === 'type-asyncfunction');
     if (p.name == parseInt(p.name)) {
       set(p, 'name', parseInt(p.name));
     }
