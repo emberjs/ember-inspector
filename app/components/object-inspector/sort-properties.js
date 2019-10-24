@@ -19,11 +19,11 @@ export default Component.extend({
    */
   sortedProperties: computed('sorted.length', function () {
     // limit arrays
-    if (this.get('sorted.length') > 100) {
+    if (this.get('isArray') && this.get('sorted.length') > 100) {
       const indicator = {
         name: '...',
         value: {
-          inspect: 'there are more properties, send to console to see all'
+          inspect: 'there are more items, send to console to see all'
         }
       };
       const props = this.get('sorted').slice(0, 100);

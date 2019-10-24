@@ -7,6 +7,7 @@ import { guidFor } from '@ember/object/internals';
 import EmberObject, { computed } from '@ember/object';
 import Service from '@ember/service';
 import { VERSION } from '@ember/version';
+import { tracked } from '@glimmer/tracking';
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import require from 'require';
@@ -21,6 +22,10 @@ let objectInspector;
 function setupApp() {
   this.owner.register('component:x-simple', Component);
   this.owner.register('template:simple', hbs`Simple {{input class="simple-input"}} {{x-simple class="simple-view"}}`);
+}
+
+function waitTime(time) {
+  return new Promise(res => setTimeout(res, time));
 }
 
 let ignoreErrors = true;
@@ -89,7 +94,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     let firstDetail = message.details[0];
     assert.equal(firstDetail.name, 'Own Properties');
 
-    assert.equal(firstDetail.properties.length, 5, 'methods are included');
+    assert.equal(firstDetail.properties.length, 4, 'methods are included');
 
     let idProperty = firstDetail.properties[0];
     assert.equal(idProperty.name, 'id');
@@ -110,7 +115,14 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(prop.value.type, 'type-date');
     assert.equal(prop.value.inspect, date.toString());
 
-    let nameProperty = firstDetail.properties[4];
+    let secondDetail = message.details[1];
+    assert.ok(secondDetail.name.includes('Parent Object'));
+
+    idProperty = secondDetail.properties[0];
+    assert.equal(idProperty.name, 'id');
+    assert.equal(idProperty.overridden, 'Own Properties');
+
+    let nameProperty = secondDetail.properties[1];
     assert.equal(nameProperty.name, 'name');
     assert.equal(nameProperty.value.inspect, inspect('My Object'));
 
@@ -167,8 +179,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     let firstDetail = message.details[0];
     assert.equal(firstDetail.name, 'Own Properties');
 
-    assert.equal(firstDetail.properties.length, 7, 'methods are included');
-
+    assert.equal(firstDetail.properties.length, 5, 'methods are included');
 
     let idProperty = firstDetail.properties[0];
     assert.equal(idProperty.name, 'id');
@@ -195,14 +206,64 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(prop.value.type, 'type-date');
     assert.equal(prop.value.inspect, date.toString());
 
-    prop = firstDetail.properties[5];
-    assert.equal(prop.name, 'aCP');
-    assert.equal(prop.value.type, 'type-boolean');
+    let secondDetail = message.details[1];
+    prop = secondDetail.properties[0];
+    assert.equal(prop.name, 'toString');
+    assert.equal(prop.value.type, 'type-function');
 
-    prop = firstDetail.properties[6];
+    prop = secondDetail.properties[1];
     assert.equal(prop.name, 'get');
     assert.equal(prop.value.type, 'type-function');
 
+    prop = secondDetail.properties[2];
+    assert.equal(prop.name, 'aCP');
+    assert.equal(prop.value.type, 'type-boolean');
+  });
+
+  test('Correct mixin order with es6 class', function (assert) {
+
+    // eslint-disable-next-line ember/no-new-mixins
+    const MyMixin = Mixin.create({
+      a: 'custom',
+    });
+
+    // eslint-disable-next-line ember/no-new-mixins
+    const MyMixin2 = Mixin.create({
+      b: 'custom2',
+    });
+
+    class Baz extends EmberObject {}
+    class Bar extends Baz {}
+    class FooBar extends Bar.extend(MyMixin, MyMixin2) {}
+
+    class Foo extends FooBar {
+      foobar = 1
+    }
+
+    const instance = Foo.create({
+      ownProp: 'hi'
+    });
+
+    objectInspector.sendObject(instance);
+
+    const mixinNames = message.details.map(d => d.name);
+    const expectedMixinNames = [
+      'Own Properties',
+      'Foo',
+      'FooBar',
+      '(unknown)',
+      '(unknown mixin)',
+      '(unknown mixin)',
+      'Bar',
+      'Baz',
+      'EmberObject',
+      '(unknown mixin)',
+      'CoreObject'
+    ];
+
+    expectedMixinNames.forEach((expectedMixinName, i) => {
+      assert.ok(mixinNames[i].includes(expectedMixinName), `${mixinNames[i]} : ${expectedMixinName}`);
+    });
   });
 
   test('Computed properties are correctly calculated', function(assert) {
@@ -222,7 +283,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     assert.step('inspector: sendObject');
     objectInspector.sendObject(inspected);
-    let computedProperty = message.details[0].properties[0];
+    let computedProperty = message.details[1].properties[0];
     assert.equal(computedProperty.name, 'hi');
     assert.ok(computedProperty.isComputed);
     assert.equal(computedProperty.value.type, 'type-descriptor');
@@ -301,13 +362,13 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     inspected.set('name', 'Alex');
 
-    await new Promise(res => setTimeout(res, 400));
+    await waitTime(400);
 
     assert.equal(name, 'objectInspector:updateProperty');
 
     assert.equal(message.objectId, id);
     assert.equal(message.property, 'name');
-    assert.equal(message.mixinIndex, 0);
+    assert.equal(message.mixinIndex, 1);
     assert.equal(message.value.isCalculated, true);
     assert.equal(message.value.inspect, inspect('Alex'));
     assert.equal(message.value.type, 'type-string');
@@ -318,11 +379,11 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     inspected.set('hi', 'Hey');
 
-    await new Promise(res => setTimeout(res, 400));
+    await waitTime(400);
 
     assert.equal(message.objectId, id);
     assert.equal(message.property, 'hi');
-    assert.equal(message.mixinIndex, 0);
+    assert.equal(message.mixinIndex, 1);
     assert.ok(message.value.isCalculated);
     assert.equal(message.value.inspect, inspect('Hey'));
     assert.equal(message.value.type, 'type-string');
@@ -337,11 +398,11 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     inspected.set('hi', 'Hello!');
 
-    await new Promise(res => setTimeout(res, 500));
+    await waitTime(400);
 
     assert.equal(message.objectId, id);
     assert.equal(message.property, 'hi');
-    assert.equal(message.mixinIndex, 0);
+    assert.equal(message.mixinIndex, 1);
     assert.ok(message.value.isCalculated);
     assert.equal(message.value.inspect, inspect('Hello!'));
     assert.equal(message.value.type, 'type-string');
@@ -365,7 +426,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     assert.equal(inspected.get('name'), 'Alex');
 
-    await new Promise(res => setTimeout(res, 400));
+    await waitTime(400);
 
     // A property updated message is published
     assert.equal(name, 'objectInspector:updateProperty');
@@ -410,6 +471,9 @@ module('Ember Debug - Object Inspector', function(hooks) {
       name: 'Teddy',
       gender: 'Male',
       hasChildren: false,
+      toString: function() {
+        return 'TestObject';
+      },
       expensiveProperty: computed(function() { return ''; }),
       _debugInfo() {
         return {
@@ -434,10 +498,6 @@ module('Ember Debug - Object Inspector', function(hooks) {
       }
     });
 
-    Inspected.toString = function() {
-      return 'TestObject';
-    };
-
     let inspected = Inspected.create({
       maritalStatus: 'Single',
       propertyToSkip: null
@@ -456,9 +516,13 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.details[1].properties[0].name, 'maritalStatus');
 
     assert.equal(message.details[2].name, 'Own Properties');
-    assert.equal(message.details[2].properties.length, 2, 'Correctly merges properties');
-    assert.equal(message.details[2].properties[0].value.isCalculated, undefined, 'Does not calculate expensive properties');
-    assert.equal(message.details[2].properties[1].name, 'hasChildren');
+    assert.equal(message.details[2].properties.length, 0, 'Correctly skips properties');
+
+    assert.equal(message.details[3].name, 'TestObject');
+    assert.equal(message.details[3].properties.length, 3, 'Correctly merges properties');
+    assert.equal(message.details[3].properties[1].name, 'hasChildren');
+    assert.equal(message.details[3].properties[2].name, 'expensiveProperty', 'property name is correct');
+    assert.equal(message.details[3].properties[2].value.isCalculated, undefined, 'Does not calculate expensive properties');
 
     assert.ok(message.details[3].name !== 'MixinToSkip', 'Correctly skips mixins');
   });
@@ -661,4 +725,108 @@ module('Ember Debug - Object Inspector', function(hooks) {
     // teardown
     ignoreErrors = true;
   });
+
+  test('Plain properties work', function(assert) {
+    let inspected = EmberObject.create({ hi: 123 });
+
+    objectInspector.sendObject(inspected);
+    let plainProperty = message.details[0].properties[0];
+    assert.equal(plainProperty.name, 'hi');
+    assert.ok(plainProperty.isProperty);
+    assert.equal(plainProperty.value.type, 'type-number');
+    assert.equal(plainProperty.value.inspect, '123');
+  });
+
+  test('Getters work', function(assert) {
+    class Foo {
+      get hi() { return 123 }
+    }
+
+    let inspected = new Foo();
+
+    objectInspector.sendObject(inspected);
+    let getter = message.details[1].properties[0];
+    assert.equal(getter.name, 'hi');
+    assert.ok(getter.isGetter);
+    assert.equal(getter.value.type, 'type-number');
+    assert.equal(getter.value.inspect, '123');
+  });
+
+  if (hasEmberVersion(3, 13)) {
+    test('Tracked properties work', async function(assert) {
+      class Foo {
+        @tracked hi = 123;
+      }
+
+      let inspected = new Foo();
+
+      assert.step('inspector: sendObject');
+      objectInspector.sendObject(inspected);
+      let trackedProp = message.details[1].properties[0];
+      assert.equal(trackedProp.name, 'hi');
+      assert.ok(trackedProp.isTracked);
+      assert.equal(trackedProp.value.type, 'type-number');
+      assert.equal(trackedProp.value.inspect, 123);
+
+      assert.step('inspector: update value');
+      inspected.hi++;
+
+      await waitTime(400);
+
+      assert.step('inspector: updateProperty');
+      assert.equal(message.property, 'hi');
+      assert.equal(message.mixinIndex, 1);
+      assert.equal(message.value.type, 'type-number');
+      assert.equal(message.value.inspect, inspect(124));
+      assert.ok(message.value.isCalculated);
+
+      assert.verifySteps([
+        'inspector: sendObject',
+        'inspector: update value',
+        'inspector: updateProperty',
+      ]);
+    });
+
+    test('Tracked getters update', async function(assert) {
+      class Foo {
+        @tracked hi = 123;
+      }
+
+      let dataSource = new Foo();
+
+      class Bar {
+        get hello() {
+          return dataSource.hi;
+        }
+      }
+
+      let inspected = new Bar();
+
+      assert.step('inspector: sendObject');
+      objectInspector.sendObject(inspected);
+      let trackedProp = message.details[1].properties[0];
+      assert.equal(trackedProp.name, 'hello');
+      assert.ok(trackedProp.isGetter);
+      assert.equal(trackedProp.value.type, 'type-number');
+      assert.equal(trackedProp.value.inspect, 123);
+
+      assert.step('inspector: update value');
+      dataSource.hi++;
+
+      await waitTime(400);
+
+      assert.step('inspector: updateProperty');
+      assert.equal(message.property, 'hello');
+      assert.equal(message.mixinIndex, 1);
+      assert.equal(message.value.type, 'type-number');
+      assert.equal(message.value.inspect, inspect(124));
+      assert.ok(message.value.isCalculated);
+
+      assert.verifySteps([
+        'inspector: sendObject',
+        'inspector: update value',
+        'inspector: updateProperty',
+      ]);
+    });
+  }
 });
