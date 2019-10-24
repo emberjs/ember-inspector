@@ -260,7 +260,7 @@ export default EmberObject.extend(PortMixin, {
               }
               this.sendMessage('updateProperty', { objectId, property: item.name, value, mixinIndex, dependentKeys });
             }
-          } catch (e) {
+          } catch(e) {
             // dont do anything
           }
         });
@@ -364,7 +364,7 @@ export default EmberObject.extend(PortMixin, {
     inspectById(message) {
       const obj = this.sentObjects[message.objectId];
       if (obj) {
-        this.sendObject(obj.instance || obj);
+        this.sendObject(obj);
       }
     },
     inspectByContainerLookup(message) {
@@ -442,7 +442,13 @@ export default EmberObject.extend(PortMixin, {
     if (!this.canSend(object)) {
       throw new Error(`Can't inspect ${object}. Only Ember objects and arrays are supported.`);
     }
-    let details = this.mixinsForObject(object);
+    // Support template only components, which do not have an instance
+    let details = { objectId: null, mixins: [], errors: [] };
+
+    if (object.instance) {
+      details = this.mixinsForObject(object.instance);
+    }
+
     this.sendMessage('updateObject', {
       objectId: details.objectId,
       name: object.toString(),
@@ -721,6 +727,7 @@ function ownMixins(object) {
 
 function ownProperties(object, ownMixins) {
   let meta = Ember.meta(object);
+  let parentMeta = meta.parent;
 
   if (Array.isArray(object)) {
     // slice to max 101, for performance and so that the object inspector will show a `more items` indicator above 100

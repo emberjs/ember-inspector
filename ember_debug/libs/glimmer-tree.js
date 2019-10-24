@@ -53,6 +53,7 @@ export default class {
   constructor({
     owner,
     retainObject,
+    options,
     durations,
     highlightRange,
     objectInspector,
@@ -412,7 +413,7 @@ export default class {
   inspectComponent(component) {
     let viewClass = getShortViewName(component);
     let tagName = get(component, 'tagName');
-    let objectId = this.retainObject(component);
+    let objectId = this.retainObject({ instance: component });
     let duration = this.durations[objectId];
 
     let name = getShortViewName(component);
@@ -594,7 +595,9 @@ export default class {
     let applicationOutlet = this.getApplicationOutlet();
     let element = this.elementForRoot();
 
-    if (!element) { return; }
+    if (!element) {
+      return;
+    }
 
     let options = {
       isPreview,
@@ -697,7 +700,7 @@ export default class {
    *     value: |inspected outlet|,
    *     contorller: |controller instance|
    *   }
- *   ]
+   *   ]
    *
    * @method outletArray
    * @param  {Object} outletTree

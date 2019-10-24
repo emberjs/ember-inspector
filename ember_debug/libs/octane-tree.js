@@ -16,7 +16,7 @@ export function makeRenderNodeCloneable(retainObject, renderNode) {
         bounds: renderNode.bounds,
         isComponent: renderNode.type === 'component',
         name: renderNode.name,
-        objectId: renderNode.instance ? retainObject(renderNode) : null,
+        objectId: retainObject(renderNode),
         viewClass: renderNode.name
       },
       children
