@@ -7,7 +7,7 @@ export default Component.extend({
   sendToConsole: action(function ({ name }) {    
     const data = {
       objectId: this.model.objectId
-    });
+    };
     if (name !== '...') {
       data.property = name;
     }
