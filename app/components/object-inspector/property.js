@@ -88,7 +88,7 @@ export default Component.extend({
   },
 
   cannotEdit() {
-    if (!this.isCalculated) return true;
+    if (this.model.name === '...' || !this.isCalculated) return true;
     return this.isFunction || this.isOverridden || this.readOnly;
   },
 
