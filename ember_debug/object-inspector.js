@@ -402,7 +402,7 @@ export default EmberObject.extend(PortMixin, {
         parentObject: objectId,
         property,
         objectId: details.objectId,
-        name: details.objectName,
+        name: object.toString(),
         details: details.mixins,
         errors: details.errors
       });
@@ -416,7 +416,7 @@ export default EmberObject.extend(PortMixin, {
     let details = this.mixinsForObject(object);
     this.sendMessage('updateObject', {
       objectId: details.objectId,
-      name: details.objectName,
+      name: object.toString(),
       details: details.mixins,
       errors: details.errors
     });
@@ -606,7 +606,7 @@ export default EmberObject.extend(PortMixin, {
     this.currentObject = { object, mixinDetails, objectId };
 
     let errors = errorsToSend(errorsForObject);
-    return { objectName, objectId, mixins: mixinDetails, errors };
+    return { objectId, mixins: mixinDetails, errors };
   },
 
   valueForObjectProperty(objectId, property, mixinIndex) {
@@ -691,7 +691,7 @@ function ownProperties(object) {
   }
 
   let props = Object.getOwnPropertyDescriptors(object);
-  delete props.constructor;   
+  delete props.constructor;
 
   meta.forEachDescriptors((name, desc) => {
     // TODO: Need to add a way to get own descriptors only from meta
@@ -705,7 +705,7 @@ function ownProperties(object) {
       return;
     }
     props[k].isDescriptor = true;
-  });   
+  });
 
   // Clean the properties, removing private props and bindings, etc
   return addProperties([], props);
