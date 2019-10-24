@@ -4,14 +4,14 @@ import { action } from '@ember/object';
 export default Component.extend({
   tagName: '',
 
-  sendToConsole: action(function ({ name }) {
-    if (name === '...') {
-      name = undefined;
-    }
-    this.port.send('objectInspector:sendToConsole', {
-      objectId: this.model.objectId,
-      property: name
+  sendToConsole: action(function ({ name }) {    
+    const data = {
+      objectId: this.model.objectId
     });
+    if (name !== '...') {
+      data.property = name;
+    }
+    this.port.send('objectInspector:sendToConsole', data);
   }),
 
   digDeeper: action(function({ name }) {
