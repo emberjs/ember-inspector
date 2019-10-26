@@ -1,6 +1,7 @@
 /* eslint no-cond-assign:0 */
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import GlimmerTree from 'ember-debug/libs/glimmer-tree';
+import CaptureRenderTree from 'ember-debug/libs/capture-render-tree';
 import {
   modelName as getModelName,
   shortModelName as getShortModelName,
@@ -122,15 +123,24 @@ export default EmberObject.extend(PortMixin, {
     };
     window.addEventListener('resize', this.resizeHandler);
 
-    this.glimmerTree = new GlimmerTree({
-      owner: this.getOwner(),
-      retainObject: this.retainObject.bind(this),
-      highlightRange: this._highlightRange.bind(this),
-      options: this.get('options'),
-      objectInspector: this.get('objectInspector'),
-      durations: this._durations,
-      viewRegistry: this.get('viewRegistry')
-    });
+    if (Ember._captureRenderTree === undefined) {
+      this.glimmerTree = new GlimmerTree({
+        owner: this.getOwner(),
+        retainObject: this.retainObject.bind(this),
+        highlightRange: this._highlightRange.bind(this),
+        options: this.get('options'),
+        objectInspector: this.get('objectInspector'),
+        durations: this._durations,
+        viewRegistry: this.get('viewRegistry')
+      });
+    } else {
+      // console.log("options", this.get('options'));
+      this.glimmerTree = new CaptureRenderTree({
+        owner: this.getOwner(),
+        retainObject: this.retainObject.bind(this),
+        options: this.get('options')
+      });
+    }
   },
 
   inspectComponentForNode(domNode) {
