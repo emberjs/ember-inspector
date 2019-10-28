@@ -691,6 +691,11 @@ function ownMixins(object) {
 function ownProperties(object) {
   let meta = Ember.meta(object);
   let parentMeta = meta.parent;
+  
+  if (Array.isArray(object)) {
+    // slice to max 101, for performance and so that the object inspector will show a `more items` indicator above 100
+    object = object.slice(0, 101);
+  }
 
   let props = Object.getOwnPropertyDescriptors(object);
   delete props.constructor;

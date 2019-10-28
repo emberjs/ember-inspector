@@ -17,7 +17,23 @@ export default Component.extend({
    * @property sortedProperties
    * @type {Array<Object>}
    */
-  sortedProperties: sort('props', 'sortProperties'),
+  sortedProperties: computed('sorted.length', function () {
+    // limit arrays
+    if (this.get('isArray') && this.get('sorted.length') > 100) {
+      const indicator = {
+        name: '...',
+        value: {
+          inspect: 'there are more items, send to console to see all'
+        }
+      };
+      const props = this.get('sorted').slice(0, 100);
+      props.push(indicator);
+      return props;
+    }
+    return this.get('sorted');
+  }),
+
+  sorted: sort('props', 'sortProperties'),
 
   props: map('properties', function (p) {
     set(p, 'isFunction', p.value.type === 'type-function');
