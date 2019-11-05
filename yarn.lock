@@ -749,15 +749,15 @@
   resolved "https://registry.yarnpkg.com/@ember/edition-utils/-/edition-utils-1.1.1.tgz#d5732c3da593f202e6e1ac6dbee56a758242403f"
   integrity sha512-GEhri78jdQp/xxPpM6z08KlB0wrHfnfrJ9dmQk7JeQ4XCiMzXsJci7yooQgg/IcTKCM/PxE/IkGCQAo80adMkw==
 
-"@ember/optional-features@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@ember/optional-features/-/optional-features-1.0.0.tgz#8e54ff37f4d9642212b45387f182cf7322aaaab9"
-  integrity sha512-nPWqiyjkbSLaNd1kA1Y0BYAx+0IzuxdBfOkQyEwNaaB6xvgGpQMiQF/Au5UBlV/S3GEpuL2kFRQj48XMiTBY+w==
+"@ember/optional-features@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@ember/optional-features/-/optional-features-1.1.0.tgz#0ff27ba6e9fc1f1e936e024f6a7cc33a96abffba"
+  integrity sha512-ST3+gIRH2WtgGcOtf42uM9WaXBY4dj4//zoTYV6GPe8cp0XdJEU63oMo9SbE6+0Efp8lvk96LsX+DVDDZy9Rmw==
   dependencies:
     chalk "^2.4.2"
     co "^4.6.0"
     ember-cli-version-checker "^3.1.3"
-    glob "^7.1.4"
+    glob "^7.1.5"
     inquirer "^6.5.1"
     mkdirp "^0.5.1"
     silent-error "^1.1.1"
@@ -2060,10 +2060,10 @@ babel-plugin-htmlbars-inline-precompile@^1.0.0:
   resolved "https://registry.yarnpkg.com/babel-plugin-htmlbars-inline-precompile/-/babel-plugin-htmlbars-inline-precompile-1.0.0.tgz#a9d2f6eaad8a3f3d361602de593a8cbef8179c22"
   integrity sha512-4jvKEHR1bAX03hBDZ94IXsYCj3bwk9vYsn6ux6JZNL2U5pvzCWjqyrGahfsGNrhERyxw8IqcirOi9Q6WCo3dkQ==
 
-babel-plugin-htmlbars-inline-precompile@^2.0.0, babel-plugin-htmlbars-inline-precompile@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-htmlbars-inline-precompile/-/babel-plugin-htmlbars-inline-precompile-2.1.0.tgz#92b0b23efc462c8df4d54c04a591b5d4111fd9c2"
-  integrity sha512-yoaNhhSO1bM5qgzwmK5y8EteCq6rOsrTjbgVFQoZcVuADAlDPYNcvin4120BR9UPG2qWD3mYwYPfY39kWq3WGA==
+babel-plugin-htmlbars-inline-precompile@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-htmlbars-inline-precompile/-/babel-plugin-htmlbars-inline-precompile-3.0.0.tgz#95aa0d2379347cda9a7127c028fe35cb39179fa2"
+  integrity sha512-dR12lOqIcBLOTwgnI5iG+bSrZhR8JIZ7zAHW43YhcD5q8G8iipvSuRo8Fah6NPPh6C8cATd827bgPikphbF09w==
 
 babel-plugin-istanbul@^5.1.0:
   version "5.2.0"
@@ -3087,6 +3087,17 @@ broccoli-plugin@^2.0.0, broccoli-plugin@^2.1.0:
   resolved "https://registry.yarnpkg.com/broccoli-plugin/-/broccoli-plugin-2.1.0.tgz#2fab6c578219cfcc64f773e9616073313fc8b334"
   integrity sha512-ElE4caljW4slapyEhSD9jU9Uayc8SoSABWdmY9SqbV8DHNxU6xg1jJsPcMm+cXOvggR3+G+OXAYQeFjWVnznaw==
   dependencies:
+    promise-map-series "^0.2.1"
+    quick-temp "^0.1.3"
+    rimraf "^2.3.4"
+    symlink-or-copy "^1.1.8"
+
+broccoli-plugin@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/broccoli-plugin/-/broccoli-plugin-3.0.0.tgz#516f2b550ffa2bb111bf54c1afb4bd0b2f02065b"
+  integrity sha512-aEtobBvzAlUIAaY5z+LwW2W3IJ9pruJtrT571CyfjoDFTGa8LZx0qjQG97Z7Guk5YzuxDoDNlM3hGsgBnnReTw==
+  dependencies:
+    broccoli-node-api "^1.6.0"
     promise-map-series "^0.2.1"
     quick-temp "^0.1.3"
     rimraf "^2.3.4"
@@ -5051,17 +5062,6 @@ ember-cli-htmlbars-inline-precompile@^2.1.0:
     heimdalljs-logger "^0.1.9"
     silent-error "^1.1.0"
 
-ember-cli-htmlbars-inline-precompile@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/ember-cli-htmlbars-inline-precompile/-/ember-cli-htmlbars-inline-precompile-3.0.0.tgz#df67c7c3e69406063d57d3d9b7a27812bb2835de"
-  integrity sha512-OI/xDQkYm+uo0rbMAtRFWwuYv+MKekyzDac4xm42kWKNVClCABL56U7X7Z18BEWXhp5twYVbc3PSnjwA/eZN3w==
-  dependencies:
-    babel-plugin-htmlbars-inline-precompile "^2.0.0"
-    ember-cli-version-checker "^3.1.3"
-    hash-for-dep "^1.5.1"
-    heimdalljs-logger "^0.1.9"
-    silent-error "^1.1.0"
-
 ember-cli-htmlbars@^2.0.3:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/ember-cli-htmlbars/-/ember-cli-htmlbars-2.0.5.tgz#b5a105429a6bce4f7c9c97b667e3b8926e31397f"
@@ -5082,15 +5082,16 @@ ember-cli-htmlbars@^3.0.0, ember-cli-htmlbars@^3.0.1:
     json-stable-stringify "^1.0.1"
     strip-bom "^3.0.0"
 
-"ember-cli-htmlbars@github:ember-cli/ember-cli-htmlbars#253503f1cda5bce173d65fd7b15de1f447cfa5e7":
-  version "3.2.0-alpha.0"
-  resolved "https://codeload.github.com/ember-cli/ember-cli-htmlbars/tar.gz/253503f1cda5bce173d65fd7b15de1f447cfa5e7"
+ember-cli-htmlbars@^4.0.8:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/ember-cli-htmlbars/-/ember-cli-htmlbars-4.0.8.tgz#e87b62e7040bd478a2d007053bdb1644dd1685b0"
+  integrity sha512-B6fzlqmv2E2dl8P6UIYu3bY8nZU2kKfl1VkEIgxFAINfsu9fP65kX/bKzHqGhHF8nAtWBoXZWw6tomHKfUT/Jg==
   dependencies:
     "@ember/edition-utils" "^1.1.1"
-    babel-plugin-htmlbars-inline-precompile "^2.1.0"
+    babel-plugin-htmlbars-inline-precompile "^3.0.0"
     broccoli-debug "^0.6.5"
     broccoli-persistent-filter "^2.3.1"
-    broccoli-plugin "^2.0.0"
+    broccoli-plugin "^3.0.0"
     common-tags "^1.8.0"
     ember-cli-babel-plugin-helpers "^1.1.0"
     fs-copy-file-sync "^1.1.1"
@@ -5099,8 +5100,8 @@ ember-cli-htmlbars@^3.0.0, ember-cli-htmlbars@^3.0.1:
     json-stable-stringify "^1.0.1"
     mkdirp "^0.5.1"
     semver "^6.3.0"
-    strip-bom "^3.0.0"
-    walk-sync "^1.1.3"
+    strip-bom "^4.0.0"
+    walk-sync "^2.0.2"
 
 ember-cli-import-polyfill@^0.2.0:
   version "0.2.0"
@@ -5621,9 +5622,10 @@ ember-source-channel-url@^2.0.1:
   dependencies:
     got "^8.0.1"
 
-"ember-source@https://s3.amazonaws.com/builds.emberjs.com/beta/shas/96e569c6a3dca9e68b34d04c4cbbb5215aaf9270.tgz":
-  version "3.14.0-beta.1.beta"
-  resolved "https://s3.amazonaws.com/builds.emberjs.com/beta/shas/96e569c6a3dca9e68b34d04c4cbbb5215aaf9270.tgz#2ef8ca76445d10aa99a41839b4e52c08bef7cf14"
+ember-source@~3.14.1:
+  version "3.14.1"
+  resolved "https://registry.yarnpkg.com/ember-source/-/ember-source-3.14.1.tgz#f11f98dffa7b169a045590203fa15c3ad2098c34"
+  integrity sha512-UvgjF/I7jANBEjQWdxtL/luXn97ZtIL3QCsJnR7HIcwRg7JuIyz/kaT9gLOGMxWEnwu610gJ+Ic0h0dkgQqg2w==
   dependencies:
     "@babel/helper-module-imports" "^7.0.0"
     "@babel/plugin-transform-block-scoping" "^7.6.0"
@@ -7045,6 +7047,18 @@ glob@^7.0.0, glob@^7.0.3, glob@^7.0.4, glob@^7.1.1, glob@^7.1.2, glob@^7.1.3, gl
   version "7.1.4"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.4.tgz#aa608a2f6c577ad357e1ae5a5c26d9a8d1969255"
   integrity sha512-hkLPepehmnKk41pUGm3sYxoFs/umurYfYJCerbXEyFIWcAzvpipAgVkBqqT9RBKMGjnq6kMuyYwha6csxbiM1A==
+  dependencies:
+    fs.realpath "^1.0.0"
+    inflight "^1.0.4"
+    inherits "2"
+    minimatch "^3.0.4"
+    once "^1.3.0"
+    path-is-absolute "^1.0.0"
+
+glob@^7.1.5:
+  version "7.1.5"
+  resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.5.tgz#6714c69bee20f3c3e64c4dd905553e532b40cdc0"
+  integrity sha512-J9dlskqUXK1OeTOYBEn5s8aMukWMwWfs+rPTn/jn50Ux4MNXVhubL1wu/j2t+H4NVI+cXEcCaYellqaPVGXNqQ==
   dependencies:
     fs.realpath "^1.0.0"
     inflight "^1.0.4"
@@ -12146,6 +12160,11 @@ strip-bom@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/strip-bom/-/strip-bom-3.0.0.tgz#2334c18e9c759f7bdd56fdef7e9ae3d588e68ed3"
   integrity sha1-IzTBjpx1n3vdVv3vfprj1YjmjtM=
+
+strip-bom@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/strip-bom/-/strip-bom-4.0.0.tgz#9c3505c1db45bcedca3d9cf7a16f5c5aa3901878"
+  integrity sha512-3xurFv5tEgii33Zi8Jtp55wEIILR9eh34FAW00PZf+JnSsTmV/ioewSgQl97JHvgjoRGwPShsWm+IdrxB35d0w==
 
 strip-eof@^1.0.0:
   version "1.0.0"

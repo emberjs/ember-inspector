@@ -1,7 +1,7 @@
 import { settled, visit } from '@ember/test-helpers';
 import Ember from 'ember';
 import { module, test } from 'qunit';
-import hbs from 'htmlbars-inline-precompile';
+import { hbs } from 'ember-cli-htmlbars';
 import require from 'require';
 import { setupEIApp, destroyEIApp } from '../helpers/setup-destroy-ei-app';
 
