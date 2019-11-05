@@ -16,7 +16,7 @@ export default TabRoute.extend({
     this.port.on('view:viewTree', this, this.setViewTree);
     this.port.on('view:stopInspecting', this, this.stopInspecting);
     this.port.on('view:startInspecting', this, this.startInspecting);
-    this.port.on('view:inspectDOMElement', this, this.inspectDOMElement);
+    this.port.on('view:inspectDOMNode', this, this.inspectDOMNode);
 
     this.set('controller.viewTreeLoaded', false);
     this.port.send('view:setOptions', { options: this.get('controller.options') });
@@ -27,7 +27,7 @@ export default TabRoute.extend({
     this.port.off('view:viewTree', this, this.setViewTree);
     this.port.off('view:stopInspecting', this, this.stopInspecting);
     this.port.off('view:startInspecting', this, this.startInspecting);
-    this.port.off('view:inspectDOMElement', this, this.inspectDOMElement);
+    this.port.off('view:inspectDOMNode', this, this.inspectDOMNode);
   },
 
   setViewTree(options) {
@@ -57,8 +57,8 @@ export default TabRoute.extend({
     this.set('controller.inspectingViews', false);
   },
 
-  inspectDOMElement({ elementSelector }) {
-    this.get('port.adapter').inspectDOMElement(elementSelector);
+  inspectDOMNode({ selector }) {
+    this.get('port.adapter').inspectDOMNode(selector);
   },
 
   actions: {

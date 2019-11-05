@@ -43,10 +43,12 @@ exports.openDevTool = function(toolId) {
   return gDevToolsBrowser.selectToolCommand(gBrowser, toolId);
 };
 
-exports.inspectDOMElement = function(target, selector, toolId) {
+exports.inspectDOMNode = function(target, selector, toolId) {
   return gDevTools.showToolbox(target, "inspector").then(toolbox => {
     let sel = toolbox.getCurrentPanel().selection;
-    sel.setNode(sel.document.querySelector(selector), toolId);
+    let doc = sel.document;
+    let result = doc.evaluate(selector, doc, null, 9 /* FIRST_ORDERED_NODE_TYPE */);
+    sel.setNode(result.singleNodeValue, toolId);
   });
 };
 
