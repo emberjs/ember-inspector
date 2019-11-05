@@ -77,13 +77,13 @@ export default BasicAdapter.extend({
   },
 
   /**
-   * Open the devtools "Elements" tab and select a specific DOM element.
+   * Open the devtools "Elements" tab and select a specific DOM node.
    *
-   * @method inspectDOMElement
-   * @param  {String} selector jQuery selector
+   * @method inspectDOMNode
+   * @param  {String} selector XPath selector
    */
-  inspectDOMElement(selector) {
-    chrome.devtools.inspectedWindow.eval(`inspect($('${selector}')[0])`);
+  inspectDOMNode(selector) {
+    chrome.devtools.inspectedWindow.eval(`inspect($x('${selector}')[0])`);
   },
 
   /**
