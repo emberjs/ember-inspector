@@ -4,9 +4,9 @@
     "ember-addon"
   ],
   "dependencies": {
-    "ember-cli-babel": "^7.1.2",
-    "ember-cli-htmlbars": "^4.0.8",
-    "ember-cli-sass": "^7.1.7",
-    "ember-svg-jar": "^1.2.2"
+    "ember-cli-babel": "*",
+    "ember-cli-htmlbars": "*",
+    "ember-cli-sass": "*",
+    "ember-svg-jar": "*"
   }
 }
