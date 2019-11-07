@@ -56,15 +56,13 @@ const flattenSearchTree = (
     searchMatch(get(treeNode, 'value.name'), searchValue) :
     true;
 
-  let viewItem = ComponentViewItem.create({
-    view: treeNode.value,
+  let viewItem = new ComponentViewItem({
+    treeNode,
     parent,
     parentCount,
     searchMatched,
     activeSearch,
-    expanded: !activeSearch,
-    hasChildren: treeNode.children.length > 0,
-    children: treeNode.children
+    expanded: !activeSearch
   });
 
   // remember if there is no active search, searchMatched will be true
@@ -85,6 +83,7 @@ const flattenSearchTree = (
       list
     );
   });
+
   return list;
 };
 
@@ -137,7 +136,7 @@ export default Controller.extend({
     viewArray.forEach(viewItem => {
       let cachedExpansion = expandedStateCache[getIdFromObj(viewItem)];
       if (cachedExpansion !== undefined) {
-        viewItem.set('expanded', cachedExpansion);
+        viewItem.expanded = cachedExpansion;
       } else {
         expandedStateCache[getIdFromObj(viewItem)] = viewItem.expanded;
       }
@@ -170,7 +169,7 @@ export default Controller.extend({
    * @param {*} objectId The id of the ember view to show
    */
   expandToNode(objectId) {
-    let node = this.filteredArray.find(item => item.get('id') === objectId);
+    let node = this.filteredArray.find(item => item.id === objectId);
     if (node) {
       node.expandParents();
     }
@@ -210,7 +209,7 @@ export default Controller.extend({
     this.filteredArray.forEach((item) => {
       const id = getIdFromObj(item);
       if (objects.includes(id)) {
-        item.set('expanded', state);
+        item.expanded = state;
         this.expandedStateCache[id] = state;
       }
     });
@@ -221,7 +220,7 @@ export default Controller.extend({
    * @param {ComponentViewItem} item
    */
   toggleWithChildren(item) {
-    const newState = !item.get('expanded');
+    const newState = !item.expanded;
     const list = [];
     const clickedId = getIdFromObj(item);
 
@@ -268,16 +267,16 @@ export default Controller.extend({
     if (event.altKey) {
       this.toggleWithChildren(item);
     } else {
-      item.toggleProperty('expanded');
-      this.expandedStateCache[getIdFromObj(item)] = item.get('expanded');
+      item.expanded = !item.expanded;
+      this.expandedStateCache[getIdFromObj(item)] = item.expanded;
     }
   }),
 
   viewInElementsPanel: action(function(item, event) {
     event.stopPropagation();
 
-    const objectId = item.get('view.objectId');
-    const elementId = item.get('view.elementId');
+    const objectId = item.view.objectId;
+    const elementId = item.view.elementId;
 
     if (objectId || elementId) {
       this.port.send('view:inspectElement', {
@@ -294,7 +293,7 @@ export default Controller.extend({
   expandOrCollapseAll: action(function(expanded) {
     this.expandedStateCache = {};
     this.filteredArray.forEach((item) => {
-      item.set('expanded', expanded);
+      item.expanded = expanded;
       this.expandedStateCache[getIdFromObj(item)] = expanded;
     });
   }),
