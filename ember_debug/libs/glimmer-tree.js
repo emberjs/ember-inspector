@@ -718,19 +718,4 @@ export default class {
   componentById(id) {
     return this.viewRegistry[id];
   }
-
-  /**
-   * @method modelForViewNodeValue
-   * @param  {Boolean} isComponent
-   * @param  {Object}  inspectedNodeValue
-   * @return {Any}     The inspected node's model (if it has one)
-   */
-  modelForViewNodeValue({ isComponent, objectId, name }) {
-    if (isComponent) {
-      return this.modelForComponent(this.componentById(objectId));
-    } else {
-      let { controller } = A(this.outletArray()).findBy('value.name', name);
-      return get(controller, 'model');
-    }
-  }
 }
