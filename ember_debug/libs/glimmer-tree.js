@@ -409,7 +409,6 @@ export default class {
    */
   inspectComponent(component) {
     let viewClass = getShortViewName(component);
-    let completeViewClass = viewClass;
     let tagName = get(component, 'tagName');
     let objectId = this.retainObject(component);
     let duration = this.durations[objectId];
@@ -423,7 +422,6 @@ export default class {
       objectId,
       viewClass,
       duration,
-      completeViewClass,
       isComponent: true,
       tagName: isNone(tagName) ? 'div' : tagName
     };

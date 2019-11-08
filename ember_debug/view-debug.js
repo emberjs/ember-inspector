@@ -6,7 +6,6 @@ import {
   shortModelName as getShortModelName,
   controllerName as getControllerName,
   shortControllerName as getShortControllerName,
-  viewName as getViewName,
   shortViewName as getShortViewName
 } from 'ember-debug/utils/name-functions';
 
@@ -639,13 +638,12 @@ export default EmberObject.extend(PortMixin, {
    * @return {Object} the object containing the required values
    */
   _inspectNode(renderNode) {
-    let name, viewClassName, completeViewClassName, tagName, viewId, timeToRender;
+    let name, viewClassName, tagName, viewId, timeToRender;
 
     let viewClass = this._viewInstanceForNode(renderNode);
 
     if (viewClass) {
       viewClassName = getShortViewName(viewClass);
-      completeViewClassName = getViewName(viewClass);
       tagName = viewClass.get('tagName') || 'div';
       viewId = this.retainObject(viewClass);
       timeToRender = this._durations[viewId];
@@ -659,7 +657,6 @@ export default EmberObject.extend(PortMixin, {
       objectId: viewId,
       viewClass: viewClassName,
       duration: timeToRender,
-      completeViewClass: completeViewClassName,
       isComponent: this._nodeIsEmberComponent(renderNode),
       tagName,
       isVirtual: !viewClass

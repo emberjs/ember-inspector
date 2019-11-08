@@ -56,7 +56,6 @@ module('Component Tab', function (hooks) {
       isComponent: false,
       objectId: 'applicationView',
       viewClass: 'App.ApplicationView',
-      completeViewClass: 'App.ApplicationView',
       duration: 10,
       controller: {
         name: 'App.ApplicationController',
@@ -69,7 +68,6 @@ module('Component Tab', function (hooks) {
           isVirtual: false,
           isComponent: false,
           viewClass: 'App.TodosView',
-          completeViewClass: 'App.TodosView',
           duration: 1,
           objectId: 'todosView',
           model: {
@@ -85,7 +83,6 @@ module('Component Tab', function (hooks) {
           },
           children: [
             {
-              completeViewClass: 'todo-list',
               isComponent: true,
               name: 'todo-list',
               objectId: 'ember392',
@@ -94,7 +91,6 @@ module('Component Tab', function (hooks) {
               viewClass: 'todo-list',
               children: [
                 {
-                  completeViewClass: 'todo-item',
                   isComponent: true,
                   name: 'todo-item',
                   objectId: 'ember267',
