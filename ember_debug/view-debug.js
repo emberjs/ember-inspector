@@ -75,11 +75,7 @@ export default EmberObject.extend(PortMixin, {
         this.inspectElement(element);
       }
     },
-    setOptions({ options }) {
-      this.set('options', options);
-      this.glimmerTree.updateOptions(options);
-      this.sendTree();
-    },
+
     sendModelToConsole(message) {
       const model = this.glimmerTree.modelForViewNodeValue(message);
 
@@ -96,7 +92,6 @@ export default EmberObject.extend(PortMixin, {
     this._super(...arguments);
 
     this.retainedObjects = [];
-    this.options = {};
     this._durations = {};
     layerDiv = document.createElement('div');
     layerDiv.setAttribute('data-label', 'layer-div');
@@ -126,7 +121,6 @@ export default EmberObject.extend(PortMixin, {
       owner: this.getOwner(),
       retainObject: this.retainObject.bind(this),
       highlightRange: this._highlightRange.bind(this),
-      options: this.get('options'),
       objectInspector: this.get('objectInspector'),
       durations: this._durations,
       viewRegistry: this.get('viewRegistry')
@@ -305,10 +299,11 @@ export default EmberObject.extend(PortMixin, {
 
   shouldShowView(view) {
     if (view instanceof Component) {
-      return this.options.components;
+      return true;
+    } else {
+      return (this.hasOwnController(view) || this.hasOwnContext(view)) &&
+        (!view.get('isVirtual') || this.hasOwnController(view) || this.hasOwnContext(view));
     }
-    return (this.hasOwnController(view) || this.hasOwnContext(view)) &&
-      (!view.get('isVirtual') || this.hasOwnController(view) || this.hasOwnContext(view));
   },
 
   hasOwnController(view) {
@@ -548,7 +543,6 @@ export default EmberObject.extend(PortMixin, {
       return false;
     }
     return this._nodeHasOwnController(renderNode, parentNode) &&
-      (this.options.components || !(this._nodeIsEmberComponent(renderNode))) &&
       (this._nodeHasViewInstance(renderNode) || this._nodeHasOwnController(renderNode, parentNode));
   },
 
