@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.12.1](https://github.com/emberjs/ember-inspector/tree/v3.12.1) (2019-11-08)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.12.0...v3.12.1)
+
+**Fixed bugs:**
+
+- Inspector refused to load due to invalid subresource integrity checksum [\#1064](https://github.com/emberjs/ember-inspector/issues/1064)
+
+**Merged pull requests:**
+
+- Remove ember-cli-sri [\#1065](https://github.com/emberjs/ember-inspector/pull/1065) ([rwwagner90](https://github.com/rwwagner90))
+- 3.12 Changelog [\#1062](https://github.com/emberjs/ember-inspector/pull/1062) ([rwwagner90](https://github.com/rwwagner90))
+
 ## [v3.12.0](https://github.com/emberjs/ember-inspector/tree/v3.12.0) (2019-11-08)
 
 [Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.11.0...v3.12.0)
