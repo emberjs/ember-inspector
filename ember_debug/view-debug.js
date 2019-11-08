@@ -296,15 +296,6 @@ export default EmberObject.extend(PortMixin, {
     return model;
   },
 
-  shouldShowView(view) {
-    if (view instanceof Component) {
-      return true;
-    } else {
-      return (this.hasOwnController(view) || this.hasOwnContext(view)) &&
-        (!view.get('isVirtual') || this.hasOwnController(view) || this.hasOwnContext(view));
-    }
-  },
-
   hasOwnController(view) {
     return view.get('controller') !== view.get('_parentView.controller') &&
       ((view instanceof Component) || !(view.get('_parentView.controller') instanceof Component));
@@ -659,7 +650,6 @@ export default EmberObject.extend(PortMixin, {
       duration: timeToRender,
       isComponent: this._nodeIsEmberComponent(renderNode),
       tagName,
-      isVirtual: !viewClass
     };
 
     let controller = this._controllerForNode(renderNode);

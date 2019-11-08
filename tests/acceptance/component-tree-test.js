@@ -52,7 +52,6 @@ module('Component Tab', function (hooks) {
   function defaultViewTree() {
     return viewTreeFactory({
       name: 'application',
-      isVirtual: false,
       isComponent: false,
       objectId: 'applicationView',
       viewClass: 'App.ApplicationView',
@@ -65,7 +64,6 @@ module('Component Tab', function (hooks) {
       children: [
         {
           name: 'todos',
-          isVirtual: false,
           isComponent: false,
           viewClass: 'App.TodosView',
           duration: 1,
