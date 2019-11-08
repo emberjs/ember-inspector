@@ -104,6 +104,7 @@ export default class ProfileManager {
       parentNode.calcDuration();
 
       this.profiles.push(parentNode);
+      this.profiles = this.profiles.slice(0, 100);
       this._triggerProfilesAdded([parentNode]);
       this.currentSet = [];
     });

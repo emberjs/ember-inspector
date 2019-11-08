@@ -1,22 +1,28 @@
-{{#ember-table as |t|}}
-  {{t.head columns=columns enableReorder=false}}
-  {{#t.body
-    rows=rows
+<EmberTable as |t|>
+  <t.head
+    @columns={{columns}}
+    @enableReorder={{false}}
+  />
+  <t.body
+    @rows={{rows}}
   as |b|
-  }}
-    {{#b.row
-      class=(concat "js-container-instance-list-item" (if (mod b.rowMeta.index 2) " striped"))
+  >
+    <b.row
+      class={{concat "js-container-instance-list-item" (if (mod b.rowMeta.index 2) " striped")}}
     as |r|
-    }}
-      {{#r.cell as |value|}}
+    >
+      <r.cell as |value|>
         {{#if value.inspectable}}
-          <div class="is-link js-instance-name" {{action "inspectInstance" value}}>
+          <div
+            class="is-link js-instance-name"
+            {{on "click" (fn this.inspectInstance value)}}
+          >
             {{value.name}}
           </div>
         {{else}}
           <span class="js-instance-name">{{value.name}}</span>
         {{/if}}
-      {{/r.cell}}
-    {{/b.row}}
-  {{/t.body}}
-{{/ember-table}}
+      </r.cell>
+    </b.row>
+  </t.body>
+</EmberTable>

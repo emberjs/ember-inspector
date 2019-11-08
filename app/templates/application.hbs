@@ -1,72 +1,69 @@
-{{#x-app
-  active=active
-  isDragging=isDragging
-}}
-  {{#if isEmberApplication}}
+<div
+  class="ember-view app {{if this.active "" "inactive"}}"
+  tabindex="1"
+  {{on "focusin" (fn this.setActive true)}}
+  {{on "focusout" (fn this.setActive false)}}
+>
+  {{#if this.isEmberApplication}}
     <div class="split">
       <div class="split__panel">
-        {{!-- Begin main --}}
         <div class="split split--main">
-          {{#draggable-column
-            width=navWidth
-            classes="split__panel split__panel--sidebar-1"
-            setIsDragging=(action "setIsDragging")
-          }}
+          <Ui::DraggableColumn
+            @classes="split__panel split__panel--sidebar-1"
+            @side="left"
+            @width={{this.navWidth}}
+          >
             <div class="split__panel__hd">
               {{app-picker}}
             </div>
             <div class="split__panel__bd">
-              {{side-nav deprecationCount=deprecationCount}}
+              <SideNav @deprecationCount={{this.deprecationCount}} />
             </div>
             <div class="split__panel__ft">
               <a target="_blank" href="https://github.com/emberjs/ember-inspector/issues">
                 Submit an Issue
               </a>
             </div>
-          {{/draggable-column}}
+          </Ui::DraggableColumn>
 
           <div class="split__panel">
             <div class="split__panel__hd">
               {{outlet "toolbar"}}
-              {{ui/sidebar-toggle
-                classNames="toolbar__icon-button"
-                isExpanded=inspectorExpanded
-                toggleInspector=(action "toggleInspector")
-              }}
+              <button
+                class="sidebar-toggle toolbar__icon-button {{if this.inspectorExpanded "flip"}}"
+                {{on "click" this.toggleInspector}}
+              >
+                {{svg-jar "sidebar-toggle" width="16" height="16"}}
+              </button>
             </div>
 
-            {{#main-content class="split__panel__bd"}}
+            <MonitorContentHeight class="split__panel__bd">
               {{outlet}}
-            {{/main-content}}
+            </MonitorContentHeight>
           </div>
         </div>
-
-        {{!-- End main --}}
       </div>
 
-      {{#if inspectorExpanded}}
-        {{#draggable-column
-          side="right"
-          width=inspectorWidth
-          classes="split__panel"
-          setIsDragging=(action "setIsDragging")
-        }}
-          {{object-inspector
-            application=this
-            model=mixinStack
-            mixinDetails=mixinDetails
-            toggleInspector=(action "toggleInspector")
-          }}
-        {{/draggable-column}}
+      {{#if this.inspectorExpanded}}
+        <Ui::DraggableColumn
+          @classes="split__panel"
+          @side="right"
+          @width={{this.inspectorWidth}}
+        >
+          <ObjectInspector
+            @popMixinDetails={{this.popMixinDetails}}
+            @model={{this.mixinStack}}
+            @mixinDetails={{this.mixinDetails}}
+          />
+        </Ui::DraggableColumn>
       {{/if}}
     </div>
-
   {{else}}
-    {{#ui/error-page description="Ember application not detected!"}}
+    <Ui::ErrorPage @description="Ember application not detected!">
       <ul>
         <li>This is not an Ember application.</li>
         <li>You are using an old version of Ember (&lt; rc5).</li>
-        {{#if isChrome}}
+        {{#if this.isChrome}}
           <li>
             You are using the file:// protocol (instead of http://), in which case:
 
@@ -78,6 +75,6 @@
           </li>
         {{/if}}
       </ul>
-    {{/ui/error-page}}
+    </Ui::ErrorPage>
   {{/if}}
-{{/x-app}}
+</div>

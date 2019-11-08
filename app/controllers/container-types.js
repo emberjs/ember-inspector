@@ -1,9 +1,7 @@
-import Controller, { inject as controller } from '@ember/controller';
+import Controller from '@ember/controller';
 import { sort } from '@ember/object/computed';
 
 export default Controller.extend({
-  application: controller(),
-
   sorted: sort('model', 'sortProperties'),
 
   init() {

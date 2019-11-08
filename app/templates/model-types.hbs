@@ -1,9 +1,8 @@
-{{#item-types
-  header="Model Types"
-  setIsDragging=(action "setIsDragging" target=application)
-  sorted=(readonly (if orderByRecordCount sortByDescCount sortByName))
-  type="model"
-  width=navWidth
-}}
+<ItemTypes
+  @header="Model Types"
+  @sorted={{readonly (if this.orderByRecordCount this.sortByDescCount this.sortByName)}}
+  @type="model"
+  @width={{this.navWidth}}
+>
   {{outlet}}
-{{/item-types}}
+</ItemTypes>

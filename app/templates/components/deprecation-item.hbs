@@ -1,76 +1,84 @@
-<tr
-  class="list__row {{if isExpanded "list__row_arrow_expanded" "list__row_arrow_collapsed"}} js-deprecation-item"
-  {{action "toggleExpand"}}
->
-  {{#list.cell
-    class="list__cell_main js-deprecation-main-cell"
-    title=model.message
-  }}
-    <div class="list__cell-arrow"></div>
-    <span class="pill js-deprecation-count">{{model.count}}</span>
-    <span class="js-deprecation-message">{{model.message}}</span>
-    {{#if model.url}}
-      <a
-        href={{model.url}}
-        class="js-deprecation-url"
-        target="_blank"
-        title="Transition Plan"
+<Ui::Disclosure as |disclosure|>
+  <div class="deprecation-item px-3" data-test="deprecation-item">
+    <div class="flex items-center">
+      <div
+        class="flex items-center flex-grow py-2"
+        {{on "click" disclosure.toggle}}
       >
-        Transition Plan
-        {{svg-jar "external-link" width="12px" height="12px"}}
-      </a>
-    {{/if}}
-  {{/list.cell}}
-</tr>
-{{#if isExpanded}}
-  {{#if model.hasSourceMap}}
-    {{#each model.sources as |single|}}
-      {{#deprecation-item-source model=single as |source|}}
-        <tr class="list__row js-deprecation-source">
-          {{#list.cell
-            class="list__cell_main list__cell_size_larger"
-            style="padding-left:48px"
-          }}
-            <span class="source">
-              {{#if source.isClickable}}
-                <a
-                  class="js-deprecation-source-link"
-                  href="#"
-                  {{action openResource source.model.map}}
-                >
-                  {{source.url}}
-                </a>
-              {{else}}
-                <span class="js-deprecation-source-text">{{source.url}}</span>
-              {{/if}}
-            </span>
-          {{/list.cell}}
-          {{#list.cell}}
-            &nbsp; &nbsp;
-            <button
-              class="send-to-console send-to-console--chevron-only js-trace-deprecations-btn"
-              title="Trace deprecations in console"
-              {{action traceSource model source.model}}
-            >
-              {{svg-jar "send-with-chevron" width="6px" height="9px"}}
-              Trace in the Console
-            </button>
-          {{/list.cell}}
-        </tr>
-      {{/deprecation-item-source}}
-    {{/each}}
-  {{else}}
-    <tr class="list__row js-deprecation-full-trace">
-      {{#list.cell class="list__cell_main" clickable=true style="padding-left:48px"}}
+        {{#if @model.hasSourceMap}}
+          <div class="flex-shrink-0 w-3">
+            <disclosure.triangleIcon />
+          </div>
+        {{/if}}
+
+        <div class="w-12 flex-shrink-0 pr-2 text-right">
+          <span class="pill" data-test="deprecation-count">
+            {{@model.count}}
+          </span>
+        </div>
+
+        <span class="flex-grow font-bold" data-test="deprecation-message">
+          {{@model.message}}
+        </span>
+      </div>
+
+      {{#if (not @model.hasSourceMap)}}
         <button
-          class="send-to-console send-to-console--chevron-only js-full-trace-deprecations-btn"
+          class="send-to-console send-to-console--chevron-only mr-2"
           title="Trace deprecations in console"
-          {{action traceDeprecations model}}
+          data-test="full-trace-deprecations-btn"
+          {{on "click" (fn @traceDeprecations @model)}}
         >
           {{svg-jar "send-with-chevron" width="6px" height="9px"}}
           Trace in the Console
         </button>
-      {{/list.cell}}
-    </tr>
-  {{/if}}
-{{/if}}
+      {{/if}}
+
+      {{#if @model.url}}
+        <a
+          href={{@model.url}}
+          class="flex items-center flex-shrink-0 py-1 px-2 rounded no-underline bg-base02"
+          target="_blank"
+          title="Transition Plan"
+        >
+          Transition Plan
+          {{svg-jar "external-link" width="16px" height="16px" class="ml-1 external-link"}}
+        </a>
+      {{/if}}
+    </div>
+
+    {{#if (and @model.hasSourceMap disclosure.isExpanded)}}
+      {{#each @model.sources as |single|}}
+        <DeprecationItemSource @model={{single}} as |source|>
+          <div class="deprecation-source pb-2" data-test="deprecation-source">
+            <button
+              class="send-to-console send-to-console--chevron-only mr-3"
+              title="Trace deprecations in console"
+              data-test="trace-deprecations-btn"
+              {{on "click" (fn @traceSource @model source.model)}}
+            >
+              {{svg-jar "send-with-chevron" width="6px" height="9px"}}
+              Trace in the Console
+            </button>
+            <span class="source">
+              {{#if source.isClickable}}
+                <a
+                  class="font-mono"
+                  href="#"
+                  data-test="deprecation-source-link"
+                  {{action @openResource source.model.map}}
+                >
+                  {{source.url}}
+                </a>
+              {{else}}
+                <span class="font-mono" data-test="deprecation-source-text">
+                  {{source.url}}
+                </span>
+              {{/if}}
+            </span>
+          </div>
+        </DeprecationItemSource>
+      {{/each}}
+    {{/if}}
+  </div>
+</Ui::Disclosure>

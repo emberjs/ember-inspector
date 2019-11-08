@@ -1,75 +1,65 @@
 <div class="toolbar">
-  {{ui/toolbar-clear-button
-    action=(action send "clear")
-    classNames="toolbar__icon-button js-clear-promises-btn"
-  }}
+  <Ui::ToolbarClearButton
+    @action={{this.clear}}
+    class="js-clear-promises-btn"
+  />
 
   {{! if should refresh the refresh button will be in the middle of the of the tab }}
   {{#unless shouldRefresh}}
-    <div
-      class="divider"
-      aria-hidden="true"
-    >
-
-    </div>
-    {{ui/toolbar-reload-button
-      action=(action send "refreshPage")
-      classNames="toolbar__icon-button js-toolbar-page-refresh-btn"
-    }}
+    <Ui::ToolbarDivider />
+    <Ui::ToolbarReloadButton
+      @action={{action send "refreshPage"}}
+      class="js-toolbar-page-refresh-btn"
+    />
   {{/unless}}
 
-  <div
-    class="divider"
-    aria-hidden="true"
-  >
-  </div>
+  <Ui::ToolbarDivider />
 
-  <div class="toolbar__search js-promise-search">
-    {{ui/toolbar-search-field value=searchValue}}
-  </div>
+  <Ui::ToolbarSearchField
+    @value={{this.searchValue}}
+    class="js-promise-search"
+  />
 
-  <div
-    class="divider"
-    aria-hidden="true"
-  >
-  </div>
+  <Ui::ToolbarDivider />
 
   <button
-    class="{{if noFilter "active"}} toolbar__radio toolbar__radio--first js-filter"
-    {{action "setFilter" "all"}}
+    class="{{if (eq this.filter "all") "active"}} toolbar__radio toolbar__radio--first js-filter"
+    {{on "click" (fn this.setFilter "all")}}
   >
     All
   </button>
 
   <button
-    class="{{if isRejectedFilter "active"}} toolbar__radio js-filter"
-    {{action "setFilter" "rejected"}}
+    class="{{if (eq this.filter "rejected") "active"}} toolbar__radio js-filter"
+    {{on "click" (fn this.setFilter "rejected")}}
   >
     Rejected
   </button>
   <button
-    class="{{if isPendingFilter "active"}} toolbar__radio js-filter"
-    {{action "setFilter" "pending"}}
+    class="{{if (eq this.filter "pending") "active"}} toolbar__radio js-filter"
+    {{on "click" (fn this.setFilter "pending")}}
   >
     Pending
   </button>
   <button
-    class="{{if isFulfilledFilter "active"}} toolbar__radio toolbar__radio--last js-filter"
+    class="{{if (eq this.filter "fulfilled") "active"}} toolbar__radio toolbar__radio--last js-filter"
     {{action "setFilter" "fulfilled"}}
   >
     Fulfilled
   </button>
 
-  <div class="divider" aria-hidden="true"></div>
+  <Ui::ToolbarDivider />
 
   <div class="toolbar__checkbox js-with-stack">
     <label for="instrument-with-stack">
-      {{ui/action-checkbox
-        onUpdate=(action "updateInstrumentWithStack")
-        checked=instrumentWithStack
-        id="instrument-with-stack"
-      }}
+      <Input
+        @type="checkbox"
+        @checked={{this.instrumentWithStack}}
+        @id="instrument-with-stack"
+        @change={{fn this.updateInstrumentWithStack (not this.instrumentWithStack)}}
+      />
       Trace promises
     </label>
+
   </div>
 </div>

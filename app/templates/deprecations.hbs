@@ -1,29 +1,23 @@
 {{#if filtered.length}}
-  <List
-    class="js-deprecations list_no-alternate-color"
-    @headerHeight="0"
-    @name="deprecation-list"
-    @schema={{hash columns=null}}
-    @setIsDragging={{action "setIsDragging" target=this.application}} as |list|
-  >
-    <tbody>
-      {{#each filtered as |content|}}
-        {{deprecation-item
-          model=content
-          openResource=(action "openResource")
-          traceSource=(action "traceSource")
-          traceDeprecations=(action "traceDeprecations")
-          class="deprecation-item"
-          list=list
-        }}
-      {{/each}}
-    </tbody>
-  </List>
+  <div class="list__content js-deprecations" style="height: 100%;">
+    {{#vertical-collection
+      filtered
+      estimateHeight=20
+    as |content|
+    }}
+      <DeprecationItem
+        @model={{content}}
+        @openResource={{this.openResource}}
+        @traceSource={{this.traceSource}}
+        @traceDeprecations={{this.traceDeprecations}}
+      />
+    {{/vertical-collection}}
+  </div>
 {{else}}
   <Ui::EmptyMessage class="js-page-refresh">
     <p>
-      No deprecations have been detected. Try reloading to catch the deprecations that were logged before you opened
-      the inspector.
+      No deprecations have been detected. Try reloading to catch the
+      deprecations that were logged before you opened the inspector.
     </p>
     <button
       class="js-page-refresh-btn"

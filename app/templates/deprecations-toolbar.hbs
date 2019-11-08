@@ -1,23 +1,24 @@
 <div class="toolbar">
-  {{ui/toolbar-clear-button
-    action=(action send "clear")
-    classNames="toolbar__icon-button js-clear-deprecations-btn"
-  }}
+  <Ui::ToolbarClearButton @action={{action send "clear"}} />
 
-  <div class="toolbar__checkbox js-toggle-flush-deprecations">
+  <Ui::ToolbarDivider />
+
+  <div class="toolbar__checkbox">
     <label for="options-toggle-deprecations" title="Deprecation workflow">
-      {{input
-        type="checkbox"
-        checked=options.toggleDeprecationWorkflow
-        id="options-toggle-deprecations"
-      }}
+      <Input
+        @type="checkbox"
+        @checked={{this.toggleDeprecationWorkflow}}
+        @change={{this.changeDeprecationWorkflow}}
+        @id="options-toggle-deprecations"
+      />
       Toggle for Deprecation Workflow
     </label>
   </div>
 
-  <div class="divider" aria-hidden="true"></div>
+  <Ui::ToolbarDivider />
 
-  <div class="toolbar__search js-deprecations-search">
-    {{ui/toolbar-search-field value=searchValue}}
-  </div>
+  <Ui::ToolbarSearchField
+    @value={{this.searchValue}}
+    data-test="deprecations-search"
+  />
 </div>

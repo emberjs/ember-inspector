@@ -98,7 +98,6 @@ export default Controller.extend({
    */
   pinnedObjectId: null,
   inspectingViews: false,
-  components: true,
   viewTreeLoaded: false,
 
   /**
@@ -159,9 +158,6 @@ export default Controller.extend({
   init() {
     this._super(...arguments);
     this.set('expandedStateCache', {});
-    this.options = {
-      components: true
-    };
   },
 
   /**
@@ -306,6 +302,7 @@ export default Controller.extend({
   }),
 
   inspect: action(function(objectId) {
+    if (this.get('pinnedObjectId') === objectId) return;
     if (objectId) {
       this.set('pinnedObjectId', objectId);
       this.expandToNode(objectId);

@@ -1,31 +1,31 @@
 <div class="split">
-  {{#draggable-column
-    classes="split__panel split__panel--sidebar-2 nav"
-    setIsDragging=setIsDragging
-    width=width
-  }}
+  <Ui::DraggableColumn
+    @classes="split__panel split__panel--sidebar-2 nav"
+    @side="left"
+    @width={{@width}}
+  >
     <div class="split__panel__bd">
-      <h1 class="nav__title">{{header}}</h1>
+      <h1 class="nav__title">{{@header}}</h1>
 
       <ul>
-        {{#each sorted as |itemType|}}
-          <li class={{typeClass}}>
-            {{#link-to
-              (if (eq type "model") "records" "container-type")
-              (escape-url itemType.name)
+        {{#each @sorted as |itemType|}}
+          <li class={{this.typeClass}}>
+            <LinkTo
+              @route={{if (eq @type "model") "records" "container-type"}}
+              @model={{escape-url itemType.name}}
               class="nav__item"
-            }}
-              <span class={{concat typeClass "-name" " nav__item-label"}}>
+            >
+              <span class={{concat this.typeClass "-name" " nav__item-label"}}>
                 {{itemType.name}}
               </span>
 
-              <span class={{concat typeClass "-count" " pill"}}>{{itemType.count}}</span>
-            {{/link-to}}
+              <span class={{concat this.typeClass "-count" " pill"}}>{{itemType.count}}</span>
+            </LinkTo>
           </li>
         {{/each}}
       </ul>
     </div>
-  {{/draggable-column}}
+  </Ui::DraggableColumn>
 
   <div class="split__panel">
     <div class="split__panel__bd">

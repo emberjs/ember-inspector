@@ -1,16 +1,8 @@
 import Component from '@ember/component';
 import { action, computed, get } from '@ember/object';
+
 export default Component.extend({
   tagName: '',
-
-  /**
-   * Application Controller passed
-   * through the template
-   *
-   * @property application
-   * @type {Controller}
-   */
-  application: null,
 
   propDisplayType: 'grouped',
 
@@ -37,7 +29,14 @@ export default Component.extend({
 
   popStack: action(function () {
     if (this.isNested) {
-      this.application.popMixinDetails();
+      this.popMixinDetails();
     }
   }),
+
+  traceErrors: action(function(objectId) {
+    this.port.send('objectInspector:traceErrors', {
+      objectId
+    });
+  })
 });
+

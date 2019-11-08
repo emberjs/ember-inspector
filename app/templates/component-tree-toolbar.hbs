@@ -10,7 +10,7 @@
     }}
   </button>
 
-  <div class="divider"></div>
+  <Ui::ToolbarDivider />
 
   <button
     class="toolbar__icon-button"
@@ -36,9 +36,10 @@
     }}
   </button>
 
-  <div class="divider"></div>
+  <Ui::ToolbarDivider />
 
-  <div class="toolbar__search js-filter-views">
-    {{ui/toolbar-search-field value=searchValue}}
-  </div>
+  <Ui::ToolbarSearchField
+    @value={{this.searchValue}}
+    class="js-filter-views"
+  />
 </div>

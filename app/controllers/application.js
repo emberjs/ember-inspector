@@ -1,4 +1,5 @@
 import Controller from '@ember/controller';
+import { action } from '@ember/object';
 import { equal } from '@ember/object/computed';
 import { schedule } from '@ember/runloop';
 import { inject as service } from '@ember/service';
@@ -41,6 +42,10 @@ export default Controller.extend({
     this.mixinDetails = [];
   },
 
+  /*
+   * Called when digging deeper into object stack
+   * from within the ObjectInspector
+  */
   pushMixinDetails(name, property, objectId, details, errors) {
     details = {
       name,
@@ -54,13 +59,28 @@ export default Controller.extend({
     this.set('mixinDetails', details);
   },
 
-  popMixinDetails() {
+  popMixinDetails: action(function() {
     let mixinStack = this.mixinStack;
     let item = mixinStack.popObject();
     this.set('mixinDetails', mixinStack.get('lastObject'));
     this.port.send('objectInspector:releaseObject', { objectId: item.objectId });
-  },
+  }),
 
+  toggleInspector: action(function() {
+    this.toggleProperty('inspectorExpanded');
+    // Broadcast that tables have been resized (used by `x-list`).
+    schedule('afterRender', () => {
+      this.layoutService.trigger('resize', { source: 'object-inspector' });
+    });
+  }),
+
+  setActive: action(function(bool) {
+    this.set('active', bool);
+  }),
+
+  /*
+   * Called when inspecting an object from outside of the ObjectInspector
+  */
   activateMixinDetails(name, objectId, details, errors) {
     this.mixinStack.forEach(item => {
       this.port.send('objectInspector:releaseObject', { objectId: item.objectId });
@@ -90,18 +110,4 @@ export default Controller.extend({
     }
 
   },
-
-  actions: {
-    setIsDragging(isDragging) {
-      this.set('isDragging', isDragging);
-    },
-
-    toggleInspector() {
-      this.toggleProperty('inspectorExpanded');
-      // Broadcast that tables have been resized (used by `x-list`).
-      schedule('afterRender', () => {
-        this.layoutService.trigger('resize', { source: 'object-inspector' });
-      });
-    }
-  }
 });
