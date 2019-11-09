@@ -15,6 +15,12 @@ let metal;
 try {
   glimmer = Ember.__loader.require('@glimmer/reference');
   metal = Ember.__loader.require('@ember/-internals/metal');
+  if (!glimmer || !glimmer.value || !glimmer.validate) {
+    glimmer = null;
+  }
+  if (!metal || !metal.track) {
+    metal = null;
+  }
 } catch (e) {
   glimmer = null;
   metal = null;
@@ -202,7 +208,7 @@ export default EmberObject.extend(PortMixin, {
             const desc = Object.getOwnPropertyDescriptor(object, item.name);
             const isSetter = desc && isMandatorySetter(desc);
 
-            if (glimmer && glimmer.validate && metal.track && item.canTrack && !isSetter) {
+            if (glimmer && metal && item.canTrack && !isSetter) {
               let tagInfo = tracked[item.name] || { tag: metal.tagForProperty(object, item.name), revision: 0 };
               if (!tagInfo.tag) return;
 
@@ -900,7 +906,7 @@ function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties
         item.isExpensive = expensiveProperties.indexOf(item.name) >= 0;
         if (cache !== undefined || !item.isExpensive) {
           let value;
-          if (item.canTrack && metal && metal.track && glimmer && glimmer.value) {
+          if (item.canTrack && metal && glimmer) {
             const tagInfo = tracked[item.name] = {};
             tagInfo.tag = metal.track(() => {
               value = calculateCP(object, item.name, errorsForObject);
