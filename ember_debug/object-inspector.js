@@ -900,7 +900,7 @@ function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties
         item.isExpensive = expensiveProperties.indexOf(item.name) >= 0;
         if (cache !== undefined || !item.isExpensive) {
           let value;
-          if (item.canTrack && metal && metal.track) {
+          if (item.canTrack && metal && metal.track && glimmer && glimmer.value) {
             const tagInfo = tracked[item.name] = {};
             tagInfo.tag = metal.track(() => {
               value = calculateCP(object, item.name, errorsForObject);
