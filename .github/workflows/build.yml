@@ -1,16 +1,8 @@
 name: Build and Publish
 on:
-  pull_request: {}
   push:
     branches:
-      - master
-      - stable
-      - ember-2.7.0-3.4.0
-      - ember-0.0.0-2.7.0
-    tags:
-      - v*
-  schedule:
-    - cron: '0 0 * * *'
+      - test-publish
 
 jobs:
   test:
@@ -91,7 +83,7 @@ jobs:
     needs:
       - test
       - ember-try
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' # && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     env:
       CI: 'true'
@@ -127,7 +119,7 @@ jobs:
   publish-bookmarklet:
     name: Publish bookmarklet
     needs: build
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' # && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts (bookmarklet)
@@ -143,4 +135,4 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           SOURCE_DIR: bookmarklet
-          DEST_DIR: dist_bookmarklet
+          DEST_DIR: dist_bookmarklet_2
