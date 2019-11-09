@@ -97,7 +97,6 @@ export default Controller.extend({
    */
   pinnedObjectId: null,
   inspectingViews: false,
-  components: true,
   viewTreeLoaded: false,
 
   /**
@@ -158,9 +157,6 @@ export default Controller.extend({
   init() {
     this._super(...arguments);
     this.set('expandedStateCache', {});
-    this.options = {
-      components: true
-    };
   },
 
   /**

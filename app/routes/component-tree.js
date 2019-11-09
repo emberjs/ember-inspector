@@ -19,7 +19,6 @@ export default TabRoute.extend({
     this.port.on('view:inspectDOMNode', this, this.inspectDOMNode);
 
     this.set('controller.viewTreeLoaded', false);
-    this.port.send('view:setOptions', { options: this.get('controller.options') });
     this.port.send('view:getTree');
   },
 
