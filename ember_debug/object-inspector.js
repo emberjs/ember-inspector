@@ -15,11 +15,14 @@ let metal;
 try {
   glimmer = Ember.__loader.require('@glimmer/reference');
   metal = Ember.__loader.require('@ember/-internals/metal');
-  if (!glimmer || !glimmer.value || !glimmer.validate) {
+  if (!glimmer || !glimmer.validate) {
     glimmer = null;
-  }
-  if (!metal || !metal.track) {
+  } 
+  if (!metal || !metal.track || !metal.tagForProperty) {
     metal = null;
+  }
+  if (glimmer && !glimmer.value) {
+    glimmer.value = (obj, name) => const tag = metal.tagForProperty(obj, name), tag && tag.value && tag.value();
   }
 } catch (e) {
   glimmer = null;
