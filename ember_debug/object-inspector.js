@@ -12,18 +12,16 @@ const { oneWay } = computed;
 
 let glimmer;
 let metal;
+let HAS_GLIMMER_TRACKING = false;
 try {
   glimmer = Ember.__loader.require('@glimmer/reference');
   metal = Ember.__loader.require('@ember/-internals/metal');
-  if (!glimmer || !glimmer.validate) {
-    glimmer = null;
-  } 
-  if (!metal || !metal.track || !metal.tagForProperty) {
-    metal = null;
-  }
-  if (glimmer && !glimmer.value) {
-    glimmer.value = (obj, name) => const tag = metal.tagForProperty(obj, name), tag && tag.value && tag.value();
-  }
+  HAS_GLIMMER_TRACKING = glimmer && 
+                         glimmer.value && 
+                         glimmer.validate && 
+                         metal && 
+                         metal.track && 
+                         metal.tagForProperty;
 } catch (e) {
   glimmer = null;
   metal = null;
@@ -173,7 +171,7 @@ function getTrackedDependencies(object, property, tag) {
   if (cpDesc) {
     dependentKeys.push(...(cpDesc._dependentKeys || []));
   }
-  if (metal) {
+  if (HAS_GLIMMER_TRACKING) {
     const ownTag = metal.tagForProperty(object, property);
     dependentKeys.push(...getTagTrackedProps(tag, ownTag));
   }
@@ -211,7 +209,7 @@ export default EmberObject.extend(PortMixin, {
             const desc = Object.getOwnPropertyDescriptor(object, item.name);
             const isSetter = desc && isMandatorySetter(desc);
 
-            if (glimmer && metal && item.canTrack && !isSetter) {
+            if (HAS_GLIMMER_TRACKING) {
               let tagInfo = tracked[item.name] || { tag: metal.tagForProperty(object, item.name), revision: 0 };
               if (!tagInfo.tag) return;
 
@@ -909,7 +907,7 @@ function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties
         item.isExpensive = expensiveProperties.indexOf(item.name) >= 0;
         if (cache !== undefined || !item.isExpensive) {
           let value;
-          if (item.canTrack && metal && glimmer) {
+          if (item.canTrack && HAS_GLIMMER_TRACKING) {
             const tagInfo = tracked[item.name] = {};
             tagInfo.tag = metal.track(() => {
               value = calculateCP(object, item.name, errorsForObject);
