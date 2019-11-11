@@ -209,7 +209,7 @@ export default EmberObject.extend(PortMixin, {
             const desc = Object.getOwnPropertyDescriptor(object, item.name);
             const isSetter = desc && isMandatorySetter(desc);
 
-            if (HAS_GLIMMER_TRACKING) {
+            if (HAS_GLIMMER_TRACKING && item.canTrack && !isSetter) {
               let tagInfo = tracked[item.name] || { tag: metal.tagForProperty(object, item.name), revision: 0 };
               if (!tagInfo.tag) return;
 
