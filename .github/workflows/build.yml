@@ -1,0 +1,146 @@
+name: Build and Publish
+on:
+  pull_request: {}
+  push:
+    branches:
+      - master
+      - stable
+      - ember-2.7.0-3.4.0
+      - ember-0.0.0-2.7.0
+    tags:
+      - v*
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    env:
+      CI: 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Set up Volta
+        uses: rwjblue/setup-volta@v1
+      - name: Install dependencies (yarn)
+        run: yarn install
+      - name: Lint (hbs)
+        run: yarn lint:hbs
+      - name: Lint (js)
+        run: yarn lint:js
+      - name: Run test
+        run: yarn test
+        env:
+          COVERAGE: 'true'
+      # Ideally, we would split up the test task into separate build and run
+      # steps to get better CI log output (folding and timing information).
+      # However, this is not currently possible with ember-cli-code-coverage.
+      #
+      # See https://github.com/kategengler/ember-cli-code-coverage/issues/210
+      #
+      # - name: Build
+      #   run: yarn ember build --environment test
+      #   env:
+      #     COVERAGE: 'true'
+      # - name: Run test
+      #   run: COVERAGEyarn ember test --path dist
+      #   env:
+      #     # Due to a bug in ember-cli, running `ember test` with `--path` doesn't set `EMBER_ENV=test`
+      #     # See https://github.com/ember-cli/ember-cli/issues/8922
+      #     EMBER_ENV: test
+      #     COVERAGE: 'true'
+      - name: Report coverage
+        run: yarn codeclimate-test-reporter < coverage/lcov.info
+        env:
+          CODECLIMATE_REPO_TOKEN: 59edcfd1ffc778791af49ca594b503e7179f6bbe1991b2cc0c0a6987d103253d
+
+  ember-try:
+    name: ember-try (${{ matrix.scenario }})
+    needs: test
+    runs-on: ubuntu-latest
+    env:
+      CI: 'true'
+    strategy:
+      matrix:
+        scenario:
+          - release
+          - beta
+          - canary
+          - lts-3.4
+          - lts-3.8
+          - lts-3.12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Set up Volta
+        uses: rwjblue/setup-volta@v1
+      - name: Install dependencies (yarn)
+        run: yarn install
+      - name: Setup ember-try scenario
+        run: yarn ember try:one ember-${{ matrix.scenario }} --skip-cleanup --- cat package.json
+      - name: Build
+        run: yarn ember build --environment test
+      - name: Run test
+        # Due to a bug in ember-cli, running `ember test` with `--path` doesn't set `EMBER_ENV=test`
+        # See https://github.com/ember-cli/ember-cli/issues/8922
+        run: EMBER_ENV=test yarn ember test --path dist --filter="Ember Debug"
+
+  build:
+    name: Build for publishing
+    needs:
+      - test
+      - ember-try
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    env:
+      CI: 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Set up Volta
+        uses: rwjblue/setup-volta@v1
+      - name: Install dependencies (yarn)
+        run: yarn install
+      - name: Download panes
+        run: node scripts/download-panes.js
+        env:
+          EMBER_ENV: production
+      - name: Build
+        run: yarn ember build --environment production
+      - name: Upload artifacts (bookmarklet)
+        uses: actions/upload-artifact@master
+        with:
+          name: bookmarklet
+          path: dist/bookmarklet
+      - name: Upload artifacts (Chrome)
+        uses: actions/upload-artifact@master
+        with:
+          name: chrome
+          path: dist/chrome
+      - name: Upload artifacts (Firefox)
+        uses: actions/upload-artifact@master
+        with:
+          name: firefox
+          path: dist/firefox
+
+  publish-bookmarklet:
+    name: Publish bookmarklet
+    needs: build
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts (bookmarklet)
+        uses: actions/download-artifact@master
+        with:
+          name: bookmarklet
+      - name: Upload to S3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --cache-control "max-age=86400000,public"
+        env:
+          AWS_S3_BUCKET: ember-extension
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SOURCE_DIR: bookmarklet
+          DEST_DIR: dist_bookmarklet
