@@ -199,7 +199,7 @@ jobs:
   publish-firefox:
     name: Publish Firefox extension
     needs: build
-    if: github.event_name == 'push' # && startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
       - name: Set up Volta
@@ -242,3 +242,19 @@ jobs:
       - name: Publish to npm
         working-directory: npm
         run: npm publish --tag alpha
+
+  publish-github:
+    name: Publish GitHub release
+    needs: build
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
