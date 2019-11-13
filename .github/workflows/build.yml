@@ -87,11 +87,8 @@ jobs:
         run: EMBER_ENV=test yarn ember test --path dist --filter="Ember Debug"
 
   build:
-    name: Build for publishing
-    needs:
-      - test
-      - ember-try
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    name: Build extensions
+    needs: test
     runs-on: ubuntu-latest
     env:
       CI: 'true'
@@ -126,7 +123,9 @@ jobs:
 
   publish-bookmarklet:
     name: Publish bookmarklet
-    needs: build
+    needs:
+      - build
+      - ember-try
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
