@@ -1,6 +1,14 @@
 # Changelog
 
-## [v3.12.4](https://github.com/emberjs/ember-inspector/tree/v3.12.4)
+## [v3.12.5](https://github.com/emberjs/ember-inspector/tree/v3.12.5) (2019-11-13)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.12.4...v3.12.5)
+
+**Merged pull requests:**
+
+- Fix Chrome publishing [\#1082](https://github.com/emberjs/ember-inspector/pull/1082) ([chancancode](https://github.com/chancancode))
+
+## [v3.12.4](https://github.com/emberjs/ember-inspector/tree/v3.12.4) (2019-11-13)
 
 [Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.12.3...v3.12.4)
 
