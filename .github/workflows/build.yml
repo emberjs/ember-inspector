@@ -207,12 +207,10 @@ jobs:
       - name: Upload to Chrome Web Store
         run: |
           if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
-            EXTENSION_ID="ibdbkmdgflhglikhjdbogjjflkialpfi"
+            webstore upload --source chrome --extension-id ibdbkmdgflhglikhjdbogjjflkialpfi --auto-publish
           else
-            EXTENSION_ID="bmdblncegkenkacieihfhpjfppoconhi"
+            webstore upload --source chrome --extension-id bmdblncegkenkacieihfhpjfppoconhi --auto-publish
           fi
-
-          webstore upload --source chrome --auto-publish
         env:
           CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
