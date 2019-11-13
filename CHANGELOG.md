@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.12.4](https://github.com/emberjs/ember-inspector/tree/v3.12.4)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.12.3...v3.12.4)
+
+**Fixed bugs:**
+
+- Fixed issue with automatic publishing
+
 ## [v3.12.3](https://github.com/emberjs/ember-inspector/tree/v3.12.3) (2019-11-13)
 
 [Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.12.2...v3.12.3)
