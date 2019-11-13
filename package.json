@@ -1,6 +1,6 @@
 {
   "name": "ember-inspector",
-  "version": "3.12.0",
+  "version": "3.13.0",
   "description": "Extends developer tools to allow you to better inspect your Ember.js apps.",
   "license": "MIT",
   "author": "Tilde, Inc.",
@@ -33,9 +33,9 @@
   ],
   "devDependencies": {
     "@ember/edition-utils": "^1.1.1",
-    "@ember/optional-features": "^1.0.0",
+    "@ember/optional-features": "^1.1.0",
     "@ember/render-modifiers": "^1.0.1",
-    "@glimmer/component": "^0.14.0-alpha.12",
+    "@glimmer/component": "^1.0.0-beta.1",
     "@html-next/vertical-collection": "^1.0.0",
     "amd-name-resolver": "^1.2.1",
     "aws-sdk": "^2.533.0",
@@ -53,18 +53,16 @@
     "codeclimate-test-reporter": "^0.5.1",
     "compare-versions": "^3.5.0",
     "del": "^5.1.0",
-    "ember-auto-import": "^1.2.20",
+    "ember-auto-import": "^1.5.2",
     "ember-cli": "~3.13.0",
     "ember-cli-app-version": "^3.2.0",
     "ember-cli-babel": "^7.11.1",
     "ember-cli-code-coverage": "^1.0.0-beta.8",
     "ember-cli-dependency-checker": "^3.1.0",
     "ember-cli-eslint": "^5.1.0",
-    "ember-cli-htmlbars": "github:ember-cli/ember-cli-htmlbars#253503f1cda5bce173d65fd7b15de1f447cfa5e7",
-    "ember-cli-htmlbars-inline-precompile": "^3.0.0",
+    "ember-cli-htmlbars": "^4.0.8",
     "ember-cli-inject-live-reload": "^2.0.1",
     "ember-cli-moment-shim": "^3.7.1",
-    "ember-cli-pretender": "^3.1.1",
     "ember-cli-sass": "^10.0.0",
     "ember-cli-shims": "^1.2.0",
     "ember-cli-showdown": "^4.4.4",
@@ -81,7 +79,7 @@
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-qunit": "^4.5.1",
     "ember-resolver": "^5.3.0",
-    "ember-source": "https://s3.amazonaws.com/builds.emberjs.com/beta/shas/96e569c6a3dca9e68b34d04c4cbbb5215aaf9270.tgz",
+    "ember-source": "~3.14.1",
     "ember-source-channel-url": "^2.0.1",
     "ember-svg-jar": "^2.2.2",
     "ember-table": "^2.1.3",
@@ -97,6 +95,7 @@
     "js-string-escape": "^1.0.0",
     "loader.js": "^4.7.0",
     "mkdirp": "^0.5.1",
+    "pretender": "^3.0.4",
     "qunit-dom": "^0.9.0",
     "rimraf": "^3.0.0",
     "sass": "^1.22.10",
@@ -111,5 +110,9 @@
     "paths": [
       "lib/ui"
     ]
+  },
+  "volta": {
+    "node": "12.13.0",
+    "yarn": "1.19.1"
   }
 }

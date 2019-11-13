@@ -13,7 +13,7 @@ import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
 import { inspect } from '@ember/debug';
 import { module, skip, test } from 'qunit';
-import hbs from 'htmlbars-inline-precompile';
+import { hbs } from 'ember-cli-htmlbars';
 import require from 'require';
 import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
 import hasEmberVersion from '@ember/test-helpers/has-ember-version';
@@ -147,16 +147,7 @@ module('Ember Debug - View', function(hooks) {
 
     let tree = message.tree;
     let simple = tree.children[0];
-    assert.equal(simple.children.length, 0, 'Components are not listed by default.');
-    run(() => {
-      port.trigger('view:setOptions', { options: { components: true } });
-    });
-
-    await settled();
-
-    tree = message.tree;
-    simple = tree.children[0];
-    assert.equal(simple.children.length, 1, 'Components can be configured to show.');
+    assert.equal(simple.children.length, 1, 'Components are shown.');
     let component = simple.children[0];
     assert.equal(component.value.viewClass, 'App.TestFooComponent');
   });

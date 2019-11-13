@@ -45,7 +45,6 @@ export default class {
    * @param {Object} options
    *  - {owner}      owner           The Ember app's owner.
    *  - {Function}   retainObject    Called to retain an object for future inspection.
-   *  - {Object}     options         Options whether to show components or not.
    *  - {Object}     durations       Hash containing time to render per view id.
    *  - {Function}   highlightRange  Called to highlight a range of elements.
    *  - {Object}     ObjectInspector Used to inspect models.
@@ -54,7 +53,6 @@ export default class {
   constructor({
     owner,
     retainObject,
-    options,
     durations,
     highlightRange,
     objectInspector,
@@ -62,19 +60,10 @@ export default class {
   }) {
     this.owner = owner;
     this.retainObject = retainObject;
-    this.options = options;
     this.durations = durations;
     this.highlightRange = highlightRange;
     this.objectInspector = objectInspector;
     this.viewRegistry = viewRegistry;
-  }
-
-  /**
-   * @method updateOptions
-   * @param {Object} options
-   */
-  updateOptions(options) {
-    this.options = options;
   }
 
   /**
@@ -86,8 +75,7 @@ export default class {
   }
 
   /**
-   * Builds the view tree. The view tree may or may not contain
-   * components depending on the current options.
+   * Builds the view tree.
    *
    * The view tree has the top level outlet as the root of the tree.
    * The format is:
@@ -116,7 +104,7 @@ export default class {
   build() {
     if (this.getRoot()) {
       let outletTree = this.buildOutletTree();
-      let componentTrees = this.options.components ? this.buildComponentTrees(outletTree) : [];
+      let componentTrees = this.buildComponentTrees(outletTree);
       return this.addComponentsToOutlets(outletTree, componentTrees);
     }
   }
@@ -423,7 +411,6 @@ export default class {
    */
   inspectComponent(component) {
     let viewClass = getShortViewName(component);
-    let completeViewClass = viewClass;
     let tagName = get(component, 'tagName');
     let objectId = this.retainObject(component);
     let duration = this.durations[objectId];
@@ -437,7 +424,6 @@ export default class {
       objectId,
       viewClass,
       duration,
-      completeViewClass,
       isComponent: true,
       tagName: isNone(tagName) ? 'div' : tagName
     };
@@ -733,20 +719,5 @@ export default class {
    */
   componentById(id) {
     return this.viewRegistry[id];
-  }
-
-  /**
-   * @method modelForViewNodeValue
-   * @param  {Boolean} isComponent
-   * @param  {Object}  inspectedNodeValue
-   * @return {Any}     The inspected node's model (if it has one)
-   */
-  modelForViewNodeValue({ isComponent, objectId, name }) {
-    if (isComponent) {
-      return this.modelForComponent(this.componentById(objectId));
-    } else {
-      let { controller } = A(this.outletArray()).findBy('value.name', name);
-      return get(controller, 'model');
-    }
   }
 }

@@ -18,7 +18,7 @@ const logError = curry(function log(msg, e) {
   console.error("ember-extensions: " + msg, e);
 });
 
-const { openDevTool, inspectDOMElement, openSource,
+const { openDevTool, inspectDOMNode, openSource,
         evaluateFileOnTargetWindow }  = require("./devtools-utils");
 
 var Promise = require("sdk/core/promise.js");
@@ -133,9 +133,9 @@ let EmberInspector = Class({
 
     log("_handleTargetTabMessage", msg);
 
-    if (msg.type === "view:devtools:inspectDOMElement") {
+    if (msg.type === "view:devtools:inspectDOMNode") {
       // polyfill missing inspect function in content-script
-      inspectDOMElement(this.toolbox._target, msg.elementSelector,
+      inspectDOMNode(this.toolbox._target, msg.selector,
                         exports.devtoolTabDefinition.id);
     } else {
       // route to devtool panel

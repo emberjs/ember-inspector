@@ -1,14 +1,6 @@
 /* eslint no-cond-assign:0 */
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import GlimmerTree from 'ember-debug/libs/glimmer-tree';
-import {
-  modelName as getModelName,
-  shortModelName as getShortModelName,
-  controllerName as getControllerName,
-  shortControllerName as getShortControllerName,
-  viewName as getViewName,
-  shortViewName as getShortViewName
-} from 'ember-debug/utils/name-functions';
 import { typeOf } from './utils/type-check';
 
 const Ember = window.Ember;
@@ -19,15 +11,11 @@ const {
   run,
   Object: EmberObject,
   Component,
-  Controller,
-  A,
   String
 } = Ember;
 const { throttle } = run;
 const { readOnly } = computed;
 const { classify } = String;
-
-const keys = Object.keys || Ember.keys;
 
 let layerDiv, previewDiv;
 
@@ -75,18 +63,7 @@ export default EmberObject.extend(PortMixin, {
         this.inspectElement(element);
       }
     },
-    setOptions({ options }) {
-      this.set('options', options);
-      this.glimmerTree.updateOptions(options);
-      this.sendTree();
-    },
-    sendModelToConsole(message) {
-      const model = this.glimmerTree.modelForViewNodeValue(message);
 
-      if (model) {
-        this.get('objectInspector').sendValueToConsole(model);
-      }
-    },
     contextMenu() {
       this.inspectComponentForNode(this.lastClickedElement);
     }
@@ -96,7 +73,6 @@ export default EmberObject.extend(PortMixin, {
     this._super(...arguments);
 
     this.retainedObjects = [];
-    this.options = {};
     this._durations = {};
     layerDiv = document.createElement('div');
     layerDiv.setAttribute('data-label', 'layer-div');
@@ -126,7 +102,6 @@ export default EmberObject.extend(PortMixin, {
       owner: this.getOwner(),
       retainObject: this.retainObject.bind(this),
       highlightRange: this._highlightRange.bind(this),
-      options: this.get('options'),
       objectInspector: this.get('objectInspector'),
       durations: this._durations,
       viewRegistry: this.get('viewRegistry')
@@ -168,17 +143,12 @@ export default EmberObject.extend(PortMixin, {
     this.retainedObjects = [];
   },
 
-  eventNamespace: computed(function() {
-    return `view_debug_${guidFor(this)}`;
-  }),
-
   willDestroy() {
     this._super();
     window.removeEventListener('resize', this.resizeHandler);
     window.removeEventListener('mousedown', this.lastClickedHandler);
     document.body.removeChild(layerDiv);
     document.body.removeChild(previewDiv);
-    this.get('_lastNodes').clear();
     this.releaseCurrentObjects();
     this.stopInspecting();
   },
@@ -282,7 +252,7 @@ export default EmberObject.extend(PortMixin, {
   },
 
   viewTree() {
-    let emberApp = this.get('namespace.owner');
+    let emberApp = this.getOwner();
     if (!emberApp) {
       return false;
     }
@@ -292,35 +262,6 @@ export default EmberObject.extend(PortMixin, {
 
   getOwner() {
     return this.get('namespace.owner');
-  },
-
-  modelForView(view) {
-    const controller = view.get('controller');
-    let model = controller.get('model');
-    if (view.get('context') !== controller) {
-      model = view.get('context');
-    }
-    return model;
-  },
-
-  shouldShowView(view) {
-    if (view instanceof Component) {
-      return this.options.components;
-    }
-    return (this.hasOwnController(view) || this.hasOwnContext(view)) &&
-      (!view.get('isVirtual') || this.hasOwnController(view) || this.hasOwnContext(view));
-  },
-
-  hasOwnController(view) {
-    return view.get('controller') !== view.get('_parentView.controller') &&
-      ((view instanceof Component) || !(view.get('_parentView.controller') instanceof Component));
-  },
-
-  hasOwnContext(view) {
-    // Context switching is deprecated, we will need to find a better way for {{#each}} helpers.
-    return view.get('context') !== view.get('_parentView.context') &&
-      // make sure not a view inside a component, like `{{yield}}` for example.
-      !(view.get('_parentView.context') instanceof Component);
   },
 
   // TODO: This method needs a serious refactor/cleanup
@@ -474,304 +415,9 @@ export default EmberObject.extend(PortMixin, {
     }
   },
 
-  /**
-   * List of render nodes from the last
-   * sent view tree.
-   *
-   * @property lastNodes
-   * @type {Array}
-   */
-  _lastNodes: computed(function() {
-    return A([]);
-  }),
-
   viewRegistry: computed('namespace.owner', function() {
     return this.getOwner().lookup('-view-registry:main');
   }),
-
-  /**
-   * Walk the render node hierarchy and build the tree.
-   *
-   * @param  {Object} renderNode
-   * @param  {Array} children
-   */
-  _appendNodeChildren(renderNode, children) {
-    let childNodes = this._childrenForNode(renderNode);
-    if (!childNodes) {
-      return;
-    }
-    childNodes.forEach(childNode => {
-      if (this._shouldShowNode(childNode, renderNode)) {
-        let grandChildren = [];
-        children.push({ value: this._inspectNode(childNode), children: grandChildren });
-        this._appendNodeChildren(childNode, grandChildren);
-      } else {
-        this._appendNodeChildren(childNode, children);
-      }
-    });
-  },
-
-  /**
-   * Gather the children assigned to the render node.
-   *
-   * @param  {Object} renderNode
-   * @return {Array} children
-   */
-  _childrenForNode(renderNode) {
-    if (renderNode.morphMap) {
-      return keys(renderNode.morphMap).map(key => renderNode.morphMap[key]).filter(node => !!node);
-    } else {
-      return renderNode.childNodes;
-    }
-  },
-
-  /**
-   * Whether a render node is elligible to be included
-   * in the tree.
-   * Depends on whether the node is actually a view node
-   * (as opposed to an attribute node for example),
-   * and also checks the filtering options. For example,
-   * showing Ember component nodes can be toggled.
-   *
-   * @param  {Object} renderNode
-   * @param  {Object} parentNode
-   * @return {Boolean} `true` for show and `false` to skip the node
-   */
-  _shouldShowNode(renderNode, parentNode) {
-
-    // Filter out non-(view/components)
-    if (!this._nodeIsView(renderNode)) {
-      return false;
-    }
-    // Has either a template or a view/component instance
-    if (!this._nodeTemplateName(renderNode) && !this._nodeHasViewInstance(renderNode)) {
-      return false;
-    }
-    return this._nodeHasOwnController(renderNode, parentNode) &&
-      (this.options.components || !(this._nodeIsEmberComponent(renderNode))) &&
-      (this._nodeHasViewInstance(renderNode) || this._nodeHasOwnController(renderNode, parentNode));
-  },
-
-  /**
-   * The node's model. If the view has a controller,
-   * it will be the controller's `model` property.s
-   *
-   * @param  {Object} renderNode
-   * @return {Object} the model
-   */
-  _modelForNode(renderNode) {
-    let controller = this._controllerForNode(renderNode);
-    if (controller) {
-      return controller.get('model');
-    }
-  },
-
-  /**
-   * Not all nodes are actually views/components.
-   * Nodes can be attributes for example.
-   *
-   * @param  {Object} renderNode
-   * @return {Boolean}
-   */
-  _nodeIsView(renderNode) {
-    if (renderNode.getState) {
-      return !!renderNode.getState().manager;
-    } else {
-      return !!renderNode.state.manager;
-    }
-  },
-
-  /**
-   * Check if a node has its own controller (as opposed to sharing
-   * its parent's controller).
-   * Useful to identify route views from other views.
-   *
-   * @param  {Object} renderNode
-   * @param  {Object} parentNode
-   * @return {Boolean}
-   */
-  _nodeHasOwnController(renderNode, parentNode) {
-    return this._controllerForNode(renderNode) !== this._controllerForNode(parentNode);
-  },
-
-  /**
-   * Check if the node has a view instance.
-   * Virtual nodes don't have a view/component instance.
-   *
-   * @param  {Object} renderNode
-   * @return {Boolean}
-   */
-  _nodeHasViewInstance(renderNode) {
-    return !!this._viewInstanceForNode(renderNode);
-  },
-
-
-  /**
-   * Returns the nodes' controller.
-   *
-   * @param  {Object} renderNode
-   * @return {Ember.Controller}
-   */
-  _controllerForNode(renderNode) {
-    // If it's a component then return the component instance itself
-    if (this._nodeIsEmberComponent(renderNode)) {
-      return this._viewInstanceForNode(renderNode);
-    }
-    if (renderNode.lastResult) {
-      let scope = renderNode.lastResult.scope;
-      let controller;
-      if (scope.getLocal) {
-        controller = scope.getLocal('controller');
-      } else {
-        controller = scope.locals.controller.value();
-      }
-      if ((!controller || !(controller instanceof Controller)) && scope.getSelf) {
-        // Ember >= 2.2 + no ember-legacy-controllers addon
-        controller = scope.getSelf().value();
-        if (!(controller instanceof Controller)) {
-          controller = controller._controller || controller.controller;
-        }
-      }
-      return controller;
-    }
-  },
-
-  /**
-   * Inspect a node. This will return an object with all
-   * the required properties to be added to the view tree
-   * to be sent.
-   *
-   * @param  {Object} renderNode
-   * @return {Object} the object containing the required values
-   */
-  _inspectNode(renderNode) {
-    let name, viewClassName, completeViewClassName, tagName, viewId, timeToRender;
-
-    let viewClass = this._viewInstanceForNode(renderNode);
-
-    if (viewClass) {
-      viewClassName = getShortViewName(viewClass);
-      completeViewClassName = getViewName(viewClass);
-      tagName = viewClass.get('tagName') || 'div';
-      viewId = this.retainObject(viewClass);
-      timeToRender = this._durations[viewId];
-    }
-
-    name = this._nodeDescription(renderNode);
-
-    let value = {
-      template: this._nodeTemplateName(renderNode) || '(inline)',
-      name,
-      objectId: viewId,
-      viewClass: viewClassName,
-      duration: timeToRender,
-      completeViewClass: completeViewClassName,
-      isComponent: this._nodeIsEmberComponent(renderNode),
-      tagName,
-      isVirtual: !viewClass
-    };
-
-    let controller = this._controllerForNode(renderNode);
-    if (controller && !(this._nodeIsEmberComponent(renderNode))) {
-      value.controller = {
-        name: getShortControllerName(controller),
-        completeName: getControllerName(controller),
-        objectId: this.retainObject(controller)
-      };
-
-      let model = this._modelForNode(renderNode);
-      if (model) {
-        if (EmberObject.detectInstance(model) || typeOf(model) === 'array') {
-          value.model = {
-            name: getShortModelName(model),
-            completeName: getModelName(model),
-            objectId: this.retainObject(model),
-            type: 'type-ember-object'
-          };
-        } else {
-          value.model = {
-            name: this.get('objectInspector').inspect(model),
-            type: `type-${typeOf(model)}`
-          };
-        }
-      }
-    }
-
-    value.renderNodeId = this.get('_lastNodes').push(renderNode) - 1;
-
-    return value;
-  },
-
-  /**
-   * Get the node's template name. Relies on an htmlbars
-   * feature that adds the module name as a meta property
-   * to compiled templates.
-   *
-   * @param  {Object} renderNode
-   * @return {String} the template name
-   */
-  _nodeTemplateName(renderNode) {
-    let template = renderNode.lastResult && renderNode.lastResult.template;
-    if (template && template.meta && template.meta.moduleName) {
-      return template.meta.moduleName.replace(/\.hbs$/, '');
-    }
-  },
-
-  /**
-   * The node's name. Should be anything that the user
-   * can use to identity what node we are talking about.
-   *
-   * Usually either the view instance name, or the template name.
-   *
-   * @param  {Object} renderNode
-   * @return {String}
-   */
-  _nodeDescription(renderNode) {
-    let name;
-
-    let viewClass = this._viewInstanceForNode(renderNode);
-
-    if (viewClass) {
-      //. Has a view instance - take the view's name
-      name = viewClass.get('_debugContainerKey');
-      if (name) {
-        name = name.replace(/.*(view|component):/, '').replace(/:$/, '');
-      }
-    } else {
-      // Virtual - no view instance
-      let templateName = this._nodeTemplateName(renderNode);
-      if (templateName) {
-        return templateName.replace(/^.*templates\//, '').replace(/\//g, '.');
-      }
-    }
-
-    // If application view was not defined, it uses a `toplevel` view
-    if (name === 'toplevel') {
-      name = 'application';
-    }
-    return name;
-  },
-
-  /**
-   * Return a node's view instance.
-   *
-   * @param  {Object} renderNode
-   * @return {Ember.View|Ember.Component} The view or component instance
-   */
-  _viewInstanceForNode(renderNode) {
-    return renderNode.emberView;
-  },
-
-  /**
-   * Returns whether the node is an Ember Component or not.
-   *
-   * @param  {Object} renderNode
-   * @return {Boolean}
-   */
-  _nodeIsEmberComponent(renderNode) {
-    let viewInstance = this._viewInstanceForNode(renderNode);
-    return !!(viewInstance && (viewInstance instanceof Component));
-  }
 });
 
 function escapeHTML(string) {

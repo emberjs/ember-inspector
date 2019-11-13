@@ -1,5 +1,62 @@
 # Changelog
 
+## [3.12.2](https://github.com/emberjs/ember-inspector/tree/v3.12.2) (2019-11-08)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.12.1...v3.12.2)
+
+**Fixed bugs:**
+
+- Fixed issue with NPM publishing
+
+## [3.12.1](https://github.com/emberjs/ember-inspector/tree/v3.12.1) (2019-11-08)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.12.0...v3.12.1)
+
+**Fixed bugs:**
+
+- Inspector refused to load due to invalid subresource integrity checksum [\#1064](https://github.com/emberjs/ember-inspector/issues/1064)
+
+**Merged pull requests:**
+
+- Remove ember-cli-sri [\#1065](https://github.com/emberjs/ember-inspector/pull/1065) ([rwwagner90](https://github.com/rwwagner90))
+- 3.12 Changelog [\#1062](https://github.com/emberjs/ember-inspector/pull/1062) ([rwwagner90](https://github.com/rwwagner90))
+
+## [v3.12.0](https://github.com/emberjs/ember-inspector/tree/v3.12.0) (2019-11-08)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.11.0...v3.12.0)
+
+**Implemented enhancements:**
+
+- Component Tree Search [\#1021](https://github.com/emberjs/ember-inspector/issues/1021)
+- Use XPath to select elements [\#1056](https://github.com/emberjs/ember-inspector/pull/1056) ([chancancode](https://github.com/chancancode))
+- \<EmberTable\> [\#1046](https://github.com/emberjs/ember-inspector/pull/1046) ([nummi](https://github.com/nummi))
+- Misc Component Cleanup [\#1044](https://github.com/emberjs/ember-inspector/pull/1044) ([nummi](https://github.com/nummi))
+- Ember 3.13 [\#1040](https://github.com/emberjs/ember-inspector/pull/1040) ([nummi](https://github.com/nummi))
+- Tidy up Promise tab [\#1038](https://github.com/emberjs/ember-inspector/pull/1038) ([nummi](https://github.com/nummi))
+- Run octane blueprint, bump deps [\#1036](https://github.com/emberjs/ember-inspector/pull/1036) ([rwwagner90](https://github.com/rwwagner90))
+- Support tracked and other improvements [\#1035](https://github.com/emberjs/ember-inspector/pull/1035) ([patricklx](https://github.com/patricklx))
+- Tidy up data tab [\#1034](https://github.com/emberjs/ember-inspector/pull/1034) ([nummi](https://github.com/nummi))
+- Tidy up container tab [\#1032](https://github.com/emberjs/ember-inspector/pull/1032) ([nummi](https://github.com/nummi))
+- Tidy up deprecations tab [\#1030](https://github.com/emberjs/ember-inspector/pull/1030) ([nummi](https://github.com/nummi))
+- Tidy up render-tree tab [\#1025](https://github.com/emberjs/ember-inspector/pull/1025) ([nummi](https://github.com/nummi))
+- Tidy up object inspector [\#1024](https://github.com/emberjs/ember-inspector/pull/1024) ([nummi](https://github.com/nummi))
+
+**Merged pull requests:**
+
+- Remove unused code [\#1061](https://github.com/emberjs/ember-inspector/pull/1061) ([chancancode](https://github.com/chancancode))
+- More dependencies upgrade [\#1058](https://github.com/emberjs/ember-inspector/pull/1058) ([chancancode](https://github.com/chancancode))
+- Bump dependencies [\#1057](https://github.com/emberjs/ember-inspector/pull/1057) ([chancancode](https://github.com/chancancode))
+- Performance improvements [\#1051](https://github.com/emberjs/ember-inspector/pull/1051) ([patricklx](https://github.com/patricklx))
+- fix glimmer tree [\#1050](https://github.com/emberjs/ember-inspector/pull/1050) ([patricklx](https://github.com/patricklx))
+- Use "::" instead of  "/" when displaying component names [\#1048](https://github.com/emberjs/ember-inspector/pull/1048) ([camerondubas](https://github.com/camerondubas))
+- \<LinkTo\> [\#1045](https://github.com/emberjs/ember-inspector/pull/1045) ([nummi](https://github.com/nummi))
+- Github Issue Template [\#1042](https://github.com/emberjs/ember-inspector/pull/1042) ([nummi](https://github.com/nummi))
+- Update deps and travis dist to hopefully fix build [\#1029](https://github.com/emberjs/ember-inspector/pull/1029) ([rwwagner90](https://github.com/rwwagner90))
+- Ignore dashes in search [\#1023](https://github.com/emberjs/ember-inspector/pull/1023) ([nummi](https://github.com/nummi))
+- Modernize UI Components [\#1022](https://github.com/emberjs/ember-inspector/pull/1022) ([nummi](https://github.com/nummi))
+- Bump minor version to 3.12.0 [\#1018](https://github.com/emberjs/ember-inspector/pull/1018) ([rwwagner90](https://github.com/rwwagner90))
+- 3.11 Changelog [\#1017](https://github.com/emberjs/ember-inspector/pull/1017) ([rwwagner90](https://github.com/rwwagner90))
+
 ## [v3.11.0](https://github.com/emberjs/ember-inspector/tree/v3.11.0) (2019-08-30)
 
 [Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.10.0...v3.11.0)
