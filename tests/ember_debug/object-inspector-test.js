@@ -12,7 +12,7 @@ import Service from '@ember/service';
 import { VERSION } from '@ember/version';
 import { tracked } from '@glimmer/tracking';
 import { module, test } from 'qunit';
-import hbs from 'htmlbars-inline-precompile';
+import { hbs } from 'ember-cli-htmlbars';
 import require from 'require';
 import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
 import hasEmberVersion from '@ember/test-helpers/has-ember-version';
