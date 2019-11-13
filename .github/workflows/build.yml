@@ -196,6 +196,31 @@ jobs:
           CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
 
+  publish-firefox:
+    name: Publish Firefox extension
+    needs: build
+    if: github.event_name == 'push' # && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Volta
+        uses: rwjblue/setup-volta@v1
+      - name: Install dependencies (web-ext)
+        run: |
+          volta install web-ext
+          # https://github.com/mozilla/web-ext/issues/804
+          volta install web-ext-submit
+      - name: Download artifacts (Firefox)
+        uses: actions/download-artifact@master
+        with:
+          name: firefox
+      - name: Upload to AMO
+        working-directory: firefox
+        run: web-ext-submit --channel=listed
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.FIREFOX_API_KEY }}
+          WEB_EXT_API_SECRET: ${{ secrets.FIREFOX_API_SECRET }}
+          WEB_EXT_ID: '{3f2863d9-1e32-4177-9407-38504db6f4d5}'
+
   publish-npm:
     name: Publish npm package
     needs: build
