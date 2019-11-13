@@ -155,6 +155,11 @@ jobs:
         with:
           name: firefox
           path: dist/firefox
+      - name: Upload artifacts (npm)
+        uses: actions/upload-artifact@master
+        with:
+          name: npm
+          path: dist/npm
 
   publish-bookmarklet:
     name: Publish bookmarklet
