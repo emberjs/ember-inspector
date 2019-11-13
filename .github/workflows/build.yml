@@ -123,9 +123,16 @@ jobs:
           cat "$FILE"
         env:
           FILE: package.json
-          FILTER: .version += "-alpha.$date+$sha"
+          FILTER: .version += "-alpha.\($date)+\($sha)"
       - name: Build
         run: yarn ember build --environment production
+      - name: Pack
+        run: |
+          VERSION="$(jq -r '.version | split("+") | .[0]' package.json)"
+
+          yarn pack
+          mkdir -p dist/npm
+          tar xvzf "ember-inspector-v$VERSION.tgz" -C dist/npm --strip-components 1
       - name: Upload artifacts (bookmarklet)
         uses: actions/upload-artifact@master
         with:
@@ -141,6 +148,11 @@ jobs:
         with:
           name: firefox
           path: dist/firefox
+      - name: Upload artifacts (npm)
+        uses: actions/upload-artifact@master
+        with:
+          name: npm
+          path: dist/npm
 
   publish-bookmarklet:
     name: Publish bookmarklet
@@ -183,3 +195,25 @@ jobs:
           CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+
+  publish-npm:
+    name: Publish npm package
+    needs: build
+    if: github.event_name == 'push' # && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Volta
+        uses: rwjblue/setup-volta@v1
+      - name: Set up NPM
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}"> ~/.npmrc
+          npm whoami
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      - name: Download artifacts (npm)
+        uses: actions/download-artifact@master
+        with:
+          name: npm
+      - name: Publish to npm
+        working-directory: npm
+        run: npm publish --tag alpha
