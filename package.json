@@ -88,6 +88,7 @@
     "ember-test-selectors": "^2.1.0",
     "ember-truth-helpers": "^2.1.0",
     "ember-try": "^1.1.0",
+    "ensure-posix-path": "^1.1.1",
     "eslint-plugin-ember": "^7.1.0",
     "eslint-plugin-node": "^10.0.0",
     "fstream": "^1.0.8",

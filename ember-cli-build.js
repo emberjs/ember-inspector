@@ -15,6 +15,8 @@ const moduleResolver = require('amd-name-resolver').resolveModules({
   throwOnRootAccess: false
 });
 const Funnel = require('broccoli-funnel');
+const ensurePosix = require('ensure-posix-path');
+const path = require('path');
 const packageJson = require('./package.json');
 const { map, mv } = stew;
 
@@ -34,6 +36,17 @@ const options = {
 // Firefox requires non-minified assets for review :(
 options.minifyJS = { enabled: false };
 options.minifyCSS = { enabled: false };
+
+// Stolen from relative-module-paths.js in ember-cli-babel
+function getRelativeModulePath(modulePath) {
+  return ensurePosix(path.relative(process.cwd(), modulePath));
+}
+
+// Stolen from relative-module-paths.js in ember-cli-babel
+function resolveRelativeModulePath(name, child) {
+  return moduleResolver(name, getRelativeModulePath(child));
+}
+
 
 module.exports = function(defaults) {
   let checker = new VersionChecker(defaults);
@@ -82,8 +95,9 @@ module.exports = function(defaults) {
 
   emberDebug = new Babel(emberDebug, {
     moduleIds: true,
+    getModuleId: getRelativeModulePath,
     plugins: [
-      ['module-resolver', { resolvePath: moduleResolver }],
+      ['module-resolver', { resolvePath: resolveRelativeModulePath }],
       ['transform-es2015-modules-amd', { noInterop: true }]
     ]
   });
