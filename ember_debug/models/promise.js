@@ -1,5 +1,7 @@
+import { typeOf } from '../utils/type-check';
+
 const Ember = window.Ember;
-const { typeOf, Object: EmberObject, computed, A } = Ember;
+const { Object: EmberObject, computed, A } = Ember;
 
 const dateComputed = function() {
   return computed({
