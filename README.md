@@ -1,4 +1,4 @@
-# Ember Inspector [![Build Status](https://secure.travis-ci.org/emberjs/ember-inspector.svg?branch=master)](https://travis-ci.org/emberjs/ember-inspector)
+# Ember Inspector [![Build Status](https://github.com/emberjs/ember-inspector/workflows/Build%20and%20Publish/badge.svg?branch=master)](https://github.com/emberjs/ember-inspector/actions?query=branch%3Amaster+workflow%3A%22Build+and+Publish%22)
 
 Adds an Ember tab to the browser's Developer Tools that allows you to inspect
 Ember objects in your application.
@@ -84,55 +84,28 @@ Run `yarn install && yarn global add ember-cli to install the required modules.
 Patch versions are only committed to the stable branch. So we need to cherry-pick the commits we need from master and bump stable to the new patch version.
 
 - `git checkout stable`
-- Cherry-pick the needed commits from master to stable
-- Bump the patch version in `package.json`. Add the change log entry and commit.
-- Follow the "Steps to publish" below.
-- `git checkout master`
-- Commit the change log entry to the master branch.
+- Cherry-pick the needed commits from master to stable.
+- Add the change log entry and commit. We use [github-changelog-generator](https://github.com/github-changelog-generator/github-changelog-generator) for this.
+  You will want to follow the installation instructions on their README, and take note that you will need to provide a GitHub token.
+  Once installed, and you add a token, you can run `yarn changelog` in your terminal.
+- `yarn version --patch`
+- `git push --tags`
+- `git push`
+- PR the change log entry to the master branch.
 
 #### Minor and major versions
 
 When releasing a major/minor version, master would already have this version set, so what we need to do is to merge master into stable and release.
 
-- Add the new minor/major version's change log entry in `CHANGELOG.md` and commit to master. We use [github-changelog-generator](https://github.com/github-changelog-generator/github-changelog-generator)
-for this. You will want to follow the installation instructions on their README, and take note that you will need to provide a GitHub token.
-Once installed, and you add a token, you can run `yarn changelog` in your terminal.
 - `git checkout stable`
 - `git merge -X theirs master`
-- Follow the "Steps to publish" steps below.
-- `git checkout master`
-- Update `package.json` to the future major/minor version.
-
-#### Steps to publish
-
-- Push the `stable` branch to github (this will publish the bookmarklet version).
-- `yarn build:production`
-- `git tag` the new version
-- Follow the "Publishing to Chrome" steps
-- Follow the "Publishing to Firefox" steps
-- `npm publish ./`
-
-##### Publishing to Chrome
-
-- Make sure you have the correct credentials to publish to Chrome.
-- Sign in to the [Chrome Webstore](https://chrome.google.com/webstore)
-- Click on Settings -> Developer dashboard
-- Click on "Edit" next to "Ember Inspector"
-- Click on Upload Updated Package
-- Click on "Choose file"
-- Choose the file `dist/chrome/ember-inspector.zip`
-- Click "Upload"
-- Click "Save and publish changes"
-
-##### Publishing to Firefox
-
-- Make sure you have the correct credentials to publish to Firefox.
-- Sign in to the [Mozilla Addons Site](https://addons.mozilla.org)
-- Click on Tools -> Manage My Submissions
-- Click on "New Version" below "Ember Inspector"
-- Click on "Select a file"
-- Choose the file `dist/firefox/ember-inspector.zip`
-- Follow the steps to publish
+- Add the change log entry and commit. We use [github-changelog-generator](https://github.com/github-changelog-generator/github-changelog-generator) for this.
+  You will want to follow the installation instructions on their README, and take note that you will need to provide a GitHub token.
+  Once installed, and you add a token, you can run `yarn changelog` in your terminal.
+- `yarn version` (keep the same version number)
+- `git push --tags`
+- `git push`
+- PR the change log entry to the master branch, as well as increment `package.json` to the next major/minor version.
 
 ### Locking a version
 

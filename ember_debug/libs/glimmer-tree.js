@@ -24,7 +24,9 @@
  *
  * @class GlimmerTree
  */
+
 const Ember = window.Ember;
+import { typeOf } from '../utils/type-check';
 import {
   modelName as getModelName,
   shortModelName as getShortModelName,
@@ -32,7 +34,7 @@ import {
   shortViewName as getShortViewName
 } from 'ember-debug/utils/name-functions';
 
-const { Object: EmberObject, typeOf, isNone, Controller, ViewUtils, get, A } = Ember;
+const { Object: EmberObject, isNone, Controller, ViewUtils, get, A } = Ember;
 const { getRootViews, getChildViews, getViewBoundingClientRect } = ViewUtils;
 
 export default class {
@@ -477,7 +479,8 @@ export default class {
    * @return {String}        The layout's name
    */
   nameFromLayout(layout) {
-    let moduleName = layout && get(layout, 'meta.moduleName');
+    let moduleName = layout && get(layout, 'referrer.moduleName');
+
     if (moduleName) {
       return moduleName.replace(/\.hbs$/, '');
     }

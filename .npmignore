@@ -3,7 +3,7 @@ tmp/
 .DS_Store
 *.swp
 
-dist/chrome/ember-inspector.zip
+dist/**/*.zip
 dist/testing
 
 dist_prev

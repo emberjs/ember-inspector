@@ -1,7 +1,8 @@
 import BasicAdapter from './basic';
+import { typeOf } from '../utils/type-check';
 
 const Ember = window.Ember;
-const { run, typeOf } = Ember;
+const { run } = Ember;
 const { isArray } = Array;
 const { keys } = Object;
 

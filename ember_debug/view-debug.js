@@ -1,6 +1,7 @@
 /* eslint no-cond-assign:0 */
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import GlimmerTree from 'ember-debug/libs/glimmer-tree';
+import { typeOf } from './utils/type-check';
 
 const Ember = window.Ember;
 
@@ -9,7 +10,6 @@ const {
   computed,
   run,
   Object: EmberObject,
-  typeOf,
   Component,
   String
 } = Ember;

@@ -1,10 +1,11 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import { compareVersion } from 'ember-debug/utils/version';
 import { isComputed, isDescriptor, getDescriptorFor } from 'ember-debug/utils/type-check';
+import { typeOf } from './utils/type-check';
 
 const Ember = window.Ember;
 const {
-  Object: EmberObject, inspect: emberInspect, meta: emberMeta, typeOf: emberTypeOf,
+  Object: EmberObject, inspect: emberInspect, meta: emberMeta,
   computed, get, set, guidFor, isNone,
   cacheFor, VERSION
 } = Ember;
@@ -12,27 +13,22 @@ const { oneWay } = computed;
 
 let glimmer;
 let metal;
+let HAS_GLIMMER_TRACKING = false;
 try {
   glimmer = Ember.__loader.require('@glimmer/reference');
   metal = Ember.__loader.require('@ember/-internals/metal');
+  HAS_GLIMMER_TRACKING = glimmer && 
+                         glimmer.value && 
+                         glimmer.validate && 
+                         metal && 
+                         metal.track && 
+                         metal.tagForProperty;
 } catch (e) {
   glimmer = null;
   metal = null;
 }
 
 const keys = Object.keys || Ember.keys;
-
-/**
- * workaround to support detection of `[object AsyncFunction]` as a function
- * @param value
- * @returns {string}
- */
-function typeOf(value) {
-  if (typeof value === 'function') {
-    return 'function';
-  }
-  return emberTypeOf(value);
-}
 
 /**
  * Determine the type and get the value of the passed property
@@ -104,7 +100,7 @@ function inspect(value) {
         if (v === 'toString') {
           continue;
         } // ignore useless items
-        if (typeOf(v) === 'function') {
+        if (typeOf(v).includes('function')) {
           v = 'function() { ... }';
         }
         if (typeOf(v) === 'array') {
@@ -164,7 +160,7 @@ function getTrackedDependencies(object, property, tag) {
   if (cpDesc) {
     dependentKeys.push(...(cpDesc._dependentKeys || []));
   }
-  if (metal) {
+  if (HAS_GLIMMER_TRACKING) {
     const ownTag = metal.tagForProperty(object, property);
     dependentKeys.push(...getTagTrackedProps(tag, ownTag));
   }
@@ -202,7 +198,7 @@ export default EmberObject.extend(PortMixin, {
             const desc = Object.getOwnPropertyDescriptor(object, item.name);
             const isSetter = desc && isMandatorySetter(desc);
 
-            if (glimmer && glimmer.validate && metal.track && item.canTrack && !isSetter) {
+            if (HAS_GLIMMER_TRACKING && item.canTrack && !isSetter) {
               let tagInfo = tracked[item.name] || { tag: metal.tagForProperty(object, item.name), revision: 0 };
               if (!tagInfo.tag) return;
 
@@ -900,7 +896,7 @@ function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties
         item.isExpensive = expensiveProperties.indexOf(item.name) >= 0;
         if (cache !== undefined || !item.isExpensive) {
           let value;
-          if (item.canTrack && metal && metal.track) {
+          if (item.canTrack && HAS_GLIMMER_TRACKING) {
             const tagInfo = tracked[item.name] = {};
             tagInfo.tag = metal.track(() => {
               value = calculateCP(object, item.name, errorsForObject);

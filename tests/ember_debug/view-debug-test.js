@@ -22,8 +22,15 @@ const EmberDebug = require('ember-debug/main').default;
 let port;
 let App;
 
-function setTemplate(name, template) {
-  this.owner.register(`template:${name}`, template);
+function setTemplate(name, factory) {
+  if (typeof factory.meta === 'object') {
+    factory.meta.moduleName = `my-app/${name}.hbs`;
+  } else if (typeof factory.__meta === 'object') {
+    // Ember 3.13+
+    factory.__meta.moduleName = `my-app/${name}.hbs`;
+  }
+
+  this.owner.register(`template:${name}`, factory);
 }
 
 function isVisible(elem) {
@@ -85,6 +92,7 @@ function setupApp() {
   setTemplate.call(this, 'simple', hbs`Simple {{test-foo class="simple-component"}}`);
   setTemplate.call(this, 'comments/index', hbs`{{#each}}{{this}}{{/each}}`);
   setTemplate.call(this, 'posts', hbs`Posts`);
+  setTemplate.call(this, 'components/test-foo', hbs`test-foo`);
 }
 
 module('Ember Debug - View', function(hooks) {
@@ -150,6 +158,7 @@ module('Ember Debug - View', function(hooks) {
     assert.equal(simple.children.length, 1, 'Components are shown.');
     let component = simple.children[0];
     assert.equal(component.value.viewClass, 'App.TestFooComponent');
+    assert.equal(component.value.template, 'my-app/components/test-foo');
   });
 
   skip('Highlighting Views on hover', async function t(assert) {

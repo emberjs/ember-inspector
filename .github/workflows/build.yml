@@ -1,0 +1,296 @@
+name: Build and Publish
+on:
+  pull_request: {}
+  push:
+    branches:
+      - master
+      - stable
+      - ember-2.7.0-3.4.0
+      - ember-0.0.0-2.7.0
+    tags:
+      - v*
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    env:
+      CI: 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Set up Volta
+        uses: rwjblue/setup-volta@v1
+      - name: Install dependencies (yarn)
+        run: yarn install
+      - name: Lint (hbs)
+        run: yarn lint:hbs
+      - name: Lint (js)
+        run: yarn lint:js
+      - name: Run test
+        run: yarn test
+        env:
+          COVERAGE: 'true'
+      # Ideally, we would split up the test task into separate build and run
+      # steps to get better CI log output (folding and timing information).
+      # However, this is not currently possible with ember-cli-code-coverage.
+      #
+      # See https://github.com/kategengler/ember-cli-code-coverage/issues/210
+      #
+      # - name: Build
+      #   run: yarn ember build --environment test
+      #   env:
+      #     COVERAGE: 'true'
+      # - name: Run test
+      #   run: COVERAGEyarn ember test --path dist
+      #   env:
+      #     # Due to a bug in ember-cli, running `ember test` with `--path` doesn't set `EMBER_ENV=test`
+      #     # See https://github.com/ember-cli/ember-cli/issues/8922
+      #     EMBER_ENV: test
+      #     COVERAGE: 'true'
+      - name: Report coverage
+        run: yarn codeclimate-test-reporter < coverage/lcov.info
+        env:
+          CODECLIMATE_REPO_TOKEN: 59edcfd1ffc778791af49ca594b503e7179f6bbe1991b2cc0c0a6987d103253d
+
+  ember-try:
+    name: ember-try (${{ matrix.scenario }})
+    needs: test
+    runs-on: ubuntu-latest
+    env:
+      CI: 'true'
+    strategy:
+      matrix:
+        scenario:
+          - release
+          - beta
+          - canary
+          - lts-3.4
+          - lts-3.8
+          - lts-3.12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Set up Volta
+        uses: rwjblue/setup-volta@v1
+      - name: Install dependencies (yarn)
+        run: yarn install
+      - name: Setup ember-try scenario
+        run: yarn ember try:one ember-${{ matrix.scenario }} --skip-cleanup --- cat package.json
+      - name: Build
+        run: yarn ember build --environment test
+      - name: Run test
+        # Due to a bug in ember-cli, running `ember test` with `--path` doesn't set `EMBER_ENV=test`
+        # See https://github.com/ember-cli/ember-cli/issues/8922
+        run: EMBER_ENV=test yarn ember test --path dist --filter="Ember Debug"
+
+  build:
+    name: Build extensions
+    needs: test
+    runs-on: ubuntu-latest
+    env:
+      CI: 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Set up Volta
+        uses: rwjblue/setup-volta@v1
+      - name: Install dependencies (yarn)
+        run: yarn install
+      - name: Download panes
+        run: node scripts/download-panes.js
+        env:
+          EMBER_ENV: production
+      - name: Update manifest.json
+        if: github.event_name == 'schedule'
+        run: |
+          DATE="$(date +"%Y.%m.%d")"
+          SHA="${GITHUB_SHA:0:7}"
+          VERSION="$(jq -r '.version' package.json)"
+          CONTENT="$(cat "$FILE")"
+
+          echo "$CONTENT" | jq --arg date "$DATE" --arg sha "$SHA" --arg version "$VERSION" "$FILTER" > $FILE
+          cat "$FILE"
+        env:
+          FILE: skeletons/web-extension/manifest.json
+          FILTER: >-
+            .name += " (Nightly)" |
+            .version = $date |
+            .version_name = "\($version) (nightly build \($date) / \($sha))"
+      - name: Update package.json
+        if: github.event_name == 'schedule'
+        run: |
+          DATE="$(date +"%Y.%m.%d")"
+          SHA="${GITHUB_SHA:0:7}"
+          CONTENT="$(cat "$FILE")"
+
+          echo "$CONTENT" | jq --arg date "$DATE" --arg sha "$SHA" "$FILTER" > $FILE
+          cat "$FILE"
+        env:
+          FILE: package.json
+          FILTER: .version += "-alpha.\($date)+\($sha)"
+      - name: Build
+        run: yarn ember build --environment production
+      - name: Pack
+        run: |
+          VERSION="$(jq -r '.version | split("+") | .[0]' package.json)"
+
+          yarn pack
+          mkdir -p dist/npm
+          tar xvzf "ember-inspector-v$VERSION.tgz" -C dist/npm --strip-components 1
+      - name: Upload artifacts (bookmarklet)
+        uses: actions/upload-artifact@master
+        with:
+          name: bookmarklet
+          path: dist/bookmarklet
+      - name: Upload artifacts (Chrome)
+        uses: actions/upload-artifact@master
+        with:
+          name: chrome
+          path: dist/chrome
+      - name: Upload artifacts (Firefox)
+        uses: actions/upload-artifact@master
+        with:
+          name: firefox
+          path: dist/firefox
+      - name: Upload artifacts (npm)
+        uses: actions/upload-artifact@master
+        with:
+          name: npm
+          path: dist/npm
+
+  publish-bookmarklet:
+    name: Publish bookmarklet
+    needs:
+      - test
+      - ember-try
+      - build
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts (bookmarklet)
+        uses: actions/download-artifact@master
+        with:
+          name: bookmarklet
+      - name: Upload to S3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --cache-control "max-age=86400000,public"
+        env:
+          AWS_S3_BUCKET: ember-extension
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SOURCE_DIR: bookmarklet
+          DEST_DIR: dist_bookmarklet
+
+  publish-chrome:
+    name: Publish Chrome extension
+    needs:
+      - test
+      - ember-try
+      - build
+    if: >-
+      github.event_name == 'schedule' ||
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Volta
+        uses: rwjblue/setup-volta@v1
+      - name: Install dependencies (chrome-webstore-upload-cli)
+        run: volta install chrome-webstore-upload-cli
+      - name: Download artifacts (Chrome)
+        uses: actions/download-artifact@master
+        with:
+          name: chrome
+      - name: Upload to Chrome Web Store
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
+            webstore upload --source chrome --extension-id ibdbkmdgflhglikhjdbogjjflkialpfi --auto-publish
+          else
+            webstore upload --source chrome --extension-id bmdblncegkenkacieihfhpjfppoconhi --auto-publish
+          fi
+        env:
+          CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+
+  publish-firefox:
+    name: Publish Firefox extension
+    needs:
+      - test
+      - ember-try
+      - build
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Volta
+        uses: rwjblue/setup-volta@v1
+      - name: Install dependencies (web-ext)
+        run: |
+          volta install web-ext
+          # https://github.com/mozilla/web-ext/issues/804
+          volta install web-ext-submit
+      - name: Download artifacts (Firefox)
+        uses: actions/download-artifact@master
+        with:
+          name: firefox
+      - name: Upload to AMO
+        working-directory: firefox
+        run: web-ext-submit --channel=listed
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.FIREFOX_API_KEY }}
+          WEB_EXT_API_SECRET: ${{ secrets.FIREFOX_API_SECRET }}
+          WEB_EXT_ID: ember-inspector@emberjs.com
+
+  publish-npm:
+    name: Publish npm package
+    needs:
+      - test
+      - ember-try
+      - build
+    if: >-
+      github.event_name == 'schedule' ||
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Volta
+        uses: rwjblue/setup-volta@v1
+      - name: Set up NPM
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}"> ~/.npmrc
+          npm whoami
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      - name: Download artifacts (npm)
+        uses: actions/download-artifact@master
+        with:
+          name: npm
+      - name: Publish to npm
+        working-directory: npm
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
+            npm publish --tag alpha
+          else
+            npm publish
+          fi
+
+  publish-github:
+    name: Publish GitHub release
+    needs:
+      - test
+      - ember-try
+      - build
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
