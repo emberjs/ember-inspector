@@ -479,7 +479,8 @@ export default class {
    * @return {String}        The layout's name
    */
   nameFromLayout(layout) {
-    let moduleName = layout && get(layout, 'meta.moduleName');
+    let moduleName = layout && get(layout, 'referrer.moduleName');
+
     if (moduleName) {
       return moduleName.replace(/\.hbs$/, '');
     }
