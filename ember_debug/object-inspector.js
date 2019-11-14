@@ -1,10 +1,11 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import { compareVersion } from 'ember-debug/utils/version';
 import { isComputed, isDescriptor, getDescriptorFor } from 'ember-debug/utils/type-check';
+import { typeOf } from './utils/type-check';
 
 const Ember = window.Ember;
 const {
-  Object: EmberObject, inspect: emberInspect, meta: emberMeta, typeOf: emberTypeOf,
+  Object: EmberObject, inspect: emberInspect, meta: emberMeta,
   computed, get, set, guidFor, isNone,
   cacheFor, VERSION
 } = Ember;
@@ -28,18 +29,6 @@ try {
 }
 
 const keys = Object.keys || Ember.keys;
-
-/**
- * workaround to support detection of `[object AsyncFunction]` as a function
- * @param value
- * @returns {string}
- */
-function typeOf(value) {
-  if (typeof value === 'function') {
-    return 'function';
-  }
-  return emberTypeOf(value);
-}
 
 /**
  * Determine the type and get the value of the passed property
@@ -111,7 +100,7 @@ function inspect(value) {
         if (v === 'toString') {
           continue;
         } // ignore useless items
-        if (typeOf(v) === 'function') {
+        if (typeOf(v).includes('function')) {
           v = 'function() { ... }';
         }
         if (typeOf(v) === 'array') {
