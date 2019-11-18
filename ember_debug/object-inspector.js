@@ -244,7 +244,7 @@ export default EmberObject.extend(PortMixin, {
               }
               tracked[item.name] = tagInfo;
             } else {
-              value = calculateCP(object, item.name, {});
+              value = calculateCP(object, item, {});
               if (values[item.name] !== value) {
                 changed = true;
                 values[item.name] = value;
@@ -401,7 +401,7 @@ export default EmberObject.extend(PortMixin, {
     if (isNone(prop)) {
       value = this.sentObjects[objectId];
     } else {
-      value = calculateCP(object, prop, {});
+      value = calculateCP(object, { name: prop }, {});
     }
 
     this.sendValueToConsole(value);
@@ -421,7 +421,7 @@ export default EmberObject.extend(PortMixin, {
 
   digIntoObject(objectId, property) {
     let parentObject = this.sentObjects[objectId];
-    let object = calculateCP(parentObject, property, {});
+    let object = calculateCP(parentObject, { name: property }, {});
 
     if (this.canSend(object)) {
       const currentObject = this.currentObject;
@@ -646,7 +646,7 @@ export default EmberObject.extend(PortMixin, {
     if (object.isDestroying) {
       value = '<DESTROYED>';
     } else {
-      value = calculateCP(object, property, this.get('_errorsFor')[objectId]);
+      value = calculateCP(object, { name: property }, this.get('_errorsFor')[objectId]);
     }
 
     if (!value || !(value instanceof CalculateCPError)) {
@@ -956,7 +956,7 @@ function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties
           if (item.canTrack && HAS_GLIMMER_TRACKING) {
             const tagInfo = tracked[item.name] = {};
             tagInfo.tag = metal.track(() => {
-              value = calculateCP(object, item.name, errorsForObject);
+              value = calculateCP(object, item, errorsForObject);
             });
             if (tagInfo.tag === metal.tagForProperty(object, item.name)) {
               if (!item.isComputed && !item.isService) {
@@ -967,7 +967,7 @@ function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties
             tagInfo.revision = glimmer.value(object, item.name);
             item.dependentKeys = getTrackedDependencies(object, item.name, tagInfo.tag);
           } else {
-            value = calculateCP(object, item.name, errorsForObject);
+            value = calculateCP(object, item, errorsForObject);
           }
           if (!value || !(value instanceof CalculateCPError)) {
             item.value = inspectValue(object, item.name, value);
@@ -1130,13 +1130,14 @@ function toArray(errors) {
   return keys(errors).map(key => errors[key]);
 }
 
-function calculateCP(object, property, errorsForObject) {
+function calculateCP(object, item, errorsForObject) {
+  const property = item.name;
   delete errorsForObject[property];
   try {
     if (object instanceof Ember.ArrayProxy && property == parseInt(property)) {
       return object.objectAt(property);
     }
-    return get(object, property);
+    return item.isGetter ? object[property] : get(object, property);
   } catch (error) {
     errorsForObject[property] = { property, error };
     return new CalculateCPError();
