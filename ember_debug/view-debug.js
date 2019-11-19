@@ -172,7 +172,7 @@ export default EmberObject.extend(PortMixin, {
       return;
     }
 
-    this.getTree();
+    debugger;
     // this.sendMessage('viewTree', this.getTree());
   },
 
