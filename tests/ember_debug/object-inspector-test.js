@@ -5,6 +5,9 @@ import { inspect } from '@ember/debug';
 import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import EmberObject, { computed } from '@ember/object';
+import MutableArray from '@ember/array/mutable';
+import ArrayProxy from '@ember/array/proxy';
+import ObjectProxy from '@ember/object/proxy';
 import Service from '@ember/service';
 import { VERSION } from '@ember/version';
 import { tracked } from '@glimmer/tracking';
@@ -271,6 +274,60 @@ module('Ember Debug - Object Inspector', function(hooks) {
     });
   });
 
+  test('Proxies are skipped by default', function (assert) {
+    let inspected = EmberObject.extend({
+      test: 'a'
+    }).create();
+    const proxy = ObjectProxy.create({
+      content: inspected
+    });
+    objectInspector.sendObject(proxy);
+    let computedProperty = message.details[1].properties[0];
+    assert.equal(computedProperty.name, 'test');
+    assert.equal(computedProperty.value.inspect, inspect('a'));
+  });
+
+  test('Object Proxies are not skipped with _showProxyDetails', function (assert) {
+    let inspected = EmberObject.extend({
+      test: 'a'
+    }).create();
+    const proxy = ObjectProxy.create({
+      content: inspected,
+      _showProxyDetails: true,
+      prop: 'b'
+    });
+    objectInspector.sendObject(proxy);
+    let computedProperty = message.details[0].properties[1];
+    assert.equal(computedProperty.name, 'prop');
+    assert.equal(computedProperty.value.inspect, inspect('b'));
+  });
+
+  test('Array Proxies show content from toArray', function (assert) {
+    // support ArrayProxy -> MutableArray for ember data many-array
+    // https://api.emberjs.com/ember-data/release/classes/ManyArray
+    // https://github.com/emberjs/data/blob/master/packages/store/addon/-private/system/promise-proxies.js#L130
+    const array = EmberObject.extend(MutableArray, {
+      length: 1,
+      content: ['internal'],
+      objectAt() {
+         return 1;
+      }
+    }).create();
+
+    const proxy = ArrayProxy.create({
+      content: array
+    });
+    objectInspector.sendObject(proxy);
+
+    let property = message.details[0].properties[0];
+    assert.equal(property.name, 0);
+    assert.equal(property.value.inspect, 1);
+
+    property = message.details[0].properties[1];
+    assert.equal(property.name, 'length');
+    assert.equal(property.value.inspect, 1);
+  });
+
   test('Correct mixin properties', function (assert) {
 
     // eslint-disable-next-line ember/no-new-mixins
@@ -310,7 +367,6 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(details[3].properties.length, 1, 'should only show own mixin properties');
     assert.equal(details[3].properties[0].value.inspect, inspect('custom2'));
   });
-
 
   test('Computed properties are correctly calculated', function(assert) {
     let inspected = EmberObject.extend({
@@ -563,6 +619,80 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.details[3].name, 'TestObject');
     assert.equal(message.details[3].properties.length, 3, 'Correctly merges properties');
     assert.equal(message.details[3].properties[0].name, 'toString');
+    assert.equal(message.details[3].properties[1].name, 'hasChildren');
+    assert.equal(message.details[3].properties[2].name, 'expensiveProperty', 'property name is correct');
+    assert.equal(message.details[3].properties[2].value.isCalculated, undefined, 'Does not calculate expensive properties');
+
+    assert.ok(message.details[3].name !== 'MixinToSkip', 'Correctly skips mixins');
+  });
+
+  test('Property grouping can be customized using _debugInfo when using Proxy', function(assert) {
+
+    class MyMixin extends Mixin {
+      toString() {
+        return 'MixinToSkip';
+      }
+    }
+
+    let mixinToSkip = MyMixin.create({});
+
+    let Inspected = EmberObject.extend(mixinToSkip, {
+      name: 'Teddy',
+      gender: 'Male',
+      hasChildren: false,
+      toString: function() {
+        return 'TestObject';
+      },
+      expensiveProperty: computed(function() { return ''; }),
+      _debugInfo() {
+        return {
+          propertyInfo: {
+            includeOtherProperties: true,
+            skipProperties: ['propertyToSkip'],
+            skipMixins: ['MixinToSkip'],
+            expensiveProperties: ['expensiveProperty'],
+            groups: [
+              {
+                name: 'Basic Info',
+                properties: ['name', 'gender'],
+                expand: true
+              },
+              {
+                name: 'Family Info',
+                properties: ['maritalStatus']
+              }
+            ]
+          }
+        };
+      }
+    });
+
+    let inspected = Inspected.create({
+      maritalStatus: 'Single',
+      propertyToSkip: null
+    });
+
+    const proxy = ObjectProxy.create({
+      content: inspected
+    });
+
+    objectInspector.sendObject(proxy);
+
+    assert.ok(message.name.includes('(unknown)'));
+
+    assert.equal(message.details[0].name, 'Basic Info');
+    assert.equal(message.details[0].properties[0].name, 'name');
+    assert.equal(message.details[0].properties[1].name, 'gender');
+    assert.ok(message.details[0].expand);
+
+    assert.equal(message.details[1].name, 'Family Info');
+    assert.equal(message.details[1].properties[0].name, 'maritalStatus');
+
+    assert.equal(message.details[2].name, 'Own Properties');
+    assert.equal(message.details[2].properties.length, 0, 'Correctly skips properties');
+
+    assert.equal(message.details[3].name, 'TestObject');
+    assert.equal(message.details[3].properties.length, 3, 'Correctly merges properties');
     assert.equal(message.details[3].properties[1].name, 'hasChildren');
     assert.equal(message.details[3].properties[2].name, 'expensiveProperty', 'property name is correct');
     assert.equal(message.details[3].properties[2].value.isCalculated, undefined, 'Does not calculate expensive properties');
