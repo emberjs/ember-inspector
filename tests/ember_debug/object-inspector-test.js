@@ -627,12 +627,14 @@ module('Ember Debug - Object Inspector', function(hooks) {
   });
 
   test('Property grouping can be customized using _debugInfo when using Proxy', function(assert) {
-    // eslint-disable-next-line ember/no-new-mixins
-    let mixinToSkip = Mixin.create({
+
+    class MyMixin extends Mixin {
       toString() {
         return 'MixinToSkip';
       }
-    });
+    }
+
+    let mixinToSkip = MyMixin.create({});
 
     let Inspected = EmberObject.extend(mixinToSkip, {
       name: 'Teddy',
