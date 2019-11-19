@@ -8,7 +8,37 @@ export default EmberObject.extend({
   /**
    * The Ember View object this item represents
    */
-  view: null,
+  renderNode: null,
+
+  view: computed('renderNode', function() {
+    // TODO
+    // console.error('someone is using .view, change it to .renderNode');
+    return this.renderNode;
+  }),
+
+  isComponent: computed('renderNode.type', function() {
+    return this.renderNode.type === 'component';
+  }),
+
+  isOutlet: computed('renderNode.type', function() {
+    return this.renderNode.type === 'outlet';
+  }),
+
+  isEngine: computed('renderNode.type', function() {
+    return this.renderNode.type === 'engine';
+  }),
+
+  isRouteTemplate: computed('renderNode.type', function() {
+    return this.renderNode.type === 'route-template';
+  }),
+
+  hasBounds: computed('renderNode.bounds', function() {
+    return this.renderNode.bounds !== null;
+  }),
+
+  name: computed('renderNode.name', function() {
+    return this.renderNode.name;
+  }),
 
   /**
    * A reference to the parent `ComponentViewItem`, null at the root of the tree
@@ -29,7 +59,7 @@ export default EmberObject.extend({
    */
   activeSearch: false,
 
-  id: reads('view.objectId'),
+  id: reads('renderNode.id'),
 
   expandParents() {
     let parent = this.parent;
