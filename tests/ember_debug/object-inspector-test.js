@@ -223,13 +223,21 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
   test('Correct mixin order with es6 class', function (assert) {
 
-    // eslint-disable-next-line ember/no-new-mixins
-    const MyMixin = Mixin.create({
+    class MyMixinClass extends Mixin {
+      toString() {
+        return 'MyMixin';
+      }
+    }
+    const MyMixin = MyMixinClass.create({
       a: 'custom',
     });
 
-    // eslint-disable-next-line ember/no-new-mixins
-    const MyMixin2 = Mixin.create({
+    class MyMixin2Class extends Mixin {
+      toString() {
+        return 'MyMixin2';
+      }
+    }
+    const MyMixin2 = MyMixin2Class.create({
       b: 'custom2',
     });
 
@@ -252,13 +260,12 @@ module('Ember Debug - Object Inspector', function(hooks) {
       'Own Properties',
       'Foo',
       'FooBar',
-      '(unknown)',
-      '(unknown mixin)',
-      '(unknown mixin)',
+      'MyMixin',
+      'MyMixin2',
       'Bar',
       'Baz',
       'EmberObject',
-      '(unknown mixin)',
+      'Observable Mixin',
       'CoreObject'
     ];
 
@@ -319,6 +326,46 @@ module('Ember Debug - Object Inspector', function(hooks) {
     property = message.details[0].properties[1];
     assert.equal(property.name, 'length');
     assert.equal(property.value.inspect, 1);
+  });
+
+  test('Correct mixin properties', function (assert) {
+
+    // eslint-disable-next-line ember/no-new-mixins
+    class MyMixin extends Mixin {
+      toString() {
+        return 'MyMixin1';
+      }
+    }
+    // eslint-disable-next-line ember/no-new-mixins
+    class MyMixin2 extends Mixin {
+      toString() {
+        return 'MyMixin2';
+      }
+    }
+
+    const mix1 = MyMixin.create({a: 'custom1'});
+    const mix2 = MyMixin2.create({b: 'custom2'});
+
+    class Foo extends EmberObject.extend(mix1, mix2) {}
+
+    const instance = Foo.create({
+      ownProp: 'b'
+    });
+
+    objectInspector.sendObject(instance);
+
+    const details = message.details;
+
+    assert.equal(details[0].properties.length, 1, 'should not show mixin properties');
+    assert.equal(details[0].properties[0].name, 'ownProp');
+
+    assert.equal(details[2].name, 'MyMixin1');
+    assert.equal(details[2].properties.length, 1, 'should only show own mixin properties');
+    assert.equal(details[2].properties[0].value.inspect, inspect('custom1'));
+
+    assert.equal(details[3].name, 'MyMixin2');
+    assert.equal(details[3].properties.length, 1, 'should only show own mixin properties');
+    assert.equal(details[3].properties[0].value.inspect, inspect('custom2'));
   });
 
   test('Computed properties are correctly calculated', function(assert) {
@@ -516,11 +563,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
   test('Property grouping can be customized using _debugInfo', function(assert) {
     // eslint-disable-next-line ember/no-new-mixins
-    let mixinToSkip = Mixin.create({
-      toString() {
-        return 'MixinToSkip';
-      }
-    });
+    let mixinToSkip = Mixin.create({});
 
     let Inspected = EmberObject.extend(mixinToSkip, {
       name: 'Teddy',
@@ -575,6 +618,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     assert.equal(message.details[3].name, 'TestObject');
     assert.equal(message.details[3].properties.length, 3, 'Correctly merges properties');
+    assert.equal(message.details[3].properties[0].name, 'toString');
     assert.equal(message.details[3].properties[1].name, 'hasChildren');
     assert.equal(message.details[3].properties[2].name, 'expensiveProperty', 'property name is correct');
     assert.equal(message.details[3].properties[2].value.isCalculated, undefined, 'Does not calculate expensive properties');
