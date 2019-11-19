@@ -25,14 +25,14 @@ export default EmberObject.extend(PortMixin, {
     getTree() {
       this.sendTree();
     },
-    hideLayer() {
-      // this.hideLayer();
-    },
-    previewLayer() {
+
+    showPreview({ id }) {
+      this.viewInspection.show(id, false);
       // this.renderTree.highlightLayer(message.objectId || message.elementId, true);
     },
+
     hidePreview() {
-      // this.hidePreview();
+      this.viewInspection.hide();
     },
 
     inspectViews(message) {
@@ -43,20 +43,12 @@ export default EmberObject.extend(PortMixin, {
       }
     },
 
-    scrollToElement() {
-      // let el = document.querySelector(`#${elementId}`);
-      // if (el) {
-      //   el.scrollIntoView();
-      // }
+    scrollIntoView({ id }) {
+      this.renderTree.scrollIntoView(id);
     },
 
-    inspectElement() {
-      // if (objectId) {
-      //   this.inspectViewElement(objectId);
-      // } else {
-      //   let element = document.getElementById(elementId);
-      //   this.inspectElement(element);
-      // }
+    inspect({ id }) {
+      this.renderTree.inspect(id);
     },
 
     contextMenu() {
@@ -74,6 +66,7 @@ export default EmberObject.extend(PortMixin, {
     let renderTree = this.renderTree = new RenderTree({
       owner: this.getOwner(),
       retainObject: this.retainObject.bind(this),
+      inspectNode: this.inspectNode.bind(this),
     });
 
     this.viewInspection = new ViewInspection({
@@ -139,22 +132,15 @@ export default EmberObject.extend(PortMixin, {
     this.stopInspecting();
   },
 
-  inspectViewElement(objectId) {
-    let view = this.get('objectInspector').sentObjects[objectId];
-    if (view && view.get('element')) {
-      this.inspectElement(view.get('element'));
-    }
-  },
-
   /**
-   * Opens the "Elements" tab and selects the given element. Doesn't work in all
+   * Opens the "Elements" tab and selects the given DOM node. Doesn't work in all
    * browsers/addons (only in the Chrome and FF devtools addons at the time of writing).
    *
-   * @method inspectElement
-   * @param  {Element} element The element to inspect
+   * @method inspectNode
+   * @param  {Node} node The DOM node to inspect
    */
-  inspectElement(element) {
-    this.get('adapter').inspectElement(element);
+  inspectNode(node) {
+    this.get('adapter').inspectNode(node);
   },
 
   sendTree() {
@@ -172,8 +158,9 @@ export default EmberObject.extend(PortMixin, {
       return;
     }
 
-    debugger;
-    // this.sendMessage('viewTree', this.getTree());
+    this.sendMessage('viewTree', {
+      tree: this.getTree()
+    });
   },
 
   getTree() {

@@ -9,9 +9,10 @@ export default class RenderTree {
    *  - {owner}      owner           The Ember app's owner.
    *  - {Function}   retainObject    Called to retain an object for future inspection.
    */
-  constructor({ owner, retainObject }) {
+  constructor({ owner, retainObject, inspectNode }) {
     this.owner = owner;
     this.retainObject = retainObject;
+    this.inspectNode = inspectNode;
     this._reset();
   }
 
@@ -137,7 +138,7 @@ export default class RenderTree {
     // to taking hidden (clipped) content into account, so prefer that over
     // Range.getBoundingClientRect when possible.
 
-    if (node.bounds) {
+    if (node && node.bounds) {
       let { firstNode, lastNode } = node.bounds;
 
       if (firstNode === lastNode && firstNode.getBoundingClientRect) {
@@ -182,6 +183,46 @@ export default class RenderTree {
     }
 
     return range;
+  }
+
+  /**
+   * Scroll the given render node id into view (if the render node is found and has valid `bounds`).
+   *
+   * @method scrollIntoView
+   * @param {string} id A render node id.
+   */
+  scrollIntoView(id) {
+    let node = this.nodes[id];
+
+    if (!node || node.bounds === null) {
+      return;
+    }
+
+    let element = this._findNode(node.bounds, [Node.ELEMENT_NODE]);
+
+    if (element) {
+      element.scrollIntoView();
+    }
+  }
+
+  /**
+   * Inspect the bounds for the given render node id in the "Elements" panel (if the render node
+   * is found and has valid `bounds`).
+   *
+   * @method inspect
+   * @param {string} id A render node id.
+   */
+  inspect(id) {
+    let node = this.nodes[id];
+
+    if (!node || node.bounds === null) {
+      return;
+    }
+
+    // We cannot inspect text nodes
+    let target = this._findNode(node.bounds, [Node.ELEMENT_NODE, Node.COMMENT_NODE]);
+
+    this.inspectNode(target);
   }
 
   _reset() {
@@ -295,5 +336,19 @@ export default class RenderTree {
     }
 
     return null;
+  }
+
+  _findNode(bounds, nodeTypes) {
+    let node = bounds.firstNode;
+
+    do {
+      if (nodeTypes.indexOf(node.nodeType) > -1) {
+        return node;
+      } else {
+        node = node.nextSibling;
+      }
+    } while (node && node !== bounds.lastNode);
+
+    return bounds.parentElement;
   }
 }

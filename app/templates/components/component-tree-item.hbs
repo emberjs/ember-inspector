@@ -1,5 +1,5 @@
 <div
-  class="component-tree-item {{if @item.view.isComponent "component-tree-item--component"}} {{if @selected "component-tree-item--selected"}} {{if @highlighted "component-tree-item--highlighted"}}"
+  class="component-tree-item {{if @item.isComponent "component-tree-item--component"}} {{if @selected "component-tree-item--selected"}} {{if @highlighted "component-tree-item--highlighted"}}"
   style={{component-indentation @item.hasChildren @item.parentCount}}
   {{on "click" @inspect}}
   {{on "mouseenter" @eventMouseEnter}}
@@ -15,16 +15,24 @@
   {{/if}}
 
   <code
-    class="component-tree-item__tag {{if @item.view.isComponent "component-tree-item__bracket"}} {{if (not @item.hasChildren) "component-tree-item__bracket--self-closing"}}"
+    class="component-tree-item__tag {{if @item.isComponent "component-tree-item__bracket"}} {{if (not @item.hasChildren) "component-tree-item__bracket--self-closing"}}"
   >
-    {{if @item.view.isComponent (classify @item.view.name) @item.view.name}}
+    {{#if @item.isComponent}}
+      {{classify @item.name}}
+    {{else if @item.isOutlet}}
+      \{{outlet "{{@item.name}}"}}
+    {{else if @item.isEngine}}
+      \{{mount "{{@item.name}}"}}
+    {{else if @item.isRouteTemplate}}
+      {{@item.name}} route
+    {{/if}}
   </code>
 
-  {{#if @item.view.isComponent}}
+  {{#if @item.hasBounds}}
     <button
       class="component-tree-item__action js-scroll-into-view"
       title="Scroll into view"
-      {{on "click" @scrollToElement}}
+      {{on "click" @scrollIntoView}}
     >
       {{svg-jar
         "eye"
@@ -33,21 +41,12 @@
       }}
     </button>
 
-    {{#if (component-has-element @item.view)}}
-      <button
-        class="component-tree-item__action js-view-dom-element"
-        title="View in Elements panel"
-        {{on "click" @viewInElementsPanel}}
-      >
-        {{svg-jar "code-line" width="20px" height="20px"}}
-      </button>
-    {{else}}
-      <button
-        class="component-tree-item__action disabled"
-        title="Tagless components cannot be viewed"
-      >
-        {{svg-jar "code-line" width="20px" height="20px"}}
-      </button>
-    {{/if}}
+    <button
+      class="component-tree-item__action js-view-dom-element"
+      title="View in Elements panel"
+      {{on "click" @viewInElementsPanel}}
+    >
+      {{svg-jar "code-line" width="20px" height="20px"}}
+    </button>
   {{/if}}
 </div>

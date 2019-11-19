@@ -33,6 +33,30 @@ const getIdFromObj = function(obj) {
   return get(obj, 'view.objectId') || get(obj, 'view.controller.objectId') || get(obj, 'view.elementId');
 };
 
+const flattenSearchTreeNodes = (
+  searchValue,
+  treeNodes,
+  parent,
+  parentCount,
+  parentMatched,
+  list
+) => {
+  let flattened = [];
+
+  for (let treeNode of treeNodes) {
+    flattened.push(...flattenSearchTreeNode(
+      searchValue,
+      treeNode,
+      parent,
+      parentCount,
+      parentMatched,
+      list
+    ));
+  }
+
+  return flattened;
+};
+
 /**
  * Takes the `viewTree` from `view-debug`'s `sendTree()` method, and recursively
  * flattens it into an array of `ComponentViewItem` objects
@@ -43,7 +67,7 @@ const getIdFromObj = function(obj) {
  * @param {boolean} parentMatched Whether the parent node is initially set to display
  * @param {Array<ComponentViewItem>} list The accumulator, gets mutated in each call
  */
-const flattenSearchTree = (
+const flattenSearchTreeNode = (
   searchValue,
   treeNode,
   parent,
@@ -53,11 +77,11 @@ const flattenSearchTree = (
 ) => {
   let activeSearch = !isEmpty(searchValue);
   let searchMatched = activeSearch ?
-    searchMatch(get(treeNode, 'value.name'), searchValue) :
+    searchMatch(treeNode.name, searchValue) :
     true;
 
   let viewItem = ComponentViewItem.create({
-    view: treeNode.value,
+    renderNode: treeNode,
     parent,
     parentCount,
     searchMatched,
@@ -76,7 +100,7 @@ const flattenSearchTree = (
   let newParentCount = shouldAddItem ? parentCount + 1 : 0;
 
   treeNode.children.forEach(child => {
-    flattenSearchTree(
+    flattenSearchTreeNode(
       searchValue,
       child,
       viewItem,
@@ -150,7 +174,7 @@ export default Controller.extend({
     if (!tree) {
       return [];
     }
-    return flattenSearchTree(this.searchValue, tree, null, 0, false, []);
+    return flattenSearchTreeNodes(this.searchValue, tree, null, 0, false, []);
   }),
 
   expandedStateCache: null, //set on init
@@ -229,32 +253,16 @@ export default Controller.extend({
   /**
    * Scrolls the main page to put the selected element into view
    */
-  scrollToElement: action(function(objectId, event) {
+  scrollIntoView: action(function(id, event) {
     event.stopPropagation();
-
-    this.port.send('view:scrollToElement', {
-      elementId: objectId // TODO: what?
-    });
+    this.port.send('view:scrollIntoView', { id });
   }),
 
-  showPreviewLayer: action(function(
-    {
-      view: {
-        objectId,
-        elementId,
-        renderNodeId
-      }
-    }) {
-    // We are passing all of objectId, elementId, and renderNodeId to support post-glimmer 1, post-glimmer 2, and root for
-    // post-glimmer 2
-    this.port.send('view:previewLayer', {
-      objectId,
-      renderNodeId,
-      elementId
-    });
+  showPreview: action(function(id) {
+    this.port.send('view:showPreview', { id });
   }),
 
-  hidePreviewLayer: action(function() {
+  hidePreview: action(function() {
     this.port.send('view:hidePreview');
   }),
 
@@ -269,18 +277,9 @@ export default Controller.extend({
     }
   }),
 
-  viewInElementsPanel: action(function(item, event) {
+  viewInElementsPanel: action(function(id, event) {
     event.stopPropagation();
-
-    const objectId = item.get('view.objectId');
-    const elementId = item.get('view.elementId');
-
-    if (objectId || elementId) {
-      this.port.send('view:inspectElement', {
-        objectId,
-        elementId
-      });
-    }
+    this.port.send('view:inspect', { id });
   }),
 
   /**
