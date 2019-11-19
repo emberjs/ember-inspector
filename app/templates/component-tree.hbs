@@ -9,12 +9,12 @@
       @item={{item}}
       @highlighted={{component-parent-selected item this.pinnedObjectId}}
       @selected={{eq item.view.objectId this.pinnedObjectId}}
-      @eventMouseEnter={{fn this.showPreviewLayer item}}
-      @eventMouseLeave={{this.hidePreviewLayer}}
+      @eventMouseEnter={{fn this.showPreview item.id}}
+      @eventMouseLeave={{this.hidePreview}}
       @inspect={{fn this.inspect item.view.objectId}}
-      @scrollToElement={{fn this.scrollToElement item.view.objectId}}
+      @scrollIntoView={{fn this.scrollIntoView item.id}}
       @toggleExpanded={{fn this.toggleExpanded item}}
-      @viewInElementsPanel={{fn this.viewInElementsPanel item}}
+      @viewInElementsPanel={{fn this.viewInElementsPanel item.id}}
     />
   {{/vertical-collection}}
 </div>
