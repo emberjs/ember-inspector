@@ -12,29 +12,25 @@ export default class RenderTree {
   constructor({ owner, retainObject }) {
     this.owner = owner;
     this.retainObject = retainObject;
-
-    this.tree = [];
-    this.nodes = Object.create(null);
-    this.serialized = Object.create(null);
-    this.ranges = Object.create(null);
+    this._reset();
   }
 
   /**
    * Capture the render tree and serialize it for sending.
    *
-   * This returns an array of these:
+   * This returns an array of `SerializedRenderNode`:
    *
-   * type SerializedObject = string | number | bigint | boolean | null | undefined | { id: string };
+   * type SerializedItem = string | number | bigint | boolean | null | undefined | { id: string };
    *
    * interface SerializedRenderNode {
    *   id: string;
    *   type: 'outlet' | 'engine' | 'route-template' | 'component';
    *   name: string;
    *   args: {
-   *     named: Dict<SerializedObject>;
-   *     positional: SerializedObject[];
+   *     named: Dict<SerializedItem>;
+   *     positional: SerializedItem[];
    *   };
-   *   instance: SerializedObject;
+   *   instance: SerializedItem;
    *   template: Option<string>;
    *   bounds: Option<'single' | 'range'>;
    *   children: SerializedRenderNode[];
@@ -44,10 +40,8 @@ export default class RenderTree {
    * @return {Array<SerializedRenderNode>} The render nodes tree.
    */
   build() {
+    this._reset();
     this.tree = captureRenderTree(this.owner);
-    this.nodes = Object.create(null);
-    this.serialized = Object.create(null);
-    this.ranges = Object.create(null);
     return this._serializeRenderNodes(this.tree);
   }
 
@@ -58,7 +52,13 @@ export default class RenderTree {
    * @return {Option<SerializedRenderNode>} A render node with the given id, if any.
    */
   find(id) {
-    return this.nodes[id] || null;
+    let node = this.nodes[id];
+
+    if (node) {
+      return this._serializeRenderNode(node);
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -66,16 +66,88 @@ export default class RenderTree {
    *
    * @method findNearest
    * @param {Node} node A DOM node.
+   * @param {string} hint The id of the last-matched render node (see comment below).
    * @return {Option<SerializedRenderNode>} The deepest enclosing render node, if any.
    */
-  findNearest(node) {
-    let renderNode = this._matchRenderNodes(this.tree, node);
+  findNearest(node, hint) {
+    let hintNode = null;
+
+    // Use the hint if we are given one. When doing "live" inspecting, the mouse likely
+    // hasn't moved far from its last location. Therefore, the matching render node is
+    // likely to be the same render node, one of its children, or its parent. Knowing this,
+    // we can heuristically start the search from the parent render node (which would also
+    // match against this node and its children), then only fallback to matching the entire
+    // tree when there is no match in this subtree.
+    if (hint) {
+      hintNode = this.nodes[hint];
+
+      let parentElement;
+
+      if (hintNode && hintNode.bounds) {
+        parentElement = hintNode.bounds.parentElement;
+      }
+
+      // Find the first parent render node with a different enclosing DOM element.
+      // Usually, this is just the first parent render node, but there are cases where
+      // multiple render nodes share the same bounds (e.g. outlet -> route template).
+      while (hintNode && parentElement) {
+        let parentNode = this._getParent(hintNode.id);
+
+        if (parentNode) {
+          let currentParentElement = parentElement;
+
+          hintNode = parentNode;
+          parentElement = parentNode.bounds && parentNode.bounds.parentElement;
+
+          if (parentElement === currentParentElement) {
+            continue;
+          }
+        }
+
+        break;
+      }
+    }
+
+    let renderNode;
+
+    if (hintNode) {
+      renderNode = this._matchRenderNodes([hintNode, ...this.tree], node);
+    } else {
+      renderNode = this._matchRenderNodes(this.tree, node);
+    }
 
     if (renderNode) {
       return this._serializeRenderNode(renderNode);
     } else {
       return null;
     }
+  }
+
+  /**
+   * Get the bounding rect for a given render node id.
+   *
+   * @method getBoundingClientRect
+   * @param {*} id A render node id.
+   * @return {Option<DOMRect>} The bounding rect, if the render node is found and has valid `bounds`.
+   */
+  getBoundingClientRect(id) {
+    let node = this.nodes[id];
+
+    // Element.getBoundingClientRect seems to be less buggy when it comes
+    // to taking hidden (clipped) content into account, so prefer that over
+    // Range.getBoundingClientRect when possible.
+
+    if (node.bounds) {
+      let { firstNode, lastNode } = node.bounds;
+
+      if (firstNode === lastNode && firstNode.getBoundingClientRect) {
+        return firstNode.getBoundingClientRect();
+      } else {
+        return this.getRange(id).getBoundingClientRect();
+      }
+    }
+
+    return null;
   }
 
   /**
@@ -112,21 +184,34 @@ export default class RenderTree {
     return range;
   }
 
-  _serializeRenderNodes(nodes) {
-    return nodes.map(node => this._serializeRenderNode(node));
+  _reset() {
+    this.tree = [];
+    this.nodes = Object.create(null);
+    this.parentNodes = Object.create(null);
+    this.serialized = Object.create(null);
+    this.ranges = Object.create(null);
   }
 
-  _serializeRenderNode(node) {
+  _serializeRenderNodes(nodes, parentNode = null) {
+    return nodes.map(node => this._serializeRenderNode(node, parentNode));
+  }
+
+  _serializeRenderNode(node, parentNode = null) {
     let serialized = this.serialized[node.id];
 
     if (serialized === undefined) {
       this.nodes[node.id] = node;
+
+      if (parentNode) {
+        this.parentNodes[node.id] = parentNode;
+      }
+
       this.serialized[node.id] = serialized = {
         ...node,
         args: this._serializeArgs(node.args),
         instance: this._serializeItem(node.instance),
         bounds: this._serializeBounds(node.bounds),
-        children: this._serializeRenderNodes(node.children),
+        children: this._serializeRenderNodes(node.children, node),
       };
     }
 
@@ -182,26 +267,33 @@ export default class RenderTree {
     return { id: this.retainObject(object) };
   }
 
-  _matchRenderNodes(renderNodes, dom) {
-    for (let renderNode of renderNodes) {
-      let match = this._matchRenderNode(renderNode, dom);
+  _getParent(id) {
+    return this.parentNodes[id] || null;
+  }
 
-      if (match) {
-        return match;
+  _matchRenderNodes(renderNodes, dom, deep = true) {
+    let candidates = [...renderNodes];
+
+    while (candidates.length > 0) {
+      let candidate = candidates.shift();
+      let range = this.getRange(candidate.id);
+
+      if (range && range.isPointInRange(dom, 0)) {
+        // We may be able to find a more exact match in one of the children.
+        return this._matchRenderNodes(candidate.children, dom, false) || candidate;
+      } else if (!range || deep) {
+        // There are some edge cases of non-containing parent nodes (e.g. "worm
+        // hole") so we can't rule out the entire subtree just because the parent
+        // didn't match. Howevwe, we should come back to this subtree at the end
+        // since we are unlikely to find a match here.
+        candidates.push(...candidate.children);
+      } else {
+        // deep = false: In this case, we already found a matching parent,
+        // we are just trying to find a more precise match here. If the child
+        // does not contain the DOM node, we don't need to travese further.
       }
     }
 
     return null;
-  }
-
-  _matchRenderNode(renderNode, dom) {
-    let match = null;
-    let range = this.getRange(renderNode.id);
-
-    if (range && range.isPointInRange(dom, 0)) {
-      match = renderNode;
-    }
-
-    return this._matchRenderNodes(renderNode.children, dom) || match;
   }
 }
