@@ -22,7 +22,7 @@ if (Ember._captureRenderTree) {
    *
    * interface CapturedRenderNode {
    *   id: string;
-   *   type: 'outlet' | 'engine' | 'route-template' | 'component';;
+   *   type: 'outlet' | 'engine' | 'route-template' | 'component';
    *   name: string;
    *   args: {
    *     named: Dict<unknown>;
@@ -72,7 +72,7 @@ if (Ember._captureRenderTree) {
     let components = getTopLevelComponents(owner);
 
     if (outletState && components) {
-      tree.push(captureOutlet(null, 'root', owner, components, outletState));
+      tree.push(captureOutlet('root', owner, components, outletState));
     }
 
     return tree;
@@ -210,7 +210,7 @@ if (Ember._captureRenderTree) {
    * also pass down a "path" of the routes/outlets we have encountered so far which we
    * use to generate the ID.
    */
-  function captureOutlet(parent, path, owner, components, { outlets, render }) {
+  function captureOutlet(path, owner, components, { outlets, render }) {
     let outlet = {
       id: `render-node:${path}@${render.outlet}`,
       type: 'outlet',
@@ -222,11 +222,7 @@ if (Ember._captureRenderTree) {
       children: [],
     };
 
-    if (parent) {
-      parent.children.push(outlet);
-    }
-
-    parent = outlet;
+    let parent = outlet;
 
     if (owner !== render.owner) {
       let engine = {
@@ -260,13 +256,96 @@ if (Ember._captureRenderTree) {
     parent.children.push(route);
     parent = route;
 
-    Object.keys(outlets).forEach(name => {
-      captureOutlet(parent, subpath, render.owner, components, outlets[name]);
-    });
+    let childOutlets = Object.keys(outlets).map(name => captureOutlet(
+      subpath,
+      render.owner,
+      components,
+      outlets[name]
+    ));
 
-    captureComponents(parent, components.get(render.controller) || [], render.controller);
+    let childComponents = captureComponents(
+      components.get(render.controller) || [],
+      render.controller
+    );
+
+    parent.children.push(...mergeOutletChildren(
+      render.controller,
+      childOutlets,
+      childComponents
+    ));
 
     return outlet;
+  }
+
+  /**
+   * Its is possible to nest an outlet inside a component, one pretty common example
+   * is a "layout" component:
+   *
+   * <SidebarWrapper>
+   *   {{outlet "sidebar"}}
+   * </SidebarWrapper>
+   *
+   * On the other hand, it's not possible to put a component inside an outlet anymore
+   * when we get to this point. Try to find a suitable parent for each child outlet
+   * taking the above into account.
+   */
+  function mergeOutletChildren(controller, outlets, components) {
+    let merged = [];
+
+    for (let outlet of outlets) {
+      if (controller) {
+        let parentComponent = findOutletComponentParent(outlet.children);
+
+        if (controllerForComponent(parentComponent) === controller) {
+          let parentNode = findOutletComponentNode(components, parentComponent);
+
+          if (parentNode) {
+            parentNode.children.push(outlet);
+            continue;
+          }
+        }
+      }
+
+      merged.push(outlet);
+    }
+
+    merged.push(...components);
+
+    return merged;
+  }
+
+  function findOutletComponentParent(nodes) {
+    let result;
+
+    for (let node of nodes) {
+      if (node.type === 'component') {
+        result = node.instance.parentView;
+      } else if (node.type === 'engine' || node.type === 'route-template') {
+        result = findOutletComponentParent(node.children);
+      }
+
+      if (result !== undefined) {
+        return result;
+      }
+    }
+  }
+
+  function findOutletComponentNode(nodes, instance) {
+    let result;
+
+    for (let node of nodes) {
+      if (node.type === 'component') {
+        if (node.instance === instance) {
+          result = node;
+        } else {
+          result = findOutletComponentNode(node.children, instance);
+        }
+      }
+
+      if (result !== undefined) {
+        return result;
+      }
+    }
   }
 
   /**
@@ -317,25 +396,19 @@ if (Ember._captureRenderTree) {
    * Return the render node for a given (classic) component, and its children up
    * until the next route boundary.
    */
-  function captureComponents(parent, components, controller) {
-    components.forEach(component => {
-      if (controllerForComponent(component) === controller) {
-        let node = {
-          id: `render-node:${guidFor(component)}`,
-          type: 'component',
-          name: nameForComponent(component),
-          args: EMPTY_ARGS,
-          instance: component,
-          template: templateForComponent(component),
-          bounds: getViewBounds(component),
-          children: [],
-        };
-
-        parent.children.push(node);
-
-        captureComponents(node, getChildViews(component), controller);
-      }
-    });
+  function captureComponents(components, controller) {
+    return components
+      .filter(component => controllerForComponent(component) === controller)
+      .map(component => ({
+        id: `render-node:${guidFor(component)}`,
+        type: 'component',
+        name: nameForComponent(component),
+        args: EMPTY_ARGS,
+        instance: component,
+        template: templateForComponent(component),
+        bounds: getViewBounds(component),
+        children: captureComponents(getChildViews(component), controller),
+      }));
   }
 }
 
