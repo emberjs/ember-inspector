@@ -49,7 +49,7 @@ export default EmberObject.extend(PortMixin, {
         viewDurations[node.viewGuid] = node.duration;
       }
     });
-    this.get('viewDebug').updateDurations(viewDurations);
+    // this.get('viewDebug').updateDurations(viewDurations);
     this._updateComponentTree();
   },
 
