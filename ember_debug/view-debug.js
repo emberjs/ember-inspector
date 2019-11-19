@@ -2,14 +2,6 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import GlimmerTree from 'ember-debug/libs/glimmer-tree';
 import { typeOf } from './utils/type-check';
-import {
-  modelName as getModelName,
-  shortModelName as getShortModelName,
-  controllerName as getControllerName,
-  shortControllerName as getShortControllerName,
-  viewName as getViewName,
-  shortViewName as getShortViewName
-} from 'ember-debug/utils/name-functions';
 import { makeRenderNodeCloneable } from './libs/octane-tree';
 
 const Ember = window.Ember;
