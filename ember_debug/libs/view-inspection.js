@@ -275,9 +275,9 @@ export default class ViewInspection {
     if (node.type === 'component') {
       this._renderTokens(title, this._tokenizeComponentNode(node));
     } else if (node.type === 'outlet') {
-      this._renderTokens(title, [['tag', '{{'], ['name', 'outlet'], ['id', node.name], ['tag', '}}']]);
+      this._renderTokens(title, [['tag', '{{'], ['name', 'outlet'], ['tag', ' '], ['tag', '"'], ['id', node.name], ['tag', '"'], ['tag', '}}']]);
     } else if (node.type === 'engine') {
-      this._renderTokens(title, [['tag', '{{'], ['name', 'mount'], ['id', node.name], ['tag', '}}']]);
+      this._renderTokens(title, [['tag', '{{'], ['name', 'mount'], ['tag', ' '], ['tag', '"'], ['id', node.name], ['tag', '"'], ['tag', '}}']]);
     } else {
       title.innerText = node.name;
     }
