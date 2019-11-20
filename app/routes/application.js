@@ -35,7 +35,7 @@ export default Route.extend({
   inspectComponent({ viewId }) {
     this.transitionTo('component-tree', {
       queryParams: {
-        pinnedObjectId: viewId
+        pinned: viewId
       }
     });
   },
