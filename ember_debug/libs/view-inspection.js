@@ -136,14 +136,18 @@ function makeStylesheet(id) {
 }
 
 export default class ViewInspection {
-  constructor({ renderTree, objectInspector }) {
+  constructor({ renderTree, objectInspector, didStop }) {
     this.renderTree = renderTree;
     this.objectInspector = objectInspector;
+    this.didStop = didStop;
 
     this.id = (Math.random() * 100000000).toFixed(0);
+
     this.isInspecting = false;
     this.lastTarget = null;
-    this.lastMatch = null;
+    this.lastMatchId = null;
+
+    this.isPinned = false;
 
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onClick = this.onClick.bind(this);
@@ -156,42 +160,61 @@ export default class ViewInspection {
     this.highlight = this._insertHTML(makeHighlight(id));
     this.tooltip = this._insertHTML(makeTooltip(id));
     this._insertStylesheet(makeStylesheet(id));
+
+    document.body.addEventListener('click', this.onClick, { capture: true });
   }
 
   start() {
     this.isInspecting = true;
     this.lastTarget = null;
-    this.lastMatch = null;
+    this.lastMatchId = null;
 
-    document.body.addEventListener('mousemove', this.onMouseMove);
+    document.body.addEventListener('mousemove', this.onMouseMove, { capture: true });
   }
 
-  stop() {
-    this.hide();
+  stop(shouldHide = true) {
+    if (shouldHide) {
+      this.hide();
+    }
 
     this.isInspecting = false;
     this.lastTarget = null;
     this.lastMatchId = null;
 
-    document.body.removeEventListener('mousemove', this.onMouseMove);
+    document.body.removeEventListener('mousemove', this.onMouseMove, { capture: true });
+
+    this.didStop();
   }
 
-  onMouseMove({ target }) {
-    this.inspectNearest(target, false);
+  onMouseMove(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.inspectNearest(event.target, false);
   }
 
-  onClick({ target }) {
-
+  onClick(event) {
+    if (this.isPinned) {
+      this.hide();
+    } else if (this.isInspecting && event.button === 0) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.inspectNearest(event.target, true);
+      this.stop(false);
+    }
   }
 
   inspectNearest(target, pin = true) {
     let { isInspecting, lastTarget, lastMatchId } = this;
 
+    let match;
+
     if (isInspecting && target === lastTarget) {
-      return this.renderTree.find(lastMatchId);
+      match = this.renderTree.find(lastMatchId);
     }
 
-    let match = this.renderTree.findNearest(target, lastMatchId);
+    if (!match) {
+      match = this.renderTree.findNearest(target, lastMatchId);
+    }
 
     if (match) {
       this.show(match.id, pin);
@@ -214,6 +237,7 @@ export default class ViewInspection {
     if (node && rect) {
       this._showHighlight(node, rect);
       this._showTooltip(node, rect);
+      this.isPinned = pin;
     } else {
       this.hide();
     }
@@ -222,6 +246,7 @@ export default class ViewInspection {
   hide() {
     this._hideHighlight();
     this._hideTooltip();
+    this.isPinned = false;
   }
 
   _showHighlight(_node, rect) {
