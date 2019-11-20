@@ -7,11 +7,11 @@
   }}
     <ComponentTreeItem
       @item={{item}}
-      @highlighted={{component-parent-selected item this.pinnedObjectId}}
-      @selected={{eq item.view.objectId this.pinnedObjectId}}
+      @highlighted={{component-parent-selected item this.pinned}}
+      @selected={{eq item.id this.pinned}}
       @eventMouseEnter={{fn this.showPreview item.id}}
       @eventMouseLeave={{this.hidePreview}}
-      @inspect={{fn this.inspect item.view.objectId}}
+      @inspect={{fn this.inspect item.renderNode}}
       @scrollIntoView={{fn this.scrollIntoView item.id}}
       @toggleExpanded={{fn this.toggleExpanded item}}
       @viewInElementsPanel={{fn this.viewInElementsPanel item.id}}

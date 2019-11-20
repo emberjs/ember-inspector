@@ -36,6 +36,11 @@ export default EmberObject.extend({
     return this.renderNode.bounds !== null;
   }),
 
+  hasInstance: computed('renderNode.instance', function() {
+    let { instance } = this.renderNode;
+    return typeof instance === 'object' && instance !== null;
+  }),
+
   name: computed('renderNode.name', function() {
     return this.renderNode.name;
   }),
