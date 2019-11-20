@@ -1,5 +1,6 @@
 const Ember = window.Ember;
 const { classify } = Ember.String;
+const _EmberInspectorTether = window._EmberInspectorTether;
 
 function makeHighlight(id) {
   return `<div id="ember-inspector-highlight-${id}" role="presentation"></div>`;
@@ -107,32 +108,34 @@ function makeStylesheet(id) {
       text-align: right;
       color: #000;
     }
-
-    #${prefix}-tooltip-${id} .${prefix}-tooltip-arrow {
-      position: absolute;
-      width: 40px;
-      height: 20px;
-      left: 0px;
-      bottom: -20px;
-      overflow: hidden;
-    }
-
-    #${prefix}-tooltip-${id} .${prefix}-tooltip-arrow::after {
-      content: "";
-      position: absolute;
-      width: 0px;
-      height: 0px;
-      top: 0px;
-      left: 8px;
-      box-sizing: border-box;
-      border: 6px solid white;
-      border-color: transparent transparent white white;
-      transform-origin: 0 0;
-      transform: rotate(-45deg);
-      box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.25);
-      pointer-events: none;
-    }
   `;
+
+  //TODO: add back arrow styles after we figure out all arrow cases in Tether
+
+  // #${prefix}-tooltip-${id} .${prefix}-tooltip-arrow {
+  //   border: 10px solid transparent;
+  //   content: '';
+  //   display: block;
+  //   height: 10px;
+  //   pointer-events: none;
+  //   position: absolute;
+  //   width: 10px;
+  //   z-index: 10000;
+  // }
+  //
+  // #${prefix}-tooltip-${id}.ember-inspector-tether-element-attached-bottom .${prefix}-tooltip-arrow {
+  //   bottom: 0;
+  //   border-top-color: #fff;
+  //   left: 8px;
+  //   transform: translate(0, 100%);
+  // }
+  //
+  // #${prefix}-tooltip-${id}.ember-inspector-tether-element-attached-top .${prefix}-tooltip-arrow {
+  //   border-bottom-color: #fff;
+  //   left: 8px;
+  //   top: 0;
+  //   transform: translate(0, -100%);
+  // }
 }
 
 export default class ViewInspection {
@@ -159,6 +162,20 @@ export default class ViewInspection {
     let { id } = this;
     this.highlight = this._insertHTML(makeHighlight(id));
     this.tooltip = this._insertHTML(makeTooltip(id));
+    this.tether = new _EmberInspectorTether({
+      element: this.tooltip,
+      target: this.highlight,
+      attachment: 'bottom left',
+      targetAttachment: 'top left',
+      classPrefix: 'ember-inspector-tether',
+      constraints: [
+        {
+          to: 'scrollParent',
+          attachment: 'together',
+          pin: true
+        }
+      ]
+    });
     this._insertStylesheet(makeStylesheet(id));
 
     document.body.addEventListener('click', this.onClick, { capture: true });
@@ -266,26 +283,16 @@ export default class ViewInspection {
     this.highlight.style.display = 'none';
   }
 
-  _showTooltip(node, rect) {
+  _showTooltip(node) {
+    this.tether.position();
     this._renderTooltipTitle(node);
     this._renderTooltipCategory(node);
     this._renderTooltipDetails(node);
 
     let { style } = this.tooltip;
-    let { top, left } = rect;
-    let { scrollX, scrollY } = window;
 
     style.display = 'block';
-    style.top = 'auto';
-    style.bottom = 'auto';
-    style.left = 'auto';
-    style.right = 'auto';
     style.pointerEvents = 'none';
-
-    let { height } = this.tooltip.getBoundingClientRect();
-
-    style.top = `${top + scrollY - height - 16}px`;
-    style.left = `${left + scrollX}px`;
   }
 
   _hideTooltip() {

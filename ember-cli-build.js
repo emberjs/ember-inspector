@@ -89,7 +89,8 @@ module.exports = function(defaults) {
     exclude: [
       'vendor/loader.js',
       'vendor/source-map.js',
-      'vendor/startup-wrapper.js'
+      'vendor/startup-wrapper.js',
+      'vendor/tether.js'
     ]
   });
 
@@ -132,11 +133,16 @@ module.exports = function(defaults) {
     files: ['loader.js']
   });
 
+  const tether = new Funnel('ember_debug', {
+    srcDir: 'vendor',
+    files: ['tether.js']
+  });
+
   sourceMap = map(sourceMap, '**/*.js', function(content) {
     return `(function() {\n${content}\n}());`;
   });
 
-  emberDebug = mergeTrees([loader, startupWrapper, sourceMap, emberDebug]);
+  emberDebug = mergeTrees([loader, startupWrapper, sourceMap, tether, emberDebug]);
 
   emberDebug = concatFiles(emberDebug, {
     headerFiles: ['loader.js'],

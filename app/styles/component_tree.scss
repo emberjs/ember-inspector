@@ -1,3 +1,29 @@
+.component-tree-item__action {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: inline-flex;
+  height: 100%;
+  margin-left: 10px;
+  opacity: 0;
+  padding: 0;
+
+  &:focus {
+    outline: none;
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+  }
+
+  polygon,
+  rect,
+  path {
+    fill: var(--base15);
+  }
+}
+
 .component-tree-item {
   align-items: center;
   border-radius: 4px;
@@ -26,32 +52,6 @@
   cursor: pointer;
   padding-left: 3px;
   padding-right: 3px;
-}
-
-.component-tree-item__action {
-  align-items: center;
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  display: inline-flex;
-  height: 100%;
-  margin-left: 10px;
-  opacity: 0;
-  padding: 0;
-
-  &:focus {
-    outline: none;
-  }
-
-  &.disabled {
-    cursor: not-allowed;
-  }
-
-  polygon,
-  rect,
-  path {
-    fill: var(--base15);
-  }
 }
 
 .component-tree-item__tag {
