@@ -1,5 +1,11 @@
 <div
-  class="component-tree-item {{if @item.isComponent "component-tree-item--component"}} {{if @selected "component-tree-item--selected"}} {{if @highlighted "component-tree-item--highlighted"}}"
+  class="
+    component-tree-item
+    {{if @item.isComponent "component-tree-item--component"}}
+    {{if @item.hasInstance "component-tree-item--has-instance"}}
+    {{if @selected "component-tree-item--selected"}}
+    {{if @highlighted "component-tree-item--highlighted"}}
+  "
   style={{component-indentation @item.hasChildren @item.parentCount}}
   {{on "click" @inspect}}
   {{on "mouseenter" @eventMouseEnter}}
