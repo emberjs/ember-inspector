@@ -1,6 +1,6 @@
 <div class="toolbar">
   <button
-    class="{{if inspectingViews "active"}} toolbar__icon-button js-inspect-views"
+    class="{{if this.isInspecting "active"}} toolbar__icon-button js-inspect-views"
     {{on "click" this.toggleViewInspection}}
   >
     {{svg-jar
