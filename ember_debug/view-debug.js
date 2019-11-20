@@ -72,6 +72,7 @@ export default EmberObject.extend(PortMixin, {
     this.viewInspection = new ViewInspection({
       renderTree,
       objectInspector: this.objectInspector,
+      didStop: this.didStopInspecting.bind(this),
     });
 
     this.setupListeners();
@@ -183,6 +184,10 @@ export default EmberObject.extend(PortMixin, {
 
   stopInspecting() {
     this.viewInspection.stop();
+    this.sendMessage('stopInspecting', {});
+  },
+
+  didStopInspecting() {
     this.sendMessage('stopInspecting', {});
   },
 
