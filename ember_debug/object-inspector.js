@@ -557,6 +557,13 @@ export default EmberObject.extend(PortMixin, {
    */
   mixinDetailsForObject(object) {
     const mixins = [];
+    if (object instanceof Ember.ObjectProxy && object.content && !object._showProxyDetails) {
+      return this.mixinDetailsForObject(object.content);
+    }
+
+    if (object instanceof Ember.ArrayProxy && object.content && !object._showProxyDetails) {
+      return this.mixinDetailsForObject(object.slice(0, 101));
+    }
 
     const own = ownMixins(object);
 
@@ -1095,6 +1102,9 @@ function getDebugInfo(object) {
   let debugInfo = null;
   let objectDebugInfo = get(object, '_debugInfo');
   if (objectDebugInfo && typeof objectDebugInfo === 'function') {
+    if (object instanceof Ember.ObjectProxy && object.content) {
+      object = object.content;
+    }
     // We have to bind to object here to make sure the `this` context is correct inside _debugInfo when we call it
     debugInfo = objectDebugInfo.bind(object)();
   }
