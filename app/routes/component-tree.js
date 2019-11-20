@@ -3,7 +3,7 @@ import TabRoute from 'ember-inspector/routes/tab';
 
 export default TabRoute.extend({
   queryParams: {
-    pinnedObjectId: {
+    pinned: {
       replace: true
     }
   },
@@ -40,7 +40,7 @@ export default TabRoute.extend({
     this.set('controller.viewTree', options.tree);
 
     // If we're waiting for view tree to inspect a component
-    const componentToInspect = this.get('controller.pinnedObjectId');
+    const componentToInspect = this.controller.pinned;
     if (componentToInspect) {
       this.inspectComponent(componentToInspect);
     }
@@ -51,11 +51,11 @@ export default TabRoute.extend({
   },
 
   startInspecting() {
-    this.set('controller.inspectingViews', true);
+    this.set('controller.isInspecting', true);
   },
 
   stopInspecting() {
-    this.set('controller.inspectingViews', false);
+    this.set('controller.isInspecting', false);
   },
 
   inspectDOMNode({ name }) {
@@ -64,9 +64,9 @@ export default TabRoute.extend({
 
   actions: {
     queryParamsDidChange(params) {
-      const { pinnedObjectId } = params;
-      if (pinnedObjectId) {
-        this.inspectComponent(pinnedObjectId);
+      const { pinned } = params;
+      if (pinned) {
+        this.inspectComponent(pinned);
       }
     }
   }

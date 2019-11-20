@@ -1,6 +1,5 @@
 import {
   action,
-  get,
   computed
 } from '@ember/object';
 import Controller, {
@@ -19,19 +18,6 @@ import {
 } from '@ember/runloop';
 
 import ComponentViewItem from 'ember-inspector/models/component-view-item';
-
-const buildObjectIdList = function(children, list) {
-  children.forEach(function(child) {
-    if (child.children.length) {
-      list.push(child.value.objectId);
-      buildObjectIdList(child.children, list);
-    }
-  });
-};
-
-const getIdFromObj = function(obj) {
-  return get(obj, 'view.objectId') || get(obj, 'view.controller.objectId') || get(obj, 'view.elementId');
-};
 
 const flattenSearchTreeNodes = (
   searchValue,
@@ -114,14 +100,15 @@ const flattenSearchTreeNode = (
 
 export default Controller.extend({
   application: controller(),
-  queryParams: ['pinnedObjectId'],
+  queryParams: ['pinned'],
 
   /**
-   * The entry in the component tree corresponding to the pinnedObjectId
+   * The entry in the component tree corresponding to the id
    * will be selected
    */
-  pinnedObjectId: null,
-  inspectingViews: false,
+
+  pinned: null,
+  isInspecting: false,
 
   /**
    * Bound to the search field to filter the component list.
@@ -157,11 +144,11 @@ export default Controller.extend({
     let viewArray = this.viewArray;
     let expandedStateCache = this.expandedStateCache;
     viewArray.forEach(viewItem => {
-      let cachedExpansion = expandedStateCache[getIdFromObj(viewItem)];
+      let cachedExpansion = expandedStateCache[viewItem.id];
       if (cachedExpansion !== undefined) {
         viewItem.set('expanded', cachedExpansion);
       } else {
-        expandedStateCache[getIdFromObj(viewItem)] = viewItem.expanded;
+        expandedStateCache[viewItem.id] = viewItem.expanded;
       }
     });
 
@@ -184,12 +171,12 @@ export default Controller.extend({
   },
 
   /**
-   * Expands the component tree so that entry for the given view will
-   * be shown.  Recursively expands the entry's parents up to the root.
-   * @param {*} objectId The id of the ember view to show
+   * Expands the component tree so that entry for the given render node will
+   * be shown. Recursively expands the entry's parents up to the root.
+   * @param {*} id The id of the render node to show
    */
-  expandToNode(objectId) {
-    let node = this.filteredArray.find(item => item.get('id') === objectId);
+  expandToNode(id) {
+    let node = this.filteredArray.find(item => item.id === id);
     if (node) {
       node.expandParents();
     }
@@ -201,14 +188,14 @@ export default Controller.extend({
    * can guess at how far down the list the item is. Then we can manually set the scrollTop
    * of the virtual scroll.
    */
-  scrollTreeToItem(objectId) {
-    let selectedItemIndex = this.displayedList.findIndex(item => item.view.objectId === objectId);
+  scrollTreeToItem(id) {
+    let selectedItemIndex = this.displayedList.findIndex(item => item.id === id);
 
-    if (!selectedItemIndex) {
+    if (selectedItemIndex === -1) {
       return;
     }
 
-    const averageItemHeight = 25;
+    const averageItemHeight = 22;
     const targetScrollTop = averageItemHeight * selectedItemIndex;
     const componentTreeEl = document.querySelector('.js-component-tree');
     const height = componentTreeEl.offsetHeight;
@@ -222,17 +209,16 @@ export default Controller.extend({
   },
 
   /**
-   * @param {array} objects Array of objectids
+   * @param {array} objects Array of render node ids
    * @param {boolean} state expanded state for objects
    */
-  setExpandedStateForObjects(objects, state) {
-    this.filteredArray.forEach((item) => {
-      const id = getIdFromObj(item);
-      if (objects.includes(id)) {
+  setExpandedStateForObjects(ids, state) {
+    this.filteredArray
+      .filter(item => ids.indexOf(item.id) > -1)
+      .forEach(item => {
         item.set('expanded', state);
-        this.expandedStateCache[id] = state;
-      }
-    });
+        this.expandedStateCache[item.id] = state;
+      });
   },
 
   /**
@@ -240,13 +226,17 @@ export default Controller.extend({
    * @param {ComponentViewItem} item
    */
   toggleWithChildren(item) {
-    const newState = !item.get('expanded');
-    const list = [];
-    const clickedId = getIdFromObj(item);
+    let newState = !item.expanded;
+    let ids = [];
 
-    list.push(clickedId);
-    buildObjectIdList(item.children, list);
-    this.setExpandedStateForObjects(list, newState);
+    let collectIds = item => {
+      ids.push(item.id);
+      item.children.forEach(collectIds);
+    };
+
+    collectIds(item);
+
+    this.setExpandedStateForObjects(ids, newState);
   },
 
   /**
@@ -272,7 +262,7 @@ export default Controller.extend({
       this.toggleWithChildren(item);
     } else {
       item.toggleProperty('expanded');
-      this.expandedStateCache[getIdFromObj(item)] = item.get('expanded');
+      this.expandedStateCache[item.id] = item.get('expanded');
     }
   }),
 
@@ -289,25 +279,29 @@ export default Controller.extend({
     this.expandedStateCache = {};
     this.filteredArray.forEach((item) => {
       item.set('expanded', expanded);
-      this.expandedStateCache[getIdFromObj(item)] = expanded;
+      this.expandedStateCache[item.id] = expanded;
     });
   }),
 
   toggleViewInspection: action(function() {
     this.port.send('view:inspectViews', {
-      inspect: !this.inspectingViews
+      inspect: !this.isInspecting
     });
   }),
 
-  inspect: action(function(objectId) {
-    if (this.get('pinnedObjectId') === objectId) return;
-    if (objectId) {
-      this.set('pinnedObjectId', objectId);
-      this.expandToNode(objectId);
-      this.scrollTreeToItem(objectId);
-      this.port.send('objectInspector:inspectById', {
-        objectId
-      });
+  inspect: action(function({ id, instance }) {
+    if (id === this.pinned) {
+      return;
+    }
+
+    this.set('pinned', id);
+    this.expandToNode(id);
+    this.scrollTreeToItem(id);
+
+    if (typeof instance === 'object' && instance !== null) {
+      this.port.send('objectInspector:inspectById', { objectId: instance.id });
+    } else {
+      this.application.set('inspectorExpanded', false);
     }
   })
 });
