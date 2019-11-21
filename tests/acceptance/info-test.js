@@ -9,7 +9,7 @@ module('Info Tab', function(hooks) {
 
   hooks.beforeEach(function() {
     this.owner.lookup('config:main').VERSION = '9.9.9';
-    port = this.owner.lookup('port:main');
+    port = this.owner.lookup('service:port');
     port.reopen({
       send(name) {
         if (name === 'general:getLibraries') {

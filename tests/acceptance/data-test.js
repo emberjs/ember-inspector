@@ -22,7 +22,7 @@ module('Data Tab', function(hooks) {
   setupApplicationTest(hooks);
 
   hooks.beforeEach(function() {
-    port = this.owner.lookup('port:main');
+    port = this.owner.lookup('service:port');
     port.reopen({
       init() {},
       send(n, m) {
