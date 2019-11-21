@@ -114,7 +114,15 @@ function makeStylesheet(id) {
       height: 20px;
       left: 0px;
       bottom: -20px;
-      overflow: hidden;
+      margin-left: -20px;
+      overflow-x: visible;
+      overflow-y: hidden;
+    }
+
+    #${prefix}-tooltip-${id}.${prefix}-tooltip-attach-below .${prefix}-tooltip-arrow {
+      top: -20px;
+      bottom: auto;
+      transform: rotate(180deg);
     }
 
     #${prefix}-tooltip-${id} .${prefix}-tooltip-arrow::after {
@@ -123,13 +131,14 @@ function makeStylesheet(id) {
       width: 0px;
       height: 0px;
       top: 0px;
-      left: 8px;
+      left: 50%;
+      margin-left: -8px;
       box-sizing: border-box;
       border: 6px solid white;
       border-color: transparent transparent white white;
       transform-origin: 0 0;
       transform: rotate(-45deg);
-      box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.25);
+      box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.25);
       pointer-events: none;
     }
   `;
@@ -259,33 +268,85 @@ export default class ViewInspection {
     style.left = `${left + scrollX}px`;
     style.width = `${width}px`;
     style.height = `${height}px`;
-    style.pointerEvents = 'none';
   }
 
   _hideHighlight() {
     this.highlight.style.display = 'none';
   }
 
-  _showTooltip(node, rect) {
+  _showTooltip(node, highlightRect) {
     this._renderTooltipTitle(node);
     this._renderTooltipCategory(node);
     this._renderTooltipDetails(node);
 
-    let { style } = this.tooltip;
-    let { top, left } = rect;
-    let { scrollX, scrollY } = window;
+    // Positioning the tooltip: the goal is to match the Chrome's Element
+    // inspection tooltip's positioning behavior as closely as possible.
 
-    style.display = 'block';
-    style.top = 'auto';
-    style.bottom = 'auto';
-    style.left = 'auto';
-    style.right = 'auto';
-    style.pointerEvents = 'none';
+    let { style: tooltipStyle } = this.tooltip;
+    let { scrollX, scrollY, innerWidth } = window;
 
-    let { height } = this.tooltip.getBoundingClientRect();
+    // Leave 20px safety margin in case of scrollbars
+    let safetyMargin = 20;
+    let viewportWidth = innerWidth - safetyMargin;
 
-    style.top = `${top + scrollY - height - 16}px`;
-    style.left = `${left + scrollX}px`;
+    // Start by attaching the tooltip below the highlight, and align it to the
+    // left edge of the highlight.
+    let attachmentTop = highlightRect.bottom;
+    let attachmentLeft = highlightRect.left;
+
+    tooltipStyle.display = 'block';
+    tooltipStyle.top = `${scrollY + attachmentTop}px`;
+    tooltipStyle.left = `${scrollX + attachmentLeft}px`;
+
+    // Measure the tooltip
+    let tooltipRect = this.tooltip.getBoundingClientRect();
+
+    // Prefer to attach above the highlight instead, if space permits. This is
+    // visually more pleasing and matches the way Chrome attaches its Element
+    // inspection tooltips. We had to do this step here instead of setting it
+    // at the beginning, because it requires measuring the height of the rendered
+    // tooltip.
+    let top = highlightRect.top - tooltipRect.height - safetyMargin;
+
+    if (top >= 0) {
+      attachmentTop = top;
+      this.tooltip.setAttribute('class', `ember-inspector-tooltip-attach-above`);
+    } else {
+      this.tooltip.setAttribute('class', `ember-inspector-tooltip-attach-below`);
+    }
+
+    let leftOffset = 0;
+
+    // Try to keep the entire tooltip onscreen.
+    if (tooltipRect.left < 0) {
+      // If the tooltip is partially offscreen to the left (because the higlight
+      // is partially offscreen to the left), then push it to the right to stay
+      // within the viewport, but not so much that it will become detached.
+      leftOffset = Math.max(highlightRect.left - safetyMargin, safetyMargin - highlightRect.width);
+    } else if (tooltipRect.right > viewportWidth) {
+      // If the tooltip is partially offscreen to the right (because the tooltip
+      // is too wide), then push it to the left to stay within the viewport, but
+      // not so much that it will become detached.
+      leftOffset = Math.min(tooltipRect.right - viewportWidth, tooltipRect.width - safetyMargin * 2);
+      tooltipStyle.left = `${scrollX + attachmentLeft - leftOffset}px`;
+    }
+
+    // Left-align the arrow 17px form the left edge of the highlight, unless the
+    // component is tiny, in which case, we center it.
+    let arrowLeft = Math.min(17, highlightRect.width / 2);
+
+    // Try to maintain at least 17 pixels to the left/right of the arrow so it
+    // doesn't "poke outside" the tooltip.
+    if (arrowLeft < 17) {
+      leftOffset = Math.max(leftOffset, 17);
+    }
+
+    tooltipStyle.top = `${scrollY + attachmentTop}px`;
+    tooltipStyle.left = `${scrollX + attachmentLeft - leftOffset}px`;
+
+    let arrow = this.tooltip.querySelector('.ember-inspector-tooltip-arrow');
+
+    arrow.style.left = `${Math.max(leftOffset, 0) + arrowLeft}px`;
   }
 
   _hideTooltip() {
