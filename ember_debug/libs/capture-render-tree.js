@@ -1,11 +1,13 @@
+import { compareVersion } from '../utils/version';
+
 /* eslint-disable no-console, no-inner-declarations */
 
 const Ember = window.Ember;
 
 let captureRenderTree;
 
-if (Ember._captureRenderTree) {
-  // 3.14+
+// Ember 3.14+ comes with debug render tree, but the version in 3.14.0/3.14.1 is buggy
+if (Ember._captureRenderTree && compareVersion(Ember.VERSION, '3.14.1') > 0) {
   if (Ember.ENV._DEBUG_RENDER_TREE) {
     captureRenderTree = Ember._captureRenderTree;
   } else {
