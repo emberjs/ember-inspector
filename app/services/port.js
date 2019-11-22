@@ -1,7 +1,7 @@
 import Evented from '@ember/object/evented';
-import EmberObject from '@ember/object';
+import Service from '@ember/service';
 
-export default EmberObject.extend(Evented, {
+export default Service.extend(Evented, {
   applicationId: undefined,
   applicationName: undefined,
 
