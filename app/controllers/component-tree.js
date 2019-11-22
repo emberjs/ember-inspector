@@ -1,307 +1,300 @@
-import {
-  action,
-  computed
-} from '@ember/object';
-import Controller, {
-  inject as controller
-} from '@ember/controller';
+import Controller, { inject as controller } from '@ember/controller';
+import { action } from '@ember/object';
+import { inject as service } from '@ember/service';
+import { htmlSafe } from '@ember/string';
+import { tracked } from '@glimmer/tracking';
+
 import searchMatch from 'ember-inspector/utils/search-match';
-import {
-  notEmpty
-} from '@ember/object/computed';
-import {
-  isEmpty
-} from '@ember/utils';
 
-import {
-  schedule
-} from '@ember/runloop';
+export default class ComponentTreeController extends Controller {
+  queryParams = ['pinned', 'query'];
 
-import ComponentViewItem from 'ember-inspector/models/component-view-item';
+  // Estimated height for each row
+  itemHeight = 22;
 
-const flattenSearchTreeNodes = (
-  searchValue,
-  treeNodes,
-  parent,
-  parentCount,
-  parentMatched,
-  list
-) => {
-  let flattened = [];
+  @controller application;
+  @service port;
 
-  for (let treeNode of treeNodes) {
-    flattened.push(...flattenSearchTreeNode(
-      searchValue,
-      treeNode,
-      parent,
-      parentCount,
-      parentMatched,
-      list
-    ));
-  }
+  @tracked query;
+  @tracked isInspecting = false;
+  @tracked renderItems = [];
 
-  return flattened;
-};
+  _store = Object.create(null);
 
-/**
- * Takes the `viewTree` from `view-debug`'s `sendTree()` method, and recursively
- * flattens it into an array of `ComponentViewItem` objects
- * @param {string} searchValue The value of the search box
- * @param {*} treeNode The node in the viewTree
- * @param {ComponentViewItem} parent The parent `ComponentViewItem`
- * @param {number} parentCount The component hierarchy depth
- * @param {boolean} parentMatched Whether the parent node is initially set to display
- * @param {Array<ComponentViewItem>} list The accumulator, gets mutated in each call
- */
-const flattenSearchTreeNode = (
-  searchValue,
-  treeNode,
-  parent,
-  parentCount,
-  parentMatched,
-  list
-) => {
-  let activeSearch = !isEmpty(searchValue);
-  let searchMatched = activeSearch ?
-    searchMatch(treeNode.name, searchValue) :
-    true;
+  set renderTree(renderTree) {
+    let { _store } = this;
 
-  let viewItem = ComponentViewItem.create({
-    renderNode: treeNode,
-    parent,
-    parentCount,
-    searchMatched,
-    activeSearch,
-    expanded: !activeSearch,
-    hasChildren: treeNode.children.length > 0,
-    children: treeNode.children
-  });
+    let store = Object.create(null);
+    let renderItems = [];
 
-  // remember if there is no active search, searchMatched will be true
-  let shouldAddItem = searchMatched || parentMatched;
-  if (shouldAddItem) {
-    list.push(viewItem);
-  }
-
-  let newParentCount = shouldAddItem ? parentCount + 1 : 0;
-
-  treeNode.children.forEach(child => {
-    flattenSearchTreeNode(
-      searchValue,
-      child,
-      viewItem,
-      newParentCount,
-      shouldAddItem,
-      list
-    );
-  });
-  return list;
-};
-
-export default Controller.extend({
-  application: controller(),
-  queryParams: ['pinned'],
-
-  /**
-   * The entry in the component tree corresponding to the id
-   * will be selected
-   */
-
-  pinned: null,
-  isInspecting: false,
-
-  /**
-   * Bound to the search field to filter the component list.
-   *
-   * @property searchValue
-   * @type {String}
-   * @default ''
-   */
-  searchValue: '',
-
-  activeSearch: notEmpty('searchValue'),
-
-  /**
-   * The final list that the `{{vertical-collection}}` renders
-   * is created in three stages:
-   * 1. The `viewArray` is recalculated When the controller's `viewTree` is set by the route, or when
-   *    a user updates the search box.
-   * 2. The `filteredArray` CP takes the `viewArray` and caches the expanded state for each item.
-   *    This keeps the tree from suddenly re-expanding if the `viewTree` updates after users have
-   *    collapsed some nodes.
-   * 3. Once the list is rendered, when users expand/collapse a node that action directly
-   *    toggles the `expanded` property on each item, which makes `visible` recompute.
-   *
-   * This could probably happen in one big function, but for the time being its split in the
-   * interest of clarity rather than performance (even if the extra CPs might avoid doing some extra
-   * work when users expand/contract tree nodes)
-   */
-  displayedList: computed('filteredArray.@each.visible', function() {
-    return this.filteredArray.filterBy('visible');
-  }),
-
-  filteredArray: computed('viewArray.[]', function() {
-    let viewArray = this.viewArray;
-    let expandedStateCache = this.expandedStateCache;
-    viewArray.forEach(viewItem => {
-      let cachedExpansion = expandedStateCache[viewItem.id];
-      if (cachedExpansion !== undefined) {
-        viewItem.set('expanded', cachedExpansion);
+    let flatten = (parent, renderNode) => {
+      if (isInternalRenderNode(renderNode)) {
+        renderNode.children.forEach(node => flatten(parent, node));
       } else {
-        expandedStateCache[viewItem.id] = viewItem.expanded;
+        let item = _store[renderNode.id];
+
+        if (item === undefined) {
+          item = new RenderItem(this, parent, renderNode);
+        } else {
+          item.renderNode = renderNode;
+        }
+
+        store[renderNode.id] = item;
+
+        renderItems.push(item);
+
+        renderNode.children.forEach(node => flatten(item, node));
       }
-    });
-
-    return viewArray;
-  }),
-
-  viewArray: computed('viewTree', 'searchValue', function() {
-    let tree = this.viewTree;
-    if (!tree) {
-      return [];
-    }
-    return flattenSearchTreeNodes(this.searchValue, tree, null, 0, false, []);
-  }),
-
-  expandedStateCache: null, //set on init
-
-  init() {
-    this._super(...arguments);
-    this.set('expandedStateCache', {});
-  },
-
-  /**
-   * Expands the component tree so that entry for the given render node will
-   * be shown. Recursively expands the entry's parents up to the root.
-   * @param {*} id The id of the render node to show
-   */
-  expandToNode(id) {
-    let node = this.filteredArray.find(item => item.id === id);
-    if (node) {
-      node.expandParents();
-    }
-  },
-
-  /**
-   * This method is basically a trick to get the `{{vertical-collection}}` in the vicinity
-   * of the item that's been selected.  We can't directly scroll to the element but we
-   * can guess at how far down the list the item is. Then we can manually set the scrollTop
-   * of the virtual scroll.
-   */
-  scrollTreeToItem(id) {
-    let selectedItemIndex = this.displayedList.findIndex(item => item.id === id);
-
-    if (selectedItemIndex === -1) {
-      return;
-    }
-
-    const averageItemHeight = 22;
-    const targetScrollTop = averageItemHeight * selectedItemIndex;
-    const componentTreeEl = document.querySelector('.js-component-tree');
-    const height = componentTreeEl.offsetHeight;
-
-    // Only scroll to item if not already in view
-    if (targetScrollTop < componentTreeEl.scrollTop || targetScrollTop > componentTreeEl.scrollTop + height) {
-      schedule('afterRender', () => {
-        componentTreeEl.scrollTop = targetScrollTop - (height / 2);
-      });
-    }
-  },
-
-  /**
-   * @param {array} objects Array of render node ids
-   * @param {boolean} state expanded state for objects
-   */
-  setExpandedStateForObjects(ids, state) {
-    this.filteredArray
-      .filter(item => ids.indexOf(item.id) > -1)
-      .forEach(item => {
-        item.set('expanded', state);
-        this.expandedStateCache[item.id] = state;
-      });
-  },
-
-  /**
-   * Builds array of objectids and the expanded state they should be set to
-   * @param {ComponentViewItem} item
-   */
-  toggleWithChildren(item) {
-    let newState = !item.expanded;
-    let ids = [];
-
-    let collectIds = item => {
-      ids.push(item.id);
-      item.children.forEach(collectIds);
     };
 
-    collectIds(item);
+    renderTree.forEach(node => flatten(null, node));
 
-    this.setExpandedStateForObjects(ids, newState);
-  },
+    this._store = store;
 
-  /**
-   * Scrolls the main page to put the selected element into view
-   */
-  scrollIntoView: action(function(id, event) {
-    event.stopPropagation();
-    this.port.send('view:scrollIntoView', { id });
-  }),
+    this.renderItems = renderItems;
+  }
 
-  showPreview: action(function(id) {
-    this.port.send('view:showPreview', { id });
-  }),
+  findItem(id) {
+    return this._store[id];
+  }
 
-  hidePreview: action(function() {
-    this.port.send('view:hidePreview');
-  }),
+  get pinnedItem() {
+    return this.findItem(this.pinned);
+  }
 
-  toggleExpanded: action(function(item, event) {
-    event.stopPropagation();
+  get matchingItems() {
+    let { renderItems, query } = this;
 
-    if (event.altKey) {
-      this.toggleWithChildren(item);
-    } else {
-      item.toggleProperty('expanded');
-      this.expandedStateCache[item.id] = item.get('expanded');
+    if (query) {
+      let match = item => searchMatch(item.name, query) || item.childItems.some(match);
+      renderItems = renderItems.filter(match);
     }
-  }),
 
-  viewInElementsPanel: action(function(id, event) {
-    event.stopPropagation();
-    this.port.send('view:inspect', { id });
-  }),
+    return renderItems;
+  }
 
-  /**
-   * Expand or collapse all component nodes
-   * @param {Boolean} expanded if true, expanded, if false, collapsed
-   */
-  expandOrCollapseAll: action(function(expanded) {
-    this.expandedStateCache = {};
-    this.filteredArray.forEach((item) => {
-      item.set('expanded', expanded);
-      this.expandedStateCache[item.id] = expanded;
-    });
-  }),
+  get visibleItems() {
+    return this.matchingItems.filter(item => item.isVisible);
+  }
 
-  toggleViewInspection: action(function() {
-    this.port.send('view:inspectViews', {
-      inspect: !this.isInspecting
-    });
-  }),
+  @tracked _pinned = undefined;
 
-  inspect: action(function({ id, instance }) {
-    if (id === this.pinned) {
+  get pinned() {
+    return this._pinned;
+  }
+
+  set pinned(id) {
+    if (this.pinned === id) {
       return;
     }
 
-    this.set('pinned', id);
-    this.expandToNode(id);
-    this.scrollTreeToItem(id);
+    let item = this.findItem(id);
 
-    if (typeof instance === 'object' && instance !== null) {
-      this.port.send('objectInspector:inspectById', { objectId: instance.id });
+    if (item) {
+      this._pinned = id;
+
+      item.show();
+
+      if (item.hasInstance) {
+        this.port.send('objectInspector:inspectById', { objectId: item.instance });
+      } else {
+        this.application.hideInspector();
+      }
     } else {
-      this.application.set('inspectorExpanded', false);
+      this._pinnded = undefined;
+      this.application.hideInspector();
     }
-  })
-});
+  }
+
+  @action toggleInspect() {
+    this.port.send('view:inspectViews', { inspect: !this.isInspecting });
+  }
+
+  @action expandAll() {
+    this.renderItems.forEach(item => item.expand());
+  }
+
+  @action collapseAll() {
+    this.renderItems.forEach(item => item.collapse());
+  }
+}
+
+function isInternalRenderNode(renderNode) {
+  return renderNode.type === 'outlet' && renderNode.name === 'main' ||
+    renderNode.type === 'route-template' && renderNode.name === '-top-level';
+}
+
+class RenderItem {
+  @tracked isExpanded = true;
+
+  constructor(controller, parentItem, renderNode) {
+    this.controller = controller;
+    this.parentItem = parentItem;
+    this.renderNode = renderNode;
+  }
+
+  get id() {
+    return this.renderNode.id;
+  }
+
+  get isOutlet() {
+    return this.renderNode.type === 'outlet';
+  }
+
+  get isEngine() {
+    return this.renderNode.type === 'engine';
+  }
+
+  get isRouteTemplate() {
+    return this.renderNode.type === 'route-template';
+  }
+
+  get isComponent() {
+    return this.renderNode.type === 'component';
+  }
+
+  get name() {
+    return this.renderNode.name;
+  }
+
+  get hasInstance() {
+    let { instance } = this.renderNode;
+    return typeof instance === 'object' && instance !== null;
+  }
+
+  get instance() {
+    if (this.hasInstance) {
+      return this.renderNode.instance.id;
+    } else {
+      return null;
+    }
+  }
+
+  get hasBounds() {
+    return this.renderNode.bounds !== null;
+  }
+
+  get isRoot() {
+    return this.parentItem === null;
+  }
+
+  get level() {
+    if (this.isRoot) {
+      return 0;
+    } else {
+      return this.parentItem.level + 1;
+    }
+  }
+
+  get hasChildren() {
+    return this.renderNode.children.length > 0;
+  }
+
+  get childItems() {
+    return this.renderNode.children.map(child => {
+      return this.controller.findItem(child.id);
+    });
+  }
+
+  get isVisible() {
+    if (this.isRoot) {
+      return true;
+    } else {
+      return this.parentItem.isVisible && this.parentItem.isExpanded;
+    }
+  }
+
+  get isSelected() {
+    return this.id === this.controller.pinned;
+  }
+
+  get isHighlighted() {
+    if (this.isRoot) {
+      return false;
+    } else {
+      return this.parentItem.isPinned || this.parentItem.isHighlighted;
+    }
+  }
+
+  get style() {
+    let indentation = 25;
+
+    indentation += this.level * 20;
+
+    if (this.hasChildren) {
+      // folding triangle
+      indentation -= 12;
+    }
+
+    return htmlSafe(`padding-left: ${indentation}px`);
+  }
+
+  @action showPreview() {
+    this.send('view:showPreview', { id: this.id });
+  }
+
+  @action hidePreview() {
+    let { pinnedItem } = this.controller;
+
+    if (pinnedItem) {
+      this.send('view:showPreview', { id: pinnedItem.id });
+    } else {
+      this.send('view:hidePreview');
+    }
+  }
+
+  @action inspect() {
+    this.controller.pinned = this.id;
+  }
+
+  @action toggle(event) {
+    event.stopPropagation();
+
+    if (this.isExpanded) {
+      this.collapse(event.altKey);
+    } else {
+      this.expand(event.altKey);
+    }
+  }
+
+  @action scrollIntoView() {
+    event.stopPropagation();
+
+    this.send('view:scrollIntoView', { id: this.id });
+  }
+
+  @action inspectElement() {
+    event.stopPropagation();
+
+    this.send('view:inspectElement', { id: this.id });
+  }
+
+  show() {
+    let item = this.parent;
+
+    while (item) {
+      item.expand();
+      item = item.parent;
+    }
+  }
+
+  expand(deep = false) {
+    this.isExpanded = true;
+
+    if (deep === true) {
+      this.childItems.forEach(child => child.expand(true));
+    }
+  }
+
+  collapse(deep = false) {
+    this.isExpanded = false;
+
+    if (deep === true) {
+      this.childItems.forEach(child => child.collapse(true));
+    }
+  }
+
+  send(message, payload) {
+    this.controller.port.send(message, payload);
+  }
+}

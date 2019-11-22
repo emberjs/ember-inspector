@@ -66,12 +66,32 @@ export default Controller.extend({
     this.port.send('objectInspector:releaseObject', { objectId: item.objectId });
   }),
 
+  showInspector: action(function() {
+    if (this.inspectorExpanded === false) {
+      this.set('inspectorExpanded', true);
+      // Broadcast that tables have been resized (used by `x-list`).
+      schedule('afterRender', () => {
+        this.layoutService.trigger('resize', { source: 'object-inspector' });
+      });
+    }
+  }),
+
+  hideInspector: action(function() {
+    if (this.inspectorExpanded === true) {
+      this.set('inspectorExpanded', false);
+      // Broadcast that tables have been resized (used by `x-list`).
+      schedule('afterRender', () => {
+        this.layoutService.trigger('resize', { source: 'object-inspector' });
+      });
+    }
+  }),
+
   toggleInspector: action(function() {
-    this.toggleProperty('inspectorExpanded');
-    // Broadcast that tables have been resized (used by `x-list`).
-    schedule('afterRender', () => {
-      this.layoutService.trigger('resize', { source: 'object-inspector' });
-    });
+    if (this.inspectorExpanded) {
+      this.hideInspector();
+    } else {
+      this.showInspector();
+    }
   }),
 
   setActive: action(function(bool) {

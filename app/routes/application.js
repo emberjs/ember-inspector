@@ -1,7 +1,6 @@
 import { set, get } from '@ember/object';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { schedule } from '@ember/runloop';
 import Ember from "ember";
 
 const {
@@ -31,10 +30,10 @@ export default Route.extend({
     port.off('view:inspectComponent', this, this.inspectComponent);
   },
 
-  inspectComponent({ viewId }) {
+  inspectComponent({ id }) {
     this.transitionTo('component-tree', {
       queryParams: {
-        pinned: viewId
+        pinned: id
       }
     });
   },
@@ -57,7 +56,7 @@ export default Route.extend({
       controller.activateMixinDetails(name, objectId, details, errors);
     }
 
-    this.send('expandInspector');
+    this.controller.showInspector();
   },
 
   setDeprecationCount(message) {
@@ -99,13 +98,6 @@ export default Route.extend({
   layoutService: service('layout'),
 
   actions: {
-    expandInspector() {
-      this.set("controller.inspectorExpanded", true);
-      // Broadcast that tables have been resized (used by `list`).
-      schedule('afterRender', () => {
-        this.layoutService.trigger('resize', { source: 'object-inspector' });
-      });
-    },
     inspectObject(objectId) {
       if (objectId) {
         this.port.send('objectInspector:inspectById', { objectId });
