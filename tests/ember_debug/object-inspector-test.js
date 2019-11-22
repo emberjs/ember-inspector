@@ -921,6 +921,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     let getter = message.details[1].properties[0];
     assert.equal(getter.name, 'hi');
     assert.ok(getter.isGetter);
+    assert.ok(!getter.isTracked);
     assert.equal(getter.value.type, 'type-number');
     assert.equal(getter.value.inspect, '123');
   });
