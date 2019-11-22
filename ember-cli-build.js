@@ -167,9 +167,19 @@ module.exports = function(defaults) {
   const minimumVersion = packageJson.emberVersionsSupported[0].replace(/\./g, '-');
   const webExtensionRoot = `panes-${minimumVersion}`;
 
+  let tabLabel;
+
+  if (process.env.EMBER_INSPECTOR_TAB) {
+    tabLabel = `Ember [${process.env.EMBER_INSPECTOR_TAB}]`;
+  } else if (env === 'development') {
+    tabLabel = `Ember [DEV]`;
+  } else {
+    tabLabel = 'Ember';
+  }
+
   let replacementPattern = [{
-    match: /{{env}}/,
-    replacement: env === 'development' ? ' [DEV]' : ''
+    match: /{{TAB_LABEL}}/,
+    replacement: tabLabel
   }, {
     match: /{{PANE_ROOT}}/g,
     replacement: `panes-${minimumVersion}`
