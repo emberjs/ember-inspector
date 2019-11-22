@@ -1,20 +1,5 @@
 <div class="list__content js-component-tree" style="height: 100%;">
-  {{#vertical-collection
-    displayedList
-    estimateHeight=22
-    key="id"
-  as |item|
-  }}
-    <ComponentTreeItem
-      @item={{item}}
-      @highlighted={{component-parent-selected item this.pinned}}
-      @selected={{eq item.id this.pinned}}
-      @eventMouseEnter={{fn this.showPreview item.id}}
-      @eventMouseLeave={{this.hidePreview}}
-      @inspect={{fn this.inspect item.renderNode}}
-      @scrollIntoView={{fn this.scrollIntoView item.id}}
-      @toggleExpanded={{fn this.toggleExpanded item}}
-      @viewInElementsPanel={{fn this.viewInElementsPanel item.id}}
-    />
+  {{#vertical-collection this.visibleItems estimateHeight=this.itemHeight key="id" as |item|}}
+    <ComponentTreeItem @item={{item}} />
   {{/vertical-collection}}
 </div>
