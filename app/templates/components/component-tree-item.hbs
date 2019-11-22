@@ -1,22 +1,22 @@
 <div
+  style={{@item.style}}
   class="
     component-tree-item
     {{if @item.isComponent "component-tree-item--component"}}
     {{if @item.hasInstance "component-tree-item--has-instance"}}
-    {{if @selected "component-tree-item--selected"}}
-    {{if @highlighted "component-tree-item--highlighted"}}
+    {{if @item.isSelected "component-tree-item--selected"}}
+    {{if @item.isHighlighted "component-tree-item--highlighted"}}
   "
-  style={{component-indentation @item.hasChildren @item.parentCount}}
-  {{on "click" @inspect}}
-  {{on "mouseenter" @eventMouseEnter}}
-  {{on "mouseleave" @eventMouseLeave}}
+  {{on "click" @item.inspect}}
+  {{on "mouseenter" @item.showPreview}}
+  {{on "mouseleave" @item.hidePreview}}
 >
   {{#if @item.hasChildren}}
     <Ui::DisclosureTriangle
       class="component-tree-item__expand"
       title="Click to toggle (alt/option click to toggle with children)"
-      @toggle={{@toggleExpanded}}
-      @expanded={{@item.expanded}}
+      @toggle={{@item.toggle}}
+      @expanded={{@item.isExpanded}}
     />
   {{/if}}
 
@@ -38,19 +38,15 @@
     <button
       class="component-tree-item__action js-scroll-into-view"
       title="Scroll into view"
-      {{on "click" @scrollIntoView}}
+      {{on "click" @item.scrollIntoView}}
     >
-      {{svg-jar
-        "eye"
-        width="20px"
-        height="20px"
-      }}
+      {{svg-jar "eye" width="20px" height="20px"}}
     </button>
 
     <button
       class="component-tree-item__action js-view-dom-element"
       title="View in Elements panel"
-      {{on "click" @viewInElementsPanel}}
+      {{on "click" @item.inspectElement}}
     >
       {{svg-jar "code-line" width="20px" height="20px"}}
     </button>

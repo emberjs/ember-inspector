@@ -10,7 +10,7 @@ const {
   run,
   Object: EmberObject,
 } = Ember;
-const { throttle } = run;
+const { backburner } = run;
 const { readOnly } = computed;
 
 export default EmberObject.extend(PortMixin, {
@@ -35,8 +35,8 @@ export default EmberObject.extend(PortMixin, {
       this.viewInspection.hide();
     },
 
-    inspectViews(message) {
-      if (message.inspect) {
+    inspectViews({ inspect }) {
+      if (inspect) {
         this.startInspecting();
       } else {
         this.stopInspecting();
@@ -47,8 +47,8 @@ export default EmberObject.extend(PortMixin, {
       this.renderTree.scrollIntoView(id);
     },
 
-    inspect({ id }) {
-      this.renderTree.inspect(id);
+    inspectElement({ id }) {
+      this.renderTree.inspectElement(id);
     },
 
     contextMenu() {
@@ -85,6 +85,10 @@ export default EmberObject.extend(PortMixin, {
 
     this.onResize = this.onResize.bind(this);
     window.addEventListener('resize', this.resizeHandler);
+
+    this.scheduledSendTree = null;
+    this.sendTree = this.sendTree.bind(this);
+    backburner.on('end', this.sendTree);
   },
 
   cleanupListeners() {
@@ -92,6 +96,12 @@ export default EmberObject.extend(PortMixin, {
     window.removeEventListener('mousedown', this.onRightClick);
 
     window.removeEventListener('resize', this.onResize);
+
+    backburner.off('end', this.sendTree);
+
+    if (this.scheduledSendTree) {
+      window.clearTimeout(this.scheduledSendTree);
+    }
   },
 
   onRightClick(event) {
@@ -105,7 +115,11 @@ export default EmberObject.extend(PortMixin, {
   },
 
   inspectNearest(node) {
-    if (!this.viewInspection.inspectNearest(node)) {
+    let renderNode = this.viewInspection.inspectNearest(node);
+
+    if (renderNode) {
+      this.sendMessage('inspectComponent', { id: renderNode.id });
+    } else {
       this.adapter.log('No Ember component found.');
     }
   },
@@ -145,13 +159,11 @@ export default EmberObject.extend(PortMixin, {
   },
 
   sendTree() {
-    run.scheduleOnce('afterRender', this, this.scheduledSendTree);
-  },
+    if (this.scheduledSendTree) {
+      return;
+    }
 
-  scheduledSendTree() {
-    // needs to trigger on the trailing edge of the wait interval, otherwise it might happen
-    // that we do not pick up fast route switching or 2 or more short rerenders
-    throttle(this, this.send, 250, false);
+    window.setTimeout(() => this.send(), 250);
   },
 
   send() {
@@ -159,21 +171,13 @@ export default EmberObject.extend(PortMixin, {
       return;
     }
 
-    this.sendMessage('viewTree', {
+    this.sendMessage('renderTree', {
       tree: this.getTree()
     });
   },
 
   getTree() {
     this.releaseCurrentObjects();
-
-    // TODO: why is this needed?
-    let emberApp = this.getOwner();
-
-    if (!emberApp) {
-      return [];
-    }
-
     return this.renderTree.build();
   },
 

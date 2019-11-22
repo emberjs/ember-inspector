@@ -201,7 +201,11 @@ export default class RenderTree {
     let element = this._findNode(node.bounds, [Node.ELEMENT_NODE]);
 
     if (element) {
-      element.scrollIntoView();
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest"
+      });
     }
   }
 
@@ -209,10 +213,10 @@ export default class RenderTree {
    * Inspect the bounds for the given render node id in the "Elements" panel (if the render node
    * is found and has valid `bounds`).
    *
-   * @method inspect
+   * @method inspectElement
    * @param {string} id A render node id.
    */
-  inspect(id) {
+  inspectElement(id) {
     let node = this.nodes[id];
 
     if (!node || node.bounds === null) {

@@ -1,71 +1,51 @@
 import TabRoute from "ember-inspector/routes/tab";
 
-export default TabRoute.extend({
-  queryParams: {
-    pinned: {
-      replace: true
-    }
-  },
+export default class ComponentTreeRoute extends TabRoute {
+  queryParams = {
+    pinned: { replace: true },
+    query: { replace: true },
+  };
 
   model() {
-    return [];
-  },
+    return new Promise(resolve => {
+      this.port.one('view:renderTree', ({ tree }) => resolve(tree));
+      this.port.send('view:getTree');
+    });
+  }
 
-  setupController() {
-    this._super(...arguments);
-    this.port.on('view:viewTree', this, this.setViewTree);
-    this.port.on('view:stopInspecting', this, this.stopInspecting);
+  setupController(controller, tree) {
+    controller.renderTree = tree;
+  }
+
+  activate() {
+    super.activate(...arguments);
+    this.port.on('view:renderTree', this, this.setRenderTree);
     this.port.on('view:startInspecting', this, this.startInspecting);
+    this.port.on('view:stopInspecting', this, this.stopInspecting);
     this.port.on('view:inspectDOMNode', this, this.inspectDOMNode);
-
-    this.set('controller.viewTreeLoaded', false);
-    this.port.send('view:getTree');
-  },
+  }
 
   deactivate() {
-    this.port.off('view:viewTree', this, this.setViewTree);
-    this.port.off('view:stopInspecting', this, this.stopInspecting);
+    super.deactivate(...arguments);
+    this.port.off('view:renderTree', this, this.setRenderTree);
     this.port.off('view:startInspecting', this, this.startInspecting);
+    this.port.off('view:stopInspecting', this, this.stopInspecting);
     this.port.off('view:inspectDOMNode', this, this.inspectDOMNode);
-  },
+  }
 
-  setViewTree(options) {
-    this.set('controller.viewTree', options.tree);
-    this.set('controller.viewTreeLoaded', true);
-
-    // If we're waiting for view tree to inspect a component
-    const componentToInspect = this.controller.pinned;
-    if (componentToInspect) {
-      this.inspectComponent(componentToInspect);
-    }
-  },
-
-  inspectComponent(viewId) {
-    if (!this.get('controller.viewTreeLoaded')) {
-      return;
-    }
-
-    this.controller.inspect(viewId);
-  },
+  setRenderTree({ tree }) {
+    this.controller.renderTree = tree;
+  }
 
   startInspecting() {
-    this.set('controller.isInspecting', true);
-  },
+    this.controller.isInspecting = true;
+  }
 
   stopInspecting() {
-    this.set('controller.isInspecting', false);
-  },
+    this.controller.isInspecting = false;
+  }
 
   inspectDOMNode({ name }) {
-    this.get('port.adapter').inspectDOMNode(name);
-  },
-
-  actions: {
-    queryParamsDidChange(params) {
-      const { pinned } = params;
-      if (pinned) {
-        this.inspectComponent(pinned);
-      }
-    }
+    this.port.adapter.inspectDOMNode(name);
   }
-});
+}
