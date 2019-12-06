@@ -105,7 +105,7 @@ jobs:
       - name: Update manifest.json (nightly)
         if: github.event_name == 'schedule'
         run: |
-          DATE="$(date +"%Y.%m.%d")"
+          DATE="$(date +"%Y.%-m.%-d")"
           SHA="${GITHUB_SHA:0:7}"
           VERSION="$(jq -r '.version' package.json)"
           CONTENT="$(cat "$FILE")"
@@ -137,7 +137,7 @@ jobs:
       - name: Update package.json (nightly)
         if: github.event_name == 'schedule'
         run: |
-          DATE="$(date +"%Y.%m.%d")"
+          DATE="$(date +"%Y.%-m.%-d")"
           SHA="${GITHUB_SHA:0:7}"
           CONTENT="$(cat "$FILE")"
 
