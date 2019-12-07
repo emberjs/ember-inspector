@@ -1,7 +1,7 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
+import bound from 'ember-debug/utils/bound-method';
+import { isComputed, isDescriptor, getDescriptorFor, typeOf } from 'ember-debug/utils/type-check';
 import { compareVersion } from 'ember-debug/utils/version';
-import { isComputed, isDescriptor, getDescriptorFor } from 'ember-debug/utils/type-check';
-import { typeOf } from './utils/type-check';
 
 const Ember = window.Ember;
 const {
@@ -272,9 +272,7 @@ export default EmberObject.extend(PortMixin, {
   init() {
     this._super();
     this.set('sentObjects', {});
-
-    this.updateCurrentObject = this.updateCurrentObject.bind(this);
-    backburner.on('end', this.updateCurrentObject);
+    backburner.on('end', bound(this, this.updateCurrentObject));
   },
 
   willDestroy() {
@@ -282,7 +280,7 @@ export default EmberObject.extend(PortMixin, {
     for (let objectId in this.sentObjects) {
       this.releaseObject(objectId);
     }
-    backburner.off('end', this.updateCurrentObject);
+    backburner.off('end', bound(this, this.updateCurrentObject));
   },
 
   sentObjects: {},
@@ -1107,8 +1105,7 @@ function getDebugInfo(object) {
     if (object instanceof Ember.ObjectProxy && object.content) {
       object = object.content;
     }
-    // We have to bind to object here to make sure the `this` context is correct inside _debugInfo when we call it
-    debugInfo = objectDebugInfo.bind(object)();
+    debugInfo = objectDebugInfo.call(object);
   }
   debugInfo = debugInfo || {};
   let propertyInfo = debugInfo.propertyInfo || (debugInfo.propertyInfo = {});

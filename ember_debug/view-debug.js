@@ -2,6 +2,7 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import RenderTree from 'ember-debug/libs/render-tree';
 import ViewInspection from 'ember-debug/libs/view-inspection';
+import bound from 'ember-debug/utils/bound-method';
 
 const Ember = window.Ember;
 
@@ -65,14 +66,14 @@ export default EmberObject.extend(PortMixin, {
 
     let renderTree = this.renderTree = new RenderTree({
       owner: this.getOwner(),
-      retainObject: this.retainObject.bind(this),
-      inspectNode: this.inspectNode.bind(this),
+      retainObject: bound(this, this.retainObject),
+      inspectNode: bound(this, this.inspectNode),
     });
 
     this.viewInspection = new ViewInspection({
       renderTree,
       objectInspector: this.objectInspector,
-      didStop: this.didStopInspecting.bind(this),
+      didStop: bound(this, this.didStopInspecting),
     });
 
     this.setupListeners();
@@ -80,24 +81,18 @@ export default EmberObject.extend(PortMixin, {
 
   setupListeners() {
     this.lastRightClicked = null;
-    this.onRightClick = this.onRightClick.bind(this);
-    window.addEventListener('mousedown', this.onRightClick);
-
-    this.onResize = this.onResize.bind(this);
-    window.addEventListener('resize', this.resizeHandler);
-
     this.scheduledSendTree = null;
-    this.sendTree = this.sendTree.bind(this);
-    backburner.on('end', this.sendTree);
+    window.addEventListener('mousedown', bound(this, this.onRightClick));
+    window.addEventListener('resize', bound(this, this.onResize));
+    backburner.on('end', bound(this, this.sendTree));
   },
 
   cleanupListeners() {
     this.lastRightClicked = null;
-    window.removeEventListener('mousedown', this.onRightClick);
 
-    window.removeEventListener('resize', this.onResize);
-
-    backburner.off('end', this.sendTree);
+    window.removeEventListener('mousedown', bound(this, this.onRightClick));
+    window.removeEventListener('resize', bound(this, this.onResize));
+    backburner.off('end', bound(this, this.sendTree));
 
     if (this.scheduledSendTree) {
       window.clearTimeout(this.scheduledSendTree);
