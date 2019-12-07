@@ -7,9 +7,10 @@ const Ember = window.Ember;
 const {
   Object: EmberObject, inspect: emberInspect, meta: emberMeta,
   computed, get, set, guidFor, isNone,
-  cacheFor, VERSION
+  cacheFor, VERSION, run,
 } = Ember;
 const { oneWay } = computed;
+const { backburner } = run;
 
 let glimmer;
 let metal;
@@ -266,14 +267,14 @@ export default EmberObject.extend(PortMixin, {
         });
       });
     }
-    // workaround for tests, since calling any runloop inside runloop will prevent any `settled` to be called
-    setTimeout(() => Ember.run.next(this, this.updateCurrentObject), 300);
   },
 
   init() {
     this._super();
     this.set('sentObjects', {});
-    Ember.run.next(this, this.updateCurrentObject);
+
+    this.updateCurrentObject = this.updateCurrentObject.bind(this);
+    backburner.on('end', this.updateCurrentObject);
   },
 
   willDestroy() {
@@ -281,6 +282,7 @@ export default EmberObject.extend(PortMixin, {
     for (let objectId in this.sentObjects) {
       this.releaseObject(objectId);
     }
+    backburner.off('end', this.updateCurrentObject);
   },
 
   sentObjects: {},
