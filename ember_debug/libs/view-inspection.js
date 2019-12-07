@@ -208,10 +208,14 @@ function makeStylesheet(id) {
 }
 
 export default class ViewInspection {
-  constructor({ renderTree, objectInspector, didStop }) {
+  constructor({ renderTree, objectInspector, didShow, didHide, didStartInspecting, didStopInspecting }) {
     this.renderTree = renderTree;
     this.objectInspector = objectInspector;
-    this.didStop = didStop;
+
+    this.didShow = didShow;
+    this.didHide = didHide;
+    this.didStartInspecting = didStartInspecting;
+    this.didStopInspecting = didStopInspecting;
 
     this.id = (Math.random() * 100000000).toFixed(0);
 
@@ -244,6 +248,8 @@ export default class ViewInspection {
     this.lastMatchId = null;
 
     document.body.addEventListener('mousemove', this.onMouseMove, { capture: true });
+
+    this.didStartInspecting();
   }
 
   stop(shouldHide = true) {
@@ -257,7 +263,7 @@ export default class ViewInspection {
 
     document.body.removeEventListener('mousemove', this.onMouseMove, { capture: true });
 
-    this.didStop();
+    this.didStopInspecting();
   }
 
   onMouseMove(event) {
@@ -328,6 +334,7 @@ export default class ViewInspection {
       this._showHighlight(node, rect);
       this._showTooltip(node, rect);
       this.isPinned = pin;
+      this.didShow(id, pin);
     } else {
       this.hide();
     }
@@ -337,6 +344,7 @@ export default class ViewInspection {
     this._hideHighlight();
     this._hideTooltip();
     this.isPinned = false;
+    this.didHide();
   }
 
   _showHighlight(_node, rect) {

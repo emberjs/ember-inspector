@@ -3,6 +3,7 @@ import TabRoute from "ember-inspector/routes/tab";
 export default class ComponentTreeRoute extends TabRoute {
   queryParams = {
     pinned: { replace: true },
+    previewing: { replace: true },
     query: { replace: true },
   };
 
@@ -20,6 +21,7 @@ export default class ComponentTreeRoute extends TabRoute {
   activate() {
     super.activate(...arguments);
     this.port.on('view:renderTree', this, this.setRenderTree);
+    this.port.on('view:cancelSelection', this, this.cancelSelection);
     this.port.on('view:startInspecting', this, this.startInspecting);
     this.port.on('view:stopInspecting', this, this.stopInspecting);
     this.port.on('view:inspectDOMNode', this, this.inspectDOMNode);
@@ -28,6 +30,7 @@ export default class ComponentTreeRoute extends TabRoute {
   deactivate() {
     super.deactivate(...arguments);
     this.port.off('view:renderTree', this, this.setRenderTree);
+    this.port.off('view:cancelSelection', this, this.cancelSelection);
     this.port.off('view:startInspecting', this, this.startInspecting);
     this.port.off('view:stopInspecting', this, this.stopInspecting);
     this.port.off('view:inspectDOMNode', this, this.inspectDOMNode);
@@ -35,6 +38,10 @@ export default class ComponentTreeRoute extends TabRoute {
 
   setRenderTree({ tree }) {
     this.controller.renderTree = tree;
+  }
+
+  cancelSelection() {
+    this.controller.cancelSelection();
   }
 
   startInspecting() {

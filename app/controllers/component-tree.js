@@ -7,7 +7,7 @@ import { tracked } from '@glimmer/tracking';
 import searchMatch from 'ember-inspector/utils/search-match';
 
 export default class ComponentTreeController extends Controller {
-  queryParams = ['pinned', 'query'];
+  queryParams = ['pinned', 'previewing', 'query'];
 
   // Estimated height for each row
   itemHeight = 22;
@@ -15,7 +15,7 @@ export default class ComponentTreeController extends Controller {
   @controller application;
   @service port;
 
-  @tracked query;
+  @tracked query = '';
   @tracked isInspecting = false;
   @tracked renderItems = [];
 
@@ -58,8 +58,14 @@ export default class ComponentTreeController extends Controller {
     return this._store[id];
   }
 
-  get pinnedItem() {
-    return this.findItem(this.pinned);
+  get currentItem() {
+    if (this.previewing) {
+      return this.findItem(this.previewing);
+    } else if (this.pinned) {
+      return this.findItem(this.pinned);
+    } else {
+      return undefined;
+    }
   }
 
   get matchingItems() {
@@ -101,8 +107,42 @@ export default class ComponentTreeController extends Controller {
         this.application.hideInspector();
       }
     } else {
-      this._pinnded = undefined;
+      this._pinned = undefined;
       this.application.hideInspector();
+    }
+  }
+
+  @tracked _previewing = undefined;
+
+  get previewing() {
+    return this._previewing;
+  }
+
+  set previewing(id) {
+    if (this.previewing === id) {
+      return;
+    }
+
+    let item = this.findItem(id);
+
+    if (item) {
+      this._previewing = id;
+
+      item.show();
+    } else {
+      this._previewing = undefined;
+    }
+  }
+
+  cancelSelection() {
+    if (this.previewing) {
+      this.previewing = undefined;
+    } else {
+      this.pinned = undefined;
+    }
+
+    if (this.pinned) {
+      this.port.send('view:showInspection', { id: this.pinned, pin: true });
     }
   }
 
@@ -209,11 +249,7 @@ class RenderItem {
   }
 
   get isHighlighted() {
-    if (this.isRoot) {
-      return false;
-    } else {
-      return this.parentItem.isPinned || this.parentItem.isHighlighted;
-    }
+    return this.id === this.controller.previewing;
   }
 
   get style() {
@@ -230,21 +266,15 @@ class RenderItem {
   }
 
   @action showPreview() {
-    this.send('view:showPreview', { id: this.id });
+    this.send('view:showInspection', { id: this.id, pin: false });
   }
 
   @action hidePreview() {
-    let { pinnedItem } = this.controller;
-
-    if (pinnedItem) {
-      this.send('view:showPreview', { id: pinnedItem.id });
-    } else {
-      this.send('view:hidePreview');
-    }
+    this.send('view:hideInspection');
   }
 
   @action inspect() {
-    this.controller.pinned = this.id;
+    this.send('view:showInspection', { id: this.id, pin: true });
   }
 
   @action toggle(event) {
