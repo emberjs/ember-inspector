@@ -101,6 +101,7 @@ export default EmberObject.extend(PortMixin, {
 
     if (this.scheduledSendTree) {
       window.clearTimeout(this.scheduledSendTree);
+      this.scheduledSendTree = null;
     }
   },
 
@@ -163,7 +164,10 @@ export default EmberObject.extend(PortMixin, {
       return;
     }
 
-    window.setTimeout(() => this.send(), 250);
+    this.scheduledSendTree = window.setTimeout(() => {
+      this.send();
+      this.scheduledSendTree = null;
+    }, 250);
   },
 
   send() {
