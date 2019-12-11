@@ -27,12 +27,11 @@ export default EmberObject.extend(PortMixin, {
       this.sendTree();
     },
 
-    showPreview({ id }) {
-      this.viewInspection.show(id, false);
-      // this.renderTree.highlightLayer(message.objectId || message.elementId, true);
+    showInspection({ id, pin }) {
+      this.viewInspection.show(id, pin);
     },
 
-    hidePreview() {
+    hideInspection() {
       this.viewInspection.hide();
     },
 
@@ -73,7 +72,10 @@ export default EmberObject.extend(PortMixin, {
     this.viewInspection = new ViewInspection({
       renderTree,
       objectInspector: this.objectInspector,
-      didStop: bound(this, this.didStopInspecting),
+      didShow: bound(this, this.didShowInspection),
+      didHide: bound(this, this.didHideInspection),
+      didStartInspecting: bound(this, this.didStartInspecting),
+      didStopInspecting: bound(this, this.didStopInspecting),
     });
 
     this.setupListeners();
@@ -113,9 +115,7 @@ export default EmberObject.extend(PortMixin, {
   inspectNearest(node) {
     let renderNode = this.viewInspection.inspectNearest(node);
 
-    if (renderNode) {
-      this.sendMessage('inspectComponent', { id: renderNode.id });
-    } else {
+    if (!renderNode) {
       this.adapter.log('No Ember component found.');
     }
   },
@@ -181,13 +181,27 @@ export default EmberObject.extend(PortMixin, {
   },
 
   startInspecting() {
-    this.sendMessage('startInspecting', {});
     this.viewInspection.start();
   },
 
   stopInspecting() {
     this.viewInspection.stop();
-    this.sendMessage('stopInspecting', {});
+  },
+
+  didShowInspection(id, pin) {
+    if (pin) {
+      this.sendMessage('inspectComponent', { id });
+    } else {
+      this.sendMessage('previewComponent', { id });
+    }
+  },
+
+  didHideInspection(id, pin) {
+    this.sendMessage('cancelSelection', { id, pin });
+  },
+
+  didStartInspecting() {
+    this.sendMessage('startInspecting', {});
   },
 
   didStopInspecting() {

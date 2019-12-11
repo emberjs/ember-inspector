@@ -1,5 +1,5 @@
-<div class="list__content js-component-tree" style="height: 100%;">
+<ScrollContainer @collection={{this.visibleItems}} @currentItem={{this.currentItem}} @itemHeight={{this.itemHeight}} class="list__content js-component-tree">
   {{#vertical-collection this.visibleItems estimateHeight=this.itemHeight key="id" as |item|}}
     <ComponentTreeItem @item={{item}} />
   {{/vertical-collection}}
-</div>
+</ScrollContainer>
