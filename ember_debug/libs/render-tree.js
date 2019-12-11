@@ -9,9 +9,10 @@ export default class RenderTree {
    *  - {owner}      owner           The Ember app's owner.
    *  - {Function}   retainObject    Called to retain an object for future inspection.
    */
-  constructor({ owner, retainObject, inspectNode }) {
+  constructor({ owner, retainObject, releaseObject, inspectNode }) {
     this.owner = owner;
     this.retainObject = retainObject;
+    this.releaseObject = releaseObject;
     this.inspectNode = inspectNode;
     this._reset();
   }
@@ -42,8 +43,13 @@ export default class RenderTree {
    */
   build() {
     this._reset();
+
     this.tree = captureRenderTree(this.owner);
-    return this._serializeRenderNodes(this.tree);
+    let serialized = this._serializeRenderNodes(this.tree);
+
+    this._releaseStaleObjects();
+
+    return serialized;
   }
 
   /**
@@ -235,6 +241,8 @@ export default class RenderTree {
     this.parentNodes = Object.create(null);
     this.serialized = Object.create(null);
     this.ranges = Object.create(null);
+    this.previouslyRetainedObjects = this.retainedObjects || new Map();
+    this.retainedObjects = new Map();
   }
 
   _serializeRenderNodes(nodes, parentNode = null) {
@@ -309,7 +317,45 @@ export default class RenderTree {
   }
 
   _serializeObject(object) {
-    return { id: this.retainObject(object) };
+    let id = this.previouslyRetainedObjects.get(object);
+
+    if (id === undefined) {
+      id = this.retainObject(object);
+    }
+
+    this.retainedObjects.set(object, id);
+
+    return { id };
+  }
+
+  _releaseStaleObjects() {
+    // The object inspector already handles ref-counting. So doing the same
+    // bookkeeping here may seem redundant, and it is. However, in practice,
+    // calling `retainObject` and `dropObject` could be quite expensive and
+    // we call them a lot. Also, temporarily dropping the ref-count to 0 just
+    // to re-increment it later (which is what would happen if we release all
+    // current objects before the walk, then re-retain them as we walk the
+    // new tree) is especially bad, as it triggers the initialization and
+    // clean up logic on each of these objects. In my (GC's) opinion, the
+    // object inspector is likely overly eager and doing too much bookkeeping
+    // when we can be using weakmaps. Until we have a chance to revamp the
+    // object inspector, the logic here tries to reduce the number of retain
+    // and release calls by diffing the object set betweeen walks. Feel free
+    // to remove this code and revert to the old release-then-retain method
+    // when the object inspector is not slow anymore.
+
+    let { previouslyRetainedObjects, retainedObjects, releaseObject } = this;
+
+    // The object inspector should make its own GC async, but until then...
+    window.setTimeout(function() {
+      for (let [object, id] of previouslyRetainedObjects) {
+        if (!retainedObjects.has(object)) {
+          releaseObject(id);
+        }
+      }
+    }, 0);
+
+    this.previouslyRetainedObjects = null;
   }
 
   _getParent(id) {
