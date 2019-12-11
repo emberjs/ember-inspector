@@ -489,7 +489,6 @@ export default EmberObject.extend(PortMixin, {
     if (meta._debugReferences === 0) {
       this.dropObject(guid);
     }
-
   },
 
   dropObject(objectId) {

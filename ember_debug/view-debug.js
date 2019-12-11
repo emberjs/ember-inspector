@@ -61,11 +61,10 @@ export default EmberObject.extend(PortMixin, {
   init() {
     this._super(...arguments);
 
-    this.retainedObjects = [];
-
     let renderTree = this.renderTree = new RenderTree({
       owner: this.getOwner(),
-      retainObject: bound(this, this.retainObject),
+      retainObject: bound(this.objectInspector, this.objectInspector.retainObject),
+      releaseObject: bound(this.objectInspector, this.objectInspector.releaseObject),
       inspectNode: bound(this, this.inspectNode),
     });
 
@@ -120,19 +119,6 @@ export default EmberObject.extend(PortMixin, {
     }
   },
 
-  retainObject(object) {
-    let guid = this.objectInspector.retainObject(object);
-    this.retainedObjects.push(guid);
-    return guid;
-  },
-
-  releaseCurrentObjects() {
-    this.retainedObjects.forEach(guid => {
-      this.objectInspector.releaseObject(guid);
-    });
-    this.retainedObjects = [];
-  },
-
   willDestroy() {
     this._super();
 
@@ -171,13 +157,8 @@ export default EmberObject.extend(PortMixin, {
     }
 
     this.sendMessage('renderTree', {
-      tree: this.getTree()
+      tree: this.renderTree.build()
     });
-  },
-
-  getTree() {
-    this.releaseCurrentObjects();
-    return this.renderTree.build();
   },
 
   startInspecting() {
