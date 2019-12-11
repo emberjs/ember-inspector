@@ -221,7 +221,6 @@ export default class ViewInspection {
 
     this.id = (Math.random() * 100000000).toFixed(0);
 
-
     this.isInspecting = false;
     this.lastTarget = null;
     this.lastMatchId = null;
@@ -329,7 +328,11 @@ export default class ViewInspection {
 
   show(id, pin = true) {
     if (this.currentId === id) {
-      this.isPinned = pin;
+      if (this.isPinned !== pin) {
+        this.isPinned = pin;
+        this.didShow(id, pin);
+      }
+
       return;
     }
 
