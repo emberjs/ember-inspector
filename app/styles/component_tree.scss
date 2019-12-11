@@ -77,6 +77,20 @@
   content: '/>';
 }
 
+.component-tree-item-classic__bracket:before {
+  color: var(--base07);
+  content: '{{';
+}
+
+.component-tree-item-classic__bracket:after {
+  color: var(--base07);
+  content: '}}';
+}
+
+.component-tree-item-classic__bracket.component-tree-item-classic__bracket--self-closing:after {
+  content: '/}}';
+}
+
 /**
  * Modifier
  * highlighted - children of selected component

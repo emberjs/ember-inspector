@@ -21,10 +21,26 @@
   {{/if}}
 
   <code
-    class="component-tree-item__tag {{if @item.isComponent "component-tree-item__bracket"}} {{if (not @item.hasChildren) "component-tree-item__bracket--self-closing"}}"
+    class="component-tree-item__tag 
+    {{if (and (not @item.args.positional) @item.isComponent) "component-tree-item__bracket"}} 
+    {{if (and (not @item.args.positional) (not @item.hasChildren)) "component-tree-item__bracket--self-closing"}}
+    {{if (and @item.args.positional @item.isComponent) "component-tree-item-classic__bracket"}} 
+    {{if (and @item.args.positional (not @item.hasChildren)) "component-tree-item-classic__bracket--self-closing"}}"
   >
     {{#if @item.isComponent}}
-      {{classify @item.name}}
+      {{#if @item.args.positional}}
+        {{dasherize @item.name}}
+      {{else}}
+        {{classify @item.name}}
+      {{/if}}
+
+      {{#each-in @item.args.positional as |name value|}}
+        {{component-argument value}}
+      {{/each-in}}
+
+      {{#each-in @item.args.named as |name value|}}
+        @{{name}}={{component-argument value}}
+      {{/each-in}}
     {{else if @item.isOutlet}}
       \{{outlet "{{@item.name}}"}}
     {{else if @item.isEngine}}

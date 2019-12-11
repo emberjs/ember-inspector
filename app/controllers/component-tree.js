@@ -195,6 +195,10 @@ class RenderItem {
     this.renderNode = renderNode;
   }
 
+  get args() {
+    return this.renderNode.args;
+  }
+
   get id() {
     return this.renderNode.id;
   }
