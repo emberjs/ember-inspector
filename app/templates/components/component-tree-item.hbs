@@ -5,8 +5,7 @@
     {{if @item.isComponent "component-tree-item--component"}}
     {{if @item.hasInstance "component-tree-item--has-instance"}}
     {{if @item.isSelected "component-tree-item--selected"}}
-    {{if @item.isHighlighted "component-tree-item--highlighted"}}
-  "
+    {{if @item.isHighlighted "component-tree-item--highlighted"}}"
   {{on "click" @item.toggleInspection}}
   {{on "mouseenter" @item.showPreview}}
   {{on "mouseleave" @item.hidePreview}}
@@ -21,10 +20,76 @@
   {{/if}}
 
   <code
-    class="component-tree-item__tag {{if @item.isComponent "component-tree-item__bracket"}} {{if (not @item.hasChildren) "component-tree-item__bracket--self-closing"}}"
+    class="component-tree-item__tag
+      {{if
+        (and (not @item.isCurlyInvocation) @item.isComponent)
+        "component-tree-item__bracket"
+      }}
+      {{if
+        (and (not @item.isCurlyInvocation) (not @item.hasChildren) @item.isComponent)
+        "component-tree-item__bracket--self-closing"
+      }}
+      {{if
+        (and @item.isCurlyInvocation @item.isComponent)
+        "component-tree-item-classic__bracket"
+      }}"
   >
     {{#if @item.isComponent}}
-      {{classify @item.name}}
+      {{#if @item.args.positional}}
+        {{@item.name}}
+
+        {{#each @item.args.positional as |value|}}
+          <div class="arg-token">
+            <span class="value-token">
+              {{component-argument value}}
+            </span>
+          </div>
+        {{/each}}
+
+        {{#each-in @item.args.named as |name value|}}
+          <div class="arg-token">
+            <span class="key-token">
+              {{name}}
+            </span>
+            =
+            <span class="value-token">
+              {{component-argument value}}
+            </span>
+          </div>
+        {{/each-in}}
+      {{else}}
+        {{classify @item.name}}
+
+        {{#each-in @item.args.named as |name value|}}
+          <div class="arg-token">
+            {{#if (is-string value)}}
+              <span class="at-token">
+                @
+              </span>
+              <span class="key-token">
+                {{name}}
+              </span>
+              =
+              <span class="value-token">
+                {{component-argument value}}
+              </span>
+            {{else}}
+              <span class="at-token">
+                @
+              </span>
+              <span class="key-token">
+                {{name}}
+              </span>
+              =
+              <span class="bracket-token">\{{</span>
+              <span class="value-token">
+                {{component-argument value}}
+              </span>
+              <span class="bracket-token">}}</span>
+            {{/if}}
+          </div>
+        {{/each-in}}
+      {{/if}}
     {{else if @item.isOutlet}}
       \{{outlet "{{@item.name}}"}}
     {{else if @item.isEngine}}

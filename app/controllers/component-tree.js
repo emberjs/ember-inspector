@@ -195,8 +195,16 @@ class RenderItem {
     this.renderNode = renderNode;
   }
 
+  get args() {
+    return this.renderNode.args;
+  }
+
   get id() {
     return this.renderNode.id;
+  }
+
+  get isCurlyInvocation() {
+    return this.renderNode && this.renderNode.args && this.renderNode.args.positional;
   }
 
   get isOutlet() {
