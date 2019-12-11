@@ -18,6 +18,7 @@ export default Route.extend({
     port.on('objectInspector:droppedObject', this, this.droppedObject);
     port.on('deprecation:count', this, this.setDeprecationCount);
     port.on('view:inspectComponent', this, this.inspectComponent);
+    port.on('view:previewComponent', this, this.previewComponent);
   },
 
   deactivate() {
@@ -28,12 +29,21 @@ export default Route.extend({
     port.off('objectInspector:droppedObject', this, this.droppedObject);
     port.off('deprecation:count', this, this.setDeprecationCount);
     port.off('view:inspectComponent', this, this.inspectComponent);
+    port.off('view:previewComponent', this, this.previewComponent);
   },
 
   inspectComponent({ id }) {
     this.transitionTo('component-tree', {
       queryParams: {
         pinned: id
+      }
+    });
+  },
+
+  previewComponent({ id }) {
+    this.transitionTo('component-tree', {
+      queryParams: {
+        previewing: id
       }
     });
   },

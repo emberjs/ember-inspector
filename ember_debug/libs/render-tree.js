@@ -202,9 +202,9 @@ export default class RenderTree {
 
     if (element) {
       element.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "nearest"
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest'
       });
     }
   }

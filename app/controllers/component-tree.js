@@ -1,5 +1,6 @@
 import Controller, { inject as controller } from '@ember/controller';
 import { action } from '@ember/object';
+import { debounce } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { htmlSafe } from '@ember/string';
 import { tracked } from '@glimmer/tracking';
@@ -7,7 +8,7 @@ import { tracked } from '@glimmer/tracking';
 import searchMatch from 'ember-inspector/utils/search-match';
 
 export default class ComponentTreeController extends Controller {
-  queryParams = ['pinned', 'query'];
+  queryParams = ['pinned', 'previewing', 'query'];
 
   // Estimated height for each row
   itemHeight = 22;
@@ -15,7 +16,7 @@ export default class ComponentTreeController extends Controller {
   @controller application;
   @service port;
 
-  @tracked query;
+  @tracked query = '';
   @tracked isInspecting = false;
   @tracked renderItems = [];
 
@@ -58,8 +59,14 @@ export default class ComponentTreeController extends Controller {
     return this._store[id];
   }
 
-  get pinnedItem() {
-    return this.findItem(this.pinned);
+  get currentItem() {
+    if (this.previewing) {
+      return this.findItem(this.previewing);
+    } else if (this.pinned) {
+      return this.findItem(this.pinned);
+    } else {
+      return undefined;
+    }
   }
 
   get matchingItems() {
@@ -92,6 +99,7 @@ export default class ComponentTreeController extends Controller {
 
     if (item) {
       this._pinned = id;
+      this._previewing = undefined;
 
       item.show();
 
@@ -101,8 +109,62 @@ export default class ComponentTreeController extends Controller {
         this.application.hideInspector();
       }
     } else {
-      this._pinnded = undefined;
+      this._pinned = undefined;
+      this._previewing = undefined;
+
+      this.port.send('view:hideInspection');
       this.application.hideInspector();
+    }
+
+    this.syncInspection();
+  }
+
+  @tracked _previewing = undefined;
+
+  get previewing() {
+    return this._previewing;
+  }
+
+  set previewing(id) {
+    let { pinned, previewing } = this;
+
+    if ((pinned && pinned === id) || previewing === id) {
+      return;
+    }
+
+    let item = this.findItem(id);
+
+    if (item) {
+      this._previewing = id;
+      item.show();
+    } else {
+      this._previewing = undefined;
+    }
+
+    this.syncInspection();
+  }
+
+  syncInspection() {
+    debounce(this, this._syncInspection, 50);
+  }
+
+  _syncInspection() {
+    let { pinned, previewing } = this;
+
+    if (previewing) {
+      this.port.send('view:showInspection', { id: previewing, pin: false });
+    } else if (pinned) {
+      this.port.send('view:showInspection', { id: pinned, pin: true });
+    } else {
+      this.port.send('view:hideInspection');
+    }
+  }
+
+  cancelSelection(id, pinned) {
+    if (pinned && this.pinned === id) {
+      this.pinned = undefined;
+    } else if (!pinned && (this.previewing === id || this.previewing === undefined)) {
+      this.previewing = undefined;
     }
   }
 
@@ -209,11 +271,7 @@ class RenderItem {
   }
 
   get isHighlighted() {
-    if (this.isRoot) {
-      return false;
-    } else {
-      return this.parentItem.isPinned || this.parentItem.isHighlighted;
-    }
+    return this.id === this.controller.previewing;
   }
 
   get style() {
@@ -230,24 +288,24 @@ class RenderItem {
   }
 
   @action showPreview() {
-    this.send('view:showPreview', { id: this.id });
+    this.controller.previewing = this.id;
   }
 
   @action hidePreview() {
-    let { pinnedItem } = this.controller;
-
-    if (pinnedItem) {
-      this.send('view:showPreview', { id: pinnedItem.id });
-    } else {
-      this.send('view:hidePreview');
+    if (this.isHighlighted) {
+      this.controller.previewing = undefined;
     }
   }
 
-  @action inspect() {
-    this.controller.pinned = this.id;
+  @action toggleInspection() {
+    if (this.isSelected) {
+      this.controller.pinned = undefined;
+    } else {
+      this.controller.pinned = this.id;
+    }
   }
 
-  @action toggle(event) {
+  @action toggleExpansion(event) {
     event.stopPropagation();
 
     if (this.isExpanded) {

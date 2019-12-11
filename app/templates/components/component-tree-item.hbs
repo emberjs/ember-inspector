@@ -7,7 +7,7 @@
     {{if @item.isSelected "component-tree-item--selected"}}
     {{if @item.isHighlighted "component-tree-item--highlighted"}}
   "
-  {{on "click" @item.inspect}}
+  {{on "click" @item.toggleInspection}}
   {{on "mouseenter" @item.showPreview}}
   {{on "mouseleave" @item.hidePreview}}
 >
@@ -15,7 +15,7 @@
     <Ui::DisclosureTriangle
       class="component-tree-item__expand"
       title="Click to toggle (alt/option click to toggle with children)"
-      @toggle={{@item.toggle}}
+      @toggle={{@item.toggleExpansion}}
       @expanded={{@item.isExpanded}}
     />
   {{/if}}

@@ -1,3 +1,5 @@
+import bound from 'ember-debug/utils/bound-method';
+
 const Ember = window.Ember;
 const { classify } = Ember.String;
 
@@ -208,22 +210,25 @@ function makeStylesheet(id) {
 }
 
 export default class ViewInspection {
-  constructor({ renderTree, objectInspector, didStop }) {
+  constructor({ renderTree, objectInspector, didShow, didHide, didStartInspecting, didStopInspecting }) {
     this.renderTree = renderTree;
     this.objectInspector = objectInspector;
-    this.didStop = didStop;
+
+    this.didShow = didShow;
+    this.didHide = didHide;
+    this.didStartInspecting = didStartInspecting;
+    this.didStopInspecting = didStopInspecting;
 
     this.id = (Math.random() * 100000000).toFixed(0);
+
 
     this.isInspecting = false;
     this.lastTarget = null;
     this.lastMatchId = null;
 
+    this.isShowing = false;
     this.isPinned = false;
-
-    this.onMouseMove = this.onMouseMove.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
-    this.onClick = this.onClick.bind(this);
+    this.currentId = null;
 
     this.setup();
   }
@@ -234,8 +239,8 @@ export default class ViewInspection {
     this.tooltip = this._insertHTML(makeTooltip(id));
     this._insertStylesheet(makeStylesheet(id));
 
-    document.body.addEventListener('keydown', this.onKeyDown, { capture: true });
-    document.body.addEventListener('click', this.onClick, { capture: true });
+    document.body.addEventListener('keydown', bound(this, this.onKeyDown), { capture: true });
+    document.body.addEventListener('click', bound(this, this.onClick), { capture: true });
   }
 
   start() {
@@ -243,7 +248,9 @@ export default class ViewInspection {
     this.lastTarget = null;
     this.lastMatchId = null;
 
-    document.body.addEventListener('mousemove', this.onMouseMove, { capture: true });
+    document.body.addEventListener('mousemove', bound(this, this.onMouseMove), { capture: true });
+
+    this.didStartInspecting();
   }
 
   stop(shouldHide = true) {
@@ -255,9 +262,9 @@ export default class ViewInspection {
     this.lastTarget = null;
     this.lastMatchId = null;
 
-    document.body.removeEventListener('mousemove', this.onMouseMove, { capture: true });
+    document.body.removeEventListener('mousemove', bound(this, this.onMouseMove), { capture: true });
 
-    this.didStop();
+    this.didStopInspecting();
   }
 
   onMouseMove(event) {
@@ -321,22 +328,43 @@ export default class ViewInspection {
   }
 
   show(id, pin = true) {
+    if (this.currentId === id) {
+      this.isPinned = pin;
+      return;
+    }
+
     let node = this.renderTree.find(id);
     let rect = this.renderTree.getBoundingClientRect(id);
 
     if (node && rect) {
       this._showHighlight(node, rect);
       this._showTooltip(node, rect);
+
+      this.isShowing = true;
       this.isPinned = pin;
+      this.currentId = id;
+
+      this.didShow(id, pin);
     } else {
-      this.hide();
+      this.hide(false);
     }
   }
 
-  hide() {
-    this._hideHighlight();
-    this._hideTooltip();
-    this.isPinned = false;
+  hide(notify = true) {
+    let { isShowing, isPinned, currentId } = this;
+
+    if (isShowing) {
+      this._hideHighlight();
+      this._hideTooltip();
+
+      this.isShowing = false;
+      this.isPinned = false;
+      this.currentId = null;
+
+      if (notify) {
+        this.didHide(currentId, isPinned);
+      }
+    }
   }
 
   _showHighlight(_node, rect) {
