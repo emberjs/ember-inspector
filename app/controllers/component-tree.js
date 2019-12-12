@@ -249,13 +249,13 @@ class RenderItem {
   }
 
   get hasChildren() {
-    return this.renderNode.children.length > 0;
+    return this.childItems.length > 0;
   }
 
   get childItems() {
-    return this.renderNode.children.map(child => {
-      return this.controller.findItem(child.id);
-    });
+    return this.renderNode.children
+      .filter(child => !isInternalRenderNode(child))
+      .map(child => this.controller.findItem(child.id));
   }
 
   get isVisible() {
