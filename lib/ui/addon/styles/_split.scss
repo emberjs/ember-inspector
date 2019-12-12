@@ -24,6 +24,7 @@
   flex: auto;
   flex-direction: column;
   position: relative;
+  overflow: hidden;
 }
 
 .split__panel__hd,
@@ -51,7 +52,9 @@
 .split__panel__bd {
   background: var(--base00);
   flex: auto;
-  overflow: auto;
+  overflow: scroll;
+  max-width: 100%;
+  width: auto;
 }
 
 .split__panel__ft {
@@ -83,7 +86,7 @@
 
 /* Fix main list-view scrolling */
 .split--main > .split__panel > .split__panel__bd {
-  overflow-y: hidden;
+  overflow: hidden;
 }
 
 .split--main > .split__panel--sidebar-1 > .split__panel__bd {
