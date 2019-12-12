@@ -8,10 +8,8 @@ const Ember = window.Ember;
 
 const {
   computed,
-  run,
   Object: EmberObject,
 } = Ember;
-const { backburner } = run;
 const { readOnly } = computed;
 
 export default EmberObject.extend(PortMixin, {
@@ -85,7 +83,6 @@ export default EmberObject.extend(PortMixin, {
     this.scheduledSendTree = null;
     window.addEventListener('mousedown', bound(this, this.onRightClick));
     window.addEventListener('resize', bound(this, this.onResize));
-    backburner.on('end', bound(this, this.sendTree));
   },
 
   cleanupListeners() {
@@ -93,7 +90,6 @@ export default EmberObject.extend(PortMixin, {
 
     window.removeEventListener('mousedown', bound(this, this.onRightClick));
     window.removeEventListener('resize', bound(this, this.onResize));
-    backburner.off('end', bound(this, this.sendTree));
 
     if (this.scheduledSendTree) {
       window.clearTimeout(this.scheduledSendTree);
