@@ -206,7 +206,7 @@ export default EmberObject.extend(PortMixin, {
       // For ember-debug testing we usually don't want
       // to catch deprecations
       if (!this.get('namespace').IGNORE_DEPRECATIONS) {
-        this.get('deprecationsToSend').pushObject(deprecation);
+        this.get('deprecationsToSend').push(deprecation);
         run.cancel(this.debounce);
         if (this._watching) {
           this.debounce = run.debounce(this, 'sendPending', 100);
