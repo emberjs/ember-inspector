@@ -1,3 +1,4 @@
+import { set } from '@ember/object';
 import Evented from '@ember/object/evented';
 import Service from '@ember/service';
 
@@ -9,46 +10,32 @@ export default Service.extend(Evented, {
     this._super(...arguments);
 
     /*
-     * An array of objects of the form:
-     * { applicationId, applicationName }
+     * A dictionary of the form:
+     * { applicationId: applicationName }
      */
-    this.detectedApplications = [];
+    this.detectedApplications = {};
+    this.applicationId = undefined;
 
     this.adapter.onMessageReceived(message => {
       if (message.type === 'apps-loaded') {
-        message.apps.forEach(app => {
-          if (!this.detectedApplications.mapBy('applicationId').includes(app.applicationId)) {
-            this.detectedApplications.pushObject(app);
-          }
-        });
-      }
-    });
-
-    this.adapter.onMessageReceived(message => {
-      const { applicationId, applicationName } = message;
-
-      if (message.type === 'app-list') {
-        const apps = JSON.parse(message.appList);
-        apps.forEach((app) => {
-          if (!this.detectedApplications.mapBy('applicationId').includes(app.applicationId)) {
-            this.detectedApplications.push(app);
-          }
+        message.apps.forEach(({ applicationId, applicationName }) => {
+          set(this.detectedApplications, applicationId, applicationName);
         });
 
         return;
       }
+
+      let { applicationId, applicationName } = message;
 
       if (!applicationId) {
         return;
       }
 
-      if (!this.applicationId) {
-        this.set('applicationId', applicationId);
-      }
+      // save the application, in case we haven't seen it yet
+      set(this.detectedApplications, applicationId, applicationName);
 
-      // save list of application ids
-      if (!this.detectedApplications.mapBy('applicationId').includes(applicationId)) {
-        this.detectedApplications.pushObject({ applicationId, applicationName });
+      if (!this.applicationId) {
+        this.selectApplication(applicationId);
       }
 
       if (this.applicationId === applicationId) {
@@ -56,6 +43,14 @@ export default Service.extend(Evented, {
       }
     });
   },
+
+  selectApplication(applicationId) {
+    if (applicationId in this.detectedApplications && applicationId !== this.applicationId) {
+      this.set('applicationId', applicationId);
+      this.send('app-selected', { applicationId });
+    }
+  },
+
   send(type, message) {
     message = message || {};
     message.type = type;
