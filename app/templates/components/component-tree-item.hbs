@@ -39,27 +39,61 @@
         {{@item.name}}
 
         {{#each @item.args.positional as |value|}}
-          {{component-argument value}}
+          <div class="arg-token">
+            <span class="value-token">
+              {{component-argument value}}
+            </span>
+          </div>
         {{/each}}
 
         {{#each-in @item.args.named as |name value|}}
-          {{name}}={{component-argument value}}
+          <div class="arg-token">
+            <span class="key-token">
+              {{name}}
+            </span>
+            =
+            <span class="value-token">
+              {{component-argument value}}
+            </span>
+          </div>
         {{/each-in}}
       {{else}}
         {{classify @item.name}}
 
         {{#each-in @item.args.named as |name value|}}
-          {{#if (is-string value)}}
-            @{{name}}={{component-argument value}}
-          {{else}}
-            @{{name}}=\{{ {{~component-argument value~}}}}
-          {{/if}}
+          <div class="arg-token">
+            {{#if (is-string value)}}
+              <span class="at-token">
+                @
+              </span>
+              <span class="key-token">
+                {{name}}
+              </span>
+              =
+              <span class="value-token">
+                {{component-argument value}}
+              </span>
+            {{else}}
+              <span class="at-token">
+                @
+              </span>
+              <span class="key-token">
+                {{name}}
+              </span>
+              =
+              <span class="bracket-token">\{{</span>
+              <span class="value-token">
+                {{component-argument value}}
+              </span>
+              <span class="bracket-token">}}</span>
+            {{/if}}
+          </div>
         {{/each-in}}
       {{/if}}
     {{else if @item.isOutlet}}
-      {{outlet "{{@item.name}}"}}
+      \{{outlet "{{@item.name}}"}}
     {{else if @item.isEngine}}
-      {{mount "{{@item.name}}"}}
+      \{{mount "{{@item.name}}"}}
     {{else if @item.isRouteTemplate}}
       {{@item.name}} route
     {{/if}}

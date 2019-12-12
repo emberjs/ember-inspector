@@ -1,5 +1,4 @@
 import { helper } from '@ember/component/helper';
-import { isArray } from '@ember/array';
 
 /**
  * Determine the type of the component argument for display
@@ -10,16 +9,12 @@ import { isArray } from '@ember/array';
  */
 export function componentArgumentDisplay([argument]) {
   if (typeof argument === 'string') {
-    return `"${argument}"`;
-  } else if (argument === null) {
-    return 'null';
-  } else if (argument === undefined) {
-    return 'undefined';
-  } else if (isArray(argument) || typeof argument === 'object') {
+    return JSON.stringify(argument);
+  } else if (typeof argument === 'object' && argument !== null) {
     return '...';
   }
 
-  return argument;
+  return String(argument);
 }
 
 export default helper(componentArgumentDisplay);
