@@ -19,6 +19,7 @@ export default EmberObject.extend(PortMixin, {
     this._super();
 
     this.profileManager.wrapForErrors = (context, callback) => this.get('port').wrap(() => callback.call(context));
+    this.profileManager.onProfilesAdded(this, this._updateComponentTree);
   },
 
   willDestroy() {
@@ -29,10 +30,19 @@ export default EmberObject.extend(PortMixin, {
     };
 
     this.profileManager.offProfilesAdded(this, this.sendAdded);
+    this.profileManager.offProfilesAdded(this, this._updateRenderPerformanceAndComponentTree);
   },
 
   sendAdded(profiles) {
     this.sendMessage('profilesAdded', { profiles });
+  },
+
+  /**
+   * Update the components tree. Called on each `render.component` event.
+   * @private
+   */
+  _updateComponentTree() {
+    this.viewDebug.sendTree();
   },
 
   messages: {
