@@ -57,6 +57,7 @@
 .component-tree-item__tag {
   cursor: default;
   display: flex;
+  white-space: nowrap;
 }
 
 .component-tree-item--has-instance .component-tree-item__tag {

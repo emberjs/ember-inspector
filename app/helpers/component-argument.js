@@ -15,7 +15,7 @@ export function componentArgumentDisplay([argument]) {
     return 'null';
   } else if (argument === undefined) {
     return 'undefined';
-  } else if(isArray(argument) || typeof argument === 'object'){
+  } else if (isArray(argument) || typeof argument === 'object') {
     return '...';
   }
 

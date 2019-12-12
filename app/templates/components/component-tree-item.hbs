@@ -5,8 +5,7 @@
     {{if @item.isComponent "component-tree-item--component"}}
     {{if @item.hasInstance "component-tree-item--has-instance"}}
     {{if @item.isSelected "component-tree-item--selected"}}
-    {{if @item.isHighlighted "component-tree-item--highlighted"}}
-  "
+    {{if @item.isHighlighted "component-tree-item--highlighted"}}"
   {{on "click" @item.toggleInspection}}
   {{on "mouseenter" @item.showPreview}}
   {{on "mouseleave" @item.hidePreview}}
@@ -21,30 +20,46 @@
   {{/if}}
 
   <code
-    class="component-tree-item__tag 
-    {{if (and (not @item.args.positional) @item.isComponent) "component-tree-item__bracket"}} 
-    {{if (and (not @item.args.positional) (not @item.hasChildren)) "component-tree-item__bracket--self-closing"}}
-    {{if (and @item.args.positional @item.isComponent) "component-tree-item-classic__bracket"}} 
-    {{if (and @item.args.positional (not @item.hasChildren)) "component-tree-item-classic__bracket--self-closing"}}"
+    class="component-tree-item__tag
+      {{if
+        (and (not @item.args.positional) @item.isComponent)
+        "component-tree-item__bracket"
+      }}
+      {{if
+        (and (not @item.args.positional) (not @item.hasChildren))
+        "component-tree-item__bracket--self-closing"
+      }}
+      {{if
+        (and @item.args.positional @item.isComponent)
+        "component-tree-item-classic__bracket"
+      }}"
   >
     {{#if @item.isComponent}}
       {{#if @item.args.positional}}
-        {{dasherize @item.name}}
+        {{@item.name}}
+
+        {{#each @item.args.positional as |value|}}
+          {{component-argument value}}
+        {{/each}}
+
+        {{#each-in @item.args.named as |name value|}}
+          {{name}}={{component-argument value}}
+        {{/each-in}}
       {{else}}
         {{classify @item.name}}
+
+        {{#each-in @item.args.named as |name value|}}
+          {{#if (is-string value)}}
+            @{{name}}={{component-argument value}}
+          {{else}}
+            @{{name}}=\{{ {{~component-argument value~}}}}
+          {{/if}}
+        {{/each-in}}
       {{/if}}
-
-      {{#each-in @item.args.positional as |name value|}}
-        {{component-argument value}}
-      {{/each-in}}
-
-      {{#each-in @item.args.named as |name value|}}
-        @{{name}}={{component-argument value}}
-      {{/each-in}}
     {{else if @item.isOutlet}}
-      \{{outlet "{{@item.name}}"}}
+      {{outlet "{{@item.name}}"}}
     {{else if @item.isEngine}}
-      \{{mount "{{@item.name}}"}}
+      {{mount "{{@item.name}}"}}
     {{else if @item.isRouteTemplate}}
       {{@item.name}} route
     {{/if}}
