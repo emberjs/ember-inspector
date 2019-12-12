@@ -236,10 +236,21 @@ export default class ViewInspection {
     let { id } = this;
     this.highlight = this._insertHTML(makeHighlight(id));
     this.tooltip = this._insertHTML(makeTooltip(id));
-    this._insertStylesheet(makeStylesheet(id));
+    this.stylesheet = this._insertStylesheet(makeStylesheet(id));
 
     document.body.addEventListener('keydown', bound(this, this.onKeyDown), { capture: true });
     document.body.addEventListener('click', bound(this, this.onClick), { capture: true });
+  }
+
+  teardown() {
+    this.stop();
+
+    document.body.removeEventListener('keydown', bound(this, this.onKeyDown), { capture: true });
+    document.body.removeEventListener('click', bound(this, this.onClick), { capture: true });
+
+    this.highlight.remove();
+    this.tooltip.remove();
+    this.stylesheet.remove();
   }
 
   start() {
@@ -640,5 +651,6 @@ export default class ViewInspection {
     let style = document.createElement('style');
     style.appendChild(document.createTextNode(content));
     document.head.appendChild(style);
+    return style;
   }
 }

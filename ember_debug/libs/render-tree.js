@@ -235,6 +235,11 @@ export default class RenderTree {
     this.inspectNode(target);
   }
 
+  teardown() {
+    this._reset();
+    this._releaseStaleObjects();
+  }
+
   _reset() {
     this.tree = [];
     this.nodes = Object.create(null);

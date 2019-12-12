@@ -121,12 +121,9 @@ export default EmberObject.extend(PortMixin, {
 
   willDestroy() {
     this._super();
-
-    this.cleanupLayers();
     this.cleanupListeners();
-
-    this.releaseCurrentObjects();
-    this.stopInspecting();
+    this.viewInspection.teardown();
+    this.renderTree.teardown();
   },
 
   /**
