@@ -22,15 +22,15 @@
   <code
     class="component-tree-item__tag
       {{if
-        (and (not @item.args.positional) @item.isComponent)
+        (and (not @item.isCurlyInvocation) @item.isComponent)
         "component-tree-item__bracket"
       }}
       {{if
-        (and (not @item.args.positional) (not @item.hasChildren))
+        (and (not @item.isCurlyInvocation) (not @item.hasChildren) @item.isComponent)
         "component-tree-item__bracket--self-closing"
       }}
       {{if
-        (and @item.args.positional @item.isComponent)
+        (and @item.isCurlyInvocation @item.isComponent)
         "component-tree-item-classic__bracket"
       }}"
   >
