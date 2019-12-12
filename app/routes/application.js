@@ -19,7 +19,6 @@ export default Route.extend({
     port.on('deprecation:count', this, this.setDeprecationCount);
     port.on('view:inspectComponent', this, this.inspectComponent);
     port.on('view:previewComponent', this, this.previewComponent);
-    port.send('deprecation:getCount');
   },
 
   deactivate() {

@@ -250,6 +250,7 @@ if (Ember._captureRenderTree && compareVersion(Ember.VERSION, '3.14.1') > 0) {
         name: render.owner.mountPoint,
         args: EMPTY_ARGS,
         instance: render.owner,
+        template: null,
         bounds: null,
         children: [],
       };
