@@ -146,11 +146,16 @@ export default class RenderTree {
 
     if (node && node.bounds) {
       let { firstNode, lastNode } = node.bounds;
+      let rect;
 
       if (firstNode === lastNode && firstNode.getBoundingClientRect) {
-        return firstNode.getBoundingClientRect();
+        rect = firstNode.getBoundingClientRect();
       } else {
-        return this.getRange(id).getBoundingClientRect();
+        rect = this.getRange(id).getBoundingClientRect();
+      }
+
+      if (rect && !isEmptyRect(rect)) {
+        return rect;
       }
     }
 
@@ -406,4 +411,8 @@ export default class RenderTree {
 
     return bounds.parentElement;
   }
+}
+
+function isEmptyRect({ x, y, width, height }) {
+  return x === 0 && y === 0 && width === 0 && height === 0;
 }
