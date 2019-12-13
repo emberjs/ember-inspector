@@ -1,60 +1,53 @@
-/**
- * Service that manages local storage. This service is useful because
- * it abstracts serialization and parsing of json.
- *
- * @class Local
- * @extends Service
- */
 import Service from '@ember/service';
 
-import { isNone } from '@ember/utils';
-const { parse, stringify } = JSON;
-let LOCAL_STORAGE_SUPPORTED;
+export let LOCAL_STORAGE_SUPPORTED = false;
 
-const LocalStorage = Service.extend({
+/**
+ * Service that wraps local storage. Only store strings. This
+ * is not intended to be used directly, use StorageServeice
+ * instead.
+ *
+ * @class LocalStorageService
+ * @extends Service
+ */
+export default class LocalStorageService extends Service {
   /**
-   * Reads a stored json string and parses it to
-   * and object.
+   * Reads a stored string for a give key, if any.
    *
    * @method getItem
-   * @param  {String} key The cache key
-   * @return {Object}     The json value
+   * @param  {String} key
+   * @return {Option<String>} The value, if found
    */
   getItem(key) {
-    let json = localStorage.getItem(key);
-    return json && parse(json);
-  },
+    return localStorage.getItem(key);
+  }
 
   /**
-   * Serializes an object into a json string
-   * and stores it in local storage.
+   * Store a string for a given key.
    *
    * @method setItem
-   * @param {String} key The cache key
-   * @param {Object} value The object
+   * @param {String} key
+   * @param {String} value
    */
   setItem(key, value) {
-    if (!isNone(value)) {
-      value = stringify(value);
-    }
-    return localStorage.setItem(key, value);
-  },
+    localStorage.setItem(key, value);
+  }
 
   /**
-   * Deletes an entry from local storage.
+   * Deletes the stored string for a given key.
    *
    * @method removeItem
-   * @param  {String} key The cache key
+   * @param  {String} key
    */
   removeItem(key) {
-    return localStorage.removeItem(key);
-  },
+    localStorage.removeItem(key);
+  }
 
   /**
-   * Returns the list keys of saved entries in local storage.
+   * Returns the list of stored keys.
    *
    * @method keys
-   * @return {Array}  The array of keys
+   * @return {Array<String>} The array of keys
    */
   keys() {
     let keys = [];
@@ -63,35 +56,17 @@ const LocalStorage = Service.extend({
     }
     return keys;
   }
-});
-
-try {
-  localStorage.setItem('test', 0);
-  localStorage.removeItem('test');
-  LOCAL_STORAGE_SUPPORTED = true;
-} catch (e) {
-  // Security setting in chrome that disables storage for third party
-  // throws an error when `localStorage` is accessed. Safari in Private mode
-  // also throws an error.
-  LOCAL_STORAGE_SUPPORTED = false;
 }
 
-LocalStorage.reopenClass({
-  /**
-   * Checks if `localStorage` is supported.
-   *
-   * @property SUPPORTED
-   * @type {Boolean}
-   */
-  SUPPORTED: LOCAL_STORAGE_SUPPORTED,
-
-  /**
-   * The type of storage to use based on the browser's feature support. Will be 'local' or 'memory'.
-   *
-   * @property STORAGE_TYPE_TO_USE
-   * @type {String}
-   */
-  STORAGE_TYPE_TO_USE: LOCAL_STORAGE_SUPPORTED ? 'local' : 'memory'
-});
-
-export default LocalStorage;
+try {
+  localStorage.setItem('test', 'testing');
+  LOCAL_STORAGE_SUPPORTED = localStorage.getItem('test') === 'testing';
+} catch (e) {
+  // ignore
+} finally {
+  try {
+    localStorage.removeItem('test');
+  } catch(e) {
+    // ignore
+  }
+}
