@@ -78,7 +78,7 @@ jobs:
       - name: Install dependencies (yarn)
         run: yarn install
       - name: Setup ember-try scenario
-        run: yarn ember try:one ember-${{ matrix.scenario }} --skip-cleanup --- cat package.json
+        run: yarn ember try:one ember-${{ matrix.scenario }} --skip-cleanup --- yarn list
       - name: Build
         run: yarn ember build --environment test
       - name: Run test
