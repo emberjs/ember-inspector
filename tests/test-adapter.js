@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import QUnit from 'qunit';
 import { next } from '@ember/runloop';
 import BasicAdapter from '../adapters/basic';
@@ -5,8 +6,18 @@ import BasicAdapter from '../adapters/basic';
 let adapter = null;
 let responders = [];
 
-QUnit.testDone(() => {
+QUnit.testDone(({ failed }) => {
   adapter = null;
+
+  if (failed === 0) {
+    for (let { type, actual, expected, reject } of responders) {
+      if (!isNaN(expected)) {
+        QUnit.assert.strictEqual(actual, expected, `The correct amount of ${type} messages are sent`);
+        reject(`Expecting ${expected} ${type} messages, got ${actual}`);
+      }
+    }
+  }
+
   responders.length = 0;
 });
 
@@ -17,39 +28,26 @@ export function sendResponse(response) {
 
   return new Promise(resolve => {
     next(() => {
-      adapter._messageReceived({ ...response, from: 'inspectedWindow' });
-      resolve();
+      let normalized = { ...response, from: 'inspectedWindow' };
+      adapter._messageReceived(normalized);
+      resolve(normalized);
     });
   });
 }
 
 export function registerResponderFor(type, payload, options = {}) {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     let { count } = { count: 1, ...options };
+    let callback = (typeof payload === 'function') ? payload : () => payload;
 
-    let callback = message => {
-      if (message.type === type) {
-        let result;
-
-        if (typeof payload === 'function') {
-          result = payload(message);
-        } else {
-          result = payload;
-        }
-
-        if (result !== undefined && count !== false) {
-          if (--count === 0) {
-            let idx = responders.indexOf(callback);
-            responders.splice(idx, 1);
-            resolve();
-          }
-        }
-
-        return result;
-      }
-    };
-
-    responders.push(callback);
+    responders.push({
+      type,
+      callback,
+      expected: count === false ? NaN : count,
+      actual: 0,
+      resolve,
+      reject,
+    });
   });
 }
 
@@ -62,6 +60,8 @@ export default BasicAdapter.extend({
   },
 
   sendMessage(message) {
+    console.debug('Sending message (devtools -> inspectedWindow)', message);
+
     if (!message.type) {
       QUnit.assert.ok(false, `message has valid "type" field: ${JSON.stringify(message)}`);
       return;
@@ -72,16 +72,36 @@ export default BasicAdapter.extend({
       return;
     }
 
-    for (let responder of responders) {
-      let response = responder(message);
+    for (let [i, responder] of responders.entries()) {
+      if (responder.type === message.type) {
+        let response = responder.callback(message);
 
-      if (response) {
-        sendResponse(response);
-        return;
-      } else if (response === false) {
-        return;
+        if (response !== undefined) {
+          responder.actual++;
+        }
+
+        let didRespond;
+
+        if (response) {
+          console.debug('Received response (inspectedWindow -> devtools)', response);
+          didRespond = sendResponse(response);
+        } else if (response === false) {
+          console.debug('Ignoreing message (devtools -> inspectedWindow)', message);
+          didRespond = Promise.resolve();
+        }
+
+        if (didRespond) {
+          if (responder.expected === responder.actual) {
+            responders.splice(i, 1);
+            didRespond.then(responder.resolve);
+          }
+
+          return;
+        }
       }
     }
+
+    console.error('Unexpected message', message);
 
     QUnit.assert.deepEqual(message, {}, 'Unexpected message');
   }

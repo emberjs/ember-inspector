@@ -15,6 +15,7 @@ export default Service.extend(Evented, {
      */
     this.detectedApplications = {};
     this.applicationId = undefined;
+    this.applicationName = undefined;
 
     this.adapter.onMessageReceived(message => {
       if (message.type === 'apps-loaded') {
@@ -46,8 +47,9 @@ export default Service.extend(Evented, {
 
   selectApplication(applicationId) {
     if (applicationId in this.detectedApplications && applicationId !== this.applicationId) {
-      this.set('applicationId', applicationId);
-      this.send('app-selected', { applicationId });
+      let applicationName = this.detectedApplications[applicationId];
+      this.setProperties({ applicationId, applicationName });
+      this.send('app-selected', { applicationId, applicationName });
     }
   },
 

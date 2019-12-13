@@ -8,8 +8,7 @@ import {
   fillIn,
   currentURL
 } from 'ember-test-helpers';
-
-let port, message, name;
+import { registerResponderFor } from '../test-adapter';
 
 function getTypes() {
   return [
@@ -24,42 +23,67 @@ function getTypes() {
   ];
 }
 
-function getInstances() {
+function getControllers() {
   return [
     {
-      name: 'first',
+      name: 'first controller',
+      fullName: 'controller:first',
       inspectable: false
     },
     {
-      name: 'second',
+      name: 'second controller',
+      fullName: 'controller:second',
       inspectable: true
     }
   ];
 }
 
 module('Container Tab', function(hooks) {
-  setupApplicationTest(hooks);
-
   hooks.beforeEach(function() {
-    port = this.owner.lookup('service:port');
-  });
+    registerResponderFor('check-version', () => false);
 
-  hooks.afterEach(function() {
-    name = null;
-    message = null;
-  });
-
-  test("Container types are successfully listed", async function(assert) {
-    port.reopen({
-      send(name) {
-        if (name === 'container:getTypes') {
-          this.trigger('container:types', { types: getTypes() });
-        }
-      }
+    registerResponderFor('general:applicationBooted', {
+      type: 'general:applicationBooted',
+      applicationId: 'my-app',
+      applicationName: 'My App',
+      booted: true
     });
 
+    registerResponderFor('app-picker-loaded', {
+      type: 'apps-loaded',
+      apps: [{
+        applicationId: 'my-app',
+        applicationName: 'My App'
+      }]
+    });
+
+    registerResponderFor('app-selected', ({ applicationId }) => {
+      this.currentApplicationId = applicationId;
+      return false;
+    });
+
+    registerResponderFor('deprecation:getCount', ({ applicationId, applicationName }) => ({
+      type: 'deprecation:count',
+      applicationId,
+      applicationName,
+      count: 0
+    }));
+  });
+
+  setupApplicationTest(hooks);
+
+  test("Container types are successfully listed", async function(assert) {
+    registerResponderFor('container:getTypes', ({ applicationId, applicationName }) => ({
+      type: 'container:types',
+      applicationId,
+      applicationName,
+      types: getTypes()
+    }));
+
     await visit('/container-types');
+
     let rows = findAll('.js-container-type');
+
     assert.equal(rows.length, 2);
     assert.dom(findAll('.js-container-type-name')[0]).hasText('controller');
     assert.dom(findAll('.js-container-type-count')[0]).hasText('2');
@@ -68,68 +92,83 @@ module('Container Tab', function(hooks) {
   });
 
   test("Container instances are successfully listed", async function(assert) {
-    let instances = getInstances();
+    registerResponderFor('container:getTypes', ({ applicationId, applicationName }) => ({
+      type: 'container:types',
+      applicationId,
+      applicationName,
+      types: getTypes()
+    }));
 
-    port.reopen({
-      send(n, m) {
-        name = n;
-        message = m;
-        if (name === 'container:getTypes') {
-          this.trigger('container:types', { types: getTypes() });
-        }
-
-        if (name === 'container:getInstances' && message.containerType === 'controller') {
-          //TODO: these instances are getting no names
-          this.trigger('container:instances', { instances, status: 200 });
-        }
+    registerResponderFor('container:getInstances', ({ applicationId, applicationName, containerType }) => {
+      if (containerType === 'controller') {
+        return {
+          type: 'container:instances',
+          applicationId,
+          applicationName,
+          status: 200,
+          instances: getControllers()
+        };
       }
     });
 
     await visit('/container-types/controller');
-    let rows;
 
-    rows = findAll('.js-container-instance-list-item');
+    let rows = findAll('.js-container-instance-list-item');
 
-    assert.dom(rows[0]).hasText('first');
-    assert.dom(rows[1]).hasText('second');
-    name = null;
-    message = null;
+    assert.dom(rows[0]).hasText('first controller');
+    assert.dom(rows[1]).hasText('second controller');
 
+    // Uninspectable, no messages
     await click(rows[0].querySelector('.js-instance-name'));
 
-    assert.equal(name, null);
-    await click(rows[1].querySelector('.js-instance-name'));
+    // Second object is inspectable
+    registerResponderFor('objectInspector:inspectByContainerLookup', ({ applicationId, applicationName, name }) => {
+      if (name === 'controller:second') {
+        return {
+          type: 'objectInspector:updateObject',
+          applicationId,
+          applicationName,
+          objectId: 'ember123',
+          name: 'second controller',
+          details: [],
+          errors: []
+        };
+      }
+    });
 
-    assert.equal(name, 'objectInspector:inspectByContainerLookup');
+    await click(rows[1].querySelector('.js-instance-name'));
 
     await fillIn('.js-container-instance-search input', 'first');
 
     rows = findAll('.js-container-instance-list-item');
+
     assert.equal(rows.length, 1);
-    assert.dom(rows[0]).hasText('first');
+    assert.dom(rows[0]).hasText('first controller');
   });
 
   test("It should clear the search filter when the clear button is clicked", async function(assert) {
-    let instances = getInstances();
+    registerResponderFor('container:getTypes', ({ applicationId, applicationName }) => ({
+      type: 'container:types',
+      applicationId,
+      applicationName,
+      types: getTypes()
+    }));
 
-    port.reopen({
-      send(n, m) {
-        name = n;
-        message = m;
-        if (name === 'container:getTypes') {
-          this.trigger('container:types', { types: getTypes() });
-        }
-
-        if (name === 'container:getInstances' && message.containerType === 'controller') {
-          this.trigger('container:instances', { instances, status: 200 });
-        }
+    registerResponderFor('container:getInstances', ({ applicationId, applicationName, containerType }) => {
+      if (containerType === 'controller') {
+        return {
+          type: 'container:instances',
+          applicationId,
+          applicationName,
+          status: 200,
+          instances: getControllers()
+        };
       }
     });
 
     await visit('/container-types/controller');
-    let rows;
 
-    rows = findAll('.js-container-instance-list-item');
+    let rows = findAll('.js-container-instance-list-item');
     assert.equal(rows.length, 2, 'expected all rows');
 
     await fillIn('.js-container-instance-search input', 'xxxxx');
@@ -142,21 +181,26 @@ module('Container Tab', function(hooks) {
   });
 
   test("Successfully redirects if the container type is not found", async function(assert) {
+    registerResponderFor('container:getTypes', ({ applicationId, applicationName }) => ({
+      type: 'container:types',
+      applicationId,
+      applicationName,
+      types: getTypes()
+    }));
 
-    port.reopen({
-      send(n, m) {
-        name = n;
-        message = m;
-        if (name === 'container:getTypes') {
-          this.trigger('container:types', { types: getTypes() });
-        }
-
-        if (name === 'container:getInstances' && message.containerType === 'random-type') {
-          this.trigger('container:instances', { status: 404 });
-        }
+    registerResponderFor('container:getInstances', ({ applicationId, applicationName, containerType }) => {
+      if (containerType === 'random-type') {
+        return {
+          type: 'container:instances',
+          applicationId,
+          applicationName,
+          status: 404
+        };
       }
     });
+
     let adapterException = Ember.Test.adapter.exception;
+
     // Failed route causes a promise unhandled rejection
     // even though there's an `error` action defined :(
     Ember.Test.adapter.exception = err => {
@@ -164,22 +208,32 @@ module('Container Tab', function(hooks) {
         return adapterException.call(Ember.Test.adapter, err);
       }
     };
-    await visit('/container-types/random-type');
-    assert.equal(currentURL(), '/container-types');
-    Ember.Test.adapter.exception = adapterException;
+
+    try {
+      await visit('/container-types/random-type');
+      assert.equal(currentURL(), '/container-types');
+    } finally {
+      Ember.Test.adapter.exception = adapterException;
+    }
   });
 
   test("Reload", async function(assert) {
-    let types = [], instances = [];
+    registerResponderFor('container:getTypes', ({ applicationId, applicationName }) => ({
+      type: 'container:types',
+      applicationId,
+      applicationName,
+      types: []
+    }));
 
-    port.reopen({
-      send(n, m) {
-        if (n === 'container:getTypes') {
-          this.trigger('container:types', { types });
-        }
-        if (n === 'container:getInstances' && m.containerType === 'controller') {
-          this.trigger('container:instances', { instances, status: 200 });
-        }
+    registerResponderFor('container:getInstances', ({ applicationId, applicationName, containerType }) => {
+      if (containerType === 'controller') {
+        return {
+          type: 'container:instances',
+          applicationId,
+          applicationName,
+          status: 200,
+          instances: []
+        };
       }
     });
 
@@ -187,8 +241,25 @@ module('Container Tab', function(hooks) {
 
     assert.dom('.js-container-type').doesNotExist();
     assert.dom('.js-container-instance-list-item').doesNotExist();
-    types = getTypes();
-    instances = getInstances();
+
+    registerResponderFor('container:getTypes', ({ applicationId, applicationName }) => ({
+      type: 'container:types',
+      applicationId,
+      applicationName,
+      types: getTypes()
+    }));
+
+    registerResponderFor('container:getInstances', ({ applicationId, applicationName, containerType }) => {
+      if (containerType === 'controller') {
+        return {
+          type: 'container:instances',
+          applicationId,
+          applicationName,
+          status: 200,
+          instances: getControllers()
+        };
+      }
+    });
 
     await click('.js-reload-container-btn');
 
