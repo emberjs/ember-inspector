@@ -1,66 +1,67 @@
-/**
- * Service that manages storage in memory. Usually as a fallback
- * for local storage.
- *
- * @class Memory
- * @extends Service
- */
 import Service from '@ember/service';
 
-const { keys } = Object;
-
-export default Service.extend({
-  init() {
-    this._super(...arguments);
-
-    /**
-     * Where data is stored.
-     *
-     * @property hash
-     * @type {Object}
-     */
-    this.hash = {};
-  },
+/**
+ * Service that wraps an in-memory object with the same APIs as
+ * the LocalStorageService, usually as a fallback. Only store
+ * strings. This is not intended to be used directly, use
+ * StorageServeice instead.
+ *
+ * @class MemoryStorageService
+ * @extends Service
+ */
+export default class MemoryStorageService extends Service {
+  /**
+   * Where data is stored.
+   *
+   * @property store
+   * @type {Object}
+   * @private
+   */
+  store = Object.create(null);
 
   /**
-   * Reads a stored item.
+   * Reads a stored string for a give key, if any.
    *
    * @method getItem
-   * @param  {String} key The cache key
-   * @return {Object}     The stored value
+   * @param  {String} key
+   * @return {Option<String>} The value, if found
    */
   getItem(key) {
-    return this.hash[key];
-  },
+    if (key in this.store) {
+      return this.store[key];
+    } else {
+      return null;
+    }
+  }
 
   /**
-   * Stores an item in memory.
+   * Store a string for a given key.
    *
    * @method setItem
-   * @param {String} key The cache key
-   * @param {Object} value The item
+   * @param {String} key
+   * @param {String} value
    */
   setItem(key, value) {
-    this.hash[key] = value;
-  },
+    this.store[key] = value;
+  }
 
   /**
-   * Deletes an entry from memory storage.
+   * Deletes the stored string for a given key.
    *
    * @method removeItem
-   * @param  {String} key The cache key
+   * @param  {String} key
    */
   removeItem(key) {
-    delete this.hash[key];
-  },
+    delete this.store[key];
+  }
 
   /**
-   * Returns the list keys of saved entries in memory.
+   * Returns the list of stored keys.
    *
    * @method keys
-   * @return {Array}  The array of keys
+   * @return {Array<String>} The array of keys
    */
   keys() {
-    return keys(this.hash);
+    return Object.keys(this.store);
   }
-});
+}

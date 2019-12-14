@@ -2,7 +2,6 @@ import Component from '@ember/component';
 import { run, scheduleOnce } from '@ember/runloop';
 import { task, timeout } from 'ember-concurrency';
 import ResizableColumns from 'ember-inspector/libs/resizable-columns';
-import LocalStorageService from 'ember-inspector/services/storage/local';
 import { inject as service } from '@ember/service';
 import { readOnly, reads } from '@ember/object/computed';
 import { action } from '@ember/object';
@@ -64,8 +63,7 @@ export default Component.extend({
    * @property storage
    * @return {Service}
    */
-  storage: service(`storage/${LocalStorageService.STORAGE_TYPE_TO_USE}`),
-
+  storage: service(),
 
   /**
    * The key used to cache the current schema. Defaults

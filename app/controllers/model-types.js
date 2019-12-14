@@ -1,16 +1,14 @@
 import Controller from '@ember/controller';
 import { get, computed } from '@ember/object';
-import LocalStorageService from 'ember-inspector/services/storage/local';
 import { sort } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
-import {
-  HIDE_EMPTY_MODELS_KEY,
-  ORDER_MODELS_BY_COUNT_KEY
-} from 'ember-inspector/utils/local-storage-keys';
+
+const HIDE_EMPTY_MODELS_KEY = 'are-model-types-hidden';
+const ORDER_MODELS_BY_COUNT_KEY = 'are-models-ordered-by-record-count';
 
 export default Controller.extend({
   navWidth: 180,
-  storage: service(`storage/${LocalStorageService.STORAGE_TYPE_TO_USE}`),
+  storage: service(),
 
   init() {
     this._super(...arguments);
