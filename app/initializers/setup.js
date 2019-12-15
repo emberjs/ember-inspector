@@ -1,4 +1,3 @@
-import { typeOf } from '@ember/utils';
 import config from 'ember-inspector/config/environment';
 import PromiseAssembler from "ember-inspector/libs/promise-assembler";
 

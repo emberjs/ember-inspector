@@ -57,10 +57,7 @@ module('Container Tab', function(hooks) {
       }]
     });
 
-    registerResponderFor('app-selected', ({ applicationId }) => {
-      this.currentApplicationId = applicationId;
-      return false;
-    });
+    registerResponderFor('app-selected', () => false);
 
     registerResponderFor('deprecation:getCount', ({ applicationId, applicationName }) => ({
       type: 'deprecation:count',
