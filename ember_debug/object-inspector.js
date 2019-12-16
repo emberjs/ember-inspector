@@ -12,21 +12,27 @@ const {
 const { oneWay } = computed;
 const { backburner } = run;
 
-let glimmer;
-let metal;
+let GlimmerComponent = null;
+try {
+  GlimmerComponent = window.require('@glimmer/component').default;
+} catch(e) {
+  // ignore
+}
+
+let GlimmerReference = null;
+let metal = null;
 let HAS_GLIMMER_TRACKING = false;
 try {
-  glimmer = Ember.__loader.require('@glimmer/reference');
+  GlimmerReference = Ember.__loader.require('@glimmer/reference');
   metal = Ember.__loader.require('@ember/-internals/metal');
-  HAS_GLIMMER_TRACKING = glimmer &&
-                         glimmer.value &&
-                         glimmer.validate &&
+  HAS_GLIMMER_TRACKING = GlimmerReference &&
+                         GlimmerReference.value &&
+                         GlimmerReference.validate &&
                          metal &&
                          metal.track &&
                          metal.tagForProperty;
 } catch (e) {
-  glimmer = null;
-  metal = null;
+  // ignore
 }
 
 const keys = Object.keys || Ember.keys;
@@ -236,12 +242,12 @@ export default EmberObject.extend(PortMixin, {
               let tagInfo = tracked[item.name] || { tag: metal.tagForProperty(object, item.name), revision: 0 };
               if (!tagInfo.tag) return;
 
-              changed = !glimmer.validate(tagInfo.tag, tagInfo.revision);
+              changed = !GlimmerReference.validate(tagInfo.tag, tagInfo.revision);
               if (changed) {
                 tagInfo.tag = metal.track(() => {
                   value = get(object, item.name);
                 });
-                tagInfo.revision = glimmer.value(object, item.name);
+                tagInfo.revision = GlimmerReference.value(object, item.name);
               }
               tracked[item.name] = tagInfo;
             } else {
@@ -970,7 +976,7 @@ function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties
                 item.isTracked = true;
               }
             }
-            tagInfo.revision = glimmer.value(object, item.name);
+            tagInfo.revision = GlimmerReference.value(object, item.name);
             item.dependentKeys = getTrackedDependencies(object, item.name, tagInfo.tag);
           } else {
             value = calculateCP(object, item, errorsForObject);
@@ -1128,6 +1134,17 @@ function getDebugInfo(object) {
       'states',
       'element',
       'targetObject'
+    );
+  } else if (GlimmerComponent && object instanceof GlimmerComponent) {
+    // These properties don't really exist on Glimmer Components, but
+    // reading their values trigger a development mode assertion. The
+    // more correct long term fix is to make getters lazy (shows "..."
+    // in the UI and only computed them when requested (when the user
+    // clicked on the "..." in the UI).
+    skipProperties.push(
+      'bounds',
+      'debugName',
+      'element'
     );
   }
   return debugInfo;
