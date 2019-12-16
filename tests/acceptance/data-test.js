@@ -10,11 +10,6 @@ import EmberObject from '@ember/object';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { triggerPort } from '../helpers/trigger-port';
-import LocalStorageService from 'ember-inspector/services/storage/local';
-import {
-  HIDE_EMPTY_MODELS_KEY,
-  ORDER_MODELS_BY_COUNT_KEY
-} from 'ember-inspector/utils/local-storage-keys';
 
 let port, name;
 
@@ -42,11 +37,6 @@ module('Data Tab', function(hooks) {
 
   hooks.afterEach(function() {
     name = null;
-    // This is to ensure settings in Storage do not persist across multiple test runs.
-    let storageService = this.owner.lookup(`service:storage/${LocalStorageService.STORAGE_TYPE_TO_USE}`);
-
-    storageService.removeItem(HIDE_EMPTY_MODELS_KEY);
-    storageService.removeItem(ORDER_MODELS_BY_COUNT_KEY);
   });
 
   function modelTypeFactory(options) {

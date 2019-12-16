@@ -1,3 +1,4 @@
+/* eslint-disable ember/no-new-mixins */
 import { find, settled, visit } from '@ember/test-helpers';
 import Mixin from '@ember/object/mixin';
 import Component from '@ember/component';
@@ -222,7 +223,6 @@ module('Ember Debug - Object Inspector', function(hooks) {
   });
 
   test('Correct mixin order with es6 class', function (assert) {
-
     class MyMixinClass extends Mixin {
       toString() {
         return 'MyMixin';
@@ -329,14 +329,11 @@ module('Ember Debug - Object Inspector', function(hooks) {
   });
 
   test('Correct mixin properties', function (assert) {
-
-    // eslint-disable-next-line ember/no-new-mixins
     class MyMixin extends Mixin {
       toString() {
         return 'MyMixin1';
       }
     }
-    // eslint-disable-next-line ember/no-new-mixins
     class MyMixin2 extends Mixin {
       toString() {
         return 'MyMixin2';
@@ -562,7 +559,6 @@ module('Ember Debug - Object Inspector', function(hooks) {
   });
 
   test('Property grouping can be customized using _debugInfo', function(assert) {
-    // eslint-disable-next-line ember/no-new-mixins
     let mixinToSkip = Mixin.create({});
 
     let Inspected = EmberObject.extend(mixinToSkip, {
@@ -627,7 +623,6 @@ module('Ember Debug - Object Inspector', function(hooks) {
   });
 
   test('Property grouping can be customized using _debugInfo when using Proxy', function(assert) {
-
     class MyMixin extends Mixin {
       toString() {
         return 'MixinToSkip';
