@@ -3,17 +3,15 @@ import RSVP from 'rsvp';
 const { Promise } = RSVP;
 import { readOnly } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
-import LocalStorageService from 'ember-inspector/services/storage/local';
+import { LOCAL_STORAGE_SUPPORTED } from 'ember-inspector/services/storage/local';
 
 const chromeStoreSupported = (!!window.chrome && !!window.chrome.storage);
-const localStoreSupported = LocalStorageService.SUPPORTED;
-const storageSupported = chromeStoreSupported || localStoreSupported;
+const storageSupported = chromeStoreSupported || LOCAL_STORAGE_SUPPORTED;
 const STORE_KEY = 'last-version-opened';
 
 export default Route.extend({
   version: readOnly('config.VERSION'),
-  storage: service(`storage/${LocalStorageService.STORAGE_TYPE_TO_USE}`),
-
+  storage: service(),
 
   lastVersionOpened() {
     if (chromeStoreSupported) {
@@ -24,16 +22,11 @@ export default Route.extend({
           );
         });
       });
-    }
-    else if (localStoreSupported) {
+    } else {
       return RSVP.resolve(
         (this.storage.getItem(STORE_KEY) || 0).toString()
       );
     }
-
-    return RSVP.resolve(
-      (0).toString()
-    );
   },
 
   setLastVersionOpened(version) {
@@ -45,9 +38,7 @@ export default Route.extend({
           resolve();
         });
       });
-    }
-
-    else if (localStoreSupported) {
+    } else {
       this.storage.setItem(STORE_KEY, version);
       return RSVP.resolve();
     }
