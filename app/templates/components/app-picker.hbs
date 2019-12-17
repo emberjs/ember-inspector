@@ -3,14 +3,14 @@
     class="dropdown__select"
     onchange={{action "selectApp" value="target.value"}}
   >
-    {{#each apps as |app|}}
+    {{#each-in this.apps as |id name|}}
       <option
-        value={{app.applicationId}}
-        selected={{eq app.applicationId selectedApp}}
+        value={{id}}
+        selected={{eq id this.selectedAppId}}
       >
-        {{app.applicationName}}
+        {{name}}
       </option>
-    {{/each}}
+    {{/each-in}}
   </select>
   {{svg-jar "dropdown-arrow" class="dropdown__arrow"}}
 </div>

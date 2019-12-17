@@ -10,6 +10,8 @@ export default EmberObject.extend({
     resolve(this.connect(), 'ember-inspector').then(() => {
       this.onConnectionReady();
     }, null, 'ember-inspector');
+
+    this._messageCallbacks = [];
   },
 
   /**
@@ -54,7 +56,7 @@ export default EmberObject.extend({
     @param {Function} callback
   */
   onMessageReceived(callback) {
-    this.get('_messageCallbacks').pushObject(callback);
+    this._messageCallbacks.push(callback);
   },
 
   /**
@@ -70,10 +72,8 @@ export default EmberObject.extend({
   */
   inspectElement(/* elem */) {},
 
-  _messageCallbacks: computed(function() { return A(); }),
-
   _messageReceived(message) {
-    this.get('_messageCallbacks').forEach(callback => {
+    this._messageCallbacks.forEach(callback => {
       callback(message);
     });
   },

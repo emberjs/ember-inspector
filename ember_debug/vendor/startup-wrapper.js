@@ -141,10 +141,11 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       }
 
       if (message.type === 'app-selected') {
-        const appInstance = getApplications().find(app => Ember.guidFor(app) === message.applicationId);
+        let current = Ember.EmberInspectorDebugger._application;
+        let selected = getApplications().find(app => Ember.guidFor(app) === message.applicationId);
 
-        if (appInstance && appInstance.__deprecatedInstance__) {
-          bootEmberInspector(appInstance.__deprecatedInstance__);
+        if (current !== selected && selected.__deprecatedInstance__) {
+          bootEmberInspector(selected.__deprecatedInstance__);
         }
       }
     });
