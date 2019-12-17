@@ -19,12 +19,17 @@ export default Route.extend({
       this.applicationBooted = ({ booted }) => {
         if (booted) {
           port.off('general:applicationBooted', this.applicationBooted);
+          this.applicationBooted = null;
           resolve();
         }
       };
       port.on('general:applicationBooted', this.applicationBooted);
       port.send('general:applicationBooted');
     });
+  },
+
+  afterModel() {
+    this.port.send('deprecation:getCount');
   },
 
   /**

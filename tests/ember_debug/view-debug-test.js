@@ -250,7 +250,7 @@ module('Ember Debug - View', function(hooks) {
   });
 
   test('Supports applications that don\'t have the ember-application CSS class', async function t(assert) {
-    let name = null;
+    let name, message;
     let rootElement = document.body;
 
     await visit('/simple');
@@ -265,15 +265,20 @@ module('Ember Debug - View', function(hooks) {
     EmberDebug.start();
     port = EmberDebug.port;
 
+    await visit('/simple');
+
     port.reopen({
-      send(n/*, m*/) {
+      send(n, m) {
         name = n;
+        message = m;
       }
     });
 
-    await visit('/simple');
+    run(port, 'trigger', 'view:getTree');
+    await settled();
 
-    assert.equal(name, 'view:viewTree');
+    assert.equal(name, 'view:viewTree', 'view tree is sent');
+    assert.ok(message.tree, 'view tree is sent');
   });
 
   test('Does not list nested {{yield}} views', async function t(assert) {

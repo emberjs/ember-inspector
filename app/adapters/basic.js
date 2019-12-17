@@ -11,7 +11,7 @@
  * });
  * ```
  */
-import EmberObject, { computed } from '@ember/object';
+import EmberObject from '@ember/object';
 
 import config from 'ember-inspector/config/environment';
 
@@ -24,6 +24,7 @@ export default EmberObject.extend({
    */
   init() {
     this._super(...arguments);
+    this._messageCallbacks = [];
     this._checkVersion();
   },
 
@@ -85,10 +86,8 @@ export default EmberObject.extend({
     when a message from EmberDebug is received
   **/
   onMessageReceived(callback) {
-    this._messageCallbacks.pushObject(callback);
+    this._messageCallbacks.push(callback);
   },
-
-  _messageCallbacks: computed(function() { return []; }),
 
   _messageReceived(message) {
     this._messageCallbacks.forEach(callback => {

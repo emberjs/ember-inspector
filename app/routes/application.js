@@ -19,7 +19,6 @@ export default Route.extend({
     port.on('objectInspector:droppedObject', this, this.droppedObject);
     port.on('deprecation:count', this, this.setDeprecationCount);
     port.on('view:inspectComponent', this, this.inspectComponent);
-    port.send('deprecation:getCount');
   },
 
   deactivate() {

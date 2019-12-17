@@ -1,16 +1,17 @@
-<div class="dropdown">
+<div class="h-7 text-base13">
   <select
-    class="dropdown__select"
+    class="box-border block w-full h-full m-0 border-0 pr-4 pl-1 text-base text-base13 bg-transparent appearance-none outline-none"
     onchange={{action "selectApp" value="target.value"}}
   >
-    {{#each this.apps as |app|}}
+    {{#each-in this.apps as |id name|}}
       <option
-        value={{app.applicationId}}
-        selected={{eq app.applicationId this.selectedApp}}
+        value={{id}}
+        selected={{eq id this.selectedAppId}}
       >
-        {{app.applicationName}}
+        {{name}}
       </option>
-    {{/each}}
+    {{/each-in}}
   </select>
-  {{svg-jar "dropdown-arrow" class="dropdown__arrow"}}
+  {{svg-jar "dropdown-arrow" class="dropdown__arrow fill-current absolute opacity-75 pointer-events-none"}}
 </div>
+

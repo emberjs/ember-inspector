@@ -98,7 +98,6 @@ export default Controller.extend({
    */
   pinnedObjectId: null,
   inspectingViews: false,
-  viewTreeLoaded: false,
 
   /**
    * Bound to the search field to filter the component list.
