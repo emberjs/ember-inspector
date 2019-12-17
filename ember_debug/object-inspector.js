@@ -557,13 +557,6 @@ export default EmberObject.extend(PortMixin, {
    */
   mixinDetailsForObject(object) {
     const mixins = [];
-    if (object instanceof Ember.ObjectProxy && object.content && !object._showProxyDetails) {
-      return this.mixinDetailsForObject(object.content);
-    }
-
-    if (object instanceof Ember.ArrayProxy && object.content && !object._showProxyDetails) {
-      return this.mixinDetailsForObject(object.slice(0, 101));
-    }
 
     const own = ownMixins(object);
 
@@ -611,6 +604,14 @@ export default EmberObject.extend(PortMixin, {
   },
 
   mixinsForObject(object) {
+    if (object instanceof Ember.ObjectProxy && object.content && !object._showProxyDetails) {
+      object = object.content;
+    }
+
+    if (object instanceof Ember.ArrayProxy && object.content && !object._showProxyDetails) {
+      object = object.slice(0, 101);
+    }
+
     let mixinDetails = this.mixinDetailsForObject(object);
 
     mixinDetails[0].name = 'Own Properties';

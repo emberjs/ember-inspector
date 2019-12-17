@@ -276,7 +276,10 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
   test('Proxies are skipped by default', function (assert) {
     let inspected = EmberObject.extend({
-      test: 'a'
+      test: 'a',
+      get abc() {
+        return 1;
+      }
     }).create();
     const proxy = ObjectProxy.create({
       content: inspected
@@ -285,6 +288,10 @@ module('Ember Debug - Object Inspector', function(hooks) {
     let computedProperty = message.details[1].properties[0];
     assert.equal(computedProperty.name, 'test');
     assert.equal(computedProperty.value.inspect, inspect('a'));
+    
+    let getterProperty = message.details[1].properties[1];
+    assert.equal(getterProperty.name, 'abc');
+    assert.equal(getterProperty.value.inspect, inspect(1));
   });
 
   test('Object Proxies are not skipped with _showProxyDetails', function (assert) {
