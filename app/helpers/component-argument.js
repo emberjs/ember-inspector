@@ -9,7 +9,7 @@ import { helper } from '@ember/component/helper';
  */
 export function componentArgumentDisplay([argument]) {
   if (typeof argument === 'string') {
-    return JSON.stringify(argument);
+    return JSON.stringify(argument).replace(/^\"|\"$/g, '');
   } else if (typeof argument === 'object' && argument !== null) {
     return '...';
   }

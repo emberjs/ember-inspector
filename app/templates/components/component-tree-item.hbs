@@ -36,7 +36,9 @@
   >
     {{#if @item.isComponent}}
       {{#if @item.args.positional}}
-        {{@item.name}}
+        <span class="component-name">
+          {{@item.name}}
+        </span>
 
         {{#each @item.args.positional as |value|}}
           <div class="arg-token">
@@ -58,7 +60,9 @@
           </div>
         {{/each-in}}
       {{else}}
-        {{classify @item.name}}
+        <span class="component-name">
+          {{classify @item.name}}
+        </span>
 
         {{#each-in @item.args.named as |name value|}}
           <div class="arg-token">
@@ -69,10 +73,11 @@
               <span class="key-token">
                 {{name}}
               </span>
-              =
+              ="
               <span class="value-token">
                 {{component-argument value}}
               </span>
+              "
             {{else}}
               <span class="at-token">
                 @
