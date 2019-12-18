@@ -7,6 +7,18 @@
   margin: 0 3px;
   min-height: 22px;
   position: relative;
+
+  &:hover {
+    background-color: var(--base05);
+
+    .component-tree-item__action {
+      opacity: 1;
+    }
+
+    .component-tree-item__action.disabled {
+      opacity: 0.65;
+    }
+  }
 }
 
 .component-tree-item__expand {
@@ -46,40 +58,56 @@
   cursor: default;
   display: flex;
   white-space: nowrap;
+
+  .component-name {
+    color: var(--component-name);
+  }
+
+  .arg-token {
+    display: flex;
+    margin-left: 0.5rem;
+  }
+
+  .bracket-token {
+    color: var(--base09);
+  }
+
+  .at-token,
+  .key-token {
+    color: var(--component-attr);
+  }
+
+  .value-token {
+    color: var(--spec03);
+  }
 }
 
 .component-tree-item--has-instance .component-tree-item__tag {
   cursor: pointer;
 }
 
-.component-tree-item__tag .arg-token {
-  display: flex;
-  margin-left: 0.5rem;
+.component-tree-item--selected .component-tree-item__tag {
+  .component-name,
+  .at-token,
+  .bracket-token,
+  .key-token,
+  .value-token {
+    color: var(--focus-text);
+  }
 }
 
-.component-tree-item__tag .at-token {
-  color: var(--spec04);
-}
-
-.component-tree-item__tag .bracket-token {
-  color: var(--base07);
-}
-
-.component-tree-item__tag .key-token {
-  color: var(--spec02);
-}
-
-.component-tree-item__tag .value-token {
-  color: var(--spec03);
+.component-tree-item__bracket:before,
+.component-tree-item__bracket:after,
+.component-tree-item-classic__bracket:before,
+.component-tree-item-classic__bracket:after {
+  color: var(--base09);
 }
 
 .component-tree-item__bracket:before {
-  color: var(--base07);
   content: '<';
 }
 
 .component-tree-item__bracket:after {
-  color: var(--base07);
   content: '>';
 }
 
@@ -88,25 +116,11 @@
 }
 
 .component-tree-item-classic__bracket:before {
-  color: var(--base07);
   content: '{{';
 }
 
 .component-tree-item-classic__bracket:after {
-  color: var(--base07);
   content: '}}';
-}
-
-.component-tree-item:hover {
-  background-color: var(--spec06);
-
-  .component-tree-item__action {
-    opacity: 1;
-  }
-
-  .component-tree-item__action.disabled {
-    opacity: 0.65;
-  }
 }
 
 /**
@@ -115,7 +129,7 @@
  */
 
 .component-tree-item.component-tree-item--highlighted {
-  background-color: var(--spec06);
+  background-color: var(--component-highlighted-bg);
   border-radius: 0;
 }
 
@@ -154,5 +168,5 @@
 }
 
 .component-tree-item--component {
-  color: var(--component-text);
+  color: var(--base09);
 }
