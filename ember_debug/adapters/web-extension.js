@@ -77,28 +77,36 @@ export default BasicAdapter.extend({
   }
 });
 
-/**
- * Recursively clones all arrays. Needed because Chrome
- * refuses to clone Ember Arrays when extend prototypes is disabled.
- *
- * If the item passed is an array, a clone of the array is returned.
- * If the item is an object or an array, or array properties/items are cloned.
- *
- * @param {Mixed} item The item to clone
- * @return {Mixed}
- */
-function deepClone(item) {
-  let clone = item;
-  if (isArray(item)) {
-    clone = new Array(item.length);
-    item.forEach((child, key) => {
-      clone[key] = deepClone(child);
-    });
-  } else if (item && typeOf(item) === 'object') {
-    clone = {};
-    keys(item).forEach(key => {
-      clone[key] = deepClone(item[key]);
-    });
-  }
-  return clone;
+let deepClone;
+
+if (Ember.ENV.EXTEND_PROTOTYPES.Array) {
+  deepClone = function deepClone(item) {
+    return item;
+  };
+} else {
+  /**
+   * Recursively clones all arrays. Needed because Chrome
+   * refuses to clone Ember Arrays when extend prototypes is disabled.
+   *
+   * If the item passed is an array, a clone of the array is returned.
+   * If the item is an object or an array, or array properties/items are cloned.
+   *
+   * @param {Mixed} item The item to clone
+   * @return {Mixed}
+   */
+  deepClone = function deepClone(item) {
+    let clone = item;
+    if (isArray(item)) {
+      clone = new Array(item.length);
+      item.forEach((child, key) => {
+        clone[key] = deepClone(child);
+      });
+    } else if (item && typeOf(item) === 'object') {
+      clone = {};
+      keys(item).forEach(key => {
+        clone[key] = deepClone(item[key]);
+      });
+    }
+    return clone;
+  };
 }
