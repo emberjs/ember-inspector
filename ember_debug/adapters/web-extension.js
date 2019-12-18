@@ -32,24 +32,35 @@ export default BasicAdapter.extend({
   },
 
   /**
-   * Open the devtools "Elements" and select an element.
+   * Open the devtools "Elements" and select an DOM node.
    *
-   * NOTE:
-   * This method was supposed to call `inspect` which is a Chrome specific function
-   * that can either be called from the console or from code evaled using `inspectedWindow.eval`
-   * (which is how this code is executed). See https://developer.chrome.com/extensions/devtools#evaluating-js.
-   * However for some reason Chrome 52+ has started throwing an Error that `inspect`
-   * is not a function when called from this code. The current workaround is to
-   * message the Ember Ibspector asking it to execute `inspected.Window.eval('inspect(element)')`
-   * for us.
-   *
-   * @param  {HTMLElement} elem The element to select
+   * @param  {Node} node The DOM node to select
    */
-  inspectElement(elem) {
-    /* inspect(elem); */
-    this.get('namespace.port').send('view:inspectDOMNode', {
-      selector: `//*[@id="${elem.getAttribute('id')}"]`
-    });
+  inspectNode(node) {
+    // NOTE:
+    //
+    // Basically, we are just trying to call `inspect(node)` here.
+    // However, `inspect` is a special function that is in the global
+    // scope but not on the global object (i.e. `window.inspect`) does
+    // not work. This sometimes causes problems, because, e.g. if the
+    // page has a div with the ID `inspect`, `window.inspect` will point
+    // to that div and shadown the "global" inspect function with no way
+    // to get it back. That causes "`inspect` is not a function" errors.
+    //
+    // As it turns out, however, when the extension page evals, the
+    // `inspect` function does not get shadowed. So, we can ask the
+    // inspector extension page to call that function for us, using
+    // `inspected.Window.eval('inspect(node)')`.
+    //
+    // However, since we cannot just send the DOM node directly to the
+    // extension, we will have to store it in a temporary global variable
+    // so that the extension can find it.
+
+    let name = `__EMBER_INSPECTOR_${(Math.random() * 100000000).toFixed(0)}`;
+
+    window[name] = node;
+
+    this.get('namespace.port').send('view:inspectDOMNode', { name });
   },
 
   _listen() {

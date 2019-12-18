@@ -168,7 +168,7 @@ export default EmberObject.extend(PortMixin, {
    * @param  {Element} element The element to inspect
    */
   inspectElement(element) {
-    this.get('adapter').inspectElement(element);
+    this.get('adapter').inspectNode(element);
   },
 
   sendTree() {
