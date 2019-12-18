@@ -18,6 +18,14 @@ import require from 'require';
 import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
 import hasEmberVersion from '@ember/test-helpers/has-ember-version';
 
+const GlimmerComponent = (function() {
+  try {
+    return require('@glimmer/component').default;
+  } catch(e) {
+    // ignore, return undefined
+  }
+})();
+
 let EmberDebug;
 let port;
 let App;
@@ -1008,6 +1016,60 @@ module('Ember Debug - Object Inspector', function(hooks) {
         'inspector: update value',
         'inspector: updateProperty',
       ]);
+    });
+  }
+
+  // @glimmer/component 1.0 doesn't seem to support 3.4, even though it has the manager API
+  // Assertion Failed: Could not find custom component manager 'glimmer'
+  if (hasEmberVersion(3, 8) && GlimmerComponent) {
+    test('Inspecting GlimmerComponent does not cause errors', async function(assert) {
+      let instance;
+
+      class FooComponent extends GlimmerComponent {
+        constructor(...args) {
+          super(...args);
+          instance = this;
+        }
+
+        get foo() {
+          return 'foo';
+        }
+
+        bar = 'bar';
+
+        baz() {
+          return 'baz';
+        }
+      }
+
+      this.owner.register('component:foo', FooComponent);
+      this.owner.register('template:simple', hbs`<Foo />`);
+
+      await visit('/simple');
+
+      assert.ok(instance instanceof FooComponent, 'an instance of FooComponent has been created');
+
+      let { details, errors } = await inspectObject(instance);
+
+      assert.ok(details, 'has details');
+      assert.deepEqual(errors, [], 'has no errors');
+
+      let properties = [];
+
+      for (let mixin of details) {
+        for (let property of mixin.properties) {
+          properties.push(property.name);
+        }
+      }
+
+      assert.ok(properties.indexOf('args') > -1, 'contains args');
+      assert.ok(properties.indexOf('foo') > -1, 'contains foo');
+      assert.ok(properties.indexOf('bar') > -1, 'contains bar');
+      assert.ok(properties.indexOf('baz') > -1, 'contains baz');
+
+      assert.ok(properties.indexOf('bounds') === -1, 'does not contain bounds');
+      assert.ok(properties.indexOf('element') === -1, 'does not contain element');
+      assert.ok(properties.indexOf('debugName') === -1, 'does not contain debugName');
     });
   }
 });
