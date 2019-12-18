@@ -32,7 +32,7 @@ exports.devtoolTabDefinition = {
   ordinal: 7,
   icon: self.data.url("{{PANE_ROOT}}/assets/svg/ember-icon.svg"),
   url: self.data.url("devtool-panel.html"),
-  label: "Ember{{env}}",
+  label: "{{TAB_LABEL}}",
   tooltip: "Ember Inspector",
   isTargetSupported: function(target) {
     return target.isLocalTab;
