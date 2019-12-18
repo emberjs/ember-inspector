@@ -3,8 +3,8 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import Pretender from 'pretender';
 
-const url = 'https://raw.githubusercontent.com/emberjs/ember-inspector/master/CHANGELOG.md';
-const response = `
+const CHANGELOG_URL = 'https://raw.githubusercontent.com/emberjs/ember-inspector/master/CHANGELOG.md';
+const CHANGELOG_RESPONSE = `
 # Changelog
 
 ## [Unreleased](https://github.com/emberjs/ember-inspector/tree/HEAD)
@@ -31,9 +31,15 @@ const response = `
 module('Whats New', function (hooks) {
   setupApplicationTest(hooks);
 
-  test('Changelog is parsed and displayed', async function t(assert) {
-    const server = new Pretender(function () {
-      this.get(url, () => [200, { 'Content-Type': 'text/plain' }, response]);
+  hooks.afterEach(function() {
+    if (this.server) {
+      this.server.shutdown();
+    }
+  });
+
+  test('Changelog is parsed and displayed', async function(assert) {
+    this.server = new Pretender(function () {
+      this.get(CHANGELOG_URL, () => [200, { 'Content-Type': 'text/plain' }, CHANGELOG_RESPONSE]);
     });
 
     await visit('/info/whats-new');
@@ -45,19 +51,15 @@ module('Whats New', function (hooks) {
       'v3.3.0',
       'correct section of markdown is rendered'
     );
-
-    server.shutdown();
   });
 
-  test('Error message is displayed on request failure', async function t(assert) {
-    const server = new Pretender(function () {
-      this.get(url, () => [404, {}, '']);
+  test('Error message is displayed on request failure', async function(assert) {
+    this.server = new Pretender(function () {
+      this.get(CHANGELOG_URL, () => [404, {}, '']);
     });
 
     await visit('/info/whats-new');
 
     assert.dom('.whats-new p').exists({ count: 1 }, 'Changelog could not be loaded');
-
-    server.shutdown();
   });
 });

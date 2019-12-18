@@ -1,16 +1,11 @@
 import Component from '@ember/component';
-import { observer } from '@ember/object';
 import { alias, reads } from '@ember/object/computed';
 
 export default Component.extend({
   classNames: ['app-picker'],
 
-  apps: alias('port.detectedApplications.[]'),
-  selectedApp: reads('port.applicationId'),
-
-  selectedDidChange: observer('selectedApp', function() {
-    this.port.set('applicationId', this.selectedApp);
-  }),
+  apps: alias('port.detectedApplications'),
+  selectedAppId: reads('port.applicationId'),
 
   init() {
     this._super(...arguments);
@@ -19,8 +14,7 @@ export default Component.extend({
 
   actions: {
     selectApp(applicationId) {
-      this.set('selectedApp', applicationId);
-      this.port.send('app-selected', { applicationId });
+      this.port.selectApplication(applicationId);
     }
   }
 });

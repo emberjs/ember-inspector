@@ -1,7 +1,15 @@
 import Application from 'ember-inspector/app';
-import config from '../config/environment';
+import config from 'ember-inspector/config/environment';
 import { setApplication } from '@ember/test-helpers';
 import { start } from 'ember-qunit';
+import TestAdapter from './test-adapter';
+
+Application.initializer({
+  name: `00-override-adapter`,
+  initialize(app) {
+    app.register('adapter:main', TestAdapter);
+  }
+});
 
 Application.instanceInitializer({
   name: '00-force-memory-storage-backend',
@@ -9,15 +17,6 @@ Application.instanceInitializer({
     let memory = instance.lookup('service:storage/memory');
     let storage = instance.lookup('service:storage');
     storage.backend = memory;
-  }
-});
-
-Application.instanceInitializer({
-  name: '01-detect-ember-application',
-  initialize(instance) {
-    instance.lookup('route:app-detected').reopen({
-      model() { }
-    });
   }
 });
 

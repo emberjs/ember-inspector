@@ -1,20 +1,13 @@
-import { typeOf } from '@ember/utils';
 import config from 'ember-inspector/config/environment';
 import PromiseAssembler from "ember-inspector/libs/promise-assembler";
 
 export default {
   name: 'setup',
   initialize(instance) {
-    // {{EMBER_DIST}} is replaced by the build process.
-    instance.adapter = '{{EMBER_DIST}}';
+    // {{EMBER_DIST}} is replaced by the build process (basic, chrome, etc)
+    let Adapter = instance.resolveRegistration(`adapter:{{EMBER_DIST}}`);
 
     // register and inject adapter
-    let Adapter;
-    if (typeOf(instance.adapter) === 'string') {
-      Adapter = instance.resolveRegistration(`adapter:${instance.adapter}`);
-    } else {
-      Adapter = instance.adapter;
-    }
     register(instance, 'adapter:main', Adapter);
     instance.inject('controller:deprecations', 'adapter', 'adapter:main');
     instance.inject('route:application', 'adapter', 'adapter:main');
