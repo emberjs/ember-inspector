@@ -64,6 +64,7 @@ jobs:
     strategy:
       matrix:
         scenario:
+          - default-no-prototype-extensions
           - release
           - beta
           - canary
@@ -77,6 +78,9 @@ jobs:
         uses: rwjblue/setup-volta@v1
       - name: Install dependencies (yarn)
         run: yarn install
+      - name: Set NO_EXTEND_PROTOTYPES
+        if: matrix.scenario == 'default-no-prototype-extensions'
+        run: echo "::set-env name=NO_EXTEND_PROTOTYPES,::true"
       - name: Setup ember-try scenario
         run: yarn ember try:one ember-${{ matrix.scenario }} --skip-cleanup --- cat package.json
       - name: Build
