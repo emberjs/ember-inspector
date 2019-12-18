@@ -251,15 +251,14 @@ module('Ember Debug - View', function(hooks) {
 
   test('Supports applications that don\'t have the ember-application CSS class', async function t(assert) {
     let name, message;
-    let rootElement = document.body;
 
     await visit('/simple');
 
-    assert.dom(rootElement).hasClass(
+    assert.dom(this.element).hasClass(
       'ember-application',
       'The rootElement has the .ember-application CSS class'
     );
-    rootElement.classList.remove('ember-application');
+    this.element.classList.remove('ember-application');
 
     // Restart the inspector
     EmberDebug.start();

@@ -22,7 +22,10 @@ export async function setupEIApp(EmberDebug, routes) {
     Router.map(routes);
   }
 
-  let App = Application.create({ autoboot: false });
+  let App = Application.create({
+    autoboot: false,
+    rootElement: document.getElementById('ember-testing'),
+  });
   App.register('router:main', Router);
 
   await setApplication(App);
