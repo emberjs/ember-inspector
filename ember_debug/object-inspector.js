@@ -1,15 +1,17 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
-import { compareVersion } from 'ember-debug/utils/version';
+import bound from 'ember-debug/utils/bound-method';
 import { isComputed, isDescriptor, getDescriptorFor } from 'ember-debug/utils/type-check';
+import { compareVersion } from 'ember-debug/utils/version';
 import { typeOf } from './utils/type-check';
 
 const Ember = window.Ember;
 const {
   Object: EmberObject, inspect: emberInspect, meta: emberMeta,
   computed, get, set, guidFor, isNone,
-  cacheFor, VERSION
+  cacheFor, VERSION, run,
 } = Ember;
 const { oneWay } = computed;
+const { backburner, join } = run;
 
 let glimmer;
 let metal;
@@ -266,14 +268,12 @@ export default EmberObject.extend(PortMixin, {
         });
       });
     }
-    // workaround for tests, since calling any runloop inside runloop will prevent any `settled` to be called
-    setTimeout(() => Ember.run.next(this, this.updateCurrentObject), 300);
   },
 
   init() {
     this._super();
     this.set('sentObjects', {});
-    Ember.run.next(this, this.updateCurrentObject);
+    backburner.on('end', bound(this, this.updateCurrentObject));
   },
 
   willDestroy() {
@@ -281,6 +281,7 @@ export default EmberObject.extend(PortMixin, {
     for (let objectId in this.sentObjects) {
       this.releaseObject(objectId);
     }
+    backburner.off('end', bound(this, this.updateCurrentObject));
   },
 
   sentObjects: {},
@@ -391,7 +392,7 @@ export default EmberObject.extend(PortMixin, {
 
   saveProperty(objectId, prop, val) {
     let object = this.sentObjects[objectId];
-    set(object, prop, val);
+    join(() => set(object, prop, val));
   },
 
   sendToConsole(objectId, prop) {
@@ -489,7 +490,6 @@ export default EmberObject.extend(PortMixin, {
     if (meta._debugReferences === 0) {
       this.dropObject(guid);
     }
-
   },
 
   dropObject(objectId) {
