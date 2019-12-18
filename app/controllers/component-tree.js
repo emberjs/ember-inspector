@@ -253,9 +253,20 @@ class RenderItem {
   }
 
   get childItems() {
-    return this.renderNode.children
-      .filter(child => !isInternalRenderNode(child))
-      .map(child => this.controller.findItem(child.id));
+    let children = [];
+    let candidates = [...this.renderNode.children];
+
+    while (candidates.length > 0) {
+      let candidate = candidates.shift();
+
+      if (isInternalRenderNode(candidate)) {
+        candidates.unshift(...candidate.children);
+      } else {
+        children.push(this.controller.findItem(candidate.id));
+      }
+    }
+
+    return children;
   }
 
   get isVisible() {

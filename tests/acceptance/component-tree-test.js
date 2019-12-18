@@ -14,94 +14,95 @@ function textFor(selector, context) {
   return context.querySelector(selector).textContent.trim();
 }
 
-let treeId = 0;
+let GUID = 1;
 
-function viewNodeFactory(props) {
-  if (!props.template) {
-    props.template = props.name;
+function object(id = `ember${GUID++}`) {
+  return { id };
+}
+
+function makeArgs({ names = [], positionals = 0 } = {}) {
+  let named = {};
+
+  for (let name of names) {
+    named[name] = object();
   }
-  let obj = {
-    value: props,
-    children: [],
-    treeId: ++treeId,
+
+  let positional = [];
+
+  for (let i = 0; i < positionals; i++) {
+    positional.push(object());
+  }
+
+  return { named, positional };
+}
+
+function route({ id, name, args = makeArgs(), instance = object(), template = `my-app/templates/${name}.hbs`, bounds = 'range' }, ...children) {
+  return {
+    id: `render-node:${id}:outlet`,
+    type: 'outlet',
+    name: 'main',
+    args: makeArgs(),
+    instance: null,
+    template: null,
+    bounds: 'range',
+    children: [{
+      id: `render-node:${id}`,
+      type: 'route-template',
+      name,
+      args,
+      instance,
+      template,
+      bounds,
+      children
+    }]
   };
-  return obj;
 }
 
-function viewTreeFactory(tree) {
-  let children = tree.children;
-  delete tree.children;
-  let viewNode = viewNodeFactory(tree);
-  if (children) {
-    for (let i = 0; i < children.length; i++) {
-      viewNode.children.push(viewTreeFactory(children[i]));
-    }
-  }
-  return viewNode;
+function topLevel({ id }, ...children) {
+  return route({
+    id,
+    name: '-top-level',
+    instance: null,
+    template: 'packages/@ember/-internals/glimmer/lib/templates/outlet.hbs'
+  }, ...children);
 }
 
-function defaultViewTree() {
-  return viewTreeFactory({
-    name: 'application',
-    isComponent: false,
-    objectId: 'applicationView',
-    viewClass: 'App.ApplicationView',
-    duration: 10,
-    controller: {
-      name: 'App.ApplicationController',
-      completeName: 'App.ApplicationController',
-      objectId: 'applicationController',
-    },
-    children: [
-      {
-        name: 'todos',
-        isComponent: false,
-        viewClass: 'App.TodosView',
-        duration: 1,
-        objectId: 'todosView',
-        model: {
-          name: 'TodosArray',
-          completeName: 'TodosArray',
-          objectId: 'todosArray',
-          type: 'type-ember-object',
-        },
-        controller: {
-          name: 'App.TodosController',
-          completeName: 'App.TodosController',
-          objectId: 'todosController',
-        },
-        children: [
-          {
-            isComponent: true,
-            name: 'todo-list',
-            objectId: 'ember392',
-            tagName: 'section',
-            template: 'app/templates/components/todo-list',
-            viewClass: 'todo-list',
-            children: [
-              {
-                isComponent: true,
-                name: 'todo-item',
-                objectId: 'ember267',
-                tagName: 'li',
-                template: 'app/templates/components/todo-item',
-                viewClass: 'todo-item',
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  });
+function component({ id, name, args = makeArgs(), instance = null, bounds = 'range' }, ...children) {
+  return {
+    id: `render-node:${id}`,
+    type: 'component',
+    name,
+    args,
+    instance,
+    template: `my-app/templates/components/${name}.hbs`,
+    bounds,
+    children
+  };
+}
+
+function getRenderTree() {
+  return [
+    topLevel({ id: 0 },
+      route({ id: 1, name: 'application', instance: object('ember123') },
+        route({ id: 2, name: 'todos' },
+          component({ id: 3, name: 'todo-list', instance: object('ember456') },
+            component({ id: 4, name: 'todo-item' })
+          )
+        )
+      )
+    )
+  ];
 }
 
 module('Component Tab', function (hooks) {
   setupApplicationTest(hooks);
 
   hooks.beforeEach(function() {
+    GUID = 1;
+
     respondWith('view:getTree', {
-      type: 'view:viewTree',
-      tree: defaultViewTree()
+      type: 'view:renderTree',
+      tree: getRenderTree()
     });
   });
 
@@ -114,15 +115,15 @@ module('Component Tab', function (hooks) {
     let expandedNodes = findAll('.component-tree-item .expanded');
     assert.equal(expandedNodes.length, 3, 'all nodes should be expanded except the leaf node');
 
-    let templateNames = [];
+    let names = [];
 
     [...treeNodes].forEach(function (node) {
-      templateNames.push(textFor('code', node));
+      names.push(textFor('code', node));
     });
 
     assert.deepEqual(
-      templateNames,
-      ['application', 'todos', 'TodoList', 'TodoItem'],
+      names,
+      ['application route', 'todos route', 'TodoList', 'TodoItem'],
       'expected names for all views/components'
     );
   });
@@ -171,7 +172,7 @@ module('Component Tab', function (hooks) {
     let treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 4, 'expected some tree nodes');
 
-    await fillIn('.js-filter-views input', 'todo-');
+    await fillIn('.js-filter-views input', 'list');
     treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 3, 'expected filtered tree nodes');
 
@@ -182,7 +183,7 @@ module('Component Tab', function (hooks) {
 
     assert.deepEqual(
       visibleComponentNames,
-      ['todos', 'TodoList', 'TodoItem'],
+      ['application route', 'todos route', 'TodoList'],
       'expected names for all views/components'
     );
   });
@@ -215,7 +216,7 @@ module('Component Tab', function (hooks) {
     // resend the same view tree
     await sendMessage({
       type: 'view:viewTree',
-      tree: defaultViewTree()
+      tree: getRenderTree()
     });
 
     assert.dom('.component-tree-item').exists({ count: 3 }, 'the last node should still be hidden');
@@ -224,14 +225,15 @@ module('Component Tab', function (hooks) {
   test('Previewing / showing a view on the client', async function (assert) {
     await visit('/component-tree');
 
-    respondWith('view:previewLayer', ({ objectId }) => {
-      assert.equal(objectId, 'applicationView', 'Client sent correct id to preview layer');
+    respondWith('view:showInspection', ({ id, pin }) => {
+      assert.equal(id, 'render-node:1', 'application route');
+      assert.strictEqual(pin, false, 'preview only');
       return false;
     });
 
     await triggerEvent('.component-tree-item', 'mouseenter');
 
-    respondWith('view:hidePreview', false);
+    respondWith('view:hideInspection', false);
 
     await triggerEvent('.component-tree-item', 'mouseleave');
   });
@@ -239,9 +241,8 @@ module('Component Tab', function (hooks) {
   test('Scrolling an element into view', async function (assert) {
     await visit('/component-tree');
 
-    respondWith('view:scrollToElement', () => {
-      // TODO: this should assert the right elementId
-      assert.ok(true, 'Client asked to scroll element into view');
+    respondWith('view:scrollIntoView', ({ id }) => {
+      assert.equal(id, 'render-node:1', 'application route');
       return false;
     });
 
@@ -251,20 +252,25 @@ module('Component Tab', function (hooks) {
   test('View DOM element in Elements panel', async function (assert) {
     await visit('/component-tree');
 
-    respondWith('view:inspectElement', () => {
-      // TODO: this should assert the right elementId
-      assert.ok(true, 'Client asked to view DOM element');
+    respondWith('view:inspectElement', ({ id }) => {
+      assert.equal(id, 'render-node:1', 'application route');
       return false;
     });
 
     await click('.js-view-dom-element');
   });
 
-  test('Inspects the component in the object inspector on click', async function (assert) {
+  test('Inspects the component in the object inspector on click and shows tooltip', async function (assert) {
     await visit('/component-tree');
 
+    respondWith('view:showInspection', ({ id, pin }) => {
+      assert.equal(id, 'render-node:3', '<TodoList>');
+      assert.strictEqual(pin, true, 'pin');
+      return false;
+    });
+
     respondWith('objectInspector:inspectById', ({ objectId }) => {
-      assert.equal(objectId, 'ember392', 'Client asked to inspect the right objectId');
+      assert.equal(objectId, 'ember456', 'Client asked to inspect the application controller');
       return false;
     });
 
@@ -275,17 +281,23 @@ module('Component Tab', function (hooks) {
     // Go to the component tree and populate it before sending the message from the context menu
     await visit('/component-tree');
 
+    respondWith('view:showInspection', ({ id, pin }) => {
+      assert.equal(id, 'render-node:3', '<TodoList>');
+      assert.strictEqual(pin, true, 'pin');
+      return false;
+    });
+
     respondWith('objectInspector:inspectById', ({ objectId }) => {
-      assert.equal(objectId, 'ember267', 'Client asked to inspect the right objectId');
+      assert.equal(objectId, 'ember456', 'Client asked to inspect the <TodoList> component');
       return false;
     });
 
     await sendMessage({
       type: 'view:inspectComponent',
-      viewId: 'ember267'
+      id: 'render-node:3'
     });
 
-    assert.equal(currentURL(), '/component-tree?pinnedObjectId=ember267', 'It pins the element id as a query param');
-    assert.dom('.component-tree-item--selected').hasText('TodoItem', 'It selects the item in the tree corresponding to the element');
+    assert.equal(currentURL(), '/component-tree?pinned=render-node%3A3', 'It pins the element id as a query param');
+    assert.dom('.component-tree-item--selected').hasText('TodoList', 'It selects the item in the tree corresponding to the element');
   });
 });
