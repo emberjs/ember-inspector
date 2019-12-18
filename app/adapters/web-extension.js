@@ -80,10 +80,13 @@ export default BasicAdapter.extend({
    * Open the devtools "Elements" tab and select a specific DOM node.
    *
    * @method inspectDOMNode
-   * @param  {String} selector XPath selector
+   * @param {String} name
    */
-  inspectDOMNode(selector) {
-    chrome.devtools.inspectedWindow.eval(`inspect($x('${selector}')[0])`);
+  inspectDOMNode(name) {
+    chrome.devtools.inspectedWindow.eval(`
+      inspect(window[${JSON.stringify(name)}]);
+      delete window[${JSON.stringify(name)}];
+    `);
   },
 
   /**

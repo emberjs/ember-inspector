@@ -58,8 +58,8 @@ export default TabRoute.extend({
     this.set('controller.inspectingViews', false);
   },
 
-  inspectDOMNode({ selector }) {
-    this.get('port.adapter').inspectDOMNode(selector);
+  inspectDOMNode({ name }) {
+    this.port.adapter.inspectDOMNode(name);
   },
 
   actions: {
