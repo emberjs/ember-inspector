@@ -20,6 +20,9 @@ export default class ComponentTreeController extends Controller {
   @tracked isInspecting = false;
   @tracked renderItems = [];
 
+  @tracked _pinned = undefined;
+  @tracked _previewing = undefined;
+
   _store = Object.create(null);
 
   set renderTree(renderTree) {
@@ -84,8 +87,6 @@ export default class ComponentTreeController extends Controller {
     return this.matchingItems.filter(item => item.isVisible);
   }
 
-  @tracked _pinned = undefined;
-
   get pinned() {
     return this._pinned;
   }
@@ -118,8 +119,6 @@ export default class ComponentTreeController extends Controller {
 
     this.syncInspection();
   }
-
-  @tracked _previewing = undefined;
 
   get previewing() {
     return this._previewing;
@@ -326,13 +325,13 @@ class RenderItem {
     }
   }
 
-  @action scrollIntoView() {
+  @action scrollIntoView(event) {
     event.stopPropagation();
 
     this.send('view:scrollIntoView', { id: this.id });
   }
 
-  @action inspectElement() {
+  @action inspectElement(event) {
     event.stopPropagation();
 
     this.send('view:inspectElement', { id: this.id });
