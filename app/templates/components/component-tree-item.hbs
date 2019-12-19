@@ -67,11 +67,8 @@
         {{#each-in @item.args.named as |name value|}}
           <div class="arg-token">
             {{#if (is-string value)}}
-              <span class="at-token">
-                @
-              </span>
               <span class="key-token">
-                {{name}}
+                @{{name}}
               </span>
               ="
               <span class="value-token">
@@ -79,11 +76,8 @@
               </span>
               "
             {{else}}
-              <span class="at-token">
-                @
-              </span>
               <span class="key-token">
-                {{name}}
+                @{{name}}
               </span>
               =
               <span class="bracket-token">\{{</span>
