@@ -275,7 +275,7 @@ function TopLevel(...children) {
   return Route({
     name: '-top-level',
     instance: Undefined(),
-    template: 'packages/@ember/-internals/glimmer/lib/templates/outlet.hbs',
+    template: /^packages\/.+\/templates\/outlet\.hbs$/,
   }, ...children);
 }
 
