@@ -401,75 +401,7 @@ export default class ViewInspection {
     this._renderTooltipTitle(node);
     this._renderTooltipCategory(node);
     this._renderTooltipDetails(node);
-
-    // Positioning the tooltip: the goal is to match the Chrome's Element
-    // inspection tooltip's positioning behavior as closely as possible.
-
-    let { style: tooltipStyle } = this.tooltip;
-    let { scrollX, scrollY, innerWidth } = window;
-
-    // Leave 20px safety margin in case of scrollbars
-    let safetyMargin = 20;
-    let viewportWidth = innerWidth - safetyMargin;
-
-    // Start by attaching the tooltip below the highlight, and align it to the
-    // left edge of the highlight.
-    let attachmentTop = highlightRect.bottom;
-    let attachmentLeft = highlightRect.left;
-
-    tooltipStyle.display = 'block';
-    tooltipStyle.top = `${scrollY + attachmentTop}px`;
-    tooltipStyle.left = `${scrollX + attachmentLeft}px`;
-
-    // Measure the tooltip
-    let tooltipRect = this.tooltip.getBoundingClientRect();
-
-    // Prefer to attach above the highlight instead, if space permits. This is
-    // visually more pleasing and matches the way Chrome attaches its Element
-    // inspection tooltips. We had to do this step here instead of setting it
-    // at the beginning, because it requires measuring the height of the rendered
-    // tooltip.
-    let top = highlightRect.top - tooltipRect.height - safetyMargin;
-
-    if (top >= 0) {
-      attachmentTop = top;
-      this.tooltip.setAttribute('class', `ember-inspector-tooltip-attach-above`);
-    } else {
-      this.tooltip.setAttribute('class', `ember-inspector-tooltip-attach-below`);
-    }
-
-    let leftOffset = 0;
-
-    // Try to keep the entire tooltip onscreen.
-    if (tooltipRect.left < 0) {
-      // If the tooltip is partially offscreen to the left (because the higlight
-      // is partially offscreen to the left), then push it to the right to stay
-      // within the viewport, but not so much that it will become detached.
-      leftOffset = Math.max(highlightRect.left - safetyMargin, safetyMargin - highlightRect.width);
-    } else if (tooltipRect.right > viewportWidth) {
-      // If the tooltip is partially offscreen to the right (because the tooltip
-      // is too wide), then push it to the left to stay within the viewport, but
-      // not so much that it will become detached.
-      leftOffset = Math.min(tooltipRect.right - viewportWidth, tooltipRect.width - safetyMargin * 2);
-      tooltipStyle.left = `${scrollX + attachmentLeft - leftOffset}px`;
-    }
-
-    // Left-align the arrow 17px form the left edge of the highlight, unless the
-    // component is tiny, in which case, we center it.
-    let arrowLeft = Math.min(17, highlightRect.width / 2);
-
-    // Try to maintain at least 17 pixels to the left/right of the arrow so it
-    // doesn't "poke outside" the tooltip.
-    if (arrowLeft < 17) {
-      leftOffset = Math.max(leftOffset, 17);
-    }
-
-    tooltipStyle.top = `${scrollY + attachmentTop}px`;
-    tooltipStyle.left = `${scrollX + attachmentLeft - leftOffset}px`;
-
-    let arrow = this.tooltip.querySelector('.ember-inspector-tooltip-arrow');
-
-    arrow.style.left = `${Math.max(leftOffset, 0) + arrowLeft}px`;
+    this._positionTooltip(highlightRect);
   }
 
   _hideTooltip() {
@@ -641,6 +573,77 @@ export default class ViewInspection {
 
     // TODO: support other ember object strings, `[object Object]`, `Symbol(hi)` etc
     return [['tag', stringified]];
+  }
+
+  _positionTooltip(highlightRect) {
+    // Positioning the tooltip: the goal is to match the Chrome's Element
+    // inspection tooltip's positioning behavior as closely as possible.
+
+    let { style: tooltipStyle } = this.tooltip;
+    let { scrollX, scrollY, innerWidth } = window;
+
+    // Leave 20px safety margin in case of scrollbars
+    let safetyMargin = 20;
+    let viewportWidth = innerWidth - safetyMargin;
+
+    // Start by attaching the tooltip below the highlight, and align it to the
+    // left edge of the highlight.
+    let attachmentTop = highlightRect.bottom;
+    let attachmentLeft = highlightRect.left;
+
+    tooltipStyle.display = 'block';
+    tooltipStyle.top = `${scrollY + attachmentTop}px`;
+    tooltipStyle.left = `${scrollX + attachmentLeft}px`;
+
+    // Measure the tooltip
+    let tooltipRect = this.tooltip.getBoundingClientRect();
+
+    // Prefer to attach above the highlight instead, if space permits. This is
+    // visually more pleasing and matches the way Chrome attaches its Element
+    // inspection tooltips. We had to do this step here instead of setting it
+    // at the beginning, because it requires measuring the height of the rendered
+    // tooltip.
+    let top = highlightRect.top - tooltipRect.height - safetyMargin;
+
+    if (top >= 0) {
+      attachmentTop = top;
+      this.tooltip.setAttribute('class', `ember-inspector-tooltip-attach-above`);
+    } else {
+      this.tooltip.setAttribute('class', `ember-inspector-tooltip-attach-below`);
+    }
+
+    let leftOffset = 0;
+
+    // Try to keep the entire tooltip onscreen.
+    if (tooltipRect.left < 0) {
+      // If the tooltip is partially offscreen to the left (because the higlight
+      // is partially offscreen to the left), then push it to the right to stay
+      // within the viewport, but not so much that it will become detached.
+      leftOffset = Math.max(highlightRect.left - safetyMargin, safetyMargin - highlightRect.width);
+    } else if (tooltipRect.right > viewportWidth) {
+      // If the tooltip is partially offscreen to the right (because the tooltip
+      // is too wide), then push it to the left to stay within the viewport, but
+      // not so much that it will become detached.
+      leftOffset = Math.min(tooltipRect.right - viewportWidth, tooltipRect.width - safetyMargin * 2);
+      tooltipStyle.left = `${scrollX + attachmentLeft - leftOffset}px`;
+    }
+
+    // Left-align the arrow 17px form the left edge of the highlight, unless the
+    // component is tiny, in which case, we center it.
+    let arrowLeft = Math.min(17, highlightRect.width / 2);
+
+    // Try to maintain at least 17 pixels to the left/right of the arrow so it
+    // doesn't "poke outside" the tooltip.
+    if (arrowLeft < 17) {
+      leftOffset = Math.max(leftOffset, 17);
+    }
+
+    tooltipStyle.top = `${scrollY + attachmentTop}px`;
+    tooltipStyle.left = `${scrollX + attachmentLeft - leftOffset}px`;
+
+    let arrow = this.tooltip.querySelector('.ember-inspector-tooltip-arrow');
+
+    arrow.style.left = `${Math.max(leftOffset, 0) + arrowLeft}px`;
   }
 
   _insertHTML(html) {
