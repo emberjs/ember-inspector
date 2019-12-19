@@ -21,8 +21,8 @@ export default EmberObject.extend(PortMixin, {
   portNamespace: 'view',
 
   messages: {
-    getTree() {
-      this.sendTree();
+    getTree({ immediate }) {
+      this.sendTree(immediate);
     },
 
     showInspection({ id, pin }) {
@@ -133,7 +133,12 @@ export default EmberObject.extend(PortMixin, {
     this.get('adapter').inspectNode(node);
   },
 
-  sendTree() {
+  sendTree(immediate = false) {
+    if (immediate) {
+      this.send(true);
+      return;
+    }
+
     if (this.scheduledSendTree) {
       return;
     }
