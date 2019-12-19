@@ -45,10 +45,32 @@
 .component-tree-item__tag {
   cursor: default;
   display: flex;
+  white-space: nowrap;
 }
 
 .component-tree-item--has-instance .component-tree-item__tag {
   cursor: pointer;
+}
+
+.component-tree-item__tag .arg-token {
+  display: flex;
+  margin-left: 0.5rem;
+}
+
+.component-tree-item__tag .at-token {
+  color: var(--spec04);
+}
+
+.component-tree-item__tag .bracket-token {
+  color: var(--base07);
+}
+
+.component-tree-item__tag .key-token {
+  color: var(--spec02);
+}
+
+.component-tree-item__tag .value-token {
+  color: var(--spec03);
 }
 
 .component-tree-item__bracket:before {
@@ -63,6 +85,16 @@
 
 .component-tree-item__bracket.component-tree-item__bracket--self-closing:after {
   content: '/>';
+}
+
+.component-tree-item-classic__bracket:before {
+  color: var(--base07);
+  content: '{{';
+}
+
+.component-tree-item-classic__bracket:after {
+  color: var(--base07);
+  content: '}}';
 }
 
 .component-tree-item:hover {
