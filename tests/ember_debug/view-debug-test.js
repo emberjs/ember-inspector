@@ -4,6 +4,7 @@ import {
   triggerEvent,
   visit
 } from '@ember/test-helpers';
+import hasEmberVersion from '@ember/test-helpers/has-ember-version';
 import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 import EmberComponent from '@ember/component';
@@ -131,6 +132,7 @@ function setupApp() {
   }));
 
   this.owner.register('component:test-foo', EmberComponent.extend({
+    classNames: ['simple-component'],
     toString() {
       return 'App.TestFooComponent';
     }
@@ -144,7 +146,7 @@ function setupApp() {
   }));
 
   setTemplate.call(this, 'application', hbs`<div class="application">{{outlet}}</div>`);
-  setTemplate.call(this, 'simple', hbs`Simple {{test-foo class="simple-component"}} {{test-bar}}`);
+  setTemplate.call(this, 'simple', hbs`Simple {{test-foo}} {{test-bar}}`);
   setTemplate.call(this, 'comments/index', hbs`{{#each}}{{this}}{{/each}}`);
   setTemplate.call(this, 'posts', hbs`Posts`);
   setTemplate.call(this, 'components/test-foo', hbs`test-foo`);
@@ -260,12 +262,13 @@ function Component({
 
 function Route({
   name,
+  args = hasEmberVersion(3, 14) ? Args({ names: ['model'] }) : Args(),
   instance = Serialized(),
   template = `my-app/templates/${name}.hbs`,
   ...options
 }, ...children) {
   return RenderNode({ type: 'outlet', name: 'main', instance: undefined, template: null },
-    RenderNode({ name, instance, template, ...options, type: 'route-template' },
+    RenderNode({ name, args, instance, template, ...options, type: 'route-template' },
       ...children
     )
   );
@@ -274,6 +277,7 @@ function Route({
 function TopLevel(...children) {
   return Route({
     name: '-top-level',
+    args: Args(),
     instance: Undefined(),
     template: /^packages\/.+\/templates\/outlet\.hbs$/,
   }, ...children);
@@ -429,7 +433,7 @@ module('Ember Debug - View', function(hooks) {
     assert.equal(actual.width, expected.width, 'same width as component');
     assert.equal(actual.height, expected.height, 'same height as component');
 
-    await triggerEvent(this.element, 'mousemove');
+    await triggerEvent(document.body, 'mousemove');
 
     assert.ok(!isVisible(tooltip), 'tooltip is not visible');
     assert.ok(!isVisible(highlight), 'highlight is not visible');
