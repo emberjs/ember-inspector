@@ -1,7 +1,6 @@
 import { set, get } from '@ember/object';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { schedule } from '@ember/runloop';
 import Ember from "ember";
 
 const {
@@ -19,6 +18,7 @@ export default Route.extend({
     port.on('objectInspector:droppedObject', this, this.droppedObject);
     port.on('deprecation:count', this, this.setDeprecationCount);
     port.on('view:inspectComponent', this, this.inspectComponent);
+    port.on('view:previewComponent', this, this.previewComponent);
   },
 
   deactivate() {
@@ -29,12 +29,21 @@ export default Route.extend({
     port.off('objectInspector:droppedObject', this, this.droppedObject);
     port.off('deprecation:count', this, this.setDeprecationCount);
     port.off('view:inspectComponent', this, this.inspectComponent);
+    port.off('view:previewComponent', this, this.previewComponent);
   },
 
-  inspectComponent({ viewId }) {
+  inspectComponent({ id }) {
     this.transitionTo('component-tree', {
       queryParams: {
-        pinnedObjectId: viewId
+        pinned: id
+      }
+    });
+  },
+
+  previewComponent({ id }) {
+    this.transitionTo('component-tree', {
+      queryParams: {
+        previewing: id
       }
     });
   },
@@ -57,7 +66,7 @@ export default Route.extend({
       controller.activateMixinDetails(name, objectId, details, errors);
     }
 
-    this.send('expandInspector');
+    this.controller.showInspector();
   },
 
   setDeprecationCount(message) {
@@ -99,13 +108,6 @@ export default Route.extend({
   layoutService: service('layout'),
 
   actions: {
-    expandInspector() {
-      this.set("controller.inspectorExpanded", true);
-      // Broadcast that tables have been resized (used by `list`).
-      schedule('afterRender', () => {
-        this.layoutService.trigger('resize', { source: 'object-inspector' });
-      });
-    },
     inspectObject(objectId) {
       if (objectId) {
         this.port.send('objectInspector:inspectById', { objectId });

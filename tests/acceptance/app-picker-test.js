@@ -46,22 +46,10 @@ module('App Picker', function(hooks) {
   test('Both apps show up in picker', async function(assert) {
     // TODO: shouldn't this be called again when the app changes?
     respondWith('view:getTree', {
-      type: 'view:viewTree',
+      type: 'view:renderTree',
       applicationId: 'app-one',
       applicationName: 'First App',
-      tree: {
-        name: 'application',
-        isComponent: false,
-        objectId: 'applicationView',
-        viewClass: 'App.ApplicationView',
-        duration: 10,
-        controller: {
-          name: 'App.ApplicationController',
-          completeName: 'App.ApplicationController',
-          objectId: 'applicationController',
-        },
-        children: []
-      }
+      tree: []
     });
 
     await visit('/component-tree');

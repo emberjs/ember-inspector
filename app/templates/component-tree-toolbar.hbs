@@ -1,13 +1,9 @@
 <div class="toolbar">
   <button
-    class="{{if inspectingViews "active"}} toolbar__icon-button js-inspect-views"
-    {{on "click" this.toggleViewInspection}}
+    class="{{if this.isInspecting "active"}} toolbar__icon-button js-inspect-views"
+    {{on "click" this.toggleInspect}}
   >
-    {{svg-jar
-      "inspect"
-      width="16px"
-      height="17px"
-    }}
+    {{svg-jar "inspect" width="16px" height="17px"}}
   </button>
 
   <Ui::ToolbarDivider />
@@ -15,31 +11,23 @@
   <button
     class="toolbar__icon-button"
     title="expand all"
-    {{on "click" (fn this.expandOrCollapseAll true)}}
+    {{on "click" this.expandAll}}
   >
-    {{svg-jar
-      "chevron-down"
-      width="16px"
-      height="16px"
-    }}
+    {{svg-jar "chevron-down" width="16px" height="16px"}}
   </button>
 
   <button
     class="toolbar__icon-button"
     title="collapse all"
-    {{on "click" (fn this.expandOrCollapseAll false)}}
+    {{on "click" this.collapseAll}}
   >
-    {{svg-jar
-      "chevron-right"
-      width="16px"
-      height="16px"
-    }}
+    {{svg-jar "chevron-right" width="16px" height="16px"}}
   </button>
 
   <Ui::ToolbarDivider />
 
   <Ui::ToolbarSearchField
-    @value={{this.searchValue}}
+    @value={{this.query}}
     class="js-filter-views"
   />
 </div>
