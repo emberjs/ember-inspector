@@ -47,7 +47,7 @@
   display: flex;
 }
 
-.component-tree-item--component .component-tree-item__tag {
+.component-tree-item--has-instance .component-tree-item__tag {
   cursor: pointer;
 }
 
@@ -63,6 +63,18 @@
 
 .component-tree-item__bracket.component-tree-item__bracket--self-closing:after {
   content: '/>';
+}
+
+.component-tree-item:hover {
+  background-color: var(--spec06);
+
+  .component-tree-item__action {
+    opacity: 1;
+  }
+
+  .component-tree-item__action.disabled {
+    opacity: 0.65;
+  }
 }
 
 /**
@@ -111,16 +123,4 @@
 
 .component-tree-item--component {
   color: var(--component-text);
-
-  &:hover {
-    background-color: var(--spec06);
-
-    .component-tree-item__action {
-      opacity: 1;
-    }
-
-    .component-tree-item__action.disabled {
-      opacity: 0.65;
-    }
-  }
 }

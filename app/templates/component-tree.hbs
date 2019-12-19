@@ -1,20 +1,13 @@
-<div class="list__content js-component-tree" style="height: 100%;">
-  {{#vertical-collection
-    this.displayedList
-    estimateHeight=20
-    key="view.objectId"
-  as |item|
-  }}
-    <ComponentTreeItem
-      @item={{item}}
-      @highlighted={{component-parent-selected item this.pinnedObjectId}}
-      @selected={{eq item.view.objectId this.pinnedObjectId}}
-      @eventMouseEnter={{fn this.showPreviewLayer item}}
-      @eventMouseLeave={{this.hidePreviewLayer}}
-      @inspect={{fn this.inspect item.view.objectId}}
-      @scrollToElement={{fn this.scrollToElement item.view.objectId}}
-      @toggleExpanded={{fn this.toggleExpanded item}}
-      @viewInElementsPanel={{fn this.viewInElementsPanel item}}
-    />
+<ScrollContainer
+  {{did-insert this.arrowKeysSetup}}
+  {{will-destroy this.arrowKeysTeardown}}
+  @collection={{this.visibleItems}}
+  @currentItem={{this.currentItem}}
+  @itemHeight={{this.itemHeight}}
+  class="list__content js-component-tree"
+  tabindex="-1"
+>
+  {{#vertical-collection this.visibleItems estimateHeight=this.itemHeight key="id" as |item|}}
+    <ComponentTreeItem @item={{item}} />
   {{/vertical-collection}}
-</div>
+</ScrollContainer>

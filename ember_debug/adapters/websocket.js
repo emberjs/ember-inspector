@@ -15,9 +15,24 @@ export default BasicAdapter.extend({
 
   _listen() {
     this.get('socket').on('emberInspectorMessage', message => {
-      run(() => {
+      // We should generally not be run-wrapping here. Starting a runloop in
+      // ember-debug will cause the inspected app to revalidate/rerender. We
+      // are generally not intending to cause changes to the rendered output
+      // of the app, so this is generally unnecessary, and in big apps this
+      // could be quite slow. There is nothing special about the `view:*`
+      // messages – I (GC) just happened to have reviewed all of them recently
+      // and can be quite sure that they don't need the runloop. We should
+      // audit the rest of them and see if we can remove the else branch. I
+      // think we most likely can. In the limited cases (if any) where the
+      // runloop is needed, the callback code should just do the wrapping
+      // themselves.
+      if (message.type.startsWith('view:')) {
         this._messageReceived(message);
-      });
+      } else {
+        run(() => {
+          this._messageReceived(message);
+        });
+      }
     });
   },
 
