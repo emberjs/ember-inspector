@@ -8,30 +8,10 @@ import {
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { triggerPort } from '../helpers/trigger-port';
+import { respondWith, sendMessage } from '../test-adapter';
 
-let port, message, name;
-
-
-module('Object Inspector', function(hooks) {
-  setupApplicationTest(hooks);
-
-  hooks.beforeEach(function() {
-    port = this.owner.lookup('port:main');
-    port.reopen({
-      send(n, m) {
-        name = n;
-        message = m;
-      }
-    });
-  });
-
-  hooks.afterEach(function() {
-    name = null;
-    message = null;
-  });
-
-  const objectAttr = {
+function objectFactory(props) {
+  return {
     name: 'Object Name',
     objectId: 1,
     errors: [],
@@ -44,57 +24,60 @@ module('Object Inspector', function(hooks) {
           value: 1
         }]
       }
-    ]
+    ],
+    ...props
   };
+}
 
-  function objectFactory(props) {
-    return Object.assign({}, objectAttr, props);
-  }
-
-  function objectToInspect() {
-    return objectFactory({
-      name: 'My Object',
-      objectId: 'objectId',
-      errors: [],
-      details: [
-        {
-          name: 'First Detail',
-          expand: false,
-          properties: [{
-            name: 'numberProperty',
+function objectToInspect() {
+  return objectFactory({
+    name: 'My Object',
+    objectId: 'objectId',
+    errors: [],
+    details: [
+      {
+        name: 'First Detail',
+        expand: false,
+        properties: [{
+          name: 'numberProperty',
+          value: {
+            inspect: 1,
+            value: 'type-number'
+          }
+        }]
+      },
+      {
+        name: 'Second Detail',
+        properties: [
+          {
+            name: 'objectProperty',
             value: {
-              inspect: 1,
-              value: 'type-number'
+              inspect: 'Ember Object Name',
+              type: 'type-ember-object'
             }
-          }]
-        },
-        {
-          name: 'Second Detail',
-          properties: [
-            {
-              name: 'objectProperty',
-              value: {
-                inspect: 'Ember Object Name',
-                type: 'type-ember-object'
-              }
-            }, {
-              name: 'stringProperty',
-              value: {
-                inspect: 'String Value',
-                type: 'type-ember-string'
-              }
+          }, {
+            name: 'stringProperty',
+            value: {
+              inspect: 'String Value',
+              type: 'type-ember-string'
             }
-          ]
-        }
-      ]
-    });
-  }
+          }
+        ]
+      }
+    ]
+  });
+}
+
+module('Object Inspector', function(hooks) {
+  setupApplicationTest(hooks);
 
   test("The object displays correctly", async function (assert) {
-    let obj = objectFactory({ name: 'My Object' });
     await visit('/');
 
-    await triggerPort(this, 'objectInspector:updateObject', obj);
+    await sendMessage({
+      type: 'objectInspector:updateObject',
+      ...objectFactory({ name: 'My Object' })
+    });
 
     assert.dom('.js-object-name').hasText('My Object');
     assert.dom('.js-object-detail-name').hasText('Own Properties');
@@ -107,7 +90,10 @@ module('Object Inspector', function(hooks) {
   test("Object details", async function (assert) {
     await visit('/');
 
-    await triggerPort(this, 'objectInspector:updateObject', objectToInspect());
+    await sendMessage({
+      type: 'objectInspector:updateObject',
+      ...objectToInspect()
+    });
 
     assert.dom('.js-object-name').hasText('My Object');
     let [firstDetail, secondDetail] = findAll('.js-object-detail');
@@ -135,21 +121,15 @@ module('Object Inspector', function(hooks) {
   });
 
   test("Digging deeper into objects", async function (assert) {
-    let secondDetail;
-
     await visit('/');
 
-    triggerPort(this, 'objectInspector:updateObject', objectToInspect());
+    await sendMessage({
+      type: 'objectInspector:updateObject',
+      ...objectToInspect()
+    });
 
-    secondDetail = findAll('.js-object-detail')[1];
-    await click(secondDetail.querySelector('.js-object-detail-name'));
-
-    await click('.js-object-property .js-object-property-value');
-
-    assert.equal(name, 'objectInspector:digDeeper');
-    assert.deepEqual(message, { objectId: 'objectId', property: 'objectProperty' });
-
-    let nestedObject = {
+    respondWith('objectInspector:digDeeper', {
+      type: 'objectInspector:updateObject',
       parentObject: 'objectId',
       name: 'Nested Object',
       objectId: 'nestedObject',
@@ -164,18 +144,28 @@ module('Object Inspector', function(hooks) {
           }
         }]
       }]
-    };
+    });
 
-    await triggerPort(this, 'objectInspector:updateObject', nestedObject);
+    let secondDetail = findAll('.js-object-detail')[1];
+
+    await click(secondDetail.querySelector('.js-object-detail-name'));
+    await click('.js-object-property .js-object-property-value');
 
     assert.dom('.js-object-name').hasText('My Object', 'Title stays as the initial object.');
     assert.dom('.js-object-trail').hasText('.objectProperty', 'Nested property shows below title');
     assert.dom('.js-object-detail-name').hasText('Nested Detail');
+
     await click('.js-object-detail-name');
 
     assert.dom('.js-object-detail').hasClass('mixin_state_expanded');
     assert.dom('.js-object-property-name').hasText('nestedProp');
     assert.dom('.js-object-property-value').hasText('Nested Prop');
+
+    respondWith('objectInspector:releaseObject', ({ objectId }) => {
+      assert.equal(objectId, 'nestedObject');
+      return false;
+    });
+
     await click('.js-object-inspector-back');
 
     assert.dom('.js-object-trail').doesNotExist(0);
@@ -184,7 +174,8 @@ module('Object Inspector', function(hooks) {
   test("Computed properties", async function (assert) {
     await visit('/');
 
-    let obj = {
+    await sendMessage({
+      type: 'objectInspector:updateObject',
       name: 'My Object',
       objectId: 'myObject',
       details: [{
@@ -198,31 +189,31 @@ module('Object Inspector', function(hooks) {
           }
         }]
       }]
-    };
-
-    await triggerPort(this, 'objectInspector:updateObject', obj);
+    });
 
     await click('.js-object-detail-name');
-    await click('.js-calculate');
 
-    assert.equal(name, 'objectInspector:calculate');
-    assert.deepEqual(message, { objectId: 'myObject', property: 'computedProp', mixinIndex: 0 });
-    await triggerPort(this, 'objectInspector:updateProperty', {
-      objectId: 'myObject',
-      property: 'computedProp',
+    respondWith('objectInspector:calculate', ({ objectId, property, mixinIndex }) => ({
+      type: 'objectInspector:updateProperty',
+      objectId,
+      property,
+      mixinIndex,
       value: {
         inspect: 'Computed value',
         isCalculated: true
-      },
-      mixinIndex: 0
-    });
+      }
+    }));
+
+    await click('.js-calculate');
+
     assert.dom('.js-object-property-value').hasText('Computed value');
   });
 
   test("Service highlight", async function(assert) {
     await visit('/');
 
-    let obj = {
+    await sendMessage({
+      type: 'objectInspector:updateObject',
       name: 'My Object',
       objectId: 'myObject',
       details: [{
@@ -235,9 +226,8 @@ module('Object Inspector', function(hooks) {
           }
         }]
       }]
-    };
+    });
 
-    await triggerPort(this, 'objectInspector:updateObject', obj);
     await click('.js-object-detail-name');
 
     assert.dom('.mixin__property--group').exists({ count: 1 });
@@ -251,7 +241,8 @@ module('Object Inspector', function(hooks) {
   test("Computed properties no dependency", async function (assert) {
     await visit('/');
 
-    let obj = {
+    await sendMessage({
+      type: 'objectInspector:updateObject',
       name: 'My Object',
       objectId: 'myObject',
       details: [{
@@ -267,24 +258,22 @@ module('Object Inspector', function(hooks) {
           }
         }]
       }]
-    };
-
-    await triggerPort(this, 'objectInspector:updateObject', obj);
+    });
 
     await click('.js-object-detail-name');
-    await click('.js-calculate');
 
-    assert.equal(name, 'objectInspector:calculate');
-    assert.deepEqual(message, { objectId: 'myObject', property: 'computedProp', mixinIndex: 0 });
-    await triggerPort(this, 'objectInspector:updateProperty', {
-      objectId: 'myObject',
-      property: 'computedProp',
+    respondWith('objectInspector:calculate', ({ objectId, property, mixinIndex }) => ({
+      type: 'objectInspector:updateProperty',
+      objectId,
+      property,
+      mixinIndex,
       value: {
         inspect: 'Computed value',
         computed: 'foo-bar'
-      },
-      mixinIndex: 0
-    });
+      }
+    }));
+
+    await click('.js-calculate');
 
     assert.dom('.mixin__property--group').doesNotExist();
 
@@ -304,7 +293,8 @@ module('Object Inspector', function(hooks) {
   test("Computed properties dependency expand", async function (assert) {
     await visit('/');
 
-    let obj = {
+    await sendMessage({
+      type: 'objectInspector:updateObject',
       name: 'My Object',
       objectId: 'myObject',
       details: [{
@@ -319,22 +309,22 @@ module('Object Inspector', function(hooks) {
           }
         }]
       }]
-    };
-    await triggerPort(this, 'objectInspector:updateObject', obj);
-    await click('.js-object-detail-name');
-    await click('.js-calculate');
+    });
 
-    assert.equal(name, 'objectInspector:calculate');
-    assert.deepEqual(message, { objectId: 'myObject', property: 'computedProp', mixinIndex: 0 });
-    await triggerPort(this, 'objectInspector:updateProperty', {
-      objectId: 'myObject',
-      property: 'computedProp',
+    await click('.js-object-detail-name');
+
+    respondWith('objectInspector:calculate', ({ objectId, property, mixinIndex }) => ({
+      type: 'objectInspector:updateProperty',
+      objectId,
+      property,
+      mixinIndex,
       value: {
         inspect: 'Computed value',
         isCalculated: true
-      },
-      mixinIndex: 0
-    });
+      }
+    }));
+
+    await click('.js-calculate');
 
     assert.dom('.mixin__property--group').exists({ count: 1 });
 
@@ -363,7 +353,8 @@ module('Object Inspector', function(hooks) {
   test("Properties are bound to the application properties", async function (assert) {
     await visit('/');
 
-    let obj = {
+    await sendMessage({
+      type: 'objectInspector:updateObject',
       name: 'My Object',
       objectId: 'object-id',
       details: [{
@@ -377,13 +368,13 @@ module('Object Inspector', function(hooks) {
             isCalculated: false
           }
         }]
-
       }]
-    };
-    await triggerPort(this, 'objectInspector:updateObject', obj);
+    });
 
     assert.dom('.js-object-property-value').hasText('Teddy');
-    await triggerPort(this, 'objectInspector:updateProperty', {
+
+    await sendMessage({
+      type: 'objectInspector:updateProperty',
       objectId: 'object-id',
       mixinIndex: 0,
       property: 'boundProp',
@@ -398,23 +389,21 @@ module('Object Inspector', function(hooks) {
 
     let txtField = find('.js-object-property-value-txt');
     assert.equal(txtField.value, '"Alex"');
-    await fillIn(txtField, '"Joey"');
 
-    await triggerKeyEvent('.js-object-property-value-txt', 'keyup', 13);
-    assert.equal(name, 'objectInspector:saveProperty');
-    assert.equal(message.property, 'boundProp');
-    assert.equal(message.value, 'Joey');
-
-    await triggerPort(this, 'objectInspector:updateProperty', {
-      objectId: 'object-id',
+    respondWith('objectInspector:saveProperty', ({ objectId, property, value }) => ({
+      type: 'objectInspector:updateProperty',
+      objectId,
+      property,
       mixinIndex: 0,
-      property: 'boundProp',
       value: {
-        inspect: 'Joey',
+        inspect: value,
         type: 'type-string',
         isCalculated: false
       }
-    });
+    }));
+
+    await fillIn(txtField, '"Joey"');
+    await triggerKeyEvent('.js-object-property-value-txt', 'keyup', 13);
 
     assert.dom('.js-object-property-value').hasText('Joey');
   });
@@ -422,7 +411,8 @@ module('Object Inspector', function(hooks) {
   test("Stringified json should not get double parsed", async function (assert) {
     await visit('/');
 
-    let obj = {
+    await sendMessage({
+      type: 'objectInspector:updateObject',
       name: 'My Object',
       objectId: 'object-id',
       details: [{
@@ -436,27 +426,39 @@ module('Object Inspector', function(hooks) {
             isCalculated: true
           }
         }]
-
       }]
-    };
-    await triggerPort(this, 'objectInspector:updateObject', obj);
+    });
+
+    assert.dom('.js-object-property-value').hasText('{"name":"teddy"}');
 
     await click('.js-object-property-value');
 
     let txtField = find('.js-object-property-value-txt');
     assert.equal(txtField.value, '"{"name":"teddy"}"');
-    await fillIn(txtField, '"{"name":"joey"}"');
 
+    respondWith('objectInspector:saveProperty', ({ objectId, property, value }) => ({
+      type: 'objectInspector:updateProperty',
+      objectId,
+      property,
+      mixinIndex: 0,
+      value: {
+        inspect: value,
+        type: 'type-string',
+        isCalculated: false
+      }
+    }));
+
+    await fillIn(txtField, '"{"name":"joey"}"');
     await triggerKeyEvent('.js-object-property-value-txt', 'keyup', 13);
-    assert.equal(name, 'objectInspector:saveProperty');
-    assert.equal(message.property, 'boundProp');
-    assert.equal(message.value, '{"name":"joey"}');
+
+    assert.dom('.js-object-property-value').hasText('{"name":"joey"}');
   });
 
   test("Send to console", async function (assert) {
     await visit('/');
 
-    let obj = {
+    await sendMessage({
+      type: 'objectInspector:updateObject',
       name: 'My Object',
       objectId: 'object-id',
       details: [{
@@ -470,37 +472,43 @@ module('Object Inspector', function(hooks) {
             isCalculated: true
           }
         }]
-
       }]
-    };
-    await triggerPort(this, 'objectInspector:updateObject', obj);
+    });
+
+    respondWith('objectInspector:sendToConsole', ({ objectId, property }) => {
+      assert.equal(objectId, 'object-id');
+      assert.equal(property, 'myProp');
+      return false;
+    });
 
     // Grouped View
     await click('.js-send-to-console-btn');
 
-    assert.equal(name, 'objectInspector:sendToConsole');
-    assert.equal(message.objectId, 'object-id');
-    assert.equal(message.property, 'myProp');
+    respondWith('objectInspector:sendToConsole', ({ objectId, property }) => {
+      assert.equal(objectId, 'object-id');
+      assert.strictEqual(property, undefined);
+      return false;
+    });
 
     await click('.js-send-object-to-console-btn');
-
-    assert.equal(name, 'objectInspector:sendToConsole');
-    assert.equal(message.objectId, 'object-id');
-    assert.equal(message.property, undefined);
 
     // All View
-
     await click('.js-object-display-type-all');
+
+    respondWith('objectInspector:sendToConsole', ({ objectId, property }) => {
+      assert.equal(objectId, 'object-id');
+      assert.strictEqual(property, undefined);
+      return false;
+    });
+
     await click('.js-send-object-to-console-btn');
-    assert.equal(name, 'objectInspector:sendToConsole');
-    assert.equal(message.objectId, 'object-id');
-    assert.equal(message.property, undefined);
   });
 
   test("Read only CPs cannot be edited", async function (assert) {
     await visit('/');
 
-    let obj = {
+    await sendMessage({
+      type: 'objectInspector:updateObject',
       name: 'My Object',
       objectId: 'object-id',
       details: [{
@@ -524,9 +532,10 @@ module('Object Inspector', function(hooks) {
           }
         }]
       }]
-    };
-    await triggerPort(this, 'objectInspector:updateObject', obj);
+    });
+
     await click('.js-object-property-value');
+
     assert.dom('.js-object-property-value-txt').doesNotExist();
 
     let valueElements = findAll('.js-object-property-value');
@@ -538,19 +547,22 @@ module('Object Inspector', function(hooks) {
   test("Dropping an object due to destruction", async function (assert) {
     await visit('/');
 
-    let obj = {
+    await sendMessage({
+      type: 'objectInspector:updateObject',
       name: 'My Object',
       objectId: 'myObject',
       details: [{
         name: 'Detail',
         properties: []
       }]
-    };
-
-    await triggerPort(this, 'objectInspector:updateObject', obj);
+    });
 
     assert.dom('.js-object-name').hasText('My Object');
-    await triggerPort(this, 'objectInspector:droppedObject', { objectId: 'myObject' });
+
+    await sendMessage({
+      type: 'objectInspector:droppedObject',
+      objectId: 'myObject'
+    });
 
     assert.dom('.js-object-name').doesNotExist();
   });
@@ -558,9 +570,10 @@ module('Object Inspector', function(hooks) {
   test("Date fields are editable", async function (assert) {
     await visit('/');
 
-    let date = new Date();
+    let date = new Date(2019, 7, 13); // 2019-08-13
 
-    let obj = {
+    await sendMessage({
+      type: 'objectInspector:updateObject',
       name: 'My Object',
       objectId: 'myObject',
       details: [{
@@ -574,71 +587,91 @@ module('Object Inspector', function(hooks) {
           }
         }]
       }]
-    };
-    await triggerPort(this, 'objectInspector:updateObject', obj);
-    assert.ok(true);
+    });
 
     await click('.js-object-detail-name');
+
+    assert.dom('.js-object-property-value').hasText(date.toString());
+
     await click('.js-object-property-value');
 
     let field = find('.js-object-property-value-date');
     assert.ok(field);
-    await click(field);
+
+    respondWith('objectInspector:saveProperty', ({ objectId, property, value }) => {
+      assert.ok(typeof value === 'number', 'sent as timestamp');
+      date = new Date(value);
+
+      return {
+        type: 'objectInspector:updateProperty',
+        objectId,
+        property,
+        mixinIndex: 0,
+        value: {
+          inspect: date.toString(),
+          type: 'type-date',
+          isCalculated: false
+        }
+      };
+    });
+
     await fillIn(field, '2015-01-01');
     await triggerKeyEvent(field, 'keydown', 13);
 
-    assert.equal(name, 'objectInspector:saveProperty');
-    assert.equal(message.property, 'dateProperty');
-    assert.equal(message.dataType, 'date');
-
-    let newDate = new Date(message.value);
-    assert.equal(newDate.getMonth(), 0);
-    assert.equal(newDate.getDate(), 1);
-    assert.equal(newDate.getFullYear(), 2015);
+    assert.dom('.js-object-property-value').hasText(date.toString());
   });
 
   test("Errors are correctly displayed", async function (assert) {
-    let obj = objectFactory({
+    await visit('/');
+
+    await sendMessage({
+      type: 'objectInspector:updateObject',
       name: 'My Object',
       objectId: '1',
+      details: [],
       errors: [
         { property: 'foo' },
         { property: 'bar' }
       ]
     });
-    await visit('/');
-    await triggerPort(this, 'objectInspector:updateObject', obj);
 
     assert.dom('.js-object-name').hasText('My Object');
     assert.dom('.js-object-inspector-errors').exists({ count: 1 });
     assert.dom('.js-object-inspector-error').exists({ count: 2 });
 
+    respondWith('objectInspector:traceErrors', ({ objectId }) => {
+      assert.equal(objectId, '1');
+      return false;
+    });
+
     await click('.js-send-errors-to-console');
 
-    assert.equal(name, 'objectInspector:traceErrors');
-    assert.equal(message.objectId, '1');
-
-    await triggerPort(this, 'objectInspector:updateErrors', {
+    await sendMessage({
+      type: 'objectInspector:updateErrors',
       objectId: '1',
       errors: [
         { property: 'foo' }
       ]
     });
 
-    assert.dom('.js-object-inspector-error').exists();
+    assert.dom('.js-object-inspector-errors').exists({ count: 1 });
+    assert.dom('.js-object-inspector-error').exists({ count: 1 });
 
-    await triggerPort(this, 'objectInspector:updateErrors', {
+    await sendMessage({
+      type: 'objectInspector:updateErrors',
       objectId: '1',
       errors: []
     });
 
     assert.dom('.js-object-inspector-errors').doesNotExist();
+    assert.dom('.js-object-inspector-error').doesNotExist();
   });
 
   test("Tracked properties", async function (assert) {
     await visit('/');
 
-    let obj = {
+    await sendMessage({
+      type: 'objectInspector:updateObject',
       name: 'My Object',
       objectId: 'myObject',
       details: [{
@@ -652,16 +685,15 @@ module('Object Inspector', function(hooks) {
           }
         }]
       }]
-    };
-
-    await triggerPort(this, 'objectInspector:updateObject', obj);
+    });
 
     await click('.js-object-detail-name');
 
     assert.dom('.mixin__property-icon--tracked').exists();
     assert.dom('.js-object-property-value').hasText('123');
 
-    await triggerPort(this, 'objectInspector:updateProperty', {
+    await sendMessage({
+      type: 'objectInspector:updateProperty',
       objectId: 'myObject',
       property: 'trackedProp',
       value: {
@@ -670,13 +702,15 @@ module('Object Inspector', function(hooks) {
       mixinIndex: 0
     });
 
+    assert.dom('.mixin__property-icon--tracked').exists();
     assert.dom('.js-object-property-value').hasText('456');
   });
 
   test("Plain properties", async function (assert) {
     await visit('/');
 
-    let obj = {
+    await sendMessage({
+      type: 'objectInspector:updateObject',
       name: 'My Object',
       objectId: 'myObject',
       details: [{
@@ -690,16 +724,15 @@ module('Object Inspector', function(hooks) {
           }
         }]
       }]
-    };
-
-    await triggerPort(this, 'objectInspector:updateObject', obj);
+    });
 
     await click('.js-object-detail-name');
 
     assert.dom('.mixin__property-icon--property').exists();
     assert.dom('.js-object-property-value').hasText('123');
 
-    await triggerPort(this, 'objectInspector:updateProperty', {
+    await sendMessage({
+      type: 'objectInspector:updateProperty',
       objectId: 'myObject',
       property: 'plainProp',
       value: {
@@ -708,13 +741,15 @@ module('Object Inspector', function(hooks) {
       mixinIndex: 0
     });
 
+    assert.dom('.mixin__property-icon--property').exists();
     assert.dom('.js-object-property-value').hasText('456');
   });
 
   test("Getters", async function (assert) {
     await visit('/');
 
-    let obj = {
+    await sendMessage({
+      type: 'objectInspector:updateObject',
       name: 'My Object',
       objectId: 'myObject',
       details: [{
@@ -728,16 +763,15 @@ module('Object Inspector', function(hooks) {
           }
         }]
       }]
-    };
-
-    await triggerPort(this, 'objectInspector:updateObject', obj);
+    });
 
     await click('.js-object-detail-name');
 
     assert.dom('.mixin__property-icon--getter').exists();
     assert.dom('.js-object-property-value').hasText('123');
 
-    await triggerPort(this, 'objectInspector:updateProperty', {
+    await sendMessage({
+      type: 'objectInspector:updateProperty',
       objectId: 'myObject',
       property: 'getter',
       value: {
@@ -746,6 +780,7 @@ module('Object Inspector', function(hooks) {
       mixinIndex: 0
     });
 
+    assert.dom('.mixin__property-icon--getter').exists();
     assert.dom('.js-object-property-value').hasText('456');
   });
 });

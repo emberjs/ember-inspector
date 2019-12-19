@@ -76,6 +76,12 @@
    * @param {Boolean} force don't use the activeTabs array to check for an existing context menu
    */
   function updateContextMenu(force) {
+    // The Chromium that Electron runs does not have a chrome.contextMenus,
+    // so make sure this doesn't throw an error in Electron
+    if (!chrome.contextMenus) {
+      return;
+    }
+
     // Only add context menu item when an Ember app has been detected
     var isEmberApp = !!activeTabs[activeTabId] || force;
     if (!isEmberApp && contextMenuAdded) {

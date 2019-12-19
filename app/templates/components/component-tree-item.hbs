@@ -1,53 +1,54 @@
 <div
-  class="component-tree-item {{if @item.view.isComponent "component-tree-item--component"}} {{if @selected "component-tree-item--selected"}} {{if @highlighted "component-tree-item--highlighted"}}"
-  style={{component-indentation @item.hasChildren @item.parentCount}}
-  {{on "click" @inspect}}
-  {{on "mouseenter" @eventMouseEnter}}
-  {{on "mouseleave" @eventMouseLeave}}
+  style={{@item.style}}
+  class="
+    component-tree-item
+    {{if @item.isComponent "component-tree-item--component"}}
+    {{if @item.hasInstance "component-tree-item--has-instance"}}
+    {{if @item.isSelected "component-tree-item--selected"}}
+    {{if @item.isHighlighted "component-tree-item--highlighted"}}
+  "
+  {{on "click" @item.toggleInspection}}
+  {{on "mouseenter" @item.showPreview}}
+  {{on "mouseleave" @item.hidePreview}}
 >
   {{#if @item.hasChildren}}
     <Ui::DisclosureTriangle
       class="component-tree-item__expand"
       title="Click to toggle (alt/option click to toggle with children)"
-      @toggle={{@toggleExpanded}}
-      @expanded={{@item.expanded}}
+      @toggle={{@item.toggleExpansion}}
+      @expanded={{@item.isExpanded}}
     />
   {{/if}}
 
   <code
-    class="component-tree-item__tag {{if @item.view.isComponent "component-tree-item__bracket"}} {{if (not @item.hasChildren) "component-tree-item__bracket--self-closing"}}"
+    class="component-tree-item__tag {{if @item.isComponent "component-tree-item__bracket"}} {{if (not @item.hasChildren) "component-tree-item__bracket--self-closing"}}"
   >
-    {{if @item.view.isComponent (classify @item.view.name) @item.view.name}}
+    {{#if @item.isComponent}}
+      {{classify @item.name}}
+    {{else if @item.isOutlet}}
+      \{{outlet "{{@item.name}}"}}
+    {{else if @item.isEngine}}
+      \{{mount "{{@item.name}}"}}
+    {{else if @item.isRouteTemplate}}
+      {{@item.name}} route
+    {{/if}}
   </code>
 
-  {{#if @item.view.isComponent}}
+  {{#if @item.hasBounds}}
     <button
       class="component-tree-item__action js-scroll-into-view"
       title="Scroll into view"
-      {{on "click" @scrollToElement}}
+      {{on "click" @item.scrollIntoView}}
     >
-      {{svg-jar
-        "eye"
-        width="20px"
-        height="20px"
-      }}
+      {{svg-jar "eye" width="20px" height="20px"}}
     </button>
 
-    {{#if (component-has-element @item.view)}}
-      <button
-        class="component-tree-item__action js-view-dom-element"
-        title="View in Elements panel"
-        {{on "click" @viewInElementsPanel}}
-      >
-        {{svg-jar "code-line" width="20px" height="20px"}}
-      </button>
-    {{else}}
-      <button
-        class="component-tree-item__action disabled"
-        title="Tagless components cannot be viewed"
-      >
-        {{svg-jar "code-line" width="20px" height="20px"}}
-      </button>
-    {{/if}}
+    <button
+      class="component-tree-item__action js-view-dom-element"
+      title="View in Elements panel"
+      {{on "click" @item.inspectElement}}
+    >
+      {{svg-jar "code-line" width="20px" height="20px"}}
+    </button>
   {{/if}}
 </div>

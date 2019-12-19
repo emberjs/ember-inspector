@@ -4,7 +4,6 @@ import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
 import debounceComputed from "ember-inspector/computed/debounce";
-import LocalStorageService from "ember-inspector/services/storage/local";
 import { and, equal } from '@ember/object/computed';
 
 export default Controller.extend({
@@ -18,8 +17,7 @@ export default Controller.extend({
    * @property storage
    * @type {Service}
    */
-  storage: service(`storage/${LocalStorageService.STORAGE_TYPE_TO_USE}`),
-
+  storage: service(),
 
   /**
    * Checks if the user previously closed the warning by referencing localStorage

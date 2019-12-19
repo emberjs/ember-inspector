@@ -65,6 +65,12 @@ module.exports = function() {
           npm: {
             devDependencies: {}
           }
+        },
+        {
+          name: 'ember-default-no-prototype-extensions',
+          env: {
+            NO_EXTEND_PROTOTYPES: 'true'
+          }
         }
       ]
     };

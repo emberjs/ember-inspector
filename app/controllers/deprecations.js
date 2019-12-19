@@ -1,16 +1,20 @@
-import { action, get, computed } from '@ember/object';
+import { action, computed } from '@ember/object';
 import Controller from '@ember/controller';
 import debounceComputed from 'ember-inspector/computed/debounce';
 import searchMatch from 'ember-inspector/utils/search-match';
 
 export default Controller.extend({
+  init() {
+    this._super(...arguments);
+    this.deprecations = [];
+  },
+
   search: null,
   searchValue: debounceComputed('search', 300),
   toggleDeprecationWorkflow: false,
 
-  filtered: computed('model.@each.message', 'search', function() {
-    return this.model
-      .filter((item) => searchMatch(get(item, 'message'), this.search));
+  filtered: computed('deprecations.@each.message', 'search', function() {
+    return this.deprecations.filter(item => searchMatch(item.message, this.search));
   }),
 
   openResource: action(function(item) {

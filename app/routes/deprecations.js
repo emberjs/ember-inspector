@@ -1,32 +1,39 @@
-import { set } from '@ember/object';
-import TabRoute from "ember-inspector/routes/tab";
+import { Promise } from 'rsvp';
+import { setProperties } from '@ember/object';
+import TabRoute from 'ember-inspector/routes/tab';
 
 export default TabRoute.extend({
-  setupController() {
-    let port = this.port;
-    port.on('deprecation:deprecationsAdded', this, this.deprecationsAdded);
-    port.send('deprecation:watch');
-    this._super(...arguments);
+  model() {
+    return new Promise(resolve => {
+      this.port.one('deprecation:deprecationsAdded', resolve);
+      this.port.send('deprecation:watch');
+    });
   },
 
-  model() {
-    return [];
+  setupController(controller, message) {
+    this._super(...arguments);
+    this.deprecationsAdded(message);
+  },
+
+  activate() {
+    this._super(...arguments);
+    this.port.on('deprecation:deprecationsAdded', this, this.deprecationsAdded);
   },
 
   deactivate() {
+    this._super(...arguments);
     this.port.off('deprecation:deprecationsAdded', this, this.deprecationsAdded);
   },
 
   deprecationsAdded(message) {
-    let model = this.currentModel;
+    let { deprecations } = this.controller;
+
     message.deprecations.forEach(item => {
-      let record = model.findBy('id', item.id);
+      let record = deprecations.findBy('id', item.id);
       if (record) {
-        set(record, 'count', item.count);
-        set(record, 'sources', item.sources);
-        set(record, 'url', item.url);
+        setProperties(record, item);
       } else {
-        model.pushObject(item);
+        deprecations.pushObject(item);
       }
     });
   },
@@ -36,6 +43,5 @@ export default TabRoute.extend({
       this.port.send('deprecation:clear');
       this.currentModel.clear();
     }
-
   }
 });

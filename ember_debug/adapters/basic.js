@@ -10,6 +10,8 @@ export default EmberObject.extend({
     resolve(this.connect(), 'ember-inspector').then(() => {
       this.onConnectionReady();
     }, null, 'ember-inspector');
+
+    this._messageCallbacks = [];
   },
 
   /**
@@ -54,26 +56,24 @@ export default EmberObject.extend({
     @param {Function} callback
   */
   onMessageReceived(callback) {
-    this.get('_messageCallbacks').pushObject(callback);
+    this._messageCallbacks.push(callback);
   },
 
   /**
-    Inspect a specific element.  This usually
+    Inspect a specific DOM node. This usually
     means using the current environment's tools
-    to inspect the element in the DOM.
+    to inspect the node in the DOM.
 
-    For example, in chrome, `inspect(elem)`
+    For example, in chrome, `inspect(node)`
     will open the Elements tab in dev tools
-    and highlight the element.
+    and highlight the DOM node.
 
-    @param {DOM Element} elem
+    @param {Node} node
   */
-  inspectElement(/* elem */) {},
-
-  _messageCallbacks: computed(function() { return A(); }),
+  inspectNode(/* node */) {},
 
   _messageReceived(message) {
-    this.get('_messageCallbacks').forEach(callback => {
+    this._messageCallbacks.forEach(callback => {
       callback(message);
     });
   },

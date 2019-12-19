@@ -1,4 +1,4 @@
-# Ember Inspector [![Build Status](https://github.com/emberjs/ember-inspector/workflows/Build%20and%20Publish/badge.svg?branch=stable)](https://github.com/emberjs/ember-inspector/actions?query=branch%3Astable+workflow%3A%22Build+and+Publish%22)
+# Ember Inspector [![Build Status](https://github.com/emberjs/ember-inspector/workflows/Build%20and%20Publish/badge.svg?branch=master)](https://github.com/emberjs/ember-inspector/actions?query=branch%3Amaster+workflow%3A%22Build+and+Publish%22)
 
 Adds an Ember tab to the browser's Developer Tools that allows you to inspect
 Ember objects in your application.

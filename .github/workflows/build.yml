@@ -64,6 +64,7 @@ jobs:
     strategy:
       matrix:
         scenario:
+          - default-no-prototype-extensions
           - release
           - beta
           - canary
@@ -77,6 +78,9 @@ jobs:
         uses: rwjblue/setup-volta@v1
       - name: Install dependencies (yarn)
         run: yarn install
+      - name: Set NO_EXTEND_PROTOTYPES
+        if: matrix.scenario == 'default-no-prototype-extensions'
+        run: echo "::set-env name=NO_EXTEND_PROTOTYPES,::true"
       - name: Setup ember-try scenario
         run: yarn ember try:one ember-${{ matrix.scenario }} --skip-cleanup --- cat package.json
       - name: Build
@@ -88,7 +92,6 @@ jobs:
 
   build:
     name: Build extensions
-    needs: test
     runs-on: ubuntu-latest
     env:
       CI: 'true'
@@ -103,10 +106,10 @@ jobs:
         run: node scripts/download-panes.js
         env:
           EMBER_ENV: production
-      - name: Update manifest.json
+      - name: Update manifest.json (nightly)
         if: github.event_name == 'schedule'
         run: |
-          DATE="$(date +"%Y.%m.%d")"
+          DATE="$(date +"%Y.%-m.%-d")"
           SHA="${GITHUB_SHA:0:7}"
           VERSION="$(jq -r '.version' package.json)"
           CONTENT="$(cat "$FILE")"
@@ -119,10 +122,26 @@ jobs:
             .name += " (Nightly)" |
             .version = $date |
             .version_name = "\($version) (nightly build \($date) / \($sha))"
-      - name: Update package.json
+      - name: Update manifest.json (pull request)
+        if: github.event_name == 'pull_request'
+        run: |
+          SHA="${SHA:0:7}"
+          CONTENT="$(cat "$FILE")"
+
+          echo "$CONTENT" | jq --arg pr "$PR" --arg sha "$SHA" "$FILTER" > $FILE
+          cat "$FILE"
+        env:
+          FILE: skeletons/web-extension/manifest.json
+          FILTER: >-
+            .name += " (PR #\($pr))" |
+            .version = $pr |
+            .version_name = $sha
+          PR: ${{ github.event.pull_request.number }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+      - name: Update package.json (nightly)
         if: github.event_name == 'schedule'
         run: |
-          DATE="$(date +"%Y.%m.%d")"
+          DATE="$(date +"%Y.%-m.%-d")"
           SHA="${GITHUB_SHA:0:7}"
           CONTENT="$(cat "$FILE")"
 
@@ -131,6 +150,27 @@ jobs:
         env:
           FILE: package.json
           FILTER: .version += "-alpha.\($date)+\($sha)"
+      - name: Update package.json (pull request)
+        if: github.event_name == 'pull_request'
+        run: |
+          SHA="${SHA:0:7}"
+          CONTENT="$(cat "$FILE")"
+
+          echo "$CONTENT" | jq --arg pr "$PR" --arg sha "$SHA" "$FILTER" > $FILE
+          cat "$FILE"
+        env:
+          FILE: package.json
+          FILTER: .version += "-alpha.0.\($pr)+\($sha)"
+          PR: ${{ github.event.pull_request.number }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+      - name: Set EMBER_INSPECTOR_TAB (nightly)
+        if: github.event_name == 'schedule'
+        run: echo "::set-env name=EMBER_INSPECTOR_TAB,::Nightly"
+      - name: Set EMBER_INSPECTOR_TAB (pull request)
+        if: github.event_name == 'pull_request'
+        run: echo "::set-env name=EMBER_INSPECTOR_TAB,::PR \#$PR"
+        env:
+          PR: ${{ github.event.pull_request.number }}
       - name: Build
         run: yarn ember build --environment production
       - name: Pack

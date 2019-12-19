@@ -34,10 +34,15 @@ module('Ember Debug - Deprecation', function(hooks) {
   });
 
   test('deprecations are caught and sent', async function t(assert) {
-    let messages = [];
+    let deprecations, count;
+
     port.reopen({
       send(name, message) {
-        messages.push({ name, message });
+        if (name === 'deprecation:deprecationsAdded') {
+          deprecations = message.deprecations;
+        } else if (name === 'deprecation:count') {
+          count = message.count;
+        }
       }
     });
 
@@ -52,20 +57,22 @@ module('Ember Debug - Deprecation', function(hooks) {
     });
 
     run(port, 'trigger', 'deprecation:watch');
+
     await visit('/');
-    let deprecations = messages.filterBy('name', 'deprecation:deprecationsAdded').get('lastObject').message.deprecations;
+
     assert.equal(deprecations.length, 2);
+
     let deprecation = deprecations[0];
     assert.equal(deprecation.count, 2, 'Correctly combined');
     assert.equal(deprecation.message, 'Deprecation 1');
     assert.equal(deprecation.sources.length, 2, 'Correctly separated by source');
+
     deprecation = deprecations[1];
     assert.equal(deprecation.count, 1);
     assert.equal(deprecation.message, 'Deprecation 2');
     assert.equal(deprecation.sources.length, 1);
     assert.equal(deprecation.url, 'http://www.emberjs.com');
 
-    let count = messages.filterBy('name', 'deprecation:count').get('lastObject').message.count;
     assert.equal(count, 3, 'count correctly sent');
   });
 

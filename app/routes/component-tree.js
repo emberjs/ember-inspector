@@ -1,71 +1,60 @@
-import TabRoute from "ember-inspector/routes/tab";
+import { Promise } from 'rsvp';
+import TabRoute from 'ember-inspector/routes/tab';
 
-export default TabRoute.extend({
-  queryParams: {
-    pinnedObjectId: {
-      replace: true
-    }
-  },
+export default class ComponentTreeRoute extends TabRoute {
+  queryParams = {
+    pinned: { replace: true },
+    previewing: { replace: true },
+    query: { replace: true },
+  };
 
   model() {
-    return [];
-  },
+    return new Promise(resolve => {
+      this.port.one('view:renderTree', resolve);
+      this.port.send('view:getTree', { immediate: true });
+    });
+  }
 
-  setupController() {
-    this._super(...arguments);
-    this.port.on('view:viewTree', this, this.setViewTree);
-    this.port.on('view:stopInspecting', this, this.stopInspecting);
+  setupController(controller, message) {
+    super.setupController(...arguments);
+    this.setRenderTree(message);
+  }
+
+  activate() {
+    super.activate(...arguments);
+    this.port.on('view:renderTree', this, this.setRenderTree);
+    this.port.on('view:cancelSelection', this, this.cancelSelection);
     this.port.on('view:startInspecting', this, this.startInspecting);
+    this.port.on('view:stopInspecting', this, this.stopInspecting);
     this.port.on('view:inspectDOMNode', this, this.inspectDOMNode);
-
-    this.set('controller.viewTreeLoaded', false);
-    this.port.send('view:getTree');
-  },
+  }
 
   deactivate() {
-    this.port.off('view:viewTree', this, this.setViewTree);
-    this.port.off('view:stopInspecting', this, this.stopInspecting);
+    super.deactivate(...arguments);
+    this.port.off('view:renderTree', this, this.setRenderTree);
+    this.port.off('view:cancelSelection', this, this.cancelSelection);
     this.port.off('view:startInspecting', this, this.startInspecting);
+    this.port.off('view:stopInspecting', this, this.stopInspecting);
     this.port.off('view:inspectDOMNode', this, this.inspectDOMNode);
-  },
+  }
 
-  setViewTree(options) {
-    this.set('controller.viewTree', options.tree);
-    this.set('controller.viewTreeLoaded', true);
+  setRenderTree({ tree }) {
+    this.controller.renderTree = tree;
+  }
 
-    // If we're waiting for view tree to inspect a component
-    const componentToInspect = this.get('controller.pinnedObjectId');
-    if (componentToInspect) {
-      this.inspectComponent(componentToInspect);
-    }
-  },
-
-  inspectComponent(viewId) {
-    if (!this.get('controller.viewTreeLoaded')) {
-      return;
-    }
-
-    this.controller.inspect(viewId);
-  },
+  cancelSelection({ id, pin }) {
+    this.controller.cancelSelection(id, pin);
+  }
 
   startInspecting() {
-    this.set('controller.inspectingViews', true);
-  },
+    this.controller.isInspecting = true;
+  }
 
   stopInspecting() {
-    this.set('controller.inspectingViews', false);
-  },
-
-  inspectDOMNode({ selector }) {
-    this.get('port.adapter').inspectDOMNode(selector);
-  },
-
-  actions: {
-    queryParamsDidChange(params) {
-      const { pinnedObjectId } = params;
-      if (pinnedObjectId) {
-        this.inspectComponent(pinnedObjectId);
-      }
-    }
+    this.controller.isInspecting = false;
   }
-});
+
+  inspectDOMNode({ name }) {
+    this.port.adapter.inspectDOMNode(name);
+  }
+}

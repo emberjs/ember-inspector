@@ -1,45 +1,76 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
-import { compareVersion } from 'ember-debug/utils/version';
+import bound from 'ember-debug/utils/bound-method';
 import { isComputed, isDescriptor, getDescriptorFor } from 'ember-debug/utils/type-check';
+import { compareVersion } from 'ember-debug/utils/version';
+import { typeOf } from './utils/type-check';
 
 const Ember = window.Ember;
 const {
-  Object: EmberObject, inspect: emberInspect, meta: emberMeta, typeOf: emberTypeOf,
+  Object: EmberObject, inspect: emberInspect, meta: emberMeta,
   computed, get, set, guidFor, isNone,
-  cacheFor, VERSION
+  cacheFor, VERSION, run,
 } = Ember;
 const { oneWay } = computed;
+const { backburner, join } = run;
 
-let glimmer;
-let metal;
+const GlimmerComponent = (() => {
+  try {
+    return window.require('@glimmer/component').default;
+  } catch(e) {
+    // ignore, return undefined
+  }
+})();
+
+let GlimmerReference = null;
+let metal = null;
 let HAS_GLIMMER_TRACKING = false;
 try {
-  glimmer = Ember.__loader.require('@glimmer/reference');
+  GlimmerReference = Ember.__loader.require('@glimmer/reference');
   metal = Ember.__loader.require('@ember/-internals/metal');
-  HAS_GLIMMER_TRACKING = glimmer && 
-                         glimmer.value && 
-                         glimmer.validate && 
-                         metal && 
-                         metal.track && 
+  HAS_GLIMMER_TRACKING = GlimmerReference &&
+                         GlimmerReference.value &&
+                         GlimmerReference.validate &&
+                         metal &&
+                         metal.track &&
                          metal.tagForProperty;
 } catch (e) {
-  glimmer = null;
-  metal = null;
+  // ignore
 }
 
 const keys = Object.keys || Ember.keys;
 
 /**
- * workaround to support detection of `[object AsyncFunction]` as a function
- * @param value
- * @returns {string}
+ * Add Known Ember Mixins and Classes so we can label them correctly in the inspector
  */
-function typeOf(value) {
-  if (typeof value === 'function') {
-    return 'function';
-  }
-  return emberTypeOf(value);
+const emberNames = new Map([
+  [Ember.Evented, 'Evented Mixin'],
+  [Ember.PromiseProxyMixin, 'PromiseProxy Mixin'],
+  [Ember.MutableArray, 'MutableArray Mixin'],
+  [Ember.MutableEnumerable, 'MutableEnumerable Mixin'],
+  [Ember.NativeArray, 'NativeArray Mixin'],
+  [Ember.Observable, 'Observable Mixin'],
+  [Ember.ControllerMixin, 'Controller Mixin'],
+  [Ember.TargetActionSupport, 'TargetActionSupport Mixin'],
+  [Ember.ActionHandler, 'ActionHandler Mixin'],
+  [Ember.CoreObject, 'CoreObject'],
+  [Ember.Object, 'EmberObject'],
+  [Ember.Component, 'Component'],
+]);
+
+try {
+  const Views = Ember.__loader.require('@ember/-internals/views');
+  emberNames.set(Views.ViewStateSupport, 'ViewStateSupport Mixin');
+  emberNames.set(Views.ViewMixin, 'View Mixin');
+  emberNames.set(Views.ActionSupport, 'ActionSupport Mixin');
+  emberNames.set(Views.ClassNamesSupport, 'ClassNamesSupport Mixin');
+  emberNames.set(Views.ChildViewsSupport, 'ChildViewsSupport Mixin');
+  emberNames.set(Views.ViewStateSupport , 'ViewStateSupport  Mixin');
+  // this one is not a Mixin, but an .extend({}), which results in a class
+  emberNames.set(Views.CoreView, 'CoreView');
+} catch (e) {
+  // do nothing
 }
+
 
 /**
  * Determine the type and get the value of the passed property
@@ -111,7 +142,7 @@ function inspect(value) {
         if (v === 'toString') {
           continue;
         } // ignore useless items
-        if (typeOf(v) === 'function') {
+        if (typeOf(v).includes('function')) {
           v = 'function() { ... }';
         }
         if (typeOf(v) === 'array') {
@@ -143,7 +174,7 @@ function isMandatorySetter(descriptor) {
   return false;
 }
 
-function getTagTrackedProps(tag, ownTag, level=0) {
+function getTagTrackedProps(tag, ownTag, level = 0) {
   const props = [];
   // do not include tracked properties from dependencies
   if (!tag || level > 1) {
@@ -190,7 +221,7 @@ export default EmberObject.extend(PortMixin, {
 
   updateCurrentObject() {
     if (this.currentObject) {
-      const {object, mixinDetails, objectId} = this.currentObject;
+      const { object, mixinDetails, objectId } = this.currentObject;
       mixinDetails.forEach((mixin, mixinIndex) => {
         mixin.properties.forEach(item => {
           if (item.overridden) {
@@ -204,7 +235,7 @@ export default EmberObject.extend(PortMixin, {
             let value = null;
             let changed = false;
             const values = this.objectPropertyValues[objectId] = this.objectPropertyValues[objectId] || {};
-            const tracked = this.trackedTags[objectId] = this.trackedTags[objectId]  || {};
+            const tracked = this.trackedTags[objectId] = this.trackedTags[objectId] || {};
 
             const desc = Object.getOwnPropertyDescriptor(object, item.name);
             const isSetter = desc && isMandatorySetter(desc);
@@ -213,16 +244,16 @@ export default EmberObject.extend(PortMixin, {
               let tagInfo = tracked[item.name] || { tag: metal.tagForProperty(object, item.name), revision: 0 };
               if (!tagInfo.tag) return;
 
-              changed = !glimmer.validate(tagInfo.tag, tagInfo.revision);
+              changed = !GlimmerReference.validate(tagInfo.tag, tagInfo.revision);
               if (changed) {
                 tagInfo.tag = metal.track(() => {
                   value = get(object, item.name);
                 });
-                tagInfo.revision = glimmer.value(object, item.name);
+                tagInfo.revision = GlimmerReference.value(object, item.name);
               }
               tracked[item.name] = tagInfo;
             } else {
-              value = calculateCP(object, item.name, {});
+              value = calculateCP(object, item, {});
               if (values[item.name] !== value) {
                 changed = true;
                 values[item.name] = value;
@@ -244,14 +275,12 @@ export default EmberObject.extend(PortMixin, {
         });
       });
     }
-    // workaround for tests, since calling any runloop inside runloop will prevent any `settled` to be called
-    setTimeout(() => Ember.run.next(this, this.updateCurrentObject), 300);
   },
 
   init() {
     this._super();
     this.set('sentObjects', {});
-    Ember.run.next(this, this.updateCurrentObject);
+    backburner.on('end', bound(this, this.updateCurrentObject));
   },
 
   willDestroy() {
@@ -259,6 +288,7 @@ export default EmberObject.extend(PortMixin, {
     for (let objectId in this.sentObjects) {
       this.releaseObject(objectId);
     }
+    backburner.off('end', bound(this, this.updateCurrentObject));
   },
 
   sentObjects: {},
@@ -369,7 +399,7 @@ export default EmberObject.extend(PortMixin, {
 
   saveProperty(objectId, prop, val) {
     let object = this.sentObjects[objectId];
-    set(object, prop, val);
+    join(() => set(object, prop, val));
   },
 
   sendToConsole(objectId, prop) {
@@ -379,7 +409,7 @@ export default EmberObject.extend(PortMixin, {
     if (isNone(prop)) {
       value = this.sentObjects[objectId];
     } else {
-      value = calculateCP(object, prop, {});
+      value = calculateCP(object, { name: prop }, {});
     }
 
     this.sendValueToConsole(value);
@@ -399,7 +429,7 @@ export default EmberObject.extend(PortMixin, {
 
   digIntoObject(objectId, property) {
     let parentObject = this.sentObjects[objectId];
-    let object = calculateCP(parentObject, property, {});
+    let object = calculateCP(parentObject, { name: property }, {});
 
     if (this.canSend(object)) {
       const currentObject = this.currentObject;
@@ -467,7 +497,6 @@ export default EmberObject.extend(PortMixin, {
     if (meta._debugReferences === 0) {
       this.dropObject(guid);
     }
-
   },
 
   dropObject(objectId) {
@@ -536,26 +565,28 @@ export default EmberObject.extend(PortMixin, {
   mixinDetailsForObject(object) {
     const mixins = [];
 
-    const mixin = {
+    const own = ownMixins(object);
+
+    const objectMixin = {
       id: guidFor(object),
       name: getClassName(object),
-      properties: ownProperties(object)
+      properties: ownProperties(object, own)
     };
 
-    mixins.push(mixin);
+    mixins.push(objectMixin);
 
     // insert ember mixins
-    for (let mixin of ownMixins(object)) {
-      let name = (mixin[Ember.NAME_KEY] || mixin.ownerConstructor || '').toString();
+    for (let mixin of own) {
+      let name = (mixin[Ember.NAME_KEY] || mixin.ownerConstructor || emberNames.get(mixin) || '').toString();
 
-      if (typeof mixin.toString === 'function') {
+      if (!name && (typeof mixin.toString === 'function')) {
         try {
           name = mixin.toString();
 
           if (name === '(unknown)') {
             name = '(unknown mixin)';
           }
-        } catch(e) {
+        } catch (e) {
           name = '(Unable to convert Object to string)';
         }
       }
@@ -580,6 +611,14 @@ export default EmberObject.extend(PortMixin, {
   },
 
   mixinsForObject(object) {
+    if (object instanceof Ember.ObjectProxy && object.content && !object._showProxyDetails) {
+      object = object.content;
+    }
+
+    if (object instanceof Ember.ArrayProxy && object.content && !object._showProxyDetails) {
+      object = object.slice(0, 101);
+    }
+
     let mixinDetails = this.mixinDetailsForObject(object);
 
     mixinDetails[0].name = 'Own Properties';
@@ -607,7 +646,7 @@ export default EmberObject.extend(PortMixin, {
     let objectId = this.retainObject(object);
 
     let errorsForObject = this.get('_errorsFor')[objectId] = {};
-    const tracked = this.trackedTags[objectId] = this.trackedTags[objectId]  || {};
+    const tracked = this.trackedTags[objectId] = this.trackedTags[objectId] || {};
     calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties, tracked);
 
     this.currentObject = { object, mixinDetails, objectId };
@@ -622,7 +661,7 @@ export default EmberObject.extend(PortMixin, {
     if (object.isDestroying) {
       value = '<DESTROYED>';
     } else {
-      value = calculateCP(object, property, this.get('_errorsFor')[objectId]);
+      value = calculateCP(object, { name: property }, this.get('_errorsFor')[objectId]);
     }
 
     if (!value || !(value instanceof CalculateCPError)) {
@@ -640,7 +679,7 @@ export default EmberObject.extend(PortMixin, {
 
 function getClassName(object) {
   let name = '';
-  let className = object.constructor.name;
+  let className = emberNames.get(object.constructor) || object.constructor.name;
 
   if ('toString' in object && object.toString !== Function.prototype.toString) {
     name = object.toString();
@@ -688,10 +727,9 @@ function ownMixins(object) {
   return mixins;
 }
 
-function ownProperties(object) {
+function ownProperties(object, ownMixins) {
   let meta = Ember.meta(object);
-  let parentMeta = meta.parent;
-  
+
   if (Array.isArray(object)) {
     // slice to max 101, for performance and so that the object inspector will show a `more items` indicator above 100
     object = object.slice(0, 101);
@@ -700,10 +738,33 @@ function ownProperties(object) {
   let props = Object.getOwnPropertyDescriptors(object);
   delete props.constructor;
 
+  // meta has the correct descriptors for CPs
   meta.forEachDescriptors((name, desc) => {
-    // TODO: Need to add a way to get own descriptors only from meta
-    if (!parentMeta || !parentMeta.peekDescriptors(name)) {
+    // only for own properties
+    if (props[name]) {
       props[name] = desc;
+    }
+  });
+
+  // remove properties set by mixins
+  // especially for Object.extend(mixin1, mixin2), where a new class is created which holds the merged properties
+  // if all properties are removed, it will be marked as useless mixin and will not be shown
+  ownMixins.forEach((m) => {
+    if (m.mixins) {
+      m.mixins.forEach((mix) => {
+        Object.keys(mix.properties || {}).forEach((k) => {
+          const pDesc = Object.getOwnPropertyDescriptor(mix.properties, k);
+          if (pDesc && props[k] && pDesc.get && pDesc.get === props[k].get) {
+            delete props[k];
+          }
+          if (pDesc && props[k] && 'value' in pDesc && pDesc.value === props[k].value) {
+            delete props[k];
+          }
+          if (pDesc && props[k] && pDesc._getter === props[k]._getter) {
+            delete props[k];
+          }
+        })
+      })
     }
   });
 
@@ -910,7 +971,7 @@ function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties
           if (item.canTrack && HAS_GLIMMER_TRACKING) {
             const tagInfo = tracked[item.name] = {};
             tagInfo.tag = metal.track(() => {
-              value = calculateCP(object, item.name, errorsForObject);
+              value = calculateCP(object, item, errorsForObject);
             });
             if (tagInfo.tag === metal.tagForProperty(object, item.name)) {
               if (!item.isComputed && !item.isService) {
@@ -918,10 +979,10 @@ function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties
                 item.isTracked = true;
               }
             }
-            tagInfo.revision = glimmer.value(object, item.name);
+            tagInfo.revision = GlimmerReference.value(object, item.name);
             item.dependentKeys = getTrackedDependencies(object, item.name, tagInfo.tag);
           } else {
-           value = calculateCP(object, item.name, errorsForObject);
+            value = calculateCP(object, item, errorsForObject);
           }
           if (!value || !(value instanceof CalculateCPError)) {
             item.value = inspectValue(object, item.name, value);
@@ -1049,8 +1110,10 @@ function getDebugInfo(object) {
   let debugInfo = null;
   let objectDebugInfo = get(object, '_debugInfo');
   if (objectDebugInfo && typeof objectDebugInfo === 'function') {
-    // We have to bind to object here to make sure the `this` context is correct inside _debugInfo when we call it
-    debugInfo = objectDebugInfo.bind(object)();
+    if (object instanceof Ember.ObjectProxy && object.content) {
+      object = object.content;
+    }
+    debugInfo = objectDebugInfo.call(object);
   }
   debugInfo = debugInfo || {};
   let propertyInfo = debugInfo.propertyInfo || (debugInfo.propertyInfo = {});
@@ -1075,6 +1138,17 @@ function getDebugInfo(object) {
       'element',
       'targetObject'
     );
+  } else if (GlimmerComponent && object instanceof GlimmerComponent) {
+    // These properties don't really exist on Glimmer Components, but
+    // reading their values trigger a development mode assertion. The
+    // more correct long term fix is to make getters lazy (shows "..."
+    // in the UI and only computed them when requested (when the user
+    // clicked on the "..." in the UI).
+    skipProperties.push(
+      'bounds',
+      'debugName',
+      'element'
+    );
   }
   return debugInfo;
 }
@@ -1084,20 +1158,21 @@ function toArray(errors) {
   return keys(errors).map(key => errors[key]);
 }
 
-function calculateCP(object, property, errorsForObject) {
+function calculateCP(object, item, errorsForObject) {
+  const property = item.name;
   delete errorsForObject[property];
   try {
     if (object instanceof Ember.ArrayProxy && property == parseInt(property)) {
       return object.objectAt(property);
     }
-    return get(object, property);
-  } catch(error) {
+    return item.isGetter ? object[property] : get(object, property);
+  } catch (error) {
     errorsForObject[property] = { property, error };
     return new CalculateCPError();
   }
 }
 
-function CalculateCPError() {}
+function CalculateCPError() { }
 
 function errorsToSend(errors) {
   return toArray(errors).map(error => ({ property: error.property }));

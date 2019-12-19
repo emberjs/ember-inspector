@@ -1,7 +1,8 @@
 import BasicAdapter from './basic';
+import { typeOf } from '../utils/type-check';
 
 const Ember = window.Ember;
-const { run, typeOf } = Ember;
+const { run } = Ember;
 const { isArray } = Array;
 const { keys } = Object;
 
@@ -31,24 +32,35 @@ export default BasicAdapter.extend({
   },
 
   /**
-   * Open the devtools "Elements" and select an element.
+   * Open the devtools "Elements" and select an DOM node.
    *
-   * NOTE:
-   * This method was supposed to call `inspect` which is a Chrome specific function
-   * that can either be called from the console or from code evaled using `inspectedWindow.eval`
-   * (which is how this code is executed). See https://developer.chrome.com/extensions/devtools#evaluating-js.
-   * However for some reason Chrome 52+ has started throwing an Error that `inspect`
-   * is not a function when called from this code. The current workaround is to
-   * message the Ember Ibspector asking it to execute `inspected.Window.eval('inspect(element)')`
-   * for us.
-   *
-   * @param  {HTMLElement} elem The element to select
+   * @param  {Node} node The DOM node to select
    */
-  inspectElement(elem) {
-    /* inspect(elem); */
-    this.get('namespace.port').send('view:inspectDOMNode', {
-      selector: `//*[@id="${elem.getAttribute('id')}"]`
-    });
+  inspectNode(node) {
+    // NOTE:
+    //
+    // Basically, we are just trying to call `inspect(node)` here.
+    // However, `inspect` is a special function that is in the global
+    // scope but not on the global object (i.e. `window.inspect`) does
+    // not work. This sometimes causes problems, because, e.g. if the
+    // page has a div with the ID `inspect`, `window.inspect` will point
+    // to that div and shadown the "global" inspect function with no way
+    // to get it back. That causes "`inspect` is not a function" errors.
+    //
+    // As it turns out, however, when the extension page evals, the
+    // `inspect` function does not get shadowed. So, we can ask the
+    // inspector extension page to call that function for us, using
+    // `inspected.Window.eval('inspect(node)')`.
+    //
+    // However, since we cannot just send the DOM node directly to the
+    // extension, we will have to store it in a temporary global variable
+    // so that the extension can find it.
+
+    let name = `__EMBER_INSPECTOR_${(Math.random() * 100000000).toFixed(0)}`;
+
+    window[name] = node;
+
+    this.get('namespace.port').send('view:inspectDOMNode', { name });
   },
 
   _listen() {
@@ -56,37 +68,61 @@ export default BasicAdapter.extend({
 
     chromePort.addEventListener('message', event => {
       const message = event.data;
-      run(() => {
+
+      // We should generally not be run-wrapping here. Starting a runloop in
+      // ember-debug will cause the inspected app to revalidate/rerender. We
+      // are generally not intending to cause changes to the rendered output
+      // of the app, so this is generally unnecessary, and in big apps this
+      // could be quite slow. There is nothing special about the `view:*`
+      // messages – I (GC) just happened to have reviewed all of them recently
+      // and can be quite sure that they don't need the runloop. We should
+      // audit the rest of them and see if we can remove the else branch. I
+      // think we most likely can. In the limited cases (if any) where the
+      // runloop is needed, the callback code should just do the wrapping
+      // themselves.
+      if (message.type.startsWith('view:')) {
         this._messageReceived(message);
-      });
+      } else {
+        run(() => {
+          this._messageReceived(message);
+        });
+      }
     });
 
     chromePort.start();
   }
 });
 
-/**
- * Recursively clones all arrays. Needed because Chrome
- * refuses to clone Ember Arrays when extend prototypes is disabled.
- *
- * If the item passed is an array, a clone of the array is returned.
- * If the item is an object or an array, or array properties/items are cloned.
- *
- * @param {Mixed} item The item to clone
- * @return {Mixed}
- */
-function deepClone(item) {
-  let clone = item;
-  if (isArray(item)) {
-    clone = new Array(item.length);
-    item.forEach((child, key) => {
-      clone[key] = deepClone(child);
-    });
-  } else if (item && typeOf(item) === 'object') {
-    clone = {};
-    keys(item).forEach(key => {
-      clone[key] = deepClone(item[key]);
-    });
-  }
-  return clone;
+let deepClone;
+
+if (Ember.ENV.EXTEND_PROTOTYPES.Array) {
+  deepClone = function deepClone(item) {
+    return item;
+  };
+} else {
+  /**
+   * Recursively clones all arrays. Needed because Chrome
+   * refuses to clone Ember Arrays when extend prototypes is disabled.
+   *
+   * If the item passed is an array, a clone of the array is returned.
+   * If the item is an object or an array, or array properties/items are cloned.
+   *
+   * @param {Mixed} item The item to clone
+   * @return {Mixed}
+   */
+  deepClone = function deepClone(item) {
+    let clone = item;
+    if (isArray(item)) {
+      clone = new Array(item.length);
+      item.forEach((child, key) => {
+        clone[key] = deepClone(child);
+      });
+    } else if (item && typeOf(item) === 'object') {
+      clone = {};
+      keys(item).forEach(key => {
+        clone[key] = deepClone(item[key]);
+      });
+    }
+    return clone;
+  };
 }
