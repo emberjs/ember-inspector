@@ -61,7 +61,7 @@ async function captureMessage(type, callback) {
 
 async function getRenderTree() {
   let message = await captureMessage('view:renderTree', async () => {
-    port.trigger('view:getTree');
+    port.trigger('view:getTree', {});
     await timeout(300);
   });
 
@@ -321,14 +321,16 @@ module('Ember Debug - View', function(hooks) {
 
     let tree = await getRenderTree();
 
-    matchTree(tree, [TopLevel(
-      Route({ name: 'application' },
-        Route({ name: 'simple' },
-          Component({ name: 'test-foo', bounds: 'single' }),
-          Component({ name: 'test-bar', bounds: 'range' })
+    matchTree(tree, [
+      TopLevel(
+        Route({ name: 'application' },
+          Route({ name: 'simple' },
+            Component({ name: 'test-foo', bounds: 'single' }),
+            Component({ name: 'test-bar', bounds: 'range' })
+          )
         )
       )
-    )]);
+    ]);
   });
 
   test('Supports applications that don\'t have the ember-application CSS class', async function(assert) {
@@ -354,14 +356,16 @@ module('Ember Debug - View', function(hooks) {
 
     let tree = await getRenderTree();
 
-    matchTree(tree, [TopLevel(
-      Route({ name: 'application' },
-        Route({ name: 'simple' },
-          Component({ name: 'test-foo', bounds: 'single' }),
-          Component({ name: 'test-bar', bounds: 'range' })
+    matchTree(tree, [
+      TopLevel(
+        Route({ name: 'application' },
+          Route({ name: 'simple' },
+            Component({ name: 'test-foo', bounds: 'single' }),
+            Component({ name: 'test-bar', bounds: 'range' })
+          )
         )
       )
-    )]);
+    ]);
   });
 
   test('Does not list nested {{yield}} views', async function() {
@@ -376,15 +380,17 @@ module('Ember Debug - View', function(hooks) {
 
     let tree = await getRenderTree();
 
-    matchTree(tree, [TopLevel(
-      Route({ name: 'application' },
-        Route({ name: 'posts' },
-          Component({ name: 'x-first' },
-            Component({ name: 'x-second' })
+    matchTree(tree, [
+      TopLevel(
+        Route({ name: 'application' },
+          Route({ name: 'posts' },
+            Component({ name: 'x-first' },
+              Component({ name: 'x-second' })
+            )
           )
         )
       )
-    )]);
+    ]);
   });
 
   test('Highlighting Views on hover', async function(assert) {

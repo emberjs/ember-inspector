@@ -16,32 +16,32 @@ function textFor(selector, context) {
 
 let GUID = 1;
 
-function object(id = `ember${GUID++}`) {
+function Serialized(id = `ember${GUID++}`) {
   return { id };
 }
 
-function makeArgs({ names = [], positionals = 0 } = {}) {
+function Args({ names = [], positionals = 0 } = {}) {
   let named = {};
 
   for (let name of names) {
-    named[name] = object();
+    named[name] = Serialized();
   }
 
   let positional = [];
 
   for (let i = 0; i < positionals; i++) {
-    positional.push(object());
+    positional.push(Serialized());
   }
 
   return { named, positional };
 }
 
-function route({ id, name, args = makeArgs(), instance = object(), template = `my-app/templates/${name}.hbs`, bounds = 'range' }, ...children) {
+function Route({ id, name, args = Args(), instance = Serialized(), template = `my-app/templates/${name}.hbs`, bounds = 'range' }, ...children) {
   return {
     id: `render-node:${id}:outlet`,
     type: 'outlet',
     name: 'main',
-    args: makeArgs(),
+    args: Args(),
     instance: null,
     template: null,
     bounds: 'range',
@@ -58,8 +58,8 @@ function route({ id, name, args = makeArgs(), instance = object(), template = `m
   };
 }
 
-function topLevel({ id }, ...children) {
-  return route({
+function TopLevel({ id }, ...children) {
+  return Route({
     id,
     name: '-top-level',
     instance: null,
@@ -67,7 +67,7 @@ function topLevel({ id }, ...children) {
   }, ...children);
 }
 
-function component({ id, name, args = makeArgs(), instance = null, bounds = 'range' }, ...children) {
+function Component({ id, name, args = Args(), instance = null, bounds = 'range' }, ...children) {
   return {
     id: `render-node:${id}`,
     type: 'component',
@@ -82,11 +82,11 @@ function component({ id, name, args = makeArgs(), instance = null, bounds = 'ran
 
 function getRenderTree() {
   return [
-    topLevel({ id: 0 },
-      route({ id: 1, name: 'application', instance: object('ember123') },
-        route({ id: 2, name: 'todos' },
-          component({ id: 3, name: 'todo-list', instance: object('ember456') },
-            component({ id: 4, name: 'todo-item' })
+    TopLevel({ id: 0 },
+      Route({ id: 1, name: 'application', instance: Serialized('ember123') },
+        Route({ id: 2, name: 'todos' },
+          Component({ id: 3, name: 'todo-list', instance: Serialized('ember456') },
+            Component({ id: 4, name: 'todo-item' })
           )
         )
       )
