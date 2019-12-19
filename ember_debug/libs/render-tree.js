@@ -77,43 +77,13 @@ export default class RenderTree {
    * @return {Option<SerializedRenderNode>} The deepest enclosing render node, if any.
    */
   findNearest(node, hint) {
-    let hintNode = null;
-
     // Use the hint if we are given one. When doing "live" inspecting, the mouse likely
     // hasn't moved far from its last location. Therefore, the matching render node is
     // likely to be the same render node, one of its children, or its parent. Knowing this,
     // we can heuristically start the search from the parent render node (which would also
     // match against this node and its children), then only fallback to matching the entire
     // tree when there is no match in this subtree.
-    if (hint) {
-      hintNode = this.nodes[hint];
-
-      let parentElement;
-
-      if (hintNode && hintNode.bounds) {
-        parentElement = hintNode.bounds.parentElement;
-      }
-
-      // Find the first parent render node with a different enclosing DOM element.
-      // Usually, this is just the first parent render node, but there are cases where
-      // multiple render nodes share the same bounds (e.g. outlet -> route template).
-      while (hintNode && parentElement) {
-        let parentNode = this._getParent(hintNode.id);
-
-        if (parentNode) {
-          let currentParentElement = parentElement;
-
-          hintNode = parentNode;
-          parentElement = parentNode.bounds && parentNode.bounds.parentElement;
-
-          if (parentElement === currentParentElement) {
-            continue;
-          }
-        }
-
-        break;
-      }
-    }
+    let hintNode = this._findUp(this.nodes[hint]);
 
     let renderNode;
 
@@ -140,23 +110,26 @@ export default class RenderTree {
   getBoundingClientRect(id) {
     let node = this.nodes[id];
 
+    if (!node || !node.bounds) {
+      return null;
+    }
+
     // Element.getBoundingClientRect seems to be less buggy when it comes
     // to taking hidden (clipped) content into account, so prefer that over
     // Range.getBoundingClientRect when possible.
 
-    if (node && node.bounds) {
-      let { firstNode, lastNode } = node.bounds;
-      let rect;
+    let rect;
+    let { bounds } = node;
+    let { firstNode } = bounds;
 
-      if (firstNode === lastNode && firstNode.getBoundingClientRect) {
-        rect = firstNode.getBoundingClientRect();
-      } else {
-        rect = this.getRange(id).getBoundingClientRect();
-      }
+    if (isSingleNode(bounds) && firstNode.getBoundingClientRect) {
+      rect = firstNode.getBoundingClientRect();
+    } else {
+      rect = this.getRange(id).getBoundingClientRect();
+    }
 
-      if (rect && !isEmptyRect(rect)) {
-        return rect;
-      }
+    if (rect && !isEmptyRect(rect)) {
+      return rect;
     }
 
     return null;
@@ -175,18 +148,12 @@ export default class RenderTree {
     if (range === undefined) {
       let node = this.nodes[id];
 
-      if (node && node.bounds) {
-        let { parentElement, firstNode, lastNode } = node.bounds;
-
-        if (firstNode.parentElement === parentElement && lastNode.parentElement === parentElement) {
-          range = document.createRange();
-          range.setStartBefore(node.bounds.firstNode);
-          range.setEndAfter(node.bounds.lastNode);
-        } else {
-          // The node has already been detached, we probably have a stale tree
-          range = null;
-        }
+      if (node && node.bounds && isAttached(node.bounds)) {
+        range = document.createRange();
+        range.setStartBefore(node.bounds.firstNode);
+        range.setEndAfter(node.bounds.lastNode);
       } else {
+        // If the node has already been detached, we probably have a stale tree
         range = null;
       }
 
@@ -291,7 +258,7 @@ export default class RenderTree {
   _serializeBounds(bounds) {
     if (bounds === null) {
       return null;
-    } else if (bounds.firstNode === bounds.lastNode) {
+    } else if (isSingleNode(bounds)) {
       return 'single';
     } else {
       return 'range';
@@ -385,7 +352,7 @@ export default class RenderTree {
       } else if (!range || deep) {
         // There are some edge cases of non-containing parent nodes (e.g. "worm
         // hole") so we can't rule out the entire subtree just because the parent
-        // didn't match. Howevwe, we should come back to this subtree at the end
+        // didn't match. However, we should come back to this subtree at the end
         // since we are unlikely to find a match here.
         candidates.push(...candidate.children);
       } else {
@@ -411,6 +378,37 @@ export default class RenderTree {
 
     return bounds.parentElement;
   }
+
+  _findUp(node) {
+    // Find the first parent render node with a different enclosing DOM element.
+    // Usually, this is just the first parent render node, but there are cases where
+    // multiple render nodes share the same bounds (e.g. outlet -> route template).
+    let parentElement = node && node.bounds && node.bounds.parentElement;
+
+    while (node && parentElement) {
+      let parentNode = this._getParent(node.id);
+
+      if (parentNode) {
+        node = parentNode;
+
+        if (parentElement === node.bounds && node.bounds.parentElement) {
+          continue;
+        }
+      }
+
+      break;
+    }
+
+    return node;
+  }
+}
+
+function isSingleNode({ firstNode, lastNode }) {
+  return firstNode === lastNode;
+}
+
+function isAttached({ parentElement, firstNode, lastNode}) {
+  return parentElement === firstNode.parentElement && parentElement === lastNode.parentElement;
 }
 
 function isEmptyRect({ x, y, width, height }) {
