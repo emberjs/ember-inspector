@@ -22,16 +22,16 @@
   <code
     class="component-tree-item__tag
       {{if
-        (and (not @item.isCurlyInvocation) @item.isComponent)
-        "component-tree-item__bracket"
-      }}
-      {{if
-        (and (not @item.isCurlyInvocation) (not @item.hasChildren) @item.isComponent)
-        "component-tree-item__bracket--self-closing"
-      }}
-      {{if
-        (and @item.isCurlyInvocation @item.isComponent)
-        "component-tree-item-classic__bracket"
+        @item.isComponent
+        (if
+          @item.isCurlyInvocation
+          "component-tree-item-classic__bracket"
+          (if
+            @item.hasChildren
+            "component-tree-item__bracket--self-closing"
+            "component-tree-item__bracket"
+          )
+        )
       }}"
   >
     {{#if @item.isComponent}}
