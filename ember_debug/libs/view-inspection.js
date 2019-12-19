@@ -532,6 +532,7 @@ export default class ViewInspection {
     let td = document.createElement('td');
 
     th.innerText = key;
+    td.className = `ember-inspector-tooltip-detail-${key.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 
     if (Array.isArray(value)) {
       this._renderTokens(td, value);

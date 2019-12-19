@@ -2,7 +2,7 @@ import PortMixin from 'ember-debug/mixins/port-mixin';
 import ProfileManager from './models/profile-manager';
 
 const Ember = window.Ember;
-const { computed: { readOnly }, subscribe, Object: EmberObject } = Ember;
+const { subscribe, Object: EmberObject } = Ember;
 
 // Initial setup, that has to occur before the EmberObject init for some reason
 let profileManager = new ProfileManager();
@@ -10,7 +10,6 @@ _subscribeToRenderEvents();
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,
-  viewDebug: readOnly('namespace.viewDebug'),
   portNamespace: 'render',
 
   profileManager,
@@ -42,7 +41,7 @@ export default EmberObject.extend(PortMixin, {
    * @private
    */
   _updateComponentTree() {
-    this.viewDebug.sendTree();
+    this.namespace.viewDebug.sendTree();
   },
 
   messages: {
