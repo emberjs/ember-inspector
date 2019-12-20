@@ -1,7 +1,7 @@
 import TabRoute from 'ember-inspector/routes/tab';
 import fetch from 'fetch';
 
-const checkStatus = function(response) {
+function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
   } else {
@@ -9,19 +9,24 @@ const checkStatus = function(response) {
     error.response = response;
     throw error;
   }
-};
+}
 
-const getLatestEntry = function(doc) {
-  const regex = /^#{2} ?\[(v?[.\d]+)\]((?:[\s\S](?!^#{2}))+)/gm;
+function getLatestEntry(doc) {
+  const regex = /^#{2} ?\[(.+)\]((?:[\s\S](?!^#{2}))+)/gm;
   const matches = doc.match(regex);
   return matches ? matches[0] : '';
-};
+}
 
 export default TabRoute.extend({
   error: false,
 
   model() {
-    return fetch('https://raw.githubusercontent.com/emberjs/ember-inspector/master/CHANGELOG.md')
+    let { version } = this.config;
+
+    let ref = (version.indexOf('alpha') === -1) ? `v${version}` : 'master';
+    let url = `https://raw.githubusercontent.com/emberjs/ember-inspector/${encodeURIComponent(ref)}/CHANGELOG.md`;
+
+    return fetch(url)
       .then(checkStatus)
       .then((response) => response.text())
       .then((text) => getLatestEntry(text))
