@@ -45,10 +45,10 @@
     "basiccontext": "^3.5.1",
     "broccoli-asset-rev": "^3.0.0",
     "broccoli-babel-transpiler": "^7.3.0",
-    "broccoli-concat": "^4.2.0",
+    "broccoli-concat": "^3.7.5",
     "broccoli-file-creator": "^2.1.1",
-    "broccoli-funnel": "3.0.0",
-    "broccoli-merge-trees": "^4.0.0",
+    "broccoli-funnel": "^2.0.2",
+    "broccoli-merge-trees": "^3.0.0",
     "broccoli-stew": "^3.0.0",
     "broccoli-string-replace": "^0.1.2",
     "codeclimate-test-reporter": "^0.5.1",
@@ -107,7 +107,7 @@
     "yauzl": "^2.10.0"
   },
   "engines": {
-    "node": ">= 10.*"
+    "node": "8.* || >= 10.*"
   },
   "ember": {
     "edition": "octane"
@@ -118,7 +118,7 @@
     ]
   },
   "volta": {
-    "node": "12.13.0",
+    "node": "8.17.0",
     "yarn": "1.19.1"
   }
 }
