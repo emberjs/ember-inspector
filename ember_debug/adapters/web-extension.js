@@ -93,9 +93,23 @@ export default BasicAdapter.extend({
   }
 });
 
+// On some older Ember version `Ember.ENV.EXTEND_PROTOTYPES` is not
+// guarenteed to be an object. While this code only support 3.4+ (all
+// of which normalizes `EXTEND_PROTOTYPES` for us), startup-wrapper.js
+// eagerly require/load ember-debug modules, which ultimately causes
+// this top-level code to run, even we are going to pick a different
+// adapter later. See GH #1114.
+const HAS_ARRAY_PROTOTYPE_EXTENSIONS = (() => {
+  try {
+    return Ember.ENV.EXTEND_PROTOTYPES.Array === true;
+  } catch(e) {
+    return false;
+  }
+})();
+
 let deepClone;
 
-if (Ember.ENV.EXTEND_PROTOTYPES.Array) {
+if (HAS_ARRAY_PROTOTYPE_EXTENSIONS) {
   deepClone = function deepClone(item) {
     return item;
   };
