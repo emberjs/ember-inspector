@@ -8,6 +8,7 @@ module.exports = function(environment) {
     environment,
     rootURL: '',
     locationType: 'hash',
+    version: packageJson.version,
     emberVersionsSupported: packageJson.emberVersionsSupported,
     previousEmberVersionsSupported: packageJson.previousEmberVersionsSupported,
     EmberENV: {
