@@ -1,5 +1,20 @@
 # Changelog
 
+## [v3.13.1](https://github.com/emberjs/ember-inspector/tree/v3.13.1) (2019-12-20)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.13.0...v3.13.1)
+
+**Fixed bugs:**
+
+- Inspector does not recognize app if Ember.ENV.EXTEND\_PROTOTYPES does not exist [\#1114](https://github.com/emberjs/ember-inspector/issues/1114)
+- Fix prototype extensions detection [\#1117](https://github.com/emberjs/ember-inspector/pull/1117) ([chancancode](https://github.com/chancancode))
+- Bring back Node 8 support \(for now\) [\#1116](https://github.com/emberjs/ember-inspector/pull/1116) ([chancancode](https://github.com/chancancode))
+- Render the CHANGELOG for the current version [\#1115](https://github.com/emberjs/ember-inspector/pull/1115) ([chancancode](https://github.com/chancancode))
+
+**Merged pull requests:**
+
+- v3.13.0 CHANGELOGs [\#1113](https://github.com/emberjs/ember-inspector/pull/1113) ([chancancode](https://github.com/chancancode))
+
 ## [v3.13.0](https://github.com/emberjs/ember-inspector/tree/v3.13.0) (2019-12-19)
 
 [Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.12.5...v3.13.0)
