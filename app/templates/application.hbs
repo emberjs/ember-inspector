@@ -29,12 +29,9 @@
           <div class="split__panel">
             <div class="split__panel__hd">
               {{outlet "toolbar"}}
-              <button
-                class="sidebar-toggle toolbar__icon-button {{if this.inspectorExpanded "flip"}}"
-                {{on "click" this.toggleInspector}}
-              >
-                {{svg-jar "sidebar-toggle" width="16" height="16"}}
-              </button>
+              {{#if (not this.objectInspectorService.inspectorExpanded)}}
+                <Ui::ToolbarToggleButton />
+              {{/if}}
             </div>
 
             <MonitorContentHeight class="split__panel__bd">
@@ -43,8 +40,7 @@
           </div>
         </div>
       </div>
-
-      {{#if this.inspectorExpanded}}
+      {{#if this.objectInspectorService.inspectorExpanded}}
         <Ui::DraggableColumn
           @classes="split__panel"
           @side="right"
