@@ -11,8 +11,13 @@
   right: 0;
   top: 0;
 
-  &.flip .sidebar-toggle-triangle {
-    transform: rotate(180deg) translateX(3px);
-    transform-origin: center;
+  &.flip {
+    background-color: var(--base00);
+    left: -28px;
+
+    & .sidebar-toggle-triangle {
+      transform: rotate(180deg) translateX(3px);
+      transform-origin: center;
+    }
   }
 }
