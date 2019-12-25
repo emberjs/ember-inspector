@@ -24,6 +24,7 @@
   flex: auto;
   flex-direction: column;
   position: relative;
+  z-index: 0;
 }
 
 .split__panel__hd,
@@ -51,7 +52,7 @@
 .split__panel__bd {
   background: var(--base00);
   flex: auto;
-  overflow: auto;
+  overflow: scroll;
 }
 
 .split__panel__ft {
