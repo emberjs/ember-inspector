@@ -32,7 +32,6 @@ export default Controller.extend({
   isEmberApplication: false,
 
   navWidth: 180,
-  inspectorWidth: 360,
   isChrome: equal('port.adapter.name', 'chrome'),
 
   deprecationCount: 0,
