@@ -13,6 +13,7 @@ export default class ObjectInspectorService extends Service {
   showInspector() {
     if (this.inspectorExpanded === false) {
       this.inspectorExpanded = true;
+      // Broadcast that tables have been resized (used by `x-list`).
       schedule("afterRender", () => {
         this.layoutService.trigger("resize", { source: "object-inspector" });
       });
@@ -23,6 +24,7 @@ export default class ObjectInspectorService extends Service {
   hideInspector() {
     if (this.inspectorExpanded === true) {
       this.inspectorExpanded = false;
+      // Broadcast that tables have been resized (used by `x-list`).
       schedule("afterRender", () => {
         this.layoutService.trigger("resize", { source: "object-inspector" });
       });
