@@ -1,7 +1,6 @@
 import Controller from '@ember/controller';
 import { action } from '@ember/object';
 import { equal } from '@ember/object/computed';
-import { schedule } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 
 export default Controller.extend({
@@ -13,6 +12,14 @@ export default Controller.extend({
    * @type {Service}
    */
   layoutService: service('layout'),
+
+  /**
+   * Service used to control the object inspector toggling
+   *
+   * @property objectInspectorService
+   * @type {Service}
+   */
+  objectInspectorService: service('object-inspector'),
 
   isDragging: false,
   contentHeight: null,
@@ -32,8 +39,6 @@ export default Controller.extend({
 
   // Indicates that the extension window is focused,
   active: true,
-
-  inspectorExpanded: false,
 
   init() {
     this._super(...arguments);
@@ -64,34 +69,6 @@ export default Controller.extend({
     let item = mixinStack.popObject();
     this.set('mixinDetails', mixinStack.get('lastObject'));
     this.port.send('objectInspector:releaseObject', { objectId: item.objectId });
-  }),
-
-  showInspector: action(function() {
-    if (this.inspectorExpanded === false) {
-      this.set('inspectorExpanded', true);
-      // Broadcast that tables have been resized (used by `x-list`).
-      schedule('afterRender', () => {
-        this.layoutService.trigger('resize', { source: 'object-inspector' });
-      });
-    }
-  }),
-
-  hideInspector: action(function() {
-    if (this.inspectorExpanded === true) {
-      this.set('inspectorExpanded', false);
-      // Broadcast that tables have been resized (used by `x-list`).
-      schedule('afterRender', () => {
-        this.layoutService.trigger('resize', { source: 'object-inspector' });
-      });
-    }
-  }),
-
-  toggleInspector: action(function() {
-    if (this.inspectorExpanded) {
-      this.hideInspector();
-    } else {
-      this.showInspector();
-    }
   }),
 
   setActive: action(function(bool) {

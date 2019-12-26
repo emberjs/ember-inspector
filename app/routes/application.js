@@ -66,7 +66,7 @@ export default Route.extend({
       controller.activateMixinDetails(name, objectId, details, errors);
     }
 
-    this.controller.showInspector();
+    this.objectInspectorService.showInspector();
   },
 
   setDeprecationCount(message) {
@@ -106,6 +106,14 @@ export default Route.extend({
    * @type {Service}
    */
   layoutService: service('layout'),
+
+  /**
+   * Service used to control the object inspector toggling
+   *
+   * @property objectInspectorService
+   * @type {Service}
+   */
+  objectInspectorService: service('object-inspector'),
 
   actions: {
     inspectObject(objectId) {
