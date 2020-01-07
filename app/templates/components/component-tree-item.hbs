@@ -28,8 +28,8 @@
           "component-tree-item-classic__bracket"
           (if
             @item.hasChildren
-            "component-tree-item__bracket--self-closing"
             "component-tree-item__bracket"
+            "component-tree-item__bracket component-tree-item__bracket--self-closing"
           )
         )
       }}"
@@ -66,26 +66,14 @@
 
         {{#each-in @item.args.named as |name value|}}
           <div class="arg-token">
-            {{#if (is-string value)}}
-              <span class="key-token">
-                @{{name}}
-              </span>
-              ="
-              <span class="value-token">
-                {{component-argument value}}
-              </span>
-              "
-            {{else}}
-              <span class="key-token">
-                @{{name}}
-              </span>
-              =
-              <span class="bracket-token">\{{</span>
-              <span class="value-token">
-                {{component-argument value}}
-              </span>
-              <span class="bracket-token">}}</span>
-            {{/if}}
+            <span class="key-token">
+              @{{name}}
+            </span>
+            ={{#if (is-string value)}}"{{else}}<span class="bracket-token">\{{</span>{{/if}}
+            <span class="value-token">
+              {{component-argument value}}
+            </span>
+            {{#if (is-string value)}}"{{else}}<span class="bracket-token">}}</span>{{/if}}
           </div>
         {{/each-in}}
       {{/if}}
