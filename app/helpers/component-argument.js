@@ -10,7 +10,7 @@ import { helper } from '@ember/component/helper';
 export function componentArgumentDisplay([argument]) {
   if (typeof argument === 'string') {
     // Escape any interior quotes – we will add the surrounding quotes in the template
-    return argument.replace(/\"/g, '\\"');
+    return argument.replace(/"/g, '\\"');
   } else if (typeof argument === 'object' && argument !== null) {
     return '...';
   }
