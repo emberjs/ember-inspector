@@ -220,6 +220,12 @@ export default EmberObject.extend(PortMixin, {
   currentObject: null,
 
   updateCurrentObject() {
+    if (this.updateCurrentObjectTimeout) {
+      return;
+    }
+    this.updateCurrentObjectTimeout = setTimeout(() => {
+      this.updateCurrentObjectTimeout = null;
+    }, 350);
     if (this.currentObject) {
       const { object, mixinDetails, objectId } = this.currentObject;
       mixinDetails.forEach((mixin, mixinIndex) => {
