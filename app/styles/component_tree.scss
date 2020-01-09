@@ -1,30 +1,36 @@
 .component-tree-item {
-  align-items: center;
-  border-radius: 4px;
   color: var(--base12);
-  display: flex;
   font-size: 12px;
-  margin: 0 3px;
   min-height: 22px;
-  position: relative;
+
+  &__actions {
+    min-height: 22px;
+    opacity: 0;
+    right: var(--unit1);
+
+    /**
+      * __actions is position:sticky so it is always visible.
+      * Due to margins and padding on various elements, it was
+      * difficult to keep the background of __actions on top
+      * of .tree-item text and align with the .tree-item background.
+      * This pseudo element is 100% of the width of __actions plus
+      * a little extra to guarantee alignment.
+    */
+    &:after {
+      border-bottom-right-radius: var(--unit1);
+      border-top-right-radius: var(--unit1);
+      bottom: 0;
+      content: '';
+      left: calc(var(--unit1) * -1);
+      position: absolute;
+      right: calc(var(--unit1) * -1);
+      top: 0;
+    }
+  }
 
   &__action {
-    align-items: center;
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-    display: inline-flex;
-    height: 100%;
-    margin-left: 10px;
-    opacity: 0;
-    padding: 0;
-
     &:focus {
       outline: none;
-    }
-
-    &.disabled {
-      cursor: not-allowed;
     }
 
     polygon,
@@ -34,38 +40,37 @@
     }
   }
 
-  &:hover {
-    background-color: var(--base05);
+  /**
+    * This element helps with a visual bug.
+    * When an item overflows the bounds of the list,
+    * the item background color clips at the point of the overflow.
+    * This child of the item has the same background color
+    * and will extend past the overflow point.
+  */
+  .component-tree-item-background {
+    min-height: 22px;
+  }
 
-    .component-tree-item__action {
-      opacity: 1;
+  &:hover {
+    background-color: var(--component-highlighted-bg);
+
+    .component-tree-item-background {
+      background-color: var(--component-highlighted-bg);
     }
 
-    .component-tree-item__action.disabled {
-      opacity: 0.65;
+    .component-tree-item__actions {
+      opacity: 1;
+
+      &:after {
+        background-color: var(--component-highlighted-bg);
+      }
     }
   }
-}
-
-.component-tree-item__expand {
-  align-self: stretch;
-  cursor: pointer;
-  padding-left: 3px;
-  padding-right: 3px;
 }
 
 .component-tree-item__tag {
-  cursor: default;
-  display: flex;
-  white-space: nowrap;
-
   .component-name {
     color: var(--component-name);
-  }
-
-  .arg-token {
-    display: flex;
-    margin-left: 0.5rem;
   }
 
   .bracket-token {
@@ -79,10 +84,6 @@
   .value-token {
     color: var(--spec03);
   }
-}
-
-.component-tree-item--has-instance .component-tree-item__tag {
-  cursor: pointer;
 }
 
 .component-tree-item--selected .component-tree-item__tag {
@@ -123,17 +124,7 @@
 
 /**
  * Modifier
- * highlighted - children of selected component
- */
-
-.component-tree-item.component-tree-item--highlighted {
-  background-color: var(--component-highlighted-bg);
-  border-radius: 0;
-}
-
-/**
- * Modifier
- * selected
+ * selected - user clicked on component
  */
 
 .component-tree-item.component-tree-item--selected {
@@ -142,6 +133,18 @@
 
   &:hover {
     background: var(--focus);
+  }
+
+  .component-tree-item-background {
+    background: var(--focus);
+  }
+
+  .component-tree-item__actions {
+    opacity: 1;
+
+    &:after {
+      background: var(--focus);
+    }
   }
 
   .component-tree-item__bracket:before,
@@ -158,10 +161,6 @@
     path {
       fill: var(--focus-text);
     }
-  }
-
-  .component-tree-item__action.disabled {
-    opacity: 0.65;
   }
 }
 
