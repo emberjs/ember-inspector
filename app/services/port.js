@@ -57,8 +57,8 @@ export default Service.extend(Evented, {
     message = message || {};
     message.type = type;
     message.from = 'devtools';
-    message.applicationId = this.applicationId;
-    message.applicationName = this.applicationName;
+    message.applicationId = this.applicationId || null;
+    message.applicationName = this.applicationName || null;
     this.adapter.sendMessage(message);
   }
 });

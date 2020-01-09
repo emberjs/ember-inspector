@@ -12,6 +12,8 @@
 (function() {
   "use strict";
 
+  let backgroundPage = chrome.runtime.connect({ name: 'content-script' });
+
   /**
    * Add an event listener for window.messages.
    * The initial message from EmberDebug is used to setup the event listener
@@ -29,7 +31,7 @@
       var emberDebugPort = event.ports[0];
       listenToEmberDebugPort(emberDebugPort);
     } else if (event.data && event.data.type) {
-      chrome.runtime.sendMessage(event.data);
+      backgroundPage.postMessage(event.data);
     }
   });
 
@@ -40,11 +42,11 @@
   function listenToEmberDebugPort(emberDebugPort) {
     // listen for messages from EmberDebug, and pass them on to the background-script
     emberDebugPort.addEventListener('message', function(event) {
-      chrome.runtime.sendMessage(event.data);
+      backgroundPage.postMessage(event.data);
     });
 
     // listen for messages from the EmberInspector, and pass them on to EmberDebug
-    chrome.runtime.onMessage.addListener(function(message) {
+    backgroundPage.onMessage.addListener(function(message) {
       if (message.from === 'devtools') {
         // forward message to EmberDebug
         emberDebugPort.postMessage(message);
@@ -61,29 +63,11 @@
     document.documentElement.dataset.emberExtension = 1;
   }
 
-
-
   // Iframes should not reset the icon so we make sure
   // it's the top level window before resetting.
   if (window.top === window) {
     // Clear a possible previous Ember icon
-    chrome.runtime.sendMessage({ type: 'resetEmberIcon' });
-  }
-
-
-  /**
-   * Inject JS into the page to check for an app on domready.  The in-page-script
-   * is used by all variants of ember-inspector (Chrome, FF, Bookmarklet) to get
-   * the libraries running in the ClientApp
-   */
-  var script = document.createElement('script');
-  script.type = "text/javascript";
-  script.src = chrome.runtime.getURL("scripts/in-page-script.js");
-  if (document.body && document.contentType !== "application/pdf") {
-    document.body.appendChild(script);
-    script.onload = function() {
-      document.body.removeChild(script);
-    };
+    backgroundPage.postMessage({ type: 'resetEmberIcon' });
   }
 
   /**
@@ -101,7 +85,7 @@
    */
   //FIX ME
   setTimeout(function() {
-    chrome.runtime.sendMessage({type: 'iframes', urls: urls});
+    backgroundPage.postMessage({ type: 'iframes', from: 'content-script', urls, location: document.location });
   }, 500);
 
 

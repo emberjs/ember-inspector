@@ -80,11 +80,6 @@ const Tabs = Class({
 let tomsterTabs = Tabs();
 module.exports = tomsterTabs;
 
-
-let contentScriptOptions = {
-  emberInPageScript: data.load("scripts/in-page-script.js")
-};
-
 previousVersions.concat([supportedVersions[0]]).forEach((version) => {
   let dashedVersion = version.replace(/\./g, '-');
   contentScriptOptions['emberDebugScript-' + dashedVersion] = data.load('panes-' + dashedVersion + '/ember_debug.js');

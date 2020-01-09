@@ -133,6 +133,11 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       return;
     }
 
+    // FIXME: (discuss before merge) creating multiple instances of the adapter is fairly dubious, because
+    // it creates multiple MessageChannels that have to be properly managed by the content script.
+    //
+    // Right now, it appears that they're being managed by timing coincidences, which is probably not
+    // acceptable, but by the same token, we don't want to change the older copies of ember_debug.
     const adapterInstance = requireModule('ember-debug/adapters/' + currentAdapter)['default'].create();
 
     adapterInstance.onMessageReceived(function(message) {
