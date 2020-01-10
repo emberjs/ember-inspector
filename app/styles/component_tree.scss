@@ -9,7 +9,7 @@
     right: var(--unit1);
 
     /**
-      * __actions is position:sticky so it is always visible.
+      * __actions is position:sticky so it is always visible and on top.
       * Due to margins and padding on various elements, it was
       * difficult to keep the background of __actions on top
       * of .tree-item text and align with the .tree-item background.
@@ -25,6 +25,19 @@
       position: absolute;
       right: calc(var(--unit1) * -1);
       top: 0;
+    }
+
+    /**
+      * __actions is position:sticky so it is always visible and on top.
+      * :before is a gradient to soften the edge when overlaying text.
+    */
+    &:before {
+      bottom: 0;
+      content: '';
+      left: calc(var(--unit3) * -1);
+      position: absolute;
+      top: 0;
+      width: var(--unit3);
     }
   }
 
@@ -63,6 +76,10 @@
 
       &:after {
         background-color: var(--component-highlighted-bg);
+      }
+
+      &:before {
+        background: linear-gradient(to right, var(--transparent), var(--component-highlighted-bg) 75%);
       }
     }
   }
@@ -144,6 +161,10 @@
 
     &:after {
       background: var(--focus);
+    }
+
+    &:before {
+      background: linear-gradient(to right, var(--transparent), var(--focus) 75%);
     }
   }
 
