@@ -41,6 +41,8 @@
   },
 
   "web_accessible_resources": [
+    "content-script-module.js",
+    "utils.js"
   ],
 
   "options_ui": {

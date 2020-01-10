@@ -22,7 +22,22 @@ declare class Connection {
   destroy(): void;
 }
 
-type FilterResponse = { type: string } | { infer: true } | null;
+// These are used to specify that this is a debugging message notifying the background page
+// of a message sent from one component to another, but not through the background page.
+interface DebugFilterResponse {
+  from?: string;
+  to?: string;
+}
+
+interface TypedFilterResponse extends DebugFilterResponse {
+  type: string;
+}
+
+interface InferredFilterResponse extends DebugFilterResponse {
+  infer: true;
+}
+
+type FilterResponse = TypedFilterResponse | InferredFilterResponse | null;
 
 declare interface ConnectionDelegate {
   readonly name: ConnectionKind;
@@ -50,7 +65,7 @@ declare interface ConnectionDelegate {
   unknownEvent(collector: Logger, message: object, connections: Connections, type: string | null): MessageResponse;
 }
 
-type ConnectionKind = 'devtools' | 'inspector' | 'content' | 'host';
+type ConnectionKind = 'devtools' | 'inspector' | 'content' | 'inspectedWindow';
 
 declare class Connections {
   listen(conn: Connection): void;
@@ -58,37 +73,13 @@ declare class Connections {
   devtools: Connection | null;
   inspector: Connection | null;
   content: Connection | null;
-  host: Connection | null;
+  inspectedWindow: Connection | null;
 }
 
 type MessageHandler = (collector: Logger, message: object, type: string, connections: Connections) => MessageResponse;
 
 interface MessageHandlers {
     [key: string]: MessageHandler
-}
-
-type ConsoleLevel = 'trace' | 'info' | 'warn' | 'error';
-
-interface ConsoleMessage {
-  type: ConsoleLevel;
-  value: unknown[];
-}
-
-interface LoggerDelegate {
-  emit(level: ConsoleLevel, ...values: unknown[]): void;
-  flush(): void;
-}
-
-declare class Logger {
-  sawWarning: boolean;
-  sawError: boolean;
-
-  warn(string: unknown, ...args: unknown[]): void;
-  trace(string: unknown, ...args: unknown[]): void;
-  info(string: unknown, ...args: unknown[]): void;
-  error(string: unknown, ...args: unknown[]): void;
-
-  flush(): void;
 }
 
 type HeaderStyle = 'ignored' | 'flushed' | 'normal';
