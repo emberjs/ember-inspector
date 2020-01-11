@@ -221,10 +221,15 @@ export default EmberObject.extend(PortMixin, {
 
   updateCurrentObject() {
     if (this.updateCurrentObjectTimeout) {
+      this.scheduleUpdateCurrentObject = true
       return;
     }
     this.updateCurrentObjectTimeout = setTimeout(() => {
       this.updateCurrentObjectTimeout = null;
+      if (this.scheduleUpdateCurrentObject) {
+        this.scheduleUpdateCurrentObject = false;
+        this.updateCurrentObject();
+      }
     }, 350);
     if (this.currentObject) {
       const { object, mixinDetails, objectId } = this.currentObject;
