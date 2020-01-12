@@ -1,6 +1,18 @@
 $units: 0, 1, 2, 3, 4;
 
+.relative { position: relative; }
+
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+}
+
+.right-0 {
+  right: 0;
+}
+
 .flex { display: flex; }
+.inline-flex { display: inline-flex; }
 
 .flex-grow { flex-grow: 1; }
 .flex-grow-0 { flex-grow: 0; }
@@ -8,6 +20,7 @@ $units: 0, 1, 2, 3, 4;
 .flex-shrink-0 { flex-shrink: 0; }
 
 .items-center { align-items: center; }
+.self-stretch { align-self: stretch; }
 
 .w-5 { width: var(--unit5); }
 .w-6 { width: var(--unit6); }
@@ -18,10 +31,13 @@ $units: 0, 1, 2, 3, 4;
 .w-11 { width: var(--unit11); }
 .w-12 { width: var(--unit12); }
 
+.h-full { height: 100%; }
+
 @each $key in $units {
   .w-#{$key} { width: var(--unit#{$key}); }
   .h-#{$key} { height: var(--unit#{$key}); }
 
+  .p-#{$key} { padding: var(--unit#{$key}); }
   .pt-#{$key} { padding-top: var(--unit#{$key}); }
   .pr-#{$key} { padding-right: var(--unit#{$key}); }
   .pb-#{$key} { padding-bottom: var(--unit#{$key}); }
@@ -37,6 +53,7 @@ $units: 0, 1, 2, 3, 4;
     padding-top: var(--unit#{$key});
   }
 
+  .m-#{$key} { margin: var(--unit#{$key}); }
   .mt-#{$key} { margin-top: var(--unit#{$key}); }
   .mr-#{$key} { margin-right: var(--unit#{$key}); }
   .mb-#{$key} { margin-bottom: var(--unit#{$key}); }
@@ -53,10 +70,12 @@ $units: 0, 1, 2, 3, 4;
   }
 }
 
+.border-0 { border-width: 0; }
+
 .rounded-none { border-radius: 0; }
-.rounded-sm { border-radius: 0.125rem; }
-.rounded { border-radius: 0.25rem; }
-.rounded-lg { border-radius: 0.5rem; }
+.rounded-sm { border-radius: calc(var(--unit1) / 2); }
+.rounded { border-radius: var(--unit1); }
+.rounded-lg { border-radius: var(--unit2); }
 .rounded-full { border-radius: 9999px; }
 
 .font-bold { font-weight: bold; }
@@ -65,7 +84,14 @@ $units: 0, 1, 2, 3, 4;
 .text-left { text-align: left; }
 .text-center { text-align: center; }
 .text-right { text-align: right; }
+.whitespace-no-wrap { white-space: nowrap; }
 
+.bg-transparent { background-color: var(--transparent); }
 .bg-base00 { background-color: var(--base00); }
 .bg-base01 { background-color: var(--base01); }
 .bg-base02 { background-color: var(--base02); }
+
+.cursor-default { cursor: default; }
+.cursor-pointer { cursor: pointer; }
+
+.z-10 { z-index: 10; }
