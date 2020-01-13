@@ -5,7 +5,6 @@ import {
   visit
 } from '@ember/test-helpers';
 import hasEmberVersion from '@ember/test-helpers/has-ember-version';
-import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 import EmberComponent from '@ember/component';
 import EmberRoute from '@ember/routing/route';
@@ -107,12 +106,6 @@ function setupApp() {
     }
   }));
 
-  this.owner.register('route:comments.index', EmberRoute.extend({
-    model() {
-      return A(['first comment', 'second comment', 'third comment']);
-    }
-  }));
-
   this.owner.register('route:posts', EmberRoute.extend({
     model() {
       return 'String as model';
@@ -147,7 +140,6 @@ function setupApp() {
 
   setTemplate.call(this, 'application', hbs`<div class="application">{{outlet}}</div>`);
   setTemplate.call(this, 'simple', hbs`Simple {{test-foo}} {{test-bar}}`);
-  setTemplate.call(this, 'comments/index', hbs`{{#each}}{{this}}{{/each}}`);
   setTemplate.call(this, 'posts', hbs`Posts`);
   setTemplate.call(this, 'components/test-foo', hbs`test-foo`);
   setTemplate.call(this, 'components/test-bar', hbs`<!-- before --><div class="another-component"><span>test</span> <span class="bar-inner">bar</span></div><!-- after -->`);
@@ -303,7 +295,6 @@ module('Ember Debug - View', function(hooks) {
 
     App = await setupEIApp.call(this, EmberDebug, function() {
       this.route('simple');
-      this.route('comments', { resetNamespace: true }, function() {});
       this.route('posts', { resetNamespace: true });
     });
 
