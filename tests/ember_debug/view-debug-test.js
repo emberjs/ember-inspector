@@ -147,7 +147,7 @@ function setupApp() {
 
   setTemplate.call(this, 'application', hbs`<div class="application">{{outlet}}</div>`);
   setTemplate.call(this, 'simple', hbs`Simple {{test-foo}} {{test-bar}}`);
-  setTemplate.call(this, 'comments/index', hbs`{{#each}}{{this}}{{/each}}`);
+  setTemplate.call(this, 'comments/index', hbs`{{#each this.comments as |comment|}}{{comment}}{{/each}}`);
   setTemplate.call(this, 'posts', hbs`Posts`);
   setTemplate.call(this, 'components/test-foo', hbs`test-foo`);
   setTemplate.call(this, 'components/test-bar', hbs`<!-- before --><div class="another-component"><span>test</span> <span class="bar-inner">bar</span></div><!-- after -->`);
