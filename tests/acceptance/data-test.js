@@ -92,6 +92,9 @@ module('Data Tab', function(outer) {
         }]
       });
 
+      // ember-table doesn't render synchronously, await
+      await settled();
+
       assert.dom(findAll('.js-model-type-name')[0]).hasText('App.Comment');
       assert.dom(findAll('.js-model-type-name')[1]).hasText('App.Post');
 
@@ -135,6 +138,9 @@ module('Data Tab', function(outer) {
           objectId: 'comment-type'
         }]
       });
+
+      // ember-table doesn't render synchronously, await
+      await settled();
 
       assert.dom('.js-model-type').exists({ count: 3 }, 'All models are present');
 
@@ -284,7 +290,7 @@ module('Data Tab', function(outer) {
         })]
       });
 
-      // Why is this needed?
+      // ember-table doesn't render synchronously, await
       await settled();
 
       recordRows = findAll('[data-test-table-row]');
@@ -317,6 +323,9 @@ module('Data Tab', function(outer) {
           body: 'I am no longer new'
         })]
       });
+
+      // ember-table doesn't render synchronously, await
+      await settled();
 
       recordRows = findAll('[data-test-table-row]');
       assert.equal(recordRows.length, 3);
@@ -354,7 +363,7 @@ module('Data Tab', function(outer) {
         count: 1
       });
 
-      // Why is this needed?
+      // ember-table doesn't render synchronously, await
       await settled();
 
       recordRows = findAll('[data-test-table-row]');
