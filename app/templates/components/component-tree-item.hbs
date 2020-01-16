@@ -35,7 +35,7 @@
         }}"
     >
       {{#if @item.isComponent}}
-        {{#if @item.args.positional}}
+        {{#if @item.isCurlyInvocation}}
           <span class="component-name">
             {{@item.name}}
           </span>
