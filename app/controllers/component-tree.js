@@ -223,7 +223,7 @@ class RenderItem {
   }
 
   get isCurlyInvocation() {
-    return this.renderNode && this.renderNode.args && this.renderNode.args.positional;
+    return this.renderNode.args && this.renderNode.args.positional;
   }
 
   get hasInstance() {
