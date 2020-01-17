@@ -103,6 +103,16 @@
   }
 }
 
+/**
+ * Modifier
+ * highlighted - the component currently being previewed
+ */
+
+.component-tree-item.component-tree-item--highlighted {
+  background-color: var(--component-highlighted-bg);
+  border-radius: 0;
+}
+
 .component-tree-item--selected .component-tree-item__tag {
   .component-name,
   .bracket-token,
