@@ -43,9 +43,11 @@
 
           {{#each @item.args.positional as |value|}}
             <div class="arg-token flex ml-2">
+              {{if (is-string value) "\""}}
               <span class="value-token">
                 {{component-argument value}}
               </span>
+              {{if (is-string value) "\""}}
             </div>
           {{/each}}
 
@@ -54,10 +56,11 @@
               <span class="key-token">
                 {{name}}
               </span>
-              =
+              ={{if (is-string value) "\""}}
               <span class="value-token">
                 {{component-argument value}}
               </span>
+              {{if (is-string value) "\""}}
             </div>
           {{/each-in}}
         {{else}}
