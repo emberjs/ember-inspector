@@ -21,21 +21,39 @@ const GlimmerComponent = (() => {
   }
 })();
 
-let GlimmerReference = null;
-let metal = null;
-let HAS_GLIMMER_TRACKING = false;
+let tagValue, tagValidate, track, tagForProperty;
+
 try {
-  GlimmerReference = Ember.__loader.require('@glimmer/reference');
-  metal = Ember.__loader.require('@ember/-internals/metal');
-  HAS_GLIMMER_TRACKING = GlimmerReference &&
-                         GlimmerReference.value &&
-                         GlimmerReference.validate &&
-                         metal &&
-                         metal.track &&
-                         metal.tagForProperty;
+  // Try to load the most recent library
+  let GlimmerValidator = Ember.__loader.require('@glimmer/validator');
+
+  tagValue = GlimmerValidator.value;
+  tagValidate = GlimmerValidator.validate;
+  track = GlimmerValidator.track;
+} catch (e) {
+  try {
+    // Fallback to the previous implementation
+    let GlimmerReference = Ember.__loader.require('@glimmer/reference');
+
+    tagValue = GlimmerReference.value;
+    tagValidate = GlimmerReference.validate;
+  } catch (e) {
+    // ignore
+  }
+}
+
+try {
+  let metal = Ember.__loader.require('@ember/-internals/metal');
+
+  tagForProperty = metal.tagForProperty;
+  // If track was not already loaded, use metal's version (the previous version)
+  track = track || metal.track;
 } catch (e) {
   // ignore
 }
+
+const HAS_GLIMMER_TRACKING = tagValue && tagValidate && track && tagForProperty;
+
 
 const keys = Object.keys || Ember.keys;
 
@@ -203,7 +221,7 @@ function getTrackedDependencies(object, property, tag) {
     dependentKeys.push(...(cpDesc._dependentKeys || []));
   }
   if (HAS_GLIMMER_TRACKING) {
-    const ownTag = metal.tagForProperty(object, property);
+    const ownTag = tagForProperty(object, property);
     dependentKeys.push(...getTagTrackedProps(tag, ownTag));
   }
 
@@ -241,15 +259,15 @@ export default EmberObject.extend(PortMixin, {
             const isSetter = desc && isMandatorySetter(desc);
 
             if (HAS_GLIMMER_TRACKING && item.canTrack && !isSetter) {
-              let tagInfo = tracked[item.name] || { tag: metal.tagForProperty(object, item.name), revision: 0 };
+              let tagInfo = tracked[item.name] || { tag: tagForProperty(object, item.name), revision: 0 };
               if (!tagInfo.tag) return;
 
-              changed = !GlimmerReference.validate(tagInfo.tag, tagInfo.revision);
+              changed = !tagValidate(tagInfo.tag, tagInfo.revision);
               if (changed) {
-                tagInfo.tag = metal.track(() => {
+                tagInfo.tag = track(() => {
                   value = get(object, item.name);
                 });
-                tagInfo.revision = GlimmerReference.value(object, item.name);
+                tagInfo.revision = tagValue(object, item.name);
               }
               tracked[item.name] = tagInfo;
             } else {
@@ -970,16 +988,16 @@ function calculateCPs(object, mixinDetails, errorsForObject, expensiveProperties
           let value;
           if (item.canTrack && HAS_GLIMMER_TRACKING) {
             const tagInfo = tracked[item.name] = {};
-            tagInfo.tag = metal.track(() => {
+            tagInfo.tag = track(() => {
               value = calculateCP(object, item, errorsForObject);
             });
-            if (tagInfo.tag === metal.tagForProperty(object, item.name)) {
+            if (tagInfo.tag === tagForProperty(object, item.name)) {
               if (!item.isComputed && !item.isService) {
                 item.code = '';
                 item.isTracked = true;
               }
             }
-            tagInfo.revision = GlimmerReference.value(object, item.name);
+            tagInfo.revision = tagValue(object, item.name);
             item.dependentKeys = getTrackedDependencies(object, item.name, tagInfo.tag);
           } else {
             value = calculateCP(object, item, errorsForObject);
