@@ -12,6 +12,7 @@ export default function truncate(str, limit = 20, rest = '…') {
   let targetLength = limit - rest.length; // leave room for the "..."
   let currentLength = 0;
 
+  // eslint-disable-next-line
   while (true) {
     let candidate = parts.shift();
 
