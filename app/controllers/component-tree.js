@@ -218,6 +218,14 @@ class RenderItem {
     return this.renderNode.name;
   }
 
+  get args() {
+    return this.renderNode.args;
+  }
+
+  get isCurlyInvocation() {
+    return this.renderNode.args && this.renderNode.args.positional;
+  }
+
   get hasInstance() {
     let { instance } = this.renderNode;
     return typeof instance === 'object' && instance !== null;
