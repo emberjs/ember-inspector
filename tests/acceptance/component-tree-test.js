@@ -246,7 +246,7 @@ module('Component Tab', function (hooks) {
       return false;
     });
 
-    await click('.js-scroll-into-view');
+    await click('[data-test="scroll-into-view"]');
   });
 
   test('View DOM element in Elements panel', async function (assert) {
@@ -257,7 +257,7 @@ module('Component Tab', function (hooks) {
       return false;
     });
 
-    await click('.js-view-dom-element');
+    await click('[data-test="view-dom-element"]');
   });
 
   test('Inspects the component in the object inspector on click and shows tooltip', async function (assert) {
