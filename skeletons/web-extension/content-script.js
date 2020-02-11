@@ -61,15 +61,12 @@
     document.documentElement.dataset.emberExtension = 1;
   }
 
-
-
   // Iframes should not reset the icon so we make sure
   // it's the top level window before resetting.
   if (window.top === window) {
     // Clear a possible previous Ember icon
     chrome.runtime.sendMessage({ type: 'resetEmberIcon' });
   }
-
 
   /**
    * Inject JS into the page to check for an app on domready.  The in-page-script
@@ -91,7 +88,7 @@
    */
   var iframes = document.getElementsByTagName('iframe');
   var urls = [];
-  for (var i = 0, l = iframes.length; i < l; i ++) {
+  for (var i = 0, l = iframes.length; i < l; i++) {
     urls.push(iframes[i].src);
   }
 
@@ -103,6 +100,4 @@
   setTimeout(function() {
     chrome.runtime.sendMessage({type: 'iframes', urls: urls});
   }, 500);
-
-
-}());
+})();
