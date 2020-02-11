@@ -53,8 +53,12 @@ export default BasicAdapter.extend({
   },
 
   _injectDebugger() {
-    loadEmberDebug().then((emberDebug) => {
-      chrome.devtools.inspectedWindow.eval(emberDebug);
+    loadEmberDebug().then(emberDebug => {
+      chrome.devtools.inspectedWindow.eval(emberDebug, (success, error) => {
+        if (success === undefined && error) {
+          throw error;
+        }
+      });
       this.onResourceAdded();
     });
   },
@@ -96,7 +100,10 @@ export default BasicAdapter.extend({
    * @param {String} goToVersion
    */
   onVersionMismatch(goToVersion) {
-    window.location.href = `../panes-${goToVersion.replace(/\./g, '-')}/index.html`;
+    window.location.href = `../panes-${goToVersion.replace(
+      /\./g,
+      '-'
+    )}/index.html`;
   },
 
   /**
@@ -104,16 +111,15 @@ export default BasicAdapter.extend({
     scripts as soon as possible into the new page.
   */
   reloadTab() {
-    loadEmberDebug().then((emberDebug) => {
+    loadEmberDebug().then(emberDebug => {
       chrome.devtools.inspectedWindow.reload({ injectedScript: emberDebug });
     });
-
   },
 
   canOpenResource: false,
 
   sendIframes(urls) {
-    loadEmberDebug().then((emberDebug) => {
+    loadEmberDebug().then(emberDebug => {
       urls.forEach(url => {
         chrome.devtools.inspectedWindow.eval(emberDebug, { frameURL: url });
       });
@@ -124,7 +130,7 @@ export default BasicAdapter.extend({
 function loadEmberDebug() {
   let minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
   let xhr;
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     if (!emberDebug) {
       xhr = new XMLHttpRequest();
       xhr.open("GET", chrome.runtime.getURL(`/panes-${minimumVersion}/ember_debug.js`));
