@@ -200,13 +200,13 @@ function getTagTrackedProps(tag, ownTag, level = 0) {
   }
   if (tag.subtag) {
     if (tag.subtag._propertyKey) props.push(tag.subtag._propertyKey);
-    props.push(...getTagTrackedProps(tag.subtag, level + 1));
+    props.push(...getTagTrackedProps(tag.subtag, ownTag, level + 1));
   }
   if (tag.subtags) {
     tag.subtags.forEach((t) => {
       if (t === ownTag) return;
       if (t._propertyKey) props.push(t._propertyKey);
-      props.push(...getTagTrackedProps(t, level + 1));
+      props.push(...getTagTrackedProps(t, ownTag, level + 1));
     });
   }
   return props;
