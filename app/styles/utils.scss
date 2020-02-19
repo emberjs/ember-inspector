@@ -11,6 +11,7 @@ $units: 0, 1, 2, 3, 4;
   right: 0;
 }
 
+.inline-block { display: inline-block; }
 .flex { display: flex; }
 .inline-flex { display: inline-flex; }
 
@@ -19,8 +20,11 @@ $units: 0, 1, 2, 3, 4;
 .flex-shrink { flex-shrink: 1; }
 .flex-shrink-0 { flex-shrink: 0; }
 
+.flex-row { flex-direction: row; }
+.flex-col { flex-direction: column; }
 .items-center { align-items: center; }
 .self-stretch { align-self: stretch; }
+.justify-start { justify-content: flex-start; }
 
 .w-5 { width: var(--unit5); }
 .w-6 { width: var(--unit6); }
@@ -32,6 +36,8 @@ $units: 0, 1, 2, 3, 4;
 .w-12 { width: var(--unit12); }
 
 .h-full { height: 100%; }
+
+.border-0 { border-width: 0; }
 
 @each $key in $units {
   .w-#{$key} { width: var(--unit#{$key}); }
@@ -80,18 +86,32 @@ $units: 0, 1, 2, 3, 4;
 
 .font-bold { font-weight: bold; }
 .font-mono { font-family: var(--font-monospace); }
+.leading-none { line-height: 1; }
 .no-underline { text-decoration: none; }
+.underline { text-decoration: underline; }
 .text-left { text-align: left; }
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 .whitespace-no-wrap { white-space: nowrap; }
 
 .bg-transparent { background-color: var(--transparent); }
-.bg-base00 { background-color: var(--base00); }
-.bg-base01 { background-color: var(--base01); }
-.bg-base02 { background-color: var(--base02); }
+
+.fill-current { fill: currentColor; }
 
 .cursor-default { cursor: default; }
 .cursor-pointer { cursor: pointer; }
 
 .z-10 { z-index: 10; }
+
+
+
+/*
+  Utilities not part of Tailwind:
+*/
+
+.text-inherit { color: inherit; }
+
+.bg-base00 { background-color: var(--base00); }
+.bg-base01 { background-color: var(--base01); }
+.bg-base02 { background-color: var(--base02); }
+.bg-spec00 { background-color: var(--spec00); }

@@ -1,38 +1,4 @@
 .warning {
-  align-items: center;
-  background: var(--spec00);
   color: var(--warning-text);
-  display: flex;
-  flex-direction: row;
   font-size: 12px;
-  justify-content: flex-start;
-  line-height: 1;
-  padding: 4px 8px;
-}
-
-.warning__icon {
-  display: inline-block;
-  height: 18px;
-  margin-right: 5px;
-  width: 18px;
-
-  path {
-    fill: var(--warning-text);
-  }
-}
-
-.warning__text {
-  flex-grow: 1;
-  margin: 0;
-  padding: 0;
-}
-
-.warning__close {
-  background: var(--spec00);
-  border: hidden;
-  color: var(--base13);
-  cursor: pointer;
-  font-weight: 200;
-  padding: 0;
-  text-decoration: underline;
 }
