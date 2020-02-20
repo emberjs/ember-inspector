@@ -13,6 +13,7 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .top-0 { top: 0; }
 .left-0 { left: 0; }
 .right-0 { right: 0; }
+.bottom-0 { bottom: 0; }
 
 .overflow-auto { overflow: auto; }
 .overflow-hidden { overflow: hidden; }
@@ -104,6 +105,7 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 
 .cursor-default { cursor: default; }
 .cursor-pointer { cursor: pointer; }
+.cursor-col-resize { cursor: col-resize; }
 
 .z-10 { z-index: 10; }
 
@@ -112,6 +114,8 @@ $units: 0, 1, 2, 3, 4, 5, 6;
   -moz-appearance: none;
   appearance: none;
 }
+
+.pointer-events-none { pointer-events: none; }
 
 /*
   Utilities not part of Tailwind:
