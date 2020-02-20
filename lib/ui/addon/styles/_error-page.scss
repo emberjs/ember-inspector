@@ -1,52 +1,31 @@
 /**
   ERROR-PAGE
   ===========
-  An error with possible reaons
-  and solutions.
-  For example when application
-  is not detected.
+  An error with possible reasons and solutions.
+  For example: when application is not detected.
 */
 
-.error-page {
-  background: var(--base02);
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  color: var(--base13);
-  display: flex;
-  font-size: 13px;
-  left: 0;
-  min-height: 100%;
-  padding: 10px;
-  position: absolute;
-  top: 0;
-  width: 100%;
-}
-
 .error-page__content {
-  background: var(--base00);
   border: 1px solid var(--base04);
-  border-radius: 5px;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  margin: auto;
-  padding: 0 25px 25px 25px;
-  position: relative;
   width: 530px;
-}
 
-.error-page__content a {
-  color: var(--spec01);
-  text-decoration: none;
+  ul {
+    list-style-type: disc;
+    padding-left: var(--unit4);
+  }
+  
+  li {
+    padding: 2px 0;
+  }
+
+  a {
+    color: var(--spec01);
+    text-decoration: none;
+  }
 }
 
 .error-page__header {
-  align-items: center;
   border-bottom: 1px solid var(--base04);
-  display: flex;
-  font-size: 19px;
-  font-weight: bold;
-  overflow: hidden;
-  position: relative;
   top: -25px;
 
   .tomster {
@@ -64,34 +43,11 @@
   from {
     transform: translateY(90px);
   }
-  to   {
+  to {
     transform: translateY(0px);
   }
 }
 
-.error-page__title {
-  flex-grow: 1;
-  padding-top: 25px;
-}
-
 .error-page__body {
   border-bottom: 1px solid var(--base04);
-  padding-bottom: 10px;
-}
-
-.error-page__body-title {
-  font-weight: bold;
-}
-
-.error-page__body ul {
-  list-style-type: disc;
-  padding-left: 16px;
-}
-
-.error-page__body li {
-  padding: 2px 0;
-}
-
-.error-page__footer {
-  padding-top: 10px;
 }
