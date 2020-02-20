@@ -42,7 +42,9 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .w-12 { width: var(--unit12); }
 
 .w-full { width: 100%; }
+.w-auto { width: auto; }
 .h-full { height: 100%; }
+.h-auto { height: auto; }
 
 .m-auto { margin: auto; }
 .border-0 { border-width: 0; }
@@ -117,6 +119,8 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 }
 
 .pointer-events-none { pointer-events: none; }
+
+.outline-none { outline: 0; }
 
 /*
   Utilities not part of Tailwind:

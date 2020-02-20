@@ -177,7 +177,7 @@ module('Deprecation Tab', function(outer) {
       sources = findAll('[data-test="deprecation-source"]');
       assert.equal(sources.length, 0, 'sources filtered');
 
-      await click('.js-search-field-clear-button');
+      await click('[data-test="search-field-clear-button"]');
       await click('[data-test="deprecation-item"] .disclosure-triangle');
       sources = findAll('[data-test="deprecation-source"]');
       assert.equal(sources.length, 2, 'show all sources');
