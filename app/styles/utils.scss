@@ -11,9 +11,9 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 }
 
 .top-0 { top: 0; }
-.left-0 { left: 0; }
 .right-0 { right: 0; }
 .bottom-0 { bottom: 0; }
+.left-0 { left: 0; }
 
 .overflow-auto { overflow: auto; }
 .overflow-hidden { overflow: hidden; }
@@ -32,6 +32,7 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .items-center { align-items: center; }
 .self-stretch { align-self: stretch; }
 .justify-start { justify-content: flex-start; }
+.justify-center { justify-content: center; }
 
 .w-7 { width: var(--unit7); }
 .w-8 { width: var(--unit8); }
@@ -128,6 +129,7 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .bg-base02 { background-color: var(--base02); }
 .bg-spec00 { background-color: var(--spec00); }
 
+.text-base11 { color: var(--base11); }
 .text-base13 { color: var(--base13); }
 
 .text-12 { font-size: 12px; }
