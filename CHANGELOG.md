@@ -1,5 +1,29 @@
 # Changelog
 
+## [v3.13.2](https://github.com/emberjs/ember-inspector/tree/v3.13.2) (2020-02-19)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.13.1...v3.13.2)
+
+**Fixed bugs:**
+
+- fix recursion of getTagTrackedProps [\#1144](https://github.com/emberjs/ember-inspector/pull/1144) ([patricklx](https://github.com/patricklx))
+- Fix fallback to old inspectors [\#1141](https://github.com/emberjs/ember-inspector/pull/1141) ([wycats](https://github.com/wycats))
+- \[BUGFIX\] Updates "import" paths for autotracking APIs [\#1138](https://github.com/emberjs/ember-inspector/pull/1138) ([pzuraq](https://github.com/pzuraq))
+- only boot inspector on HTML pages [\#1137](https://github.com/emberjs/ember-inspector/pull/1137) ([efx](https://github.com/efx))
+
+**Closed issues:**
+
+- Route Tab not displaying anything - 3.15 [\#1140](https://github.com/emberjs/ember-inspector/issues/1140)
+- injected script breaks browser default XML presentation [\#1136](https://github.com/emberjs/ember-inspector/issues/1136)
+- Investigate canary failures [\#1134](https://github.com/emberjs/ember-inspector/issues/1134)
+- Error message: Ember.meta\(...\).peekDescriptors is not a function - Object are not shown for any ember component [\#1120](https://github.com/emberjs/ember-inspector/issues/1120)
+
+**Merged pull requests:**
+
+- Bump Ember Table to 2.2.2 [\#1131](https://github.com/emberjs/ember-inspector/pull/1131) ([mixonic](https://github.com/mixonic))
+- Fix canary test failure [\#1130](https://github.com/emberjs/ember-inspector/pull/1130) ([chancancode](https://github.com/chancancode))
+- Bump handlebars from 4.2.1 to 4.5.3 [\#1122](https://github.com/emberjs/ember-inspector/pull/1122) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v3.13.1](https://github.com/emberjs/ember-inspector/tree/v3.13.1) (2019-12-20)
 
 [Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.13.0...v3.13.1)
