@@ -412,7 +412,7 @@ export default EmberObject.extend(PortMixin, {
   },
 
   canSend(val) {
-    return val && ((val instanceof EmberObject) || (val instanceof Object) || typeOf(val) === 'array');
+    return val && ((val instanceof EmberObject) || (val instanceof Object) || typeOf(val) === 'object' || typeOf(val) === 'array');
   },
 
   saveProperty(objectId, prop, val) {
