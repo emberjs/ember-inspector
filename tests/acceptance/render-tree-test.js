@@ -113,7 +113,7 @@ module('Render Tree Tab', function(outer) {
       rows = findAll('.js-render-profile-item');
       assert.equal(rows.length, 0, 'expected filtered rows');
 
-      await click('[data-test="search-field-clear-button"]');
+      await click('[data-test-search-field-clear-button]');
       rows = findAll('.js-render-profile-item');
       assert.equal(rows.length, 2, 'expected all rows');
     });

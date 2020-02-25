@@ -251,7 +251,7 @@ module('Component Tab', function (hooks) {
     treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 0, 'expected filtered tree nodes');
 
-    await click('[data-test="search-field-clear-button"]');
+    await click('[data-test-search-field-clear-button]');
     treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 4, 'expected all tree nodes');
   });
@@ -299,7 +299,7 @@ module('Component Tab', function (hooks) {
       return false;
     });
 
-    await click('[data-test="scroll-into-view"]');
+    await click('[data-test-scroll-into-view]');
   });
 
   test('View DOM element in Elements panel', async function (assert) {

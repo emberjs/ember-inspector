@@ -438,7 +438,7 @@ module('Data Tab', function(outer) {
       rows = findAll('[data-test-table-row]');
       assert.equal(rows.length, 1);
 
-      await click('[data-test="search-field-clear-button"]');
+      await click('[data-test-search-field-clear-button]');
       rows = findAll('[data-test-table-row]');
       assert.equal(rows.length, 2);
     });

@@ -377,7 +377,7 @@ module('Promise Tab', function(outer) {
       assert.dom('.js-promise-tree-item').exists({ count: 1 });
       await fillIn('.js-promise-search input', 'xxxxx');
       assert.dom('.js-promise-tree-item').doesNotExist();
-      await click('[data-test="search-field-clear-button"]');
+      await click('[data-test-search-field-clear-button]');
       assert.dom('.js-promise-tree-item').exists({ count: 1 });
     });
   });
