@@ -726,7 +726,7 @@ function ownMixins(object) {
   let mixins = new Set();
 
   // Filter out anonymous mixins that are directly in a `class.extend`
-  let baseMixins = object.constructor.PrototypeMixin && object.constructor.PrototypeMixin.mixins;
+  let baseMixins = object.constructor && object.constructor.PrototypeMixin && object.constructor.PrototypeMixin.mixins;
 
   meta.forEachMixins(m => {
     // Find mixins that:
