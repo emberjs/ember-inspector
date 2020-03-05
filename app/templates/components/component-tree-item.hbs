@@ -4,7 +4,7 @@
     component-tree-item relative flex items-center mx-1 rounded
     {{if @item.hasInstance "cursor-pointer" "cursor-default"}}
     {{if @item.isComponent "component-tree-item--component"}}
-    {{if @item.isSelected "component-tree-item--selected"}}
+    {{if @item.isPinned "component-tree-item--pinned"}}
     {{if @item.isHighlighted "component-tree-item--highlighted"}}"
   {{on "click" @item.toggleInspection}}
   {{on "mouseenter" @item.showPreview}}
