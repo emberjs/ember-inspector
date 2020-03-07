@@ -113,7 +113,7 @@
   border-radius: 0;
 }
 
-.component-tree-item--selected .component-tree-item__tag {
+.component-tree-item--pinned .component-tree-item__tag {
   .component-name,
   .bracket-token,
   .key-token,
@@ -154,7 +154,7 @@
  * selected - user clicked on component
  */
 
-.component-tree-item.component-tree-item--selected {
+.component-tree-item.component-tree-item--pinned {
   background: var(--focus);
   color: var(--focus-text);
 
