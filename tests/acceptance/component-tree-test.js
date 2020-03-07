@@ -4,6 +4,7 @@ import {
   fillIn,
   findAll,
   triggerEvent,
+  triggerKeyEvent,
   visit
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
@@ -140,6 +141,58 @@ module('Component Tab', function (hooks) {
 
     treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 3, 'the last node should be hidden');
+  });
+
+  test('It allows users to expand and collapse nodes with arrow keys', async function (assert) {
+    await visit('/component-tree');
+
+    // handle messages
+    respondWith('view:showInspection', () => { return false; });
+    respondWith('objectInspector:inspectById', () => { return false; });
+
+    let treeNodes = findAll('.component-tree-item');
+    assert.equal(treeNodes.length, 4, 'expected some tree nodes');
+
+    // select first component node and collapse with left arrow
+    await click(treeNodes[2]);
+    await triggerKeyEvent(document, 'keydown', 37);
+
+    treeNodes = findAll('.component-tree-item');
+    assert.equal(treeNodes.length, 3, 'child nodes should be hidden');
+
+    // press right arrow key
+    await triggerKeyEvent(document, 'keydown', 39);
+
+    treeNodes = findAll('.component-tree-item');
+    assert.equal(treeNodes.length, 4, 'child nodes should be visible');
+  });
+
+  test('It allows users to navigate nodes with arrow keys', async function (assert) {
+    await visit('/component-tree');
+
+    // select first node with down arrow key
+    respondWith('view:showInspection', false);
+    respondWith('objectInspector:inspectById', ({ objectId }) => {
+      assert.equal(objectId, 'ember123');
+      return false;
+    });
+    await triggerKeyEvent(document, 'keydown', 40);
+
+    // select next node with down arrow key
+    respondWith('view:showInspection', false);
+    respondWith('objectInspector:inspectById', ({ objectId }) => {
+      assert.equal(objectId, 'ember1');
+      return false;
+    });
+    await triggerKeyEvent(document, 'keydown', 40);
+
+    // select previous node with up arrow key
+    respondWith('view:showInspection', false);
+    respondWith('objectInspector:inspectById', ({ objectId }) => {
+      assert.equal(objectId, 'ember123');
+      return false;
+    });
+    await triggerKeyEvent(document, 'keydown', 38);
   });
 
   test('It allows users to expand and collapse children with alt key', async function (assert) {
@@ -298,6 +351,6 @@ module('Component Tab', function (hooks) {
     });
 
     assert.equal(currentURL(), '/component-tree?pinned=render-node%3A3', 'It pins the element id as a query param');
-    assert.dom('.component-tree-item--selected').hasText('TodoList', 'It selects the item in the tree corresponding to the element');
+    assert.dom('.component-tree-item--pinned').hasText('TodoList', 'It selects the item in the tree corresponding to the element');
   });
 });

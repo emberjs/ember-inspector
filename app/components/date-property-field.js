@@ -1,9 +1,6 @@
 import { scheduleOnce } from '@ember/runloop';
 import DatePicker from 'ember-inspector/components/ember-flatpickr';
-
-const KEY_EVENTS = {
-  escape: 27
-};
+import { KEYS } from 'ember-inspector/utils/key-codes';
 
 export default DatePicker.extend({
   didInsertElement() {
@@ -13,7 +10,7 @@ export default DatePicker.extend({
   },
 
   keyUp(e) {
-    if (e.keyCode === KEY_EVENTS.escape) {
+    if (e.keyCode === KEYS.escape) {
       this.flatpickrRef.close();
     }
     return this._super(...arguments);
