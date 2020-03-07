@@ -1,4 +1,12 @@
-<ScrollContainer @collection={{this.visibleItems}} @currentItem={{this.currentItem}} @itemHeight={{this.itemHeight}} class="list__content js-component-tree">
+<ScrollContainer
+  {{did-insert this.arrowKeysSetup}}
+  {{will-destroy this.arrowKeysTeardown}}
+  @collection={{this.visibleItems}}
+  @currentItem={{this.currentItem}}
+  @itemHeight={{this.itemHeight}}
+  class="list__content js-component-tree"
+  tabindex="-1"
+>
   {{#vertical-collection this.visibleItems estimateHeight=this.itemHeight key="id" as |item|}}
     <ComponentTreeItem @item={{item}} />
   {{/vertical-collection}}

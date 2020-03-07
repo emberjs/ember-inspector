@@ -6,6 +6,7 @@ import { htmlSafe } from '@ember/string';
 import { tracked } from '@glimmer/tracking';
 
 import searchMatch from 'ember-inspector/utils/search-match';
+import { KEYS } from 'ember-inspector/utils/key-codes';
 
 export default class ComponentTreeController extends Controller {
   queryParams = ['pinned', 'previewing', 'query'];
@@ -70,6 +71,16 @@ export default class ComponentTreeController extends Controller {
     } else {
       return undefined;
     }
+  }
+
+  get nextItem() {
+    const items = this.visibleItems;
+    return items[items.indexOf(this.findItem(this.pinned)) + 1] || items[items.length - 1];
+  }
+
+  get previousItem() {
+    const items = this.visibleItems;
+    return items[items.indexOf(this.findItem(this.pinned)) - 1] || items[0];
   }
 
   get matchingItems() {
@@ -167,6 +178,31 @@ export default class ComponentTreeController extends Controller {
     }
   }
 
+  @action handleKeyDown(event) {
+    if(focusedInInput()) {
+      return;
+    }
+
+    if(arrowKeyPressed(event.keyCode)) {
+      event.preventDefault();
+    }
+
+    switch (event.keyCode) {
+      case KEYS.up:
+        this.pinned = this.previousItem.id;
+        break;
+      case KEYS.right:
+        this.findItem(this.pinned).expand();
+        break;
+      case KEYS.down:
+        this.pinned = this.nextItem.id;
+        break;
+      case KEYS.left:
+        this.findItem(this.pinned).collapse();
+        break;
+    }
+  }
+
   @action toggleInspect() {
     this.port.send('view:inspectViews', { inspect: !this.isInspecting });
   }
@@ -178,11 +214,29 @@ export default class ComponentTreeController extends Controller {
   @action collapseAll() {
     this.renderItems.forEach(item => item.collapse());
   }
+
+  @action arrowKeysSetup() {
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
+
+  @action arrowKeysTeardown() {
+    document.removeEventListener('keydown', this.handleKeyDown);
+  }
 }
 
 function isInternalRenderNode(renderNode) {
   return renderNode.type === 'outlet' && renderNode.name === 'main' ||
     renderNode.type === 'route-template' && renderNode.name === '-top-level';
+}
+
+function focusedInInput() {
+  return ['input', 'textarea'].includes(
+    document.activeElement.tagName.toLowerCase()
+  );
+}
+
+function arrowKeyPressed(keyCode) {
+  return [KEYS.up, KEYS.right, KEYS.down, KEYS.left].includes(keyCode);
 }
 
 class RenderItem {
@@ -284,7 +338,7 @@ class RenderItem {
     }
   }
 
-  get isSelected() {
+  get isPinned() {
     return this.id === this.controller.pinned;
   }
 
@@ -316,7 +370,7 @@ class RenderItem {
   }
 
   @action toggleInspection() {
-    if (this.isSelected) {
+    if (this.isPinned) {
       this.controller.pinned = undefined;
     } else {
       this.controller.pinned = this.id;
