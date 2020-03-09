@@ -1,20 +1,9 @@
 .empty-message {
-  align-items: center;
-  color: var(--base11);
-  display: flex;
-  flex-direction: column;
-  font-size: 18px;
-  height: 100%;
-  justify-content: center;
-  text-align: center;
-
   svg path {
-    fill: var(--base06);
+    fill: var(--base07);
   }
 }
 
 .empty-message__content {
   max-width: 40rem;
-  margin: 0 3rem;
-  padding-top: 1rem;
 }

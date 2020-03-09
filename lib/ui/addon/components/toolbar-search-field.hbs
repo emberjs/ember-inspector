@@ -1,15 +1,17 @@
-<div class="toolbar__search" ...attributes>
+<div class="toolbar__search relative mx-1" ...attributes>
   <Input
     @id={{this.inputId}}
     @type="text"
     @value={{@value}}
     placeholder="Search"
+    class="box-border m-0 rounded pt-0 pr-4 pb-0 pl-1 text-12 leading-none outline-none bg-base00"
   />
 
   {{#if @value}}
     <button
-      class="toolbar__icon-button toolbar__search-clear-button js-search-field-clear-button"
+      class="toolbar__icon-button toolbar__search-clear-button absolute right-0 w-auto h-auto"
       title="clear"
+      data-test-search-field-clear-button
       {{on "click" this.clear}}
     >
       {{svg-jar "clear" width="14px" height="14px"}}

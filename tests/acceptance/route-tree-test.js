@@ -178,7 +178,7 @@ module('Route Tree Tab', function(outer) {
       routeNodes = findAll('.js-route-tree-item');
       assert.equal(routeNodes.length, 1);
 
-      await click('.js-search-field-clear-button');
+      await click('[data-test-search-field-clear-button]');
 
       routeNodes = findAll('.js-route-tree-item');
       assert.equal(routeNodes.length, 6);
