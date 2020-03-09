@@ -1,32 +1,11 @@
-.toolbar__search {
-  margin-left: 4px;
-  margin-right: 4px;
-  position: relative;
-}
-
 .toolbar__search input {
-  background-color: var(--base00);
   border: 1px solid var(--base05);
-  border-radius: 3px;
-  box-sizing: border-box;
-  font-size: 12px;
   height: calc(var(--toolbar-height) - 7px);
-  line-height: normal;
-  margin: 0;
-  padding: 0 15px 0 4px;
   width: 175px;
 }
 
-.toolbar__search input:focus {
-  outline: none;
-}
-
 .toolbar__search-clear-button {
-  height: auto;
-  position: absolute;
-  right: 0;
   top: 3px;
-  width: auto;
 
   svg {
     path { fill: var(--base11); }

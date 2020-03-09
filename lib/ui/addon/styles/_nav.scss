@@ -6,7 +6,7 @@
   line-height: 22px;
   margin: 2px 0 0;
   overflow: hidden;
-  padding: 0 5px;
+  padding: 0 var(--unit1);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -32,7 +32,7 @@
   height: 24px;
   line-height: 24px;
   overflow: hidden;
-  padding: 0 5px;
+  padding: 0 var(--unit1);
   text-decoration: none;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -84,8 +84,8 @@
 }
 
 .nav--main .pill {
-  margin-right: 5px;
-  margin-left: 5px;
+  margin-right: var(--unit1);
+  margin-left: var(--unit1);
 }
 
 .nav.nav--main .nav__title {

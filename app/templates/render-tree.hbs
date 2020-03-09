@@ -1,7 +1,7 @@
 {{#unless this.isWarningClosed}}
-  <WarningMessage @close={{this.closeWarning}}>
+  <Ui::WarningMessage @close={{this.closeWarning}}>
     Render times may be inaccurate due to instrumentation and environment
-  </WarningMessage>
+  </Ui::WarningMessage>
 {{/unless}}
 
 {{#if this.showEmpty}}
