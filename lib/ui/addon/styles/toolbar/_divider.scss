@@ -1,9 +1,4 @@
 .toolbar .divider {
-  background-color: var(--base05);
-  display: inline-block;
   height: calc(var(--toolbar-height) - 10px);
-  margin-left: 4px;
-  margin-right: 4px;
-  position: relative;
   width: 1px;
 }

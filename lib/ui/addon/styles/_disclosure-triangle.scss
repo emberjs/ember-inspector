@@ -1,10 +1,4 @@
 .disclosure-triangle {
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  display: inline-block;
   padding: 0 2px;
 
   &:focus { outline: none; }
