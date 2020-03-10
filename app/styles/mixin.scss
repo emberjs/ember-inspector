@@ -55,7 +55,7 @@ $mixin-left-padding: 22px;
 .mixin__properties {
   border-bottom: 1px solid var(--base03);
   font-family: var(--font-monospace);
-  font-size: 12px;
+  font-size: 1.2rem;
   list-style-type: none;
   margin: 0;
   padding: 3px 0 5px;
@@ -162,7 +162,7 @@ $mixin-left-padding: 22px;
   border: 1px solid var(--base09);
   color: var(--base14);
   flex: 1;
-  font-size: 12px;
+  font-size: 1.2rem;
   outline: none;
 }
 
