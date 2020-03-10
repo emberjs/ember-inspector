@@ -145,6 +145,13 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .text-base11 { color: var(--base11); }
 .text-base13 { color: var(--base13); }
 
-.text-12 { font-size: 1.2rem; }
-.text-13 { font-size: 1.3rem; }
-.text-18 { font-size: 1.8rem; }
+.text-xs { font-size: 1rem; }
+.text-sm { font-size: 1.1rem; }
+.text-base { font-size: 1.2rem; }
+.text-md { font-size: 1.3rem; }
+.text-lg { font-size: 1.4rem; }
+.text-xl { font-size: 1.5rem; }
+.text-2xl { font-size: 1.6rem; }
+.text-3xl { font-size: 1.7rem; }
+.text-4xl { font-size: 1.8rem; }
+.text-5xl { font-size: 1.9rem; }
