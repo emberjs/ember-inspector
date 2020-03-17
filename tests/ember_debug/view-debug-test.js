@@ -145,7 +145,12 @@ function setupApp() {
     }
   }));
 
-  setTemplate.call(this, 'application', hbs`<div class="application">{{outlet}}</div>`);
+  /*
+    Setting line-height to normal because normalize.css sets the
+    html line-height to 1.15. This seems to cause a measurement
+    error with getBoundingClientRect
+  */
+  setTemplate.call(this, 'application', hbs`<div class="application" style="line-height: normal;">{{outlet}}</div>`);
   setTemplate.call(this, 'simple', hbs`Simple {{test-foo}} {{test-bar}}`);
   setTemplate.call(this, 'comments/index', hbs`{{#each this.comments as |comment|}}{{comment}}{{/each}}`);
   setTemplate.call(this, 'posts', hbs`Posts`);
