@@ -15,6 +15,13 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .bottom-0 { bottom: 0; }
 .left-0 { left: 0; }
 
+.inset-0 {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
 .overflow-auto { overflow: auto; }
 .overflow-hidden { overflow: hidden; }
 
@@ -110,6 +117,7 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .cursor-pointer { cursor: pointer; }
 .cursor-col-resize { cursor: col-resize; }
 
+.z-0 { z-index: 0; }
 .z-10 { z-index: 10; }
 
 .appearance-none {
@@ -137,6 +145,13 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .text-base11 { color: var(--base11); }
 .text-base13 { color: var(--base13); }
 
-.text-12 { font-size: 12px; }
-.text-13 { font-size: 13px; }
-.text-18 { font-size: 18px; }
+.text-xs { font-size: 1rem; }
+.text-sm { font-size: 1.1rem; }
+.text-base { font-size: 1.2rem; }
+.text-md { font-size: 1.3rem; }
+.text-lg { font-size: 1.4rem; }
+.text-xl { font-size: 1.5rem; }
+.text-2xl { font-size: 1.6rem; }
+.text-3xl { font-size: 1.7rem; }
+.text-4xl { font-size: 1.8rem; }
+.text-5xl { font-size: 1.9rem; }
