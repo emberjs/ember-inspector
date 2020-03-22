@@ -1,22 +1,5 @@
-/**
- OBJECT-INSPECTOR
- ================
- The Object inspector
- at the far right of the screen
-*/
-
-.object-inspector-object-name {
-  flex: auto;
-  font-weight: 700;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .object-trail {
-  margin-bottom: 4px;
-  margin-left: 39px;
-  word-break: break-all;
+  margin-left: 34px;
 }
 
 .object-inspector-toolbar.toolbar {
@@ -34,7 +17,6 @@
   margin-bottom: 5px;
   margin-top: 2px;
   padding-top: 2px;
-  position: relative;
 
   & > svg {
     height: 10px;
@@ -43,20 +25,11 @@
     top: -4px;
     width: 19px;
   }
-
-  ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
 }
 
 .mixin__property-dependency-item {
-  color: var(--base12);
-  font-size: 1.1rem;
   margin-bottom: 2px;
   margin-left: 55px;
-  position: relative;
 
   &:before {
     background-color: var(--base08);
@@ -85,21 +58,12 @@
 }
 
 .mixin__property-icon-container {
-  flex-shrink: 0;
   width: $mixin-left-padding;
 }
 
 .mixin__property-icon {
-  border-radius: 3px;
-  color: var(--white);
-  display: inline-block;
-  font-family: var(--font-monospace);
-  font-size: 1.3rem;
   height: 17px;
   line-height: 17px;
-  text-align: center;
-  -webkit-user-select: none;
-  user-select: none;
   width: 17px;
 }
 

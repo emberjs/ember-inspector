@@ -215,7 +215,7 @@ module('Data Tab', function(outer) {
         modelTypes: getModelTypes()
       }));
 
-      await click('.js-reload-container-btn');
+      await click('[data-test-reload-container-btn]');
 
       assert.dom('.js-model-type').exists({ count: 2 });
     });

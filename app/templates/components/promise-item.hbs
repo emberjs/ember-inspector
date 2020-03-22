@@ -16,7 +16,7 @@
       <button
         class="send-to-console send-to-console--chevron-only js-trace-promise-btn"
         title="Trace promise in console"
-        {{on "click" (fn @tracePromise @model)}}
+        {{action @tracePromise @model}}
       >
         {{svg-jar "send-with-chevron" width="6px" height="9px"}}
         Trace
@@ -43,7 +43,7 @@
       {{#if this.isValueInspectable}}
         <span
           class="list__link js-promise-object-value"
-          {{on "click" (fn @inspectObject this.settledValue.objectId)}}
+          {{on "click" (fn @inspectObject settledValue.objectId)}}
         >
           {{this.settledValue.inspect}}
         </span>
@@ -55,9 +55,10 @@
     <div class="list__cell-helper">
       {{#if this.isError}}
         <button
-          class="send-to-console send-to-console--chevron-only js-send-to-console-btn"
+          class="send-to-console send-to-console--chevron-only"
           title="Send stack trace to the console"
-          {{on "click" (fn @sendValueToConsole @model)}}
+          {{action @sendValueToConsole @model}}
+          data-test-send-to-console-btn
         >
           {{svg-jar "send-with-chevron" width="6px" height="9px"}}
           Stack Trace

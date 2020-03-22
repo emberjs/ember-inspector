@@ -2,43 +2,52 @@
   <div class="split__panel__hd">
     <div class="toolbar">
       <button
-        class="toolbar__icon-button {{if this.isNested "enabled" "disabled"}} js-object-inspector-back"
+        class="toolbar__icon-button {{if this.isNested "enabled" "disabled"}}"
         {{on "click" this.popStack}}
+        data-test-object-inspector-back
       >
         {{svg-jar "arrow-back" width="21px" height="21px"}}
       </button>
 
-      <Ui::ToolbarDivider />
-
-      <code class="object-inspector-object-name js-object-name">
+      <code
+        class="flex-auto truncate font-bold"
+        data-test-object-name
+      >
         {{@model.firstObject.name}}
       </code>
 
       <button
-        class="send-to-console js-send-object-to-console-btn"
+        class="send-to-console"
         title="Send to Console"
         {{on "click" (fn this.sendObjectToConsole @model.lastObject)}}
+        data-test-send-object-to-console-btn
       >
         {{svg-jar "send-with-text" width="20px" height="10px"}}
       </button>
     </div>
 
     {{#if this.trail}}
-      <code class="object-trail js-object-trail">{{this.trail}}</code>
+      <code
+        class="object-trail mb-1 break-all"
+        data-test-object-trail
+      >
+        {{this.trail}}
+      </code>
     {{/if}}
   </div>
 
   <div class="split__panel__bd">
     <div class="toolbar object-inspector-toolbar">
       <button
-        class="toolbar__radio toolbar__radio--first js-object-display-type-grouped {{if (eq this.propDisplayType "grouped") "active"}}"
+        class="toolbar__radio toolbar__radio--first {{if (eq this.propDisplayType "grouped") "active"}}"
         {{on "click" (fn this.setPropDisplay "grouped")}}
       >
         Grouped
       </button>
       <button
-        class="toolbar__radio js-object-display-type-all {{if (eq this.propDisplayType "all") "active"}}"
+        class="toolbar__radio {{if (eq this.propDisplayType "all") "active"}}"
         {{on "click" (fn this.setPropDisplay "all")}}
+        data-test-object-display-type-all
       >
         All
       </button>
