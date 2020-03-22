@@ -1,8 +1,9 @@
 <div class="route-cell-objects">
   <span
-    class="is-link js-route-handler"
+    class="is-link inline-block"
     title={{@route.value.routeHandler.className}}
     {{on "click" @inspectRoute}}
+    data-test-route-handler
   >
     Route
   </span>

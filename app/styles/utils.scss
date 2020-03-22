@@ -25,10 +25,14 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .overflow-auto { overflow: auto; }
 .overflow-hidden { overflow: hidden; }
 
+.block { display: block; }
+.inline { display: inline; }
 .inline-block { display: inline-block; }
 .flex { display: flex; }
 .inline-flex { display: inline-flex; }
 
+.flex-1 { flex: 1 1 0%; }
+.flex-auto { flex: 1 1 auto; }
 .flex-grow { flex-grow: 1; }
 .flex-grow-0 { flex-grow: 0; }
 .flex-shrink { flex-shrink: 1; }
@@ -47,9 +51,10 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .w-10 { width: var(--unit10); }
 .w-11 { width: var(--unit11); }
 .w-12 { width: var(--unit12); }
-
 .w-full { width: 100%; }
 .w-auto { width: auto; }
+
+.h-7 { height: var(--unit7); }
 .h-full { height: 100%; }
 .h-auto { height: auto; }
 
@@ -104,10 +109,18 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .leading-none { line-height: 1; }
 .no-underline { text-decoration: none; }
 .underline { text-decoration: underline; }
+.line-through { text-decoration: line-through; }
 .text-left { text-align: left; }
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 .whitespace-no-wrap { white-space: nowrap; }
+.break-all { word-break: break-all; }
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .bg-transparent { background-color: var(--transparent); }
 
@@ -116,6 +129,8 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .cursor-default { cursor: default; }
 .cursor-pointer { cursor: pointer; }
 .cursor-col-resize { cursor: col-resize; }
+
+.select-none { user-select: none; }
 
 .z-0 { z-index: 0; }
 .z-10 { z-index: 10; }
@@ -130,6 +145,14 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 
 .outline-none { outline: 0; }
 
+.opacity-100 { opacity: 1; }
+.opacity-75 { opacity: 0.75; }
+.opacity-50 { opacity: 0.5; }
+.opacity-25 { opacity: 0.25; }
+.opacity-0 { opacity: 0; }
+
+.list-none { list-style-type: none; }
+
 /*
   Utilities not part of Tailwind:
 */
@@ -142,8 +165,15 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .bg-base05 { background-color: var(--base05); }
 .bg-spec00 { background-color: var(--spec00); }
 
+.text-white { color: var(--white); }
+.text-base09 { color: var(--base09); }
+.text-base10 { color: var(--base10); }
 .text-base11 { color: var(--base11); }
+.text-base12 { color: var(--base12); }
 .text-base13 { color: var(--base13); }
+.text-base14 { color: var(--base14); }
+.text-base15 { color: var(--base15); }
+.text-spec01 { color: var(--spec01); }
 
 .text-xs { font-size: 1rem; }
 .text-sm { font-size: 1.1rem; }

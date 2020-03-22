@@ -295,7 +295,7 @@ module('Promise Tab', function(outer) {
 
       await visit('/promise-tree');
 
-      assert.dom('.js-send-to-console-btn').hasText('Stack Trace');
+      assert.dom('[data-test-send-to-console-btn]').hasText('Stack Trace');
 
       respondWith('promise:sendValueToConsole', ({ promiseId }) => {
         assert.equal(promiseId, 1, 'promiseId');
@@ -303,7 +303,7 @@ module('Promise Tab', function(outer) {
       });
 
       let row = find('.js-promise-tree-item');
-      await click(row.querySelector('.js-send-to-console-btn'));
+      await click(row.querySelector('[data-test-send-to-console-btn]'));
     });
 
     test("Send fulfillment value to console", async function(assert) {
@@ -323,7 +323,7 @@ module('Promise Tab', function(outer) {
 
       await visit('/promise-tree');
 
-      assert.dom('.js-send-to-console-btn').exists();
+      assert.dom('[data-test-send-to-console-btn]').exists();
 
       respondWith('promise:sendValueToConsole', ({ promiseId }) => {
         assert.equal(promiseId, 1, 'promiseId');
@@ -331,7 +331,7 @@ module('Promise Tab', function(outer) {
       });
 
       let row = find('.js-promise-tree-item');
-      await click(row.querySelector('.js-send-to-console-btn'));
+      await click(row.querySelector('[data-test-send-to-console-btn]'));
     });
 
     test("Sending objects to the object inspector", async function(assert) {
