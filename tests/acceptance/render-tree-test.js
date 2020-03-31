@@ -1,7 +1,7 @@
 import { visit, findAll, click, fillIn } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { respondWith } from '../test-adapter';
+import { setupTestAdapter, respondWith } from '../test-adapter';
 
 function generateProfiles() {
   return [
@@ -27,6 +27,7 @@ function generateProfiles() {
 }
 
 module('Render Tree Tab', function(outer) {
+  setupTestAdapter(outer);
   setupApplicationTest(outer);
 
   outer.afterEach(function() {

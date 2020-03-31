@@ -7,7 +7,7 @@ import {
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { respondWith, sendMessage } from '../test-adapter';
+import { setupTestAdapter, respondWith, sendMessage } from '../test-adapter';
 
 function getFilters() {
   return [{ name: 'isNew', desc: 'New' }];
@@ -59,6 +59,7 @@ function getRecords(type) {
 }
 
 module('Data Tab', function(outer) {
+  setupTestAdapter(outer);
   setupApplicationTest(outer);
 
   module('Model Types', function(inner) {

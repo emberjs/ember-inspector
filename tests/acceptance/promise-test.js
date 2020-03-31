@@ -8,7 +8,7 @@ import {
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { respondWith, sendMessage } from '../test-adapter';
+import { setupTestAdapter, respondWith, sendMessage } from '../test-adapter';
 
 let guids = 0;
 
@@ -28,6 +28,7 @@ function generatePromise(props) {
 }
 
 module('Promise Tab', function(outer) {
+  setupTestAdapter(outer);
   setupApplicationTest(outer);
 
   outer.beforeEach(function() {

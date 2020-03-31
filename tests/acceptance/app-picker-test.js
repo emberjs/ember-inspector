@@ -5,9 +5,10 @@ import {
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { respondWith, disableDefaultResponseFor } from '../test-adapter';
+import { setupTestAdapter, respondWith, disableDefaultResponseFor } from '../test-adapter';
 
 module('App Picker', function(hooks) {
+  setupTestAdapter(hooks);
   setupApplicationTest(hooks);
 
   hooks.beforeEach(function() {

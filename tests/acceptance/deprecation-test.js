@@ -1,7 +1,7 @@
 import { visit, findAll, fillIn, click } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { enableOpenResource, respondWith, expectOpenResource, disableDefaultResponseFor } from '../test-adapter';
+import { setupTestAdapter, enableOpenResource, respondWith, expectOpenResource, disableDefaultResponseFor } from '../test-adapter';
 
 /*
   Toggling the source can be done by clicking the
@@ -53,6 +53,7 @@ function deprecationsWithSource() {
 }
 
 module('Deprecation Tab', function(outer) {
+  setupTestAdapter(outer);
   setupApplicationTest(outer);
 
   outer.beforeEach(function() {
