@@ -21,6 +21,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
+      # Code Climate expects these variables to be set
+      - name: Set up commit metadata
+        if: github.event_name == 'push'
+        env:
+          GIT_COMMIT_SHA: ${{ github.sha }}
+          GIT_BRANCH: ${{ github.ref }}
+        run: |
+          echo "::set-env name=GIT_COMMIT_SHA::${GIT_COMMIT_SHA}"
+          echo "::set-env name=GIT_BRANCH::${GIT_BRANCH/refs\/heads\//}"
+      - name: Set up commit metadata
+        if: github.event_name == 'pull_request'
+        env:
+          GIT_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+          GIT_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          echo "::set-env name=GIT_COMMIT_SHA::${GIT_COMMIT_SHA}"
+          echo "::set-env name=GIT_BRANCH::${GIT_BRANCH}"
       - name: Set up Volta
         uses: rwjblue/setup-volta@v1
       - name: Install dependencies (yarn)
@@ -51,6 +68,7 @@ jobs:
       #     EMBER_ENV: test
       #     COVERAGE: 'true'
       - name: Report coverage
+        if: github.event_name != 'schedule'
         run: yarn codeclimate-test-reporter < coverage/lcov.info
         env:
           CODECLIMATE_REPO_TOKEN: 59edcfd1ffc778791af49ca594b503e7179f6bbe1991b2cc0c0a6987d103253d
