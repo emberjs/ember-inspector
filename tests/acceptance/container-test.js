@@ -8,7 +8,7 @@ import {
   fillIn,
   currentURL
 } from 'ember-test-helpers';
-import { respondWith } from '../test-adapter';
+import { setupTestAdapter, respondWith } from '../test-adapter';
 
 function getTypes() {
   return [
@@ -39,6 +39,7 @@ function getControllers() {
 }
 
 module('Container Tab', function(outer) {
+  setupTestAdapter(outer);
   setupApplicationTest(outer);
 
   module('With default types', function(inner) {

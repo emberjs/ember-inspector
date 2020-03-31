@@ -8,7 +8,7 @@ import {
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { respondWith, sendMessage } from '../test-adapter';
+import { setupTestAdapter, respondWith, sendMessage } from '../test-adapter';
 
 function isObject(item) {
   return (item && typeof item === 'object' && !Array.isArray(item));
@@ -75,6 +75,7 @@ function routeTree() {
 }
 
 module('Route Tree Tab', function(outer) {
+  setupTestAdapter(outer);
   setupApplicationTest(outer);
 
   outer.beforeEach(function() {

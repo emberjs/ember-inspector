@@ -2,9 +2,10 @@ import { visit, findAll } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-inspector/config/environment';
-import { respondWith } from '../test-adapter';
+import { setupTestAdapter, respondWith } from '../test-adapter';
 
 module('Info Tab', function(hooks) {
+  setupTestAdapter(hooks);
   setupApplicationTest(hooks);
 
   test("Libraries are displayed correctly", async function(assert) {

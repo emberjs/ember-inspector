@@ -8,7 +8,7 @@ import {
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { respondWith, sendMessage } from '../test-adapter';
+import { setupTestAdapter, respondWith, sendMessage } from '../test-adapter';
 
 function objectFactory(props) {
   return {
@@ -69,6 +69,7 @@ function objectToInspect() {
 }
 
 module('Object Inspector', function(hooks) {
+  setupTestAdapter(hooks);
   setupApplicationTest(hooks);
 
   test("The object displays correctly", async function (assert) {
