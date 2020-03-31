@@ -219,6 +219,22 @@ module('Data Tab', function(outer) {
 
       assert.dom('.js-model-type').exists({ count: 2 });
     });
+
+    test('Can inspect store in data pane', async function(assert) {
+      respondWith('data:getModelTypes', {
+        type: 'data:modelTypesAdded',
+        modelTypes: getModelTypes()
+      });
+
+      await visit('/data/model-types');
+
+      respondWith('objectInspector:inspectByContainerLookup', ({ name }) => {
+        assert.equal(name, 'service:store');
+        return false;
+      });
+
+      await click('[data-test-inspect-store]');
+    });
   });
 
   module('Records', function(inner) {
