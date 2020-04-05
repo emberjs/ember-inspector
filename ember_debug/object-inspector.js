@@ -27,8 +27,8 @@ try {
   // Try to load the most recent library
   let GlimmerValidator = Ember.__loader.require('@glimmer/validator');
 
-  tagValue = GlimmerValidator.value;
-  tagValidate = GlimmerValidator.validate;
+  tagValue = GlimmerValidator.value || GlimmerValidator.valueForTag;
+  tagValidate = GlimmerValidator.validate || GlimmerValidator.validateTag;
   track = GlimmerValidator.track;
 } catch (e) {
   try {

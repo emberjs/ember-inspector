@@ -2,6 +2,8 @@ import { visit, find } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import Pretender from 'pretender';
+import { setupTestAdapter } from '../test-adapter';
+
 
 function urlFor(ref) {
   return `https://raw.githubusercontent.com/emberjs/ember-inspector/${encodeURIComponent(ref)}/CHANGELOG.md`;
@@ -42,6 +44,7 @@ function generateContent(master = false) {
 }
 
 module('Whats New', function(outer) {
+  setupTestAdapter(outer);
   setupApplicationTest(outer);
 
   outer.beforeEach(function() {

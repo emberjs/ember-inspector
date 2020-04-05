@@ -1,5 +1,5 @@
 import Controller from '@ember/controller';
-import { get, computed } from '@ember/object';
+import { action, get, computed } from '@ember/object';
 import { sort } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 
@@ -48,9 +48,14 @@ export default Controller.extend({
         return true;
       }
     });
-  })
-});
+  }),
 
+  getStore: action(function() {
+    this.port.send('objectInspector:inspectByContainerLookup', {
+      name: 'service:store'
+    });
+  }),
+});
 /**
  * Returns whether or not a given key has been set in storage.
  * @param {*} storage
