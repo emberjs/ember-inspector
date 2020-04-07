@@ -5,6 +5,7 @@ export default Component.extend({
   tagName: '',
 
   propDisplayType: 'grouped',
+  customFilter: '',
 
   trail: computed('model.[]', function () {
     let nested = this.model.slice(1);
@@ -18,6 +19,14 @@ export default Component.extend({
 
   setPropDisplay: action(function (type) {
     this.set('propDisplayType', type);
+  }),
+
+  setCustomFilter: action(function (event) {
+    let { value } = event.target;
+    this.setProperties({
+      propDisplayType: 'all',
+      customFilter: value,
+    });
   }),
 
   sendObjectToConsole: action(function (obj) {

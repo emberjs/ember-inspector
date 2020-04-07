@@ -42,6 +42,14 @@
       >
         All
       </button>
+      <Input
+        @id="custom-filter-input"
+        @type="text"
+        @value={{this.customFilter}}
+        @change={{this.setCustomFilter}}
+        placeholder="Search"
+        class="toolbar__search"
+      />
     </div>
 
     {{#if @mixinDetails.errors.length}}
@@ -52,7 +60,10 @@
     {{/if}}
 
     {{#if (eq this.propDisplayType "all")}}
-      <ObjectInspector::PropertiesAll @model={{@mixinDetails}} />
+      <ObjectInspector::PropertiesAll
+        @customFilter={{this.customFilter}}
+        @model={{@mixinDetails}}
+      />
     {{else if (eq this.propDisplayType "grouped")}}
       <ObjectInspector::PropertiesGrouped @model={{@mixinDetails}} />
     {{/if}}
