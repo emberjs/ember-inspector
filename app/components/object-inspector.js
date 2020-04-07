@@ -29,6 +29,10 @@ export default Component.extend({
     });
   }),
 
+  clearCustomFilter: action(function () {
+    this.set('customFilter', '');
+  }),
+
   sendObjectToConsole: action(function (obj) {
     let objectId = get(obj, 'objectId');
     this.port.send('objectInspector:sendToConsole', {

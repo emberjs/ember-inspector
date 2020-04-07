@@ -42,14 +42,26 @@
       >
         All
       </button>
-      <Input
-        @id="custom-filter-input"
-        @type="text"
-        @value={{this.customFilter}}
-        @keyDown={{this.setCustomFilter}}
-        placeholder="Search"
-        class="toolbar__search object-inspector-custom-search-input"
-      />
+      <div class="object-inspector-custom-search">
+        <Input
+          @id="custom-filter-input"
+          @type="text"
+          @value={{this.customFilter}}
+          @keyDown={{this.setCustomFilter}}
+          placeholder="Search"
+          class="toolbar__search object-inspector-custom-search-input"
+        />
+        {{#if this.customFilter}}
+          <button
+            class="object-inspector-custom-search-clear toolbar__icon-button absolute right-0 w-auto h-auto"
+            title="clear"
+            data-test-search-field-clear-button
+            {{on "click" this.clearCustomFilter}}
+          >
+            {{svg-jar "clear" width="14px" height="14px"}}
+          </button>
+        {{/if}}
+      </div>
     </div>
 
     {{#if @mixinDetails.errors.length}}
