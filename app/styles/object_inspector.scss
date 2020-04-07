@@ -30,6 +30,10 @@
   }
 }
 
+.object-inspector-custom-search-input {
+  margin-left: 2px;
+}
+
 .mixin__property-dependency-list {
   margin-bottom: 5px;
   margin-top: 2px;
@@ -107,7 +111,7 @@
   background-color: var(--spec08);
 
   &:before {
-    content: "S";
+    content: 'S';
   }
 }
 
@@ -115,7 +119,7 @@
   background-color: var(--spec07);
 
   &:before {
-    content: "C";
+    content: 'C';
   }
 }
 
@@ -123,7 +127,7 @@
   background-color: var(--base06);
 
   &:before {
-    content: "P";
+    content: 'P';
   }
 }
 
@@ -131,7 +135,7 @@
   background-color: var(--spec07);
 
   &:before {
-    content: "G";
+    content: 'G';
   }
 }
 
@@ -139,7 +143,7 @@
   background-color: var(--base08);
 
   &:before {
-    content: "ƒ";
+    content: 'ƒ';
   }
 }
 
@@ -147,6 +151,6 @@
   background-color: var(--tracked-icon-bg);
 
   &:before {
-    content: "T";
+    content: 'T';
   }
 }
