@@ -18,6 +18,12 @@ export default Component.extend({
   }),
 
   setPropDisplay: action(function (type) {
+    // The custom filter is only working for the "all" table yet
+    // Otherwise, we reset the customFilter input value
+    if (type !== 'all') {
+      this.set('customFilter', '');
+    }
+
     this.set('propDisplayType', type);
   }),
 
