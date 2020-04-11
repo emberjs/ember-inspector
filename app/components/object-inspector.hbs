@@ -77,10 +77,7 @@
         @model={{@mixinDetails}}
       />
     {{else if (eq this.propDisplayType "grouped")}}
-      <ObjectInspector::PropertiesGrouped
-        @customFilter={{this.customFilter}}
-        @model={{@mixinDetails}}
-      />
+      <ObjectInspector::PropertiesGrouped @model={{@mixinDetails}} />
     {{/if}}
   </div>
 {{else}}

@@ -23,7 +23,10 @@ export default Component.extend({
 
   setCustomFilter: action(function (event) {
     let { value } = event.target;
-    this.set('customFilter', value);
+    this.setProperties({
+      propDisplayType: 'all',
+      customFilter: value,
+    });
   }),
 
   clearCustomFilter: action(function () {

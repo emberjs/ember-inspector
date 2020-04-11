@@ -1,4 +1,4 @@
-{{#each this.propertyList as |mixin|}}
+{{#each @model.mixins as |mixin|}}
   <ObjectInspector::Accordion @mixin={{mixin}} as |accordion|>
     <div
       class="mixin {{mixin.type}} {{if accordion.isExpanded "mixin_state_expanded"}} {{if mixin.properties.length "mixin_props_yes" "mixin_props_no"}} js-object-detail"
