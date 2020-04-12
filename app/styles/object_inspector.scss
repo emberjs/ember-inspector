@@ -30,22 +30,6 @@
   }
 }
 
-.object-inspector-custom-search {
-  align-items: center;
-  display: flex;
-  position: relative;
-}
-
-.object-inspector-custom-search-input {
-  margin-left: 2px;
-  padding-right: 16px;
-  width: 110px;
-}
-
-.object-inspector-custom-search-clear svg path {
-  fill: var(--base11);
-}
-
 .mixin__property-dependency-list {
   margin-bottom: 5px;
   margin-top: 2px;

@@ -42,18 +42,21 @@
       >
         All
       </button>
-      <div class="object-inspector-custom-search">
+
+      <Ui::ToolbarDivider />
+
+      <div class="toolbar__search relative mx-1">
         <Input
           @id="custom-filter-input"
           @type="text"
           @value={{this.customFilter}}
           @keyDown={{this.setCustomFilter}}
           placeholder="Search"
-          class="toolbar__search object-inspector-custom-search-input"
+          class="box-border m-0 rounded pt-0 pr-4 pb-0 pl-1 text-base leading-none outline-none bg-base00"
         />
         {{#if this.customFilter}}
           <button
-            class="object-inspector-custom-search-clear toolbar__icon-button absolute right-0 w-auto h-auto"
+            class="toolbar__icon-button toolbar__search-clear-button absolute right-0 w-auto h-auto"
             title="clear"
             {{on "click" this.clearCustomFilter}}
             data-test-object-inspector-custom-search-clear
