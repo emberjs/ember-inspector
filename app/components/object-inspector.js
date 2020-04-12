@@ -7,6 +7,11 @@ export default Component.extend({
   propDisplayType: 'grouped',
   customFilter: '',
 
+  init() {
+    this._super(...arguments);
+    this.searchInputId = 'custom-filter-input';
+  },
+
   trail: computed('model.[]', function () {
     let nested = this.model.slice(1);
     if (nested.length === 0) { return ""; }
@@ -36,6 +41,7 @@ export default Component.extend({
   }),
 
   clearCustomFilter: action(function () {
+    document.querySelector('#' + this.searchInputId).focus();
     this.set('customFilter', '');
   }),
 

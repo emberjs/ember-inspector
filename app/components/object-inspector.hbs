@@ -47,7 +47,7 @@
 
       <div class="toolbar__search relative mx-1">
         <Input
-          @id="custom-filter-input"
+          @id={{this.searchInputId}}
           @type="text"
           @value={{this.customFilter}}
           @keyDown={{this.setCustomFilter}}
