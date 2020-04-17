@@ -101,6 +101,11 @@
   .value-token {
     color: var(--spec03);
   }
+
+  .arg-value-token:hover {
+    background-color: var(--spec03);
+    color: var(--base09);
+  }
 }
 
 /**

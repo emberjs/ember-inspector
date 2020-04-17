@@ -1,0 +1,13 @@
+{{#if this.valueIsObject}}
+  <span
+    class="value-token arg-value-token"
+    {{on "click" this.inspectArgumentValue}}
+    data-test-arg-object
+  >
+    {{this.componentArgumentDisplay}}
+  </span>
+{{else}}
+  <span data-test-arg-string class="value-token">
+    {{this.componentArgumentDisplay}}
+  </span>
+{{/if}}

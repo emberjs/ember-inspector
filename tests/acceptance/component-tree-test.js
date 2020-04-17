@@ -87,7 +87,7 @@ function getRenderTree() {
       Route({ id: 1, name: 'application', instance: Serialized('ember123') },
         Route({ id: 2, name: 'todos' },
           Component({ id: 3, name: 'todo-list', instance: Serialized('ember456') },
-            Component({ id: 4, name: 'todo-item' })
+            Component({ id: 4, name: 'todo-item', args: Args({ names: ["subTasks"], positionals: 0 })})
           )
         )
       )
@@ -120,12 +120,17 @@ module('Component Tab', function (hooks) {
     let names = [];
 
     [...treeNodes].forEach(function (node) {
-      names.push(textFor('code', node));
+      // remove newlines and extra whitespace to improve component arg readability
+      names.push(textFor('code', node).replace(/\s\s+/g, ' '));
     });
 
     assert.deepEqual(
       names,
-      ['application route', 'todos route', 'TodoList', 'TodoItem'],
+      [
+        'application route',
+        'todos route',
+        'TodoList',
+        'TodoItem @subTasks ={{ ... }}'],
       'expected names for all views/components'
     );
   });
@@ -182,7 +187,7 @@ module('Component Tab', function (hooks) {
     // select next node with down arrow key
     respondWith('view:showInspection', false);
     respondWith('objectInspector:inspectById', ({ objectId }) => {
-      assert.equal(objectId, 'ember1');
+      assert.equal(objectId, 'ember2');
       return false;
     });
     await triggerKeyEvent(document, 'keydown', 40);
@@ -353,5 +358,17 @@ module('Component Tab', function (hooks) {
 
     assert.equal(currentURL(), '/component-tree?pinned=render-node%3A3', 'It pins the element id as a query param');
     assert.dom('.component-tree-item--pinned').hasText('TodoList', 'It selects the item in the tree corresponding to the element');
+  });
+
+  test('Can inspect component arguments that are objects in component tree', async function (assert) {
+    await visit('/component-tree');
+
+
+    respondWith('objectInspector:inspectById', ({ objectId }) => {
+      assert.equal(objectId, 'ember1', 'Client asked to inspect the <TodoList> component argument');
+      return false;
+    });
+
+    await click('[data-test-arg-object]');
   });
 });
