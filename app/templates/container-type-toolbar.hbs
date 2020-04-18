@@ -1,7 +1,7 @@
 <div class="toolbar">
   <Ui::ToolbarReloadButton
     @action={{action send "reload"}}
-    class="js-reload-container-btn"
+    data-test-reload-container-btn
   />
 
   <Ui::ToolbarDivider />
@@ -12,6 +12,6 @@
 
   <Ui::ToolbarSearchField
     @value={{this.searchValue}}
-    class="js-container-instance-search"
+    data-test-container-instance-search
   />
 </div>

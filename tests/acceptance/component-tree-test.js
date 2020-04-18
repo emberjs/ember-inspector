@@ -226,7 +226,7 @@ module('Component Tab', function (hooks) {
     let treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 4, 'expected some tree nodes');
 
-    await fillIn('.js-filter-views input', 'list');
+    await fillIn('[data-test-filter-views] input', 'list');
     treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 3, 'expected filtered tree nodes');
 
@@ -248,7 +248,7 @@ module('Component Tab', function (hooks) {
     let treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 4, 'expected all tree nodes');
 
-    await fillIn('.js-filter-views input', 'xxxxxx');
+    await fillIn('[data-test-filter-views] input', 'xxxxxx');
     treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 0, 'expected filtered tree nodes');
 

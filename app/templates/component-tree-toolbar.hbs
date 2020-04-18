@@ -1,6 +1,6 @@
 <div class="toolbar">
   <button
-    class="{{if this.isInspecting "active"}} toolbar__icon-button js-inspect-views"
+    class="{{if this.isInspecting "active"}} toolbar__icon-button"
     {{on "click" this.toggleInspect}}
     type="button"
   >
@@ -31,6 +31,6 @@
 
   <Ui::ToolbarSearchField
     @value={{this.query}}
-    class="js-filter-views"
+    data-test-filter-views
   />
 </div>

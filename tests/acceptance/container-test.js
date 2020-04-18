@@ -98,7 +98,7 @@ module('Container Tab', function(outer) {
 
       await click(rows[1].querySelector('.js-instance-name'));
 
-      await fillIn('.js-container-instance-search input', 'first');
+      await fillIn('[data-test-container-instance-search] input', 'first');
 
       rows = findAll('.js-container-instance-list-item');
 
@@ -122,7 +122,7 @@ module('Container Tab', function(outer) {
       let rows = findAll('.js-container-instance-list-item');
       assert.equal(rows.length, 2, 'expected all rows');
 
-      await fillIn('.js-container-instance-search input', 'xxxxx');
+      await fillIn('[data-test-container-instance-search] input', 'xxxxx');
       rows = findAll('.js-container-instance-list-item');
       assert.equal(rows.length, 0, 'expected filtered rows');
 
@@ -196,7 +196,7 @@ module('Container Tab', function(outer) {
       }
     });
 
-    await click('.js-reload-container-btn');
+    await click('[data-test-reload-container-btn]');
 
     assert.dom('.js-container-type').exists({ count: 2 });
     assert.dom('.js-container-instance-list-item').exists({ count: 2 });
