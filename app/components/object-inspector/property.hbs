@@ -6,6 +6,7 @@
     <button
       class="mixin__cp-toggle {{if this.showDependentKeys "mixin__cp-toggle--expanded"}}"
       {{on "click" this.toggleDeps}}
+      type="button"
     >
       {{svg-jar
         "disclosure-triangle"
@@ -75,6 +76,7 @@
         class="mixin__calc-btn js-calculate"
         title="compute property"
         {{on "click" @calculate bubbles=false}}
+        type="button"
       >
         {{svg-jar "calculate" width="16px" height="16px"}}
       </button>
@@ -102,6 +104,7 @@
     class="mixin__send-btn send-to-console js-send-to-console-btn"
     title="Send to console"
     {{on "click" @sendToConsole}}
+    type="button"
   >
     {{svg-jar "send-with-text" width="20px" height="10px"}}
   </button>

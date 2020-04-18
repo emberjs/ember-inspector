@@ -4,6 +4,7 @@
       <button
         class="toolbar__icon-button {{if this.isNested "enabled" "disabled"}} js-object-inspector-back"
         {{on "click" this.popStack}}
+        type="button"
       >
         {{svg-jar "arrow-back" width="21px" height="21px"}}
       </button>
@@ -18,6 +19,7 @@
         class="send-to-console js-send-object-to-console-btn"
         title="Send to Console"
         {{on "click" (fn this.sendObjectToConsole @model.lastObject)}}
+        type="button"
       >
         {{svg-jar "send-with-text" width="20px" height="10px"}}
       </button>
@@ -33,12 +35,14 @@
       <button
         class="toolbar__radio toolbar__radio--first js-object-display-type-grouped {{if (eq this.propDisplayType "grouped") "active"}}"
         {{on "click" (fn this.setPropDisplay "grouped")}}
+        type="button"
       >
         Grouped
       </button>
       <button
         class="toolbar__radio js-object-display-type-all {{if (eq this.propDisplayType "all") "active"}}"
         {{on "click" (fn this.setPropDisplay "all")}}
+        type="button"
       >
         All
       </button>
@@ -60,6 +64,7 @@
             title="clear"
             {{on "click" this.clearCustomFilter}}
             data-test-object-inspector-custom-search-clear
+            type="button"
           >
             {{svg-jar "clear" width="14px" height="14px"}}
           </button>

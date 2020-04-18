@@ -17,6 +17,7 @@
         class="send-to-console send-to-console--chevron-only js-trace-promise-btn"
         title="Trace promise in console"
         {{action @tracePromise @model}}
+        type="button"
       >
         {{svg-jar "send-with-chevron" width="6px" height="9px"}}
         Trace
@@ -58,6 +59,7 @@
           class="send-to-console send-to-console--chevron-only js-send-to-console-btn"
           title="Send stack trace to the console"
           {{action @sendValueToConsole @model}}
+          type="button"
         >
           {{svg-jar "send-with-chevron" width="6px" height="9px"}}
           Stack Trace
