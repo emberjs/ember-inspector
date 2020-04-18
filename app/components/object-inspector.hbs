@@ -41,6 +41,7 @@
       <button
         class="toolbar__radio toolbar__radio--first {{if (eq this.propDisplayType "grouped") "active"}}"
         {{on "click" (fn this.setPropDisplay "grouped")}}
+        data-test-object-display-type-grouped
       >
         Grouped
       </button>

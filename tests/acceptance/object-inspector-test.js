@@ -810,31 +810,31 @@ module('Object Inspector', function(hooks) {
       ],
     });
 
-    await click('.js-object-detail-name');
+    await click('[data-test-object-detail-name]');
 
-    assert.dom('.js-object-property').exists({ count: 2 });
-    assert.dom('.js-object-display-type-grouped.active').exists();
+    assert.dom('[data-test-object-property]').exists({ count: 2 });
+    assert.dom('[data-test-object-display-type-grouped].active').exists();
     assert.dom('[data-test-object-inspector-custom-search-clear]').doesNotExist();
 
     await typeIn('#custom-filter-input', 'e');
-    assert.dom('.js-object-property').exists({ count: 2 });
-    assert.dom('.js-object-display-type-all.active').exists();
-    assert.dom('.js-object-display-type-grouped.active').doesNotExist();
+    assert.dom('[data-test-object-property]').exists({ count: 2 });
+    assert.dom('[data-test-object-display-type-all].active').exists();
+    assert.dom('[data-test-object-display-type-grouped].active').doesNotExist();
     assert.dom('[data-test-object-inspector-custom-search-clear]').exists();
 
     await typeIn('#custom-filter-input', 'r');
-    assert.dom('.js-object-property').exists({ count: 1 });
-    assert.dom('.js-object-display-type-all').exists();
+    assert.dom('[data-test-object-property]').exists({ count: 1 });
+    assert.dom('[data-test-object-display-type-all]').exists();
 
     await click('[data-test-object-inspector-custom-search-clear]');
-    assert.dom('.js-object-property').exists({ count: 2 });
-    assert.dom('.js-object-display-type-all').exists();
+    assert.dom('[data-test-object-property]').exists({ count: 2 });
+    assert.dom('[data-test-object-display-type-all]').exists();
 
     await typeIn('#custom-filter-input', 'z');
-    assert.dom('.js-object-property').exists({ count: 0 });
+    assert.dom('[data-test-object-property]').exists({ count: 0 });
 
-    await click('.js-object-display-type-grouped');
-    assert.dom('.js-object-display-type-grouped.active').exists();
+    await click('[data-test-object-display-type-grouped]');
+    assert.dom('[data-test-object-display-type-grouped].active').exists();
     assert.dom('#custom-filter-input').hasNoText();
     assert.dom('[data-test-object-inspector-custom-search-clear]').doesNotExist();
   });
