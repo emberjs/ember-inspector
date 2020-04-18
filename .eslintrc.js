@@ -24,6 +24,8 @@ module.exports = {
     basicContext: false
   },
   rules: {
+    'no-prototype-builtins': 'off',
+    
     'ember/no-jquery': 'error',
 
     // Temporarily turn these off
