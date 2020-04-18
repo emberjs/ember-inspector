@@ -1,10 +1,11 @@
 import {
-  visit,
-  find,
-  findAll,
   click,
   fillIn,
-  triggerKeyEvent
+  find,
+  findAll,
+  triggerKeyEvent,
+  typeIn,
+  visit,
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
@@ -783,5 +784,58 @@ module('Object Inspector', function(hooks) {
 
     assert.dom('.mixin__property-icon--getter').exists();
     assert.dom('.js-object-property-value').hasText('456');
+  });
+
+  test('Custom filter', async function (assert) {
+    await visit('/');
+
+    await sendMessage({
+      type: 'objectInspector:updateObject',
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [
+        {
+          name: 'Detail',
+          properties: [
+            {
+              name: 'er',
+              value: 1,
+            },
+            {
+              name: 'el',
+              value: 1,
+            },
+          ],
+        },
+      ],
+    });
+
+    await click('.js-object-detail-name');
+
+    assert.dom('.js-object-property').exists({ count: 2 });
+    assert.dom('.js-object-display-type-grouped.active').exists();
+    assert.dom('[data-test-object-inspector-custom-search-clear]').doesNotExist();
+
+    await typeIn('#custom-filter-input', 'e');
+    assert.dom('.js-object-property').exists({ count: 2 });
+    assert.dom('.js-object-display-type-all.active').exists();
+    assert.dom('.js-object-display-type-grouped.active').doesNotExist();
+    assert.dom('[data-test-object-inspector-custom-search-clear]').exists();
+
+    await typeIn('#custom-filter-input', 'r');
+    assert.dom('.js-object-property').exists({ count: 1 });
+    assert.dom('.js-object-display-type-all').exists();
+
+    await click('[data-test-object-inspector-custom-search-clear]');
+    assert.dom('.js-object-property').exists({ count: 2 });
+    assert.dom('.js-object-display-type-all').exists();
+
+    await typeIn('#custom-filter-input', 'z');
+    assert.dom('.js-object-property').exists({ count: 0 });
+
+    await click('.js-object-display-type-grouped');
+    assert.dom('.js-object-display-type-grouped.active').exists();
+    assert.dom('#custom-filter-input').hasNoText();
+    assert.dom('[data-test-object-inspector-custom-search-clear]').doesNotExist();
   });
 });

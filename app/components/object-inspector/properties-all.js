@@ -18,12 +18,15 @@ export default PropertiesBase.extend({
     });
   }),
 
-  flatPropertyList: computed('model', function () {
+  flatPropertyList: computed('model', 'customFilter', function () {
     const props = this.get('model.mixins').map(function (mixin) {
       return mixin.properties.filter(function (p) {
-        return !p.hasOwnProperty('overridden');
-      });
-    });
+        let shoulApplyCustomFilter = this.customFilter
+          ? p.name.toLowerCase().indexOf(this.customFilter.toLowerCase()) > -1
+          : true;
+        return !p.hasOwnProperty('overridden') && shoulApplyCustomFilter;
+      }, this);
+    }, this);
 
     return props.flat();
   }),
