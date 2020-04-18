@@ -55,9 +55,10 @@
     <div class="list__cell-helper">
       {{#if this.isError}}
         <button
-          class="send-to-console send-to-console--chevron-only js-send-to-console-btn"
+          class="send-to-console send-to-console--chevron-only"
           title="Send stack trace to the console"
           {{action @sendValueToConsole @model}}
+          data-test-send-to-console-btn
         >
           {{svg-jar "send-with-chevron" width="6px" height="9px"}}
           Stack Trace

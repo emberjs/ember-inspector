@@ -1,7 +1,8 @@
 <button
-  class="send-to-console js-send-to-console-btn"
+  class="send-to-console"
   title="Send to Console"
   {{on "click" (fn @action @param)}}
+  data-test-send-to-console-btn
 >
   {{svg-jar "send-with-text" width="20px" height="10px"}}
 </button>

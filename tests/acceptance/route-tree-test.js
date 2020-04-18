@@ -109,7 +109,7 @@ module('Route Tree Tab', function(outer) {
         'route name displayed'
       );
 
-      let routeHandlers = findAll('.js-route-handler').map(function(item) {
+      let routeHandlers = findAll('[data-test-route-handler]').map(function(item) {
         return item.getAttribute('title').trim();
       });
       assert.deepEqual(
@@ -140,7 +140,7 @@ module('Route Tree Tab', function(outer) {
         return false;
       });
 
-      await click(applicationRow.querySelector('.js-route-handler'));
+      await click(applicationRow.querySelector('[data-test-route-handler]'));
 
       respondWith('objectInspector:inspectController', ({ name }) => {
         assert.equal(name, 'application', 'controller name');
@@ -174,7 +174,7 @@ module('Route Tree Tab', function(outer) {
       let routeNodes = findAll('.js-route-tree-item');
       assert.equal(routeNodes.length, 6);
 
-      await fillIn('.js-filter-views input', 'edit');
+      await fillIn('[data-test-filter-views] input', 'edit');
 
       routeNodes = findAll('.js-route-tree-item');
       assert.equal(routeNodes.length, 1);
