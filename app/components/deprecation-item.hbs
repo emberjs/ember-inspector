@@ -28,6 +28,7 @@
           title="Trace deprecations in console"
           data-test-full-trace-deprecations-btn
           {{on "click" (fn @traceDeprecations @model)}}
+          type="button"
         >
           {{svg-jar "send-with-chevron" width="6px" height="9px"}}
           Trace in the Console
@@ -56,6 +57,7 @@
               title="Trace deprecations in console"
               data-test-trace-deprecations-btn
               {{on "click" (fn @traceSource @model source.model)}}
+              type="button"
             >
               {{svg-jar "send-with-chevron" width="6px" height="9px"}}
               Trace in the Console

@@ -2,9 +2,10 @@
   <div class="split__panel__hd">
     <div class="toolbar">
       <button
-        class="toolbar__icon-button {{if this.isNested "enabled" "disabled"}}"
-        {{on "click" this.popStack}}
         data-test-object-inspector-back
+        class="toolbar__icon-button {{if this.isNested "enabled" "disabled"}}"
+        type="button"
+        {{on "click" this.popStack}}
       >
         {{svg-jar "arrow-back" width="21px" height="21px"}}
       </button>
@@ -17,10 +18,11 @@
       </code>
 
       <button
+        data-test-send-object-to-console-btn
         class="send-to-console"
         title="Send to Console"
+        type="button"
         {{on "click" (fn this.sendObjectToConsole @model.lastObject)}}
-        data-test-send-object-to-console-btn
       >
         {{svg-jar "send-with-text" width="20px" height="10px"}}
       </button>
@@ -39,16 +41,18 @@
   <div class="split__panel__bd">
     <div class="toolbar object-inspector-toolbar">
       <button
-        class="toolbar__radio toolbar__radio--first {{if (eq this.propDisplayType "grouped") "active"}}"
-        {{on "click" (fn this.setPropDisplay "grouped")}}
         data-test-object-display-type-grouped
+        class="toolbar__radio toolbar__radio--first {{if (eq this.propDisplayType "grouped") "active"}}"
+        type="button"
+        {{on "click" (fn this.setPropDisplay "grouped")}}
       >
         Grouped
       </button>
       <button
-        class="toolbar__radio {{if (eq this.propDisplayType "all") "active"}}"
-        {{on "click" (fn this.setPropDisplay "all")}}
         data-test-object-display-type-all
+        class="toolbar__radio {{if (eq this.propDisplayType "all") "active"}}"
+        type="button"
+        {{on "click" (fn this.setPropDisplay "all")}}
       >
         All
       </button>
@@ -70,6 +74,7 @@
             title="clear"
             {{on "click" this.clearCustomFilter}}
             data-test-object-inspector-custom-search-clear
+            type="button"
           >
             {{svg-jar "clear" width="14px" height="14px"}}
           </button>

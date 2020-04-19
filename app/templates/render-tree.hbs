@@ -8,7 +8,7 @@
   <Ui::EmptyMessage class="js-render-tree-empty">
     <p>No rendering metrics have been collected. Try reloading or navigating around your application.</p>
     <p><strong>Note:</strong> Very fast rendering times (&lt;1ms) are excluded.</p>
-    <button class="js-toolbar-page-refresh-btn" {{action "refreshPage"}}>Reload</button>
+    <button class="js-toolbar-page-refresh-btn" {{action "refreshPage"}} type="button">Reload</button>
   </Ui::EmptyMessage>
 {{else}}
   <List

@@ -2,9 +2,10 @@
   <h2 class="mixin__name mixin__name--errors bg-base00">
     Errors
     <button
-      class="send-to-console send-to-console--chevron-only ml-1"
-      {{on "click" @traceErrors}}
       data-test-send-errors-to-console
+      class="send-to-console send-to-console--chevron-only ml-1"
+      type="button"
+      {{on "click" @traceErrors}}
     >
       {{svg-jar "send-with-chevron" width="6px" height="9px"}}
       Trace in the Console

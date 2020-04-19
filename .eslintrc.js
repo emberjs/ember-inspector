@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   root: true,
   parser: 'babel-eslint',
@@ -22,6 +24,8 @@ module.exports = {
     basicContext: false
   },
   rules: {
+    'no-prototype-builtins': 'off',
+    
     'ember/no-jquery': 'error',
 
     // Temporarily turn these off

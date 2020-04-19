@@ -98,6 +98,7 @@
         title="Scroll into view"
         data-test-scroll-into-view
         {{on "click" @item.scrollIntoView}}
+        type="button"
       >
         {{svg-jar "eye" width="20px" height="20px"}}
       </button>
@@ -107,6 +108,7 @@
         title="View in Elements panel"
         data-test="view-dom-element"
         {{on "click" @item.inspectElement}}
+        type="button"
       >
         {{svg-jar "code-line" width="20px" height="20px"}}
       </button>

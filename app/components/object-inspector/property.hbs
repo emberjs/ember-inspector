@@ -7,6 +7,7 @@
     <button
       class="mixin__cp-toggle {{if this.showDependentKeys "mixin__cp-toggle--expanded"}}"
       {{on "click" this.toggleDeps}}
+      type="button"
     >
       {{svg-jar
         "disclosure-triangle"
@@ -80,10 +81,11 @@
   {{else}}
     {{#if this.canCalculate}}
       <button
+        data-test-calculate
         class="mixin__calc-btn"
         title="compute property"
+        type="button"
         {{on "click" @calculate bubbles=false}}
-        data-test-calculate
       >
         {{svg-jar "calculate" width="16px" height="16px"}}
       </button>
@@ -112,10 +114,11 @@
   </span>
 
   <button
+    data-test-send-to-console-btn
     class="mixin__send-btn flex-shrink-0 send-to-console"
     title="Send to console"
+    type="button"
     {{on "click" @sendToConsole}}
-    data-test-send-to-console-btn
   >
     {{svg-jar "send-with-text" width="20px" height="10px"}}
   </button>
