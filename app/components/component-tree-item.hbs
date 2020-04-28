@@ -44,7 +44,7 @@
           {{#each @item.args.positional as |value|}}
             <div class="arg-token flex ml-2">
               {{if (is-string value) "\""}}
-              <ComponentTreeArg @componentArgValue={{value}} />
+              <ComponentTreeArg @value={{value}} />
               {{if (is-string value) "\""}}
             </div>
           {{/each}}
@@ -55,7 +55,7 @@
                 {{name}}
               </span>
               ={{if (is-string value) "\""}}
-              <ComponentTreeArg @componentArgValue={{value}} />
+              <ComponentTreeArg @value={{value}} />
               {{if (is-string value) "\""}}
             </div>
           {{/each-in}}
@@ -70,7 +70,7 @@
                 @{{name}}
               </span>
               ={{#if (is-string value)}}"{{else}}<span class="bracket-token">\{{</span>{{/if}}
-              <ComponentTreeArg @componentArgValue={{value}} />
+              <ComponentTreeArg @value={{value}} />
               {{#if (is-string value)}}"{{else}}<span class="bracket-token">}}</span>{{/if}}
             </div>
           {{/each-in}}

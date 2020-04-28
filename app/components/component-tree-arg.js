@@ -3,28 +3,28 @@ import truncate from 'ember-inspector/utils/truncate';
 import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 
-export default class ComponentTreeArgs extends Component {
+export default class ComponentTreeArg extends Component {
   @service port;
 
-  get valueIsObject() {
-    return typeof this.args.componentArgValue === 'object' && this.args.componentArgValue !== null;
+  get isObject() {
+    return typeof this.args.value === 'object' && this.args.value !== null;
   }
 
-  get componentArgumentDisplay() {
-    if (this.valueIsObject) {
+  get displayValue() {
+    if (this.isObject) {
       return '...';
-    } else if (typeof this.args.componentArgValue === 'string') {
+    } else if (typeof this.args.value === 'string') {
       // Escape any interior quotes – we will add the surrounding quotes in the template
-      return `"${truncate(this.args.componentArgValue.replace(/"/g, '\\"'))}"`;
+      return `"${truncate(this.args.value.replace(/"/g, '\\"'))}"`;
     }
 
-    return String(this.args.componentArgValue);
+    return String(this.args.value);
   }
 
-  @action inspectArgumentValue(event) {
+  @action inspect(event) {
     event.stopPropagation();
     this.port.send('objectInspector:inspectById', {
-      objectId: this.args.componentArgValue.id
+      objectId: this.args.value.id
     });
   }
 }

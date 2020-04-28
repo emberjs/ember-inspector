@@ -102,9 +102,16 @@
     color: var(--spec03);
   }
 
+  .arg-value-token {
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
   .arg-value-token:hover {
     background-color: var(--spec03);
     color: var(--base09);
+    cursor: pointer;
   }
 }
 
