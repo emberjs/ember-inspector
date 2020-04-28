@@ -363,7 +363,6 @@ module('Component Tab', function (hooks) {
   test('Can inspect component arguments that are objects in component tree', async function (assert) {
     await visit('/component-tree');
 
-
     respondWith('objectInspector:inspectById', ({ objectId }) => {
       assert.equal(objectId, 'ember1', 'Client asked to inspect the <TodoList> component argument');
       return false;
