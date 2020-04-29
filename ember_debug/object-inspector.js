@@ -697,7 +697,7 @@ export default EmberObject.extend(PortMixin, {
 
 function getClassName(object) {
   let name = '';
-  let className = object.constructor && emberNames.get(object.constructor) || object.constructor.name || '';
+  let className = (object.constructor && (emberNames.get(object.constructor) || object.constructor.name)) || '';
 
   if ('toString' in object && object.toString !== Function.prototype.toString) {
     name = object.toString();
