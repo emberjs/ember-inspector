@@ -11,10 +11,9 @@ import EmberComponent from '@ember/component';
 import EmberRoute from '@ember/routing/route';
 import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
-import { module, test } from 'qunit';
+import QUnit, { module, test } from 'qunit';
 import { hbs } from 'ember-cli-htmlbars';
 import require from 'require';
-import QUnit from 'qunit';
 import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
 
 const EmberDebug = require('ember-debug/main').default;
