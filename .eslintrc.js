@@ -30,7 +30,6 @@ module.exports = {
 
     // Temporarily turn these off
     'ember/avoid-leaking-state-in-ember-objects': 'off',
-    'ember/no-observers': 'off',
 
     // Best practice
     'no-duplicate-imports': 'error'
