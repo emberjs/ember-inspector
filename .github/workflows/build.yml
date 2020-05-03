@@ -229,7 +229,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts (bookmarklet)
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v1
         with:
           name: bookmarklet
       - name: Upload to S3
@@ -259,7 +259,7 @@ jobs:
       - name: Install dependencies (chrome-webstore-upload-cli)
         run: volta install chrome-webstore-upload-cli
       - name: Download artifacts (Chrome)
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v1
         with:
           name: chrome
       - name: Upload to Chrome Web Store
@@ -291,7 +291,7 @@ jobs:
           # https://github.com/mozilla/web-ext/issues/804
           volta install web-ext-submit
       - name: Download artifacts (Firefox)
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v1
         with:
           name: firefox
       - name: Upload to AMO
@@ -322,7 +322,7 @@ jobs:
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
       - name: Download artifacts (npm)
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v1
         with:
           name: npm
       - name: Publish to npm
