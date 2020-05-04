@@ -33,7 +33,7 @@ module.exports = {
     'ember/no-observers': 'off',
 
     // Best practice
-    'no-duplicate-imports': 'error',
+    'no-duplicate-imports': 'error'
   },
   overrides: [
     // node files
