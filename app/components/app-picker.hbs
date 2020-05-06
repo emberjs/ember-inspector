@@ -1,16 +1,18 @@
-<div class="h-7 text-base13">
-  <select
-    class="box-border block w-full h-full m-0 border-0 pr-4 pl-1 text-base text-base13 bg-transparent appearance-none outline-none"
-    {{on 'change' this.selectApp}}
-  >
-    {{#each-in this.apps as |id name|}}
-      <option
-        value={{id}}
-        selected={{eq id this.selectedAppId}}
-      >
-        {{name}}
-      </option>
-    {{/each-in}}
-  </select>
-  {{svg-jar "dropdown-arrow" class="dropdown__arrow fill-current absolute opacity-75 pointer-events-none"}}
+<div class="app-picker">
+  <div class="h-7 text-base13">
+    <select
+      class="box-border block w-full h-full m-0 border-0 pr-4 pl-1 text-base text-base13 bg-transparent appearance-none outline-none"
+      {{on 'change' this.selectApp}}
+    >
+      {{#each-in this.apps as |id name|}}
+        <option
+          value={{id}}
+          selected={{eq id this.selectedAppId}}
+        >
+          {{name}}
+        </option>
+      {{/each-in}}
+    </select>
+    {{svg-jar "dropdown-arrow" class="dropdown__arrow fill-current absolute opacity-75 pointer-events-none"}}
+  </div>
 </div>
