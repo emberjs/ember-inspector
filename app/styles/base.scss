@@ -1,6 +1,7 @@
 :root {
-  --font-sans-serif: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Cantarell', 'Oxygen', 'Ubuntu', 'Helvetica Neue', helvetica, arial, sans-serif;
+  --font-sans-serif: "Inter", -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Cantarell', 'Oxygen', 'Ubuntu', 'Helvetica Neue', helvetica, arial, sans-serif;
   --font-monospace: 'SF Mono', Menlo, Monaco, monospace;
+  --inherit: inherit;
   --unit0: 0;
   --unit1: 4px;
   --unit2: calc(var(--unit1) * 2);
@@ -16,16 +17,12 @@
   --unit12: calc(var(--unit1) * 12);
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-size: 12px;
-  font-weight: normal;
-  margin: 0;
-  padding: 0;
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.2rem;
 }
 
 html,
@@ -42,6 +39,18 @@ input {
 body,
 div,
 nav {
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: 1.2rem;
+  font-weight: normal;
   margin: 0;
   padding: 0;
 }

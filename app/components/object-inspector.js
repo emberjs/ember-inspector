@@ -5,6 +5,12 @@ export default Component.extend({
   tagName: '',
 
   propDisplayType: 'grouped',
+  customFilter: '',
+
+  init() {
+    this._super(...arguments);
+    this.searchInputId = 'custom-filter-input';
+  },
 
   trail: computed('model.[]', function () {
     let nested = this.model.slice(1);
@@ -17,7 +23,26 @@ export default Component.extend({
   }),
 
   setPropDisplay: action(function (type) {
+    // The custom filter is only working for the "all" table yet
+    // Otherwise, we reset the customFilter input value
+    if (type !== 'all') {
+      this.set('customFilter', '');
+    }
+
     this.set('propDisplayType', type);
+  }),
+
+  setCustomFilter: action(function (event) {
+    let { value } = event.target;
+    this.setProperties({
+      propDisplayType: 'all',
+      customFilter: value,
+    });
+  }),
+
+  clearCustomFilter: action(function () {
+    document.querySelector('#' + this.searchInputId).focus();
+    this.set('customFilter', '');
   }),
 
   sendObjectToConsole: action(function (obj) {

@@ -7,7 +7,7 @@ import {
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { respondWith, sendMessage } from '../test-adapter';
+import { setupTestAdapter, respondWith, sendMessage } from '../test-adapter';
 
 function getFilters() {
   return [{ name: 'isNew', desc: 'New' }];
@@ -59,6 +59,7 @@ function getRecords(type) {
 }
 
 module('Data Tab', function(outer) {
+  setupTestAdapter(outer);
   setupApplicationTest(outer);
 
   module('Model Types', function(inner) {
@@ -215,9 +216,25 @@ module('Data Tab', function(outer) {
         modelTypes: getModelTypes()
       }));
 
-      await click('.js-reload-container-btn');
+      await click('[data-test-reload-container-btn]');
 
       assert.dom('.js-model-type').exists({ count: 2 });
+    });
+
+    test('Can inspect store in data pane', async function(assert) {
+      respondWith('data:getModelTypes', {
+        type: 'data:modelTypesAdded',
+        modelTypes: getModelTypes()
+      });
+
+      await visit('/data/model-types');
+
+      respondWith('objectInspector:inspectByContainerLookup', ({ name }) => {
+        assert.equal(name, 'service:store');
+        return false;
+      });
+
+      await click('[data-test-inspect-store]');
     });
   });
 
@@ -438,7 +455,7 @@ module('Data Tab', function(outer) {
       rows = findAll('[data-test-table-row]');
       assert.equal(rows.length, 1);
 
-      await click('.js-search-field-clear-button');
+      await click('[data-test-search-field-clear-button]');
       rows = findAll('[data-test-table-row]');
       assert.equal(rows.length, 2);
     });

@@ -1,7 +1,7 @@
 {{#if this.shouldRefresh}}
   <Ui::EmptyMessage class="js-page-refresh">
     <p>Reload the page to see promises created before you opened the inspector.</p>
-    <button class="js-page-refresh-btn" {{action "refreshPage"}}>Reload</button>
+    <button class="js-page-refresh-btn" {{action "refreshPage"}} type="button">Reload</button>
   </Ui::EmptyMessage>
 {{else}}
   <List

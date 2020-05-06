@@ -1,20 +1,21 @@
-<div class="mixin mixin_props_no js-object-inspector-errors">
-  <h2 class="mixin__name mixin__name--errors">
+<div class="mixin mixin_props_no" data-test-object-inspector-errors>
+  <h2 class="mixin__name mixin__name--errors bg-base00">
     Errors
     <button
-      class="send-to-console send-to-console--chevron-only js-send-errors-to-console"
+      data-test-send-errors-to-console
+      class="send-to-console send-to-console--chevron-only ml-1"
+      type="button"
       {{on "click" @traceErrors}}
     >
       {{svg-jar "send-with-chevron" width="6px" height="9px"}}
       Trace in the Console
     </button>
   </h2>
-  <div class="mixin__properties">
+  <div class="mixin__properties m-0 text-base font-mono">
     {{#each @errors as |error|}}
-      <div class="mixin__error js-object-inspector-error">
+      <div class="py-0 px-5 mr-1 text-spec01" data-test-object-inspector-error>
         Error while computing: {{error.property}}
       </div>
     {{/each}}
   </div>
 </div>
-

@@ -8,7 +8,7 @@ import {
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { respondWith, sendMessage } from '../test-adapter';
+import { setupTestAdapter, respondWith, sendMessage } from '../test-adapter';
 
 let guids = 0;
 
@@ -28,6 +28,7 @@ function generatePromise(props) {
 }
 
 module('Promise Tab', function(outer) {
+  setupTestAdapter(outer);
   setupApplicationTest(outer);
 
   outer.beforeEach(function() {
@@ -294,7 +295,7 @@ module('Promise Tab', function(outer) {
 
       await visit('/promise-tree');
 
-      assert.dom('.js-send-to-console-btn').hasText('Stack Trace');
+      assert.dom('[data-test-send-to-console-btn]').hasText('Stack Trace');
 
       respondWith('promise:sendValueToConsole', ({ promiseId }) => {
         assert.equal(promiseId, 1, 'promiseId');
@@ -302,7 +303,7 @@ module('Promise Tab', function(outer) {
       });
 
       let row = find('.js-promise-tree-item');
-      await click(row.querySelector('.js-send-to-console-btn'));
+      await click(row.querySelector('[data-test-send-to-console-btn]'));
     });
 
     test("Send fulfillment value to console", async function(assert) {
@@ -322,7 +323,7 @@ module('Promise Tab', function(outer) {
 
       await visit('/promise-tree');
 
-      assert.dom('.js-send-to-console-btn').exists();
+      assert.dom('[data-test-send-to-console-btn]').exists();
 
       respondWith('promise:sendValueToConsole', ({ promiseId }) => {
         assert.equal(promiseId, 1, 'promiseId');
@@ -330,7 +331,7 @@ module('Promise Tab', function(outer) {
       });
 
       let row = find('.js-promise-tree-item');
-      await click(row.querySelector('.js-send-to-console-btn'));
+      await click(row.querySelector('[data-test-send-to-console-btn]'));
     });
 
     test("Sending objects to the object inspector", async function(assert) {
@@ -377,7 +378,7 @@ module('Promise Tab', function(outer) {
       assert.dom('.js-promise-tree-item').exists({ count: 1 });
       await fillIn('.js-promise-search input', 'xxxxx');
       assert.dom('.js-promise-tree-item').doesNotExist();
-      await click('.js-search-field-clear-button');
+      await click('[data-test-search-field-clear-button]');
       assert.dom('.js-promise-tree-item').exists({ count: 1 });
     });
   });

@@ -8,7 +8,7 @@ import {
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { respondWith, sendMessage } from '../test-adapter';
+import { setupTestAdapter, respondWith, sendMessage } from '../test-adapter';
 
 function isObject(item) {
   return (item && typeof item === 'object' && !Array.isArray(item));
@@ -75,6 +75,7 @@ function routeTree() {
 }
 
 module('Route Tree Tab', function(outer) {
+  setupTestAdapter(outer);
   setupApplicationTest(outer);
 
   outer.beforeEach(function() {
@@ -108,7 +109,7 @@ module('Route Tree Tab', function(outer) {
         'route name displayed'
       );
 
-      let routeHandlers = findAll('.js-route-handler').map(function(item) {
+      let routeHandlers = findAll('[data-test-route-handler]').map(function(item) {
         return item.getAttribute('title').trim();
       });
       assert.deepEqual(
@@ -139,7 +140,7 @@ module('Route Tree Tab', function(outer) {
         return false;
       });
 
-      await click(applicationRow.querySelector('.js-route-handler'));
+      await click(applicationRow.querySelector('[data-test-route-handler]'));
 
       respondWith('objectInspector:inspectController', ({ name }) => {
         assert.equal(name, 'application', 'controller name');
@@ -173,12 +174,12 @@ module('Route Tree Tab', function(outer) {
       let routeNodes = findAll('.js-route-tree-item');
       assert.equal(routeNodes.length, 6);
 
-      await fillIn('.js-filter-views input', 'edit');
+      await fillIn('[data-test-filter-views] input', 'edit');
 
       routeNodes = findAll('.js-route-tree-item');
       assert.equal(routeNodes.length, 1);
 
-      await click('.js-search-field-clear-button');
+      await click('[data-test-search-field-clear-button]');
 
       routeNodes = findAll('.js-route-tree-item');
       assert.equal(routeNodes.length, 6);

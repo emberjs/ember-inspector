@@ -1,5 +1,5 @@
 <div
-  class="ember-view app {{if this.active "" "inactive"}}"
+  class="ember-view app absolute inset-0 z-0 {{if this.active "" "inactive"}}"
   tabindex="1"
   {{on "focusin" (fn this.setActive true)}}
   {{on "focusout" (fn this.setActive false)}}
@@ -32,6 +32,7 @@
               <button
                 class="sidebar-toggle toolbar__icon-button {{if this.inspectorExpanded "flip"}}"
                 {{on "click" this.toggleInspector}}
+                type="button"
               >
                 {{svg-jar "sidebar-toggle" width="16" height="16"}}
               </button>

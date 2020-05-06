@@ -1,63 +1,151 @@
 .component-tree-item {
-  align-items: center;
-  border-radius: 4px;
   color: var(--base12);
-  display: flex;
-  font-size: 12px;
-  margin: 0 3px;
+  font-size: 1.2rem;
   min-height: 22px;
-  position: relative;
-}
 
-.component-tree-item__expand {
-  align-self: stretch;
-  cursor: pointer;
-  padding-left: 3px;
-  padding-right: 3px;
-}
+  &__actions {
+    min-height: 22px;
+    opacity: 0;
+    right: var(--unit1);
 
-.component-tree-item__action {
-  align-items: center;
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  display: inline-flex;
-  height: 100%;
-  margin-left: 10px;
-  opacity: 0;
-  padding: 0;
+    /**
+      * __actions is position:sticky so it is always visible and on top.
+      * Due to margins and padding on various elements, it was
+      * difficult to keep the background of __actions on top
+      * of .tree-item text and align with the .tree-item background.
+      * This pseudo element is 100% of the width of __actions plus
+      * a little extra to guarantee alignment.
+    */
+    &:after {
+      border-bottom-right-radius: var(--unit1);
+      border-top-right-radius: var(--unit1);
+      bottom: 0;
+      content: '';
+      left: calc(var(--unit1) * -1);
+      position: absolute;
+      right: calc(var(--unit1) * -1);
+      top: 0;
+    }
 
-  &:focus {
-    outline: none;
+    /**
+      * __actions is position:sticky so it is always visible and on top.
+      * :before is a gradient to soften the edge when overlaying text.
+    */
+    &:before {
+      bottom: 0;
+      content: '';
+      left: calc(var(--unit3) * -1);
+      position: absolute;
+      top: 0;
+      width: var(--unit3);
+    }
   }
 
-  &.disabled {
-    cursor: not-allowed;
+  &__action {
+    &:focus {
+      outline: none;
+    }
+
+    polygon,
+    rect,
+    path {
+      fill: var(--base15);
+    }
   }
 
-  polygon,
-  rect,
-  path {
-    fill: var(--base15);
+  /**
+    * This element helps with a visual bug.
+    * When an item overflows the bounds of the list,
+    * the item background color clips at the point of the overflow.
+    * This child of the item has the same background color
+    * and will extend past the overflow point.
+  */
+  .component-tree-item-background {
+    min-height: 22px;
+  }
+
+  &:hover {
+    background-color: var(--component-highlighted-bg);
+
+    .component-tree-item-background {
+      background-color: var(--component-highlighted-bg);
+    }
+
+    .component-tree-item__actions {
+      opacity: 1;
+
+      &:after {
+        background-color: var(--component-highlighted-bg);
+      }
+
+      &:before {
+        background: linear-gradient(to right, var(--transparent), var(--component-highlighted-bg) 75%);
+      }
+    }
   }
 }
 
 .component-tree-item__tag {
-  cursor: default;
-  display: flex;
+  .component-name {
+    color: var(--component-name);
+  }
+
+  .bracket-token {
+    color: var(--base09);
+  }
+
+  .key-token {
+    color: var(--component-attr);
+  }
+
+  .value-token {
+    color: var(--spec03);
+  }
+
+  .arg-value-token {
+    background: none;
+    border: none;
+    padding: 0 2px;
+  }
+
+  .arg-value-token:hover {
+    background-color: var(--spec03);
+    color: var(--base00);
+    cursor: pointer;
+  }
 }
 
-.component-tree-item--has-instance .component-tree-item__tag {
-  cursor: pointer;
+/**
+ * Modifier
+ * highlighted - the component currently being previewed
+ */
+
+.component-tree-item.component-tree-item--highlighted {
+  background-color: var(--component-highlighted-bg);
+  border-radius: 0;
+}
+
+.component-tree-item--pinned .component-tree-item__tag {
+  .component-name,
+  .bracket-token,
+  .key-token,
+  .value-token {
+    color: var(--focus-text);
+  }
+}
+
+.component-tree-item__bracket:before,
+.component-tree-item__bracket:after,
+.component-tree-item-classic__bracket:before,
+.component-tree-item-classic__bracket:after {
+  color: var(--base09);
 }
 
 .component-tree-item__bracket:before {
-  color: var(--base07);
   content: '<';
 }
 
 .component-tree-item__bracket:after {
-  color: var(--base07);
   content: '>';
 }
 
@@ -65,39 +153,41 @@
   content: '/>';
 }
 
-.component-tree-item:hover {
-  background-color: var(--spec06);
+.component-tree-item-classic__bracket:before {
+  content: '{{';
+}
 
-  .component-tree-item__action {
-    opacity: 1;
-  }
-
-  .component-tree-item__action.disabled {
-    opacity: 0.65;
-  }
+.component-tree-item-classic__bracket:after {
+  content: '}}';
 }
 
 /**
  * Modifier
- * highlighted - children of selected component
+ * selected - user clicked on component
  */
 
-.component-tree-item.component-tree-item--highlighted {
-  background-color: var(--spec06);
-  border-radius: 0;
-}
-
-/**
- * Modifier
- * selected
- */
-
-.component-tree-item.component-tree-item--selected {
+.component-tree-item.component-tree-item--pinned {
   background: var(--focus);
   color: var(--focus-text);
 
   &:hover {
     background: var(--focus);
+  }
+
+  .component-tree-item-background {
+    background: var(--focus);
+  }
+
+  .component-tree-item__actions {
+    opacity: 1;
+
+    &:after {
+      background: var(--focus);
+    }
+
+    &:before {
+      background: linear-gradient(to right, var(--transparent), var(--focus) 75%);
+    }
   }
 
   .component-tree-item__bracket:before,
@@ -115,12 +205,8 @@
       fill: var(--focus-text);
     }
   }
-
-  .component-tree-item__action.disabled {
-    opacity: 0.65;
-  }
 }
 
 .component-tree-item--component {
-  color: var(--component-text);
+  color: var(--base09);
 }

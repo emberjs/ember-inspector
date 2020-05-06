@@ -27,8 +27,8 @@ try {
   // Try to load the most recent library
   let GlimmerValidator = Ember.__loader.require('@glimmer/validator');
 
-  tagValue = GlimmerValidator.value;
-  tagValidate = GlimmerValidator.validate;
+  tagValue = GlimmerValidator.value || GlimmerValidator.valueForTag;
+  tagValidate = GlimmerValidator.validate || GlimmerValidator.validateTag;
   track = GlimmerValidator.track;
 } catch (e) {
   try {
@@ -412,7 +412,7 @@ export default EmberObject.extend(PortMixin, {
   },
 
   canSend(val) {
-    return val && ((val instanceof EmberObject) || (val instanceof Object) || typeOf(val) === 'array');
+    return val && ((val instanceof EmberObject) || (val instanceof Object) || typeOf(val) === 'object' || typeOf(val) === 'array');
   },
 
   saveProperty(objectId, prop, val) {
@@ -697,7 +697,7 @@ export default EmberObject.extend(PortMixin, {
 
 function getClassName(object) {
   let name = '';
-  let className = emberNames.get(object.constructor) || object.constructor.name;
+  let className = (object.constructor && (emberNames.get(object.constructor) || object.constructor.name)) || '';
 
   if ('toString' in object && object.toString !== Function.prototype.toString) {
     name = object.toString();
@@ -726,7 +726,7 @@ function ownMixins(object) {
   let mixins = new Set();
 
   // Filter out anonymous mixins that are directly in a `class.extend`
-  let baseMixins = object.constructor.PrototypeMixin && object.constructor.PrototypeMixin.mixins;
+  let baseMixins = object.constructor && object.constructor.PrototypeMixin && object.constructor.PrototypeMixin.mixins;
 
   meta.forEachMixins(m => {
     // Find mixins that:

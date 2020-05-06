@@ -17,6 +17,7 @@
         class="send-to-console send-to-console--chevron-only js-trace-promise-btn"
         title="Trace promise in console"
         {{action @tracePromise @model}}
+        type="button"
       >
         {{svg-jar "send-with-chevron" width="6px" height="9px"}}
         Trace
@@ -27,7 +28,7 @@
 
 <@list.cell>
   <div
-    class="pill pill--bold pill--text js-promise-state"
+    class="pill pill--text font-bold js-promise-state"
     style={{this.style}}
   >
     {{this.state}}
@@ -55,8 +56,10 @@
     <div class="list__cell-helper">
       {{#if this.isError}}
         <button
-          class="send-to-console send-to-console--chevron-only js-send-to-console-btn"
+          data-test-send-to-console-btn
+          class="send-to-console send-to-console--chevron-only"
           title="Send stack trace to the console"
+          type="button"
           {{action @sendValueToConsole @model}}
         >
           {{svg-jar "send-with-chevron" width="6px" height="9px"}}

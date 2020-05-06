@@ -1,5 +1,5 @@
 <Ui::Disclosure as |disclosure|>
-  <div class="deprecation-item px-3" data-test="deprecation-item">
+  <div class="deprecation-item px-3 text-lg" data-test-deprecation-item>
     <div class="flex items-center">
       <div
         class="flex items-center flex-grow py-2"
@@ -12,12 +12,12 @@
         {{/if}}
 
         <div class="w-12 flex-shrink-0 pr-2 text-right">
-          <span class="pill" data-test="deprecation-count">
+          <span class="pill" data-test-deprecation-count>
             {{@model.count}}
           </span>
         </div>
 
-        <span class="flex-grow font-bold" data-test="deprecation-message">
+        <span class="flex-grow font-bold" data-test-deprecation-message>
           {{@model.message}}
         </span>
       </div>
@@ -26,8 +26,9 @@
         <button
           class="send-to-console send-to-console--chevron-only mr-2"
           title="Trace deprecations in console"
-          data-test="full-trace-deprecations-btn"
+          data-test-full-trace-deprecations-btn
           {{on "click" (fn @traceDeprecations @model)}}
+          type="button"
         >
           {{svg-jar "send-with-chevron" width="6px" height="9px"}}
           Trace in the Console
@@ -50,12 +51,13 @@
     {{#if (and @model.hasSourceMap disclosure.isExpanded)}}
       {{#each @model.sources as |single|}}
         <DeprecationItemSource @model={{single}} as |source|>
-          <div class="deprecation-source pb-2" data-test="deprecation-source">
+          <div class="deprecation-source pb-2" data-test-deprecation-source>
             <button
               class="send-to-console send-to-console--chevron-only mr-3"
               title="Trace deprecations in console"
-              data-test="trace-deprecations-btn"
+              data-test-trace-deprecations-btn
               {{on "click" (fn @traceSource @model source.model)}}
+              type="button"
             >
               {{svg-jar "send-with-chevron" width="6px" height="9px"}}
               Trace in the Console
@@ -65,13 +67,13 @@
                 <a
                   class="font-mono"
                   href="#"
-                  data-test="deprecation-source-link"
+                  data-test-deprecation-source-link
                   {{action @openResource source.model.map}}
                 >
                   {{source.url}}
                 </a>
               {{else}}
-                <span class="font-mono" data-test="deprecation-source-text">
+                <span class="font-mono" data-test-deprecation-source-text>
                   {{source.url}}
                 </span>
               {{/if}}

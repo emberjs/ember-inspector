@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   root: true,
   parser: 'babel-eslint',
@@ -22,12 +24,16 @@ module.exports = {
     basicContext: false
   },
   rules: {
+    'no-prototype-builtins': 'off',
+    
     'ember/no-jquery': 'error',
 
     // Temporarily turn these off
     'ember/avoid-leaking-state-in-ember-objects': 'off',
     'ember/no-observers': 'off',
-    'ember/use-brace-expansion': 'off'
+
+    // Best practice
+    'no-duplicate-imports': 'error'
   },
   overrides: [
     // node files
@@ -35,6 +41,7 @@ module.exports = {
       files: [
         '.ember-cli.js',
         '.eslintrc.js',
+        '.prettierrc.js',
         '.stylelintrc.js',
         '.template-lintrc.js',
         'ember-cli-build.js',

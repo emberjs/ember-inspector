@@ -9,39 +9,25 @@
 $mixin-left-padding: 22px;
 
 .mixin__name {
-  background-color: var(--base01);
   border-bottom: 1px solid var(--base03);
-  color: var(--base15);
-  cursor: default;
-  overflow: hidden;
   padding: 4px 2px 4px $mixin-left-padding;
-  position: -webkit-sticky;
-  position: sticky;
-  text-overflow: ellipsis;
-  top: 0;
-  user-select: none;
-  white-space: nowrap;
   z-index: 1;
-}
 
-.mixin__name:active {
-  background-color: var(--base02);
-}
+  &:active {
+    background-color: var(--base02);
+  }
 
-.mixin__name--no-props {
-  color: var(--base09);
-}
-
-.mixin__name:before {
-  color: var(--base10);
-  content: "\25B6";
-  font-size: 90%;
-  left: 6px;
-  margin-right: 5px;
-  position: absolute;
-  top: 5px;
-  transform: rotate(0deg);
-  transition: all 0.1s;
+  &:before {
+    color: var(--base10);
+    content: "\25B6";
+    font-size: 75%;
+    left: 7px;
+    margin-right: 5px;
+    position: absolute;
+    top: 6px;
+    transform: rotate(0deg);
+    transition: all 0.1s;
+  }
 }
 
 .mixin_props_no .mixin__name:before {
@@ -54,24 +40,13 @@ $mixin-left-padding: 22px;
 
 .mixin__properties {
   border-bottom: 1px solid var(--base03);
-  font-family: var(--font-monospace);
-  font-size: 12px;
-  list-style-type: none;
-  margin: 0;
   padding: 3px 0 5px;
 }
 
 .mixin__property {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
   min-height: 19px;
-  overflow: hidden;
   padding-bottom: 1px;
   padding-top: 1px;
-  position: relative;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 
   button {
     background: none;
@@ -93,7 +68,6 @@ $mixin-left-padding: 22px;
   }
 
   .mixin__send-btn {
-    flex-shrink: 0;
     opacity: 0;
     padding-right: 6px;
   }
@@ -115,26 +89,6 @@ $mixin-left-padding: 22px;
   }
 }
 
-/* Errors */
-
-.mixin__error {
-  color: var(--spec01);
-  margin-right: 3px;
-  padding: 0 20px;
-}
-
-.mixin__name--errors {
-  background-color: var(--base00);
-
-  &:active {
-    background-color: var(--base00);
-  }
-
-  button {
-    margin-left: 10px;
-  }
-}
-
 /* Buttons */
 
 .mixin__property-overridden-by {
@@ -142,32 +96,16 @@ $mixin-left-padding: 22px;
 }
 
 .mixin__property-name {
-  color: var(--base14);
   max-width: 50%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .mixin__property-value {
   flex: 1;
   min-height: 14px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .mixin__property-value-txt {
-  background: var(--base01);
   border: 1px solid var(--base09);
-  color: var(--base14);
-  flex: 1;
-  font-size: 12px;
-  outline: none;
-}
-
-.mixin__property-value-separator {
-  margin-right: 5px;
 }
 
 .mixin__property .type-function {
@@ -198,23 +136,15 @@ $mixin-left-padding: 22px;
   color: var(--spec09);
 }
 
-.mixin__property_state_overridden {
-  text-decoration: line-through;
-}
-
-.mixin__property:not(.mixin__property_state_overridden):hover {
+.mixin__property:not(.mixin__property-state-overridden):hover {
   background-color: var(--base01);
 }
 
-.mixin__property_state_overridden:hover .mixin__property-overridden-by {
-  background-color: var(--spec00);
+.mixin__property-state-overridden:hover .mixin__property-overridden-by {
   display: inline;
-  position: absolute;
-  right: 0;
-  text-decoration: none;
 }
 
-.mixin__property:not(.mixin__property_state_overridden):hover .mixin__send-btn {
+.mixin__property:not(.mixin__property-state-overridden):hover .mixin__send-btn {
   opacity: 1;
 
   &:active {

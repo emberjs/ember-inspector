@@ -11,10 +11,9 @@ import EmberComponent from '@ember/component';
 import EmberRoute from '@ember/routing/route';
 import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
-import { module, test } from 'qunit';
+import QUnit, { module, test } from 'qunit';
 import { hbs } from 'ember-cli-htmlbars';
 import require from 'require';
-import QUnit from 'qunit';
 import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
 
 const EmberDebug = require('ember-debug/main').default;
@@ -145,7 +144,12 @@ function setupApp() {
     }
   }));
 
-  setTemplate.call(this, 'application', hbs`<div class="application">{{outlet}}</div>`);
+  /*
+    Setting line-height to normal because normalize.css sets the
+    html line-height to 1.15. This seems to cause a measurement
+    error with getBoundingClientRect
+  */
+  setTemplate.call(this, 'application', hbs`<div class="application" style="line-height: normal;">{{outlet}}</div>`);
   setTemplate.call(this, 'simple', hbs`Simple {{test-foo}} {{test-bar}}`);
   setTemplate.call(this, 'comments/index', hbs`{{#each this.comments as |comment|}}{{comment}}{{/each}}`);
   setTemplate.call(this, 'posts', hbs`Posts`);

@@ -9,6 +9,7 @@
   <button
     class="{{if (is-empty this.filterValue) "active"}} toolbar__radio js-filter"
     {{on "click" (fn this.setFilter "")}}
+    type="button"
   >
     All
   </button>
@@ -17,6 +18,7 @@
     <button
       class="{{if (eq this.filterValue filter.name) "active"}} toolbar__radio js-filter"
       {{on "click" (fn this.setFilter filter.name)}}
+      type="button"
     >
       {{filter.desc}}
     </button>

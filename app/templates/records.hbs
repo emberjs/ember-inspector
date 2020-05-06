@@ -6,7 +6,7 @@
   as |h|
   >
     <h.row as |r|>
-      <r.cell data-test-table-header-column="" />
+      <r.cell data-test-table-header-column />
     </h.row>
   </t.head>
   <t.body
@@ -18,10 +18,10 @@
   >
     <b.row
       class={{if (mod b.rowMeta.index 2) "striped"}}
-      data-test-table-row=""
+      data-test-table-row
     as |r|
     >
-      <r.cell data-test-table-cell="" as |value column row|>
+      <r.cell data-test-table-cell as |value column row|>
         <span class={{row.color}}>
           {{value}}
         </span>

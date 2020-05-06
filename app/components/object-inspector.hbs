@@ -1,0 +1,107 @@
+{{#if @model.length}}
+  <div class="split__panel__hd">
+    <div class="toolbar">
+      <button
+        data-test-object-inspector-back
+        class="toolbar__icon-button {{if this.isNested "enabled" "disabled"}}"
+        type="button"
+        {{on "click" this.popStack}}
+      >
+        {{svg-jar "arrow-back" width="21px" height="21px"}}
+      </button>
+
+      <code
+        class="flex-auto truncate font-bold"
+        data-test-object-name
+      >
+        {{@model.firstObject.name}}
+      </code>
+
+      <button
+        data-test-send-object-to-console-btn
+        class="send-to-console"
+        title="Send to Console"
+        type="button"
+        {{on "click" (fn this.sendObjectToConsole @model.lastObject)}}
+      >
+        {{svg-jar "send-with-text" width="20px" height="10px"}}
+      </button>
+    </div>
+
+    {{#if this.trail}}
+      <code
+        class="object-trail mb-1 break-all"
+        data-test-object-trail
+      >
+        {{this.trail}}
+      </code>
+    {{/if}}
+  </div>
+
+  <div class="split__panel__bd">
+    <div class="toolbar object-inspector-toolbar">
+      <button
+        data-test-object-display-type-grouped
+        class="toolbar__radio toolbar__radio--first {{if (eq this.propDisplayType "grouped") "active"}}"
+        type="button"
+        {{on "click" (fn this.setPropDisplay "grouped")}}
+      >
+        Grouped
+      </button>
+      <button
+        data-test-object-display-type-all
+        class="toolbar__radio {{if (eq this.propDisplayType "all") "active"}}"
+        type="button"
+        {{on "click" (fn this.setPropDisplay "all")}}
+      >
+        All
+      </button>
+
+      <Ui::ToolbarDivider />
+
+      <div class="toolbar__search relative mx-1">
+        <Input
+          @id={{this.searchInputId}}
+          @type="text"
+          @value={{this.customFilter}}
+          @keyDown={{this.setCustomFilter}}
+          placeholder="Search"
+          class="box-border m-0 rounded pt-0 pr-4 pb-0 pl-1 text-base leading-none outline-none bg-base00"
+        />
+        {{#if this.customFilter}}
+          <button
+            class="toolbar__icon-button toolbar__search-clear-button absolute right-0 w-auto h-auto"
+            title="clear"
+            {{on "click" this.clearCustomFilter}}
+            data-test-object-inspector-custom-search-clear
+            type="button"
+          >
+            {{svg-jar "clear" width="14px" height="14px"}}
+          </button>
+        {{/if}}
+      </div>
+    </div>
+
+    {{#if @mixinDetails.errors.length}}
+      <ObjectInspector::Errors
+        @errors={{@mixinDetails.errors}}
+        @traceErrors={{fn this.traceErrors @mixinDetails.objectId}}
+      />
+    {{/if}}
+
+    {{#if (eq this.propDisplayType "all")}}
+      <ObjectInspector::PropertiesAll
+        @customFilter={{this.customFilter}}
+        @model={{@mixinDetails}}
+      />
+    {{else if (eq this.propDisplayType "grouped")}}
+      <ObjectInspector::PropertiesGrouped @model={{@mixinDetails}} />
+    {{/if}}
+  </div>
+{{else}}
+  <div class="split__panel__bd">
+    <Ui::EmptyMessage>
+      No object selected
+    </Ui::EmptyMessage>
+  </div>
+{{/if}}

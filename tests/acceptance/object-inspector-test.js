@@ -1,14 +1,15 @@
 import {
-  visit,
-  find,
-  findAll,
   click,
   fillIn,
-  triggerKeyEvent
+  find,
+  findAll,
+  triggerKeyEvent,
+  typeIn,
+  visit,
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { respondWith, sendMessage } from '../test-adapter';
+import { setupTestAdapter, respondWith, sendMessage } from '../test-adapter';
 
 function objectFactory(props) {
   return {
@@ -69,6 +70,7 @@ function objectToInspect() {
 }
 
 module('Object Inspector', function(hooks) {
+  setupTestAdapter(hooks);
   setupApplicationTest(hooks);
 
   test("The object displays correctly", async function (assert) {
@@ -79,9 +81,9 @@ module('Object Inspector', function(hooks) {
       ...objectFactory({ name: 'My Object' })
     });
 
-    assert.dom('.js-object-name').hasText('My Object');
-    assert.dom('.js-object-detail-name').hasText('Own Properties');
-    assert.dom('.js-object-detail').hasClass(
+    assert.dom('[data-test-object-name]').hasText('My Object');
+    assert.dom('[data-test-object-detail-name]').hasText('Own Properties');
+    assert.dom('[data-test-object-detail]').hasClass(
       'mixin_state_expanded',
       'The "Own Properties" detail is expanded by default'
     );
@@ -95,29 +97,29 @@ module('Object Inspector', function(hooks) {
       ...objectToInspect()
     });
 
-    assert.dom('.js-object-name').hasText('My Object');
-    let [firstDetail, secondDetail] = findAll('.js-object-detail');
-    assert.dom(firstDetail.querySelector('.js-object-detail-name')).hasText('First Detail');
+    assert.dom('[data-test-object-name]').hasText('My Object');
+    let [firstDetail, secondDetail] = findAll('[data-test-object-detail]');
+    assert.dom(firstDetail.querySelector('[data-test-object-detail-name]')).hasText('First Detail');
     assert.dom(firstDetail).hasNoClass('mixin_state_expanded', 'Detail not expanded by default');
 
-    await click('.js-object-detail-name', firstDetail);
+    await click('[data-test-object-detail-name]', firstDetail);
 
     assert.dom(firstDetail).hasClass('mixin_state_expanded', 'Detail expands on click.');
     assert.dom(secondDetail).hasNoClass('mixin_state_expanded', 'Second detail does not expand.');
-    assert.equal(firstDetail.querySelectorAll('.js-object-property').length, 1);
-    assert.dom(firstDetail.querySelector('.js-object-property-name')).hasText('numberProperty');
-    assert.dom(firstDetail.querySelector('.js-object-property-value')).hasText('1');
-    await click(firstDetail.querySelector('.js-object-detail-name'));
+    assert.equal(firstDetail.querySelectorAll('[data-test-object-property]').length, 1);
+    assert.dom(firstDetail.querySelector('[data-test-object-property-name]')).hasText('numberProperty');
+    assert.dom(firstDetail.querySelector('[data-test-object-property-value]')).hasText('1');
+    await click(firstDetail.querySelector('[data-test-object-detail-name]'));
 
     assert.dom(firstDetail).hasNoClass('mixin_state_expanded', 'Expanded detail minimizes on click.');
-    await click(secondDetail.querySelector('.js-object-detail-name'));
+    await click(secondDetail.querySelector('[data-test-object-detail-name]'));
 
     assert.dom(secondDetail).hasClass('mixin_state_expanded');
-    assert.equal(secondDetail.querySelectorAll('.js-object-property').length, 2);
-    assert.dom(secondDetail.querySelectorAll('.js-object-property-name')[0]).hasText('objectProperty');
-    assert.dom(secondDetail.querySelectorAll('.js-object-property-value')[0]).hasText('Ember Object Name');
-    assert.dom(secondDetail.querySelectorAll('.js-object-property-name')[1]).hasText('stringProperty');
-    assert.dom(secondDetail.querySelectorAll('.js-object-property-value')[1]).hasText('String Value');
+    assert.equal(secondDetail.querySelectorAll('[data-test-object-property]').length, 2);
+    assert.dom(secondDetail.querySelectorAll('[data-test-object-property-name]')[0]).hasText('objectProperty');
+    assert.dom(secondDetail.querySelectorAll('[data-test-object-property-value]')[0]).hasText('Ember Object Name');
+    assert.dom(secondDetail.querySelectorAll('[data-test-object-property-name]')[1]).hasText('stringProperty');
+    assert.dom(secondDetail.querySelectorAll('[data-test-object-property-value]')[1]).hasText('String Value');
   });
 
   test("Digging deeper into objects", async function (assert) {
@@ -146,29 +148,29 @@ module('Object Inspector', function(hooks) {
       }]
     });
 
-    let secondDetail = findAll('.js-object-detail')[1];
+    let secondDetail = findAll('[data-test-object-detail]')[1];
 
-    await click(secondDetail.querySelector('.js-object-detail-name'));
-    await click('.js-object-property .js-object-property-value');
+    await click(secondDetail.querySelector('[data-test-object-detail-name]'));
+    await click('[data-test-object-property] [data-test-object-property-value]');
 
-    assert.dom('.js-object-name').hasText('My Object', 'Title stays as the initial object.');
-    assert.dom('.js-object-trail').hasText('.objectProperty', 'Nested property shows below title');
-    assert.dom('.js-object-detail-name').hasText('Nested Detail');
+    assert.dom('[data-test-object-name]').hasText('My Object', 'Title stays as the initial object.');
+    assert.dom('[data-test-object-trail]').hasText('.objectProperty', 'Nested property shows below title');
+    assert.dom('[data-test-object-detail-name]').hasText('Nested Detail');
 
-    await click('.js-object-detail-name');
+    await click('[data-test-object-detail-name]');
 
-    assert.dom('.js-object-detail').hasClass('mixin_state_expanded');
-    assert.dom('.js-object-property-name').hasText('nestedProp');
-    assert.dom('.js-object-property-value').hasText('Nested Prop');
+    assert.dom('[data-test-object-detail]').hasClass('mixin_state_expanded');
+    assert.dom('[data-test-object-property-name]').hasText('nestedProp');
+    assert.dom('[data-test-object-property-value]').hasText('Nested Prop');
 
     respondWith('objectInspector:releaseObject', ({ objectId }) => {
       assert.equal(objectId, 'nestedObject');
       return false;
     });
 
-    await click('.js-object-inspector-back');
+    await click('[data-test-object-inspector-back]');
 
-    assert.dom('.js-object-trail').doesNotExist(0);
+    assert.dom('[data-test-object-trail]').doesNotExist(0);
   });
 
   test("Computed properties", async function (assert) {
@@ -191,7 +193,7 @@ module('Object Inspector', function(hooks) {
       }]
     });
 
-    await click('.js-object-detail-name');
+    await click('[data-test-object-detail-name]');
 
     respondWith('objectInspector:calculate', ({ objectId, property, mixinIndex }) => ({
       type: 'objectInspector:updateProperty',
@@ -204,9 +206,9 @@ module('Object Inspector', function(hooks) {
       }
     }));
 
-    await click('.js-calculate');
+    await click('[data-test-calculate]');
 
-    assert.dom('.js-object-property-value').hasText('Computed value');
+    assert.dom('[data-test-object-property-value]').hasText('Computed value');
   });
 
   test("Service highlight", async function(assert) {
@@ -228,11 +230,11 @@ module('Object Inspector', function(hooks) {
       }]
     });
 
-    await click('.js-object-detail-name');
+    await click('[data-test-object-detail-name]');
 
     assert.dom('.mixin__property--group').exists({ count: 1 });
     assert.dom('.mixin__property-icon--service').exists({ count: 1 });
-    assert.dom('.js-property-name-service').exists({ count: 1 });
+    assert.dom('[data-test-property-name-service]').exists({ count: 1 });
     assert.dom('.mixin__property-dependency-list').doesNotExist();
     assert.dom('.mixin__property-dependency-item').doesNotExist();
     assert.dom('.mixin__property-dependency-item > .mixin__property-dependency-name').doesNotExist();
@@ -260,7 +262,7 @@ module('Object Inspector', function(hooks) {
       }]
     });
 
-    await click('.js-object-detail-name');
+    await click('[data-test-object-detail-name]');
 
     respondWith('objectInspector:calculate', ({ objectId, property, mixinIndex }) => ({
       type: 'objectInspector:updateProperty',
@@ -273,7 +275,7 @@ module('Object Inspector', function(hooks) {
       }
     }));
 
-    await click('.js-calculate');
+    await click('[data-test-calculate]');
 
     assert.dom('.mixin__property--group').doesNotExist();
 
@@ -311,7 +313,7 @@ module('Object Inspector', function(hooks) {
       }]
     });
 
-    await click('.js-object-detail-name');
+    await click('[data-test-object-detail-name]');
 
     respondWith('objectInspector:calculate', ({ objectId, property, mixinIndex }) => ({
       type: 'objectInspector:updateProperty',
@@ -324,7 +326,7 @@ module('Object Inspector', function(hooks) {
       }
     }));
 
-    await click('.js-calculate');
+    await click('[data-test-calculate]');
 
     assert.dom('.mixin__property--group').exists({ count: 1 });
 
@@ -342,7 +344,7 @@ module('Object Inspector', function(hooks) {
 
     // All View
 
-    await click('.js-object-display-type-all');
+    await click('[data-test-object-display-type-all]');
     await click('.mixin__property-icon--computed');
 
     assert.dom('.mixin__property-dependency-list').exists({ count: 1 });
@@ -371,7 +373,7 @@ module('Object Inspector', function(hooks) {
       }]
     });
 
-    assert.dom('.js-object-property-value').hasText('Teddy');
+    assert.dom('[data-test-object-property-value]').hasText('Teddy');
 
     await sendMessage({
       type: 'objectInspector:updateProperty',
@@ -385,9 +387,9 @@ module('Object Inspector', function(hooks) {
       }
     });
 
-    await click('.js-object-property-value');
+    await click('[data-test-object-property-value]');
 
-    let txtField = find('.js-object-property-value-txt');
+    let txtField = find('[data-test-object-property-value-txt]');
     assert.equal(txtField.value, '"Alex"');
 
     respondWith('objectInspector:saveProperty', ({ objectId, property, value }) => ({
@@ -403,9 +405,9 @@ module('Object Inspector', function(hooks) {
     }));
 
     await fillIn(txtField, '"Joey"');
-    await triggerKeyEvent('.js-object-property-value-txt', 'keyup', 13);
+    await triggerKeyEvent('[data-test-object-property-value-txt]', 'keyup', 13);
 
-    assert.dom('.js-object-property-value').hasText('Joey');
+    assert.dom('[data-test-object-property-value]').hasText('Joey');
   });
 
   test("Stringified json should not get double parsed", async function (assert) {
@@ -429,11 +431,11 @@ module('Object Inspector', function(hooks) {
       }]
     });
 
-    assert.dom('.js-object-property-value').hasText('{"name":"teddy"}');
+    assert.dom('[data-test-object-property-value]').hasText('{"name":"teddy"}');
 
-    await click('.js-object-property-value');
+    await click('[data-test-object-property-value]');
 
-    let txtField = find('.js-object-property-value-txt');
+    let txtField = find('[data-test-object-property-value-txt');
     assert.equal(txtField.value, '"{"name":"teddy"}"');
 
     respondWith('objectInspector:saveProperty', ({ objectId, property, value }) => ({
@@ -449,9 +451,9 @@ module('Object Inspector', function(hooks) {
     }));
 
     await fillIn(txtField, '"{"name":"joey"}"');
-    await triggerKeyEvent('.js-object-property-value-txt', 'keyup', 13);
+    await triggerKeyEvent('[data-test-object-property-value-txt]', 'keyup', 13);
 
-    assert.dom('.js-object-property-value').hasText('{"name":"joey"}');
+    assert.dom('[data-test-object-property-value]').hasText('{"name":"joey"}');
   });
 
   test("Send to console", async function (assert) {
@@ -482,7 +484,7 @@ module('Object Inspector', function(hooks) {
     });
 
     // Grouped View
-    await click('.js-send-to-console-btn');
+    await click('[data-test-send-to-console-btn]');
 
     respondWith('objectInspector:sendToConsole', ({ objectId, property }) => {
       assert.equal(objectId, 'object-id');
@@ -490,10 +492,10 @@ module('Object Inspector', function(hooks) {
       return false;
     });
 
-    await click('.js-send-object-to-console-btn');
+    await click('[data-test-send-object-to-console-btn]');
 
     // All View
-    await click('.js-object-display-type-all');
+    await click('[data-test-object-display-type-all]');
 
     respondWith('objectInspector:sendToConsole', ({ objectId, property }) => {
       assert.equal(objectId, 'object-id');
@@ -501,7 +503,7 @@ module('Object Inspector', function(hooks) {
       return false;
     });
 
-    await click('.js-send-object-to-console-btn');
+    await click('[data-test-send-object-to-console-btn]');
   });
 
   test("Read only CPs cannot be edited", async function (assert) {
@@ -534,14 +536,14 @@ module('Object Inspector', function(hooks) {
       }]
     });
 
-    await click('.js-object-property-value');
+    await click('[data-test-object-property-value]');
 
-    assert.dom('.js-object-property-value-txt').doesNotExist();
+    assert.dom('[data-test-object-property-value-txt]').doesNotExist();
 
-    let valueElements = findAll('.js-object-property-value');
+    let valueElements = findAll('[data-test-object-property-value]');
     await click(valueElements[valueElements.length - 1]);
 
-    assert.dom('.js-object-property-value-txt').exists();
+    assert.dom('[data-test-object-property-value-txt]').exists();
   });
 
   test("Dropping an object due to destruction", async function (assert) {
@@ -557,14 +559,14 @@ module('Object Inspector', function(hooks) {
       }]
     });
 
-    assert.dom('.js-object-name').hasText('My Object');
+    assert.dom('[data-test-object-name]').hasText('My Object');
 
     await sendMessage({
       type: 'objectInspector:droppedObject',
       objectId: 'myObject'
     });
 
-    assert.dom('.js-object-name').doesNotExist();
+    assert.dom('[data-test-object-name]').doesNotExist();
   });
 
   test("Date fields are editable", async function (assert) {
@@ -589,11 +591,11 @@ module('Object Inspector', function(hooks) {
       }]
     });
 
-    await click('.js-object-detail-name');
+    await click('[data-test-object-detail-name]');
 
-    assert.dom('.js-object-property-value').hasText(date.toString());
+    assert.dom('[data-test-object-property-value]').hasText(date.toString());
 
-    await click('.js-object-property-value');
+    await click('[data-test-object-property-value]');
 
     let field = find('.js-object-property-value-date');
     assert.ok(field);
@@ -618,7 +620,7 @@ module('Object Inspector', function(hooks) {
     await fillIn(field, '2015-01-01');
     await triggerKeyEvent(field, 'keydown', 13);
 
-    assert.dom('.js-object-property-value').hasText(date.toString());
+    assert.dom('[data-test-object-property-value]').hasText(date.toString());
   });
 
   test("Errors are correctly displayed", async function (assert) {
@@ -635,16 +637,16 @@ module('Object Inspector', function(hooks) {
       ]
     });
 
-    assert.dom('.js-object-name').hasText('My Object');
-    assert.dom('.js-object-inspector-errors').exists({ count: 1 });
-    assert.dom('.js-object-inspector-error').exists({ count: 2 });
+    assert.dom('[data-test-object-name]').hasText('My Object');
+    assert.dom('[data-test-object-inspector-errors]').exists({ count: 1 });
+    assert.dom('[data-test-object-inspector-error]').exists({ count: 2 });
 
     respondWith('objectInspector:traceErrors', ({ objectId }) => {
       assert.equal(objectId, '1');
       return false;
     });
 
-    await click('.js-send-errors-to-console');
+    await click('[data-test-send-errors-to-console]');
 
     await sendMessage({
       type: 'objectInspector:updateErrors',
@@ -654,8 +656,8 @@ module('Object Inspector', function(hooks) {
       ]
     });
 
-    assert.dom('.js-object-inspector-errors').exists({ count: 1 });
-    assert.dom('.js-object-inspector-error').exists({ count: 1 });
+    assert.dom('[data-test-object-inspector-errors]').exists({ count: 1 });
+    assert.dom('[data-test-object-inspector-error]').exists({ count: 1 });
 
     await sendMessage({
       type: 'objectInspector:updateErrors',
@@ -663,8 +665,8 @@ module('Object Inspector', function(hooks) {
       errors: []
     });
 
-    assert.dom('.js-object-inspector-errors').doesNotExist();
-    assert.dom('.js-object-inspector-error').doesNotExist();
+    assert.dom('[data-test-object-inspector-errors]').doesNotExist();
+    assert.dom('[data-test-object-inspector-error]').doesNotExist();
   });
 
   test("Tracked properties", async function (assert) {
@@ -687,10 +689,10 @@ module('Object Inspector', function(hooks) {
       }]
     });
 
-    await click('.js-object-detail-name');
+    await click('[data-test-object-detail-name]');
 
     assert.dom('.mixin__property-icon--tracked').exists();
-    assert.dom('.js-object-property-value').hasText('123');
+    assert.dom('[data-test-object-property-value]').hasText('123');
 
     await sendMessage({
       type: 'objectInspector:updateProperty',
@@ -703,7 +705,7 @@ module('Object Inspector', function(hooks) {
     });
 
     assert.dom('.mixin__property-icon--tracked').exists();
-    assert.dom('.js-object-property-value').hasText('456');
+    assert.dom('[data-test-object-property-value]').hasText('456');
   });
 
   test("Plain properties", async function (assert) {
@@ -726,10 +728,10 @@ module('Object Inspector', function(hooks) {
       }]
     });
 
-    await click('.js-object-detail-name');
+    await click('[data-test-object-detail-name]');
 
     assert.dom('.mixin__property-icon--property').exists();
-    assert.dom('.js-object-property-value').hasText('123');
+    assert.dom('[data-test-object-property-value]').hasText('123');
 
     await sendMessage({
       type: 'objectInspector:updateProperty',
@@ -742,7 +744,7 @@ module('Object Inspector', function(hooks) {
     });
 
     assert.dom('.mixin__property-icon--property').exists();
-    assert.dom('.js-object-property-value').hasText('456');
+    assert.dom('[data-test-object-property-value]').hasText('456');
   });
 
   test("Getters", async function (assert) {
@@ -765,10 +767,10 @@ module('Object Inspector', function(hooks) {
       }]
     });
 
-    await click('.js-object-detail-name');
+    await click('[data-test-object-detail-name]');
 
     assert.dom('.mixin__property-icon--getter').exists();
-    assert.dom('.js-object-property-value').hasText('123');
+    assert.dom('[data-test-object-property-value]').hasText('123');
 
     await sendMessage({
       type: 'objectInspector:updateProperty',
@@ -781,6 +783,59 @@ module('Object Inspector', function(hooks) {
     });
 
     assert.dom('.mixin__property-icon--getter').exists();
-    assert.dom('.js-object-property-value').hasText('456');
+    assert.dom('[data-test-object-property-value]').hasText('456');
+  });
+
+  test('Custom filter', async function (assert) {
+    await visit('/');
+
+    await sendMessage({
+      type: 'objectInspector:updateObject',
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [
+        {
+          name: 'Detail',
+          properties: [
+            {
+              name: 'er',
+              value: 1,
+            },
+            {
+              name: 'el',
+              value: 1,
+            },
+          ],
+        },
+      ],
+    });
+
+    await click('[data-test-object-detail-name]');
+
+    assert.dom('[data-test-object-property]').exists({ count: 2 });
+    assert.dom('[data-test-object-display-type-grouped].active').exists();
+    assert.dom('[data-test-object-inspector-custom-search-clear]').doesNotExist();
+
+    await typeIn('#custom-filter-input', 'e');
+    assert.dom('[data-test-object-property]').exists({ count: 2 });
+    assert.dom('[data-test-object-display-type-all].active').exists();
+    assert.dom('[data-test-object-display-type-grouped].active').doesNotExist();
+    assert.dom('[data-test-object-inspector-custom-search-clear]').exists();
+
+    await typeIn('#custom-filter-input', 'r');
+    assert.dom('[data-test-object-property]').exists({ count: 1 });
+    assert.dom('[data-test-object-display-type-all]').exists();
+
+    await click('[data-test-object-inspector-custom-search-clear]');
+    assert.dom('[data-test-object-property]').exists({ count: 2 });
+    assert.dom('[data-test-object-display-type-all]').exists();
+
+    await typeIn('#custom-filter-input', 'z');
+    assert.dom('[data-test-object-property]').exists({ count: 0 });
+
+    await click('[data-test-object-display-type-grouped]');
+    assert.dom('[data-test-object-display-type-grouped].active').exists();
+    assert.dom('#custom-filter-input').hasNoText();
+    assert.dom('[data-test-object-inspector-custom-search-clear]').doesNotExist();
   });
 });

@@ -4,11 +4,12 @@ import {
   fillIn,
   findAll,
   triggerEvent,
+  triggerKeyEvent,
   visit
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { respondWith, sendMessage } from '../test-adapter';
+import { setupTestAdapter, respondWith, sendMessage } from '../test-adapter';
 
 function textFor(selector, context) {
   return context.querySelector(selector).textContent.trim();
@@ -86,7 +87,7 @@ function getRenderTree() {
       Route({ id: 1, name: 'application', instance: Serialized('ember123') },
         Route({ id: 2, name: 'todos' },
           Component({ id: 3, name: 'todo-list', instance: Serialized('ember456') },
-            Component({ id: 4, name: 'todo-item' })
+            Component({ id: 4, name: 'todo-item', args: Args({ names: ["subTasks"], positionals: 0 })})
           )
         )
       )
@@ -95,6 +96,7 @@ function getRenderTree() {
 }
 
 module('Component Tab', function (hooks) {
+  setupTestAdapter(hooks);
   setupApplicationTest(hooks);
 
   hooks.beforeEach(function() {
@@ -118,12 +120,17 @@ module('Component Tab', function (hooks) {
     let names = [];
 
     [...treeNodes].forEach(function (node) {
-      names.push(textFor('code', node));
+      // remove newlines and extra whitespace to improve component arg readability
+      names.push(textFor('code', node).replace(/\s\s+/g, ' '));
     });
 
     assert.deepEqual(
       names,
-      ['application route', 'todos route', 'TodoList', 'TodoItem'],
+      [
+        'application route',
+        'todos route',
+        'TodoList',
+        'TodoItem @subTasks ={{ ... }}'],
       'expected names for all views/components'
     );
   });
@@ -140,6 +147,58 @@ module('Component Tab', function (hooks) {
 
     treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 3, 'the last node should be hidden');
+  });
+
+  test('It allows users to expand and collapse nodes with arrow keys', async function (assert) {
+    await visit('/component-tree');
+
+    // handle messages
+    respondWith('view:showInspection', () => { return false; });
+    respondWith('objectInspector:inspectById', () => { return false; });
+
+    let treeNodes = findAll('.component-tree-item');
+    assert.equal(treeNodes.length, 4, 'expected some tree nodes');
+
+    // select first component node and collapse with left arrow
+    await click(treeNodes[2]);
+    await triggerKeyEvent(document, 'keydown', 37);
+
+    treeNodes = findAll('.component-tree-item');
+    assert.equal(treeNodes.length, 3, 'child nodes should be hidden');
+
+    // press right arrow key
+    await triggerKeyEvent(document, 'keydown', 39);
+
+    treeNodes = findAll('.component-tree-item');
+    assert.equal(treeNodes.length, 4, 'child nodes should be visible');
+  });
+
+  test('It allows users to navigate nodes with arrow keys', async function (assert) {
+    await visit('/component-tree');
+
+    // select first node with down arrow key
+    respondWith('view:showInspection', false);
+    respondWith('objectInspector:inspectById', ({ objectId }) => {
+      assert.equal(objectId, 'ember123');
+      return false;
+    });
+    await triggerKeyEvent(document, 'keydown', 40);
+
+    // select next node with down arrow key
+    respondWith('view:showInspection', false);
+    respondWith('objectInspector:inspectById', ({ objectId }) => {
+      assert.equal(objectId, 'ember2');
+      return false;
+    });
+    await triggerKeyEvent(document, 'keydown', 40);
+
+    // select previous node with up arrow key
+    respondWith('view:showInspection', false);
+    respondWith('objectInspector:inspectById', ({ objectId }) => {
+      assert.equal(objectId, 'ember123');
+      return false;
+    });
+    await triggerKeyEvent(document, 'keydown', 38);
   });
 
   test('It allows users to expand and collapse children with alt key', async function (assert) {
@@ -172,7 +231,7 @@ module('Component Tab', function (hooks) {
     let treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 4, 'expected some tree nodes');
 
-    await fillIn('.js-filter-views input', 'list');
+    await fillIn('[data-test-filter-views] input', 'list');
     treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 3, 'expected filtered tree nodes');
 
@@ -194,11 +253,11 @@ module('Component Tab', function (hooks) {
     let treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 4, 'expected all tree nodes');
 
-    await fillIn('.js-filter-views input', 'xxxxxx');
+    await fillIn('[data-test-filter-views] input', 'xxxxxx');
     treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 0, 'expected filtered tree nodes');
 
-    await click('.js-search-field-clear-button');
+    await click('[data-test-search-field-clear-button]');
     treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 4, 'expected all tree nodes');
   });
@@ -246,7 +305,7 @@ module('Component Tab', function (hooks) {
       return false;
     });
 
-    await click('.js-scroll-into-view');
+    await click('[data-test-scroll-into-view]');
   });
 
   test('View DOM element in Elements panel', async function (assert) {
@@ -257,7 +316,7 @@ module('Component Tab', function (hooks) {
       return false;
     });
 
-    await click('.js-view-dom-element');
+    await click('[data-test="view-dom-element"]');
   });
 
   test('Inspects the component in the object inspector on click and shows tooltip', async function (assert) {
@@ -298,6 +357,17 @@ module('Component Tab', function (hooks) {
     });
 
     assert.equal(currentURL(), '/component-tree?pinned=render-node%3A3', 'It pins the element id as a query param');
-    assert.dom('.component-tree-item--selected').hasText('TodoList', 'It selects the item in the tree corresponding to the element');
+    assert.dom('.component-tree-item--pinned').hasText('TodoList', 'It selects the item in the tree corresponding to the element');
+  });
+
+  test('Can inspect component arguments that are objects in component tree', async function (assert) {
+    await visit('/component-tree');
+
+    respondWith('objectInspector:inspectById', ({ objectId }) => {
+      assert.equal(objectId, 'ember1', 'Client asked to inspect the <TodoList> component argument');
+      return false;
+    });
+
+    await click('[data-test-arg-object]');
   });
 });

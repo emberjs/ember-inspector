@@ -1,7 +1,7 @@
 <div class="toolbar">
   <Ui::ToolbarReloadButton
     @action={{action send "reload"}}
-    class="js-reload-container-btn"
+    data-test-reload-container-btn
   />
 
   <Ui::ToolbarDivider />
@@ -26,4 +26,7 @@
       Order Models By Record Count
     </label>
   </div>
+  <button class="toolbar__radio js-filter" {{on "click" this.getStore}} data-test-inspect-store type="button">
+    Inspect Store
+  </button>
 </div>

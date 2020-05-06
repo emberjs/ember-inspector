@@ -1,7 +1,6 @@
 'use strict';
 
 /* eslint-env node */
-/* global require, module */
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 const VersionChecker = require('ember-cli-version-checker');
@@ -19,8 +18,6 @@ const ensurePosix = require('ensure-posix-path');
 const path = require('path');
 const packageJson = require('./package.json');
 const { map, mv } = stew;
-
-/*global process */
 
 const options = {
   fingerprint: {
@@ -98,6 +95,7 @@ module.exports = function(defaults) {
   app.import('node_modules/basiccontext/dist/themes/default.min.css');
   app.import('node_modules/basiccontext/dist/basicContext.min.js');
   app.import('node_modules/compare-versions/index.js');
+  app.import('node_modules/normalize.css/normalize.css');
 
   // Ember Debug
 
