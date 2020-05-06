@@ -31,10 +31,9 @@ module.exports = {
     // Temporarily turn these off
     'ember/avoid-leaking-state-in-ember-objects': 'off',
     'ember/no-observers': 'off',
-    'ember/use-brace-expansion': 'off',
 
     // Best practice
-    'no-duplicate-imports': 'error',
+    'no-duplicate-imports': 'error'
   },
   overrides: [
     // node files
