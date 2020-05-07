@@ -712,7 +712,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     let message = await inspectObject(proxy);
 
-    assert.equal(message.name, 'TestObject');
+    assert.ok(message.name.includes('ObjectProxy'), 'object name should start with <ObjectProxy:');
 
     assert.equal(message.details[0].name, 'Basic Info');
     assert.equal(message.details[0].properties[0].name, 'name');
