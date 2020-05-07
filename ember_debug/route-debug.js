@@ -42,6 +42,7 @@ export default EmberObject.extend(PortMixin, {
     }
   },
 
+  // eslint-disable-next-line ember/no-observers
   sendCurrentRoute: observer('currentURL', function() {
     const {
       currentPath: name,

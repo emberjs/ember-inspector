@@ -1,6 +1,7 @@
 import { assign } from '@ember/polyfills';
 import { once } from '@ember/runloop';
 import { typeOf, isEmpty } from '@ember/utils';
+// eslint-disable-next-line ember/no-observers
 import EmberObject, { computed, observer } from '@ember/object';
 import { not, equal, or } from '@ember/object/computed';
 import escapeRegExp from 'ember-inspector/utils/escape-reg-exp';
@@ -73,6 +74,7 @@ export default EmberObject.extend({
 
   // Need this observer because CP dependent keys do not support nested arrays
   // TODO: This can be so much better
+  // eslint-disable-next-line ember/no-observers
   stateChanged: observer('pendingBranch', 'fulfilledBranch', 'rejectedBranch', function() {
     if (!this.parent) {
       return;
@@ -88,6 +90,7 @@ export default EmberObject.extend({
     }
   }),
 
+  // eslint-disable-next-line ember/no-observers
   updateParentLabel: observer('label', 'parent', function() {
     this.addBranchLabel(this.label, true);
   }),
@@ -125,6 +128,7 @@ export default EmberObject.extend({
 
   isManuallyExpanded: undefined,
 
+  // eslint-disable-next-line ember/no-observers
   stateOrParentChanged: observer('isPending', 'isFulfilled', 'isRejected', 'parent', function() {
     let parent = this.parent;
     if (parent) {

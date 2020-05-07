@@ -1,4 +1,5 @@
 import { isEmpty } from '@ember/utils';
+// eslint-disable-next-line ember/no-observers
 import { action, observer, computed, get } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
@@ -12,6 +13,7 @@ export default Controller.extend({
 
   filterValue: null,
 
+  // eslint-disable-next-line ember/no-observers
   modelChanged: observer('model', function() {
     this.set('searchValue', '');
   }),
