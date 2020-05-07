@@ -457,7 +457,7 @@ export default EmberObject.extend(PortMixin, {
         parentObject: objectId,
         property,
         objectId: details.objectId,
-        name: object.toString(),
+        name: getClassName(object),
         details: details.mixins,
         errors: details.errors
       });
@@ -471,7 +471,7 @@ export default EmberObject.extend(PortMixin, {
     let details = this.mixinsForObject(object);
     this.sendMessage('updateObject', {
       objectId: details.objectId,
-      name: object.toString(),
+      name: getClassName(object),
       details: details.mixins,
       errors: details.errors
     });
