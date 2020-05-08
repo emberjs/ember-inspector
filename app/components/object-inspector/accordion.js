@@ -4,7 +4,7 @@ import Component from '@ember/component';
 export default Component.extend({
   tagName: '',
 
-  isExpanded: computed('mixin.expand', 'mixin.properties.length', function () {
+  isExpanded: computed('mixin.{expand,properties.length}', function () {
     return this.get('mixin.expand') && this.get('mixin.properties.length') > 0;
   }),
 

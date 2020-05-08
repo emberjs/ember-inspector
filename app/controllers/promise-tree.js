@@ -1,3 +1,4 @@
+// eslint-disable-next-line ember/no-observers
 import { action, observer } from '@ember/object';
 import Controller from '@ember/controller';
 import { isEmpty } from '@ember/utils';
@@ -64,6 +65,7 @@ export default Controller.extend({
   searchValue: null,
   effectiveSearch: null,
 
+  // eslint-disable-next-line ember/no-observers
   searchChanged: observer('searchValue', function() {
     debounce(this, this.notifyChange, 500);
   }),

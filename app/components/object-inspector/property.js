@@ -52,7 +52,7 @@ export default Component.extend({
     return this.get('isComputedProperty') && !this.get('isCalculated');
   }),
 
-  iconInfo: computed('isService', 'model.inspect.value', 'model.isTracked', 'model.isProperty', 'model.isGetter', 'isFunction', function () {
+  iconInfo: computed('isService', 'isFunction', 'model.{inspect.value,isTracked,isProperty,isGetter}', function () {
     if (this.get('isService')) {
       return { type: 'service', title: 'Service' };
     }

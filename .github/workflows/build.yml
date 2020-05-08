@@ -80,6 +80,7 @@ jobs:
     env:
       CI: 'true'
     strategy:
+      fail-fast: false
       matrix:
         scenario:
           - default-no-prototype-extensions

@@ -103,7 +103,7 @@ export default Component.extend({
     }
   }),
 
-  timeToSettle: computed('model.{createdAt,settledAt}', 'model.parent.settledAt', function() {
+  timeToSettle: computed('model.{createdAt,settledAt,parent.settledAt}', function() {
     if (!this.get('model.createdAt') || !this.get('model.settledAt')) {
       return ' -- ';
     }
