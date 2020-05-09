@@ -1,5 +1,5 @@
-import { action, get, computed } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
+import { action, computed, get, set } from '@ember/object';
 import debounceComputed from 'ember-inspector/computed/debounce';
 import searchMatch from 'ember-inspector/utils/search-match';
 
@@ -10,17 +10,9 @@ export default Controller.extend({
 
   search: null,
 
-  filtered: computed('model.@each.name', 'search', function() {
+  rows: computed('model.@each.name', 'search', function() {
     return this.model
-      .filter((item) => searchMatch(get(item, 'name'), this.search));
-  }),
-
-  rows: computed('filtered.[]', function() {
-    return this.filtered.map(function(item) {
-      return {
-        name: item
-      };
-    });
+      .filter((instance) => searchMatch(get(instance, 'name'), this.search));
   }),
 
   init() {
@@ -31,7 +23,13 @@ export default Controller.extend({
       name: 'Name'
     }];
 
-    this.sortProperties = ['name'];
+    // By default, sort alphabetically
+    this.sorts = [
+      {
+        valuePath: 'name',
+        isAscending: true
+      }
+    ]
   },
 
   /**
@@ -39,18 +37,38 @@ export default Controller.extend({
    * Called whenever an item in the list is clicked.
    *
    * @method inspectInstance
-   * @param {Object} obj
+   * @param {Object} instance
    */
-  inspectInstance: action(function(obj) {
-    if (!get(obj, 'inspectable')) {
+  inspectInstance: action(function(instance) {
+    if (!get(instance, 'inspectable')) {
       return;
     }
     this.port.send('objectInspector:inspectByContainerLookup', {
-      name: get(obj, 'fullName')
+      name: get(instance, 'fullName')
     });
   }),
 
   sendContainerToConsole: action(function() {
     this.port.send('objectInspector:sendContainerToConsole');
   }),
+
+  @action
+  updateSorts(sorts) {
+    let hasExistingSort = this.sorts && this.sorts.length;
+    let isDefaultSort = !sorts.length;
+
+    if (hasExistingSort && isDefaultSort) {
+      // override empty sorts with reversed previous sort
+      let newSorts = [
+        {
+          valuePath: this.sorts[0].valuePath,
+          isAscending: !this.sorts[0].isAscending,
+        },
+      ];
+      set(this, 'sorts', newSorts);
+      return;
+    }
+
+    set(this, 'sorts', sorts);
+  }
 });
