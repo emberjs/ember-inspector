@@ -1,5 +1,5 @@
 import Controller, { inject as controller } from '@ember/controller';
-import { action, computed, get, set } from '@ember/object';
+import { action, computed, set } from '@ember/object';
 import debounceComputed from 'ember-inspector/computed/debounce';
 import searchMatch from 'ember-inspector/utils/search-match';
 
@@ -12,7 +12,7 @@ export default Controller.extend({
 
   rows: computed('model.@each.name', 'search', function() {
     return this.model
-      .filter((instance) => searchMatch(get(instance, 'name'), this.search));
+      .filter((instance) => searchMatch(instance.name, this.search));
   }),
 
   init() {
@@ -40,12 +40,11 @@ export default Controller.extend({
    * @param {Object} instance
    */
   inspectInstance: action(function(instance) {
-    if (!get(instance, 'inspectable')) {
-      return;
+    if (instance.inspectable) {
+      this.port.send('objectInspector:inspectByContainerLookup', {
+        name: instance.fullName
+      });
     }
-    this.port.send('objectInspector:inspectByContainerLookup', {
-      name: get(instance, 'fullName')
-    });
   }),
 
   sendContainerToConsole: action(function() {
@@ -54,21 +53,17 @@ export default Controller.extend({
 
   @action
   updateSorts(sorts) {
-    let hasExistingSort = this.sorts && this.sorts.length;
-    let isDefaultSort = !sorts.length;
-
-    if (hasExistingSort && isDefaultSort) {
-      // override empty sorts with reversed previous sort
-      let newSorts = [
+    // The default sort has no meaning here, so force it to always be ascending
+    //   or descending
+    let isDefaultSort = !sorts.length
+    if (isDefaultSort) {
+      sorts = [
         {
           valuePath: this.sorts[0].valuePath,
           isAscending: !this.sorts[0].isAscending,
         },
       ];
-      set(this, 'sorts', newSorts);
-      return;
     }
-
     set(this, 'sorts', sorts);
   }
 });

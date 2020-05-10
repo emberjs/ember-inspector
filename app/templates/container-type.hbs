@@ -1,12 +1,12 @@
 <EmberTable as |t|>
   <t.head
-    @columns={{columns}}
-    @sorts={{sorts}}
+    @columns={{this.columns}}
+    @sorts={{this.sorts}}
     @onUpdateSorts={{this.updateSorts}}
     @enableReorder={{false}}
   />
   <t.body
-    @rows={{rows}}
+    @rows={{this.rows}}
   as |b|
   >
     <b.row
@@ -24,9 +24,7 @@
             {{instance.name}}
           </div>
         {{else}}
-          <span
-            data-test-instance={{name}}
-          >
+          <span data-test-instance={{name}}>
             {{instance.name}}
           </span>
         {{/if}}
