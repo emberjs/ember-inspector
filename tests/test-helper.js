@@ -3,6 +3,8 @@ import config from 'ember-inspector/config/environment';
 import { setApplication } from '@ember/test-helpers';
 import { start } from 'ember-qunit';
 import TestAdapter from './test-adapter';
+
+// ensure ember-debug is required
 import 'ember-debug/main';
 
 Application.initializer({

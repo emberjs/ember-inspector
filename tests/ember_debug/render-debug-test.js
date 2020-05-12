@@ -1,42 +1,25 @@
 import { settled, visit } from '@ember/test-helpers';
-import Ember from 'ember';
 import { module, test } from 'qunit';
-import { hbs } from 'ember-cli-htmlbars';
-import { setupEIApp, destroyEIApp } from '../helpers/setup-destroy-ei-app';
+import setupEmberDebugTest  from '../helpers/setup-ember-debug-test';
 import EmberDebug from 'ember-debug/main';
 
-let port, App;
-
 module('Ember Debug - Render Debug', function(hooks) {
-  hooks.beforeEach(async function() {
-    EmberDebug.Port = EmberDebug.Port.extend({
-      init() {},
-      send() {}
-    });
-
-    App = await setupEIApp.call(this, EmberDebug, function() {
+  setupEmberDebugTest(hooks, {
+    routes: function() {
       this.route('simple');
-    });
-
-    Ember.TEMPLATES.simple = hbs`Simple template`;
-
-    port = EmberDebug.port;
-  });
-
-  hooks.afterEach(async function() {
-    await destroyEIApp.call(this, EmberDebug, App);
+    }
   });
 
   test('Simple Render', async function t(assert) {
     let profiles = [];
-    port.reopen({
+    EmberDebug.port.reopen({
       send(n, m) {
         if (n === 'render:profilesAdded') {
           profiles = profiles.concat(m.profiles);
         }
       }
     });
-    port.trigger('render:watchProfiles');
+    EmberDebug.port.trigger('render:watchProfiles');
 
     await visit('/simple');
 
@@ -46,7 +29,7 @@ module('Ember Debug - Render Debug', function(hooks) {
   test('Clears correctly', async function t(assert) {
     let profiles = [];
 
-    port.reopen({
+    EmberDebug.port.reopen({
       send(n, m) {
         if (n === 'render:profilesAdded') {
           profiles.push(m.profiles);
@@ -57,12 +40,12 @@ module('Ember Debug - Render Debug', function(hooks) {
       }
     });
 
-    port.trigger('render:watchProfiles');
+    EmberDebug.port.trigger('render:watchProfiles');
 
     await visit('/simple');
 
     assert.ok(profiles.length > 0, 'it has created profiles');
-    port.trigger('render:clear');
+    EmberDebug.port.trigger('render:clear');
     await settled();
 
     assert.ok(profiles.length === 0, 'it has cleared the profiles');

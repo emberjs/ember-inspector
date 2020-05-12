@@ -4,22 +4,13 @@ import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
-import { setupEIApp, destroyEIApp } from '../helpers/setup-destroy-ei-app';
 import EmberDebug from 'ember-debug/main';
-
-let port;
-let App;
+import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 
 module('Ember Debug - Deprecation', function(hooks) {
+  setupEmberDebugTest(hooks);
+
   hooks.beforeEach(async function() {
-    EmberDebug.Port = EmberDebug.Port.extend({
-      init() { },
-      send(/*n, m*/) { }
-    });
-
-    App = await setupEIApp.call(this, EmberDebug);
-
-    port = EmberDebug.port;
     EmberDebug.IGNORE_DEPRECATIONS = true;
     EmberDebug.deprecationDebug.reopen({
       fetchSourceMap() { return RSVP.resolve(null); },
@@ -27,14 +18,10 @@ module('Ember Debug - Deprecation', function(hooks) {
     });
   });
 
-  hooks.afterEach(async function() {
-    await destroyEIApp.call(this, EmberDebug, App);
-  });
-
   test('deprecations are caught and sent', async function t(assert) {
     let deprecations, count;
 
-    port.reopen({
+    EmberDebug.port.reopen({
       send(name, message) {
         if (name === 'deprecation:deprecationsAdded') {
           deprecations = message.deprecations;
@@ -44,7 +31,7 @@ module('Ember Debug - Deprecation', function(hooks) {
       }
     });
 
-    App.ApplicationRoute = Route.extend({
+    this.owner.register('route:application', Route.extend({
       setupController() {
         EmberDebug.IGNORE_DEPRECATIONS = false;
         deprecate('Deprecation 1', false, { id: 'dep-1', until: '1.0.0' });
@@ -52,9 +39,9 @@ module('Ember Debug - Deprecation', function(hooks) {
         deprecate('Deprecation 1', false, { id: 'dep-1', until: '1.0.0' });
         EmberDebug.IGNORE_DEPRECATIONS = true;
       }
-    });
+    }));
 
-    run(port, 'trigger', 'deprecation:watch');
+    run(EmberDebug.port, 'trigger', 'deprecation:watch');
 
     await visit('/');
 
@@ -77,21 +64,23 @@ module('Ember Debug - Deprecation', function(hooks) {
   test('Warns once about deprecations', async function t(assert) {
     assert.expect(2);
     let count = 0;
-    run(port, 'trigger', 'deprecation:watch');
-    port.get('adapter').reopen({
+    run(EmberDebug.port, 'trigger', 'deprecation:watch');
+    EmberDebug.port.get('adapter').reopen({
       warn(message) {
         assert.equal(message, 'Deprecations were detected, see the Ember Inspector deprecations tab for more details.');
         assert.equal(++count, 1, 'Warns once');
       }
     });
-    App.ApplicationRoute = Route.extend({
+
+    this.owner.register('route:application', Route.extend({
       setupController() {
         EmberDebug.IGNORE_DEPRECATIONS = false;
         deprecate('Deprecation 1', false, { id: 'dep-1', until: '1.0.0' });
         deprecate('Deprecation 2', false, { id: 'dep-2', until: '1.0.0' });
         EmberDebug.IGNORE_DEPRECATIONS = true;
       }
-    });
+    }));
+
     await visit('/');
   });
 });

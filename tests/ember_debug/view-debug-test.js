@@ -13,11 +13,8 @@ import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
 import QUnit, { module, test } from 'qunit';
 import { hbs } from 'ember-cli-htmlbars';
-import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
 import EmberDebug from 'ember-debug/main';
-
-let port;
-let App;
+import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 
 // TODO make the debounce configurable for tests
 async function timeout(ms) {
@@ -28,20 +25,20 @@ async function timeout(ms) {
 
 // TODO switch to an adapter architecture, similar to the acceptance tests
 async function captureMessage(type, callback) {
-  if (!port) {
+  if (!EmberDebug.port) {
     throw new Error('Cannot call captureMessage without a port');
   }
 
-  let send = port.send;
+  let send = EmberDebug.port.send;
 
   try {
     let captured;
 
-    port.send = (name, message) => {
+    EmberDebug.port.send = (name, message) => {
       if (!captured && name === type) {
         captured = message;
       } else {
-        send.call(port, name, message);
+        send.call(EmberDebug.port, name, message);
       }
     };
 
@@ -53,13 +50,13 @@ async function captureMessage(type, callback) {
       throw new Error(`Did not send a message of type ${type}`);
     }
   } finally {
-    port.send = send;
+    EmberDebug.port.send = send;
   }
 }
 
 async function getRenderTree() {
   let message = await captureMessage('view:renderTree', async () => {
-    port.trigger('view:getTree', {});
+    EmberDebug.port.trigger('view:getTree', {});
     await timeout(300);
   });
 
@@ -71,78 +68,6 @@ async function getRenderTree() {
 function isVisible(element) {
   let { width, height } = element.getBoundingClientRect();
   return width > 0 && height > 0;
-}
-
-function setupApp() {
-  this.owner.register('route:application', EmberRoute.extend({
-    model() {
-      return EmberObject.create({
-        toString() {
-          return 'Application model';
-        }
-      });
-    }
-  }));
-
-  this.owner.register('route:simple', EmberRoute.extend({
-    model() {
-      return EmberObject.create({
-        toString() {
-          return 'Simple Model';
-        }
-      });
-    }
-  }));
-
-  this.owner.register('route:comments.index', EmberRoute.extend({
-    model() {
-      return A(['first comment', 'second comment', 'third comment']);
-    }
-  }));
-
-  this.owner.register('route:posts', EmberRoute.extend({
-    model() {
-      return 'String as model';
-    }
-  }));
-
-  this.owner.register('controller:application', Controller.extend({
-    toString() {
-      return 'App.ApplicationController';
-    }
-  }));
-
-  this.owner.register('controller:simple', Controller.extend({
-    toString() {
-      return 'App.SimpleController';
-    }
-  }));
-
-  this.owner.register('component:test-foo', EmberComponent.extend({
-    classNames: ['simple-component'],
-    toString() {
-      return 'App.TestFooComponent';
-    }
-  }));
-
-  this.owner.register('component:test-bar', EmberComponent.extend({
-    tagName: '',
-    toString() {
-      return 'App.TestBarComponent';
-    }
-  }));
-
-  /*
-    Setting line-height to normal because normalize.css sets the
-    html line-height to 1.15. This seems to cause a measurement
-    error with getBoundingClientRect
-  */
-  this.owner.register('template:application', hbs('<div class="application" style="line-height: normal;">{{outlet}}</div>', { moduleName: 'my-app/templates/application.hbs' }));
-  this.owner.register('template:simple', hbs('Simple {{test-foo}} {{test-bar}}', { moduleName: 'my-app/templates/simple.hbs' }));
-  this.owner.register('template:comments/index', hbs('{{#each this.comments as |comment|}}{{comment}}{{/each}}', { moduleName: 'my-app/templates/comments/index.hbs' }));
-  this.owner.register('template:posts', hbs('Posts', { moduleName: 'my-app/templates/posts.hbs' }));
-  this.owner.register('template:components/test-foo', hbs('test-foo', { moduleName: 'my-app/templates/components/test-foo.hbs' }));
-  this.owner.register('template:components/test-bar', hbs('<!-- before --><div class="another-component"><span>test</span> <span class="bar-inner">bar</span></div><!-- after -->', { moduleName: 'my-app/templates/components/test-bar.hbs' }));
 }
 
 function matchTree(tree, matchers) {
@@ -285,26 +210,86 @@ function findInspectorElement(kind) {
 }
 
 module('Ember Debug - View', function(hooks) {
-  hooks.beforeEach(async function() {
-    EmberDebug.Port = EmberDebug.Port.extend({
-      init() {},
-      send() {}
-    });
-    EmberDebug.IGNORE_DEPRECATIONS = true;
-
-    App = await setupEIApp.call(this, EmberDebug, function() {
+  setupEmberDebugTest(hooks, {
+    routes() {
       this.route('simple');
       this.route('comments', { resetNamespace: true }, function() {});
       this.route('posts', { resetNamespace: true });
-    });
-
-    setupApp.call(this);
-
-    port = EmberDebug.port;
+    }
   });
 
-  hooks.afterEach(async function() {
-    await destroyEIApp.call(this, EmberDebug, App);
+  hooks.beforeEach(async function() {
+    EmberDebug.IGNORE_DEPRECATIONS = true;
+
+    this.owner.register('route:application', EmberRoute.extend({
+      model() {
+        return EmberObject.create({
+          toString() {
+            return 'Application model';
+          }
+        });
+      }
+    }));
+
+    this.owner.register('route:simple', EmberRoute.extend({
+      model() {
+        return EmberObject.create({
+          toString() {
+            return 'Simple Model';
+          }
+        });
+      }
+    }));
+
+    this.owner.register('route:comments.index', EmberRoute.extend({
+      model() {
+        return A(['first comment', 'second comment', 'third comment']);
+      }
+    }));
+
+    this.owner.register('route:posts', EmberRoute.extend({
+      model() {
+        return 'String as model';
+      }
+    }));
+
+    this.owner.register('controller:application', Controller.extend({
+      toString() {
+        return 'App.ApplicationController';
+      }
+    }));
+
+    this.owner.register('controller:simple', Controller.extend({
+      toString() {
+        return 'App.SimpleController';
+      }
+    }));
+
+    this.owner.register('component:test-foo', EmberComponent.extend({
+      classNames: ['simple-component'],
+      toString() {
+        return 'App.TestFooComponent';
+      }
+    }));
+
+    this.owner.register('component:test-bar', EmberComponent.extend({
+      tagName: '',
+      toString() {
+        return 'App.TestBarComponent';
+      }
+    }));
+
+    /*
+    Setting line-height to normal because normalize.css sets the
+    html line-height to 1.15. This seems to cause a measurement
+    error with getBoundingClientRect
+    */
+    this.owner.register('template:application', hbs('<div class="application" style="line-height: normal;">{{outlet}}</div>', { moduleName: 'my-app/templates/application.hbs' }));
+    this.owner.register('template:simple', hbs('Simple {{test-foo}} {{test-bar}}', { moduleName: 'my-app/templates/simple.hbs' }));
+    this.owner.register('template:comments/index', hbs('{{#each this.comments as |comment|}}{{comment}}{{/each}}', { moduleName: 'my-app/templates/comments/index.hbs' }));
+    this.owner.register('template:posts', hbs('Posts', { moduleName: 'my-app/templates/posts.hbs' }));
+    this.owner.register('template:components/test-foo', hbs('test-foo', { moduleName: 'my-app/templates/components/test-foo.hbs' }));
+    this.owner.register('template:components/test-bar', hbs('<!-- before --><div class="another-component"><span>test</span> <span class="bar-inner">bar</span></div><!-- after -->', { moduleName: 'my-app/templates/components/test-bar.hbs' }));
   });
 
   test('Simple View Tree', async function() {
@@ -336,7 +321,6 @@ module('Ember Debug - View', function(hooks) {
 
     // Restart the inspector
     EmberDebug.start();
-    port = EmberDebug.port;
 
     await visit('/simple');
 
@@ -396,7 +380,7 @@ module('Ember Debug - View', function(hooks) {
     assert.ok(!isVisible(tooltip), 'tooltip is not visible');
     assert.ok(!isVisible(highlight), 'highlight is not visible');
 
-    run(() => port.trigger('view:inspectViews', { inspect: true }));
+    run(() => EmberDebug.port.trigger('view:inspectViews', { inspect: true }));
 
     await triggerEvent('.simple-component', 'mousemove');
 

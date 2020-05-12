@@ -2,12 +2,10 @@ import { run, later } from '@ember/runloop';
 import { A as emberA } from '@ember/array';
 import RSVP from 'rsvp';
 import { module, skip, test } from 'qunit';
-import { setupEIApp, destroyEIApp } from '../helpers/setup-destroy-ei-app';
 import { settled } from '@ember/test-helpers';
 import EmberDebug from 'ember-debug/main';
-
-let port, name, message;
-let App;
+import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
+import Port from 'ember-debug/port';
 
 // RSVP instrumentation is out of band (50 ms delay)
 async function rsvpDelay() {
@@ -16,18 +14,19 @@ async function rsvpDelay() {
 }
 
 module('Ember Debug - Promise Debug', function(hooks) {
-  hooks.beforeEach(async function() {
+  let name, message;
 
-    EmberDebug.Port = EmberDebug.Port.extend({
+  setupEmberDebugTest(hooks, {
+    Port: Port.extend({
       init() {},
       send(n, m) {
         name = n;
         message = m;
       }
-    });
+    }),
+  });
 
-    App = await setupEIApp.call(this, EmberDebug);
-
+  hooks.beforeEach(async function() {
     EmberDebug.get('promiseDebug').reopen({
       delay: 5,
       session: {
@@ -36,19 +35,12 @@ module('Ember Debug - Promise Debug', function(hooks) {
         removeItem() {}
       }
     });
-    port = EmberDebug.port;
-  });
-
-  hooks.afterEach(async function() {
-    name = null;
-    message = null;
-    await destroyEIApp.call(this, EmberDebug, App);
   });
 
   test('Existing promises sent when requested', async function t(assert) {
     let promise1, child1, promise2;
 
-    run(function() {
+    run(() => {
       RSVP.resolve('value', 'Promise1')
         .then(function() {}, null, 'Child1');
 
@@ -58,7 +50,7 @@ module('Ember Debug - Promise Debug', function(hooks) {
 
     await rsvpDelay();
 
-    port.trigger('promise:getAndObservePromises');
+    EmberDebug.port.trigger('promise:getAndObservePromises');
 
     assert.equal(name, 'promise:promisesUpdated');
 
@@ -84,7 +76,7 @@ module('Ember Debug - Promise Debug', function(hooks) {
   });
 
   test('Updates are published when they happen', function(assert) {
-    port.trigger('promise:getAndObservePromises');
+    EmberDebug.port.trigger('promise:getAndObservePromises');
 
     let p;
 
@@ -130,13 +122,13 @@ module('Ember Debug - Promise Debug', function(hooks) {
     });
 
     await settled();
-    port.trigger('promise:getInstrumentWithStack');
+    EmberDebug.port.trigger('promise:getInstrumentWithStack');
 
 
     await settled();
     assert.equal(name, 'promise:instrumentWithStack');
     assert.equal(message.instrumentWithStack, false);
-    port.trigger('promise:setInstrumentWithStack', {
+    EmberDebug.port.trigger('promise:setInstrumentWithStack', {
       instrumentWithStack: true
     });
 
@@ -145,7 +137,7 @@ module('Ember Debug - Promise Debug', function(hooks) {
     assert.equal(name, 'promise:instrumentWithStack');
     assert.equal(message.instrumentWithStack, true);
     assert.equal(withStack, true, 'persisted');
-    port.trigger('promise:setInstrumentWithStack', {
+    EmberDebug.port.trigger('promise:setInstrumentWithStack', {
       instrumentWithStack: false
     });
 
@@ -156,7 +148,7 @@ module('Ember Debug - Promise Debug', function(hooks) {
   });
 
   skip('Responds even if no promises detected', function(assert) {
-    port.trigger('promise:getAndObservePromises');
+    EmberDebug.port.trigger('promise:getAndObservePromises');
     assert.equal(name, 'promise:promisesUpdated');
     assert.equal(message.promises.length, 0);
   });
