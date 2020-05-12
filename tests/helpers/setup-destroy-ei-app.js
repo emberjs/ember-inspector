@@ -1,6 +1,7 @@
 import Application from '@ember/application';
 import EmberRouter from '@ember/routing/router';
 import {
+  getApplication,
   setApplication,
   setupApplicationContext,
   setupContext,
@@ -9,7 +10,6 @@ import {
 } from '@ember/test-helpers';
 import { assert } from '@ember/debug';
 import { run } from '@ember/runloop';
-
 
 export async function setupEIApp(EmberDebug, routes) {
   assert('setupEIApp requires `EmberDebug` to be passed.', EmberDebug !== undefined);
@@ -28,6 +28,7 @@ export async function setupEIApp(EmberDebug, routes) {
   });
   App.register('router:main', Router);
 
+  this._originalApp = getApplication();
   await setApplication(App);
   await setupContext(this);
   await setupApplicationContext(this);
@@ -50,5 +51,8 @@ export async function destroyEIApp(EmberDebug, App) {
   EmberDebug.destroyContainer();
   await teardownApplicationContext(this);
   await teardownContext(this);
-  return run(App, 'destroy');
+
+  run(App, 'destroy');
+
+  setApplication(this._originalApp);
 }
