@@ -2,17 +2,15 @@ import { settled, visit } from '@ember/test-helpers';
 import { A as emberA } from '@ember/array';
 
 import { module, test } from 'qunit';
-import require from 'require';
 
+import EmberDebug from 'ember-debug/main';
 import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
 
-let EmberDebug;
 let port, name, message;
 let App;
 
 module('Ember Debug - Container', function(hooks) {
   hooks.beforeEach(async function() {
-    EmberDebug = require('ember-debug/main').default;
     EmberDebug.Port = EmberDebug.Port.extend({
       init() {},
       send(n, m) {

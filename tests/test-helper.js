@@ -3,6 +3,7 @@ import config from 'ember-inspector/config/environment';
 import { setApplication } from '@ember/test-helpers';
 import { start } from 'ember-qunit';
 import TestAdapter from './test-adapter';
+import 'ember-debug/main';
 
 Application.initializer({
   name: `00-override-adapter`,

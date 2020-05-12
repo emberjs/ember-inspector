@@ -2,10 +2,9 @@ import { settled, visit } from '@ember/test-helpers';
 import Ember from 'ember';
 import { module, test } from 'qunit';
 import { hbs } from 'ember-cli-htmlbars';
-import require from 'require';
 import { setupEIApp, destroyEIApp } from '../helpers/setup-destroy-ei-app';
+import EmberDebug from 'ember-debug/main';
 
-const EmberDebug = require('ember-debug/main').default;
 let port, App;
 
 module('Ember Debug - Render Debug', function(hooks) {

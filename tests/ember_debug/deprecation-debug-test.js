@@ -4,10 +4,8 @@ import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
-import require from 'require';
 import { setupEIApp, destroyEIApp } from '../helpers/setup-destroy-ei-app';
-
-const EmberDebug = require('ember-debug/main').default;
+import EmberDebug from 'ember-debug/main';
 
 let port;
 let App;
