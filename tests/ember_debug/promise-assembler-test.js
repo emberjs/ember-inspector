@@ -2,9 +2,7 @@ import { run } from '@ember/runloop';
 import Evented from '@ember/object/evented';
 import EmberObject from '@ember/object';
 import { module, test } from 'qunit';
-import require from 'require';
-
-const PromiseAssembler = require('ember-debug/libs/promise-assembler').default;
+import PromiseAssembler from 'ember-debug/libs/promise-assembler';
 
 let assembler;
 

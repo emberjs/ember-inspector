@@ -1,7 +1,5 @@
-import require from 'require';
 import { module, test } from 'qunit';
-
-const ProfileNode = require('ember-debug/models/profile-node').default;
+import ProfileNode from 'ember-debug/models/profile-node';
 
 module('Ember Debug - ProfileNode', function() {
   test('It can create a ProfileNode', function(assert) {
