@@ -3,10 +3,9 @@ import { get } from '@ember/object';
 import { run } from '@ember/runloop';
 import Route from '@ember/routing/route';
 import { module, test } from 'qunit';
-import require from 'require';
 import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
+import EmberDebug from 'ember-debug/main';
 
-const EmberDebug = require('ember-debug/main').default;
 let port;
 let App;
 
