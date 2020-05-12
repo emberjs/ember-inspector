@@ -68,17 +68,6 @@ async function getRenderTree() {
   }
 }
 
-function setTemplate(name, factory) {
-  if (typeof factory.meta === 'object') {
-    factory.meta.moduleName = `my-app/templates/${name}.hbs`;
-  } else if (typeof factory.__meta === 'object') {
-    // Ember 3.13+
-    factory.__meta.moduleName = `my-app/templates/${name}.hbs`;
-  }
-
-  this.owner.register(`template:${name}`, factory);
-}
-
 function isVisible(element) {
   let { width, height } = element.getBoundingClientRect();
   return width > 0 && height > 0;
@@ -148,13 +137,12 @@ function setupApp() {
     html line-height to 1.15. This seems to cause a measurement
     error with getBoundingClientRect
   */
-  setTemplate.call(this, 'application', hbs`<div class="application" style="line-height: normal;">{{outlet}}</div>`);
-  setTemplate.call(this, 'simple', hbs`Simple {{test-foo}} {{test-bar}}`);
-  setTemplate.call(this, 'comments/index', hbs`{{#each this.comments as |comment|}}{{comment}}{{/each}}`);
-  setTemplate.call(this, 'posts', hbs`Posts`);
-  setTemplate.call(this, 'components/test-foo', hbs`test-foo`);
-  setTemplate.call(this, 'components/test-bar', hbs`<!-- before --><div class="another-component"><span>test</span> <span class="bar-inner">bar</span></div><!-- after -->`);
-
+  this.owner.register('template:application', hbs('<div class="application" style="line-height: normal;">{{outlet}}</div>', { moduleName: 'my-app/templates/application.hbs' }));
+  this.owner.register('template:simple', hbs('Simple {{test-foo}} {{test-bar}}', { moduleName: 'my-app/templates/simple.hbs' }));
+  this.owner.register('template:comments/index', hbs('{{#each this.comments as |comment|}}{{comment}}{{/each}}', { moduleName: 'my-app/templates/comments/index.hbs' }));
+  this.owner.register('template:posts', hbs('Posts', { moduleName: 'my-app/templates/posts.hbs' }));
+  this.owner.register('template:components/test-foo', hbs('test-foo', { moduleName: 'my-app/templates/components/test-foo.hbs' }));
+  this.owner.register('template:components/test-bar', hbs('<!-- before --><div class="another-component"><span>test</span> <span class="bar-inner">bar</span></div><!-- after -->', { moduleName: 'my-app/templates/components/test-bar.hbs' }));
 }
 
 function matchTree(tree, matchers) {
@@ -375,9 +363,9 @@ module('Ember Debug - View', function(hooks) {
     this.owner.register('component:x-first', EmberComponent.extend());
     this.owner.register('component:x-second', EmberComponent.extend());
 
-    setTemplate.call(this, 'posts', hbs`{{#x-first}}Foo{{/x-first}}`);
-    setTemplate.call(this, 'components/x-first', hbs`{{#x-second}}{{yield}}{{/x-second}}`);
-    setTemplate.call(this, 'components/x-second', hbs`{{yield}}`);
+    this.owner.register('template:posts', hbs('{{#x-first}}Foo{{/x-first}}', { moduleName: 'my-app/templates/posts.hbs' }));
+    this.owner.register('template:components/x-first', hbs('{{#x-second}}{{yield}}{{/x-second}}', { moduleName: 'my-app/templates/components/x-first.hbs' }));
+    this.owner.register('template:components/x-second', hbs('{{yield}}', { moduleName: 'my-app/templates/components/x-second.hbs' }));
 
     await visit('/posts');
 
