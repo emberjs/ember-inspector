@@ -2,11 +2,9 @@ import { run, later } from '@ember/runloop';
 import { A as emberA } from '@ember/array';
 import RSVP from 'rsvp';
 import { module, skip, test } from 'qunit';
-import require from 'require';
 import { setupEIApp, destroyEIApp } from '../helpers/setup-destroy-ei-app';
 import { settled } from '@ember/test-helpers';
-
-const EmberDebug = require('ember-debug/main').default;
+import EmberDebug from 'ember-debug/main';
 
 let port, name, message;
 let App;

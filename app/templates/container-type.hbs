@@ -1,26 +1,32 @@
 <EmberTable as |t|>
   <t.head
-    @columns={{columns}}
+    @columns={{this.columns}}
+    @sorts={{this.sorts}}
+    @onUpdateSorts={{this.updateSorts}}
     @enableReorder={{false}}
   />
   <t.body
-    @rows={{rows}}
+    @rows={{this.rows}}
   as |b|
   >
     <b.row
-      class={{concat "js-container-instance-list-item" (if (mod b.rowMeta.index 2) " striped")}}
+      class={{if (mod b.rowMeta.index 2) "striped"}}
+      data-test-instance-row
     as |r|
     >
-      <r.cell as |value|>
-        {{#if value.inspectable}}
+      <r.cell as |name column instance|>
+        {{#if instance.inspectable}}
           <div
-            class="is-link js-instance-name"
-            {{on "click" (fn this.inspectInstance value)}}
+            class="is-link"
+            data-test-instance={{name}}
+            {{on "click" (fn this.inspectInstance instance)}}
           >
-            {{value.name}}
+            {{instance.name}}
           </div>
         {{else}}
-          <span class="js-instance-name">{{value.name}}</span>
+          <span data-test-instance={{name}}>
+            {{instance.name}}
+          </span>
         {{/if}}
       </r.cell>
     </b.row>
