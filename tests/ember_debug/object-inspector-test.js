@@ -15,10 +15,10 @@ import { tracked } from '@glimmer/tracking';
 import { module, test } from 'qunit';
 import { hbs } from 'ember-cli-htmlbars';
 import require from 'require';
-import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
 import hasEmberVersion from '@ember/test-helpers/has-ember-version';
-import EmberDebug from 'ember-debug/main';
 import { compareVersion } from 'ember-debug/utils/version';
+import EmberDebug from 'ember-debug/main';
+import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 
 const GlimmerComponent = (function() {
   try {
@@ -28,31 +28,24 @@ const GlimmerComponent = (function() {
   }
 })();
 
-let port;
-let App;
 let objectInspector;
-
-function setupApp() {
-  this.owner.register('component:x-simple', Component);
-  this.owner.register('template:simple', hbs`Simple {{input class="simple-input"}} {{x-simple class="simple-view"}}`);
-}
 
 // TODO switch to an adapter architecture, similar to the acceptance tests
 async function captureMessage(type, callback) {
-  if (!port) {
+  if (!EmberDebug.port) {
     throw new Error('Cannot call captureMessage without a port');
   }
 
-  let send = port.send;
+  let send = EmberDebug.port.send;
 
   try {
     let captured;
 
-    port.send = (name, message) => {
+    EmberDebug.port.send = (name, message) => {
       if (!captured && name === type) {
         captured = message;
       } else {
-        send.call(port, name, message);
+        send.call(EmberDebug.port, name, message);
       }
     };
 
@@ -64,7 +57,7 @@ async function captureMessage(type, callback) {
       throw new Error(`Did not send a message of type ${type}`);
     }
   } finally {
-    port.send = send;
+    EmberDebug.port.send = send;
   }
 }
 
@@ -79,25 +72,13 @@ async function inspectObject(object) {
 }
 
 module('Ember Debug - Object Inspector', function(hooks) {
-  // eslint-disable-next-line object-shorthand
+  setupEmberDebugTest(hooks);
+
   hooks.beforeEach(async function() {
-    EmberDebug.Port = EmberDebug.Port.extend({
-      init() { },
-      send() { }
-    });
-
-    App = await setupEIApp.call(this, EmberDebug, function() {
-      this.route('simple');
-    });
-
-    setupApp.call(this);
+    this.owner.register('component:x-simple', Component);
+    this.owner.register('template:simple', hbs`Simple {{input class="simple-input"}} {{x-simple class="simple-view"}}`);
 
     objectInspector = EmberDebug.get('objectInspector');
-    port = EmberDebug.port;
-  });
-
-  hooks.afterEach(async function() {
-    await destroyEIApp.call(this, EmberDebug, App);
   });
 
   test('An Ember Object is correctly transformed into an inspection hash', async function(assert) {
@@ -429,7 +410,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     assert.step('inspector: calculate');
     message = await captureMessage('objectInspector:updateProperty', () => {
-      port.trigger('objectInspector:calculate', {
+      EmberDebug.port.trigger('objectInspector:calculate', {
         objectId: id,
         property: 'hi',
         mixinIndex: 1
@@ -519,7 +500,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.value.type, 'type-string');
 
     message = await captureMessage('objectInspector:updateProperty', () => {
-      port.trigger('objectInspector:calculate', {
+      EmberDebug.port.trigger('objectInspector:calculate', {
         objectId,
         property: 'hi',
         mixinIndex: 1
@@ -553,7 +534,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     let { objectId } = await inspectObject(inspected);
 
     let message = await captureMessage('objectInspector:updateProperty', () => {
-      port.trigger('objectInspector:saveProperty', {
+      EmberDebug.port.trigger('objectInspector:saveProperty', {
         objectId,
         mixinIndex: 1,
         property: 'name',
@@ -578,7 +559,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     let { objectId } = await inspectObject(inspected);
 
     let message = await captureMessage('objectInspector:updateProperty', () => {
-      port.trigger('objectInspector:saveProperty', {
+      EmberDebug.port.trigger('objectInspector:saveProperty', {
         objectId,
         mixinIndex: 1,
         property: 'date',
@@ -891,7 +872,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     // Calculate CP a second time
     message = await captureMessage('objectInspector:updateErrors', () => {
-      port.trigger('objectInspector:calculate', {
+      EmberDebug.port.trigger('objectInspector:calculate', {
         objectId,
         property: 'foo',
         mixinIndex: 1
@@ -903,7 +884,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     // Calculate CP a third time (no error this time)
     message = await captureMessage('objectInspector:updateProperty', () => {
-      port.trigger('objectInspector:calculate', {
+      EmberDebug.port.trigger('objectInspector:calculate', {
         objectId: guidFor(object),
         property: 'foo',
         mixinIndex: 1

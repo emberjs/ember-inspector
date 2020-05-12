@@ -3,50 +3,37 @@ import { get } from '@ember/object';
 import { run } from '@ember/runloop';
 import Route from '@ember/routing/route';
 import { module, test } from 'qunit';
-import { destroyEIApp, setupEIApp } from '../helpers/setup-destroy-ei-app';
+import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import EmberDebug from 'ember-debug/main';
-
-let port;
-let App;
-
-function setupApp() {
-  this.owner.register('route:loading', Route);
-  this.owner.register('route:error', Route);
-}
 
 function getChildrenProperty(route, prop) {
   return route.children.map(item => get(item.value, prop));
 }
 
 module('Ember Debug - Route Tree', function(hooks) {
-  hooks.beforeEach(async function() {
-    EmberDebug.Port = EmberDebug.Port.extend({
-      init() {},
-      send() {}
-    });
-    App = await setupEIApp.call(this, EmberDebug, function() {
+  setupEmberDebugTest(hooks, {
+    routes() {
       this.route('simple');
       this.route('posts', { resetNamespace: true });
       this.route('comments', { resetNamespace: true }, function() {
         this.route('new');
         this.route('edit', { path: '/edit/:comment_id' });
       });
-    });
+    }
+  });
 
-    setupApp.call(this);
+  hooks.beforeEach(async function() {
+    this.owner.register('route:loading', Route);
+    this.owner.register('route:error', Route);
+
     EmberDebug.get('generalDebug').reopen({
       emberCliConfig: null
     });
-    port = EmberDebug.port;
-  });
-
-  hooks.afterEach(async function() {
-    await destroyEIApp.call(this, EmberDebug, App);
   });
 
   test('Route tree', async function t(assert) {
     let name = null, message = null, route;
-    port.reopen({
+    EmberDebug.port.reopen({
       send(n, m) {
         name = n;
         message = m;
@@ -55,7 +42,7 @@ module('Ember Debug - Route Tree', function(hooks) {
 
     await visit('/');
 
-    run(port, 'trigger', 'route:getTree');
+    run(EmberDebug.port, 'trigger', 'route:getTree');
     await settled();
 
     assert.equal(name, 'route:routeTree');
