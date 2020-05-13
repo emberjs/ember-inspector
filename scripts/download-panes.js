@@ -29,7 +29,7 @@ async function main() {
 
   for (let version of packageJson.previousEmberVersionsSupported) {
     let dasherizedVersion = version.replace(/\./g, '-');
-    let paneFolder = 'panes-' + dasherizedVersion;
+    let paneFolder = `panes-${dasherizedVersion}`;
 
     await downloadPane(paneFolder, 'chrome');
     await downloadPane(paneFolder, 'firefox');

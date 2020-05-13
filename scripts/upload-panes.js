@@ -44,7 +44,7 @@ function main() {
 
     s3.upload({
       Body: body,
-      Key: env + '/' + folderName + '/' + dist + '.zip',
+      Key: `${env}/${folderName}/${dist}.zip`,
     }).send(function (err) {
       if (err) {
         throw err;
