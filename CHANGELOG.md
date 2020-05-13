@@ -1,5 +1,37 @@
 # Changelog
 
+## [v4.1.0](https://github.com/emberjs/ember-inspector/tree/v4.1.0) (2020-05-12)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v4.0.1...v4.1.0)
+
+**Implemented enhancements:**
+
+- Add ability to sort container instances alphabetically [\#1198](https://github.com/emberjs/ember-inspector/pull/1198) ([lukemelia](https://github.com/lukemelia))
+
+**Fixed bugs:**
+
+- Rendering tests unusable in ember-inspectors test suite [\#1201](https://github.com/emberjs/ember-inspector/issues/1201)
+- Can't see full list of components in `Components` tab after 4.0.0 [\#1200](https://github.com/emberjs/ember-inspector/issues/1200)
+- Component Tree - dissapears if modal-dialog used and focused using component explorer [\#1195](https://github.com/emberjs/ember-inspector/issues/1195)
+- Component tree: incorrect string component arguments serialization [\#1190](https://github.com/emberjs/ember-inspector/issues/1190)
+- Ensure renderDebug is properly unregistered. [\#1202](https://github.com/emberjs/ember-inspector/pull/1202) ([rwjblue](https://github.com/rwjblue))
+- Upgrade to Ember 3.18 to fix list rendering issue [\#1196](https://github.com/emberjs/ember-inspector/pull/1196) ([chancancode](https://github.com/chancancode))
+- Fix string arguments in component tree to render only one pair of double quotes fixes \#1190 [\#1193](https://github.com/emberjs/ember-inspector/pull/1193) ([SYU15](https://github.com/SYU15))
+- fix attrs/args - toString is undefined [\#1189](https://github.com/emberjs/ember-inspector/pull/1189) ([patricklx](https://github.com/patricklx))
+
+**Merged pull requests:**
+
+- Bump jquery from 3.4.1 to 3.5.1 [\#1207](https://github.com/emberjs/ember-inspector/pull/1207) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Remove private API usage to set moduleName in view debug tests. [\#1205](https://github.com/emberjs/ember-inspector/pull/1205) ([rwjblue](https://github.com/rwjblue))
+- Introduce `setupEmberDebugTest` test helper. [\#1204](https://github.com/emberjs/ember-inspector/pull/1204) ([rwjblue](https://github.com/rwjblue))
+- Reset internal test helper state for EmberDebug tests. [\#1203](https://github.com/emberjs/ember-inspector/pull/1203) ([rwjblue](https://github.com/rwjblue))
+- Add 4.0.0 changelog, bump minor version [\#1188](https://github.com/emberjs/ember-inspector/pull/1188) ([rwwagner90](https://github.com/rwwagner90))
+- No observers lint rule [\#1181](https://github.com/emberjs/ember-inspector/pull/1181) ([ansmonjol](https://github.com/ansmonjol))
+
+## [v4.0.1](https://github.com/emberjs/ember-inspector/tree/v4.0.1) (2020-05-06)
+
+[Full Changelog](https://github.com/emberjs/ember-inspector/compare/v4.0.0...v4.0.1)
+
 ## [v4.0.0](https://github.com/emberjs/ember-inspector/tree/v4.0.0) (2020-05-06)
 
 [Full Changelog](https://github.com/emberjs/ember-inspector/compare/v3.13.2...v4.0.0)
