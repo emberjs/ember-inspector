@@ -18,5 +18,5 @@ export default DatePicker.extend({
 
   _openFlatpickr() {
     this.flatpickrRef.open();
-  }
+  },
 });

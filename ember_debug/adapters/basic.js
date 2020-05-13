@@ -7,9 +7,13 @@ import { onReady } from '../utils/on-ready';
 
 export default EmberObject.extend({
   init() {
-    resolve(this.connect(), 'ember-inspector').then(() => {
-      this.onConnectionReady();
-    }, null, 'ember-inspector');
+    resolve(this.connect(), 'ember-inspector').then(
+      () => {
+        this.onConnectionReady();
+      },
+      null,
+      'ember-inspector'
+    );
 
     this._messageCallbacks = [];
   },
@@ -21,7 +25,7 @@ export default EmberObject.extend({
    * @property environment
    * @type {String}
    */
-  environment: computed(function() {
+  environment: computed(function () {
     return requireModule('ember-debug/config')['default'].environment;
   }),
 
@@ -73,7 +77,7 @@ export default EmberObject.extend({
   inspectNode(/* node */) {},
 
   _messageReceived(message) {
-    this._messageCallbacks.forEach(callback => {
+    this._messageCallbacks.forEach((callback) => {
       callback(message);
     });
   },
@@ -96,9 +100,11 @@ export default EmberObject.extend({
       if (error && error instanceof Error) {
         error = `Error message: ${error.message}\nStack trace: ${error.stack}`;
       }
-      this.warn(`Ember Inspector has errored.\n` +
-        `This is likely a bug in the inspector itself.\n` +
-        `You can report bugs at https://github.com/emberjs/ember-inspector.\n${error}`);
+      this.warn(
+        `Ember Inspector has errored.\n` +
+          `This is likely a bug in the inspector itself.\n` +
+          `You can report bugs at https://github.com/emberjs/ember-inspector.\n${error}`
+      );
     } else {
       this.warn('EmberDebug has errored:');
       throw error;
@@ -115,7 +121,9 @@ export default EmberObject.extend({
   connect() {
     return new Promise((resolve, reject) => {
       onReady(() => {
-        if (this.isDestroyed) { reject(); }
+        if (this.isDestroyed) {
+          reject();
+        }
         this.interval = setInterval(() => {
           if (document.documentElement.dataset.emberExtension) {
             clearInterval(this.interval);
@@ -132,7 +140,9 @@ export default EmberObject.extend({
   },
 
   _isReady: false,
-  _pendingMessages: computed(function() { return A(); }),
+  _pendingMessages: computed(function () {
+    return A();
+  }),
 
   send(options) {
     if (this._isReady) {
@@ -149,8 +159,8 @@ export default EmberObject.extend({
   onConnectionReady() {
     // Flush pending messages
     const messages = this.get('_pendingMessages');
-    messages.forEach(options => this.sendMessage(options));
+    messages.forEach((options) => this.sendMessage(options));
     messages.clear();
     this._isReady = true;
-  }
+  },
 });

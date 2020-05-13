@@ -1,5 +1,5 @@
-import WebExtension from "./web-extension";
+import WebExtension from './web-extension';
 
 export default WebExtension.extend({
-  name: 'firefox'
+  name: 'firefox',
 });

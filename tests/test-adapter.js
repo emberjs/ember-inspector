@@ -10,48 +10,72 @@ let responders = [];
 
 export function setupTestAdapter(hooks) {
   // Some default responders that are part of the normal application boot cycle
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     respondWith('check-version', false, { isDefault: true });
 
-    respondWith('general:applicationBooted', {
-      type: 'general:applicationBooted',
-      applicationId: 'my-app',
-      applicationName: 'My App',
-      booted: true
-    }, { isDefault: true });
-
-    respondWith('app-picker-loaded', {
-      type: 'apps-loaded',
-      applicationId: null,
-      applicationName: null,
-      apps: [{
+    respondWith(
+      'general:applicationBooted',
+      {
+        type: 'general:applicationBooted',
         applicationId: 'my-app',
-        applicationName: 'My App'
-      }]
-    }, { isDefault: true });
+        applicationName: 'My App',
+        booted: true,
+      },
+      { isDefault: true }
+    );
+
+    respondWith(
+      'app-picker-loaded',
+      {
+        type: 'apps-loaded',
+        applicationId: null,
+        applicationName: null,
+        apps: [
+          {
+            applicationId: 'my-app',
+            applicationName: 'My App',
+          },
+        ],
+      },
+      { isDefault: true }
+    );
 
     respondWith('app-selected', false, { isDefault: true });
 
-    respondWith('deprecation:getCount', ({ applicationId, applicationName }) => ({
-      type: 'deprecation:count',
-      applicationId,
-      applicationName,
-      count: 0
-    }), { isDefault: true });
+    respondWith(
+      'deprecation:getCount',
+      ({ applicationId, applicationName }) => ({
+        type: 'deprecation:count',
+        applicationId,
+        applicationName,
+        count: 0,
+      }),
+      { isDefault: true }
+    );
   });
 
   // Ensure all expectations are met and reset the global states
-  hooks.afterEach(function(assert) {
+  hooks.afterEach(function (assert) {
     for (let { file, line, actual, expected, reject } of resources) {
       if (!isNaN(expected) && actual !== expected) {
-        assert.strictEqual(actual, expected, `Expceting resouce ${file}:${line} to be opened ${expected} time(s)`);
-        reject(`Expceting resouce ${file}:${line} to be opened ${expected} time(s), was opened ${actual} time(s)`);
+        assert.strictEqual(
+          actual,
+          expected,
+          `Expceting resouce ${file}:${line} to be opened ${expected} time(s)`
+        );
+        reject(
+          `Expceting resouce ${file}:${line} to be opened ${expected} time(s), was opened ${actual} time(s)`
+        );
       }
     }
 
     for (let { type, isDefault, actual, expected, reject } of responders) {
       if (!isDefault && !isNaN(expected) && actual !== expected) {
-        assert.strictEqual(actual, expected, `The correct amount of ${type} messages are sent`);
+        assert.strictEqual(
+          actual,
+          expected,
+          `The correct amount of ${type} messages are sent`
+        );
         reject(`Expecting ${expected} ${type} messages, got ${actual}`);
       }
     }
@@ -116,13 +140,13 @@ export function sendMessage(message) {
     throw new Error('Cannot call sendMessage outside of a test');
   }
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     next(() => {
       let normalized = {
         applicationId: 'my-app',
         applicationName: 'My App',
         ...message,
-        from: 'inspectedWindow'
+        from: 'inspectedWindow',
       };
       adapter._messageReceived(normalized);
       resolve(normalized);
@@ -153,7 +177,7 @@ export function sendMessage(message) {
 export function respondWith(type, payload, options = {}) {
   return new Promise((resolve, reject) => {
     let { count, isDefault } = { count: 1, isDefault: false, ...options };
-    let callback = (typeof payload === 'function') ? payload : () => payload;
+    let callback = typeof payload === 'function' ? payload : () => payload;
 
     responders.push({
       type,
@@ -176,7 +200,9 @@ export function disableDefaultResponseFor(type) {
   for (let [i, responder] of responders.entries()) {
     if (responder.type === type && responder.isDefault) {
       if (responder.actual > 0) {
-        throw new Error(`Cannot remove default responder for ${type}: a response has already been sent!`);
+        throw new Error(
+          `Cannot remove default responder for ${type}: a response has already been sent!`
+        );
       }
 
       responders.splice(i, 1);
@@ -184,7 +210,9 @@ export function disableDefaultResponseFor(type) {
     }
   }
 
-  throw new Error(`Cannot remove default responder for ${type}: no such responder!`);
+  throw new Error(
+    `Cannot remove default responder for ${type}: no such responder!`
+  );
 }
 
 export default class TestAdapter extends BasicAdapter {
@@ -209,12 +237,18 @@ export default class TestAdapter extends BasicAdapter {
     console.debug('Opening resource', { file, line });
 
     if (!file) {
-      QUnit.assert.ok(file, `resource has valid "file" field: ${JSON.stringify(file)}`);
+      QUnit.assert.ok(
+        file,
+        `resource has valid "file" field: ${JSON.stringify(file)}`
+      );
       return;
     }
 
     if (!line) {
-      QUnit.assert.ok(file, `resource has valid "line" field: ${JSON.stringify(line)}`);
+      QUnit.assert.ok(
+        file,
+        `resource has valid "line" field: ${JSON.stringify(line)}`
+      );
       return;
     }
 
@@ -242,12 +276,19 @@ export default class TestAdapter extends BasicAdapter {
     console.debug('Sending message (devtools -> inspectedWindow)', message);
 
     if (!message.type) {
-      QUnit.assert.ok(false, `message has valid "type" field: ${JSON.stringify(message)}`);
+      QUnit.assert.ok(
+        false,
+        `message has valid "type" field: ${JSON.stringify(message)}`
+      );
       return;
     }
 
     if (message.from !== 'devtools') {
-      QUnit.assert.equal(message.from, 'devtools', `message has valid "from" field: ${JSON.stringify(message)}`);
+      QUnit.assert.equal(
+        message.from,
+        'devtools',
+        `message has valid "from" field: ${JSON.stringify(message)}`
+      );
       return;
     }
 
@@ -268,10 +309,16 @@ export default class TestAdapter extends BasicAdapter {
         let didRespond;
 
         if (response) {
-          console.debug('Received response (inspectedWindow -> devtools)', response);
+          console.debug(
+            'Received response (inspectedWindow -> devtools)',
+            response
+          );
           didRespond = sendMessage(response);
         } else if (response === false) {
-          console.debug('Ignoreing message (devtools -> inspectedWindow)', message);
+          console.debug(
+            'Ignoreing message (devtools -> inspectedWindow)',
+            message
+          );
           didRespond = Promise.resolve();
         }
 

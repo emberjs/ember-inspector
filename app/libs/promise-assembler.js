@@ -40,14 +40,18 @@ export default EmberObject.extend(EventedMixin, {
     // Lazily destroy promises
     // Allows for a smooth transition on deactivate,
     // and thus providing the illusion of better perf
-    later(this, function() {
-      this.destroyPromises(all);
-    }, 500);
+    later(
+      this,
+      function () {
+        this.destroyPromises(all);
+      },
+      500
+    );
     this.set('all', []);
   },
 
   destroyPromises(promises) {
-    promises.forEach(function(item) {
+    promises.forEach(function (item) {
       item.destroy();
     });
   },
@@ -62,7 +66,7 @@ export default EmberObject.extend(EventedMixin, {
   },
 
   rebuildPromises(promises) {
-    promises.forEach(props => {
+    promises.forEach((props) => {
       props = Object.assign({}, props);
       let childrenIds = props.children;
       let parentId = props.parent;
@@ -73,7 +77,7 @@ export default EmberObject.extend(EventedMixin, {
       }
       let promise = this.updateOrCreate(props);
       if (childrenIds) {
-        childrenIds.forEach(childId => {
+        childrenIds.forEach((childId) => {
           // avoid infinite recursion
           if (childId === props.guid) {
             return;
@@ -119,7 +123,7 @@ export default EmberObject.extend(EventedMixin, {
     } else {
       topSort.pushObject(promise);
     }
-    promise.get('children').forEach(child => {
+    promise.get('children').forEach((child) => {
       topSort.removeObject(child);
       this.insertInTopSort(child);
     });
@@ -161,5 +165,5 @@ export default EmberObject.extend(EventedMixin, {
       assert('You have tried to findOrCreate without a guid');
     }
     return this.find(guid) || this.createPromise({ guid });
-  }
+  },
 });

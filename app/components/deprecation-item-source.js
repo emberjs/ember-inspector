@@ -7,7 +7,7 @@ export default Component.extend({
 
   known: bool('model.map.source'),
 
-  url: computed('model.map.{line,source}', 'known', function() {
+  url: computed('model.map.{line,source}', 'known', function () {
     let source = this.get('model.map.source');
     if (this.known) {
       return `${source}:${this.get('model.map.line')}`;
@@ -18,5 +18,5 @@ export default Component.extend({
 
   adapter: readOnly('port.adapter'),
 
-  isClickable: and('known', 'adapter.canOpenResource')
+  isClickable: and('known', 'adapter.canOpenResource'),
 });

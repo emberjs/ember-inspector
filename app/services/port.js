@@ -17,7 +17,7 @@ export default Service.extend(Evented, {
     this.applicationId = undefined;
     this.applicationName = undefined;
 
-    this.adapter.onMessageReceived(message => {
+    this.adapter.onMessageReceived((message) => {
       if (message.type === 'apps-loaded') {
         message.apps.forEach(({ applicationId, applicationName }) => {
           set(this.detectedApplications, applicationId, applicationName);
@@ -46,7 +46,10 @@ export default Service.extend(Evented, {
   },
 
   selectApplication(applicationId) {
-    if (applicationId in this.detectedApplications && applicationId !== this.applicationId) {
+    if (
+      applicationId in this.detectedApplications &&
+      applicationId !== this.applicationId
+    ) {
       let applicationName = this.detectedApplications[applicationId];
       this.setProperties({ applicationId, applicationName });
       this.send('app-selected', { applicationId, applicationName });
@@ -60,5 +63,5 @@ export default Service.extend(Evented, {
     message.applicationId = this.applicationId;
     message.applicationName = this.applicationName;
     this.adapter.sendMessage(message);
-  }
+  },
 });

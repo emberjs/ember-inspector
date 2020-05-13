@@ -1,5 +1,5 @@
 /* eslint no-empty:0 */
-import WebExtension from "./web-extension";
+import WebExtension from './web-extension';
 
 export default WebExtension.extend({
   debug() {
@@ -9,7 +9,7 @@ export default WebExtension.extend({
     // - https://code.google.com/p/fbug/issues/detail?id=7045
     try {
       this._super(...arguments);
-    } catch (e) { }
+    } catch (e) {}
   },
   log() {
     // WORKAROUND: temporarily workaround issues with firebug console object:
@@ -18,6 +18,6 @@ export default WebExtension.extend({
     // - https://code.google.com/p/fbug/issues/detail?id=7045
     try {
       this._super(...arguments);
-    } catch (e) { }
-  }
+    } catch (e) {}
+  },
 });

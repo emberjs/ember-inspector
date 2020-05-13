@@ -1,4 +1,4 @@
-import WebExtension from "./web-extension";
+import WebExtension from './web-extension';
 
 export default WebExtension.extend({
   name: 'chrome',
@@ -12,10 +12,10 @@ export default WebExtension.extend({
   },
 
   onResourceAdded() {
-    chrome.devtools.inspectedWindow.onResourceAdded.addListener(opts => {
+    chrome.devtools.inspectedWindow.onResourceAdded.addListener((opts) => {
       if (opts.type === 'document') {
         this.sendIframes([opts.url]);
       }
     });
-  }
+  },
 });

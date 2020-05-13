@@ -4,7 +4,7 @@ import TabRoute from 'ember-inspector/routes/tab';
 
 export default TabRoute.extend({
   model() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.port.one('deprecation:deprecationsAdded', resolve);
       this.port.send('deprecation:watch');
     });
@@ -22,13 +22,17 @@ export default TabRoute.extend({
 
   deactivate() {
     this._super(...arguments);
-    this.port.off('deprecation:deprecationsAdded', this, this.deprecationsAdded);
+    this.port.off(
+      'deprecation:deprecationsAdded',
+      this,
+      this.deprecationsAdded
+    );
   },
 
   deprecationsAdded(message) {
     let { deprecations } = this.controller;
 
-    message.deprecations.forEach(item => {
+    message.deprecations.forEach((item) => {
       let record = deprecations.findBy('id', item.id);
       if (record) {
         setProperties(record, item);
@@ -42,6 +46,6 @@ export default TabRoute.extend({
     clear() {
       this.port.send('deprecation:clear');
       this.currentModel.clear();
-    }
-  }
+    },
+  },
 });

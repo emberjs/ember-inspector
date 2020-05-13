@@ -1,8 +1,8 @@
 import checkCurrentRoute from 'ember-inspector/utils/check-current-route';
 import { module, test } from 'qunit';
 
-module("Unit | Helper | checkCurrentRoute", function() {
-  test("matches the correct routes", function(assert) {
+module('Unit | Helper | checkCurrentRoute', function () {
+  test('matches the correct routes', function (assert) {
     const testSet = [
       {
         currentRoute: {
@@ -91,7 +91,7 @@ module("Unit | Helper | checkCurrentRoute", function() {
           name: 'employees',
         },
         message: 'nested route w/ resetNamespace matches correctly',
-      }
+      },
     ];
 
     testSet.forEach(({ currentRoute, routeValue, message }) => {
@@ -99,7 +99,7 @@ module("Unit | Helper | checkCurrentRoute", function() {
     });
   });
 
-  test('does not match incorrect routes', function(assert) {
+  test('does not match incorrect routes', function (assert) {
     const testSet = [
       {
         currentRoute: {
@@ -110,7 +110,8 @@ module("Unit | Helper | checkCurrentRoute", function() {
           url: '/posts',
           name: 'index',
         },
-        message: 'resource match fails even when route name same as resource name',
+        message:
+          'resource match fails even when route name same as resource name',
       },
       {
         currentRoute: {
@@ -132,7 +133,8 @@ module("Unit | Helper | checkCurrentRoute", function() {
           url: '/users/comments',
           name: 'comments',
         },
-        message: 'resource match fails when current route does not match full url path',
+        message:
+          'resource match fails when current route does not match full url path',
       },
       {
         currentRoute: {
@@ -143,7 +145,8 @@ module("Unit | Helper | checkCurrentRoute", function() {
           url: '/comments',
           name: 'comments',
         },
-        message: 'resource match fails when current route does not match the root route',
+        message:
+          'resource match fails when current route does not match the root route',
       },
     ];
 

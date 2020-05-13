@@ -66,14 +66,17 @@ export default class ScrollContainerComponent extends Component {
       scrollTarget.scrollIntoView({
         behavior: 'auto',
         block: 'nearest',
-        inline: 'nearest'
+        inline: 'nearest',
       });
     }
   }
 }
 
 function needsScroll(container, target) {
-  let { top: containerTop, bottom: containerBottom } = container.getBoundingClientRect();
+  let {
+    top: containerTop,
+    bottom: containerBottom,
+  } = container.getBoundingClientRect();
   let { top: targetTop, bottom: targetBottom } = target.getBoundingClientRect();
   return targetTop < containerTop || targetBottom > containerBottom;
 }

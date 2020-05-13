@@ -1,11 +1,11 @@
 import { isEmpty } from '@ember/utils';
-import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
+import escapeRegExp from 'ember-inspector/utils/escape-reg-exp';
 
-const sanitize = function(str) {
+const sanitize = function (str) {
   return str.toLowerCase().replace(/-/g, '');
 };
 
-export default function(text, searchQuery) {
+export default function (text, searchQuery) {
   if (isEmpty(searchQuery)) {
     return true;
   }

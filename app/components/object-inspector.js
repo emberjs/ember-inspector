@@ -14,8 +14,10 @@ export default Component.extend({
 
   trail: computed('model.[]', function () {
     let nested = this.model.slice(1);
-    if (nested.length === 0) { return ""; }
-    return `.${nested.mapBy('property').join(".")}`;
+    if (nested.length === 0) {
+      return '';
+    }
+    return `.${nested.mapBy('property').join('.')}`;
   }),
 
   isNested: computed('model.[]', function () {
@@ -48,7 +50,7 @@ export default Component.extend({
   sendObjectToConsole: action(function (obj) {
     let objectId = get(obj, 'objectId');
     this.port.send('objectInspector:sendToConsole', {
-      objectId
+      objectId,
     });
   }),
 
@@ -58,10 +60,9 @@ export default Component.extend({
     }
   }),
 
-  traceErrors: action(function(objectId) {
+  traceErrors: action(function (objectId) {
     this.port.send('objectInspector:traceErrors', {
-      objectId
+      objectId,
     });
-  })
+  }),
 });
-

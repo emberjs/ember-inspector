@@ -1,20 +1,20 @@
 import { action, computed } from '@ember/object';
 import PropertiesBase from 'ember-inspector/components/object-inspector/properties-base';
 
-const findMixin = function(mixins, property) {
+const findMixin = function (mixins, property) {
   return mixins.find((m) => {
     return m.properties.includes(property);
   });
 };
 
 export default PropertiesBase.extend({
-  calculate: action(function(property) {
+  calculate: action(function (property) {
     const mixin = findMixin(this.get('model.mixins'), property);
 
     this.port.send('objectInspector:calculate', {
       objectId: this.model.objectId,
       mixinIndex: this.get('model.mixins').indexOf(mixin),
-      property: property.name
+      property: property.name,
     });
   }),
 
@@ -31,4 +31,3 @@ export default PropertiesBase.extend({
     return props.flat();
   }),
 });
-

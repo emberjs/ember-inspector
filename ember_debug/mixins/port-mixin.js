@@ -48,5 +48,5 @@ export default Mixin.create({
         port[onOrOff](this.messageName(name), this, messages[name]);
       }
     }
-  }
+  },
 });

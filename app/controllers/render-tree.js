@@ -2,8 +2,8 @@ import { action, computed, get } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
-import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
-import debounceComputed from "ember-inspector/computed/debounce";
+import escapeRegExp from 'ember-inspector/utils/escape-reg-exp';
+import debounceComputed from 'ember-inspector/computed/debounce';
 import { and, equal } from '@ember/object/computed';
 
 export default Controller.extend({
@@ -32,7 +32,7 @@ export default Controller.extend({
     set(key, value) {
       this.storage.setItem('is-render-tree-warning-closed', value);
       return value;
-    }
+    },
   }),
 
   /**
@@ -41,7 +41,7 @@ export default Controller.extend({
    * @property headerHeight
    * @type {Number}
    */
-  headerHeight: computed('isWarningClosed', function() {
+  headerHeight: computed('isWarningClosed', function () {
     return this.isWarningClosed ? 31 : 56;
   }),
 
@@ -52,11 +52,11 @@ export default Controller.extend({
   // model filtered based on this value
   search: '',
 
-  escapedSearch: computed('search', function() {
+  escapedSearch: computed('search', function () {
     return escapeRegExp(this.search.toLowerCase());
   }),
 
-  filtered: computed('model.@each.name', 'search', function() {
+  filtered: computed('model.@each.name', 'search', function () {
     if (isEmpty(this.escapedSearch)) {
       return this.model;
     }
@@ -67,9 +67,9 @@ export default Controller.extend({
     });
   }),
 
-  closeWarning: action(function() {
+  closeWarning: action(function () {
     this.set('isWarningClosed', true);
-  })
+  }),
 });
 
 function recursiveMatch(item, regExp) {

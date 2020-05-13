@@ -1,7 +1,7 @@
 /* eslint no-useless-escape: 0 */
 import { computed } from '@ember/object';
 
-import BasicAdapter from "./basic";
+import BasicAdapter from './basic';
 
 export default BasicAdapter.extend({
   name: 'bookmarklet',
@@ -16,11 +16,11 @@ export default BasicAdapter.extend({
     return this._super(...arguments);
   },
 
-  inspectedWindow: computed(function() {
+  inspectedWindow: computed(function () {
     return window.opener || window.parent;
   }),
 
-  inspectedWindowURL: computed(function() {
+  inspectedWindowURL: computed(function () {
     return loadPageVar('inspectedWindowURL');
   }),
 
@@ -37,11 +37,14 @@ export default BasicAdapter.extend({
    */
   onVersionMismatch(goToVersion) {
     this.sendMessage({ name: 'version-mismatch', version: goToVersion });
-    window.location.href = `../panes-${goToVersion.replace(/\./g, '-')}/index.html${window.location.search}`;
+    window.location.href = `../panes-${goToVersion.replace(
+      /\./g,
+      '-'
+    )}/index.html${window.location.search}`;
   },
 
   _connect() {
-    window.addEventListener('message', e => {
+    window.addEventListener('message', (e) => {
       let message = e.data;
       if (e.origin !== this.inspectedWindowURL) {
         return;
@@ -54,10 +57,20 @@ export default BasicAdapter.extend({
         this._messageReceived(message);
       }
     });
-  }
+  },
 });
 
-
-function loadPageVar (sVar) {
-  return decodeURI(window.location.search.replace(new RegExp(`^(?:.*[&\\?]${encodeURI(sVar).replace(/[\.\+\*]/g, "\\$&")}(?:\\=([^&]*))?)?.*$`, "i"), "$1"));
+function loadPageVar(sVar) {
+  return decodeURI(
+    window.location.search.replace(
+      new RegExp(
+        `^(?:.*[&\\?]${encodeURI(sVar).replace(
+          /[\.\+\*]/g,
+          '\\$&'
+        )}(?:\\=([^&]*))?)?.*$`,
+        'i'
+      ),
+      '$1'
+    )
+  );
 }

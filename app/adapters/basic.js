@@ -39,7 +39,7 @@ export default EmberObject.extend({
    * @private
    */
   _checkVersion() {
-    this.onMessageReceived(message => {
+    this.onMessageReceived((message) => {
       let { name, version } = message;
       if (name === 'version-mismatch') {
         let previousVersions = config.previousEmberVersionsSupported;
@@ -90,7 +90,7 @@ export default EmberObject.extend({
   },
 
   _messageReceived(message) {
-    this._messageCallbacks.forEach(callback => {
+    this._messageCallbacks.forEach((callback) => {
       callback(message);
     });
   },
@@ -99,8 +99,7 @@ export default EmberObject.extend({
   willReload() {},
 
   canOpenResource: false,
-  openResource(/* file, line */) {}
-
+  openResource(/* file, line */) {},
 });
 
 /**

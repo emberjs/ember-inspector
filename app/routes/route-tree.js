@@ -21,9 +21,8 @@ export default TabRoute.extend({
   setTree(options) {
     let routeArray = topSort(options.tree);
     this.set('controller.model', routeArray);
-  }
+  },
 });
-
 
 function topSort(tree, list) {
   list = list || [];
@@ -35,7 +34,7 @@ function topSort(tree, list) {
     list.push(route);
   }
   tree.children = tree.children || [];
-  tree.children.forEach(child => {
+  tree.children.forEach((child) => {
     child.parentCount = route.parentCount + 1;
     topSort(child, list);
   });

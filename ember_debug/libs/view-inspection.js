@@ -210,7 +210,14 @@ function makeStylesheet(id) {
 }
 
 export default class ViewInspection {
-  constructor({ renderTree, objectInspector, didShow, didHide, didStartInspecting, didStopInspecting }) {
+  constructor({
+    renderTree,
+    objectInspector,
+    didShow,
+    didHide,
+    didStartInspecting,
+    didStopInspecting,
+  }) {
     this.renderTree = renderTree;
     this.objectInspector = objectInspector;
 
@@ -238,15 +245,23 @@ export default class ViewInspection {
     this.tooltip = this._insertHTML(makeTooltip(id));
     this.stylesheet = this._insertStylesheet(makeStylesheet(id));
 
-    document.body.addEventListener('keydown', bound(this, this.onKeyDown), { capture: true });
-    document.body.addEventListener('click', bound(this, this.onClick), { capture: true });
+    document.body.addEventListener('keydown', bound(this, this.onKeyDown), {
+      capture: true,
+    });
+    document.body.addEventListener('click', bound(this, this.onClick), {
+      capture: true,
+    });
   }
 
   teardown() {
     this.stop();
 
-    document.body.removeEventListener('keydown', bound(this, this.onKeyDown), { capture: true });
-    document.body.removeEventListener('click', bound(this, this.onClick), { capture: true });
+    document.body.removeEventListener('keydown', bound(this, this.onKeyDown), {
+      capture: true,
+    });
+    document.body.removeEventListener('click', bound(this, this.onClick), {
+      capture: true,
+    });
 
     this.highlight.remove();
     this.tooltip.remove();
@@ -258,7 +273,9 @@ export default class ViewInspection {
     this.lastTarget = null;
     this.lastMatchId = null;
 
-    document.body.addEventListener('mousemove', bound(this, this.onMouseMove), { capture: true });
+    document.body.addEventListener('mousemove', bound(this, this.onMouseMove), {
+      capture: true,
+    });
 
     this.didStartInspecting();
   }
@@ -272,7 +289,11 @@ export default class ViewInspection {
     this.lastTarget = null;
     this.lastMatchId = null;
 
-    document.body.removeEventListener('mousemove', bound(this, this.onMouseMove), { capture: true });
+    document.body.removeEventListener(
+      'mousemove',
+      bound(this, this.onMouseMove),
+      { capture: true }
+    );
 
     this.didStopInspecting();
   }
@@ -416,16 +437,34 @@ export default class ViewInspection {
     if (node.type === 'component') {
       this._renderTokens(title, this._tokenizeComponentNode(node));
     } else if (node.type === 'outlet') {
-      this._renderTokens(title, [['tag', '{{'], ['name', 'outlet'], ['tag', ' '], ['tag', '"'], ['id', node.name], ['tag', '"'], ['tag', '}}']]);
+      this._renderTokens(title, [
+        ['tag', '{{'],
+        ['name', 'outlet'],
+        ['tag', ' '],
+        ['tag', '"'],
+        ['id', node.name],
+        ['tag', '"'],
+        ['tag', '}}'],
+      ]);
     } else if (node.type === 'engine') {
-      this._renderTokens(title, [['tag', '{{'], ['name', 'mount'], ['tag', ' '], ['tag', '"'], ['id', node.name], ['tag', '"'], ['tag', '}}']]);
+      this._renderTokens(title, [
+        ['tag', '{{'],
+        ['name', 'mount'],
+        ['tag', ' '],
+        ['tag', '"'],
+        ['id', node.name],
+        ['tag', '"'],
+        ['tag', '}}'],
+      ]);
     } else {
       title.innerText = node.name;
     }
   }
 
   _renderTooltipCategory(node) {
-    let category = this.tooltip.querySelector('.ember-inspector-tooltip-category');
+    let category = this.tooltip.querySelector(
+      '.ember-inspector-tooltip-category'
+    );
 
     switch (node.type) {
       case 'component':
@@ -441,7 +480,9 @@ export default class ViewInspection {
   }
 
   _renderTooltipDetails(node) {
-    let tbody = this.tooltip.querySelector('.ember-inspector-tooltip-details tbody');
+    let tbody = this.tooltip.querySelector(
+      '.ember-inspector-tooltip-details tbody'
+    );
 
     tbody.innerHTML = '';
 
@@ -451,9 +492,17 @@ export default class ViewInspection {
 
     if (node.instance) {
       if (node.type === 'route-template') {
-        this._renderTooltipDetail(tbody, 'Controller', this._tokenizeItem(node.instance));
+        this._renderTooltipDetail(
+          tbody,
+          'Controller',
+          this._tokenizeItem(node.instance)
+        );
       } else {
-        this._renderTooltipDetail(tbody, 'Instance', this._tokenizeItem(node.instance));
+        this._renderTooltipDetail(
+          tbody,
+          'Instance',
+          this._tokenizeItem(node.instance)
+        );
       }
     }
   }
@@ -464,7 +513,9 @@ export default class ViewInspection {
     let td = document.createElement('td');
 
     th.innerText = key;
-    td.className = `ember-inspector-tooltip-detail-${key.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+    td.className = `ember-inspector-tooltip-detail-${key
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')}`;
 
     if (Array.isArray(value)) {
       this._renderTokens(td, value);
@@ -478,7 +529,7 @@ export default class ViewInspection {
   }
 
   _renderTokens(parent, tokens) {
-    for(let [type, value] of tokens) {
+    for (let [type, value] of tokens) {
       let span = document.createElement('span');
       span.innerText = value;
       span.setAttribute('class', `ember-inspector-tooltip-token-${type}`);
@@ -554,7 +605,9 @@ export default class ViewInspection {
 
     {
       // <my-app@component:foo-bar::ember123>
-      let match = stringified.match(/<([a-z0-9-_]+)@([a-z0-9-_]+):([a-z0-9-_]+)::([a-z0-9-_]+)>/i);
+      let match = stringified.match(
+        /<([a-z0-9-_]+)@([a-z0-9-_]+):([a-z0-9-_]+)::([a-z0-9-_]+)>/i
+      );
 
       if (match) {
         return [
@@ -566,7 +619,7 @@ export default class ViewInspection {
           ['name', match[3]],
           ['tag', '::'],
           ['id', match[4]],
-          ['tag', '>']
+          ['tag', '>'],
         ];
       }
     }
@@ -607,9 +660,15 @@ export default class ViewInspection {
 
     if (top >= 0) {
       attachmentTop = top;
-      this.tooltip.setAttribute('class', `ember-inspector-tooltip-attach-above`);
+      this.tooltip.setAttribute(
+        'class',
+        `ember-inspector-tooltip-attach-above`
+      );
     } else {
-      this.tooltip.setAttribute('class', `ember-inspector-tooltip-attach-below`);
+      this.tooltip.setAttribute(
+        'class',
+        `ember-inspector-tooltip-attach-below`
+      );
     }
 
     let leftOffset = 0;
@@ -619,12 +678,18 @@ export default class ViewInspection {
       // If the tooltip is partially offscreen to the left (because the higlight
       // is partially offscreen to the left), then push it to the right to stay
       // within the viewport, but not so much that it will become detached.
-      leftOffset = Math.max(highlightRect.left - safetyMargin, safetyMargin - highlightRect.width);
+      leftOffset = Math.max(
+        highlightRect.left - safetyMargin,
+        safetyMargin - highlightRect.width
+      );
     } else if (tooltipRect.right > viewportWidth) {
       // If the tooltip is partially offscreen to the right (because the tooltip
       // is too wide), then push it to the left to stay within the viewport, but
       // not so much that it will become detached.
-      leftOffset = Math.min(tooltipRect.right - viewportWidth, tooltipRect.width - safetyMargin * 2);
+      leftOffset = Math.min(
+        tooltipRect.right - viewportWidth,
+        tooltipRect.width - safetyMargin * 2
+      );
       tooltipStyle.left = `${scrollX + attachmentLeft - leftOffset}px`;
     }
 

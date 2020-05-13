@@ -3,7 +3,7 @@ import { computed } from '@ember/object';
 
 export default Component.extend({
   tagName: '',
-  typeClass: computed('type', function() {
+  typeClass: computed('type', function () {
     return `js-${this.type}-type`;
-  })
+  }),
 });

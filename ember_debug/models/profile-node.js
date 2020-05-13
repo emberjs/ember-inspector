@@ -6,7 +6,7 @@
 const Ember = window.Ember;
 const { get, guidFor } = Ember;
 
-const ProfileNode = function(start, payload, parent, now) {
+const ProfileNode = function (start, payload, parent, now) {
   let name;
   this.start = start;
   this.timestamp = now || Date.now();
@@ -24,7 +24,10 @@ const ProfileNode = function(start, payload, parent, now) {
     }
 
     if (!name && payload.object) {
-      name = payload.object.toString().replace(/:?:ember\d+>$/, '').replace(/^</, '');
+      name = payload.object
+        .toString()
+        .replace(/:?:ember\d+>$/, '')
+        .replace(/^</, '');
       if (!this.viewGuid) {
         const match = name.match(/:(ember\d+)>$/);
         if (match && match.length > 1) {
@@ -36,13 +39,15 @@ const ProfileNode = function(start, payload, parent, now) {
 
   this.name = name || 'Unknown view';
 
-  if (parent) { this.parent = parent; }
+  if (parent) {
+    this.parent = parent;
+  }
   this.children = [];
 };
 
 ProfileNode.prototype = {
   finish(timestamp) {
-    this.time = (timestamp - this.start);
+    this.time = timestamp - this.start;
     this.calcDuration();
 
     // Once we attach to our parent, we remove that reference
@@ -55,7 +60,7 @@ ProfileNode.prototype = {
 
   calcDuration() {
     this.duration = Math.round(this.time * 100) / 100;
-  }
+  },
 };
 
 export default ProfileNode;

@@ -66,7 +66,7 @@ try {
 } finally {
   try {
     localStorage.removeItem('test');
-  } catch(e) {
+  } catch (e) {
     // ignore
   }
 }

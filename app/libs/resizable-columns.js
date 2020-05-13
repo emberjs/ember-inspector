@@ -14,7 +14,6 @@ const { keys } = Object;
 const THIRTY_DAYS_FROM_NOW = 1000 * 60 * 60 * 24 * 30;
 
 export default class {
-
   /**
    * Set up everything when new instance is created.
    *
@@ -101,8 +100,10 @@ export default class {
    */
   clearExpiredCache() {
     let now = Date.now();
-    this.storage.keys().filter(key => key.match(/^list/))
-      .forEach(key => {
+    this.storage
+      .keys()
+      .filter((key) => key.match(/^list/))
+      .forEach((key) => {
         if (now - this.storage.getItem(key).updatedAt > THIRTY_DAYS_FROM_NOW) {
           this.storage.removeItem(key);
         }
@@ -191,9 +192,11 @@ export default class {
     if (this._columnVisibility) {
       return this._columnVisibility;
     }
-    this._columnVisibility = this.columnSchema.map(column => Object.assign({}, column, {
-      visible: this.isColumnVisible(column.id)
-    }));
+    this._columnVisibility = this.columnSchema.map((column) =>
+      Object.assign({}, column, {
+        visible: this.isColumnVisible(column.id),
+      })
+    );
   }
 
   /**
@@ -206,24 +209,26 @@ export default class {
   buildColumns() {
     this.buildColumnVisibility();
     let totalWidth = 0;
-    let columns = this._columnVisibility
-      .map(({ id, name, visible }) => {
-        let width = visible ? this.getColumnWidth(id) : 0;
-        totalWidth += width;
-        return { width, id, name, visible };
-      });
+    let columns = this._columnVisibility.map(({ id, name, visible }) => {
+      let width = visible ? this.getColumnWidth(id) : 0;
+      totalWidth += width;
+      return { width, id, name, visible };
+    });
     // Fix percentage precision errors. If we only add it to the last column
     // the last column will slowly increase in size every time we visit this list.
     // So we distribute the extra pixels starting with the smallest column.
     if (columns.length > 0) {
       let diff = this.tableWidth - totalWidth;
       while (diff > 0) {
-        columns.filterBy('visible').sortBy('width').forEach(column => {
-          if (diff > 0) {
-            column.width++;
-            diff--;
-          }
-        });
+        columns
+          .filterBy('visible')
+          .sortBy('width')
+          .forEach((column) => {
+            if (diff > 0) {
+              column.width++;
+              diff--;
+            }
+          });
       }
     }
     this._columns = columns;
@@ -307,10 +312,13 @@ export default class {
    */
   saveVisibility() {
     let saved = this.storage.getItem(this.getStorageKey()) || {};
-    saved.columnVisibility = this._columnVisibility.reduce((obj, { id, visible }) => {
-      obj[id] = visible;
-      return obj;
-    }, {});
+    saved.columnVisibility = this._columnVisibility.reduce(
+      (obj, { id, visible }) => {
+        obj[id] = visible;
+        return obj;
+      },
+      {}
+    );
     this.storage.setItem(this.getStorageKey(), saved);
   }
 

@@ -20,10 +20,10 @@ import { compareVersion } from 'ember-debug/utils/version';
 import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 
-const GlimmerComponent = (function() {
+const GlimmerComponent = (function () {
   try {
     return require('@glimmer/component').default;
-  } catch(e) {
+  } catch (e) {
     // ignore, return undefined
   }
 })();
@@ -71,28 +71,31 @@ async function inspectObject(object) {
   });
 }
 
-module('Ember Debug - Object Inspector', function(hooks) {
+module('Ember Debug - Object Inspector', function (hooks) {
   setupEmberDebugTest(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     this.owner.register('component:x-simple', Component);
-    this.owner.register('template:simple', hbs`Simple {{input class="simple-input"}} {{x-simple class="simple-view"}}`);
+    this.owner.register(
+      'template:simple',
+      hbs`Simple {{input class="simple-input"}} {{x-simple class="simple-view"}}`
+    );
 
     objectInspector = EmberDebug.get('objectInspector');
   });
 
-  test('An Ember Object is correctly transformed into an inspection hash', async function(assert) {
+  test('An Ember Object is correctly transformed into an inspection hash', async function (assert) {
     let date = new Date();
 
     let Parent = EmberObject.extend({
       id: null,
-      name: 'My Object'
+      name: 'My Object',
     });
 
     Parent.reopenClass({
       toString() {
         return 'Parent Object';
-      }
+      },
     });
 
     let inspected = Parent.create({
@@ -101,7 +104,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
         return `Object:${this.get('name')}`;
       },
       nullVal: null,
-      dateVal: date
+      dateVal: date,
     });
 
     let message = await inspectObject(inspected);
@@ -144,7 +147,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(nameProperty.value.inspect, inspect('My Object'));
   });
 
-  test('An ES6 Class is correctly transformed into an inspection hash', async function(assert) {
+  test('An ES6 Class is correctly transformed into an inspection hash', async function (assert) {
     if (compareVersion(VERSION, '3.9.0') === -1) {
       assert.expect(0);
       return;
@@ -180,7 +183,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
         return `Object:${this.get('name')}`;
       },
       nullVal: null,
-      dateVal: date
+      dateVal: date,
     });
 
     let message = await captureMessage('objectInspector:updateObject', () => {
@@ -193,7 +196,6 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(firstDetail.name, 'Own Properties');
 
     assert.equal(firstDetail.properties.length, 5, 'methods are included');
-
 
     let idProperty = firstDetail.properties[0];
     assert.equal(idProperty.name, 'id');
@@ -258,16 +260,16 @@ module('Ember Debug - Object Inspector', function(hooks) {
     class FooBar extends Bar.extend(MyMixin, MyMixin2) {}
 
     class Foo extends FooBar {
-      foobar = 1
+      foobar = 1;
     }
 
     const inspected = Foo.create({
-      ownProp: 'hi'
+      ownProp: 'hi',
     });
 
     let message = await inspectObject(inspected);
 
-    const mixinNames = message.details.map(d => d.name);
+    const mixinNames = message.details.map((d) => d.name);
     const expectedMixinNames = [
       'Own Properties',
       'Foo',
@@ -278,11 +280,14 @@ module('Ember Debug - Object Inspector', function(hooks) {
       'Baz',
       'EmberObject',
       'Observable Mixin',
-      'CoreObject'
+      'CoreObject',
     ];
 
     expectedMixinNames.forEach((expectedMixinName, i) => {
-      assert.ok(mixinNames[i].includes(expectedMixinName), `${mixinNames[i]} : ${expectedMixinName}`);
+      assert.ok(
+        mixinNames[i].includes(expectedMixinName),
+        `${mixinNames[i]} : ${expectedMixinName}`
+      );
     });
   });
 
@@ -291,10 +296,10 @@ module('Ember Debug - Object Inspector', function(hooks) {
       test: 'a',
       get abc() {
         return 1;
-      }
+      },
     }).create();
     const proxy = ObjectProxy.create({
-      content: inspected
+      content: inspected,
     });
     let message = await inspectObject(proxy);
     let computedProperty = message.details[1].properties[0];
@@ -308,12 +313,12 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
   test('Object Proxies are not skipped with _showProxyDetails', async function (assert) {
     let inspected = EmberObject.extend({
-      test: 'a'
+      test: 'a',
     }).create();
     const proxy = ObjectProxy.create({
       content: inspected,
       _showProxyDetails: true,
-      prop: 'b'
+      prop: 'b',
     });
     let message = await inspectObject(proxy);
     let computedProperty = message.details[0].properties[1];
@@ -329,12 +334,12 @@ module('Ember Debug - Object Inspector', function(hooks) {
       length: 1,
       content: ['internal'],
       objectAt() {
-         return 1;
-      }
+        return 1;
+      },
     }).create();
 
     const proxy = ArrayProxy.create({
-      content: array
+      content: array,
     });
 
     let message = await inspectObject(proxy);
@@ -360,42 +365,54 @@ module('Ember Debug - Object Inspector', function(hooks) {
       }
     }
 
-    const mix1 = MyMixin.create({a: 'custom1'});
-    const mix2 = MyMixin2.create({b: 'custom2'});
+    const mix1 = MyMixin.create({ a: 'custom1' });
+    const mix2 = MyMixin2.create({ b: 'custom2' });
 
     class Foo extends EmberObject.extend(mix1, mix2) {}
 
     const instance = Foo.create({
-      ownProp: 'b'
+      ownProp: 'b',
     });
 
     let { details } = await inspectObject(instance);
 
-    assert.equal(details[0].properties.length, 1, 'should not show mixin properties');
+    assert.equal(
+      details[0].properties.length,
+      1,
+      'should not show mixin properties'
+    );
     assert.equal(details[0].properties[0].name, 'ownProp');
 
     assert.equal(details[2].name, 'MyMixin1');
-    assert.equal(details[2].properties.length, 1, 'should only show own mixin properties');
+    assert.equal(
+      details[2].properties.length,
+      1,
+      'should only show own mixin properties'
+    );
     assert.equal(details[2].properties[0].value.inspect, inspect('custom1'));
 
     assert.equal(details[3].name, 'MyMixin2');
-    assert.equal(details[3].properties.length, 1, 'should only show own mixin properties');
+    assert.equal(
+      details[3].properties.length,
+      1,
+      'should only show own mixin properties'
+    );
     assert.equal(details[3].properties[0].value.inspect, inspect('custom2'));
   });
 
-  test('Computed properties are correctly calculated', async function(assert) {
+  test('Computed properties are correctly calculated', async function (assert) {
     let inspected = EmberObject.extend({
-      hi: computed(function() {
+      hi: computed(function () {
         assert.step('calculating computed');
         return 'Hello';
       }),
       _debugInfo() {
         return {
           propertyInfo: {
-            expensiveProperties: ['hi']
-          }
+            expensiveProperties: ['hi'],
+          },
         };
-      }
+      },
     }).create();
 
     assert.step('inspector: sendObject');
@@ -413,7 +430,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
       EmberDebug.port.trigger('objectInspector:calculate', {
         objectId: id,
         property: 'hi',
-        mixinIndex: 1
+        mixinIndex: 1,
       });
     });
     assert.equal(message.objectId, id);
@@ -426,15 +443,15 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.verifySteps([
       'inspector: sendObject',
       'inspector: calculate',
-      'calculating computed'
+      'calculating computed',
     ]);
   });
 
-  test('Cached Computed properties are pre-calculated', async function(assert) {
+  test('Cached Computed properties are pre-calculated', async function (assert) {
     let inspected = EmberObject.extend({
-      hi: computed(function() {
+      hi: computed(function () {
         return 'Hello';
-      })
+      }),
     }).create();
 
     // pre-calculate CP
@@ -450,7 +467,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(computedProperty.value.inspect, inspect('Hello'));
   });
 
-  test('Properties are correctly bound', async function(assert) {
+  test('Properties are correctly bound', async function (assert) {
     let inspected = EmberObject.extend({
       name: 'Teddy',
 
@@ -460,17 +477,16 @@ module('Ember Debug - Object Inspector', function(hooks) {
         },
         set(key, val) {
           return val;
-        }
+        },
       }),
 
       _debugInfo() {
         return {
           propertyInfo: {
-            expensiveProperties: ['hi']
-          }
+            expensiveProperties: ['hi'],
+          },
         };
-      }
-
+      },
     }).create();
 
     let { objectId } = await inspectObject(inspected);
@@ -503,7 +519,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
       EmberDebug.port.trigger('objectInspector:calculate', {
         objectId,
         property: 'hi',
-        mixinIndex: 1
+        mixinIndex: 1,
       });
     });
 
@@ -526,9 +542,9 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.value.type, 'type-string');
   });
 
-  test('Properties can be updated through a port message', async function(assert) {
+  test('Properties can be updated through a port message', async function (assert) {
     let inspected = EmberObject.extend({
-      name: 'Teddy'
+      name: 'Teddy',
     }).create();
 
     let { objectId } = await inspectObject(inspected);
@@ -538,7 +554,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
         objectId,
         mixinIndex: 1,
         property: 'name',
-        value: 'Alex'
+        value: 'Alex',
       });
     });
 
@@ -549,11 +565,11 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.value.type, 'type-string');
   });
 
-  test('Date properties are converted to dates before being updated', async function(assert) {
+  test('Date properties are converted to dates before being updated', async function (assert) {
     let newDate = new Date(2015, 0, 1);
 
     let inspected = EmberObject.extend({
-      date: null
+      date: null,
     }).create();
 
     let { objectId } = await inspectObject(inspected);
@@ -564,7 +580,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
         mixinIndex: 1,
         property: 'date',
         value: newDate.getTime(),
-        dataType: 'date'
+        dataType: 'date',
       });
     });
 
@@ -577,17 +593,19 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.value.type, 'type-date');
   });
 
-  test('Property grouping can be customized using _debugInfo', async function(assert) {
+  test('Property grouping can be customized using _debugInfo', async function (assert) {
     let mixinToSkip = Mixin.create({});
 
     let Inspected = EmberObject.extend(mixinToSkip, {
       name: 'Teddy',
       gender: 'Male',
       hasChildren: false,
-      toString: function() {
+      toString: function () {
         return 'TestObject';
       },
-      expensiveProperty: computed(function() { return ''; }),
+      expensiveProperty: computed(function () {
+        return '';
+      }),
       _debugInfo() {
         return {
           propertyInfo: {
@@ -599,21 +617,21 @@ module('Ember Debug - Object Inspector', function(hooks) {
               {
                 name: 'Basic Info',
                 properties: ['name', 'gender'],
-                expand: true
+                expand: true,
               },
               {
                 name: 'Family Info',
-                properties: ['maritalStatus']
-              }
-            ]
-          }
+                properties: ['maritalStatus'],
+              },
+            ],
+          },
         };
-      }
+      },
     });
 
     let inspected = Inspected.create({
       maritalStatus: 'Single',
-      propertyToSkip: null
+      propertyToSkip: null,
     });
 
     let message = await inspectObject(inspected);
@@ -629,19 +647,38 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.details[1].properties[0].name, 'maritalStatus');
 
     assert.equal(message.details[2].name, 'Own Properties');
-    assert.equal(message.details[2].properties.length, 0, 'Correctly skips properties');
+    assert.equal(
+      message.details[2].properties.length,
+      0,
+      'Correctly skips properties'
+    );
 
     assert.equal(message.details[3].name, 'TestObject');
-    assert.equal(message.details[3].properties.length, 3, 'Correctly merges properties');
+    assert.equal(
+      message.details[3].properties.length,
+      3,
+      'Correctly merges properties'
+    );
     assert.equal(message.details[3].properties[0].name, 'toString');
     assert.equal(message.details[3].properties[1].name, 'hasChildren');
-    assert.equal(message.details[3].properties[2].name, 'expensiveProperty', 'property name is correct');
-    assert.equal(message.details[3].properties[2].value.isCalculated, undefined, 'Does not calculate expensive properties');
+    assert.equal(
+      message.details[3].properties[2].name,
+      'expensiveProperty',
+      'property name is correct'
+    );
+    assert.equal(
+      message.details[3].properties[2].value.isCalculated,
+      undefined,
+      'Does not calculate expensive properties'
+    );
 
-    assert.ok(message.details[3].name !== 'MixinToSkip', 'Correctly skips mixins');
+    assert.ok(
+      message.details[3].name !== 'MixinToSkip',
+      'Correctly skips mixins'
+    );
   });
 
-  test('Property grouping can be customized using _debugInfo when using Proxy', async function(assert) {
+  test('Property grouping can be customized using _debugInfo when using Proxy', async function (assert) {
     class MyMixin extends Mixin {
       toString() {
         return 'MixinToSkip';
@@ -654,10 +691,12 @@ module('Ember Debug - Object Inspector', function(hooks) {
       name: 'Teddy',
       gender: 'Male',
       hasChildren: false,
-      toString: function() {
+      toString: function () {
         return 'TestObject';
       },
-      expensiveProperty: computed(function() { return ''; }),
+      expensiveProperty: computed(function () {
+        return '';
+      }),
       _debugInfo() {
         return {
           propertyInfo: {
@@ -669,30 +708,33 @@ module('Ember Debug - Object Inspector', function(hooks) {
               {
                 name: 'Basic Info',
                 properties: ['name', 'gender'],
-                expand: true
+                expand: true,
               },
               {
                 name: 'Family Info',
-                properties: ['maritalStatus']
-              }
-            ]
-          }
+                properties: ['maritalStatus'],
+              },
+            ],
+          },
         };
-      }
+      },
     });
 
     let inspected = Inspected.create({
       maritalStatus: 'Single',
-      propertyToSkip: null
+      propertyToSkip: null,
     });
 
     const proxy = ObjectProxy.create({
-      content: inspected
+      content: inspected,
     });
 
     let message = await inspectObject(proxy);
 
-    assert.ok(message.name.includes('ObjectProxy'), 'object name should start with <ObjectProxy:');
+    assert.ok(
+      message.name.includes('ObjectProxy'),
+      'object name should start with <ObjectProxy:'
+    );
 
     assert.equal(message.details[0].name, 'Basic Info');
     assert.equal(message.details[0].properties[0].name, 'name');
@@ -703,27 +745,45 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(message.details[1].properties[0].name, 'maritalStatus');
 
     assert.equal(message.details[2].name, 'Own Properties');
-    assert.equal(message.details[2].properties.length, 0, 'Correctly skips properties');
+    assert.equal(
+      message.details[2].properties.length,
+      0,
+      'Correctly skips properties'
+    );
 
     assert.equal(message.details[3].name, 'TestObject');
-    assert.equal(message.details[3].properties.length, 3, 'Correctly merges properties');
+    assert.equal(
+      message.details[3].properties.length,
+      3,
+      'Correctly merges properties'
+    );
     assert.equal(message.details[3].properties[1].name, 'hasChildren');
-    assert.equal(message.details[3].properties[2].name, 'expensiveProperty', 'property name is correct');
-    assert.equal(message.details[3].properties[2].value.isCalculated, undefined, 'Does not calculate expensive properties');
+    assert.equal(
+      message.details[3].properties[2].name,
+      'expensiveProperty',
+      'property name is correct'
+    );
+    assert.equal(
+      message.details[3].properties[2].value.isCalculated,
+      undefined,
+      'Does not calculate expensive properties'
+    );
 
-    assert.ok(message.details[3].name !== 'MixinToSkip', 'Correctly skips mixins');
+    assert.ok(
+      message.details[3].name !== 'MixinToSkip',
+      'Correctly skips mixins'
+    );
   });
 
-
-  test('Service should be successfully tagged as service on serialization', async function(assert) {
+  test('Service should be successfully tagged as service on serialization', async function (assert) {
     let inspectedService = Service.extend({
       fooBoo() {
         return true;
-      }
+      },
     }).create();
 
     let inspected = EmberObject.extend({
-      service: inspectedService
+      service: inspectedService,
     }).create();
 
     let message = await inspectObject(inspected);
@@ -733,15 +793,15 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(serializedServiceProperty.isService, true);
   });
 
-  test('Proxy Service should be successfully tagged as service on serialization', async function(assert) {
+  test('Proxy Service should be successfully tagged as service on serialization', async function (assert) {
     let inspectedService = Service.extend({
       unknownProperty() {
         return true;
-      }
+      },
     }).create();
 
     let inspected = EmberObject.extend({
-      service: inspectedService
+      service: inspectedService,
     }).create();
 
     let message = await inspectObject(inspected);
@@ -751,15 +811,15 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(serializedServiceProperty.isService, true);
   });
 
-  test('Computed property dependent keys and code should be successfully serialized', async function(assert) {
-    let computedFn = function() {
+  test('Computed property dependent keys and code should be successfully serialized', async function (assert) {
+    let computedFn = function () {
       return this.get('foo') + this.get('bar');
     };
 
     let inspected = EmberObject.extend({
       foo: true,
       bar: false,
-      fooAndBar: computed('foo', 'bar', computedFn)
+      fooAndBar: computed('foo', 'bar', computedFn),
     }).create();
 
     let message = await inspectObject(inspected);
@@ -770,7 +830,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(serializedComputedProperty.dependentKeys[1], 'bar');
   });
 
-  test('Views are correctly handled when destroyed during transitions', async function(assert) {
+  test('Views are correctly handled when destroyed during transitions', async function (assert) {
     let objectId = null;
 
     await visit('/simple');
@@ -779,19 +839,22 @@ module('Ember Debug - Object Inspector', function(hooks) {
     let view = this.owner.lookup('-view-registry:main')[objectId];
     await inspectObject(view);
 
-    assert.ok(objectInspector.sentObjects[objectId], 'Object successfully retained.');
+    assert.ok(
+      objectInspector.sentObjects[objectId],
+      'Object successfully retained.'
+    );
 
     await visit('/');
 
     assert.ok(true, 'No exceptions thrown');
   });
 
-  test('Objects are dropped on destruction', async function(assert) {
+  test('Objects are dropped on destruction', async function (assert) {
     let didDestroy = false;
     let object = EmberObject.create({
       willDestroy() {
         didDestroy = true;
-      }
+      },
     });
     let objectId = guidFor(object);
 
@@ -799,7 +862,10 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
     assert.equal(message.objectId, objectId, 'objectId matches');
 
-    assert.ok(objectInspector.sentObjects[objectId], 'Object successfully retained.');
+    assert.ok(
+      objectInspector.sentObjects[objectId],
+      'Object successfully retained.'
+    );
 
     message = await captureMessage('objectInspector:droppedObject', () => {
       run(object, 'destroy');
@@ -810,37 +876,47 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.deepEqual(message, { objectId });
   });
 
-  test('Properties ending with `Binding` are skipped', async function(assert) {
+  test('Properties ending with `Binding` are skipped', async function (assert) {
     let object = EmberObject.create({
       bar: 'test',
-      fooBinding: 'bar'
+      fooBinding: 'bar',
     });
 
     let message = await inspectObject(object);
 
     let props = message.details[0].properties;
     if (!hasEmberVersion(3, 0)) {
-      assert.equal(props.length, 2, 'Props should be foo and bar without fooBinding');
+      assert.equal(
+        props.length,
+        2,
+        'Props should be foo and bar without fooBinding'
+      );
       assert.equal(props[1].name, 'foo');
     } else {
-      assert.equal(props.length, 1, 'Props should be only bar without fooBinding, in Ember 3.0+');
+      assert.equal(
+        props.length,
+        1,
+        'Props should be only bar without fooBinding, in Ember 3.0+'
+      );
     }
     assert.equal(props[0].name, 'bar');
   });
 
-  test('Properties listed in _debugInfo but don\'t exist should be skipped silently', async function(assert) {
+  test("Properties listed in _debugInfo but don't exist should be skipped silently", async function (assert) {
     let object = EmberObject.create({
       foo: 'test',
       _debugInfo() {
         return {
           propertyInfo: {
-            groups: [{
-              name: 'Attributes', properties: ['foo', 'bar']
-            }]
-          }
+            groups: [
+              {
+                name: 'Attributes',
+                properties: ['foo', 'bar'],
+              },
+            ],
+          },
         };
-      }
-
+      },
     });
 
     let message = await inspectObject(object);
@@ -850,16 +926,18 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(props[0].name, 'foo');
   });
 
-  test('Errors while computing CPs are handled', async function(assert) {
+  test('Errors while computing CPs are handled', async function (assert) {
     let count = 0;
-    let object = run(() => EmberObject.extend({
-      foo: computed(function() {
-        if (count++ < 2) {
-          throw new Error('CP Calculation');
-        }
-        return 'bar';
-      })
-    }).create());
+    let object = run(() =>
+      EmberObject.extend({
+        foo: computed(function () {
+          if (count++ < 2) {
+            throw new Error('CP Calculation');
+          }
+          return 'bar';
+        }),
+      }).create()
+    );
 
     let message = await inspectObject(object);
 
@@ -875,7 +953,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
       EmberDebug.port.trigger('objectInspector:calculate', {
         objectId,
         property: 'foo',
-        mixinIndex: 1
+        mixinIndex: 1,
       });
     });
 
@@ -887,14 +965,14 @@ module('Ember Debug - Object Inspector', function(hooks) {
       EmberDebug.port.trigger('objectInspector:calculate', {
         objectId: guidFor(object),
         property: 'foo',
-        mixinIndex: 1
+        mixinIndex: 1,
       });
     });
 
     assert.equal(message.value.inspect, inspect('bar'));
   });
 
-  test('Plain properties work', async function(assert) {
+  test('Plain properties work', async function (assert) {
     let inspected = EmberObject.create({ hi: 123 });
     let message = await inspectObject(inspected);
 
@@ -905,9 +983,11 @@ module('Ember Debug - Object Inspector', function(hooks) {
     assert.equal(plainProperty.value.inspect, '123');
   });
 
-  test('Getters work', async function(assert) {
+  test('Getters work', async function (assert) {
     class Foo {
-      get hi() { return 123 }
+      get hi() {
+        return 123;
+      }
     }
 
     let inspected = new Foo();
@@ -922,7 +1002,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
   });
 
   if (hasEmberVersion(3, 13)) {
-    test('Tracked properties work', async function(assert) {
+    test('Tracked properties work', async function (assert) {
       class Foo {
         @tracked hi = 123;
       }
@@ -956,7 +1036,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
       ]);
     });
 
-    test('Tracked getters update', async function(assert) {
+    test('Tracked getters update', async function (assert) {
       class Foo {
         @tracked hi = 123;
       }
@@ -1002,7 +1082,7 @@ module('Ember Debug - Object Inspector', function(hooks) {
   // @glimmer/component 1.0 doesn't seem to support 3.4, even though it has the manager API
   // Assertion Failed: Could not find custom component manager 'glimmer'
   if (hasEmberVersion(3, 8) && GlimmerComponent) {
-    test('Inspecting GlimmerComponent does not cause errors', async function(assert) {
+    test('Inspecting GlimmerComponent does not cause errors', async function (assert) {
       let instance;
 
       class FooComponent extends GlimmerComponent {
@@ -1027,7 +1107,10 @@ module('Ember Debug - Object Inspector', function(hooks) {
 
       await visit('/simple');
 
-      assert.ok(instance instanceof FooComponent, 'an instance of FooComponent has been created');
+      assert.ok(
+        instance instanceof FooComponent,
+        'an instance of FooComponent has been created'
+      );
 
       let { details, errors } = await inspectObject(instance);
 
@@ -1048,8 +1131,14 @@ module('Ember Debug - Object Inspector', function(hooks) {
       assert.ok(properties.indexOf('baz') > -1, 'contains baz');
 
       assert.ok(properties.indexOf('bounds') === -1, 'does not contain bounds');
-      assert.ok(properties.indexOf('element') === -1, 'does not contain element');
-      assert.ok(properties.indexOf('debugName') === -1, 'does not contain debugName');
+      assert.ok(
+        properties.indexOf('element') === -1,
+        'does not contain element'
+      );
+      assert.ok(
+        properties.indexOf('debugName') === -1,
+        'does not contain debugName'
+      );
     });
   }
 });

@@ -8,7 +8,7 @@ const {
   observer,
   run: { later },
   Object: EmberObject,
-  VERSION
+  VERSION,
 } = Ember;
 const { readOnly } = computed;
 
@@ -17,11 +17,11 @@ const { hasOwnProperty } = Object.prototype;
 export default EmberObject.extend(PortMixin, {
   namespace: null,
 
-  router: computed('namespace.owner', function() {
+  router: computed('namespace.owner', function () {
     return this.get('namespace.owner').lookup('router:main');
   }),
 
-  applicationController: computed('namespace.owner', function() {
+  applicationController: computed('namespace.owner', function () {
     const container = this.get('namespace.owner');
     return container.lookup('controller:application');
   }),
@@ -39,15 +39,12 @@ export default EmberObject.extend(PortMixin, {
     },
     getCurrentRoute() {
       this.sendCurrentRoute();
-    }
+    },
   },
 
   // eslint-disable-next-line ember/no-observers
-  sendCurrentRoute: observer('currentURL', function() {
-    const {
-      currentPath: name,
-      currentURL: url
-    } = this.getProperties(
+  sendCurrentRoute: observer('currentURL', function () {
+    const { currentPath: name, currentURL: url } = this.getProperties(
       'currentPath',
       'currentURL'
     );
@@ -57,7 +54,7 @@ export default EmberObject.extend(PortMixin, {
     }, 50);
   }),
 
-  routeTree: computed('router', function() {
+  routeTree: computed('router', function () {
     const router = this.get('router');
     const routerLib = router._routerMicrolib || router.router;
     let routeNames = routerLib.recognizer.names;
@@ -98,7 +95,10 @@ export default EmberObject.extend(PortMixin, {
         className = className.replace(new RegExp(`^${type}\:`), '');
       } else if (className) {
         // Module exists and found
-        className = className.replace(new RegExp(`^/?(${prefix}|${podPrefix})/${type}s/`), '');
+        className = className.replace(
+          new RegExp(`^/?(${prefix}|${podPrefix})/${type}s/`),
+          ''
+        );
       } else {
         // Module does not exist
         if (usePodsByDefault) {
@@ -124,8 +124,7 @@ export default EmberObject.extend(PortMixin, {
       }
     }
     return className;
-  }
-
+  },
 });
 
 function buildSubTree(routeTree, route) {
@@ -166,8 +165,11 @@ function buildSubTree(routeTree, route) {
         // Ember < 3.9.0
         routeHandler = routerLib.getHandler(handler);
       }
-      controllerName = routeHandler.get('controllerName') || routeHandler.get('routeName');
-      controllerFactory = owner.factoryFor ? owner.factoryFor(`controller:${controllerName}`) : owner._lookupFactory(`controller:${controllerName}`);
+      controllerName =
+        routeHandler.get('controllerName') || routeHandler.get('routeName');
+      controllerFactory = owner.factoryFor
+        ? owner.factoryFor(`controller:${controllerName}`)
+        : owner._lookupFactory(`controller:${controllerName}`);
       controllerClassName = this.getClassName(controllerName, 'controller');
       templateName = this.getClassName(handler, 'template');
 
@@ -176,17 +178,17 @@ function buildSubTree(routeTree, route) {
           name: handler,
           routeHandler: {
             className: routeClassName,
-            name: handler
+            name: handler,
           },
           controller: {
             className: controllerClassName,
             name: controllerName,
-            exists: !!controllerFactory
+            exists: !!controllerFactory,
           },
           template: {
-            name: templateName
-          }
-        }
+            name: templateName,
+          },
+        },
       };
 
       if (i === handlers.length - 1) {
@@ -230,9 +232,11 @@ function getURL(container, segments) {
 
     if (typeof segments[i].generate !== 'function') {
       let { type, value } = segments[i];
-      if (type === 1) { // dynamic
+      if (type === 1) {
+        // dynamic
         name = `:${value}`;
-      } else if (type === 2) { // star
+      } else if (type === 2) {
+        // star
         name = `*${value}`;
       } else {
         name = value;
@@ -256,7 +260,9 @@ function getURL(container, segments) {
   return url;
 }
 
-
 function routeHasBeenDefined(owner, name) {
-  return owner.hasRegistration(`template:${name}`) || owner.hasRegistration(`route:${name}`);
+  return (
+    owner.hasRegistration(`template:${name}`) ||
+    owner.hasRegistration(`route:${name}`)
+  );
 }

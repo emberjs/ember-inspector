@@ -6,7 +6,7 @@ import EmberDebug from 'ember-debug/main';
 import Port from 'ember-debug/port';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 
-module('Ember Debug - Container', function(hooks) {
+module('Ember Debug - Container', function (hooks) {
   let name, message;
 
   setupEmberDebugTest(hooks, {
@@ -15,7 +15,7 @@ module('Ember Debug - Container', function(hooks) {
       send(n, m) {
         name = n;
         message = m;
-      }
+      },
     }),
   });
 
@@ -34,7 +34,9 @@ module('Ember Debug - Container', function(hooks) {
   test('#getInstances', async function t(assert) {
     await visit('/simple');
 
-    EmberDebug.port.trigger('container:getInstances', { containerType: 'controller' });
+    EmberDebug.port.trigger('container:getInstances', {
+      containerType: 'controller',
+    });
     await settled();
 
     assert.equal(name, 'container:instances');
@@ -45,7 +47,9 @@ module('Ember Debug - Container', function(hooks) {
   test('#getInstances on a non existing type', async function t(assert) {
     await visit('/simple');
 
-    EmberDebug.port.trigger('container:getInstances', { containerType: 'not-here' });
+    EmberDebug.port.trigger('container:getInstances', {
+      containerType: 'not-here',
+    });
     await settled();
 
     assert.equal(name, 'container:instances');

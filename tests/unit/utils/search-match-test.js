@@ -1,8 +1,8 @@
 import searchMatch from 'ember-inspector/utils/search-match';
 import { module, test } from 'qunit';
 
-module('Unit | Utility | searchMatch', function() {
-  test('searchMatch returns the correct results', function(assert) {
+module('Unit | Utility | searchMatch', function () {
+  test('searchMatch returns the correct results', function (assert) {
     assert.ok(
       searchMatch('something-component-test', 'something'),
       'simple search with dash in text'
@@ -29,4 +29,3 @@ module('Unit | Utility | searchMatch', function() {
     );
   });
 });
-

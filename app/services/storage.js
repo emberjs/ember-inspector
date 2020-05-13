@@ -11,7 +11,8 @@ import { LOCAL_STORAGE_SUPPORTED } from './storage/local';
  * @extends Service
  */
 export default class StorageService extends Service {
-  @service(LOCAL_STORAGE_SUPPORTED ? 'storage/local' : 'storage/memory') backend;
+  @service(LOCAL_STORAGE_SUPPORTED ? 'storage/local' : 'storage/memory')
+  backend;
 
   /**
    * Reads a stored object for a give key, if any.

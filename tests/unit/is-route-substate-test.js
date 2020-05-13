@@ -1,8 +1,8 @@
 import { module, test } from 'qunit';
 import isRouteSubstate from 'ember-inspector/utils/is-route-substate';
 
-module('Unit | Lib | isRouteSubstate', function() {
-  test('it should only find loading and error substates', function(assert) {
+module('Unit | Lib | isRouteSubstate', function () {
+  test('it should only find loading and error substates', function (assert) {
     assert.equal(isRouteSubstate('testing.loading'), true);
     assert.equal(isRouteSubstate('testing_loading'), true);
     assert.equal(isRouteSubstate('testing.error'), true);

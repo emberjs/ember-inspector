@@ -4,7 +4,7 @@ import {
   find,
   findAll,
   settled,
-  visit
+  visit,
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
@@ -23,34 +23,34 @@ function generatePromise(props) {
     reason: null,
     createdAt: Date.now(),
     hasStack: false,
-    ...props
+    ...props,
   };
 }
 
-module('Promise Tab', function(outer) {
+module('Promise Tab', function (outer) {
   setupTestAdapter(outer);
   setupApplicationTest(outer);
 
-  outer.beforeEach(function() {
+  outer.beforeEach(function () {
     respondWith('promise:getInstrumentWithStack', {
       type: 'promise:instrumentWithStack',
-      instrumentWithStack: false
+      instrumentWithStack: false,
     });
   });
 
-  module('No promises initially', function(inner) {
-    inner.beforeEach(function() {
+  module('No promises initially', function (inner) {
+    inner.beforeEach(function () {
       respondWith('promise:getAndObservePromises', {
         type: 'promise:promisesUpdated',
-        promises: []
+        promises: [],
       });
     });
 
-    test("Shows page refresh hint if no promises", async function(assert) {
+    test('Shows page refresh hint if no promises', async function (assert) {
       await visit('/promise-tree');
 
-      assert.dom('.js-promise-tree').doesNotExist("no promise list");
-      assert.dom('.js-page-refresh').exists("page refresh hint seen");
+      assert.dom('.js-promise-tree').doesNotExist('no promise list');
+      assert.dom('.js-page-refresh').exists('page refresh hint seen');
 
       respondWith('general:refresh', false);
       respondWith('promise:releasePromises', false);
@@ -58,11 +58,11 @@ module('Promise Tab', function(outer) {
       await click('.js-page-refresh-btn');
     });
 
-    test("Promise tree can update after initially showing as unavailable", async function(assert) {
+    test('Promise tree can update after initially showing as unavailable', async function (assert) {
       await visit('/promise-tree');
 
-      assert.dom('.js-promise-tree').doesNotExist("no promise list");
-      assert.dom('.js-page-refresh').exists("page refresh hint seen");
+      assert.dom('.js-promise-tree').doesNotExist('no promise list');
+      assert.dom('.js-page-refresh').exists('page refresh hint seen');
 
       await sendMessage({
         type: 'promise:promisesUpdated',
@@ -70,16 +70,20 @@ module('Promise Tab', function(outer) {
           generatePromise({
             guid: 1,
             label: 'Promise 1',
-            state: 'created'
-          })
-        ]
+            state: 'created',
+          }),
+        ],
       });
 
       // Why is this needed?
       await settled();
 
-      assert.dom('.js-promise-tree').exists('promise tree is seen after being populated');
-      assert.dom('.js-promise-tree-item').exists({ count: 1 }, '1 promise item can be seen');
+      assert
+        .dom('.js-promise-tree')
+        .exists('promise tree is seen after being populated');
+      assert
+        .dom('.js-promise-tree-item')
+        .exists({ count: 1 }, '1 promise item can be seen');
       assert.dom('.js-page-refresh').doesNotExist('page refresh hint hidden');
 
       // make sure clearing does not show the refresh hint
@@ -93,21 +97,21 @@ module('Promise Tab', function(outer) {
     });
   });
 
-  module('Some promises', function(inner) {
-    inner.afterEach(function() {
+  module('Some promises', function (inner) {
+    inner.afterEach(function () {
       respondWith('promise:releasePromises', false);
     });
 
-    test("Pending promise", async function(assert) {
+    test('Pending promise', async function (assert) {
       respondWith('promise:getAndObservePromises', {
         type: 'promise:promisesUpdated',
         promises: [
           generatePromise({
             guid: 1,
             label: 'Promise 1',
-            state: 'created'
-          })
-        ]
+            state: 'created',
+          }),
+        ],
       });
 
       await visit('/promise-tree');
@@ -119,7 +123,7 @@ module('Promise Tab', function(outer) {
       assert.dom(row.querySelector('.js-promise-state')).hasText('Pending');
     });
 
-    test("Fulfilled promise", async function(assert) {
+    test('Fulfilled promise', async function (assert) {
       let now = Date.now();
 
       respondWith('promise:getAndObservePromises', {
@@ -131,12 +135,12 @@ module('Promise Tab', function(outer) {
             state: 'fulfilled',
             value: {
               inspect: 'value',
-              type: 'type-string'
+              type: 'type-string',
             },
             createdAt: now,
-            settledAt: now + 10
-          })
-        ]
+            settledAt: now + 10,
+          }),
+        ],
       });
 
       await visit('/promise-tree');
@@ -150,7 +154,7 @@ module('Promise Tab', function(outer) {
       assert.dom(row.querySelector('.js-promise-time')).hasText('10.00ms');
     });
 
-    test("Rejected promise", async function(assert) {
+    test('Rejected promise', async function (assert) {
       let now = Date.now();
 
       respondWith('promise:getAndObservePromises', {
@@ -162,12 +166,12 @@ module('Promise Tab', function(outer) {
             state: 'rejected',
             reason: {
               inspect: 'reason',
-              type: 'type-string'
+              type: 'type-string',
             },
             createdAt: now,
-            settledAt: now + 20
-          })
-        ]
+            settledAt: now + 20,
+          }),
+        ],
       });
 
       await visit('/promise-tree');
@@ -181,21 +185,21 @@ module('Promise Tab', function(outer) {
       assert.dom(row.querySelector('.js-promise-time')).hasText('20.00ms');
     });
 
-    test("Chained promises", async function(assert) {
+    test('Chained promises', async function (assert) {
       respondWith('promise:getAndObservePromises', {
         type: 'promise:promisesUpdated',
         promises: [
           generatePromise({
             guid: 2,
             parent: 1,
-            label: 'Child'
+            label: 'Child',
           }),
           generatePromise({
             guid: 1,
             children: [2],
-            label: 'Parent'
-          })
-        ]
+            label: 'Parent',
+          }),
+        ],
       });
 
       await visit('/promise-tree');
@@ -212,15 +216,15 @@ module('Promise Tab', function(outer) {
     });
 
     // TODO: is this test realistic? (having stack traces without turning on instrumentWithStack)
-    test("Can trace promise when there is a stack", async function(assert) {
+    test('Can trace promise when there is a stack', async function (assert) {
       respondWith('promise:getAndObservePromises', {
         type: 'promise:promisesUpdated',
         promises: [
           generatePromise({
             guid: 1,
-            hasStack: true
-          })
-        ]
+            hasStack: true,
+          }),
+        ],
       });
 
       await visit('/promise-tree');
@@ -233,15 +237,15 @@ module('Promise Tab', function(outer) {
       await click('.js-trace-promise-btn');
     });
 
-    test("Trace button hidden if promise has no stack", async function(assert) {
+    test('Trace button hidden if promise has no stack', async function (assert) {
       respondWith('promise:getAndObservePromises', {
         type: 'promise:promisesUpdated',
         promises: [
           generatePromise({
             guid: 1,
-            hasStack: false
-          })
-        ]
+            hasStack: false,
+          }),
+        ],
       });
 
       await visit('/promise-tree');
@@ -249,12 +253,10 @@ module('Promise Tab', function(outer) {
       assert.dom('.js-trace-promise-btn').doesNotExist();
     });
 
-    test("Toggling promise trace option", async function(assert) {
+    test('Toggling promise trace option', async function (assert) {
       respondWith('promise:getAndObservePromises', {
         type: 'promise:promisesUpdated',
-        promises: [
-          generatePromise()
-        ]
+        promises: [generatePromise()],
       });
 
       await visit('/promise-tree');
@@ -262,23 +264,24 @@ module('Promise Tab', function(outer) {
       let input = find('.js-with-stack input');
       assert.notOk(input.checked, 'should not be checked by default');
 
-      respondWith('promise:setInstrumentWithStack', ({
-        applicationId, applicationName, instrumentWithStack
-      }) => {
-        assert.strictEqual(instrumentWithStack, true, 'instrumentWithStack');
+      respondWith(
+        'promise:setInstrumentWithStack',
+        ({ applicationId, applicationName, instrumentWithStack }) => {
+          assert.strictEqual(instrumentWithStack, true, 'instrumentWithStack');
 
-        return {
-          type: 'promise:instrumentWithStack',
-          applicationId,
-          applicationName,
-          instrumentWithStack
-        };
-      });
+          return {
+            type: 'promise:instrumentWithStack',
+            applicationId,
+            applicationName,
+            instrumentWithStack,
+          };
+        }
+      );
 
       await click(input);
     });
 
-    test("Logging error stack trace in the console", async function(assert) {
+    test('Logging error stack trace in the console', async function (assert) {
       respondWith('promise:getAndObservePromises', {
         type: 'promise:promisesUpdated',
         promises: [
@@ -287,10 +290,10 @@ module('Promise Tab', function(outer) {
             state: 'rejected',
             reason: {
               inspect: 'some error',
-              type: 'type-error'
-            }
-          })
-        ]
+              type: 'type-error',
+            },
+          }),
+        ],
       });
 
       await visit('/promise-tree');
@@ -306,7 +309,7 @@ module('Promise Tab', function(outer) {
       await click(row.querySelector('[data-test-send-to-console-btn]'));
     });
 
-    test("Send fulfillment value to console", async function(assert) {
+    test('Send fulfillment value to console', async function (assert) {
       respondWith('promise:getAndObservePromises', {
         type: 'promise:promisesUpdated',
         promises: [
@@ -315,10 +318,10 @@ module('Promise Tab', function(outer) {
             state: 'fulfilled',
             value: {
               inspect: 'some string',
-              type: 'type-string'
-            }
-          })
-        ]
+              type: 'type-string',
+            },
+          }),
+        ],
       });
 
       await visit('/promise-tree');
@@ -334,7 +337,7 @@ module('Promise Tab', function(outer) {
       await click(row.querySelector('[data-test-send-to-console-btn]'));
     });
 
-    test("Sending objects to the object inspector", async function(assert) {
+    test('Sending objects to the object inspector', async function (assert) {
       respondWith('promise:getAndObservePromises', {
         type: 'promise:promisesUpdated',
         promises: [
@@ -344,10 +347,10 @@ module('Promise Tab', function(outer) {
             value: {
               inspect: 'Some Object',
               type: 'type-ember-object',
-              objectId: 100
-            }
-          })
-        ]
+              objectId: 100,
+            },
+          }),
+        ],
       });
 
       await visit('/promise-tree');
@@ -361,16 +364,16 @@ module('Promise Tab', function(outer) {
       await click(row.querySelector('.js-promise-object-value'));
     });
 
-    test("It should clear the search filter when the clear button is clicked", async function(assert) {
+    test('It should clear the search filter when the clear button is clicked', async function (assert) {
       respondWith('promise:getAndObservePromises', {
         type: 'promise:promisesUpdated',
         promises: [
           generatePromise({
             guid: 1,
             label: 'Promise 1',
-            state: 'created'
-          })
-        ]
+            state: 'created',
+          }),
+        ],
       });
 
       await visit('/promise-tree');

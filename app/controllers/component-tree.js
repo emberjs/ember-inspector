@@ -34,7 +34,7 @@ export default class ComponentTreeController extends Controller {
 
     let flatten = (parent, renderNode) => {
       if (isInternalRenderNode(renderNode)) {
-        renderNode.children.forEach(node => flatten(parent, node));
+        renderNode.children.forEach((node) => flatten(parent, node));
       } else {
         let item = _store[renderNode.id];
 
@@ -48,11 +48,11 @@ export default class ComponentTreeController extends Controller {
 
         renderItems.push(item);
 
-        renderNode.children.forEach(node => flatten(item, node));
+        renderNode.children.forEach((node) => flatten(item, node));
       }
     };
 
-    renderTree.forEach(node => flatten(null, node));
+    renderTree.forEach((node) => flatten(null, node));
 
     this._store = store;
 
@@ -75,7 +75,10 @@ export default class ComponentTreeController extends Controller {
 
   get nextItem() {
     const items = this.visibleItems;
-    return items[items.indexOf(this.findItem(this.pinned)) + 1] || items[items.length - 1];
+    return (
+      items[items.indexOf(this.findItem(this.pinned)) + 1] ||
+      items[items.length - 1]
+    );
   }
 
   get previousItem() {
@@ -87,7 +90,8 @@ export default class ComponentTreeController extends Controller {
     let { renderItems, query } = this;
 
     if (query) {
-      let match = item => searchMatch(item.name, query) || item.childItems.some(match);
+      let match = (item) =>
+        searchMatch(item.name, query) || item.childItems.some(match);
       renderItems = renderItems.filter(match);
     }
 
@@ -95,7 +99,7 @@ export default class ComponentTreeController extends Controller {
   }
 
   get visibleItems() {
-    return this.matchingItems.filter(item => item.isVisible);
+    return this.matchingItems.filter((item) => item.isVisible);
   }
 
   get pinned() {
@@ -116,7 +120,9 @@ export default class ComponentTreeController extends Controller {
       item.show();
 
       if (item.hasInstance) {
-        this.port.send('objectInspector:inspectById', { objectId: item.instance });
+        this.port.send('objectInspector:inspectById', {
+          objectId: item.instance,
+        });
       } else {
         this.application.hideInspector();
       }
@@ -173,17 +179,20 @@ export default class ComponentTreeController extends Controller {
   cancelSelection(id, pinned) {
     if (pinned && this.pinned === id) {
       this.pinned = undefined;
-    } else if (!pinned && (this.previewing === id || this.previewing === undefined)) {
+    } else if (
+      !pinned &&
+      (this.previewing === id || this.previewing === undefined)
+    ) {
       this.previewing = undefined;
     }
   }
 
   @action handleKeyDown(event) {
-    if(focusedInInput()) {
+    if (focusedInInput()) {
       return;
     }
 
-    if(arrowKeyPressed(event.keyCode)) {
+    if (arrowKeyPressed(event.keyCode)) {
       event.preventDefault();
     }
 
@@ -208,11 +217,11 @@ export default class ComponentTreeController extends Controller {
   }
 
   @action expandAll() {
-    this.renderItems.forEach(item => item.expand());
+    this.renderItems.forEach((item) => item.expand());
   }
 
   @action collapseAll() {
-    this.renderItems.forEach(item => item.collapse());
+    this.renderItems.forEach((item) => item.collapse());
   }
 
   @action arrowKeysSetup() {
@@ -225,8 +234,10 @@ export default class ComponentTreeController extends Controller {
 }
 
 function isInternalRenderNode(renderNode) {
-  return renderNode.type === 'outlet' && renderNode.name === 'main' ||
-    renderNode.type === 'route-template' && renderNode.name === '-top-level';
+  return (
+    (renderNode.type === 'outlet' && renderNode.name === 'main') ||
+    (renderNode.type === 'route-template' && renderNode.name === '-top-level')
+  );
 }
 
 function focusedInInput() {
@@ -412,7 +423,7 @@ class RenderItem {
     this.isExpanded = true;
 
     if (deep === true) {
-      this.childItems.forEach(child => child.expand(true));
+      this.childItems.forEach((child) => child.expand(true));
     }
   }
 
@@ -420,7 +431,7 @@ class RenderItem {
     this.isExpanded = false;
 
     if (deep === true) {
-      this.childItems.forEach(child => child.collapse(true));
+      this.childItems.forEach((child) => child.collapse(true));
     }
   }
 

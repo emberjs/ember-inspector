@@ -37,20 +37,26 @@ export function isDescriptor(value) {
  * @param {String} key The key for the property on the object
  */
 export function getDescriptorFor(object, key) {
-
   if (isDescriptor(object[key])) {
     return object[key];
   }
 
   if (Ember.Debug.isComputed) {
-    const { descriptorForDecorator, descriptorForProperty } = Ember.__loader.require('@ember/-internals/metal');
-    return descriptorForDecorator(object[key]) || descriptorForProperty(object, key);
+    const {
+      descriptorForDecorator,
+      descriptorForProperty,
+    } = Ember.__loader.require('@ember/-internals/metal');
+    return (
+      descriptorForDecorator(object[key]) || descriptorForProperty(object, key)
+    );
   }
 
   return object[key];
 }
 
-
 export function typeOf(obj) {
-  return Object.prototype.toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
+  return Object.prototype.toString
+    .call(obj)
+    .match(/\s([a-zA-Z]+)/)[1]
+    .toLowerCase();
 }

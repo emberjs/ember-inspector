@@ -5,8 +5,7 @@ import EmberDebug from 'ember-debug/main';
 import Port from 'ember-debug/port';
 import { settled } from '@ember/test-helpers';
 
-
-module("Ember Debug", function(hooks) {
+module('Ember Debug', function (hooks) {
   let name, adapter;
 
   setupEmberDebugTest(hooks, {
@@ -14,11 +13,11 @@ module("Ember Debug", function(hooks) {
       init() {},
       send(n) {
         name = n;
-      }
+      },
     }),
   });
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     adapter = EmberDebug.get('port.adapter');
   });
 
@@ -31,20 +30,20 @@ module("Ember Debug", function(hooks) {
     }
   }
 
-  test("EmberDebug#inspect sends inspectable objects", function(assert) {
+  test('EmberDebug#inspect sends inspectable objects', function (assert) {
     let obj = EmberObject.create();
     EmberDebug.inspect(obj);
-    assert.equal(name, "objectInspector:updateObject");
+    assert.equal(name, 'objectInspector:updateObject');
     name = null;
     obj = [];
     EmberDebug.inspect(obj);
-    assert.equal(name, "objectInspector:updateObject");
+    assert.equal(name, 'objectInspector:updateObject');
     cantSend(1, assert);
-    cantSend("a", assert);
+    cantSend('a', assert);
     cantSend(null, assert);
   });
 
-  test("Errors are caught and handled by EmberDebug", async function t(assert) {
+  test('Errors are caught and handled by EmberDebug', async function t(assert) {
     assert.expect(1);
     const error = new Error('test error');
     EmberDebug.port.on('test:errors', () => {
@@ -55,7 +54,7 @@ module("Ember Debug", function(hooks) {
     adapter.reopen({
       handleError(e) {
         assert.equal(e, error, 'Error handled');
-      }
+      },
     });
 
     EmberDebug.port.messageReceived('test:errors', {});

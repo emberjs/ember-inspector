@@ -16,10 +16,14 @@ export default BasicAdapter.extend({
 
   connect() {
     const channel = this.get('_channel');
-    return this._super(...arguments).then(() => {
-      window.postMessage('debugger-client', '*', [channel.port2]);
-      this._listen();
-    }, null, 'ember-inspector');
+    return this._super(...arguments).then(
+      () => {
+        window.postMessage('debugger-client', '*', [channel.port2]);
+        this._listen();
+      },
+      null,
+      'ember-inspector'
+    );
   },
 
   sendMessage(options = {}) {
@@ -66,7 +70,7 @@ export default BasicAdapter.extend({
   _listen() {
     let chromePort = this.get('_chromePort');
 
-    chromePort.addEventListener('message', event => {
+    chromePort.addEventListener('message', (event) => {
       const message = event.data;
 
       // We should generally not be run-wrapping here. Starting a runloop in
@@ -90,7 +94,7 @@ export default BasicAdapter.extend({
     });
 
     chromePort.start();
-  }
+  },
 });
 
 // On some older Ember version `Ember.ENV.EXTEND_PROTOTYPES` is not
@@ -102,7 +106,7 @@ export default BasicAdapter.extend({
 const HAS_ARRAY_PROTOTYPE_EXTENSIONS = (() => {
   try {
     return Ember.ENV.EXTEND_PROTOTYPES.Array === true;
-  } catch(e) {
+  } catch (e) {
     return false;
   }
 })();
@@ -133,7 +137,7 @@ if (HAS_ARRAY_PROTOTYPE_EXTENSIONS) {
       });
     } else if (item && typeOf(item) === 'object') {
       clone = {};
-      keys(item).forEach(key => {
+      keys(item).forEach((key) => {
         clone[key] = deepClone(item[key]);
       });
     }

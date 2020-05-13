@@ -1,4 +1,4 @@
-export default function(a, b) {
+export default function (a, b) {
   if (a.length !== b.length) {
     return false;
   }

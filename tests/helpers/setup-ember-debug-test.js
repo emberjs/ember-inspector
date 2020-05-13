@@ -18,7 +18,7 @@ import Port from 'ember-debug/port';
 export default function setupEmberDebugTest(hooks, options = {}) {
   let app, originalApp, originalPort;
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     originalPort = EmberDebug.Port;
     originalApp = getApplication();
 
@@ -29,13 +29,13 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     await setupApplicationContext(this);
 
     const Router = EmberRouter.extend({
-      location: 'none'
+      location: 'none',
     });
 
     if (options.routes) {
       Router.map(options.routes);
     } else {
-      Router.map(function() {
+      Router.map(function () {
         this.route('simple');
       });
 
@@ -52,15 +52,17 @@ export default function setupEmberDebugTest(hooks, options = {}) {
       });
     });
 
-    EmberDebug.Port = options.Port || Port.extend({
-      init() {},
-      send() {},
-    });
+    EmberDebug.Port =
+      options.Port ||
+      Port.extend({
+        init() {},
+        send() {},
+      });
 
     run(EmberDebug, 'start');
   });
 
-  hooks.afterEach(async function() {
+  hooks.afterEach(async function () {
     await teardownApplicationContext(this);
     await teardownContext(this);
 
@@ -69,7 +71,7 @@ export default function setupEmberDebugTest(hooks, options = {}) {
 
     run(() => {
       EmberDebug.setProperties({
-        isTesting: false
+        isTesting: false,
       });
     });
 

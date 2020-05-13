@@ -1,5 +1,5 @@
 import config from 'ember-inspector/config/environment';
-import PromiseAssembler from "ember-inspector/libs/promise-assembler";
+import PromiseAssembler from 'ember-inspector/libs/promise-assembler';
 
 export default {
   name: 'setup',
@@ -27,7 +27,7 @@ export default {
     // register and inject promise assembler
     register(instance, 'promise-assembler:main', PromiseAssembler);
     instance.inject('route:promiseTree', 'assembler', 'promise-assembler:main');
-  }
+  },
 };
 
 function register(instance, name, item, options) {

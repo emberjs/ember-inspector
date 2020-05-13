@@ -13,5 +13,5 @@ import { getOwner } from '@ember/application';
 export default Helper.extend({
   compute([name]) {
     return getOwner(this).resolveRegistration(`schema:${name}`);
-  }
+  },
 });
