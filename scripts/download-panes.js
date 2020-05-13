@@ -8,82 +8,70 @@
  * package.
  */
 
-const http = require('http');
+const got = require('got');
 const fs = require('fs');
+const { promisify } = require('util');
+const stream = require('stream');
 const packageJson = require('../package.json');
-const mkdirp = require('mkdirp');
 const yauzl = require('yauzl');
 const path = require('path');
-const rimraf = require('rimraf');
+
+const yauzlFromBuffer = promisify(yauzl.fromBuffer);
+const pipeline = promisify(stream.pipeline);
+const rimraf = promisify(require('rimraf'));
 
 const env = process.env.EMBER_ENV || 'development';
 const S3_BUCKET_URL =
   'http://s3-eu-west-1.amazonaws.com/ember-inspector-panes/';
 
-rimraf('dist_prev', function (err) {
-  if (err) {
-    throw err;
-  }
-  packageJson.previousEmberVersionsSupported.forEach(function (version) {
+async function main() {
+  await rimraf('dist_prev');
+
+  for (let version of packageJson.previousEmberVersionsSupported) {
     let dasherizedVersion = version.replace(/\./g, '-');
     let paneFolder = 'panes-' + dasherizedVersion;
-    ['chrome', 'firefox', 'bookmarklet'].forEach(function (dist) {
-      downloadPane(paneFolder, dist);
-    });
-  });
-});
 
-function downloadPane(paneFolder, dist) {
-  let dir = 'dist_prev/' + env + '/' + dist;
-  let zipFile = dir + '/' + paneFolder + '.zip';
-  mkdirp(dir, function () {
-    let request = http.get(
-      S3_BUCKET_URL + env + '/' + paneFolder + '/' + dist + '.zip',
-      function (response) {
-        let file = fs.createWriteStream(zipFile);
-        file.on('finish', function () {
-          dir += '/' + paneFolder;
-          unzip(zipFile, dir);
-        });
-        response.pipe(file);
-      }
-    );
+    await downloadPane(paneFolder, 'chrome');
+    await downloadPane(paneFolder, 'firefox');
+    await downloadPane(paneFolder, 'bookmarklet');
+  }
+}
+
+async function downloadPane(paneFolder, dist) {
+  console.log(`Downloading ${paneFolder}`);
+
+  let response = await got(`${S3_BUCKET_URL}${env}/${paneFolder}/${dist}.zip`, {
+    responseType: 'buffer',
+  });
+
+  await unzip(response.body, `dist_prev/${env}/${dist}/${paneFolder}`);
+}
+
+async function unzip(zipFileBuffer, dir) {
+  let zipfile = await yauzlFromBuffer(zipFileBuffer, { lazyEntries: true });
+  let openReadStream = promisify(zipfile.openReadStream.bind(zipfile));
+
+  zipfile.readEntry();
+  zipfile.on('entry', async (entry) => {
+    if (entry.fileName.endsWith('/')) {
+      // skip directories, we are going to mkdirp on the file anyways
+      zipfile.readEntry();
+      return;
+    }
+
+    // file entry
+    let readStream = await openReadStream(entry);
+    let entryFullPath = `${dir}/${entry.fileName}`;
+
+    // ensure parent directory exists
+    fs.mkdirSync(path.dirname(entryFullPath), { recursive: true });
+
+    readStream.on('end', function () {
+      zipfile.readEntry();
+    });
+
+    await pipeline(readStream, fs.createWriteStream(entryFullPath));
   });
 }
 
-function unzip(zipFile, dir) {
-  yauzl.open(zipFile, { lazyEntries: true }, function (err, zipfile) {
-    if (err) throw err;
-    zipfile.once('end', function () {
-      zipfile.close();
-      rimraf(zipFile, function (err) {
-        if (err) {
-          throw err;
-        }
-      });
-    });
-    zipfile.readEntry();
-    zipfile.on('entry', function (entry) {
-      if (/\/$/.test(entry.fileName)) {
-        // directory file names end with '/'
-        mkdirp(dir + '/' + entry.fileName, function (err) {
-          if (err) throw err;
-          zipfile.readEntry();
-        });
-      } else {
-        // file entry
-        zipfile.openReadStream(entry, function (err, readStream) {
-          if (err) throw err;
-          // ensure parent directory exists
-          mkdirp(path.dirname(dir + '/' + entry.fileName), function (err) {
-            if (err) throw err;
-            readStream.pipe(fs.createWriteStream(dir + '/' + entry.fileName));
-            readStream.on('end', function () {
-              zipfile.readEntry();
-            });
-          });
-        });
-      }
-    });
-  });
-}
+main();
