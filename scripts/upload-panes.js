@@ -14,7 +14,10 @@ var secrets = require('../config/secrets.json');
 var version = packageJson.emberVersionsSupported[0];
 
 if (!packageJson.emberVersionsSupported[1]) {
-  console.log("\x1b[31m%s\x1b[0m", "[FAILED] You need to set the right limit for the Ember versions supported (in package.json). Exiting...");
+  console.log(
+    '\x1b[31m%s\x1b[0m',
+    '[FAILED] You need to set the right limit for the Ember versions supported (in package.json). Exiting...'
+  );
   process.exit();
 }
 
@@ -28,10 +31,18 @@ AWS.config.update(config);
 var env = process.env.EMBER_ENV || 'development';
 
 var folderName = 'panes-' + version.replace(/\./g, '-');
-var s3 = new AWS.S3({ params: { Bucket: 'ember-inspector-panes', ACL: 'public-read' } });
+var s3 = new AWS.S3({
+  params: { Bucket: 'ember-inspector-panes', ACL: 'public-read' },
+});
 
-['chrome', 'firefox', 'bookmarklet'].forEach(function(dist) {
-    var body = fs.createReadStream('dist/' + dist + '-pane.zip');
-    s3.upload({ Body: body, Key: env + '/' + folderName  +'/' + dist + '.zip' }).
-      send(function(err, data) { if (err) { throw err; } });
+['chrome', 'firefox', 'bookmarklet'].forEach(function (dist) {
+  var body = fs.createReadStream('dist/' + dist + '-pane.zip');
+  s3.upload({
+    Body: body,
+    Key: env + '/' + folderName + '/' + dist + '.zip',
+  }).send(function (err, data) {
+    if (err) {
+      throw err;
+    }
+  });
 });
