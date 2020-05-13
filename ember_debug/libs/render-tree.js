@@ -182,7 +182,7 @@ export default class RenderTree {
       element.scrollIntoView({
         behavior: 'smooth',
         block: 'center',
-        inline: 'nearest'
+        inline: 'nearest',
       });
     }
   }
@@ -202,7 +202,10 @@ export default class RenderTree {
     }
 
     // We cannot inspect text nodes
-    let target = this._findNode(node.bounds, [Node.ELEMENT_NODE, Node.COMMENT_NODE]);
+    let target = this._findNode(node.bounds, [
+      Node.ELEMENT_NODE,
+      Node.COMMENT_NODE,
+    ]);
 
     this.inspectNode(target);
   }
@@ -223,7 +226,7 @@ export default class RenderTree {
   }
 
   _serializeRenderNodes(nodes, parentNode = null) {
-    return nodes.map(node => this._serializeRenderNode(node, parentNode));
+    return nodes.map((node) => this._serializeRenderNode(node, parentNode));
   }
 
   _serializeRenderNode(node, parentNode = null) {
@@ -268,7 +271,7 @@ export default class RenderTree {
   _serializeDict(dict) {
     let result = Object.create(null);
 
-    Object.keys(dict).forEach(key => {
+    Object.keys(dict).forEach((key) => {
       result[key] = this._serializeItem(dict[key]);
     });
 
@@ -276,7 +279,7 @@ export default class RenderTree {
   }
 
   _serializeArray(array) {
-    return array.map(item => this._serializeItem(item));
+    return array.map((item) => this._serializeItem(item));
   }
 
   _serializeItem(item) {
@@ -324,7 +327,7 @@ export default class RenderTree {
     let { previouslyRetainedObjects, retainedObjects, releaseObject } = this;
 
     // The object inspector should make its own GC async, but until then...
-    window.setTimeout(function() {
+    window.setTimeout(function () {
       for (let [object, id] of previouslyRetainedObjects) {
         if (!retainedObjects.has(object)) {
           releaseObject(id);
@@ -348,7 +351,9 @@ export default class RenderTree {
 
       if (range && range.isPointInRange(dom, 0)) {
         // We may be able to find a more exact match in one of the children.
-        return this._matchRenderNodes(candidate.children, dom, false) || candidate;
+        return (
+          this._matchRenderNodes(candidate.children, dom, false) || candidate
+        );
       } else if (!range || deep) {
         // There are some edge cases of non-containing parent nodes (e.g. "worm
         // hole") so we can't rule out the entire subtree just because the parent
@@ -407,8 +412,11 @@ function isSingleNode({ firstNode, lastNode }) {
   return firstNode === lastNode;
 }
 
-function isAttached({ parentElement, firstNode, lastNode}) {
-  return parentElement === firstNode.parentElement && parentElement === lastNode.parentElement;
+function isAttached({ parentElement, firstNode, lastNode }) {
+  return (
+    parentElement === firstNode.parentElement &&
+    parentElement === lastNode.parentElement
+  );
 }
 
 function isEmptyRect({ x, y, width, height }) {

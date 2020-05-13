@@ -7,14 +7,16 @@ import { module, test } from 'qunit';
 import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 
-module('Ember Debug - Deprecation', function(hooks) {
+module('Ember Debug - Deprecation', function (hooks) {
   setupEmberDebugTest(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     EmberDebug.IGNORE_DEPRECATIONS = true;
     EmberDebug.deprecationDebug.reopen({
-      fetchSourceMap() { return RSVP.resolve(null); },
-      emberCliConfig: null
+      fetchSourceMap() {
+        return RSVP.resolve(null);
+      },
+      emberCliConfig: null,
     });
   });
 
@@ -28,18 +30,25 @@ module('Ember Debug - Deprecation', function(hooks) {
         } else if (name === 'deprecation:count') {
           count = message.count;
         }
-      }
+      },
     });
 
-    this.owner.register('route:application', Route.extend({
-      setupController() {
-        EmberDebug.IGNORE_DEPRECATIONS = false;
-        deprecate('Deprecation 1', false, { id: 'dep-1', until: '1.0.0' });
-        deprecate('Deprecation 2', false, { id: 'dep-2', until: '1.0.0', url: 'http://www.emberjs.com' });
-        deprecate('Deprecation 1', false, { id: 'dep-1', until: '1.0.0' });
-        EmberDebug.IGNORE_DEPRECATIONS = true;
-      }
-    }));
+    this.owner.register(
+      'route:application',
+      Route.extend({
+        setupController() {
+          EmberDebug.IGNORE_DEPRECATIONS = false;
+          deprecate('Deprecation 1', false, { id: 'dep-1', until: '1.0.0' });
+          deprecate('Deprecation 2', false, {
+            id: 'dep-2',
+            until: '1.0.0',
+            url: 'http://www.emberjs.com',
+          });
+          deprecate('Deprecation 1', false, { id: 'dep-1', until: '1.0.0' });
+          EmberDebug.IGNORE_DEPRECATIONS = true;
+        },
+      })
+    );
 
     run(EmberDebug.port, 'trigger', 'deprecation:watch');
 
@@ -50,7 +59,11 @@ module('Ember Debug - Deprecation', function(hooks) {
     let deprecation = deprecations[0];
     assert.equal(deprecation.count, 2, 'Correctly combined');
     assert.equal(deprecation.message, 'Deprecation 1');
-    assert.equal(deprecation.sources.length, 2, 'Correctly separated by source');
+    assert.equal(
+      deprecation.sources.length,
+      2,
+      'Correctly separated by source'
+    );
 
     deprecation = deprecations[1];
     assert.equal(deprecation.count, 1);
@@ -67,19 +80,25 @@ module('Ember Debug - Deprecation', function(hooks) {
     run(EmberDebug.port, 'trigger', 'deprecation:watch');
     EmberDebug.port.get('adapter').reopen({
       warn(message) {
-        assert.equal(message, 'Deprecations were detected, see the Ember Inspector deprecations tab for more details.');
+        assert.equal(
+          message,
+          'Deprecations were detected, see the Ember Inspector deprecations tab for more details.'
+        );
         assert.equal(++count, 1, 'Warns once');
-      }
+      },
     });
 
-    this.owner.register('route:application', Route.extend({
-      setupController() {
-        EmberDebug.IGNORE_DEPRECATIONS = false;
-        deprecate('Deprecation 1', false, { id: 'dep-1', until: '1.0.0' });
-        deprecate('Deprecation 2', false, { id: 'dep-2', until: '1.0.0' });
-        EmberDebug.IGNORE_DEPRECATIONS = true;
-      }
-    }));
+    this.owner.register(
+      'route:application',
+      Route.extend({
+        setupController() {
+          EmberDebug.IGNORE_DEPRECATIONS = false;
+          deprecate('Deprecation 1', false, { id: 'dep-1', until: '1.0.0' });
+          deprecate('Deprecation 2', false, { id: 'dep-2', until: '1.0.0' });
+          EmberDebug.IGNORE_DEPRECATIONS = true;
+        },
+      })
+    );
 
     await visit('/');
   });

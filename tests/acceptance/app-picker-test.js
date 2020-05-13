@@ -1,17 +1,17 @@
-import {
-  visit,
-  findAll,
-  fillIn
-} from '@ember/test-helpers';
+import { visit, findAll, fillIn } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { setupTestAdapter, respondWith, disableDefaultResponseFor } from '../test-adapter';
+import {
+  setupTestAdapter,
+  respondWith,
+  disableDefaultResponseFor,
+} from '../test-adapter';
 
-module('App Picker', function(hooks) {
+module('App Picker', function (hooks) {
   setupTestAdapter(hooks);
   setupApplicationTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.currentApplicationId = null;
 
     disableDefaultResponseFor('general:applicationBooted');
@@ -22,35 +22,42 @@ module('App Picker', function(hooks) {
       type: 'general:applicationBooted',
       applicationId: 'app-one',
       applicationName: 'First App',
-      booted: true
+      booted: true,
     });
 
     respondWith('app-picker-loaded', {
       type: 'apps-loaded',
       applicationId: null,
       applicationName: null,
-      apps: [{
-        applicationId: 'app-one',
-        applicationName: 'First App'
-      }, {
-        applicationId: 'app-two',
-        applicationName: 'Second App'
-      }]
+      apps: [
+        {
+          applicationId: 'app-one',
+          applicationName: 'First App',
+        },
+        {
+          applicationId: 'app-two',
+          applicationName: 'Second App',
+        },
+      ],
     });
 
-    respondWith('app-selected', ({ applicationId }) => {
-      this.currentApplicationId = applicationId;
-      return false;
-    }, { count: 3 });
+    respondWith(
+      'app-selected',
+      ({ applicationId }) => {
+        this.currentApplicationId = applicationId;
+        return false;
+      },
+      { count: 3 }
+    );
   });
 
-  test('Both apps show up in picker', async function(assert) {
+  test('Both apps show up in picker', async function (assert) {
     // TODO: shouldn't this be called again when the app changes?
     respondWith('view:getTree', {
       type: 'view:renderTree',
       applicationId: 'app-one',
       applicationName: 'First App',
-      tree: []
+      tree: [],
     });
 
     await visit('/component-tree');
@@ -73,7 +80,11 @@ module('App Picker', function(hooks) {
     assert.dom(options[0]).hasText('First App');
     assert.dom(options[1]).hasText('Second App');
 
-    assert.equal(this.currentApplicationId, 'app-two', 'Second App is selected');
+    assert.equal(
+      this.currentApplicationId,
+      'app-two',
+      'Second App is selected'
+    );
     assert.ok(!options[0].selected, 'First App is not selected');
     assert.ok(options[1].selected, 'Second App is selected');
 

@@ -42,7 +42,10 @@ export default Component.extend({
    * @property classNameBindings
    * @type {Array}
    */
-  classNameBindings: ['highlight:list__cell_highlight', 'clickable:list__cell_clickable'],
+  classNameBindings: [
+    'highlight:list__cell_highlight',
+    'clickable:list__cell_clickable',
+  ],
 
   /**
    * Style passed through the `style` property
@@ -61,7 +64,7 @@ export default Component.extend({
    * @property safeStyle
    * @type {SafeString}
    */
-  safeStyle: computed('style', function() {
+  safeStyle: computed('style', function () {
     return htmlSafe(this.style);
   }),
 
@@ -122,5 +125,5 @@ export default Component.extend({
    */
   click() {
     this['on-click']();
-  }
+  },
 });

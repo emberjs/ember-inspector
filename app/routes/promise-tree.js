@@ -1,11 +1,11 @@
 import { Promise } from 'rsvp';
-import TabRoute from "ember-inspector/routes/tab";
+import TabRoute from 'ember-inspector/routes/tab';
 
 export default TabRoute.extend({
   model() {
     // block rendering until first batch arrives
     // Helps prevent flashing of "please refresh the page"
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.assembler.one('firstMessageReceived', () => {
         resolve(this.get('assembler.topSort'));
       });
@@ -15,7 +15,11 @@ export default TabRoute.extend({
 
   setupController() {
     this._super(...arguments);
-    this.port.on('promise:instrumentWithStack', this, this.setInstrumentWithStack);
+    this.port.on(
+      'promise:instrumentWithStack',
+      this,
+      this.setInstrumentWithStack
+    );
     this.port.send('promise:getInstrumentWithStack');
   },
 
@@ -25,6 +29,10 @@ export default TabRoute.extend({
 
   deactivate() {
     this.assembler.stop();
-    this.port.off('promise:instrumentWithStack', this, this.setInstrumentWithStack);
-  }
+    this.port.off(
+      'promise:instrumentWithStack',
+      this,
+      this.setInstrumentWithStack
+    );
+  },
 });

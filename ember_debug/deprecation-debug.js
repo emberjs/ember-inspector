@@ -12,7 +12,7 @@ export default EmberObject.extend(PortMixin, {
 
   adapter: readOnly('port.adapter'),
 
-  sourceMap: computed(function() {
+  sourceMap: computed(function () {
     return SourceMap.create();
   }),
 
@@ -25,7 +25,7 @@ export default EmberObject.extend(PortMixin, {
     this.deprecationsToSend = A();
     this.groupedDeprecations = {};
     this.options = {
-      toggleDeprecationWorkflow: false
+      toggleDeprecationWorkflow: false,
     };
 
     this.handleDeprecations();
@@ -35,25 +35,38 @@ export default EmberObject.extend(PortMixin, {
    * Checks if ember-cli and looks for source maps.
    */
   fetchSourceMap(stackStr) {
-    if (this.get('emberCliConfig') && this.get('emberCliConfig.environment') === 'development') {
-      return this.get('sourceMap').map(stackStr).then(mapped => {
-        if (mapped && mapped.length > 0) {
-          let source = mapped.find(
-            item => item.source && !!item.source.match(new RegExp(this.get('emberCliConfig.modulePrefix'))));
+    if (
+      this.get('emberCliConfig') &&
+      this.get('emberCliConfig.environment') === 'development'
+    ) {
+      return this.get('sourceMap')
+        .map(stackStr)
+        .then(
+          (mapped) => {
+            if (mapped && mapped.length > 0) {
+              let source = mapped.find(
+                (item) =>
+                  item.source &&
+                  !!item.source.match(
+                    new RegExp(this.get('emberCliConfig.modulePrefix'))
+                  )
+              );
 
-          if (source) {
-            source.found = true;
-          } else {
-            source = mapped.get('firstObject');
-            source.found = false;
-          }
-          return source;
-        }
-      }, null, 'ember-inspector');
+              if (source) {
+                source.found = true;
+              } else {
+                source = mapped.get('firstObject');
+                source.found = false;
+              }
+              return source;
+            }
+          },
+          null,
+          'ember-inspector'
+        );
     } else {
       return resolve(null, 'ember-inspector');
     }
-
   },
 
   sendPending() {
@@ -63,44 +76,58 @@ export default EmberObject.extend(PortMixin, {
 
     let deprecations = A();
 
-    let promises = all(this.get('deprecationsToSend').map(deprecation => {
-      let obj;
-      let promise = resolve(undefined, 'ember-inspector');
-      let grouped = this.get('groupedDeprecations');
-      this.get('deprecations').pushObject(deprecation);
-      const id = guidFor(deprecation.message);
-      obj = grouped[id];
-      if (obj) {
-        obj.count++;
-        obj.url = obj.url || deprecation.url;
-      } else {
-        obj = deprecation;
-        obj.count = 1;
-        obj.id = id;
-        obj.sources = A();
-        grouped[id] = obj;
-      }
-      let found = obj.sources.findBy('stackStr', deprecation.stackStr);
-      if (!found) {
-        let stackStr = deprecation.stackStr;
-        promise = this.fetchSourceMap(stackStr).then(map => {
-          obj.sources.pushObject({ map, stackStr });
-          if (map) {
-            obj.hasSourceMap = true;
-          }
-        }, null, 'ember-inspector');
-      }
-      return promise.then(() => {
-        delete obj.stackStr;
-        deprecations.addObject(obj);
-      }, null, 'ember-inspector');
-    }));
+    let promises = all(
+      this.get('deprecationsToSend').map((deprecation) => {
+        let obj;
+        let promise = resolve(undefined, 'ember-inspector');
+        let grouped = this.get('groupedDeprecations');
+        this.get('deprecations').pushObject(deprecation);
+        const id = guidFor(deprecation.message);
+        obj = grouped[id];
+        if (obj) {
+          obj.count++;
+          obj.url = obj.url || deprecation.url;
+        } else {
+          obj = deprecation;
+          obj.count = 1;
+          obj.id = id;
+          obj.sources = A();
+          grouped[id] = obj;
+        }
+        let found = obj.sources.findBy('stackStr', deprecation.stackStr);
+        if (!found) {
+          let stackStr = deprecation.stackStr;
+          promise = this.fetchSourceMap(stackStr).then(
+            (map) => {
+              obj.sources.pushObject({ map, stackStr });
+              if (map) {
+                obj.hasSourceMap = true;
+              }
+            },
+            null,
+            'ember-inspector'
+          );
+        }
+        return promise.then(
+          () => {
+            delete obj.stackStr;
+            deprecations.addObject(obj);
+          },
+          null,
+          'ember-inspector'
+        );
+      })
+    );
 
-    promises.then(() => {
-      this.sendMessage('deprecationsAdded', { deprecations });
-      this.get('deprecationsToSend').clear();
-      this.sendCount();
-    }, null, 'ember-inspector');
+    promises.then(
+      () => {
+        this.sendMessage('deprecationsAdded', { deprecations });
+        this.get('deprecationsToSend').clear();
+        this.sendCount();
+      },
+      null,
+      'ember-inspector'
+    );
   },
 
   sendCount() {
@@ -109,7 +136,8 @@ export default EmberObject.extend(PortMixin, {
     }
 
     this.sendMessage('count', {
-      count: this.get('deprecations.length') + this.get('deprecationsToSend.length')
+      count:
+        this.get('deprecations.length') + this.get('deprecationsToSend.length'),
     });
   },
 
@@ -125,17 +153,19 @@ export default EmberObject.extend(PortMixin, {
         deprecations.push(grouped[i]);
       }
       this.sendMessage('deprecationsAdded', {
-        deprecations
+        deprecations,
       });
       this.sendPending();
     },
 
     sendStackTraces(message) {
       let deprecation = message.deprecation;
-      deprecation.sources.forEach(source => {
+      deprecation.sources.forEach((source) => {
         let stack = source.stackStr;
         stack = stack.split('\n');
-        stack.unshift(`Ember Inspector (Deprecation Trace): ${deprecation.message || ''}`);
+        stack.unshift(
+          `Ember Inspector (Deprecation Trace): ${deprecation.message || ''}`
+        );
         this.get('adapter').log(stack.join('\n'));
       });
     },
@@ -156,8 +186,9 @@ export default EmberObject.extend(PortMixin, {
     },
 
     setOptions({ options }) {
-      this.options.toggleDeprecationWorkflow = options.toggleDeprecationWorkflow;
-    }
+      this.options.toggleDeprecationWorkflow =
+        options.toggleDeprecationWorkflow;
+    },
   },
 
   willDestroy() {
@@ -167,7 +198,6 @@ export default EmberObject.extend(PortMixin, {
 
   handleDeprecations() {
     registerDeprecationHandler((message, options, next) => {
-
       /* global __fail__*/
 
       let error;
@@ -182,15 +212,21 @@ export default EmberObject.extend(PortMixin, {
       let stack;
       let stackStr = '';
       if (error.stack) {
-
         // var stack;
         if (error['arguments']) {
           // Chrome
-          stack = error.stack.replace(/^\s+at\s+/gm, '').replace(/^([^\(]+?)([\n$])/gm, '{anonymous}($1)$2').replace(/^Object.<anonymous>\s*\(([^\)]+)\)/gm, '{anonymous}($1)').split('\n');
+          stack = error.stack
+            .replace(/^\s+at\s+/gm, '')
+            .replace(/^([^\(]+?)([\n$])/gm, '{anonymous}($1)$2')
+            .replace(/^Object.<anonymous>\s*\(([^\)]+)\)/gm, '{anonymous}($1)')
+            .split('\n');
           stack.shift();
         } else {
           // Firefox
-          stack = error.stack.replace(/(?:\n@:0)?\s+$/m, '').replace(/^\(/gm, '{anonymous}(').split('\n');
+          stack = error.stack
+            .replace(/(?:\n@:0)?\s+$/m, '')
+            .replace(/^\(/gm, '{anonymous}(')
+            .split('\n');
         }
 
         stackStr = `\n    ${stack.slice(2).join('\n    ')}`;
@@ -214,7 +250,9 @@ export default EmberObject.extend(PortMixin, {
           this.debounce = run.debounce(this, 'sendCount', 100);
         }
         if (!this._warned) {
-          this.get('adapter').warn('Deprecations were detected, see the Ember Inspector deprecations tab for more details.');
+          this.get('adapter').warn(
+            'Deprecations were detected, see the Ember Inspector deprecations tab for more details.'
+          );
           this._warned = true;
         }
       }
@@ -223,6 +261,5 @@ export default EmberObject.extend(PortMixin, {
         next(message, options);
       }
     });
-  }
-
+  },
 });

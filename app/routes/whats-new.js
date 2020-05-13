@@ -23,18 +23,22 @@ export default TabRoute.extend({
   model() {
     let { version } = this.config;
 
-    let ref = (version.indexOf('alpha') === -1) ? `v${version}` : 'master';
-    let url = `https://raw.githubusercontent.com/emberjs/ember-inspector/${encodeURIComponent(ref)}/CHANGELOG.md`;
+    let ref = version.indexOf('alpha') === -1 ? `v${version}` : 'master';
+    let url = `https://raw.githubusercontent.com/emberjs/ember-inspector/${encodeURIComponent(
+      ref
+    )}/CHANGELOG.md`;
 
     return fetch(url)
       .then(checkStatus)
       .then((response) => response.text())
       .then((text) => getLatestEntry(text))
-      .catch((error) => { this.set('error', error); });
+      .catch((error) => {
+        this.set('error', error);
+      });
   },
 
   setupController(controller, model) {
     this._super(controller, model);
     controller.set('error', this.error);
-  }
+  },
 });

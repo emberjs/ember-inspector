@@ -12,7 +12,14 @@ import DeprecationDebug from 'ember-debug/deprecation-debug';
 import Session from 'ember-debug/services/session';
 
 const Ember = window.Ember;
-const { Object: EmberObject, run, Application, Namespace, guidFor, computed } = Ember;
+const {
+  Object: EmberObject,
+  run,
+  Application,
+  Namespace,
+  guidFor,
+  computed,
+} = Ember;
 
 const EmberDebug = EmberObject.extend({
   /**
@@ -33,7 +40,9 @@ const EmberDebug = EmberObject.extend({
   owner: null,
   started: false,
 
-  applicationName: computed.or('_application.name', '_application.modulePrefix').readOnly(),
+  applicationName: computed
+    .or('_application.name', '_application.modulePrefix')
+    .readOnly(),
 
   /**
    * We use the application's id instead of the owner's id so that we use the same inspector
@@ -42,7 +51,7 @@ const EmberDebug = EmberObject.extend({
    * @property applicationId
    * @type {String}
    */
-  applicationId: computed('_application', 'isTesting', 'owner', function() {
+  applicationId: computed('_application', 'isTesting', 'owner', function () {
     if (!this.get('isTesting')) {
       return guidFor(this.get('_application'));
     }
@@ -68,7 +77,7 @@ const EmberDebug = EmberObject.extend({
 
     this.get('adapter').debug('Ember Inspector Active');
     this.get('adapter').sendMessage({
-      type: 'inspectorLoaded'
+      type: 'inspectorLoaded',
     });
   },
 
@@ -76,7 +85,8 @@ const EmberDebug = EmberObject.extend({
     if (this.get('generalDebug')) {
       this.get('generalDebug').sendReset();
     }
-    ['dataDebug',
+    [
+      'dataDebug',
       'viewDebug',
       'routeDebug',
       'generalDebug',
@@ -85,8 +95,8 @@ const EmberDebug = EmberObject.extend({
       'containerDebug',
       'deprecationDebug',
       'objectInspector',
-      'session'
-    ].forEach(prop => {
+      'session',
+    ].forEach((prop) => {
       let handler = this.get(prop);
       if (handler) {
         run(handler, 'destroy');
@@ -143,18 +153,17 @@ const EmberDebug = EmberObject.extend({
 
   clear() {
     this.setProperties({
-      '_application': null,
-      owner: null
+      _application: null,
+      owner: null,
     });
-  }
-
+  },
 }).create();
 
 function getApplication() {
   let namespaces = Namespace.NAMESPACES;
   let application;
 
-  namespaces.forEach(namespace => {
+  namespaces.forEach((namespace) => {
     if (namespace instanceof Application) {
       application = namespace;
       return false;

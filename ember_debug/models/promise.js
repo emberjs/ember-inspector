@@ -3,7 +3,7 @@ import { typeOf } from '../utils/type-check';
 const Ember = window.Ember;
 const { Object: EmberObject, computed, A } = Ember;
 
-const dateComputed = function() {
+const dateComputed = function () {
   return computed({
     get() {
       return null;
@@ -15,7 +15,7 @@ const dateComputed = function() {
         return new Date(date);
       }
       return null;
-    }
+    },
   });
 };
 
@@ -26,11 +26,11 @@ export default EmberObject.extend({
 
   parent: null,
 
-  children: computed(function() {
+  children: computed(function () {
     return A();
   }),
 
-  level: computed('parent.level', function() {
+  level: computed('parent.level', function () {
     const parent = this.get('parent');
     if (!parent) {
       return 0;
@@ -38,16 +38,15 @@ export default EmberObject.extend({
     return parent.get('level') + 1;
   }),
 
-  isSettled: computed('state', function() {
+  isSettled: computed('state', function () {
     return this.get('isFulfilled') || this.get('isRejected');
   }),
 
-  isFulfilled: computed('state', function() {
+  isFulfilled: computed('state', function () {
     return this.get('state') === 'fulfilled';
   }),
 
-  isRejected: computed('state', function() {
+  isRejected: computed('state', function () {
     return this.get('state') === 'rejected';
-  })
-
+  }),
 });

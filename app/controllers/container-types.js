@@ -8,5 +8,5 @@ export default Controller.extend({
     this._super(...arguments);
 
     this.sortProperties = ['name'];
-  }
+  },
 });

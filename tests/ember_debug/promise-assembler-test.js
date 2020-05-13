@@ -10,7 +10,7 @@ let fakeRSVP;
 
 function stubRSVP() {
   fakeRSVP = EmberObject.extend(Evented, {
-    configure() {}
+    configure() {},
   }).create();
 }
 
@@ -18,15 +18,14 @@ function startAssembler() {
   run(assembler, 'start');
 }
 
-module('Ember Debug - PromiseAssembler', function(hooks) {
+module('Ember Debug - PromiseAssembler', function (hooks) {
   hooks.beforeEach(() => {
     stubRSVP();
-    run(function() {
+    run(function () {
       assembler = PromiseAssembler.create({
-        RSVP: fakeRSVP
+        RSVP: fakeRSVP,
       });
     });
-
   });
 
   hooks.afterEach(() => {
@@ -36,12 +35,12 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
     }
   });
 
-  test('Creates promises correctly', function(assert) {
+  test('Creates promises correctly', function (assert) {
     startAssembler();
     let date = new Date();
     let event;
 
-    assembler.on('created', function(e) {
+    assembler.on('created', function (e) {
       event = e;
     });
 
@@ -49,7 +48,7 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
       guid: 1,
       label: 'label',
       timeStamp: date,
-      stack: 'stack'
+      stack: 'stack',
     });
 
     assert.ok(event);
@@ -65,7 +64,7 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
     assert.equal(promise.get('state'), 'created');
   });
 
-  test('Chains a promise correctly (parent and child not-existing)', function(assert) {
+  test('Chains a promise correctly (parent and child not-existing)', function (assert) {
     startAssembler();
     let date = new Date();
     let event;
@@ -80,7 +79,7 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
       guid: 1,
       label: 'label',
       timeStamp: date,
-      childGuid: 2
+      childGuid: 2,
     });
 
     let parent = event.promise;
@@ -100,8 +99,7 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
     assembler.off('chained', captureEvent);
   });
 
-  test('Chains a promise correctly (parent and child existing)', function(assert) {
-
+  test('Chains a promise correctly (parent and child existing)', function (assert) {
     startAssembler();
     let date = new Date();
     let event;
@@ -115,7 +113,7 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
     assembler.on('created', captureParent);
 
     fakeRSVP.trigger('created', {
-      guid: 1
+      guid: 1,
     });
 
     assembler.off('created', captureParent);
@@ -127,7 +125,7 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
     assembler.on('created', captureChild);
 
     fakeRSVP.trigger('created', {
-      guid: 2
+      guid: 2,
     });
 
     function captureEvent(e) {
@@ -140,7 +138,7 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
       guid: 1,
       label: 'label',
       timeStamp: date,
-      childGuid: 2
+      childGuid: 2,
     });
 
     assert.equal(parent, event.promise);
@@ -161,7 +159,7 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
     assembler.off('created', captureChild);
   });
 
-  test('Fulfills a promise correctly', function(assert) {
+  test('Fulfills a promise correctly', function (assert) {
     startAssembler();
     let date = new Date();
     let event;
@@ -174,21 +172,21 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
     assembler.on('created', capturePromise);
 
     fakeRSVP.trigger('created', {
-      guid: 1
+      guid: 1,
     });
 
     assembler.off('created', capturePromise);
 
     assert.equal(promise.get('state'), 'created');
 
-    assembler.on('fulfilled', function(e) {
+    assembler.on('fulfilled', function (e) {
       event = e;
     });
 
     fakeRSVP.trigger('fulfilled', {
       guid: 1,
       detail: 'value',
-      timeStamp: date
+      timeStamp: date,
     });
 
     assert.equal(event.promise, promise);
@@ -198,7 +196,7 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
     assert.equal(assembler.find().get('length'), 1);
   });
 
-  test('Rejects a promise correctly', function(assert) {
+  test('Rejects a promise correctly', function (assert) {
     startAssembler();
     let date = new Date();
     let event;
@@ -211,21 +209,21 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
     assembler.on('created', capturePromise);
 
     fakeRSVP.trigger('created', {
-      guid: 1
+      guid: 1,
     });
 
     assembler.off('created', capturePromise);
 
     assert.equal(promise.get('state'), 'created');
 
-    assembler.on('rejected', function(e) {
+    assembler.on('rejected', function (e) {
       event = e;
     });
 
     fakeRSVP.trigger('rejected', {
       guid: 1,
       detail: 'reason',
-      timeStamp: date
+      timeStamp: date,
     });
 
     assert.equal(event.promise, promise);
@@ -235,18 +233,18 @@ module('Ember Debug - PromiseAssembler', function(hooks) {
     assert.equal(assembler.find().get('length'), 1);
   });
 
-  test('#stop', function(assert) {
+  test('#stop', function (assert) {
     startAssembler();
 
     fakeRSVP.trigger('created', {
-      guid: 1
+      guid: 1,
     });
     assert.equal(assembler.find().get('length'), 1);
 
     run(assembler, 'stop');
 
     assert.equal(assembler.find().get('length'), 0);
-    assembler.on('created', function() {
+    assembler.on('created', function () {
       assert.ok(false);
     });
     fakeRSVP.trigger('created', { guid: 1 });

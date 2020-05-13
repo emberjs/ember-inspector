@@ -1,13 +1,13 @@
 import { settled, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
-import setupEmberDebugTest  from '../helpers/setup-ember-debug-test';
+import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import EmberDebug from 'ember-debug/main';
 
-module('Ember Debug - Render Debug', function(hooks) {
+module('Ember Debug - Render Debug', function (hooks) {
   setupEmberDebugTest(hooks, {
-    routes: function() {
+    routes: function () {
       this.route('simple');
-    }
+    },
   });
 
   test('Simple Render', async function t(assert) {
@@ -17,7 +17,7 @@ module('Ember Debug - Render Debug', function(hooks) {
         if (n === 'render:profilesAdded') {
           profiles = profiles.concat(m.profiles);
         }
-      }
+      },
     });
     EmberDebug.port.trigger('render:watchProfiles');
 
@@ -37,7 +37,7 @@ module('Ember Debug - Render Debug', function(hooks) {
         if (n === 'render:profilesUpdated') {
           profiles = m.profiles;
         }
-      }
+      },
     });
 
     EmberDebug.port.trigger('render:watchProfiles');
@@ -49,6 +49,5 @@ module('Ember Debug - Render Debug', function(hooks) {
     await settled();
 
     assert.ok(profiles.length === 0, 'it has cleared the profiles');
-
   });
 });

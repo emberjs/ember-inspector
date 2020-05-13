@@ -9,7 +9,7 @@ export default class ComponentTreeRoute extends TabRoute {
   };
 
   model() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.port.one('view:renderTree', resolve);
       this.port.send('view:getTree', { immediate: true });
     });

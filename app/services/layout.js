@@ -34,5 +34,5 @@ export default Service.extend(Evented, {
   updateContentHeight(height) {
     this.set('contentHeight', height);
     this.trigger('content-height-update', height);
-  }
+  },
 });

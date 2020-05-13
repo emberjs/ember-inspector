@@ -1,5 +1,5 @@
 import { set } from '@ember/object';
-import TabRoute from "ember-inspector/routes/tab";
+import TabRoute from 'ember-inspector/routes/tab';
 
 export default TabRoute.extend({
   setupController(controller, model) {
@@ -12,7 +12,7 @@ export default TabRoute.extend({
     this.port.on('data:recordsAdded', this, this.addRecords);
     this.port.on('data:recordsUpdated', this, this.updateRecords);
     this.port.on('data:recordsRemoved', this, this.removeRecords);
-    this.port.one('data:filters', this, function(message) {
+    this.port.one('data:filters', this, function (message) {
       this.set('controller.filters', message.filters);
     });
     this.port.send('data:getFilters');
@@ -31,7 +31,7 @@ export default TabRoute.extend({
   },
 
   updateRecords(message) {
-    message.records.forEach(record => {
+    message.records.forEach((record) => {
       let currentRecord = this.currentModel.findBy('objectId', record.objectId);
       if (currentRecord) {
         set(currentRecord, 'columnValues', record.columnValues);
@@ -40,7 +40,6 @@ export default TabRoute.extend({
         set(currentRecord, 'color', record.color);
       }
     });
-
   },
 
   addRecords(message) {
@@ -49,5 +48,5 @@ export default TabRoute.extend({
 
   removeRecords(message) {
     this.currentModel.removeAt(message.index, message.count);
-  }
+  },
 });

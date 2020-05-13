@@ -6,8 +6,8 @@ export default Route.extend({
     try {
       this.render(`${this.routeName.replace(/\./g, '/')}-toolbar`, {
         into: 'application',
-        outlet: 'toolbar'
+        outlet: 'toolbar',
       });
     } catch (e) {}
-  }
+  },
 });

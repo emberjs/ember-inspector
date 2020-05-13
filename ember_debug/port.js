@@ -5,7 +5,10 @@ const { or, readOnly } = computed;
 export default EmberObject.extend(Ember.Evented, {
   adapter: readOnly('namespace.adapter'),
   applicationId: readOnly('namespace.applicationId'),
-  applicationName: or('namespace._application.name', 'namespace._application.modulePrefix').readOnly(),
+  applicationName: or(
+    'namespace._application.name',
+    'namespace._application.modulePrefix'
+  ).readOnly(),
 
   /**
    * Unique id per application (not application instance). It's very important
@@ -15,7 +18,7 @@ export default EmberObject.extend(Ember.Evented, {
    * @property uniqueId
    * @type {String}
    */
-  uniqueId: computed('namespace._application', function() {
+  uniqueId: computed('namespace._application', function () {
     return Ember.guidFor(this.get('namespace._application'));
   }),
 
@@ -28,8 +31,11 @@ export default EmberObject.extend(Ember.Evented, {
      */
     this.now = Date.now();
 
-    this.get('adapter').onMessageReceived(message => {
-      if (this.get('uniqueId') === message.applicationId || !message.applicationId) {
+    this.get('adapter').onMessageReceived((message) => {
+      if (
+        this.get('uniqueId') === message.applicationId ||
+        !message.applicationId
+      ) {
         this.messageReceived(message.type, message);
       }
     });
@@ -50,7 +56,7 @@ export default EmberObject.extend(Ember.Evented, {
     if (name.startsWith('view:')) {
       try {
         this.trigger(name, message);
-      } catch(error) {
+      } catch (error) {
         this.adapter.handleError(error);
       }
     } else {
@@ -85,12 +91,12 @@ export default EmberObject.extend(Ember.Evented, {
    * @return {Mixed} The return value of the passed function
    */
   wrap(fn) {
-    return run(this, function() {
+    return run(this, function () {
       try {
         return fn();
-      } catch(error) {
+      } catch (error) {
         this.get('adapter').handleError(error);
       }
     });
-  }
+  },
 });

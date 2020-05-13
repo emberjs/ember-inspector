@@ -22,7 +22,7 @@ export default Controller.extend({
     },
     set(key, value) {
       return handleSettingProperty(this.storage, HIDE_EMPTY_MODELS_KEY, value);
-    }
+    },
   }),
 
   orderByRecordCount: computed({
@@ -30,16 +30,20 @@ export default Controller.extend({
       return getStoredPropertyValue(this.storage, ORDER_MODELS_BY_COUNT_KEY);
     },
     set(key, value) {
-      return handleSettingProperty(this.storage, ORDER_MODELS_BY_COUNT_KEY, value);
-    }
+      return handleSettingProperty(
+        this.storage,
+        ORDER_MODELS_BY_COUNT_KEY,
+        value
+      );
+    },
   }),
 
   sortByName: sort('filtered', 'sortByNameProp'),
 
   sortByDescCount: sort('filtered', 'sortByDescCountProp'),
 
-  filtered: computed('model.@each.count', 'hideEmptyModelTypes', function() {
-    return this.model.filter(item => {
+  filtered: computed('model.@each.count', 'hideEmptyModelTypes', function () {
+    return this.model.filter((item) => {
       let hideEmptyModels = this.hideEmptyModelTypes;
 
       if (hideEmptyModels) {
@@ -50,9 +54,9 @@ export default Controller.extend({
     });
   }),
 
-  getStore: action(function() {
+  getStore: action(function () {
     this.port.send('objectInspector:inspectByContainerLookup', {
-      name: 'service:store'
+      name: 'service:store',
     });
   }),
 });

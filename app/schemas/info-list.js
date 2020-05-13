@@ -4,9 +4,10 @@
 export default [
   {
     valuePath: 'library',
-    name: 'Library'
-  }, {
+    name: 'Library',
+  },
+  {
     valuePath: 'version',
-    name: 'Version'
-  }
+    name: 'Version',
+  },
 ];

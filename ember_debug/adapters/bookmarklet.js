@@ -1,4 +1,4 @@
-import BasicAdapter from "./basic";
+import BasicAdapter from './basic';
 
 export default BasicAdapter.extend({
   init() {
@@ -12,7 +12,7 @@ export default BasicAdapter.extend({
   },
 
   _listen() {
-    window.addEventListener('message', e => {
+    window.addEventListener('message', (e) => {
       if (e.origin !== window.emberInspector.url) {
         return;
       }
@@ -24,8 +24,8 @@ export default BasicAdapter.extend({
 
     window.onunload = () => {
       this.sendMessage({
-        unloading: true
+        unloading: true,
       });
     };
-  }
+  },
 });

@@ -1,5 +1,5 @@
 /* eslint no-empty:0 */
-import PortMixin from "ember-debug/mixins/port-mixin";
+import PortMixin from 'ember-debug/mixins/port-mixin';
 const Ember = window.Ember;
 const { Object: EmberObject } = Ember;
 let { libraries } = Ember;
@@ -66,7 +66,7 @@ export default EmberObject.extend(PortMixin, {
    */
   sendBooted() {
     this.sendMessage('applicationBooted', {
-      booted: this.get('namespace.owner.__inspector__booted')
+      booted: this.get('namespace.owner.__inspector__booted'),
     });
   },
 
@@ -101,8 +101,8 @@ export default EmberObject.extend(PortMixin, {
      */
     refresh() {
       window.location.reload();
-    }
-  }
+    },
+  },
 });
 
 /**

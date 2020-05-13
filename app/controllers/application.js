@@ -45,28 +45,30 @@ export default Controller.extend({
   /*
    * Called when digging deeper into object stack
    * from within the ObjectInspector
-  */
+   */
   pushMixinDetails(name, property, objectId, details, errors) {
     details = {
       name,
       property,
       objectId,
       mixins: details,
-      errors
+      errors,
     };
 
     this.mixinStack.pushObject(details);
     this.set('mixinDetails', details);
   },
 
-  popMixinDetails: action(function() {
+  popMixinDetails: action(function () {
     let mixinStack = this.mixinStack;
     let item = mixinStack.popObject();
     this.set('mixinDetails', mixinStack.get('lastObject'));
-    this.port.send('objectInspector:releaseObject', { objectId: item.objectId });
+    this.port.send('objectInspector:releaseObject', {
+      objectId: item.objectId,
+    });
   }),
 
-  showInspector: action(function() {
+  showInspector: action(function () {
     if (this.inspectorExpanded === false) {
       this.set('inspectorExpanded', true);
       // Broadcast that tables have been resized (used by `x-list`).
@@ -76,7 +78,7 @@ export default Controller.extend({
     }
   }),
 
-  hideInspector: action(function() {
+  hideInspector: action(function () {
     if (this.inspectorExpanded === true) {
       this.set('inspectorExpanded', false);
       // Broadcast that tables have been resized (used by `x-list`).
@@ -86,7 +88,7 @@ export default Controller.extend({
     }
   }),
 
-  toggleInspector: action(function() {
+  toggleInspector: action(function () {
     if (this.inspectorExpanded) {
       this.hideInspector();
     } else {
@@ -94,16 +96,18 @@ export default Controller.extend({
     }
   }),
 
-  setActive: action(function(bool) {
+  setActive: action(function (bool) {
     this.set('active', bool);
   }),
 
   /*
    * Called when inspecting an object from outside of the ObjectInspector
-  */
+   */
   activateMixinDetails(name, objectId, details, errors) {
-    this.mixinStack.forEach(item => {
-      this.port.send('objectInspector:releaseObject', { objectId: item.objectId });
+    this.mixinStack.forEach((item) => {
+      this.port.send('objectInspector:releaseObject', {
+        objectId: item.objectId,
+      });
     });
 
     this.set('mixinStack', []);
@@ -119,7 +123,7 @@ export default Controller.extend({
       for (let i = index; i >= 0; i--) {
         objectsToRemove.pushObject(mixinStack.objectAt(i));
       }
-      objectsToRemove.forEach(item => {
+      objectsToRemove.forEach((item) => {
         mixinStack.removeObject(item);
       });
     }
@@ -128,6 +132,5 @@ export default Controller.extend({
     } else {
       this.set('mixinDetails', null);
     }
-
   },
 });

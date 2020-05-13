@@ -15,6 +15,6 @@ export default Component.extend({
   actions: {
     selectApp(applicationId) {
       this.port.selectApplication(applicationId);
-    }
-  }
+    },
+  },
 });

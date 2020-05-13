@@ -11,7 +11,7 @@ Application.initializer({
   name: `00-override-adapter`,
   initialize(app) {
     app.register('adapter:main', TestAdapter);
-  }
+  },
 });
 
 Application.instanceInitializer({
@@ -20,7 +20,7 @@ Application.instanceInitializer({
     let memory = instance.lookup('service:storage/memory');
     let storage = instance.lookup('service:storage');
     storage.backend = memory;
-  }
+  },
 });
 
 setApplication(Application.create(config.APP));

@@ -10,26 +10,29 @@ export default Controller.extend({
 
   search: null,
 
-  rows: computed('model.@each.name', 'search', function() {
-    return this.model
-      .filter((instance) => searchMatch(instance.name, this.search));
+  rows: computed('model.@each.name', 'search', function () {
+    return this.model.filter((instance) =>
+      searchMatch(instance.name, this.search)
+    );
   }),
 
   init() {
     this._super(...arguments);
 
-    this.columns = [{
-      valuePath: 'name',
-      name: 'Name'
-    }];
+    this.columns = [
+      {
+        valuePath: 'name',
+        name: 'Name',
+      },
+    ];
 
     // By default, sort alphabetically
     this.sorts = [
       {
         valuePath: 'name',
-        isAscending: true
-      }
-    ]
+        isAscending: true,
+      },
+    ];
   },
 
   /**
@@ -39,15 +42,15 @@ export default Controller.extend({
    * @method inspectInstance
    * @param {Object} instance
    */
-  inspectInstance: action(function(instance) {
+  inspectInstance: action(function (instance) {
     if (instance.inspectable) {
       this.port.send('objectInspector:inspectByContainerLookup', {
-        name: instance.fullName
+        name: instance.fullName,
       });
     }
   }),
 
-  sendContainerToConsole: action(function() {
+  sendContainerToConsole: action(function () {
     this.port.send('objectInspector:sendContainerToConsole');
   }),
 
@@ -55,7 +58,7 @@ export default Controller.extend({
   updateSorts(sorts) {
     // The default sort has no meaning here, so force it to always be ascending
     //   or descending
-    let isDefaultSort = !sorts.length
+    let isDefaultSort = !sorts.length;
     if (isDefaultSort) {
       sorts = [
         {
@@ -65,5 +68,5 @@ export default Controller.extend({
       ];
     }
     set(this, 'sorts', sorts);
-  }
+  },
 });

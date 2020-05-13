@@ -5,7 +5,7 @@ import {
   findAll,
   triggerEvent,
   triggerKeyEvent,
-  visit
+  visit,
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
@@ -37,7 +37,17 @@ function Args({ names = [], positionals = 0 } = {}) {
   return { named, positional };
 }
 
-function Route({ id, name, args = Args(), instance = Serialized(), template = `my-app/templates/${name}.hbs`, bounds = 'range' }, ...children) {
+function Route(
+  {
+    id,
+    name,
+    args = Args(),
+    instance = Serialized(),
+    template = `my-app/templates/${name}.hbs`,
+    bounds = 'range',
+  },
+  ...children
+) {
   return {
     id: `render-node:${id}:outlet`,
     type: 'outlet',
@@ -46,29 +56,37 @@ function Route({ id, name, args = Args(), instance = Serialized(), template = `m
     instance: null,
     template: null,
     bounds: 'range',
-    children: [{
-      id: `render-node:${id}`,
-      type: 'route-template',
-      name,
-      args,
-      instance,
-      template,
-      bounds,
-      children
-    }]
+    children: [
+      {
+        id: `render-node:${id}`,
+        type: 'route-template',
+        name,
+        args,
+        instance,
+        template,
+        bounds,
+        children,
+      },
+    ],
   };
 }
 
 function TopLevel({ id }, ...children) {
-  return Route({
-    id,
-    name: '-top-level',
-    instance: null,
-    template: 'packages/@ember/-internals/glimmer/lib/templates/outlet.hbs'
-  }, ...children);
+  return Route(
+    {
+      id,
+      name: '-top-level',
+      instance: null,
+      template: 'packages/@ember/-internals/glimmer/lib/templates/outlet.hbs',
+    },
+    ...children
+  );
 }
 
-function Component({ id, name, args = Args(), instance = null, bounds = 'range' }, ...children) {
+function Component(
+  { id, name, args = Args(), instance = null, bounds = 'range' },
+  ...children
+) {
   return {
     id: `render-node:${id}`,
     type: 'component',
@@ -77,21 +95,29 @@ function Component({ id, name, args = Args(), instance = null, bounds = 'range' 
     instance,
     template: `my-app/templates/components/${name}.hbs`,
     bounds,
-    children
+    children,
   };
 }
 
 function getRenderTree() {
   return [
-    TopLevel({ id: 0 },
-      Route({ id: 1, name: 'application', instance: Serialized('ember123') },
-        Route({ id: 2, name: 'todos' },
-          Component({ id: 3, name: 'todo-list', instance: Serialized('ember456') },
-            Component({ id: 4, name: 'todo-item', args: Args({ names: ["subTasks"], positionals: 0 })})
+    TopLevel(
+      { id: 0 },
+      Route(
+        { id: 1, name: 'application', instance: Serialized('ember123') },
+        Route(
+          { id: 2, name: 'todos' },
+          Component(
+            { id: 3, name: 'todo-list', instance: Serialized('ember456') },
+            Component({
+              id: 4,
+              name: 'todo-item',
+              args: Args({ names: ['subTasks'], positionals: 0 }),
+            })
           )
         )
       )
-    )
+    ),
   ];
 }
 
@@ -99,12 +125,12 @@ module('Component Tab', function (hooks) {
   setupTestAdapter(hooks);
   setupApplicationTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     GUID = 1;
 
     respondWith('view:getTree', {
       type: 'view:renderTree',
-      tree: getRenderTree()
+      tree: getRenderTree(),
     });
   });
 
@@ -115,7 +141,11 @@ module('Component Tab', function (hooks) {
     assert.equal(treeNodes.length, 4, 'expected some tree nodes');
 
     let expandedNodes = findAll('.component-tree-item .expanded');
-    assert.equal(expandedNodes.length, 3, 'all nodes should be expanded except the leaf node');
+    assert.equal(
+      expandedNodes.length,
+      3,
+      'all nodes should be expanded except the leaf node'
+    );
 
     let names = [];
 
@@ -130,7 +160,8 @@ module('Component Tab', function (hooks) {
         'application route',
         'todos route',
         'TodoList',
-        'TodoItem @subTasks ={{ ... }}'],
+        'TodoItem @subTasks ={{ ... }}',
+      ],
       'expected names for all views/components'
     );
   });
@@ -153,8 +184,12 @@ module('Component Tab', function (hooks) {
     await visit('/component-tree');
 
     // handle messages
-    respondWith('view:showInspection', () => { return false; });
-    respondWith('objectInspector:inspectById', () => { return false; });
+    respondWith('view:showInspection', () => {
+      return false;
+    });
+    respondWith('objectInspector:inspectById', () => {
+      return false;
+    });
 
     let treeNodes = findAll('.component-tree-item');
     assert.equal(treeNodes.length, 4, 'expected some tree nodes');
@@ -205,14 +240,22 @@ module('Component Tab', function (hooks) {
     await visit('/component-tree');
 
     let expanders = findAll('.component-tree-item__expand.expanded');
-    assert.equal(expanders.length, 3, 'disclosure triangles all in expanded state');
+    assert.equal(
+      expanders.length,
+      3,
+      'disclosure triangles all in expanded state'
+    );
 
     // Click second component with alt key;
     // this should collapse itself and children
     let expanderEl = expanders[1];
     await click(expanderEl, { altKey: true });
     expanders = findAll('.component-tree-item__expand.expanded');
-    assert.equal(expanders.length, 1, 'clicked disclosure triangle no longer expanded');
+    assert.equal(
+      expanders.length,
+      1,
+      'clicked disclosure triangle no longer expanded'
+    );
 
     expanders = findAll('.component-tree-item__expand');
     expanderEl = expanders[1];
@@ -222,7 +265,9 @@ module('Component Tab', function (hooks) {
     // the children should be collapsed
     expanders = findAll('.component-tree-item__expand');
     expanderEl = expanders[2];
-    assert.dom(expanderEl).hasClass('collapsed', 'child component was collapsed');
+    assert
+      .dom(expanderEl)
+      .hasClass('collapsed', 'child component was collapsed');
   });
 
   test('It should filter the view tree using the search text', async function (assert) {
@@ -247,7 +292,7 @@ module('Component Tab', function (hooks) {
     );
   });
 
-  test("It should clear the search filter when the clear button is clicked", async function (assert) {
+  test('It should clear the search filter when the clear button is clicked', async function (assert) {
     await visit('/component-tree');
 
     let treeNodes = findAll('.component-tree-item');
@@ -275,10 +320,12 @@ module('Component Tab', function (hooks) {
     // resend the same view tree
     await sendMessage({
       type: 'view:viewTree',
-      tree: getRenderTree()
+      tree: getRenderTree(),
     });
 
-    assert.dom('.component-tree-item').exists({ count: 3 }, 'the last node should still be hidden');
+    assert
+      .dom('.component-tree-item')
+      .exists({ count: 3 }, 'the last node should still be hidden');
   });
 
   test('Previewing / showing a view on the client', async function (assert) {
@@ -329,7 +376,11 @@ module('Component Tab', function (hooks) {
     });
 
     respondWith('objectInspector:inspectById', ({ objectId }) => {
-      assert.equal(objectId, 'ember456', 'Client asked to inspect the application controller');
+      assert.equal(
+        objectId,
+        'ember456',
+        'Client asked to inspect the application controller'
+      );
       return false;
     });
 
@@ -347,24 +398,41 @@ module('Component Tab', function (hooks) {
     });
 
     respondWith('objectInspector:inspectById', ({ objectId }) => {
-      assert.equal(objectId, 'ember456', 'Client asked to inspect the <TodoList> component');
+      assert.equal(
+        objectId,
+        'ember456',
+        'Client asked to inspect the <TodoList> component'
+      );
       return false;
     });
 
     await sendMessage({
       type: 'view:inspectComponent',
-      id: 'render-node:3'
+      id: 'render-node:3',
     });
 
-    assert.equal(currentURL(), '/component-tree?pinned=render-node%3A3', 'It pins the element id as a query param');
-    assert.dom('.component-tree-item--pinned').hasText('TodoList', 'It selects the item in the tree corresponding to the element');
+    assert.equal(
+      currentURL(),
+      '/component-tree?pinned=render-node%3A3',
+      'It pins the element id as a query param'
+    );
+    assert
+      .dom('.component-tree-item--pinned')
+      .hasText(
+        'TodoList',
+        'It selects the item in the tree corresponding to the element'
+      );
   });
 
   test('Can inspect component arguments that are objects in component tree', async function (assert) {
     await visit('/component-tree');
 
     respondWith('objectInspector:inspectById', ({ objectId }) => {
-      assert.equal(objectId, 'ember1', 'Client asked to inspect the <TodoList> component argument');
+      assert.equal(
+        objectId,
+        'ember1',
+        'Client asked to inspect the <TodoList> component argument'
+      );
       return false;
     });
 

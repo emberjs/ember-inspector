@@ -4,6 +4,5 @@ export default TextField.extend({
   didInsertElement() {
     this.element.select();
     return this._super(...arguments);
-  }
+  },
 });
-

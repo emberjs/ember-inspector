@@ -1,11 +1,11 @@
 import { Promise } from 'rsvp';
-import TabRoute from "ember-inspector/routes/tab";
+import TabRoute from 'ember-inspector/routes/tab';
 
 export default TabRoute.extend({
   model() {
     const port = this.port;
-    return new Promise(function(resolve) {
-      port.one('render:profilesAdded', function(message) {
+    return new Promise(function (resolve) {
+      port.one('render:profilesAdded', function (message) {
         resolve(message.profiles);
       });
       port.send('render:watchProfiles');
@@ -46,7 +46,6 @@ export default TabRoute.extend({
   actions: {
     clearProfiles() {
       this.port.send('render:clear');
-    }
-  }
-
+    },
+  },
 });

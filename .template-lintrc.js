@@ -8,6 +8,6 @@ module.exports = {
     'no-invalid-interactive': false,
     'no-negated-condition': false,
     'no-positive-tabindex': false,
-    'table-groups': false
-  }
+    'table-groups': false,
+  },
 };

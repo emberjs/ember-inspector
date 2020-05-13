@@ -1,6 +1,6 @@
 import { set } from '@ember/object';
 import { Promise } from 'rsvp';
-import TabRoute from "ember-inspector/routes/tab";
+import TabRoute from 'ember-inspector/routes/tab';
 
 export default TabRoute.extend({
   setupController(controller, model) {
@@ -11,8 +11,8 @@ export default TabRoute.extend({
 
   model() {
     const port = this.port;
-    return new Promise(function(resolve) {
-      port.one('data:modelTypesAdded', function(message) {
+    return new Promise(function (resolve) {
+      port.one('data:modelTypesAdded', function (message) {
         resolve(message.modelTypes);
       });
       port.send('data:getModelTypes');
@@ -31,8 +31,11 @@ export default TabRoute.extend({
 
   updateModelTypes(message) {
     let route = this;
-    message.modelTypes.forEach(function(modelType) {
-      const currentType = route.currentModel.findBy('objectId', modelType.objectId);
+    message.modelTypes.forEach(function (modelType) {
+      const currentType = route.currentModel.findBy(
+        'objectId',
+        modelType.objectId
+      );
       set(currentType, 'count', modelType.count);
     });
   },
@@ -40,6 +43,6 @@ export default TabRoute.extend({
   actions: {
     reload() {
       this.refresh();
-    }
-  }
+    },
+  },
 });

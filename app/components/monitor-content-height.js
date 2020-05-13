@@ -25,7 +25,7 @@ export default Component.extend({
    */
   el: null,
 
-  setupListeners: action(function(element) {
+  setupListeners: action(function (element) {
     this.el = element;
 
     this._performUpdateHeight = () => {
@@ -36,7 +36,7 @@ export default Component.extend({
     this.updateHeight();
   }),
 
-  destroyListeners: action(function() {
+  destroyListeners: action(function () {
     window.removeEventListener('resize', this._performUpdateHeight);
   }),
 
@@ -47,7 +47,7 @@ export default Component.extend({
    * @property updateHeightDebounce
    * @type {Object} Ember Concurrency task
    */
-  updateHeightDebounce: task(function * () {
+  updateHeightDebounce: task(function* () {
     yield timeout(100);
     this.updateHeight();
   }).restartable(),

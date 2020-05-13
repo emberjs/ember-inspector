@@ -26,7 +26,7 @@ export default Component.extend(Evented, {
    * @property classNames
    * @type {Array}
    */
-  classNames: ["list__content", "js-list-content"],
+  classNames: ['list__content', 'js-list-content'],
 
   init() {
     this._super(...arguments);
@@ -60,7 +60,11 @@ export default Component.extend(Evented, {
    */
   setupHeight() {
     this.set('contentHeight', this.get('layoutService.contentHeight'));
-    this.layoutService.on('content-height-update', this, this.updateContentHeight);
+    this.layoutService.on(
+      'content-height-update',
+      this,
+      this.updateContentHeight
+    );
   },
 
   /**
@@ -81,7 +85,6 @@ export default Component.extend(Evented, {
     if (previousHeight === 0 && height > 0) {
       this.rerender();
     }
-
   },
 
   /**
@@ -90,13 +93,17 @@ export default Component.extend(Evented, {
    * @method willDestroyElement
    */
   willDestroyElement() {
-    this.layoutService.off('content-height-update', this, this.updateContentHeight);
+    this.layoutService.off(
+      'content-height-update',
+      this,
+      this.updateContentHeight
+    );
     return this._super(...arguments);
   },
 
   attributeBindings: ['style'],
 
-  style: computed('height', function() {
+  style: computed('height', function () {
     return htmlSafe(`height:${this.height}px`);
   }),
 
@@ -113,7 +120,7 @@ export default Component.extend(Evented, {
    * @property height
    * @type {Integer}
    */
-  height: computed('contentHeight', 'headerHeight', function() {
+  height: computed('contentHeight', 'headerHeight', function () {
     let headerHeight = this.headerHeight;
     let contentHeight = this.contentHeight;
 
@@ -123,5 +130,5 @@ export default Component.extend(Evented, {
       return 1;
     }
     return contentHeight - headerHeight;
-  })
+  }),
 });

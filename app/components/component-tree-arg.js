@@ -24,7 +24,7 @@ export default class ComponentTreeArg extends Component {
   @action inspect(event) {
     event.stopPropagation();
     this.port.send('objectInspector:inspectById', {
-      objectId: this.args.value.id
+      objectId: this.args.value.id,
     });
   }
 }

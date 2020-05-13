@@ -9,11 +9,11 @@ import Port from 'ember-debug/port';
 
 // RSVP instrumentation is out of band (50 ms delay)
 async function rsvpDelay() {
-  later(function() {}, 100);
+  later(function () {}, 100);
   await settled();
 }
 
-module('Ember Debug - Promise Debug', function(hooks) {
+module('Ember Debug - Promise Debug', function (hooks) {
   let name, message;
 
   setupEmberDebugTest(hooks, {
@@ -22,18 +22,18 @@ module('Ember Debug - Promise Debug', function(hooks) {
       send(n, m) {
         name = n;
         message = m;
-      }
+      },
     }),
   });
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     EmberDebug.get('promiseDebug').reopen({
       delay: 5,
       session: {
         getItem() {},
         setItem() {},
-        removeItem() {}
-      }
+        removeItem() {},
+      },
     });
   });
 
@@ -41,8 +41,7 @@ module('Ember Debug - Promise Debug', function(hooks) {
     let promise1, child1, promise2;
 
     run(() => {
-      RSVP.resolve('value', 'Promise1')
-        .then(function() {}, null, 'Child1');
+      RSVP.resolve('value', 'Promise1').then(function () {}, null, 'Child1');
 
       // catch so we don't get a promise failure
       RSVP.reject('reason', 'Promise2').catch(() => {});
@@ -71,29 +70,27 @@ module('Ember Debug - Promise Debug', function(hooks) {
 
     assert.equal(promise2.label, 'Promise2');
     assert.equal(promise2.state, 'rejected');
-
-
   });
 
-  test('Updates are published when they happen', function(assert) {
+  test('Updates are published when they happen', function (assert) {
     EmberDebug.port.trigger('promise:getAndObservePromises');
 
     let p;
 
-    run(function() {
-      p = new RSVP.Promise(function() {}, 'Promise1');
+    run(function () {
+      p = new RSVP.Promise(function () {}, 'Promise1');
     });
 
     let done = assert.async();
-    later(function() {
+    later(function () {
       assert.equal(name, 'promise:promisesUpdated');
       let promises = emberA(message.promises);
       let promise = promises.findBy('label', 'Promise1');
       assert.ok(!!promise);
       if (promise) {
         assert.equal(promise.label, 'Promise1');
-        p.then(function() {}, null, 'Child1');
-        later(function() {
+        p.then(function () {}, null, 'Child1');
+        later(function () {
           assert.equal(name, 'promise:promisesUpdated');
           assert.equal(message.promises.length, 2);
           let child = message.promises[0];
@@ -107,8 +104,7 @@ module('Ember Debug - Promise Debug', function(hooks) {
     }, 200);
   });
 
-
-  test('Instrumentation with stack is persisted to session storage', async function(assert) {
+  test('Instrumentation with stack is persisted to session storage', async function (assert) {
     let withStack = false;
     EmberDebug.get('promiseDebug').reopen({
       session: {
@@ -117,28 +113,26 @@ module('Ember Debug - Promise Debug', function(hooks) {
         },
         setItem(key, val) {
           withStack = val;
-        }
-      }
+        },
+      },
     });
 
     await settled();
     EmberDebug.port.trigger('promise:getInstrumentWithStack');
 
-
     await settled();
     assert.equal(name, 'promise:instrumentWithStack');
     assert.equal(message.instrumentWithStack, false);
     EmberDebug.port.trigger('promise:setInstrumentWithStack', {
-      instrumentWithStack: true
+      instrumentWithStack: true,
     });
-
 
     await settled();
     assert.equal(name, 'promise:instrumentWithStack');
     assert.equal(message.instrumentWithStack, true);
     assert.equal(withStack, true, 'persisted');
     EmberDebug.port.trigger('promise:setInstrumentWithStack', {
-      instrumentWithStack: false
+      instrumentWithStack: false,
     });
 
     await settled();
@@ -147,7 +141,7 @@ module('Ember Debug - Promise Debug', function(hooks) {
     assert.equal(withStack, false, 'persisted');
   });
 
-  skip('Responds even if no promises detected', function(assert) {
+  skip('Responds even if no promises detected', function (assert) {
     EmberDebug.port.trigger('promise:getAndObservePromises');
     assert.equal(name, 'promise:promisesUpdated');
     assert.equal(message.promises.length, 0);

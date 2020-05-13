@@ -12,4 +12,3 @@ export default Component.extend({
     this.toggleProperty('mixin.expand');
   }),
 });
-

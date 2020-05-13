@@ -14,7 +14,7 @@ export default BasicAdapter.extend({
   },
 
   _connect() {
-    this.socket.on('emberInspectorMessage', message => {
+    this.socket.on('emberInspectorMessage', (message) => {
       run(() => {
         this._messageReceived(message);
       });
@@ -27,6 +27,5 @@ export default BasicAdapter.extend({
 
   willDestroy() {
     this._disconnect();
-  }
+  },
 });
-

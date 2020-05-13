@@ -1,12 +1,12 @@
 import { Promise } from 'rsvp';
 import { get } from '@ember/object';
-import TabRoute from "ember-inspector/routes/tab";
+import TabRoute from 'ember-inspector/routes/tab';
 
 export default TabRoute.extend({
   setupController(controller) {
     controller.setProperties({
       search: '',
-      searchVal: ''
+      searchVal: '',
     });
     this._super(...arguments);
   },
@@ -14,7 +14,7 @@ export default TabRoute.extend({
     const type = params.type_id;
     const port = this.port;
     return new Promise((resolve, reject) => {
-      port.one('container:instances', message => {
+      port.one('container:instances', (message) => {
         if (message.status === 200) {
           resolve(message.instances);
         } else {
@@ -25,7 +25,6 @@ export default TabRoute.extend({
     });
   },
 
-
   actions: {
     error(err) {
       if (err && err.status === 404) {
@@ -34,7 +33,9 @@ export default TabRoute.extend({
       }
     },
     sendInstanceToConsole(obj) {
-      this.port.send('container:sendInstanceToConsole', { name: get(obj, 'fullName') });
-    }
-  }
+      this.port.send('container:sendInstanceToConsole', {
+        name: get(obj, 'fullName'),
+      });
+    },
+  },
 });

@@ -117,7 +117,7 @@ if (Ember._captureRenderTree && compareVersion(Ember.VERSION, '3.14.1') > 0) {
   function getOutletState(owner) {
     try {
       return owner.lookup('router:main')._toplevelView.state.ref.value();
-    } catch(error) {
+    } catch (error) {
       console.log('[Ember Inspector] failed to capture render tree');
       console.log(error);
       return undefined;
@@ -141,7 +141,7 @@ if (Ember._captureRenderTree && compareVersion(Ember.VERSION, '3.14.1') > 0) {
       let map = new Map();
       collectComponentsByController(map, null, getRootViews(owner));
       return map;
-    } catch(error) {
+    } catch (error) {
       console.log('[Ember Inspector] failed to capture render tree');
       console.log(error);
       return undefined;
@@ -156,28 +156,28 @@ if (Ember._captureRenderTree && compareVersion(Ember.VERSION, '3.14.1') > 0) {
   }
 
   /**
-  * Recursively walk an array of components and add any "top level" components
-  * to the map keyed by their controller.
-  */
+   * Recursively walk an array of components and add any "top level" components
+   * to the map keyed by their controller.
+   */
   function collectComponentsByController(map, controller, components) {
-    components.forEach(component => {
+    components.forEach((component) => {
       let target = targetForComponent(component);
 
       if (target === undefined || target instanceof Controller) {
         /**
-        * If our parent is already added, don't add ourself again.
-        *
-        * This is to prevent something like this:
-        *
-        *    {{!-- app/templates/application.hbs}}
-        *    <Parent>
-        *      <Child />
-        *    </Parent>
-        *
-        * Without this check, both the parent and the yielded child will be
-        * considered "top level" since they both have the controller as their
-        * target.
-        */
+         * If our parent is already added, don't add ourself again.
+         *
+         * This is to prevent something like this:
+         *
+         *    {{!-- app/templates/application.hbs}}
+         *    <Parent>
+         *      <Child />
+         *    </Parent>
+         *
+         * Without this check, both the parent and the yielded child will be
+         * considered "top level" since they both have the controller as their
+         * target.
+         */
         if (target !== controller) {
           if (!map.has(target)) {
             map.set(target, []);
@@ -188,7 +188,11 @@ if (Ember._captureRenderTree && compareVersion(Ember.VERSION, '3.14.1') > 0) {
 
         collectComponentsByController(map, target, getChildViews(component));
       } else {
-        collectComponentsByController(map, controller, getChildViews(component));
+        collectComponentsByController(
+          map,
+          controller,
+          getChildViews(component)
+        );
       }
     });
   }
@@ -276,23 +280,18 @@ if (Ember._captureRenderTree && compareVersion(Ember.VERSION, '3.14.1') > 0) {
     parent.children.push(route);
     parent = route;
 
-    let childOutlets = Object.keys(outlets).map(name => captureOutlet(
-      subpath,
-      render.owner,
-      components,
-      outlets[name]
-    ));
+    let childOutlets = Object.keys(outlets).map((name) =>
+      captureOutlet(subpath, render.owner, components, outlets[name])
+    );
 
     let childComponents = captureComponents(
       components.get(render.controller) || [],
       render.controller
     );
 
-    parent.children.push(...mergeOutletChildren(
-      render.controller,
-      childOutlets,
-      childComponents
-    ));
+    parent.children.push(
+      ...mergeOutletChildren(render.controller, childOutlets, childComponents)
+    );
 
     return outlet;
   }
@@ -418,8 +417,8 @@ if (Ember._captureRenderTree && compareVersion(Ember.VERSION, '3.14.1') > 0) {
    */
   function captureComponents(components, controller) {
     return components
-      .filter(component => controllerForComponent(component) === controller)
-      .map(component => ({
+      .filter((component) => controllerForComponent(component) === controller)
+      .map((component) => ({
         id: `render-node:${guidFor(component)}`,
         type: 'component',
         name: nameForComponent(component),

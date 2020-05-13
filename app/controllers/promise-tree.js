@@ -22,8 +22,8 @@ export default Controller.extend({
 
   /* jscs:disable validateIndentation */
   filtered: filter(
-    'model.@each.{createdAt,fulfilledBranch,rejectedBranch,pendingBranch,isVisible}', function(item) {
-
+    'model.@each.{createdAt,fulfilledBranch,rejectedBranch,pendingBranch,isVisible}',
+    function (item) {
       // exclude cleared promises
       if (this.createdAfter && item.get('createdAt') < this.createdAfter) {
         return false;
@@ -56,7 +56,6 @@ export default Controller.extend({
         return item.matches(search);
       }
       return true;
-
     }
   ),
   /* jscs:enable validateIndentation */
@@ -66,7 +65,7 @@ export default Controller.extend({
   effectiveSearch: null,
 
   // eslint-disable-next-line ember/no-observers
-  searchChanged: observer('searchValue', function() {
+  searchChanged: observer('searchValue', function () {
     debounce(this, this.notifyChange, 500);
   }),
 
@@ -77,13 +76,13 @@ export default Controller.extend({
     });
   },
 
-  toggleExpand: action(function(promise) {
+  toggleExpand: action(function (promise) {
     let isExpanded = !promise.get('isExpanded');
     promise.set('isManuallyExpanded', isExpanded);
     promise.recalculateExpanded();
     let children = promise._allChildren();
     if (isExpanded) {
-      children.forEach(child => {
+      children.forEach((child) => {
         let isManuallyExpanded = child.get('isManuallyExpanded');
         if (isManuallyExpanded === undefined) {
           child.set('isManuallyExpanded', isExpanded);
@@ -93,34 +92,34 @@ export default Controller.extend({
     }
   }),
 
-  tracePromise: action(function(promise) {
+  tracePromise: action(function (promise) {
     this.port.send('promise:tracePromise', { promiseId: promise.get('guid') });
   }),
 
-  inspectObject: action(function() {
+  inspectObject: action(function () {
     this.target.send('inspectObject', ...arguments);
   }),
 
-  sendValueToConsole: action(function(promise) {
+  sendValueToConsole: action(function (promise) {
     this.port.send('promise:sendValueToConsole', {
-      promiseId: promise.get('guid')
+      promiseId: promise.get('guid'),
     });
   }),
 
-  setFilter: action(function(filter) {
+  setFilter: action(function (filter) {
     this.set('filter', filter);
     next(() => {
       this.notifyPropertyChange('filtered');
     });
   }),
 
-  updateInstrumentWithStack: action(function(bool) {
+  updateInstrumentWithStack: action(function (bool) {
     this.port.send('promise:setInstrumentWithStack', {
-      instrumentWithStack: bool
+      instrumentWithStack: bool,
     });
   }),
 
-  clear: action(function() {
+  clear: action(function () {
     this.set('createdAfter', new Date());
     once(this, this.notifyChange);
   }),

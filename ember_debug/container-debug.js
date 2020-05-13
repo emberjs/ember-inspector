@@ -1,4 +1,4 @@
-import PortMixin from "ember-debug/mixins/port-mixin";
+import PortMixin from 'ember-debug/mixins/port-mixin';
 const Ember = window.Ember;
 const { Object: EmberObject, computed } = Ember;
 const { readOnly } = computed;
@@ -8,19 +8,19 @@ export default EmberObject.extend(PortMixin, {
 
   objectInspector: readOnly('namespace.objectInspector'),
 
-  container: computed('namespace.owner', function() {
+  container: computed('namespace.owner', function () {
     // should update this to use real owner API
     return this.get('namespace.owner.__container__');
   }),
 
   portNamespace: 'container',
 
-  TYPES_TO_SKIP: computed(function() {
+  TYPES_TO_SKIP: computed(function () {
     return [
       'component-lookup',
       'container-debug-adapter',
       'resolver-for-debugging',
-      'event_dispatcher'
+      'event_dispatcher',
     ];
   }),
 
@@ -41,18 +41,23 @@ export default EmberObject.extend(PortMixin, {
     let instancesByType = {};
     let cache = this.get('container').cache;
     // Detect if InheritingDict (from Ember < 1.8)
-    if (typeof cache.dict !== 'undefined' && typeof cache.eachLocal !== 'undefined') {
+    if (
+      typeof cache.dict !== 'undefined' &&
+      typeof cache.eachLocal !== 'undefined'
+    ) {
       cache = cache.dict;
     }
     for (key in cache) {
       const type = this.typeFromKey(key);
-      if (this.shouldHide(type)) { continue; }
+      if (this.shouldHide(type)) {
+        continue;
+      }
       if (instancesByType[type] === undefined) {
         instancesByType[type] = [];
       }
       instancesByType[type].push({
         fullName: key,
-        instance: cache[key]
+        instance: cache[key],
       });
     }
     return instancesByType;
@@ -73,17 +78,17 @@ export default EmberObject.extend(PortMixin, {
     if (!instances) {
       return null;
     }
-    return instances.map(item => ({
+    return instances.map((item) => ({
       name: this.nameFromKey(item.fullName),
       fullName: item.fullName,
-      inspectable: this.get('objectInspector').canSend(item.instance)
+      inspectable: this.get('objectInspector').canSend(item.instance),
     }));
   },
 
   messages: {
     getTypes() {
       this.sendMessage('types', {
-        types: this.getTypes()
+        types: this.getTypes(),
       });
     },
     getInstances(message) {
@@ -91,17 +96,17 @@ export default EmberObject.extend(PortMixin, {
       if (instances) {
         this.sendMessage('instances', {
           instances,
-          status: 200
+          status: 200,
         });
       } else {
         this.sendMessage('instances', {
-          status: 404
+          status: 404,
         });
       }
     },
     sendInstanceToConsole(message) {
       const instance = this.get('container').lookup(message.name);
       this.get('objectToConsole').sendValueToConsole(instance);
-    }
-  }
+    },
+  },
 });
