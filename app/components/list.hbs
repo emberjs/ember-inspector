@@ -47,7 +47,7 @@
       @left={{column.left}}
       @minWidth={{this.minWidth}}
       @maxWidth={{column.maxWidth}}
-      @on-drag={{action "didResize" column.id}}
+      @on-drag={{fn this.didResize column.id}}
       @position={{one-way column.width}}
       @side="left"
     />

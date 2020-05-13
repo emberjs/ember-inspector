@@ -68,7 +68,7 @@
                   class="font-mono"
                   href="#"
                   data-test-deprecation-source-link
-                  {{action @openResource source.model.map}}
+                  {{on "click" (fn @openResource source.model.map)}}
                 >
                   {{source.url}}
                 </a>
