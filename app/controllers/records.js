@@ -74,6 +74,7 @@ export default Controller.extend({
     this._super(...arguments);
 
     this.filters = [];
+    this.sorts = undefined;
   },
 
   setFilter: action(function (val) {
@@ -84,5 +85,9 @@ export default Controller.extend({
   inspectModel: action(function ([record]) {
     this.set('selection', record);
     this.port.send('data:inspectModel', { objectId: get(record, 'objectId') });
+  }),
+
+  updateSorts: action(function (newSorts) {
+    this.set('sorts', newSorts);
   }),
 });
