@@ -1,7 +1,7 @@
 <div class="h-7 text-base13">
   <select
     class="box-border block w-full h-full m-0 border-0 pr-4 pl-1 text-base text-base13 bg-transparent appearance-none outline-none"
-    onchange={{action "selectApp" value="target.value"}}
+    {{on 'change' this.selectApp}}
   >
     {{#each-in this.apps as |id name|}}
       <option

@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { alias, reads } from '@ember/object/computed';
+import { action } from '@ember/object';
 
 export default Component.extend({
   classNames: ['app-picker'],
@@ -12,9 +13,8 @@ export default Component.extend({
     this.port.send('app-picker-loaded');
   },
 
-  actions: {
-    selectApp(applicationId) {
-      this.port.selectApplication(applicationId);
-    },
-  },
+  selectApp: action(function (event) {
+    let applicationId = event.target.value;
+    this.port.selectApplication(applicationId);
+  }),
 });

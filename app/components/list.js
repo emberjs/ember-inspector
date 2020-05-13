@@ -4,6 +4,7 @@ import { task, timeout } from 'ember-concurrency';
 import ResizableColumns from 'ember-inspector/libs/resizable-columns';
 import { inject as service } from '@ember/service';
 import { readOnly, reads } from '@ember/object/computed';
+import { action } from '@ember/object';
 
 const CHECK_HTML = '&#10003;';
 
@@ -253,18 +254,16 @@ export default Component.extend({
     this.setupContextMenu();
   },
 
-  actions: {
-    /**
-     * Called whenever a column is resized using the draggable handle.
-     * It is responsible for updating the column info by notifying
-     * `resizableColumns` about the update.
-     *
-     * @method didResize
-     * @param {String} id The column's id
-     * @param {Number} width The new width
-     */
-    didResize(id, width) {
-      this.resizableColumns.updateColumnWidth(id, width);
-    },
-  },
+  /**
+   * Called whenever a column is resized using the draggable handle.
+   * It is responsible for updating the column info by notifying
+   * `resizableColumns` about the update.
+   *
+   * @method didResize
+   * @param {String} id The column's id
+   * @param {Number} width The new width
+   */
+  didResize: action(function (id, width) {
+    this.resizableColumns.updateColumnWidth(id, width);
+  }),
 });
