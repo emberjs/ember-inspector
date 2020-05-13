@@ -43,7 +43,7 @@
     "amd-name-resolver": "^1.3.1",
     "aws-sdk": "^2.533.0",
     "babel-eslint": "^10.1.0",
-    "babel-plugin-module-resolver": "^3.2.0",
+    "babel-plugin-module-resolver": "^4.0.0",
     "babel-plugin-transform-es2015-modules-amd": "^6.24.0",
     "basiccontext": "^3.5.1",
     "broccoli-asset-rev": "^3.0.0",
