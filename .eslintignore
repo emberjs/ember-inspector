@@ -21,6 +21,5 @@
 
 # ember-inspector specific
 /dist_prev/
-/scripts/
 /skeletons/
 /ember_debug/vendor/startup-wrapper.js
