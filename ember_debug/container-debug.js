@@ -1,5 +1,7 @@
 // eslint-disable-next-line ember/no-mixins
 import PortMixin from 'ember-debug/mixins/port-mixin';
+import { reads } from '@ember/object/computed';
+
 const Ember = window.Ember;
 const { Object: EmberObject, computed } = Ember;
 const { readOnly } = computed;
@@ -9,10 +11,8 @@ export default EmberObject.extend(PortMixin, {
 
   objectInspector: readOnly('namespace.objectInspector'),
 
-  container: computed('namespace.owner', function () {
-    // should update this to use real owner API
-    return this.get('namespace.owner.__container__');
-  }),
+  // should update this to use real owner API
+  container: reads('namespace.owner.__container__'),
 
   portNamespace: 'container',
 

@@ -1,4 +1,5 @@
 import { typeOf } from '../utils/type-check';
+import { equal, or } from '@ember/object/computed';
 
 const Ember = window.Ember;
 const { Object: EmberObject, computed, A } = Ember;
@@ -38,15 +39,9 @@ export default EmberObject.extend({
     return parent.get('level') + 1;
   }),
 
-  isSettled: computed('state', function () {
-    return this.get('isFulfilled') || this.get('isRejected');
-  }),
+  isSettled: or('isFulfilled', 'isRejected'),
 
-  isFulfilled: computed('state', function () {
-    return this.get('state') === 'fulfilled';
-  }),
+  isFulfilled: equal('state', 'fulfilled'),
 
-  isRejected: computed('state', function () {
-    return this.get('state') === 'rejected';
-  }),
+  isRejected: equal('state', 'rejected'),
 });
