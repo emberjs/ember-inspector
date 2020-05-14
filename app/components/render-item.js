@@ -9,7 +9,7 @@ import { gt } from '@ember/object/computed';
 export default Component.extend({
   tagName: '',
 
-  searchMatch: computed('search', 'name', function () {
+  searchMatch: computed('search', 'model.name', function () {
     let search = this.search;
     if (isEmpty(search)) {
       return true;

@@ -18,7 +18,7 @@ export default PropertiesBase.extend({
     });
   }),
 
-  flatPropertyList: computed('model', 'customFilter', function () {
+  flatPropertyList: computed('model.mixins', 'customFilter', function () {
     const props = this.get('model.mixins').map(function (mixin) {
       return mixin.properties.filter(function (p) {
         let shoulApplyCustomFilter = this.customFilter

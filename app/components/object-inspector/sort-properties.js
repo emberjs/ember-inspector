@@ -17,7 +17,7 @@ export default Component.extend({
    * @property sortedProperties
    * @type {Array<Object>}
    */
-  sortedProperties: computed('sorted.length', function () {
+  sortedProperties: computed('isArray', 'sorted.length', function () {
     // limit arrays
     if (this.get('isArray') && this.get('sorted.length') > 100) {
       const indicator = {
