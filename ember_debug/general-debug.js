@@ -1,4 +1,5 @@
 /* eslint no-empty:0 */
+// eslint-disable-next-line ember/no-mixins
 import PortMixin from 'ember-debug/mixins/port-mixin';
 const Ember = window.Ember;
 const { Object: EmberObject } = Ember;

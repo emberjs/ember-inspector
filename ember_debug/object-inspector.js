@@ -1,3 +1,4 @@
+// eslint-disable-next-line ember/no-mixins
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import bound from 'ember-debug/utils/bound-method';
 import {
