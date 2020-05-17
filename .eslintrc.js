@@ -32,6 +32,7 @@ module.exports = {
 
     // Best practice
     'no-duplicate-imports': 'error',
+    'ember/require-computed-property-dependencies': 'error',
   },
   overrides: [
     // node files
