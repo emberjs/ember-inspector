@@ -32,6 +32,7 @@ module.exports = {
 
     // Best practice
     'no-duplicate-imports': 'error',
+    'ember/no-mixins': 'error',
   },
   overrides: [
     // node files
