@@ -50,7 +50,7 @@
     "broccoli-babel-transpiler": "^7.3.0",
     "broccoli-concat": "^3.7.5",
     "broccoli-file-creator": "^2.1.1",
-    "broccoli-funnel": "^2.0.2",
+    "broccoli-funnel": "^3.0.3",
     "broccoli-merge-trees": "^4.2.0",
     "broccoli-stew": "^3.0.0",
     "broccoli-string-replace": "^0.1.2",
