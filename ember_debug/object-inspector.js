@@ -772,7 +772,7 @@ function getClassName(object) {
       (emberNames.get(object.constructor) || object.constructor.name)) ||
     '';
 
-  if ('toString' in object && object.toString !== Function.prototype.toString) {
+  if ('toString' in object && object.toString !== Object.prototype.toString) {
     name = object.toString();
   }
 
