@@ -1,5 +1,5 @@
 import Controller from '@ember/controller';
 
-export default Controller.extend({
-  navWidth: 180,
-});
+export default class InfoController extends Controller {
+  navWidth = 180;
+}
