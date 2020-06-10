@@ -48,9 +48,10 @@ export default Component.extend({
   showDependentKeys: and('isDepsExpanded', 'hasDependentKeys'),
 
   canCalculate: computed(
-    'model',
     'isCalculated',
     'isComputedProperty',
+    'isOverridden',
+    'model.{isExpensive,isGetter}',
     function () {
       if (this.get('isOverridden')) return false;
       if (
@@ -65,9 +66,10 @@ export default Component.extend({
   ),
 
   iconInfo: computed(
+    'isFunction', // eslint-disable-line ember/use-brace-expansion
     'isService',
-    'isFunction',
-    'model.{inspect.value,isTracked,isProperty,isGetter}',
+    'model.inspect.value',
+    'model.{isComputed,isGetter,isProperty,isTracked}',
     function () {
       if (this.get('isService')) {
         return { type: 'service', title: 'Service' };

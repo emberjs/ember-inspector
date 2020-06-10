@@ -31,11 +31,8 @@ export default EmberObject.extend(Ember.Evented, {
      */
     this.now = Date.now();
 
-    this.get('adapter').onMessageReceived((message) => {
-      if (
-        this.get('uniqueId') === message.applicationId ||
-        !message.applicationId
-      ) {
+    this.adapter.onMessageReceived((message) => {
+      if (this.uniqueId === message.applicationId || !message.applicationId) {
         this.messageReceived(message.type, message);
       }
     });
@@ -69,9 +66,9 @@ export default EmberObject.extend(Ember.Evented, {
   send(messageType, options = {}) {
     options.type = messageType;
     options.from = 'inspectedWindow';
-    options.applicationId = this.get('uniqueId');
-    options.applicationName = this.get('applicationName');
-    this.get('adapter').send(options);
+    options.applicationId = this.uniqueId;
+    options.applicationName = this.applicationName;
+    this.adapter.send(options);
   },
 
   /**
@@ -95,7 +92,7 @@ export default EmberObject.extend(Ember.Evented, {
       try {
         return fn();
       } catch (error) {
-        this.get('adapter').handleError(error);
+        this.adapter.handleError(error);
       }
     });
   },

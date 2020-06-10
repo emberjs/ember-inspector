@@ -93,9 +93,7 @@ export default EmberObject.extend(PortMixin, {
     this.sentRecords[objectId] = record;
     // make objects clonable
     for (let i in record.columnValues) {
-      columnValues[i] = this.get('objectInspector').inspect(
-        record.columnValues[i]
-      );
+      columnValues[i] = this.objectInspector.inspect(record.columnValues[i]);
     }
     // make sure keywords can be searched and clonable
     searchKeywords = A(record.searchKeywords).filter(
@@ -134,12 +132,12 @@ export default EmberObject.extend(PortMixin, {
 
   messages: {
     checkAdapter() {
-      this.sendMessage('hasAdapter', { hasAdapter: !!this.get('adapter') });
+      this.sendMessage('hasAdapter', { hasAdapter: !!this.adapter });
     },
 
     getModelTypes() {
       this.releaseTypes();
-      this.releaseTypesMethod = this.get('adapter').watchModelTypes(
+      this.releaseTypesMethod = this.adapter.watchModelTypes(
         (types) => {
           this.modelTypesAdded(types);
         },
@@ -163,7 +161,7 @@ export default EmberObject.extend(PortMixin, {
         typeOrName = type.name;
       }
 
-      let releaseMethod = this.get('adapter').watchRecords(
+      let releaseMethod = this.adapter.watchRecords(
         typeOrName,
         (recordsReceived) => {
           this.recordsAdded(recordsReceived);
@@ -183,14 +181,14 @@ export default EmberObject.extend(PortMixin, {
     },
 
     inspectModel(message) {
-      this.get('objectInspector').sendObject(
+      this.objectInspector.sendObject(
         this.sentRecords[message.objectId].object
       );
     },
 
     getFilters() {
       this.sendMessage('filters', {
-        filters: this.get('adapter').getFilters(),
+        filters: this.adapter.getFilters(),
       });
     },
   },

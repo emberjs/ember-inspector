@@ -101,7 +101,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
     let inspected = Parent.create({
       id: 1,
       toString() {
-        return `Object:${this.get('name')}`;
+        return `Object:${this.name}`;
       },
       nullVal: null,
       dateVal: date,
@@ -180,7 +180,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
     let inspected = new Parent({
       id: 1,
       toString() {
-        return `Object:${this.get('name')}`;
+        return `Object:${this.name}`;
       },
       nullVal: null,
       dateVal: date,
@@ -813,7 +813,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
 
   test('Computed property dependent keys and code should be successfully serialized', async function (assert) {
     let computedFn = function () {
-      return this.get('foo') + this.get('bar');
+      return this.foo + this.bar;
     };
 
     let inspected = EmberObject.extend({

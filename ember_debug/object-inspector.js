@@ -374,7 +374,7 @@ export default EmberObject.extend(PortMixin, {
       }
       this.sendMessage('updateErrors', {
         objectId: message.objectId,
-        errors: errorsToSend(this.get('_errorsFor')[message.objectId]),
+        errors: errorsToSend(this._errorsFor[message.objectId]),
       });
     },
     saveProperty(message) {
@@ -434,7 +434,7 @@ export default EmberObject.extend(PortMixin, {
       this.sendObject(container.lookup(message.name));
     },
     traceErrors(message) {
-      let errors = this.get('_errorsFor')[message.objectId];
+      let errors = this._errorsFor[message.objectId];
       toArray(errors).forEach((error) => {
         let stack = error.error;
         if (stack && stack.stack) {
@@ -442,10 +442,7 @@ export default EmberObject.extend(PortMixin, {
         } else {
           stack = error;
         }
-        this.get('adapter').log(
-          `Object Inspector error for ${error.property}`,
-          stack
-        );
+        this.adapter.log(`Object Inspector error for ${error.property}`, stack);
       });
     },
   },
@@ -487,7 +484,7 @@ export default EmberObject.extend(PortMixin, {
     if (value instanceof EmberObject) {
       args.unshift(inspect(value));
     }
-    this.get('adapter').log('Ember Inspector ($E): ', ...args);
+    this.adapter.log('Ember Inspector ($E): ', ...args);
   },
 
   digIntoObject(objectId, property) {
@@ -582,7 +579,7 @@ export default EmberObject.extend(PortMixin, {
       this.currentObject = null;
     }
 
-    delete this.get('_errorsFor')[objectId];
+    delete this._errorsFor[objectId];
 
     this.sendMessage('droppedObject', { objectId });
   },
@@ -722,7 +719,7 @@ export default EmberObject.extend(PortMixin, {
 
     let objectId = this.retainObject(object);
 
-    let errorsForObject = (this.get('_errorsFor')[objectId] = {});
+    let errorsForObject = (this._errorsFor[objectId] = {});
     const tracked = (this.trackedTags[objectId] =
       this.trackedTags[objectId] || {});
     calculateCPs(
@@ -749,7 +746,7 @@ export default EmberObject.extend(PortMixin, {
       value = calculateCP(
         object,
         { name: property },
-        this.get('_errorsFor')[objectId]
+        this._errorsFor[objectId]
       );
     }
 

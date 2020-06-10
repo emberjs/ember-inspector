@@ -96,7 +96,7 @@ export default EmberObject.extend({
    * @param {Error} error
    */
   handleError(error) {
-    if (this.get('environment') === 'production') {
+    if (this.environment === 'production') {
       if (error && error instanceof Error) {
         error = `Error message: ${error.message}\nStack trace: ${error.stack}`;
       }
@@ -148,7 +148,7 @@ export default EmberObject.extend({
     if (this._isReady) {
       this.sendMessage(...arguments);
     } else {
-      this.get('_pendingMessages').push(options);
+      this._pendingMessages.push(options);
     }
   },
 
@@ -158,7 +158,7 @@ export default EmberObject.extend({
   */
   onConnectionReady() {
     // Flush pending messages
-    const messages = this.get('_pendingMessages');
+    const messages = this._pendingMessages;
     messages.forEach((options) => this.sendMessage(options));
     messages.clear();
     this._isReady = true;
