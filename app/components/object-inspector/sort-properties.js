@@ -7,7 +7,7 @@ export default Component.extend({
   tagName: '',
 
   isArray: computed('properties', function () {
-    const props = A(this.get('properties') || []);
+    const props = A(this.properties || []);
     return props.findBy('name', 'length') && props.findBy('name', 0);
   }),
 
@@ -17,20 +17,20 @@ export default Component.extend({
    * @property sortedProperties
    * @type {Array<Object>}
    */
-  sortedProperties: computed('sorted.length', function () {
+  sortedProperties: computed('isArray', 'sorted.length', function () {
     // limit arrays
-    if (this.get('isArray') && this.get('sorted.length') > 100) {
+    if (this.isArray && this.get('sorted.length') > 100) {
       const indicator = {
         name: '...',
         value: {
           inspect: 'there are more items, send to console to see all',
         },
       };
-      const props = this.get('sorted').slice(0, 100);
+      const props = this.sorted.slice(0, 100);
       props.push(indicator);
       return props;
     }
-    return this.get('sorted');
+    return this.sorted;
   }),
 
   sorted: sort('props', 'sortProperties'),
@@ -64,7 +64,7 @@ export default Component.extend({
       'name',
     ];
     // change order for arrays, if the array doesnt have items, then the order does not need to be changed
-    if (this.get('isArray')) {
+    if (this.isArray) {
       const i = order.indexOf('isProperty:desc');
       order.splice(i, 1);
       order.splice(order.length - 1, 0, 'isProperty:desc');

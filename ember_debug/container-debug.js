@@ -9,10 +9,7 @@ export default EmberObject.extend(PortMixin, {
 
   objectInspector: readOnly('namespace.objectInspector'),
 
-  container: computed('namespace.owner', function () {
-    // should update this to use real owner API
-    return this.get('namespace.owner.__container__');
-  }),
+  container: computed.reads('namespace.owner.__container__'),
 
   portNamespace: 'container',
 
@@ -34,13 +31,13 @@ export default EmberObject.extend(PortMixin, {
   },
 
   shouldHide(type) {
-    return type[0] === '-' || this.get('TYPES_TO_SKIP').indexOf(type) !== -1;
+    return type[0] === '-' || this.TYPES_TO_SKIP.indexOf(type) !== -1;
   },
 
   instancesByType() {
     let key;
     let instancesByType = {};
-    let cache = this.get('container').cache;
+    let cache = this.container.cache;
     // Detect if InheritingDict (from Ember < 1.8)
     if (
       typeof cache.dict !== 'undefined' &&
@@ -82,7 +79,7 @@ export default EmberObject.extend(PortMixin, {
     return instances.map((item) => ({
       name: this.nameFromKey(item.fullName),
       fullName: item.fullName,
-      inspectable: this.get('objectInspector').canSend(item.instance),
+      inspectable: this.objectInspector.canSend(item.instance),
     }));
   },
 
@@ -106,8 +103,8 @@ export default EmberObject.extend(PortMixin, {
       }
     },
     sendInstanceToConsole(message) {
-      const instance = this.get('container').lookup(message.name);
-      this.get('objectToConsole').sendValueToConsole(instance);
+      const instance = this.container.lookup(message.name);
+      this.objectToConsole.sendValueToConsole(instance);
     },
   },
 });

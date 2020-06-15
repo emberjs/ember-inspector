@@ -9,7 +9,7 @@ import { onReady } from '../utils/on-ready';
 
 export default BasicAdapter.extend({
   sendMessage(options = {}) {
-    this.get('socket').emit('emberInspectorMessage', options);
+    this.socket.emit('emberInspectorMessage', options);
   },
 
   socket: computed(function () {
@@ -17,7 +17,7 @@ export default BasicAdapter.extend({
   }),
 
   _listen() {
-    this.get('socket').on('emberInspectorMessage', (message) => {
+    this.socket.on('emberInspectorMessage', (message) => {
       // We should generally not be run-wrapping here. Starting a runloop in
       // ember-debug will cause the inspected app to revalidate/rerender. We
       // are generally not intending to cause changes to the rendered output
@@ -40,7 +40,7 @@ export default BasicAdapter.extend({
   },
 
   _disconnect() {
-    this.get('socket').removeAllListeners('emberInspectorMessage');
+    this.socket.removeAllListeners('emberInspectorMessage');
   },
 
   connect() {

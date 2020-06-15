@@ -37,34 +37,32 @@ export default EmberObject.extend(PortMixin, {
    */
   fetchSourceMap(stackStr) {
     if (
-      this.get('emberCliConfig') &&
+      this.emberCliConfig &&
       this.get('emberCliConfig.environment') === 'development'
     ) {
-      return this.get('sourceMap')
-        .map(stackStr)
-        .then(
-          (mapped) => {
-            if (mapped && mapped.length > 0) {
-              let source = mapped.find(
-                (item) =>
-                  item.source &&
-                  !!item.source.match(
-                    new RegExp(this.get('emberCliConfig.modulePrefix'))
-                  )
-              );
+      return this.sourceMap.map(stackStr).then(
+        (mapped) => {
+          if (mapped && mapped.length > 0) {
+            let source = mapped.find(
+              (item) =>
+                item.source &&
+                !!item.source.match(
+                  new RegExp(this.get('emberCliConfig.modulePrefix'))
+                )
+            );
 
-              if (source) {
-                source.found = true;
-              } else {
-                source = mapped.get('firstObject');
-                source.found = false;
-              }
-              return source;
+            if (source) {
+              source.found = true;
+            } else {
+              source = mapped.get('firstObject');
+              source.found = false;
             }
-          },
-          null,
-          'ember-inspector'
-        );
+            return source;
+          }
+        },
+        null,
+        'ember-inspector'
+      );
     } else {
       return resolve(null, 'ember-inspector');
     }
@@ -78,11 +76,11 @@ export default EmberObject.extend(PortMixin, {
     let deprecations = A();
 
     let promises = all(
-      this.get('deprecationsToSend').map((deprecation) => {
+      this.deprecationsToSend.map((deprecation) => {
         let obj;
         let promise = resolve(undefined, 'ember-inspector');
-        let grouped = this.get('groupedDeprecations');
-        this.get('deprecations').pushObject(deprecation);
+        let grouped = this.groupedDeprecations;
+        this.deprecations.pushObject(deprecation);
         const id = guidFor(deprecation.message);
         obj = grouped[id];
         if (obj) {
@@ -123,7 +121,7 @@ export default EmberObject.extend(PortMixin, {
     promises.then(
       () => {
         this.sendMessage('deprecationsAdded', { deprecations });
-        this.get('deprecationsToSend').clear();
+        this.deprecationsToSend.clear();
         this.sendCount();
       },
       null,
@@ -145,7 +143,7 @@ export default EmberObject.extend(PortMixin, {
   messages: {
     watch() {
       this._watching = true;
-      let grouped = this.get('groupedDeprecations');
+      let grouped = this.groupedDeprecations;
       let deprecations = [];
       for (let i in grouped) {
         if (!grouped.hasOwnProperty(i)) {
@@ -167,7 +165,7 @@ export default EmberObject.extend(PortMixin, {
         stack.unshift(
           `Ember Inspector (Deprecation Trace): ${deprecation.message || ''}`
         );
-        this.get('adapter').log(stack.join('\n'));
+        this.adapter.log(stack.join('\n'));
       });
     },
 
@@ -177,7 +175,7 @@ export default EmberObject.extend(PortMixin, {
 
     clear() {
       run.cancel(this.debounce);
-      this.get('deprecations').clear();
+      this.deprecations.clear();
       this.set('groupedDeprecations', {});
       this.sendCount();
     },
@@ -242,7 +240,7 @@ export default EmberObject.extend(PortMixin, {
 
       // For ember-debug testing we usually don't want
       // to catch deprecations
-      if (!this.get('namespace').IGNORE_DEPRECATIONS) {
+      if (!this.namespace.IGNORE_DEPRECATIONS) {
         this.deprecationsToSend.pushObject(deprecation);
         run.cancel(this.debounce);
         if (this._watching) {
@@ -251,7 +249,7 @@ export default EmberObject.extend(PortMixin, {
           this.debounce = run.debounce(this, 'sendCount', 100);
         }
         if (!this._warned) {
-          this.get('adapter').warn(
+          this.adapter.warn(
             'Deprecations were detected, see the Ember Inspector deprecations tab for more details.'
           );
           this._warned = true;

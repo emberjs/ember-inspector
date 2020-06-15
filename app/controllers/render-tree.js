@@ -56,16 +56,21 @@ export default Controller.extend({
     return escapeRegExp(this.search.toLowerCase());
   }),
 
-  filtered: computed('model.@each.name', 'search', function () {
-    if (isEmpty(this.escapedSearch)) {
-      return this.model;
-    }
+  filtered: computed(
+    'escapedSearch',
+    'model.@each.name',
+    'search',
+    function () {
+      if (isEmpty(this.escapedSearch)) {
+        return this.model;
+      }
 
-    return this.model.filter((item) => {
-      const regExp = new RegExp(this.escapedSearch);
-      return recursiveMatch(item, regExp);
-    });
-  }),
+      return this.model.filter((item) => {
+        const regExp = new RegExp(this.escapedSearch);
+        return recursiveMatch(item, regExp);
+      });
+    }
+  ),
 
   closeWarning: action(function () {
     this.set('isWarningClosed', true);

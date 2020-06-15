@@ -19,7 +19,7 @@ export default EmberObject.extend(PortMixin, {
     this._super();
 
     this.profileManager.wrapForErrors = (context, callback) =>
-      this.get('port').wrap(() => callback.call(context));
+      this.port.wrap(() => callback.call(context));
     this.profileManager.onProfilesAdded(this, this._updateComponentTree);
   },
 

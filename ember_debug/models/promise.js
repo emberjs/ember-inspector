@@ -31,22 +31,16 @@ export default EmberObject.extend({
   }),
 
   level: computed('parent.level', function () {
-    const parent = this.get('parent');
+    const parent = this.parent;
     if (!parent) {
       return 0;
     }
     return parent.get('level') + 1;
   }),
 
-  isSettled: computed('state', function () {
-    return this.get('isFulfilled') || this.get('isRejected');
-  }),
+  isSettled: computed.or('isFulfilled', 'isRejected'),
 
-  isFulfilled: computed('state', function () {
-    return this.get('state') === 'fulfilled';
-  }),
+  isFulfilled: computed.equal('state', 'fulfilled'),
 
-  isRejected: computed('state', function () {
-    return this.get('state') === 'rejected';
-  }),
+  isRejected: computed.equal('state', 'rejected'),
 });

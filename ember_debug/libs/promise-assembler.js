@@ -59,7 +59,7 @@ let PromiseAssembler = EmberObject.extend(Evented, {
       this.RSVP.off('fulfilled', this.promiseFulfilled);
       this.RSVP.off('created', this.promiseCreated);
 
-      this.get('all').forEach((item) => {
+      this.all.forEach((item) => {
         item.destroy();
       });
       this.set('all', A());
@@ -82,19 +82,19 @@ let PromiseAssembler = EmberObject.extend(Evented, {
     let promise = Promise.create(props);
     let index = this.get('all.length');
 
-    this.get('all').pushObject(promise);
-    this.get('promiseIndex')[promise.get('guid')] = index;
+    this.all.pushObject(promise);
+    this.promiseIndex[promise.get('guid')] = index;
     return promise;
   },
 
   find(guid) {
     if (guid) {
-      const index = this.get('promiseIndex')[guid];
+      const index = this.promiseIndex[guid];
       if (index !== undefined) {
-        return this.get('all').objectAt(index);
+        return this.all.objectAt(index);
       }
     } else {
-      return this.get('all');
+      return this.all;
     }
   },
 

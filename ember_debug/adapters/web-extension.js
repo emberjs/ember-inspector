@@ -15,7 +15,7 @@ export default BasicAdapter.extend({
   },
 
   connect() {
-    const channel = this.get('_channel');
+    const channel = this._channel;
     return this._super(...arguments).then(
       () => {
         window.postMessage('debugger-client', '*', [channel.port2]);
@@ -32,7 +32,7 @@ export default BasicAdapter.extend({
     // "clone" them through postMessage unless they are converted to a
     // native array.
     options = deepClone(options);
-    this.get('_chromePort').postMessage(options);
+    this._chromePort.postMessage(options);
   },
 
   /**
@@ -68,7 +68,7 @@ export default BasicAdapter.extend({
   },
 
   _listen() {
-    let chromePort = this.get('_chromePort');
+    let chromePort = this._chromePort;
 
     chromePort.addEventListener('message', (event) => {
       const message = event.data;

@@ -30,7 +30,7 @@ export default EmberObject.extend({
     let array = A();
     let lastPromise = null;
     parsed.forEach((item) => {
-      lastPromise = this.get('_lastPromise')
+      lastPromise = this._lastPromise
         .then(() => this.getSourceMap(item.url), null, 'ember-inspector')
         .then(
           (smc) => {
@@ -62,7 +62,7 @@ export default EmberObject.extend({
   }),
 
   getSourceMap(url) {
-    let sourceMaps = this.get('sourceMapCache');
+    let sourceMaps = this.sourceMapCache;
     if (sourceMaps[url] !== undefined) {
       return resolve(sourceMaps[url], 'ember-inspector');
     }

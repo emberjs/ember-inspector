@@ -20,9 +20,7 @@ export default Component.extend({
     return `.${nested.mapBy('property').join('.')}`;
   }),
 
-  isNested: computed('model.[]', function () {
-    return this.get('model.length') > 1;
-  }),
+  isNested: computed.gt('model.length', 1),
 
   setPropDisplay: action(function (type) {
     // The custom filter is only working for the "all" table yet

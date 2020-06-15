@@ -24,13 +24,13 @@ export default Mixin.create({
   },
 
   sendMessage(name, message) {
-    this.get('port').send(this.messageName(name), message);
+    this.port.send(this.messageName(name), message);
   },
 
   messageName(name) {
     let messageName = name;
-    if (this.get('portNamespace')) {
-      messageName = `${this.get('portNamespace')}:${messageName}`;
+    if (this.portNamespace) {
+      messageName = `${this.portNamespace}:${messageName}`;
     }
     return messageName;
   },
@@ -40,8 +40,8 @@ export default Mixin.create({
    * @param {String} onOrOff 'on' or 'off' the functions to call i.e. port.on or port.off for adding or removing listeners
    */
   setupOrRemovePortListeners(onOrOff) {
-    let port = this.get('port');
-    let messages = this.get('messages');
+    let port = this.port;
+    let messages = this.messages;
 
     for (let name in messages) {
       if (messages.hasOwnProperty(name)) {

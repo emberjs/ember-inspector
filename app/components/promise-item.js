@@ -18,7 +18,7 @@ export default Component.extend({
 
   isError: equal('model.reason.type', 'type-error'),
 
-  style: computed('model.state', function () {
+  style: computed('model.{isFulfilled,isRejected,state}', function () {
     let color = '';
     if (this.get('model.isFulfilled')) {
       color = 'green';
@@ -30,30 +30,35 @@ export default Component.extend({
     return htmlSafe(`background-color: ${COLOR_MAP[color]}; color: white;`);
   }),
 
-  nodeStyle: computed('model.state', 'filter', 'effectiveSearch', function () {
-    let relevant;
-    switch (this.filter) {
-      case 'pending':
-        relevant = this.get('model.isPending');
-        break;
-      case 'rejected':
-        relevant = this.get('model.isRejected');
-        break;
-      case 'fulfilled':
-        relevant = this.get('model.isFulfilled');
-        break;
-      default:
-        relevant = true;
+  nodeStyle: computed(
+    'effectiveSearch',
+    'filter',
+    'model.{isFulfilled,isPending,isRejected,state}',
+    function () {
+      let relevant;
+      switch (this.filter) {
+        case 'pending':
+          relevant = this.get('model.isPending');
+          break;
+        case 'rejected':
+          relevant = this.get('model.isRejected');
+          break;
+        case 'fulfilled':
+          relevant = this.get('model.isFulfilled');
+          break;
+        default:
+          relevant = true;
+      }
+      if (relevant && !isEmpty(this.effectiveSearch)) {
+        relevant = this.model.matchesExactly(this.effectiveSearch);
+      }
+      if (!relevant) {
+        return 'opacity: 0.3;';
+      } else {
+        return '';
+      }
     }
-    if (relevant && !isEmpty(this.effectiveSearch)) {
-      relevant = this.model.matchesExactly(this.effectiveSearch);
-    }
-    if (!relevant) {
-      return 'opacity: 0.3;';
-    } else {
-      return '';
-    }
-  }),
+  ),
 
   labelStyle: computed('model.level', 'nodeStyle', function () {
     return htmlSafe(
@@ -75,26 +80,29 @@ export default Component.extend({
 
   hasChildren: gt('model.children.length', 0),
 
-  settledValue: computed('model.value', function () {
-    if (this.get('model.isFulfilled')) {
-      return this.get('model.value');
-    } else if (this.get('model.isRejected')) {
-      return this.get('model.reason');
-    } else {
-      return '--';
+  settledValue: computed(
+    'model.{isFulfilled,isRejected,reason,value}',
+    function () {
+      if (this.get('model.isFulfilled')) {
+        return this.get('model.value');
+      } else if (this.get('model.isRejected')) {
+        return this.get('model.reason');
+      } else {
+        return '--';
+      }
     }
-  }),
+  ),
 
   isValueInspectable: notEmpty('settledValue.objectId'),
 
-  hasValue: computed('settledValue', 'model.isSettled', function () {
+  hasValue: computed('model.isSettled', 'settledValue.type', function () {
     return (
       this.get('model.isSettled') &&
       this.get('settledValue.type') !== 'type-undefined'
     );
   }),
 
-  label: computed('model.label', function () {
+  label: computed('model.{label,parent}', function () {
     return (
       this.get('model.label') ||
       (!!this.get('model.parent') && 'Then') ||
@@ -102,20 +110,23 @@ export default Component.extend({
     );
   }),
 
-  state: computed('model.state', function () {
-    if (this.get('model.isFulfilled')) {
-      return 'Fulfilled';
-    } else if (this.get('model.isRejected')) {
-      return 'Rejected';
-    } else if (
-      this.get('model.parent') &&
-      !this.get('model.parent.isSettled')
-    ) {
-      return 'Waiting for parent';
-    } else {
-      return 'Pending';
+  state: computed(
+    'model.{parent.isSettled,isFulfilled,isRejected,state}',
+    function () {
+      if (this.get('model.isFulfilled')) {
+        return 'Fulfilled';
+      } else if (this.get('model.isRejected')) {
+        return 'Rejected';
+      } else if (
+        this.get('model.parent') &&
+        !this.get('model.parent.isSettled')
+      ) {
+        return 'Waiting for parent';
+      } else {
+        return 'Pending';
+      }
     }
-  }),
+  ),
 
   timeToSettle: computed(
     'model.{createdAt,settledAt,parent.settledAt}',

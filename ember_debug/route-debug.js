@@ -56,7 +56,7 @@ export default EmberObject.extend(PortMixin, {
   }),
 
   routeTree: computed('router', function () {
-    const router = this.get('router');
+    const router = this.router;
     const routerLib = router._routerMicrolib || router.router;
     let routeNames = routerLib.recognizer.names;
     let routeTree = {};
@@ -71,7 +71,7 @@ export default EmberObject.extend(PortMixin, {
   }),
 
   sendTree() {
-    const routeTree = this.get('routeTree');
+    const routeTree = this.routeTree;
     this.sendMessage('routeTree', { tree: routeTree });
   },
 
@@ -154,7 +154,7 @@ function buildSubTree(routeTree, route) {
     if (subTree[handler] === undefined) {
       routeClassName = this.getClassName(handler, 'route');
 
-      const router = this.get('router');
+      const router = this.router;
       const routerLib = router._routerMicrolib || router.router;
       // 3.9.0 removed intimate APIs from router
       // https://github.com/emberjs/ember.js/pull/17843
