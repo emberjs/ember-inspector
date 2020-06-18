@@ -44,7 +44,7 @@ function resolveRelativeModulePath(name, child) {
 
 module.exports = function (defaults) {
   let checker = new VersionChecker(defaults);
-  let emberChecker = checker.forEmber();
+  let emberChecker = checker.for('ember');
 
   if (emberChecker.isAbove('3.0.0')) {
     options.vendorFiles = { 'jquery.js': null };
