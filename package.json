@@ -106,7 +106,7 @@
     "prettier": "^2.0.5",
     "qunit-dom": "^1.2.0",
     "rimraf": "^3.0.0",
-    "sass": "^1.26.8",
+    "sass": "^1.26.9",
     "stylelint": "^13.6.1",
     "stylelint-config-ship-shape": "^0.6.0",
     "yauzl": "^2.10.0"
