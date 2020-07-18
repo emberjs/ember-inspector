@@ -100,6 +100,21 @@ export default Controller.extend({
     this.set('active', bool);
   }),
 
+  setupContentElement: action(function (element) {
+    this.contentElement = element;
+    this.layoutService.updateContentHeight(this.contentElement.clientHeight);
+  }),
+
+  windowDidResize: action(function () {
+    schedule('afterRender', () => {
+      this.layoutService.trigger('resize', {
+        source: 'application-controller',
+      });
+
+      this.layoutService.updateContentHeight(this.contentElement.clientHeight);
+    });
+  }),
+
   /*
    * Called when inspecting an object from outside of the ObjectInspector
    */
