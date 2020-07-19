@@ -1,5 +1,5 @@
 import Controller from '@ember/controller';
-import { action } from '@ember/object';
+import { action, computed } from '@ember/object';
 import { equal } from '@ember/object/computed';
 import { schedule } from '@ember/runloop';
 import { inject as service } from '@ember/service';
@@ -24,7 +24,19 @@ export default Controller.extend({
    */
   isEmberApplication: false,
 
-  navWidth: 180,
+  _navWidth: 180,
+  _navWidthCollapsed: 48,
+  navIsCollapsed: false,
+  navWidth: computed('_navWidth', '_navWidthCollapsed', 'navIsCollapsed', {
+    get() {
+      return this.navIsCollapsed ? this._navWidthCollapsed : this._navWidth;
+    },
+    set(key, value) {
+      this.set('_navWidth', value);
+      return value;
+    },
+  }),
+
   inspectorWidth: 360,
   isChrome: equal('port.adapter.name', 'chrome'),
 
@@ -112,6 +124,13 @@ export default Controller.extend({
       });
 
       this.layoutService.updateContentHeight(this.contentElement.clientHeight);
+    });
+  }),
+
+  toggleNavCollapsed: action(function () {
+    this.set('navIsCollapsed', !this.navIsCollapsed);
+    schedule('afterRender', () => {
+      this.layoutService.trigger('resize', { source: 'object-inspector' });
     });
   }),
 

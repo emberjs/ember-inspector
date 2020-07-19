@@ -1,3 +1,5 @@
+$nav--main-item-height: 38px;
+
 .nav__title {
   color: var(--base09);
   cursor: default;
@@ -26,7 +28,7 @@
 
 .nav__item {
   align-items: center;
-  color: var(--base12);
+  color: var(--base15);
   cursor: default;
   display: flex;
   height: 24px;
@@ -60,6 +62,11 @@
   font-size: 1.3rem;
 }
 
+.nav--collapsed .nav__item-label,
+.nav--collapsed .nav__item .pill {
+  display: none;
+}
+
 .nav__item-icon {
   flex-shrink: 0;
   height: 22px;
@@ -68,7 +75,7 @@
 }
 
 .nav__icon-stroke {
-  fill: var(--base15);
+  fill: var(--base12);
 }
 
 .nav__item.active .nav__icon-stroke {
@@ -78,8 +85,8 @@
 /* Custom navs */
 
 .nav--main .nav__item {
-  height: 38px;
-  line-height: 38px;
+  height: $nav--main-item-height;
+  line-height: $nav--main-item-height;
   padding-left: 12px;
 }
 
@@ -97,4 +104,41 @@
 .promises-icon-circle {
   transform: scaleX(-1);
   transform-origin: 18px;
+}
+
+.navigation-submit-issue {
+  grid-area: left;
+}
+
+.navigation-toggle {
+  grid-area: right;
+
+  .svg-stroke {
+    stroke: var(--base12);
+  }
+
+  .svg-fill {
+    fill: var(--base12);
+  }
+}
+
+// when nav is expaned, layout horizontally
+.nav__footer.nav--expanded {
+  display: grid;
+  grid-template: "left center right" $nav--main-item-height / auto 1fr auto;
+  height: $nav--main-item-height;
+}
+
+// when nav is collapsed, layout vertically
+.nav__footer.nav--collapsed {
+  display: grid;
+  grid-template:
+    "left" $nav--main-item-height - 6px
+    "right" $nav--main-item-height  - 6px;
+  height: auto;
+}
+
+// force select to cover clickable area
+.nav--overflow select {
+  height: $nav--main-item-height;
 }
