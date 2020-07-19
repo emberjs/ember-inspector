@@ -4,6 +4,7 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 
 .absolute { position: absolute; }
 .relative { position: relative; }
+.grid { display: grid; }
 
 .sticky {
   position: -webkit-sticky;
