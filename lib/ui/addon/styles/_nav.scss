@@ -138,7 +138,15 @@ $nav--main-item-height: 38px;
   height: auto;
 }
 
+.nav__overflow.nav__overflow--active {
+  background-color: var(--focus);
+
+  .nav__icon-stroke {
+    fill: var(--focus-text);
+  }
+}
+
 // force select to cover clickable area
-.nav--overflow select {
+.nav__overflow select {
   height: $nav--main-item-height;
 }

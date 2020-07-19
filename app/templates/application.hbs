@@ -17,11 +17,13 @@
             <div class="split__panel__hd">
               <AppPicker @collapsed={{this.navIsCollapsed}} />
             </div>
+
             <SideNav
               class="split__panel__bd"
               @collapsed={{this.navIsCollapsed}}
               @deprecationCount={{this.deprecationCount}}
             />
+
             <div class="split__panel__ft nav__footer {{if this.navIsCollapsed "nav--collapsed" "nav--expanded"}}">
               <a
                 target="_blank"

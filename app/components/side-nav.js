@@ -87,6 +87,12 @@ export default class SideNav extends Component {
     return this.router.currentRouteName;
   }
 
+  get overflowItemIsActive() {
+    return this.overflowItems.find((item) => {
+      return this.currentRouteName.match(item.route);
+    });
+  }
+
   handleResize() {
     const containerHeight = this.element.clientHeight;
     const item = this.element.querySelector('.nav__item');

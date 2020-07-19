@@ -17,7 +17,10 @@
         </li>
       {{/each}}
       {{#if (and @collapsed this.overflowItems.length)}}
-        <li class="nav--overflow relative flex items-center justify-center cursor-pointer">
+        <li
+          class="{{if this.overflowItemIsActive "nav__overflow--active"}} nav__overflow relative flex items-center justify-center cursor-pointer"
+          title="More options"
+        >
           <select
             class="w-full border-0 bg-transparent py-2 appearance-none opacity-0"
             {{on "change" this.handleOverflowSelect}}
