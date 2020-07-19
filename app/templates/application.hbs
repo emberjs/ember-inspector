@@ -32,9 +32,10 @@
             <div class="split__panel__hd">
               {{outlet "toolbar"}}
               <button
-                class="sidebar-toggle toolbar__icon-button {{if this.inspectorExpanded "flip"}}"
+                class="object-inspector-toggle toolbar__icon-button absolute top-0 right-0"
                 {{on "click" this.toggleInspector}}
                 type="button"
+                title="{{if this.inspectorExpanded "hide" "show"}} object inspector"
               >
                 {{svg-jar "sidebar-toggle" width="16" height="16"}}
               </button>
