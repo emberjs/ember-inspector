@@ -3,6 +3,7 @@
   tabindex="1"
   {{on "focusin" (fn this.setActive true)}}
   {{on "focusout" (fn this.setActive false)}}
+  {{did-resize this.windowDidResize debounce=250}}
 >
   {{#if this.isEmberApplication}}
     <div class="split">
@@ -38,9 +39,9 @@
               </button>
             </div>
 
-            <MonitorContentHeight class="split__panel__bd">
+            <div class="split__panel__bd" {{did-insert this.setupContentElement}}>
               {{outlet}}
-            </MonitorContentHeight>
+            </div>
           </div>
         </div>
       </div>
