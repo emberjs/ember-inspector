@@ -24,18 +24,25 @@ export default Controller.extend({
    */
   isEmberApplication: false,
 
-  _navWidth: 180,
+  _navWidthExpanded: 180,
   _navWidthCollapsed: 48,
   navIsCollapsed: false,
-  navWidth: computed('_navWidth', '_navWidthCollapsed', 'navIsCollapsed', {
-    get() {
-      return this.navIsCollapsed ? this._navWidthCollapsed : this._navWidth;
-    },
-    set(key, value) {
-      this.set('_navWidth', value);
-      return value;
-    },
-  }),
+  navWidth: computed(
+    '_navWidthExpanded',
+    '_navWidthCollapsed',
+    'navIsCollapsed',
+    {
+      get() {
+        return this.navIsCollapsed
+          ? this._navWidthCollapsed
+          : this._navWidthExpanded;
+      },
+      set(key, value) {
+        this.set('_navWidthExpanded', value);
+        return value;
+      },
+    }
+  ),
 
   inspectorWidth: 360,
   isChrome: equal('port.adapter.name', 'chrome'),
@@ -130,7 +137,7 @@ export default Controller.extend({
   toggleNavCollapsed: action(function () {
     this.set('navIsCollapsed', !this.navIsCollapsed);
     schedule('afterRender', () => {
-      this.layoutService.trigger('resize', { source: 'object-inspector' });
+      this.layoutService.trigger('resize', { source: 'navigation' });
     });
   }),
 
