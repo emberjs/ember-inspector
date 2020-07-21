@@ -12,8 +12,31 @@ export default class SideNav extends Component {
 
   constructor() {
     super(...arguments);
+    this.items = this._createNavigationData();
+  }
 
-    this.items = [
+  get itemsToDisplay() {
+    return this.args.collapsed
+      ? this.items.slice(0, this.displayCount)
+      : this.items;
+  }
+
+  get overflowItems() {
+    return this.args.collapsed ? this.items.slice(this.displayCount, 1000) : [];
+  }
+
+  get currentRouteName() {
+    return this.router.currentRouteName;
+  }
+
+  get overflowItemIsActive() {
+    return this.overflowItems.find((item) => {
+      return this.currentRouteName.match(item.route);
+    });
+  }
+
+  _createNavigationData() {
+    return [
       {
         route: 'component-tree',
         icon: 'nav-components',
@@ -71,26 +94,6 @@ export default class SideNav extends Component {
         pillCount: '',
       },
     ];
-  }
-
-  get itemsToDisplay() {
-    return this.args.collapsed
-      ? this.items.slice(0, this.displayCount)
-      : this.items;
-  }
-
-  get overflowItems() {
-    return this.args.collapsed ? this.items.slice(this.displayCount, 1000) : [];
-  }
-
-  get currentRouteName() {
-    return this.router.currentRouteName;
-  }
-
-  get overflowItemIsActive() {
-    return this.overflowItems.find((item) => {
-      return this.currentRouteName.match(item.route);
-    });
   }
 
   handleResize() {
