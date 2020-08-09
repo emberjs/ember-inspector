@@ -83,7 +83,7 @@
     "ember-qunit": "^4.6.0",
     "ember-resolver": "^8.0.0",
     "ember-source": "~3.20.3",
-    "ember-source-channel-url": "^2.0.1",
+    "ember-source-channel-url": "^3.0.0",
     "ember-svg-jar": "^2.2.3",
     "ember-table": "^2.2.3",
     "ember-template-lint": "^2.9.1",
