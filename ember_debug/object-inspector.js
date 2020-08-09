@@ -288,7 +288,7 @@ export default EmberObject.extend(PortMixin, {
                 tagInfo.tag = track(() => {
                   value = get(object, item.name);
                 });
-                tagInfo.revision = tagValue(object, item.name);
+                tagInfo.revision = tagValue(tagInfo.tag);
               }
               tracked[item.name] = tagInfo;
             } else {
@@ -1093,7 +1093,7 @@ function calculateCPs(
                 item.isTracked = true;
               }
             }
-            tagInfo.revision = tagValue(object, item.name);
+            tagInfo.revision = tagValue(tagInfo.tag);
             item.dependentKeys = getTrackedDependencies(
               object,
               item.name,
