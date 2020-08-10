@@ -81,7 +81,7 @@
     "ember-math-helpers": "^2.15.0",
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-qunit": "^4.6.0",
-    "ember-resolver": "^8.0.0",
+    "ember-resolver": "^8.0.2",
     "ember-source": "~3.20.3",
     "ember-source-channel-url": "^3.0.0",
     "ember-svg-jar": "^2.2.3",
