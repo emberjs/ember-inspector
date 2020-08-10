@@ -5980,10 +5980,10 @@ ember-fetch@^8.0.2:
     node-fetch "^2.6.0"
     whatwg-fetch "^3.4.0"
 
-ember-flatpickr@^2.16.2:
-  version "2.16.2"
-  resolved "https://registry.yarnpkg.com/ember-flatpickr/-/ember-flatpickr-2.16.2.tgz#755cd488d4d6f68c9ba429e82e52df1f4c9b4245"
-  integrity sha512-LyHdNCNiy53wDcL0JW567Ad5tE5Pr2FxqpBhDC5HMkoO8CI2LaV/f4OpXB7QnRtWmHd5Md2SbHRNAXxoJj+lxg==
+ember-flatpickr@^2.16.3:
+  version "2.16.3"
+  resolved "https://registry.yarnpkg.com/ember-flatpickr/-/ember-flatpickr-2.16.3.tgz#1dcdc357d0c816c9ec03367ae761049ef8c83ce3"
+  integrity sha512-gPs+JMn+UHqP4j1Xj62R/uoPihf/fju/EW986znJ7f3SiBPlk9bY1lX1IJnBrRUb63vF4+4m+wwQxHNq+76IdQ==
   dependencies:
     ember-cli-babel "^7.19.0"
     ember-cli-htmlbars "^5.0.0"
