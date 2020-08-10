@@ -86,7 +86,7 @@
     "ember-source-channel-url": "^3.0.0",
     "ember-svg-jar": "^2.2.3",
     "ember-table": "^2.2.3",
-    "ember-template-lint": "^2.9.1",
+    "ember-template-lint": "^2.10.0",
     "ember-test-selectors": "^4.1.0",
     "ember-truth-helpers": "^2.1.0",
     "ember-try": "^1.1.0",
