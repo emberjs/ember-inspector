@@ -1911,14 +1911,15 @@ arrify@^1.0.1:
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
   integrity sha1-iYUI2iIm84DfkEcoRWhJwVAaSw0=
 
-asn1.js@^4.0.0:
-  version "4.10.1"
-  resolved "https://registry.yarnpkg.com/asn1.js/-/asn1.js-4.10.1.tgz#b9c2bf5805f1e64aadeed6df3a2bfafb5a73f5a0"
-  integrity sha512-p32cOF5q0Zqs9uBiONKYLm6BClCoBCM5O9JfeUSlnQLBTxYdTK+pW+nXflm8UkKd2UYlEbYz5qEi0JuZR9ckSw==
+asn1.js@^5.2.0:
+  version "5.4.1"
+  resolved "https://registry.yarnpkg.com/asn1.js/-/asn1.js-5.4.1.tgz#11a980b84ebb91781ce35b0fdc2ee294e3783f07"
+  integrity sha512-+I//4cYPccV8LdmBLiX8CYvf9Sp3vQsrqu2QNXRcrbiWvcx/UdlFiqUJJzxRQxgsZmvhXhn4cSKeSmoFjVdupA==
   dependencies:
     bn.js "^4.0.0"
     inherits "^2.0.1"
     minimalistic-assert "^1.0.0"
+    safer-buffer "^2.1.0"
 
 asn1@~0.2.3:
   version "0.2.4"
@@ -2071,10 +2072,10 @@ autoprefixer@^9.8.0:
     postcss "^7.0.32"
     postcss-value-parser "^4.1.0"
 
-aws-sdk@^2.729.0:
-  version "2.730.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.730.0.tgz#5b2775bb0c3cd7764031a17a9bcac3f1aafc385e"
-  integrity sha512-hYHplsbgUDP0XuaVJaHx2L/nC0E1i+4dGlkAQpkJz3qQ4NDfLnrbUFsA2g3AyWAsrnjrBNCkexPvwnV82Qng1g==
+aws-sdk@^2.731.0:
+  version "2.731.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.731.0.tgz#a2564d882b943c2080d5100f5021088750cfb5f5"
+  integrity sha512-SUTzpr7gRUpgj0gK03B3YV2ziU1079sZ7jQV2AsmkaexZz50ANXC41Gv1qcLohzkTiPNM344qPZMTo5qeuK7LQ==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -2349,7 +2350,7 @@ babel-plugin-htmlbars-inline-precompile@^1.0.0:
   resolved "https://registry.yarnpkg.com/babel-plugin-htmlbars-inline-precompile/-/babel-plugin-htmlbars-inline-precompile-1.0.0.tgz#a9d2f6eaad8a3f3d361602de593a8cbef8179c22"
   integrity sha512-4jvKEHR1bAX03hBDZ94IXsYCj3bwk9vYsn6ux6JZNL2U5pvzCWjqyrGahfsGNrhERyxw8IqcirOi9Q6WCo3dkQ==
 
-babel-plugin-htmlbars-inline-precompile@^3.0.1:
+babel-plugin-htmlbars-inline-precompile@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-htmlbars-inline-precompile/-/babel-plugin-htmlbars-inline-precompile-3.2.0.tgz#c4882ea875d0f5683f0d91c1f72e29a4f14b5606"
   integrity sha512-IUeZmgs9tMUGXYu1vfke5I18yYJFldFGdNFQOWslXTnDWXzpwPih7QFduUqvT+awDpDuNtXpdt5JAf43Q1Hhzg==
@@ -3924,9 +3925,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001111:
-  version "1.0.30001112"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001112.tgz#0fffc3b934ff56ff0548c37bc9dad7d882bcf672"
-  integrity sha512-J05RTQlqsatidif/38aN3PGULCLrg8OYQOlJUKbeYVzC2mGZkZLIztwRlB3MtrfLmawUmjFlNJvy/uhwniIe1Q==
+  version "1.0.30001113"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001113.tgz#22016ab55b5a8b04fa00ca342d9ee1b98df48065"
+  integrity sha512-qMvjHiKH21zzM/VDZr6oosO6Ri3U0V2tC015jRXjOecwQCJtsU5zklTNTk31jQbIOP8gha0h1ccM/g0ECP+4BA==
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -5220,9 +5221,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.47, electron-to-chromium@^1.3.523:
-  version "1.3.527"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.527.tgz#5f59202c066c77a13e6cb0869852ef784e8f2089"
-  integrity sha512-ZlB9ySKOnS4g2Ja/TWDz4Q79NZhKV+Vsgntg85zLN08t+QsN1hK/zeDrcqwysSfbfGRVtvai6QYMczeNNUUgUA==
+  version "1.3.529"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.529.tgz#a7eed559bc848a7c8d95026be7d8929e3f9af169"
+  integrity sha512-n3sriLldqNyjBlosbnPftjCY+m1dVOY307I1Y0HaHAqDGe3hRvK7ksJwWd+qs599ybR4jobCo1+7zXM9GyNMSA==
 
 element-resize-detector@^1.1.15:
   version "1.2.1"
@@ -5427,12 +5428,12 @@ ember-cli-htmlbars@^3.0.0, ember-cli-htmlbars@^3.0.1:
     strip-bom "^3.0.0"
 
 ember-cli-htmlbars@^4.0.0:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/ember-cli-htmlbars/-/ember-cli-htmlbars-4.3.1.tgz#4af8adc21ab3c4953f768956b7f7d207782cb175"
-  integrity sha512-CW6AY/yzjeVqoRtItOKj3hcYzc5dWPRETmeCzr2Iqjt5vxiVtpl0z5VTqHqIlT5fsFx6sGWBQXNHIe+ivYsxXQ==
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/ember-cli-htmlbars/-/ember-cli-htmlbars-4.4.0.tgz#7ca17d5ca8f7550984346d9e6e93da0c3323f8d9"
+  integrity sha512-ohgctqk7dXIZR4TgN0xRoUYltWhghFJgqmtuswQTpZ7p74RxI9PKx+E8WV/95mGcPzraesvMNBg5utQNvcqgNg==
   dependencies:
     "@ember/edition-utils" "^1.2.0"
-    babel-plugin-htmlbars-inline-precompile "^3.0.1"
+    babel-plugin-htmlbars-inline-precompile "^3.2.0"
     broccoli-debug "^0.6.5"
     broccoli-persistent-filter "^2.3.1"
     broccoli-plugin "^3.1.0"
@@ -5447,9 +5448,9 @@ ember-cli-htmlbars@^4.0.0:
     walk-sync "^2.0.2"
 
 ember-cli-htmlbars@^5.0.0, ember-cli-htmlbars@^5.1.2, ember-cli-htmlbars@^5.2.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/ember-cli-htmlbars/-/ember-cli-htmlbars-5.3.0.tgz#a7a1d2be1d44778d0f10041a74281c8c7cd0cff1"
-  integrity sha512-/pSuA+gKz+TN6NPKdlgfGDE53hxUw4X5OVD+8xvgoLmpWZbgwHjwYBRhNyBuaa7ND6Oh9tlkAM1X0bbOiy/bSg==
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/ember-cli-htmlbars/-/ember-cli-htmlbars-5.3.1.tgz#61793964fc2599ce750db9e972ab55c6dd177c48"
+  integrity sha512-ZjQTt44euDoqLvUkWbt1svgNCXgLzOztEbc2qqYMQvhQig416LMrWK7l3SSbNU+BtLD5UIxmwvLfF1tsO2CVyA==
   dependencies:
     "@ember/edition-utils" "^1.2.0"
     babel-plugin-htmlbars-inline-precompile "^4.2.0"
@@ -5458,7 +5459,6 @@ ember-cli-htmlbars@^5.0.0, ember-cli-htmlbars@^5.1.2, ember-cli-htmlbars@^5.2.0:
     broccoli-plugin "^4.0.3"
     common-tags "^1.8.0"
     ember-cli-babel-plugin-helpers "^1.1.0"
-    ember-template-lint "^2.9.1"
     fs-tree-diff "^2.0.1"
     hash-for-dep "^1.5.1"
     heimdalljs-logger "^0.1.10"
@@ -6000,10 +6000,10 @@ ember-source-channel-url@^3.0.0:
   dependencies:
     node-fetch "^2.6.0"
 
-ember-source@~3.20.3:
-  version "3.20.3"
-  resolved "https://registry.yarnpkg.com/ember-source/-/ember-source-3.20.3.tgz#fdc0e8d9a402985783a2c53729f75abbb7b2ac95"
-  integrity sha512-Fpz0eVFcL4s74d2mw5D3RFGlhRcljB6N4RyjsuumwYTlg7UMrkDdlHy7A1ZI2tDw2Cz7uE7W2dKzSnCQcZGcVQ==
+ember-source@~3.20.4:
+  version "3.20.4"
+  resolved "https://registry.yarnpkg.com/ember-source/-/ember-source-3.20.4.tgz#582545ae3b20de5ffd9f8b43c42c94815e592291"
+  integrity sha512-ycWlaq7W63S3Nh7pMRU4oXNirBB9MbNGDN6hUgs3/qc1gjOUVGfGv0p2NPVcKXgqWtbiqrWGqCbp1iTay2MUpA==
   dependencies:
     "@babel/helper-module-imports" "^7.8.3"
     "@babel/plugin-transform-block-scoping" "^7.8.3"
@@ -6073,7 +6073,7 @@ ember-table@^2.2.3:
     ember-useragent "^0.6.0"
     hammerjs "^2.0.8"
 
-ember-template-lint@^2.10.0, ember-template-lint@^2.9.1:
+ember-template-lint@^2.10.0:
   version "2.10.0"
   resolved "https://registry.yarnpkg.com/ember-template-lint/-/ember-template-lint-2.10.0.tgz#15283b1a1d2f9d7454735e3387a1d0e6c3f1be44"
   integrity sha512-pSqXckhhAmdrA40Wo41sgsuhQKSnr5F+ovMQ+kbX7CxTvrg/7ox8xNcI/nxvwyhgClofFPxxn9rocqJ6sIS+JA==
@@ -10787,13 +10787,12 @@ parent-module@^1.0.0:
     callsites "^3.0.0"
 
 parse-asn1@^5.0.0, parse-asn1@^5.1.5:
-  version "5.1.5"
-  resolved "https://registry.yarnpkg.com/parse-asn1/-/parse-asn1-5.1.5.tgz#003271343da58dc94cace494faef3d2147ecea0e"
-  integrity sha512-jkMYn1dcJqF6d5CpU689bq7w/b5ALS9ROVSpQDPrZsqqesUJii9qutvoT5ltGedNXMO2e16YUWIghG9KxaViTQ==
+  version "5.1.6"
+  resolved "https://registry.yarnpkg.com/parse-asn1/-/parse-asn1-5.1.6.tgz#385080a3ec13cb62a62d39409cb3e88844cdaed4"
+  integrity sha512-RnZRo1EPU6JBnra2vGHj0yhp6ebyjBZpmUCLHWiFhxlzvBCCpAuZ7elsBp1PVAbQN0/04VD/19rfzlBSwLstMw==
   dependencies:
-    asn1.js "^4.0.0"
+    asn1.js "^5.2.0"
     browserify-aes "^1.0.0"
-    create-hash "^1.1.0"
     evp_bytestokey "^1.0.0"
     pbkdf2 "^3.0.3"
     safe-buffer "^5.1.1"
