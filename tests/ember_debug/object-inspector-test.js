@@ -6,6 +6,7 @@ import { inspect } from '@ember/debug';
 import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import EmberObject, { computed } from '@ember/object';
+import { A } from '@ember/array';
 import MutableArray from '@ember/array/mutable';
 import ArrayProxy from '@ember/array/proxy';
 import ObjectProxy from '@ember/object/proxy';
@@ -660,12 +661,15 @@ module('Ember Debug - Object Inspector', function (hooks) {
       'Correctly merges properties'
     );
 
-    const toString = message.details[3].properties.findBy('name', 'toString');
-    const hasChildren = message.details[3].properties.findBy(
+    const toString = A(message.details[3].properties).findBy(
+      'name',
+      'toString'
+    );
+    const hasChildren = A(message.details[3].properties).findBy(
       'name',
       'hasChildren'
     );
-    const expensiveProperty = message.details[3].properties.findBy(
+    const expensiveProperty = A(message.details[3].properties).findBy(
       'name',
       'expensiveProperty'
     );
@@ -768,11 +772,11 @@ module('Ember Debug - Object Inspector', function (hooks) {
       'Correctly merges properties'
     );
 
-    const hasChildren = message.details[3].properties.findBy(
+    const hasChildren = A(message.details[3].properties).findBy(
       'name',
       'hasChildren'
     );
-    const expensiveProperty = message.details[3].properties.findBy(
+    const expensiveProperty = A(message.details[3].properties).findBy(
       'name',
       'expensiveProperty'
     );
