@@ -15,15 +15,32 @@
             @width={{this.navWidth}}
           >
             <div class="split__panel__hd">
-              <AppPicker/>
+              <AppPicker @collapsed={{this.navIsCollapsed}} />
             </div>
-            <div class="split__panel__bd">
-              <SideNav @deprecationCount={{this.deprecationCount}} />
-            </div>
-            <div class="split__panel__ft">
-              <a target="_blank" href="https://github.com/emberjs/ember-inspector/issues">
-                Submit an Issue
+
+            <SideNav
+              class="split__panel__bd"
+              @collapsed={{this.navIsCollapsed}}
+              @deprecationCount={{this.deprecationCount}}
+            />
+
+            <div class="split__panel__ft nav__footer {{if this.navIsCollapsed "nav--collapsed" "nav--expanded"}}">
+              <a
+                target="_blank"
+                title="Submit an Issue"
+                class="navigation-submit-issue flex items-center justify-center px-3"
+                href="https://github.com/emberjs/ember-inspector/issues"
+              >
+                {{svg-jar "nav-bug" width="18" height="18"}}
               </a>
+              <button
+                {{on "click" this.toggleNavCollapsed}}
+                title="{{if this.navIsCollapsed "expand" "collapse"}} navigation"
+                type="button"
+                class="navigation-toggle flex items-center bg-transparent border-0 outline-none appearance-none px-3"
+              >
+                {{svg-jar "sidebar-toggle" width="16" height="16"}}
+              </button>
             </div>
           </Ui::DraggableColumn>
 
@@ -31,9 +48,10 @@
             <div class="split__panel__hd">
               {{outlet "toolbar"}}
               <button
-                class="sidebar-toggle toolbar__icon-button {{if this.inspectorExpanded "flip"}}"
+                class="object-inspector-toggle toolbar__icon-button absolute top-0 right-0"
                 {{on "click" this.toggleInspector}}
                 type="button"
+                title="{{if this.inspectorExpanded "hide" "show"}} object inspector"
               >
                 {{svg-jar "sidebar-toggle" width="16" height="16"}}
               </button>
