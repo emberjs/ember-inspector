@@ -673,8 +673,8 @@ module('Ember Debug - Object Inspector', function (hooks) {
       'name',
       'expensiveProperty'
     );
-    assert.ok(toString);
-    assert.ok(hasChildren);
+    assert.ok(toString, 'has toString');
+    assert.ok(hasChildren, 'has hasChildren');
     assert.equal(
       expensiveProperty.name,
       'expensiveProperty',
