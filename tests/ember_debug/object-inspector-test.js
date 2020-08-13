@@ -6,7 +6,6 @@ import { inspect } from '@ember/debug';
 import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import EmberObject, { computed } from '@ember/object';
-import { A } from '@ember/array';
 import MutableArray from '@ember/array/mutable';
 import ArrayProxy from '@ember/array/proxy';
 import ObjectProxy from '@ember/object/proxy';
@@ -661,9 +660,15 @@ module('Ember Debug - Object Inspector', function (hooks) {
       'Correctly merges properties'
     );
 
-    const toString = message.details[3].properties.find((p) => p.name === 'toString');
-    const hasChildren = message.details[3].properties.find((p) => p.name === 'hasChildren');
-    const expensiveProperty = message.details[3].properties.find((p) => p.name === 'expensiveProperty');
+    const toString = message.details[3].properties.find(
+      (p) => p.name === 'toString'
+    );
+    const hasChildren = message.details[3].properties.find(
+      (p) => p.name === 'hasChildren'
+    );
+    const expensiveProperty = message.details[3].properties.find(
+      (p) => p.name === 'expensiveProperty'
+    );
     assert.ok(toString, 'has toString');
     assert.ok(hasChildren, 'has hasChildren');
     assert.equal(
@@ -763,8 +768,12 @@ module('Ember Debug - Object Inspector', function (hooks) {
       'Correctly merges properties'
     );
 
-    const hasChildren = message.details[3].properties.find((p) => p.name === 'hasChildren');
-    const expensiveProperty = message.details[3].properties.find((p) => p.name === 'expensiveProperty');
+    const hasChildren = message.details[3].properties.find(
+      (p) => p.name === 'hasChildren'
+    );
+    const expensiveProperty = message.details[3].properties.find(
+      (p) => p.name === 'expensiveProperty'
+    );
     assert.equal(hasChildren.name, 'hasChildren');
     assert.equal(
       expensiveProperty.name,
