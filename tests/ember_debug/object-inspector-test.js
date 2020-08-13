@@ -772,14 +772,8 @@ module('Ember Debug - Object Inspector', function (hooks) {
       'Correctly merges properties'
     );
 
-    const hasChildren = A(message.details[3].properties).findBy(
-      'name',
-      'hasChildren'
-    );
-    const expensiveProperty = A(message.details[3].properties).findBy(
-      'name',
-      'expensiveProperty'
-    );
+    const hasChildren = message.details[3].properties.find((p) => p.name === 'hasChildren');
+    const expensiveProperty = message.details[3].properties.find((p) => p.name === 'expensiveProperty');
     assert.equal(hasChildren.name, 'hasChildren');
     assert.equal(
       expensiveProperty.name,
