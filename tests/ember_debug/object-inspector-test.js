@@ -659,15 +659,25 @@ module('Ember Debug - Object Inspector', function (hooks) {
       3,
       'Correctly merges properties'
     );
-    assert.equal(message.details[3].properties[0].name, 'toString');
-    assert.equal(message.details[3].properties[1].name, 'hasChildren');
+
+    const toString = message.details[3].properties.find(
+      (p) => p.name === 'toString'
+    );
+    const hasChildren = message.details[3].properties.find(
+      (p) => p.name === 'hasChildren'
+    );
+    const expensiveProperty = message.details[3].properties.find(
+      (p) => p.name === 'expensiveProperty'
+    );
+    assert.ok(toString, 'has toString');
+    assert.ok(hasChildren, 'has hasChildren');
     assert.equal(
-      message.details[3].properties[2].name,
+      expensiveProperty.name,
       'expensiveProperty',
       'property name is correct'
     );
     assert.equal(
-      message.details[3].properties[2].value.isCalculated,
+      expensiveProperty.value.isCalculated,
       undefined,
       'Does not calculate expensive properties'
     );
@@ -757,14 +767,21 @@ module('Ember Debug - Object Inspector', function (hooks) {
       3,
       'Correctly merges properties'
     );
-    assert.equal(message.details[3].properties[1].name, 'hasChildren');
+
+    const hasChildren = message.details[3].properties.find(
+      (p) => p.name === 'hasChildren'
+    );
+    const expensiveProperty = message.details[3].properties.find(
+      (p) => p.name === 'expensiveProperty'
+    );
+    assert.equal(hasChildren.name, 'hasChildren');
     assert.equal(
-      message.details[3].properties[2].name,
+      expensiveProperty.name,
       'expensiveProperty',
       'property name is correct'
     );
     assert.equal(
-      message.details[3].properties[2].value.isCalculated,
+      expensiveProperty.value.isCalculated,
       undefined,
       'Does not calculate expensive properties'
     );
