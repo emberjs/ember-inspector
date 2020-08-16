@@ -1,3 +1,30 @@
+## v4.3.0 (2020-08-16)
+
+#### :rocket: Enhancement
+* [#1273](https://github.com/emberjs/ember-inspector/pull/1273) Collapsible Navigation ([@nummi](https://github.com/nummi))
+
+#### :bug: Bug Fix
+* [#1299](https://github.com/emberjs/ember-inspector/pull/1299) Ensure `valueForTag` is passed an actual `Tag` ([@rwjblue](https://github.com/rwjblue))
+* [#1227](https://github.com/emberjs/ember-inspector/pull/1227) fix get class name ([@patricklx](https://github.com/patricklx))
+
+#### :house: Internal
+* [#1311](https://github.com/emberjs/ember-inspector/pull/1311) Add rwjblue release-it config ([@rwwagner90](https://github.com/rwwagner90))
+* [#1309](https://github.com/emberjs/ember-inspector/pull/1309) Fix some tests ([@rwwagner90](https://github.com/rwwagner90))
+* [#1247](https://github.com/emberjs/ember-inspector/pull/1247) Update eslint-plugin-ember, fix lint ([@rwwagner90](https://github.com/rwwagner90))
+* [#1185](https://github.com/emberjs/ember-inspector/pull/1185) Start converting some things to octane ([@rwwagner90](https://github.com/rwwagner90))
+* [#1219](https://github.com/emberjs/ember-inspector/pull/1219) Prevent future ember/no-mixins eslint error ([@ansmonjol](https://github.com/ansmonjol))
+* [#1215](https://github.com/emberjs/ember-inspector/pull/1215) Refactor `scripts/` to use more modern Node idioms. ([@rwjblue](https://github.com/rwjblue))
+* [#1206](https://github.com/emberjs/ember-inspector/pull/1206) Add Prettier to ESLint configuration. ([@rwjblue](https://github.com/rwjblue))
+
+#### Committers: 7
+- Alexandre Monjol ([@ansmonjol](https://github.com/ansmonjol))
+- Godfrey Chan ([@chancancode](https://github.com/chancancode))
+- Jerry Nummi ([@nummi](https://github.com/nummi))
+- Robert Jackson ([@rwjblue](https://github.com/rwjblue))
+- Robert Wagner ([@rwwagner90](https://github.com/rwwagner90))
+- [@dependabot-preview[bot]](https://github.com/apps/dependabot-preview)
+- [@patricklx](https://github.com/patricklx)
+
 # Changelog
 
 ## [v4.1.0](https://github.com/emberjs/ember-inspector/tree/v4.1.0) (2020-05-12)
