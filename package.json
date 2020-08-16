@@ -2,13 +2,13 @@
   "name": "ember-inspector",
   "version": "4.2.0",
   "description": "Extends developer tools to allow you to better inspect your Ember.js apps.",
+  "repository": "https://github.com/emberjs/ember-inspector",
   "license": "MIT",
   "author": "Tilde, Inc.",
   "directories": {
     "doc": "doc",
     "test": "tests"
   },
-  "repository": "https://github.com/emberjs/ember-inspector",
   "scripts": {
     "build": "ember build",
     "build:production": "EMBER_ENV=production node scripts/download-panes.js && ember build --environment production && gulp compress:chrome && gulp compress:firefox && gulp clean-tmp",
@@ -25,14 +25,6 @@
     "upload:panes": "yarn build && yarn compress:panes && node scripts/upload-panes.js",
     "watch": "ember build --watch"
   },
-  "emberVersionsSupported": [
-    "3.4.0",
-    ""
-  ],
-  "previousEmberVersionsSupported": [
-    "0.0.0",
-    "2.7.0"
-  ],
   "devDependencies": {
     "@babel/helper-call-delegate": "^7.10.4",
     "@ember/edition-utils": "^1.2.0",
@@ -106,6 +98,8 @@
     "pretender": "^3.4.3",
     "prettier": "^2.0.5",
     "qunit-dom": "^1.4.0",
+    "release-it": "^13.6.5",
+    "release-it-lerna-changelog": "^2.3.0",
     "rimraf": "^3.0.0",
     "sass": "^1.26.10",
     "stylelint": "^13.6.1",
@@ -115,6 +109,9 @@
   "engines": {
     "node": "10.* || >= 12"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "ember": {
     "edition": "octane"
   },
@@ -122,6 +119,32 @@
     "paths": [
       "lib/ui"
     ]
+  },
+  "emberVersionsSupported": [
+    "3.4.0",
+    ""
+  ],
+  "previousEmberVersionsSupported": [
+    "0.0.0",
+    "2.7.0"
+  ],
+  "release-it": {
+    "plugins": {
+      "release-it-lerna-changelog": {
+        "infile": "CHANGELOG.md",
+        "launchEditor": true
+      }
+    },
+    "git": {
+      "tagName": "v${version}"
+    },
+    "github": {
+      "release": false,
+      "tokenRef": "GITHUB_AUTH"
+    },
+    "npm": {
+      "publish": false
+    }
   },
   "volta": {
     "node": "10.19.0",
