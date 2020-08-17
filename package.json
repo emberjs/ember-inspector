@@ -68,7 +68,7 @@
     "ember-did-resize-modifier": "^1.0.0",
     "ember-export-application-global": "^2.0.1",
     "ember-fetch": "^8.0.2",
-    "ember-flatpickr": "^2.16.4",
+    "ember-flatpickr": "^3.0.0",
     "ember-load-initializers": "^2.1.1",
     "ember-math-helpers": "^2.15.0",
     "ember-maybe-import-regenerator": "^0.1.6",
