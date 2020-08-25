@@ -64,13 +64,12 @@
     "@babel/helper-explode-assignable-expression" "^7.10.4"
     "@babel/types" "^7.10.4"
 
-"@babel/helper-call-delegate@^7.10.4":
-  version "7.10.4"
-  resolved "https://registry.yarnpkg.com/@babel/helper-call-delegate/-/helper-call-delegate-7.10.4.tgz#300ae262c6ad7e4da91d47e20d77152e84a8201e"
-  integrity sha512-Tn9r7FUOcBYJi7gZOcYZQtMgh/EzGQ13Z8Bc2Mwzlcuo/edUcwt9YneF/hHs7mv8GJv64VqXErClQLQeGDxDlg==
+"@babel/helper-call-delegate@^7.11.4":
+  version "7.11.4"
+  resolved "https://registry.yarnpkg.com/@babel/helper-call-delegate/-/helper-call-delegate-7.11.4.tgz#c9c63196f0eebabe592dc684e3f17c48a7554db7"
+  integrity sha512-JionsxeZH+NQPj7Z2xZiJj/b5Duo9m3qz7SjTgQS4T/p2QDbzWXjG15DbmAogbnE3CMCi9UeeplaB5UY4gUejg==
   dependencies:
     "@babel/helper-hoist-variables" "^7.10.4"
-    "@babel/traverse" "^7.10.4"
     "@babel/types" "^7.10.4"
 
 "@babel/helper-compilation-targets@^7.10.4":
