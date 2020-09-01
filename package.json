@@ -98,7 +98,7 @@
     "pretender": "^3.4.3",
     "prettier": "^2.1.1",
     "qunit-dom": "^1.4.0",
-    "release-it": "^13.6.9",
+    "release-it": "^13.7.0",
     "release-it-lerna-changelog": "^2.3.0",
     "rimraf": "^3.0.0",
     "sass": "^1.26.10",
