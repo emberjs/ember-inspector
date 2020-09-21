@@ -1141,10 +1141,10 @@
     handlebars "^4.7.4"
     simple-html-tokenizer "^0.5.9"
 
-"@glimmer/tracking@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@glimmer/tracking/-/tracking-1.0.1.tgz#77d8b16e9e0be2cc8e4a00b77259fdc208802840"
-  integrity sha512-Jt8rn4/6S6CObILaotYUT0lFWNPq1xJubXdU/9p6zxWtMrBXYJalVvI5hFYrCh/hG8Z/aLoERGnb2YRWtBSyzw==
+"@glimmer/tracking@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@glimmer/tracking/-/tracking-1.0.2.tgz#4fe9ca89e3f4a2ae8e37c8bd8e4ea0d886d9abbf"
+  integrity sha512-9Vp04TM2IDTShGFdxccfvnmcaj4NwqLrwbOXm4iju5KL/WkeB8mqoCSLtO3kUg+80DqU0pKE8tR460lQP8CutA==
   dependencies:
     "@glimmer/env" "^0.1.7"
     "@glimmer/validator" "^0.44.0"
