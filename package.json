@@ -102,7 +102,7 @@
     "release-it-lerna-changelog": "^2.4.0",
     "rimraf": "^3.0.0",
     "sass": "^1.26.10",
-    "stylelint": "^13.7.0",
+    "stylelint": "^13.7.2",
     "stylelint-config-ship-shape": "^0.7.0",
     "yauzl": "^2.10.0"
   },
