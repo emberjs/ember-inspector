@@ -64,7 +64,7 @@
     "ember-cli-stylelint": "^4.0.0",
     "ember-cli-uglify": "^3.0.0",
     "ember-cli-version-checker": "^5.1.1",
-    "ember-concurrency": "^1.2.1",
+    "ember-concurrency": "^1.3.0",
     "ember-did-resize-modifier": "^1.0.0",
     "ember-export-application-global": "^2.0.1",
     "ember-fetch": "^8.0.2",
