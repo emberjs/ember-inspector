@@ -20,6 +20,9 @@ const packageJson = require('./package.json');
 const { map, mv } = stew;
 
 const options = {
+  autoImport: {
+    forbidEval: true,
+  },
   fingerprint: {
     enabled: false,
   },
