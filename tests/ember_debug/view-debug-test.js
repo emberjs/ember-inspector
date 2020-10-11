@@ -2,7 +2,8 @@ import { click, find, triggerEvent, visit } from '@ember/test-helpers';
 import hasEmberVersion from '@ember/test-helpers/has-ember-version';
 import { A } from '@ember/array';
 import { run } from '@ember/runloop';
-import EmberComponent from '@ember/component';
+import EmberComponent, { setComponentTemplate } from '@ember/component';
+import GlimmerComponent from '@glimmer/component';
 import EmberRoute from '@ember/routing/route';
 import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
@@ -354,6 +355,26 @@ module('Ember Debug - View', function (hooks) {
           return 'App.TestBarComponent';
         },
       })
+    );
+
+    this.owner.register(
+      'component:test-in-element',
+      setComponentTemplate(
+        hbs`
+        {{#-in-element this.element}}
+          <p>
+            this text is in the target div
+          </p>
+        {{/-in-element}}
+        `,
+        class TestInElement extends GlimmerComponent {
+          constructor(owner, args) {
+            super(owner, args);
+
+            this.element = document.querySelector('#target');
+          }
+        }
+      )
     );
 
     /*
