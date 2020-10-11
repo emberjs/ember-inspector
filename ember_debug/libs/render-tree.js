@@ -352,7 +352,7 @@ export default class RenderTree {
         return node;
       }
 
-      return this._doesExistInTree(node.children, dom);
+      nodes.push(...node.children);
     }
 
     return false;

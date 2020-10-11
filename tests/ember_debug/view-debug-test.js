@@ -684,13 +684,15 @@ module('Ember Debug - View', function (hooks) {
       let actual = highlight.getBoundingClientRect();
       let expected = inElement.getBoundingClientRect();
 
+      // await this.pauseTest();
+      assert.ok(isVisible(tooltip), 'tooltip is visible');
       assert.ok(isVisible(highlight), 'highlight is visible');
+
       assert.equal(actual.x, expected.x, 'same x as component');
       assert.equal(actual.y, expected.y, 'same y as component');
       assert.equal(actual.width, expected.width, 'same width as component');
       assert.equal(actual.height, expected.height, 'same height as component');
 
-      assert.ok(isVisible(tooltip), 'tooltip is visible');
       assert
         .dom('.ember-inspector-tooltip-detail-template', tooltip)
         .hasText('my-app/components/test-foo.hbs'); // maybe? co-located
