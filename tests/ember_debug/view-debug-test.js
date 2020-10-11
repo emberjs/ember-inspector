@@ -391,7 +391,7 @@ module('Ember Debug - View', function (hooks) {
     );
     this.owner.register(
       'template:simple',
-      hbs('Simple {{test-foo}} {{test-bar}}', {
+      hbs('Simple {{test-foo}} {{test-bar}} <TestInElement />', {
         moduleName: 'my-app/templates/simple.hbs',
       })
     );
@@ -432,7 +432,12 @@ module('Ember Debug - View', function (hooks) {
           Route(
             { name: 'simple' },
             Component({ name: 'test-foo', bounds: 'single' }),
-            Component({ name: 'test-bar', bounds: 'range' })
+            Component({ name: 'test-bar', bounds: 'range' }),
+            Component({
+              name: 'test-in-element',
+              bounds: 'range',
+              template: null,
+            })
           )
         )
       ),
@@ -472,7 +477,12 @@ module('Ember Debug - View', function (hooks) {
           Route(
             { name: 'simple' },
             Component({ name: 'test-foo', bounds: 'single' }),
-            Component({ name: 'test-bar', bounds: 'range' })
+            Component({ name: 'test-bar', bounds: 'range' }),
+            Component({
+              name: 'test-in-element',
+              bounds: 'range',
+              template: null,
+            })
           )
         )
       ),
