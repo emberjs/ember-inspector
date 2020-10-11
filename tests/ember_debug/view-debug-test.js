@@ -360,18 +360,21 @@ module('Ember Debug - View', function (hooks) {
     this.owner.register(
       'component:test-in-element',
       setComponentTemplate(
-        hbs`
-        {{#-in-element this.element}}
-          <p>
-            this text is in the target div
-          </p>
-        {{/-in-element}}
-        `,
+        hbs(`
+          {{#-in-element this.element}}
+            <p class='test-in-element'>
+              App.TestInElement
+            </p>
+          {{/-in-element}}
+        `),
         class TestInElement extends GlimmerComponent {
           constructor(owner, args) {
             super(owner, args);
 
             this.element = document.querySelector('#target');
+          }
+          toString() {
+            return 'App.TestInElement';
           }
         }
       )
@@ -385,7 +388,10 @@ module('Ember Debug - View', function (hooks) {
     this.owner.register(
       'template:application',
       hbs(
-        '<div class="application" style="line-height: normal;">{{outlet}}</div>',
+        `<div class="application" style="line-height: normal;">
+          <div id="target"></div>
+          {{outlet}}
+        </div>`,
         { moduleName: 'my-app/templates/application.hbs' }
       )
     );
@@ -414,7 +420,12 @@ module('Ember Debug - View', function (hooks) {
     this.owner.register(
       'template:components/test-bar',
       hbs(
-        '<!-- before --><div class="another-component"><span>test</span> <span class="bar-inner">bar</span></div><!-- after -->',
+        `<!-- before -->
+        <div class="another-component">
+          <span>test</span>
+          <span class="bar-inner">bar</span>
+        </div>
+        <!-- after -->`,
         { moduleName: 'my-app/templates/components/test-bar.hbs' }
       )
     );
@@ -535,6 +546,7 @@ module('Ember Debug - View', function (hooks) {
 
     let foo = find('.simple-component');
     let bar = find('.another-component');
+    let inElement = find('.test-in-element');
     let tooltip = findInspectorElement('tooltip');
     let highlight = findInspectorElement('highlight');
 
@@ -636,5 +648,29 @@ module('Ember Debug - View', function (hooks) {
 
     assert.ok(!isVisible(tooltip), 'tooltip is not visible');
     assert.ok(!isVisible(highlight), 'highlight is not visible');
+
+    // in-element support
+    await triggerEvent('.test-in-element', 'mousemove');
+
+    assert
+      .dom('.ember-inspector-tooltip-header', tooltip)
+      .hasText('<TestInElement>');
+
+    actual = highlight.getBoundingClientRect();
+    expected = inElement.getBoundingClientRect();
+
+    assert.ok(isVisible(highlight), 'highlight is visible');
+    assert.equal(actual.x, expected.x, 'same x as component');
+    assert.equal(actual.y, expected.y, 'same y as component');
+    assert.equal(actual.width, expected.width, 'same width as component');
+    assert.equal(actual.height, expected.height, 'same height as component');
+
+    assert.ok(isVisible(tooltip), 'tooltip is visible');
+    assert
+      .dom('.ember-inspector-tooltip-detail-template', tooltip)
+      .hasText('my-app/components/test-foo.hbs'); // maybe? co-located
+    assert
+      .dom('.ember-inspector-tooltip-detail-instance', tooltip)
+      .hasText('App.TestInElement');
   });
 });
