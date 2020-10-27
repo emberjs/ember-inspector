@@ -361,13 +361,15 @@ export default class RenderTree {
   _matchRenderNodes(renderNodes, dom, deep = true, knownToExist = undefined) {
     let candidates = [...renderNodes];
 
-    if (knownToExist === undefined) {
-      knownToExist = this._doesExistInTree(renderNodes, dom);
-    }
+    // if (knownToExist === undefined) {
+    //   knownToExist = this._doesExistInTree(renderNodes, dom);
+    // }
 
-    if (knownToExist) {
-      return knownToExist;
-    }
+    // console.log({ dom, deep, knownToExist, candidate: candidates[0] });
+
+    // if (knownToExist) {
+    //   return knownToExist;
+    // }
 
     while (candidates.length > 0) {
       let candidate = candidates.shift();
@@ -376,7 +378,8 @@ export default class RenderTree {
       if (range && range.isPointInRange(dom, 0)) {
         // We may be able to find a more exact match in one of the children.
         return (
-          this._matchRenderNodes(candidate.children, dom, true) || candidate
+          this._matchRenderNodes(candidate.children, dom, true, knownToExist) ||
+          candidate
         );
       } else if (!range || deep) {
         // There are some edge cases of non-containing parent nodes (e.g. "worm
