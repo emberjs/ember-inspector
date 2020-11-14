@@ -1,7 +1,5 @@
+import { classify } from '@ember/string';
 import bound from 'ember-debug/utils/bound-method';
-
-const Ember = window.Ember;
-const { classify } = Ember.String;
 
 function makeHighlight(id) {
   return `<div id="ember-inspector-highlight-${id}" role="presentation"></div>`;

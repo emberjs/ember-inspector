@@ -6,6 +6,7 @@ import {
   triggerEvent,
   visit,
 } from '@ember/test-helpers';
+import { classify } from '@ember/string';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupTestAdapter, respondWith, sendMessage } from '../test-adapter';
@@ -37,12 +38,12 @@ function routeValue(name, props) {
     name,
     controller: {
       name,
-      className: `${name.replace(/\./g, '_').classify()}Controller`,
+      className: `${classify(name.replace(/\./g, '_'))}Controller`,
       exists: true,
     },
     routeHandler: {
       name,
-      className: `${name.replace(/\./g, '_').classify()}Route`,
+      className: `${classify(name.replace(/\./g, '_'))}Route`,
     },
     template: {
       name: name.replace(/\./g, '/'),
