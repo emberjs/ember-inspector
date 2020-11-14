@@ -38,13 +38,25 @@ module('Ember Debug - Deprecation', function (hooks) {
       Route.extend({
         setupController() {
           EmberDebug.IGNORE_DEPRECATIONS = false;
-          deprecate('Deprecation 1', false, { id: 'dep-1', until: '1.0.0' });
+          deprecate('Deprecation 1', false, {
+            id: 'dep-1',
+            for: 'ember-inspector',
+            since: '0.1.0',
+            until: '1.0.0',
+          });
           deprecate('Deprecation 2', false, {
             id: 'dep-2',
+            for: 'ember-inspector',
+            since: '0.1.0',
             until: '1.0.0',
             url: 'http://www.emberjs.com',
           });
-          deprecate('Deprecation 1', false, { id: 'dep-1', until: '1.0.0' });
+          deprecate('Deprecation 1', false, {
+            id: 'dep-1',
+            for: 'ember-inspector',
+            since: '0.1.0',
+            until: '1.0.0',
+          });
           EmberDebug.IGNORE_DEPRECATIONS = true;
         },
       })
@@ -93,8 +105,18 @@ module('Ember Debug - Deprecation', function (hooks) {
       Route.extend({
         setupController() {
           EmberDebug.IGNORE_DEPRECATIONS = false;
-          deprecate('Deprecation 1', false, { id: 'dep-1', until: '1.0.0' });
-          deprecate('Deprecation 2', false, { id: 'dep-2', until: '1.0.0' });
+          deprecate('Deprecation 1', false, {
+            id: 'dep-1',
+            for: 'ember-inspector',
+            since: '0.1.0',
+            until: '1.0.0',
+          });
+          deprecate('Deprecation 2', false, {
+            id: 'dep-2',
+            for: 'ember-inspector',
+            since: '0.1.0',
+            until: '1.0.0',
+          });
           EmberDebug.IGNORE_DEPRECATIONS = true;
         },
       })
