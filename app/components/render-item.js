@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { isNone, isEmpty } from '@ember/utils';
 import { computed } from '@ember/object';
-import { htmlSafe } from '@ember/string';
+import { htmlSafe } from '@ember/template';
 import escapeRegExp from 'ember-inspector/utils/escape-reg-exp';
 
 import { gt } from '@ember/object/computed';

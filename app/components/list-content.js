@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { htmlSafe } from '@ember/string';
+import { htmlSafe } from '@ember/template';
 import Evented from '@ember/object/evented';
 import { computed } from '@ember/object';
 import { schedule } from '@ember/runloop';
