@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { debounce } from '@ember/runloop';
-import { htmlSafe } from '@ember/string';
+import { htmlSafe } from '@ember/template';
 import { tracked } from '@glimmer/tracking';
 
 export default class ScrollContainerComponent extends Component {

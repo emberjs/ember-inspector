@@ -17,7 +17,7 @@
 import Component from '@ember/component';
 
 import { computed } from '@ember/object';
-import { htmlSafe } from '@ember/string';
+import { htmlSafe } from '@ember/template';
 export default Component.extend({
   /**
    * Defaults to a table cell. For headers

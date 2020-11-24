@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
-import { htmlSafe } from '@ember/string';
+import { htmlSafe } from '@ember/template';
 import checkCurrentRoute from 'ember-inspector/utils/check-current-route';
 
 export default Component.extend({
