@@ -1,4 +1,4 @@
-import { classify } from '@ember/string';
+import classify from '../utils/classify';
 import bound from 'ember-debug/utils/bound-method';
 
 function makeHighlight(id) {

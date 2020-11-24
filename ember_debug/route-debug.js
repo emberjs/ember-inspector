@@ -1,7 +1,8 @@
-import { classify, dasherize } from '@ember/string';
 // eslint-disable-next-line ember/no-mixins
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import { compareVersion } from 'ember-debug/utils/version';
+import classify from 'ember-debug/utils/classify';
+import dasherize from 'ember-debug/utils/dasherize';
 
 const Ember = window.Ember;
 const {
