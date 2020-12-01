@@ -1,5 +1,5 @@
 import { alias } from '@ember/object/computed';
-import { action, computed } from '@ember/object';
+import { action, computed, set } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import checkCurrentRoute from 'ember-inspector/utils/check-current-route';
 import searchMatch from 'ember-inspector/utils/search-match';
@@ -55,11 +55,11 @@ export default Controller.extend({
   init() {
     this._super(...arguments);
 
-    this.model = [];
-    this.options = {
+    set(this, 'model', []);
+    set(this, 'options', {
       hideRoutes: false,
       hideSubstates: false,
-    };
+    });
   },
 
   inspectRoute: action(function (name) {

@@ -55,6 +55,7 @@ export default Route.extend({
     NativeArray.apply(details);
     details.forEach(arrayize);
 
+    // eslint-disable-next-line ember/no-controller-access-in-routes
     let controller = this.controller;
 
     if (options.parentObject) {
@@ -63,12 +64,15 @@ export default Route.extend({
       controller.activateMixinDetails(name, objectId, details, errors);
     }
 
+    // eslint-disable-next-line ember/no-controller-access-in-routes
     this.controller.showInspector();
   },
 
   setDeprecationCount(message) {
+    // eslint-disable-next-line ember/no-controller-access-in-routes
     this.controller.set('deprecationCount', message.count);
   },
+  // eslint-enable ember/no-controller-access-in-routes
 
   updateProperty(options) {
     if (this.get('controller.mixinDetails.mixins')) {
@@ -94,6 +98,7 @@ export default Route.extend({
   },
 
   droppedObject(message) {
+    // eslint-disable-next-line ember/no-controller-access-in-routes
     this.controller.droppedObject(message.objectId);
   },
 

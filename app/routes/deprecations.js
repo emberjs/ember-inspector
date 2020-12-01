@@ -30,6 +30,7 @@ export default TabRoute.extend({
   },
 
   deprecationsAdded(message) {
+    // eslint-disable-next-line ember/no-controller-access-in-routes
     let { deprecations } = this.controller;
 
     message.deprecations.forEach((item) => {

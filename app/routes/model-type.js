@@ -5,6 +5,7 @@ import { Promise } from 'rsvp';
 export default Route.extend({
   setupController(controller, model) {
     this._super(controller, model);
+    // eslint-disable-next-line ember/no-controller-access-in-routes
     this.controllerFor('model-types').set('selected', model);
   },
 
@@ -23,6 +24,7 @@ export default Route.extend({
   },
 
   deactivate() {
+    // eslint-disable-next-line ember/no-controller-access-in-routes
     this.controllerFor('model-types').set('selected', null);
   },
 
