@@ -41,7 +41,7 @@
     "babel-plugin-transform-es2015-modules-amd": "^6.24.0",
     "basiccontext": "^3.5.1",
     "broccoli-asset-rev": "^3.0.0",
-    "broccoli-babel-transpiler": "^7.7.0",
+    "broccoli-babel-transpiler": "^7.8.0",
     "broccoli-concat": "^4.2.4",
     "broccoli-file-creator": "^2.1.1",
     "broccoli-funnel": "^3.0.3",
