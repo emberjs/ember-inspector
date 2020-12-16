@@ -1,4 +1,4 @@
-import { action, computed } from '@ember/object';
+import { action, computed, set } from '@ember/object';
 import Controller from '@ember/controller';
 import debounceComputed from 'ember-inspector/computed/debounce';
 import searchMatch from 'ember-inspector/utils/search-match';
@@ -6,7 +6,7 @@ import searchMatch from 'ember-inspector/utils/search-match';
 export default Controller.extend({
   init() {
     this._super(...arguments);
-    this.deprecations = [];
+    set(this, 'deprecations', []);
   },
 
   search: null,

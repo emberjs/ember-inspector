@@ -15,6 +15,7 @@ export default TabRoute.extend({
   },
 
   setCurrentRoute(message) {
+    // eslint-disable-next-line ember/no-controller-access-in-routes
     this.controller.set('currentRoute', message);
   },
 

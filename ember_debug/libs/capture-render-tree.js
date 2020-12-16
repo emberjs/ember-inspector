@@ -116,6 +116,7 @@ if (Ember._captureRenderTree && compareVersion(Ember.VERSION, '3.14.1') > 0) {
    */
   function getOutletState(owner) {
     try {
+      // eslint-disable-next-line ember/no-private-routing-service
       return owner.lookup('router:main')._toplevelView.state.ref.value();
     } catch (error) {
       console.log('[Ember Inspector] failed to capture render tree');

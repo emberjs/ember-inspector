@@ -37,6 +37,7 @@ export default Route.extend({
    * resets.
    */
   setupController() {
+    // eslint-disable-next-line ember/no-controller-access-in-routes
     this.controllerFor('application').set('isEmberApplication', true);
     this.port.one('general:reset', this, this.reset);
   },
