@@ -75,7 +75,7 @@
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-qunit": "^4.6.0",
     "ember-resolver": "^8.0.2",
-    "ember-source": "~3.21.1",
+    "ember-source": "~3.23.1",
     "ember-source-channel-url": "^3.0.0",
     "ember-svg-jar": "^2.2.3",
     "ember-table": "^2.2.3",
