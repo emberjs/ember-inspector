@@ -130,6 +130,12 @@ export default EmberObject.extend(PortMixin, {
   },
 });
 
+/**
+ *
+ * @param {*} routeTree
+ * @param {*} route
+ * @return {Void}
+ */
 function buildSubTree(routeTree, route) {
   let handlers = route.handlers;
   let owner = this.get('namespace.owner');
@@ -168,6 +174,12 @@ function buildSubTree(routeTree, route) {
         // Ember < 3.9.0
         routeHandler = routerLib.getHandler(handler);
       }
+
+      // Skip when route is an unresolved promise
+      if (typeof routeHandler?.then === 'function') {
+        continue;
+      }
+
       controllerName =
         routeHandler.get('controllerName') || routeHandler.get('routeName');
       controllerFactory = owner.factoryFor
@@ -227,6 +239,12 @@ function arrayizeChildren(routeTree) {
   return obj;
 }
 
+/**
+ *
+ * @param {*} container
+ * @param {*} segments
+ * @return {String}
+ */
 function getURL(container, segments) {
   const locationImplementation = container.lookup('router:main').location;
   let url = [];
@@ -263,6 +281,12 @@ function getURL(container, segments) {
   return url;
 }
 
+/**
+ *
+ * @param {String} owner
+ * @param {String} name
+ * @return {Void}
+ */
 function routeHasBeenDefined(owner, name) {
   return (
     owner.hasRegistration(`template:${name}`) ||
