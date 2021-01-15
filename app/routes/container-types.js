@@ -1,7 +1,8 @@
 import Route from '@ember/routing/route';
+import { action } from '@ember/object';
 import { Promise } from 'rsvp';
 
-export default Route.extend({
+export default class ContainerTypesRoute extends Route {
   model() {
     const port = this.port;
     return new Promise((resolve) => {
@@ -10,10 +11,10 @@ export default Route.extend({
       });
       port.send('container:getTypes');
     });
-  },
-  actions: {
-    reload() {
-      this.refresh();
-    },
-  },
-});
+  }
+
+  @action
+  reload() {
+    this.refresh();
+  }
+}

@@ -30,6 +30,7 @@ module.exports = {
     // Temporarily turn these off
     'ember/avoid-leaking-state-in-ember-objects': 'off',
     'ember/no-get': 'off',
+    'ember/no-computed-properties-in-native-classes': 'off',
     'ember/no-test-import-export': 'off',
 
     // Best practice

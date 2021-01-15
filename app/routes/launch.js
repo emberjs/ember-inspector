@@ -9,9 +9,10 @@ const chromeStoreSupported = !!window.chrome && !!window.chrome.storage;
 const storageSupported = chromeStoreSupported || LOCAL_STORAGE_SUPPORTED;
 const STORE_KEY = 'last-version-opened';
 
-export default Route.extend({
-  version: readOnly('config.VERSION'),
-  storage: service(),
+export default class LaunchRoute extends Route {
+  @service storage;
+
+  @readOnly('config.VERSION') version;
 
   lastVersionOpened() {
     if (chromeStoreSupported) {
@@ -23,7 +24,7 @@ export default Route.extend({
     } else {
       return RSVP.resolve((this.storage.getItem(STORE_KEY) || 0).toString());
     }
-  },
+  }
 
   setLastVersionOpened(version) {
     if (chromeStoreSupported) {
@@ -41,7 +42,7 @@ export default Route.extend({
       this.storage.setItem(STORE_KEY, version);
       return RSVP.resolve();
     }
-  },
+  }
 
   beforeModel() {
     let targetRoute = 'component-tree';
@@ -58,5 +59,5 @@ export default Route.extend({
 
       this.transitionTo(targetRoute);
     });
-  },
-});
+  }
+}

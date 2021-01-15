@@ -3,7 +3,7 @@ import hasEmberVersion from '@ember/test-helpers/has-ember-version';
 import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 import EmberComponent from '@ember/component';
-import EmberRoute from '@ember/routing/route';
+import Route from '@ember/routing/route';
 import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
 import QUnit, { module, test } from 'qunit';
@@ -205,7 +205,7 @@ function RenderNode(
   };
 }
 
-function Component(
+function _Component(
   {
     name,
     instance = Serialized(),
@@ -221,7 +221,7 @@ function Component(
   );
 }
 
-function Route(
+function _Route(
   {
     name,
     args = hasEmberVersion(3, 14) ? Args({ names: ['model'] }) : Args(),
@@ -241,7 +241,7 @@ function Route(
 }
 
 function TopLevel(...children) {
-  return Route(
+  return _Route(
     {
       name: '-top-level',
       args: Args(),
@@ -276,64 +276,64 @@ module('Ember Debug - View', function (hooks) {
 
     this.owner.register(
       'route:application',
-      EmberRoute.extend({
+      class ApplicationRoute extends Route {
         model() {
           return EmberObject.create({
             toString() {
               return 'Application model';
             },
           });
-        },
-      })
+        }
+      }
     );
 
     this.owner.register(
       'route:simple',
-      EmberRoute.extend({
+      class SimpleRoute extends Route {
         model() {
           return EmberObject.create({
             toString() {
               return 'Simple Model';
             },
           });
-        },
-      })
+        }
+      }
     );
 
     this.owner.register(
       'route:comments.index',
-      EmberRoute.extend({
+      class CommentsIndexRoute extends Route {
         model() {
           return A(['first comment', 'second comment', 'third comment']);
-        },
-      })
+        }
+      }
     );
 
     this.owner.register(
       'route:posts',
-      EmberRoute.extend({
+      class PostsRoute extends Route {
         model() {
           return 'String as model';
-        },
-      })
+        }
+      }
     );
 
     this.owner.register(
       'controller:application',
-      Controller.extend({
+      class ApplicationController extends Controller {
         toString() {
           return 'App.ApplicationController';
-        },
-      })
+        }
+      }
     );
 
     this.owner.register(
       'controller:simple',
-      Controller.extend({
+      class SimpleController extends Controller {
         toString() {
           return 'App.SimpleController';
-        },
-      })
+        }
+      }
     );
 
     this.owner.register(
@@ -406,12 +406,12 @@ module('Ember Debug - View', function (hooks) {
 
     matchTree(tree, [
       TopLevel(
-        Route(
+        _Route(
           { name: 'application' },
-          Route(
+          _Route(
             { name: 'simple' },
-            Component({ name: 'test-foo', bounds: 'single' }),
-            Component({ name: 'test-bar', bounds: 'range' })
+            _Component({ name: 'test-foo', bounds: 'single' }),
+            _Component({ name: 'test-bar', bounds: 'range' })
           )
         )
       ),
@@ -446,12 +446,12 @@ module('Ember Debug - View', function (hooks) {
 
     matchTree(tree, [
       TopLevel(
-        Route(
+        _Route(
           { name: 'application' },
-          Route(
+          _Route(
             { name: 'simple' },
-            Component({ name: 'test-foo', bounds: 'single' }),
-            Component({ name: 'test-bar', bounds: 'range' })
+            _Component({ name: 'test-foo', bounds: 'single' }),
+            _Component({ name: 'test-bar', bounds: 'range' })
           )
         )
       ),
@@ -487,11 +487,11 @@ module('Ember Debug - View', function (hooks) {
 
     matchTree(tree, [
       TopLevel(
-        Route(
+        _Route(
           { name: 'application' },
-          Route(
+          _Route(
             { name: 'posts' },
-            Component({ name: 'x-first' }, Component({ name: 'x-second' }))
+            _Component({ name: 'x-first' }, _Component({ name: 'x-second' }))
           )
         )
       ),

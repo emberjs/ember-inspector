@@ -50,6 +50,7 @@ export default Component.extend(Evented, {
    * @method didInsertElement
    */
   didInsertElement() {
+    this._super(...arguments);
     schedule('afterRender', this, this.setupHeight);
   },
 

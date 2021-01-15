@@ -547,7 +547,7 @@ module('Object Inspector', function (hooks) {
 
     await click('[data-test-object-property-value]');
 
-    let txtField = find('[data-test-object-property-value-txt');
+    let txtField = find('[data-test-object-property-value-txt]');
     assert.equal(txtField.value, '"{"name":"teddy"}"');
 
     respondWith(

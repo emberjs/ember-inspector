@@ -1,15 +1,16 @@
 import { Promise } from 'rsvp';
-import { get } from '@ember/object';
+import { action, get } from '@ember/object';
 import TabRoute from 'ember-inspector/routes/tab';
 
-export default TabRoute.extend({
+export default class ContainerTypeRoute extends TabRoute {
   setupController(controller) {
     controller.setProperties({
       search: '',
       searchVal: '',
     });
-    this._super(...arguments);
-  },
+    super.setupController(...arguments);
+  }
+
   model(params) {
     const type = params.type_id;
     const port = this.port;
@@ -23,19 +24,20 @@ export default TabRoute.extend({
       });
       port.send('container:getInstances', { containerType: type });
     });
-  },
+  }
 
-  actions: {
-    error(err) {
-      if (err && err.status === 404) {
-        this.transitionTo('container-types.index');
-        return false;
-      }
-    },
-    sendInstanceToConsole(obj) {
-      this.port.send('container:sendInstanceToConsole', {
-        name: get(obj, 'fullName'),
-      });
-    },
-  },
-});
+  @action
+  error(err) {
+    if (err && err.status === 404) {
+      this.transitionTo('container-types.index');
+      return false;
+    }
+  }
+
+  @action
+  sendInstanceToConsole(obj) {
+    this.port.send('container:sendInstanceToConsole', {
+      name: get(obj, 'fullName'),
+    });
+  }
+}

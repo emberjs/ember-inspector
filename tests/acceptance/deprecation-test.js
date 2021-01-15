@@ -134,7 +134,7 @@ module('Deprecation Tab', function (outer) {
       await toggleDeprecationSource();
 
       assert
-        .dom('[data-test-deprecation-message')
+        .dom('[data-test-deprecation-message]')
         .hasText('Deprecation 1', 'message shown');
       assert.dom('[data-test-deprecation-count]').hasText('2', 'Count correct');
       assert
