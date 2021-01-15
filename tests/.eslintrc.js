@@ -4,5 +4,8 @@ module.exports = {
     wait: true,
     triggerPort: true,
   },
-  rules: {},
+  rules: {
+    'ember/no-classic-classes': 'off',
+    'ember/no-classic-components': 'off',
+  },
 };

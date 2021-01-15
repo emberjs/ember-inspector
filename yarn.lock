@@ -7266,15 +7266,14 @@ eslint-config-prettier@^7.1.0:
   resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-7.1.0.tgz#5402eb559aa94b894effd6bddfa0b1ca051c858f"
   integrity sha512-9sm5/PxaFG7qNJvJzTROMM1Bk1ozXVTKI0buKOyb0Bsr1hrwi0H/TzxF/COtf1uxikIK8SwhX7K6zg78jAzbeA==
 
-eslint-plugin-ember@^10.1.1:
-  version "10.1.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-ember/-/eslint-plugin-ember-10.1.2.tgz#213910b642ba74c999d1ea01b846e3c85c0c0b1e"
-  integrity sha512-1dImhjajeuMf0Isc5FK8it+zL//NJO6ZXorsgNB2dLLc+Mb5ECD5E6f7B1lYuuD68Oh1Wsbw+V4JLIgCjw5X2g==
+eslint-plugin-ember@^9.6.0:
+  version "9.6.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-ember/-/eslint-plugin-ember-9.6.0.tgz#607669732094081922660c3be5fc29f3caa3ee51"
+  integrity sha512-MNSXffxPhIiYaVc4eisRPeNoRb19W/2pHWiXwETlhQI9w/2VCyXLKY7c/8gtOCcjuEw4Xd5NiCMqxcNmyq5UzQ==
   dependencies:
     "@ember-data/rfc395-data" "^0.0.4"
     css-tree "^1.0.0-alpha.39"
     ember-rfc176-data "^0.3.15"
-    eslint-utils "^2.1.0"
     lodash.kebabcase "^4.1.1"
     snake-case "^3.0.3"
 
