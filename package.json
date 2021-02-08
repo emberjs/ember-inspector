@@ -26,7 +26,7 @@
     "watch": "ember build --watch"
   },
   "devDependencies": {
-    "@babel/helper-call-delegate": "^7.12.1",
+    "@babel/helper-call-delegate": "^7.12.13",
     "@ember/edition-utils": "^1.2.0",
     "@ember/optional-features": "^2.0.0",
     "@ember/render-modifiers": "^1.0.2",
