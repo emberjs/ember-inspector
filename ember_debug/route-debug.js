@@ -177,16 +177,20 @@ function buildSubTree(routeTree, route) {
 
       // Skip when route is an unresolved promise
       if (typeof routeHandler?.then === 'function') {
-        continue;
+        // ensure we rebuild the route tree when this route is resolved
+        routeHandler.then(() => this.notifyPropertyChange('routeTree'));
+        controllerName = '(unresolved)';
+        controllerClassName = '(unresolved)';
+        templateName = '(unresolved)';
+      } else {
+        controllerName =
+          routeHandler.get('controllerName') || routeHandler.get('routeName');
+        controllerFactory = owner.factoryFor
+          ? owner.factoryFor(`controller:${controllerName}`)
+          : owner._lookupFactory(`controller:${controllerName}`);
+        controllerClassName = this.getClassName(controllerName, 'controller');
+        templateName = this.getClassName(handler, 'template');
       }
-
-      controllerName =
-        routeHandler.get('controllerName') || routeHandler.get('routeName');
-      controllerFactory = owner.factoryFor
-        ? owner.factoryFor(`controller:${controllerName}`)
-        : owner._lookupFactory(`controller:${controllerName}`);
-      controllerClassName = this.getClassName(controllerName, 'controller');
-      templateName = this.getClassName(handler, 'template');
 
       subTree[handler] = {
         value: {
