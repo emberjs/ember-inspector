@@ -130,6 +130,12 @@ export default EmberObject.extend(PortMixin, {
   },
 });
 
+/**
+ *
+ * @param {*} routeTree
+ * @param {*} route
+ * @return {Void}
+ */
 function buildSubTree(routeTree, route) {
   let handlers = route.handlers;
   let owner = this.get('namespace.owner');
@@ -168,13 +174,23 @@ function buildSubTree(routeTree, route) {
         // Ember < 3.9.0
         routeHandler = routerLib.getHandler(handler);
       }
-      controllerName =
-        routeHandler.get('controllerName') || routeHandler.get('routeName');
-      controllerFactory = owner.factoryFor
-        ? owner.factoryFor(`controller:${controllerName}`)
-        : owner._lookupFactory(`controller:${controllerName}`);
-      controllerClassName = this.getClassName(controllerName, 'controller');
-      templateName = this.getClassName(handler, 'template');
+
+      // Skip when route is an unresolved promise
+      if (typeof routeHandler?.then === 'function') {
+        // ensure we rebuild the route tree when this route is resolved
+        routeHandler.then(() => this.notifyPropertyChange('routeTree'));
+        controllerName = '(unresolved)';
+        controllerClassName = '(unresolved)';
+        templateName = '(unresolved)';
+      } else {
+        controllerName =
+          routeHandler.get('controllerName') || routeHandler.get('routeName');
+        controllerFactory = owner.factoryFor
+          ? owner.factoryFor(`controller:${controllerName}`)
+          : owner._lookupFactory(`controller:${controllerName}`);
+        controllerClassName = this.getClassName(controllerName, 'controller');
+        templateName = this.getClassName(handler, 'template');
+      }
 
       subTree[handler] = {
         value: {
@@ -227,6 +243,12 @@ function arrayizeChildren(routeTree) {
   return obj;
 }
 
+/**
+ *
+ * @param {*} container
+ * @param {*} segments
+ * @return {String}
+ */
 function getURL(container, segments) {
   const locationImplementation = container.lookup('router:main').location;
   let url = [];
@@ -263,6 +285,12 @@ function getURL(container, segments) {
   return url;
 }
 
+/**
+ *
+ * @param {String} owner
+ * @param {String} name
+ * @return {Void}
+ */
 function routeHasBeenDefined(owner, name) {
   return (
     owner.hasRegistration(`template:${name}`) ||
