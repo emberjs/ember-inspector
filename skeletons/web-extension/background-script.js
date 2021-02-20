@@ -97,7 +97,7 @@
         onclick: function() {
           chrome.tabs.sendMessage(activeTabId, {
             from: 'devtools',
-            type: 'view:contextMenu'
+            type: 'view:inspectComponent'
           });
         }
       });
