@@ -77,7 +77,7 @@
     "ember-resolver": "^8.0.2",
     "ember-source": "~3.21.1",
     "ember-source-channel-url": "^3.0.0",
-    "ember-svg-jar": "^2.2.3",
+    "ember-svg-jar": "^2.3.1",
     "ember-table": "^3.0.0",
     "ember-template-lint": "^2.18.1",
     "ember-test-selectors": "^5.0.0",
