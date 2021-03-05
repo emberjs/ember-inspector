@@ -39,7 +39,9 @@ jobs:
           echo "GIT_COMMIT_SHA=${GIT_COMMIT_SHA}" >> $GITHUB_ENV
           echo "GIT_BRANCH=${GIT_BRANCH}" >> $GITHUB_ENV
       - name: Set up Volta
-        uses: rwjblue/setup-volta@v1
+        uses: volta-cli/action@v1
+        with:
+          node-version: 12.x
       - name: Install dependencies (yarn)
         run: yarn install
       - name: Lint (hbs)
@@ -94,7 +96,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Set up Volta
-        uses: rwjblue/setup-volta@v1
+        uses: volta-cli/action@v1
+        with:
+          node-version: 12.x
       - name: Install dependencies (yarn)
         run: yarn install
       - name: Set NO_EXTEND_PROTOTYPES
@@ -118,7 +122,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Set up Volta
-        uses: rwjblue/setup-volta@v1
+        uses: volta-cli/action@v1
+        with:
+          node-version: 12.x
       - name: Install dependencies (yarn)
         run: yarn install
       - name: Download panes
@@ -256,7 +262,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Volta
-        uses: rwjblue/setup-volta@v1
+        uses: volta-cli/action@v1
+        with:
+          node-version: 12.x
       - name: Install dependencies (chrome-webstore-upload-cli)
         run: volta install chrome-webstore-upload-cli
       - name: Download artifacts (Chrome)
@@ -285,7 +293,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Volta
-        uses: rwjblue/setup-volta@v1
+        uses: volta-cli/action@v1
+        with:
+          node-version: 12.x
       - name: Install dependencies (web-ext)
         run: |
           volta install web-ext
@@ -315,7 +325,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Volta
-        uses: rwjblue/setup-volta@v1
+        uses: volta-cli/action@v1
+        with:
+          node-version: 12.x
       - name: Set up NPM
         run: |
           echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}"> ~/.npmrc
