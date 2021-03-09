@@ -6052,10 +6052,10 @@ ember-cli-htmlbars@^4.0.0:
     strip-bom "^4.0.0"
     walk-sync "^2.0.2"
 
-ember-cli-htmlbars@^5.1.2, ember-cli-htmlbars@^5.2.0, ember-cli-htmlbars@^5.3.1, ember-cli-htmlbars@^5.6.2:
-  version "5.6.2"
-  resolved "https://registry.yarnpkg.com/ember-cli-htmlbars/-/ember-cli-htmlbars-5.6.2.tgz#01aebe6df7b8db7fd6e5dd02ba1c82898c087a35"
-  integrity sha512-8+x82oVqSkWN1RkHtK7QG40D/X94uEJCPmv5QUOJDg4KE+F/zrjA8TEjDKI/phjBUS6JfZ+Hg5RvamU1ZoZbjQ==
+ember-cli-htmlbars@^5.1.2, ember-cli-htmlbars@^5.2.0, ember-cli-htmlbars@^5.3.1, ember-cli-htmlbars@^5.6.4:
+  version "5.6.4"
+  resolved "https://registry.yarnpkg.com/ember-cli-htmlbars/-/ember-cli-htmlbars-5.6.4.tgz#97c1ce813dfe79961c575b4516fbb30cbb782b43"
+  integrity sha512-I4zSc6PJpWiDuhru7jozQsodo4tAsNENJP/Ry0LTL0DtlZASEa5cwahPsxBjzEmAnr30oI2AExZhrDcZBryTjQ==
   dependencies:
     "@ember/edition-utils" "^1.2.0"
     babel-plugin-htmlbars-inline-precompile "^4.4.1"
@@ -6072,9 +6072,6 @@ ember-cli-htmlbars@^5.1.2, ember-cli-htmlbars@^5.2.0, ember-cli-htmlbars@^5.3.1,
     silent-error "^1.1.1"
     strip-bom "^4.0.0"
     walk-sync "^2.2.0"
-  optionalDependencies:
-    release-it "^14.2.1"
-    release-it-lerna-changelog "^3.1.0"
 
 ember-cli-import-polyfill@^0.2.0:
   version "0.2.0"
@@ -12751,7 +12748,7 @@ release-it-lerna-changelog@^3.1.0:
     validate-peer-dependencies "^1.0.0"
     which "^2.0.2"
 
-release-it@^14.2.1, release-it@^14.4.1:
+release-it@^14.4.1:
   version "14.4.1"
   resolved "https://registry.yarnpkg.com/release-it/-/release-it-14.4.1.tgz#7b7dac839e22521853e81aa67d833c40a4094c43"
   integrity sha512-fNvl2hIiTA3wKOQMu/cS07acuvibaTlvLUJmhuHarPsYJZpwX+nugb0a4PG20vlpuU5jKfnhkP8uPmvKXtRfuw==
