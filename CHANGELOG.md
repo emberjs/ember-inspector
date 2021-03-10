@@ -1,3 +1,18 @@
+## v4.3.5 (2021-03-10)
+
+#### :bug: Bug Fix
+* [#1445](https://github.com/emberjs/ember-inspector/pull/1445) Bypass unresolved route promises in route-debug ([@steventsao](https://github.com/steventsao))
+
+#### :house: Internal
+* [#1509](https://github.com/emberjs/ember-inspector/pull/1509) Migrate to volta-cli/action ([@steventsao](https://github.com/steventsao))
+
+#### Committers: 4
+- Ricardo Mendes ([@locks](https://github.com/locks))
+- Robert Wagner ([@rwwagner90](https://github.com/rwwagner90))
+- Steven Tsao ([@steventsao](https://github.com/steventsao))
+- [@dependabot-preview[bot]](https://github.com/apps/dependabot-preview)
+
+
 ## v4.3.2 (2020-08-17)
 
 ## v4.3.1 (2020-08-16)
