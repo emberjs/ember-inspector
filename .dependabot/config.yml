@@ -10,4 +10,4 @@ update_configs:
   # other updates monthly, to cut down on repo noise.
   - package_manager: "javascript"
     directory: "/"
-    update_schedule: "monthly"
+    update_schedule: "weekly"
