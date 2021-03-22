@@ -1,5 +1,5 @@
 import ProfileNode from './profile-node';
-const Ember = window.Ember;
+const Ember = require('ember');
 const {
   run: { later, scheduleOnce },
 } = Ember;

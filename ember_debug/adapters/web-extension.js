@@ -1,7 +1,7 @@
 import BasicAdapter from './basic';
 import { typeOf } from '../utils/type-check';
 
-const Ember = window.Ember;
+const Ember = require('ember');
 const { run } = Ember;
 const { isArray } = Array;
 const { keys } = Object;
@@ -48,7 +48,7 @@ export default BasicAdapter.extend({
     // scope but not on the global object (i.e. `window.inspect`) does
     // not work. This sometimes causes problems, because, e.g. if the
     // page has a div with the ID `inspect`, `window.inspect` will point
-    // to that div and shadown the "global" inspect function with no way
+    // to that div and shadow the "global" inspect function with no way
     // to get it back. That causes "`inspect` is not a function" errors.
     //
     // As it turns out, however, when the extension page evals, the

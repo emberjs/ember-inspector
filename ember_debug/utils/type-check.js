@@ -1,4 +1,4 @@
-const Ember = window.Ember;
+const Ember = require('ember');
 const { ComputedProperty } = Ember;
 
 /**

@@ -1,4 +1,4 @@
-const Ember = window.Ember;
+const Ember = require('ember');
 const { Mixin } = Ember;
 
 // eslint-disable-next-line ember/no-new-mixins

@@ -1,5 +1,5 @@
 import BasicAdapter from './basic';
-const Ember = window.Ember;
+const Ember = require('ember');
 const {
   computed,
   run,

@@ -5,7 +5,7 @@ import RenderTree from 'ember-debug/libs/render-tree';
 import ViewInspection from 'ember-debug/libs/view-inspection';
 import bound from 'ember-debug/utils/bound-method';
 
-const Ember = window.Ember;
+const Ember = require('ember');
 
 const { computed, Object: EmberObject } = Ember;
 const { readOnly } = computed;

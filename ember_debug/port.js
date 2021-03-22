@@ -1,4 +1,4 @@
-const Ember = window.Ember;
+const Ember = require('ember');
 const { Object: EmberObject, computed, run } = Ember;
 const { or, readOnly } = computed;
 

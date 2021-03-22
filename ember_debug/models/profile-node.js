@@ -3,7 +3,7 @@
 
   @class ProfileNode
 **/
-const Ember = window.Ember;
+const Ember = require('ember');
 const { get, guidFor } = Ember;
 
 const ProfileNode = function (start, payload, parent, now) {

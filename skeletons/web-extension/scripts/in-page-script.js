@@ -27,7 +27,8 @@
   }
 
   onReady(function() {
-    var libraries = window.Ember && window.Ember.libraries;
+    var Ember = require('ember');
+    var libraries = Ember && Ember.libraries;
     if (libraries) {
       // Ember has changed where the array of libraries is located.
       // In older versions, `Ember.libraries` was the array itself,
