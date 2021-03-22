@@ -21,6 +21,7 @@ module.exports = {
   },
   globals: {
     basicContext: false,
+    require: false,
   },
   rules: {
     'no-prototype-builtins': 'off',

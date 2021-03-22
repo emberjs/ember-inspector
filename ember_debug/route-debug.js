@@ -5,7 +5,7 @@ import { compareVersion } from 'ember-debug/utils/version';
 import classify from 'ember-debug/utils/classify';
 import dasherize from 'ember-debug/utils/dasherize';
 
-const Ember = require('ember');
+const Ember = require('ember') || window.Ember;
 const {
   computed,
   observer,

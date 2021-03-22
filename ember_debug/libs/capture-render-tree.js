@@ -2,7 +2,7 @@ import { compareVersion } from '../utils/version';
 
 /* eslint-disable no-console, no-inner-declarations */
 
-const Ember = require('ember');
+const Ember = require('ember') || window.Ember;
 
 let captureRenderTree;
 

@@ -97,7 +97,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
         return;
       }
 
-      var Ember = require('ember');
+      var Ember = require('ember') || window.Ember;
 
       if (!Ember) {
         return;

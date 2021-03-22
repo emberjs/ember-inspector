@@ -1,6 +1,6 @@
 // eslint-disable-next-line ember/no-mixins
 import PortMixin from 'ember-debug/mixins/port-mixin';
-const Ember = require('ember');
+const Ember = require('ember') || window.Ember;
 const { Object: EmberObject, computed } = Ember;
 const { readOnly } = computed;
 
