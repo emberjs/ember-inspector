@@ -1,13 +1,14 @@
-
-# Create Pull-Requests for NPM updates automatically
-# https://dependabot.com/docs/config-file/
-
 version: 1
 update_configs:
-  # Keep package.json (& lockfiles) up to date.
-  #
-  # Security updates will be created immediately,
-  # other updates monthly, to cut down on repo noise.
   - package_manager: "javascript"
     directory: "/"
     update_schedule: "weekly"
+    default_labels:
+      - "dependencies"
+    automerged_updates:
+      - match:
+          update_type: "in_range"
+    ignored_updates:
+      - match:
+          dependency_name: "ember-cli"
+    version_requirement_updates: "auto"
