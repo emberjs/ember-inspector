@@ -11,7 +11,7 @@ import ContainerDebug from 'ember-debug/container-debug';
 import DeprecationDebug from 'ember-debug/deprecation-debug';
 import Session from 'ember-debug/services/session';
 
-const Ember = requireModule('ember')['default'] || window.Ember;
+const Ember = require.has('ember') ? require('ember')['default'] : window.Ember;
 const {
   Object: EmberObject,
   run,

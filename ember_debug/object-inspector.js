@@ -10,7 +10,7 @@ import {
 import { compareVersion } from 'ember-debug/utils/version';
 import { typeOf } from './utils/type-check';
 
-const Ember = requireModule('ember')['default'] || window.Ember;
+const Ember = require.has('ember') ? require('ember')['default'] : window.Ember;
 const {
   Object: EmberObject,
   inspect: emberInspect,

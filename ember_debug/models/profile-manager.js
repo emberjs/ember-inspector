@@ -1,5 +1,5 @@
 import ProfileNode from './profile-node';
-const Ember = requireModule('ember')['default'] || window.Ember;
+const Ember = require.has('ember') ? require('ember')['default'] : window.Ember;
 const {
   run: { later, scheduleOnce },
 } = Ember;
