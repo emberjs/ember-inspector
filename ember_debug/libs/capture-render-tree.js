@@ -2,7 +2,7 @@ import { compareVersion } from '../utils/version';
 
 /* eslint-disable no-console, no-inner-declarations */
 
-const Ember = require.has('ember') ? require('ember')['default'] : window.Ember;
+const Ember = requireModule('ember')['default'] || window.Ember;
 
 let captureRenderTree;
 

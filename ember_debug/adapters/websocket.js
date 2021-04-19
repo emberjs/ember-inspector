@@ -1,5 +1,5 @@
 import BasicAdapter from './basic';
-const Ember = require.has('ember') ? require('ember')['default'] : window.Ember;
+const Ember = requireModule('ember')['default'] || window.Ember;
 const {
   computed,
   run,

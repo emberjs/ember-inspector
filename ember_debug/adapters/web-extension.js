@@ -1,7 +1,7 @@
 import BasicAdapter from './basic';
 import { typeOf } from '../utils/type-check';
 
-const Ember = require.has('ember') ? require('ember')['default'] : window.Ember;
+const Ember = requireModule('ember')['default'] || window.Ember;
 const { run } = Ember;
 const { isArray } = Array;
 const { keys } = Object;

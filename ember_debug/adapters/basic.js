@@ -1,4 +1,3 @@
-/* globals requireModule */
 /* eslint no-console: 0 */
 const Ember = requireModule('ember')['default'] || window.Ember;
 const { A, computed, RSVP, Object: EmberObject } = Ember;

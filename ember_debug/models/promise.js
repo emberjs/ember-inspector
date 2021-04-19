@@ -1,6 +1,6 @@
 import { typeOf } from '../utils/type-check';
 
-const Ember = require.has('ember') ? require('ember')['default'] : window.Ember;
+const Ember = requireModule('ember')['default'] || window.Ember;
 const { Object: EmberObject, computed, A } = Ember;
 
 const dateComputed = function () {
