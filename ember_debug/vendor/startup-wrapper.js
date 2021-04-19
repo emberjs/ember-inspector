@@ -97,7 +97,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
         return;
       }
 
-      var Ember = require.has('ember') ? require('ember')['default'] : window.Ember;
+      var Ember = requireModule('ember')['default'] || window.Ember;
 
       if (!Ember) {
         return;
