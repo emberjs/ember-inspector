@@ -1,4 +1,4 @@
-const Ember = require('ember') || window.Ember;
+const Ember = requireModule('ember')['default'] || window.Ember;
 const { Object: EmberObject } = Ember;
 
 const Session = EmberObject.extend({

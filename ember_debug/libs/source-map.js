@@ -3,7 +3,7 @@
  * A lot of the code is inspired by/taken from
  * https://github.com/evanw/node-source-map-support
  */
-const Ember = require('ember') || window.Ember;
+const Ember = requireModule('ember')['default'] || window.Ember;
 const {
   Object: EmberObject,
   A,

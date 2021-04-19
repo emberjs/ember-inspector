@@ -1,6 +1,6 @@
 /* globals requireModule */
 /* eslint no-console: 0 */
-const Ember = require('ember') || window.Ember;
+const Ember = requireModule('ember')['default'] || window.Ember;
 const { A, computed, RSVP, Object: EmberObject } = Ember;
 const { Promise, resolve } = RSVP;
 import { onReady } from '../utils/on-ready';
