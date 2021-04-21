@@ -629,6 +629,12 @@ module('Ember Debug - Object Inspector', function (hooks) {
       },
     });
 
+    Inspected.reopenClass({
+      toString: function () {
+        return 'TestObject';
+      },
+    });
+
     let inspected = Inspected.create({
       maritalStatus: 'Single',
       propertyToSkip: null,
@@ -727,6 +733,12 @@ module('Ember Debug - Object Inspector', function (hooks) {
             ],
           },
         };
+      },
+    });
+
+    Inspected.reopenClass({
+      toString: function () {
+        return 'TestObject';
       },
     });
 
