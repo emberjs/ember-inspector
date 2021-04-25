@@ -97,7 +97,12 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
         return;
       }
 
-      var Ember = requireModule('ember')['default'] || window.Ember;
+      let Ember;
+      try {
+        Ember = requireModule('ember')['default'];
+      } catch {
+        Ember = window.Ember;
+      }
 
       if (!Ember) {
         return;

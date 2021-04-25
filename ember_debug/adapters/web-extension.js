@@ -1,7 +1,12 @@
 import BasicAdapter from './basic';
 import { typeOf } from '../utils/type-check';
 
-const Ember = requireModule('ember')['default'] || window.Ember;
+let Ember;
+try {
+  Ember = requireModule('ember')['default'];
+} catch {
+  Ember = window.Ember;
+}
 const { run } = Ember;
 const { isArray } = Array;
 const { keys } = Object;

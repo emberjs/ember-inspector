@@ -1,4 +1,9 @@
-const Ember = requireModule('ember')['default'] || window.Ember;
+let Ember;
+try {
+  Ember = requireModule('ember')['default'];
+} catch {
+  Ember = window.Ember;
+}
 const { Object: EmberObject, computed, run } = Ember;
 const { or, readOnly } = computed;
 

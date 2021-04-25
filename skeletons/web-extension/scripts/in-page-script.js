@@ -27,7 +27,12 @@
   }
 
   onReady(function() {
-    var Ember = requireModule('ember')['default'] || window.Ember;
+    let Ember;
+    try {
+      Ember = requireModule('ember')['default'];
+    } catch {
+      Ember = window.Ember;
+    }
     var libraries = Ember && Ember.libraries;
     if (libraries) {
       // Ember has changed where the array of libraries is located.

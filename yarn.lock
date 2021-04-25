@@ -1225,13 +1225,6 @@
   resolved "https://registry.yarnpkg.com/@glimmer/validator/-/validator-0.44.0.tgz#03d127097dc9cb23052cdb7fcae59d0a9dca53e1"
   integrity sha512-i01plR0EgFVz69GDrEuFgq1NheIjZcyTy3c7q+w7d096ddPVeVcRzU3LKaqCfovvLJ+6lJx40j45ecycASUUyw==
 
-"@glimmer/vm-babel-plugins@0.77.5":
-  version "0.77.5"
-  resolved "https://registry.yarnpkg.com/@glimmer/vm-babel-plugins/-/vm-babel-plugins-0.77.5.tgz#daffb6507aa6b08ec36f69d652897d339fdd0007"
-  integrity sha512-jTBM7fJMrIEy4/bCeI8e7ypR+AuWYzLA+KORCGbnTJtL/NYg4G8qwhQAZBtg1d3KmoqyqaCsyqE6f4/tzJO4eQ==
-  dependencies:
-    babel-plugin-debug-macros "^0.3.4"
-
 "@glimmer/vm@^0.42.2":
   version "0.42.2"
   resolved "https://registry.yarnpkg.com/@glimmer/vm/-/vm-0.42.2.tgz#492a4f05eac587c3a37371b3c62593f20bef553d"
@@ -5778,7 +5771,7 @@ ember-cli-babel@^6.0.0-beta.4, ember-cli-babel@^6.16.0, ember-cli-babel@^6.6.0, 
     ember-cli-version-checker "^2.1.2"
     semver "^5.5.0"
 
-ember-cli-babel@^7.0.0, ember-cli-babel@^7.10.0, ember-cli-babel@^7.11.0, ember-cli-babel@^7.12.0, ember-cli-babel@^7.13.0, ember-cli-babel@^7.20.5, ember-cli-babel@^7.21.0, ember-cli-babel@^7.22.1, ember-cli-babel@^7.23.0, ember-cli-babel@^7.23.1, ember-cli-babel@^7.26.2, ember-cli-babel@^7.26.3, ember-cli-babel@^7.4.0, ember-cli-babel@^7.7.3:
+ember-cli-babel@^7.0.0, ember-cli-babel@^7.10.0, ember-cli-babel@^7.11.0, ember-cli-babel@^7.12.0, ember-cli-babel@^7.13.0, ember-cli-babel@^7.19.0, ember-cli-babel@^7.20.5, ember-cli-babel@^7.21.0, ember-cli-babel@^7.22.1, ember-cli-babel@^7.23.0, ember-cli-babel@^7.23.1, ember-cli-babel@^7.26.2, ember-cli-babel@^7.26.3, ember-cli-babel@^7.4.0, ember-cli-babel@^7.7.3:
   version "7.26.3"
   resolved "https://registry.yarnpkg.com/ember-cli-babel/-/ember-cli-babel-7.26.3.tgz#e93ce7ec458208894d10844cf76e41cc06fdbeb6"
   integrity sha512-ZCs0g99d3kYaHs1+HT33oMY7/K+nLCAAv7dCLxsMzg7cQf55O6Pq4ZKnWEr3IHVs33xbJFnEb9prt1up36QVnw==
@@ -6443,16 +6436,15 @@ ember-source-channel-url@^3.0.0:
   dependencies:
     node-fetch "^2.6.0"
 
-ember-source@3.27.0-beta.3:
-  version "3.27.0-beta.3"
-  resolved "https://registry.yarnpkg.com/ember-source/-/ember-source-3.27.0-beta.3.tgz#075dfd21f79424a3f6bfe8d5eb998aca13ba4900"
-  integrity sha512-XcA+3qQexvqNUu3uDeG7JgU5AehdwzwbNI/i1uSzjOCgQ6PiAfePJWGrRIFAb4QHKVsijh5oi2IyNFiLN2kENw==
+ember-source@~3.21.1:
+  version "3.21.3"
+  resolved "https://registry.yarnpkg.com/ember-source/-/ember-source-3.21.3.tgz#c85fae070566468a1e479b1817bc690fe3d03207"
+  integrity sha512-wb9vkm2OLax7D6zo5NqB4/Da78LIsa8t74XGPcHtCg4hv5NhipIIgQEtGgWRgdQAp+vMMeZGwNWxw0Lra8MejA==
   dependencies:
     "@babel/helper-module-imports" "^7.8.3"
     "@babel/plugin-transform-block-scoping" "^7.8.3"
     "@babel/plugin-transform-object-assign" "^7.8.3"
     "@ember/edition-utils" "^1.2.0"
-    "@glimmer/vm-babel-plugins" "0.77.5"
     babel-plugin-debug-macros "^0.3.3"
     babel-plugin-filter-imports "^4.0.0"
     broccoli-concat "^4.2.4"
@@ -6460,7 +6452,7 @@ ember-source@3.27.0-beta.3:
     broccoli-funnel "^2.0.2"
     broccoli-merge-trees "^4.2.0"
     chalk "^4.0.0"
-    ember-cli-babel "^7.23.0"
+    ember-cli-babel "^7.19.0"
     ember-cli-get-component-path-option "^1.0.0"
     ember-cli-is-package-missing "^1.0.0"
     ember-cli-normalize-entity-name "^1.0.0"
@@ -6469,9 +6461,9 @@ ember-source@3.27.0-beta.3:
     ember-cli-version-checker "^5.1.1"
     ember-router-generator "^2.0.0"
     inflection "^1.12.0"
-    jquery "^3.5.1"
+    jquery "^3.5.0"
     resolve "^1.17.0"
-    semver "^7.3.4"
+    semver "^6.1.1"
     silent-error "^1.1.1"
 
 ember-svg-jar@^2.3.3:
@@ -9637,7 +9629,7 @@ jmespath@0.15.0:
   resolved "https://registry.yarnpkg.com/jmespath/-/jmespath-0.15.0.tgz#a3f222a9aae9f966f5d27c796510e28091764217"
   integrity sha1-o/Iiqarp+Wb10nx5ZRDigJF2Qhc=
 
-jquery@^3.4.1, jquery@^3.5.1:
+jquery@^3.4.1, jquery@^3.5.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.0.tgz#c72a09f15c1bdce142f49dbf1170bdf8adac2470"
   integrity sha512-JVzAR/AjBvVt2BmYhxRCSYysDsPcssdmTFnzyLEts9qNwmjmu4JTAMYubEfwVOSwpQ1I1sKKFcxhZCI2buerfw==

@@ -1,5 +1,10 @@
 /* eslint no-console: 0 */
-const Ember = requireModule('ember')['default'] || window.Ember;
+let Ember;
+try {
+  Ember = requireModule('ember')['default'];
+} catch {
+  Ember = window.Ember;
+}
 const { A, computed, RSVP, Object: EmberObject } = Ember;
 const { Promise, resolve } = RSVP;
 import { onReady } from '../utils/on-ready';

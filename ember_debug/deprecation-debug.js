@@ -2,13 +2,25 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import SourceMap from 'ember-debug/libs/source-map';
 
-const Ember = requireModule('ember')['default'] || window.Ember;
+let Ember;
+try {
+  Ember = requireModule('ember')['default'];
+} catch {
+  Ember = window.Ember;
+}
+
 const { Debug, Object: EmberObject, computed, guidFor, RSVP, A } = Ember;
 const { resolve, all } = RSVP;
 const { readOnly } = computed;
 const { registerDeprecationHandler } = Debug;
 
-const run = requireModule('@ember/runloop')['default'] || Ember.run;
+let run;
+try {
+  run = requireModule('@ember/runloop')['default'];
+} catch {
+  run = Ember.run;
+}
+
 const { cancel, debounce } = run;
 
 export default EmberObject.extend(PortMixin, {
