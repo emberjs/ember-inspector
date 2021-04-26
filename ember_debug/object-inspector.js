@@ -10,7 +10,12 @@ import {
 import { compareVersion } from 'ember-debug/utils/version';
 import { typeOf } from './utils/type-check';
 
-const Ember = window.Ember;
+let Ember;
+try {
+  Ember = requireModule('ember')['default'];
+} catch {
+  Ember = window.Ember;
+}
 const {
   Object: EmberObject,
   inspect: emberInspect,
@@ -770,7 +775,21 @@ function getClassName(object) {
       (emberNames.get(object.constructor) || object.constructor.name)) ||
     '';
 
-  if ('toString' in object && object.toString !== Object.prototype.toString) {
+  if (object.constructor && object.constructor.prototype === object) {
+    let { constructor } = object;
+
+    if (
+      constructor.toString &&
+      constructor.toString !== Object.prototype.toString
+    ) {
+      name = constructor.toString();
+    } else {
+      name = constructor.name;
+    }
+  } else if (
+    'toString' in object &&
+    object.toString !== Object.prototype.toString
+  ) {
     name = object.toString();
   }
 
@@ -779,7 +798,7 @@ function getClassName(object) {
   // with the class name. We check the length of the class name to prevent doing
   // this when the value is minified.
   if (
-    name.match(/<.*:ember\d+>/) &&
+    name.match(/<.*:.*>/) &&
     !className.startsWith('_') &&
     className.length > 2 &&
     className !== 'Class'

@@ -1,7 +1,12 @@
 /* eslint no-empty:0 */
 // eslint-disable-next-line ember/no-mixins
 import PortMixin from 'ember-debug/mixins/port-mixin';
-const Ember = window.Ember;
+let Ember;
+try {
+  Ember = requireModule('ember')['default'];
+} catch {
+  Ember = window.Ember;
+}
 const { Object: EmberObject } = Ember;
 let { libraries } = Ember;
 

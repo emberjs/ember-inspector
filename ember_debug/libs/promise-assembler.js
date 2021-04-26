@@ -7,7 +7,12 @@
 
 import Promise from 'ember-debug/models/promise';
 
-const Ember = window.Ember;
+let Ember;
+try {
+  Ember = requireModule('ember')['default'];
+} catch {
+  Ember = window.Ember;
+}
 const { Object: EmberObject, Evented, A, computed, RSVP, isNone } = Ember;
 
 let PromiseAssembler = EmberObject.extend(Evented, {

@@ -9,7 +9,7 @@
  Also responsible for sending the first tree.
  **/
 /*eslint prefer-spread: 0 */
-/* globals Ember, adapter, env, requireModule */
+/* globals Ember, adapter, env */
 var currentAdapter = 'basic';
 if (typeof adapter !== 'undefined') {
   currentAdapter = adapter;
@@ -96,12 +96,20 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       if (triggered) {
         return;
       }
-      if (!window.Ember) {
+
+      let Ember;
+      try {
+        Ember = requireModule('ember')['default'];
+      } catch {
+        Ember = window.Ember;
+      }
+
+      if (!Ember) {
         return;
       }
       // `Ember.Application` load hook triggers before all of Ember is ready.
       // In this case we ignore and wait for the `Ember` load hook.
-      if (!window.Ember.RSVP) {
+      if (!Ember.RSVP) {
         return;
       }
       triggered = true;
@@ -112,7 +120,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     window.addEventListener('Ember', triggerOnce, false);
     // Old Ember versions
     window.addEventListener('Ember.Application', function() {
-      if (window.Ember && window.Ember.VERSION && compareVersion(window.Ember.VERSION, '1.10.0') === 1) {
+      if (Ember && Ember.VERSION && compareVersion(Ember.VERSION, '1.10.0') === 1) {
         // Ember >= 1.10 should be handled by `Ember` load hook instead.
         return;
       }

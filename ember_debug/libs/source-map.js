@@ -3,7 +3,12 @@
  * A lot of the code is inspired by/taken from
  * https://github.com/evanw/node-source-map-support
  */
-const Ember = window.Ember;
+let Ember;
+try {
+  Ember = requireModule('ember')['default'];
+} catch {
+  Ember = window.Ember;
+}
 const {
   Object: EmberObject,
   A,

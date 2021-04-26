@@ -116,7 +116,9 @@ export default Controller.extend({
   }),
 
   setActive: action(function (bool) {
-    this.set('active', bool);
+    schedule('afterRender', () => {
+      this.set('active', bool);
+    });
   }),
 
   setupContentElement: action(function (element) {

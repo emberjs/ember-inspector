@@ -2,11 +2,26 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import SourceMap from 'ember-debug/libs/source-map';
 
-const Ember = window.Ember;
-const { Debug, Object: EmberObject, computed, guidFor, run, RSVP, A } = Ember;
+let Ember;
+try {
+  Ember = requireModule('ember')['default'];
+} catch {
+  Ember = window.Ember;
+}
+
+const { Debug, Object: EmberObject, computed, guidFor, RSVP, A } = Ember;
 const { resolve, all } = RSVP;
 const { readOnly } = computed;
 const { registerDeprecationHandler } = Debug;
+
+let run;
+try {
+  run = requireModule('@ember/runloop')['default'];
+} catch {
+  run = Ember.run;
+}
+
+const { cancel, debounce } = run;
 
 export default EmberObject.extend(PortMixin, {
   portNamespace: 'deprecation',
@@ -174,7 +189,7 @@ export default EmberObject.extend(PortMixin, {
     },
 
     clear() {
-      run.cancel(this.debounce);
+      cancel(this.debounce);
       this.deprecations.clear();
       this.set('groupedDeprecations', {});
       this.sendCount();
@@ -191,7 +206,7 @@ export default EmberObject.extend(PortMixin, {
   },
 
   willDestroy() {
-    run.cancel(this.debounce);
+    cancel(this.debounce);
     return this._super(...arguments);
   },
 
@@ -242,11 +257,11 @@ export default EmberObject.extend(PortMixin, {
       // to catch deprecations
       if (!this.namespace.IGNORE_DEPRECATIONS) {
         this.deprecationsToSend.pushObject(deprecation);
-        run.cancel(this.debounce);
+        cancel(this.debounce);
         if (this._watching) {
-          this.debounce = run.debounce(this, 'sendPending', 100);
+          this.debounce = debounce(this, 'sendPending', 100);
         } else {
-          this.debounce = run.debounce(this, 'sendCount', 100);
+          this.debounce = debounce(this, 'sendCount', 100);
         }
         if (!this._warned) {
           this.adapter.warn(
