@@ -1,9 +1,5 @@
-let Ember;
-try {
-  Ember = requireModule('ember')['default'];
-} catch {
-  Ember = window.Ember;
-}
+import Ember from '../utils/ember';
+
 const { Object: EmberObject } = Ember;
 
 const Session = EmberObject.extend({

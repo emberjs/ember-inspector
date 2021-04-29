@@ -4,13 +4,7 @@ import PortMixin from 'ember-debug/mixins/port-mixin';
 import RenderTree from 'ember-debug/libs/render-tree';
 import ViewInspection from 'ember-debug/libs/view-inspection';
 import bound from 'ember-debug/utils/bound-method';
-
-let Ember;
-try {
-  Ember = requireModule('ember')['default'];
-} catch {
-  Ember = window.Ember;
-}
+import Ember from './utils/ember';
 
 const { computed, Object: EmberObject } = Ember;
 const { readOnly } = computed;

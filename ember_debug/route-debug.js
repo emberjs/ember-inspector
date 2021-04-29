@@ -4,13 +4,8 @@ import PortMixin from 'ember-debug/mixins/port-mixin';
 import { compareVersion } from 'ember-debug/utils/version';
 import classify from 'ember-debug/utils/classify';
 import dasherize from 'ember-debug/utils/dasherize';
+import Ember from './utils/ember';
 
-let Ember;
-try {
-  Ember = requireModule('ember')['default'];
-} catch {
-  Ember = window.Ember;
-}
 const {
   computed,
   observer,

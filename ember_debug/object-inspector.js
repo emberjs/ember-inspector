@@ -9,13 +9,8 @@ import {
 } from 'ember-debug/utils/type-check';
 import { compareVersion } from 'ember-debug/utils/version';
 import { typeOf } from './utils/type-check';
+import Ember from './utils/ember';
 
-let Ember;
-try {
-  Ember = requireModule('ember')['default'];
-} catch {
-  Ember = window.Ember;
-}
 const {
   Object: EmberObject,
   inspect: emberInspect,

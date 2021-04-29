@@ -1,13 +1,8 @@
 // eslint-disable-next-line ember/no-mixins
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import ProfileManager from './models/profile-manager';
+import Ember from './utils/ember';
 
-let Ember;
-try {
-  Ember = requireModule('ember')['default'];
-} catch {
-  Ember = window.Ember;
-}
 const { subscribe, Object: EmberObject } = Ember;
 
 // Initial setup, that has to occur before the EmberObject init for some reason

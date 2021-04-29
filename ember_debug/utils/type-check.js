@@ -1,9 +1,4 @@
-let Ember;
-try {
-  Ember = requireModule('ember')['default'];
-} catch {
-  Ember = window.Ember;
-}
+import Ember from './ember';
 const { ComputedProperty } = Ember;
 
 /**
