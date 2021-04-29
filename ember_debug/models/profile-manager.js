@@ -1,10 +1,6 @@
 import ProfileNode from './profile-node';
-let Ember;
-try {
-  Ember = requireModule('ember')['default'];
-} catch {
-  Ember = window.Ember;
-}
+import Ember from '../utils/ember';
+
 const {
   run: { later, scheduleOnce },
 } = Ember;

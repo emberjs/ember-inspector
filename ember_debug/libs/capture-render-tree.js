@@ -1,13 +1,7 @@
 import { compareVersion } from '../utils/version';
+import Ember from '../utils/ember';
 
 /* eslint-disable no-console, no-inner-declarations */
-
-let Ember;
-try {
-  Ember = requireModule('ember')['default'];
-} catch {
-  Ember = window.Ember;
-}
 
 let captureRenderTree;
 

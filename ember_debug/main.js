@@ -10,13 +10,8 @@ import PromiseDebug from 'ember-debug/promise-debug';
 import ContainerDebug from 'ember-debug/container-debug';
 import DeprecationDebug from 'ember-debug/deprecation-debug';
 import Session from 'ember-debug/services/session';
+import Ember from './utils/ember';
 
-let Ember;
-try {
-  Ember = requireModule('ember')['default'];
-} catch {
-  Ember = window.Ember;
-}
 const {
   Object: EmberObject,
   run,

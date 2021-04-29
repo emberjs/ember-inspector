@@ -2,12 +2,7 @@
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import SourceMap from 'ember-debug/libs/source-map';
 
-let Ember;
-try {
-  Ember = requireModule('ember')['default'];
-} catch {
-  Ember = window.Ember;
-}
+import Ember from './utils/ember';
 
 const { Debug, Object: EmberObject, computed, guidFor, RSVP, A } = Ember;
 const { resolve, all } = RSVP;
