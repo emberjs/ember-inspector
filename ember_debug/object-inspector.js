@@ -21,7 +21,6 @@ const {
   guidFor,
   isNone,
   cacheFor,
-  meta,
   VERSION,
   run,
   ActionHandler,
@@ -246,7 +245,7 @@ function getTagTrackedProps(tag, ownTag, level = 0) {
 function getTrackedDependencies(object, property, tag) {
   const proto = Object.getPrototypeOf(object);
   if (!proto) return [];
-  const cpDesc = meta(object).peekDescriptors(property);
+  const cpDesc = emberMeta(object).peekDescriptors(property);
   const dependentKeys = [];
   if (cpDesc) {
     dependentKeys.push(...(cpDesc._dependentKeys || []));
@@ -820,7 +819,7 @@ function getClassName(object) {
 
 function ownMixins(object) {
   // TODO: We need to expose an API for getting _just_ the own mixins directly
-  let meta = meta(object);
+  let meta = emberMeta(object);
   let parentMeta = meta.parent;
   let mixins = new Set();
 
@@ -849,7 +848,7 @@ function ownMixins(object) {
 }
 
 function ownProperties(object, ownMixins) {
-  let meta = meta(object);
+  let meta = emberMeta(object);
 
   if (Array.isArray(object)) {
     // slice to max 101, for performance and so that the object inspector will show a `more items` indicator above 100

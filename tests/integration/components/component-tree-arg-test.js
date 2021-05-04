@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { setupTestAdapter } from '../../test-adapter';
 import hbs from 'htmlbars-inline-precompile';
-import { render } from '@ember/test-helpers';
+import { render } from 'ember-test-helpers';
 
 module('Integration | Component | component-tree-arg', function (hooks) {
   setupTestAdapter(hooks);
