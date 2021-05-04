@@ -71,14 +71,14 @@
               </span>
               ={{#if (is-string value)}}"{{else}}<span class="bracket-token">\{{</span>{{/if}}
               <ComponentTreeArg @value={{value}} />
-              {{#if (is-string value)}}"{{else}}<span class="bracket-token">}}</span>{{/if}}
+              {{#if (is-string value)}}"{{else}}<span class="bracket-token">\}\}</span>{{/if}}
             </div>
           {{/each-in}}
         {{/if}}
       {{else if @item.isOutlet}}
-        \{{outlet "{{@item.name}}"}}
+        \{{outlet "{{@item.name}}"\}\}
       {{else if @item.isEngine}}
-        \{{mount "{{@item.name}}"}}
+        \{{mount "{{@item.name}}"\}\}
       {{else if @item.isRouteTemplate}}
         {{@item.name}} route
       {{/if}}

@@ -60,21 +60,21 @@
 
   {{#if this.isEdit}}
     {{#if this.isDate}}
-      {{date-property-field
-        allowInput=true
-        date=(readonly this.dateValue)
-        dateFormat="Y-m-d"
+      <DatePropertyField
         class="mixin__property-value-txt flex-1 text-base14 outline-none text-base bg-base01 js-object-property-value-date"
-        onChange=this.dateSelected
-        onClose=this.finishedEditing
-      }}
+        @allowInput={{true}}
+        @date={{readonly this.dateValue}}
+        @dateFormat="Y-m-d"
+        @onChange={{this.dateSelected}}
+        @onClose={{this.finishedEditing}}
+      />
     {{else}}
       <ObjectInspector::PropertyField
         class="mixin__property-value-txt flex-1 text-base14 text-base bg-base01 outline-none"
         @value={{this.txtValue}}
-        @insert-newline={{fn this.save}}
-        @escape-press={{fn this.finishedEditing}}
-        @focus-out={{fn this.finishedEditing}}
+        @insert-newline={{this.save}}
+        @escape-press={{this.finishedEditing}}
+        @focus-out={{this.finishedEditing}}
         data-test-object-property-value-txt
       />
     {{/if}}
