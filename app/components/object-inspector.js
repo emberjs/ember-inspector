@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { action, computed, get } from '@ember/object';
+import { gt } from '@ember/object/computed';
 
 export default Component.extend({
   tagName: '',
@@ -20,7 +21,7 @@ export default Component.extend({
     return `.${nested.mapBy('property').join('.')}`;
   }),
 
-  isNested: computed.gt('model.length', 1),
+  isNested: gt('model.length', 1),
 
   setPropDisplay: action(function (type) {
     // The custom filter is only working for the "all" table yet

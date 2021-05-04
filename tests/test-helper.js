@@ -1,6 +1,8 @@
 import Application from 'ember-inspector/app';
 import config from 'ember-inspector/config/environment';
+import * as QUnit from 'qunit';
 import { setApplication } from '@ember/test-helpers';
+import { setup } from 'qunit-dom';
 import { start } from 'ember-qunit';
 import TestAdapter from './test-adapter';
 
@@ -25,4 +27,7 @@ Application.instanceInitializer({
 
 setApplication(Application.create(config.APP));
 window.NO_EMBER_DEBUG = true;
+
+setup(QUnit.assert);
+
 start();
