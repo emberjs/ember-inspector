@@ -12,7 +12,7 @@ function checkStatus(response) {
 }
 
 function getLatestEntry(doc) {
-  const regex = /^#{2} ?\[(.+)\]((?:[\s\S](?!^#{2}))+)/gm;
+  const regex = /^#{2} ?v(.+)((?:[\s\S](?!^#{2} v))+)/gm;
   const matches = doc.match(regex);
   return matches ? matches[0] : '';
 }
