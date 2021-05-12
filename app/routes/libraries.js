@@ -14,7 +14,6 @@ export default TabRoute.extend({
           name: 'Ember Inspector',
           version,
         });
-        console.log('libraries', message.libraries)
         resolve(message.libraries);
       });
       port.send('general:getLibraries');

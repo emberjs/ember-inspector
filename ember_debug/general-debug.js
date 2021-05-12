@@ -27,7 +27,6 @@ export default EmberObject.extend(PortMixin, {
       try {
         let config = JSON.parse(unescape(found.getAttribute('content')));
         this.set('emberCliConfig', config);
-        console.log(config);
       } catch (e) {}
     }
   },
