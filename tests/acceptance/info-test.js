@@ -38,4 +38,35 @@ module('Info Tab', function (hooks) {
       .hasText('Handlebars');
     assert.dom(libraries[2].querySelector('.js-lib-version')).hasText('2.1');
   });
+
+  test('App config is displayed correctly', async function (assert) {
+    respondWith('general:getEmberCliConfig', {
+      type: 'general:emberCliConfig',
+      emberCliConfig: {
+        modulePrefix: 'extended',
+        environment: 'production',
+      },
+    });
+
+    await visit('/info/app-config');
+
+    let configs = findAll('.js-config-row');
+    assert.equal(
+      configs.length,
+      2,
+      'The correct number of configurations is displayed'
+    );
+    assert
+      .dom(configs[0].querySelector('.js-config-key'))
+      .hasText('modulePrefix');
+    assert
+      .dom(configs[0].querySelector('.js-config-value'))
+      .hasText('extended');
+    assert
+      .dom(configs[1].querySelector('.js-config-key'))
+      .hasText('environment');
+    assert
+      .dom(configs[1].querySelector('.js-config-value'))
+      .hasText('production');
+  });
 });

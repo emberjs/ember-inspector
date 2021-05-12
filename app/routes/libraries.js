@@ -8,14 +8,13 @@ export default TabRoute.extend({
   model() {
     const version = this.version;
     const port = this.port;
-    console.log('port', port)
     return new Promise((resolve) => {
       port.one('general:libraries', (message) => {
-        // console.log('m',message)
         message.libraries.insertAt(0, {
           name: 'Ember Inspector',
           version,
         });
+        console.log('libraries', message.libraries)
         resolve(message.libraries);
       });
       port.send('general:getLibraries');
