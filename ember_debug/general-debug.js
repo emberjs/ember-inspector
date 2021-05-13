@@ -96,6 +96,12 @@ export default EmberObject.extend(PortMixin, {
       this.sendMessage('libraries', { libraries: libraries._registry });
     },
 
+    getEmberCliConfig() {
+      this.sendMessage('emberCliConfig', {
+        emberCliConfig: this.emberCliConfig,
+      });
+    },
+
     /**
      * Called from the inspector to refresh the inspected app.
      * Used in case the inspector was opened late and therefore missed capturing
