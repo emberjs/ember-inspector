@@ -1,5 +1,4 @@
 import TabRoute from 'ember-inspector/routes/tab';
-import { readOnly } from '@ember/object/computed';
 
 export default TabRoute.extend({
   model() {
