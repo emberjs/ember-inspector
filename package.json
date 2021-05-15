@@ -78,6 +78,7 @@
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-page-title": "^6.2.1",
     "ember-qunit": "^4.6.0",
+    "ember-ref-modifier": "^1.0.1",
     "ember-resolver": "^8.0.2",
     "ember-source": "~3.27.0",
     "ember-source-channel-url": "^3.0.0",
