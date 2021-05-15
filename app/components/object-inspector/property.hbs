@@ -23,6 +23,7 @@
   {{!-- Property Icon --}}
   <span
     class="mixin__property-icon-container flex-shrink-0"
+    role="button"
     title={{if @model.code @model.code this.iconInfo.title}}
     {{on "click" this.toggleDeps}}
   >
@@ -93,6 +94,7 @@
     {{#if this.isDate}}
       <span
         class="{{this.valueType}} mixin__property-value truncate"
+        role="button"
         {{on "click" this.dateClick}}
         data-test-object-property-value
       >
@@ -101,6 +103,7 @@
     {{else}}
       <span
         class="{{this.valueType}} {{if this.isService "type-service"}} mixin__property-value truncate"
+        role="button"
         {{on "click" this.valueClick}}
         data-test-object-property-value
       >

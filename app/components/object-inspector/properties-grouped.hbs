@@ -6,9 +6,10 @@
     >
       {{#if mixin.properties.length}}
         <h2
-          class="mixin__name sticky top-0 truncate select-none cursor-default text-base15 bg-base01"
-          {{on "click" accordion.toggle}}
           data-test-object-detail-name
+          class="mixin__name sticky top-0 truncate select-none cursor-default text-base15 bg-base01"
+          role="button"
+          {{on "click" accordion.toggle}}
         >
           {{mixin.name}}
         </h2>

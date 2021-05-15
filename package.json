@@ -101,7 +101,7 @@
     "normalize.css": "8.0.1",
     "npm-run-all": "^4.1.5",
     "pretender": "^3.4.3",
-    "prettier": "^2.2.1",
+    "prettier": "^2.3.0",
     "qunit-dom": "^1.6.0",
     "release-it": "^14.6.1",
     "release-it-lerna-changelog": "^3.1.0",
