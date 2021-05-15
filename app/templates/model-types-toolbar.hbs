@@ -7,21 +7,21 @@
   <Ui::ToolbarDivider />
 
   <div class="toolbar__checkbox js-filter-hide-empty-model-types">
-    <label for="options-hideEmptyModelTypes">
+    <label>
       <Input
+        data-test-options-hideEmptyModelTypes
         @type="checkbox"
         @checked={{this.hideEmptyModelTypes}}
-        @id="options-hideEmptyModelTypes"
       />
       Hide Empty Model Types
     </label>
   </div>
   <div class="toolbar__checkbox js-filter-order-records-by-count">
-    <label for="options-orderByRecordCount">
+    <label>
       <Input
+        data-test-options-orderByRecordCount
         @type="checkbox"
         @checked={{this.orderByRecordCount}}
-        @id="options-orderByRecordCount"
       />
       Order Models By Record Count
     </label>

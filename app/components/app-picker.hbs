@@ -1,6 +1,7 @@
 <div class="app-picker">
   <div class="h-7 text-base13">
     <select
+      aria-label="Select app"
       class="{{if @collapsed "opacity-0"}} box-border block w-full h-full m-0 border-0 pr-4 pl-2 text-base text-base13 bg-transparent appearance-none outline-none"
       {{on 'change' this.selectApp}}
     >
