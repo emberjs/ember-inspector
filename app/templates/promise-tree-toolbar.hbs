@@ -55,12 +55,11 @@
   <Ui::ToolbarDivider />
 
   <div class="toolbar__checkbox js-with-stack">
-    <label for="instrument-with-stack">
+    <label>
       <Input
         @type="checkbox"
         @checked={{this.instrumentWithStack}}
-        @id="instrument-with-stack"
-        @change={{fn this.updateInstrumentWithStack (not this.instrumentWithStack)}}
+        {{on "change" (fn this.updateInstrumentWithStack (not this.instrumentWithStack))}}
       />
       Trace promises
     </label>

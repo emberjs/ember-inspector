@@ -1,8 +1,7 @@
 <div class="toolbar">
   <div class="toolbar__checkbox js-filter-hide-routes">
-    <label for="options-hideRoutes">
+    <label>
       <Input
-        @id="options-hideRoutes"
         @type="checkbox"
         @checked={{this.options.hideRoutes}}
       />
@@ -11,9 +10,8 @@
   </div>
 
   <div class="toolbar__checkbox js-filter-hide-substates">
-    <label for="options-hideSubstates" title="Hide loading and error substates">
+    <label title="Hide loading and error substates">
       <Input
-        @id="options-hideSubstates"
         @type="checkbox"
         @checked={{this.options.hideSubstates}}
       />

@@ -184,7 +184,7 @@ module('Data Tab', function (outer) {
       assert.dom(findAll('.js-model-type-count')[2]).hasText('2');
 
       // Hide empty models
-      await click('#options-hideEmptyModelTypes');
+      await click('[data-test-options-hideEmptyModelTypes]');
 
       assert
         .dom('.js-model-type')
@@ -194,7 +194,7 @@ module('Data Tab', function (outer) {
       assert.dom(findAll('.js-model-type-count')[0]).hasText('2');
 
       // Show empty models
-      await click('#options-hideEmptyModelTypes');
+      await click('[data-test-options-hideEmptyModelTypes]');
 
       assert
         .dom('.js-model-type')
@@ -221,13 +221,13 @@ module('Data Tab', function (outer) {
       assert.dom(findAll('.js-model-type-name')[1]).hasText('App.Post');
 
       // Order models by record count.
-      await click('#options-orderByRecordCount');
+      await click('[data-test-options-orderByRecordCount]');
 
       assert.dom(findAll('.js-model-type-name')[0]).hasText('App.Post');
       assert.dom(findAll('.js-model-type-name')[1]).hasText('App.Comment');
 
       // Don't order models by record count.
-      await click('#options-orderByRecordCount');
+      await click('[data-test-options-orderByRecordCount]');
 
       assert.dom(findAll('.js-model-type-name')[0]).hasText('App.Comment');
       assert.dom(findAll('.js-model-type-name')[1]).hasText('App.Post');
