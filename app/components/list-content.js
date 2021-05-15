@@ -22,11 +22,7 @@ export default Component.extend(Evented, {
    */
   layoutService: service('layout'),
 
-  /**
-   * @property classNames
-   * @type {Array}
-   */
-  classNames: ['list__content', 'js-list-content'],
+  tagName: '',
 
   init() {
     this._super(...arguments);
@@ -50,6 +46,7 @@ export default Component.extend(Evented, {
    * @method didInsertElement
    */
   didInsertElement() {
+    this._super(...arguments);
     schedule('afterRender', this, this.setupHeight);
   },
 
@@ -100,8 +97,6 @@ export default Component.extend(Evented, {
     );
     return this._super(...arguments);
   },
-
-  attributeBindings: ['style'],
 
   style: computed('height', function () {
     return htmlSafe(`height:${this.height}px`);

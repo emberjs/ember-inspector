@@ -31,8 +31,14 @@ module.exports = {
 
     // Temporarily turn these off
     'ember/avoid-leaking-state-in-ember-objects': 'off',
+    'ember/no-actions-hash': 'off',
+    'ember/no-classic-classes': 'off',
+    'ember/no-classic-components': 'off',
+    'ember/no-component-lifecycle-hooks': 'off',
+    'ember/no-computed-properties-in-native-classes': 'off',
     'ember/no-get': 'off',
     'ember/no-test-import-export': 'off',
+    'ember/require-tagless-components': 'off',
 
     // Best practice
     'no-duplicate-imports': 'error',

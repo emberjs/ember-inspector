@@ -8,6 +8,8 @@ const findMixin = function (mixins, property) {
 };
 
 export default PropertiesBase.extend({
+  tagName: '',
+
   calculate: action(function (property) {
     const mixin = findMixin(this.get('model.mixins'), property);
 

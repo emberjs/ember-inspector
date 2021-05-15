@@ -2,6 +2,8 @@ import { action } from '@ember/object';
 import PropertiesBase from 'ember-inspector/components/object-inspector/properties-base';
 
 export default PropertiesBase.extend({
+  tagName: '',
+
   calculate: action(function ({ name }, mixin) {
     this.port.send('objectInspector:calculate', {
       objectId: this.model.objectId,

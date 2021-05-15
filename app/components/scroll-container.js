@@ -4,7 +4,7 @@ import { htmlSafe } from '@ember/template';
 import { tracked } from '@glimmer/tracking';
 
 export default class ScrollContainerComponent extends Component {
-  attributeBindings = ['style'];
+  tagName = '';
 
   @tracked collection;
   @tracked currentItem;
@@ -49,6 +49,7 @@ export default class ScrollContainerComponent extends Component {
   }
 
   didRender() {
+    super.didRender(...arguments);
     let { index, lastIndex, currentItem, lastItem } = this;
 
     if (index !== lastIndex || currentItem !== lastItem) {
