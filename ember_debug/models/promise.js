@@ -3,6 +3,7 @@ import { typeOf } from '../utils/type-check';
 import Ember from '../utils/ember';
 
 const { Object: EmberObject, computed, A } = Ember;
+const { equal, or } = computed;
 
 const dateComputed = function () {
   return computed({
@@ -39,9 +40,9 @@ export default EmberObject.extend({
     return parent.get('level') + 1;
   }),
 
-  isSettled: computed.or('isFulfilled', 'isRejected'),
+  isSettled: or('isFulfilled', 'isRejected'),
 
-  isFulfilled: computed.equal('state', 'fulfilled'),
+  isFulfilled: equal('state', 'fulfilled'),
 
-  isRejected: computed.equal('state', 'rejected'),
+  isRejected: equal('state', 'rejected'),
 });

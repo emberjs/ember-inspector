@@ -25,4 +25,5 @@ Application.instanceInitializer({
 
 setApplication(Application.create(config.APP));
 window.NO_EMBER_DEBUG = true;
+
 start();

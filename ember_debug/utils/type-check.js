@@ -1,5 +1,5 @@
 import Ember from './ember';
-const { ComputedProperty } = Ember;
+const { meta: emberMeta, ComputedProperty } = Ember;
 
 /**
  * Check if given key on the passed object is a computed property
@@ -13,8 +13,8 @@ export function isComputed(object, key) {
     return true;
   }
 
-  if (Ember.meta(object) && Ember.meta(object).peekDescriptors(key)) {
-    return !!Ember.meta(object).peekDescriptors(key)._getter;
+  if (emberMeta(object) && emberMeta(object).peekDescriptors(key)) {
+    return !!emberMeta(object).peekDescriptors(key)._getter;
   }
 
   if (getDescriptorFor(object, key) instanceof ComputedProperty) {

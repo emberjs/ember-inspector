@@ -23,6 +23,19 @@ const {
   cacheFor,
   VERSION,
   run,
+  ActionHandler,
+  ArrayProxy,
+  Component,
+  ControllerMixin,
+  CoreObject,
+  Evented,
+  MutableArray,
+  MutableEnumerable,
+  NativeArray,
+  ObjectProxy,
+  Observable,
+  PromiseProxyMixin,
+  TargetActionSupport,
 } = Ember;
 const { oneWay } = computed;
 const { backburner, join } = run;
@@ -74,18 +87,18 @@ const keys = Object.keys || Ember.keys;
  * Add Known Ember Mixins and Classes so we can label them correctly in the inspector
  */
 const emberNames = new Map([
-  [Ember.Evented, 'Evented Mixin'],
-  [Ember.PromiseProxyMixin, 'PromiseProxy Mixin'],
-  [Ember.MutableArray, 'MutableArray Mixin'],
-  [Ember.MutableEnumerable, 'MutableEnumerable Mixin'],
-  [Ember.NativeArray, 'NativeArray Mixin'],
-  [Ember.Observable, 'Observable Mixin'],
-  [Ember.ControllerMixin, 'Controller Mixin'],
-  [Ember.TargetActionSupport, 'TargetActionSupport Mixin'],
-  [Ember.ActionHandler, 'ActionHandler Mixin'],
-  [Ember.CoreObject, 'CoreObject'],
-  [Ember.Object, 'EmberObject'],
-  [Ember.Component, 'Component'],
+  [Evented, 'Evented Mixin'],
+  [PromiseProxyMixin, 'PromiseProxy Mixin'],
+  [MutableArray, 'MutableArray Mixin'],
+  [MutableEnumerable, 'MutableEnumerable Mixin'],
+  [NativeArray, 'NativeArray Mixin'],
+  [Observable, 'Observable Mixin'],
+  [ControllerMixin, 'Controller Mixin'],
+  [TargetActionSupport, 'TargetActionSupport Mixin'],
+  [ActionHandler, 'ActionHandler Mixin'],
+  [CoreObject, 'CoreObject'],
+  [EmberObject, 'EmberObject'],
+  [Component, 'Component'],
 ]);
 
 try {
@@ -232,7 +245,7 @@ function getTagTrackedProps(tag, ownTag, level = 0) {
 function getTrackedDependencies(object, property, tag) {
   const proto = Object.getPrototypeOf(object);
   if (!proto) return [];
-  const cpDesc = Ember.meta(object).peekDescriptors(property);
+  const cpDesc = emberMeta(object).peekDescriptors(property);
   const dependentKeys = [];
   if (cpDesc) {
     dependentKeys.push(...(cpDesc._dependentKeys || []));
@@ -679,7 +692,7 @@ export default EmberObject.extend(PortMixin, {
 
   mixinsForObject(object) {
     if (
-      object instanceof Ember.ObjectProxy &&
+      object instanceof ObjectProxy &&
       object.content &&
       !object._showProxyDetails
     ) {
@@ -687,7 +700,7 @@ export default EmberObject.extend(PortMixin, {
     }
 
     if (
-      object instanceof Ember.ArrayProxy &&
+      object instanceof ArrayProxy &&
       object.content &&
       !object._showProxyDetails
     ) {
@@ -806,7 +819,7 @@ function getClassName(object) {
 
 function ownMixins(object) {
   // TODO: We need to expose an API for getting _just_ the own mixins directly
-  let meta = Ember.meta(object);
+  let meta = emberMeta(object);
   let parentMeta = meta.parent;
   let mixins = new Set();
 
@@ -835,7 +848,7 @@ function ownMixins(object) {
 }
 
 function ownProperties(object, ownMixins) {
-  let meta = Ember.meta(object);
+  let meta = emberMeta(object);
 
   if (Array.isArray(object)) {
     // slice to max 101, for performance and so that the object inspector will show a `more items` indicator above 100

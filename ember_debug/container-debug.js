@@ -3,14 +3,14 @@ import PortMixin from 'ember-debug/mixins/port-mixin';
 import Ember from './utils/ember';
 
 const { Object: EmberObject, computed } = Ember;
-const { readOnly } = computed;
+const { reads, readOnly } = computed;
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,
 
   objectInspector: readOnly('namespace.objectInspector'),
 
-  container: computed.reads('namespace.owner.__container__'),
+  container: reads('namespace.owner.__container__'),
 
   portNamespace: 'container',
 
