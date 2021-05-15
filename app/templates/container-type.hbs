@@ -5,20 +5,17 @@
     @onUpdateSorts={{this.updateSorts}}
     @enableReorder={{false}}
   />
-  <t.body
-    @rows={{this.rows}}
-  as |b|
-  >
+  <t.body @rows={{this.rows}} as |b|>
     <b.row
       class={{if (mod b.rowMeta.index 2) "striped"}}
-      data-test-instance-row
-    as |r|
+      data-test-instance-row as |r|
     >
       <r.cell as |name column instance|>
         {{#if instance.inspectable}}
           <div
-            class="is-link"
             data-test-instance={{name}}
+            class="is-link"
+            role="button"
             {{on "click" (fn this.inspectInstance instance)}}
           >
             {{instance.name}}

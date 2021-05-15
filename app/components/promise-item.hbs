@@ -44,6 +44,7 @@
       {{#if this.isValueInspectable}}
         <span
           class="list__link js-promise-object-value"
+          role="button"
           {{on "click" (fn @inspectObject settledValue.objectId)}}
         >
           {{this.settledValue.inspect}}

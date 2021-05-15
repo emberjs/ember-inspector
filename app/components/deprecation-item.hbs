@@ -3,6 +3,7 @@
     <div class="flex items-center">
       <div
         class="flex items-center flex-grow py-2"
+        role="button"
         {{on "click" disclosure.toggle}}
       >
         {{#if @model.hasSourceMap}}
