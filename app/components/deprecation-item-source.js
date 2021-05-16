@@ -1,8 +1,11 @@
 import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import { computed } from '@ember/object';
 import { bool, readOnly, and } from '@ember/object/computed';
 
 export default Component.extend({
+  port: service(),
+
   tagName: '',
 
   known: bool('model.map.source'),
