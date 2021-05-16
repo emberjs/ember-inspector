@@ -1,12 +1,15 @@
 // eslint-disable-next-line ember/no-observers
 import { action, observer } from '@ember/object';
 import Controller from '@ember/controller';
+import { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
 import { equal, bool, and, not, filter } from '@ember/object/computed';
 import { debounce, next, once } from '@ember/runloop';
 
 export default Controller.extend({
   queryParams: ['filter'],
+
+  port: service(),
 
   createdAfter: null,
 

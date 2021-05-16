@@ -8,6 +8,7 @@ const ORDER_MODELS_BY_COUNT_KEY = 'are-models-ordered-by-record-count';
 
 export default Controller.extend({
   navWidth: 180,
+  port: service(),
   storage: service(),
 
   init() {

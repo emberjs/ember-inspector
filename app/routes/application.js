@@ -6,6 +6,8 @@ import Ember from 'ember';
 const { NativeArray } = Ember;
 
 export default Route.extend({
+  port: service(),
+
   setupController(controller) {
     controller.set('mixinStack', []);
     let port = this.port;

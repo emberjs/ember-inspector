@@ -1,11 +1,14 @@
 import Route from '@ember/routing/route';
 import { Promise } from 'rsvp';
 import { getOwner } from '@ember/application';
+import { inject as service } from '@ember/service';
 
 /**
  * @module ember-inspector/routes/app-detected
  */
 export default Route.extend({
+  port: service(),
+
   /**
    * Sends a request to ember-debug to figure out whether
    * the ember-app has booted so that we can start inspecting!

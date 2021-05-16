@@ -1,4 +1,5 @@
 import { action, computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 import PropertiesBase from 'ember-inspector/components/object-inspector/properties-base';
 
 const findMixin = function (mixins, property) {
@@ -8,6 +9,8 @@ const findMixin = function (mixins, property) {
 };
 
 export default PropertiesBase.extend({
+  port: service(),
+
   tagName: '',
 
   calculate: action(function (property) {

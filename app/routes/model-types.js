@@ -1,8 +1,11 @@
+import { inject as service } from '@ember/service';
 import { set } from '@ember/object';
 import { Promise } from 'rsvp';
 import TabRoute from 'ember-inspector/routes/tab';
 
 export default TabRoute.extend({
+  port: service(),
+
   setupController(controller, model) {
     this._super(controller, model);
     this.port.on('data:modelTypesAdded', this, this.addModelTypes);

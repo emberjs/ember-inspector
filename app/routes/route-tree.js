@@ -1,7 +1,10 @@
 import { assign } from '@ember/polyfills';
+import { inject as service } from '@ember/service';
 import TabRoute from 'ember-inspector/routes/tab';
 
 export default TabRoute.extend({
+  port: service(),
+
   setupController() {
     this.port.on('route:currentRoute', this, this.setCurrentRoute);
     this.port.send('route:getCurrentRoute');

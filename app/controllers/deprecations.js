@@ -1,9 +1,12 @@
 import { action, computed, set } from '@ember/object';
+import { inject as service } from '@ember/service';
 import Controller from '@ember/controller';
 import debounceComputed from 'ember-inspector/computed/debounce';
 import searchMatch from 'ember-inspector/utils/search-match';
 
 export default Controller.extend({
+  port: service(),
+
   init() {
     this._super(...arguments);
     set(this, 'deprecations', []);

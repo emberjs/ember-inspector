@@ -1,7 +1,10 @@
+import { inject as service } from '@ember/service';
 import { set } from '@ember/object';
 import TabRoute from 'ember-inspector/routes/tab';
 
 export default TabRoute.extend({
+  port: service(),
+
   setupController(controller, model) {
     this._super(controller, model);
 

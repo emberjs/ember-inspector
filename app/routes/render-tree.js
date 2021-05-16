@@ -1,7 +1,10 @@
 import { Promise } from 'rsvp';
+import { inject as service } from '@ember/service';
 import TabRoute from 'ember-inspector/routes/tab';
 
 export default TabRoute.extend({
+  port: service(),
+
   model() {
     const port = this.port;
     return new Promise(function (resolve) {

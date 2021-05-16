@@ -1,8 +1,11 @@
 import Component from '@ember/component';
 import { action, computed, get } from '@ember/object';
+import { inject as service } from '@ember/service';
 import { gt } from '@ember/object/computed';
 
 export default Component.extend({
+  port: service(),
+
   tagName: '',
 
   propDisplayType: 'grouped',

@@ -1,8 +1,11 @@
 import { Promise } from 'rsvp';
+import { inject as service } from '@ember/service';
 import { setProperties } from '@ember/object';
 import TabRoute from 'ember-inspector/routes/tab';
 
 export default TabRoute.extend({
+  port: service(),
+
   model() {
     return new Promise((resolve) => {
       this.port.one('deprecation:deprecationsAdded', resolve);

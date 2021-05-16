@@ -1,8 +1,11 @@
 import { Promise } from 'rsvp';
 import TabRoute from 'ember-inspector/routes/tab';
+import { inject as service } from '@ember/service';
 import { readOnly } from '@ember/object/computed';
 
 export default TabRoute.extend({
+  port: service(),
+
   version: readOnly('config.VERSION'),
 
   model() {

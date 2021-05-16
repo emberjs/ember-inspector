@@ -1,8 +1,11 @@
 import { Promise } from 'rsvp';
 import { get } from '@ember/object';
+import { inject as service } from '@ember/service';
 import TabRoute from 'ember-inspector/routes/tab';
 
 export default TabRoute.extend({
+  port: service(),
+
   setupController(controller) {
     controller.setProperties({
       search: '',

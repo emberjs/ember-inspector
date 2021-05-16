@@ -9,7 +9,11 @@ import { action } from '@ember/object';
 const CHECK_HTML = '&#10003;';
 
 export default Component.extend({
-  tagName: '',
+  /**
+   * @property classNames
+   * @type {Array}
+   */
+  classNames: ['list'],
 
   /**
    * Class to pass to each row in `vertical-collection`.

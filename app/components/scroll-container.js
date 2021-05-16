@@ -4,7 +4,7 @@ import { htmlSafe } from '@ember/template';
 import { tracked } from '@glimmer/tracking';
 
 export default class ScrollContainerComponent extends Component {
-  tagName = '';
+  attributeBindings = ['style'];
 
   @tracked collection;
   @tracked currentItem;

@@ -13,6 +13,7 @@ export default Controller.extend({
    * @type {Service}
    */
   layoutService: service('layout'),
+  port: service(),
 
   isDragging: false,
   contentHeight: null,
