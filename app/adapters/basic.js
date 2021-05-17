@@ -1,3 +1,4 @@
+import classic from 'ember-classic-decorator';
 /**
  * The adapter stores logic specific to each environment.
  * Extend this object with env specific code (such as chrome/firefox/test),
@@ -15,7 +16,8 @@ import EmberObject from '@ember/object';
 
 import config from 'ember-inspector/config/environment';
 
-export default EmberObject.extend({
+@classic
+export default class Basic extends EmberObject {
   /**
    * Called when the adapter is created (when
    * the inspector app boots).
@@ -23,10 +25,10 @@ export default EmberObject.extend({
    * @method init
    */
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
     this._messageCallbacks = [];
     this._checkVersion();
-  },
+  }
 
   /**
    * Listens to `EmberInspectorDebugger` message about
@@ -57,7 +59,7 @@ export default EmberObject.extend({
       }
     });
     this.sendMessage({ type: 'check-version', from: 'devtools' });
-  },
+  }
 
   /**
    * Hook called when the Ember version is not
@@ -70,16 +72,16 @@ export default EmberObject.extend({
    * @method onVersionMismatch
    * @param {String} neededVersion (The version to go to)
    */
-  onVersionMismatch() {},
+  onVersionMismatch() {}
 
-  name: 'basic',
+  name = 'basic';
 
   /**
     Used to send messages to EmberDebug
 
     @param type {Object} the message to the send
   **/
-  sendMessage() {},
+  sendMessage() {}
 
   /**
     Register functions to be called
@@ -87,20 +89,20 @@ export default EmberObject.extend({
   **/
   onMessageReceived(callback) {
     this._messageCallbacks.push(callback);
-  },
+  }
 
   _messageReceived(message) {
     this._messageCallbacks.forEach((callback) => {
       callback(message);
     });
-  },
+  }
 
   // Called when the "Reload" is clicked by the user
-  willReload() {},
+  willReload() {}
 
-  canOpenResource: false,
-  openResource(/* file, line */) {},
-});
+  canOpenResource = false;
+  openResource /* file, line */() {}
+}
 
 /**
  * Compares two Ember versions.

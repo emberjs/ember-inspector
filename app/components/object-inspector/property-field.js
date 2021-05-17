@@ -1,8 +1,10 @@
+import classic from 'ember-classic-decorator';
 import TextField from '@ember/component/text-field';
 
-export default TextField.extend({
+@classic
+export default class PropertyField extends TextField {
   didInsertElement() {
     this.element.select();
-    return this._super(...arguments);
-  },
-});
+    return super.didInsertElement(...arguments);
+  }
+}

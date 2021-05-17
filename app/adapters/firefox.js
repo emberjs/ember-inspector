@@ -1,5 +1,7 @@
+import classic from 'ember-classic-decorator';
 import WebExtension from './web-extension';
 
-export default WebExtension.extend({
-  name: 'firefox',
-});
+@classic
+export default class Firefox extends WebExtension {
+  name = 'firefox';
+}

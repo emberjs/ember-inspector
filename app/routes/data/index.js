@@ -1,9 +1,9 @@
-import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 import { Promise } from 'rsvp';
 
-export default Route.extend({
-  port: service(),
+export default class IndexRoute extends Route {
+  @service port;
 
   model() {
     return new Promise((resolve) => {
@@ -12,11 +12,11 @@ export default Route.extend({
       });
       this.port.send('data:checkAdapter');
     });
-  },
+  }
 
   afterModel(model) {
     if (model) {
       this.transitionTo('model-types');
     }
-  },
-});
+  }
+}

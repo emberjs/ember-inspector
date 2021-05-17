@@ -1,4 +1,5 @@
 import TabRoute from 'ember-inspector/routes/tab';
+import { tracked } from '@glimmer/tracking';
 import fetch from 'fetch';
 
 function checkStatus(response) {
@@ -17,8 +18,8 @@ function getLatestEntry(doc) {
   return matches ? matches[0] : '';
 }
 
-export default TabRoute.extend({
-  error: false,
+export default class WhatsNewRoute extends TabRoute {
+  @tracked error = false;
 
   model() {
     let { version } = this.config;
@@ -33,12 +34,12 @@ export default TabRoute.extend({
       .then((response) => response.text())
       .then((text) => getLatestEntry(text))
       .catch((error) => {
-        this.set('error', error);
+        this.error = error;
       });
-  },
+  }
 
   setupController(controller, model) {
-    this._super(controller, model);
+    super.setupController(controller, model);
     controller.set('error', this.error);
-  },
-});
+  }
+}

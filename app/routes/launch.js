@@ -1,17 +1,35 @@
+import { inject as service } from '@ember/service';
+import { readOnly } from '@ember/object/computed';
 import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
 const { Promise } = RSVP;
-import { readOnly } from '@ember/object/computed';
-import { inject as service } from '@ember/service';
 import { LOCAL_STORAGE_SUPPORTED } from 'ember-inspector/services/storage/local';
 
 const chromeStoreSupported = !!window.chrome && !!window.chrome.storage;
 const storageSupported = chromeStoreSupported || LOCAL_STORAGE_SUPPORTED;
 const STORE_KEY = 'last-version-opened';
 
-export default Route.extend({
-  version: readOnly('config.VERSION'),
-  storage: service(),
+export default class LaunchRoute extends Route {
+  @service storage;
+
+  @readOnly('config.VERSION') version;
+
+  beforeModel() {
+    let targetRoute = 'component-tree';
+    const currentVersion = this.version;
+
+    return this.lastVersionOpened().then((lastVersion) => {
+      this.setLastVersionOpened(currentVersion);
+      if (
+        storageSupported &&
+        window.compareVersions(currentVersion, lastVersion) > 0
+      ) {
+        targetRoute = 'whats-new';
+      }
+
+      this.transitionTo(targetRoute);
+    });
+  }
 
   lastVersionOpened() {
     if (chromeStoreSupported) {
@@ -23,7 +41,7 @@ export default Route.extend({
     } else {
       return RSVP.resolve((this.storage.getItem(STORE_KEY) || 0).toString());
     }
-  },
+  }
 
   setLastVersionOpened(version) {
     if (chromeStoreSupported) {
@@ -41,22 +59,5 @@ export default Route.extend({
       this.storage.setItem(STORE_KEY, version);
       return RSVP.resolve();
     }
-  },
-
-  beforeModel() {
-    let targetRoute = 'component-tree';
-    const currentVersion = this.version;
-
-    return this.lastVersionOpened().then((lastVersion) => {
-      this.setLastVersionOpened(currentVersion);
-      if (
-        storageSupported &&
-        window.compareVersions(currentVersion, lastVersion) > 0
-      ) {
-        targetRoute = 'whats-new';
-      }
-
-      this.transitionTo(targetRoute);
-    });
-  },
-});
+  }
+}

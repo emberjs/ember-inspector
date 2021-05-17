@@ -1,15 +1,16 @@
+import { tagName } from '@ember-decorators/component';
+import { map, sort } from '@ember/object/computed';
 import Component from '@ember/component';
-import { sort, map } from '@ember/object/computed';
-import { set, computed } from '@ember/object';
+import { get, set, computed } from '@ember/object';
 import { A } from '@ember/array';
 
-export default Component.extend({
-  tagName: '',
-
-  isArray: computed('properties', function () {
+@tagName('')
+export default class SortProperties extends Component {
+  @computed('properties')
+  get isArray() {
     const props = A(this.properties || []);
     return props.findBy('name', 'length') && props.findBy('name', 0);
-  }),
+  }
 
   /**
    * Sort the properties by name and group them by property type to make them easier to find in the object inspector.
@@ -17,9 +18,10 @@ export default Component.extend({
    * @property sortedProperties
    * @type {Array<Object>}
    */
-  sortedProperties: computed('isArray', 'sorted.length', function () {
+  @computed('isArray', 'sorted.length')
+  get sortedProperties() {
     // limit arrays
-    if (this.isArray && this.get('sorted.length') > 100) {
+    if (this.isArray && get(this, 'sorted.length') > 100) {
       const indicator = {
         name: '...',
         value: {
@@ -31,11 +33,12 @@ export default Component.extend({
       return props;
     }
     return this.sorted;
-  }),
+  }
 
-  sorted: sort('props', 'sortProperties'),
+  @sort('props', 'sortProperties')
+  sorted;
 
-  props: map('properties', function (p) {
+  @map('properties', function (p) {
     set(
       p,
       'isFunction',
@@ -45,7 +48,8 @@ export default Component.extend({
       set(p, 'name', parseInt(p.name));
     }
     return p;
-  }),
+  })
+  props;
 
   /**
    * Used by the `sort` computed macro.
@@ -53,7 +57,8 @@ export default Component.extend({
    * @property sortProperties
    * @type {Array<String>}
    */
-  sortProperties: computed('isArray', function () {
+  @computed('isArray')
+  get sortProperties() {
     const order = [
       'isFunction',
       'isService:desc',
@@ -70,5 +75,5 @@ export default Component.extend({
       order.splice(order.length - 1, 0, 'isProperty:desc');
     }
     return order;
-  }),
-});
+  }
+}

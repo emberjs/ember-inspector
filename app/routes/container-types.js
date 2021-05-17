@@ -1,9 +1,10 @@
-import Route from '@ember/routing/route';
+import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 import { Promise } from 'rsvp';
 
-export default Route.extend({
-  port: service(),
+export default class ContainerTypesRoute extends Route {
+  @service port;
 
   model() {
     const port = this.port;
@@ -13,10 +14,10 @@ export default Route.extend({
       });
       port.send('container:getTypes');
     });
-  },
-  actions: {
-    reload() {
-      this.refresh();
-    },
-  },
-});
+  }
+
+  @action
+  reload() {
+    this.refresh();
+  }
+}

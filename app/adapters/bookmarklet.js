@@ -1,10 +1,12 @@
-/* eslint no-useless-escape: 0 */
+/* eslint-disable no-useless-escape */
+import classic from 'ember-classic-decorator';
 import { computed } from '@ember/object';
 
 import BasicAdapter from './basic';
 
-export default BasicAdapter.extend({
-  name: 'bookmarklet',
+@classic
+export default class Bookmarklet extends BasicAdapter {
+  name = 'bookmarklet';
 
   /**
    * Called when the adapter is created.
@@ -13,21 +15,23 @@ export default BasicAdapter.extend({
    */
   init() {
     this._connect();
-    return this._super(...arguments);
-  },
+    return super.init(...arguments);
+  }
 
-  inspectedWindow: computed(function () {
+  @computed
+  get inspectedWindow() {
     return window.opener || window.parent;
-  }),
+  }
 
-  inspectedWindowURL: computed(function () {
+  @computed
+  get inspectedWindowURL() {
     return loadPageVar('inspectedWindowURL');
-  }),
+  }
 
   sendMessage(options) {
     options = options || {};
     this.inspectedWindow.postMessage(options, this.inspectedWindowURL);
-  },
+  }
 
   /**
    * Redirect to the correct inspector version.
@@ -41,7 +45,7 @@ export default BasicAdapter.extend({
       /\./g,
       '-'
     )}/index.html${window.location.search}`;
-  },
+  }
 
   _connect() {
     window.addEventListener('message', (e) => {
@@ -57,8 +61,8 @@ export default BasicAdapter.extend({
         this._messageReceived(message);
       }
     });
-  },
-});
+  }
+}
 
 function loadPageVar(sVar) {
   return decodeURI(

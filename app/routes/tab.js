@@ -1,6 +1,8 @@
+import classic from 'ember-classic-decorator';
 /* eslint no-empty:0 */
 import Route from '@ember/routing/route';
-export default Route.extend({
+@classic
+export default class TabRoute extends Route {
   renderTemplate() {
     this.render();
     try {
@@ -9,5 +11,5 @@ export default Route.extend({
         outlet: 'toolbar',
       });
     } catch (e) {}
-  },
-});
+  }
+}

@@ -1,13 +1,15 @@
+import classic from 'ember-classic-decorator';
 import { set } from '@ember/object';
 import Evented from '@ember/object/evented';
 import Service from '@ember/service';
 
-export default Service.extend(Evented, {
-  applicationId: undefined,
-  applicationName: undefined,
+@classic
+export default class PortService extends Service.extend(Evented) {
+  applicationId = undefined;
+  applicationName = undefined;
 
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
 
     /*
      * A dictionary of the form:
@@ -43,7 +45,7 @@ export default Service.extend(Evented, {
         this.trigger(message.type, message, applicationId);
       }
     });
-  },
+  }
 
   selectApplication(applicationId) {
     if (
@@ -54,7 +56,7 @@ export default Service.extend(Evented, {
       this.setProperties({ applicationId, applicationName });
       this.send('app-selected', { applicationId, applicationName });
     }
-  },
+  }
 
   send(type, message) {
     message = message || {};
@@ -63,5 +65,5 @@ export default Service.extend(Evented, {
     message.applicationId = this.applicationId;
     message.applicationName = this.applicationName;
     this.adapter.sendMessage(message);
-  },
-});
+  }
+}

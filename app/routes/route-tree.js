@@ -1,32 +1,33 @@
-import { assign } from '@ember/polyfills';
 import { inject as service } from '@ember/service';
+import { assign } from '@ember/polyfills';
+import { set } from '@ember/object';
 import TabRoute from 'ember-inspector/routes/tab';
 
-export default TabRoute.extend({
-  port: service(),
+export default class RouteTreeRoute extends TabRoute {
+  @service port;
 
   setupController() {
     this.port.on('route:currentRoute', this, this.setCurrentRoute);
     this.port.send('route:getCurrentRoute');
     this.port.on('route:routeTree', this, this.setTree);
     this.port.send('route:getTree');
-  },
+  }
 
   deactivate() {
     this.port.off('route:currentRoute', this, this.setCurrentRoute);
     this.port.off('route:routeTree', this, this.setTree);
-  },
+  }
 
   setCurrentRoute(message) {
     // eslint-disable-next-line ember/no-controller-access-in-routes
     this.controller.set('currentRoute', message);
-  },
+  }
 
   setTree(options) {
     let routeArray = topSort(options.tree);
-    this.set('controller.model', routeArray);
-  },
-});
+    set(this, 'controller.model', routeArray);
+  }
+}
 
 function topSort(tree, list) {
   list = list || [];

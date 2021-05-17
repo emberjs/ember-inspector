@@ -1,8 +1,9 @@
+import { tagName } from '@ember-decorators/component';
+import { computed, get } from '@ember/object';
+import { equal, gt, notEmpty } from '@ember/object/computed';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
 import { htmlSafe } from '@ember/template';
 import { isEmpty } from '@ember/utils';
-import { notEmpty, gt, equal } from '@ember/object/computed';
 
 const COLOR_MAP = {
   red: '#ff2717',
@@ -10,135 +11,136 @@ const COLOR_MAP = {
   green: '#006400',
 };
 
-export default Component.extend({
-  tagName: '',
+@tagName('')
+export default class PromiseItem extends Component {
+  filter = null;
+  effectiveSearch = null;
 
-  filter: null,
-  effectiveSearch: null,
+  @equal('model.reason.type', 'type-error')
+  isError;
 
-  isError: equal('model.reason.type', 'type-error'),
-
-  style: computed('model.{isFulfilled,isRejected,state}', function () {
+  @computed('model.{isFulfilled,isRejected,state}')
+  get style() {
     let color = '';
-    if (this.get('model.isFulfilled')) {
+    if (get(this, 'model.isFulfilled')) {
       color = 'green';
-    } else if (this.get('model.isRejected')) {
+    } else if (get(this, 'model.isRejected')) {
       color = 'red';
     } else {
       color = 'blue';
     }
     return htmlSafe(`background-color: ${COLOR_MAP[color]}; color: white;`);
-  }),
+  }
 
-  nodeStyle: computed(
+  @computed(
     'effectiveSearch',
     'filter',
-    'model.{isFulfilled,isPending,isRejected,state}',
-    function () {
-      let relevant;
-      switch (this.filter) {
-        case 'pending':
-          relevant = this.get('model.isPending');
-          break;
-        case 'rejected':
-          relevant = this.get('model.isRejected');
-          break;
-        case 'fulfilled':
-          relevant = this.get('model.isFulfilled');
-          break;
-        default:
-          relevant = true;
-      }
-      if (relevant && !isEmpty(this.effectiveSearch)) {
-        relevant = this.model.matchesExactly(this.effectiveSearch);
-      }
-      if (!relevant) {
-        return 'opacity: 0.3;';
-      } else {
-        return '';
-      }
+    'model.{isFulfilled,isPending,isRejected,state}'
+  )
+  get nodeStyle() {
+    let relevant;
+    switch (this.filter) {
+      case 'pending':
+        relevant = get(this, 'model.isPending');
+        break;
+      case 'rejected':
+        relevant = get(this, 'model.isRejected');
+        break;
+      case 'fulfilled':
+        relevant = get(this, 'model.isFulfilled');
+        break;
+      default:
+        relevant = true;
     }
-  ),
+    if (relevant && !isEmpty(this.effectiveSearch)) {
+      relevant = this.model.matchesExactly(this.effectiveSearch);
+    }
+    if (!relevant) {
+      return 'opacity: 0.3;';
+    } else {
+      return '';
+    }
+  }
 
-  labelStyle: computed('model.level', 'nodeStyle', function () {
+  @computed('model.level', 'nodeStyle')
+  get labelStyle() {
     return htmlSafe(
-      `padding-left: ${+this.get('model.level') * 20 + 5}px;${this.nodeStyle}`
+      `padding-left: ${+get(this, 'model.level') * 20 + 5}px;${this.nodeStyle}`
     );
-  }),
+  }
 
-  expandedClass: computed('hasChildren', 'model.isExpanded', function () {
+  @computed('hasChildren', 'model.isExpanded')
+  get expandedClass() {
     if (!this.hasChildren) {
-      return;
+      return undefined;
     }
 
-    if (this.get('model.isExpanded')) {
+    if (get(this, 'model.isExpanded')) {
       return 'list__cell_arrow_expanded';
     } else {
       return 'list__cell_arrow_collapsed';
     }
-  }),
+  }
 
-  hasChildren: gt('model.children.length', 0),
+  @gt('model.children.length', 0)
+  hasChildren;
 
-  settledValue: computed(
-    'model.{isFulfilled,isRejected,reason,value}',
-    function () {
-      if (this.get('model.isFulfilled')) {
-        return this.get('model.value');
-      } else if (this.get('model.isRejected')) {
-        return this.get('model.reason');
-      } else {
-        return '--';
-      }
+  @computed('model.{isFulfilled,isRejected,reason,value}')
+  get settledValue() {
+    if (get(this, 'model.isFulfilled')) {
+      return get(this, 'model.value');
+    } else if (get(this, 'model.isRejected')) {
+      return get(this, 'model.reason');
+    } else {
+      return '--';
     }
-  ),
+  }
 
-  isValueInspectable: notEmpty('settledValue.objectId'),
+  @notEmpty('settledValue.objectId')
+  isValueInspectable;
 
-  hasValue: computed('model.isSettled', 'settledValue.type', function () {
+  @computed('model.isSettled', 'settledValue.type')
+  get hasValue() {
     return (
-      this.get('model.isSettled') &&
-      this.get('settledValue.type') !== 'type-undefined'
+      get(this, 'model.isSettled') &&
+      get(this, 'settledValue.type') !== 'type-undefined'
     );
-  }),
+  }
 
-  label: computed('model.{label,parent}', function () {
+  @computed('model.{label,parent}')
+  get label() {
     return (
-      this.get('model.label') ||
-      (!!this.get('model.parent') && 'Then') ||
+      get(this, 'model.label') ||
+      (!!get(this, 'model.parent') && 'Then') ||
       '<Unknown Promise>'
     );
-  }),
+  }
 
-  state: computed(
-    'model.{parent.isSettled,isFulfilled,isRejected,state}',
-    function () {
-      if (this.get('model.isFulfilled')) {
-        return 'Fulfilled';
-      } else if (this.get('model.isRejected')) {
-        return 'Rejected';
-      } else if (
-        this.get('model.parent') &&
-        !this.get('model.parent.isSettled')
-      ) {
-        return 'Waiting for parent';
-      } else {
-        return 'Pending';
-      }
+  @computed('model.{parent.isSettled,isFulfilled,isRejected,state}')
+  get state() {
+    if (get(this, 'model.isFulfilled')) {
+      return 'Fulfilled';
+    } else if (get(this, 'model.isRejected')) {
+      return 'Rejected';
+    } else if (
+      get(this, 'model.parent') &&
+      !get(this, 'model.parent.isSettled')
+    ) {
+      return 'Waiting for parent';
+    } else {
+      return 'Pending';
     }
-  ),
+  }
 
-  timeToSettle: computed(
-    'model.{createdAt,settledAt,parent.settledAt}',
-    function () {
-      if (!this.get('model.createdAt') || !this.get('model.settledAt')) {
-        return ' -- ';
-      }
-      let startedAt =
-        this.get('model.parent.settledAt') || this.get('model.createdAt');
-      let remaining =
-        this.get('model.settledAt').getTime() - startedAt.getTime();
-      return remaining;
+  @computed('model.{createdAt,settledAt,parent.settledAt}')
+  get timeToSettle() {
+    if (!get(this, 'model.createdAt') || !get(this, 'model.settledAt')) {
+      return ' -- ';
     }
-  ),
-});
+    let startedAt =
+      get(this, 'model.parent.settledAt') || get(this, 'model.createdAt');
+    let remaining =
+      get(this, 'model.settledAt').getTime() - startedAt.getTime();
+    return remaining;
+  }
+}

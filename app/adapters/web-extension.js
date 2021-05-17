@@ -1,4 +1,5 @@
 /* globals chrome */
+import classic from 'ember-classic-decorator';
 import { computed } from '@ember/object';
 
 import BasicAdapter from './basic';
@@ -6,7 +7,8 @@ import config from 'ember-inspector/config/environment';
 
 let emberDebug = null;
 
-export default BasicAdapter.extend({
+@classic
+export default class WebExtension extends BasicAdapter {
   /**
    * Called when the adapter is created.
    *
@@ -18,19 +20,20 @@ export default BasicAdapter.extend({
     this._injectDebugger();
     this._setThemeColors();
 
-    return this._super(...arguments);
-  },
+    return super.init(...arguments);
+  }
 
-  name: 'web-extension',
+  name = 'web-extension';
 
   sendMessage(options) {
     options = options || {};
     this._chromePort.postMessage(options);
-  },
+  }
 
-  _chromePort: computed(function () {
+  @computed
+  get _chromePort() {
     return chrome.runtime.connect();
-  }),
+  }
 
   _connect() {
     let chromePort = this._chromePort;
@@ -42,7 +45,7 @@ export default BasicAdapter.extend({
       }
       this._messageReceived(message);
     });
-  },
+  }
 
   _handleReload() {
     let self = this;
@@ -50,7 +53,7 @@ export default BasicAdapter.extend({
       self._injectDebugger();
       location.reload(true);
     });
-  },
+  }
 
   _injectDebugger() {
     loadEmberDebug().then((emberDebug) => {
@@ -61,7 +64,7 @@ export default BasicAdapter.extend({
       });
       this.onResourceAdded();
     });
-  },
+  }
 
   _setThemeColors() {
     // Remove old theme colors to ensure switching themes works
@@ -72,13 +75,13 @@ export default BasicAdapter.extend({
       theme = 'theme--dark';
     }
     document.body.classList.add(theme);
-  },
+  }
 
-  onResourceAdded(/*callback*/) {},
+  onResourceAdded /*callback*/() {}
 
   willReload() {
     this._injectDebugger();
-  },
+  }
 
   /**
    * Open the devtools "Elements" tab and select a specific DOM node.
@@ -91,7 +94,7 @@ export default BasicAdapter.extend({
       inspect(window[${JSON.stringify(name)}]);
       delete window[${JSON.stringify(name)}];
     `);
-  },
+  }
 
   /**
    * Redirect to the correct inspector version.
@@ -104,7 +107,7 @@ export default BasicAdapter.extend({
       /\./g,
       '-'
     )}/index.html`;
-  },
+  }
 
   /**
     We handle the reload here so we can inject
@@ -114,9 +117,9 @@ export default BasicAdapter.extend({
     loadEmberDebug().then((emberDebug) => {
       chrome.devtools.inspectedWindow.reload({ injectedScript: emberDebug });
     });
-  },
+  }
 
-  canOpenResource: false,
+  canOpenResource = false;
 
   sendIframes(urls) {
     loadEmberDebug().then((emberDebug) => {
@@ -124,8 +127,8 @@ export default BasicAdapter.extend({
         chrome.devtools.inspectedWindow.eval(emberDebug, { frameURL: url });
       });
     });
-  },
-});
+  }
+}
 
 function loadEmberDebug() {
   let minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');

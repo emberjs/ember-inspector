@@ -1,3 +1,11 @@
+import classic from 'ember-classic-decorator';
+import {
+  classNames,
+  attributeBindings,
+  classNameBindings,
+  tagName,
+} from '@ember-decorators/component';
+import { computed } from '@ember/object';
 /**
  * An individual cell for the `list` table.
  * Usually not called directly but as a contextual helper.
@@ -16,47 +24,16 @@
  */
 import Component from '@ember/component';
 
-import { computed } from '@ember/object';
 import { htmlSafe } from '@ember/template';
-export default Component.extend({
-  /**
-   * Defaults to a table cell. For headers
-   * set it to `th` by passing it through the
-   * template.
-   *
-   * @property tagName
-   * @type {String}
-   * @default 'td'
-   */
-  tagName: 'td',
-
-  /**
-   * @property classNames
-   * @type {Array}
-   */
-  classNames: ['list__cell'],
-
-  /**
-   * `highlight` and `clickable` or class modifiers.
-   *
-   * @property classNameBindings
-   * @type {Array}
-   */
-  classNameBindings: [
-    'highlight:list__cell_highlight',
-    'clickable:list__cell_clickable',
-  ],
-
-  /**
-   * Style passed through the `style` property
-   * should end up as the DOM element's style.
-   * Same applies to the `title` attribute.
-   *
-   * @property attributeBindings
-   * @type {Array}
-   */
-  attributeBindings: ['safeStyle:style', 'title'],
-
+@classic
+@tagName('td')
+@classNames('list__cell')
+@classNameBindings(
+  'highlight:list__cell_highlight',
+  'clickable:list__cell_clickable'
+)
+@attributeBindings('safeStyle:style', 'title')
+export default class ListCell extends Component {
   /**
    * Avoid unsafe style warning. This property does not
    * depend on user input so this is safe.
@@ -64,9 +41,10 @@ export default Component.extend({
    * @property safeStyle
    * @type {SafeString}
    */
-  safeStyle: computed('style', function () {
+  @computed('style')
+  get safeStyle() {
     return htmlSafe(this.style);
-  }),
+  }
 
   /**
    * The `title` attribute of the DOM element.
@@ -75,7 +53,7 @@ export default Component.extend({
    * @type {String}
    * @default null
    */
-  title: null,
+  title = null;
 
   /**
    * The `style` attribute of the DOM element.
@@ -84,7 +62,7 @@ export default Component.extend({
    * @type {String}
    * @default null
    */
-  style: null,
+  style = null;
 
   /**
    * Cells can be clickable. One example would be clicking Data records to
@@ -95,7 +73,7 @@ export default Component.extend({
    * @type {Boolean}
    * @default false
    */
-  clickable: false,
+  clickable = false;
 
   /**
    * Set this property to `true` to highlight the cell. For example
@@ -105,7 +83,7 @@ export default Component.extend({
    * @type {Boolean}
    * @default false
    */
-  highlight: false,
+  highlight = false;
 
   /**
    * Action to trigger when the cell is clicked.
@@ -115,7 +93,7 @@ export default Component.extend({
    * @property on-click
    * @type {Function}
    */
-  'on-click'() {},
+  'on-click'() {}
 
   /**
    * DOM event triggered when cell is clicked.
@@ -125,5 +103,5 @@ export default Component.extend({
    */
   click() {
     this['on-click']();
-  },
-});
+  }
+}
