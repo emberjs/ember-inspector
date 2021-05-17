@@ -1,11 +1,9 @@
-import classic from 'ember-classic-decorator';
 import { assert } from '@ember/debug';
 import { later } from '@ember/runloop';
 import EmberObject from '@ember/object';
 import EventedMixin from '@ember/object/evented';
 import Promise from 'ember-inspector/models/promise';
 
-@classic
 export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
   // Used to track whether current message received
   // is the first in the request

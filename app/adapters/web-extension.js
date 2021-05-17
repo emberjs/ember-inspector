@@ -1,5 +1,4 @@
 /* globals chrome */
-import classic from 'ember-classic-decorator';
 import { computed } from '@ember/object';
 
 import BasicAdapter from './basic';
@@ -7,7 +6,6 @@ import config from 'ember-inspector/config/environment';
 
 let emberDebug = null;
 
-@classic
 export default class WebExtension extends BasicAdapter {
   /**
    * Called when the adapter is created.

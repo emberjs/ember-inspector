@@ -1,8 +1,6 @@
-import classic from 'ember-classic-decorator';
 import { run } from '@ember/runloop';
 import BasicAdapter from './basic';
 
-@classic
 export default class Websocket extends BasicAdapter {
   init() {
     super.init();

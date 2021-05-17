@@ -1,4 +1,3 @@
-import classic from 'ember-classic-decorator';
 /**
  * The adapter stores logic specific to each environment.
  * Extend this object with env specific code (such as chrome/firefox/test),
@@ -16,7 +15,6 @@ import EmberObject from '@ember/object';
 
 import config from 'ember-inspector/config/environment';
 
-@classic
 export default class Basic extends EmberObject {
   /**
    * Called when the adapter is created (when

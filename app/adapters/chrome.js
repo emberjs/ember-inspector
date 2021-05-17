@@ -1,7 +1,5 @@
-import classic from 'ember-classic-decorator';
 import WebExtension from './web-extension';
 
-@classic
 export default class Chrome extends WebExtension {
   name = 'chrome';
   canOpenResource = true;

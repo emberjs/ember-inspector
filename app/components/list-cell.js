@@ -1,4 +1,3 @@
-import classic from 'ember-classic-decorator';
 import {
   classNames,
   attributeBindings,
@@ -25,7 +24,7 @@ import { computed } from '@ember/object';
 import Component from '@ember/component';
 
 import { htmlSafe } from '@ember/template';
-@classic
+
 @tagName('td')
 @classNames('list__cell')
 @classNameBindings(

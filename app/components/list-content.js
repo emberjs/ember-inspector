@@ -1,4 +1,3 @@
-import classic from 'ember-classic-decorator';
 import { tagName } from '@ember-decorators/component';
 import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
@@ -15,7 +14,6 @@ import { schedule } from '@ember/runloop';
  * @class List
  * @namespace Components
  */
-@classic
 @tagName('')
 export default class ListContent extends Component.extend(Evented) {
   /**

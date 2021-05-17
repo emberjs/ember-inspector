@@ -1,10 +1,8 @@
 /* eslint-disable no-useless-escape */
-import classic from 'ember-classic-decorator';
 import { computed } from '@ember/object';
 
 import BasicAdapter from './basic';
 
-@classic
 export default class Bookmarklet extends BasicAdapter {
   name = 'bookmarklet';
 

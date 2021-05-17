@@ -1,9 +1,7 @@
-import classic from 'ember-classic-decorator';
 import { set } from '@ember/object';
 import Evented from '@ember/object/evented';
 import Service from '@ember/service';
 
-@classic
 export default class PortService extends Service.extend(Evented) {
   applicationId = undefined;
   applicationName = undefined;

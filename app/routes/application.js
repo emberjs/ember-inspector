@@ -1,4 +1,3 @@
-import classic from 'ember-classic-decorator';
 import { inject as service } from '@ember/service';
 import { set, get, action } from '@ember/object';
 import Route from '@ember/routing/route';
@@ -6,7 +5,6 @@ import Ember from 'ember';
 
 const { NativeArray } = Ember;
 
-@classic
 export default class ApplicationRoute extends Route {
   /**
    * Service used to broadcast changes to the application's layout

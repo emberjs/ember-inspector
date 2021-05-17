@@ -1,4 +1,3 @@
-import classic from 'ember-classic-decorator';
 import { observes } from '@ember-decorators/object';
 import { or, equal, not } from '@ember/object/computed';
 import { assign } from '@ember/polyfills';
@@ -24,7 +23,6 @@ const dateComputed = function () {
   });
 };
 
-@classic
 export default class Promise extends EmberObject {
   @dateComputed()
   createdAt;
