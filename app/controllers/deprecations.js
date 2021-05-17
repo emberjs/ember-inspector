@@ -4,48 +4,54 @@ import Controller from '@ember/controller';
 import debounceComputed from 'ember-inspector/computed/debounce';
 import searchMatch from 'ember-inspector/utils/search-match';
 
-export default Controller.extend({
-  port: service(),
+export default class DeprecationsController extends Controller {
+  @service port;
 
-  init() {
-    this._super(...arguments);
+  search = null;
+  toggleDeprecationWorkflow = false;
+
+  @debounceComputed('search', 300) searchValue;
+
+  constructor() {
+    super(...arguments);
     set(this, 'deprecations', []);
-  },
+  }
 
-  search: null,
-  searchValue: debounceComputed('search', 300),
-  toggleDeprecationWorkflow: false,
-
-  filtered: computed('deprecations.@each.message', 'search', function () {
+  @computed('deprecations.@each.message', 'search')
+  get filtered() {
     return this.deprecations.filter((item) =>
       searchMatch(item.message, this.search)
     );
-  }),
+  }
 
-  openResource: action(function (item) {
+  @action
+  openResource(item) {
     this.adapter.openResource(item.fullSource, item.line);
-  }),
+  }
 
-  traceSource: action(function (deprecation, source) {
+  @action
+  traceSource(deprecation, source) {
     this.port.send('deprecation:sendStackTraces', {
       deprecation: {
         message: deprecation.message,
         sources: [source],
       },
     });
-  }),
+  }
 
-  traceDeprecations: action(function (deprecation) {
+  @action
+  traceDeprecations(deprecation) {
     this.port.send('deprecation:sendStackTraces', {
       deprecation,
     });
-  }),
+  }
 
-  changeDeprecationWorkflow: action(function (e) {
+  @action
+  changeDeprecationWorkflow(e) {
     this.set('toggleDeprecationWorkflow', e.target.checked);
 
     this.port.send('deprecation:setOptions', {
       options: { toggleDeprecationWorkflow: this.toggleDeprecationWorkflow },
     });
-  }),
-});
+  }
+}

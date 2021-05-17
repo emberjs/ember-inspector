@@ -85,13 +85,16 @@ jobs:
       fail-fast: false
       matrix:
         scenario:
-          - default-no-prototype-extensions
-          - release
-          - beta
-          - canary
-          - lts-3.4
-          - lts-3.8
-          - lts-3.12
+          - ember-lts-3.4
+          - ember-lts-3.8
+          - ember-lts-3.12
+          - ember-lts-3.16
+          - ember-lts-3.20
+          - ember-release
+          - ember-beta
+          - ember-canary
+          - ember-default-no-prototype-extensions
+  
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -102,10 +105,10 @@ jobs:
       - name: Install dependencies (yarn)
         run: yarn install
       - name: Set NO_EXTEND_PROTOTYPES
-        if: matrix.scenario == 'default-no-prototype-extensions'
+        if: matrix.scenario == 'ember-default-no-prototype-extensions'
         run: echo "NO_EXTEND_PROTOTYPES==true" >> .GITHUB_ENV
       - name: Setup ember-try scenario
-        run: yarn ember try:one ember-${{ matrix.scenario }} --skip-cleanup --- cat package.json
+        run: yarn ember try:one ${{ matrix.scenario }} --skip-cleanup --- cat package.json
       - name: Build
         run: yarn ember build --environment test
       - name: Run test

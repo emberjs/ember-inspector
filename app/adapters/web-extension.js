@@ -1,5 +1,6 @@
 /* globals chrome */
 import { computed } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
 
 import BasicAdapter from './basic';
 import config from 'ember-inspector/config/environment';
@@ -7,6 +8,9 @@ import config from 'ember-inspector/config/environment';
 let emberDebug = null;
 
 export default class WebExtension extends BasicAdapter {
+  @tracked canOpenResource = false;
+  name = 'web-extension';
+
   /**
    * Called when the adapter is created.
    *
@@ -20,8 +24,6 @@ export default class WebExtension extends BasicAdapter {
 
     return super.init(...arguments);
   }
-
-  name = 'web-extension';
 
   sendMessage(options) {
     options = options || {};
@@ -116,8 +118,6 @@ export default class WebExtension extends BasicAdapter {
       chrome.devtools.inspectedWindow.reload({ injectedScript: emberDebug });
     });
   }
-
-  canOpenResource = false;
 
   sendIframes(urls) {
     loadEmberDebug().then((emberDebug) => {

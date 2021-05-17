@@ -12,10 +12,13 @@
  * ```
  */
 import EmberObject from '@ember/object';
-
+import { tracked } from '@glimmer/tracking';
 import config from 'ember-inspector/config/environment';
 
 export default class Basic extends EmberObject {
+  @tracked canOpenResource = false;
+  name = 'basic';
+
   /**
    * Called when the adapter is created (when
    * the inspector app boots).
@@ -72,8 +75,6 @@ export default class Basic extends EmberObject {
    */
   onVersionMismatch() {}
 
-  name = 'basic';
-
   /**
     Used to send messages to EmberDebug
 
@@ -97,8 +98,6 @@ export default class Basic extends EmberObject {
 
   // Called when the "Reload" is clicked by the user
   willReload() {}
-
-  canOpenResource = false;
   openResource /* file, line */() {}
 }
 

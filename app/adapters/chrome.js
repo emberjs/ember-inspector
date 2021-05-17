@@ -1,8 +1,9 @@
 import WebExtension from './web-extension';
+import { tracked } from '@glimmer/tracking';
 
 export default class Chrome extends WebExtension {
   name = 'chrome';
-  canOpenResource = true;
+  @tracked canOpenResource = true;
 
   openResource(file, line) {
     /*global chrome */
