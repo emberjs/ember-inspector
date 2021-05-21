@@ -1,7 +1,10 @@
 import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 
 export default Component.extend({
+  port: service(),
+
   tagName: '',
 
   sendToConsole: action(function ({ name }) {

@@ -49,6 +49,7 @@ export default class ScrollContainerComponent extends Component {
   }
 
   didRender() {
+    super.didRender(...arguments);
     let { index, lastIndex, currentItem, lastItem } = this;
 
     if (index !== lastIndex || currentItem !== lastItem) {

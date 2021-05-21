@@ -1,9 +1,16 @@
+import { inject as service } from '@ember/service';
 import { set } from '@ember/object';
 import TabRoute from 'ember-inspector/routes/tab';
 
-export default TabRoute.extend({
+export default class RecordsRoute extends TabRoute {
+  @service port;
+
+  model() {
+    return [];
+  }
+
   setupController(controller, model) {
-    this._super(controller, model);
+    super.setupController(controller, model);
 
     const type = this.modelFor('model_type');
 
@@ -13,22 +20,26 @@ export default TabRoute.extend({
     this.port.on('data:recordsUpdated', this, this.updateRecords);
     this.port.on('data:recordsRemoved', this, this.removeRecords);
     this.port.one('data:filters', this, function (message) {
-      this.set('controller.filters', message.filters);
+      set(this, 'controller.filters', message.filters);
     });
     this.port.send('data:getFilters');
     this.port.send('data:getRecords', { objectId: type.objectId });
-  },
-
-  model() {
-    return [];
-  },
+  }
 
   deactivate() {
     this.port.off('data:recordsAdded', this, this.addRecords);
     this.port.off('data:recordsUpdated', this, this.updateRecords);
     this.port.off('data:recordsRemoved', this, this.removeRecords);
     this.port.send('data:releaseRecords');
-  },
+  }
+
+  addRecords(message) {
+    this.currentModel.pushObjects(message.records);
+  }
+
+  removeRecords(message) {
+    this.currentModel.removeAt(message.index, message.count);
+  }
 
   updateRecords(message) {
     message.records.forEach((record) => {
@@ -40,13 +51,5 @@ export default TabRoute.extend({
         set(currentRecord, 'color', record.color);
       }
     });
-  },
-
-  addRecords(message) {
-    this.currentModel.pushObjects(message.records);
-  },
-
-  removeRecords(message) {
-    this.currentModel.removeAt(message.index, message.count);
-  },
-});
+  }
+}

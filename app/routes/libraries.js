@@ -1,9 +1,12 @@
+import { inject as service } from '@ember/service';
+import { readOnly } from '@ember/object/computed';
 import { Promise } from 'rsvp';
 import TabRoute from 'ember-inspector/routes/tab';
-import { readOnly } from '@ember/object/computed';
 
-export default TabRoute.extend({
-  version: readOnly('config.VERSION'),
+export default class LibrariesRoute extends TabRoute {
+  @service port;
+
+  @readOnly('config.VERSION') version;
 
   model() {
     const version = this.version;
@@ -18,5 +21,5 @@ export default TabRoute.extend({
       });
       port.send('general:getLibraries');
     });
-  },
-});
+  }
+}

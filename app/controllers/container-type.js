@@ -1,10 +1,12 @@
 import Controller, { inject as controller } from '@ember/controller';
+import { inject as service } from '@ember/service';
 import { action, computed, set } from '@ember/object';
 import debounceComputed from 'ember-inspector/computed/debounce';
 import searchMatch from 'ember-inspector/utils/search-match';
 
 export default Controller.extend({
   application: controller(),
+  port: service(),
 
   searchValue: debounceComputed('search', 300),
 

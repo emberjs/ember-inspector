@@ -1,6 +1,9 @@
+import { inject as service } from '@ember/service';
 import TabRoute from 'ember-inspector/routes/tab';
 
-export default TabRoute.extend({
+export default class AppConfigRoute extends TabRoute {
+  @service port;
+
   model() {
     const port = this.port;
     return new Promise((resolve) => {
@@ -9,5 +12,5 @@ export default TabRoute.extend({
       });
       port.send('general:getEmberCliConfig');
     });
-  },
-});
+  }
+}

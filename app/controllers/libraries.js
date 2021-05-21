@@ -4,7 +4,7 @@ import Controller from '@ember/controller';
 export default class LibrariesController extends Controller {
   @computed('model.[]')
   get rows() {
-    return this.get('model.[]').map(({ name, version }) => ({
+    return this.model.map(({ name, version }) => ({
       library: name,
       version,
     }));

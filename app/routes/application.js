@@ -1,11 +1,21 @@
-import { set, get } from '@ember/object';
-import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
+import { set, get, action } from '@ember/object';
+import Route from '@ember/routing/route';
 import Ember from 'ember';
 
 const { NativeArray } = Ember;
 
-export default Route.extend({
+export default class ApplicationRoute extends Route {
+  /**
+   * Service used to broadcast changes to the application's layout
+   * such as toggling of the object inspector.
+   *
+   * @property layoutService
+   * @type {Service}
+   */
+  @service('layout') layoutService;
+  @service port;
+
   setupController(controller) {
     controller.set('mixinStack', []);
     let port = this.port;
@@ -16,7 +26,7 @@ export default Route.extend({
     port.on('deprecation:count', this, this.setDeprecationCount);
     port.on('view:inspectComponent', this, this.inspectComponent);
     port.on('view:previewComponent', this, this.previewComponent);
-  },
+  }
 
   deactivate() {
     let port = this.port;
@@ -27,7 +37,7 @@ export default Route.extend({
     port.off('deprecation:count', this, this.setDeprecationCount);
     port.off('view:inspectComponent', this, this.inspectComponent);
     port.off('view:previewComponent', this, this.previewComponent);
-  },
+  }
 
   inspectComponent({ id }) {
     this.transitionTo('component-tree', {
@@ -35,7 +45,7 @@ export default Route.extend({
         pinned: id,
       },
     });
-  },
+  }
 
   previewComponent({ id }) {
     this.transitionTo('component-tree', {
@@ -43,7 +53,7 @@ export default Route.extend({
         previewing: id,
       },
     });
-  },
+  }
 
   updateObject(options) {
     const details = options.details,
@@ -66,12 +76,13 @@ export default Route.extend({
 
     // eslint-disable-next-line ember/no-controller-access-in-routes
     this.controller.showInspector();
-  },
+  }
 
   setDeprecationCount(message) {
     // eslint-disable-next-line ember/no-controller-access-in-routes
     this.controller.set('deprecationCount', message.count);
-  },
+  }
+
   // eslint-enable ember/no-controller-access-in-routes
 
   updateProperty(options) {
@@ -86,7 +97,7 @@ export default Route.extend({
         set(property, 'dependentKeys', options.dependentKeys);
       }
     }
-  },
+  }
 
   updateErrors(options) {
     let mixinDetails = this.get('controller.mixinDetails');
@@ -95,42 +106,34 @@ export default Route.extend({
         set(mixinDetails, 'errors', options.errors);
       }
     }
-  },
+  }
 
   droppedObject(message) {
     // eslint-disable-next-line ember/no-controller-access-in-routes
     this.controller.droppedObject(message.objectId);
-  },
+  }
 
-  /**
-   * Service used to broadcast changes to the application's layout
-   * such as toggling of the object inspector.
-   *
-   * @property layoutService
-   * @type {Service}
-   */
-  layoutService: service('layout'),
+  @action
+  inspectObject(objectId) {
+    if (objectId) {
+      this.port.send('objectInspector:inspectById', { objectId });
+    }
+  }
 
-  actions: {
-    inspectObject(objectId) {
-      if (objectId) {
-        this.port.send('objectInspector:inspectById', { objectId });
-      }
-    },
-    refreshPage() {
-      // If the adapter defined a `reloadTab` method, it means
-      // they prefer to handle the reload themselves
-      if (typeof this.adapter.reloadTab === 'function') {
-        this.adapter.reloadTab();
-      } else {
-        // inject ember_debug as quickly as possible in chrome
-        // so that promises created on dom ready are caught
-        this.port.send('general:refresh');
-        this.adapter.willReload();
-      }
-    },
-  },
-});
+  @action
+  refreshPage() {
+    // If the adapter defined a `reloadTab` method, it means
+    // they prefer to handle the reload themselves
+    if (typeof this.adapter.reloadTab === 'function') {
+      this.adapter.reloadTab();
+    } else {
+      // inject ember_debug as quickly as possible in chrome
+      // so that promises created on dom ready are caught
+      this.port.send('general:refresh');
+      this.adapter.willReload();
+    }
+  }
+}
 
 function arrayize(mixin) {
   NativeArray.apply(mixin.properties);

@@ -1,17 +1,17 @@
 import { run } from '@ember/runloop';
 import BasicAdapter from './basic';
 
-export default BasicAdapter.extend({
+export default class Websocket extends BasicAdapter {
   init() {
-    this._super();
+    super.init();
     this.socket = window.EMBER_INSPECTOR_CONFIG.remoteDebugSocket;
     this._connect();
-  },
+  }
 
   sendMessage(options) {
     options = options || {};
     this.socket.emit('emberInspectorMessage', options);
-  },
+  }
 
   _connect() {
     this.socket.on('emberInspectorMessage', (message) => {
@@ -19,13 +19,13 @@ export default BasicAdapter.extend({
         this._messageReceived(message);
       });
     });
-  },
+  }
 
   _disconnect() {
     this.socket.removeAllListeners('emberInspectorMessage');
-  },
+  }
 
   willDestroy() {
     this._disconnect();
-  },
-});
+  }
+}

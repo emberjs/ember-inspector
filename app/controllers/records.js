@@ -2,10 +2,12 @@ import { isEmpty } from '@ember/utils';
 // eslint-disable-next-line ember/no-observers
 import { action, observer, computed, get } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
+import { inject as service } from '@ember/service';
 import escapeRegExp from 'ember-inspector/utils/escape-reg-exp';
 
 export default Controller.extend({
   application: controller(),
+  port: service(),
 
   queryParams: ['filterValue', 'searchValue'],
 

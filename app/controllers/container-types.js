@@ -1,12 +1,12 @@
-import Controller from '@ember/controller';
 import { sort } from '@ember/object/computed';
+import Controller from '@ember/controller';
 
-export default Controller.extend({
-  sorted: sort('model', 'sortProperties'),
+export default class ContainerTypesController extends Controller {
+  @sort('model', 'sortProperties') sorted;
 
-  init() {
-    this._super(...arguments);
+  constructor() {
+    super(...arguments);
 
     this.sortProperties = ['name'];
-  },
-});
+  }
+}
