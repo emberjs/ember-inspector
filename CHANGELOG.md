@@ -1,3 +1,26 @@
+## v4.4.0 (2021-05-21)
+
+#### :rocket: Enhancement
+* [#1577](https://github.com/emberjs/ember-inspector/pull/1577) Add app config tab ([@hannakim91](https://github.com/hannakim91))
+
+#### :bug: Bug Fix
+* [#1493](https://github.com/emberjs/ember-inspector/pull/1493) Change message type to switch to components route ([@rwwagner90](https://github.com/rwwagner90))
+
+#### :house: Internal
+* [#1592](https://github.com/emberjs/ember-inspector/pull/1592) Start on eslint-plugin-ember 10 updates ([@rwwagner90](https://github.com/rwwagner90))
+* [#1591](https://github.com/emberjs/ember-inspector/pull/1591) Fix some template lint issues ([@rwwagner90](https://github.com/rwwagner90))
+* [#1590](https://github.com/emberjs/ember-inspector/pull/1590) Fix no-invalid-interactive ([@rwwagner90](https://github.com/rwwagner90))
+* [#1559](https://github.com/emberjs/ember-inspector/pull/1559) ember lookup util ([@lifeart](https://github.com/lifeart))
+* [#1535](https://github.com/emberjs/ember-inspector/pull/1535) Use `requireModule('ember')` instead of `window.Ember` ([@rwwagner90](https://github.com/rwwagner90))
+* [#1528](https://github.com/emberjs/ember-inspector/pull/1528) Run dependabot less often ([@sandstrom](https://github.com/sandstrom))
+
+#### Committers: 5
+- Alex Kanunnikov ([@lifeart](https://github.com/lifeart))
+- Hanna (she/her) ([@hannakim91](https://github.com/hannakim91))
+- Robert Wagner ([@rwwagner90](https://github.com/rwwagner90))
+- [@dependabot-preview[bot]](https://github.com/apps/dependabot-preview)
+- [@sandstrom](https://github.com/sandstrom)
+
 ## v4.3.5 (2021-03-10)
 
 #### :bug: Bug Fix
