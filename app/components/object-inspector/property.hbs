@@ -23,6 +23,7 @@
   {{!-- Property Icon --}}
   <span
     class="mixin__property-icon-container flex-shrink-0"
+    role="button"
     title={{if @model.code @model.code this.iconInfo.title}}
     {{on "click" this.toggleDeps}}
   >
@@ -60,21 +61,21 @@
 
   {{#if this.isEdit}}
     {{#if this.isDate}}
-      {{date-property-field
-        allowInput=true
-        date=(readonly this.dateValue)
-        dateFormat="Y-m-d"
+      <DatePropertyField
         class="mixin__property-value-txt flex-1 text-base14 outline-none text-base bg-base01 js-object-property-value-date"
-        onChange=this.dateSelected
-        onClose=this.finishedEditing
-      }}
+        @allowInput={{true}}
+        @date={{readonly this.dateValue}}
+        @dateFormat="Y-m-d"
+        @onChange={{this.dateSelected}}
+        @onClose={{this.finishedEditing}}
+      />
     {{else}}
       <ObjectInspector::PropertyField
         class="mixin__property-value-txt flex-1 text-base14 text-base bg-base01 outline-none"
         @value={{this.txtValue}}
-        @insert-newline={{fn this.save}}
-        @escape-press={{fn this.finishedEditing}}
-        @focus-out={{fn this.finishedEditing}}
+        @insert-newline={{this.save}}
+        @escape-press={{this.finishedEditing}}
+        @focus-out={{this.finishedEditing}}
         data-test-object-property-value-txt
       />
     {{/if}}
@@ -93,6 +94,7 @@
     {{#if this.isDate}}
       <span
         class="{{this.valueType}} mixin__property-value truncate"
+        role="button"
         {{on "click" this.dateClick}}
         data-test-object-property-value
       >
@@ -101,6 +103,7 @@
     {{else}}
       <span
         class="{{this.valueType}} {{if this.isService "type-service"}} mixin__property-value truncate"
+        role="button"
         {{on "click" this.valueClick}}
         data-test-object-property-value
       >

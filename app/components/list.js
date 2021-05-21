@@ -4,6 +4,7 @@ import { task, timeout } from 'ember-concurrency';
 import ResizableColumns from 'ember-inspector/libs/resizable-columns';
 import { inject as service } from '@ember/service';
 import { readOnly, reads } from '@ember/object/computed';
+import { action } from '@ember/object';
 
 const CHECK_HTML = '&#10003;';
 
@@ -152,19 +153,21 @@ export default Component.extend({
    * @method setupContextMenu
    */
   setupContextMenu() {
-    let menu = this.resizableColumns.getColumnVisibility().reduce((arr, { id, name, visible }) => {
-      let check = `${CHECK_HTML}`;
-      if (!visible) {
-        check = `<span style='opacity:0'>${check}</span>`;
-      }
-      name = `${check} ${name}`;
-      arr.push({
-        name,
-        title: name,
-        fn: run.bind(this, this.toggleColumnVisibility, id)
-      });
-      return arr;
-    }, []);
+    let menu = this.resizableColumns
+      .getColumnVisibility()
+      .reduce((arr, { id, name, visible }) => {
+        let check = `${CHECK_HTML}`;
+        if (!visible) {
+          check = `<span style='opacity:0'>${check}</span>`;
+        }
+        name = `${check} ${name}`;
+        arr.push({
+          name,
+          title: name,
+          fn: run.bind(this, this.toggleColumnVisibility, id),
+        });
+        return arr;
+      }, []);
 
     this.showBasicContext = (e) => {
       basicContext.show(menu, e);
@@ -244,25 +247,23 @@ export default Component.extend({
       tableWidth: this.getTableWidth(),
       minWidth: this.minWidth,
       storage: this.storage,
-      columnSchema: this.get('schema.columns') || []
+      columnSchema: this.get('schema.columns') || [],
     });
     resizableColumns.build();
     this.set('resizableColumns', resizableColumns);
     this.setupContextMenu();
   },
 
-  actions: {
-    /**
-     * Called whenever a column is resized using the draggable handle.
-     * It is responsible for updating the column info by notifying
-     * `resizableColumns` about the update.
-     *
-     * @method didResize
-     * @param {String} id The column's id
-     * @param {Number} width The new width
-     */
-    didResize(id, width) {
-      this.resizableColumns.updateColumnWidth(id, width);
-    }
-  }
+  /**
+   * Called whenever a column is resized using the draggable handle.
+   * It is responsible for updating the column info by notifying
+   * `resizableColumns` about the update.
+   *
+   * @method didResize
+   * @param {String} id The column's id
+   * @param {Number} width The new width
+   */
+  didResize: action(function (id, width) {
+    this.resizableColumns.updateColumnWidth(id, width);
+  }),
 });

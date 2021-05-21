@@ -7,10 +7,10 @@ const { debounce } = run;
 // another property with a certain delay.
 // This means that every time this prop changes,
 // the other prop will change to the same val after [delay]
-export default function(prop, delay, callback) {
+export default function (prop, delay, callback) {
   let value;
 
-  let updateVal = function() {
+  let updateVal = function () {
     this.set(prop, value);
     if (callback) {
       callback.call(this);
@@ -24,6 +24,6 @@ export default function(prop, delay, callback) {
       value = val;
       debounce(this, updateVal, delay);
       return val;
-    }
+    },
   });
 }

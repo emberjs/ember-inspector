@@ -1,20 +1,26 @@
-import Component from '@ember/component';
-import { alias, reads } from '@ember/object/computed';
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
+import { inject as service } from '@ember/service';
 
-export default Component.extend({
-  classNames: ['app-picker'],
+export default class AppPickerComponent extends Component {
+  @service port;
 
-  apps: alias('port.detectedApplications'),
-  selectedAppId: reads('port.applicationId'),
-
-  init() {
-    this._super(...arguments);
-    this.port.send('app-picker-loaded');
-  },
-
-  actions: {
-    selectApp(applicationId) {
-      this.port.selectApplication(applicationId);
-    }
+  get apps() {
+    return this.port.detectedApplications;
   }
-});
+
+  get selectedAppId() {
+    return this.port.applicationId;
+  }
+
+  constructor() {
+    super(...arguments);
+    this.port.send('app-picker-loaded');
+  }
+
+  @action
+  selectApp(event) {
+    let applicationId = event.target.value;
+    this.port.selectApplication(applicationId);
+  }
+}

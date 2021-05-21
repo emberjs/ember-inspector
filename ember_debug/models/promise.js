@@ -1,9 +1,11 @@
 import { typeOf } from '../utils/type-check';
 
-const Ember = window.Ember;
-const { Object: EmberObject, computed, A } = Ember;
+import Ember from '../utils/ember';
 
-const dateComputed = function() {
+const { Object: EmberObject, computed, A } = Ember;
+const { equal, or } = computed;
+
+const dateComputed = function () {
   return computed({
     get() {
       return null;
@@ -15,7 +17,7 @@ const dateComputed = function() {
         return new Date(date);
       }
       return null;
-    }
+    },
   });
 };
 
@@ -26,28 +28,21 @@ export default EmberObject.extend({
 
   parent: null,
 
-  children: computed(function() {
+  children: computed(function () {
     return A();
   }),
 
-  level: computed('parent.level', function() {
-    const parent = this.get('parent');
+  level: computed('parent.level', function () {
+    const parent = this.parent;
     if (!parent) {
       return 0;
     }
     return parent.get('level') + 1;
   }),
 
-  isSettled: computed('state', function() {
-    return this.get('isFulfilled') || this.get('isRejected');
-  }),
+  isSettled: or('isFulfilled', 'isRejected'),
 
-  isFulfilled: computed('state', function() {
-    return this.get('state') === 'fulfilled';
-  }),
+  isFulfilled: equal('state', 'fulfilled'),
 
-  isRejected: computed('state', function() {
-    return this.get('state') === 'rejected';
-  })
-
+  isRejected: equal('state', 'rejected'),
 });

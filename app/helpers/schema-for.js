@@ -10,8 +10,8 @@
 import Helper from '@ember/component/helper';
 
 import { getOwner } from '@ember/application';
-export default Helper.extend({
+export default class SchemaFor extends Helper {
   compute([name]) {
     return getOwner(this).resolveRegistration(`schema:${name}`);
   }
-});
+}

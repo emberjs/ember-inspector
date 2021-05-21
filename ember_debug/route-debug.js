@@ -1,14 +1,17 @@
+/* eslint-disable ember/no-private-routing-service */
+// eslint-disable-next-line ember/no-mixins
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import { compareVersion } from 'ember-debug/utils/version';
+import classify from 'ember-debug/utils/classify';
+import dasherize from 'ember-debug/utils/dasherize';
+import Ember from './utils/ember';
 
-const Ember = window.Ember;
 const {
-  String: { classify, dasherize },
   computed,
   observer,
   run: { later },
   Object: EmberObject,
-  VERSION
+  VERSION,
 } = Ember;
 const { readOnly } = computed;
 
@@ -17,11 +20,11 @@ const { hasOwnProperty } = Object.prototype;
 export default EmberObject.extend(PortMixin, {
   namespace: null,
 
-  router: computed('namespace.owner', function() {
+  router: computed('namespace.owner', function () {
     return this.get('namespace.owner').lookup('router:main');
   }),
 
-  applicationController: computed('namespace.owner', function() {
+  applicationController: computed('namespace.owner', function () {
     const container = this.get('namespace.owner');
     return container.lookup('controller:application');
   }),
@@ -39,14 +42,12 @@ export default EmberObject.extend(PortMixin, {
     },
     getCurrentRoute() {
       this.sendCurrentRoute();
-    }
+    },
   },
 
-  sendCurrentRoute: observer('currentURL', function() {
-    const {
-      currentPath: name,
-      currentURL: url
-    } = this.getProperties(
+  // eslint-disable-next-line ember/no-observers
+  sendCurrentRoute: observer('currentURL', function () {
+    const { currentPath: name, currentURL: url } = this.getProperties(
       'currentPath',
       'currentURL'
     );
@@ -56,8 +57,8 @@ export default EmberObject.extend(PortMixin, {
     }, 50);
   }),
 
-  routeTree: computed('router', function() {
-    const router = this.get('router');
+  routeTree: computed('router', function () {
+    const router = this.router;
     const routerLib = router._routerMicrolib || router.router;
     let routeNames = routerLib.recognizer.names;
     let routeTree = {};
@@ -72,7 +73,7 @@ export default EmberObject.extend(PortMixin, {
   }),
 
   sendTree() {
-    const routeTree = this.get('routeTree');
+    const routeTree = this.routeTree;
     this.sendMessage('routeTree', { tree: routeTree });
   },
 
@@ -97,7 +98,10 @@ export default EmberObject.extend(PortMixin, {
         className = className.replace(new RegExp(`^${type}\:`), '');
       } else if (className) {
         // Module exists and found
-        className = className.replace(new RegExp(`^/?(${prefix}|${podPrefix})/${type}s/`), '');
+        className = className.replace(
+          new RegExp(`^/?(${prefix}|${podPrefix})/${type}s/`),
+          ''
+        );
       } else {
         // Module does not exist
         if (usePodsByDefault) {
@@ -123,10 +127,15 @@ export default EmberObject.extend(PortMixin, {
       }
     }
     return className;
-  }
-
+  },
 });
 
+/**
+ *
+ * @param {*} routeTree
+ * @param {*} route
+ * @return {Void}
+ */
 function buildSubTree(routeTree, route) {
   let handlers = route.handlers;
   let owner = this.get('namespace.owner');
@@ -153,7 +162,7 @@ function buildSubTree(routeTree, route) {
     if (subTree[handler] === undefined) {
       routeClassName = this.getClassName(handler, 'route');
 
-      const router = this.get('router');
+      const router = this.router;
       const routerLib = router._routerMicrolib || router.router;
       // 3.9.0 removed intimate APIs from router
       // https://github.com/emberjs/ember.js/pull/17843
@@ -165,27 +174,40 @@ function buildSubTree(routeTree, route) {
         // Ember < 3.9.0
         routeHandler = routerLib.getHandler(handler);
       }
-      controllerName = routeHandler.get('controllerName') || routeHandler.get('routeName');
-      controllerFactory = owner.factoryFor ? owner.factoryFor(`controller:${controllerName}`) : owner._lookupFactory(`controller:${controllerName}`);
-      controllerClassName = this.getClassName(controllerName, 'controller');
-      templateName = this.getClassName(handler, 'template');
+
+      // Skip when route is an unresolved promise
+      if (typeof routeHandler?.then === 'function') {
+        // ensure we rebuild the route tree when this route is resolved
+        routeHandler.then(() => this.notifyPropertyChange('routeTree'));
+        controllerName = '(unresolved)';
+        controllerClassName = '(unresolved)';
+        templateName = '(unresolved)';
+      } else {
+        controllerName =
+          routeHandler.get('controllerName') || routeHandler.get('routeName');
+        controllerFactory = owner.factoryFor
+          ? owner.factoryFor(`controller:${controllerName}`)
+          : owner._lookupFactory(`controller:${controllerName}`);
+        controllerClassName = this.getClassName(controllerName, 'controller');
+        templateName = this.getClassName(handler, 'template');
+      }
 
       subTree[handler] = {
         value: {
           name: handler,
           routeHandler: {
             className: routeClassName,
-            name: handler
+            name: handler,
           },
           controller: {
             className: controllerClassName,
             name: controllerName,
-            exists: !!controllerFactory
+            exists: !!controllerFactory,
           },
           template: {
-            name: templateName
-          }
-        }
+            name: templateName,
+          },
+        },
       };
 
       if (i === handlers.length - 1) {
@@ -221,6 +243,12 @@ function arrayizeChildren(routeTree) {
   return obj;
 }
 
+/**
+ *
+ * @param {*} container
+ * @param {*} segments
+ * @return {String}
+ */
 function getURL(container, segments) {
   const locationImplementation = container.lookup('router:main').location;
   let url = [];
@@ -229,9 +257,11 @@ function getURL(container, segments) {
 
     if (typeof segments[i].generate !== 'function') {
       let { type, value } = segments[i];
-      if (type === 1) { // dynamic
+      if (type === 1) {
+        // dynamic
         name = `:${value}`;
-      } else if (type === 2) { // star
+      } else if (type === 2) {
+        // star
         name = `*${value}`;
       } else {
         name = value;
@@ -255,7 +285,15 @@ function getURL(container, segments) {
   return url;
 }
 
-
+/**
+ *
+ * @param {String} owner
+ * @param {String} name
+ * @return {Void}
+ */
 function routeHasBeenDefined(owner, name) {
-  return owner.hasRegistration(`template:${name}`) || owner.hasRegistration(`route:${name}`);
+  return (
+    owner.hasRegistration(`template:${name}`) ||
+    owner.hasRegistration(`route:${name}`)
+  );
 }

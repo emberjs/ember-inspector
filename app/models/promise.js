@@ -1,11 +1,13 @@
+import { observes } from '@ember-decorators/object';
+import { or, equal, not } from '@ember/object/computed';
 import { assign } from '@ember/polyfills';
 import { once } from '@ember/runloop';
 import { typeOf, isEmpty } from '@ember/utils';
-import EmberObject, { computed, observer } from '@ember/object';
-import { not, equal, or } from '@ember/object/computed';
+// eslint-disable-next-line ember/no-observers
+import EmberObject, { computed } from '@ember/object';
 import escapeRegExp from 'ember-inspector/utils/escape-reg-exp';
 
-const dateComputed = function() {
+const dateComputed = function () {
   return computed({
     get() {
       return null;
@@ -17,47 +19,58 @@ const dateComputed = function() {
         return new Date(date);
       }
       return null;
-    }
+    },
   });
 };
 
-export default EmberObject.extend({
-  createdAt: dateComputed(),
-  settledAt: dateComputed(),
+export default class Promise extends EmberObject {
+  @dateComputed()
+  createdAt;
 
-  parent: null,
+  @dateComputed()
+  settledAt;
 
-  level: computed('parent.level', function() {
+  parent = null;
+
+  @computed('parent.level')
+  get level() {
     let parent = this.parent;
     if (!parent) {
       return 0;
     }
     return parent.get('level') + 1;
-  }),
+  }
 
-  isSettled: or('isFulfilled', 'isRejected'),
+  @or('isFulfilled', 'isRejected')
+  isSettled;
 
-  isFulfilled: equal('state', 'fulfilled'),
+  @equal('state', 'fulfilled')
+  isFulfilled;
 
-  isRejected: equal('state', 'rejected'),
+  @equal('state', 'rejected')
+  isRejected;
 
-  isPending: not('isSettled'),
+  @not('isSettled')
+  isPending;
 
-  children: computed(function() {
+  get children() {
     return [];
-  }),
+  }
 
-  pendingBranch: computed('isPending', 'children.@each.pendingBranch', function() {
+  @computed('isPending', 'children.@each.pendingBranch')
+  get pendingBranch() {
     return this.recursiveState('isPending', 'pendingBranch');
-  }),
+  }
 
-  rejectedBranch: computed('isRejected', 'children.@each.rejectedBranch', function() {
+  @computed('isRejected', 'children.@each.rejectedBranch')
+  get rejectedBranch() {
     return this.recursiveState('isRejected', 'rejectedBranch');
-  }),
+  }
 
-  fulfilledBranch: computed('isFulfilled', 'children.@each.fulfilledBranch', function() {
+  @computed('isFulfilled', 'children.@each.fulfilledBranch')
+  get fulfilledBranch() {
     return this.recursiveState('isFulfilled', 'fulfilledBranch');
-  }),
+  }
 
   recursiveState(prop, cp) {
     if (this.get(prop)) {
@@ -69,11 +82,13 @@ export default EmberObject.extend({
       }
     }
     return false;
-  },
+  }
 
   // Need this observer because CP dependent keys do not support nested arrays
   // TODO: This can be so much better
-  stateChanged: observer('pendingBranch', 'fulfilledBranch', 'rejectedBranch', function() {
+  // eslint-disable-next-line ember/no-observers
+  @observes('pendingBranch', 'fulfilledBranch', 'rejectedBranch')
+  stateChanged() {
     if (!this.parent) {
       return;
     }
@@ -86,11 +101,13 @@ export default EmberObject.extend({
       this.parent.notifyPropertyChange('rejectedBranch');
       this.parent.notifyPropertyChange('pendingBranch');
     }
-  }),
+  }
 
-  updateParentLabel: observer('label', 'parent', function() {
+  // eslint-disable-next-line ember/no-observers
+  @observes('label', 'parent')
+  updateParentLabel() {
     this.addBranchLabel(this.label, true);
-  }),
+  }
 
   addBranchLabel(label, replace) {
     if (isEmpty(label)) {
@@ -106,31 +123,36 @@ export default EmberObject.extend({
     if (parent) {
       parent.addBranchLabel(label);
     }
-  },
+  }
 
-  branchLabel: '',
+  branchLabel = '';
 
   matches(val) {
-    return !!this.branchLabel.toLowerCase().match(new RegExp(`.*${escapeRegExp(val.toLowerCase())}.*`));
-  },
+    return !!this.branchLabel
+      .toLowerCase()
+      .match(new RegExp(`.*${escapeRegExp(val.toLowerCase())}.*`));
+  }
 
   matchesExactly(val) {
-    return !!((this.label || '').toLowerCase().match(new RegExp(`.*${escapeRegExp(val.toLowerCase())}.*`)));
-  },
-
+    return !!(this.label || '')
+      .toLowerCase()
+      .match(new RegExp(`.*${escapeRegExp(val.toLowerCase())}.*`));
+  }
 
   // EXPANDED / COLLAPSED PROMISES
 
-  isExpanded: false,
+  isExpanded = false;
 
-  isManuallyExpanded: undefined,
+  isManuallyExpanded = undefined;
 
-  stateOrParentChanged: observer('isPending', 'isFulfilled', 'isRejected', 'parent', function() {
+  // eslint-disable-next-line ember/no-observers
+  @observes('isPending', 'isFulfilled', 'isRejected', 'parent')
+  stateOrParentChanged() {
     let parent = this.parent;
     if (parent) {
       once(parent, 'recalculateExpanded');
     }
-  }),
+  }
 
   _findTopParent() {
     let parent = this.parent;
@@ -139,7 +161,7 @@ export default EmberObject.extend({
     } else {
       return parent._findTopParent();
     }
-  },
+  }
 
   recalculateExpanded() {
     let isExpanded = false;
@@ -161,7 +183,7 @@ export default EmberObject.extend({
       }
       let parents = this._allParents();
       if (isExpanded) {
-        parents.forEach(parent => {
+        parents.forEach((parent) => {
           parent.set('isExpanded', true);
         });
       } else if (this.get('parent.isExpanded')) {
@@ -170,22 +192,23 @@ export default EmberObject.extend({
     }
     this.set('isExpanded', isExpanded);
     return isExpanded;
-  },
+  }
 
-  isVisible: computed('parent.{isExpanded,isVisible}', 'parent', function() {
+  @computed('parent.{isExpanded,isVisible}', 'parent')
+  get isVisible() {
     if (this.parent) {
       return this.get('parent.isExpanded') && this.get('parent.isVisible');
     }
     return true;
-  }),
+  }
 
   _allChildren() {
     let children = assign([], this.children);
-    children.forEach(item => {
+    children.forEach((item) => {
       children = assign(children, item._allChildren());
     });
     return children;
-  },
+  }
 
   _allParents() {
     let parent = this.parent;
@@ -195,4 +218,4 @@ export default EmberObject.extend({
       return [];
     }
   }
-});
+}

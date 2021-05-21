@@ -1,9 +1,7 @@
-import Component from '@ember/component';
-import { computed } from '@ember/object';
+import Component from '@glimmer/component';
 
-export default Component.extend({
-  tagName: '',
-  typeClass: computed('type', function() {
-    return `js-${this.type}-type`;
-  })
-});
+export default class ItemTypesComponent extends Component {
+  get typeClass() {
+    return `js-${this.args.type}-type`;
+  }
+}

@@ -1,7 +1,8 @@
+// eslint-disable-next-line ember/no-mixins
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import ProfileManager from './models/profile-manager';
+import Ember from './utils/ember';
 
-const Ember = window.Ember;
 const { subscribe, Object: EmberObject } = Ember;
 
 // Initial setup, that has to occur before the EmberObject init for some reason
@@ -17,19 +18,20 @@ export default EmberObject.extend(PortMixin, {
   init() {
     this._super();
 
-    this.profileManager.wrapForErrors = (context, callback) => this.get('port').wrap(() => callback.call(context));
+    this.profileManager.wrapForErrors = (context, callback) =>
+      this.port.wrap(() => callback.call(context));
     this.profileManager.onProfilesAdded(this, this._updateComponentTree);
   },
 
   willDestroy() {
     this._super();
 
-    this.profileManager.wrapForErrors = function(context, callback) {
+    this.profileManager.wrapForErrors = function (context, callback) {
       return callback.call(context);
     };
 
     this.profileManager.offProfilesAdded(this, this.sendAdded);
-    this.profileManager.offProfilesAdded(this, this._updateRenderPerformanceAndComponentTree);
+    this.profileManager.offProfilesAdded(this, this._updateComponentTree);
   },
 
   sendAdded(profiles) {
@@ -55,10 +57,12 @@ export default EmberObject.extend(PortMixin, {
     },
 
     watchProfiles() {
-      this.sendMessage('profilesAdded', { profiles: this.profileManager.profiles });
+      this.sendMessage('profilesAdded', {
+        profiles: this.profileManager.profiles,
+      });
       this.profileManager.onProfilesAdded(this, this.sendAdded);
-    }
-  }
+    },
+  },
 });
 
 /**
@@ -73,7 +77,7 @@ function _subscribeToRenderEvents() {
         type: 'began',
         timestamp,
         payload,
-        now: Date.now()
+        now: Date.now(),
       };
 
       return profileManager.addToQueue(info);
@@ -83,11 +87,11 @@ function _subscribeToRenderEvents() {
       const endedInfo = {
         type: 'ended',
         timestamp,
-        payload
+        payload,
       };
 
       const index = profileManager.addToQueue(endedInfo);
       profileManager.queue[beganIndex].endedIndex = index;
-    }
+    },
   });
 }

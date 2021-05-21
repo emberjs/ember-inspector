@@ -1,7 +1,5 @@
 'use strict';
 
-/* eslint-env node */
-
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 const VersionChecker = require('ember-cli-version-checker');
 const mergeTrees = require('broccoli-merge-trees');
@@ -11,7 +9,7 @@ const writeFile = require('broccoli-file-creator');
 const replace = require('broccoli-string-replace');
 const Babel = require('broccoli-babel-transpiler');
 const moduleResolver = require('amd-name-resolver').resolveModules({
-  throwOnRootAccess: false
+  throwOnRootAccess: false,
 });
 const Funnel = require('broccoli-funnel');
 const ensurePosix = require('ensure-posix-path');
@@ -20,13 +18,14 @@ const packageJson = require('./package.json');
 const { map, mv } = stew;
 
 const options = {
+  autoImport: {
+    forbidEval: true,
+  },
   fingerprint: {
-    enabled: false
+    enabled: false,
   },
   svgJar: {
-    sourceDirs: [
-      'public/assets/svg'
-    ]
+    sourceDirs: ['public/assets/svg'],
   },
 };
 
@@ -44,10 +43,9 @@ function resolveRelativeModulePath(name, child) {
   return moduleResolver(name, getRelativeModulePath(child));
 }
 
-
-module.exports = function(defaults) {
+module.exports = function (defaults) {
   let checker = new VersionChecker(defaults);
-  let emberChecker = checker.forEmber();
+  let emberChecker = checker.for('ember-source');
 
   if (emberChecker.isAbove('3.0.0')) {
     options.vendorFiles = { 'jquery.js': null };
@@ -107,8 +105,8 @@ module.exports = function(defaults) {
     exclude: [
       'vendor/loader.js',
       'vendor/source-map.js',
-      'vendor/startup-wrapper.js'
-    ]
+      'vendor/startup-wrapper.js',
+    ],
   });
 
   emberDebug = new Babel(emberDebug, {
@@ -116,41 +114,47 @@ module.exports = function(defaults) {
     getModuleId: getRelativeModulePath,
     plugins: [
       ['module-resolver', { resolvePath: resolveRelativeModulePath }],
-      ['transform-es2015-modules-amd', { noInterop: true }]
-    ]
+      ['transform-es2015-modules-amd', { noInterop: true }],
+    ],
   });
 
-  const previousEmberVersionsSupportedString = `[${packageJson.previousEmberVersionsSupported.map(function(item) {
-    return `'${item}'`;
-  }).join(',')}]`;
-  const emberVersionsSupportedString = `[${packageJson.emberVersionsSupported.map(function(item) {
-    return `'${item}'`;
-  }).join(',')}]`;
+  const previousEmberVersionsSupportedString = `[${packageJson.previousEmberVersionsSupported
+    .map(function (item) {
+      return `'${item}'`;
+    })
+    .join(',')}]`;
+  const emberVersionsSupportedString = `[${packageJson.emberVersionsSupported
+    .map(function (item) {
+      return `'${item}'`;
+    })
+    .join(',')}]`;
 
   let startupWrapper = new Funnel('ember_debug', {
     srcDir: 'vendor',
-    files: ['startup-wrapper.js']
+    files: ['startup-wrapper.js'],
   });
 
   startupWrapper = replace(startupWrapper, {
     files: ['startup-wrapper.js'],
-    patterns: [{
-      match: /{{EMBER_VERSIONS_SUPPORTED}}/,
-      replacement: emberVersionsSupportedString
-    }]
+    patterns: [
+      {
+        match: /{{EMBER_VERSIONS_SUPPORTED}}/,
+        replacement: emberVersionsSupportedString,
+      },
+    ],
   });
 
   let sourceMap = new Funnel('ember_debug', {
     srcDir: 'vendor',
-    files: ['source-map.js']
+    files: ['source-map.js'],
   });
 
   const loader = new Funnel('ember_debug', {
     srcDir: 'vendor',
-    files: ['loader.js']
+    files: ['loader.js'],
   });
 
-  sourceMap = map(sourceMap, '**/*.js', function(content) {
+  sourceMap = map(sourceMap, '**/*.js', function (content) {
     return `(function() {\n${content}\n}());`;
   });
 
@@ -160,29 +164,36 @@ module.exports = function(defaults) {
     headerFiles: ['loader.js'],
     inputFiles: ['**/*.js'],
     outputFile: '/ember_debug.js',
-    sourceMapConfig: { enabled: false }
+    sourceMapConfig: { enabled: false },
   });
 
   const emberDebugs = [];
-  ['basic', 'chrome', 'firefox', 'bookmarklet', 'websocket'].forEach(function(dist) {
-    emberDebugs[dist] = map(emberDebug, '**/*.js', function(content) {
+  ['basic', 'chrome', 'firefox', 'bookmarklet', 'websocket'].forEach(function (
+    dist
+  ) {
+    emberDebugs[dist] = map(emberDebug, '**/*.js', function (content) {
       return `(function(adapter, env) {\n${content}\n}('${dist}', '${env}'));`;
     });
   });
 
   let tree = app.toTree();
 
-  const emberInspectorVersionPattern = [{
-    match: /{{EMBER_INSPECTOR_VERSION}}/g,
-    replacement: packageJson.version
-  }];
+  const emberInspectorVersionPattern = [
+    {
+      match: /{{EMBER_INSPECTOR_VERSION}}/g,
+      replacement: packageJson.version,
+    },
+  ];
 
   tree = replace(tree, {
     files: ['**/*.js'],
-    patterns: emberInspectorVersionPattern
+    patterns: emberInspectorVersionPattern,
   });
 
-  const minimumVersion = packageJson.emberVersionsSupported[0].replace(/\./g, '-');
+  const minimumVersion = packageJson.emberVersionsSupported[0].replace(
+    /\./g,
+    '-'
+  );
   const webExtensionRoot = `panes-${minimumVersion}`;
 
   let tabLabel;
@@ -195,70 +206,82 @@ module.exports = function(defaults) {
     tabLabel = 'Ember';
   }
 
-  let replacementPattern = [{
-    match: /{{TAB_LABEL}}/,
-    replacement: tabLabel
-  }, {
-    match: /{{PANE_ROOT}}/g,
-    replacement: `panes-${minimumVersion}`
-  }, {
-    match: /{{PREVIOUS_EMBER_VERSIONS_SUPPORTED}}/g,
-    replacement: previousEmberVersionsSupportedString
-  }, {
-    match: /{{EMBER_VERSIONS_SUPPORTED}}/g,
-    replacement: emberVersionsSupportedString
-  }];
+  let replacementPattern = [
+    {
+      match: /{{TAB_LABEL}}/,
+      replacement: tabLabel,
+    },
+    {
+      match: /{{PANE_ROOT}}/g,
+      replacement: `panes-${minimumVersion}`,
+    },
+    {
+      match: /{{PREVIOUS_EMBER_VERSIONS_SUPPORTED}}/g,
+      replacement: previousEmberVersionsSupportedString,
+    },
+    {
+      match: /{{EMBER_VERSIONS_SUPPORTED}}/g,
+      replacement: emberVersionsSupportedString,
+    },
+  ];
 
   replacementPattern = replacementPattern.concat(emberInspectorVersionPattern);
 
   const skeletonWebExtension = replace('skeletons/web-extension', {
     files: ['*'],
-    patterns: replacementPattern
+    patterns: replacementPattern,
   });
 
   const skeletonBookmarklet = replace('skeletons/bookmarklet', {
     files: ['*'],
-    patterns: replacementPattern
+    patterns: replacementPattern,
   });
 
   let firefox = mergeTrees([
     mv(mergeTrees([tree, emberDebugs.firefox]), webExtensionRoot),
-    skeletonWebExtension
+    skeletonWebExtension,
   ]);
 
   let chrome = mergeTrees([
     mv(mergeTrees([tree, emberDebugs.chrome]), webExtensionRoot),
-    skeletonWebExtension
+    skeletonWebExtension,
   ]);
 
   let bookmarklet = mergeTrees([
     mv(mergeTrees([tree, emberDebugs.bookmarklet]), webExtensionRoot),
-    skeletonBookmarklet
+    skeletonBookmarklet,
   ]);
 
-  packageJson.previousEmberVersionsSupported.forEach(function(version) {
+  packageJson.previousEmberVersionsSupported.forEach(function (version) {
     version = version.replace(/\./g, '-');
     if (env === 'production') {
       const prevDist = `dist_prev/${env}`;
 
       bookmarklet = mergeTrees([
         mv(`${prevDist}/bookmarklet/panes-${version}`, `panes-${version}`),
-        bookmarklet
+        bookmarklet,
       ]);
       firefox = mergeTrees([
         mv(`${prevDist}/firefox/panes-${version}`, `panes-${version}`),
-        firefox
+        firefox,
       ]);
       chrome = mergeTrees([
         mv(`${prevDist}/chrome/panes-${version}`, `panes-${version}`),
-        chrome
+        chrome,
       ]);
     } else {
-      const file = writeFile('index.html', 'This Ember version is not supported in development environment.');
+      const file = writeFile(
+        'index.html',
+        'This Ember version is not supported in development environment.'
+      );
       const emberDebugFile = writeFile('ember_debug.js', 'void(0);');
       chrome = mergeTrees([mv(file, `panes-${version}`), chrome]);
       firefox = mergeTrees([mv(file, `panes-${version}`), firefox]);
-      bookmarklet = mergeTrees([mv(file, `panes-${version}`), mv(emberDebugFile, `panes-${version}`), bookmarklet]);
+      bookmarklet = mergeTrees([
+        mv(file, `panes-${version}`),
+        mv(emberDebugFile, `panes-${version}`),
+        bookmarklet,
+      ]);
     }
   });
 
@@ -269,15 +292,17 @@ module.exports = function(defaults) {
     firefox,
     bookmarklet,
     websocket: mergeTrees([tree, emberDebugs.websocket]),
-    basic: mergeTrees([tree, emberDebugs.basic])
+    basic: mergeTrees([tree, emberDebugs.basic]),
   };
-  Object.keys(dists).forEach(function(key) {
+  Object.keys(dists).forEach(function (key) {
     dists[key] = replace(dists[key], {
       files: ['**/*.js'],
-      patterns: [{
-        match: /{{EMBER_DIST}}/g,
-        replacement: key
-      }]
+      patterns: [
+        {
+          match: /{{EMBER_DIST}}/g,
+          replacement: key,
+        },
+      ],
     });
   });
 
@@ -285,10 +310,12 @@ module.exports = function(defaults) {
   // so that the websocket addon can replace it.
   dists.websocket = replace(dists.websocket, {
     files: ['index.html'],
-    patterns: [{
-      match: /<head>/,
-      replacement: '<head>\n{{ remote-port }}\n'
-    }]
+    patterns: [
+      {
+        match: /<head>/,
+        replacement: '<head>\n{{ remote-port }}\n',
+      },
+    ],
   });
 
   let output;
@@ -298,14 +325,15 @@ module.exports = function(defaults) {
     // output directory.
     output = dists.basic;
   } else {
-
     // Change base tag for running tests in development env.
     dists.basic = replace(dists.basic, {
       files: ['tests/index.html'],
-      patterns: [{
-        match: /<base.*\/>/,
-        replacement: '<base href="../" />'
-      }]
+      patterns: [
+        {
+          match: /<base.*\/>/,
+          replacement: '<base href="../" />',
+        },
+      ],
     });
 
     output = mergeTrees([
@@ -313,7 +341,7 @@ module.exports = function(defaults) {
       mv(dists.firefox, 'firefox'),
       mv(dists.chrome, 'chrome'),
       mv(dists.websocket, 'websocket'),
-      mv(dists.basic, 'testing')
+      mv(dists.basic, 'testing'),
     ]);
   }
 

@@ -2,12 +2,12 @@ import { set } from '@ember/object';
 import Evented from '@ember/object/evented';
 import Service from '@ember/service';
 
-export default Service.extend(Evented, {
-  applicationId: undefined,
-  applicationName: undefined,
+export default class PortService extends Service.extend(Evented) {
+  applicationId = undefined;
+  applicationName = undefined;
 
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
 
     /*
      * A dictionary of the form:
@@ -17,7 +17,7 @@ export default Service.extend(Evented, {
     this.applicationId = undefined;
     this.applicationName = undefined;
 
-    this.adapter.onMessageReceived(message => {
+    this.adapter.onMessageReceived((message) => {
       if (message.type === 'apps-loaded') {
         message.apps.forEach(({ applicationId, applicationName }) => {
           set(this.detectedApplications, applicationId, applicationName);
@@ -43,15 +43,18 @@ export default Service.extend(Evented, {
         this.trigger(message.type, message, applicationId);
       }
     });
-  },
+  }
 
   selectApplication(applicationId) {
-    if (applicationId in this.detectedApplications && applicationId !== this.applicationId) {
+    if (
+      applicationId in this.detectedApplications &&
+      applicationId !== this.applicationId
+    ) {
       let applicationName = this.detectedApplications[applicationId];
       this.setProperties({ applicationId, applicationName });
       this.send('app-selected', { applicationId, applicationName });
     }
-  },
+  }
 
   send(type, message) {
     message = message || {};
@@ -61,4 +64,4 @@ export default Service.extend(Evented, {
     message.applicationName = this.applicationName;
     this.adapter.sendMessage(message);
   }
-});
+}

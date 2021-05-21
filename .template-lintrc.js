@@ -3,11 +3,14 @@
 module.exports = {
   extends: 'recommended',
   rules: {
-    'link-rel-noopener': false,
-    'no-inline-styles': false,
-    'no-invalid-interactive': false,
+    'no-down-event-binding': false,
     'no-negated-condition': false,
+
+    // TODO: enable these rules
+    'no-action': false,
+    'no-implicit-this': false,
+    'no-inline-styles': false,
     'no-positive-tabindex': false,
-    'table-groups': false
-  }
+    'table-groups': false,
+  },
 };

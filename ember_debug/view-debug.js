@@ -1,15 +1,12 @@
 /* eslint no-cond-assign:0 */
+// eslint-disable-next-line ember/no-mixins
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import RenderTree from 'ember-debug/libs/render-tree';
 import ViewInspection from 'ember-debug/libs/view-inspection';
 import bound from 'ember-debug/utils/bound-method';
+import Ember from './utils/ember';
 
-const Ember = window.Ember;
-
-const {
-  computed,
-  Object: EmberObject,
-} = Ember;
+const { computed, Object: EmberObject } = Ember;
 const { readOnly } = computed;
 
 export default EmberObject.extend(PortMixin, {
@@ -53,18 +50,24 @@ export default EmberObject.extend(PortMixin, {
       let { lastRightClicked } = this;
       this.lastRightClicked = null;
       this.inspectNearest(lastRightClicked);
-    }
+    },
   },
 
   init() {
     this._super(...arguments);
 
-    let renderTree = this.renderTree = new RenderTree({
+    let renderTree = (this.renderTree = new RenderTree({
       owner: this.getOwner(),
-      retainObject: bound(this.objectInspector, this.objectInspector.retainObject),
-      releaseObject: bound(this.objectInspector, this.objectInspector.releaseObject),
+      retainObject: bound(
+        this.objectInspector,
+        this.objectInspector.retainObject
+      ),
+      releaseObject: bound(
+        this.objectInspector,
+        this.objectInspector.releaseObject
+      ),
       inspectNode: bound(this, this.inspectNode),
-    });
+    }));
 
     this.viewInspection = new ViewInspection({
       renderTree,
@@ -130,7 +133,7 @@ export default EmberObject.extend(PortMixin, {
    * @param  {Node} node The DOM node to inspect
    */
   inspectNode(node) {
-    this.get('adapter').inspectNode(node);
+    this.adapter.inspectNode(node);
   },
 
   sendTree(immediate = false) {
@@ -155,7 +158,7 @@ export default EmberObject.extend(PortMixin, {
     }
 
     this.sendMessage('renderTree', {
-      tree: this.renderTree.build()
+      tree: this.renderTree.build(),
     });
   },
 
@@ -189,5 +192,5 @@ export default EmberObject.extend(PortMixin, {
 
   getOwner() {
     return this.namespace.owner;
-  }
+  },
 });

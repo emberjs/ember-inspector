@@ -28,18 +28,20 @@ jobs:
           GIT_COMMIT_SHA: ${{ github.sha }}
           GIT_BRANCH: ${{ github.ref }}
         run: |
-          echo "::set-env name=GIT_COMMIT_SHA::${GIT_COMMIT_SHA}"
-          echo "::set-env name=GIT_BRANCH::${GIT_BRANCH/refs\/heads\//}"
+          echo "GIT_COMMIT_SHA=${GIT_COMMIT_SHA}" >> $GITHUB_ENV
+          echo "GIT_BRANCH=${GIT_BRANCH/refs\/heads\//}" >> $GITHUB_ENV
       - name: Set up commit metadata
         if: github.event_name == 'pull_request'
         env:
           GIT_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
           GIT_BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
-          echo "::set-env name=GIT_COMMIT_SHA::${GIT_COMMIT_SHA}"
-          echo "::set-env name=GIT_BRANCH::${GIT_BRANCH}"
+          echo "GIT_COMMIT_SHA=${GIT_COMMIT_SHA}" >> $GITHUB_ENV
+          echo "GIT_BRANCH=${GIT_BRANCH}" >> $GITHUB_ENV
       - name: Set up Volta
-        uses: rwjblue/setup-volta@v1
+        uses: volta-cli/action@v1
+        with:
+          node-version: 12.x
       - name: Install dependencies (yarn)
         run: yarn install
       - name: Lint (hbs)
@@ -83,25 +85,28 @@ jobs:
       fail-fast: false
       matrix:
         scenario:
-          - default-no-prototype-extensions
-          - release
-          - beta
-          - canary
-          - lts-3.4
-          - lts-3.8
-          - lts-3.12
+          - ember-lts-3.12
+          - ember-lts-3.16
+          - ember-lts-3.20
+          - ember-release
+          - ember-beta
+          - ember-canary
+          - ember-default-no-prototype-extensions
+  
     steps:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Set up Volta
-        uses: rwjblue/setup-volta@v1
+        uses: volta-cli/action@v1
+        with:
+          node-version: 12.x
       - name: Install dependencies (yarn)
         run: yarn install
       - name: Set NO_EXTEND_PROTOTYPES
-        if: matrix.scenario == 'default-no-prototype-extensions'
-        run: echo "::set-env name=NO_EXTEND_PROTOTYPES,::true"
+        if: matrix.scenario == 'ember-default-no-prototype-extensions'
+        run: echo "NO_EXTEND_PROTOTYPES==true" >> .GITHUB_ENV
       - name: Setup ember-try scenario
-        run: yarn ember try:one ember-${{ matrix.scenario }} --skip-cleanup --- cat package.json
+        run: yarn ember try:one ${{ matrix.scenario }} --skip-cleanup --- cat package.json
       - name: Build
         run: yarn ember build --environment test
       - name: Run test
@@ -118,7 +123,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Set up Volta
-        uses: rwjblue/setup-volta@v1
+        uses: volta-cli/action@v1
+        with:
+          node-version: 12.x
       - name: Install dependencies (yarn)
         run: yarn install
       - name: Download panes
@@ -184,10 +191,10 @@ jobs:
           SHA: ${{ github.event.pull_request.head.sha }}
       - name: Set EMBER_INSPECTOR_TAB (nightly)
         if: github.event_name == 'schedule'
-        run: echo "::set-env name=EMBER_INSPECTOR_TAB,::Nightly"
+        run: echo "EMBER_INSPECTOR_TAB=Nightly" >> $GITHUB_ENV
       - name: Set EMBER_INSPECTOR_TAB (pull request)
         if: github.event_name == 'pull_request'
-        run: echo "::set-env name=EMBER_INSPECTOR_TAB,::PR \#$PR"
+        run: echo "EMBER_INSPECTOR_TAB=PR \#$PR" >> $GITHUB_ENV
         env:
           PR: ${{ github.event.pull_request.number }}
       - name: Build
@@ -256,7 +263,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Volta
-        uses: rwjblue/setup-volta@v1
+        uses: volta-cli/action@v1
+        with:
+          node-version: 12.x
       - name: Install dependencies (chrome-webstore-upload-cli)
         run: volta install chrome-webstore-upload-cli
       - name: Download artifacts (Chrome)
@@ -285,7 +294,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Volta
-        uses: rwjblue/setup-volta@v1
+        uses: volta-cli/action@v1
+        with:
+          node-version: 12.x
       - name: Install dependencies (web-ext)
         run: |
           volta install web-ext
@@ -315,7 +326,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Volta
-        uses: rwjblue/setup-volta@v1
+        uses: volta-cli/action@v1
+        with:
+          node-version: 12.x
       - name: Set up NPM
         run: |
           echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}"> ~/.npmrc

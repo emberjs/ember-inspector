@@ -1,12 +1,16 @@
 /* globals chrome */
 import { computed } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
 
-import BasicAdapter from "./basic";
+import BasicAdapter from './basic';
 import config from 'ember-inspector/config/environment';
 
 let emberDebug = null;
 
-export default BasicAdapter.extend({
+export default class WebExtension extends BasicAdapter {
+  @tracked canOpenResource = false;
+  name = 'web-extension';
+
   /**
    * Called when the adapter is created.
    *
@@ -18,42 +22,41 @@ export default BasicAdapter.extend({
     this._injectDebugger();
     this._setThemeColors();
 
-    return this._super(...arguments);
-  },
-
-  name: 'web-extension',
+    return super.init(...arguments);
+  }
 
   sendMessage(options) {
     options = options || {};
     this._chromePort.postMessage(options);
-  },
+  }
 
-  _chromePort: computed(function() {
+  @computed
+  get _chromePort() {
     return chrome.runtime.connect();
-  }),
+  }
 
   _connect() {
     let chromePort = this._chromePort;
     chromePort.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
 
-    chromePort.onMessage.addListener(message => {
+    chromePort.onMessage.addListener((message) => {
       if (typeof message.type === 'string' && message.type === 'iframes') {
         this.sendIframes(message.urls);
       }
       this._messageReceived(message);
     });
-  },
+  }
 
   _handleReload() {
     let self = this;
-    chrome.devtools.network.onNavigated.addListener(function() {
+    chrome.devtools.network.onNavigated.addListener(function () {
       self._injectDebugger();
       location.reload(true);
     });
-  },
+  }
 
   _injectDebugger() {
-    loadEmberDebug().then(emberDebug => {
+    loadEmberDebug().then((emberDebug) => {
       chrome.devtools.inspectedWindow.eval(emberDebug, (success, error) => {
         if (success === undefined && error) {
           throw error;
@@ -61,7 +64,7 @@ export default BasicAdapter.extend({
       });
       this.onResourceAdded();
     });
-  },
+  }
 
   _setThemeColors() {
     // Remove old theme colors to ensure switching themes works
@@ -72,13 +75,13 @@ export default BasicAdapter.extend({
       theme = 'theme--dark';
     }
     document.body.classList.add(theme);
-  },
+  }
 
-  onResourceAdded(/*callback*/) { },
+  onResourceAdded /*callback*/() {}
 
   willReload() {
     this._injectDebugger();
-  },
+  }
 
   /**
    * Open the devtools "Elements" tab and select a specific DOM node.
@@ -91,7 +94,7 @@ export default BasicAdapter.extend({
       inspect(window[${JSON.stringify(name)}]);
       delete window[${JSON.stringify(name)}];
     `);
-  },
+  }
 
   /**
    * Redirect to the correct inspector version.
@@ -104,37 +107,38 @@ export default BasicAdapter.extend({
       /\./g,
       '-'
     )}/index.html`;
-  },
+  }
 
   /**
     We handle the reload here so we can inject
     scripts as soon as possible into the new page.
   */
   reloadTab() {
-    loadEmberDebug().then(emberDebug => {
+    loadEmberDebug().then((emberDebug) => {
       chrome.devtools.inspectedWindow.reload({ injectedScript: emberDebug });
     });
-  },
-
-  canOpenResource: false,
+  }
 
   sendIframes(urls) {
-    loadEmberDebug().then(emberDebug => {
-      urls.forEach(url => {
+    loadEmberDebug().then((emberDebug) => {
+      urls.forEach((url) => {
         chrome.devtools.inspectedWindow.eval(emberDebug, { frameURL: url });
       });
     });
   }
-});
+}
 
 function loadEmberDebug() {
   let minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
   let xhr;
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     if (!emberDebug) {
       xhr = new XMLHttpRequest();
-      xhr.open("GET", chrome.runtime.getURL(`/panes-${minimumVersion}/ember_debug.js`));
-      xhr.onload = function() {
+      xhr.open(
+        'GET',
+        chrome.runtime.getURL(`/panes-${minimumVersion}/ember_debug.js`)
+      );
+      xhr.onload = function () {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
             emberDebug = xhr.responseText;

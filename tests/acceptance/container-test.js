@@ -1,25 +1,19 @@
-import Ember from "ember";
+import Ember from 'ember';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import {
-  visit,
-  findAll,
-  click,
-  fillIn,
-  currentURL
-} from 'ember-test-helpers';
+import { visit, findAll, click, fillIn, currentURL } from 'ember-test-helpers';
 import { setupTestAdapter, respondWith } from '../test-adapter';
 
 function getTypes() {
   return [
     {
       name: 'route',
-      count: 5
+      count: 5,
     },
     {
       name: 'controller',
-      count: 2
-    }
+      count: 4,
+    },
   ];
 }
 
@@ -28,62 +22,74 @@ function getControllers() {
     {
       name: 'first controller',
       fullName: 'controller:first',
-      inspectable: false
+      inspectable: false,
     },
     {
       name: 'second controller',
       fullName: 'controller:second',
-      inspectable: true
-    }
+      inspectable: true,
+    },
+    {
+      name: 'third controller',
+      fullName: 'controller:third',
+      inspectable: true,
+    },
+    {
+      name: 'fourth controller',
+      fullName: 'controller:fourth',
+      inspectable: true,
+    },
   ];
 }
 
-module('Container Tab', function(outer) {
+module('Container Tab', function (outer) {
   setupTestAdapter(outer);
   setupApplicationTest(outer);
 
-  module('With default types', function(inner) {
-    inner.beforeEach(function() {
+  module('With default types', function (inner) {
+    inner.beforeEach(function () {
       respondWith('container:getTypes', {
         type: 'container:types',
-        types: getTypes()
+        types: getTypes(),
       });
     });
 
-    test("Container types are successfully listed", async function(assert) {
+    test('Container types are successfully listed', async function (assert) {
       await visit('/container-types');
-
       let rows = findAll('.js-container-type');
 
       assert.equal(rows.length, 2);
       assert.dom(findAll('.js-container-type-name')[0]).hasText('controller');
-      assert.dom(findAll('.js-container-type-count')[0]).hasText('2');
+      assert.dom(findAll('.js-container-type-count')[0]).hasText('4');
       assert.dom(findAll('.js-container-type-name')[1]).hasText('route');
       assert.dom(findAll('.js-container-type-count')[1]).hasText('5');
     });
 
-    test("Container instances are successfully listed", async function(assert) {
+    test('Container instances are successfully listed and navigable', async function (assert) {
       respondWith('container:getInstances', ({ containerType }) => {
         if (containerType === 'controller') {
           return {
             type: 'container:instances',
             status: 200,
-            instances: getControllers()
+            instances: getControllers(),
           };
         }
       });
 
       await visit('/container-types/controller');
 
-      let rows = findAll('.js-container-instance-list-item');
+      let rows = findAll('[data-test-instance-row]');
 
+      // Sorted alphabetically
       assert.dom(rows[0]).hasText('first controller');
-      assert.dom(rows[1]).hasText('second controller');
+      assert.dom(rows[1]).hasText('fourth controller');
+      assert.dom(rows[2]).hasText('second controller');
+      assert.dom(rows[3]).hasText('third controller');
 
       // Uninspectable, no messages
-      await click(rows[0].querySelector('.js-instance-name'));
+      await click('[data-test-instance="first controller"]');
 
-      // Second object is inspectable
+      // Second controller is inspectable
       respondWith('objectInspector:inspectByContainerLookup', ({ name }) => {
         if (name === 'controller:second') {
           return {
@@ -91,52 +97,75 @@ module('Container Tab', function(outer) {
             objectId: 'ember123',
             name: 'second controller',
             details: [],
-            errors: []
+            errors: [],
           };
         }
       });
 
-      await click(rows[1].querySelector('.js-instance-name'));
-
-      await fillIn('[data-test-container-instance-search] input', 'first');
-
-      rows = findAll('.js-container-instance-list-item');
-
-      assert.equal(rows.length, 1);
-      assert.dom(rows[0]).hasText('first controller');
+      await click('[data-test-instance="second controller"]');
     });
 
-    test("It should clear the search filter when the clear button is clicked", async function(assert) {
+    test('Container instances are filterable and sortable', async function (assert) {
       respondWith('container:getInstances', ({ containerType }) => {
         if (containerType === 'controller') {
           return {
             type: 'container:instances',
             status: 200,
-            instances: getControllers()
+            instances: getControllers(),
           };
         }
       });
 
       await visit('/container-types/controller');
 
-      let rows = findAll('.js-container-instance-list-item');
-      assert.equal(rows.length, 2, 'expected all rows');
+      await fillIn('[data-test-container-instance-search] input', 'first');
+      assert
+        .dom('[data-test-instance-row]')
+        .exists({ count: 1 }, 'expected filtered row');
+      assert
+        .dom(findAll('[data-test-instance-row]')[0])
+        .hasText('first controller');
 
       await fillIn('[data-test-container-instance-search] input', 'xxxxx');
-      rows = findAll('.js-container-instance-list-item');
-      assert.equal(rows.length, 0, 'expected filtered rows');
+      assert
+        .dom('[data-test-instance-row]')
+        .exists({ count: 0 }, 'expected filtered rows');
 
       await click('[data-test-search-field-clear-button]');
-      rows = findAll('.js-container-instance-list-item');
-      assert.equal(rows.length, 2, 'expected all rows');
+      assert
+        .dom('[data-test-instance-row]')
+        .exists({ count: 4 }, 'expected all rows');
+
+      let rows = findAll('[data-test-instance-row]');
+
+      // Sorted alphabetically by name ascending
+      assert.dom(rows[0]).hasText('first controller');
+      assert.dom(rows[1]).hasText('fourth controller');
+      assert.dom(rows[2]).hasText('second controller');
+      assert.dom(rows[3]).hasText('third controller');
+      assert
+        .dom('[data-test-sort-indicator].is-ascending')
+        .exists({ count: 1 });
+
+      await click('[data-test-sort-toggle]');
+
+      // Sorted alphabetically by name descending
+      rows = findAll('[data-test-instance-row]');
+      assert.dom(rows[0]).hasText('third controller');
+      assert.dom(rows[1]).hasText('second controller');
+      assert.dom(rows[2]).hasText('fourth controller');
+      assert.dom(rows[3]).hasText('first controller');
+      assert
+        .dom('[data-test-sort-indicator].is-descending')
+        .exists({ count: 1 });
     });
 
-    test("Successfully redirects if the container type is not found", async function(assert) {
+    test('Successfully redirects if the container type is not found', async function (assert) {
       respondWith('container:getInstances', ({ containerType }) => {
         if (containerType === 'random-type') {
           return {
             type: 'container:instances',
-            status: 404
+            status: 404,
           };
         }
       });
@@ -145,7 +174,7 @@ module('Container Tab', function(outer) {
 
       // Failed route causes a promise unhandled rejection
       // even though there's an `error` action defined :(
-      Ember.Test.adapter.exception = err => {
+      Ember.Test.adapter.exception = (err) => {
         if (!err || err.status !== 404) {
           return adapterException.call(Ember.Test.adapter, err);
         }
@@ -160,10 +189,10 @@ module('Container Tab', function(outer) {
     });
   });
 
-  test("Reload", async function(assert) {
+  test('Reload', async function (assert) {
     respondWith('container:getTypes', {
       type: 'container:types',
-      types: []
+      types: [],
     });
 
     respondWith('container:getInstances', ({ containerType }) => {
@@ -171,7 +200,7 @@ module('Container Tab', function(outer) {
         return {
           type: 'container:instances',
           status: 200,
-          instances: []
+          instances: [],
         };
       }
     });
@@ -179,11 +208,11 @@ module('Container Tab', function(outer) {
     await visit('/container-types/controller');
 
     assert.dom('.js-container-type').doesNotExist();
-    assert.dom('.js-container-instance-list-item').doesNotExist();
+    assert.dom('[data-test-instance-row]').doesNotExist();
 
     respondWith('container:getTypes', {
       type: 'container:types',
-      types: getTypes()
+      types: getTypes(),
     });
 
     respondWith('container:getInstances', ({ containerType }) => {
@@ -191,7 +220,7 @@ module('Container Tab', function(outer) {
         return {
           type: 'container:instances',
           status: 200,
-          instances: getControllers()
+          instances: getControllers(),
         };
       }
     });
@@ -199,6 +228,6 @@ module('Container Tab', function(outer) {
     await click('[data-test-reload-container-btn]');
 
     assert.dom('.js-container-type').exists({ count: 2 });
-    assert.dom('.js-container-instance-list-item').exists({ count: 2 });
+    assert.dom('[data-test-instance-row]').exists({ count: 4 });
   });
 });

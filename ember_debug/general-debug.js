@@ -1,6 +1,8 @@
 /* eslint no-empty:0 */
-import PortMixin from "ember-debug/mixins/port-mixin";
-const Ember = window.Ember;
+// eslint-disable-next-line ember/no-mixins
+import PortMixin from 'ember-debug/mixins/port-mixin';
+import Ember from './utils/ember';
+
 const { Object: EmberObject } = Ember;
 let { libraries } = Ember;
 
@@ -66,7 +68,7 @@ export default EmberObject.extend(PortMixin, {
    */
   sendBooted() {
     this.sendMessage('applicationBooted', {
-      booted: this.get('namespace.owner.__inspector__booted')
+      booted: this.get('namespace.owner.__inspector__booted'),
     });
   },
 
@@ -94,6 +96,12 @@ export default EmberObject.extend(PortMixin, {
       this.sendMessage('libraries', { libraries: libraries._registry });
     },
 
+    getEmberCliConfig() {
+      this.sendMessage('emberCliConfig', {
+        emberCliConfig: this.emberCliConfig,
+      });
+    },
+
     /**
      * Called from the inspector to refresh the inspected app.
      * Used in case the inspector was opened late and therefore missed capturing
@@ -101,8 +109,8 @@ export default EmberObject.extend(PortMixin, {
      */
     refresh() {
       window.location.reload();
-    }
-  }
+    },
+  },
 });
 
 /**

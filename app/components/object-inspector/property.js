@@ -29,7 +29,10 @@ export default Component.extend({
   isComputedProperty: alias('model.isComputed'),
 
   isFunction: computed('valueType', function () {
-    return this.valueType === 'type-function' || this.valueType === 'type-asyncfunction';
+    return (
+      this.valueType === 'type-function' ||
+      this.valueType === 'type-asyncfunction'
+    );
   }),
 
   isArray: equal('valueType', 'type-array'),
@@ -44,46 +47,60 @@ export default Component.extend({
 
   showDependentKeys: and('isDepsExpanded', 'hasDependentKeys'),
 
-  canCalculate: computed('model', 'isCalculated', 'isComputedProperty', function () {
-    if (this.get('isOverridden')) return false;
-    if (!this.get('isComputedProperty') && this.get('model.isGetter') && this.get('model.isExpensive')) {
-      return true;
+  canCalculate: computed(
+    'isCalculated',
+    'isComputedProperty',
+    'isOverridden',
+    'model.{isExpensive,isGetter}',
+    function () {
+      if (this.get('isOverridden')) return false;
+      if (
+        !this.get('isComputedProperty') &&
+        this.get('model.isGetter') &&
+        this.get('model.isExpensive')
+      ) {
+        return true;
+      }
+      return this.get('isComputedProperty') && !this.get('isCalculated');
     }
-    return this.get('isComputedProperty') && !this.get('isCalculated');
-  }),
+  ),
 
-  iconInfo: computed('isService', 'isFunction', 'model.{inspect.value,isTracked,isProperty,isGetter}', function () {
-    if (this.get('isService')) {
-      return { type: 'service', title: 'Service' };
+  iconInfo: computed(
+    'isFunction', // eslint-disable-line ember/use-brace-expansion
+    'isService',
+    'model.inspect.value',
+    'model.{isComputed,isGetter,isProperty,isTracked}',
+    function () {
+      if (this.get('isService')) {
+        return { type: 'service', title: 'Service' };
+      }
+
+      if (this.get('isFunction')) {
+        return { type: 'function', title: 'Function' };
+      }
+
+      if (this.get('model.isTracked')) {
+        return { type: 'tracked', title: 'Tracked' };
+      }
+
+      if (this.get('model.isProperty')) {
+        return { type: 'property', title: 'Property' };
+      }
+
+      if (this.get('model.isComputed')) {
+        return { type: 'computed', title: 'Computed' };
+      }
+
+      if (this.get('model.isGetter')) {
+        return { type: 'getter', title: 'Getter' };
+      }
+
+      return { type: 'n/a', title: 'N/A' };
     }
-
-    if (this.get('isFunction')) {
-      return { type: 'function', title: 'Function' };
-    }
-
-    if (this.get('model.isTracked')) {
-      return { type: 'tracked', title: 'Tracked' };
-    }
-
-    if (this.get('model.isProperty')) {
-      return { type: 'property', title: 'Property' };
-    }
-
-    if (this.get('model.isComputed')) {
-      return { type: 'computed', title: 'Computed' };
-    }
-
-    if (this.get('model.isGetter')) {
-      return { type: 'getter', title: 'Getter' };
-    }
-
-    return { type: 'n/a', title: 'N/A' };
-  }),
+  ),
 
   canDig() {
-    return this.isObject
-      || this.isEmberObject
-      || this.isArray
+    return this.isObject || this.isEmberObject || this.isArray;
   },
 
   cannotEdit() {
@@ -117,19 +134,19 @@ export default Component.extend({
     this.set('isEdit', true);
   }),
 
-  dateClick: action(function() {
-    this.set('dateValue', new Date(
-      this.get('model.value.inspect')
-    ));
+  dateClick: action(function () {
+    this.set('dateValue', new Date(this.get('model.value.inspect')));
 
     this.set('isEdit', true);
   }),
 
   _quotedString(value) {
-    return (!value.startsWith('"') && !value.endsWith('"')) ? `"${value}"` : value;
+    return !value.startsWith('"') && !value.endsWith('"')
+      ? `"${value}"`
+      : value;
   },
 
-  save: action(function() {
+  save: action(function () {
     let realValue, dataType;
     if (!this.isDate) {
       realValue = parseText(this.txtValue);
@@ -142,15 +159,14 @@ export default Component.extend({
     this.finishedEditing();
   }),
 
-  finishedEditing: action(function() {
+  finishedEditing: action(function () {
     next(() => {
       this.set('isEdit', false);
     });
   }),
 
-  dateSelected: action(function([val]) {
+  dateSelected: action(function ([val]) {
     this.set('dateValue', val);
     this.save();
   }),
 });
-

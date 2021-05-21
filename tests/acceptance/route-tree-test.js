@@ -4,14 +4,15 @@ import {
   find,
   findAll,
   triggerEvent,
-  visit
+  visit,
 } from '@ember/test-helpers';
+import { classify } from '@ember/string';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupTestAdapter, respondWith, sendMessage } from '../test-adapter';
 
 function isObject(item) {
-  return (item && typeof item === 'object' && !Array.isArray(item));
+  return item && typeof item === 'object' && !Array.isArray(item);
 }
 
 function deepAssign(target, ...sources) {
@@ -37,16 +38,16 @@ function routeValue(name, props) {
     name,
     controller: {
       name,
-      className: `${name.replace(/\./g, '_').classify()}Controller`,
-      exists: true
+      className: `${classify(name.replace(/\./g, '_'))}Controller`,
+      exists: true,
     },
     routeHandler: {
       name,
-      className: `${name.replace(/\./g, '_').classify()}Route`
+      className: `${classify(name.replace(/\./g, '_'))}Route`,
     },
     template: {
-      name: name.replace(/\./g, '/')
-    }
+      name: name.replace(/\./g, '/'),
+    },
   };
   props = props || {};
   return deepAssign({}, value, props);
@@ -55,82 +56,112 @@ function routeValue(name, props) {
 function routeTree() {
   return {
     value: routeValue('application'),
-    children: [{
-      value: routeValue('post', { controller: { exists: false } }),
-      children: [{
-        value: routeValue('post.loading', { url: 'post/loading' }),
-        children: []
-      }, {
-        value: routeValue('post.new', { url: 'post/new' }),
-        children: []
-      }, {
-        value: routeValue('post.edit', { url: 'post/edit' }),
-        children: [{
-          value: routeValue('comments', { url: 'post/edit/comments' }),
-          children: []
-        }]
-      }]
-    }]
+    children: [
+      {
+        value: routeValue('post', { controller: { exists: false } }),
+        children: [
+          {
+            value: routeValue('post.loading', { url: 'post/loading' }),
+            children: [],
+          },
+          {
+            value: routeValue('post.new', { url: 'post/new' }),
+            children: [],
+          },
+          {
+            value: routeValue('post.edit', { url: 'post/edit' }),
+            children: [
+              {
+                value: routeValue('comments', { url: 'post/edit/comments' }),
+                children: [],
+              },
+            ],
+          },
+        ],
+      },
+    ],
   };
 }
 
-module('Route Tree Tab', function(outer) {
+module('Route Tree Tab', function (outer) {
   setupTestAdapter(outer);
   setupApplicationTest(outer);
 
-  outer.beforeEach(function() {
+  outer.beforeEach(function () {
     respondWith('route:getTree', {
       type: 'route:routeTree',
-      tree: routeTree()
+      tree: routeTree(),
     });
   });
 
-  module('Starting at post/edit', function(inner) {
-    inner.beforeEach(function() {
+  module('Starting at post/edit', function (inner) {
+    inner.beforeEach(function () {
       respondWith('route:getCurrentRoute', {
         type: 'route:currentRoute',
         name: 'post.edit',
-        url: 'post/edit'
+        url: 'post/edit',
       });
     });
 
-    test("Route tree is successfully displayed", async function(assert) {
+    test('Route tree is successfully displayed', async function (assert) {
       await visit('route-tree');
 
       let routeNodes = findAll('.js-route-tree-item');
       assert.equal(routeNodes.length, 6, 'correct number of nodes');
 
-      let routeNames = findAll('.js-route-name').map(function(item) {
+      let routeNames = findAll('.js-route-name').map(function (item) {
         return item.textContent.trim();
       });
       assert.deepEqual(
         routeNames,
-        ['application', 'post', 'post.loading', 'post.new', 'post.edit', 'comments'],
+        [
+          'application',
+          'post',
+          'post.loading',
+          'post.new',
+          'post.edit',
+          'comments',
+        ],
         'route name displayed'
       );
 
-      let routeHandlers = findAll('[data-test-route-handler]').map(function(item) {
+      let routeHandlers = findAll('[data-test-route-handler]').map(function (
+        item
+      ) {
         return item.getAttribute('title').trim();
       });
       assert.deepEqual(
         routeHandlers,
-        ['ApplicationRoute', 'PostRoute', 'PostLoadingRoute', 'PostNewRoute', 'PostEditRoute', 'CommentsRoute'],
+        [
+          'ApplicationRoute',
+          'PostRoute',
+          'PostLoadingRoute',
+          'PostNewRoute',
+          'PostEditRoute',
+          'CommentsRoute',
+        ],
         'route class name in title attribute'
       );
 
-      let controllers = findAll('.js-route-controller').map(function(item) {
+      let controllers = findAll('.js-route-controller').map(function (item) {
         return item.getAttribute('title').trim();
       });
 
       // "PostController" not listed because a file for it was not created on the filesystem
       assert.deepEqual(
         controllers,
-        ['ApplicationController', 'PostLoadingController', 'PostNewController', 'PostEditController', 'CommentsController'],
+        [
+          'ApplicationController',
+          'PostLoadingController',
+          'PostNewController',
+          'PostEditController',
+          'CommentsController',
+        ],
         'controller class name in title attribute'
       );
     });
 
-    test("Clicking on route handlers and controller sends an inspection message", async function(assert) {
+    test('Clicking on route handlers and controller sends an inspection message', async function (assert) {
       await visit('route-tree');
 
       let applicationRow = find('.js-route-tree-item');
@@ -150,25 +181,33 @@ module('Route Tree Tab', function(outer) {
       await click(applicationRow.querySelector('.js-route-controller'));
     });
 
-    test("Current Route is highlighted", async function(assert) {
+    test('Current Route is highlighted', async function (assert) {
       await visit('route-tree');
 
       let routeNodes = findAll('.js-route-tree-item .js-route-name');
-      let isCurrent = [...routeNodes].map(item => item.classList.contains('pill'));
+      let isCurrent = [...routeNodes].map((item) =>
+        item.classList.contains('pill')
+      );
       assert.deepEqual(isCurrent, [true, true, false, false, true, false]);
 
       await sendMessage({
         type: 'route:currentRoute',
         name: 'post.new',
-        url: 'post/new'
+        url: 'post/new',
       });
 
       routeNodes = findAll('.js-route-tree-item .js-route-name');
-      isCurrent = [...routeNodes].map(item => item.classList.contains('pill'));
-      assert.deepEqual(isCurrent, [true, true, false, true, false, false], 'Current route is bound');
+      isCurrent = [...routeNodes].map((item) =>
+        item.classList.contains('pill')
+      );
+      assert.deepEqual(
+        isCurrent,
+        [true, true, false, true, false, false],
+        'Current route is bound'
+      );
     });
 
-    test("It should filter the tree using the search text", async function(assert) {
+    test('It should filter the tree using the search text', async function (assert) {
       await visit('route-tree');
 
       let routeNodes = findAll('.js-route-tree-item');
@@ -185,7 +224,7 @@ module('Route Tree Tab', function(outer) {
       assert.equal(routeNodes.length, 6);
     });
 
-    test("Hiding non current route", async function(assert) {
+    test('Hiding non current route', async function (assert) {
       await visit('route-tree');
 
       let routeNodes = findAll('.js-route-tree-item');
@@ -199,7 +238,7 @@ module('Route Tree Tab', function(outer) {
       assert.equal(routeNodes.length, 3);
     });
 
-    test("Hiding substates", async function(assert) {
+    test('Hiding substates', async function (assert) {
       await visit('route-tree');
 
       let routeNodes = findAll('.js-route-tree-item');
@@ -212,13 +251,13 @@ module('Route Tree Tab', function(outer) {
       routeNodes = findAll('.js-route-tree-item');
       assert.equal(routeNodes.length, 5);
     });
-  })
+  });
 
-  test('Displaying route w/ reset namespace set to true', async function(assert) {
+  test('Displaying route w/ reset namespace set to true', async function (assert) {
     respondWith('route:getCurrentRoute', {
       type: 'route:currentRoute',
       name: 'post.edit.comments',
-      url: 'post/edit/comments'
+      url: 'post/edit/comments',
     });
 
     await visit('route-tree');

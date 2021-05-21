@@ -4,31 +4,31 @@ import EmberObject from '@ember/object';
 import EventedMixin from '@ember/object/evented';
 import Promise from 'ember-inspector/models/promise';
 
-export default EmberObject.extend(EventedMixin, {
+export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
   // Used to track whether current message received
   // is the first in the request
   // Mainly helps in triggering 'firstMessageReceived' event
-  firstMessageReceived: false,
+  firstMessageReceived = false;
 
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
 
     this.all = [];
     this.topSort = [];
     this.topSortMeta = {};
     this.promiseIndex = {};
-  },
+  }
 
   start() {
     this.port.on('promise:promisesUpdated', this, this.addOrUpdatePromises);
     this.port.send('promise:getAndObservePromises');
-  },
+  }
 
   stop() {
     this.port.off('promise:promisesUpdated', this, this.addOrUpdatePromises);
     this.port.send('promise:releasePromises');
     this.reset();
-  },
+  }
 
   reset() {
     this.set('topSortMeta', {});
@@ -40,17 +40,21 @@ export default EmberObject.extend(EventedMixin, {
     // Lazily destroy promises
     // Allows for a smooth transition on deactivate,
     // and thus providing the illusion of better perf
-    later(this, function() {
-      this.destroyPromises(all);
-    }, 500);
+    later(
+      this,
+      function () {
+        this.destroyPromises(all);
+      },
+      500
+    );
     this.set('all', []);
-  },
+  }
 
   destroyPromises(promises) {
-    promises.forEach(function(item) {
+    promises.forEach(function (item) {
       item.destroy();
     });
-  },
+  }
 
   addOrUpdatePromises(message) {
     this.rebuildPromises(message.promises);
@@ -59,10 +63,10 @@ export default EmberObject.extend(EventedMixin, {
       this.set('firstMessageReceived', true);
       this.trigger('firstMessageReceived');
     }
-  },
+  }
 
   rebuildPromises(promises) {
-    promises.forEach(props => {
+    promises.forEach((props) => {
       props = Object.assign({}, props);
       let childrenIds = props.children;
       let parentId = props.parent;
@@ -73,7 +77,7 @@ export default EmberObject.extend(EventedMixin, {
       }
       let promise = this.updateOrCreate(props);
       if (childrenIds) {
-        childrenIds.forEach(childId => {
+        childrenIds.forEach((childId) => {
           // avoid infinite recursion
           if (childId === props.guid) {
             return;
@@ -83,7 +87,7 @@ export default EmberObject.extend(EventedMixin, {
         });
       }
     });
-  },
+  }
 
   updateTopSort(promise) {
     let topSortMeta = this.topSortMeta;
@@ -109,7 +113,7 @@ export default EmberObject.extend(EventedMixin, {
     if (parentChanged) {
       this.insertInTopSort(promise);
     }
-  },
+  }
 
   insertInTopSort(promise) {
     let topSort = this.topSort;
@@ -119,11 +123,11 @@ export default EmberObject.extend(EventedMixin, {
     } else {
       topSort.pushObject(promise);
     }
-    promise.get('children').forEach(child => {
+    promise.get('children').forEach((child) => {
       topSort.removeObject(child);
       this.insertInTopSort(child);
     });
-  },
+  }
 
   updateOrCreate(props) {
     let guid = props.guid;
@@ -134,7 +138,7 @@ export default EmberObject.extend(EventedMixin, {
     this.updateTopSort(promise);
 
     return promise;
-  },
+  }
 
   createPromise(props) {
     let promise = Promise.create(props);
@@ -143,7 +147,7 @@ export default EmberObject.extend(EventedMixin, {
     this.all.pushObject(promise);
     this.promiseIndex[promise.get('guid')] = index;
     return promise;
-  },
+  }
 
   find(guid) {
     if (guid) {
@@ -154,7 +158,7 @@ export default EmberObject.extend(EventedMixin, {
     } else {
       return this.all;
     }
-  },
+  }
 
   findOrCreate(guid) {
     if (!guid) {
@@ -162,4 +166,4 @@ export default EmberObject.extend(EventedMixin, {
     }
     return this.find(guid) || this.createPromise({ guid });
   }
-});
+}

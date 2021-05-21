@@ -6,8 +6,8 @@
  */
 
 import Promise from 'ember-debug/models/promise';
+import Ember from '../utils/ember';
 
-const Ember = window.Ember;
 const { Object: EmberObject, Evented, A, computed, RSVP, isNone } = Ember;
 
 let PromiseAssembler = EmberObject.extend(Evented, {
@@ -16,9 +16,13 @@ let PromiseAssembler = EmberObject.extend(Evented, {
 
   isStarted: false,
 
-  all: computed(function() { return A(); }),
+  all: computed(function () {
+    return A();
+  }),
 
-  promiseIndex: computed(function() { return {}; }),
+  promiseIndex: computed(function () {
+    return {};
+  }),
 
   // injected on creation
   promiseDebug: null,
@@ -26,16 +30,16 @@ let PromiseAssembler = EmberObject.extend(Evented, {
   start() {
     this.RSVP.configure('instrument', true);
 
-    this.promiseChained = e => {
+    this.promiseChained = (e) => {
       chain.call(this, e);
     };
-    this.promiseRejected = e => {
+    this.promiseRejected = (e) => {
       reject.call(this, e);
     };
-    this.promiseFulfilled = e => {
+    this.promiseFulfilled = (e) => {
       fulfill.call(this, e);
     };
-    this.promiseCreated = e => {
+    this.promiseCreated = (e) => {
       create.bind(this)(e);
     };
 
@@ -55,7 +59,7 @@ let PromiseAssembler = EmberObject.extend(Evented, {
       this.RSVP.off('fulfilled', this.promiseFulfilled);
       this.RSVP.off('created', this.promiseCreated);
 
-      this.get('all').forEach(item => {
+      this.all.forEach((item) => {
         item.destroy();
       });
       this.set('all', A());
@@ -78,19 +82,19 @@ let PromiseAssembler = EmberObject.extend(Evented, {
     let promise = Promise.create(props);
     let index = this.get('all.length');
 
-    this.get('all').pushObject(promise);
-    this.get('promiseIndex')[promise.get('guid')] = index;
+    this.all.pushObject(promise);
+    this.promiseIndex[promise.get('guid')] = index;
     return promise;
   },
 
   find(guid) {
     if (guid) {
-      const index = this.get('promiseIndex')[guid];
+      const index = this.promiseIndex[guid];
       if (index !== undefined) {
-        return this.get('all').objectAt(index);
+        return this.all.objectAt(index);
       }
     } else {
-      return this.get('all');
+      return this.all;
     }
   },
 
@@ -109,7 +113,7 @@ let PromiseAssembler = EmberObject.extend(Evented, {
     }
 
     return entry;
-  }
+  },
 });
 
 export default PromiseAssembler;
@@ -120,7 +124,7 @@ function fulfill(event) {
     label: event.label,
     settledAt: event.timeStamp,
     state: 'fulfilled',
-    value: event.detail
+    value: event.detail,
   });
   this.trigger('fulfilled', { promise });
 }
@@ -131,7 +135,7 @@ function reject(event) {
     label: event.label,
     settledAt: event.timeStamp,
     state: 'rejected',
-    reason: event.detail
+    reason: event.detail,
   });
   this.trigger('rejected', { promise });
 }
@@ -140,7 +144,7 @@ function chain(event) {
   let guid = event.guid;
   let promise = this.updateOrCreate(guid, {
     label: event.label,
-    chainedAt: event.timeStamp
+    chainedAt: event.timeStamp,
   });
   let children = promise.get('children');
   let child = this.findOrCreate(event.childGuid);
@@ -157,7 +161,7 @@ function create(event) {
   const promise = this.updateOrCreate(guid, {
     label: event.label,
     createdAt: event.timeStamp,
-    stack: event.stack
+    stack: event.stack,
   });
 
   // todo fix ordering

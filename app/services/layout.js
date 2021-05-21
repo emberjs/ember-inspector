@@ -11,9 +11,10 @@
  * @extends Service
  */
 import Service from '@ember/service';
-
+import { tracked } from '@glimmer/tracking';
 import Evented from '@ember/object/evented';
-export default Service.extend(Evented, {
+
+export default class LayoutService extends Service.extend(Evented) {
   /**
    * Stores the app's content height. This property is kept up-to-date
    * by the `monitor-content-height` component.
@@ -21,7 +22,7 @@ export default Service.extend(Evented, {
    * @property contentHeight
    * @type {Number}
    */
-  contentHeight: null,
+  @tracked contentHeight = null;
 
   /**
    * This is called by `monitor-content-height` whenever a window resize is detected
@@ -32,7 +33,7 @@ export default Service.extend(Evented, {
    * @param  {Number} height The new app content height
    */
   updateContentHeight(height) {
-    this.set('contentHeight', height);
+    this.contentHeight = height;
     this.trigger('content-height-update', height);
   }
-});
+}

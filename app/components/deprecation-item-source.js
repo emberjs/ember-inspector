@@ -1,22 +1,26 @@
+import { tagName } from '@ember-decorators/component';
+import { computed, get } from '@ember/object';
+import { inject as service } from '@ember/service';
+import { and, readOnly, bool } from '@ember/object/computed';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { bool, readOnly, and } from '@ember/object/computed';
 
-export default Component.extend({
-  tagName: '',
+@tagName('')
+export default class DeprecationItemSource extends Component {
+  @service port;
 
-  known: bool('model.map.source'),
+  @bool('model.map.source') known;
 
-  url: computed('model.map.{line,source}', 'known', function() {
-    let source = this.get('model.map.source');
+  @computed('model.map.{line,source}', 'known')
+  get url() {
+    let source = get(this, 'model.map.source');
     if (this.known) {
-      return `${source}:${this.get('model.map.line')}`;
+      return `${source}:${get(this, 'model.map.line')}`;
     } else {
       return 'Unkown source';
     }
-  }),
+  }
 
-  adapter: readOnly('port.adapter'),
+  @readOnly('port.adapter') adapter;
 
-  isClickable: and('known', 'adapter.canOpenResource')
-});
+  @and('known', 'adapter.canOpenResource') isClickable;
+}

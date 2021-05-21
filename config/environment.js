@@ -2,7 +2,7 @@
 
 let packageJson = require('../package.json');
 
-module.exports = function(environment) {
+module.exports = function (environment) {
   let ENV = {
     modulePrefix: 'ember-inspector',
     environment,
@@ -15,18 +15,20 @@ module.exports = function(environment) {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
         // e.g. EMBER_MODULE_UNIFICATION: true
-        EMBER_METAL_TRACKED_PROPERTIES: true
+        EMBER_METAL_TRACKED_PROPERTIES: true,
       },
-      EXTEND_PROTOTYPES: process.env.NO_EXTEND_PROTOTYPES ? false : {
-        // Prevent Ember Data from overriding Date.parse.
-        Date: false
-      }
+      EXTEND_PROTOTYPES: process.env.NO_EXTEND_PROTOTYPES
+        ? false
+        : {
+            // Prevent Ember Data from overriding Date.parse.
+            Date: false,
+          },
     },
 
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
-    }
+    },
   };
 
   if (environment === 'development') {

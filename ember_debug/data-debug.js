@@ -1,6 +1,7 @@
+// eslint-disable-next-line ember/no-mixins
 import PortMixin from 'ember-debug/mixins/port-mixin';
+import Ember from './utils/ember';
 
-const Ember = window.Ember;
 const { Object: EmberObject, computed, guidFor, A, set } = Ember;
 const { alias } = computed;
 
@@ -15,11 +16,12 @@ export default EmberObject.extend(PortMixin, {
   releaseRecordsMethod: null,
 
   /* eslint-disable ember/no-side-effects */
-  adapter: computed('namespace.owner', function() {
+  adapter: computed('namespace.owner', function () {
     const owner = this.get('namespace.owner');
 
     // dataAdapter:main is deprecated
-    let adapter = (this._resolve('data-adapter:main') && owner.lookup('data-adapter:main'));
+    let adapter =
+      this._resolve('data-adapter:main') && owner.lookup('data-adapter:main');
     // column limit is now supported at the inspector level
     if (adapter) {
       set(adapter, 'attributeLimit', 100);
@@ -45,16 +47,16 @@ export default EmberObject.extend(PortMixin, {
 
   modelTypesAdded(types) {
     let typesToSend;
-    typesToSend = types.map(type => this.wrapType(type));
+    typesToSend = types.map((type) => this.wrapType(type));
     this.sendMessage('modelTypesAdded', {
-      modelTypes: typesToSend
+      modelTypes: typesToSend,
     });
   },
 
   modelTypesUpdated(types) {
-    let typesToSend = types.map(type => this.wrapType(type));
+    let typesToSend = types.map((type) => this.wrapType(type));
     this.sendMessage('modelTypesUpdated', {
-      modelTypes: typesToSend
+      modelTypes: typesToSend,
     });
   },
 
@@ -66,18 +68,17 @@ export default EmberObject.extend(PortMixin, {
       columns: type.columns,
       count: type.count,
       name: type.name,
-      objectId
+      objectId,
     };
   },
 
-
   recordsAdded(recordsReceived) {
-    let records = recordsReceived.map(record => this.wrapRecord(record));
+    let records = recordsReceived.map((record) => this.wrapRecord(record));
     this.sendMessage('recordsAdded', { records });
   },
 
   recordsUpdated(recordsReceived) {
-    let records = recordsReceived.map(record => this.wrapRecord(record));
+    let records = recordsReceived.map((record) => this.wrapRecord(record));
     this.sendMessage('recordsUpdated', { records });
   },
 
@@ -92,18 +93,18 @@ export default EmberObject.extend(PortMixin, {
     this.sentRecords[objectId] = record;
     // make objects clonable
     for (let i in record.columnValues) {
-      columnValues[i] = this.get('objectInspector').inspect(record.columnValues[i]);
+      columnValues[i] = this.objectInspector.inspect(record.columnValues[i]);
     }
     // make sure keywords can be searched and clonable
-    searchKeywords = A(record.searchKeywords).filter(keyword =>
-      (typeof keyword === 'string' || typeof keyword === 'number')
+    searchKeywords = A(record.searchKeywords).filter(
+      (keyword) => typeof keyword === 'string' || typeof keyword === 'number'
     );
     return {
       columnValues,
       searchKeywords,
       filterValues: record.filterValues,
       color: record.color,
-      objectId
+      objectId,
     };
   },
 
@@ -131,16 +132,19 @@ export default EmberObject.extend(PortMixin, {
 
   messages: {
     checkAdapter() {
-      this.sendMessage('hasAdapter', { hasAdapter: !!this.get('adapter') });
+      this.sendMessage('hasAdapter', { hasAdapter: !!this.adapter });
     },
 
     getModelTypes() {
       this.releaseTypes();
-      this.releaseTypesMethod = this.get('adapter').watchModelTypes(types => {
-        this.modelTypesAdded(types);
-      }, types => {
-        this.modelTypesUpdated(types);
-      });
+      this.releaseTypesMethod = this.adapter.watchModelTypes(
+        (types) => {
+          this.modelTypesAdded(types);
+        },
+        (types) => {
+          this.modelTypesUpdated(types);
+        }
+      );
     },
 
     releaseModelTypes() {
@@ -157,11 +161,12 @@ export default EmberObject.extend(PortMixin, {
         typeOrName = type.name;
       }
 
-      let releaseMethod = this.get('adapter').watchRecords(typeOrName,
-        recordsReceived => {
+      let releaseMethod = this.adapter.watchRecords(
+        typeOrName,
+        (recordsReceived) => {
           this.recordsAdded(recordsReceived);
         },
-        recordsUpdated => {
+        (recordsUpdated) => {
           this.recordsUpdated(recordsUpdated);
         },
         (...args) => {
@@ -176,13 +181,15 @@ export default EmberObject.extend(PortMixin, {
     },
 
     inspectModel(message) {
-      this.get('objectInspector').sendObject(this.sentRecords[message.objectId].object);
+      this.objectInspector.sendObject(
+        this.sentRecords[message.objectId].object
+      );
     },
 
     getFilters() {
       this.sendMessage('filters', {
-        filters: this.get('adapter').getFilters()
+        filters: this.adapter.getFilters(),
       });
-    }
-  }
+    },
+  },
 });

@@ -1,10 +1,13 @@
 import { isEmpty } from '@ember/utils';
+// eslint-disable-next-line ember/no-observers
 import { action, observer, computed, get } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
-import escapeRegExp from "ember-inspector/utils/escape-reg-exp";
+import { inject as service } from '@ember/service';
+import escapeRegExp from 'ember-inspector/utils/escape-reg-exp';
 
 export default Controller.extend({
   application: controller(),
+  port: service(),
 
   queryParams: ['filterValue', 'searchValue'],
 
@@ -12,14 +15,13 @@ export default Controller.extend({
 
   filterValue: null,
 
-  modelChanged: observer('model', function() {
+  // eslint-disable-next-line ember/no-observers
+  modelChanged: observer('model', function () {
     this.set('searchValue', '');
   }),
 
   recordToString(record) {
-    return (
-      get(record, 'searchKeywords') || []
-    ).join(' ').toLowerCase();
+    return (get(record, 'searchKeywords') || []).join(' ').toLowerCase();
   },
 
   /**
@@ -37,45 +39,57 @@ export default Controller.extend({
    * @property schema
    * @type {Object}
    */
-  columns: computed('modelType.columns', function() {
+  columns: computed('modelType.columns', function () {
     return this.get('modelType.columns').map(({ desc, name }) => ({
       valuePath: `columnValues.${name}`,
-      name: desc
+      name: desc,
     }));
   }),
 
-  filteredRecords: computed('searchValue', 'model.@each.{columnValues,filterValues}', 'filterValue', function() {
-    let search = this.searchValue;
-    let filter = this.filterValue;
+  filteredRecords: computed(
+    'searchValue',
+    'model.@each.{columnValues,filterValues}',
+    'filterValue',
+    function () {
+      let search = this.searchValue;
+      let filter = this.filterValue;
 
-    return this.model.filter(item => {
-      // check filters
-      if (filter && !get(item, `filterValues.${filter}`)) {
-        return false;
-      }
+      return this.model.filter((item) => {
+        // check filters
+        if (filter && !get(item, `filterValues.${filter}`)) {
+          return false;
+        }
 
-      // check search
-      if (!isEmpty(search)) {
-        let searchString = this.recordToString(item);
-        return !!searchString.match(new RegExp(`.*${escapeRegExp(search.toLowerCase())}.*`));
-      }
-      return true;
-    });
-  }),
+        // check search
+        if (!isEmpty(search)) {
+          let searchString = this.recordToString(item);
+          return !!searchString.match(
+            new RegExp(`.*${escapeRegExp(search.toLowerCase())}.*`)
+          );
+        }
+        return true;
+      });
+    }
+  ),
 
   init() {
     this._super(...arguments);
 
     this.filters = [];
+    this.sorts = undefined;
   },
 
-  setFilter: action(function(val) {
+  setFilter: action(function (val) {
     val = val || null;
     this.set('filterValue', val);
   }),
 
-  inspectModel: action(function([record]) {
+  inspectModel: action(function ([record]) {
     this.set('selection', record);
     this.port.send('data:inspectModel', { objectId: get(record, 'objectId') });
+  }),
+
+  updateSorts: action(function (newSorts) {
+    this.set('sorts', newSorts);
   }),
 });

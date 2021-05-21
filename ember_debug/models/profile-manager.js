@@ -1,12 +1,15 @@
 import ProfileNode from './profile-node';
-const Ember = window.Ember;
-const { run: { later,  scheduleOnce } } = Ember;
+import Ember from '../utils/ember';
+
+const {
+  run: { later, scheduleOnce },
+} = Ember;
 
 /**
  * A class for keeping track of active rendering profiles as a list.
  */
 export default class ProfileManager {
-  constructor(){
+  constructor() {
     this.profiles = [];
     this.current = null;
     this.currentSet = [];
@@ -15,15 +18,17 @@ export default class ProfileManager {
   }
 
   began(timestamp, payload, now) {
-    return this.wrapForErrors(this, function() {
+    return this.wrapForErrors(this, function () {
       this.current = new ProfileNode(timestamp, payload, this.current, now);
       return this.current;
     });
   }
 
   ended(timestamp, payload, profileNode) {
-    if (payload.exception) { throw payload.exception; }
-    return this.wrapForErrors(this, function() {
+    if (payload.exception) {
+      throw payload.exception;
+    }
+    return this.wrapForErrors(this, function () {
       this.current = profileNode.parent;
       profileNode.finish(timestamp);
 
@@ -62,7 +67,8 @@ export default class ProfileManager {
   }
 
   offProfilesAdded(context, callback) {
-    let index = -1, item;
+    let index = -1,
+      item;
     for (let i = 0, l = this._profilesAddedCallbacks.length; i < l; i++) {
       item = this._profilesAddedCallbacks[i];
       if (item.context === context && item.callback === callback) {
@@ -81,23 +87,28 @@ export default class ProfileManager {
       if (entry.type === 'began') {
         // If there was an error during rendering `entry.endedIndex` never gets set.
         if (entry.endedIndex) {
-          this.queue[entry.endedIndex].profileNode = this.began(entry.timestamp, entry.payload, entry.now);
+          this.queue[entry.endedIndex].profileNode = this.began(
+            entry.timestamp,
+            entry.payload,
+            entry.now
+          );
         }
       } else {
         this.ended(entry.timestamp, entry.payload, entry.profileNode);
       }
-
     }
     this.queue.length = 0;
   }
 
   _profilesFinished() {
-    return this.wrapForErrors(this, function() {
+    return this.wrapForErrors(this, function () {
       const firstNode = this.currentSet[0];
-      let parentNode = new ProfileNode(firstNode.start, { template: 'View Rendering' });
+      let parentNode = new ProfileNode(firstNode.start, {
+        template: 'View Rendering',
+      });
 
       parentNode.time = 0;
-      this.currentSet.forEach(n => {
+      this.currentSet.forEach((n) => {
         parentNode.time += n.time;
         parentNode.children.push(n);
       });
@@ -111,7 +122,7 @@ export default class ProfileManager {
   }
 
   _triggerProfilesAdded(profiles) {
-    this._profilesAddedCallbacks.forEach(function(item) {
+    this._profilesAddedCallbacks.forEach(function (item) {
       item.callback.call(item.context, profiles);
     });
   }

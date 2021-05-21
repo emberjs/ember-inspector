@@ -15,7 +15,7 @@ export default class ComponentTreeArg extends Component {
       return '...';
     } else if (typeof this.args.value === 'string') {
       // Escape any interior quotes – we will add the surrounding quotes in the template
-      return `"${truncate(this.args.value.replace(/"/g, '\\"'))}"`;
+      return truncate(this.args.value.replace(/"/g, '\\"'));
     }
 
     return String(this.args.value);
@@ -24,7 +24,7 @@ export default class ComponentTreeArg extends Component {
   @action inspect(event) {
     event.stopPropagation();
     this.port.send('objectInspector:inspectById', {
-      objectId: this.args.value.id
+      objectId: this.args.value.id,
     });
   }
 }

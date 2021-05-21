@@ -10,9 +10,16 @@ import PromiseDebug from 'ember-debug/promise-debug';
 import ContainerDebug from 'ember-debug/container-debug';
 import DeprecationDebug from 'ember-debug/deprecation-debug';
 import Session from 'ember-debug/services/session';
+import Ember from './utils/ember';
 
-const Ember = window.Ember;
-const { Object: EmberObject, run, Application, Namespace, guidFor, computed } = Ember;
+const {
+  Object: EmberObject,
+  run,
+  Application,
+  Namespace,
+  guidFor,
+  computed,
+} = Ember;
 
 const EmberDebug = EmberObject.extend({
   /**
@@ -33,7 +40,9 @@ const EmberDebug = EmberObject.extend({
   owner: null,
   started: false,
 
-  applicationName: computed.or('_application.name', '_application.modulePrefix').readOnly(),
+  applicationName: computed
+    .or('_application.name', '_application.modulePrefix')
+    .readOnly(),
 
   /**
    * We use the application's id instead of the owner's id so that we use the same inspector
@@ -42,11 +51,11 @@ const EmberDebug = EmberObject.extend({
    * @property applicationId
    * @type {String}
    */
-  applicationId: computed('_application', 'isTesting', 'owner', function() {
-    if (!this.get('isTesting')) {
-      return guidFor(this.get('_application'));
+  applicationId: computed('_application', 'isTesting', 'owner', function () {
+    if (!this.isTesting) {
+      return guidFor(this._application);
     }
-    return guidFor(this.get('owner'));
+    return guidFor(this.owner);
   }),
 
   // Using object shorthand syntax here is somehow having strange side effects.
@@ -55,28 +64,29 @@ const EmberDebug = EmberObject.extend({
   Adapter: BasicAdapter,
 
   start($keepAdapter) {
-    if (this.get('started')) {
+    if (this.started) {
       this.reset($keepAdapter);
       return;
     }
-    if (!this.get('_application') && !this.get('isTesting')) {
+    if (!this._application && !this.isTesting) {
       this.set('_application', getApplication());
     }
     this.set('started', true);
 
     this.reset();
 
-    this.get('adapter').debug('Ember Inspector Active');
-    this.get('adapter').sendMessage({
-      type: 'inspectorLoaded'
+    this.adapter.debug('Ember Inspector Active');
+    this.adapter.sendMessage({
+      type: 'inspectorLoaded',
     });
   },
 
   destroyContainer() {
-    if (this.get('generalDebug')) {
-      this.get('generalDebug').sendReset();
+    if (this.generalDebug) {
+      this.generalDebug.sendReset();
     }
-    ['dataDebug',
+    [
+      'dataDebug',
       'viewDebug',
       'routeDebug',
       'generalDebug',
@@ -85,8 +95,8 @@ const EmberDebug = EmberObject.extend({
       'containerDebug',
       'deprecationDebug',
       'objectInspector',
-      'session'
-    ].forEach(prop => {
+      'session',
+    ].forEach((prop) => {
       let handler = this.get(prop);
       if (handler) {
         run(handler, 'destroy');
@@ -105,18 +115,18 @@ const EmberDebug = EmberObject.extend({
   },
 
   reset($keepAdapter) {
-    if (!this.get('isTesting') && !this.get('owner')) {
-      this.set('owner', getOwner(this.get('_application')));
+    if (!this.isTesting && !this.owner) {
+      this.set('owner', getOwner(this._application));
     }
     this.destroyContainer();
     run(() => {
       // Adapters don't have state depending on the application itself.
       // They also maintain connections with the inspector which we will
       // lose if we destroy.
-      if (!this.get('adapter') || !$keepAdapter) {
+      if (!this.adapter || !$keepAdapter) {
         this.startModule('adapter', this.Adapter);
       }
-      if (!this.get('port') || !$keepAdapter) {
+      if (!this.port || !$keepAdapter) {
         this.startModule('port', this.Port);
       }
 
@@ -136,25 +146,24 @@ const EmberDebug = EmberObject.extend({
   },
 
   inspect(obj) {
-    this.get('objectInspector').sendObject(obj);
-    this.get('adapter').log('Sent to the Object Inspector');
+    this.objectInspector.sendObject(obj);
+    this.adapter.log('Sent to the Object Inspector');
     return obj;
   },
 
   clear() {
     this.setProperties({
-      '_application': null,
-      owner: null
+      _application: null,
+      owner: null,
     });
-  }
-
+  },
 }).create();
 
 function getApplication() {
   let namespaces = Namespace.NAMESPACES;
   let application;
 
-  namespaces.forEach(namespace => {
+  namespaces.forEach((namespace) => {
     if (namespace instanceof Application) {
       application = namespace;
       return false;

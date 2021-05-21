@@ -1,6 +1,8 @@
+// eslint-disable-next-line ember/no-mixins
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import PromiseAssembler from 'ember-debug/libs/promise-assembler';
-const Ember = window.Ember;
+import Ember from './utils/ember';
+
 const { computed, Object: EmberObject, RSVP, A, run } = Ember;
 const { readOnly } = computed;
 
@@ -14,23 +16,25 @@ export default EmberObject.extend(PortMixin, {
   // created on init
   promiseAssembler: null,
 
-  releaseMethods: computed(function() { return A(); }),
+  releaseMethods: computed(function () {
+    return A();
+  }),
 
   init() {
     this._super();
     this.set('promiseAssembler', PromiseAssembler.create());
-    this.get('promiseAssembler').set('promiseDebug', this);
+    this.promiseAssembler.set('promiseDebug', this);
     this.setInstrumentWithStack();
     this.sendInstrumentWithStack();
-    this.get('promiseAssembler').start();
+    this.promiseAssembler.start();
   },
 
   delay: 100,
 
   willDestroy() {
     this.releaseAll();
-    if (this.get('promiseAssembler')) {
-      this.get('promiseAssembler').destroy();
+    if (this.promiseAssembler) {
+      this.promiseAssembler.destroy();
     }
     this.set('promiseAssembler', null);
     this._super();
@@ -47,23 +51,25 @@ export default EmberObject.extend(PortMixin, {
 
     sendValueToConsole(message) {
       let promiseId = message.promiseId;
-      let promise = this.get('promiseAssembler').find(promiseId);
+      let promise = this.promiseAssembler.find(promiseId);
       let value = promise.get('value');
       if (value === undefined) {
         value = promise.get('reason');
       }
-      this.get('objectInspector').sendValueToConsole(value);
+      this.objectInspector.sendValueToConsole(value);
     },
 
     tracePromise(message) {
       let id = message.promiseId;
-      let promise = this.get('promiseAssembler').find(id);
+      let promise = this.promiseAssembler.find(id);
       // Remove first two lines and add label
       let stack = promise.get('stack');
       if (stack) {
-        stack = stack.split("\n");
-        stack.splice(0, 2, [`Ember Inspector (Promise Trace): ${promise.get('label') || ''}`]);
-        this.get("adapter").log(stack.join("\n"));
+        stack = stack.split('\n');
+        stack.splice(0, 2, [
+          `Ember Inspector (Promise Trace): ${promise.get('label') || ''}`,
+        ]);
+        this.adapter.log(stack.join('\n'));
       }
     },
 
@@ -75,84 +81,88 @@ export default EmberObject.extend(PortMixin, {
 
     getInstrumentWithStack() {
       this.sendInstrumentWithStack();
-    }
+    },
   },
 
-  instrumentWithStack: computed({
+  instrumentWithStack: computed('session', {
     get() {
-      return !!this.get('session').getItem('promise:stack');
+      return !!this.session.getItem('promise:stack');
     },
     set(key, value) {
-      this.get('session').setItem('promise:stack', value);
+      this.session.setItem('promise:stack', value);
       return value;
-    }
+    },
   }),
 
   sendInstrumentWithStack() {
     this.sendMessage('instrumentWithStack', {
-      instrumentWithStack: this.get('instrumentWithStack')
+      instrumentWithStack: this.instrumentWithStack,
     });
   },
 
   setInstrumentWithStack() {
-    RSVP.configure('instrument-with-stack', this.get('instrumentWithStack'));
+    RSVP.configure('instrument-with-stack', this.instrumentWithStack);
     this.sendInstrumentWithStack();
   },
 
   releaseAll() {
-    this.get('releaseMethods').forEach(fn => {
+    this.releaseMethods.forEach((fn) => {
       fn();
     });
     this.set('releaseMethods', A());
   },
 
   getAndObservePromises() {
-    this.get('promiseAssembler').on('created', this, this.promiseUpdated);
-    this.get('promiseAssembler').on('fulfilled', this, this.promiseUpdated);
-    this.get('promiseAssembler').on('rejected', this, this.promiseUpdated);
-    this.get('promiseAssembler').on('chained', this, this.promiseChained);
+    this.promiseAssembler.on('created', this, this.promiseUpdated);
+    this.promiseAssembler.on('fulfilled', this, this.promiseUpdated);
+    this.promiseAssembler.on('rejected', this, this.promiseUpdated);
+    this.promiseAssembler.on('chained', this, this.promiseChained);
 
-    this.get('releaseMethods').pushObject(() => {
-      this.get('promiseAssembler').off('created', this, this.promiseUpdated);
-      this.get('promiseAssembler').off('fulfilled', this, this.promiseUpdated);
-      this.get('promiseAssembler').off('rejected', this, this.promiseUpdated);
-      this.get('promiseAssembler').off('chained', this, this.promiseChained);
+    this.releaseMethods.pushObject(() => {
+      this.promiseAssembler.off('created', this, this.promiseUpdated);
+      this.promiseAssembler.off('fulfilled', this, this.promiseUpdated);
+      this.promiseAssembler.off('rejected', this, this.promiseUpdated);
+      this.promiseAssembler.off('chained', this, this.promiseChained);
     });
 
-    this.promisesUpdated(this.get('promiseAssembler').find());
+    this.promisesUpdated(this.promiseAssembler.find());
   },
 
-  updatedPromises: computed(function() { return A(); }),
+  updatedPromises: computed(function () {
+    return A();
+  }),
 
   promisesUpdated(uniquePromises) {
     if (!uniquePromises) {
       uniquePromises = A();
-      this.get('updatedPromises').forEach(promise => {
+      this.updatedPromises.forEach((promise) => {
         uniquePromises.addObject(promise);
       });
     }
     // Remove inspector-created promises
-    uniquePromises = uniquePromises.filter(promise => promise.get('label') !== 'ember-inspector');
+    uniquePromises = uniquePromises.filter(
+      (promise) => promise.get('label') !== 'ember-inspector'
+    );
     const serialized = this.serializeArray(uniquePromises);
     this.sendMessage('promisesUpdated', {
-      promises: serialized
+      promises: serialized,
     });
-    this.get('updatedPromises').clear();
+    this.updatedPromises.clear();
   },
 
   promiseUpdated(event) {
-    this.get('updatedPromises').pushObject(event.promise);
+    this.updatedPromises.pushObject(event.promise);
     Ember.run.debounce(this, 'promisesUpdated', this.delay);
   },
 
   promiseChained(event) {
-    this.get('updatedPromises').pushObject(event.promise);
-    this.get('updatedPromises').pushObject(event.child);
+    this.updatedPromises.pushObject(event.promise);
+    this.updatedPromises.pushObject(event.child);
     run.debounce(this, 'promisesUpdated', this.delay);
   },
 
   serializeArray(promises) {
-    return promises.map(item => this.serialize(item));
+    return promises.map((item) => this.serialize(item));
   },
 
   serialize(promise) {
@@ -177,7 +187,7 @@ export default EmberObject.extend(PortMixin, {
   },
 
   promiseIds(promises) {
-    return promises.map(promise => promise.get('guid'));
+    return promises.map((promise) => promise.get('guid'));
   },
 
   /**
@@ -187,16 +197,18 @@ export default EmberObject.extend(PortMixin, {
    * @return {*|{inspect: (string|*), type: string}|{computed: boolean, inspect: string, type: string}|{inspect: string, type: string}}
    */
   inspectValue(promise, key) {
-    let objectInspector = this.get('objectInspector');
+    let objectInspector = this.objectInspector;
     let inspected = objectInspector.inspectValue(promise, key);
 
-    if (inspected.type === 'type-ember-object' || inspected.type === "type-array") {
+    if (
+      inspected.type === 'type-ember-object' ||
+      inspected.type === 'type-array'
+    ) {
       inspected.objectId = objectInspector.retainObject(promise.get(key));
-      this.get('releaseMethods').pushObject(function() {
+      this.releaseMethods.pushObject(function () {
         objectInspector.releaseObject(inspected.objectId);
       });
     }
     return inspected;
-  }
-
+  },
 });

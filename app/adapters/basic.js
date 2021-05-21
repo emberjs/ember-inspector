@@ -12,10 +12,13 @@
  * ```
  */
 import EmberObject from '@ember/object';
-
+import { tracked } from '@glimmer/tracking';
 import config from 'ember-inspector/config/environment';
 
-export default EmberObject.extend({
+export default class Basic extends EmberObject {
+  @tracked canOpenResource = false;
+  name = 'basic';
+
   /**
    * Called when the adapter is created (when
    * the inspector app boots).
@@ -23,10 +26,10 @@ export default EmberObject.extend({
    * @method init
    */
   init() {
-    this._super(...arguments);
+    super.init(...arguments);
     this._messageCallbacks = [];
     this._checkVersion();
-  },
+  }
 
   /**
    * Listens to `EmberInspectorDebugger` message about
@@ -39,7 +42,7 @@ export default EmberObject.extend({
    * @private
    */
   _checkVersion() {
-    this.onMessageReceived(message => {
+    this.onMessageReceived((message) => {
       let { name, version } = message;
       if (name === 'version-mismatch') {
         let previousVersions = config.previousEmberVersionsSupported;
@@ -57,7 +60,7 @@ export default EmberObject.extend({
       }
     });
     this.sendMessage({ type: 'check-version', from: 'devtools' });
-  },
+  }
 
   /**
    * Hook called when the Ember version is not
@@ -70,16 +73,14 @@ export default EmberObject.extend({
    * @method onVersionMismatch
    * @param {String} neededVersion (The version to go to)
    */
-  onVersionMismatch() {},
-
-  name: 'basic',
+  onVersionMismatch() {}
 
   /**
     Used to send messages to EmberDebug
 
     @param type {Object} the message to the send
   **/
-  sendMessage() {},
+  sendMessage() {}
 
   /**
     Register functions to be called
@@ -87,21 +88,18 @@ export default EmberObject.extend({
   **/
   onMessageReceived(callback) {
     this._messageCallbacks.push(callback);
-  },
+  }
 
   _messageReceived(message) {
-    this._messageCallbacks.forEach(callback => {
+    this._messageCallbacks.forEach((callback) => {
       callback(message);
     });
-  },
+  }
 
   // Called when the "Reload" is clicked by the user
-  willReload() {},
-
-  canOpenResource: false,
-  openResource(/* file, line */) {}
-
-});
+  willReload() {}
+  openResource /* file, line */() {}
+}
 
 /**
  * Compares two Ember versions.

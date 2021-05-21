@@ -1,7 +1,10 @@
 import { Promise } from 'rsvp';
+import { inject as service } from '@ember/service';
 import TabRoute from 'ember-inspector/routes/tab';
 
 export default class ComponentTreeRoute extends TabRoute {
+  @service port;
+
   queryParams = {
     pinned: { replace: true },
     previewing: { replace: true },
@@ -9,7 +12,7 @@ export default class ComponentTreeRoute extends TabRoute {
   };
 
   model() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.port.one('view:renderTree', resolve);
       this.port.send('view:getTree', { immediate: true });
     });

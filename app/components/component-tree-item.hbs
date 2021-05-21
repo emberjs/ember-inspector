@@ -1,3 +1,4 @@
+{{!-- template-lint-disable no-invalid-interactive --}}
 <div
   style={{@item.style}}
   class="
@@ -35,6 +36,7 @@
           )
         }}"
     >
+      {{!-- template-lint-disable no-unbalanced-curlies --}}
       {{#if @item.isComponent}}
         {{#if @item.isCurlyInvocation}}
           <span class="component-name">

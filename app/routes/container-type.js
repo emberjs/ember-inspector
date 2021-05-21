@@ -1,20 +1,16 @@
+import { inject as service } from '@ember/service';
 import { Promise } from 'rsvp';
-import { get } from '@ember/object';
-import TabRoute from "ember-inspector/routes/tab";
+import { get, action } from '@ember/object';
+import TabRoute from 'ember-inspector/routes/tab';
 
-export default TabRoute.extend({
-  setupController(controller) {
-    controller.setProperties({
-      search: '',
-      searchVal: ''
-    });
-    this._super(...arguments);
-  },
+export default class ContainerTypeRoute extends TabRoute {
+  @service port;
+
   model(params) {
     const type = params.type_id;
     const port = this.port;
     return new Promise((resolve, reject) => {
-      port.one('container:instances', message => {
+      port.one('container:instances', (message) => {
         if (message.status === 200) {
           resolve(message.instances);
         } else {
@@ -23,18 +19,28 @@ export default TabRoute.extend({
       });
       port.send('container:getInstances', { containerType: type });
     });
-  },
+  }
 
+  setupController(controller) {
+    controller.setProperties({
+      search: '',
+      searchVal: '',
+    });
+    super.setupController(...arguments);
+  }
 
-  actions: {
-    error(err) {
-      if (err && err.status === 404) {
-        this.transitionTo('container-types.index');
-        return false;
-      }
-    },
-    sendInstanceToConsole(obj) {
-      this.port.send('container:sendInstanceToConsole', { name: get(obj, 'fullName') });
+  @action
+  error(err) {
+    if (err && err.status === 404) {
+      this.transitionTo('container-types.index');
+      return false;
     }
   }
-});
+
+  @action
+  sendInstanceToConsole(obj) {
+    this.port.send('container:sendInstanceToConsole', {
+      name: get(obj, 'fullName'),
+    });
+  }
+}

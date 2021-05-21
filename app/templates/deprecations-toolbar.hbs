@@ -4,12 +4,11 @@
   <Ui::ToolbarDivider />
 
   <div class="toolbar__checkbox">
-    <label for="options-toggle-deprecations" title="Deprecation workflow">
+    <label title="Deprecation workflow">
       <Input
         @type="checkbox"
         @checked={{this.toggleDeprecationWorkflow}}
-        @change={{this.changeDeprecationWorkflow}}
-        @id="options-toggle-deprecations"
+        {{on "change" this.changeDeprecationWorkflow}}
       />
       Toggle for Deprecation Workflow
     </label>

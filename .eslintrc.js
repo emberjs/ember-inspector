@@ -7,33 +7,44 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: 'module',
     ecmaFeatures: {
-      legacyDecorators: true
-    }
+      legacyDecorators: true,
+    },
   },
-  plugins: [
-    'ember'
-  ],
+  plugins: ['ember'],
   extends: [
     'eslint:recommended',
-    'plugin:ember/recommended'
+    'plugin:ember/recommended',
+    'plugin:prettier/recommended',
   ],
   env: {
-    browser: true
+    browser: true,
   },
   globals: {
-    basicContext: false
+    basicContext: false,
+    require: false,
+    requireModule: false,
   },
   rules: {
     'no-prototype-builtins': 'off',
-    
+
     'ember/no-jquery': 'error',
 
     // Temporarily turn these off
     'ember/avoid-leaking-state-in-ember-objects': 'off',
-    'ember/no-observers': 'off',
+    'ember/classic-decorator-hooks': 'off',
+    'ember/classic-decorator-no-classic-methods': 'off',
+    'ember/no-actions-hash': 'off',
+    'ember/no-classic-classes': 'off',
+    'ember/no-classic-components': 'off',
+    'ember/no-component-lifecycle-hooks': 'off',
+    'ember/no-computed-properties-in-native-classes': 'off',
+    'ember/no-get': 'off',
+    'ember/no-test-import-export': 'off',
+    'ember/require-tagless-components': 'off',
 
     // Best practice
-    'no-duplicate-imports': 'error'
+    'no-duplicate-imports': 'error',
+    'ember/no-mixins': 'error',
   },
   overrides: [
     // node files
@@ -49,27 +60,24 @@ module.exports = {
         'blueprints/*/index.js',
         'config/**/*.js',
         'lib/*/index.js',
-        'server/**/*.js'
+        'scripts/**/*.js',
+        'server/**/*.js',
       ],
-      excludedFiles: [
-        'app/**',
-      ],
+      excludedFiles: ['app/**'],
       parserOptions: {
         sourceType: 'script',
-        ecmaVersion: 2015
       },
       env: {
         browser: false,
-        node: true
+        node: true,
       },
       plugins: ['node'],
-      rules: Object.assign({}, require('eslint-plugin-node').configs.recommended.rules, {
-        // add your custom rules and overrides for node files here
-
+      extends: ['plugin:node/recommended'],
+      rules: {
         // this can be removed once the following is fixed
         // https://github.com/mysticatea/eslint-plugin-node/issues/77
-        'node/no-unpublished-require': 'off'
-      })
-    }
-  ]
+        'node/no-unpublished-require': 'off',
+      },
+    },
+  ],
 };

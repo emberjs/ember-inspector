@@ -3,6 +3,7 @@
     <div class="flex items-center">
       <div
         class="flex items-center flex-grow py-2"
+        role="button"
         {{on "click" disclosure.toggle}}
       >
         {{#if @model.hasSourceMap}}
@@ -39,8 +40,7 @@
         <a
           href={{@model.url}}
           class="flex items-center flex-shrink-0 py-1 px-2 rounded no-underline bg-base02"
-          target="_blank"
-          title="Transition Plan"
+          target="_blank" rel="noopener noreferrer"
         >
           Transition Plan
           {{svg-jar "external-link" width="16px" height="16px" class="ml-1 external-link"}}
@@ -68,7 +68,7 @@
                   class="font-mono"
                   href="#"
                   data-test-deprecation-source-link
-                  {{action @openResource source.model.map}}
+                  {{on "click" (fn @openResource source.model.map)}}
                 >
                   {{source.url}}
                 </a>
