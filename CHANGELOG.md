@@ -1,3 +1,11 @@
+## v4.4.1 (2021-05-25)
+
+#### :bug: Bug Fix
+* [#1601](https://github.com/emberjs/ember-inspector/pull/1601) Ensure vendored loader does not cache missing modules. ([@rwjblue](https://github.com/rwjblue))
+
+#### Committers: 1
+- Robert Jackson ([@rwjblue](https://github.com/rwjblue))
+
 ## v4.4.0 (2021-05-21)
 
 #### :rocket: Enhancement
