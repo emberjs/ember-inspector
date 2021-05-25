@@ -17,13 +17,13 @@ if (typeof define !== 'function' || typeof requireModule !== 'function') {
       if (seen[name]) {
         return seen[name];
       }
-      seen[name] = {};
 
       let mod = registry[name];
-
       if (!mod) {
         throw new Error(`Module: '${name}' not found.`);
       }
+
+      seen[name] = {};
 
       let deps = mod.deps;
       let callback = mod.callback;
