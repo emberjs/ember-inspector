@@ -1,3 +1,5 @@
+# Changelog
+
 ## v4.4.1 (2021-05-25)
 
 #### :bug: Bug Fix
@@ -74,8 +76,6 @@
 - Robert Wagner ([@rwwagner90](https://github.com/rwwagner90))
 - [@dependabot-preview[bot]](https://github.com/apps/dependabot-preview)
 - [@patricklx](https://github.com/patricklx)
-
-# Changelog
 
 ## [v4.1.0](https://github.com/emberjs/ember-inspector/tree/v4.1.0) (2020-05-12)
 
