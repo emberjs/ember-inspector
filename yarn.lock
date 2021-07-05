@@ -6703,9 +6703,9 @@ ember-test-selectors@^2.1.0:
     ember-cli-version-checker "^3.1.2"
 
 ember-test-selectors@^5.2.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/ember-test-selectors/-/ember-test-selectors-5.3.0.tgz#1dee515e43e7beb7b7083a2fee2cdf808bf9de26"
-  integrity sha512-B9kkCTO39l+XXcp6eRnfZWHeeL3Ffxdux8chXHSwmAPYCc50KI8VW7mr1uy2ZcUMNP/o0sk7VrpA6x3lBkSvWQ==
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/ember-test-selectors/-/ember-test-selectors-5.5.0.tgz#114bd29c4a33eee3a328c9ce32a57a018c27f5f6"
+  integrity sha512-PiKhbPnidRYQ5ed/CTU3teJV3XmzkjYjsCGx1UTy7qEY/1dEqxezlZu1DtisoLJ9Y+BcjTVlE+596lo9cOXd3w==
   dependencies:
     calculate-cache-key-for-tree "^2.0.0"
     ember-cli-babel "^7.26.4"
