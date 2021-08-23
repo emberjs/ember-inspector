@@ -6641,9 +6641,9 @@ ember-svg-jar@^2.3.3:
     path-posix "^1.0.0"
 
 ember-table@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/ember-table/-/ember-table-3.0.1.tgz#1cca110a7620390df89df29001d16d706aaf3569"
-  integrity sha512-ZcLCC/UzuWkLvkk876GiVb7jWMppx5v8dz/TLS4a5LuCliUm/ZPwWv4mJWRSKcQ6eqBqJ2d9SETpQSdq2bGk6w==
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/ember-table/-/ember-table-3.0.2.tgz#12a861c6bf6119a50ac5e959b350c243fcc70cd1"
+  integrity sha512-jv8Omj0U6zwB8/h+a/lSanq7UykZ9bVKCziry4UquCxzwuPEVefqqiD9KOoleguHdGBTwhQDlFENoyDjyCgAsg==
   dependencies:
     "@babel/plugin-proposal-nullish-coalescing-operator" "^7.12.13"
     "@babel/plugin-proposal-numeric-separator" "^7.12.13"
