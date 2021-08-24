@@ -209,6 +209,8 @@ module('Component Tab', function (hooks) {
   });
 
   test('It allows users to navigate nodes with arrow keys', async function (assert) {
+    assert.expect(3);
+
     await visit('/component-tree');
 
     // select first node with down arrow key
@@ -329,11 +331,13 @@ module('Component Tab', function (hooks) {
   });
 
   test('Previewing / showing a view on the client', async function (assert) {
+    assert.expect(2);
+
     await visit('/component-tree');
 
     respondWith('view:showInspection', ({ id, pin }) => {
       assert.equal(id, 'render-node:1', 'application route');
-      assert.strictEqual(pin, false, 'preview only');
+      assert.false(pin, 'preview only');
       return false;
     });
 
@@ -345,6 +349,8 @@ module('Component Tab', function (hooks) {
   });
 
   test('Scrolling an element into view', async function (assert) {
+    assert.expect(1);
+
     await visit('/component-tree');
 
     respondWith('view:scrollIntoView', ({ id }) => {
@@ -356,6 +362,8 @@ module('Component Tab', function (hooks) {
   });
 
   test('View DOM element in Elements panel', async function (assert) {
+    assert.expect(1);
+
     await visit('/component-tree');
 
     respondWith('view:inspectElement', ({ id }) => {
@@ -367,11 +375,13 @@ module('Component Tab', function (hooks) {
   });
 
   test('Inspects the component in the object inspector on click and shows tooltip', async function (assert) {
+    assert.expect(3);
+
     await visit('/component-tree');
 
     respondWith('view:showInspection', ({ id, pin }) => {
       assert.equal(id, 'render-node:3', '<TodoList>');
-      assert.strictEqual(pin, true, 'pin');
+      assert.true(pin, 'pin');
       return false;
     });
 
@@ -388,12 +398,14 @@ module('Component Tab', function (hooks) {
   });
 
   test('Selects a component in the tree in response to a message from the context menu', async function (assert) {
+    assert.expect(5);
+
     // Go to the component tree and populate it before sending the message from the context menu
     await visit('/component-tree');
 
     respondWith('view:showInspection', ({ id, pin }) => {
       assert.equal(id, 'render-node:3', '<TodoList>');
-      assert.strictEqual(pin, true, 'pin');
+      assert.true(pin, 'pin');
       return false;
     });
 
@@ -425,6 +437,8 @@ module('Component Tab', function (hooks) {
   });
 
   test('Can inspect component arguments that are objects in component tree', async function (assert) {
+    assert.expect(1);
+
     await visit('/component-tree');
 
     respondWith('objectInspector:inspectById', ({ objectId }) => {

@@ -162,6 +162,8 @@ module('Route Tree Tab', function (outer) {
     });
 
     test('Clicking on route handlers and controller sends an inspection message', async function (assert) {
+      assert.expect(2);
+
       await visit('route-tree');
 
       let applicationRow = find('.js-route-tree-item');

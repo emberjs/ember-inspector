@@ -72,7 +72,7 @@ module('App Picker', function (hooks) {
 
     assert.equal(this.currentApplicationId, 'app-one', 'First App is selected');
     assert.ok(options[0].selected, 'First App is selected');
-    assert.ok(!options[1].selected, 'Second App is not selected');
+    assert.notOk(options[1].selected, 'Second App is not selected');
 
     await fillIn('.app-picker select', 'app-two');
 
@@ -85,7 +85,7 @@ module('App Picker', function (hooks) {
       'app-two',
       'Second App is selected'
     );
-    assert.ok(!options[0].selected, 'First App is not selected');
+    assert.notOk(options[0].selected, 'First App is not selected');
     assert.ok(options[1].selected, 'Second App is selected');
 
     await fillIn('.app-picker select', 'app-one');
@@ -96,6 +96,6 @@ module('App Picker', function (hooks) {
 
     assert.equal(this.currentApplicationId, 'app-one', 'First App is selected');
     assert.ok(options[0].selected, 'First App is selected');
-    assert.ok(!options[1].selected, 'Second App is not selected');
+    assert.notOk(options[1].selected, 'Second App is not selected');
   });
 });

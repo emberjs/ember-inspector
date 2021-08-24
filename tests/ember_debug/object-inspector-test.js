@@ -498,7 +498,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.equal(message.objectId, objectId);
     assert.equal(message.property, 'name');
     assert.equal(message.mixinIndex, 1);
-    assert.equal(message.value.isCalculated, true);
+    assert.true(message.value.isCalculated);
     assert.equal(message.value.inspect, inspect('Alex'));
     assert.equal(message.value.type, 'type-string');
 
@@ -688,8 +688,9 @@ module('Ember Debug - Object Inspector', function (hooks) {
       'Does not calculate expensive properties'
     );
 
-    assert.ok(
-      message.details[3].name !== 'MixinToSkip',
+    assert.notStrictEqual(
+      message.details[3].name,
+      'MixinToSkip',
       'Correctly skips mixins'
     );
   });
@@ -798,8 +799,9 @@ module('Ember Debug - Object Inspector', function (hooks) {
       'Does not calculate expensive properties'
     );
 
-    assert.ok(
-      message.details[3].name !== 'MixinToSkip',
+    assert.notStrictEqual(
+      message.details[3].name,
+      'MixinToSkip',
       'Correctly skips mixins'
     );
   });
@@ -819,7 +821,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
 
     let serializedServiceProperty = message.details[1].properties[0];
 
-    assert.equal(serializedServiceProperty.isService, true);
+    assert.true(serializedServiceProperty.isService);
   });
 
   test('Proxy Service should be successfully tagged as service on serialization', async function (assert) {
@@ -837,7 +839,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
 
     let serializedServiceProperty = message.details[1].properties[0];
 
-    assert.equal(serializedServiceProperty.isService, true);
+    assert.true(serializedServiceProperty.isService);
   });
 
   test('Computed property dependent keys and code should be successfully serialized', async function (assert) {
@@ -901,10 +903,11 @@ module('Ember Debug - Object Inspector', function (hooks) {
     });
 
     assert.ok(didDestroy, 'Original willDestroy is preserved.');
-    assert.ok(!objectInspector.sentObjects[objectId], 'Object is dropped');
+    assert.notOk(objectInspector.sentObjects[objectId], 'Object is dropped');
     assert.deepEqual(message, { objectId });
   });
 
+  // eslint-disable-next-line qunit/require-expect
   test('Properties ending with `Binding` are skipped', async function (assert) {
     let object = EmberObject.create({
       bar: 'test',
@@ -1025,7 +1028,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
     let getter = message.details[1].properties[0];
     assert.equal(getter.name, 'hi');
     assert.ok(getter.isGetter);
-    assert.ok(!getter.isTracked);
+    assert.notOk(getter.isTracked);
     assert.equal(getter.value.type, 'type-number');
     assert.equal(getter.value.inspect, '123');
   });
@@ -1159,13 +1162,19 @@ module('Ember Debug - Object Inspector', function (hooks) {
       assert.ok(properties.indexOf('bar') > -1, 'contains bar');
       assert.ok(properties.indexOf('baz') > -1, 'contains baz');
 
-      assert.ok(properties.indexOf('bounds') === -1, 'does not contain bounds');
-      assert.ok(
-        properties.indexOf('element') === -1,
+      assert.strictEqual(
+        properties.indexOf('bounds'),
+        -1,
+        'does not contain bounds'
+      );
+      assert.strictEqual(
+        properties.indexOf('element'),
+        -1,
         'does not contain element'
       );
-      assert.ok(
-        properties.indexOf('debugName') === -1,
+      assert.strictEqual(
+        properties.indexOf('debugName'),
+        -1,
         'does not contain debugName'
       );
     });

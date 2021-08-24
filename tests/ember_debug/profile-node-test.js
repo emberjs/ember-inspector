@@ -9,7 +9,7 @@ module('Ember Debug - ProfileNode', function () {
     assert.equal(p.start, 1001, 'it stores the start time');
     assert.equal(p.name, 'application', 'it extracted the correct name');
     assert.equal(p.children.length, 0, 'it has no children by default');
-    assert.ok(!p.time, "It has no time because it's unfinished");
+    assert.notOk(p.time, "It has no time because it's unfinished");
   });
 
   test('with no payload it has an unknown name', function (assert) {
@@ -33,13 +33,13 @@ module('Ember Debug - ProfileNode', function () {
     let p1 = new ProfileNode(new Date().getTime(), { template: 'items' });
     let p2 = new ProfileNode(new Date().getTime(), { template: 'item' }, p1);
 
-    assert.ok(
-      !p1.parent,
+    assert.notOk(
+      p1.parent,
       'Without a parent parameter, the attribute is not set'
     );
     assert.equal(p2.parent, p1, "If passed, p2's parent is assigned to p1");
-    assert.ok(!p1.time, "p1 has no time because it's unfinished");
-    assert.ok(!p2.time, "p2 has no time because it's unfinished");
+    assert.notOk(p1.time, "p1 has no time because it's unfinished");
+    assert.notOk(p2.time, "p2 has no time because it's unfinished");
   });
 
   test('It can finish the timer', function (assert) {

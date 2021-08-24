@@ -31,6 +31,8 @@ module('Ember Debug', function (hooks) {
   }
 
   test('EmberDebug#inspect sends inspectable objects', function (assert) {
+    assert.expect(2);
+
     let obj = EmberObject.create();
     EmberDebug.inspect(obj);
     assert.equal(name, 'objectInspector:updateObject');

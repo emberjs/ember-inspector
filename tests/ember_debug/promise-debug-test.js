@@ -73,6 +73,8 @@ module('Ember Debug - Promise Debug', function (hooks) {
   });
 
   test('Updates are published when they happen', function (assert) {
+    assert.expect(8);
+
     EmberDebug.port.trigger('promise:getAndObservePromises');
 
     let p;
@@ -122,23 +124,23 @@ module('Ember Debug - Promise Debug', function (hooks) {
 
     await settled();
     assert.equal(name, 'promise:instrumentWithStack');
-    assert.equal(message.instrumentWithStack, false);
+    assert.false(message.instrumentWithStack);
     EmberDebug.port.trigger('promise:setInstrumentWithStack', {
       instrumentWithStack: true,
     });
 
     await settled();
     assert.equal(name, 'promise:instrumentWithStack');
-    assert.equal(message.instrumentWithStack, true);
-    assert.equal(withStack, true, 'persisted');
+    assert.true(message.instrumentWithStack);
+    assert.true(withStack, 'persisted');
     EmberDebug.port.trigger('promise:setInstrumentWithStack', {
       instrumentWithStack: false,
     });
 
     await settled();
     assert.equal(name, 'promise:instrumentWithStack');
-    assert.equal(message.instrumentWithStack, false);
-    assert.equal(withStack, false, 'persisted');
+    assert.false(message.instrumentWithStack);
+    assert.false(withStack, 'persisted');
   });
 
   skip('Responds even if no promises detected', function (assert) {

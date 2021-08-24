@@ -48,6 +48,6 @@ module('Ember Debug - Render Debug', function (hooks) {
     EmberDebug.port.trigger('render:clear');
     await settled();
 
-    assert.ok(profiles.length === 0, 'it has cleared the profiles');
+    assert.strictEqual(profiles.length, 0, 'it has cleared the profiles');
   });
 });

@@ -217,6 +217,8 @@ module('Promise Tab', function (outer) {
 
     // TODO: is this test realistic? (having stack traces without turning on instrumentWithStack)
     test('Can trace promise when there is a stack', async function (assert) {
+      assert.expect(1);
+
       respondWith('promise:getAndObservePromises', {
         type: 'promise:promisesUpdated',
         promises: [
@@ -254,6 +256,8 @@ module('Promise Tab', function (outer) {
     });
 
     test('Toggling promise trace option', async function (assert) {
+      assert.expect(2);
+
       respondWith('promise:getAndObservePromises', {
         type: 'promise:promisesUpdated',
         promises: [generatePromise()],
@@ -267,7 +271,7 @@ module('Promise Tab', function (outer) {
       respondWith(
         'promise:setInstrumentWithStack',
         ({ applicationId, applicationName, instrumentWithStack }) => {
-          assert.strictEqual(instrumentWithStack, true, 'instrumentWithStack');
+          assert.true(instrumentWithStack, 'instrumentWithStack');
 
           return {
             type: 'promise:instrumentWithStack',
@@ -282,6 +286,8 @@ module('Promise Tab', function (outer) {
     });
 
     test('Logging error stack trace in the console', async function (assert) {
+      assert.expect(2);
+
       respondWith('promise:getAndObservePromises', {
         type: 'promise:promisesUpdated',
         promises: [
@@ -310,6 +316,8 @@ module('Promise Tab', function (outer) {
     });
 
     test('Send fulfillment value to console', async function (assert) {
+      assert.expect(2);
+
       respondWith('promise:getAndObservePromises', {
         type: 'promise:promisesUpdated',
         promises: [
@@ -338,6 +346,8 @@ module('Promise Tab', function (outer) {
     });
 
     test('Sending objects to the object inspector', async function (assert) {
+      assert.expect(1);
+
       respondWith('promise:getAndObservePromises', {
         type: 'promise:promisesUpdated',
         promises: [

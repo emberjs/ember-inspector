@@ -165,6 +165,8 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Digging deeper into objects', async function (assert) {
+    assert.expect(8);
+
     await visit('/');
 
     await sendMessage({
@@ -572,6 +574,8 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Send to console', async function (assert) {
+    assert.expect(6);
+
     await visit('/');
 
     await sendMessage({
@@ -696,6 +700,8 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Date fields are editable', async function (assert) {
+    assert.expect(4);
+
     await visit('/');
 
     let date = new Date(2019, 7, 13); // 2019-08-13
@@ -733,7 +739,7 @@ module('Object Inspector', function (hooks) {
     respondWith(
       'objectInspector:saveProperty',
       ({ objectId, property, value }) => {
-        assert.ok(typeof value === 'number', 'sent as timestamp');
+        assert.strictEqual(typeof value, 'number', 'sent as timestamp');
         date = new Date(value);
 
         return {
@@ -757,6 +763,8 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Errors are correctly displayed', async function (assert) {
+    assert.expect(8);
+
     await visit('/');
 
     await sendMessage({
