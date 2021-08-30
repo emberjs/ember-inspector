@@ -90,6 +90,8 @@ module('Deprecation Tab', function (outer) {
     });
 
     test('No source map', async function (assert) {
+      assert.expect(6);
+
       await visit('/deprecations');
 
       await toggleDeprecationSource();
@@ -129,6 +131,8 @@ module('Deprecation Tab', function (outer) {
     });
 
     test("With source map, source found, can't open resource", async function (assert) {
+      assert.expect(12);
+
       await visit('/deprecations');
 
       await toggleDeprecationSource();

@@ -507,8 +507,8 @@ module('Ember Debug - View', function (hooks) {
     let tooltip = findInspectorElement('tooltip');
     let highlight = findInspectorElement('highlight');
 
-    assert.ok(!isVisible(tooltip), 'tooltip is not visible');
-    assert.ok(!isVisible(highlight), 'highlight is not visible');
+    assert.notOk(isVisible(tooltip), 'tooltip is not visible');
+    assert.notOk(isVisible(highlight), 'highlight is not visible');
 
     run(() => EmberDebug.port.trigger('view:inspectViews', { inspect: true }));
 
@@ -554,8 +554,8 @@ module('Ember Debug - View', function (hooks) {
 
     await triggerEvent(document.body, 'mousemove');
 
-    assert.ok(!isVisible(tooltip), 'tooltip is not visible');
-    assert.ok(!isVisible(highlight), 'highlight is not visible');
+    assert.notOk(isVisible(tooltip), 'tooltip is not visible');
+    assert.notOk(isVisible(highlight), 'highlight is not visible');
 
     // Pin tooltip and stop inspecting
     await click('.simple-component');
@@ -598,12 +598,12 @@ module('Ember Debug - View', function (hooks) {
     // Dismiss tooltip
     await click(this.element);
 
-    assert.ok(!isVisible(tooltip), 'tooltip is not visible');
-    assert.ok(!isVisible(highlight), 'highlight is not visible');
+    assert.notOk(isVisible(tooltip), 'tooltip is not visible');
+    assert.notOk(isVisible(highlight), 'highlight is not visible');
 
     await triggerEvent('.bar-inner', 'mousemove');
 
-    assert.ok(!isVisible(tooltip), 'tooltip is not visible');
-    assert.ok(!isVisible(highlight), 'highlight is not visible');
+    assert.notOk(isVisible(tooltip), 'tooltip is not visible');
+    assert.notOk(isVisible(highlight), 'highlight is not visible');
   });
 });

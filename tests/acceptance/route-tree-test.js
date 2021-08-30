@@ -5,6 +5,7 @@ import {
   findAll,
   triggerEvent,
   visit,
+  waitUntil,
 } from '@ember/test-helpers';
 import { classify } from '@ember/string';
 import { module, test } from 'qunit';
@@ -106,6 +107,13 @@ module('Route Tree Tab', function (outer) {
     test('Route tree is successfully displayed', async function (assert) {
       await visit('route-tree');
 
+      await waitUntil(
+        function () {
+          return findAll('.js-route-tree-item').length === 6;
+        },
+        { timeout: 2000 }
+      );
+
       let routeNodes = findAll('.js-route-tree-item');
       assert.equal(routeNodes.length, 6, 'correct number of nodes');
 
@@ -162,6 +170,8 @@ module('Route Tree Tab', function (outer) {
     });
 
     test('Clicking on route handlers and controller sends an inspection message', async function (assert) {
+      assert.expect(2);
+
       await visit('route-tree');
 
       let applicationRow = find('.js-route-tree-item');

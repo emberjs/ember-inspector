@@ -3,6 +3,8 @@ import { module, test } from 'qunit';
 
 module('Unit | Helper | checkCurrentRoute', function () {
   test('matches the correct routes', function (assert) {
+    assert.expect(8);
+
     const testSet = [
       {
         currentRoute: {
@@ -100,6 +102,8 @@ module('Unit | Helper | checkCurrentRoute', function () {
   });
 
   test('does not match incorrect routes', function (assert) {
+    assert.expect(4);
+
     const testSet = [
       {
         currentRoute: {

@@ -3,10 +3,10 @@ import { module, test } from 'qunit';
 
 module('Unit | Helper | match', function () {
   test('it should find a match', function (assert) {
-    assert.equal(match(['thing.string', 'thing']), true);
+    assert.true(match(['thing.string', 'thing']));
   });
 
   test('it should not find a match', function (assert) {
-    assert.equal(match(['thing.string', 'test']), false);
+    assert.false(match(['thing.string', 'test']));
   });
 });

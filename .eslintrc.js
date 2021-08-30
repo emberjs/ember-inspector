@@ -50,7 +50,6 @@ module.exports = {
     // node files
     {
       files: [
-        '.ember-cli.js',
         '.eslintrc.js',
         '.prettierrc.js',
         '.stylelintrc.js',
@@ -77,6 +76,15 @@ module.exports = {
         // this can be removed once the following is fixed
         // https://github.com/mysticatea/eslint-plugin-node/issues/77
         'node/no-unpublished-require': 'off',
+      },
+    },
+    {
+      // Test files:
+      files: ['tests/**/*-test.{js,ts}'],
+      extends: ['plugin:qunit/recommended'],
+      rules: {
+        'qunit/no-conditional-assertions': 'off',
+        'qunit/no-early-return': 'off',
       },
     },
   ],

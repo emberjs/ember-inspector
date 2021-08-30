@@ -6,7 +6,6 @@ import {
   setupApplicationContext,
   setupContext,
   teardownContext,
-  teardownApplicationContext,
 } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import BasicAdapter from '../../adapters/basic';
@@ -63,7 +62,6 @@ export default function setupEmberDebugTest(hooks, options = {}) {
   });
 
   hooks.afterEach(async function () {
-    await teardownApplicationContext(this);
     await teardownContext(this);
 
     EmberDebug.destroyContainer();

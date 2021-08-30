@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { visit, findAll, click, fillIn, currentURL } from 'ember-test-helpers';
+import { visit, findAll, click, fillIn, currentURL } from '@ember/test-helpers';
 import { setupTestAdapter, respondWith } from '../test-adapter';
 
 function getTypes() {
@@ -161,6 +161,8 @@ module('Container Tab', function (outer) {
     });
 
     test('Successfully redirects if the container type is not found', async function (assert) {
+      assert.expect(1);
+
       respondWith('container:getInstances', ({ containerType }) => {
         if (containerType === 'random-type') {
           return {

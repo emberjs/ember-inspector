@@ -3,13 +3,13 @@ import isRouteSubstate from 'ember-inspector/utils/is-route-substate';
 
 module('Unit | Lib | isRouteSubstate', function () {
   test('it should only find loading and error substates', function (assert) {
-    assert.equal(isRouteSubstate('testing.loading'), true);
-    assert.equal(isRouteSubstate('testing_loading'), true);
-    assert.equal(isRouteSubstate('testing.error'), true);
-    assert.equal(isRouteSubstate('testing_error'), true);
-    assert.equal(isRouteSubstate('loading.testing'), false);
-    assert.equal(isRouteSubstate('error_testing'), false);
-    assert.equal(isRouteSubstate('testingloading'), false);
-    assert.equal(isRouteSubstate('testingerror'), false);
+    assert.true(isRouteSubstate('testing.loading'));
+    assert.true(isRouteSubstate('testing_loading'));
+    assert.true(isRouteSubstate('testing.error'));
+    assert.true(isRouteSubstate('testing_error'));
+    assert.false(isRouteSubstate('loading.testing'));
+    assert.false(isRouteSubstate('error_testing'));
+    assert.false(isRouteSubstate('testingloading'));
+    assert.false(isRouteSubstate('testingerror'));
   });
 });

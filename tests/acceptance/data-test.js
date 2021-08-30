@@ -259,6 +259,8 @@ module('Data Tab', function (outer) {
     });
 
     test('Can inspect store in data pane', async function (assert) {
+      assert.expect(1);
+
       respondWith('data:getModelTypes', {
         type: 'data:modelTypesAdded',
         modelTypes: getModelTypes(),
