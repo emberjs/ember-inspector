@@ -50,7 +50,6 @@ module.exports = {
     // node files
     {
       files: [
-        '.ember-cli.js',
         '.eslintrc.js',
         '.prettierrc.js',
         '.stylelintrc.js',
