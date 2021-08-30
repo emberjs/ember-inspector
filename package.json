@@ -65,7 +65,6 @@
     "ember-cli-htmlbars": "^5.7.1",
     "ember-cli-inject-live-reload": "^2.0.2",
     "ember-cli-sass": "^10.0.0",
-    "ember-cli-shims": "^1.2.0",
     "ember-cli-showdown": "^4.5.0",
     "ember-cli-stylelint": "^4.0.0",
     "ember-cli-terser": "^4.0.2",
