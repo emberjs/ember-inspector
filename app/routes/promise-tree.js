@@ -19,6 +19,7 @@ export default class PromiseTreeRoute extends TabRoute {
 
   setupController() {
     super.setupController(...arguments);
+
     this.port.on(
       'promise:instrumentWithStack',
       this,

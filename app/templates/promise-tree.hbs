@@ -1,13 +1,28 @@
+{{#if this.toolbarContainer}}
+  {{#in-element this.toolbarContainer}}
+    <PromiseTreeToolbar
+      @clear={{this.clear}}
+      @filter={{this.filter}}
+      @instrumentWithStack={{this.instrumentWithStack}}
+      @refreshPage={{action send "refreshPage"}}
+      @searchValue={{this.searchValue}}
+      @setFilter={{this.setFilter}}
+      @updateInstrumentWithStack={{this.updateInstrumentWithStack}}
+    />
+  {{/in-element}}
+{{/if}}
+
 {{#if this.shouldRefresh}}
   <Ui::EmptyMessage class="js-page-refresh">
-    <p>Reload the page to see promises created before you opened the inspector.</p>
-    <button class="js-page-refresh-btn" {{action "refreshPage"}} type="button">Reload</button>
+    <p>
+      Reload the page to see promises created before you opened the inspector.
+    </p>
+    <button class="js-page-refresh-btn" type="button" {{action "refreshPage"}}>
+      Reload
+    </button>
   </Ui::EmptyMessage>
 {{else}}
-  <List
-    class="js-promise-tree"
-    @schema={{schema-for "promise-tree"}} as |list|
-  >
+  <List class="js-promise-tree" @schema={{schema-for "promise-tree"}} as |list|>
     {{#list.vertical-collection this.filtered as |content index|}}
       <tr class="list__row js-promise-tree-item {{if (mod index 2) "striped"}}">
         <PromiseItem

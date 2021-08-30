@@ -18,6 +18,7 @@ export default class RenderTreeRoute extends TabRoute {
 
   setupController(controller, model) {
     super.setupController(...arguments);
+
     if (model.length === 0) {
       controller.set('initialEmpty', true);
     }
@@ -27,6 +28,8 @@ export default class RenderTreeRoute extends TabRoute {
   }
 
   deactivate() {
+    super.deactivate(...arguments);
+
     const port = this.port;
     port.off('render:profilesUpdated', this, this.profilesUpdated);
     port.off('render:profilesAdded', this, this.profilesAdded);

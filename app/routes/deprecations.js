@@ -15,16 +15,19 @@ export default class DeprecationsRoute extends TabRoute {
 
   setupController(controller, message) {
     super.setupController(...arguments);
+
     this.deprecationsAdded(message);
   }
 
   activate() {
     super.activate(...arguments);
+
     this.port.on('deprecation:deprecationsAdded', this, this.deprecationsAdded);
   }
 
   deactivate() {
     super.deactivate(...arguments);
+
     this.port.off(
       'deprecation:deprecationsAdded',
       this,

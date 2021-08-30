@@ -1,14 +1,14 @@
-/* eslint no-empty:0 */
 import Route from '@ember/routing/route';
+import { scheduleOnce } from '@ember/runloop';
 
 export default class TabRoute extends Route {
-  renderTemplate() {
-    this.render();
-    try {
-      this.render(`${this.routeName.replace(/\./g, '/')}-toolbar`, {
-        into: 'application',
-        outlet: 'toolbar',
-      });
-    } catch (e) {}
+  setupController(controller) {
+    super.setupController(...arguments);
+
+    function setToolbarContainer() {
+      controller.set('toolbarContainer', document.querySelector('#toolbar'));
+    }
+
+    scheduleOnce('afterRender', this, setToolbarContainer);
   }
 }

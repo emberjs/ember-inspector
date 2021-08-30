@@ -1,13 +1,29 @@
+{{#if this.toolbarContainer}}
+  {{#in-element this.toolbarContainer}}
+    <ComponentTreeToolbar
+      @collapseAll={{this.collapseAll}}
+      @expandAll={{this.expandAll}}
+      @isInspecting={{this.isInspecting}}
+      @query={{this.query}}
+      @toggleInspect={{this.toggleInspect}}
+    />
+  {{/in-element}}
+{{/if}}
+
 <ScrollContainer
-  {{did-insert this.arrowKeysSetup}}
-  {{will-destroy this.arrowKeysTeardown}}
   @collection={{this.visibleItems}}
   @currentItem={{this.currentItem}}
   @itemHeight={{this.itemHeight}}
   class="list__content"
   tabindex="-1"
+  {{did-insert this.arrowKeysSetup}}
+  {{will-destroy this.arrowKeysTeardown}}
 >
-  {{#vertical-collection this.visibleItems estimateHeight=this.itemHeight key="id" as |item|}}
+  {{#vertical-collection
+    this.visibleItems
+    estimateHeight=this.itemHeight
+    key="id" as |item|
+  }}
     <ComponentTreeItem @item={{item}} />
   {{/vertical-collection}}
 </ScrollContainer>

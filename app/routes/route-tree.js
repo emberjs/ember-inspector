@@ -7,6 +7,8 @@ export default class RouteTreeRoute extends TabRoute {
   @service port;
 
   setupController() {
+    super.setupController(...arguments);
+
     this.port.on('route:currentRoute', this, this.setCurrentRoute);
     this.port.send('route:getCurrentRoute');
     this.port.on('route:routeTree', this, this.setTree);

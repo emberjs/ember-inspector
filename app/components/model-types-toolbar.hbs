@@ -1,6 +1,6 @@
 <div class="toolbar">
   <Ui::ToolbarReloadButton
-    @action={{action send "reload"}}
+    @action={{@reload}}
     data-test-reload-container-btn
   />
 
@@ -11,7 +11,7 @@
       <Input
         data-test-options-hideEmptyModelTypes
         @type="checkbox"
-        @checked={{this.hideEmptyModelTypes}}
+        @checked={{@hideEmptyModelTypes}}
       />
       Hide Empty Model Types
     </label>
@@ -21,12 +21,12 @@
       <Input
         data-test-options-orderByRecordCount
         @type="checkbox"
-        @checked={{this.orderByRecordCount}}
+        @checked={{@orderByRecordCount}}
       />
       Order Models By Record Count
     </label>
   </div>
-  <button class="toolbar__radio js-filter" {{on "click" this.getStore}} data-test-inspect-store type="button">
+  <button class="toolbar__radio js-filter" {{on "click" @getStore}} data-test-inspect-store type="button">
     Inspect Store
   </button>
 </div>

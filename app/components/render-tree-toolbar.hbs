@@ -1,12 +1,12 @@
 <div class="toolbar">
   <Ui::ToolbarClearButton
-    @action={{action send "clearProfiles"}}
+    @action={{@clearProfiles}}
   />
 
-  {{#unless this.showEmpty}}
+  {{#unless @showEmpty}}
     <Ui::ToolbarDivider />
     <Ui::ToolbarReloadButton
-      @action={{action send "refreshPage"}}
+      @action={{@refreshPage}}
       class="js-toolbar-page-refresh-btn"
     />
   {{/unless}}
@@ -14,7 +14,7 @@
   <Ui::ToolbarDivider />
 
   <Ui::ToolbarSearchField
-    @value={{this.searchValue}}
+    @value={{@searchValue}}
     class="js-render-profiles-search"
   />
 </div>
