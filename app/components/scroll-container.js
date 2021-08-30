@@ -45,7 +45,7 @@ export default class ScrollContainerComponent extends Component {
   }
 
   get scrollTarget() {
-    return this.element.querySelector('.scroll-target');
+    return this.element?.querySelector('.scroll-target');
   }
 
   didRender() {
@@ -74,6 +74,8 @@ export default class ScrollContainerComponent extends Component {
 }
 
 function needsScroll(container, target) {
+  if (!container || !target) return;
+
   let { top: containerTop, bottom: containerBottom } =
     container.getBoundingClientRect();
   let { top: targetTop, bottom: targetBottom } = target.getBoundingClientRect();

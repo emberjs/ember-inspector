@@ -17,7 +17,7 @@ export default class RouteCellName extends Component {
   get isCurrent() {
     const { currentRoute, route } = this;
 
-    if (!currentRoute) {
+    if (!currentRoute || !route) {
       return false;
     }
 
