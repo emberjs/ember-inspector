@@ -6,7 +6,6 @@ import {
   setupApplicationContext,
   setupContext,
   teardownContext,
-  teardownApplicationContext,
 } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import BasicAdapter from '../../adapters/basic';

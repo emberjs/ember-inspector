@@ -74,7 +74,7 @@ export default class ScrollContainerComponent extends Component {
 }
 
 function needsScroll(container, target) {
-  if (!container || !target) return;
+  if (!container || !target) return false;
 
   let { top: containerTop, bottom: containerBottom } =
     container.getBoundingClientRect();
