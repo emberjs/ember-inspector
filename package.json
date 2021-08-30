@@ -76,6 +76,7 @@
     "ember-export-application-global": "^2.0.1",
     "ember-fetch": "^8.0.4",
     "ember-flatpickr": "^2.16.4",
+    "ember-in-element-polyfill": "^1.0.1",
     "ember-load-initializers": "^2.1.2",
     "ember-math-helpers": "^2.15.0",
     "ember-maybe-import-regenerator": "^0.1.6",
