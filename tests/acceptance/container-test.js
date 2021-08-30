@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { visit, findAll, click, fillIn, currentURL } from 'ember-test-helpers';
+import { visit, findAll, click, fillIn, currentURL } from '@ember/test-helpers';
 import { setupTestAdapter, respondWith } from '../test-adapter';
 
 function getTypes() {

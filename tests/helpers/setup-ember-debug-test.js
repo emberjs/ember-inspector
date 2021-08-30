@@ -63,7 +63,6 @@ export default function setupEmberDebugTest(hooks, options = {}) {
   });
 
   hooks.afterEach(async function () {
-    await teardownApplicationContext(this);
     await teardownContext(this);
 
     EmberDebug.destroyContainer();
