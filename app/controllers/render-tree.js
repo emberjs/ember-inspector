@@ -10,6 +10,9 @@ export default Controller.extend({
   initialEmpty: false,
   modelEmpty: equal('model.length', 0),
   showEmpty: and('initialEmpty', 'modelEmpty'),
+  shouldHighlightRender: false,
+
+  port: service(),
 
   /**
    * Storage is needed for remembering if the user closed the warning
@@ -74,6 +77,14 @@ export default Controller.extend({
 
   closeWarning: action(function () {
     this.set('isWarningClosed', true);
+  }),
+
+  updateShouldHighlightRender: action(function () {
+    const value = !this.shouldHighlightRender
+    this.set('shouldHighlightRender', value);
+    this.port.send('render:updateShouldHighlightRender', {
+      shouldHighlightRender: value,
+    });
   }),
 });
 
