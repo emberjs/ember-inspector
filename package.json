@@ -82,7 +82,7 @@
     "ember-page-title": "^6.2.2",
     "ember-qunit": "^5.1.4",
     "ember-resolver": "^8.0.2",
-    "ember-source": "~3.27.2",
+    "ember-source": "~3.28.1",
     "ember-source-channel-url": "^3.0.0",
     "ember-svg-jar": "^2.3.3",
     "ember-table": "rwwagner90/ember-table#68a9d8a1f4b294b00e78dd70c2e1d164d3e2df3c",
