@@ -1,7 +1,7 @@
 import { inject as service } from '@ember/service';
 import { set, get, action } from '@ember/object';
 import Route from '@ember/routing/route';
-const Ember = require('ember')['default'];
+import Ember from 'ember';
 const { NativeArray } = Ember;
 
 export default class ApplicationRoute extends Route {
