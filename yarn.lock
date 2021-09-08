@@ -6728,9 +6728,9 @@ ember-svg-jar@^2.3.3:
     mkdirp "^0.5.1"
     path-posix "^1.0.0"
 
-ember-table@rwwagner90/ember-table#68a9d8a1f4b294b00e78dd70c2e1d164d3e2df3c:
+ember-table@rwwagner90/ember-table#00d598d40ba5252b062ffc9425fb2b735eb0710b:
   version "3.0.2"
-  resolved "https://codeload.github.com/rwwagner90/ember-table/tar.gz/68a9d8a1f4b294b00e78dd70c2e1d164d3e2df3c"
+  resolved "https://codeload.github.com/rwwagner90/ember-table/tar.gz/00d598d40ba5252b062ffc9425fb2b735eb0710b"
   dependencies:
     "@ember/jquery" "^2.0.0"
     "@html-next/vertical-collection" "2.0.0"
@@ -6743,7 +6743,7 @@ ember-table@rwwagner90/ember-table#68a9d8a1f4b294b00e78dd70c2e1d164d3e2df3c:
     ember-cli-version-checker "^5.1.2"
     ember-compatibility-helpers "^1.2.5"
     ember-raf-scheduler "^0.2.0"
-    ember-test-selectors "^5.5.0"
+    ember-test-selectors "^6.0.0"
     hammerjs "^2.0.8"
 
 ember-template-lint@^3.6.0:
@@ -6782,15 +6782,6 @@ ember-template-recast@^5.0.3:
     slash "^3.0.0"
     tmp "^0.2.1"
     workerpool "^6.1.4"
-
-ember-test-selectors@^5.5.0:
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/ember-test-selectors/-/ember-test-selectors-5.5.0.tgz#114bd29c4a33eee3a328c9ce32a57a018c27f5f6"
-  integrity sha512-PiKhbPnidRYQ5ed/CTU3teJV3XmzkjYjsCGx1UTy7qEY/1dEqxezlZu1DtisoLJ9Y+BcjTVlE+596lo9cOXd3w==
-  dependencies:
-    calculate-cache-key-for-tree "^2.0.0"
-    ember-cli-babel "^7.26.4"
-    ember-cli-version-checker "^5.1.2"
 
 ember-test-selectors@^6.0.0:
   version "6.0.0"
