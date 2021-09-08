@@ -1,10 +1,17 @@
+{{#if this.toolbarContainer}}
+  {{#in-element this.toolbarContainer}}
+    <DeprecationsToolbar
+      @changeDeprecationWorkflow={{this.changeDeprecationWorkflow}}
+      @clear={{action send "clear"}}
+      @searchValue={{this.searchValue}}
+      @toggleDeprecationWorkflow={{this.toggleDeprecationWorkflow}}
+    />
+  {{/in-element}}
+{{/if}}
+
 {{#if filtered.length}}
   <div class="list__content js-deprecations" style="height: 100%;">
-    {{#vertical-collection
-      filtered
-      estimateHeight=20
-    as |content|
-    }}
+    {{#vertical-collection filtered estimateHeight=20 as |content|}}
       <DeprecationItem
         @model={{content}}
         @openResource={{this.openResource}}
@@ -19,11 +26,7 @@
       No deprecations have been detected. Try reloading to catch the
       deprecations that were logged before you opened the inspector.
     </p>
-    <button
-      class="js-page-refresh-btn"
-      {{action "refreshPage"}}
-      type="button"
-    >
+    <button class="js-page-refresh-btn" type="button" {{action "refreshPage"}}>
       Reload
     </button>
   </Ui::EmptyMessage>

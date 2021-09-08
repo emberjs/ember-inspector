@@ -1,7 +1,7 @@
 <div class="toolbar">
   <button
-    class="{{if this.isInspecting "active"}} toolbar__icon-button"
-    {{on "click" this.toggleInspect}}
+    class="{{if @isInspecting "active"}} toolbar__icon-button"
+    {{on "click" @toggleInspect}}
     type="button"
   >
     {{svg-jar "inspect" width="16px" height="17px"}}
@@ -12,7 +12,7 @@
   <button
     class="toolbar__icon-button"
     title="expand all"
-    {{on "click" this.expandAll}}
+    {{on "click" @expandAll}}
     type="button"
   >
     {{svg-jar "chevron-down" width="16px" height="16px"}}
@@ -21,7 +21,7 @@
   <button
     class="toolbar__icon-button"
     title="collapse all"
-    {{on "click" this.collapseAll}}
+    {{on "click" @collapseAll}}
     type="button"
   >
     {{svg-jar "chevron-right" width="16px" height="16px"}}
@@ -30,7 +30,7 @@
   <Ui::ToolbarDivider />
 
   <Ui::ToolbarSearchField
-    @value={{this.query}}
+    @value={{@query}}
     data-test-filter-views
   />
 </div>

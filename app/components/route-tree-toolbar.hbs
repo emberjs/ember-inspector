@@ -3,7 +3,7 @@
     <label>
       <Input
         @type="checkbox"
-        @checked={{this.options.hideRoutes}}
+        @checked={{@options.hideRoutes}}
       />
       Current Route only
     </label>
@@ -13,7 +13,7 @@
     <label title="Hide loading and error substates">
       <Input
         @type="checkbox"
-        @checked={{this.options.hideSubstates}}
+        @checked={{@options.hideSubstates}}
       />
       Hide Substates
     </label>
@@ -22,7 +22,7 @@
   <Ui::ToolbarDivider />
 
   <Ui::ToolbarSearchField
-    @value={{this.searchValue}}
+    @value={{@searchValue}}
     data-test-filter-views
   />
 </div>

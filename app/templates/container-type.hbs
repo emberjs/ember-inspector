@@ -1,3 +1,13 @@
+{{#if this.toolbarContainer}}
+  {{#in-element this.toolbarContainer}}
+    <ContainerTypeToolbar
+      @reload={{action send "reload"}}
+      @searchValue={{this.searchValue}}
+      @sendContainerToConsole={{this.sendContainerToConsole}}
+    />
+  {{/in-element}}
+{{/if}}
+
 <EmberTable as |t|>
   <t.head
     @columns={{this.columns}}

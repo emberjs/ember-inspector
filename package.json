@@ -56,17 +56,15 @@
     "compare-versions": "^3.5.0",
     "del": "^6.0.0",
     "ember-auto-import": "^2.1.0",
-    "ember-cli": "~3.27.0",
+    "ember-cli": "~3.28.0",
     "ember-cli-app-version": "^5.0.0",
     "ember-cli-babel": "^7.26.6",
     "ember-cli-code-coverage": "^1.0.2",
     "ember-cli-dependency-checker": "^3.2.0",
     "ember-cli-deprecation-workflow": "^2.0.0",
     "ember-cli-htmlbars": "^5.7.1",
-    "ember-cli-inject-live-reload": "^2.0.2",
+    "ember-cli-inject-live-reload": "^2.1.0",
     "ember-cli-sass": "^10.0.0",
-    "ember-cli-shims": "^1.2.0",
-    "ember-cli-showdown": "^4.5.0",
     "ember-cli-stylelint": "^4.0.0",
     "ember-cli-terser": "^4.0.2",
     "ember-cli-version-checker": "^5.1.2",
@@ -74,29 +72,31 @@
     "ember-decorators": "^6.1.1",
     "ember-did-resize-modifier": "^1.0.0",
     "ember-export-application-global": "^2.0.1",
-    "ember-fetch": "^8.0.4",
+    "ember-fetch": "^8.1.1",
     "ember-flatpickr": "^2.16.4",
+    "ember-in-element-polyfill": "^1.0.1",
     "ember-load-initializers": "^2.1.2",
     "ember-math-helpers": "^2.15.0",
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-page-title": "^6.2.2",
     "ember-qunit": "^5.1.4",
     "ember-resolver": "^8.0.2",
-    "ember-source": "~3.27.2",
+    "ember-showdown": "^1.0.0-beta.1",
+    "ember-source": "~3.28.0",
     "ember-source-channel-url": "^3.0.0",
     "ember-svg-jar": "^2.3.3",
     "ember-table": "rwwagner90/ember-table#68a9d8a1f4b294b00e78dd70c2e1d164d3e2df3c",
-    "ember-template-lint": "^3.4.2",
+    "ember-template-lint": "^3.6.0",
     "ember-test-selectors": "^6.0.0",
     "ember-truth-helpers": "^3.0.0",
     "ember-try": "^1.1.0",
     "ensure-posix-path": "^1.1.1",
-    "eslint": "^7.27.0",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-ember": "^10.4.2",
+    "eslint-plugin-ember": "^10.5.4",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-qunit": "^6.1.1",
+    "eslint-plugin-prettier": "^3.4.1",
+    "eslint-plugin-qunit": "^6.2.0",
     "fstream": "^1.0.12",
     "got": "^11.8.2",
     "gulp": "^4.0.2",
@@ -105,7 +105,7 @@
     "normalize.css": "8.0.1",
     "npm-run-all": "^4.1.5",
     "pretender": "^3.4.3",
-    "prettier": "^2.3.0",
+    "prettier": "^2.3.2",
     "qunit": "^2.16.0",
     "qunit-dom": "^1.6.0",
     "release-it": "^14.6.1",
@@ -118,7 +118,7 @@
     "yauzl": "^2.10.0"
   },
   "engines": {
-    "node": "10.* || >= 12"
+    "node": "12.* || 14.* || >= 16"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
@@ -158,7 +158,7 @@
     }
   },
   "volta": {
-    "node": "10.19.0",
-    "yarn": "1.22.0"
+    "node": "12.22.5",
+    "yarn": "1.22.11"
   }
 }

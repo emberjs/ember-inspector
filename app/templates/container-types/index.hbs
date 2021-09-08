@@ -1,0 +1,10 @@
+{{#if this.toolbarContainer}}
+  {{#in-element this.toolbarContainer}}
+    <ContainerTypesToolbar
+      @reload={{action send "reload"}}
+      @sendContainerToConsole={{this.sendContainerToConsole}}
+    />
+  {{/in-element}}
+{{/if}}
+
+{{yield}}

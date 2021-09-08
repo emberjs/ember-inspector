@@ -1,18 +1,19 @@
+{{#if this.toolbarContainer}}
+  {{#in-element this.toolbarContainer}}
+    <LibrariesToolbar />
+  {{/in-element}}
+{{/if}}
+
 <EmberTable as |t|>
-  <t.head
-    @columns={{schema-for "info-list"}}
-    @enableReorder={{false}}
-  />
+  <t.head @columns={{schema-for "info-list"}} @enableReorder={{false}} />
 
   <t.body @rows={{rows}} as |b|>
     <b.row
-      class={{concat "js-library-row" (if (mod b.rowMeta.index 2) " striped")}}
-    as |r|
+      class={{
+        concat "js-library-row" (if (mod b.rowMeta.index 2) " striped")
+      }} as |r|
     >
-      <r.cell
-        class={{concat "js-lib-" r.columnValue.valuePath}}
-      as |value|
-      >
+      <r.cell class={{concat "js-lib-" r.columnValue.valuePath}} as |value|>
         {{value}}
       </r.cell>
     </b.row>

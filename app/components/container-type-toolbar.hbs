@@ -1,17 +1,17 @@
 <div class="toolbar">
   <Ui::ToolbarReloadButton
-    @action={{action send "reload"}}
+    @action={{@reload}}
     data-test-reload-container-btn
   />
 
   <Ui::ToolbarDivider />
 
-  <Ui::SendToConsole @action={{this.sendContainerToConsole}} />
+  <Ui::SendToConsole @action={{@sendContainerToConsole}} />
 
   <Ui::ToolbarDivider />
 
   <Ui::ToolbarSearchField
-    @value={{this.searchValue}}
+    @value={{@searchValue}}
     data-test-container-instance-search
   />
 </div>

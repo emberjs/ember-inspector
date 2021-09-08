@@ -1,3 +1,14 @@
+{{#if this.toolbarContainer}}
+  {{#in-element this.toolbarContainer}}
+    <RenderTreeToolbar
+      @clearProfiles={{action send "clearProfiles"}}
+      @refreshPage={{action send "refreshPage"}}
+      @searchValue={{this.searchValue}}
+      @showEmpty={{this.showEmpty}}
+    />
+  {{/in-element}}
+{{/if}}
+
 {{#unless this.isWarningClosed}}
   <Ui::WarningMessage @close={{this.closeWarning}}>
     Render times may be inaccurate due to instrumentation and environment
@@ -6,9 +17,22 @@
 
 {{#if this.showEmpty}}
   <Ui::EmptyMessage class="js-render-tree-empty">
-    <p>No rendering metrics have been collected. Try reloading or navigating around your application.</p>
-    <p><strong>Note:</strong> Very fast rendering times (&lt;1ms) are excluded.</p>
-    <button class="js-toolbar-page-refresh-btn" {{action "refreshPage"}} type="button">Reload</button>
+    <p>
+      No rendering metrics have been collected. Try reloading or navigating around your application.
+    </p>
+    <p>
+      <strong>
+        Note:
+      </strong>
+      Very fast rendering times (&lt;1ms) are excluded.
+    </p>
+    <button
+      class="js-toolbar-page-refresh-btn"
+      type="button"
+      {{action "refreshPage"}}
+    >
+      Reload
+    </button>
   </Ui::EmptyMessage>
 {{else}}
   <List
@@ -18,11 +42,7 @@
   >
     <tbody>
       {{#each this.filtered as |item|}}
-        <RenderItem
-          @model={{item}}
-          @search={{this.search}}
-          @list={{list}}
-        />
+        <RenderItem @model={{item}} @search={{this.search}} @list={{list}} />
       {{/each}}
     </tbody>
   </List>

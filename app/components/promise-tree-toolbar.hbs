@@ -1,6 +1,6 @@
 <div class="toolbar">
   <Ui::ToolbarClearButton
-    @action={{this.clear}}
+    @action={{@clear}}
     class="js-clear-promises-btn"
   />
 
@@ -8,7 +8,7 @@
   {{#unless shouldRefresh}}
     <Ui::ToolbarDivider />
     <Ui::ToolbarReloadButton
-      @action={{action send "refreshPage"}}
+      @action={{@refreshPage}}
       class="js-toolbar-page-refresh-btn"
     />
   {{/unless}}
@@ -16,37 +16,37 @@
   <Ui::ToolbarDivider />
 
   <Ui::ToolbarSearchField
-    @value={{this.searchValue}}
+    @value={{@searchValue}}
     class="js-promise-search"
   />
 
   <Ui::ToolbarDivider />
 
   <button
-    class="{{if (eq this.filter "all") "active"}} toolbar__radio toolbar__radio--first js-filter"
-    {{on "click" (fn this.setFilter "all")}}
+    class="{{if (eq @filter "all") "active"}} toolbar__radio toolbar__radio--first js-filter"
+    {{on "click" (fn @setFilter "all")}}
     type="button"
   >
     All
   </button>
 
   <button
-    class="{{if (eq this.filter "rejected") "active"}} toolbar__radio js-filter"
-    {{on "click" (fn this.setFilter "rejected")}}
+    class="{{if (eq @filter "rejected") "active"}} toolbar__radio js-filter"
+    {{on "click" (fn @setFilter "rejected")}}
     type="button"
   >
     Rejected
   </button>
   <button
-    class="{{if (eq this.filter "pending") "active"}} toolbar__radio js-filter"
-    {{on "click" (fn this.setFilter "pending")}}
+    class="{{if (eq @filter "pending") "active"}} toolbar__radio js-filter"
+    {{on "click" (fn @setFilter "pending")}}
     type="button"
   >
     Pending
   </button>
   <button
-    class="{{if (eq this.filter "fulfilled") "active"}} toolbar__radio toolbar__radio--last js-filter"
-    {{on "click" (fn this.setFilter "fullfilled")}}
+    class="{{if (eq @filter "fulfilled") "active"}} toolbar__radio toolbar__radio--last js-filter"
+    {{on "click" (fn @setFilter "fullfilled")}}
     type="button"
   >
     Fulfilled
@@ -58,8 +58,8 @@
     <label>
       <Input
         @type="checkbox"
-        @checked={{this.instrumentWithStack}}
-        {{on "change" (fn this.updateInstrumentWithStack (not this.instrumentWithStack))}}
+        @checked={{@instrumentWithStack}}
+        {{on "change" (fn @updateInstrumentWithStack (not @instrumentWithStack))}}
       />
       Trace promises
     </label>

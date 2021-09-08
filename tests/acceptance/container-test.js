@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import TestAdapter from '@ember/test/adapter';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { visit, findAll, click, fillIn, currentURL } from '@ember/test-helpers';
@@ -172,13 +172,13 @@ module('Container Tab', function (outer) {
         }
       });
 
-      let adapterException = Ember.Test.adapter.exception;
+      let adapterException = TestAdapter.exception;
 
       // Failed route causes a promise unhandled rejection
       // even though there's an `error` action defined :(
-      Ember.Test.adapter.exception = (err) => {
+      TestAdapter.exception = (err) => {
         if (!err || err.status !== 404) {
-          return adapterException.call(Ember.Test.adapter, err);
+          return adapterException.call(TestAdapter, err);
         }
       };
 
@@ -186,7 +186,7 @@ module('Container Tab', function (outer) {
         await visit('/container-types/random-type');
         assert.equal(currentURL(), '/container-types');
       } finally {
-        Ember.Test.adapter.exception = adapterException;
+        TestAdapter.exception = adapterException;
       }
     });
   });

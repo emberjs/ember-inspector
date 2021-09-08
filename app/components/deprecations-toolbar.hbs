@@ -1,5 +1,5 @@
 <div class="toolbar">
-  <Ui::ToolbarClearButton @action={{action send "clear"}} />
+  <Ui::ToolbarClearButton @action={{@clear}} />
 
   <Ui::ToolbarDivider />
 
@@ -7,8 +7,8 @@
     <label title="Deprecation workflow">
       <Input
         @type="checkbox"
-        @checked={{this.toggleDeprecationWorkflow}}
-        {{on "change" this.changeDeprecationWorkflow}}
+        @checked={{@toggleDeprecationWorkflow}}
+        {{on "change" @changeDeprecationWorkflow}}
       />
       Toggle for Deprecation Workflow
     </label>
@@ -17,7 +17,7 @@
   <Ui::ToolbarDivider />
 
   <Ui::ToolbarSearchField
-    @value={{this.searchValue}}
+    @value={{@searchValue}}
     data-test-deprecations-search
   />
 </div>

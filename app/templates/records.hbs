@@ -1,9 +1,19 @@
+{{#if this.toolbarContainer}}
+  {{#in-element this.toolbarContainer}}
+    <RecordsToolbar
+      @filters={{this.filters}}
+      @filterValue={{this.filterValue}}
+      @searchValue={{this.searchValue}}
+      @setFilter={{this.setFilter}}
+    />
+  {{/in-element}}
+{{/if}}
+
 <EmberTable as |t|>
   <t.head
     @columns={{this.columns}}
     @sorts={{this.sorts}}
-    @onUpdateSorts={{this.updateSorts}}
-  as |h|
+    @onUpdateSorts={{this.updateSorts}} as |h|
   >
     <h.row as |r|>
       <r.cell data-test-table-header-column />
@@ -13,13 +23,11 @@
     @rows={{this.filteredRecords}}
     @checkboxSelectionMode="none"
     @selection={{this.selection}}
-    @onSelect={{this.inspectModel}}
-  as |b|
+    @onSelect={{this.inspectModel}} as |b|
   >
     <b.row
       class={{if (mod b.rowMeta.index 2) "striped"}}
-      data-test-table-row
-    as |r|
+      data-test-table-row as |r|
     >
       <r.cell data-test-table-cell as |value column row|>
         <span class={{row.color}}>

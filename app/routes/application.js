@@ -2,7 +2,6 @@ import { inject as service } from '@ember/service';
 import { set, get, action } from '@ember/object';
 import Route from '@ember/routing/route';
 import Ember from 'ember';
-
 const { NativeArray } = Ember;
 
 export default class ApplicationRoute extends Route {
@@ -56,11 +55,7 @@ export default class ApplicationRoute extends Route {
   }
 
   updateObject(options) {
-    const details = options.details,
-      name = options.name,
-      property = options.property,
-      objectId = options.objectId,
-      errors = options.errors;
+    let { details, errors, name, objectId, property } = options;
 
     NativeArray.apply(details);
     details.forEach(arrayize);
