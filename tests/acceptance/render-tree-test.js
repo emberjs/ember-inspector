@@ -135,7 +135,9 @@ module('Render Tree Tab', function (outer) {
     test('Renders checkbox for highlight render', async function (assert) {
       await visit('/render-tree');
 
-      assert.dom('[data-test-options-highlight-render]').exists('checkbox input is rendered');
+      assert
+        .dom('[data-test-options-highlight-render]')
+        .exists('checkbox input is rendered');
       assert.dom('.js-hightlight-render').hasText('Highlight render');
     });
 

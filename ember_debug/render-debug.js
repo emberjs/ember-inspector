@@ -37,9 +37,9 @@ export default EmberObject.extend(PortMixin, {
 
   sendAdded(profiles) {
     if (this.shouldHighlightRender) {
-      profiles.forEach(profile => {
+      profiles.forEach((profile) => {
         this._hightLightNode(profile);
-      })
+      });
     }
     this.sendMessage('profilesAdded', { profiles });
   },
@@ -47,12 +47,12 @@ export default EmberObject.extend(PortMixin, {
   _hightLightNode({ viewGuid, children }) {
     const hasChildren = children?.length > 0;
     if (viewGuid) {
-      this._createOutline(viewGuid, hasChildren)
+      this._createOutline(viewGuid, hasChildren);
     }
     if (hasChildren) {
-      children.forEach(childNode => {
+      children.forEach((childNode) => {
         this._hightLightNode(childNode);
-      })
+      });
     }
   },
 
@@ -60,10 +60,12 @@ export default EmberObject.extend(PortMixin, {
     const element = document.getElementById(viewGuid);
     if (element) {
       const outline = element.style.outline;
-      element.style.outline  = `${hasChildren ? '0.5' : '1'}px solid ${hasChildren ? 'blue' : 'red'}`;
-      setTimeout(()=> {
-        element.style.outline  = outline && 'none';
-      }, 1000)
+      element.style.outline = `${hasChildren ? '0.5' : '1'}px solid ${
+        hasChildren ? 'blue' : 'red'
+      }`;
+      setTimeout(() => {
+        element.style.outline = outline ?? 'none';
+      }, 1000);
     }
   },
 
@@ -93,7 +95,7 @@ export default EmberObject.extend(PortMixin, {
     },
 
     updateShouldHighlightRender({ shouldHighlightRender }) {
-      this.shouldHighlightRender = shouldHighlightRender
+      this.shouldHighlightRender = shouldHighlightRender;
     },
   },
 });

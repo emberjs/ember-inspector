@@ -13,7 +13,9 @@ const ProfileNode = function (start, payload, parent, now) {
   if (payload) {
     if (payload.template) {
       name = payload.template;
+      debugger;
     } else if (payload.view) {
+      debugger;
       const view = payload.view;
       name = get(view, 'instrumentDisplay') || get(view, '_debugContainerKey');
       if (name) {

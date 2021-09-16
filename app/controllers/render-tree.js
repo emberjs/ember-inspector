@@ -80,7 +80,7 @@ export default Controller.extend({
   }),
 
   updateShouldHighlightRender: action(function () {
-    const value = !this.shouldHighlightRender
+    const value = !this.shouldHighlightRender;
     this.set('shouldHighlightRender', value);
     this.port.send('render:updateShouldHighlightRender', {
       shouldHighlightRender: value,
