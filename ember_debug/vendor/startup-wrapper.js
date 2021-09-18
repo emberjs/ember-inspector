@@ -19,6 +19,8 @@ if (typeof env !== 'undefined') {
   currentEnv = env;
 }
 
+let Ember;
+
 // @formatter:off
 var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
 // @formatter:on
@@ -97,7 +99,6 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
         return;
       }
 
-      let Ember;
       try {
         Ember = requireModule('ember')['default'];
       } catch {
