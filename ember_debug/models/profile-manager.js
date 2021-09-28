@@ -44,8 +44,8 @@ function makeHighlight() {
   node.setAttribute('class', 'ember-inspector-render-highlight');
   return node;
 }
-function insertHTML() {
-  return document.body.appendChild(makeHighlight());
+function insertHTML(node) {
+  document.body.appendChild(node);
 }
 
 function insertStylesheet() {
@@ -83,7 +83,7 @@ export default class ProfileManager {
     return this.wrapForErrors(this, function () {
       this.current = new ProfileNode(timestamp, payload, this.current, now);
       if (this.shouldHighlightRender && payload.view) {
-        this.renderHighLight(payload.view);
+        this._highLightView(payload.view);
       }
       return this.current;
     });
@@ -110,7 +110,7 @@ export default class ProfileManager {
     return callback.call(context);
   }
 
-  renderHighLight(view) {
+  _highLightView(view) {
     const symbols = Object.getOwnPropertySymbols(view);
     const bounds = view[symbols.find((sym) => sym.description === 'BOUNDS')];
     if (!bounds) return;
@@ -160,33 +160,35 @@ export default class ProfileManager {
   teardown() {
     this.stylesheet.remove();
     // remove all the active highlighted components
-    this.removeAllHighlights();
+    this._removeAllHighlights();
   }
 
-  removeAllHighlights() {
+  _removeAllHighlights() {
     const els = this.highlights.slice(0);
     els.forEach((el) => {
-      this.removeHighlight(el);
+      this._removeHighlight(el);
     });
   }
 
-  removeHighlight(el) {
-    this.highlights = this.highlights.filter((item) => item !== el);
-    clearTimeout(el.timeout);
-    el.node.remove();
+  _removeHighlight(highlight) {
+    this.highlights = this.highlights.filter((item) => item !== highlight);
+    clearTimeout(highlight.timeout);
+    highlight.el.remove();
   }
 
-  addHighlight(highlight) {
+  _addHighlight(highlight) {
+    insertHTML(highlight.el);
     this.highlights.push(highlight);
 
     highlight.timeout = setTimeout(() => {
-      highlight.el.remove();
+      this._removeHighlight(highlight);
     }, 1000);
   }
 
-  _constructHighlight(node) {
-    const rect = node.getBoundingClientRect();
-    const highlight = insertHTML();
+  _constructHighlight(renderedNode) {
+    const rect = renderedNode.getBoundingClientRect();
+    const highlight = makeHighlight();
+
     const { top, left, width, height } = rect;
     const { scrollX, scrollY } = window;
     const { style } = highlight;
@@ -200,14 +202,14 @@ export default class ProfileManager {
     return highlight;
   }
 
-  _renderHighlight(node) {
-    if (!node?.getBoundingClientRect) {
+  _renderHighlight(renderedNode) {
+    if (!renderedNode?.getBoundingClientRect) {
       return;
     }
 
-    const highlight = this._constructHighlight(node);
+    const highlight = this._constructHighlight(renderedNode);
 
-    this.addHighlight({ el: highlight });
+    this._addHighlight({ el: highlight });
   }
 
   _flush() {
