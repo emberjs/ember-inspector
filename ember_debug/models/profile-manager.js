@@ -4,7 +4,6 @@ import { later, scheduleOnce } from '../utils/ember/runloop';
 const { guidFor } = Ember;
 const {
   run: { later, scheduleOnce },
-  guidFor,
 } = Ember;
 
 function getEdges(first, last, closest) {
@@ -39,19 +38,14 @@ function findRoots({ first, last, parent }) {
   return roots.filter((el) => el?.nodeType === 1);
 }
 
-function getNodeId(id) {
-  return `ember-inspector-render-highlight-${id}`;
-}
-
-function makeHighlight(id) {
+function makeHighlight() {
   const node = document.createElement('div');
   node.setAttribute('role', 'presentation');
   node.setAttribute('class', 'ember-inspector-render-highlight');
-  node.setAttribute('id', getNodeId(id));
   return node;
 }
-function insertHTML(id) {
-  return document.body.appendChild(makeHighlight(id));
+function insertHTML() {
+  return document.body.appendChild(makeHighlight());
 }
 
 function insertStylesheet() {
@@ -82,7 +76,7 @@ export default class ProfileManager {
     this.shouldHighlightRender = false;
     this.stylesheet = insertStylesheet();
     // keep track of all the active highlights
-    this.highlightComponents = {};
+    this.highlights = [];
   }
 
   began(timestamp, payload, now) {
@@ -124,7 +118,7 @@ export default class ProfileManager {
     const elements = findRoots(bounds);
 
     elements.forEach((node) => {
-      this._renderHighlight(node, guidFor(view));
+      this._renderHighlight(node);
     });
   }
 
@@ -166,16 +160,33 @@ export default class ProfileManager {
   teardown() {
     this.stylesheet.remove();
     // remove all the active highlighted components
-    for (const key in this.highlightComponents) {
-      const elementId = getNodeId(key);
-      document.getElementById(elementId)?.remove();
-    }
+    this.removeAllHighlights();
   }
 
-  _constructHighlight(node, id) {
+  removeAllHighlights() {
+    const els = this.highlights.slice(0);
+    els.forEach((el) => {
+      this.removeHighlight(el);
+    });
+  }
+
+  removeHighlight(el) {
+    this.highlights = this.highlights.filter((item) => item !== el);
+    clearTimeout(el.timeout);
+    el.node.remove();
+  }
+
+  addHighlight(highlight) {
+    this.highlights.push(highlight);
+
+    highlight.timeout = setTimeout(() => {
+      highlight.el.remove();
+    }, 1000);
+  }
+
+  _constructHighlight(node) {
     const rect = node.getBoundingClientRect();
-    const highlight = insertHTML(id);
-    this.highlightComponents[id] = highlight;
+    const highlight = insertHTML();
     const { top, left, width, height } = rect;
     const { scrollX, scrollY } = window;
     const { style } = highlight;
@@ -186,28 +197,17 @@ export default class ProfileManager {
       style.width = `${width}px`;
       style.height = `${height}px`;
     }
-    return highlight
+    return highlight;
   }
 
-  _renderHighlight(node, guid) {
+  _renderHighlight(node) {
     if (!node?.getBoundingClientRect) {
       return;
     }
-    let id = guid;
-    // if guid does not exist for payload.view
-    // or payload.view is correlated to more than one component
-    // create random id to avoid collision.
-    if (!guid || this.highlightComponents[guid]) {
-      id = (Math.random() * 100000000).toFixed(0);
-    }
-    const highlight = this._constructHighlight(node, id);
 
-    setTimeout(() => {
-      if (this.highlightComponents[id]) {
-        highlight.remove();
-      }
-      delete this.highlightComponents[id];
-    }, 1000);
+    const highlight = this._constructHighlight(node);
+
+    this.addHighlight({ el: highlight });
   }
 
   _flush() {
