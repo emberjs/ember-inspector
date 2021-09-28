@@ -4,16 +4,25 @@ import { later, scheduleOnce } from '../utils/ember/runloop';
 const { guidFor } = Ember;
 const {
   run: { later, scheduleOnce },
+  guidFor,
 } = Ember;
 
-function getUnfilteredRoots(first, last, closest) {
-  const roots = [];
+function getEdges(first, last, closest) {
   let start = null;
   let end = null;
   for (let i = 0; i < closest.length; i++) {
     if (closest.item(i) === first.node) start = i;
     else if (closest.item(i) === last.node) end = i;
   }
+  return [start, end];
+}
+
+function getUnfilteredRoots(first, last, closest) {
+  if (first.node === last.node) return [first.node];
+
+  const roots = [];
+
+  const [start, end] = getEdges(first, last, closest);
 
   if (start === null || end === null) return [];
 
@@ -22,29 +31,36 @@ function getUnfilteredRoots(first, last, closest) {
   return roots;
 }
 
-function _findRoots({ first, last, parent }) {
+function findRoots({ first, last, parent }) {
   const closest = parent.childNodes;
-  if (first.node === last.node) return [first.node];
 
   const roots = getUnfilteredRoots(first, last, closest);
 
-  return roots.filter((el) => el.nodeType === 1);
+  return roots.filter((el) => el?.nodeType === 1);
 }
 
-function makeHighlight() {
+function getNodeId(id) {
+  return `ember-inspector-render-highlight-${id}`;
+}
+
+function makeHighlight(id) {
   const node = document.createElement('div');
   node.setAttribute('role', 'presentation');
   node.setAttribute('class', 'ember-inspector-render-highlight');
+  node.setAttribute('id', getNodeId(id));
   return node;
 }
-function _insertHTML() {
-  return document.body.appendChild(makeHighlight());
+function insertHTML(id) {
+  return document.body.appendChild(makeHighlight(id));
 }
 
-function _insertStylesheet() {
+function insertStylesheet() {
   const content = `
     .ember-inspector-render-highlight {
-      border: 1px solid red;
+      border: 2px solid rgba(255,0,0,0.2);
+      box-shadow: 0px 0px 1px rgba(255,0,0,0.2);
+      z-index: 1000000;
+      pointer-events: none;
     }
   `;
   const style = document.createElement('style');
@@ -53,27 +69,6 @@ function _insertStylesheet() {
   return style;
 }
 
-function _renderHighlight(node) {
-  if (!node?.getBoundingClientRect) {
-    return;
-  }
-  const rect = node.getBoundingClientRect();
-  const highlight = _insertHTML();
-  const { top, left, width, height } = rect;
-  const { scrollX, scrollY } = window;
-  const { style } = highlight;
-  if (style) {
-    style.position = 'absolute';
-    style.top = `${top + scrollY}px`;
-    style.left = `${left + scrollX}px`;
-    style.width = `${width}px`;
-    style.height = `${height}px`;
-    style.zIndex = `1000000`;
-  }
-  setTimeout(() => {
-    highlight.remove();
-  }, 1000);
-}
 /**
  * A class for keeping track of active rendering profiles as a list.
  */
@@ -85,7 +80,9 @@ export default class ProfileManager {
     this._profilesAddedCallbacks = [];
     this.queue = [];
     this.shouldHighlightRender = false;
-    this.stylesheet = _insertStylesheet();
+    this.stylesheet = insertStylesheet();
+    // keep track of all the active highlights
+    this.highlightComponents = {};
   }
 
   began(timestamp, payload, now) {
@@ -122,10 +119,12 @@ export default class ProfileManager {
   renderHighLight(view) {
     const symbols = Object.getOwnPropertySymbols(view);
     const bounds = view[symbols.find((sym) => sym.description === 'BOUNDS')];
-    const elements = _findRoots(bounds);
+    if (!bounds) return;
+
+    const elements = findRoots(bounds);
 
     elements.forEach((node) => {
-      _renderHighlight(node);
+      this._renderHighlight(node, guidFor(view));
     });
   }
 
@@ -166,6 +165,49 @@ export default class ProfileManager {
 
   teardown() {
     this.stylesheet.remove();
+    // remove all the active highlighted components
+    for (const key in this.highlightComponents) {
+      const elementId = getNodeId(key);
+      document.getElementById(elementId)?.remove();
+    }
+  }
+
+  _constructHighlight(node, id) {
+    const rect = node.getBoundingClientRect();
+    const highlight = insertHTML(id);
+    this.highlightComponents[id] = highlight;
+    const { top, left, width, height } = rect;
+    const { scrollX, scrollY } = window;
+    const { style } = highlight;
+    if (style) {
+      style.position = 'absolute';
+      style.top = `${top + scrollY}px`;
+      style.left = `${left + scrollX}px`;
+      style.width = `${width}px`;
+      style.height = `${height}px`;
+    }
+    return highlight
+  }
+
+  _renderHighlight(node, guid) {
+    if (!node?.getBoundingClientRect) {
+      return;
+    }
+    let id = guid;
+    // if guid does not exist for payload.view
+    // or payload.view is correlated to more than one component
+    // create random id to avoid collision.
+    if (!guid || this.highlightComponents[guid]) {
+      id = (Math.random() * 100000000).toFixed(0);
+    }
+    const highlight = this._constructHighlight(node, id);
+
+    setTimeout(() => {
+      if (this.highlightComponents[id]) {
+        highlight.remove();
+      }
+      delete this.highlightComponents[id];
+    }, 1000);
   }
 
   _flush() {
