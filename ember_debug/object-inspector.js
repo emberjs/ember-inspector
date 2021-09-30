@@ -923,7 +923,8 @@ function addProperties(properties, hash) {
     if (!hash.hasOwnProperty(prop)) {
       continue;
     }
-    if (prop.charAt(0) === '_') {
+
+    if (isInternalProperty(prop)) {
       continue;
     }
 
@@ -1009,6 +1010,35 @@ function addProperties(properties, hash) {
   }
 
   return properties;
+}
+
+function isInternalProperty(property) {
+  if (
+    [
+      '_state',
+      '_states',
+      '_target',
+      '_currentState',
+      '_oldWillDestroy',
+      '_super',
+      '_debugContainerKey',
+      '_transitionTo',
+    ].includes(property)
+  ) {
+    return true;
+  }
+
+  let isInternalProp = [
+    '__LEGACY_OWNER',
+    '__ARGS__',
+    '__HAS_BLOCK__',
+    '__PROPERTY_DID_CHANGE__',
+  ].any((internalProp) => property.startsWith(internalProp));
+  if (isInternalProp) {
+    return true;
+  }
+
+  return false;
 }
 
 function replaceProperty(properties, name, value, options) {
