@@ -1,10 +1,12 @@
 // eslint-disable-next-line ember/no-mixins
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import PromiseAssembler from 'ember-debug/libs/promise-assembler';
-import Ember from './utils/ember';
 
-const { computed, Object: EmberObject, RSVP, A, run } = Ember;
-const { readOnly } = computed;
+import { A } from './utils/ember/array';
+import EmberObject, { computed } from './utils/ember/object';
+import { readOnly } from './utils/ember/object/computed';
+import { debounce } from './utils/ember/runloop';
+import RSVP from './utils/rsvp';
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,
@@ -157,13 +159,13 @@ export default EmberObject.extend(PortMixin, {
 
   promiseUpdated(event) {
     this.updatedPromises.pushObject(event.promise);
-    Ember.run.debounce(this, 'promisesUpdated', this.delay);
+    debounce(this, 'promisesUpdated', this.delay);
   },
 
   promiseChained(event) {
     this.updatedPromises.pushObject(event.promise);
     this.updatedPromises.pushObject(event.child);
-    run.debounce(this, 'promisesUpdated', this.delay);
+    debounce(this, 'promisesUpdated', this.delay);
   },
 
   serializeArray(promises) {

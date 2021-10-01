@@ -1,12 +1,9 @@
 import BasicAdapter from './basic';
-import Ember from '../utils/ember';
-
-const {
-  computed,
-  run,
-  RSVP: { Promise },
-} = Ember;
 import { onReady } from '../utils/on-ready';
+
+import { computed } from '../utils/ember/object';
+import { run } from '../utils/ember/runloop';
+import { Promise } from '../utils/rsvp';
 
 export default BasicAdapter.extend({
   sendMessage(options = {}) {

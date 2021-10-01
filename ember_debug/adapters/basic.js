@@ -1,8 +1,9 @@
 /* eslint no-console: 0 */
-import Ember from '../utils/ember';
-const { A, computed, RSVP, Object: EmberObject } = Ember;
-const { Promise, resolve } = RSVP;
 import { onReady } from '../utils/on-ready';
+
+import { A } from '../utils/ember/array';
+import EmberObject, { computed } from '../utils/ember/object';
+import { Promise, resolve } from '../utils/rsvp';
 
 export default EmberObject.extend({
   init() {

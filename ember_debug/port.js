@@ -1,8 +1,10 @@
-import Ember from './utils/ember';
-const { Object: EmberObject, computed, run } = Ember;
-const { or, readOnly } = computed;
+import EmberObject, { computed } from './utils/ember/object';
+import { or, readOnly } from './utils/ember/object/computed';
+import Evented from './utils/ember/object/evented';
+import { guidFor } from './utils/ember/object/internals';
+import { run } from './utils/ember/runloop';
 
-export default EmberObject.extend(Ember.Evented, {
+export default EmberObject.extend(Evented, {
   adapter: readOnly('namespace.adapter'),
   applicationId: readOnly('namespace.applicationId'),
   applicationName: or(
@@ -19,7 +21,7 @@ export default EmberObject.extend(Ember.Evented, {
    * @type {String}
    */
   uniqueId: computed('namespace._application', function () {
-    return Ember.guidFor(this.get('namespace._application'));
+    return guidFor(this.get('namespace._application'));
   }),
 
   init() {
