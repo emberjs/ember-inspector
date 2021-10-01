@@ -1,5 +1,4 @@
 import { inject as service } from '@ember/service';
-import { assign } from '@ember/polyfills';
 import { set } from '@ember/object';
 import TabRoute from 'ember-inspector/routes/tab';
 
@@ -33,7 +32,7 @@ export default class RouteTreeRoute extends TabRoute {
 
 function topSort(tree, list) {
   list = list || [];
-  let route = assign({}, tree);
+  let route = { ...tree };
   delete route.children;
   // Firt node in the tree doesn't have a value
   if (route.value) {
