@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import QUnit from 'qunit';
 import { next } from '@ember/runloop';
-import BasicAdapter from '../adapters/basic';
+import BasicAdapter from 'ember-inspector/services/adapters/basic';
 
 let adapter = null;
 let resourcesEnabled = false;

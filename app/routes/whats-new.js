@@ -1,4 +1,5 @@
 import TabRoute from 'ember-inspector/routes/tab';
+import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import fetch from 'fetch';
 
@@ -19,6 +20,7 @@ function getLatestEntry(doc) {
 }
 
 export default class WhatsNewRoute extends TabRoute {
+  @service config;
   @tracked error = false;
 
   model() {

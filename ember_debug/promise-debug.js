@@ -22,7 +22,12 @@ export default EmberObject.extend(PortMixin, {
 
   init() {
     this._super();
-    this.set('promiseAssembler', PromiseAssembler.create());
+    this.set(
+      'promiseAssembler',
+      PromiseAssembler.create({
+        port: this.get('port'),
+      })
+    );
     this.promiseAssembler.set('promiseDebug', this);
     this.setInstrumentWithStack();
     this.sendInstrumentWithStack();

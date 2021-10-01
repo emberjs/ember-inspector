@@ -4,6 +4,7 @@ import { setProperties, action } from '@ember/object';
 import TabRoute from 'ember-inspector/routes/tab';
 
 export default class DeprecationsRoute extends TabRoute {
+  @service adapter;
   @service port;
 
   model() {
