@@ -158,7 +158,7 @@ export default class ProfileManager {
   }
 
   teardown() {
-    this.stylesheet.remove();
+    this.stylesheet?.remove();
     // remove all the active highlighted components
     this._removeAllHighlights();
   }
