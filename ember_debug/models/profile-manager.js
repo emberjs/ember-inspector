@@ -3,7 +3,7 @@ import ProfileNode from './profile-node';
 import { later, scheduleOnce } from '../utils/ember/runloop';
 const { guidFor } = Ember;
 const {
-  run: { later, scheduleOnce },
+  run: { later, scheduleOnce, cancel },
 } = Ember;
 
 function getEdges(first, last, closest) {
@@ -172,7 +172,7 @@ export default class ProfileManager {
 
   _removeHighlight(highlight) {
     this.highlights = this.highlights.filter((item) => item !== highlight);
-    clearTimeout(highlight.timeout);
+    cancel(highlight.timeout);
     highlight.el.remove();
   }
 
@@ -180,9 +180,9 @@ export default class ProfileManager {
     insertHTML(highlight.el);
     this.highlights.push(highlight);
 
-    highlight.timeout = setTimeout(() => {
+    highlight.timeout = later(() => {
       this._removeHighlight(highlight);
-    }, 1000);
+    }, 500);
   }
 
   _constructHighlight(renderedNode) {

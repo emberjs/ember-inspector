@@ -1,5 +1,5 @@
 import ProfileManager from 'ember-debug/models/profile-manager';
-import { find, visit } from '@ember/test-helpers';
+import { find, visit, waitUntil, getSettledState } from '@ember/test-helpers';
 import EmberComponent from '@ember/component';
 import EmberRoute from '@ember/routing/route';
 import EmberObject from '@ember/object';
@@ -11,22 +11,21 @@ import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import { run } from '@ember/runloop';
 
 const getRounded = (value) => {
-  let data = value
+  let data = value;
   if (typeof data === 'string') {
     // remove unit px
     if (data.indexOf('px') !== -1) {
       data.replace('px', '');
     }
-    data = parseFloat(data)
+    data = parseFloat(data);
   }
   return Math.floor(data);
-}
+};
 
 module('Ember Debug - profile manager component highlight', function (hooks) {
   setupEmberDebugTest(hooks, {
     routes() {
       this.route('simple');
-      this.route('comments', { resetNamespace: true }, function () {});
       this.route('posts', { resetNamespace: true });
     },
   });
@@ -56,15 +55,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
               return 'Simple Model';
             },
           });
-        },
-      })
-    );
-
-    this.owner.register(
-      'route:comments.index',
-      EmberRoute.extend({
-        model() {
-          return A(['first comment', 'second comment', 'third comment']);
         },
       })
     );
@@ -135,12 +125,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
       })
     );
     this.owner.register(
-      'template:comments/index',
-      hbs('{{#each this.comments as |comment|}}{{comment}}{{/each}}', {
-        moduleName: 'my-app/templates/comments/index.hbs',
-      })
-    );
-    this.owner.register(
       'template:posts',
       hbs('Posts', { moduleName: 'my-app/templates/posts.hbs' })
     );
@@ -170,34 +154,99 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
     await visit('/posts');
 
     // enable highlight
-    run(() => EmberDebug.port.trigger('render:updateShouldHighlightRender', {
-      shouldHighlightRender: true,
-    }));
+    run(() =>
+      EmberDebug.port.trigger('render:updateShouldHighlightRender', {
+        shouldHighlightRender: true,
+      })
+    );
+
+    const newHighlights = [];
+
+    const observer = new MutationObserver(function (records) {
+      records.forEach((record) => {
+        record.addedNodes.forEach((node) => {
+          if (node.className === 'ember-inspector-render-highlight') {
+            newHighlights.push(node);
+          }
+        });
+      });
+    });
+
+    observer.observe(document.body, { childList: true });
 
     await visit('/simple');
+
+    await waitUntil(() => {
+      // Check for the settled state minus hasPendingTimers
+      let { hasRunLoop, hasPendingRequests, hasPendingWaiters } =
+        getSettledState();
+      if (hasRunLoop || hasPendingRequests || hasPendingWaiters) {
+        return false;
+      }
+      return true;
+    });
 
     const simpleComponent = find('.simple-component');
     const anotherComponent = find('.another-component');
 
-    const [simpleHighlight, anotherHighlight] = document.getElementsByClassName(
-      'ember-inspector-render-highlight'
-    );
+    const [simpleHighlight, anotherHighlight] = newHighlights;
 
     const simpleStyle = simpleHighlight.style;
     const simpleExpected = simpleComponent.getBoundingClientRect();
     assert.ok(simpleHighlight, 'simpleHighlight is visible');
-    assert.equal(getRounded(simpleStyle.left), getRounded(simpleExpected.x), 'same x as component');
-    assert.equal(getRounded(simpleStyle.top), getRounded(simpleExpected.y), 'same y as component');
-    assert.equal(getRounded(simpleStyle.width), getRounded(simpleExpected.width), 'same width as component');
-    assert.equal(getRounded(simpleStyle.height), getRounded(simpleExpected.height), 'same height as component');
+    assert.equal(
+      getRounded(simpleStyle.left),
+      getRounded(simpleExpected.x),
+      'same x as component'
+    );
+    assert.equal(
+      getRounded(simpleStyle.top),
+      getRounded(simpleExpected.y),
+      'same y as component'
+    );
+    assert.equal(
+      getRounded(simpleStyle.width),
+      getRounded(simpleExpected.width),
+      'same width as component'
+    );
+    assert.equal(
+      getRounded(simpleStyle.height),
+      getRounded(simpleExpected.height),
+      'same height as component'
+    );
 
     const anotherStyle = anotherHighlight.style;
 
     const anotherExpected = anotherComponent.getBoundingClientRect();
     assert.ok(anotherHighlight, 'anotherHighlight is visible');
-    assert.equal(getRounded(anotherStyle.left), getRounded(anotherExpected.x), 'same x as component');
-    assert.equal(getRounded(anotherStyle.top), getRounded(anotherExpected.y), 'same y as component');
-    assert.equal(getRounded(anotherStyle.width), getRounded(anotherExpected.width), 'same width as component');
-    assert.equal(getRounded(anotherStyle.height), getRounded(anotherExpected.height), 'same height as component');
+    assert.equal(
+      getRounded(anotherStyle.left),
+      getRounded(anotherExpected.x),
+      'same x as component'
+    );
+    assert.equal(
+      getRounded(anotherStyle.top),
+      getRounded(anotherExpected.y),
+      'same y as component'
+    );
+    assert.equal(
+      getRounded(anotherStyle.width),
+      getRounded(anotherExpected.width),
+      'same width as component'
+    );
+    assert.equal(
+      getRounded(anotherStyle.height),
+      getRounded(anotherExpected.height),
+      'same height as component'
+    );
+
+    const highlights = document.getElementsByClassName(
+      'ember-inspector-render-highlight'
+    );
+
+    assert.notOk(
+      highlights.length,
+      'tooltip should be destroyed after execution'
+    );
   });
 });
