@@ -1,5 +1,5 @@
 import ProfileManager from 'ember-debug/models/profile-manager';
-import { find, visit, waitUntil, getSettledState } from '@ember/test-helpers';
+import { find, visit, waitUntil } from '@ember/test-helpers';
 import EmberComponent from '@ember/component';
 import EmberRoute from '@ember/routing/route';
 import EmberObject from '@ember/object';
@@ -160,31 +160,25 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
       })
     );
 
-    const newHighlights = [];
-
-    const observer = new MutationObserver(function (records) {
-      records.forEach((record) => {
-        record.addedNodes.forEach((node) => {
-          if (node.className === 'ember-inspector-render-highlight') {
-            newHighlights.push(node);
-          }
+    async function highlightsPromise() {
+      const observedHighlights = [];
+      const observer = new MutationObserver(function (records) {
+        records.forEach((record) => {
+          record.addedNodes.forEach((node) => {
+            if (node.className === 'ember-inspector-render-highlight') {
+              observedHighlights.push(node);
+            }
+          });
         });
       });
-    });
+      observer.observe(document.body, { childList: true });
+      await visit('/simple');
+      await waitUntil(() => observedHighlights.length === 2, { timeout: 2000 });
+      observer.disconnect();
+      return observedHighlights;
+    }
 
-    observer.observe(document.body, { childList: true });
-
-    await visit('/simple');
-
-    await waitUntil(() => {
-      // Check for the settled state minus hasPendingTimers
-      let { hasRunLoop, hasPendingRequests, hasPendingWaiters } =
-        getSettledState();
-      if (hasRunLoop || hasPendingRequests || hasPendingWaiters) {
-        return false;
-      }
-      return true;
-    });
+    const newHighlights = await highlightsPromise();
 
     const simpleComponent = find('.simple-component');
     const anotherComponent = find('.another-component');
