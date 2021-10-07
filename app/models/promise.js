@@ -1,6 +1,5 @@
 import { observes } from '@ember-decorators/object';
 import { or, equal, not } from '@ember/object/computed';
-import { assign } from '@ember/polyfills';
 import { once } from '@ember/runloop';
 import { typeOf, isEmpty } from '@ember/utils';
 // eslint-disable-next-line ember/no-observers
@@ -203,9 +202,9 @@ export default class Promise extends EmberObject {
   }
 
   _allChildren() {
-    let children = assign([], this.children);
+    let children = [...this.children];
     children.forEach((item) => {
-      children = assign(children, item._allChildren());
+      children = [...children, item._allChildren()];
     });
     return children;
   }
@@ -213,7 +212,7 @@ export default class Promise extends EmberObject {
   _allParents() {
     let parent = this.parent;
     if (parent) {
-      return assign([parent], parent._allParents());
+      return [parent, ...parent._allParents()];
     } else {
       return [];
     }
