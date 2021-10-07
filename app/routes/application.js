@@ -5,14 +5,7 @@ import Ember from 'ember';
 const { NativeArray } = Ember;
 
 export default class ApplicationRoute extends Route {
-  /**
-   * Service used to broadcast changes to the application's layout
-   * such as toggling of the object inspector.
-   *
-   * @property layoutService
-   * @type {Service}
-   */
-  @service('layout') layoutService;
+  @service adapter;
   @service port;
 
   setupController(controller) {

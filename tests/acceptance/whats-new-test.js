@@ -49,7 +49,7 @@ module('Whats New', function (outer) {
   setupApplicationTest(outer);
 
   outer.beforeEach(function () {
-    this.config = this.owner.lookup('config:main');
+    this.config = this.owner.lookup('service:config');
     this.originalVersion = this.config.version;
   });
 

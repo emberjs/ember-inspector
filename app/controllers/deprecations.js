@@ -5,6 +5,7 @@ import debounceComputed from 'ember-inspector/computed/debounce';
 import searchMatch from 'ember-inspector/utils/search-match';
 
 export default class DeprecationsController extends Controller {
+  @service adapter;
   @service port;
 
   search = null;

@@ -1,8 +1,9 @@
 import { set } from '@ember/object';
 import Evented from '@ember/object/evented';
-import Service from '@ember/service';
-
+import Service, { inject as service } from '@ember/service';
 export default class PortService extends Service.extend(Evented) {
+  @service adapter;
+
   applicationId = undefined;
   applicationName = undefined;
 

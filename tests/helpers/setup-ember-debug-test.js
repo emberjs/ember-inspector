@@ -8,7 +8,7 @@ import {
   teardownContext,
 } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
-import BasicAdapter from '../../adapters/basic';
+import BasicAdapter from 'ember-inspector/services/adapters/basic';
 import config from 'ember-inspector/config/environment';
 import EmberDebug from 'ember-debug/main';
 import { hbs } from 'ember-cli-htmlbars';
@@ -42,7 +42,7 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     }
 
     this.owner.register('router:main', Router);
-    this.owner.register('adapter:main', BasicAdapter);
+    this.owner.register('service:adapter', BasicAdapter);
 
     run(() => {
       EmberDebug.setProperties({

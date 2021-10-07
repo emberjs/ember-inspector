@@ -12,7 +12,7 @@ import 'ember-debug/main';
 Application.initializer({
   name: `00-override-adapter`,
   initialize(app) {
-    app.register('adapter:main', TestAdapter);
+    app.register('service:adapter', TestAdapter);
   },
 });
 

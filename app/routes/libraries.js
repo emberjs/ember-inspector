@@ -4,6 +4,7 @@ import { Promise } from 'rsvp';
 import TabRoute from 'ember-inspector/routes/tab';
 
 export default class LibrariesRoute extends TabRoute {
+  @service config;
   @service port;
 
   @readOnly('config.VERSION') version;
