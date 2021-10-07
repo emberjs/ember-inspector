@@ -1,7 +1,5 @@
-import { run } from '@ember/runloop';
+import { debounce } from '@ember/runloop';
 import { computed } from '@ember/object';
-
-const { debounce } = run;
 
 // Use this if you want a property to debounce
 // another property with a certain delay.
