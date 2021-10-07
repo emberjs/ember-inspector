@@ -6,9 +6,12 @@
  */
 
 import Promise from 'ember-debug/models/promise';
-import Ember from '../utils/ember';
 
-const { Object: EmberObject, Evented, A, computed, RSVP, isNone } = Ember;
+import { A } from '../utils/ember/array';
+import EmberObject, { computed } from '../utils/ember/object';
+import Evented from '../utils/ember/object/evented';
+import { isNone } from '../utils/ember/utils';
+import RSVP from '../utils/rsvp';
 
 let PromiseAssembler = EmberObject.extend(Evented, {
   // RSVP lib to debug

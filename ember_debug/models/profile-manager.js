@@ -1,9 +1,6 @@
 import ProfileNode from './profile-node';
-import Ember from '../utils/ember';
 
-const {
-  run: { later, scheduleOnce },
-} = Ember;
+import { later, scheduleOnce } from '../utils/ember/runloop';
 
 /**
  * A class for keeping track of active rendering profiles as a list.

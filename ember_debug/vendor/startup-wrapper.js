@@ -1,3 +1,10 @@
+let Ember;
+try {
+  Ember = requireModule('ember')['default'];
+} catch {
+  Ember = window.Ember;
+}
+
 /* eslint camelcase:0 */
 /**
  This is a wrapper for `ember-debug.js`
@@ -9,7 +16,7 @@
  Also responsible for sending the first tree.
  **/
 /*eslint prefer-spread: 0 */
-/* globals Ember, adapter, env */
+/* globals adapter, env */
 var currentAdapter = 'basic';
 if (typeof adapter !== 'undefined') {
   currentAdapter = adapter;

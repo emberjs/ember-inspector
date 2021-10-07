@@ -1,9 +1,8 @@
 // eslint-disable-next-line ember/no-mixins
 import PortMixin from 'ember-debug/mixins/port-mixin';
-import Ember from './utils/ember';
 
-const { Object: EmberObject, computed } = Ember;
-const { reads, readOnly } = computed;
+import EmberObject, { computed } from './utils/ember/object';
+import { reads, readOnly } from './utils/ember/object/computed';
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,

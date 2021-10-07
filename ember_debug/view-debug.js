@@ -4,10 +4,9 @@ import PortMixin from 'ember-debug/mixins/port-mixin';
 import RenderTree from 'ember-debug/libs/render-tree';
 import ViewInspection from 'ember-debug/libs/view-inspection';
 import bound from 'ember-debug/utils/bound-method';
-import Ember from './utils/ember';
 
-const { computed, Object: EmberObject } = Ember;
-const { readOnly } = computed;
+import EmberObject from './utils/ember/object';
+import { readOnly } from './utils/ember/object/computed';
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,

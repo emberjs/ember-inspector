@@ -1,6 +1,4 @@
-import Ember from '../utils/ember';
-
-const { Mixin } = Ember;
+import Mixin from '../utils/ember/object/mixin';
 
 // eslint-disable-next-line ember/no-new-mixins
 export default Mixin.create({

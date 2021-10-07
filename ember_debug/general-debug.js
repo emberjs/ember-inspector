@@ -1,10 +1,9 @@
 /* eslint no-empty:0 */
 // eslint-disable-next-line ember/no-mixins
 import PortMixin from 'ember-debug/mixins/port-mixin';
-import Ember from './utils/ember';
 
-const { Object: EmberObject } = Ember;
-let { libraries } = Ember;
+import Ember from './utils/ember';
+import EmberObject from './utils/ember/object';
 
 /**
  * Class that handles gathering general information of the inspected app.
@@ -93,7 +92,7 @@ export default EmberObject.extend(PortMixin, {
      * the info tab.
      */
     getLibraries() {
-      this.sendMessage('libraries', { libraries: libraries._registry });
+      this.sendMessage('libraries', { libraries: Ember.libraries._registry });
     },
 
     getEmberCliConfig() {
