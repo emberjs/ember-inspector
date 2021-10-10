@@ -12,7 +12,6 @@ _subscribeToRenderEvents();
 export default EmberObject.extend(PortMixin, {
   namespace: null,
   portNamespace: 'render',
-  shouldHighlightRender: false,
 
   profileManager,
 
@@ -33,40 +32,11 @@ export default EmberObject.extend(PortMixin, {
 
     this.profileManager.offProfilesAdded(this, this.sendAdded);
     this.profileManager.offProfilesAdded(this, this._updateComponentTree);
+    this.profileManager.teardown()
   },
 
   sendAdded(profiles) {
-    if (this.shouldHighlightRender) {
-      profiles.forEach((profile) => {
-        this._hightLightNode(profile);
-      });
-    }
     this.sendMessage('profilesAdded', { profiles });
-  },
-
-  _hightLightNode({ viewGuid, children }) {
-    const hasChildren = children?.length > 0;
-    if (viewGuid) {
-      this._createOutline(viewGuid, hasChildren);
-    }
-    if (hasChildren) {
-      children.forEach((childNode) => {
-        this._hightLightNode(childNode);
-      });
-    }
-  },
-
-  _createOutline(viewGuid, hasChildren) {
-    const element = document.getElementById(viewGuid);
-    if (element) {
-      const outline = element.style.outline;
-      element.style.outline = `${hasChildren ? '0.5' : '1'}px solid ${
-        hasChildren ? 'blue' : 'red'
-      }`;
-      setTimeout(() => {
-        element.style.outline = outline ?? 'none';
-      }, 1000);
-    }
   },
 
   /**
@@ -95,7 +65,7 @@ export default EmberObject.extend(PortMixin, {
     },
 
     updateShouldHighlightRender({ shouldHighlightRender }) {
-      this.shouldHighlightRender = shouldHighlightRender;
+      this.profileManager.shouldHighlightRender = shouldHighlightRender;
     },
   },
 });
@@ -114,7 +84,6 @@ function _subscribeToRenderEvents() {
         payload,
         now: Date.now(),
       };
-
       return profileManager.addToQueue(info);
     },
 

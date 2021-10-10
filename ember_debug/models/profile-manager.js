@@ -1,7 +1,81 @@
 import ProfileNode from './profile-node';
 
 import { later, scheduleOnce } from '../utils/ember/runloop';
+const { guidFor } = Ember;
 
+function _findRoots({ first, last, parent }) {
+  const roots = [];
+  const closest = parent.childNodes;
+  if (first.node === last.node)
+    return [first.node];
+
+  let start = null;
+  let end = null;
+  for (let i = 0; i < closest.length; i++) {
+    if (closest.item(i) === first.node)
+      start = i;
+    else if (closest.item(i) === last.node)
+      end = i;
+  }
+
+  if (start === null || end === null)
+    return [];
+
+  for (let i = start; i <= end; i++)
+    roots.push(closest.item(i));
+
+  return roots.filter((el) => {
+    if (el.nodeType === 3) {
+      if (el.nodeValue.trim() === '') {
+        return false;
+      }
+    }
+    return el;
+  })
+}
+
+function makeHighlight(id) {
+  return `<div id="ember-inspector-render-highlight-${id}" role="presentation" class="ember-inspector-render-highlight"></div>`;
+}
+function _insertHTML(id) {
+  document.body.insertAdjacentHTML('beforeend', makeHighlight(id).trim());
+  return document.body.lastChild;
+}
+
+function _insertStylesheet() {
+  const content = `
+    .ember-inspector-render-highlight {
+      border: 1px solid red;
+    }
+  `
+  const style = document.createElement('style');
+  style.appendChild(document.createTextNode(content));
+  document.head.appendChild(style);
+  return style;
+}
+
+function _renderHighlight(node, guid) {
+  if (!node?.getBoundingClientRect) {
+    return;
+  }
+  const rect = node.getBoundingClientRect()
+  const id = guid || (Math.random() * 100000000).toFixed(0);
+  const highlight = _insertHTML(id);
+  const { top, left, width, height } = rect;
+  const { scrollX, scrollY } = window;
+  const { style } = highlight;
+  if (style) {
+    style.position = 'absolute';
+    style.top = `${top + scrollY}px`;
+    style.left = `${left + scrollX}px`;
+    style.width = `${width}px`;
+    style.height = `${height}px`;
+    style.zIndex = `1000000`;
+  }
+  setTimeout(() => {
+    highlight.remove()
+  }, 1000);
+}
 /**
  * A class for keeping track of active rendering profiles as a list.
  */
@@ -12,11 +86,16 @@ export default class ProfileManager {
     this.currentSet = [];
     this._profilesAddedCallbacks = [];
     this.queue = [];
+    this.shouldHighlightRender = false;
+    this.stylesheet = _insertStylesheet();
   }
 
   began(timestamp, payload, now) {
     return this.wrapForErrors(this, function () {
       this.current = new ProfileNode(timestamp, payload, this.current, now);
+      if (this.shouldHighlightRender && payload.view) {
+        this.renderHighLight(payload.view);
+      }
       return this.current;
     });
   }
@@ -40,6 +119,16 @@ export default class ProfileManager {
 
   wrapForErrors(context, callback) {
     return callback.call(context);
+  }
+
+  renderHighLight(view) {
+    const symbols = Object.getOwnPropertySymbols(view);
+    const bounds = view[symbols.find(sym => sym.description === "BOUNDS")];
+    const elements = _findRoots(bounds);
+
+    elements.forEach((node) => {
+      _renderHighlight(node, guidFor(view))
+    });
   }
 
   /**
@@ -75,6 +164,10 @@ export default class ProfileManager {
     if (index > -1) {
       this._profilesAddedCallbacks.splice(index, 1);
     }
+  }
+
+  teardown() {
+    this.stylesheet.remove();
   }
 
   _flush() {
