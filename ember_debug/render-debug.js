@@ -32,7 +32,7 @@ export default EmberObject.extend(PortMixin, {
 
     this.profileManager.offProfilesAdded(this, this.sendAdded);
     this.profileManager.offProfilesAdded(this, this._updateComponentTree);
-    this.profileManager.teardown()
+    this.profileManager.teardown();
   },
 
   sendAdded(profiles) {

@@ -2,44 +2,43 @@ import ProfileNode from './profile-node';
 
 import { later, scheduleOnce } from '../utils/ember/runloop';
 const { guidFor } = Ember;
+const {
+  run: { later, scheduleOnce },
+} = Ember;
 
-function _findRoots({ first, last, parent }) {
+function getUnfilteredRoots(first, last, closest) {
   const roots = [];
-  const closest = parent.childNodes;
-  if (first.node === last.node)
-    return [first.node];
-
   let start = null;
   let end = null;
   for (let i = 0; i < closest.length; i++) {
-    if (closest.item(i) === first.node)
-      start = i;
-    else if (closest.item(i) === last.node)
-      end = i;
+    if (closest.item(i) === first.node) start = i;
+    else if (closest.item(i) === last.node) end = i;
   }
 
-  if (start === null || end === null)
-    return [];
+  if (start === null || end === null) return [];
 
-  for (let i = start; i <= end; i++)
-    roots.push(closest.item(i));
+  for (let i = start; i <= end; i++) roots.push(closest.item(i));
 
-  return roots.filter((el) => {
-    if (el.nodeType === 3) {
-      if (el.nodeValue.trim() === '') {
-        return false;
-      }
-    }
-    return el;
-  })
+  return roots;
 }
 
-function makeHighlight(id) {
-  return `<div id="ember-inspector-render-highlight-${id}" role="presentation" class="ember-inspector-render-highlight"></div>`;
+function _findRoots({ first, last, parent }) {
+  const closest = parent.childNodes;
+  if (first.node === last.node) return [first.node];
+
+  const roots = getUnfilteredRoots(first, last, closest);
+
+  return roots.filter((el) => el.nodeType === 1);
 }
-function _insertHTML(id) {
-  document.body.insertAdjacentHTML('beforeend', makeHighlight(id).trim());
-  return document.body.lastChild;
+
+function makeHighlight() {
+  const node = document.createElement('div');
+  node.setAttribute('role', 'presentation');
+  node.setAttribute('class', 'ember-inspector-render-highlight');
+  return node;
+}
+function _insertHTML() {
+  return document.body.appendChild(makeHighlight());
 }
 
 function _insertStylesheet() {
@@ -47,20 +46,19 @@ function _insertStylesheet() {
     .ember-inspector-render-highlight {
       border: 1px solid red;
     }
-  `
+  `;
   const style = document.createElement('style');
   style.appendChild(document.createTextNode(content));
   document.head.appendChild(style);
   return style;
 }
 
-function _renderHighlight(node, guid) {
+function _renderHighlight(node) {
   if (!node?.getBoundingClientRect) {
     return;
   }
-  const rect = node.getBoundingClientRect()
-  const id = guid || (Math.random() * 100000000).toFixed(0);
-  const highlight = _insertHTML(id);
+  const rect = node.getBoundingClientRect();
+  const highlight = _insertHTML();
   const { top, left, width, height } = rect;
   const { scrollX, scrollY } = window;
   const { style } = highlight;
@@ -73,7 +71,7 @@ function _renderHighlight(node, guid) {
     style.zIndex = `1000000`;
   }
   setTimeout(() => {
-    highlight.remove()
+    highlight.remove();
   }, 1000);
 }
 /**
@@ -123,11 +121,11 @@ export default class ProfileManager {
 
   renderHighLight(view) {
     const symbols = Object.getOwnPropertySymbols(view);
-    const bounds = view[symbols.find(sym => sym.description === "BOUNDS")];
+    const bounds = view[symbols.find((sym) => sym.description === 'BOUNDS')];
     const elements = _findRoots(bounds);
 
     elements.forEach((node) => {
-      _renderHighlight(node, guidFor(view))
+      _renderHighlight(node);
     });
   }
 
