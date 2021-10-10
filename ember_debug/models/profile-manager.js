@@ -1,10 +1,8 @@
 import ProfileNode from './profile-node';
+import Ember from '../utils/ember';
+import { compareVersion } from 'ember-debug/utils/version';
 
-import { later, scheduleOnce } from '../utils/ember/runloop';
-const { guidFor } = Ember;
-const {
-  run: { later, scheduleOnce, cancel },
-} = Ember;
+import { later, scheduleOnce, cancel } from '../utils/ember/runloop';
 
 function getEdges(first, last, closest) {
   let start = null;
@@ -77,6 +75,7 @@ export default class ProfileManager {
     this.stylesheet = insertStylesheet();
     // keep track of all the active highlights
     this.highlights = [];
+    this.isHighlightEnabled = compareVersion(Ember?.VERSION, '3.20.0') !== -1;
   }
 
   began(timestamp, payload, now) {
@@ -85,6 +84,7 @@ export default class ProfileManager {
       if (this.shouldHighlightRender && payload.view) {
         this._highLightView(payload.view);
       }
+      this.current.isHighlightEnabled = this.isHighlightEnabled;
       return this.current;
     });
   }

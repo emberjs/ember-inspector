@@ -17,16 +17,17 @@
     @value={{@searchValue}}
     class="js-render-profiles-search"
   />
-
-  <div class="toolbar__checkbox js-hightlight-render">
-    <label>
-      <Input
-        data-test-options-highlight-render
-        @type="checkbox"
-        @checked={{@shouldHighlightRender}}
-        {{on "change" @updateShouldHighlightRender}}
-      />
-      Highlight render
-    </label>
-  </div>
+  {{#if @isHighlightEnabled}}
+    <div class="toolbar__checkbox js-hightlight-render">
+      <label>
+        <Input
+          data-test-options-highlight-render
+          @type="checkbox"
+          @checked={{@shouldHighlightRender}}
+          {{on "change" @updateShouldHighlightRender}}
+        />
+        Highlight render
+      </label>
+    </div>
+  {{/if}}
 </div>

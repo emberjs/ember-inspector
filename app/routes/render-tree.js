@@ -1,4 +1,4 @@
-import { action, get, set } from '@ember/object';
+import EmberObject, { action, get, set } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { Promise } from 'rsvp';
 import TabRoute from 'ember-inspector/routes/tab';
@@ -9,9 +9,12 @@ export default class RenderTreeRoute extends TabRoute {
   model() {
     const port = this.port;
     return new Promise(function (resolve) {
-      port.one('render:profilesAdded', function (message) {
-        resolve(message.profiles);
-      });
+      port.one(
+        'render:profilesAdded',
+        function ({ profiles, isHighlighSupported }) {
+          resolve(EmberObject.create({ profiles, isHighlighSupported }));
+        }
+      );
       port.send('render:watchProfiles');
     });
   }
@@ -19,7 +22,7 @@ export default class RenderTreeRoute extends TabRoute {
   setupController(controller, model) {
     super.setupController(...arguments);
 
-    if (model.length === 0) {
+    if (get(model, 'profiles.length') === 0) {
       controller.set('initialEmpty', true);
     }
     const port = this.port;
@@ -37,16 +40,27 @@ export default class RenderTreeRoute extends TabRoute {
   }
 
   profilesUpdated(message) {
-    set(this, 'controller.model', message.profiles);
+    set(this, 'controller.model.profiles', message.profiles);
   }
 
   profilesAdded(message) {
-    const model = get(this, 'controller.model');
+    const currentProfiles = get(this, 'controller.model.profiles');
     const profiles = message.profiles;
+    if (
+      message.isHighlighSupported !== undefined &&
+      message.isHighlighSupported !==
+        get(this, 'controller.model.isHighlighSupported')
+    ) {
+      set(
+        this,
+        'controller.model.isHighlighSupported',
+        message.isHighlighSupported
+      );
+    }
 
-    model.pushObjects(profiles);
-    if (model.length > 100) {
-      set(this, 'controller.model', model.slice(0, 100));
+    currentProfiles.pushObjects(profiles);
+    if (currentProfiles.length > 100) {
+      set(this, 'controller.model.profiles', currentProfiles.slice(0, 100));
     }
   }
 

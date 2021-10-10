@@ -8,7 +8,7 @@
 import Promise from 'ember-debug/models/promise';
 
 import { A } from '../utils/ember/array';
-import EmberObject from '../utils/ember/object';
+import EmberObject, { computed } from '../utils/ember/object';
 import Evented from '../utils/ember/object/evented';
 import { isNone } from '../utils/ember/utils';
 import RSVP from '../utils/rsvp';

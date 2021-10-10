@@ -8,7 +8,7 @@ import { and, equal } from '@ember/object/computed';
 
 export default Controller.extend({
   initialEmpty: false,
-  modelEmpty: equal('model.length', 0),
+  modelEmpty: equal('model.profiles.length', 0),
   showEmpty: and('initialEmpty', 'modelEmpty'),
   shouldHighlightRender: false,
 
@@ -59,16 +59,20 @@ export default Controller.extend({
     return escapeRegExp(this.search.toLowerCase());
   }),
 
+  isHighlightEnabled: computed('model.isHighlighSupported', function () {
+    return get(this.model, 'isHighlighSupported');
+  }),
+
   filtered: computed(
     'escapedSearch',
-    'model.@each.name',
+    'model.profiles.@each.name',
     'search',
     function () {
       if (isEmpty(this.escapedSearch)) {
-        return this.model;
+        return get(this.model, 'profiles');
       }
 
-      return this.model.filter((item) => {
+      return get(this.model, 'profiles').filter((item) => {
         const regExp = new RegExp(this.escapedSearch);
         return recursiveMatch(item, regExp);
       });

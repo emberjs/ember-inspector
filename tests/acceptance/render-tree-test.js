@@ -132,15 +132,6 @@ module('Render Tree Tab', function (outer) {
         .hasText('Second View Rendering');
     });
 
-    test('Renders checkbox for highlight render', async function (assert) {
-      await visit('/render-tree');
-
-      assert
-        .dom('[data-test-options-highlight-render]')
-        .exists('checkbox input is rendered');
-      assert.dom('.js-hightlight-render').hasText('Highlight render');
-    });
-
     test('It should clear the search filter when the clear button is clicked', async function (assert) {
       await visit('/render-tree');
 
