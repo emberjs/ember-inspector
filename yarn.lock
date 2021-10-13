@@ -1362,7 +1362,7 @@
     ember-cli-htmlbars "^5.7.1"
     ember-cli-version-checker "^5.1.2"
     ember-compatibility-helpers "^1.2.5"
-    ember-raf-scheduler "0.2.0"
+    ember-raf-scheduler html-next/ember-raf-scheduler#5c3c55f1493d0db6ec87412141953b39d8601cca
 
 "@humanwhocodes/config-array@^0.5.0":
   version "0.5.0"
@@ -5576,9 +5576,9 @@ ember-auto-import@^1.10.1, ember-auto-import@^1.5.3:
     webpack "^4.43.0"
 
 ember-auto-import@^2.1.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/ember-auto-import/-/ember-auto-import-2.2.0.tgz#6206be37e676fb490f03dd20afab973d5abe9da9"
-  integrity sha512-ngluzmtV31mTY+1ceOnWfGUIgGyZt850xFncMX/14Dfx0OhXaUKBpFjKjIor/Cen4WEF+OrdgNJAjH3sM07o6w==
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/ember-auto-import/-/ember-auto-import-2.2.2.tgz#506078c87cb9c92fe772a91472a008948437671c"
+  integrity sha512-6tQzTURZ+AHlU0t/0w8IaZFO1GKaPgy/SaLUhoAo4XUAWcMQMaK0TSKqWE3P7ZYvrnSr7hBcPfaxdLCYe4naMQ==
   dependencies:
     "@babel/core" "^7.1.6"
     "@babel/plugin-proposal-class-properties" "^7.13.0"
@@ -6178,10 +6178,10 @@ ember-qunit@^5.1.4:
     silent-error "^1.1.1"
     validate-peer-dependencies "^1.1.0"
 
-ember-raf-scheduler@0.2.0, ember-raf-scheduler@^0.2.0:
+ember-raf-scheduler@^0.2.0, ember-raf-scheduler@html-next/ember-raf-scheduler#5c3c55f1493d0db6ec87412141953b39d8601cca:
   version "0.2.0"
-  resolved "https://registry.yarnpkg.com/ember-raf-scheduler/-/ember-raf-scheduler-0.2.0.tgz#73250f6ca9760e4920c26d2eeb69738dc66dadc5"
-  integrity sha512-z34reOLFORfigukrba3d5I333rixfcPjjfKPOKeaPAHf3I5wXfenoAze0Ijc7r4l/lO/4ocLw9RJbtNL2/oNpw==
+  uid "5c3c55f1493d0db6ec87412141953b39d8601cca"
+  resolved "https://codeload.github.com/html-next/ember-raf-scheduler/tar.gz/5c3c55f1493d0db6ec87412141953b39d8601cca"
   dependencies:
     ember-cli-babel "^7.12.0"
 
