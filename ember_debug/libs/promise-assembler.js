@@ -19,16 +19,11 @@ let PromiseAssembler = EmberObject.extend(Evented, {
 
   isStarted: false,
 
-  all: computed(function () {
-    return A();
-  }),
-
-  promiseIndex: computed(function () {
-    return {};
-  }),
-
-  // injected on creation
-  promiseDebug: null,
+  init() {
+    this._super(...arguments);
+    this.all = A();
+    this.promiseIndex = {};
+  },
 
   start() {
     this.RSVP.configure('instrument', true);
@@ -65,9 +60,9 @@ let PromiseAssembler = EmberObject.extend(Evented, {
       this.all.forEach((item) => {
         item.destroy();
       });
-      this.set('all', A());
-      this.set('promiseIndex', {});
 
+      this.all = A();
+      this.promiseIndex = {};
       this.promiseChained = null;
       this.promiseRejected = null;
       this.promiseFulfilled = null;

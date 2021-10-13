@@ -17,20 +17,14 @@ export default EmberObject.extend(PortMixin, {
 
   // created on init
   promiseAssembler: null,
-
-  releaseMethods: computed(function () {
-    return A();
-  }),
+  updatedPromises: null,
+  releaseMethods: null,
 
   init() {
     this._super();
-    this.set(
-      'promiseAssembler',
-      PromiseAssembler.create({
-        port: this.get('port'),
-      })
-    );
-    this.promiseAssembler.set('promiseDebug', this);
+    this.promiseAssembler = PromiseAssembler.create();
+    this.updatedPromises = A();
+    this.releaseMethods = A();
     this.setInstrumentWithStack();
     this.sendInstrumentWithStack();
     this.promiseAssembler.start();
@@ -43,7 +37,7 @@ export default EmberObject.extend(PortMixin, {
     if (this.promiseAssembler) {
       this.promiseAssembler.destroy();
     }
-    this.set('promiseAssembler', null);
+    this.promiseAssembler = null;
     this._super();
   },
 
@@ -116,7 +110,7 @@ export default EmberObject.extend(PortMixin, {
     this.releaseMethods.forEach((fn) => {
       fn();
     });
-    this.set('releaseMethods', A());
+    this.releaseMethods.clear();
   },
 
   getAndObservePromises() {
@@ -134,10 +128,6 @@ export default EmberObject.extend(PortMixin, {
 
     this.promisesUpdated(this.promiseAssembler.find());
   },
-
-  updatedPromises: computed(function () {
-    return A();
-  }),
 
   promisesUpdated(uniquePromises) {
     if (!uniquePromises) {
@@ -211,6 +201,8 @@ export default EmberObject.extend(PortMixin, {
       inspected.type === 'type-ember-object' ||
       inspected.type === 'type-array'
     ) {
+      console.count('inspectValue');
+
       inspected.objectId = objectInspector.retainObject(promise.get(key));
       this.releaseMethods.pushObject(function () {
         objectInspector.releaseObject(inspected.objectId);
