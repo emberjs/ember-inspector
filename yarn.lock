@@ -1362,7 +1362,7 @@
     ember-cli-htmlbars "^5.7.1"
     ember-cli-version-checker "^5.1.2"
     ember-compatibility-helpers "^1.2.5"
-    ember-raf-scheduler "0.2.0"
+    ember-raf-scheduler html-next/ember-raf-scheduler#5c3c55f1493d0db6ec87412141953b39d8601cca
 
 "@humanwhocodes/config-array@^0.5.0":
   version "0.5.0"

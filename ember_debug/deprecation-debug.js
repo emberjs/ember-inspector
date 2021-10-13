@@ -199,6 +199,11 @@ export default EmberObject.extend(PortMixin, {
 
   handleDeprecations() {
     registerDeprecationHandler((message, options, next) => {
+      if (!this.adapter) {
+        next(message, options);
+        return;
+      }
+
       /* global __fail__*/
 
       let error;

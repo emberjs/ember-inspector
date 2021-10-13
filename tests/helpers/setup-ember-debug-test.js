@@ -15,11 +15,12 @@ import { hbs } from 'ember-cli-htmlbars';
 import Port from 'ember-debug/port';
 
 export default function setupEmberDebugTest(hooks, options = {}) {
-  let app, originalApp, originalPort;
+  let app, originalApp, originalPort, originalIgnoreDeprecations;
 
   hooks.beforeEach(async function () {
     originalPort = EmberDebug.Port;
     originalApp = getApplication();
+    originalIgnoreDeprecations = EmberDebug.IGNORE_DEPRECATIONS;
 
     app = Application.create(config.APP);
     setApplication(app);
@@ -66,6 +67,7 @@ export default function setupEmberDebugTest(hooks, options = {}) {
 
     EmberDebug.destroyContainer();
     EmberDebug.clear();
+    EmberDebug.IGNORE_DEPRECATIONS = originalIgnoreDeprecations;
 
     run(() => {
       EmberDebug.setProperties({
