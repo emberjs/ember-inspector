@@ -700,7 +700,7 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Date fields are editable', async function (assert) {
-    assert.expect(4);
+    assert.expect(5);
 
     await visit('/');
 
@@ -726,6 +726,26 @@ module('Object Inspector', function (hooks) {
         },
       ],
     });
+
+    respondWith(
+      'objectInspector:saveProperty',
+      ({ objectId, property, value }) => {
+        assert.strictEqual(typeof value, 'number', 'sent as timestamp');
+        date = new Date(value);
+
+        return {
+          type: 'objectInspector:updateProperty',
+          objectId,
+          property,
+          mixinIndex: 0,
+          value: {
+            inspect: date.toString(),
+            type: 'type-date',
+            isCalculated: false,
+          },
+        };
+      }
+    );
 
     await click('[data-test-object-detail-name]');
 
