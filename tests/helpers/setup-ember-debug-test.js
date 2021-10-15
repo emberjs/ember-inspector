@@ -25,11 +25,10 @@ export default function setupEmberDebugTest(hooks, options = {}) {
 
     app = Application.create({
       ...config.APP,
-      modulePrefix: config.modulePrefix,
-      podModulePrefix: config.podModulePrefix,
-      Resolver
+      Resolver,
     });
     setApplication(app);
+
     await setupContext(this);
     await setupApplicationContext(this);
 
