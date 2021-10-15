@@ -1,4 +1,5 @@
 import Application from '@ember/application';
+import Resolver from 'ember-resolver';
 import EmberRouter from '@ember/routing/router';
 import {
   getApplication,
@@ -22,9 +23,13 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     originalApp = getApplication();
     originalIgnoreDeprecations = EmberDebug.IGNORE_DEPRECATIONS;
 
-    app = Application.create(config.APP);
+    app = Application.create({
+      ...config.APP,
+      modulePrefix: config.modulePrefix,
+      podModulePrefix: config.podModulePrefix,
+      Resolver
+    });
     setApplication(app);
-
     await setupContext(this);
     await setupApplicationContext(this);
 
