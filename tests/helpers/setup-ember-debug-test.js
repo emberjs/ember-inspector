@@ -25,6 +25,7 @@ export default function setupEmberDebugTest(hooks, options = {}) {
 
     app = Application.create({
       ...config.APP,
+      modulePrefix: config.modulePrefix,
       Resolver,
     });
     setApplication(app);
