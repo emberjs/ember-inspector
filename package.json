@@ -117,6 +117,9 @@
     "webpack": "^5.51.1",
     "yauzl": "^2.10.0"
   },
+  "resolutions": {
+    "socket.io": "4.2.0"
+  },
   "engines": {
     "node": "12.* || 14.* || >= 16"
   },
