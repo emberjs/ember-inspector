@@ -4,16 +4,11 @@ import PortMixin from 'ember-debug/mixins/port-mixin';
 import { compareVersion } from 'ember-debug/utils/version';
 import classify from 'ember-debug/utils/classify';
 import dasherize from 'ember-debug/utils/dasherize';
-import Ember from './utils/ember';
 
-const {
-  computed,
-  observer,
-  run: { later },
-  Object: EmberObject,
-  VERSION,
-} = Ember;
-const { readOnly } = computed;
+import Ember from './utils/ember';
+import EmberObject, { computed, observer } from './utils/ember/object';
+import { readOnly } from './utils/ember/object/computed';
+import { later } from './utils/ember/runloop';
 
 const { hasOwnProperty } = Object.prototype;
 
@@ -167,7 +162,7 @@ function buildSubTree(routeTree, route) {
       // 3.9.0 removed intimate APIs from router
       // https://github.com/emberjs/ember.js/pull/17843
       // https://deprecations.emberjs.com/v3.x/#toc_remove-handler-infos
-      if (compareVersion(VERSION, '3.9.0') !== -1) {
+      if (compareVersion(Ember.VERSION, '3.9.0') !== -1) {
         // Ember >= 3.9.0
         routeHandler = routerLib.getRoute(handler);
       } else {

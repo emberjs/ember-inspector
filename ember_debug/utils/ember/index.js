@@ -1,4 +1,5 @@
 let Ember;
+
 try {
   Ember = requireModule('ember')['default'];
 } catch {

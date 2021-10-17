@@ -9,36 +9,32 @@ import {
 } from 'ember-debug/utils/type-check';
 import { compareVersion } from 'ember-debug/utils/version';
 import { typeOf } from './utils/type-check';
+
 import Ember from './utils/ember';
+import MutableArray from './utils/ember/array/mutable';
+import ArrayProxy from './utils/ember/array/proxy';
+import Component from './utils/ember/component';
+import { inspect as emberInspect } from './utils/ember/debug';
+import EmberObject, { computed, get, set } from './utils/ember/object';
+import { oneWay } from './utils/ember/object/computed';
+import Observable from './utils/ember/object/observable';
+import Evented from './utils/ember/object/evented';
+import { cacheFor, guidFor } from './utils/ember/object/internals';
+import PromiseProxyMixin from './utils/ember/object/promise-proxy-mixin';
+import { _backburner, join } from './utils/ember/runloop';
+import { isNone } from './utils/ember/utils';
 
 const {
-  Object: EmberObject,
-  inspect: emberInspect,
   meta: emberMeta,
-  computed,
-  get,
-  set,
-  guidFor,
-  isNone,
-  cacheFor,
   VERSION,
-  run,
   ActionHandler,
-  ArrayProxy,
-  Component,
   ControllerMixin,
   CoreObject,
-  Evented,
-  MutableArray,
   MutableEnumerable,
   NativeArray,
   ObjectProxy,
-  Observable,
-  PromiseProxyMixin,
   TargetActionSupport,
 } = Ember;
-const { oneWay } = computed;
-const { backburner, join } = run;
 
 const GlimmerComponent = (() => {
   try {
@@ -343,7 +339,7 @@ export default EmberObject.extend(PortMixin, {
   init() {
     this._super();
     this.set('sentObjects', {});
-    backburner.on('end', bound(this, this.updateCurrentObject));
+    _backburner.on('end', bound(this, this.updateCurrentObject));
   },
 
   willDestroy() {
@@ -351,7 +347,7 @@ export default EmberObject.extend(PortMixin, {
     for (let objectId in this.sentObjects) {
       this.releaseObject(objectId);
     }
-    backburner.off('end', bound(this, this.updateCurrentObject));
+    _backburner.off('end', bound(this, this.updateCurrentObject));
   },
 
   sentObjects: {},

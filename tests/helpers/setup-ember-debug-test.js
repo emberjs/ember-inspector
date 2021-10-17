@@ -1,4 +1,5 @@
 import Application from '@ember/application';
+import Resolver from 'ember-resolver';
 import EmberRouter from '@ember/routing/router';
 import {
   getApplication,
@@ -8,20 +9,25 @@ import {
   teardownContext,
 } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
-import BasicAdapter from '../../adapters/basic';
+import BasicAdapter from 'ember-inspector/services/adapters/basic';
 import config from 'ember-inspector/config/environment';
 import EmberDebug from 'ember-debug/main';
 import { hbs } from 'ember-cli-htmlbars';
 import Port from 'ember-debug/port';
 
 export default function setupEmberDebugTest(hooks, options = {}) {
-  let app, originalApp, originalPort;
+  let app, originalApp, originalPort, originalIgnoreDeprecations;
 
   hooks.beforeEach(async function () {
     originalPort = EmberDebug.Port;
     originalApp = getApplication();
+    originalIgnoreDeprecations = EmberDebug.IGNORE_DEPRECATIONS;
 
-    app = Application.create(config.APP);
+    app = Application.create({
+      ...config.APP,
+      modulePrefix: config.modulePrefix,
+      Resolver,
+    });
     setApplication(app);
 
     await setupContext(this);
@@ -42,7 +48,7 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     }
 
     this.owner.register('router:main', Router);
-    this.owner.register('adapter:main', BasicAdapter);
+    this.owner.register('service:adapter', BasicAdapter);
 
     run(() => {
       EmberDebug.setProperties({
@@ -66,6 +72,7 @@ export default function setupEmberDebugTest(hooks, options = {}) {
 
     EmberDebug.destroyContainer();
     EmberDebug.clear();
+    EmberDebug.IGNORE_DEPRECATIONS = originalIgnoreDeprecations;
 
     run(() => {
       EmberDebug.setProperties({

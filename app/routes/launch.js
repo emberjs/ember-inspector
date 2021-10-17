@@ -10,6 +10,7 @@ const storageSupported = chromeStoreSupported || LOCAL_STORAGE_SUPPORTED;
 const STORE_KEY = 'last-version-opened';
 
 export default class LaunchRoute extends Route {
+  @service config;
   @service storage;
 
   @readOnly('config.VERSION') version;

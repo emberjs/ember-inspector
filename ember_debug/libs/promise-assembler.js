@@ -6,9 +6,12 @@
  */
 
 import Promise from 'ember-debug/models/promise';
-import Ember from '../utils/ember';
 
-const { Object: EmberObject, Evented, A, computed, RSVP, isNone } = Ember;
+import { A } from '../utils/ember/array';
+import EmberObject from '../utils/ember/object';
+import Evented from '../utils/ember/object/evented';
+import { isNone } from '../utils/ember/utils';
+import RSVP from '../utils/rsvp';
 
 let PromiseAssembler = EmberObject.extend(Evented, {
   // RSVP lib to debug
@@ -16,16 +19,11 @@ let PromiseAssembler = EmberObject.extend(Evented, {
 
   isStarted: false,
 
-  all: computed(function () {
-    return A();
-  }),
-
-  promiseIndex: computed(function () {
-    return {};
-  }),
-
-  // injected on creation
-  promiseDebug: null,
+  init() {
+    this._super(...arguments);
+    this.all = A();
+    this.promiseIndex = {};
+  },
 
   start() {
     this.RSVP.configure('instrument', true);
@@ -62,9 +60,9 @@ let PromiseAssembler = EmberObject.extend(Evented, {
       this.all.forEach((item) => {
         item.destroy();
       });
-      this.set('all', A());
-      this.set('promiseIndex', {});
 
+      this.all = A();
+      this.promiseIndex = {};
       this.promiseChained = null;
       this.promiseRejected = null;
       this.promiseFulfilled = null;

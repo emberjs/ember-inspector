@@ -2,9 +2,14 @@ import { get, set } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { Promise } from 'rsvp';
 import TabRoute from 'ember-inspector/routes/tab';
+import PromiseAssembler from 'ember-inspector/libs/promise-assembler';
 
 export default class PromiseTreeRoute extends TabRoute {
   @service port;
+
+  assembler = PromiseAssembler.create({
+    port: this.port,
+  });
 
   model() {
     // block rendering until first batch arrives

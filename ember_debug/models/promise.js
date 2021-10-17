@@ -1,9 +1,8 @@
 import { typeOf } from '../utils/type-check';
 
-import Ember from '../utils/ember';
-
-const { Object: EmberObject, computed, A } = Ember;
-const { equal, or } = computed;
+import { A } from '../utils/ember/array';
+import EmberObject, { computed } from '../utils/ember/object';
+import { equal, or } from '../utils/ember/object/computed';
 
 const dateComputed = function () {
   return computed({

@@ -10,16 +10,15 @@ import PromiseDebug from 'ember-debug/promise-debug';
 import ContainerDebug from 'ember-debug/container-debug';
 import DeprecationDebug from 'ember-debug/deprecation-debug';
 import Session from 'ember-debug/services/session';
-import Ember from './utils/ember';
 
-const {
-  Object: EmberObject,
-  run,
-  Application,
-  Namespace,
-  guidFor,
-  computed,
-} = Ember;
+import Ember from './utils/ember';
+import Application from './utils/ember/application';
+import EmberObject, { computed } from './utils/ember/object';
+import { or } from './utils/ember/object/computed';
+import { guidFor } from './utils/ember/object/internals';
+import { run } from './utils/ember/runloop';
+
+const { Namespace } = Ember;
 
 const EmberDebug = EmberObject.extend({
   /**
@@ -40,9 +39,10 @@ const EmberDebug = EmberObject.extend({
   owner: null,
   started: false,
 
-  applicationName: computed
-    .or('_application.name', '_application.modulePrefix')
-    .readOnly(),
+  applicationName: or(
+    '_application.name',
+    '_application.modulePrefix'
+  ).readOnly(),
 
   /**
    * We use the application's id instead of the owner's id so that we use the same inspector

@@ -1,10 +1,12 @@
 // eslint-disable-next-line ember/no-mixins
 import PortMixin from 'ember-debug/mixins/port-mixin';
 import PromiseAssembler from 'ember-debug/libs/promise-assembler';
-import Ember from './utils/ember';
 
-const { computed, Object: EmberObject, RSVP, A, run } = Ember;
-const { readOnly } = computed;
+import { A } from './utils/ember/array';
+import EmberObject, { computed } from './utils/ember/object';
+import { readOnly } from './utils/ember/object/computed';
+import { debounce } from './utils/ember/runloop';
+import RSVP from './utils/rsvp';
 
 export default EmberObject.extend(PortMixin, {
   namespace: null,
@@ -15,15 +17,14 @@ export default EmberObject.extend(PortMixin, {
 
   // created on init
   promiseAssembler: null,
-
-  releaseMethods: computed(function () {
-    return A();
-  }),
+  updatedPromises: null,
+  releaseMethods: null,
 
   init() {
     this._super();
-    this.set('promiseAssembler', PromiseAssembler.create());
-    this.promiseAssembler.set('promiseDebug', this);
+    this.promiseAssembler = PromiseAssembler.create();
+    this.updatedPromises = A();
+    this.releaseMethods = A();
     this.setInstrumentWithStack();
     this.sendInstrumentWithStack();
     this.promiseAssembler.start();
@@ -36,7 +37,7 @@ export default EmberObject.extend(PortMixin, {
     if (this.promiseAssembler) {
       this.promiseAssembler.destroy();
     }
-    this.set('promiseAssembler', null);
+    this.promiseAssembler = null;
     this._super();
   },
 
@@ -109,7 +110,7 @@ export default EmberObject.extend(PortMixin, {
     this.releaseMethods.forEach((fn) => {
       fn();
     });
-    this.set('releaseMethods', A());
+    this.releaseMethods.clear();
   },
 
   getAndObservePromises() {
@@ -127,10 +128,6 @@ export default EmberObject.extend(PortMixin, {
 
     this.promisesUpdated(this.promiseAssembler.find());
   },
-
-  updatedPromises: computed(function () {
-    return A();
-  }),
 
   promisesUpdated(uniquePromises) {
     if (!uniquePromises) {
@@ -152,13 +149,13 @@ export default EmberObject.extend(PortMixin, {
 
   promiseUpdated(event) {
     this.updatedPromises.pushObject(event.promise);
-    Ember.run.debounce(this, 'promisesUpdated', this.delay);
+    debounce(this, 'promisesUpdated', this.delay);
   },
 
   promiseChained(event) {
     this.updatedPromises.pushObject(event.promise);
     this.updatedPromises.pushObject(event.child);
-    run.debounce(this, 'promisesUpdated', this.delay);
+    debounce(this, 'promisesUpdated', this.delay);
   },
 
   serializeArray(promises) {
@@ -204,6 +201,8 @@ export default EmberObject.extend(PortMixin, {
       inspected.type === 'type-ember-object' ||
       inspected.type === 'type-array'
     ) {
+      console.count('inspectValue');
+
       inspected.objectId = objectInspector.retainObject(promise.get(key));
       this.releaseMethods.pushObject(function () {
         objectInspector.releaseObject(inspected.objectId);

@@ -11,11 +11,11 @@
  * });
  * ```
  */
-import EmberObject from '@ember/object';
+import Service from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import config from 'ember-inspector/config/environment';
 
-export default class Basic extends EmberObject {
+export default class Basic extends Service {
   @tracked canOpenResource = false;
   name = 'basic';
 

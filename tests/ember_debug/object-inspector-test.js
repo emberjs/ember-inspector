@@ -19,6 +19,8 @@ import hasEmberVersion from '@ember/test-helpers/has-ember-version';
 import { compareVersion } from 'ember-debug/utils/version';
 import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
+import EmberRoute from '@ember/routing/route';
+import Controller from '@ember/controller';
 
 const GlimmerComponent = (function () {
   try {
@@ -72,9 +74,25 @@ async function inspectObject(object) {
 }
 
 module('Ember Debug - Object Inspector', function (hooks) {
-  setupEmberDebugTest(hooks);
+  setupEmberDebugTest(hooks, {
+    routes() {
+      this.route('simple');
+    },
+  });
 
   hooks.beforeEach(async function () {
+    this.owner.register('route:application', EmberRoute);
+
+    this.owner.register('controller:application', Controller);
+
+    this.owner.register(
+      'template:application',
+      hbs(
+        '<div class="application" style="line-height: normal;">{{outlet}}</div>',
+        { moduleName: 'my-app/templates/application.hbs' }
+      )
+    );
+    this.owner.register('route:simple', EmberRoute);
     this.owner.register('component:x-simple', Component);
     this.owner.register(
       'template:simple',
@@ -1117,7 +1135,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
     test('Inspecting GlimmerComponent does not cause errors', async function (assert) {
       let instance;
 
-      class FooComponent extends GlimmerComponent {
+      class Foo extends GlimmerComponent {
         constructor(...args) {
           super(...args);
           instance = this;
@@ -1134,15 +1152,20 @@ module('Ember Debug - Object Inspector', function (hooks) {
         }
       }
 
-      this.owner.register('component:foo', FooComponent);
-      this.owner.register('template:simple', hbs`<Foo />`);
+      this.owner.register('template:simple', hbs`<Foo />`, {
+        moduleName: 'my-app/templates/simple.hbs',
+      });
 
+      this.owner.register('component:foo', Foo);
+      this.owner.register(
+        `template:components/foo`,
+        hbs('text only', {
+          moduleName: 'my-app/templates/components/foo.hbs',
+        })
+      );
       await visit('/simple');
 
-      assert.ok(
-        instance instanceof FooComponent,
-        'an instance of FooComponent has been created'
-      );
+      assert.ok(instance instanceof Foo, 'an instance of Foo has been created');
 
       let { details, errors } = await inspectObject(instance);
 
