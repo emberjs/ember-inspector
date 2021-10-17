@@ -2664,9 +2664,9 @@ autoprefixer@^9.8.6:
     postcss-value-parser "^4.1.0"
 
 aws-sdk@^2.978.0:
-  version "2.1003.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1003.0.tgz#f4ca218f466c524a90370b5604a3ad4cda4c0e08"
-  integrity sha512-UEZveI1m7+/YsomU2tVxLMmlo5g3sr3ue+QMJ2UwbrvHZ+O9hr9vVia1lD+L8fYTQenOff95NFc02h3pDE3iDA==
+  version "2.1009.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1009.0.tgz#d96217a19f259c2448f91cf24973d390de16f8e0"
+  integrity sha512-qKbmt+vzQ7ZSnfEvA+u6d7CkV09AcAGnxZAiNgOAEn8GFFEtERy6C39VoAuWfON/B2avJDYvtRocjVmAxWpgjQ==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -2756,6 +2756,11 @@ babel-helpers@^6.24.1:
     babel-runtime "^6.22.0"
     babel-template "^6.24.1"
 
+babel-import-util@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/babel-import-util/-/babel-import-util-0.2.0.tgz#b468bb679919601a3570f9e317536c54f2862e23"
+  integrity sha512-CtWYYHU/MgK88rxMrLfkD356dApswtR/kWZ/c6JifG1m10e7tBBrs/366dFzWMAoqYmG5/JSh+94tUSpIwh+ag==
+
 babel-loader@^8.0.6:
   version "8.2.2"
   resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-8.2.2.tgz#9363ce84c10c9a40e6c753748e1441b60c8a0b81"
@@ -2808,6 +2813,16 @@ babel-plugin-ember-modules-api-polyfill@^3.5.0:
   dependencies:
     ember-rfc176-data "^0.3.17"
 
+babel-plugin-ember-template-compilation@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-ember-template-compilation/-/babel-plugin-ember-template-compilation-1.0.0.tgz#984bc2ceb0bb864e878e25a9ca5c2a6153c96881"
+  integrity sha512-SvDQ+DbimZEq7XZztxiCKPNO3/HEwAOKBdJ9r4qtMpgmSuuhzO1elkixJTrnwnkLv1titAYAXNqLVD1fkE4Vgg==
+  dependencies:
+    babel-import-util "^0.2.0"
+    line-column "^1.0.2"
+    magic-string "^0.25.7"
+    string.prototype.matchall "^4.0.5"
+
 babel-plugin-filter-imports@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-filter-imports/-/babel-plugin-filter-imports-4.0.0.tgz#068f8da15236a96a9602c36dc6f4a6eeca70a4f4"
@@ -2821,7 +2836,7 @@ babel-plugin-htmlbars-inline-precompile@^3.2.0:
   resolved "https://registry.yarnpkg.com/babel-plugin-htmlbars-inline-precompile/-/babel-plugin-htmlbars-inline-precompile-3.2.0.tgz#c4882ea875d0f5683f0d91c1f72e29a4f14b5606"
   integrity sha512-IUeZmgs9tMUGXYu1vfke5I18yYJFldFGdNFQOWslXTnDWXzpwPih7QFduUqvT+awDpDuNtXpdt5JAf43Q1Hhzg==
 
-babel-plugin-htmlbars-inline-precompile@^5.0.0, babel-plugin-htmlbars-inline-precompile@^5.2.1:
+babel-plugin-htmlbars-inline-precompile@^5.0.0, babel-plugin-htmlbars-inline-precompile@^5.2.1, babel-plugin-htmlbars-inline-precompile@^5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-htmlbars-inline-precompile/-/babel-plugin-htmlbars-inline-precompile-5.3.0.tgz#eeaff07c35415264aea4d6bafb5e71167f6ffb2f"
   integrity sha512-WeLBQM5Y9rx2GbwfxKy47lWh+u23afdlb48sM+5RTMTLwO90oILA7znzzOls7e+bcj06Nw0H+xpRWuyhlS37hg==
@@ -5125,7 +5140,7 @@ data-urls@^2.0.0:
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
 
-date-fns@^2.24.0:
+date-fns@^2.25.0:
   version "2.25.0"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.25.0.tgz#8c5c8f1d958be3809a9a03f4b742eba894fc5680"
   integrity sha512-ovYRFnTrbGPD4nqaEqescPEv1mNwvt+UTqI3Ay9SzNtey9NZnYu6E2qCcBBgJ6/2VF1zGGygpyTDITqpQQ5e+w==
@@ -5564,9 +5579,9 @@ ember-auto-import@^1.11.3, ember-auto-import@^1.5.3:
     webpack "^4.43.0"
 
 ember-auto-import@^2.1.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/ember-auto-import/-/ember-auto-import-2.2.0.tgz#6206be37e676fb490f03dd20afab973d5abe9da9"
-  integrity sha512-ngluzmtV31mTY+1ceOnWfGUIgGyZt850xFncMX/14Dfx0OhXaUKBpFjKjIor/Cen4WEF+OrdgNJAjH3sM07o6w==
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/ember-auto-import/-/ember-auto-import-2.2.2.tgz#506078c87cb9c92fe772a91472a008948437671c"
+  integrity sha512-6tQzTURZ+AHlU0t/0w8IaZFO1GKaPgy/SaLUhoAo4XUAWcMQMaK0TSKqWE3P7ZYvrnSr7hBcPfaxdLCYe4naMQ==
   dependencies:
     "@babel/core" "^7.1.6"
     "@babel/plugin-proposal-class-properties" "^7.13.0"
@@ -5720,6 +5735,27 @@ ember-cli-htmlbars@^5.2.0, ember-cli-htmlbars@^5.3.1, ember-cli-htmlbars@^5.3.2,
     broccoli-plugin "^4.0.3"
     common-tags "^1.8.0"
     ember-cli-babel-plugin-helpers "^1.1.1"
+    ember-cli-version-checker "^5.1.2"
+    fs-tree-diff "^2.0.1"
+    hash-for-dep "^1.5.1"
+    heimdalljs-logger "^0.1.10"
+    json-stable-stringify "^1.0.1"
+    semver "^7.3.4"
+    silent-error "^1.1.1"
+    strip-bom "^4.0.0"
+    walk-sync "^2.2.0"
+
+ember-cli-htmlbars@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/ember-cli-htmlbars/-/ember-cli-htmlbars-6.0.0.tgz#9d0b67c0f107467b6c8ecdc47d64e877489841bf"
+  integrity sha512-7h9Lb1kfvLecMUOX8wCbwjzCsgXdNDs8qpOsDuKV6YaGS9jDZHu4P5xTYLX78YepEUnwOw1atCYWzBUsJHWrzA==
+  dependencies:
+    "@ember/edition-utils" "^1.2.0"
+    babel-plugin-ember-template-compilation "^1.0.0"
+    babel-plugin-htmlbars-inline-precompile "^5.3.0"
+    broccoli-debug "^0.6.5"
+    broccoli-persistent-filter "^3.1.2"
+    broccoli-plugin "^4.0.3"
     ember-cli-version-checker "^5.1.2"
     fs-tree-diff "^2.0.1"
     hash-for-dep "^1.5.1"
@@ -6166,10 +6202,10 @@ ember-qunit@^5.1.4:
     silent-error "^1.1.1"
     validate-peer-dependencies "^1.2.0"
 
-ember-raf-scheduler@0.2.0, ember-raf-scheduler@^0.2.0:
+ember-raf-scheduler@^0.2.0, ember-raf-scheduler@html-next/ember-raf-scheduler#5c3c55f1493d0db6ec87412141953b39d8601cca:
   version "0.2.0"
-  resolved "https://registry.yarnpkg.com/ember-raf-scheduler/-/ember-raf-scheduler-0.2.0.tgz#73250f6ca9760e4920c26d2eeb69738dc66dadc5"
-  integrity sha512-z34reOLFORfigukrba3d5I333rixfcPjjfKPOKeaPAHf3I5wXfenoAze0Ijc7r4l/lO/4ocLw9RJbtNL2/oNpw==
+  uid "5c3c55f1493d0db6ec87412141953b39d8601cca"
+  resolved "https://codeload.github.com/html-next/ember-raf-scheduler/tar.gz/5c3c55f1493d0db6ec87412141953b39d8601cca"
   dependencies:
     ember-cli-babel "^7.12.0"
 
@@ -6299,20 +6335,20 @@ ember-table@rwwagner90/ember-table#42607a07cad1c247f6e6d1617d33119d325cbce5:
     hammerjs "^2.0.8"
 
 ember-template-lint@^3.6.0:
-  version "3.9.0"
-  resolved "https://registry.yarnpkg.com/ember-template-lint/-/ember-template-lint-3.9.0.tgz#f45d82081f0d753c59b39c36e6bbdf252d85b842"
-  integrity sha512-qo3iMiiP+a+5K4E1AlH+PSPbXBLP8fgb2BYwyUQ8k6IIs6Z00Ct2ySd3BWxGL2rw+Dyp53yJ5Zj8sSSYDFDTkg==
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/ember-template-lint/-/ember-template-lint-3.10.0.tgz#7d728dacfe787b582ff4c240b63e85e5d6200a26"
+  integrity sha512-QP6gN9FwZbK+ypDr5PLXeKMPuAvKwfOWpIoqVD6DB660evnKE+rXfAdNga3CqSC7mDekpgJoLuxVQUw9oLcnjQ==
   dependencies:
     "@ember-template-lint/todo-utils" "^10.0.0"
     chalk "^4.1.2"
     ci-info "^3.2.0"
-    date-fns "^2.24.0"
+    date-fns "^2.25.0"
     ember-template-recast "^5.0.3"
     find-up "^5.0.0"
     fuse.js "^6.4.6"
     get-stdin "^8.0.0"
     globby "^11.0.4"
-    is-glob "^4.0.2"
+    is-glob "^4.0.3"
     micromatch "^4.0.4"
     requireindex "^1.2.0"
     resolve "^1.20.0"
@@ -6653,14 +6689,15 @@ eslint-config-prettier@^8.3.0:
   integrity sha512-BgZuLUSeKzvlL/VUjx/Yb787VQ26RU3gGjA3iiFvdsp/2bMfVIWUVP7tjxtjS0e+HP409cPlPvNkQloz8C91ew==
 
 eslint-plugin-ember@^10.5.4:
-  version "10.5.5"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-ember/-/eslint-plugin-ember-10.5.5.tgz#fbd292f24ea9ea4d32979d42039dbb878b6cf545"
-  integrity sha512-yuNiGyOT2pRaGcifJo9H5RU5XlHiVUXvNuAlLBXrTQyZtsOYFBsXgEhMCCq4BVV/0Q79SqXG+03ceB1YtoJHEQ==
+  version "10.5.7"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-ember/-/eslint-plugin-ember-10.5.7.tgz#132dcd139fc9e830b707910d1ee4a458b83ab9d4"
+  integrity sha512-PTnZxbexrvRgEUtiuTaRjcFIIezzNsaJLUkvOoKhmxXTZnWgSPV36PGv5ml0BOallWYAOocefjTgv9SWvlmEdw==
   dependencies:
     "@ember-data/rfc395-data" "^0.0.4"
     css-tree "^1.0.0-alpha.39"
     ember-rfc176-data "^0.3.15"
     eslint-utils "^3.0.0"
+    estraverse "^5.2.0"
     lodash.kebabcase "^4.1.1"
     requireindex "^1.2.0"
     snake-case "^3.0.3"
@@ -9089,7 +9126,7 @@ is-glob@^3.1.0:
   dependencies:
     is-extglob "^2.1.0"
 
-is-glob@^4.0.0, is-glob@^4.0.1, is-glob@^4.0.2, is-glob@~4.0.1:
+is-glob@^4.0.0, is-glob@^4.0.1, is-glob@^4.0.3, is-glob@~4.0.1:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/is-glob/-/is-glob-4.0.3.tgz#64f61e42cbbb2eec2071a9dac0b28ba1e65d5084"
   integrity sha512-xelSayHH36ZgE7ZWhli7pW34hNbNl8Ojv5KVmkJD4hBdD3th8Tfk9vYasLM+mXWOZhFkgZfxhLSnrwRr4elSSg==
@@ -13049,9 +13086,9 @@ sane@^4.0.0, sane@^4.1.0:
     walker "~1.0.5"
 
 sass@^1.38.2:
-  version "1.42.1"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.42.1.tgz#5ab17bebc1cb1881ad2e0c9a932c66ad64e441e2"
-  integrity sha512-/zvGoN8B7dspKc5mC6HlaygyCBRvnyzzgD5khiaCfglWztY99cYoiTUksVx11NlnemrcfH5CEaCpsUKoW0cQqg==
+  version "1.43.2"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.43.2.tgz#c02501520c624ad6622529a8b3724eb08da82d65"
+  integrity sha512-DncYhjl3wBaPMMJR0kIUaH3sF536rVrOcqqVGmTZHQRRzj7LQlyGV7Mb8aCKFyILMr5VsPHwRYtyKpnKYlmQSQ==
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
 
@@ -13375,7 +13412,7 @@ socket.io-parser@~4.0.4:
     component-emitter "~1.3.0"
     debug "~4.3.1"
 
-socket.io@^4.1.2:
+socket.io@4.2.0, socket.io@^4.1.2:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/socket.io/-/socket.io-4.2.0.tgz#9e1c09d3ea647e24963a2e7ba8ea5c847778e2ed"
   integrity sha512-sjlGfMmnaWvTRVxGRGWyhd9ctpg4APxWAxu85O/SxekkxHhfxmePWZbaYCkeX5QQX0z1YEnKOlNt6w82E4Nzug==
@@ -13730,7 +13767,7 @@ string-width@^4.0.0, string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2
     is-fullwidth-code-point "^3.0.0"
     strip-ansi "^6.0.1"
 
-string.prototype.matchall@^4.0.4:
+string.prototype.matchall@^4.0.4, string.prototype.matchall@^4.0.5:
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/string.prototype.matchall/-/string.prototype.matchall-4.0.6.tgz#5abb5dabc94c7b0ea2380f65ba610b3a544b15fa"
   integrity sha512-6WgDX8HmQqvEd7J+G6VtAahhsQIssiZ8zl7zKh1VDMFyL3hRTJP4FTNA3RbIp2TOQ9AYNDcc7e3fH0Qbup+DBg==
@@ -15225,9 +15262,9 @@ webpack@^4.43.0:
     webpack-sources "^1.4.1"
 
 webpack@^5.51.1:
-  version "5.58.1"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.58.1.tgz#df8aad72b617a9d0db8c89d4f410784ee93320d7"
-  integrity sha512-4Z/dmbTU+VmkCb2XNgW7wkE5TfEcSooclprn/UEuVeAkwHhn07OcgUsyaKHGtCY/VobjnsYBlyhKeMLiSoOqPg==
+  version "5.58.2"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.58.2.tgz#6b4af12fc9bd5cbedc00dc0a2fc2b9592db16b44"
+  integrity sha512-3S6e9Vo1W2ijk4F4PPWRIu6D/uGgqaPmqw+av3W3jLDujuNkdxX5h5c+RQ6GkjVR+WwIPOfgY8av+j5j4tMqJw==
   dependencies:
     "@types/eslint-scope" "^3.7.0"
     "@types/estree" "^0.0.50"
