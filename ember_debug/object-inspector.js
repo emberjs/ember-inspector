@@ -1019,6 +1019,8 @@ function isInternalProperty(property) {
       '_super',
       '_debugContainerKey',
       '_transitionTo',
+      '_debugInfo',
+      '_showProxyDetails',
     ].includes(property)
   ) {
     return true;
