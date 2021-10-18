@@ -7,12 +7,12 @@ import debounceComputed from 'ember-inspector/computed/debounce';
 import { and, equal } from '@ember/object/computed';
 
 export default Controller.extend({
+  port: service(),
+
   initialEmpty: false,
   modelEmpty: equal('model.profiles.length', 0),
   showEmpty: and('initialEmpty', 'modelEmpty'),
   shouldHighlightRender: false,
-
-  port: service(),
 
   /**
    * Storage is needed for remembering if the user closed the warning
@@ -59,8 +59,8 @@ export default Controller.extend({
     return escapeRegExp(this.search.toLowerCase());
   }),
 
-  isHighlightEnabled: computed('model.isHighlighSupported', function () {
-    return get(this.model, 'isHighlighSupported');
+  isHighlightEnabled: computed('model.isHighlightSupported', function () {
+    return get(this.model, 'isHighlightSupported');
   }),
 
   filtered: computed(

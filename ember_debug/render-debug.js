@@ -38,7 +38,7 @@ export default EmberObject.extend(PortMixin, {
   sendAdded(profiles) {
     this.sendMessage('profilesAdded', {
       profiles,
-      isHighlighSupported: this.profileManager.isHighlightEnabled,
+      isHighlightSupported: this.profileManager.isHighlightEnabled,
     });
   },
 

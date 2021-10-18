@@ -11,8 +11,8 @@ export default class RenderTreeRoute extends TabRoute {
     return new Promise(function (resolve) {
       port.one(
         'render:profilesAdded',
-        function ({ profiles, isHighlighSupported }) {
-          resolve(EmberObject.create({ profiles, isHighlighSupported }));
+        function ({ profiles, isHighlightSupported }) {
+          resolve(EmberObject.create({ profiles, isHighlightSupported }));
         }
       );
       port.send('render:watchProfiles');
@@ -47,14 +47,14 @@ export default class RenderTreeRoute extends TabRoute {
     const currentProfiles = get(this, 'controller.model.profiles');
     const profiles = message.profiles;
     if (
-      message.isHighlighSupported !== undefined &&
-      message.isHighlighSupported !==
-        get(this, 'controller.model.isHighlighSupported')
+      message.isHighlightSupported !== undefined &&
+      message.isHighlightSupported !==
+        get(this, 'controller.model.isHighlightSupported')
     ) {
       set(
         this,
-        'controller.model.isHighlighSupported',
-        message.isHighlighSupported
+        'controller.model.isHighlightSupported',
+        message.isHighlightSupported
       );
     }
 
