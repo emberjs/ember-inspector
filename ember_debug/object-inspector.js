@@ -1025,7 +1025,6 @@ function isInternalProperty(property) {
   ) {
     return true;
   }
-
   let isInternalProp = [
     '__LEGACY_OWNER',
     '__ARGS__',
@@ -1035,7 +1034,6 @@ function isInternalProperty(property) {
   if (isInternalProp) {
     return true;
   }
-
   return false;
 }
 
