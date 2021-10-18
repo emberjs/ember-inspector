@@ -7,9 +7,12 @@ import debounceComputed from 'ember-inspector/computed/debounce';
 import { and, equal } from '@ember/object/computed';
 
 export default Controller.extend({
+  port: service(),
+
   initialEmpty: false,
-  modelEmpty: equal('model.length', 0),
+  modelEmpty: equal('model.profiles.length', 0),
   showEmpty: and('initialEmpty', 'modelEmpty'),
+  shouldHighlightRender: false,
 
   /**
    * Storage is needed for remembering if the user closed the warning
@@ -56,16 +59,20 @@ export default Controller.extend({
     return escapeRegExp(this.search.toLowerCase());
   }),
 
+  isHighlightEnabled: computed('model.isHighlightSupported', function () {
+    return get(this.model, 'isHighlightSupported');
+  }),
+
   filtered: computed(
     'escapedSearch',
-    'model.@each.name',
+    'model.profiles.@each.name',
     'search',
     function () {
       if (isEmpty(this.escapedSearch)) {
-        return this.model;
+        return get(this.model, 'profiles');
       }
 
-      return this.model.filter((item) => {
+      return get(this.model, 'profiles').filter((item) => {
         const regExp = new RegExp(this.escapedSearch);
         return recursiveMatch(item, regExp);
       });
@@ -74,6 +81,14 @@ export default Controller.extend({
 
   closeWarning: action(function () {
     this.set('isWarningClosed', true);
+  }),
+
+  updateShouldHighlightRender: action(function () {
+    const value = !this.shouldHighlightRender;
+    this.set('shouldHighlightRender', value);
+    this.port.send('render:updateShouldHighlightRender', {
+      shouldHighlightRender: value,
+    });
   }),
 });
 

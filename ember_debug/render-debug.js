@@ -32,10 +32,14 @@ export default EmberObject.extend(PortMixin, {
 
     this.profileManager.offProfilesAdded(this, this.sendAdded);
     this.profileManager.offProfilesAdded(this, this._updateComponentTree);
+    this.profileManager.teardown();
   },
 
   sendAdded(profiles) {
-    this.sendMessage('profilesAdded', { profiles });
+    this.sendMessage('profilesAdded', {
+      profiles,
+      isHighlightSupported: this.profileManager.isHighlightEnabled,
+    });
   },
 
   /**
@@ -62,6 +66,10 @@ export default EmberObject.extend(PortMixin, {
       });
       this.profileManager.onProfilesAdded(this, this.sendAdded);
     },
+
+    updateShouldHighlightRender({ shouldHighlightRender }) {
+      this.profileManager.shouldHighlightRender = shouldHighlightRender;
+    },
   },
 });
 
@@ -79,7 +87,6 @@ function _subscribeToRenderEvents() {
         payload,
         now: Date.now(),
       };
-
       return profileManager.addToQueue(info);
     },
 
