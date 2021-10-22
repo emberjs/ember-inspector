@@ -109,7 +109,7 @@
     "qunit": "^2.16.0",
     "qunit-dom": "^2.0.0",
     "release-it": "^14.6.1",
-    "release-it-lerna-changelog": "^4.0.0",
+    "release-it-lerna-changelog": "^3.1.0",
     "rimraf": "^3.0.0",
     "sass": "^1.38.2",
     "stylelint": "^14.0.0",
@@ -118,7 +118,7 @@
     "yauzl": "^2.10.0"
   },
   "resolutions": {
-    "socket.io": "4.2.0"
+    "socket.io": "^4.3.1"
   },
   "engines": {
     "node": "12.* || 14.* || >= 16"
