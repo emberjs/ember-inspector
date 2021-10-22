@@ -34,7 +34,7 @@
     "@ember/optional-features": "^2.0.0",
     "@ember/render-modifiers": "^2.0.0",
     "@ember/string": "^3.0.0",
-    "@ember/test-helpers": "^2.4.2",
+    "@ember/test-helpers": "2.4.3",
     "@glimmer/component": "^1.0.4",
     "@glimmer/tracking": "^1.0.4",
     "@html-next/vertical-collection": "html-next/vertical-collection#79e7b1aa31b3e292db06df79d845cb5a6a0c1b40",
