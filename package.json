@@ -34,7 +34,7 @@
     "@ember/optional-features": "^2.0.0",
     "@ember/render-modifiers": "^2.0.0",
     "@ember/string": "^3.0.0",
-    "@ember/test-helpers": "^2.4.2",
+    "@ember/test-helpers": "^2.5.0",
     "@glimmer/component": "^1.0.4",
     "@glimmer/tracking": "^1.0.4",
     "@html-next/vertical-collection": "html-next/vertical-collection#79e7b1aa31b3e292db06df79d845cb5a6a0c1b40",
@@ -78,7 +78,6 @@
     "ember-load-initializers": "^2.1.2",
     "ember-math-helpers": "^2.15.0",
     "ember-maybe-import-regenerator": "^1.0.0",
-    "ember-page-title": "^6.2.2",
     "ember-qunit": "^5.1.4",
     "ember-resolver": "^8.0.2",
     "ember-showdown": "^1.0.0-beta.1",
@@ -109,7 +108,7 @@
     "qunit": "^2.16.0",
     "qunit-dom": "^2.0.0",
     "release-it": "^14.6.1",
-    "release-it-lerna-changelog": "^4.0.0",
+    "release-it-lerna-changelog": "^4.0.1",
     "rimraf": "^3.0.0",
     "sass": "^1.38.2",
     "stylelint": "^14.0.0",
@@ -118,7 +117,7 @@
     "yauzl": "^2.10.0"
   },
   "resolutions": {
-    "socket.io": "4.2.0"
+    "socket.io": "^4.3.1"
   },
   "engines": {
     "node": "12.* || 14.* || >= 16"
