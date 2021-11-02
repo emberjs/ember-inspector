@@ -1,6 +1,8 @@
 # Changelog
 
 
+## v4.5.1 (2021-11-02)
+
 ## v4.5.0 (2021-11-02)
 
 #### :rocket: Enhancement
