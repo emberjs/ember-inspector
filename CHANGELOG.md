@@ -1,5 +1,34 @@
 # Changelog
 
+
+## v4.5.0 (2021-11-02)
+
+#### :rocket: Enhancement
+* [#1730](https://github.com/emberjs/ember-inspector/pull/1730) Update ember-flatpickr ([@rwwagner90](https://github.com/rwwagner90))
+* [#1685](https://github.com/emberjs/ember-inspector/pull/1685) add highlight render option to Render Performance tab ([@michaelbdai](https://github.com/michaelbdai))
+
+#### :bug: Bug Fix
+* [#1760](https://github.com/emberjs/ember-inspector/pull/1760) Don't rely on Ember.EmberInspectorDebugger ([@sandstrom](https://github.com/sandstrom))
+
+#### :house: Internal
+* [#1759](https://github.com/emberjs/ember-inspector/pull/1759) Fix release-it-lerna-changelog ([@rwwagner90](https://github.com/rwwagner90))
+* [#1750](https://github.com/emberjs/ember-inspector/pull/1750) fixed all the beta build test failures ([@michaelbdai](https://github.com/michaelbdai))
+* [#1733](https://github.com/emberjs/ember-inspector/pull/1733) Recreate yarn.lock ([@rwwagner90](https://github.com/rwwagner90))
+* [#1741](https://github.com/emberjs/ember-inspector/pull/1741) Fix build ([@chancancode](https://github.com/chancancode))
+* [#1731](https://github.com/emberjs/ember-inspector/pull/1731) Fix deprecated use of `run.debounce` ([@chancancode](https://github.com/chancancode))
+* [#1714](https://github.com/emberjs/ember-inspector/pull/1714) Use forks of packages ([@rwwagner90](https://github.com/rwwagner90))
+* [#1727](https://github.com/emberjs/ember-inspector/pull/1727) Refactor legacy/bespoke injection patterns into services ([@chancancode](https://github.com/chancancode))
+* [#1695](https://github.com/emberjs/ember-inspector/pull/1695) Update ember-test-selectors ([@rwwagner90](https://github.com/rwwagner90))
+* [#1683](https://github.com/emberjs/ember-inspector/pull/1683) Remove toolbar outlet, remove more global Ember ([@rwwagner90](https://github.com/rwwagner90))
+* [#1680](https://github.com/emberjs/ember-inspector/pull/1680) ember-cli 3.27, fix some lint ([@rwwagner90](https://github.com/rwwagner90))
+* [#1619](https://github.com/emberjs/ember-inspector/pull/1619) Move changelog heading to top ([@sandstrom](https://github.com/sandstrom))
+
+#### Committers: 4
+- Bing Dai ([@michaelbdai](https://github.com/michaelbdai))
+- Godfrey Chan ([@chancancode](https://github.com/chancancode))
+- Robert Wagner ([@rwwagner90](https://github.com/rwwagner90))
+- [@sandstrom](https://github.com/sandstrom)
+
 ## v4.4.1 (2021-05-25)
 
 #### :bug: Bug Fix
