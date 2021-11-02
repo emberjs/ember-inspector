@@ -32,7 +32,7 @@ export default class Basic extends Service {
   }
 
   /**
-   * Listens to `EmberInspectorDebugger` message about
+   * Listens to Ember Inspector message about
    * Ember version mismatch. If a mismatch message is received
    * it means the current inspector app does not support the current
    * Ember version and needs to switch to an inspector version
