@@ -1,7 +1,6 @@
-import Mixin from '../utils/ember/object/mixin';
+import EmberObject from './utils/ember/object';
 
-// eslint-disable-next-line ember/no-new-mixins
-export default Mixin.create({
+export default EmberObject.extend({
   port: null,
 
   messages: {},

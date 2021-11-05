@@ -1,14 +1,13 @@
-// eslint-disable-next-line ember/no-mixins
-import PortMixin from 'ember-debug/mixins/port-mixin';
+import DebugPort from './debug-port';
 import PromiseAssembler from 'ember-debug/libs/promise-assembler';
 
 import { A } from './utils/ember/array';
-import EmberObject, { computed } from './utils/ember/object';
+import { computed } from './utils/ember/object';
 import { readOnly } from './utils/ember/object/computed';
 import { debounce } from './utils/ember/runloop';
 import RSVP from './utils/rsvp';
 
-export default EmberObject.extend(PortMixin, {
+export default DebugPort.extend({
   namespace: null,
   objectInspector: readOnly('namespace.objectInspector'),
   adapter: readOnly('namespace.adapter'),

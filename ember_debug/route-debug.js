@@ -1,18 +1,17 @@
 /* eslint-disable ember/no-private-routing-service */
-// eslint-disable-next-line ember/no-mixins
-import PortMixin from 'ember-debug/mixins/port-mixin';
+import DebugPort from './debug-port';
 import { compareVersion } from 'ember-debug/utils/version';
 import classify from 'ember-debug/utils/classify';
 import dasherize from 'ember-debug/utils/dasherize';
 
 import Ember from './utils/ember';
-import EmberObject, { computed, observer } from './utils/ember/object';
+import { computed, observer } from './utils/ember/object';
 import { readOnly } from './utils/ember/object/computed';
 import { later } from './utils/ember/runloop';
 
 const { hasOwnProperty } = Object.prototype;
 
-export default EmberObject.extend(PortMixin, {
+export default DebugPort.extend({
   namespace: null,
 
   router: computed('namespace.owner', function () {

@@ -1,15 +1,13 @@
-// eslint-disable-next-line ember/no-mixins
-import PortMixin from 'ember-debug/mixins/port-mixin';
+import DebugPort from './debug-port';
 import ProfileManager from './models/profile-manager';
 
-import EmberObject from './utils/ember/object';
 import { subscribe } from './utils/ember/instrumentation';
 
 // Initial setup, that has to occur before the EmberObject init for some reason
 let profileManager = new ProfileManager();
 _subscribeToRenderEvents();
 
-export default EmberObject.extend(PortMixin, {
+export default DebugPort.extend({
   namespace: null,
   portNamespace: 'render',
 
