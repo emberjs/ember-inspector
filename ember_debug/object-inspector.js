@@ -1,6 +1,5 @@
 /* eslint-disable ember/no-private-routing-service */
-// eslint-disable-next-line ember/no-mixins
-import PortMixin from 'ember-debug/mixins/port-mixin';
+import DebugPort from './debug-port';
 import bound from 'ember-debug/utils/bound-method';
 import {
   isComputed,
@@ -254,7 +253,7 @@ function getTrackedDependencies(object, property, tag) {
   return [...new Set([...dependentKeys])];
 }
 
-export default EmberObject.extend(PortMixin, {
+export default DebugPort.extend({
   namespace: null,
 
   adapter: oneWay('namespace.adapter'),

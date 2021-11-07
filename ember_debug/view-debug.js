@@ -1,14 +1,12 @@
 /* eslint no-cond-assign:0 */
-// eslint-disable-next-line ember/no-mixins
-import PortMixin from 'ember-debug/mixins/port-mixin';
+import DebugPort from './debug-port';
 import RenderTree from 'ember-debug/libs/render-tree';
 import ViewInspection from 'ember-debug/libs/view-inspection';
 import bound from 'ember-debug/utils/bound-method';
 
-import EmberObject from './utils/ember/object';
 import { readOnly } from './utils/ember/object/computed';
 
-export default EmberObject.extend(PortMixin, {
+export default DebugPort.extend({
   namespace: null,
 
   adapter: readOnly('namespace.adapter'),

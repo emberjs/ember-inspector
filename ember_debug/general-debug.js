@@ -1,9 +1,7 @@
 /* eslint no-empty:0 */
-// eslint-disable-next-line ember/no-mixins
-import PortMixin from 'ember-debug/mixins/port-mixin';
+import DebugPort from './debug-port';
 
 import Ember from './utils/ember';
-import EmberObject from './utils/ember/object';
 
 /**
  * Class that handles gathering general information of the inspected app.
@@ -14,7 +12,7 @@ import EmberObject from './utils/ember/object';
  *
  * @module ember-debug/general-debug
  */
-export default EmberObject.extend(PortMixin, {
+export default DebugPort.extend({
   /**
    * Fetches the ember-cli configuration info and sets them on
    * the `emberCliConfig` property.
@@ -38,7 +36,7 @@ export default EmberObject.extend(PortMixin, {
   namespace: null,
 
   /**
-   * Used by the PortMixin
+   * Used by the DebugPort
    *
    * @type {String}
    */
