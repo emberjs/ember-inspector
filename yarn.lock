@@ -6336,9 +6336,9 @@ ember-table@rwwagner90/ember-table#42607a07cad1c247f6e6d1617d33119d325cbce5:
     hammerjs "^2.0.8"
 
 ember-template-lint@^3.6.0:
-  version "3.11.0"
-  resolved "https://registry.yarnpkg.com/ember-template-lint/-/ember-template-lint-3.11.0.tgz#d766bf483e6bd3f0899a5ab86eeeb1288c44c7a1"
-  integrity sha512-5evTA7ddblB4x52QHwEJbyNttcf+/DWSOfqHWun2/JiQodLhh83TzcuJUktjCgHuEQwCwk5M3J5Xz35JoYKSKg==
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/ember-template-lint/-/ember-template-lint-3.12.0.tgz#8901453f2e72fd0071b4c3f6b1258ccd6299f43c"
+  integrity sha512-D56zdFHIjUdvFX01CKvJ0yCfkIBj6bUY5Olchd/Xd6OEIro7cphWKjjB2eGYLIdpwquEREVGS7SWc6riOaO5YQ==
   dependencies:
     "@ember-template-lint/todo-utils" "^10.0.0"
     chalk "^4.1.2"
