@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v4.5.2 (2021-11-17)
+
+#### :bug: Bug Fix
+* [#1780](https://github.com/emberjs/ember-inspector/pull/1780) fix startup bug in Firefox (Closes [#1770](https://github.com/emberjs/ember-inspector/issues/1770)) ([@luxferresum](https://github.com/luxferresum))
+
+#### :house: Internal
+* [#1793](https://github.com/emberjs/ember-inspector/pull/1793) Remove ember-did-resize-modifier dep (for now?) ([@chancancode](https://github.com/chancancode))
+* [#1783](https://github.com/emberjs/ember-inspector/pull/1783) Update publish-chrome action to use node 14.X ([@kdagnan](https://github.com/kdagnan))
+* [#1782](https://github.com/emberjs/ember-inspector/pull/1782) Update Chrome Publish Action to Use New Command ([@kdagnan](https://github.com/kdagnan))
+* [#1771](https://github.com/emberjs/ember-inspector/pull/1771) remove port mixin ([@michaelbdai](https://github.com/michaelbdai))
+
+#### Committers: 5
+- Bing Dai ([@michaelbdai](https://github.com/michaelbdai))
+- Godfrey Chan ([@chancancode](https://github.com/chancancode))
+- Igor Kvasnička ([@IgorKvasn](https://github.com/IgorKvasn))
+- Kyle D. ([@kdagnan](https://github.com/kdagnan))
+- Lukas Kohler ([@luxferresum](https://github.com/luxferresum))
+
+
 ## v4.5.1 (2021-11-02)
 
 ## v4.5.0 (2021-11-02)
