@@ -37,6 +37,11 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       return;
     }
 
+    // If Ember doesn't exist, we should stop here to avoid issues with accessing `Ember.VERSION`
+    if (!Ember) {
+      return;
+    }
+
     if (!versionTest(Ember.VERSION, EMBER_VERSIONS_SUPPORTED)) {
       // Wrong inspector version. Redirect to the correct version.
       sendVersionMiss();
