@@ -2847,6 +2847,11 @@ babel-plugin-filter-imports@^4.0.0:
     "@babel/types" "^7.7.2"
     lodash "^4.17.15"
 
+babel-plugin-htmlbars-inline-precompile@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-htmlbars-inline-precompile/-/babel-plugin-htmlbars-inline-precompile-3.2.0.tgz#c4882ea875d0f5683f0d91c1f72e29a4f14b5606"
+  integrity sha512-IUeZmgs9tMUGXYu1vfke5I18yYJFldFGdNFQOWslXTnDWXzpwPih7QFduUqvT+awDpDuNtXpdt5JAf43Q1Hhzg==
+
 babel-plugin-htmlbars-inline-precompile@^5.0.0, babel-plugin-htmlbars-inline-precompile@^5.2.1, babel-plugin-htmlbars-inline-precompile@^5.3.0:
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-htmlbars-inline-precompile/-/babel-plugin-htmlbars-inline-precompile-5.3.1.tgz#5ba272e2e4b6221522401f5f1d98a73b1de38787"
@@ -3641,7 +3646,7 @@ broccoli-plugin@^2.0.0, broccoli-plugin@^2.1.0:
     rimraf "^2.3.4"
     symlink-or-copy "^1.1.8"
 
-broccoli-plugin@^3.0.0:
+broccoli-plugin@^3.0.0, broccoli-plugin@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/broccoli-plugin/-/broccoli-plugin-3.1.0.tgz#54ba6dd90a42ec3db5624063292610e326b1e542"
   integrity sha512-7w7FP8WJYjLvb0eaw27LO678TGGaom++49O1VYIuzjhXjK5kn2+AMlDm7CaUFw4F7CLGoVQeZ84d8gICMJa4lA==
@@ -5482,7 +5487,7 @@ electron-to-chromium@^1.3.878:
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.884.tgz#0cd8c3a80271fd84a81f284c60fb3c9ecb33c166"
   integrity sha512-kOaCAa+biA98PwH5BpCkeUeTL6mCeg8p3Q3OhqzPyqhu/5QUnWAN2wr/3IK8xMQxIV76kfoQpP+Bn/wij/jXrg==
 
-element-resize-detector@^1.2.3:
+element-resize-detector@^1.1.15:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/element-resize-detector/-/element-resize-detector-1.2.3.tgz#5078d9b99398fe4c589f8c8df94ff99e5d413ff3"
   integrity sha512-+dhNzUgLpq9ol5tyhoG7YLoXL3ssjfFW+0gpszXPwRU6NjGr1fVHMEAF8fVzIiRJq57Nre0RFeIjJwI8Nh2NmQ==
@@ -5502,7 +5507,7 @@ elliptic@^6.5.3:
     minimalistic-assert "^1.0.1"
     minimalistic-crypto-utils "^1.0.1"
 
-ember-auto-import@^1.11.3:
+ember-auto-import@^1.11.3, ember-auto-import@^1.5.3:
   version "1.12.0"
   resolved "https://registry.yarnpkg.com/ember-auto-import/-/ember-auto-import-1.12.0.tgz#52246b04891090e2608244e65c4c6af7710df12b"
   integrity sha512-fzMGnyHGfUNFHchpLbJ98Vs/c5H2wZBMR9r/XwW+WOWPisZDGLUPPyhJQsSREPoUQ+o8GvyLaD/rkrKqW8bmgw==
@@ -5583,7 +5588,7 @@ ember-cli-app-version@^5.0.0:
     ember-cli-babel "^7.23.1"
     git-repo-info "^2.1.1"
 
-ember-cli-babel-plugin-helpers@^1.0.0, ember-cli-babel-plugin-helpers@^1.1.1:
+ember-cli-babel-plugin-helpers@^1.0.0, ember-cli-babel-plugin-helpers@^1.1.0, ember-cli-babel-plugin-helpers@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ember-cli-babel-plugin-helpers/-/ember-cli-babel-plugin-helpers-1.1.1.tgz#5016b80cdef37036c4282eef2d863e1d73576879"
   integrity sha512-sKvOiPNHr5F/60NLd7SFzMpYPte/nnGkq/tMIfXejfKHIhaiIkYFqX8Z9UFTKWLLn+V7NOaby6niNPZUdvKCRw==
@@ -5661,6 +5666,26 @@ ember-cli-get-component-path-option@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/ember-cli-get-component-path-option/-/ember-cli-get-component-path-option-1.0.0.tgz#0d7b595559e2f9050abed804f1d8eff1b08bc771"
   integrity sha1-DXtZVVni+QUKvtgE8djv8bCLx3E=
+
+ember-cli-htmlbars@^4.0.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/ember-cli-htmlbars/-/ember-cli-htmlbars-4.5.0.tgz#d299e4f7eba6f30dc723ee086906cc550beb252e"
+  integrity sha512-bYJpK1pqFu9AadDAGTw05g2LMNzY8xTCIqQm7dMJmKEoUpLRFbPf4SfHXrktzDh7Q5iggl6Skzf1M0bPlIxARw==
+  dependencies:
+    "@ember/edition-utils" "^1.2.0"
+    babel-plugin-htmlbars-inline-precompile "^3.2.0"
+    broccoli-debug "^0.6.5"
+    broccoli-persistent-filter "^2.3.1"
+    broccoli-plugin "^3.1.0"
+    common-tags "^1.8.0"
+    ember-cli-babel-plugin-helpers "^1.1.0"
+    fs-tree-diff "^2.0.1"
+    hash-for-dep "^1.5.1"
+    heimdalljs-logger "^0.1.10"
+    json-stable-stringify "^1.0.1"
+    semver "^6.3.0"
+    strip-bom "^4.0.0"
+    walk-sync "^2.0.2"
 
 ember-cli-htmlbars@^5.3.1, ember-cli-htmlbars@^5.3.2, ember-cli-htmlbars@^5.7.1:
   version "5.7.1"
@@ -5832,7 +5857,7 @@ ember-cli-typescript@^2.0.2:
     stagehand "^1.0.0"
     walk-sync "^1.0.0"
 
-ember-cli-typescript@^4.1.0, ember-cli-typescript@^4.2.1:
+ember-cli-typescript@^4.1.0:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/ember-cli-typescript/-/ember-cli-typescript-4.2.1.tgz#54d08fc90318cc986f3ea562f93ce58a6cc4c24d"
   integrity sha512-0iKTZ+/wH6UB/VTWKvGuXlmwiE8HSIGcxHamwNhEC5x1mN3z8RfvsFZdQWYUzIWFN2Tek0gmepGRPTwWdBYl/A==
@@ -6018,6 +6043,17 @@ ember-destroyable-polyfill@^2.0.2, ember-destroyable-polyfill@^2.0.3:
     ember-cli-version-checker "^5.1.1"
     ember-compatibility-helpers "^1.2.1"
 
+ember-did-resize-modifier@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/ember-did-resize-modifier/-/ember-did-resize-modifier-1.0.0.tgz#01b7d96be91c5ee31a19505fe8e911a7bd97947f"
+  integrity sha512-W64HlxKaBoDVOPxJOTNa/rriHKe2jyDKE3SD+QJtixSoAK8TR6ume6zNtR7+vWC8R0q4WA6BX+I5FYNN4n687w==
+  dependencies:
+    element-resize-detector "^1.1.15"
+    ember-auto-import "^1.5.3"
+    ember-cli-babel "^7.12.0"
+    ember-cli-htmlbars "^4.0.0"
+    ember-modifier-manager-polyfill "^1.2.0"
+
 ember-export-application-global@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/ember-export-application-global/-/ember-export-application-global-2.0.1.tgz#b120a70e322ab208defc9e2daebe8d0dfc2dcd46"
@@ -6104,17 +6140,6 @@ ember-modifier-manager-polyfill@^1.2.0:
     ember-cli-babel "^7.10.0"
     ember-cli-version-checker "^2.1.2"
     ember-compatibility-helpers "^1.2.0"
-
-ember-modifier@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/ember-modifier/-/ember-modifier-3.0.0.tgz#74466d32e4ef9b80004915676cc3bfd6e3fd7a3d"
-  integrity sha512-ccXfMnjWhjEUCB5taeIPQmf0h1zPUIMbmsCV7W+JZ2BioPUZTLhE1WuHspmV0iEOiX3Fwx8jMOx6b74sFcKJ0g==
-  dependencies:
-    ember-cli-babel "^7.26.6"
-    ember-cli-normalize-entity-name "^1.0.0"
-    ember-cli-string-utils "^1.1.0"
-    ember-cli-typescript "^4.2.1"
-    ember-compatibility-helpers "^1.2.5"
 
 ember-qunit@^5.1.4:
   version "5.1.5"
