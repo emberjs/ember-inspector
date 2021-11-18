@@ -2680,9 +2680,9 @@ autoprefixer@^9.8.6:
     postcss-value-parser "^4.1.0"
 
 aws-sdk@^2.978.0:
-  version "2.1018.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1018.0.tgz#6ceb079c00e4935d23c6dcd5f5d8197b1ebc4ed8"
-  integrity sha512-XIZ7X8O//bkwuh7a7CkWt5+ldwFzP1bHpWCI33BdCaW7Q6WFKokvtS8CkHMxgsmqnaQ+YC0PpHzoTdAtXpqxQw==
+  version "2.1031.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1031.0.tgz#1556a46907f13d25afd6c5e7af01f9185be3d272"
+  integrity sha512-XXrQG7l9WMYSg4fZNZctrgPjpTb6HPk1DaM2vXfhMHaNl8TyHjyeMkvU+CC0ctlPqgoCMLrGWI4Zxnq8yrsnXA==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -6256,9 +6256,9 @@ ember-table@rwwagner90/ember-table#42607a07cad1c247f6e6d1617d33119d325cbce5:
     hammerjs "^2.0.8"
 
 ember-template-lint@^3.6.0:
-  version "3.12.0"
-  resolved "https://registry.yarnpkg.com/ember-template-lint/-/ember-template-lint-3.12.0.tgz#8901453f2e72fd0071b4c3f6b1258ccd6299f43c"
-  integrity sha512-D56zdFHIjUdvFX01CKvJ0yCfkIBj6bUY5Olchd/Xd6OEIro7cphWKjjB2eGYLIdpwquEREVGS7SWc6riOaO5YQ==
+  version "3.13.0"
+  resolved "https://registry.yarnpkg.com/ember-template-lint/-/ember-template-lint-3.13.0.tgz#6c5c3d26d02985db3b40fc985f63868ec55eab84"
+  integrity sha512-hT0iatx39qWbxn/ReXsWnIMXa5pWBE/fLrEmzfDmqLjTrWbYE6op1BE1Kbuq0Js96baD3+Nnp+cTbaTYiZPWug==
   dependencies:
     "@ember-template-lint/todo-utils" "^10.0.0"
     chalk "^4.1.2"
