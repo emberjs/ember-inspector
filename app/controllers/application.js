@@ -1,7 +1,7 @@
 import Controller from '@ember/controller';
 import { action, computed } from '@ember/object';
 import { equal } from '@ember/object/computed';
-import { schedule } from '@ember/runloop';
+import { debounce, schedule } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 
 export default Controller.extend({
@@ -127,14 +127,22 @@ export default Controller.extend({
     this.layoutService.updateContentHeight(this.contentElement.clientHeight);
   }),
 
-  windowDidResize: action(function () {
+  _windowDidResize: action(function () {
     schedule('afterRender', () => {
       this.layoutService.trigger('resize', {
         source: 'application-controller',
       });
 
-      this.layoutService.updateContentHeight(this.contentElement.clientHeight);
+      if (this.contentElement) {
+        this.layoutService.updateContentHeight(
+          this.contentElement.clientHeight
+        );
+      }
     });
+  }),
+
+  windowDidResize: action(function () {
+    debounce(this, this._windowDidResize, 250);
   }),
 
   toggleNavCollapsed: action(function () {
