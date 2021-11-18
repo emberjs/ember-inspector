@@ -129,14 +129,16 @@ export default Controller.extend({
 
   _windowDidResize: action(function () {
     schedule('afterRender', () => {
-      this.layoutService.trigger('resize', {
-        source: 'application-controller',
-      });
+      if (!this.isDestroyed && !this.isDestroying) {
+        this.layoutService.trigger('resize', {
+          source: 'application-controller',
+        });
 
-      if (this.contentElement) {
-        this.layoutService.updateContentHeight(
-          this.contentElement.clientHeight
-        );
+        if (this.contentElement) {
+          this.layoutService.updateContentHeight(
+            this.contentElement.clientHeight
+          );
+        }
       }
     });
   }),
