@@ -133,7 +133,11 @@ export default Controller.extend({
         source: 'application-controller',
       });
 
-      this.layoutService.updateContentHeight(this.contentElement.clientHeight);
+      if (this.contentElement) {
+        this.layoutService.updateContentHeight(
+          this.contentElement.clientHeight
+        );
+      }
     });
   }),
 
