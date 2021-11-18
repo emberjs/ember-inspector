@@ -5811,9 +5811,9 @@ ember-cli-dependency-checker@^3.2.0:
     semver "^5.3.0"
 
 ember-cli-deprecation-workflow@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/ember-cli-deprecation-workflow/-/ember-cli-deprecation-workflow-2.0.0.tgz#ae338ed74d4329165266960016ebbe455293f303"
-  integrity sha512-pkBKvVtqIJFMPn1JAS74UYW2d8z293qwukPrUE37Z4oTbWdjCYXEPV55WUjA2MPpzkOMuHSgy+D5ZhgD3PKSOA==
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/ember-cli-deprecation-workflow/-/ember-cli-deprecation-workflow-2.1.0.tgz#f0d38ece7ac0ab7b3f83790a3a092e3472f58cff"
+  integrity sha512-Ay9P9iKMJdY4Gq5XPowh3HqqeAzLfwBRj1oB1ZKkDW1fryZQWBN4pZuRnjnB+3VWZjBnZif5e7Pacc7YNW9hWg==
   dependencies:
     broccoli-funnel "^3.0.3"
     broccoli-merge-trees "^4.2.0"
