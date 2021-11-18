@@ -1,6 +1,18 @@
 # Changelog
 
 
+
+## v4.5.3 (2021-11-18)
+
+#### :bug: Bug Fix
+* [#1803](https://github.com/emberjs/ember-inspector/pull/1803) Replace ember-did-resize-modifier with ember-on-resize-modifier ([@rwwagner90](https://github.com/rwwagner90))
+
+#### :house: Internal
+* [#1802](https://github.com/emberjs/ember-inspector/pull/1802) ESLint 8 support ([@rwwagner90](https://github.com/rwwagner90))
+
+#### Committers: 1
+- Robert Wagner ([@rwwagner90](https://github.com/rwwagner90))
+
 ## v4.5.2 (2021-11-17)
 
 #### :bug: Bug Fix
