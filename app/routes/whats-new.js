@@ -14,9 +14,16 @@ function checkStatus(response) {
 }
 
 function getLatestEntry(doc) {
-  const regex = /^#{2} ?\[(.+)\]((?:[\s\S](?!^#{2}))+)/gm;
-  const matches = doc.match(regex);
-  return matches ? matches[0] : '';
+  const regex =
+    /^#{2} (?:v(\d{1,2}(?:\.\d{1,2})?(?:\.\d{1,2})?)|(?:\[v?(.+)]))/gm;
+  const latest = regex.exec(doc);
+  const previous = regex.exec(doc);
+
+  if (latest && previous) {
+    return doc.substring(latest.index, previous.index).trim();
+  }
+
+  return '';
 }
 
 export default class WhatsNewRoute extends TabRoute {

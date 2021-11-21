@@ -25,13 +25,21 @@ function generateContent(master = false) {
   }
 
   content.push(`
-## [v3.3.0](https://github.com/emberjs/ember-inspector/tree/v3.3.0) (2018-08-02)
+## v4.5.3 (2021-11-18)
 
 [Full Changelog](https://emberjs.com)
 
 **Implemented enhancements:**
 
 - Stuff
+
+## v4.5.2 (2021-11-17)
+
+[Full Changelog](https://emberjs.com)
+
+**Implemented enhancements:**
+
+- Other Stuff
 
 ## [v3.2.0](https://github.com/emberjs/ember-inspector/tree/v3.2.0) (2018-07-03)
 
@@ -63,12 +71,12 @@ module('Whats New', function (outer) {
 
   module('Released version', function (inner) {
     inner.beforeEach(function () {
-      this.config.version = '3.3.0';
+      this.config.version = '4.5.3';
     });
 
     test('Changelog is parsed and displayed', async function (assert) {
       this.server = new Pretender(function () {
-        this.get(urlFor('v3.3.0'), () => [
+        this.get(urlFor('v4.5.3'), () => [
           200,
           { 'Content-Type': 'text/plain' },
           generateContent(),
@@ -82,15 +90,15 @@ module('Whats New', function (outer) {
         .exists({ count: 1 }, 'correct section of markdown is rendered');
 
       assert.equal(
-        find('.whats-new h2 a').text,
-        'v3.3.0',
+        find('.whats-new h2').textContent,
+        'v4.5.3 (2021-11-18)',
         'correct section of markdown is rendered'
       );
     });
 
     test('Error message is displayed on request failure', async function (assert) {
       this.server = new Pretender(function () {
-        this.get(urlFor('v3.3.0'), () => [404, {}, '']);
+        this.get(urlFor('v4.5.3'), () => [404, {}, '']);
       });
 
       await visit('/info/whats-new');
