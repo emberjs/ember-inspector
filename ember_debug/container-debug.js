@@ -102,6 +102,11 @@ export default DebugPort.extend({
       }
     },
     sendInstanceToConsole(message) {
+      // We cannot call `.lookup` after the container is destroyed.
+      if (this.container.isDestroyed || this.container.isDestroying) {
+        return;
+      }
+
       const instance = this.container.lookup(message.name);
       this.objectToConsole.sendValueToConsole(instance);
     },

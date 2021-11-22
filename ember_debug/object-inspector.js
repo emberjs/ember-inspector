@@ -440,6 +440,10 @@ export default DebugPort.extend({
     },
     inspectByContainerLookup(message) {
       const container = this.get('namespace.owner');
+      // We cannot call `.lookup` after the container is destroyed.
+      if (container.isDestroyed || container.isDestroying) {
+        return;
+      }
       this.sendObject(container.lookup(message.name));
     },
     traceErrors(message) {
