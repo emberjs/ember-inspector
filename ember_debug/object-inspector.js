@@ -1024,16 +1024,15 @@ function isInternalProperty(property) {
   ) {
     return true;
   }
+
   let isInternalProp = [
     '__LEGACY_OWNER',
     '__ARGS__',
     '__HAS_BLOCK__',
     '__PROPERTY_DID_CHANGE__',
-  ].any((internalProp) => property.startsWith(internalProp));
-  if (isInternalProp) {
-    return true;
-  }
-  return false;
+  ].some((internalProp) => property.startsWith(internalProp));
+
+  return isInternalProp;
 }
 
 function replaceProperty(properties, name, value, options) {
