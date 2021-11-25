@@ -2,6 +2,19 @@
 
 
 
+
+## v4.5.4 (2021-11-23)
+
+#### :bug: Bug Fix
+* [#1814](https://github.com/emberjs/ember-inspector/pull/1814) replace `[].any` with `[].some` ([@Windvis](https://github.com/Windvis))
+
+#### :house: Internal
+* [#1804](https://github.com/emberjs/ember-inspector/pull/1804) Try to fix owner errors ([@rwwagner90](https://github.com/rwwagner90))
+
+#### Committers: 2
+- Robert Wagner ([@rwwagner90](https://github.com/rwwagner90))
+- Sam Van Campenhout ([@Windvis](https://github.com/Windvis))
+
 ## v4.5.3 (2021-11-18)
 
 #### :bug: Bug Fix
