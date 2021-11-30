@@ -13,8 +13,8 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `yarn install`
 - run `yarn global add ember-cli`
+- run `yarn install`
 - run `yarn build` to build the `dist` directory
 - Visit `chrome://extensions` in Chrome
 - Make sure `Developer mode` is checked
@@ -30,8 +30,8 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `yarn install`
 - run `yarn global add ember-cli`
+- run `yarn install`
 - run `yarn build` to build the `dist` directory
 - Visit `about:debugging` in Firefox
 - Click on 'Load Temporary Addon-on'
@@ -41,8 +41,8 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `yarn install`
 - run `yarn global add ember-cli`
+- run `yarn install`
 - run `yarn build` to build the `dist` directory
 - Visit `chrome://extensions` in Opera
 - Make sure `Developer mode` is checked
