@@ -54,6 +54,7 @@ module.exports = {
         './.prettierrc.js',
         './.stylelintrc.js',
         './.template-lintrc.js',
+        './babel.config.js',
         './ember-cli-build.js',
         './testem.js',
         './blueprints/*/index.js',
