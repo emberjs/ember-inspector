@@ -21,9 +21,6 @@ const options = {
   autoImport: {
     forbidEval: true,
   },
-  'ember-cli-babel': {
-    useBabelConfig: true,
-  },
   fingerprint: {
     enabled: false,
   },
