@@ -40,8 +40,6 @@ jobs:
           echo "GIT_BRANCH=${GIT_BRANCH}" >> $GITHUB_ENV
       - name: Set up Volta
         uses: volta-cli/action@v1
-        with:
-          node-version: 12.x
       - name: Install dependencies (yarn)
         run: yarn install
       - name: Lint (hbs)
@@ -99,8 +97,6 @@ jobs:
         uses: actions/checkout@v1
       - name: Set up Volta
         uses: volta-cli/action@v1
-        with:
-          node-version: 12.x
       - name: Install dependencies (yarn)
         run: yarn install
       - name: Set NO_EXTEND_PROTOTYPES
@@ -125,8 +121,6 @@ jobs:
         uses: actions/checkout@v1
       - name: Set up Volta
         uses: volta-cli/action@v1
-        with:
-          node-version: 12.x
       - name: Install dependencies (yarn)
         run: yarn install
       - name: Download panes
@@ -296,8 +290,6 @@ jobs:
     steps:
       - name: Set up Volta
         uses: volta-cli/action@v1
-        with:
-          node-version: 12.x
       - name: Install dependencies (web-ext)
         run: |
           volta install web-ext
@@ -328,8 +320,6 @@ jobs:
     steps:
       - name: Set up Volta
         uses: volta-cli/action@v1
-        with:
-          node-version: 12.x
       - name: Set up NPM
         run: |
           echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}"> ~/.npmrc
