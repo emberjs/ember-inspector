@@ -68,10 +68,11 @@ export default function setupEmberDebugTest(hooks, options = {}) {
   });
 
   hooks.afterEach(async function () {
-    await teardownContext(this);
-
     EmberDebug.destroyContainer();
     EmberDebug.clear();
+
+    await teardownContext(this);
+
     EmberDebug.IGNORE_DEPRECATIONS = originalIgnoreDeprecations;
 
     run(() => {
