@@ -4,6 +4,15 @@
 
 
 
+
+## v4.5.6 (2021-12-13)
+
+#### :house: Internal
+* [#1839](https://github.com/emberjs/ember-inspector/pull/1839) Skip flaky container:types test ([@rwwagner90](https://github.com/rwwagner90))
+
+#### Committers: 1
+- Robert Wagner ([@rwwagner90](https://github.com/rwwagner90))
+
 ## v4.5.5 (2021-12-13)
 
 #### :bug: Bug Fix
