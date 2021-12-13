@@ -267,17 +267,19 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: chrome
-      - name: Upload to Chrome Web Store
+      - name: Set Environment Variables
         run: |
           if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
-            chrome-webstore-upload upload --source chrome --extension-id ibdbkmdgflhglikhjdbogjjflkialpfi --auto-publish
+            echo "EXTENSION_ID=bmdblncegkenkacieihfhpjfppoconhi" >> $GITHUB_ENV
+            echo "CLIENT_ID=${{ secrets.GOOGLE_NIGHTLY_CLIENT_ID }}" >> $GITHUB_ENV
+            echo "REFRESH_TOKEN=${{ secrets.GOOGLE_NIGHTLY_REFRESH_TOKEN }}" >> $GITHUB_ENV
           else
-            chrome-webstore-upload upload --source chrome --extension-id bmdblncegkenkacieihfhpjfppoconhi --auto-publish
+            echo "EXTENSION_ID=ibdbkmdgflhglikhjdbogjjflkialpfi" >> $GITHUB_ENV
+            echo "CLIENT_ID=${{ secrets.GOOGLE_STABLE_CLIENT_ID }}" >> $GITHUB_ENV
+            echo "REFRESH_TOKEN=${{ secrets.GOOGLE_STABLE_REFRESH_TOKEN }}" >> $GITHUB_ENV
           fi
-        env:
-          CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+      - name: Upload to Chrome Web Store
+        run: chrome-webstore-upload upload --source chrome --auto-publish
 
   publish-firefox:
     name: Publish Firefox extension
