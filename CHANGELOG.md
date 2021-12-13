@@ -3,6 +3,25 @@
 
 
 
+
+## v4.5.5 (2021-12-13)
+
+#### :bug: Bug Fix
+* [#1807](https://github.com/emberjs/ember-inspector/pull/1807) bug: Find the latest entry created by lerna-changelog ([@mdeanjones](https://github.com/mdeanjones))
+
+#### :memo: Documentation
+* [#1821](https://github.com/emberjs/ember-inspector/pull/1821) docs(readme): change order of installation hints ([@derrabauke](https://github.com/derrabauke))
+
+#### :house: Internal
+* [#1833](https://github.com/emberjs/ember-inspector/pull/1833) fix issue, test destroyed the component before EmberDebugger is destr… ([@michaelbdai](https://github.com/michaelbdai))
+* [#1829](https://github.com/emberjs/ember-inspector/pull/1829) Use new VC and ember-table betas ([@rwwagner90](https://github.com/rwwagner90))
+
+#### Committers: 4
+- Bing Dai ([@michaelbdai](https://github.com/michaelbdai))
+- Falk Neumann ([@derrabauke](https://github.com/derrabauke))
+- Michael Jones ([@mdeanjones](https://github.com/mdeanjones))
+- Robert Wagner ([@rwwagner90](https://github.com/rwwagner90))
+
 ## v4.5.4 (2021-11-23)
 
 #### :bug: Bug Fix
