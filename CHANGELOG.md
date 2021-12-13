@@ -5,6 +5,15 @@
 
 
 
+
+## v4.5.7 (2021-12-13)
+
+#### :house: Internal
+* [#1840](https://github.com/emberjs/ember-inspector/pull/1840) Disable more flaky tests ([@rwwagner90](https://github.com/rwwagner90))
+
+#### Committers: 1
+- Robert Wagner ([@rwwagner90](https://github.com/rwwagner90))
+
 ## v4.5.6 (2021-12-13)
 
 #### :house: Internal
