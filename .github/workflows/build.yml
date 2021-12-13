@@ -292,6 +292,8 @@ jobs:
     steps:
       - name: Set up Volta
         uses: volta-cli/action@v1
+        with:
+          node-version: 14.x
       - name: Install dependencies (web-ext)
         run: |
           volta install web-ext
