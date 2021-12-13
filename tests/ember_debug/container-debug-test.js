@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, skip, test } from 'qunit';
 import { settled, visit, waitUntil } from '@ember/test-helpers';
 import { A as emberA } from '@ember/array';
 
@@ -19,7 +19,7 @@ module('Ember Debug - Container', function (hooks) {
     }),
   });
 
-  test('#getTypes', async function t(assert) {
+  skip('#getTypes', async function t(assert) {
     await visit('/simple');
 
     EmberDebug.port.trigger('container:getTypes');
