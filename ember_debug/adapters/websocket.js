@@ -1,9 +1,9 @@
 import BasicAdapter from './basic';
-import { onReady } from '../utils/on-ready';
+import { onReady } from 'ember-debug/utils/on-ready';
 
-import { computed } from '../utils/ember/object';
-import { run } from '../utils/ember/runloop';
-import { Promise } from '../utils/rsvp';
+import { computed } from 'ember-debug/utils/ember/object';
+import { run } from 'ember-debug/utils/ember/runloop';
+import { Promise } from 'ember-debug/utils/rsvp';
 
 export default BasicAdapter.extend({
   sendMessage(options = {}) {

@@ -1,9 +1,9 @@
 /* eslint no-console: 0 */
-import { onReady } from '../utils/on-ready';
+import { onReady } from 'ember-debug/utils/on-ready';
 
-import { A } from '../utils/ember/array';
-import EmberObject, { computed } from '../utils/ember/object';
-import { Promise, resolve } from '../utils/rsvp';
+import { A } from 'ember-debug/utils/ember/array';
+import EmberObject, { computed } from 'ember-debug/utils/ember/object';
+import { Promise, resolve } from 'ember-debug/utils/rsvp';
 
 export default EmberObject.extend({
   init() {

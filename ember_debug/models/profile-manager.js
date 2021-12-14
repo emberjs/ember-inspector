@@ -1,8 +1,8 @@
 import ProfileNode from './profile-node';
-import Ember from '../utils/ember';
+import Ember from 'ember-debug/utils/ember';
 import { compareVersion } from 'ember-debug/utils/version';
 
-import { later, scheduleOnce, cancel } from '../utils/ember/runloop';
+import { later, scheduleOnce, cancel } from 'ember-debug/utils/ember/runloop';
 
 function getEdges(first, last, closest) {
   let start = null;

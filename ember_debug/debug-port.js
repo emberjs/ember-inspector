@@ -1,4 +1,4 @@
-import EmberObject from './utils/ember/object';
+import EmberObject from 'ember-debug/utils/ember/object';
 
 export default EmberObject.extend({
   port: null,

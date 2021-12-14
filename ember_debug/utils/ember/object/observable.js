@@ -1,4 +1,4 @@
-import Ember from '..';
+import Ember from '../../ember';
 
 let Observable;
 

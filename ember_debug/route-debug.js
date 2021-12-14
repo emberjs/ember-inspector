@@ -4,10 +4,10 @@ import { compareVersion } from 'ember-debug/utils/version';
 import classify from 'ember-debug/utils/classify';
 import dasherize from 'ember-debug/utils/dasherize';
 
-import Ember from './utils/ember';
-import { computed, observer } from './utils/ember/object';
-import { readOnly } from './utils/ember/object/computed';
-import { later } from './utils/ember/runloop';
+import Ember from 'ember-debug/utils/ember';
+import { computed, observer } from 'ember-debug/utils/ember/object';
+import { readOnly } from 'ember-debug/utils/ember/object/computed';
+import { later } from 'ember-debug/utils/ember/runloop';
 
 const { hasOwnProperty } = Object.prototype;
 

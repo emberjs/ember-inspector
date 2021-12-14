@@ -1,8 +1,8 @@
 import BasicAdapter from './basic';
-import { typeOf } from '../utils/type-check';
+import { typeOf } from 'ember-debug/utils/type-check';
 
-import Ember from '../utils/ember';
-import { run } from '../utils/ember/runloop';
+import Ember from 'ember-debug/utils/ember';
+import { run } from 'ember-debug/utils/ember/runloop';
 
 const { isArray } = Array;
 const { keys } = Object;

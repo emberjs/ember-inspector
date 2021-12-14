@@ -7,11 +7,11 @@
 
 import Promise from 'ember-debug/models/promise';
 
-import { A } from '../utils/ember/array';
-import EmberObject from '../utils/ember/object';
-import Evented from '../utils/ember/object/evented';
-import { isNone } from '../utils/ember/utils';
-import RSVP from '../utils/rsvp';
+import { A } from 'ember-debug/utils/ember/array';
+import EmberObject from 'ember-debug/utils/ember/object';
+import Evented from 'ember-debug/utils/ember/object/evented';
+import { isNone } from 'ember-debug/utils/ember/utils';
+import RSVP from 'ember-debug/utils/rsvp';
 
 let PromiseAssembler = EmberObject.extend(Evented, {
   // RSVP lib to debug
