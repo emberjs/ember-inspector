@@ -1,3 +1,4 @@
+/* eslint-disable ember/require-tagless-components */
 import Component from '@ember/component';
 import { debounce } from '@ember/runloop';
 import { htmlSafe } from '@ember/template';

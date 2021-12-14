@@ -1,0 +1,9 @@
+<td
+  class="list__cell {{if this.clickable "list__cell_clickable"}} {{
+    if this.highlight "list__cell_highlight"
+  }}"
+  style={{this.safeStyle}}
+  title={{this.title}}
+>
+  {{yield}}
+</td>

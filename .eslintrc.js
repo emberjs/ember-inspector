@@ -40,7 +40,6 @@ module.exports = {
     'ember/no-computed-properties-in-native-classes': 'off',
     'ember/no-get': 'off',
     'ember/no-test-import-export': 'off',
-    'ember/require-tagless-components': 'off',
 
     // Best practice
     'no-duplicate-imports': 'error',

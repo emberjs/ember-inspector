@@ -1,3 +1,4 @@
+/* eslint-disable ember/require-tagless-components */
 import Component from '@ember/component';
 import { run, scheduleOnce } from '@ember/runloop';
 import { task, timeout } from 'ember-concurrency';
