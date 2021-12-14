@@ -1,9 +1,4 @@
-import {
-  classNames,
-  attributeBindings,
-  classNameBindings,
-  tagName,
-} from '@ember-decorators/component';
+import { tagName } from '@ember-decorators/component';
 import { computed } from '@ember/object';
 /**
  * An individual cell for the `list` table.
@@ -25,13 +20,7 @@ import Component from '@ember/component';
 
 import { htmlSafe } from '@ember/template';
 
-@tagName('td')
-@classNames('list__cell')
-@classNameBindings(
-  'highlight:list__cell_highlight',
-  'clickable:list__cell_clickable'
-)
-@attributeBindings('safeStyle:style', 'title')
+@tagName('')
 export default class ListCell extends Component {
   /**
    * Avoid unsafe style warning. This property does not
