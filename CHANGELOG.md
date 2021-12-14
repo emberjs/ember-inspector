@@ -6,6 +6,16 @@
 
 
 
+
+## v4.5.8 (2021-12-14)
+
+#### :house: Internal
+* [#1843](https://github.com/emberjs/ember-inspector/pull/1843) Fix firefox publishing ([@chancancode](https://github.com/chancancode))
+* [#1842](https://github.com/emberjs/ember-inspector/pull/1842) Fix chrome publishing ([@chancancode](https://github.com/chancancode))
+
+#### Committers: 1
+- Godfrey Chan ([@chancancode](https://github.com/chancancode))
+
 ## v4.5.7 (2021-12-13)
 
 #### :house: Internal
