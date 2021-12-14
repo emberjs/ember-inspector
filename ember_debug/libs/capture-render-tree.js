@@ -1,5 +1,5 @@
-import { compareVersion } from '../utils/version';
-import Ember from '../utils/ember';
+import { compareVersion } from 'ember-debug/utils/version';
+import Ember from 'ember-debug/utils/ember';
 
 /* eslint-disable no-console, no-inner-declarations */
 

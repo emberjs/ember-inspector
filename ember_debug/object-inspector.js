@@ -5,23 +5,26 @@ import {
   isComputed,
   isDescriptor,
   getDescriptorFor,
+  typeOf,
 } from 'ember-debug/utils/type-check';
 import { compareVersion } from 'ember-debug/utils/version';
-import { typeOf } from './utils/type-check';
-
-import Ember from './utils/ember';
-import MutableArray from './utils/ember/array/mutable';
-import ArrayProxy from './utils/ember/array/proxy';
-import Component from './utils/ember/component';
-import { inspect as emberInspect } from './utils/ember/debug';
-import EmberObject, { computed, get, set } from './utils/ember/object';
-import { oneWay } from './utils/ember/object/computed';
-import Observable from './utils/ember/object/observable';
-import Evented from './utils/ember/object/evented';
-import { cacheFor, guidFor } from './utils/ember/object/internals';
-import PromiseProxyMixin from './utils/ember/object/promise-proxy-mixin';
-import { _backburner, join } from './utils/ember/runloop';
-import { isNone } from './utils/ember/utils';
+import Ember from 'ember-debug/utils/ember';
+import MutableArray from 'ember-debug/utils/ember/array/mutable';
+import ArrayProxy from 'ember-debug/utils/ember/array/proxy';
+import Component from 'ember-debug/utils/ember/component';
+import { inspect as emberInspect } from 'ember-debug/utils/ember/debug';
+import EmberObject, {
+  computed,
+  get,
+  set,
+} from 'ember-debug/utils/ember/object';
+import { oneWay } from 'ember-debug/utils/ember/object/computed';
+import Observable from 'ember-debug/utils/ember/object/observable';
+import Evented from 'ember-debug/utils/ember/object/evented';
+import { cacheFor, guidFor } from 'ember-debug/utils/ember/object/internals';
+import PromiseProxyMixin from 'ember-debug/utils/ember/object/promise-proxy-mixin';
+import { _backburner, join } from 'ember-debug/utils/ember/runloop';
+import { isNone } from 'ember-debug/utils/ember/utils';
 
 const {
   meta: emberMeta,

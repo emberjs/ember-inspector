@@ -1,7 +1,7 @@
 /* eslint no-empty:0 */
 import DebugPort from './debug-port';
 
-import Ember from './utils/ember';
+import Ember from 'ember-debug/utils/ember';
 
 /**
  * Class that handles gathering general information of the inspected app.

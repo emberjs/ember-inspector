@@ -1,8 +1,8 @@
-import EmberObject, { computed } from './utils/ember/object';
-import { or, readOnly } from './utils/ember/object/computed';
-import Evented from './utils/ember/object/evented';
-import { guidFor } from './utils/ember/object/internals';
-import { run } from './utils/ember/runloop';
+import EmberObject, { computed } from 'ember-debug/utils/ember/object';
+import { or, readOnly } from 'ember-debug/utils/ember/object/computed';
+import Evented from 'ember-debug/utils/ember/object/evented';
+import { guidFor } from 'ember-debug/utils/ember/object/internals';
+import { run } from 'ember-debug/utils/ember/runloop';
 
 export default EmberObject.extend(Evented, {
   adapter: readOnly('namespace.adapter'),

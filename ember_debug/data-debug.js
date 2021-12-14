@@ -1,9 +1,9 @@
 import DebugPort from './debug-port';
 
-import { A } from './utils/ember/array';
-import { computed, set } from './utils/ember/object';
-import { alias } from './utils/ember/object/computed';
-import { guidFor } from './utils/ember/object/internals';
+import { A } from 'ember-debug/utils/ember/array';
+import { computed, set } from 'ember-debug/utils/ember/object';
+import { alias } from 'ember-debug/utils/ember/object/computed';
+import { guidFor } from 'ember-debug/utils/ember/object/internals';
 
 export default DebugPort.extend({
   init() {

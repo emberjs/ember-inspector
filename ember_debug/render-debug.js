@@ -1,7 +1,7 @@
 import DebugPort from './debug-port';
 import ProfileManager from './models/profile-manager';
 
-import { subscribe } from './utils/ember/instrumentation';
+import { subscribe } from 'ember-debug/utils/ember/instrumentation';
 
 // Initial setup, that has to occur before the EmberObject init for some reason
 let profileManager = new ProfileManager();

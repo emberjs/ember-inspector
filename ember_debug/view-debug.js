@@ -4,7 +4,7 @@ import RenderTree from 'ember-debug/libs/render-tree';
 import ViewInspection from 'ember-debug/libs/view-inspection';
 import bound from 'ember-debug/utils/bound-method';
 
-import { readOnly } from './utils/ember/object/computed';
+import { readOnly } from 'ember-debug/utils/ember/object/computed';
 
 export default DebugPort.extend({
   namespace: null,

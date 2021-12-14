@@ -11,12 +11,12 @@ import ContainerDebug from 'ember-debug/container-debug';
 import DeprecationDebug from 'ember-debug/deprecation-debug';
 import Session from 'ember-debug/services/session';
 
-import Ember from './utils/ember';
-import Application from './utils/ember/application';
-import EmberObject, { computed } from './utils/ember/object';
-import { or } from './utils/ember/object/computed';
-import { guidFor } from './utils/ember/object/internals';
-import { run } from './utils/ember/runloop';
+import Ember from 'ember-debug/utils/ember';
+import Application from 'ember-debug/utils/ember/application';
+import EmberObject, { computed } from 'ember-debug/utils/ember/object';
+import { or } from 'ember-debug/utils/ember/object/computed';
+import { guidFor } from 'ember-debug/utils/ember/object/internals';
+import { run } from 'ember-debug/utils/ember/runloop';
 
 const { Namespace } = Ember;
 
