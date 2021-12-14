@@ -10,9 +10,10 @@ import { Promise, resolve } from 'ember-debug/utils/rsvp';
 const notFoundError = new Error('Source map url not found');
 
 export default EmberObject.extend({
-  _lastPromise: computed(function () {
-    return resolve(undefined, 'ember-inspector');
-  }),
+  init() {
+    this._super(...arguments);
+    this.set('_lastPromise', resolve(undefined, 'ember-inspector'));
+  },
 
   /**
    * Returns a promise that resolves to an array
