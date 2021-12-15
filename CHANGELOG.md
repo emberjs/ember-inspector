@@ -7,6 +7,20 @@
 
 
 
+## v4.5.9 (2021-12-15)
+
+#### :bug: Bug Fix
+* [#1845](https://github.com/emberjs/ember-inspector/pull/1845) Fix setting _lastPromise computed deprecation ([@rwwagner90](https://github.com/rwwagner90))
+* [#1844](https://github.com/emberjs/ember-inspector/pull/1844) Fix ember-debug imports ([@rwwagner90](https://github.com/rwwagner90))
+
+#### :house: Internal
+* [#1847](https://github.com/emberjs/ember-inspector/pull/1847) Fix chrome publishing again ([@chancancode](https://github.com/chancancode))
+* [#1846](https://github.com/emberjs/ember-inspector/pull/1846) Enable ember/require-tagless-components ([@rwwagner90](https://github.com/rwwagner90))
+
+#### Committers: 2
+- Godfrey Chan ([@chancancode](https://github.com/chancancode))
+- Robert Wagner ([@rwwagner90](https://github.com/rwwagner90))
+
 ## v4.5.8 (2021-12-14)
 
 #### :house: Internal
