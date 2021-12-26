@@ -54,7 +54,11 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
         };
       });
       
-      window.EmberInspector = requireModule('ember-debug/main')['default'];
+      let emberDebugMainModule = requireModule('ember-debug/main');
+      if (!emberDebugMainModule['default']) {
+        return;
+      }
+      window.EmberInspector = emberDebugMainModule['default'];
       window.EmberInspector.Adapter = requireModule('ember-debug/adapters/' + adapter)['default'];
 
       onApplicationStart(function appStarted(instance) {
