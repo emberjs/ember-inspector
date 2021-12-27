@@ -1,9 +1,4 @@
 let Ember;
-try {
-  Ember = requireModule('ember')['default'];
-} catch {
-  Ember = window.Ember;
-}
 
 /* eslint camelcase:0 */
 /**
@@ -59,7 +54,11 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
         };
       });
       
-      window.EmberInspector = requireModule('ember-debug/main')['default'];
+      let emberDebugMainModule = requireModule('ember-debug/main');
+      if (!emberDebugMainModule['default']) {
+        return;
+      }
+      window.EmberInspector = emberDebugMainModule['default'];
       window.EmberInspector.Adapter = requireModule('ember-debug/adapters/' + adapter)['default'];
 
       onApplicationStart(function appStarted(instance) {
@@ -111,11 +110,12 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
         return;
       }
 
-      let Ember;
-      try {
-        Ember = requireModule('ember')['default'];
-      } catch {
-        Ember = window.Ember;
+      if (!Ember) {
+        try {
+          Ember = requireModule('ember')['default'];
+        } catch {
+          Ember = window.Ember;
+        }
       }
 
       if (!Ember) {
@@ -131,15 +131,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     };
 
     // Newest Ember versions >= 1.10
-    window.addEventListener('Ember', triggerOnce, false);
-    // Old Ember versions
-    window.addEventListener('Ember.Application', function() {
-      if (Ember && Ember.VERSION && compareVersion(Ember.VERSION, '1.10.0') === 1) {
-        // Ember >= 1.10 should be handled by `Ember` load hook instead.
-        return;
-      }
-      triggerOnce();
-    }, false);
+    window.addEventListener('Ember', triggerOnce, { once: true });
     // Oldest Ember versions or if this was injected after Ember has loaded.
     onReady(triggerOnce);
   }
