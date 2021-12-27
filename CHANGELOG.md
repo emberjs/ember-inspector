@@ -7,6 +7,18 @@
 
 
 
+
+## v4.5.11 (2021-12-27)
+
+#### :bug: Bug Fix
+* [#1848](https://github.com/emberjs/ember-inspector/pull/1848) Force startup-wrapper logic to run less times ([@rwwagner90](https://github.com/rwwagner90))
+
+#### :house: Internal
+* [#1858](https://github.com/emberjs/ember-inspector/pull/1858) Node 14.18.2 ([@rwwagner90](https://github.com/rwwagner90))
+
+#### Committers: 1
+- Robert Wagner ([@rwwagner90](https://github.com/rwwagner90))
+
 ## v4.5.10 (2021-12-15)
 
 ## v4.5.9 (2021-12-15)
