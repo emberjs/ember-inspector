@@ -79,7 +79,7 @@
     "ember-load-initializers": "^2.1.2",
     "ember-math-helpers": "^2.15.0",
     "ember-maybe-import-regenerator": "^1.0.0",
-    "ember-on-resize-modifier": "^0.4.5",
+    "ember-on-resize-modifier": "^1.0.0",
     "ember-qunit": "^5.1.4",
     "ember-resolver": "^8.0.2",
     "ember-showdown": "^1.0.0-beta.1",
