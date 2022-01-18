@@ -6470,10 +6470,10 @@ ember-svg-jar@^2.3.3:
     mkdirp "^0.5.1"
     path-posix "^1.0.0"
 
-ember-table@4.0.0-beta.1:
-  version "4.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/ember-table/-/ember-table-4.0.0-beta.1.tgz#0c8797110ff9bb63c19bf78919a113f798023468"
-  integrity sha512-AcsA1tgv1AG6AV5bwlqVHKdapwYQ2dlp5Wk3eV+qk5o5BQ+AgIkvlSYkgsJOFCiyilkp6q6FbLVolBd779QCWg==
+ember-table@4.0.0-beta.2:
+  version "4.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/ember-table/-/ember-table-4.0.0-beta.2.tgz#91916fa27cf2266f429bc372ee9d147f71fb1b59"
+  integrity sha512-G9oA9gf/DZE6YDnQRTvMqhU+ptm8mD6bTzNCVfDqyfLnMz8UiK3oOrJVOMELx3Fa9n0vxOraD930TPMhEIuukg==
   dependencies:
     "@babel/core" "^7.0.0-0"
     "@babel/plugin-proposal-nullish-coalescing-operator" "^7.12.13"
