@@ -99,7 +99,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-qunit": "^6.2.0",
     "fstream": "^1.0.12",
-    "got": "^11.8.2",
+    "got": "^12.0.1",
     "gulp": "^4.0.2",
     "gulp-zip": "^5.1.0",
     "loader.js": "^4.7.0",
