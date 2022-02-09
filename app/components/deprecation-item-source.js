@@ -7,7 +7,7 @@ export default class DeprecationItemSource extends Component {
   get url() {
     const source = get(this.args, 'itemModel.map.source');
     if (this.known) {
-      return `${source}:${get(this.args, 'itemModel.map.line')}`;
+      return `${source}:${this.args.itemModel.map.line}`;
     } else {
       return 'Unkown source';
     }
