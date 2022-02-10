@@ -3,7 +3,7 @@
     class="send-to-console send-to-console--chevron-only mr-3"
     title="Trace deprecations in console"
     data-test-trace-deprecations-btn
-    onclick={{this.handleClick}}
+    {{on "click" this.handleClick}}
     type="button"
   >
     {{svg-jar "send-with-chevron" width="6px" height="9px"}}
