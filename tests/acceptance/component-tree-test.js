@@ -113,6 +113,7 @@ function getRenderTree() {
               id: 4,
               name: 'todo-item',
               args: Args({ names: ['subTasks'], positionals: 0 }),
+              instance: Serialized('ember789'),
             })
           )
         )
@@ -209,7 +210,7 @@ module('Component Tab', function (hooks) {
   });
 
   test('It allows users to navigate nodes with arrow keys', async function (assert) {
-    assert.expect(3);
+    assert.expect(6);
 
     await visit('/component-tree');
 
@@ -229,10 +230,34 @@ module('Component Tab', function (hooks) {
     });
     await triggerKeyEvent(document, 'keydown', 40);
 
+    // select next node with right arrow key
+    respondWith('view:showInspection', false);
+    respondWith('objectInspector:inspectById', ({ objectId }) => {
+      assert.equal(objectId, 'ember456');
+      return false;
+    });
+    await triggerKeyEvent(document, 'keydown', 39);
+
+    // select next node with right arrow key
+    respondWith('view:showInspection', false);
+    respondWith('objectInspector:inspectById', ({ objectId }) => {
+      assert.equal(objectId, 'ember789');
+      return false;
+    });
+    await triggerKeyEvent(document, 'keydown', 39);
+
+    // select previous node with left arrow key
+    respondWith('view:showInspection', false);
+    respondWith('objectInspector:inspectById', ({ objectId }) => {
+      assert.equal(objectId, 'ember456');
+      return false;
+    });
+    await triggerKeyEvent(document, 'keydown', 37);
+
     // select previous node with up arrow key
     respondWith('view:showInspection', false);
     respondWith('objectInspector:inspectById', ({ objectId }) => {
-      assert.equal(objectId, 'ember123');
+      assert.equal(objectId, 'ember2');
       return false;
     });
     await triggerKeyEvent(document, 'keydown', 38);

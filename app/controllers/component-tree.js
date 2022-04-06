@@ -200,15 +200,31 @@ export default class ComponentTreeController extends Controller {
       case KEYS.up:
         this.pinned = this.previousItem.id;
         break;
-      case KEYS.right:
-        this.findItem(this.pinned).expand();
+      case KEYS.right: {
+        const pinnedItem = this.findItem(this.pinned);
+
+        if (pinnedItem.isExpanded) {
+          this.pinned = this.nextItem.id;
+        } else {
+          pinnedItem.expand();
+        }
+
         break;
+      }
       case KEYS.down:
         this.pinned = this.nextItem.id;
         break;
-      case KEYS.left:
-        this.findItem(this.pinned).collapse();
+      case KEYS.left: {
+        const pinnedItem = this.findItem(this.pinned);
+
+        if (pinnedItem.isExpanded) {
+          pinnedItem.collapse();
+        } else {
+          this.pinned = pinnedItem.parentItem.id;
+        }
+
         break;
+      }
     }
   }
 
@@ -251,12 +267,14 @@ function arrowKeyPressed(keyCode) {
 }
 
 class RenderItem {
-  @tracked isExpanded = true;
+  @tracked isExpanded;
 
   constructor(controller, parentItem, renderNode) {
     this.controller = controller;
     this.parentItem = parentItem;
     this.renderNode = renderNode;
+
+    this.isExpanded = this.isExpandable;
   }
 
   get id() {
@@ -341,6 +359,10 @@ class RenderItem {
     return children;
   }
 
+  get isExpandable() {
+    return this.hasChildren;
+  }
+
   get isVisible() {
     if (this.isRoot) {
       return true;
@@ -420,18 +442,22 @@ class RenderItem {
   }
 
   expand(deep = false) {
-    this.isExpanded = true;
+    if (this.isExpandable) {
+      this.isExpanded = true;
 
-    if (deep === true) {
-      this.childItems.forEach((child) => child.expand(true));
+      if (deep === true) {
+        this.childItems.forEach((child) => child.expand(true));
+      }
     }
   }
 
   collapse(deep = false) {
-    this.isExpanded = false;
+    if (this.isExpandable) {
+      this.isExpanded = false;
 
-    if (deep === true) {
-      this.childItems.forEach((child) => child.collapse(true));
+      if (deep === true) {
+        this.childItems.forEach((child) => child.collapse(true));
+      }
     }
   }
 
