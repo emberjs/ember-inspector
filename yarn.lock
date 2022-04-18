@@ -2637,9 +2637,9 @@ autoprefixer@^9.8.6:
     postcss-value-parser "^4.1.0"
 
 aws-sdk@^2.978.0:
-  version "2.1102.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1102.0.tgz#00cceeb39966bf0000ff64d7fb237c38640618f5"
-  integrity sha512-MMOncE8IG3Dop3WPza6ryTAEz413ftn/MtDO7ouessb3ljlg5BfqRkTe/rhPH5svqEqJvlh7qHnK0VjgJwmLTQ==
+  version "2.1116.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1116.0.tgz#1187ab943e6bf730db282afe7950dd2af409cb5b"
+  integrity sha512-36JFrxPPh/fRQWsgGrZZbzTxRu7dq4KyCKKXPxgVMXylEJsG/KEAVMB1f3eq4PiI5eGxYrpt2OkKoMQZQZLjPA==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -5766,9 +5766,9 @@ ember-cli-code-coverage@^1.0.2:
     walk-sync "^2.1.0"
 
 ember-cli-dependency-checker@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/ember-cli-dependency-checker/-/ember-cli-dependency-checker-3.2.0.tgz#9202ad9e14d6fda33cffc22a11c343c2a8885330"
-  integrity sha512-dkSmcJ/jY/2ms/S6ph2jXSfOW5VfOpLfg5DFEbra0SaMNgYkNDFF1o0U4OdTsG37L5h/AXWNuVtnOa4TMabz9Q==
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/ember-cli-dependency-checker/-/ember-cli-dependency-checker-3.3.1.tgz#16b44d7a1a1e946f59859fad97f32e616d78323a"
+  integrity sha512-Tg6OeijjXNKWkDm6057Tr0N9j9Vlz/ITewXWpn1A/+Wbt3EowBx5ZKfvoupqz05EznKgL1B/ecG0t+JN7Qm6MA==
   dependencies:
     chalk "^2.3.0"
     find-yarn-workspace-root "^1.1.0"
