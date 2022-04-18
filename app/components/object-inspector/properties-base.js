@@ -1,35 +1,33 @@
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 
-export default Component.extend({
-  port: service(),
+export default class PropertiesBase extends Component {
+  @service port;
 
-  tagName: '',
-
-  sendToConsole: action(function ({ name }) {
+  @action sendToConsole({ name }) {
     const data = {
-      objectId: this.model.objectId,
+      objectId: this.args.model.objectId,
     };
     if (name !== '...') {
       data.property = name;
     }
     this.port.send('objectInspector:sendToConsole', data);
-  }),
+  }
 
-  digDeeper: action(function ({ name }) {
+  @action digDeeper({ name }) {
     this.port.send('objectInspector:digDeeper', {
-      objectId: this.model.objectId,
+      objectId: this.args.model.objectId,
       property: name,
     });
-  }),
+  }
 
-  saveProperty: action(function (property, value, dataType) {
+  @action saveProperty(property, value, dataType) {
     this.port.send('objectInspector:saveProperty', {
-      objectId: this.model.objectId,
+      objectId: this.args.model.objectId,
       property,
       value,
       dataType,
     });
-  }),
-});
+  }
+}
