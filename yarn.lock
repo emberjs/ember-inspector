@@ -2637,9 +2637,9 @@ autoprefixer@^9.8.6:
     postcss-value-parser "^4.1.0"
 
 aws-sdk@^2.978.0:
-  version "2.1102.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1102.0.tgz#00cceeb39966bf0000ff64d7fb237c38640618f5"
-  integrity sha512-MMOncE8IG3Dop3WPza6ryTAEz413ftn/MtDO7ouessb3ljlg5BfqRkTe/rhPH5svqEqJvlh7qHnK0VjgJwmLTQ==
+  version "2.1116.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1116.0.tgz#1187ab943e6bf730db282afe7950dd2af409cb5b"
+  integrity sha512-36JFrxPPh/fRQWsgGrZZbzTxRu7dq4KyCKKXPxgVMXylEJsG/KEAVMB1f3eq4PiI5eGxYrpt2OkKoMQZQZLjPA==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -12815,9 +12815,9 @@ sane@^4.0.0, sane@^4.1.0:
     walker "~1.0.5"
 
 sass@^1.38.2:
-  version "1.49.9"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.49.9.tgz#b15a189ecb0ca9e24634bae5d1ebc191809712f9"
-  integrity sha512-YlYWkkHP9fbwaFRZQRXgDi3mXZShslVmmo+FVK3kHLUELHHEYrCmL1x6IUjC7wLS6VuJSAFXRQS/DxdsC4xL1A==
+  version "1.50.0"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.50.0.tgz#3e407e2ebc53b12f1e35ce45efb226ea6063c7c8"
+  integrity sha512-cLsD6MEZ5URXHStxApajEh7gW189kkjn4Rc8DQweMyF+o5HF5nfEz8QYLMlPsTOD88DknatTmBWkOcw5/LnJLQ==
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
     immutable "^4.0.0"
