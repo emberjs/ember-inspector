@@ -24,11 +24,11 @@ export default class PropertiesAll extends PropertiesBase {
   get flatPropertyList() {
     const props = this.args.model.mixins.map(function (mixin) {
       return mixin.properties.filter(function (p) {
-        let shoulApplyCustomFilter = this.args.customFilter
+        let shouldApplyCustomFilter = this.args.customFilter
           ? p.name.toLowerCase().indexOf(this.args.customFilter.toLowerCase()) >
             -1
           : true;
-        return !p.hasOwnProperty('overridden') && shoulApplyCustomFilter;
+        return !p.hasOwnProperty('overridden') && shouldApplyCustomFilter;
       }, this);
     }, this);
 
