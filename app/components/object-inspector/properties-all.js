@@ -1,4 +1,4 @@
-import { action, computed } from '@ember/object';
+import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import PropertiesBase from 'ember-inspector/components/object-inspector/properties-base';
 
@@ -8,31 +8,30 @@ const findMixin = function (mixins, property) {
   });
 };
 
-export default PropertiesBase.extend({
-  port: service(),
+export default class PropertiesAll extends PropertiesBase {
+  @service port;
 
-  tagName: '',
-
-  calculate: action(function (property) {
-    const mixin = findMixin(this.get('model.mixins'), property);
+  @action calculate(property) {
+    const mixin = findMixin(this.args.model.mixins, property);
 
     this.port.send('objectInspector:calculate', {
-      objectId: this.model.objectId,
-      mixinIndex: this.get('model.mixins').indexOf(mixin),
+      objectId: this.args.model.objectId,
+      mixinIndex: this.args.model.mixins.indexOf(mixin),
       property: property.name,
     });
-  }),
+  }
 
-  flatPropertyList: computed('customFilter', 'model.mixins', function () {
-    const props = this.get('model.mixins').map(function (mixin) {
+  get flatPropertyList() {
+    const props = this.args.model.mixins.map(function (mixin) {
       return mixin.properties.filter(function (p) {
-        let shoulApplyCustomFilter = this.customFilter
-          ? p.name.toLowerCase().indexOf(this.customFilter.toLowerCase()) > -1
+        let shouldApplyCustomFilter = this.args.customFilter
+          ? p.name.toLowerCase().indexOf(this.args.customFilter.toLowerCase()) >
+            -1
           : true;
-        return !p.hasOwnProperty('overridden') && shoulApplyCustomFilter;
+        return !p.hasOwnProperty('overridden') && shouldApplyCustomFilter;
       }, this);
     }, this);
 
     return props.flat();
-  }),
-});
+  }
+}
