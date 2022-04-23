@@ -12,6 +12,7 @@ const STORE_KEY = 'last-version-opened';
 export default class LaunchRoute extends Route {
   @service config;
   @service storage;
+  @service router;
 
   @readOnly('config.VERSION') version;
 
@@ -28,7 +29,7 @@ export default class LaunchRoute extends Route {
         targetRoute = 'whats-new';
       }
 
-      this.transitionTo(targetRoute);
+      this.router.transitionTo(targetRoute);
     });
   }
 
