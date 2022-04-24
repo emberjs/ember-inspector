@@ -5,6 +5,7 @@ import TabRoute from 'ember-inspector/routes/tab';
 
 export default class ContainerTypeRoute extends TabRoute {
   @service port;
+  @service router;
 
   model(params) {
     const type = params.type_id;
@@ -32,7 +33,7 @@ export default class ContainerTypeRoute extends TabRoute {
   @action
   error(err) {
     if (err && err.status === 404) {
-      this.transitionTo('container-types.index');
+      this.router.transitionTo('container-types.index');
       return false;
     }
   }

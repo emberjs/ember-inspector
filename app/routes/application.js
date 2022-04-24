@@ -7,6 +7,7 @@ const { NativeArray } = Ember;
 export default class ApplicationRoute extends Route {
   @service adapter;
   @service port;
+  @service router;
 
   setupController(controller) {
     controller.set('mixinStack', []);
@@ -32,7 +33,7 @@ export default class ApplicationRoute extends Route {
   }
 
   inspectComponent({ id }) {
-    this.transitionTo('component-tree', {
+    this.router.transitionTo('component-tree', {
       queryParams: {
         pinned: id,
       },
@@ -40,7 +41,7 @@ export default class ApplicationRoute extends Route {
   }
 
   previewComponent({ id }) {
-    this.transitionTo('component-tree', {
+    this.router.transitionTo('component-tree', {
       queryParams: {
         previewing: id,
       },

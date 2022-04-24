@@ -1,8 +1,11 @@
 import { get } from '@ember/object';
+import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 import { Promise } from 'rsvp';
 
 export default class ModelTypeRoute extends Route {
+  @service router;
+
   model(params) {
     return new Promise((resolve) => {
       const type = this.modelFor('model-types').findBy(
@@ -12,7 +15,7 @@ export default class ModelTypeRoute extends Route {
       if (type) {
         resolve(type);
       } else {
-        this.transitionTo('model-types.index');
+        this.router.transitionTo('model-types.index');
       }
     });
   }

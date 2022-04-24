@@ -4,6 +4,7 @@ import { Promise } from 'rsvp';
 
 export default class IndexRoute extends Route {
   @service port;
+  @service router;
 
   model() {
     return new Promise((resolve) => {
@@ -16,7 +17,7 @@ export default class IndexRoute extends Route {
 
   afterModel(model) {
     if (model) {
-      this.transitionTo('model-types');
+      this.router.transitionTo('model-types');
     }
   }
 }
