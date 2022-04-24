@@ -1,6 +1,6 @@
 /* eslint-disable ember/require-tagless-components */
 import Component from '@ember/component';
-import { run, scheduleOnce } from '@ember/runloop';
+import { bind, scheduleOnce } from '@ember/runloop';
 import { task, timeout } from 'ember-concurrency';
 import ResizableColumns from 'ember-inspector/libs/resizable-columns';
 import { inject as service } from '@ember/service';
@@ -165,7 +165,7 @@ export default Component.extend({
         arr.push({
           name,
           title: name,
-          fn: run.bind(this, this.toggleColumnVisibility, id),
+          fn: bind(this, this.toggleColumnVisibility, id),
         });
         return arr;
       }, []);
