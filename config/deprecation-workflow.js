@@ -12,7 +12,6 @@ self.deprecationWorkflow.config = {
     { handler: 'silence', matchId: 'implicit-injections' },
     { handler: 'silence', matchId: 'manager-capabilities.modifiers-3-13' },
     { handler: 'silence', matchId: 'route-render-template' },
-    { handler: 'silence', matchId: 'this-property-fallback' },
     { handler: 'silence', matchId: 'ember-metal.get-with-default' },
     { handler: 'silence', matchId: 'globals-resolver' },
   ],

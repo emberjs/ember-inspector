@@ -7,7 +7,7 @@
 <EmberTable as |t|>
   <t.head @columns={{schema-for "info-list"}} @enableReorder={{false}} />
 
-  <t.body @rows={{rows}} as |b|>
+  <t.body @rows={{this.rows}} as |b|>
     <b.row
       class={{
         concat "js-library-row" (if (mod b.rowMeta.index 2) " striped")

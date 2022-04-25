@@ -1,15 +1,15 @@
-{{#if schema.columns.length}}
+{{#if this.schema.columns.length}}
   <div class="list__header">
     <div class="list__table-container">
       <table>
         <colgroup>
-          {{#each columns key="id" as |column|}}
+          {{#each this.columns key="id" as |column|}}
             <col style={{build-style width=(concat column.width "px")}}>
           {{/each}}
         </colgroup>
         <tbody>
           <tr class="list__row">
-            {{#each columns key="id" as |column|}}
+            {{#each this.columns key="id" as |column|}}
               <ListCell
                 class="js-header-column"
                 @tagName="th"
@@ -40,8 +40,8 @@
   }}
 </ListContent>
 
-{{#each columns key="id" as |column|}}
-  {{#if (and column.visible (not-eq column columns.lastObject))}}
+{{#each this.columns key="id" as |column|}}
+  {{#if (and column.visible (not-eq column this.columns.lastObject))}}
     <Ui::DragHandle
       @faded={{true}}
       @left={{column.left}}

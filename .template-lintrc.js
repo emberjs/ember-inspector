@@ -8,7 +8,6 @@ module.exports = {
 
     // TODO: enable these rules
     'no-action': false,
-    'no-implicit-this': false,
     'no-positive-tabindex': false,
     'table-groups': false,
   },

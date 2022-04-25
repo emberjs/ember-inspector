@@ -2,11 +2,11 @@
   <div class="list__table-container">
     <table>
       <colgroup>
-        {{#each columns as |column|}}
+        {{#each this.columns as |column|}}
           <col style={{build-style width=(concat column.width "px")}} />
         {{/each}}
       </colgroup>
-      {{yield (hash rowEvents=rowEvents)}}
+      {{yield (hash rowEvents=this.rowEvents)}}
     </table>
   </div>
 </div>

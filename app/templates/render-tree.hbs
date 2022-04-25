@@ -1,8 +1,8 @@
 {{#if this.toolbarContainer}}
   {{#in-element this.toolbarContainer}}
     <RenderTreeToolbar
-      @clearProfiles={{action send "clearProfiles"}}
-      @refreshPage={{action send "refreshPage"}}
+      @clearProfiles={{action this.send "clearProfiles"}}
+      @refreshPage={{action this.send "refreshPage"}}
       @searchValue={{this.searchValue}}
       @showEmpty={{this.showEmpty}}
       @shouldHighlightRender={{this.shouldHighlightRender}}

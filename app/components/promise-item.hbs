@@ -45,7 +45,7 @@
         <span
           class="list__link js-promise-object-value"
           role="button"
-          {{on "click" (fn @inspectObject settledValue.objectId)}}
+          {{on "click" (fn @inspectObject this.settledValue.objectId)}}
         >
           {{this.settledValue.inspect}}
         </span>

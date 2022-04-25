@@ -5,7 +5,7 @@
   />
 
   {{! if should refresh the refresh button will be in the middle of the of the tab }}
-  {{#unless shouldRefresh}}
+  {{#unless this.shouldRefresh}}
     <Ui::ToolbarDivider />
     <Ui::ToolbarReloadButton
       @action={{@refreshPage}}
