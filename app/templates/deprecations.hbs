@@ -2,16 +2,16 @@
   {{#in-element this.toolbarContainer}}
     <DeprecationsToolbar
       @changeDeprecationWorkflow={{this.changeDeprecationWorkflow}}
-      @clear={{action send "clear"}}
+      @clear={{action this.send "clear"}}
       @searchValue={{this.searchValue}}
       @toggleDeprecationWorkflow={{this.toggleDeprecationWorkflow}}
     />
   {{/in-element}}
 {{/if}}
 
-{{#if filtered.length}}
+{{#if this.filtered.length}}
   <div class="list__content js-deprecations">
-    {{#vertical-collection filtered estimateHeight=20 as |content|}}
+    {{#vertical-collection this.filtered estimateHeight=20 as |content|}}
       <DeprecationItem
         @model={{content}}
         @openResource={{this.openResource}}

@@ -15,14 +15,14 @@ module('Integration | Component | component-tree-arg', function (hooks) {
 
   test('it should correctly render an object argument', async function (assert) {
     this.objectArgs = { testKey: 'test' };
-    await render(hbs`<ComponentTreeArg @value={{objectArgs}} />`);
+    await render(hbs`<ComponentTreeArg @value={{this.objectArgs}} />`);
     assert.dom('[data-test-arg-object]').hasText('...');
   });
 
   test('it should correctly if the argument is not a string or an object', async function (assert) {
     this.falseArgs = false;
 
-    await render(hbs`<ComponentTreeArg @value={{falseArgs}} />`);
+    await render(hbs`<ComponentTreeArg @value={{this.falseArgs}} />`);
     assert.dom('[data-test-arg-string]').hasText('false');
   });
 });

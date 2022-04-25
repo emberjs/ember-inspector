@@ -1,7 +1,7 @@
 <EmberTable as |t|>
-  <t.head @columns={{columns}} @enableReorder={{false}} />
+  <t.head @columns={{this.columns}} @enableReorder={{false}} />
 
-  <t.body @rows={{rows}} as |b|>
+  <t.body @rows={{this.rows}} as |b|>
     <b.row
       class={{
         concat "js-config-row" (if (mod b.rowMeta.index 2) " striped")
