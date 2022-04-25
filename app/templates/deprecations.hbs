@@ -10,7 +10,7 @@
 {{/if}}
 
 {{#if filtered.length}}
-  <div class="list__content js-deprecations" style="height: 100%;">
+  <div class="list__content js-deprecations">
     {{#vertical-collection filtered estimateHeight=20 as |content|}}
       <DeprecationItem
         @model={{content}}

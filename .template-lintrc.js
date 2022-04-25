@@ -9,7 +9,6 @@ module.exports = {
     // TODO: enable these rules
     'no-action': false,
     'no-implicit-this': false,
-    'no-inline-styles': false,
     'no-positive-tabindex': false,
     'table-groups': false,
   },
