@@ -35,7 +35,6 @@ const {
   MutableEnumerable,
   NativeArray,
   ObjectProxy,
-  TargetActionSupport,
 } = Ember;
 
 const GlimmerComponent = (() => {
@@ -92,12 +91,15 @@ const emberNames = new Map([
   [NativeArray, 'NativeArray Mixin'],
   [Observable, 'Observable Mixin'],
   [ControllerMixin, 'Controller Mixin'],
-  [TargetActionSupport, 'TargetActionSupport Mixin'],
   [ActionHandler, 'ActionHandler Mixin'],
   [CoreObject, 'CoreObject'],
   [EmberObject, 'EmberObject'],
   [Component, 'Component'],
 ]);
+
+if (compareVersion(VERSION, '3.27.0') === -1) {
+  emberNames.set(Ember.TargetActionSupport, 'TargetActionSupport Mixin');
+}
 
 try {
   const Views = Ember.__loader.require('@ember/-internals/views');
