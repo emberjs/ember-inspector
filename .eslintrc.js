@@ -39,7 +39,6 @@ module.exports = {
     'ember/no-component-lifecycle-hooks': 'off',
     'ember/no-computed-properties-in-native-classes': 'off',
     'ember/no-get': 'off',
-    'ember/no-test-import-export': 'off',
 
     // Best practice
     'no-duplicate-imports': 'error',
