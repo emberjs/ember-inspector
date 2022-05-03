@@ -1,5 +1,3 @@
-import { tagName } from '@ember-decorators/component';
-import { computed } from '@ember/object';
 /**
  * An individual cell for the `list` table.
  * Usually not called directly but as a contextual helper.
@@ -16,11 +14,10 @@ import { computed } from '@ember/object';
  * </List>
  * ```
  */
-import Component from '@ember/component';
-
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
 import { htmlSafe } from '@ember/template';
 
-@tagName('')
 export default class ListCell extends Component {
   /**
    * Avoid unsafe style warning. This property does not
@@ -29,7 +26,6 @@ export default class ListCell extends Component {
    * @property safeStyle
    * @type {SafeString}
    */
-  @computed('style')
   get safeStyle() {
     return htmlSafe(this.style);
   }
@@ -41,7 +37,9 @@ export default class ListCell extends Component {
    * @type {String}
    * @default null
    */
-  title = null;
+  get title() {
+    return this.args.title ?? null;
+  }
 
   /**
    * The `style` attribute of the DOM element.
@@ -50,7 +48,9 @@ export default class ListCell extends Component {
    * @type {String}
    * @default null
    */
-  style = null;
+  get style() {
+    return this.args.style ?? null;
+  }
 
   /**
    * Cells can be clickable. One example would be clicking Data records to
@@ -61,7 +61,9 @@ export default class ListCell extends Component {
    * @type {Boolean}
    * @default false
    */
-  clickable = false;
+  get clickable() {
+    return this.args.clickable ?? false;
+  }
 
   /**
    * Set this property to `true` to highlight the cell. For example
@@ -71,25 +73,18 @@ export default class ListCell extends Component {
    * @type {Boolean}
    * @default false
    */
-  highlight = false;
+  get highlight() {
+    return this.args.highlight ?? false;
+  }
 
   /**
-   * Action to trigger when the cell is clicked.
-   * Pass the action through the template using the `action`
-   * helper.
-   *
-   * @property on-click
-   * @type {Function}
-   */
-  'on-click'() {}
-
-  /**
-   * DOM event triggered when cell is clicked.
-   * Calls the `on-click` action (if set).
+   * Action triggered when cell is clicked.
+   * Calls the `on-click` argument (if set).
    *
    * @method click
    */
+  @action
   click() {
-    this['on-click']();
+    this.args['on-click']?.();
   }
 }
