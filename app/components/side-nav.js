@@ -7,13 +7,7 @@ export default class SideNav extends Component {
   @service layout;
   @service router;
 
-  @tracked items = [];
   @tracked displayCount = 100;
-
-  constructor() {
-    super(...arguments);
-    this.items = this._createNavigationData();
-  }
 
   get itemsToDisplay() {
     return this.args.collapsed
@@ -35,7 +29,7 @@ export default class SideNav extends Component {
     });
   }
 
-  _createNavigationData() {
+  get items() {
     return [
       {
         route: 'component-tree',
