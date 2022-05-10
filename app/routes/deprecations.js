@@ -52,7 +52,10 @@ export default class DeprecationsRoute extends TabRoute {
 
   @action
   clear() {
+    // eslint-disable-next-line ember/no-controller-access-in-routes
+    let { deprecations } = this.controller;
+
     this.port.send('deprecation:clear');
-    this.currentModel.clear();
+    deprecations.clear();
   }
 }
