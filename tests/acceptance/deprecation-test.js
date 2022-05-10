@@ -245,5 +245,20 @@ module('Deprecation Tab', function (outer) {
       sources = findAll('[data-test-deprecation-source]');
       assert.equal(sources.length, 2, 'show all sources');
     });
+
+    test('It should clear the deprecations source when the clear button is clicked', async function (assert) {
+      await visit('/deprecations');
+
+      await toggleDeprecationSource();
+
+      let sources = findAll('[data-test-deprecation-source]');
+      assert.equal(sources.length, 2, 'shows all sources');
+
+      respondWith('deprecation:clear', false);
+      await click('[data-test-deprecations-clear]');
+
+      sources = findAll('[data-test-deprecation-source]');
+      assert.equal(sources.length, 0, 'sources cleared');
+    });
   });
 });
