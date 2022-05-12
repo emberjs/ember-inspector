@@ -1,4 +1,4 @@
-import { settled, visit } from '@ember/test-helpers';
+import { settled, visit, waitUntil } from '@ember/test-helpers';
 import { get } from '@ember/object';
 import { run } from '@ember/runloop';
 import Route from '@ember/routing/route';
@@ -43,6 +43,12 @@ module('Ember Debug - Route Tree', function (hooks) {
     });
 
     await visit('/');
+    await waitUntil(
+      () => {
+        return name === 'view:renderTree';
+      },
+      { timeout: 3000 }
+    );
 
     run(EmberDebug.port, 'trigger', 'route:getTree');
     await settled();
