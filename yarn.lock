@@ -1283,7 +1283,7 @@
     mkdirp "^1.0.4"
     silent-error "^1.1.1"
 
-"@ember/render-modifiers@^2.0.0":
+"@ember/render-modifiers@^2.0.0", "@ember/render-modifiers@^2.0.3":
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@ember/render-modifiers/-/render-modifiers-2.0.4.tgz#0ac7af647cb736076dbfcd54ca71e090cd329d71"
   integrity sha512-Zh/fo5VUmVzYHkHVvzWVjJ1RjFUxA2jH0zCp2+DQa80Bf3DUXauiEByxU22UkN4LFT55DBFttC0xCQSJG3WTsg==
@@ -6268,19 +6268,19 @@ ember-fetch@^8.1.1:
     whatwg-fetch "^3.6.2"
 
 ember-flatpickr@^3.2.2:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/ember-flatpickr/-/ember-flatpickr-3.2.2.tgz#3c908f15d681b46b1ebe110cb003cefcba1a676d"
-  integrity sha512-22/Zebg4aS/9KQRfHrrE0MVBG+OZon12WFpRPYCezqfUjIcq24Tw1E6yFVvWrNW8b7ZEBrtCzCVs+Bt1q+6SaQ==
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/ember-flatpickr/-/ember-flatpickr-3.2.3.tgz#4ec405d03853d67316fb1813e4e39bca487f1b83"
+  integrity sha512-ON6FNh3gFSxDTam2UOyPOSeYki5qNqPqPEB+SS/Q+L+kPEvxmDMPeG/lWLLvdDsPR0X55W9q7uSjzZZAD/UxqA==
   dependencies:
-    "@ember/render-modifiers" "^2.0.0"
+    "@ember/render-modifiers" "^2.0.3"
     "@glimmer/component" "^1.0.4"
     "@glimmer/tracking" "^1.0.4"
     broccoli-funnel "^3.0.3"
     broccoli-merge-trees "^4.2.0"
     broccoli-stew "^3.0.0"
-    ember-cli-babel "^7.26.6"
-    ember-cli-htmlbars "^5.7.1"
-    ember-cli-typescript "^4.1.0"
+    ember-cli-babel "^7.26.11"
+    ember-cli-htmlbars "^6.0.1"
+    ember-cli-typescript "^5.0.0"
     flatpickr "^4.6.9"
 
 ember-in-element-polyfill@^1.0.1:
