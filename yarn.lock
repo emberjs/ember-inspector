@@ -6286,9 +6286,9 @@ ember-load-initializers@^2.1.2:
     ember-cli-typescript "^2.0.2"
 
 ember-math-helpers@^2.15.0:
-  version "2.18.1"
-  resolved "https://registry.yarnpkg.com/ember-math-helpers/-/ember-math-helpers-2.18.1.tgz#7e64a0ac4ab604e2c7b88c77c7751be2e5e24aa8"
-  integrity sha512-CWLnGHqxDW++l7dvZXDs7gq9CL6XL6tXIQC8nurxyeFbrm0BQ9kWxd3sLVyhGoRUMjrPTHisbD75xj191U/yRw==
+  version "2.18.2"
+  resolved "https://registry.yarnpkg.com/ember-math-helpers/-/ember-math-helpers-2.18.2.tgz#5778f0aae08f3502be8defbacd383794f42b177e"
+  integrity sha512-ikAXlIiT0wk8X8uuMtHkrRYt8HnDt9Wk+iNoY9IoBmt6IRZjCD5BmuxrIPj5Eop2/afMfKmNKnc4L1StkXM3wg==
   dependencies:
     broccoli-funnel "^3.0.8"
     ember-cli-babel "^7.26.11"
