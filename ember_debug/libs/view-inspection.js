@@ -307,7 +307,7 @@ export default class ViewInspection {
       if (this.isPinned) {
         event.preventDefault();
         event.stopPropagation();
-        this.hide();
+        this.hide(false);
       } else if (this.isInspecting) {
         event.preventDefault();
         event.stopPropagation();
@@ -320,7 +320,7 @@ export default class ViewInspection {
     if (this.isPinned && !this.tooltip.contains(event.target)) {
       event.preventDefault();
       event.stopPropagation();
-      this.hide();
+      this.hide(false);
     } else if (this.isInspecting && event.button === 0) {
       event.preventDefault();
       event.stopPropagation();
