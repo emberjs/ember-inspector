@@ -66,21 +66,25 @@ module('App Picker', function (hooks) {
 
     let options = findAll('.app-picker option');
 
-    assert.equal(options.length, 2);
+    assert.strictEqual(options.length, 2);
     assert.dom(options[0]).hasText('First App');
     assert.dom(options[1]).hasText('Second App');
 
-    assert.equal(this.currentApplicationId, 'app-one', 'First App is selected');
+    assert.strictEqual(
+      this.currentApplicationId,
+      'app-one',
+      'First App is selected'
+    );
     assert.ok(options[0].selected, 'First App is selected');
     assert.notOk(options[1].selected, 'Second App is not selected');
 
     await fillIn('.app-picker select', 'app-two');
 
-    assert.equal(options.length, 2);
+    assert.strictEqual(options.length, 2);
     assert.dom(options[0]).hasText('First App');
     assert.dom(options[1]).hasText('Second App');
 
-    assert.equal(
+    assert.strictEqual(
       this.currentApplicationId,
       'app-two',
       'Second App is selected'
@@ -90,11 +94,15 @@ module('App Picker', function (hooks) {
 
     await fillIn('.app-picker select', 'app-one');
 
-    assert.equal(options.length, 2);
+    assert.strictEqual(options.length, 2);
     assert.dom(options[0]).hasText('First App');
     assert.dom(options[1]).hasText('Second App');
 
-    assert.equal(this.currentApplicationId, 'app-one', 'First App is selected');
+    assert.strictEqual(
+      this.currentApplicationId,
+      'app-one',
+      'First App is selected'
+    );
     assert.ok(options[0].selected, 'First App is selected');
     assert.notOk(options[1].selected, 'Second App is not selected');
   });

@@ -66,7 +66,7 @@ function isVisible(element) {
 }
 
 function matchTree(tree, matchers) {
-  QUnit.assert.equal(
+  QUnit.assert.strictEqual(
     tree.length,
     matchers.length,
     'tree and matcher should have the same length'
@@ -125,7 +125,7 @@ function Serialized(id) {
         'serialized object should have an ember guid'
       );
     } else {
-      QUnit.assert.equal(
+      QUnit.assert.strictEqual(
         actual.id,
         id,
         'serialized object should have an ember guid'
@@ -147,7 +147,7 @@ function RenderNodeID(id) {
         'render node id should have the right format'
       );
     } else {
-      QUnit.assert.equal(actual, id, 'render node id should match');
+      QUnit.assert.strictEqual(actual, id, 'render node id should match');
     }
   };
 }
@@ -527,10 +527,14 @@ module('Ember Debug - View', function (hooks) {
     let expected = foo.getBoundingClientRect();
 
     assert.ok(isVisible(highlight), 'highlight is visible');
-    assert.equal(actual.x, expected.x, 'same x as component');
-    assert.equal(actual.y, expected.y, 'same y as component');
-    assert.equal(actual.width, expected.width, 'same width as component');
-    assert.equal(actual.height, expected.height, 'same height as component');
+    assert.strictEqual(actual.x, expected.x, 'same x as component');
+    assert.strictEqual(actual.y, expected.y, 'same y as component');
+    assert.strictEqual(actual.width, expected.width, 'same width as component');
+    assert.strictEqual(
+      actual.height,
+      expected.height,
+      'same height as component'
+    );
 
     await triggerEvent('.bar-inner', 'mousemove');
 
@@ -547,10 +551,14 @@ module('Ember Debug - View', function (hooks) {
     expected = bar.getBoundingClientRect();
 
     assert.ok(isVisible(highlight), 'highlight is visible');
-    assert.equal(actual.x, expected.x, 'same x as component');
-    assert.equal(actual.y, expected.y, 'same y as component');
-    assert.equal(actual.width, expected.width, 'same width as component');
-    assert.equal(actual.height, expected.height, 'same height as component');
+    assert.strictEqual(actual.x, expected.x, 'same x as component');
+    assert.strictEqual(actual.y, expected.y, 'same y as component');
+    assert.strictEqual(actual.width, expected.width, 'same width as component');
+    assert.strictEqual(
+      actual.height,
+      expected.height,
+      'same height as component'
+    );
 
     await triggerEvent(document.body, 'mousemove');
 
@@ -574,10 +582,14 @@ module('Ember Debug - View', function (hooks) {
     expected = foo.getBoundingClientRect();
 
     assert.ok(isVisible(highlight), 'highlight is visible');
-    assert.equal(actual.x, expected.x, 'same x as component');
-    assert.equal(actual.y, expected.y, 'same y as component');
-    assert.equal(actual.width, expected.width, 'same width as component');
-    assert.equal(actual.height, expected.height, 'same height as component');
+    assert.strictEqual(actual.x, expected.x, 'same x as component');
+    assert.strictEqual(actual.y, expected.y, 'same y as component');
+    assert.strictEqual(actual.width, expected.width, 'same width as component');
+    assert.strictEqual(
+      actual.height,
+      expected.height,
+      'same height as component'
+    );
 
     assert.ok(isVisible(tooltip), 'tooltip is visible');
     assert.dom('.ember-inspector-tooltip-header', tooltip).hasText('<TestFoo>');

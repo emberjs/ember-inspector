@@ -58,7 +58,7 @@ module('Container Tab', function (outer) {
       await visit('/container-types');
       let rows = findAll('.js-container-type');
 
-      assert.equal(rows.length, 2);
+      assert.strictEqual(rows.length, 2);
       assert.dom(findAll('.js-container-type-name')[0]).hasText('controller');
       assert.dom(findAll('.js-container-type-count')[0]).hasText('4');
       assert.dom(findAll('.js-container-type-name')[1]).hasText('route');
@@ -184,7 +184,7 @@ module('Container Tab', function (outer) {
 
       try {
         await visit('/container-types/random-type');
-        assert.equal(currentURL(), '/container-types');
+        assert.strictEqual(currentURL(), '/container-types');
       } finally {
         TestAdapter.exception = adapterException;
       }

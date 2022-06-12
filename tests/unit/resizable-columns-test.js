@@ -56,22 +56,22 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
   test('calculates the correct width', function (assert) {
     let resizableColumns = new ResizableColumns(this.options);
     resizableColumns.build();
-    assert.equal(resizableColumns.columns.length, 3, 'shows all columns');
+    assert.strictEqual(resizableColumns.columns.length, 3, 'shows all columns');
 
     let column = resizableColumns.columns[0];
-    assert.equal(column.id, '1', 'correct first column id');
-    assert.equal(column.name, 'Column 1', 'correct first column name');
-    assert.equal(column.width, 10, 'correct first column width');
+    assert.strictEqual(column.id, '1', 'correct first column id');
+    assert.strictEqual(column.name, 'Column 1', 'correct first column name');
+    assert.strictEqual(column.width, 10, 'correct first column width');
 
     column = resizableColumns.columns[1];
-    assert.equal(column.id, '2', 'correct second column id');
-    assert.equal(column.name, 'Column 2', 'correct second column name');
-    assert.equal(column.width, 10, 'correct second colum width');
+    assert.strictEqual(column.id, '2', 'correct second column id');
+    assert.strictEqual(column.name, 'Column 2', 'correct second column name');
+    assert.strictEqual(column.width, 10, 'correct second colum width');
 
     column = resizableColumns.columns[2];
-    assert.equal(column.id, '3', 'correct third column id');
-    assert.equal(column.name, 'Column 3', 'correct third column name');
-    assert.equal(column.width, 10, 'correct first column width');
+    assert.strictEqual(column.id, '3', 'correct third column id');
+    assert.strictEqual(column.name, 'Column 3', 'correct third column name');
+    assert.strictEqual(column.width, 10, 'correct first column width');
   });
 
   test('updates the width correctly', function (assert) {
@@ -79,34 +79,34 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
     resizableColumns.build();
 
     resizableColumns.updateColumnWidth('1', 5);
-    assert.equal(
+    assert.strictEqual(
       resizableColumns.columns[0].width,
       5,
       'first column should have the correct width'
     );
-    assert.equal(
+    assert.strictEqual(
       resizableColumns.columns[1].width,
       10,
       'second column should have the correct width'
     );
-    assert.equal(
+    assert.strictEqual(
       resizableColumns.columns[2].width,
       15,
       'last column should have the correct width'
     );
 
     resizableColumns.updateColumnWidth('1', 15);
-    assert.equal(
+    assert.strictEqual(
       resizableColumns.columns[0].width,
       15,
       'first column should have the correct width'
     );
-    assert.equal(
+    assert.strictEqual(
       resizableColumns.columns[1].width,
       10,
       'second column should have the correct width'
     );
-    assert.equal(
+    assert.strictEqual(
       resizableColumns.columns[2].width,
       5,
       'last column should have the correct width'
@@ -115,34 +115,34 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
     // Check if it caches the updated widths
     resizableColumns = new ResizableColumns(this.options);
     resizableColumns.build();
-    assert.equal(
+    assert.strictEqual(
       resizableColumns.columns[0].width,
       15,
       'first column should have the correct width'
     );
-    assert.equal(
+    assert.strictEqual(
       resizableColumns.columns[1].width,
       10,
       'second column should have the correct width'
     );
-    assert.equal(
+    assert.strictEqual(
       resizableColumns.columns[2].width,
       5,
       'last column should have the correct width'
     );
 
     resizableColumns.resetWidths();
-    assert.equal(
+    assert.strictEqual(
       resizableColumns.columns[0].width,
       10,
       'first column should have the correct width'
     );
-    assert.equal(
+    assert.strictEqual(
       resizableColumns.columns[1].width,
       10,
       'second column should have the correct width'
     );
-    assert.equal(
+    assert.strictEqual(
       resizableColumns.columns[2].width,
       10,
       'last column should have the correct width'
@@ -150,17 +150,17 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
 
     // Table width upate
     resizableColumns.setTableWidth(15);
-    assert.equal(
+    assert.strictEqual(
       resizableColumns.columns[0].width,
       5,
       'first column should have the correct width'
     );
-    assert.equal(
+    assert.strictEqual(
       resizableColumns.columns[1].width,
       5,
       'second column should have the correct width'
     );
-    assert.equal(
+    assert.strictEqual(
       resizableColumns.columns[2].width,
       5,
       'last column should have the correct width'
@@ -170,8 +170,12 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
   test('uses the correct cache key', function (assert) {
     let resizableColumns = new ResizableColumns(this.options);
     resizableColumns.build();
-    assert.equal(this.options.storage.keys().length, 1, 'Only uses one key');
-    assert.equal(
+    assert.strictEqual(
+      this.options.storage.keys().length,
+      1,
+      'Only uses one key'
+    );
+    assert.strictEqual(
       this.options.storage.keys()[0],
       'list__my-key',
       'Uses the correct key'
@@ -236,7 +240,7 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
   test("resets cache correctly if schema doesn't match cache", function (assert) {
     assert.expect(1);
     this.options.storage.removeItem = (key) => {
-      assert.equal(key, 'list__my-key', 'cache was cleared');
+      assert.strictEqual(key, 'list__my-key', 'cache was cleared');
     };
     let resizableColumns = new ResizableColumns(this.options);
     resizableColumns.build();
@@ -256,7 +260,7 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
     storage['list__my-key'] = { updatedAt: Date.now() - sixtyDaysAgo };
     assert.expect(1);
     this.options.storage.removeItem = (key) => {
-      assert.equal(key, 'list__my-key', 'cache was cleared');
+      assert.strictEqual(key, 'list__my-key', 'cache was cleared');
     };
     let resizableColumns = new ResizableColumns(this.options);
     resizableColumns.build();

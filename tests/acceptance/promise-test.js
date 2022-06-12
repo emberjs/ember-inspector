@@ -205,13 +205,13 @@ module('Promise Tab', function (outer) {
       await visit('/promise-tree');
 
       let rows = findAll('.js-promise-tree-item');
-      assert.equal(rows.length, 1, 'Collpased by default');
+      assert.strictEqual(rows.length, 1, 'Collpased by default');
       assert.dom(rows[0].querySelector('.js-promise-label')).hasText('Parent');
 
       await click(rows[0].querySelector('.js-promise-label'));
 
       rows = findAll('.js-promise-tree-item');
-      assert.equal(rows.length, 2, 'Chain now expanded');
+      assert.strictEqual(rows.length, 2, 'Chain now expanded');
       assert.dom(rows[1].querySelector('.js-promise-label')).hasText('Child');
     });
 
@@ -232,7 +232,7 @@ module('Promise Tab', function (outer) {
       await visit('/promise-tree');
 
       respondWith('promise:tracePromise', ({ promiseId }) => {
-        assert.equal(promiseId, 1, 'promiseId');
+        assert.strictEqual(promiseId, 1, 'promiseId');
         return false;
       });
 
@@ -307,7 +307,7 @@ module('Promise Tab', function (outer) {
       assert.dom('[data-test-send-to-console-btn]').hasText('Stack Trace');
 
       respondWith('promise:sendValueToConsole', ({ promiseId }) => {
-        assert.equal(promiseId, 1, 'promiseId');
+        assert.strictEqual(promiseId, 1, 'promiseId');
         return false;
       });
 
@@ -337,7 +337,7 @@ module('Promise Tab', function (outer) {
       assert.dom('[data-test-send-to-console-btn]').exists();
 
       respondWith('promise:sendValueToConsole', ({ promiseId }) => {
-        assert.equal(promiseId, 1, 'promiseId');
+        assert.strictEqual(promiseId, 1, 'promiseId');
         return false;
       });
 
@@ -366,7 +366,7 @@ module('Promise Tab', function (outer) {
       await visit('/promise-tree');
 
       respondWith('objectInspector:inspectById', ({ objectId }) => {
-        assert.equal(objectId, 100, 'promiseId');
+        assert.strictEqual(objectId, 100, 'promiseId');
         return false;
       });
 

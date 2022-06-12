@@ -89,7 +89,7 @@ module('Whats New', function (outer) {
         .dom('.whats-new h2')
         .exists({ count: 1 }, 'correct section of markdown is rendered');
 
-      assert.equal(
+      assert.strictEqual(
         find('.whats-new h2').textContent,
         'v4.5.3 (2021-11-18)',
         'correct section of markdown is rendered'
@@ -129,7 +129,7 @@ module('Whats New', function (outer) {
         .dom('.whats-new h2')
         .exists({ count: 1 }, 'correct section of markdown is rendered');
 
-      assert.equal(
+      assert.strictEqual(
         find('.whats-new h2 a').text,
         'Unreleased',
         'correct section of markdown is rendered'

@@ -1,3 +1,4 @@
+{{! template-lint-disable require-presentational-children }}
 <Ui::Disclosure as |disclosure|>
   <div class="deprecation-item px-3 text-lg" data-test-deprecation-item>
     <div class="flex items-center">
@@ -28,8 +29,8 @@
           class="send-to-console send-to-console--chevron-only mr-2"
           title="Trace deprecations in console"
           data-test-full-trace-deprecations-btn
-          {{on "click" (fn @traceDeprecations @model)}}
           type="button"
+          {{on "click" (fn @traceDeprecations @model)}}
         >
           {{svg-jar "send-with-chevron" width="6px" height="9px"}}
           Trace in the Console
@@ -40,10 +41,16 @@
         <a
           href={{@model.url}}
           class="flex items-center flex-shrink-0 py-1 px-2 rounded no-underline bg-base02"
-          target="_blank" rel="noopener noreferrer"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Transition Plan
-          {{svg-jar "external-link" width="16px" height="16px" class="ml-1 external-link"}}
+          {{svg-jar
+            "external-link"
+            width="16px"
+            height="16px"
+            class="ml-1 external-link"
+          }}
         </a>
       {{/if}}
     </div>

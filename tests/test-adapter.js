@@ -284,7 +284,7 @@ export default class TestAdapter extends BasicAdapter {
     }
 
     if (message.from !== 'devtools') {
-      QUnit.assert.equal(
+      QUnit.assert.strictEqual(
         message.from,
         'devtools',
         `message has valid "from" field: ${JSON.stringify(message)}`
