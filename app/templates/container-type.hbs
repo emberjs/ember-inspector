@@ -1,7 +1,7 @@
 {{#if this.toolbarContainer}}
   {{#in-element this.toolbarContainer}}
     <ContainerTypeToolbar
-      @reload={{action this.send "reload"}}
+      @reload={{this.refresh}}
       @searchValue={{this.searchValue}}
       @sendContainerToConsole={{this.sendContainerToConsole}}
     />

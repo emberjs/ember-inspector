@@ -139,10 +139,10 @@ module('Component Tab', function (hooks) {
     await visit('/component-tree');
 
     let treeNodes = findAll('.component-tree-item');
-    assert.equal(treeNodes.length, 4, 'expected some tree nodes');
+    assert.strictEqual(treeNodes.length, 4, 'expected some tree nodes');
 
     let expandedNodes = findAll('.component-tree-item .expanded');
-    assert.equal(
+    assert.strictEqual(
       expandedNodes.length,
       3,
       'all nodes should be expanded except the leaf node'
@@ -171,14 +171,14 @@ module('Component Tab', function (hooks) {
     await visit('/component-tree');
 
     let treeNodes = findAll('.component-tree-item');
-    assert.equal(treeNodes.length, 4, 'expected some tree nodes');
+    assert.strictEqual(treeNodes.length, 4, 'expected some tree nodes');
 
     let expanders = findAll('.component-tree-item__expand');
     let expanderEl = expanders[expanders.length - 1];
     await click(expanderEl);
 
     treeNodes = findAll('.component-tree-item');
-    assert.equal(treeNodes.length, 3, 'the last node should be hidden');
+    assert.strictEqual(treeNodes.length, 3, 'the last node should be hidden');
   });
 
   test('It allows users to expand and collapse nodes with arrow keys', async function (assert) {
@@ -193,20 +193,20 @@ module('Component Tab', function (hooks) {
     });
 
     let treeNodes = findAll('.component-tree-item');
-    assert.equal(treeNodes.length, 4, 'expected some tree nodes');
+    assert.strictEqual(treeNodes.length, 4, 'expected some tree nodes');
 
     // select first component node and collapse with left arrow
     await click(treeNodes[2]);
     await triggerKeyEvent(document, 'keydown', 37);
 
     treeNodes = findAll('.component-tree-item');
-    assert.equal(treeNodes.length, 3, 'child nodes should be hidden');
+    assert.strictEqual(treeNodes.length, 3, 'child nodes should be hidden');
 
     // press right arrow key
     await triggerKeyEvent(document, 'keydown', 39);
 
     treeNodes = findAll('.component-tree-item');
-    assert.equal(treeNodes.length, 4, 'child nodes should be visible');
+    assert.strictEqual(treeNodes.length, 4, 'child nodes should be visible');
   });
 
   test('It allows users to navigate nodes with arrow keys', async function (assert) {
@@ -217,7 +217,7 @@ module('Component Tab', function (hooks) {
     // select first node with down arrow key
     respondWith('view:showInspection', false);
     respondWith('objectInspector:inspectById', ({ objectId }) => {
-      assert.equal(objectId, 'ember123');
+      assert.strictEqual(objectId, 'ember123');
       return false;
     });
     await triggerKeyEvent(document, 'keydown', 40);
@@ -225,7 +225,7 @@ module('Component Tab', function (hooks) {
     // select next node with down arrow key
     respondWith('view:showInspection', false);
     respondWith('objectInspector:inspectById', ({ objectId }) => {
-      assert.equal(objectId, 'ember2');
+      assert.strictEqual(objectId, 'ember2');
       return false;
     });
     await triggerKeyEvent(document, 'keydown', 40);
@@ -233,7 +233,7 @@ module('Component Tab', function (hooks) {
     // select next node with right arrow key
     respondWith('view:showInspection', false);
     respondWith('objectInspector:inspectById', ({ objectId }) => {
-      assert.equal(objectId, 'ember456');
+      assert.strictEqual(objectId, 'ember456');
       return false;
     });
     await triggerKeyEvent(document, 'keydown', 39);
@@ -241,7 +241,7 @@ module('Component Tab', function (hooks) {
     // select next node with right arrow key
     respondWith('view:showInspection', false);
     respondWith('objectInspector:inspectById', ({ objectId }) => {
-      assert.equal(objectId, 'ember789');
+      assert.strictEqual(objectId, 'ember789');
       return false;
     });
     await triggerKeyEvent(document, 'keydown', 39);
@@ -249,7 +249,7 @@ module('Component Tab', function (hooks) {
     // select previous node with left arrow key
     respondWith('view:showInspection', false);
     respondWith('objectInspector:inspectById', ({ objectId }) => {
-      assert.equal(objectId, 'ember456');
+      assert.strictEqual(objectId, 'ember456');
       return false;
     });
     await triggerKeyEvent(document, 'keydown', 37);
@@ -257,7 +257,7 @@ module('Component Tab', function (hooks) {
     // select previous node with up arrow key
     respondWith('view:showInspection', false);
     respondWith('objectInspector:inspectById', ({ objectId }) => {
-      assert.equal(objectId, 'ember2');
+      assert.strictEqual(objectId, 'ember2');
       return false;
     });
     await triggerKeyEvent(document, 'keydown', 38);
@@ -267,7 +267,7 @@ module('Component Tab', function (hooks) {
     await visit('/component-tree');
 
     let expanders = findAll('.component-tree-item__expand.expanded');
-    assert.equal(
+    assert.strictEqual(
       expanders.length,
       3,
       'disclosure triangles all in expanded state'
@@ -278,7 +278,7 @@ module('Component Tab', function (hooks) {
     let expanderEl = expanders[1];
     await click(expanderEl, { altKey: true });
     expanders = findAll('.component-tree-item__expand.expanded');
-    assert.equal(
+    assert.strictEqual(
       expanders.length,
       1,
       'clicked disclosure triangle no longer expanded'
@@ -301,11 +301,11 @@ module('Component Tab', function (hooks) {
     await visit('/component-tree');
 
     let treeNodes = findAll('.component-tree-item');
-    assert.equal(treeNodes.length, 4, 'expected some tree nodes');
+    assert.strictEqual(treeNodes.length, 4, 'expected some tree nodes');
 
     await fillIn('[data-test-filter-views] input', 'list');
     treeNodes = findAll('.component-tree-item');
-    assert.equal(treeNodes.length, 3, 'expected filtered tree nodes');
+    assert.strictEqual(treeNodes.length, 3, 'expected filtered tree nodes');
 
     let visibleComponentNames = [];
     [...treeNodes].forEach(function (node) {
@@ -323,15 +323,15 @@ module('Component Tab', function (hooks) {
     await visit('/component-tree');
 
     let treeNodes = findAll('.component-tree-item');
-    assert.equal(treeNodes.length, 4, 'expected all tree nodes');
+    assert.strictEqual(treeNodes.length, 4, 'expected all tree nodes');
 
     await fillIn('[data-test-filter-views] input', 'xxxxxx');
     treeNodes = findAll('.component-tree-item');
-    assert.equal(treeNodes.length, 0, 'expected filtered tree nodes');
+    assert.strictEqual(treeNodes.length, 0, 'expected filtered tree nodes');
 
     await click('[data-test-search-field-clear-button]');
     treeNodes = findAll('.component-tree-item');
-    assert.equal(treeNodes.length, 4, 'expected all tree nodes');
+    assert.strictEqual(treeNodes.length, 4, 'expected all tree nodes');
   });
 
   test('It should update the view tree when the port triggers a change, preserving the expanded state of existing nodes', async function (assert) {
@@ -342,7 +342,7 @@ module('Component Tab', function (hooks) {
     await click(expanderEl);
 
     let treeNodes = findAll('.component-tree-item');
-    assert.equal(treeNodes.length, 3, 'the last node should be hidden');
+    assert.strictEqual(treeNodes.length, 3, 'the last node should be hidden');
 
     // resend the same view tree
     await sendMessage({
@@ -361,7 +361,7 @@ module('Component Tab', function (hooks) {
     await visit('/component-tree');
 
     respondWith('view:showInspection', ({ id, pin }) => {
-      assert.equal(id, 'render-node:1', 'application route');
+      assert.strictEqual(id, 'render-node:1', 'application route');
       assert.false(pin, 'preview only');
       return false;
     });
@@ -379,7 +379,7 @@ module('Component Tab', function (hooks) {
     await visit('/component-tree');
 
     respondWith('view:scrollIntoView', ({ id }) => {
-      assert.equal(id, 'render-node:1', 'application route');
+      assert.strictEqual(id, 'render-node:1', 'application route');
       return false;
     });
 
@@ -392,7 +392,7 @@ module('Component Tab', function (hooks) {
     await visit('/component-tree');
 
     respondWith('view:inspectElement', ({ id }) => {
-      assert.equal(id, 'render-node:1', 'application route');
+      assert.strictEqual(id, 'render-node:1', 'application route');
       return false;
     });
 
@@ -405,13 +405,13 @@ module('Component Tab', function (hooks) {
     await visit('/component-tree');
 
     respondWith('view:showInspection', ({ id, pin }) => {
-      assert.equal(id, 'render-node:3', '<TodoList>');
+      assert.strictEqual(id, 'render-node:3', '<TodoList>');
       assert.true(pin, 'pin');
       return false;
     });
 
     respondWith('objectInspector:inspectById', ({ objectId }) => {
-      assert.equal(
+      assert.strictEqual(
         objectId,
         'ember456',
         'Client asked to inspect the application controller'
@@ -429,13 +429,13 @@ module('Component Tab', function (hooks) {
     await visit('/component-tree');
 
     respondWith('view:showInspection', ({ id, pin }) => {
-      assert.equal(id, 'render-node:3', '<TodoList>');
+      assert.strictEqual(id, 'render-node:3', '<TodoList>');
       assert.true(pin, 'pin');
       return false;
     });
 
     respondWith('objectInspector:inspectById', ({ objectId }) => {
-      assert.equal(
+      assert.strictEqual(
         objectId,
         'ember456',
         'Client asked to inspect the <TodoList> component'
@@ -448,7 +448,7 @@ module('Component Tab', function (hooks) {
       id: 'render-node:3',
     });
 
-    assert.equal(
+    assert.strictEqual(
       currentURL(),
       '/component-tree?pinned=render-node%3A3',
       'It pins the element id as a query param'
@@ -467,7 +467,7 @@ module('Component Tab', function (hooks) {
     await visit('/component-tree');
 
     respondWith('objectInspector:inspectById', ({ objectId }) => {
-      assert.equal(
+      assert.strictEqual(
         objectId,
         'ember1',
         'Client asked to inspect the <TodoList> component argument'

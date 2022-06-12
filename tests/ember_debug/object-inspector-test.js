@@ -127,42 +127,46 @@ module('Ember Debug - Object Inspector', function (hooks) {
 
     let message = await inspectObject(inspected);
 
-    assert.equal(message.name, 'Object:My Object');
+    assert.strictEqual(message.name, 'Object:My Object');
 
     let firstDetail = message.details[0];
-    assert.equal(firstDetail.name, 'Own Properties');
+    assert.strictEqual(firstDetail.name, 'Own Properties');
 
-    assert.equal(firstDetail.properties.length, 4, 'methods are included');
+    assert.strictEqual(
+      firstDetail.properties.length,
+      4,
+      'methods are included'
+    );
 
     let idProperty = firstDetail.properties[0];
-    assert.equal(idProperty.name, 'id');
-    assert.equal(idProperty.value.type, 'type-number');
-    assert.equal(idProperty.value.inspect, '1');
+    assert.strictEqual(idProperty.name, 'id');
+    assert.strictEqual(idProperty.value.type, 'type-number');
+    assert.strictEqual(idProperty.value.inspect, '1');
 
     let toStringProperty = firstDetail.properties[1];
-    assert.equal(toStringProperty.name, 'toString');
-    assert.equal(toStringProperty.value.type, 'type-function');
+    assert.strictEqual(toStringProperty.name, 'toString');
+    assert.strictEqual(toStringProperty.value.type, 'type-function');
 
     let nullProperty = firstDetail.properties[2];
-    assert.equal(nullProperty.name, 'nullVal');
-    assert.equal(nullProperty.value.type, 'type-null');
-    assert.equal(nullProperty.value.inspect, 'null');
+    assert.strictEqual(nullProperty.name, 'nullVal');
+    assert.strictEqual(nullProperty.value.type, 'type-null');
+    assert.strictEqual(nullProperty.value.inspect, 'null');
 
     let prop = firstDetail.properties[3];
-    assert.equal(prop.name, 'dateVal');
-    assert.equal(prop.value.type, 'type-date');
-    assert.equal(prop.value.inspect, date.toString());
+    assert.strictEqual(prop.name, 'dateVal');
+    assert.strictEqual(prop.value.type, 'type-date');
+    assert.strictEqual(prop.value.inspect, date.toString());
 
     let secondDetail = message.details[1];
     assert.ok(secondDetail.name.includes('Parent Object'));
 
     idProperty = secondDetail.properties[0];
-    assert.equal(idProperty.name, 'id');
-    assert.equal(idProperty.overridden, 'Own Properties');
+    assert.strictEqual(idProperty.name, 'id');
+    assert.strictEqual(idProperty.overridden, 'Own Properties');
 
     let nameProperty = secondDetail.properties[1];
-    assert.equal(nameProperty.name, 'name');
-    assert.equal(nameProperty.value.inspect, inspect('My Object'));
+    assert.strictEqual(nameProperty.name, 'name');
+    assert.strictEqual(nameProperty.value.inspect, inspect('My Object'));
   });
 
   test('An ES6 Class is correctly transformed into an inspection hash', async function (assert) {
@@ -208,50 +212,54 @@ module('Ember Debug - Object Inspector', function (hooks) {
       objectInspector.sendObject(inspected);
     });
 
-    assert.equal(message.name, 'Object:My Object');
+    assert.strictEqual(message.name, 'Object:My Object');
 
     let firstDetail = message.details[0];
-    assert.equal(firstDetail.name, 'Own Properties');
+    assert.strictEqual(firstDetail.name, 'Own Properties');
 
-    assert.equal(firstDetail.properties.length, 5, 'methods are included');
+    assert.strictEqual(
+      firstDetail.properties.length,
+      5,
+      'methods are included'
+    );
 
     let idProperty = firstDetail.properties[0];
-    assert.equal(idProperty.name, 'id');
-    assert.equal(idProperty.value.type, 'type-number');
-    assert.equal(idProperty.value.inspect, '1');
+    assert.strictEqual(idProperty.name, 'id');
+    assert.strictEqual(idProperty.value.type, 'type-number');
+    assert.strictEqual(idProperty.value.inspect, '1');
 
     let nullProperty = firstDetail.properties[1];
-    assert.equal(nullProperty.name, 'name');
-    assert.equal(nullProperty.value.type, 'type-string');
-    assert.equal(nullProperty.value.inspect, '"My Object"');
+    assert.strictEqual(nullProperty.name, 'name');
+    assert.strictEqual(nullProperty.value.type, 'type-string');
+    assert.strictEqual(nullProperty.value.inspect, '"My Object"');
 
     let prop = firstDetail.properties[2];
 
-    assert.equal(prop.name, 'toString');
-    assert.equal(prop.value.type, 'type-function');
+    assert.strictEqual(prop.name, 'toString');
+    assert.strictEqual(prop.value.type, 'type-function');
 
     prop = firstDetail.properties[3];
-    assert.equal(prop.name, 'nullVal');
-    assert.equal(prop.value.type, 'type-null');
-    assert.equal(prop.value.inspect, 'null');
+    assert.strictEqual(prop.name, 'nullVal');
+    assert.strictEqual(prop.value.type, 'type-null');
+    assert.strictEqual(prop.value.inspect, 'null');
 
     prop = firstDetail.properties[4];
-    assert.equal(prop.name, 'dateVal');
-    assert.equal(prop.value.type, 'type-date');
-    assert.equal(prop.value.inspect, date.toString());
+    assert.strictEqual(prop.name, 'dateVal');
+    assert.strictEqual(prop.value.type, 'type-date');
+    assert.strictEqual(prop.value.inspect, date.toString());
 
     let secondDetail = message.details[1];
     prop = secondDetail.properties[0];
-    assert.equal(prop.name, 'toString');
-    assert.equal(prop.value.type, 'type-function');
+    assert.strictEqual(prop.name, 'toString');
+    assert.strictEqual(prop.value.type, 'type-function');
 
     prop = secondDetail.properties[1];
-    assert.equal(prop.name, 'get');
-    assert.equal(prop.value.type, 'type-function');
+    assert.strictEqual(prop.name, 'get');
+    assert.strictEqual(prop.value.type, 'type-function');
 
     prop = secondDetail.properties[2];
-    assert.equal(prop.name, 'aCP');
-    assert.equal(prop.value.type, 'type-boolean');
+    assert.strictEqual(prop.name, 'aCP');
+    assert.strictEqual(prop.value.type, 'type-boolean');
   });
 
   skip('Correct mixin order with es6 class', async function (assert) {
@@ -321,12 +329,12 @@ module('Ember Debug - Object Inspector', function (hooks) {
     });
     let message = await inspectObject(proxy);
     let computedProperty = message.details[1].properties[0];
-    assert.equal(computedProperty.name, 'test');
-    assert.equal(computedProperty.value.inspect, inspect('a'));
+    assert.strictEqual(computedProperty.name, 'test');
+    assert.strictEqual(computedProperty.value.inspect, inspect('a'));
 
     let getterProperty = message.details[1].properties[1];
-    assert.equal(getterProperty.name, 'abc');
-    assert.equal(getterProperty.value.inspect, inspect(1));
+    assert.strictEqual(getterProperty.name, 'abc');
+    assert.strictEqual(getterProperty.value.inspect, inspect(1));
   });
 
   test('Object Proxies are not skipped with _showProxyDetails', async function (assert) {
@@ -340,8 +348,8 @@ module('Ember Debug - Object Inspector', function (hooks) {
     });
     let message = await inspectObject(proxy);
     let computedProperty = message.details[0].properties[1];
-    assert.equal(computedProperty.name, 'prop');
-    assert.equal(computedProperty.value.inspect, inspect('b'));
+    assert.strictEqual(computedProperty.name, 'prop');
+    assert.strictEqual(computedProperty.value.inspect, inspect('b'));
   });
 
   test('Array Proxies show content from toArray', async function (assert) {
@@ -363,12 +371,12 @@ module('Ember Debug - Object Inspector', function (hooks) {
     let message = await inspectObject(proxy);
 
     let property = message.details[0].properties[0];
-    assert.equal(property.name, 0);
-    assert.equal(property.value.inspect, 1);
+    assert.strictEqual(property.name, '0');
+    assert.strictEqual(property.value.inspect, '1');
 
     property = message.details[0].properties[1];
-    assert.equal(property.name, 'length');
-    assert.equal(property.value.inspect, 1);
+    assert.strictEqual(property.name, 'length');
+    assert.strictEqual(property.value.inspect, '1');
   });
 
   skip('Correct mixin properties', async function (assert) {
@@ -394,28 +402,34 @@ module('Ember Debug - Object Inspector', function (hooks) {
 
     let { details } = await inspectObject(instance);
 
-    assert.equal(
+    assert.strictEqual(
       details[0].properties.length,
       1,
       'should not show mixin properties'
     );
-    assert.equal(details[0].properties[0].name, 'ownProp');
+    assert.strictEqual(details[0].properties[0].name, 'ownProp');
 
-    assert.equal(details[2].name, 'MyMixin1');
-    assert.equal(
+    assert.strictEqual(details[2].name, 'MyMixin1');
+    assert.strictEqual(
       details[2].properties.length,
       1,
       'should only show own mixin properties'
     );
-    assert.equal(details[2].properties[0].value.inspect, inspect('custom1'));
+    assert.strictEqual(
+      details[2].properties[0].value.inspect,
+      inspect('custom1')
+    );
 
-    assert.equal(details[3].name, 'MyMixin2');
-    assert.equal(
+    assert.strictEqual(details[3].name, 'MyMixin2');
+    assert.strictEqual(
       details[3].properties.length,
       1,
       'should only show own mixin properties'
     );
-    assert.equal(details[3].properties[0].value.inspect, inspect('custom2'));
+    assert.strictEqual(
+      details[3].properties[0].value.inspect,
+      inspect('custom2')
+    );
   });
 
   test('Computed properties are correctly calculated', async function (assert) {
@@ -436,10 +450,10 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.step('inspector: sendObject');
     let message = await inspectObject(inspected);
     let computedProperty = message.details[1].properties[0];
-    assert.equal(computedProperty.name, 'hi');
+    assert.strictEqual(computedProperty.name, 'hi');
     assert.ok(computedProperty.isComputed);
-    assert.equal(computedProperty.value.type, 'type-descriptor');
-    assert.equal(computedProperty.value.inspect, '<computed>');
+    assert.strictEqual(computedProperty.value.type, 'type-descriptor');
+    assert.strictEqual(computedProperty.value.inspect, '<computed>');
 
     let id = message.objectId;
 
@@ -451,11 +465,11 @@ module('Ember Debug - Object Inspector', function (hooks) {
         mixinIndex: 1,
       });
     });
-    assert.equal(message.objectId, id);
-    assert.equal(message.property, 'hi');
-    assert.equal(message.mixinIndex, 1);
-    assert.equal(message.value.type, 'type-string');
-    assert.equal(message.value.inspect, inspect('Hello'));
+    assert.strictEqual(message.objectId, id);
+    assert.strictEqual(message.property, 'hi');
+    assert.strictEqual(message.mixinIndex, 1);
+    assert.strictEqual(message.value.type, 'type-string');
+    assert.strictEqual(message.value.inspect, inspect('Hello'));
     assert.ok(message.value.isCalculated);
 
     assert.verifySteps([
@@ -479,10 +493,10 @@ module('Ember Debug - Object Inspector', function (hooks) {
 
     let computedProperty = message.details[1].properties[0];
 
-    assert.equal(computedProperty.name, 'hi');
+    assert.strictEqual(computedProperty.name, 'hi');
     assert.ok(computedProperty.value.isCalculated);
-    assert.equal(computedProperty.value.type, 'type-string');
-    assert.equal(computedProperty.value.inspect, inspect('Hello'));
+    assert.strictEqual(computedProperty.value.type, 'type-string');
+    assert.strictEqual(computedProperty.value.inspect, inspect('Hello'));
   });
 
   test('Properties are correctly bound', async function (assert) {
@@ -513,12 +527,12 @@ module('Ember Debug - Object Inspector', function (hooks) {
       run(() => inspected.set('name', 'Alex'));
     });
 
-    assert.equal(message.objectId, objectId);
-    assert.equal(message.property, 'name');
-    assert.equal(message.mixinIndex, 1);
+    assert.strictEqual(message.objectId, objectId);
+    assert.strictEqual(message.property, 'name');
+    assert.strictEqual(message.mixinIndex, 1);
     assert.true(message.value.isCalculated);
-    assert.equal(message.value.inspect, inspect('Alex'));
-    assert.equal(message.value.type, 'type-string');
+    assert.strictEqual(message.value.inspect, inspect('Alex'));
+    assert.strictEqual(message.value.type, 'type-string');
 
     // un-cached computed properties are not bound until calculated
 
@@ -526,12 +540,12 @@ module('Ember Debug - Object Inspector', function (hooks) {
       run(() => inspected.set('hi', 'Hey'));
     });
 
-    assert.equal(message.objectId, objectId);
-    assert.equal(message.property, 'hi');
-    assert.equal(message.mixinIndex, 1);
+    assert.strictEqual(message.objectId, objectId);
+    assert.strictEqual(message.property, 'hi');
+    assert.strictEqual(message.mixinIndex, 1);
     assert.ok(message.value.isCalculated);
-    assert.equal(message.value.inspect, inspect('Hey'));
-    assert.equal(message.value.type, 'type-string');
+    assert.strictEqual(message.value.inspect, inspect('Hey'));
+    assert.strictEqual(message.value.type, 'type-string');
 
     message = await captureMessage('objectInspector:updateProperty', () => {
       EmberDebug.port.trigger('objectInspector:calculate', {
@@ -541,23 +555,23 @@ module('Ember Debug - Object Inspector', function (hooks) {
       });
     });
 
-    assert.equal(message.objectId, objectId);
-    assert.equal(message.property, 'hi');
-    assert.equal(message.mixinIndex, 1);
+    assert.strictEqual(message.objectId, objectId);
+    assert.strictEqual(message.property, 'hi');
+    assert.strictEqual(message.mixinIndex, 1);
     assert.ok(message.value.isCalculated);
-    assert.equal(message.value.inspect, inspect('Hey'));
-    assert.equal(message.value.type, 'type-string');
+    assert.strictEqual(message.value.inspect, inspect('Hey'));
+    assert.strictEqual(message.value.type, 'type-string');
 
     message = await captureMessage('objectInspector:updateProperty', () => {
       run(() => inspected.set('hi', 'Hello!'));
     });
 
-    assert.equal(message.objectId, objectId);
-    assert.equal(message.property, 'hi');
-    assert.equal(message.mixinIndex, 1);
+    assert.strictEqual(message.objectId, objectId);
+    assert.strictEqual(message.property, 'hi');
+    assert.strictEqual(message.mixinIndex, 1);
     assert.ok(message.value.isCalculated);
-    assert.equal(message.value.inspect, inspect('Hello!'));
-    assert.equal(message.value.type, 'type-string');
+    assert.strictEqual(message.value.inspect, inspect('Hello!'));
+    assert.strictEqual(message.value.type, 'type-string');
   });
 
   test('Properties can be updated through a port message', async function (assert) {
@@ -576,11 +590,11 @@ module('Ember Debug - Object Inspector', function (hooks) {
       });
     });
 
-    assert.equal(inspected.get('name'), 'Alex');
+    assert.strictEqual(inspected.get('name'), 'Alex');
 
-    assert.equal(message.property, 'name');
-    assert.equal(message.value.inspect, inspect('Alex'));
-    assert.equal(message.value.type, 'type-string');
+    assert.strictEqual(message.property, 'name');
+    assert.strictEqual(message.value.inspect, inspect('Alex'));
+    assert.strictEqual(message.value.type, 'type-string');
   });
 
   test('Date properties are converted to dates before being updated', async function (assert) {
@@ -602,13 +616,13 @@ module('Ember Debug - Object Inspector', function (hooks) {
       });
     });
 
-    assert.equal(inspected.get('date').getFullYear(), 2015);
-    assert.equal(inspected.get('date').getMonth(), 0);
-    assert.equal(inspected.get('date').getDate(), 1);
+    assert.strictEqual(inspected.get('date').getFullYear(), 2015);
+    assert.strictEqual(inspected.get('date').getMonth(), 0);
+    assert.strictEqual(inspected.get('date').getDate(), 1);
 
-    assert.equal(message.property, 'date');
-    assert.equal(message.value.inspect, inspect(newDate));
-    assert.equal(message.value.type, 'type-date');
+    assert.strictEqual(message.property, 'date');
+    assert.strictEqual(message.value.inspect, inspect(newDate));
+    assert.strictEqual(message.value.type, 'type-date');
   });
 
   test('Property grouping can be customized using _debugInfo', async function (assert) {
@@ -660,25 +674,25 @@ module('Ember Debug - Object Inspector', function (hooks) {
 
     let message = await inspectObject(inspected);
 
-    assert.equal(message.name, 'TestObject');
+    assert.strictEqual(message.name, 'TestObject');
 
-    assert.equal(message.details[0].name, 'Basic Info');
-    assert.equal(message.details[0].properties[0].name, 'name');
-    assert.equal(message.details[0].properties[1].name, 'gender');
+    assert.strictEqual(message.details[0].name, 'Basic Info');
+    assert.strictEqual(message.details[0].properties[0].name, 'name');
+    assert.strictEqual(message.details[0].properties[1].name, 'gender');
     assert.ok(message.details[0].expand);
 
-    assert.equal(message.details[1].name, 'Family Info');
-    assert.equal(message.details[1].properties[0].name, 'maritalStatus');
+    assert.strictEqual(message.details[1].name, 'Family Info');
+    assert.strictEqual(message.details[1].properties[0].name, 'maritalStatus');
 
-    assert.equal(message.details[2].name, 'Own Properties');
-    assert.equal(
+    assert.strictEqual(message.details[2].name, 'Own Properties');
+    assert.strictEqual(
       message.details[2].properties.length,
       0,
       'Correctly skips properties'
     );
 
-    assert.equal(message.details[3].name, 'TestObject');
-    assert.equal(
+    assert.strictEqual(message.details[3].name, 'TestObject');
+    assert.strictEqual(
       message.details[3].properties.length,
       3,
       'Correctly merges properties'
@@ -695,12 +709,12 @@ module('Ember Debug - Object Inspector', function (hooks) {
     );
     assert.ok(toString, 'has toString');
     assert.ok(hasChildren, 'has hasChildren');
-    assert.equal(
+    assert.strictEqual(
       expensiveProperty.name,
       'expensiveProperty',
       'property name is correct'
     );
-    assert.equal(
+    assert.strictEqual(
       expensiveProperty.value.isCalculated,
       undefined,
       'Does not calculate expensive properties'
@@ -777,23 +791,23 @@ module('Ember Debug - Object Inspector', function (hooks) {
       'object name should start with <ObjectProxy:'
     );
 
-    assert.equal(message.details[0].name, 'Basic Info');
-    assert.equal(message.details[0].properties[0].name, 'name');
-    assert.equal(message.details[0].properties[1].name, 'gender');
+    assert.strictEqual(message.details[0].name, 'Basic Info');
+    assert.strictEqual(message.details[0].properties[0].name, 'name');
+    assert.strictEqual(message.details[0].properties[1].name, 'gender');
     assert.ok(message.details[0].expand);
 
-    assert.equal(message.details[1].name, 'Family Info');
-    assert.equal(message.details[1].properties[0].name, 'maritalStatus');
+    assert.strictEqual(message.details[1].name, 'Family Info');
+    assert.strictEqual(message.details[1].properties[0].name, 'maritalStatus');
 
-    assert.equal(message.details[2].name, 'Own Properties');
-    assert.equal(
+    assert.strictEqual(message.details[2].name, 'Own Properties');
+    assert.strictEqual(
       message.details[2].properties.length,
       0,
       'Correctly skips properties'
     );
 
-    assert.equal(message.details[3].name, 'TestObject');
-    assert.equal(
+    assert.strictEqual(message.details[3].name, 'TestObject');
+    assert.strictEqual(
       message.details[3].properties.length,
       3,
       'Correctly merges properties'
@@ -805,13 +819,13 @@ module('Ember Debug - Object Inspector', function (hooks) {
     const expensiveProperty = message.details[3].properties.find(
       (p) => p.name === 'expensiveProperty'
     );
-    assert.equal(hasChildren.name, 'hasChildren');
-    assert.equal(
+    assert.strictEqual(hasChildren.name, 'hasChildren');
+    assert.strictEqual(
       expensiveProperty.name,
       'expensiveProperty',
       'property name is correct'
     );
-    assert.equal(
+    assert.strictEqual(
       expensiveProperty.value.isCalculated,
       undefined,
       'Does not calculate expensive properties'
@@ -874,9 +888,9 @@ module('Ember Debug - Object Inspector', function (hooks) {
     let message = await inspectObject(inspected);
     let serializedComputedProperty = message.details[1].properties[2];
 
-    assert.equal(serializedComputedProperty.code, computedFn.toString());
-    assert.equal(serializedComputedProperty.dependentKeys[0], 'foo');
-    assert.equal(serializedComputedProperty.dependentKeys[1], 'bar');
+    assert.strictEqual(serializedComputedProperty.code, computedFn.toString());
+    assert.strictEqual(serializedComputedProperty.dependentKeys[0], 'foo');
+    assert.strictEqual(serializedComputedProperty.dependentKeys[1], 'bar');
   });
 
   test('Views are correctly handled when destroyed during transitions', async function (assert) {
@@ -909,7 +923,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
 
     let message = await inspectObject(object);
 
-    assert.equal(message.objectId, objectId, 'objectId matches');
+    assert.strictEqual(message.objectId, objectId, 'objectId matches');
 
     assert.ok(
       objectInspector.sentObjects[objectId],
@@ -936,20 +950,20 @@ module('Ember Debug - Object Inspector', function (hooks) {
 
     let props = message.details[0].properties;
     if (!hasEmberVersion(3, 0)) {
-      assert.equal(
+      assert.strictEqual(
         props.length,
         2,
         'Props should be foo and bar without fooBinding'
       );
-      assert.equal(props[1].name, 'foo');
+      assert.strictEqual(props[1].name, 'foo');
     } else {
-      assert.equal(
+      assert.strictEqual(
         props.length,
         1,
         'Props should be only bar without fooBinding, in Ember 3.0+'
       );
     }
-    assert.equal(props[0].name, 'bar');
+    assert.strictEqual(props[0].name, 'bar');
   });
 
   test("Properties listed in _debugInfo but don't exist should be skipped silently", async function (assert) {
@@ -972,8 +986,8 @@ module('Ember Debug - Object Inspector', function (hooks) {
     let message = await inspectObject(object);
 
     let props = message.details[0].properties;
-    assert.equal(props.length, 1, 'bar should be silently skipped');
-    assert.equal(props[0].name, 'foo');
+    assert.strictEqual(props.length, 1, 'bar should be silently skipped');
+    assert.strictEqual(props[0].name, 'foo');
   });
 
   test('Errors while computing CPs are handled', async function (assert) {
@@ -992,11 +1006,11 @@ module('Ember Debug - Object Inspector', function (hooks) {
     let message = await inspectObject(object);
 
     let { objectId } = message;
-    assert.equal(objectId, guidFor(object), 'objectId matches');
+    assert.strictEqual(objectId, guidFor(object), 'objectId matches');
 
     let errors = message.errors;
-    assert.equal(errors.length, 1);
-    assert.equal(errors[0].property, 'foo');
+    assert.strictEqual(errors.length, 1);
+    assert.strictEqual(errors[0].property, 'foo');
 
     // Calculate CP a second time
     message = await captureMessage('objectInspector:updateErrors', () => {
@@ -1007,8 +1021,8 @@ module('Ember Debug - Object Inspector', function (hooks) {
       });
     });
 
-    assert.equal(message.errors.length, 1);
-    assert.equal(message.errors[0].property, 'foo');
+    assert.strictEqual(message.errors.length, 1);
+    assert.strictEqual(message.errors[0].property, 'foo');
 
     // Calculate CP a third time (no error this time)
     message = await captureMessage('objectInspector:updateProperty', () => {
@@ -1019,7 +1033,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
       });
     });
 
-    assert.equal(message.value.inspect, inspect('bar'));
+    assert.strictEqual(message.value.inspect, inspect('bar'));
   });
 
   test('Plain properties work', async function (assert) {
@@ -1027,10 +1041,10 @@ module('Ember Debug - Object Inspector', function (hooks) {
     let message = await inspectObject(inspected);
 
     let plainProperty = message.details[0].properties[0];
-    assert.equal(plainProperty.name, 'hi');
+    assert.strictEqual(plainProperty.name, 'hi');
     assert.ok(plainProperty.isProperty);
-    assert.equal(plainProperty.value.type, 'type-number');
-    assert.equal(plainProperty.value.inspect, '123');
+    assert.strictEqual(plainProperty.value.type, 'type-number');
+    assert.strictEqual(plainProperty.value.inspect, '123');
   });
 
   test('Getters work', async function (assert) {
@@ -1044,11 +1058,11 @@ module('Ember Debug - Object Inspector', function (hooks) {
 
     let message = await inspectObject(inspected);
     let getter = message.details[1].properties[0];
-    assert.equal(getter.name, 'hi');
+    assert.strictEqual(getter.name, 'hi');
     assert.ok(getter.isGetter);
     assert.notOk(getter.isTracked);
-    assert.equal(getter.value.type, 'type-number');
-    assert.equal(getter.value.inspect, '123');
+    assert.strictEqual(getter.value.type, 'type-number');
+    assert.strictEqual(getter.value.inspect, '123');
   });
 
   if (hasEmberVersion(3, 13)) {
@@ -1062,10 +1076,10 @@ module('Ember Debug - Object Inspector', function (hooks) {
       assert.step('inspector: sendObject');
       let message = await inspectObject(inspected);
       let trackedProp = message.details[1].properties[0];
-      assert.equal(trackedProp.name, 'hi');
+      assert.strictEqual(trackedProp.name, 'hi');
       assert.ok(trackedProp.isTracked);
-      assert.equal(trackedProp.value.type, 'type-number');
-      assert.equal(trackedProp.value.inspect, 123);
+      assert.strictEqual(trackedProp.value.type, 'type-number');
+      assert.strictEqual(trackedProp.value.inspect, '123');
 
       assert.step('inspector: update value');
       message = await captureMessage('objectInspector:updateProperty', () => {
@@ -1073,10 +1087,10 @@ module('Ember Debug - Object Inspector', function (hooks) {
       });
 
       assert.step('inspector: updateProperty');
-      assert.equal(message.property, 'hi');
-      assert.equal(message.mixinIndex, 1);
-      assert.equal(message.value.type, 'type-number');
-      assert.equal(message.value.inspect, inspect(124));
+      assert.strictEqual(message.property, 'hi');
+      assert.strictEqual(message.mixinIndex, 1);
+      assert.strictEqual(message.value.type, 'type-number');
+      assert.strictEqual(message.value.inspect, inspect(124));
       assert.ok(message.value.isCalculated);
 
       assert.verifySteps([
@@ -1104,10 +1118,10 @@ module('Ember Debug - Object Inspector', function (hooks) {
       assert.step('inspector: sendObject');
       let message = await inspectObject(inspected);
       let trackedProp = message.details[1].properties[0];
-      assert.equal(trackedProp.name, 'hello');
+      assert.strictEqual(trackedProp.name, 'hello');
       assert.ok(trackedProp.isGetter);
-      assert.equal(trackedProp.value.type, 'type-number');
-      assert.equal(trackedProp.value.inspect, 123);
+      assert.strictEqual(trackedProp.value.type, 'type-number');
+      assert.strictEqual(trackedProp.value.inspect, '123');
 
       assert.step('inspector: update value');
       message = await captureMessage('objectInspector:updateProperty', () => {
@@ -1115,10 +1129,10 @@ module('Ember Debug - Object Inspector', function (hooks) {
       });
 
       assert.step('inspector: updateProperty');
-      assert.equal(message.property, 'hello');
-      assert.equal(message.mixinIndex, 1);
-      assert.equal(message.value.type, 'type-number');
-      assert.equal(message.value.inspect, inspect(124));
+      assert.strictEqual(message.property, 'hello');
+      assert.strictEqual(message.mixinIndex, 1);
+      assert.strictEqual(message.value.type, 'type-number');
+      assert.strictEqual(message.value.inspect, inspect(124));
       assert.ok(message.value.isCalculated);
 
       assert.verifySteps([

@@ -66,24 +66,24 @@ module('Ember Debug - Deprecation', function (hooks) {
 
     await visit('/');
 
-    assert.equal(deprecations.length, 2);
+    assert.strictEqual(deprecations.length, 2);
 
     let deprecation = deprecations[0];
-    assert.equal(deprecation.count, 2, 'Correctly combined');
-    assert.equal(deprecation.message, 'Deprecation 1');
-    assert.equal(
+    assert.strictEqual(deprecation.count, 2, 'Correctly combined');
+    assert.strictEqual(deprecation.message, 'Deprecation 1');
+    assert.strictEqual(
       deprecation.sources.length,
       2,
       'Correctly separated by source'
     );
 
     deprecation = deprecations[1];
-    assert.equal(deprecation.count, 1);
-    assert.equal(deprecation.message, 'Deprecation 2');
-    assert.equal(deprecation.sources.length, 1);
-    assert.equal(deprecation.url, 'http://www.emberjs.com');
+    assert.strictEqual(deprecation.count, 1);
+    assert.strictEqual(deprecation.message, 'Deprecation 2');
+    assert.strictEqual(deprecation.sources.length, 1);
+    assert.strictEqual(deprecation.url, 'http://www.emberjs.com');
 
-    assert.equal(count, 3, 'count correctly sent');
+    assert.strictEqual(count, 3, 'count correctly sent');
   });
 
   test('Warns once about deprecations', async function t(assert) {
@@ -92,11 +92,11 @@ module('Ember Debug - Deprecation', function (hooks) {
     run(EmberDebug.port, 'trigger', 'deprecation:watch');
     EmberDebug.port.get('adapter').reopen({
       warn(message) {
-        assert.equal(
+        assert.strictEqual(
           message,
           'Deprecations were detected, see the Ember Inspector deprecations tab for more details.'
         );
-        assert.equal(++count, 1, 'Warns once');
+        assert.strictEqual(++count, 1, 'Warns once');
       },
     });
 

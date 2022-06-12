@@ -9,6 +9,6 @@ module('Integration | Component | basic', function (hooks) {
   test('generally works', async function (assert) {
     await render(hbs`Hello world!`);
 
-    assert.equal(this.element.textContent.trim(), 'Hello world!');
+    assert.strictEqual(this.element.textContent.trim(), 'Hello world!');
   });
 });

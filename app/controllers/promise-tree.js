@@ -9,6 +9,7 @@ import { debounce, next, once } from '@ember/runloop';
 export default Controller.extend({
   queryParams: ['filter'],
 
+  adapter: service(),
   port: service(),
 
   createdAfter: null,

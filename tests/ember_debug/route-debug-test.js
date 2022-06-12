@@ -53,17 +53,20 @@ module('Ember Debug - Route Tree', function (hooks) {
     run(EmberDebug.port, 'trigger', 'route:getTree');
     await settled();
 
-    assert.equal(name, 'route:routeTree');
+    assert.strictEqual(name, 'route:routeTree');
 
     route = message.tree.children[0];
-    assert.equal(route.value.name, 'application');
-    assert.equal(route.value.type, 'resource');
-    assert.equal(route.value.controller.name, 'application');
-    assert.equal(route.value.controller.className, 'ApplicationController');
-    assert.equal(route.value.routeHandler.name, 'application');
-    assert.equal(route.value.routeHandler.className, 'ApplicationRoute');
-    assert.equal(route.value.template.name, 'application');
-    assert.equal(route.children.length, 6);
+    assert.strictEqual(route.value.name, 'application');
+    assert.strictEqual(route.value.type, 'resource');
+    assert.strictEqual(route.value.controller.name, 'application');
+    assert.strictEqual(
+      route.value.controller.className,
+      'ApplicationController'
+    );
+    assert.strictEqual(route.value.routeHandler.name, 'application');
+    assert.strictEqual(route.value.routeHandler.className, 'ApplicationRoute');
+    assert.strictEqual(route.value.template.name, 'application');
+    assert.strictEqual(route.children.length, 6);
 
     assert.deepEqual(getChildrenProperty(route, 'name'), [
       'loading',
@@ -80,13 +83,16 @@ module('Ember Debug - Route Tree', function (hooks) {
 
     assert.ok(commentsRoute, 'expected comment steps');
 
-    assert.equal(commentsRoute.children.length, 3);
-    assert.equal(commentsRoute.value.type, 'resource');
-    assert.equal(
+    assert.strictEqual(commentsRoute.children.length, 3);
+    assert.strictEqual(commentsRoute.value.type, 'resource');
+    assert.strictEqual(
       commentsRoute.value.controller.className,
       'CommentsController'
     );
-    assert.equal(commentsRoute.value.routeHandler.className, 'CommentsRoute');
+    assert.strictEqual(
+      commentsRoute.value.routeHandler.className,
+      'CommentsRoute'
+    );
 
     assert.deepEqual(getChildrenProperty(commentsRoute, 'name'), [
       'comments.new',

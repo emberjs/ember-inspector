@@ -19,9 +19,15 @@
 # ember-try
 /.node_modules.ember-try/
 /bower.json.ember-try
+/npm-shrinkwrap.json.ember-try
 /package.json.ember-try
+/package-lock.json.ember-try
+/yarn.lock.ember-try
 
 # ember-inspector specific
 /dist_prev/
 /skeletons/
 /ember_debug/vendor/startup-wrapper.js
+
+# Safari build
+/Ember Inspector/

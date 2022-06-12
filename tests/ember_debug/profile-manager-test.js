@@ -293,7 +293,7 @@ const assertNodeSizes = (assert, synthetic, real) => {
     ['height', 'height'],
   ];
   for (const [styleKey, boxKey] of dimensions) {
-    assert.equal(
+    assert.strictEqual(
       getRounded(style[styleKey]),
       getRounded(box[boxKey]),
       `same ${boxKey} as component`

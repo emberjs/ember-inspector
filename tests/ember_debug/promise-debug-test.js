@@ -51,7 +51,7 @@ module('Ember Debug - Promise Debug', function (hooks) {
 
     EmberDebug.port.trigger('promise:getAndObservePromises');
 
-    assert.equal(name, 'promise:promisesUpdated');
+    assert.strictEqual(name, 'promise:promisesUpdated');
 
     let promises = emberA(message.promises);
 
@@ -59,17 +59,17 @@ module('Ember Debug - Promise Debug', function (hooks) {
     child1 = promises.findBy('label', 'Child1');
     promise2 = promises.findBy('label', 'Promise2');
 
-    assert.equal(promise1.label, 'Promise1');
-    assert.equal(promise1.state, 'fulfilled');
-    assert.equal(promise1.children.length, 1);
-    assert.equal(promise1.children[0], child1.guid);
+    assert.strictEqual(promise1.label, 'Promise1');
+    assert.strictEqual(promise1.state, 'fulfilled');
+    assert.strictEqual(promise1.children.length, 1);
+    assert.strictEqual(promise1.children[0], child1.guid);
 
-    assert.equal(child1.label, 'Child1');
-    assert.equal(child1.state, 'fulfilled');
-    assert.equal(child1.parent, promise1.guid);
+    assert.strictEqual(child1.label, 'Child1');
+    assert.strictEqual(child1.state, 'fulfilled');
+    assert.strictEqual(child1.parent, promise1.guid);
 
-    assert.equal(promise2.label, 'Promise2');
-    assert.equal(promise2.state, 'rejected');
+    assert.strictEqual(promise2.label, 'Promise2');
+    assert.strictEqual(promise2.state, 'rejected');
   });
 
   test('Updates are published when they happen', function (assert) {
@@ -85,21 +85,21 @@ module('Ember Debug - Promise Debug', function (hooks) {
 
     let done = assert.async();
     later(function () {
-      assert.equal(name, 'promise:promisesUpdated');
+      assert.strictEqual(name, 'promise:promisesUpdated');
       let promises = emberA(message.promises);
       let promise = promises.findBy('label', 'Promise1');
       assert.ok(!!promise);
       if (promise) {
-        assert.equal(promise.label, 'Promise1');
+        assert.strictEqual(promise.label, 'Promise1');
         p.then(function () {}, null, 'Child1');
         later(function () {
-          assert.equal(name, 'promise:promisesUpdated');
-          assert.equal(message.promises.length, 2);
+          assert.strictEqual(name, 'promise:promisesUpdated');
+          assert.strictEqual(message.promises.length, 2);
           let child = message.promises[0];
-          assert.equal(child.parent, promise.guid);
-          assert.equal(child.label, 'Child1');
+          assert.strictEqual(child.parent, promise.guid);
+          assert.strictEqual(child.label, 'Child1');
           let parent = message.promises[1];
-          assert.equal(parent.guid, promise.guid);
+          assert.strictEqual(parent.guid, promise.guid);
           done();
         }, 200);
       }
@@ -123,14 +123,14 @@ module('Ember Debug - Promise Debug', function (hooks) {
     EmberDebug.port.trigger('promise:getInstrumentWithStack');
 
     await settled();
-    assert.equal(name, 'promise:instrumentWithStack');
+    assert.strictEqual(name, 'promise:instrumentWithStack');
     assert.false(message.instrumentWithStack);
     EmberDebug.port.trigger('promise:setInstrumentWithStack', {
       instrumentWithStack: true,
     });
 
     await settled();
-    assert.equal(name, 'promise:instrumentWithStack');
+    assert.strictEqual(name, 'promise:instrumentWithStack');
     assert.true(message.instrumentWithStack);
     assert.true(withStack, 'persisted');
     EmberDebug.port.trigger('promise:setInstrumentWithStack', {
@@ -138,14 +138,14 @@ module('Ember Debug - Promise Debug', function (hooks) {
     });
 
     await settled();
-    assert.equal(name, 'promise:instrumentWithStack');
+    assert.strictEqual(name, 'promise:instrumentWithStack');
     assert.false(message.instrumentWithStack);
     assert.false(withStack, 'persisted');
   });
 
   skip('Responds even if no promises detected', function (assert) {
     EmberDebug.port.trigger('promise:getAndObservePromises');
-    assert.equal(name, 'promise:promisesUpdated');
-    assert.equal(message.promises.length, 0);
+    assert.strictEqual(name, 'promise:promisesUpdated');
+    assert.strictEqual(message.promises.length, 0);
   });
 });

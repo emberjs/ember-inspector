@@ -121,7 +121,7 @@ module('Object Inspector', function (hooks) {
     assert
       .dom(secondDetail)
       .hasNoClass('mixin_state_expanded', 'Second detail does not expand.');
-    assert.equal(
+    assert.strictEqual(
       firstDetail.querySelectorAll('[data-test-object-property]').length,
       1
     );
@@ -142,7 +142,7 @@ module('Object Inspector', function (hooks) {
     await click(secondDetail.querySelector('[data-test-object-detail-name]'));
 
     assert.dom(secondDetail).hasClass('mixin_state_expanded');
-    assert.equal(
+    assert.strictEqual(
       secondDetail.querySelectorAll('[data-test-object-property]').length,
       2
     );
@@ -218,7 +218,7 @@ module('Object Inspector', function (hooks) {
     assert.dom('[data-test-object-property-value]').hasText('Nested Prop');
 
     respondWith('objectInspector:releaseObject', ({ objectId }) => {
-      assert.equal(objectId, 'nestedObject');
+      assert.strictEqual(objectId, 'nestedObject');
       return false;
     });
 
@@ -497,7 +497,7 @@ module('Object Inspector', function (hooks) {
     await click('[data-test-object-property-value]');
 
     let txtField = find('[data-test-object-property-value-txt]');
-    assert.equal(txtField.value, '"Alex"');
+    assert.strictEqual(txtField.value, '"Alex"');
 
     respondWith(
       'objectInspector:saveProperty',
@@ -550,7 +550,7 @@ module('Object Inspector', function (hooks) {
     await click('[data-test-object-property-value]');
 
     let txtField = find('[data-test-object-property-value-txt]');
-    assert.equal(txtField.value, '"{"name":"teddy"}"');
+    assert.strictEqual(txtField.value, '"{"name":"teddy"}"');
 
     respondWith(
       'objectInspector:saveProperty',
@@ -601,8 +601,8 @@ module('Object Inspector', function (hooks) {
     });
 
     respondWith('objectInspector:sendToConsole', ({ objectId, property }) => {
-      assert.equal(objectId, 'object-id');
-      assert.equal(property, 'myProp');
+      assert.strictEqual(objectId, 'object-id');
+      assert.strictEqual(property, 'myProp');
       return false;
     });
 
@@ -610,7 +610,7 @@ module('Object Inspector', function (hooks) {
     await click('[data-test-send-to-console-btn]');
 
     respondWith('objectInspector:sendToConsole', ({ objectId, property }) => {
-      assert.equal(objectId, 'object-id');
+      assert.strictEqual(objectId, 'object-id');
       assert.strictEqual(property, undefined);
       return false;
     });
@@ -621,7 +621,7 @@ module('Object Inspector', function (hooks) {
     await click('[data-test-object-display-type-all]');
 
     respondWith('objectInspector:sendToConsole', ({ objectId, property }) => {
-      assert.equal(objectId, 'object-id');
+      assert.strictEqual(objectId, 'object-id');
       assert.strictEqual(property, undefined);
       return false;
     });
@@ -800,7 +800,7 @@ module('Object Inspector', function (hooks) {
     assert.dom('[data-test-object-inspector-error]').exists({ count: 2 });
 
     respondWith('objectInspector:traceErrors', ({ objectId }) => {
-      assert.equal(objectId, '1');
+      assert.strictEqual(objectId, '1');
       return false;
     });
 

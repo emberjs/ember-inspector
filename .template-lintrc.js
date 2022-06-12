@@ -7,7 +7,6 @@ module.exports = {
     'no-negated-condition': false,
 
     // TODO: enable these rules
-    'no-action': false,
     'no-positive-tabindex': false,
   },
 };

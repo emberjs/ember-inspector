@@ -53,15 +53,15 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
 
     assert.ok(event);
     let promise = event.promise;
-    assert.equal(event.promise, assembler.find(promise.get('guid')));
+    assert.strictEqual(event.promise, assembler.find(promise.get('guid')));
 
-    assert.equal(assembler.find().get('length'), 1);
+    assert.strictEqual(assembler.find().get('length'), 1);
 
-    assert.equal(promise.get('guid'), 1);
-    assert.equal(promise.get('label'), 'label');
-    assert.equal(promise.get('createdAt'), date);
-    assert.equal(promise.get('stack'), 'stack');
-    assert.equal(promise.get('state'), 'created');
+    assert.strictEqual(promise.get('guid'), 1);
+    assert.strictEqual(promise.get('label'), 'label');
+    assert.strictEqual(promise.get('createdAt'), date);
+    assert.strictEqual(promise.get('stack'), 'stack');
+    assert.strictEqual(promise.get('state'), 'created');
   });
 
   test('Chains a promise correctly (parent and child not-existing)', function (assert) {
@@ -85,17 +85,17 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
     let parent = event.promise;
     let child = event.child;
 
-    assert.equal(assembler.find(parent.get('guid')), parent);
-    assert.equal(assembler.find(child.get('guid')), child);
+    assert.strictEqual(assembler.find(parent.get('guid')), parent);
+    assert.strictEqual(assembler.find(child.get('guid')), child);
 
-    assert.equal(assembler.find().get('length'), 2);
+    assert.strictEqual(assembler.find().get('length'), 2);
 
-    assert.equal(parent.get('guid'), 1);
-    assert.equal(parent.get('label'), 'label');
-    assert.equal(parent.get('chainedAt'), date);
-    assert.equal(parent.get('children.length'), 1);
-    assert.equal(child.get('guid'), 2);
-    assert.equal(child.get('parent'), parent);
+    assert.strictEqual(parent.get('guid'), 1);
+    assert.strictEqual(parent.get('label'), 'label');
+    assert.strictEqual(parent.get('chainedAt'), date);
+    assert.strictEqual(parent.get('children.length'), 1);
+    assert.strictEqual(child.get('guid'), 2);
+    assert.strictEqual(child.get('parent'), parent);
     assembler.off('chained', captureEvent);
   });
 
@@ -141,20 +141,20 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
       childGuid: 2,
     });
 
-    assert.equal(parent, event.promise);
-    assert.equal(child, event.child);
+    assert.strictEqual(parent, event.promise);
+    assert.strictEqual(child, event.child);
 
-    assert.equal(assembler.find(parent.get('guid')), parent);
-    assert.equal(assembler.find(child.get('guid')), child);
+    assert.strictEqual(assembler.find(parent.get('guid')), parent);
+    assert.strictEqual(assembler.find(child.get('guid')), child);
 
-    assert.equal(assembler.find().get('length'), 2);
+    assert.strictEqual(assembler.find().get('length'), 2);
 
-    assert.equal(parent.get('guid'), 1);
-    assert.equal(parent.get('label'), 'label');
-    assert.equal(parent.get('chainedAt'), date);
-    assert.equal(parent.get('children.length'), 1);
-    assert.equal(child.get('guid'), 2);
-    assert.equal(child.get('parent'), parent);
+    assert.strictEqual(parent.get('guid'), 1);
+    assert.strictEqual(parent.get('label'), 'label');
+    assert.strictEqual(parent.get('chainedAt'), date);
+    assert.strictEqual(parent.get('children.length'), 1);
+    assert.strictEqual(child.get('guid'), 2);
+    assert.strictEqual(child.get('parent'), parent);
     assembler.off('chained', captureEvent);
     assembler.off('created', captureChild);
   });
@@ -177,7 +177,7 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
 
     assembler.off('created', capturePromise);
 
-    assert.equal(promise.get('state'), 'created');
+    assert.strictEqual(promise.get('state'), 'created');
 
     assembler.on('fulfilled', function (e) {
       event = e;
@@ -189,11 +189,11 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
       timeStamp: date,
     });
 
-    assert.equal(event.promise, promise);
-    assert.equal(promise.get('state'), 'fulfilled');
-    assert.equal(promise.get('value'), 'value');
-    assert.equal(promise.get('settledAt'), date);
-    assert.equal(assembler.find().get('length'), 1);
+    assert.strictEqual(event.promise, promise);
+    assert.strictEqual(promise.get('state'), 'fulfilled');
+    assert.strictEqual(promise.get('value'), 'value');
+    assert.strictEqual(promise.get('settledAt'), date);
+    assert.strictEqual(assembler.find().get('length'), 1);
   });
 
   test('Rejects a promise correctly', function (assert) {
@@ -214,7 +214,7 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
 
     assembler.off('created', capturePromise);
 
-    assert.equal(promise.get('state'), 'created');
+    assert.strictEqual(promise.get('state'), 'created');
 
     assembler.on('rejected', function (e) {
       event = e;
@@ -226,11 +226,11 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
       timeStamp: date,
     });
 
-    assert.equal(event.promise, promise);
-    assert.equal(promise.get('state'), 'rejected');
-    assert.equal(promise.get('reason'), 'reason');
-    assert.equal(promise.get('settledAt'), date);
-    assert.equal(assembler.find().get('length'), 1);
+    assert.strictEqual(event.promise, promise);
+    assert.strictEqual(promise.get('state'), 'rejected');
+    assert.strictEqual(promise.get('reason'), 'reason');
+    assert.strictEqual(promise.get('settledAt'), date);
+    assert.strictEqual(assembler.find().get('length'), 1);
   });
 
   test('#stop', function (assert) {
@@ -241,15 +241,15 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
     fakeRSVP.trigger('created', {
       guid: 1,
     });
-    assert.equal(assembler.find().get('length'), 1);
+    assert.strictEqual(assembler.find().get('length'), 1);
 
     run(assembler, 'stop');
 
-    assert.equal(assembler.find().get('length'), 0);
+    assert.strictEqual(assembler.find().get('length'), 0);
     assembler.on('created', function () {
       assert.ok(false);
     });
     fakeRSVP.trigger('created', { guid: 1 });
-    assert.equal(assembler.find().get('length'), 0);
+    assert.strictEqual(assembler.find().get('length'), 0);
   });
 });

@@ -108,8 +108,8 @@ module('Deprecation Tab', function (outer) {
         .exists('Full trace button shown');
 
       respondWith('deprecation:sendStackTraces', ({ deprecation }) => {
-        assert.equal(deprecation.message, 'Deprecation 1');
-        assert.equal(deprecation.sources.length, 2);
+        assert.strictEqual(deprecation.message, 'Deprecation 1');
+        assert.strictEqual(deprecation.sources.length, 2);
         return false;
       });
 
@@ -146,7 +146,7 @@ module('Deprecation Tab', function (outer) {
         .doesNotExist('Full trace button not shown');
 
       let sources = findAll('[data-test-deprecation-source]');
-      assert.equal(sources.length, 2, 'shows all sources');
+      assert.strictEqual(sources.length, 2, 'shows all sources');
       assert.notOk(
         sources[0].querySelector('[data-test-deprecation-source-link]'),
         'source not clickable'
@@ -163,8 +163,8 @@ module('Deprecation Tab', function (outer) {
         .hasText('path-to-second-file.js:2');
 
       respondWith('deprecation:sendStackTraces', ({ deprecation }) => {
-        assert.equal(deprecation.message, 'Deprecation 1');
-        assert.equal(deprecation.sources.length, 1);
+        assert.strictEqual(deprecation.message, 'Deprecation 1');
+        assert.strictEqual(deprecation.sources.length, 1);
         return false;
       });
 
@@ -173,8 +173,8 @@ module('Deprecation Tab', function (outer) {
       );
 
       respondWith('deprecation:sendStackTraces', ({ deprecation }) => {
-        assert.equal(deprecation.message, 'Deprecation 1');
-        assert.equal(deprecation.sources.length, 1);
+        assert.strictEqual(deprecation.message, 'Deprecation 1');
+        assert.strictEqual(deprecation.sources.length, 1);
         return false;
       });
 
@@ -199,7 +199,7 @@ module('Deprecation Tab', function (outer) {
         .doesNotExist('Full trace button not shown');
 
       let sources = findAll('[data-test-deprecation-source]');
-      assert.equal(sources.length, 2, 'shows all sources');
+      assert.strictEqual(sources.length, 2, 'shows all sources');
       assert.notOk(
         sources[0].querySelector('[data-test-deprecation-source-text]'),
         'source clickable'
@@ -234,16 +234,16 @@ module('Deprecation Tab', function (outer) {
       await toggleDeprecationSource();
 
       let sources = findAll('[data-test-deprecation-source]');
-      assert.equal(sources.length, 2, 'shows all sources');
+      assert.strictEqual(sources.length, 2, 'shows all sources');
 
       await fillIn('[data-test-deprecations-search] input', 'xxxx');
       sources = findAll('[data-test-deprecation-source]');
-      assert.equal(sources.length, 0, 'sources filtered');
+      assert.strictEqual(sources.length, 0, 'sources filtered');
 
       await click('[data-test-search-field-clear-button]');
       await click('[data-test-deprecation-item] .disclosure-triangle');
       sources = findAll('[data-test-deprecation-source]');
-      assert.equal(sources.length, 2, 'show all sources');
+      assert.strictEqual(sources.length, 2, 'show all sources');
     });
 
     test('It should clear the deprecations source when the clear button is clicked', async function (assert) {
@@ -252,13 +252,13 @@ module('Deprecation Tab', function (outer) {
       await toggleDeprecationSource();
 
       let sources = findAll('[data-test-deprecation-source]');
-      assert.equal(sources.length, 2, 'shows all sources');
+      assert.strictEqual(sources.length, 2, 'shows all sources');
 
       respondWith('deprecation:clear', false);
       await click('[data-test-deprecations-clear]');
 
       sources = findAll('[data-test-deprecation-source]');
-      assert.equal(sources.length, 0, 'sources cleared');
+      assert.strictEqual(sources.length, 0, 'sources cleared');
     });
   });
 });

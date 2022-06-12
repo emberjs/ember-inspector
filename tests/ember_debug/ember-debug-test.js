@@ -35,11 +35,11 @@ module('Ember Debug', function (hooks) {
 
     let obj = EmberObject.create();
     EmberDebug.inspect(obj);
-    assert.equal(name, 'objectInspector:updateObject');
+    assert.strictEqual(name, 'objectInspector:updateObject');
     name = null;
     obj = [];
     EmberDebug.inspect(obj);
-    assert.equal(name, 'objectInspector:updateObject');
+    assert.strictEqual(name, 'objectInspector:updateObject');
     cantSend(1, assert);
     cantSend('a', assert);
     cantSend(null, assert);
@@ -55,7 +55,7 @@ module('Ember Debug', function (hooks) {
     const handleError = adapter.handleError;
     adapter.reopen({
       handleError(e) {
-        assert.equal(e, error, 'Error handled');
+        assert.strictEqual(e, error, 'Error handled');
       },
     });
 

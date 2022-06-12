@@ -20,7 +20,7 @@ module('Info Tab', function (hooks) {
     await visit('/info/libraries');
 
     let libraries = findAll('.js-library-row');
-    assert.equal(
+    assert.strictEqual(
       libraries.length,
       3,
       'The correct number of libraries is displayed'
@@ -51,7 +51,7 @@ module('Info Tab', function (hooks) {
     await visit('/info/app-config');
 
     let configs = findAll('.js-config-row');
-    assert.equal(
+    assert.strictEqual(
       configs.length,
       2,
       'The correct number of configurations is displayed'

@@ -4,22 +4,25 @@ import { action, computed, set } from '@ember/object';
 import debounceComputed from 'ember-inspector/computed/debounce';
 import searchMatch from 'ember-inspector/utils/search-match';
 
-export default Controller.extend({
-  application: controller(),
-  port: service(),
+export default class ContainerTypeContoller extends Controller {
+  @controller application;
+  @service port;
+  @service router;
 
-  searchValue: debounceComputed('search', 300),
+  @debounceComputed('search', 300)
+  searchValue;
 
-  search: null,
+  search = null;
 
-  rows: computed('model.@each.name', 'search', function () {
+  @computed('model.@each.name', 'search')
+  get rows() {
     return this.model.filter((instance) =>
       searchMatch(instance.name, this.search)
     );
-  }),
+  }
 
-  init() {
-    this._super(...arguments);
+  constructor() {
+    super(...arguments);
 
     this.columns = [
       {
@@ -35,7 +38,7 @@ export default Controller.extend({
         isAscending: true,
       },
     ];
-  },
+  }
 
   /**
    * Inspect an instance in the object inspector.
@@ -44,17 +47,24 @@ export default Controller.extend({
    * @method inspectInstance
    * @param {Object} instance
    */
-  inspectInstance: action(function (instance) {
+  @action
+  inspectInstance(instance) {
     if (instance.inspectable) {
       this.port.send('objectInspector:inspectByContainerLookup', {
         name: instance.fullName,
       });
     }
-  }),
+  }
 
-  sendContainerToConsole: action(function () {
+  @action
+  refresh() {
+    this.router.refresh('container-types');
+  }
+
+  @action
+  sendContainerToConsole() {
     this.port.send('objectInspector:sendContainerToConsole');
-  }),
+  }
 
   @action
   updateSorts(sorts) {
@@ -70,5 +80,5 @@ export default Controller.extend({
       ];
     }
     set(this, 'sorts', sorts);
-  },
-});
+  }
+}

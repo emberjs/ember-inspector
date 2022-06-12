@@ -33,7 +33,7 @@ module('Ember Debug - Container', function (hooks) {
       { timeout: 3000 }
     );
 
-    assert.equal(name, 'container:types');
+    assert.strictEqual(name, 'container:types');
     let types = emberA(message.types);
     assert.ok(types.findBy('name', 'controller'));
     assert.ok(types.findBy('name', 'route'));
@@ -47,7 +47,7 @@ module('Ember Debug - Container', function (hooks) {
     });
     await settled();
 
-    assert.equal(name, 'container:instances');
+    assert.strictEqual(name, 'container:instances');
     let instances = emberA(message.instances);
     assert.ok(instances.findBy('name', 'simple'));
   });
@@ -60,7 +60,7 @@ module('Ember Debug - Container', function (hooks) {
     });
     await settled();
 
-    assert.equal(name, 'container:instances');
-    assert.equal(message.status, 404);
+    assert.strictEqual(name, 'container:instances');
+    assert.strictEqual(message.status, 404);
   });
 });

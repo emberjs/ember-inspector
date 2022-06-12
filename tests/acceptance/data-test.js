@@ -269,7 +269,7 @@ module('Data Tab', function (outer) {
       await visit('/data/model-types');
 
       respondWith('objectInspector:inspectByContainerLookup', ({ name }) => {
-        assert.equal(name, 'service:store');
+        assert.strictEqual(name, 'service:store');
         return false;
       });
 
@@ -311,7 +311,7 @@ module('Data Tab', function (outer) {
       assert.dom(columns[2]).includesText('Body');
 
       let recordRows = findAll('[data-test-table-row]');
-      assert.equal(recordRows.length, 2);
+      assert.strictEqual(recordRows.length, 2);
 
       let firstRow = recordRows[0];
       let firstRowColumns = firstRow.querySelectorAll('[data-test-table-cell]');
@@ -359,7 +359,7 @@ module('Data Tab', function (outer) {
       await settled();
 
       recordRows = findAll('[data-test-table-row]');
-      assert.equal(recordRows.length, 3);
+      assert.strictEqual(recordRows.length, 3);
 
       firstRow = recordRows[0];
       firstRowColumns = firstRow.querySelectorAll('[data-test-table-cell]');
@@ -395,7 +395,7 @@ module('Data Tab', function (outer) {
       await settled();
 
       recordRows = findAll('[data-test-table-row]');
-      assert.equal(recordRows.length, 3);
+      assert.strictEqual(recordRows.length, 3);
 
       firstRow = recordRows[0];
       firstRowColumns = firstRow.querySelectorAll('[data-test-table-cell]');
@@ -436,7 +436,7 @@ module('Data Tab', function (outer) {
       await settled();
 
       recordRows = findAll('[data-test-table-row]');
-      assert.equal(recordRows.length, 2);
+      assert.strictEqual(recordRows.length, 2);
 
       firstRow = recordRows[0];
       firstRowColumns = firstRow.querySelectorAll('[data-test-table-cell]');
@@ -457,16 +457,16 @@ module('Data Tab', function (outer) {
       await click(findAll('.js-model-type a')[1]);
 
       let rows = findAll('[data-test-table-row]');
-      assert.equal(rows.length, 2);
+      assert.strictEqual(rows.length, 2);
       let filters = findAll('.js-filter');
-      assert.equal(filters.length, 2);
+      assert.strictEqual(filters.length, 2);
       let newFilter = [...filters].find(
         (e) => e.textContent.indexOf('New') > -1
       );
       await click(newFilter);
 
       rows = findAll('[data-test-table-row]');
-      assert.equal(rows.length, 1);
+      assert.strictEqual(rows.length, 1);
       assert.dom(rows[0].querySelector('[data-test-table-cell]')).hasText('2');
     });
 
@@ -476,24 +476,24 @@ module('Data Tab', function (outer) {
       await click(findAll('.js-model-type a')[1]);
 
       let rows = findAll('[data-test-table-row]');
-      assert.equal(rows.length, 2);
+      assert.strictEqual(rows.length, 2);
 
       await fillIn('.js-records-search input', 'Hello');
 
       rows = findAll('[data-test-table-row]');
-      assert.equal(rows.length, 1);
+      assert.strictEqual(rows.length, 1);
       assert.dom(rows[0].querySelector('[data-test-table-cell]')).hasText('2');
 
       await fillIn('.js-records-search input', 'my first post');
 
       rows = findAll('[data-test-table-row]');
-      assert.equal(rows.length, 1);
+      assert.strictEqual(rows.length, 1);
       assert.dom(rows[0].querySelector('[data-test-table-cell]')).hasText('1');
 
       await fillIn('.js-records-search input', '');
 
       rows = findAll('[data-test-table-row]');
-      assert.equal(rows.length, 2);
+      assert.strictEqual(rows.length, 2);
     });
 
     test('It should clear the search filter when the clear button is clicked', async function (assert) {
@@ -502,16 +502,16 @@ module('Data Tab', function (outer) {
       await click(findAll('.js-model-type a')[1]);
 
       let rows = findAll('[data-test-table-row]');
-      assert.equal(rows.length, 2);
+      assert.strictEqual(rows.length, 2);
 
       await fillIn('.js-records-search input', 'Hello');
 
       rows = findAll('[data-test-table-row]');
-      assert.equal(rows.length, 1);
+      assert.strictEqual(rows.length, 1);
 
       await click('[data-test-search-field-clear-button]');
       rows = findAll('[data-test-table-row]');
-      assert.equal(rows.length, 2);
+      assert.strictEqual(rows.length, 2);
     });
 
     test('Columns successfully updated when switching model types', async function (assert) {

@@ -28,10 +28,12 @@ export default class ModelTypesRoute extends TabRoute {
     this.port.send('data:releaseModelTypes');
   }
 
+  @action
   addModelTypes(message) {
     this.currentModel.pushObjects(message.modelTypes);
   }
 
+  @action
   updateModelTypes(message) {
     let route = this;
     message.modelTypes.forEach(function (modelType) {
@@ -41,10 +43,5 @@ export default class ModelTypesRoute extends TabRoute {
       );
       set(currentType, 'count', modelType.count);
     });
-  }
-
-  @action
-  reload() {
-    this.refresh();
   }
 }

@@ -115,7 +115,7 @@ module('Route Tree Tab', function (outer) {
       );
 
       let routeNodes = findAll('.js-route-tree-item');
-      assert.equal(routeNodes.length, 6, 'correct number of nodes');
+      assert.strictEqual(routeNodes.length, 6, 'correct number of nodes');
 
       let routeNames = findAll('.js-route-name').map(function (item) {
         return item.textContent.trim();
@@ -177,14 +177,14 @@ module('Route Tree Tab', function (outer) {
       let applicationRow = find('.js-route-tree-item');
 
       respondWith('objectInspector:inspectRoute', ({ name }) => {
-        assert.equal(name, 'application', 'route name');
+        assert.strictEqual(name, 'application', 'route name');
         return false;
       });
 
       await click(applicationRow.querySelector('[data-test-route-handler]'));
 
       respondWith('objectInspector:inspectController', ({ name }) => {
-        assert.equal(name, 'application', 'controller name');
+        assert.strictEqual(name, 'application', 'controller name');
         return false;
       });
 
@@ -221,45 +221,45 @@ module('Route Tree Tab', function (outer) {
       await visit('route-tree');
 
       let routeNodes = findAll('.js-route-tree-item');
-      assert.equal(routeNodes.length, 6);
+      assert.strictEqual(routeNodes.length, 6);
 
       await fillIn('[data-test-filter-views] input', 'edit');
 
       routeNodes = findAll('.js-route-tree-item');
-      assert.equal(routeNodes.length, 1);
+      assert.strictEqual(routeNodes.length, 1);
 
       await click('[data-test-search-field-clear-button]');
 
       routeNodes = findAll('.js-route-tree-item');
-      assert.equal(routeNodes.length, 6);
+      assert.strictEqual(routeNodes.length, 6);
     });
 
     test('Hiding non current route', async function (assert) {
       await visit('route-tree');
 
       let routeNodes = findAll('.js-route-tree-item');
-      assert.equal(routeNodes.length, 6);
+      assert.strictEqual(routeNodes.length, 6);
 
       let checkbox = find('.js-filter-hide-routes input');
       checkbox.checked = true;
       await triggerEvent(checkbox, 'change');
 
       routeNodes = findAll('.js-route-tree-item');
-      assert.equal(routeNodes.length, 3);
+      assert.strictEqual(routeNodes.length, 3);
     });
 
     test('Hiding substates', async function (assert) {
       await visit('route-tree');
 
       let routeNodes = findAll('.js-route-tree-item');
-      assert.equal(routeNodes.length, 6);
+      assert.strictEqual(routeNodes.length, 6);
 
       let checkbox = find('.js-filter-hide-substates input');
       checkbox.checked = true;
       await triggerEvent(checkbox, 'change');
 
       routeNodes = findAll('.js-route-tree-item');
-      assert.equal(routeNodes.length, 5);
+      assert.strictEqual(routeNodes.length, 5);
     });
   });
 
@@ -273,13 +273,13 @@ module('Route Tree Tab', function (outer) {
     await visit('route-tree');
 
     let routeNodes = findAll('.js-route-tree-item');
-    assert.equal(routeNodes.length, 6);
+    assert.strictEqual(routeNodes.length, 6);
 
     const checkbox = find('.js-filter-hide-routes input');
     checkbox.checked = true;
     await triggerEvent(checkbox, 'change');
 
     routeNodes = findAll('.js-route-tree-item');
-    assert.equal(routeNodes.length, 4);
+    assert.strictEqual(routeNodes.length, 4);
   });
 });

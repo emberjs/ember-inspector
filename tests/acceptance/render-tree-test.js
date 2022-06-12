@@ -67,7 +67,7 @@ module('Render Tree Tab', function (outer) {
 
       assert.dom('.js-render-tree').exists();
       let rows = findAll('.js-render-profile-item');
-      assert.equal(rows.length, 2, 'Two rows are rendered initially');
+      assert.strictEqual(rows.length, 2, 'Two rows are rendered initially');
 
       assert
         .dom(rows[0].querySelector('.js-render-profile-name'))
@@ -92,7 +92,7 @@ module('Render Tree Tab', function (outer) {
       await click('.js-render-main-cell', rows[0]);
 
       rows = findAll('.js-render-profile-item');
-      assert.equal(rows.length, 3, 'Child is shown below the parent');
+      assert.strictEqual(rows.length, 3, 'Child is shown below the parent');
 
       assert
         .dom(rows[1].querySelector('.js-render-profile-name'))
@@ -107,14 +107,18 @@ module('Render Tree Tab', function (outer) {
       await click('.js-render-main-cell', rows[0]);
 
       rows = findAll('.js-render-profile-item');
-      assert.equal(rows.length, 2, 'Child is hidden when parent collapses');
+      assert.strictEqual(
+        rows.length,
+        2,
+        'Child is hidden when parent collapses'
+      );
     });
 
     test('Searching the profiles', async function (assert) {
       await visit('/render-tree');
 
       let rows = findAll('.js-render-profile-item');
-      assert.equal(rows.length, 2, 'Two rows are rendered initially');
+      assert.strictEqual(rows.length, 2, 'Two rows are rendered initially');
 
       assert
         .dom(rows[0].querySelector('.js-render-profile-name'))
@@ -126,7 +130,11 @@ module('Render Tree Tab', function (outer) {
       await fillIn('.js-render-profiles-search input', 'Second');
 
       rows = findAll('.js-render-profile-item');
-      assert.equal(rows.length, 1, 'The second row is the only one showing');
+      assert.strictEqual(
+        rows.length,
+        1,
+        'The second row is the only one showing'
+      );
       assert
         .dom(rows[0].querySelector('.js-render-profile-name'))
         .hasText('Second View Rendering');
@@ -136,15 +144,15 @@ module('Render Tree Tab', function (outer) {
       await visit('/render-tree');
 
       let rows = findAll('.js-render-profile-item');
-      assert.equal(rows.length, 2, 'expected all rows');
+      assert.strictEqual(rows.length, 2, 'expected all rows');
 
       await fillIn('.js-render-profiles-search input', 'xxxxxx');
       rows = findAll('.js-render-profile-item');
-      assert.equal(rows.length, 0, 'expected filtered rows');
+      assert.strictEqual(rows.length, 0, 'expected filtered rows');
 
       await click('[data-test-search-field-clear-button]');
       rows = findAll('.js-render-profile-item');
-      assert.equal(rows.length, 2, 'expected all rows');
+      assert.strictEqual(rows.length, 2, 'expected all rows');
     });
   });
 });
