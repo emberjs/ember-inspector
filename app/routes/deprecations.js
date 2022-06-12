@@ -1,6 +1,6 @@
 import { inject as service } from '@ember/service';
 import { Promise } from 'rsvp';
-import { setProperties, action } from '@ember/object';
+import { setProperties } from '@ember/object';
 import TabRoute from 'ember-inspector/routes/tab';
 
 export default class DeprecationsRoute extends TabRoute {
@@ -48,14 +48,5 @@ export default class DeprecationsRoute extends TabRoute {
         deprecations.pushObject(item);
       }
     });
-  }
-
-  @action
-  clear() {
-    // eslint-disable-next-line ember/no-controller-access-in-routes
-    let { deprecations } = this.controller;
-
-    this.port.send('deprecation:clear');
-    deprecations.clear();
   }
 }

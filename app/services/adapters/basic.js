@@ -11,11 +11,14 @@
  * });
  * ```
  */
-import Service from '@ember/service';
+import Service, { inject as service } from '@ember/service';
+import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import config from 'ember-inspector/config/environment';
 
 export default class Basic extends Service {
+  @service port;
+
   @tracked canOpenResource = false;
   name = 'basic';
 
@@ -99,6 +102,20 @@ export default class Basic extends Service {
   // Called when the "Reload" is clicked by the user
   willReload() {}
   openResource /* file, line */() {}
+
+  @action
+  refreshPage() {
+    // If the adapter defined a `reloadTab` method, it means
+    // they prefer to handle the reload themselves
+    if (typeof this.reloadTab === 'function') {
+      this.reloadTab();
+    } else {
+      // inject ember_debug as quickly as possible in chrome
+      // so that promises created on dom ready are caught
+      this.port.send('general:refresh');
+      this.willReload();
+    }
+  }
 }
 
 /**

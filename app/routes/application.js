@@ -108,20 +108,6 @@ export default class ApplicationRoute extends Route {
       this.port.send('objectInspector:inspectById', { objectId });
     }
   }
-
-  @action
-  refreshPage() {
-    // If the adapter defined a `reloadTab` method, it means
-    // they prefer to handle the reload themselves
-    if (typeof this.adapter.reloadTab === 'function') {
-      this.adapter.reloadTab();
-    } else {
-      // inject ember_debug as quickly as possible in chrome
-      // so that promises created on dom ready are caught
-      this.port.send('general:refresh');
-      this.adapter.willReload();
-    }
-  }
 }
 
 function arrayize(mixin) {

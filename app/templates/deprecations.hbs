@@ -2,7 +2,7 @@
   {{#in-element this.toolbarContainer}}
     <DeprecationsToolbar
       @changeDeprecationWorkflow={{this.changeDeprecationWorkflow}}
-      @clear={{action this.send "clear"}}
+      @clear={{this.clear}}
       @searchValue={{this.searchValue}}
       @toggleDeprecationWorkflow={{this.toggleDeprecationWorkflow}}
     />
@@ -26,7 +26,11 @@
       No deprecations have been detected. Try reloading to catch the
       deprecations that were logged before you opened the inspector.
     </p>
-    <button class="js-page-refresh-btn" type="button" {{action "refreshPage"}}>
+    <button
+      class="js-page-refresh-btn"
+      type="button"
+      {{on "click" this.adapter.refreshPage}}
+    >
       Reload
     </button>
   </Ui::EmptyMessage>

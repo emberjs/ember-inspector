@@ -18,6 +18,20 @@ export default class DeprecationsController extends Controller {
     set(this, 'deprecations', []);
   }
 
+  @action
+  changeDeprecationWorkflow(e) {
+    this.set('toggleDeprecationWorkflow', e.target.checked);
+
+    this.port.send('deprecation:setOptions', {
+      options: { toggleDeprecationWorkflow: this.toggleDeprecationWorkflow },
+    });
+  }
+
+  @action
+  clear() {
+    this.port.send('deprecation:clear');
+  }
+
   @computed('deprecations.@each.message', 'search')
   get filtered() {
     return this.deprecations.filter((item) =>
@@ -44,15 +58,6 @@ export default class DeprecationsController extends Controller {
   traceDeprecations(deprecation) {
     this.port.send('deprecation:sendStackTraces', {
       deprecation,
-    });
-  }
-
-  @action
-  changeDeprecationWorkflow(e) {
-    this.set('toggleDeprecationWorkflow', e.target.checked);
-
-    this.port.send('deprecation:setOptions', {
-      options: { toggleDeprecationWorkflow: this.toggleDeprecationWorkflow },
     });
   }
 }

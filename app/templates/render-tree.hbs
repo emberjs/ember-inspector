@@ -1,8 +1,8 @@
 {{#if this.toolbarContainer}}
   {{#in-element this.toolbarContainer}}
     <RenderTreeToolbar
-      @clearProfiles={{action this.send "clearProfiles"}}
-      @refreshPage={{action this.send "refreshPage"}}
+      @clearProfiles={{this.clearProfiles}}
+      @refreshPage={{this.adapter.refreshPage}}
       @searchValue={{this.searchValue}}
       @showEmpty={{this.showEmpty}}
       @shouldHighlightRender={{this.shouldHighlightRender}}
@@ -32,7 +32,7 @@
     <button
       class="js-toolbar-page-refresh-btn"
       type="button"
-      {{action "refreshPage"}}
+      {{on "click" this.adapter.refreshPage}}
     >
       Reload
     </button>

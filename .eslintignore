@@ -25,3 +25,6 @@
 /dist_prev/
 /skeletons/
 /ember_debug/vendor/startup-wrapper.js
+
+# Safari build
+/Ember Inspector/

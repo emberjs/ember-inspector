@@ -4,7 +4,7 @@
       @getStore={{this.getStore}}
       @hideEmptyModelTypes={{this.hideEmptyModelTypes}}
       @orderByRecordCount={{this.orderByRecordCount}}
-      @reload={{action this.send "reload"}}
+      @reload={{this.router.refresh}}
     />
   {{/in-element}}
 {{/if}}

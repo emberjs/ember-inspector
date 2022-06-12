@@ -4,6 +4,7 @@ import { inject as service } from '@ember/service';
 
 export default class ContainerTypesIndexController extends Controller {
   @service port;
+  @service router;
 
   @action
   sendContainerToConsole() {

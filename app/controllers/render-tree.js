@@ -7,6 +7,7 @@ import debounceComputed from 'ember-inspector/computed/debounce';
 import { and, equal } from '@ember/object/computed';
 
 export default Controller.extend({
+  adapter: service(),
   port: service(),
 
   initialEmpty: false,
@@ -78,6 +79,10 @@ export default Controller.extend({
       });
     }
   ),
+
+  clearProfiles: action(function () {
+    this.port.send('render:clear');
+  }),
 
   closeWarning: action(function () {
     this.set('isWarningClosed', true);

@@ -1,4 +1,4 @@
-import EmberObject, { action, get, set } from '@ember/object';
+import EmberObject, { get, set } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { Promise } from 'rsvp';
 import TabRoute from 'ember-inspector/routes/tab';
@@ -62,10 +62,5 @@ export default class RenderTreeRoute extends TabRoute {
     if (currentProfiles.length > 100) {
       set(this, 'controller.model.profiles', currentProfiles.slice(0, 100));
     }
-  }
-
-  @action
-  clearProfiles() {
-    this.port.send('render:clear');
   }
 }

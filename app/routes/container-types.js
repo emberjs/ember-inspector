@@ -1,4 +1,3 @@
-import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 import { Promise } from 'rsvp';
@@ -14,10 +13,5 @@ export default class ContainerTypesRoute extends Route {
       });
       port.send('container:getTypes');
     });
-  }
-
-  @action
-  reload() {
-    this.refresh();
   }
 }
