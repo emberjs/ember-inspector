@@ -371,12 +371,12 @@ module('Ember Debug - Object Inspector', function (hooks) {
     let message = await inspectObject(proxy);
 
     let property = message.details[0].properties[0];
-    assert.strictEqual(property.name, 0);
-    assert.strictEqual(property.value.inspect, 1);
+    assert.strictEqual(property.name, '0');
+    assert.strictEqual(property.value.inspect, '1');
 
     property = message.details[0].properties[1];
     assert.strictEqual(property.name, 'length');
-    assert.strictEqual(property.value.inspect, 1);
+    assert.strictEqual(property.value.inspect, '1');
   });
 
   skip('Correct mixin properties', async function (assert) {
@@ -1079,7 +1079,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
       assert.strictEqual(trackedProp.name, 'hi');
       assert.ok(trackedProp.isTracked);
       assert.strictEqual(trackedProp.value.type, 'type-number');
-      assert.strictEqual(trackedProp.value.inspect, 123);
+      assert.strictEqual(trackedProp.value.inspect, '123');
 
       assert.step('inspector: update value');
       message = await captureMessage('objectInspector:updateProperty', () => {
@@ -1121,7 +1121,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
       assert.strictEqual(trackedProp.name, 'hello');
       assert.ok(trackedProp.isGetter);
       assert.strictEqual(trackedProp.value.type, 'type-number');
-      assert.strictEqual(trackedProp.value.inspect, 123);
+      assert.strictEqual(trackedProp.value.inspect, '123');
 
       assert.step('inspector: update value');
       message = await captureMessage('objectInspector:updateProperty', () => {

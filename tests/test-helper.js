@@ -5,6 +5,7 @@ import { setApplication } from '@ember/test-helpers';
 import { setup } from 'qunit-dom';
 import { start } from 'ember-qunit';
 import TestAdapter from './test-adapter';
+import setupSinon from 'ember-sinon-qunit';
 
 // ensure ember-debug is required
 import 'ember-debug/main';
@@ -26,6 +27,9 @@ Application.instanceInitializer({
 });
 
 setApplication(Application.create(config.APP));
+
+setupSinon();
+
 window.NO_EMBER_DEBUG = true;
 
 setup(QUnit.assert);

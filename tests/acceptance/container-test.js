@@ -2,6 +2,7 @@ import TestAdapter from '@ember/test/adapter';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { visit, findAll, click, fillIn, currentURL } from '@ember/test-helpers';
+import sinon from 'sinon';
 import { setupTestAdapter, respondWith } from '../test-adapter';
 
 function getTypes() {
@@ -192,6 +193,9 @@ module('Container Tab', function (outer) {
   });
 
   test('Reload', async function (assert) {
+    const routerService = this.owner.lookup('service:router');
+    const refreshStub = sinon.stub(routerService, 'refresh');
+
     respondWith('container:getTypes', {
       type: 'container:types',
       types: [],
@@ -228,6 +232,8 @@ module('Container Tab', function (outer) {
     });
 
     await click('[data-test-reload-container-btn]');
+
+    assert.ok(refreshStub.calledOnce);
 
     assert.dom('.js-container-type').exists({ count: 2 });
     assert.dom('[data-test-instance-row]').exists({ count: 4 });

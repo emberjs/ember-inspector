@@ -14,7 +14,7 @@ module('Unit | Utility | parseText', function () {
       'foo',
       'removes quotes when simple string is already wrapped in quotes'
     );
-    assert.strictEqual(parseText('1'), '1');
+    assert.strictEqual(parseText('1'), 1);
     assert.strictEqual(
       parseText('"{"name":"teddy"}"'),
       '{"name":"teddy"}',

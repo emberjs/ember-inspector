@@ -1,6 +1,7 @@
 import { click, fillIn, findAll, settled, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
+import sinon from 'sinon';
 import { setupTestAdapter, respondWith, sendMessage } from '../test-adapter';
 
 function getFilters() {
@@ -234,6 +235,9 @@ module('Data Tab', function (outer) {
     });
 
     test('Reload', async function (assert) {
+      const routerService = this.owner.lookup('service:router');
+      const refreshStub = sinon.stub(routerService, 'refresh');
+
       respondWith('data:getModelTypes', {
         type: 'data:modelTypesAdded',
         modelTypes: [],
@@ -254,6 +258,8 @@ module('Data Tab', function (outer) {
       );
 
       await click('[data-test-reload-container-btn]');
+
+      assert.ok(refreshStub.calledOnce);
 
       assert.dom('.js-model-type').exists({ count: 2 });
     });
