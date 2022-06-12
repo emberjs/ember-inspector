@@ -7,6 +7,11 @@ export default class ContainerTypesIndexController extends Controller {
   @service router;
 
   @action
+  refresh() {
+    this.router.refresh();
+  }
+
+  @action
   sendContainerToConsole() {
     this.port.send('objectInspector:sendContainerToConsole');
   }

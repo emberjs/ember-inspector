@@ -61,6 +61,10 @@ export default Controller.extend({
       name: 'service:store',
     });
   }),
+
+  refresh: action(function () {
+    this.router.refresh();
+  }),
 });
 /**
  * Returns whether or not a given key has been set in storage.

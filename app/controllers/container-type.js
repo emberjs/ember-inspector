@@ -57,6 +57,11 @@ export default class ContainerTypeContoller extends Controller {
   }
 
   @action
+  refresh() {
+    this.router.refresh();
+  }
+
+  @action
   sendContainerToConsole() {
     this.port.send('objectInspector:sendContainerToConsole');
   }
