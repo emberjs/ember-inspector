@@ -58,7 +58,7 @@ export default class ContainerTypeContoller extends Controller {
 
   @action
   refresh() {
-    this.router.refresh();
+    this.router.refresh('container-types');
   }
 
   @action

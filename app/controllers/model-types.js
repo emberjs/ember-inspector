@@ -63,7 +63,7 @@ export default Controller.extend({
   }),
 
   refresh: action(function () {
-    this.router.refresh();
+    this.router.refresh('model-types');
   }),
 });
 /**

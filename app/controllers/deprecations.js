@@ -27,11 +27,6 @@ export default class DeprecationsController extends Controller {
     });
   }
 
-  @action
-  clear() {
-    this.port.send('deprecation:clear');
-  }
-
   @computed('deprecations.@each.message', 'search')
   get filtered() {
     return this.deprecations.filter((item) =>

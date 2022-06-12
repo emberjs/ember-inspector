@@ -8,7 +8,7 @@ export default class ContainerTypesIndexController extends Controller {
 
   @action
   refresh() {
-    this.router.refresh();
+    this.router.refresh('container-types');
   }
 
   @action
