@@ -20,7 +20,7 @@ if (typeof define !== 'function' || typeof requireModule !== 'function') {
 
       let mod = registry[name];
 
-      if (!mod) {
+      if (!mod && window.requireModule) {
         mod = window.requireModule(name);
         if (mod) {
           return mod;
