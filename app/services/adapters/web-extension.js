@@ -131,6 +131,19 @@ export default class WebExtension extends BasicAdapter {
 function loadEmberDebug() {
   let minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
   let xhr;
+
+  function loadEmberDebugInWebpage() {
+    const waitForEmberLoad = new Promise((resolve) => {
+      if (window.Ember) return resolve();
+      if (window.requireModule && window.requireModule.has('ember')) {
+        return resolve();
+      }
+      window.addEventListener('Ember', resolve, { once: true });
+    });
+    waitForEmberLoad.then(() => {
+      'replace-with-ember-debug';
+    });
+  }
   return new Promise((resolve) => {
     if (!emberDebug) {
       xhr = new XMLHttpRequest();
@@ -142,6 +155,14 @@ function loadEmberDebug() {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
             emberDebug = xhr.responseText;
+            // prepare for usage in replace, dollar signs are part of special replacement patterns...
+            emberDebug = emberDebug.replace(/\$/g, '$$$$');
+            emberDebug =
+              '(' +
+              loadEmberDebugInWebpage
+                .toString()
+                .replace("'replace-with-ember-debug';", emberDebug) +
+              ')()';
             resolve(emberDebug);
           }
         }
