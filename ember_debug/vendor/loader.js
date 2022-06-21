@@ -19,6 +19,14 @@ if (typeof define !== 'function' || typeof requireModule !== 'function') {
       }
 
       let mod = registry[name];
+      
+      if (!mod) {
+        mod = window.requireModule(name);
+        if (mod) {
+          return mod;
+        }
+      }
+      
       if (!mod) {
         throw new Error(`Module: '${name}' not found.`);
       }
