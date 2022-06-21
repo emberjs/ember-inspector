@@ -311,7 +311,7 @@ export default class ViewInspection {
       } else if (this.isInspecting) {
         event.preventDefault();
         event.stopPropagation();
-        this.stop();
+        this.stop(false);
       }
     }
   }
@@ -345,7 +345,7 @@ export default class ViewInspection {
     if (match) {
       this.show(match.id, pin);
     } else {
-      this.hide();
+      this.hide(false);
     }
 
     if (isInspecting) {
