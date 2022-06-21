@@ -86,7 +86,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
           });
 
           if (!window.EmberInspector._application) {
-            bootEmberInspector(instance);
+            setTimeout(() => bootEmberInspector(instance), 0);
           }
         }
       });
@@ -131,7 +131,9 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     };
 
     // Newest Ember versions >= 1.10
-    window.addEventListener('Ember', triggerOnce, { once: true });
+   
+    const later = () => setTimeout(triggerOnce, 0);
+    window.addEventListener('Ember', later, { once: true });
     // Oldest Ember versions or if this was injected after Ember has loaded.
     onReady(triggerOnce);
   }
