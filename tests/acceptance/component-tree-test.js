@@ -6,7 +6,7 @@ import {
   triggerEvent,
   triggerKeyEvent,
   visit,
-  settled
+  settled,
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
