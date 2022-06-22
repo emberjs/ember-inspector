@@ -433,11 +433,11 @@ class RenderItem {
   }
 
   show() {
-    let item = this.parent;
+    let item = this.parentItem;
 
     while (item) {
       item.expand();
-      item = item.parent;
+      item = item.parentItem;
     }
   }
 
