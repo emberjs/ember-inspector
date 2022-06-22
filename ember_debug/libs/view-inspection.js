@@ -325,7 +325,7 @@ export default class ViewInspection {
       event.preventDefault();
       event.stopPropagation();
       this.inspectNearest(event.target, true);
-      this.stop();
+      this.stop(false);
     }
   }
 
