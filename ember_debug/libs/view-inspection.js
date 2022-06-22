@@ -307,11 +307,11 @@ export default class ViewInspection {
       if (this.isPinned) {
         event.preventDefault();
         event.stopPropagation();
-        this.hide(false);
+        this.hide();
       } else if (this.isInspecting) {
         event.preventDefault();
         event.stopPropagation();
-        this.stop(false);
+        this.stop();
       }
     }
   }
@@ -320,12 +320,12 @@ export default class ViewInspection {
     if (this.isPinned && !this.tooltip.contains(event.target)) {
       event.preventDefault();
       event.stopPropagation();
-      this.hide(false);
+      this.hide();
     } else if (this.isInspecting && event.button === 0) {
       event.preventDefault();
       event.stopPropagation();
       this.inspectNearest(event.target, true);
-      this.stop(false);
+      this.stop();
     }
   }
 
@@ -345,7 +345,7 @@ export default class ViewInspection {
     if (match) {
       this.show(match.id, pin);
     } else {
-      this.hide(false);
+      this.hide();
     }
 
     if (isInspecting) {
@@ -379,11 +379,11 @@ export default class ViewInspection {
 
       this.didShow(id, pin);
     } else {
-      this.hide(false);
+      this.hide();
     }
   }
 
-  hide(notify = true) {
+  hide(notify = false) {
     let { isShowing, isPinned, currentId } = this;
 
     if (isShowing) {
