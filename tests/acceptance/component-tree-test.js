@@ -6,6 +6,7 @@ import {
   triggerEvent,
   triggerKeyEvent,
   visit,
+  settled
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
@@ -423,13 +424,23 @@ module('Component Tab', function (hooks) {
   });
 
   test('Selects a component in the tree in response to a message from the context menu', async function (assert) {
-    assert.expect(5);
+    assert.expect(8);
 
     // Go to the component tree and populate it before sending the message from the context menu
+    // also collapse the tree to test auto expanding to pinned item
     await visit('/component-tree');
+    let treeNodes = findAll('.component-tree-item');
+    assert.strictEqual(treeNodes.length, 4, 'expected some tree nodes');
+
+    let expanders = findAll('.component-tree-item__expand');
+    let expanderEl = expanders[expanders.length - 1];
+    await click(expanderEl);
+
+    treeNodes = findAll('.component-tree-item');
+    assert.strictEqual(treeNodes.length, 3, 'the last node should be hidden');
 
     respondWith('view:showInspection', ({ id, pin }) => {
-      assert.strictEqual(id, 'render-node:3', '<TodoList>');
+      assert.strictEqual(id, 'render-node:4', '<TodoList>');
       assert.true(pin, 'pin');
       return false;
     });
@@ -437,28 +448,34 @@ module('Component Tab', function (hooks) {
     respondWith('objectInspector:inspectById', ({ objectId }) => {
       assert.strictEqual(
         objectId,
-        'ember456',
-        'Client asked to inspect the <TodoList> component'
+        'ember789',
+        'Client asked to inspect the <TodoItem> component'
       );
       return false;
     });
 
     await sendMessage({
       type: 'view:inspectComponent',
-      id: 'render-node:3',
+      id: 'render-node:4',
     });
 
     assert.strictEqual(
       currentURL(),
-      '/component-tree?pinned=render-node%3A3',
+      '/component-tree?pinned=render-node%3A4',
       'It pins the element id as a query param'
     );
+
+    await settled();
+
     assert
       .dom('.component-tree-item--pinned')
       .hasText(
-        'TodoList',
+        'TodoItem @subTasks ={{ ... }}',
         'It selects the item in the tree corresponding to the element'
       );
+
+    treeNodes = findAll('.component-tree-item');
+    assert.strictEqual(treeNodes.length, 4, 'the last node should be shown');
   });
 
   test('Can inspect component arguments that are objects in component tree', async function (assert) {
