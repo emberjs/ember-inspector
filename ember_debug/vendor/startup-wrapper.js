@@ -86,7 +86,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
           });
 
           if (!window.EmberInspector._application) {
-            bootEmberInspector(instance);
+            setTimeout(() => bootEmberInspector(instance), 0);
           }
         }
       });
@@ -131,7 +131,9 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     };
 
     // Newest Ember versions >= 1.10
-    window.addEventListener('Ember', triggerOnce, { once: true });
+   
+    const later = () => setTimeout(triggerOnce, 0);
+    window.addEventListener('Ember', later, { once: true });
     // Oldest Ember versions or if this was injected after Ember has loaded.
     onReady(triggerOnce);
   }
@@ -165,20 +167,41 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
 
     sendApps(adapterInstance, apps);
 
+    function loadInstance(app) {
+      let instance = app.__deprecatedInstance__ || (app._applicationInstances && app._applicationInstances[0]);
+      if (instance) {
+        // App started
+        setupInstanceInitializer(app, callback);
+        callback(instance);
+        return true
+      }
+    }
+
     var app;
     for (var i = 0, l = apps.length; i < l; i++) {
       app = apps[i];
       // We check for the existance of an application instance because
       // in Ember > 3 tests don't destroy the app when they're done but the app has no booted instances.
       if (app._readinessDeferrals === 0) {
-        let instance = app.__deprecatedInstance__ || (app._applicationInstances && app._applicationInstances[0]);
-        if (instance) {
-          // App started
-          setupInstanceInitializer(app, callback);
-          callback(instance);
+        if (loadInstance(app)) {
           break;
         }
       }
+
+      // app already run initializers, but no instance, use _bootPromise and didBecomeReady
+      if(app._bootPromise) {
+        app._bootPromise.then((app) => {
+          loadInstance(app);
+        });
+      }
+
+      app.reopen({
+        didBecomeReady() {
+          this._super.apply(this, arguments);
+          setTimeout(() => loadInstance(app), 0)
+        }
+      });
+
     }
     Ember.Application.initializer({
       name: 'ember-inspector-booted',
