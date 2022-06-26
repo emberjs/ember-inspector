@@ -1,7 +1,5 @@
 <div class="toolbar">
-  <Ui::ToolbarClearButton
-    @action={{@clearProfiles}}
-  />
+  <Ui::ToolbarClearButton @action={{@clearProfiles}} />
 
   {{#unless @showEmpty}}
     <Ui::ToolbarDivider />
@@ -14,6 +12,7 @@
   <Ui::ToolbarDivider />
 
   <Ui::ToolbarSearchField
+    @clear={{fn (mut @searchValue)}}
     @value={{@searchValue}}
     class="js-render-profiles-search"
   />

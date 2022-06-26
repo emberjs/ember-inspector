@@ -1,4 +1,6 @@
 /* eslint no-useless-escape: 0 */
 export default function (str) {
-  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+  if (typeof str === 'string') {
+    return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+  }
 }

@@ -1,5 +1,6 @@
 <div class="toolbar">
   <Ui::ToolbarSearchField
+    @clear={{fn (mut @searchValue)}}
     @value={{@searchValue}}
     class="js-records-search"
   />
@@ -8,17 +9,19 @@
 
   <button
     class="{{if (is-empty @filterValue) "active"}} toolbar__radio js-filter"
-    {{on "click" (fn @setFilter "")}}
     type="button"
+    {{on "click" (fn @setFilter "")}}
   >
     All
   </button>
 
   {{#each @filters as |filter|}}
     <button
-      class="{{if (eq @filterValue filter.name) "active"}} toolbar__radio js-filter"
-      {{on "click" (fn @setFilter filter.name)}}
+      class="{{
+        if (eq @filterValue filter.name) "active"
+      }} toolbar__radio js-filter"
       type="button"
+      {{on "click" (fn @setFilter filter.name)}}
     >
       {{filter.desc}}
     </button>
