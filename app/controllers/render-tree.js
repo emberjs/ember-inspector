@@ -1,4 +1,5 @@
 import { action, computed, get } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
 import { isEmpty } from '@ember/utils';
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
@@ -6,22 +7,26 @@ import escapeRegExp from 'ember-inspector/utils/escape-reg-exp';
 import debounceComputed from 'ember-inspector/computed/debounce';
 import { and, equal } from '@ember/object/computed';
 
-export default Controller.extend({
-  adapter: service(),
-  port: service(),
-
-  initialEmpty: false,
-  modelEmpty: equal('model.profiles.length', 0),
-  showEmpty: and('initialEmpty', 'modelEmpty'),
-  shouldHighlightRender: false,
-
+export default class RenderTreeController extends Controller {
+  @service adapter;
+  @service port;
   /**
    * Storage is needed for remembering if the user closed the warning
    *
    * @property storage
    * @type {Service}
    */
-  storage: service(),
+  @service storage;
+
+  initialEmpty = false;
+  @tracked shouldHighlightRender = false;
+  @tracked search = '';
+
+  @equal('model.profiles.length', 0)
+  modelEmpty;
+
+  @and('initialEmpty', 'modelEmpty')
+  showEmpty;
 
   /**
    * Checks if the user previously closed the warning by referencing localStorage
@@ -29,15 +34,13 @@ export default Controller.extend({
    * @property isWarningClosed
    * @type {Boolean}
    */
-  isWarningClosed: computed({
-    get() {
-      return !!this.storage.getItem('is-render-tree-warning-closed');
-    },
-    set(key, value) {
-      this.storage.setItem('is-render-tree-warning-closed', value);
-      return value;
-    },
-  }),
+  get isWarningClosed() {
+    return !!this.storage.getItem('is-render-tree-warning-closed');
+  }
+
+  set isWarningClosed(value) {
+    this.storage.setItem('is-render-tree-warning-closed', value);
+  }
 
   /**
    * Indicate the table's header's height in pixels.
@@ -45,57 +48,55 @@ export default Controller.extend({
    * @property headerHeight
    * @type {Number}
    */
-  headerHeight: computed('isWarningClosed', function () {
+  get headerHeight() {
     return this.isWarningClosed ? 31 : 56;
-  }),
+  }
 
   // bound to the input field, updates the `search` property
   // 300ms after changing
-  searchValue: debounceComputed('search', 300),
+  @debounceComputed('search', 300)
+  searchValue;
 
-  // model filtered based on this value
-  search: '',
-
-  escapedSearch: computed('search', function () {
+  get escapedSearch() {
     return escapeRegExp(this.search?.toLowerCase());
-  }),
+  }
 
-  isHighlightEnabled: computed('model.isHighlightSupported', function () {
+  @computed('model.isHighlightSupported')
+  get isHighlightEnabled() {
     return get(this.model, 'isHighlightSupported');
-  }),
+  }
 
-  filtered: computed(
-    'escapedSearch',
-    'model.profiles.@each.name',
-    'search',
-    function () {
-      if (isEmpty(this.escapedSearch)) {
-        return get(this.model, 'profiles');
-      }
-
-      return get(this.model, 'profiles').filter((item) => {
-        const regExp = new RegExp(this.escapedSearch);
-        return recursiveMatch(item, regExp);
-      });
+  @computed('escapedSearch', 'model.profiles.@each.name', 'search')
+  get filtered() {
+    if (isEmpty(this.escapedSearch)) {
+      return get(this.model, 'profiles');
     }
-  ),
 
-  clearProfiles: action(function () {
+    return get(this.model, 'profiles').filter((item) => {
+      const regExp = new RegExp(this.escapedSearch);
+      return recursiveMatch(item, regExp);
+    });
+  }
+
+  @action
+  clearProfiles() {
     this.port.send('render:clear');
-  }),
+  }
 
-  closeWarning: action(function () {
+  @action
+  closeWarning() {
     this.set('isWarningClosed', true);
-  }),
+  }
 
-  updateShouldHighlightRender: action(function () {
+  @action
+  updateShouldHighlightRender() {
     const value = !this.shouldHighlightRender;
-    this.set('shouldHighlightRender', value);
+    this.shouldHighlightRender = value;
     this.port.send('render:updateShouldHighlightRender', {
       shouldHighlightRender: value,
     });
-  }),
-});
+  }
+}
 
 function recursiveMatch(item, regExp) {
   let children, child;
