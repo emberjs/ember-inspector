@@ -57,7 +57,7 @@ export default Controller.extend({
   search: '',
 
   escapedSearch: computed('search', function () {
-    return escapeRegExp(this.search.toLowerCase());
+    return escapeRegExp(this.search?.toLowerCase());
   }),
 
   isHighlightEnabled: computed('model.isHighlightSupported', function () {

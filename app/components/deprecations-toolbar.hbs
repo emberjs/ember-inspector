@@ -17,6 +17,7 @@
   <Ui::ToolbarDivider />
 
   <Ui::ToolbarSearchField
+    @clear={{fn (mut @searchValue)}}
     @value={{@searchValue}}
     data-test-deprecations-search
   />
