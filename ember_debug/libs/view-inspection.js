@@ -35,7 +35,7 @@ function makeStylesheet(id) {
       margin: 0px;
       padding: 0px;
       border: none;
-      z-index: 10000;
+      z-index: 1000000;
       /* https://github.com/ChromeDevTools/devtools-frontend/blob/b336f0440a8fb539352ac223ef466c3475618cf1/front_end/common/Color.js#L904 */
       background: rgba(111, 168, 220, .66);
     }
@@ -48,7 +48,7 @@ function makeStylesheet(id) {
       padding: 4px 8px;
       border: none;
       border-radius: 3px;
-      z-index: 10000;
+      z-index: 1000000;
       font-family: sans-serif;
       font-size: 12px;
       font-weight: normal;
