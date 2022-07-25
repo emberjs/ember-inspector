@@ -110,7 +110,7 @@
     "qunit": "^2.19.1",
     "qunit-dom": "^2.0.0",
     "release-it": "^14.6.1",
-    "release-it-lerna-changelog": "^4.0.1",
+    "release-it-lerna-changelog": "^5.0.0",
     "rimraf": "^3.0.2",
     "sass": "^1.52.3",
     "stylelint": "^14.9.1",
