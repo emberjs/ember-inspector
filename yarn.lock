@@ -1740,10 +1740,10 @@
   resolved "https://registry.yarnpkg.com/@handlebars/parser/-/parser-2.0.0.tgz#5e8b7298f31ff8f7b260e6b7363c7e9ceed7d9c5"
   integrity sha512-EP9uEDZv/L5Qh9IWuMUGJRfwhXJ4h1dqKTT4/3+tY0eu7sPis7xh23j61SYUnNF4vqCQvvUXpDo9Bh/+q1zASA==
 
-"@html-next/vertical-collection@3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@html-next/vertical-collection/-/vertical-collection-3.0.0.tgz#ba16bd2df413e9c25d245ae37ddb1950a5ccdbca"
-  integrity sha512-kpLYZXr3tlYkrSiyhww+f1YkyLMEhCm9h55A+PWPzJXBTZkV12sC5mIbxVcWD7q5QNjy634m6MMvmxfFgDmGoQ==
+"@html-next/vertical-collection@3.0.0-0":
+  version "3.0.0-0"
+  resolved "https://registry.yarnpkg.com/@html-next/vertical-collection/-/vertical-collection-3.0.0-0.tgz#85976337a06e8b1d069162c9aaf6c1f83b97b329"
+  integrity sha512-a0KM4qa5gcLFyU9N3iQpldqg+P3LUmg2z1x/qGiV+uI5LAzoq+P6aVLS315nCUIAhRVbIc+444XBwdedO7qH9w==
   dependencies:
     babel6-plugin-strip-class-callcheck "^6.0.0"
     broccoli-funnel "^2.0.2"
@@ -1755,10 +1755,10 @@
     ember-compatibility-helpers "^1.2.1"
     ember-raf-scheduler "^0.3.0"
 
-"@html-next/vertical-collection@3.0.0-0":
-  version "3.0.0-0"
-  resolved "https://registry.yarnpkg.com/@html-next/vertical-collection/-/vertical-collection-3.0.0-0.tgz#85976337a06e8b1d069162c9aaf6c1f83b97b329"
-  integrity sha512-a0KM4qa5gcLFyU9N3iQpldqg+P3LUmg2z1x/qGiV+uI5LAzoq+P6aVLS315nCUIAhRVbIc+444XBwdedO7qH9w==
+"@html-next/vertical-collection@3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@html-next/vertical-collection/-/vertical-collection-3.1.0.tgz#3e271fe36bbf381b5e6f7702fde72f8c6880ae0d"
+  integrity sha512-7mzdEhPA0SzIAqZA/HUwmAYVxzbsKp4l8vB7oBc6A71IGusrNZQUMLl09Vi9wgHahvhBV89LST474cu9k2Iw1Q==
   dependencies:
     babel6-plugin-strip-class-callcheck "^6.0.0"
     broccoli-funnel "^2.0.2"
