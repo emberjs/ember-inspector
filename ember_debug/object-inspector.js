@@ -98,7 +98,24 @@ const emberNames = new Map([
 ]);
 
 if (compareVersion(VERSION, '3.27.0') === -1) {
-  emberNames.set(Ember.TargetActionSupport, 'TargetActionSupport Mixin');
+  // TargetActionSupport was deprecated *at some point*
+  // For folks with deprecation-workflow's throwOnUnhandled: true,
+  // we need to swallow the error thrown by deprecation-workflow and ignore it.
+  // app-developers do not care about deprecations from the tooling (usually).
+  try {
+    emberNames.set(Ember.TargetActionSupport, 'TargetActionSupport Mixin');
+  } catch (e) {
+    // Uncaught Error: Using Ember.TargetActionSupport is deprecated.
+    if (e.message.includes('deprecated')) {
+      console.groupCollapsed(
+        `[ember-inspector]: an internal deprecation violation occurred. Please open an issue at https://github.com/emberjs/ember-inspector `
+      );
+      console.error(e);
+      console.groupEnd();
+    } else {
+      throw e;
+    }
+  }
 }
 
 try {

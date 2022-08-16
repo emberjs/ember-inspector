@@ -134,7 +134,25 @@ function loadEmberDebug() {
 
   function loadEmberDebugInWebpage() {
     const waitForEmberLoad = new Promise((resolve) => {
-      if (window.Ember) return resolve();
+      // the Ember global was deprecated during the 3.x cycle
+      // For folks with deprecation-workflow's throwOnUnhandled: true,
+      // we need to swallow the error thrown by deprecation-workflow and ignore it.
+      // app-developers do not care about deprecations from the tooling (usually).
+      try {
+        if (window.Ember) return resolve();
+      } catch (e) {
+        // Targets specifically the message printed about the Ember Global
+        if (e.message.includes('deprecated')) {
+          console.groupCollapsed(
+            `[ember-inspector]: an internal deprecation violation occurred. Please open an issue at https://github.com/emberjs/ember-inspector `
+          );
+          console.error(e);
+          console.groupEnd();
+        } else {
+          throw e;
+        }
+      }
+
       if (window.requireModule && window.requireModule.has('ember')) {
         return resolve();
       }
