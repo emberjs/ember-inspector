@@ -379,11 +379,11 @@ export default class ViewInspection {
 
       this.didShow(id, pin);
     } else {
-      this.hide(false);
+      this.hide();
     }
   }
 
-  hide(notify = true) {
+  hide(notify = false) {
     let { isShowing, isPinned, currentId } = this;
 
     if (isShowing) {
