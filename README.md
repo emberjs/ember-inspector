@@ -120,7 +120,11 @@ Here are the steps to lock an inspector version:
 - Create a new branch (from `stable`) named after the Ember version range that will be supported by this branch. The min version in the range is the first element in the `emberVersionsSupported` array in `package.json`. The max version in the range is the first version that will *not* be supported. For example, a branch named `ember-0.0.0-2.7.0` means it supports Ember 0.0.0 -> 2.6.0, and a branch named `ember-2.7.0-3.4.0` means it supports Ember 2.7.0 -> Ember 3.3.2.
 - Update `package.json`'s `emberVersionsSupported`: add a second element that indicates the minimum Ember version the `master` branch *will not* support.
 - Commit the branch.
-- Run `yarn lock-version`. This will build, compress, and upload this version to S3.
+- Run `yarn lock-version`. This will build, and compress the panes.
+- To upload the panes to GitHub:
+  - Create a folder locally with the naming convention `panes-x-x-x`
+  - Copy the 3 zip files (chrome.zip, firefox.zip, and bookmarklet.zip) into the folder you just created.
+  - Go to https://github.com/emberjs/ember-inspector/upload/panes and drag the folder in to upload it.
 - Checkout the `master` branch.
 - Update `package.json`'s `previousEmberVersionsSupported`: add the first Ember version supported by the recently locked snapshot (the first element in the `emberVersionsSupported` array).
 - Update `package.json`'s `emberVersionsSupported`: Take the last element from `previousEmberVersionsSupported` and set it as the first element in this array. Set an empty string as the second element to indicate there's currently no maximum Ember version supported yet. `emberVersionsSupported` array length should always be `2` indicating a [min, max] range.
