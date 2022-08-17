@@ -20,10 +20,10 @@ exports['compress:chrome'] = () =>
 exports['compress:firefox'] = () =>
   compress('dist/firefox', 'firefox/ember-inspector.zip');
 exports['compress:chrome-pane'] = () =>
-  compress(`dist/chrome/${versionedPane}`, 'chrome-pane.zip');
+  compress(`dist/chrome/${versionedPane}`, 'chrome.zip');
 exports['compress:firefox-pane'] = () =>
-  compress(`dist/firefox/${versionedPane}`, 'firefox-pane.zip');
+  compress(`dist/firefox/${versionedPane}`, 'firefox.zip');
 exports['compress:bookmarklet-pane'] = () =>
-  compress(`dist/bookmarklet/${versionedPane}`, 'bookmarklet-pane.zip');
+  compress(`dist/bookmarklet/${versionedPane}`, 'bookmarklet.zip');
 
 exports['clean-tmp'] = () => del('./tmp');

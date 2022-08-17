@@ -19,13 +19,12 @@
     "lint:hbs": "ember-template-lint .",
     "lint:hbs:fix": "ember-template-lint . --fix",
     "lint:js": "eslint . --cache",
-    "lock-version": "yarn build:production && yarn compress:panes && EMBER_ENV=production node scripts/upload-panes.js",
+    "lock-version": "yarn build:production && yarn compress:panes",
     "serve:bookmarklet": "ember serve --port 9191",
     "lint:js:fix": "eslint . --fix",
     "start": "ember serve",
     "test": "npm-run-all lint test:*",
     "test:ember": "COVERAGE=true ember test",
-    "upload:panes": "yarn build && yarn compress:panes && node scripts/upload-panes.js",
     "watch": "ember build --watch"
   },
   "devDependencies": {
