@@ -30,8 +30,7 @@
     let Ember;
     try {
       Ember = requireModule('ember')['default'];
-    } catch (e) {
-      console.error(`[EmberInspector]: Error occurred while trying to properly detect ember. Trying window.Ember`);
+    } catch {
       Ember = window.Ember;
     }
     var libraries = Ember && Ember.libraries;
