@@ -8,6 +8,49 @@
 
 
 
+
+## v4.6.0 (2022-08-17)
+
+#### :rocket: Enhancement
+* [#2040](https://github.com/emberjs/ember-inspector/pull/2040) do not close the object inspector ([@patricklx](https://github.com/patricklx))
+* [#1905](https://github.com/emberjs/ember-inspector/pull/1905) enhancement(view-inspection): increased z-index for highlight and tooltip ([@andrewmnlv](https://github.com/andrewmnlv))
+* [#1959](https://github.com/emberjs/ember-inspector/pull/1959) component-tree: make left/right arrow nav in certain conditions (Closes [#1537](https://github.com/emberjs/ember-inspector/issues/1537)) ([@geneukum](https://github.com/geneukum))
+
+#### :bug: Bug Fix
+* [#2051](https://github.com/emberjs/ember-inspector/pull/2051) fix loading ember-inspector after reload ([@patricklx](https://github.com/patricklx))
+* [#2052](https://github.com/emberjs/ember-inspector/pull/2052) fix component tree item show ([@patricklx](https://github.com/patricklx))
+* [#2043](https://github.com/emberjs/ember-inspector/pull/2043) bring back the inspect component context menu functionality ([@patricklx](https://github.com/patricklx))
+* [#2008](https://github.com/emberjs/ember-inspector/pull/2008) Deprecation toolbar clear btn does not clear deprecations ([@geneukum](https://github.com/geneukum))
+* [#1940](https://github.com/emberjs/ember-inspector/pull/1940) Remove support for the TargetActionSupport mixin ([@Windvis](https://github.com/Windvis))
+
+#### :house: Internal
+* [#2103](https://github.com/emberjs/ember-inspector/pull/2103) Remove automated uploads ([@rwwagner90](https://github.com/rwwagner90))
+* [#2101](https://github.com/emberjs/ember-inspector/pull/2101) Download panes from GitHub instead of S3 ([@rwwagner90](https://github.com/rwwagner90))
+* [#2054](https://github.com/emberjs/ember-inspector/pull/2054) Convert controllers to native classes ([@rwwagner90](https://github.com/rwwagner90))
+* [#2053](https://github.com/emberjs/ember-inspector/pull/2053) Convert ToolbarSearchField to glimmer ([@rwwagner90](https://github.com/rwwagner90))
+* [#2041](https://github.com/emberjs/ember-inspector/pull/2041) ember-cli 4.4.0, fix some lint ([@rwwagner90](https://github.com/rwwagner90))
+* [#1998](https://github.com/emberjs/ember-inspector/pull/1998) list-cell: convert to glimmer ([@geneukum](https://github.com/geneukum))
+* [#1990](https://github.com/emberjs/ember-inspector/pull/1990) resizable-column: convert to glimmer ([@geneukum](https://github.com/geneukum))
+* [#1991](https://github.com/emberjs/ember-inspector/pull/1991) object-inspector-test: fix legacy-attribute-arguments issue ([@geneukum](https://github.com/geneukum))
+* [#1987](https://github.com/emberjs/ember-inspector/pull/1987) render-item: fixup no-curly-component-invocation ([@geneukum](https://github.com/geneukum))
+* [#1988](https://github.com/emberjs/ember-inspector/pull/1988) eslintrc: enable 'no-actions-hash' lint rule ([@geneukum](https://github.com/geneukum))
+* [#1989](https://github.com/emberjs/ember-inspector/pull/1989) eslintrc: enable no-test-import-export rule ([@geneukum](https://github.com/geneukum))
+* [#1973](https://github.com/emberjs/ember-inspector/pull/1973) deprecations: resolve instances of this-property-fallback ([@geneukum](https://github.com/geneukum))
+* [#1976](https://github.com/emberjs/ember-inspector/pull/1976) deprecations: fixup instances of no-inline-styles ([@geneukum](https://github.com/geneukum))
+* [#1974](https://github.com/emberjs/ember-inspector/pull/1974) deprecations: fix instances of routing-transition-methods ([@geneukum](https://github.com/geneukum))
+* [#1975](https://github.com/emberjs/ember-inspector/pull/1975) list: fixup dot access for run.bind deprecation ([@geneukum](https://github.com/geneukum))
+* [#1972](https://github.com/emberjs/ember-inspector/pull/1972) properties-base, properties-grouped, properties-all: octane/glimmer upgrade  ([@geneukum](https://github.com/geneukum))
+* [#1961](https://github.com/emberjs/ember-inspector/pull/1961) object-inspector: migrate to glimmer component ([@geneukum](https://github.com/geneukum))
+* [#1906](https://github.com/emberjs/ember-inspector/pull/1906) octane migration - deprecation-item-source ([@michaelbdai](https://github.com/michaelbdai))
+
+#### Committers: 6
+- Bing Dai ([@michaelbdai](https://github.com/michaelbdai))
+- Geordan Neukum ([@geneukum](https://github.com/geneukum))
+- Robert Wagner ([@rwwagner90](https://github.com/rwwagner90))
+- Sam Van Campenhout ([@Windvis](https://github.com/Windvis))
+- [@andrewmnlv](https://github.com/andrewmnlv)
+- [@patricklx](https://github.com/patricklx)
+
 ## v4.5.11 (2021-12-27)
 
 #### :bug: Bug Fix
