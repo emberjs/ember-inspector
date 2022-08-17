@@ -1,0 +1,24 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+.DS_Store
+
+# misc
+/.env*
+/.pnp*
+/.sass-cache
+/.eslintcache
+/connect.lock
+/coverage/
+/libpeerconnection.log
+/npm-debug.log*
+/testem.log
+/yarn-error.log
+config/secrets.json
+
+/.mozilla-addon-sdk
+
+# broccoli-debug
+/DEBUG/
+
+# Safari build
+/Ember Inspector/
