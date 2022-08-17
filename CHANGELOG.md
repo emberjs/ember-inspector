@@ -9,6 +9,15 @@
 
 
 
+
+## v4.6.1 (2022-08-17)
+
+#### :bug: Bug Fix
+* [#2100](https://github.com/emberjs/ember-inspector/pull/2100) Silence Ember.global deprecation messages when consumers use 3.28 with `throwOnUnhandled: true` ([@NullVoxPopuli](https://github.com/NullVoxPopuli))
+
+#### Committers: 1
+- [@NullVoxPopuli](https://github.com/NullVoxPopuli)
+
 ## v4.6.0 (2022-08-17)
 
 #### :rocket: Enhancement
