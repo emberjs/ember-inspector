@@ -20,10 +20,6 @@ const yauzlFromBuffer = promisify(yauzl.fromBuffer);
 const pipeline = promisify(stream.pipeline);
 const rimraf = promisify(require('rimraf'));
 
-const env = process.env.EMBER_ENV || 'development';
-const S3_BUCKET_URL =
-  'http://s3-eu-west-1.amazonaws.com/ember-inspector-panes/';
-
 async function main() {
   await rimraf('dist_prev');
 
@@ -40,11 +36,14 @@ async function main() {
 async function downloadPane(paneFolder, dist) {
   console.log(`Downloading ${paneFolder}`);
 
-  let response = await got(`${S3_BUCKET_URL}${env}/${paneFolder}/${dist}.zip`, {
-    responseType: 'buffer',
-  });
+  let response = await got(
+    `https://github.com/emberjs/ember-inspector/blob/panes/${paneFolder}/${dist}.zip?raw=true`,
+    {
+      responseType: 'buffer',
+    }
+  );
 
-  await unzip(response.body, `dist_prev/${env}/${dist}/${paneFolder}`);
+  await unzip(response.body, `dist_prev/production/${dist}/${paneFolder}`);
 }
 
 async function unzip(zipFileBuffer, dir) {
