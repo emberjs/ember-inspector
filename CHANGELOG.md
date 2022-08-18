@@ -10,6 +10,15 @@
 
 
 
+
+## v4.6.2 (2022-08-18)
+
+#### :bug: Bug Fix
+* [#2105](https://github.com/emberjs/ember-inspector/pull/2105) fix ember inspector not loading ([@patricklx](https://github.com/patricklx))
+
+#### Committers: 1
+- [@patricklx](https://github.com/patricklx)
+
 ## v4.6.1 (2022-08-17)
 
 #### :bug: Bug Fix
