@@ -150,9 +150,7 @@ function loadEmberDebug() {
 
       window.addEventListener('Ember', resolve, { once: true });
     });
-    waitForEmberLoad.then(() => {
-      return 'replace-with-ember-debug';
-    });
+    waitForEmberLoad.then(() => 'replace-with-ember-debug');
   }
   return new Promise((resolve) => {
     if (!emberDebug) {
@@ -166,12 +164,14 @@ function loadEmberDebug() {
           if (xhr.status === 200) {
             emberDebug = xhr.responseText;
             // prepare for usage in replace, dollar signs are part of special replacement patterns...
-            emberDebug = emberDebug.replace(/\$/g, '$$$$');
+            // wrap in curly braces to be usable in arrow function
+            emberDebug = '{' + emberDebug.replace(/\$/g, '$$$$') + '}';
             emberDebug =
               '(' +
               loadEmberDebugInWebpage
                 .toString()
-                .replace("'replace-with-ember-debug';", emberDebug) +
+                // Use regex to support different cases in dev and prod builds
+                .replace(/['"]replace-with-ember-debug['"];*/, emberDebug) +
               ')()';
             resolve(emberDebug);
           }
