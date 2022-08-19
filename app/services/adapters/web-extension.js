@@ -150,9 +150,7 @@ function loadEmberDebug() {
 
       window.addEventListener('Ember', resolve, { once: true });
     });
-    waitForEmberLoad.then(() => {
-      return 'replace-with-ember-debug';
-    });
+    waitForEmberLoad.then(() => 'replace-with-ember-debug');
   }
   return new Promise((resolve) => {
     if (!emberDebug) {
