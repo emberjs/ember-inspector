@@ -151,7 +151,7 @@ function loadEmberDebug() {
       window.addEventListener('Ember', resolve, { once: true });
     });
     waitForEmberLoad.then(() => {
-      return 'replace-with-ember-debug';
+      return "replace-with-ember-debug";
     });
   }
   return new Promise((resolve) => {
@@ -171,7 +171,7 @@ function loadEmberDebug() {
               '(' +
               loadEmberDebugInWebpage
                 .toString()
-                .replace("'replace-with-ember-debug';", emberDebug) +
+                .replace('"replace-with-ember-debug";', emberDebug) +
               ')()';
             resolve(emberDebug);
           }
