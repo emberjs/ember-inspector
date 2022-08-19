@@ -788,7 +788,8 @@ function getClassName(object) {
 
     if (
       constructor.toString &&
-      constructor.toString !== Object.prototype.toString
+      constructor.toString !== Object.prototype.toString &&
+      constructor.toString !== Function.prototype.toString
     ) {
       name = constructor.toString();
     } else {
@@ -814,7 +815,7 @@ function getClassName(object) {
     return name.replace(/<.*:/, `<${className}:`);
   }
 
-  return name || className;
+  return name || className || '(unknown class)';
 }
 
 function ownMixins(object) {
