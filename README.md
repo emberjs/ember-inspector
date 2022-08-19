@@ -79,33 +79,8 @@ Run `yarn install && yarn global add ember-cli to install the required modules.
 
 ## Deploy new version:
 
-#### Patch versions
+See [RELEASE.md](./RELEASE.md)
 
-Patch versions are only committed to the stable branch. So we need to cherry-pick the commits we need from master and bump stable to the new patch version.
-
-- `git checkout stable`
-- Cherry-pick the needed commits from master to stable.
-- Add the change log entry and commit. We use [github-changelog-generator](https://github.com/github-changelog-generator/github-changelog-generator) for this.
-  You will want to follow the installation instructions on their README, and take note that you will need to provide a GitHub token.
-  Once installed, and you add a token, you can run `yarn changelog` in your terminal.
-- `yarn version --patch`
-- `git push --tags`
-- `git push`
-- PR the change log entry to the master branch.
-
-#### Minor and major versions
-
-When releasing a major/minor version, master would already have this version set, so what we need to do is to merge master into stable and release.
-
-- `git checkout stable`
-- `git merge -X theirs master`
-- Add the change log entry and commit. We use [github-changelog-generator](https://github.com/github-changelog-generator/github-changelog-generator) for this.
-  You will want to follow the installation instructions on their README, and take note that you will need to provide a GitHub token.
-  Once installed, and you add a token, you can run `yarn changelog` in your terminal.
-- `yarn version` (keep the same version number)
-- `git push --tags`
-- `git push`
-- PR the change log entry to the master branch, as well as increment `package.json` to the next major/minor version.
 
 ### Locking a version
 
@@ -117,7 +92,7 @@ Here are the steps to lock an inspector version:
 
 - Release a new version (See "Minor and major versions") if there are unreleased commits in `master`. Skip this step if there are not new commits after the last release.
 - Makes sure you have a `config/secrets.json` file with the correct AWS credentials to push to S3. You can use `config/secrets.json.sample` as a starting point.
-- Create a new branch (from `stable`) named after the Ember version range that will be supported by this branch. The min version in the range is the first element in the `emberVersionsSupported` array in `package.json`. The max version in the range is the first version that will *not* be supported. For example, a branch named `ember-0.0.0-2.7.0` means it supports Ember 0.0.0 -> 2.6.0, and a branch named `ember-2.7.0-3.4.0` means it supports Ember 2.7.0 -> Ember 3.3.2.
+- Create a new branch (from `master`) named after the Ember version range that will be supported by this branch. The min version in the range is the first element in the `emberVersionsSupported` array in `package.json`. The max version in the range is the first version that will *not* be supported. For example, a branch named `ember-0.0.0-2.7.0` means it supports Ember 0.0.0 -> 2.6.0, and a branch named `ember-2.7.0-3.4.0` means it supports Ember 2.7.0 -> Ember 3.3.2.
 - Update `package.json`'s `emberVersionsSupported`: add a second element that indicates the minimum Ember version the `master` branch *will not* support.
 - Commit the branch.
 - Run `yarn lock-version`. This will build, and compress the panes.
@@ -135,7 +110,7 @@ Here are the steps to lock an inspector version:
 Below is an example scenario that assumes the current `master` branch supports Ember version 2.7.0+ and we want to lock the version such that `master` will support 3.4.0+. It also assumes the last Ember Inspector version released was 3.9.0.
 
 - Release a new inspector version `3.10.0` if there are unreleased commits in `master`.
-- Create a new branch from `stable` called `ember-2.7.0-3.4.0`.
+- Create a new branch from `master` called `ember-2.7.0-3.4.0`.
 - Update `package.json`'s `emberVersionsSupported` from `["2.7.0", ""]` to `["2.7.0", "3.4.0"]`.
 - Commit with message "Lock Ember version at 2.7.0-3.4.0" and push the branch.
 - Run `yarn lock-version`.
