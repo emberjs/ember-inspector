@@ -164,7 +164,7 @@ function loadEmberDebug() {
           if (xhr.status === 200) {
             emberDebug = xhr.responseText;
             // prepare for usage in replace, dollar signs are part of special replacement patterns...
-            // wrap in curly braces to be usable in arrow function 
+            // wrap in curly braces to be usable in arrow function
             emberDebug = '{' + emberDebug.replace(/\$/g, '$$$$') + '}';
             emberDebug =
               '(' +
