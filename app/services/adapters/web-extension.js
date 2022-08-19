@@ -151,9 +151,7 @@ function loadEmberDebug() {
       window.addEventListener('Ember', resolve, { once: true });
     });
     waitForEmberLoad.then(() => {
-      // Keep it like this to be the same in dev and prod builds
-      // prettier-ignore
-      return "replace-with-ember-debug";
+      return 'replace-with-ember-debug';
     });
   }
   return new Promise((resolve) => {
@@ -173,7 +171,7 @@ function loadEmberDebug() {
               '(' +
               loadEmberDebugInWebpage
                 .toString()
-                .replace('"replace-with-ember-debug";', emberDebug) +
+                .replace(/['"]replace-with-ember-debug['"];*/, emberDebug) +
               ')()';
             resolve(emberDebug);
           }
