@@ -815,7 +815,7 @@ function getClassName(object) {
     return name.replace(/<.*:/, `<${className}:`);
   }
 
-  return name || className;
+  return name || className || '(unknown class)';
 }
 
 function ownMixins(object) {
