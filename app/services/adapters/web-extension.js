@@ -171,6 +171,7 @@ function loadEmberDebug() {
               '(' +
               loadEmberDebugInWebpage
                 .toString()
+                // Use regex to support different cases in dev and prod builds
                 .replace(/['"]replace-with-ember-debug['"];*/, emberDebug) +
               ')()';
             resolve(emberDebug);
