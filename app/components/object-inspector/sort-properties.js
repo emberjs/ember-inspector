@@ -36,7 +36,7 @@ export default class SortProperties extends Component {
   @sort('props', 'sortProperties')
   sorted;
 
-  @map('properties', function (p) {
+  @map('args.properties', function (p) {
     set(
       p,
       'isFunction',
