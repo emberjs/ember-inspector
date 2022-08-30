@@ -12,23 +12,6 @@ module.exports = function() {
     return {
       useYarn: true,
       scenarios: [
-        // TODO: Figure out how to test these versions
-        // {
-        //   name: 'ember-lts-3.4',
-        //   npm: {
-        //     devDependencies: {
-        //       'ember-source': '~3.4.0'
-        //     }
-        //   }
-        // },
-        // {
-        //   name: 'ember-lts-3.8',
-        //   npm: {
-        //     devDependencies: {
-        //       'ember-source': '~3.8.0'
-        //     }
-        //   }
-        // },
         {
           name: 'ember-lts-3.12',
           npm: {
