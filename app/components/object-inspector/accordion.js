@@ -1,14 +1,22 @@
-import { action, computed } from '@ember/object';
-import Component from '@ember/component';
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
 
-export default Component.extend({
-  tagName: '',
+export default class AccordionComponent extends Component {
+  @tracked _isExpanded;
 
-  isExpanded: computed('mixin.{expand,properties.length}', function () {
-    return this.get('mixin.expand') && this.get('mixin.properties.length') > 0;
-  }),
+  constructor() {
+    super(...arguments);
 
-  toggle: action(function () {
-    this.toggleProperty('mixin.expand');
-  }),
-});
+    this._isExpanded = this.args.mixin.expand;
+  }
+
+  get isExpanded() {
+    return this._isExpanded && this.args.mixin.properties.length > 0;
+  }
+
+  @action
+  toggle() {
+    this._isExpanded = !this._isExpanded;
+  }
+}

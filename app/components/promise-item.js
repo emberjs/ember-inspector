@@ -1,7 +1,6 @@
-import { tagName } from '@ember-decorators/component';
 import { computed, get } from '@ember/object';
 import { equal, gt, notEmpty } from '@ember/object/computed';
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import { htmlSafe } from '@ember/template';
 import { isEmpty } from '@ember/utils';
 
@@ -11,20 +10,16 @@ const COLOR_MAP = {
   green: '#006400',
 };
 
-@tagName('')
 export default class PromiseItem extends Component {
-  filter = null;
-  effectiveSearch = null;
-
-  @equal('model.reason.type', 'type-error')
+  @equal('args.model.reason.type', 'type-error')
   isError;
 
-  @computed('model.{isFulfilled,isRejected,state}')
+  @computed('args.model.{isFulfilled,isRejected,state}')
   get style() {
     let color = '';
-    if (get(this, 'model.isFulfilled')) {
+    if (get(this, 'args.model.isFulfilled')) {
       color = 'green';
-    } else if (get(this, 'model.isRejected')) {
+    } else if (get(this, 'args.model.isRejected')) {
       color = 'red';
     } else {
       color = 'blue';
@@ -33,27 +28,26 @@ export default class PromiseItem extends Component {
   }
 
   @computed(
-    'effectiveSearch',
-    'filter',
-    'model.{isFulfilled,isPending,isRejected,state}'
+    'args.{effectiveSearch,filter}',
+    'args.model.{isFulfilled,isPending,isRejected,state}'
   )
   get nodeStyle() {
     let relevant;
-    switch (this.filter) {
+    switch (this.args.filter) {
       case 'pending':
-        relevant = get(this, 'model.isPending');
+        relevant = get(this, 'args.model.isPending');
         break;
       case 'rejected':
-        relevant = get(this, 'model.isRejected');
+        relevant = get(this, 'args.model.isRejected');
         break;
       case 'fulfilled':
-        relevant = get(this, 'model.isFulfilled');
+        relevant = get(this, 'args.model.isFulfilled');
         break;
       default:
         relevant = true;
     }
-    if (relevant && !isEmpty(this.effectiveSearch)) {
-      relevant = this.model.matchesExactly(this.effectiveSearch);
+    if (relevant && !isEmpty(this.args.effectiveSearch)) {
+      relevant = this.args.model.matchesExactly(this.args.effectiveSearch);
     }
     if (!relevant) {
       return 'opacity: 0.3;';
@@ -62,35 +56,37 @@ export default class PromiseItem extends Component {
     }
   }
 
-  @computed('model.level', 'nodeStyle')
+  @computed('args.model.level', 'nodeStyle')
   get labelStyle() {
     return htmlSafe(
-      `padding-left: ${+get(this, 'model.level') * 20 + 5}px;${this.nodeStyle}`
+      `padding-left: ${+get(this, 'args.model.level') * 20 + 5}px;${
+        this.nodeStyle
+      }`
     );
   }
 
-  @computed('hasChildren', 'model.isExpanded')
+  @computed('hasChildren', 'args.model.isExpanded')
   get expandedClass() {
     if (!this.hasChildren) {
       return undefined;
     }
 
-    if (get(this, 'model.isExpanded')) {
+    if (get(this, 'args.model.isExpanded')) {
       return 'list__cell_arrow_expanded';
     } else {
       return 'list__cell_arrow_collapsed';
     }
   }
 
-  @gt('model.children.length', 0)
+  @gt('args.model.children.length', 0)
   hasChildren;
 
-  @computed('model.{isFulfilled,isRejected,reason,value}')
+  @computed('args.model.{isFulfilled,isRejected,reason,value}')
   get settledValue() {
-    if (get(this, 'model.isFulfilled')) {
-      return get(this, 'model.value');
-    } else if (get(this, 'model.isRejected')) {
-      return get(this, 'model.reason');
+    if (get(this, 'args.model.isFulfilled')) {
+      return get(this, 'args.model.value');
+    } else if (get(this, 'args.model.isRejected')) {
+      return get(this, 'args.model.reason');
     } else {
       return '--';
     }
@@ -99,32 +95,32 @@ export default class PromiseItem extends Component {
   @notEmpty('settledValue.objectId')
   isValueInspectable;
 
-  @computed('model.isSettled', 'settledValue.type')
+  @computed('args.model.isSettled', 'settledValue.type')
   get hasValue() {
     return (
-      get(this, 'model.isSettled') &&
+      get(this, 'args.model.isSettled') &&
       get(this, 'settledValue.type') !== 'type-undefined'
     );
   }
 
-  @computed('model.{label,parent}')
+  @computed('args.model.{label,parent}')
   get label() {
     return (
-      get(this, 'model.label') ||
-      (!!get(this, 'model.parent') && 'Then') ||
+      get(this, 'args.model.label') ||
+      (!!get(this, 'args.model.parent') && 'Then') ||
       '<Unknown Promise>'
     );
   }
 
-  @computed('model.{parent.isSettled,isFulfilled,isRejected,state}')
+  @computed('args.model.{parent.isSettled,isFulfilled,isRejected,state}')
   get state() {
-    if (get(this, 'model.isFulfilled')) {
+    if (get(this, 'args.model.isFulfilled')) {
       return 'Fulfilled';
-    } else if (get(this, 'model.isRejected')) {
+    } else if (get(this, 'args.model.isRejected')) {
       return 'Rejected';
     } else if (
-      get(this, 'model.parent') &&
-      !get(this, 'model.parent.isSettled')
+      get(this, 'args.model.parent') &&
+      !get(this, 'args.model.parent.isSettled')
     ) {
       return 'Waiting for parent';
     } else {
@@ -132,15 +128,19 @@ export default class PromiseItem extends Component {
     }
   }
 
-  @computed('model.{createdAt,settledAt,parent.settledAt}')
+  @computed('args.model.{createdAt,settledAt,parent.settledAt}')
   get timeToSettle() {
-    if (!get(this, 'model.createdAt') || !get(this, 'model.settledAt')) {
+    if (
+      !get(this, 'args.model.createdAt') ||
+      !get(this, 'args.model.settledAt')
+    ) {
       return ' -- ';
     }
     let startedAt =
-      get(this, 'model.parent.settledAt') || get(this, 'model.createdAt');
+      get(this, 'args.model.parent.settledAt') ||
+      get(this, 'args.model.createdAt');
     let remaining =
-      get(this, 'model.settledAt').getTime() - startedAt.getTime();
+      get(this, 'args.model.settledAt').getTime() - startedAt.getTime();
     return remaining;
   }
 }
