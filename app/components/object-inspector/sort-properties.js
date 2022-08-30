@@ -1,14 +1,12 @@
-import { tagName } from '@ember-decorators/component';
 import { map, sort } from '@ember/object/computed';
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import { get, set, computed } from '@ember/object';
 import { A } from '@ember/array';
 
-@tagName('')
 export default class SortProperties extends Component {
-  @computed('properties')
+  @computed('args.properties')
   get isArray() {
-    const props = A(this.properties || []);
+    const props = A(this.args.properties || []);
     return props.findBy('name', 'length') && props.findBy('name', 0);
   }
 
