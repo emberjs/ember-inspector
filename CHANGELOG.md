@@ -13,6 +13,15 @@
 
 
 
+
+## v4.7.1 (2022-08-31)
+
+#### :house: Internal
+* [#2127](https://github.com/emberjs/ember-inspector/pull/2127) Add back del ([@rwwagner90](https://github.com/rwwagner90))
+
+#### Committers: 1
+- Robert Wagner ([@rwwagner90](https://github.com/rwwagner90))
+
 ## v4.7.0 (2022-08-31)
 
 #### :house: Internal
