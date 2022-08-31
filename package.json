@@ -136,12 +136,13 @@
     ]
   },
   "emberVersionsSupported": [
-    "3.4.0",
+    "3.16.0",
     ""
   ],
   "previousEmberVersionsSupported": [
     "0.0.0",
-    "2.7.0"
+    "2.7.0",
+    "3.4.0"
   ],
   "release-it": {
     "plugins": {
