@@ -1,5 +1,4 @@
-import { tagName } from '@ember-decorators/component';
-import { computed } from '@ember/object';
+import { action, computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { htmlSafe } from '@ember/template';
@@ -14,7 +13,6 @@ import { schedule } from '@ember/runloop';
  * @class List
  * @namespace Components
  */
-@tagName('')
 export default class ListContent extends Component.extend(Evented) {
   /**
    * The layout service. Used to observe the app's content height.
@@ -24,8 +22,8 @@ export default class ListContent extends Component.extend(Evented) {
    */
   @service('layout') layoutService;
 
-  init() {
-    super.init(...arguments);
+  constructor() {
+    super(...arguments);
 
     /**
      * Array of objects representing the columns to render
@@ -43,10 +41,10 @@ export default class ListContent extends Component.extend(Evented) {
   /**
    * Hook called when content element is inserted.
    *
-   * @method didInsertElement
+   * @method elementInserted
    */
-  didInsertElement() {
-    super.didInsertElement(...arguments);
+  @action
+  elementInserted() {
     schedule('afterRender', this, this.setupHeight);
   }
 
@@ -55,6 +53,7 @@ export default class ListContent extends Component.extend(Evented) {
    *
    * @method setupHeight
    */
+  @action
   setupHeight() {
     this.set('contentHeight', this.get('layoutService.contentHeight'));
     this.layoutService.on(
@@ -87,15 +86,15 @@ export default class ListContent extends Component.extend(Evented) {
   /**
    * Hook called before destruction. Clean up events listeners.
    *
-   * @method willDestroyElement
+   * @method willDestroy
    */
-  willDestroyElement() {
+  willDestroy() {
     this.layoutService.off(
       'content-height-update',
       this,
       this.updateContentHeight
     );
-    return super.willDestroyElement(...arguments);
+    return super.willDestroy(...arguments);
   }
 
   @computed('height')
