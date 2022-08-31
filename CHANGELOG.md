@@ -12,6 +12,19 @@
 
 
 
+
+## v4.7.0 (2022-08-31)
+
+#### :house: Internal
+* [#2124](https://github.com/emberjs/ember-inspector/pull/2124) Update to ember 4 ([@rwwagner90](https://github.com/rwwagner90))
+* [#2122](https://github.com/emberjs/ember-inspector/pull/2122) Convert some components to glimmer ([@rwwagner90](https://github.com/rwwagner90))
+* [#2123](https://github.com/emberjs/ember-inspector/pull/2123) Update ember cli ([@rwwagner90](https://github.com/rwwagner90))
+* [#2121](https://github.com/emberjs/ember-inspector/pull/2121) Remove unused dep `del` ([@rwwagner90](https://github.com/rwwagner90))
+
+#### Committers: 2
+- Robert Wagner ([@rwwagner90](https://github.com/rwwagner90))
+- [@patricklx](https://github.com/patricklx)
+
 ## v4.6.3 (2022-08-19)
 
 #### :bug: Bug Fix
