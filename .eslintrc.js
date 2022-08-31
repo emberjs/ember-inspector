@@ -35,7 +35,6 @@ module.exports = {
     'ember/classic-decorator-no-classic-methods': 'off',
     'ember/no-classic-classes': 'off',
     'ember/no-classic-components': 'off',
-    'ember/no-component-lifecycle-hooks': 'off',
     'ember/no-computed-properties-in-native-classes': 'off',
     'ember/no-get': 'off',
 

@@ -1,5 +1,6 @@
 /* eslint-disable ember/require-tagless-components */
 import Component from '@ember/component';
+import { action } from '@ember/object';
 import { debounce } from '@ember/runloop';
 import { htmlSafe } from '@ember/template';
 import { tracked } from '@glimmer/tracking';
@@ -49,8 +50,8 @@ export default class ScrollContainerComponent extends Component {
     return this.element?.querySelector('.scroll-target');
   }
 
-  didRender() {
-    super.didRender(...arguments);
+  @action
+  elementInserted() {
     let { index, lastIndex, currentItem, lastItem } = this;
 
     if (index !== lastIndex || currentItem !== lastItem) {
@@ -61,6 +62,7 @@ export default class ScrollContainerComponent extends Component {
     }
   }
 
+  @action
   scrollIntoViewIfNeeded() {
     let { element, scrollTarget } = this;
 
