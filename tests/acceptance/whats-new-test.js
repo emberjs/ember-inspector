@@ -10,12 +10,12 @@ function urlFor(ref) {
   )}/CHANGELOG.md`;
 }
 
-function generateContent(master = false) {
+function generateContent(main = false) {
   let content = [];
 
   content.push(`# Changelog`);
 
-  if (master) {
+  if (main) {
     content.push(`
 ## [Unreleased](https://github.com/emberjs/ember-inspector/tree/HEAD)
 
@@ -116,7 +116,7 @@ module('Whats New', function (outer) {
 
     test('Changelog is parsed and displayed', async function (assert) {
       this.server = new Pretender(function () {
-        this.get(urlFor('master'), () => [
+        this.get(urlFor('main'), () => [
           200,
           { 'Content-Type': 'text/plain' },
           generateContent(true),
@@ -138,7 +138,7 @@ module('Whats New', function (outer) {
 
     test('Error message is displayed on request failure', async function (assert) {
       this.server = new Pretender(function () {
-        this.get(urlFor('master'), () => [404, {}, '']);
+        this.get(urlFor('main'), () => [404, {}, '']);
       });
 
       await visit('/info/whats-new');
