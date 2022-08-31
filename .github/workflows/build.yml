@@ -3,7 +3,7 @@ on:
   pull_request: {}
   push:
     branches:
-      - master
+      - main
       - stable
       - ember-2.7.0-3.4.0
       - ember-0.0.0-2.7.0
