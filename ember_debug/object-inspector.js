@@ -797,7 +797,8 @@ function getClassName(object) {
     }
   } else if (
     'toString' in object &&
-    object.toString !== Object.prototype.toString
+    object.toString !== Object.prototype.toString &&
+    object.toString !== Function.prototype.toString
   ) {
     name = object.toString();
   }

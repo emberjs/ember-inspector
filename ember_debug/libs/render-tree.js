@@ -225,6 +225,16 @@ export default class RenderTree {
     this.retainedObjects = new Map();
   }
 
+  _createTemplateOnlyComponent(args) {
+    const obj = Object.create(null);
+    obj.args = args;
+    obj.constructor = {
+      name: 'TemplateOnlyComponent',
+      comment: 'fake constructor',
+    };
+    return obj;
+  }
+
   _serializeRenderNodes(nodes, parentNode = null) {
     return nodes.map((node) => this._serializeRenderNode(node, parentNode));
   }
@@ -242,7 +252,14 @@ export default class RenderTree {
       this.serialized[node.id] = serialized = {
         ...node,
         args: this._serializeArgs(node.args),
-        instance: this._serializeItem(node.instance),
+        instance: this._serializeItem(
+          node.instance ||
+            (node.type === 'component'
+              ? this._createTemplateOnlyComponent(
+                  this._serializeArgs(node.args).named
+                )
+              : undefined)
+        ),
         bounds: this._serializeBounds(node.bounds),
         children: this._serializeRenderNodes(node.children, node),
       };
