@@ -1839,7 +1839,7 @@
   resolved "https://registry.yarnpkg.com/@handlebars/parser/-/parser-2.0.0.tgz#5e8b7298f31ff8f7b260e6b7363c7e9ceed7d9c5"
   integrity sha512-EP9uEDZv/L5Qh9IWuMUGJRfwhXJ4h1dqKTT4/3+tY0eu7sPis7xh23j61SYUnNF4vqCQvvUXpDo9Bh/+q1zASA==
 
-"@html-next/vertical-collection@^3.0.0", "@html-next/vertical-collection@^3.1.0":
+"@html-next/vertical-collection@^3.0.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@html-next/vertical-collection/-/vertical-collection-3.1.0.tgz#3e271fe36bbf381b5e6f7702fde72f8c6880ae0d"
   integrity sha512-7mzdEhPA0SzIAqZA/HUwmAYVxzbsKp4l8vB7oBc6A71IGusrNZQUMLl09Vi9wgHahvhBV89LST474cu9k2Iw1Q==
@@ -1852,6 +1852,20 @@
     ember-cli-htmlbars "^5.0.0"
     ember-cli-version-checker "^3.1.3"
     ember-compatibility-helpers "^1.2.1"
+    ember-raf-scheduler "^0.3.0"
+
+"@html-next/vertical-collection@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@html-next/vertical-collection/-/vertical-collection-4.0.0.tgz#b3b3d52358e15e7ed46e028d12424dab994690ed"
+  integrity sha512-/c4y6ASmkMwyG+rcoXH3kx50LiK2MuPX0bsktd+j9LhOD6zkJyT4wJ73m20dCEvxjgwA/nCQ8hj3lApQlHG0CQ==
+  dependencies:
+    babel6-plugin-strip-class-callcheck "^6.0.0"
+    broccoli-funnel "^3.0.8"
+    broccoli-merge-trees "^4.2.0"
+    broccoli-rollup "^5.0.0"
+    ember-cli-babel "^7.12.0"
+    ember-cli-htmlbars "^6.0.0"
+    ember-cli-version-checker "^5.1.2"
     ember-raf-scheduler "^0.3.0"
 
 "@humanwhocodes/config-array@^0.10.4":
@@ -2243,6 +2257,13 @@
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@types/broccoli-plugin/-/broccoli-plugin-1.3.0.tgz#38f8462fecaebc4e09a32e4d4ed1b9808f75bbca"
   integrity sha512-SLk4/hFc2kGvgwNFrpn2O1juxFOllcHAywvlo7VwxfExLzoz1GGJ0oIZCwj5fwSpvHw4AWpZjJ1fUvb62PDayQ==
+
+"@types/broccoli-plugin@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/broccoli-plugin/-/broccoli-plugin-3.0.0.tgz#290fda2270c47a568edfd0cefab8bb840d8bb7b2"
+  integrity sha512-f+TcsARR2PovfFRKFdCX0kfH/QoM3ZVD2h1rl2mNvrKO0fq2uBNCBsTU3JanfU4COCt5cXpTfARyUsERlC8vIw==
+  dependencies:
+    broccoli-plugin "*"
 
 "@types/cacheable-request@^6.0.1", "@types/cacheable-request@^6.0.2":
   version "6.0.2"
@@ -4116,6 +4137,19 @@ broccoli-persistent-filter@^3.1.2:
     symlink-or-copy "^1.0.1"
     sync-disk-cache "^2.0.0"
 
+broccoli-plugin@*, broccoli-plugin@^4.0.0, broccoli-plugin@^4.0.2, broccoli-plugin@^4.0.3, broccoli-plugin@^4.0.5, broccoli-plugin@^4.0.7:
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/broccoli-plugin/-/broccoli-plugin-4.0.7.tgz#dd176a85efe915ed557d913744b181abe05047db"
+  integrity sha512-a4zUsWtA1uns1K7p9rExYVYG99rdKeGRymW0qOCNkvDPHQxVi3yVyJHhQbM3EZwdt2E0mnhr5e0c/bPpJ7p3Wg==
+  dependencies:
+    broccoli-node-api "^1.7.0"
+    broccoli-output-wrapper "^3.2.5"
+    fs-merger "^3.2.1"
+    promise-map-series "^0.3.0"
+    quick-temp "^0.1.8"
+    rimraf "^3.0.2"
+    symlink-or-copy "^1.3.1"
+
 broccoli-plugin@^1.0.0, broccoli-plugin@^1.1.0, broccoli-plugin@^1.2.0, broccoli-plugin@^1.2.1, broccoli-plugin@^1.3.0, broccoli-plugin@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/broccoli-plugin/-/broccoli-plugin-1.3.1.tgz#a26315732fb99ed2d9fb58f12a1e14e986b4fabd"
@@ -4149,19 +4183,6 @@ broccoli-plugin@^3.0.0:
     rimraf "^2.3.4"
     symlink-or-copy "^1.1.8"
 
-broccoli-plugin@^4.0.0, broccoli-plugin@^4.0.2, broccoli-plugin@^4.0.3, broccoli-plugin@^4.0.5, broccoli-plugin@^4.0.7:
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/broccoli-plugin/-/broccoli-plugin-4.0.7.tgz#dd176a85efe915ed557d913744b181abe05047db"
-  integrity sha512-a4zUsWtA1uns1K7p9rExYVYG99rdKeGRymW0qOCNkvDPHQxVi3yVyJHhQbM3EZwdt2E0mnhr5e0c/bPpJ7p3Wg==
-  dependencies:
-    broccoli-node-api "^1.7.0"
-    broccoli-output-wrapper "^3.2.5"
-    fs-merger "^3.2.1"
-    promise-map-series "^0.3.0"
-    quick-temp "^0.1.8"
-    rimraf "^3.0.2"
-    symlink-or-copy "^1.3.1"
-
 broccoli-rollup@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/broccoli-rollup/-/broccoli-rollup-2.1.1.tgz#0b77dc4b7560a53e998ea85f3b56772612d4988d"
@@ -4193,6 +4214,21 @@ broccoli-rollup@^4.1.1:
     rollup-pluginutils "^2.8.1"
     symlink-or-copy "^1.2.0"
     walk-sync "^1.1.3"
+
+broccoli-rollup@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/broccoli-rollup/-/broccoli-rollup-5.0.0.tgz#a77b53bcef1b70e988913fee82265c0a4ca530da"
+  integrity sha512-QdMuXHwsdz/LOS8zu4HP91Sfi4ofimrOXoYP/lrPdRh7lJYD87Lfq4WzzUhGHsxMfzANIEvl/7qVHKD3cFJ4tA==
+  dependencies:
+    "@types/broccoli-plugin" "^3.0.0"
+    broccoli-plugin "^4.0.7"
+    fs-tree-diff "^2.0.1"
+    heimdalljs "^0.2.6"
+    node-modules-path "^1.0.1"
+    rollup "^2.50.0"
+    rollup-pluginutils "^2.8.1"
+    symlink-or-copy "^1.2.0"
+    walk-sync "^2.2.0"
 
 broccoli-sass-source-maps@^4.0.0:
   version "4.0.0"
@@ -6046,7 +6082,7 @@ ember-cli-htmlbars@^5.0.0, ember-cli-htmlbars@^5.0.1, ember-cli-htmlbars@^5.3.1,
     strip-bom "^4.0.0"
     walk-sync "^2.2.0"
 
-ember-cli-htmlbars@^6.0.1, ember-cli-htmlbars@^6.1.0:
+ember-cli-htmlbars@^6.0.0, ember-cli-htmlbars@^6.0.1, ember-cli-htmlbars@^6.1.0:
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/ember-cli-htmlbars/-/ember-cli-htmlbars-6.1.1.tgz#f5b588572a5d18ad087560122b8dabc90145173d"
   integrity sha512-DKf2rjzIVw9zWCuFsBGJScrgf5Mz7dSg08Cq+FWFYIxnpssINUbNUoB0NHWnUJK4QqCvaExOyOmjm0kO455CPg==
@@ -13719,6 +13755,13 @@ rollup@^1.12.0:
     "@types/estree" "*"
     "@types/node" "*"
     acorn "^7.1.0"
+
+rollup@^2.50.0:
+  version "2.79.0"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.79.0.tgz#9177992c9f09eb58c5e56cbfa641607a12b57ce2"
+  integrity sha512-x4KsrCgwQ7ZJPcFA/SUu6QVcYlO7uRLfLAy0DSA4NS2eG8japdbpM50ToH7z4iObodRYOJ0soneF0iaQRJ6zhA==
+  optionalDependencies:
+    fsevents "~2.3.2"
 
 route-recognizer@^0.3.3:
   version "0.3.4"
