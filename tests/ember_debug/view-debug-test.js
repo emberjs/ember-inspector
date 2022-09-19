@@ -77,7 +77,7 @@ function matchTree(tree, matchers) {
   }
 }
 
-function match(actual, matcher) {
+function match(actual, matcher, message) {
   if (typeof matcher === 'function') {
     matcher(actual);
   } else if (Array.isArray(matcher)) {
@@ -88,9 +88,9 @@ function match(actual, matcher) {
   } else if (matcher instanceof RegExp) {
     QUnit.assert.ok(actual.match(matcher), `${actual} should match ${matcher}`);
   } else if (matcher !== null && typeof matcher === 'object') {
-    QUnit.assert.deepEqual(actual, matcher);
+    QUnit.assert.deepEqual(actual, matcher, message);
   } else {
-    QUnit.assert.strictEqual(actual, matcher);
+    QUnit.assert.strictEqual(actual, matcher, message);
   }
 }
 
@@ -160,6 +160,11 @@ function Args({ names = [], positionals = 0 } = {}) {
     );
 
     QUnit.assert.ok(
+      actual !== null && !actual.named.__ARGS__,
+      'serialized named args should not have __ARGS__'
+    );
+
+    QUnit.assert.ok(
       typeof actual.named === 'object' && actual !== null,
       'serialized named args should be an object'
     );
@@ -195,8 +200,8 @@ function RenderNode(
 ) {
   return (actual) => {
     match(actual.id, id);
-    match(actual.type, type);
-    match(actual.name, name);
+    match(actual.type, type, 'should have correct type');
+    match(actual.name, name, 'should have correct name');
     match(actual.args, args);
     match(actual.instance, instance);
     match(actual.template, template);
@@ -266,6 +271,7 @@ module('Ember Debug - View', function (hooks) {
   setupEmberDebugTest(hooks, {
     routes() {
       this.route('simple');
+      this.route('inputs');
       this.route('comments', { resetNamespace: true }, function () {});
       this.route('posts', { resetNamespace: true });
     },
@@ -294,6 +300,19 @@ module('Ember Debug - View', function (hooks) {
           return EmberObject.create({
             toString() {
               return 'Simple Model';
+            },
+          });
+        },
+      })
+    );
+
+    this.owner.register(
+      'route:inputs',
+      EmberRoute.extend({
+        model() {
+          return EmberObject.create({
+            toString() {
+              return 'Simple Inputs';
             },
           });
         },
@@ -375,6 +394,13 @@ module('Ember Debug - View', function (hooks) {
       })
     );
     this.owner.register(
+      'template:inputs',
+      hbs('Simple <Input @value="987" />', {
+        moduleName: 'my-app/templates/inputs.hbs',
+      })
+    );
+
+    this.owner.register(
       'template:comments/index',
       hbs('{{#each this.comments as |comment|}}{{comment}}{{/each}}', {
         moduleName: 'my-app/templates/comments/index.hbs',
@@ -397,6 +423,44 @@ module('Ember Debug - View', function (hooks) {
         { moduleName: 'my-app/templates/components/test-bar.hbs' }
       )
     );
+  });
+
+  test('Simple Inputs Tree', async function () {
+    await visit('/inputs');
+
+    let tree = await getRenderTree();
+
+    const inputChildren = [];
+    // https://github.com/emberjs/ember.js/commit/e6cf1766f8e02ddb24bf67833c148e7d7c93182f
+    if (!hasEmberVersion(3, 26)) {
+      inputChildren.push(
+        Component({
+          name: '-text-field',
+          template: /.*/,
+          args: Args({ names: ['target', 'value'], positionals: 0 }),
+        })
+      );
+    }
+
+    matchTree(tree, [
+      TopLevel(
+        Route(
+          { name: 'application' },
+          Route(
+            { name: 'inputs' },
+            Component(
+              {
+                name: 'input',
+                bounds: 'single',
+                args: Args({ names: ['value'], positionals: 0 }),
+                template: /.*/,
+              },
+              ...inputChildren
+            )
+          )
+        )
+      ),
+    ]);
   });
 
   test('Simple View Tree', async function () {
