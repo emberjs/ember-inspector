@@ -63,10 +63,16 @@ export default class ComponentTreeController extends Controller {
     return this._store[id];
   }
 
-  get currentItem() {
+  get currentPreviewItem() {
     if (this.previewing) {
       return this.findItem(this.previewing);
-    } else if (this.pinned) {
+    } else {
+      return undefined;
+    }
+  }
+
+  get currentItem() {
+    if (this.pinned) {
       return this.findItem(this.pinned);
     } else {
       return undefined;
