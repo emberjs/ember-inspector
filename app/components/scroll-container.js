@@ -66,17 +66,18 @@ export default class ScrollContainerComponent extends Component {
 
   @action
   scrollPreviewIntoViewIfNeeded() {
-    let { previewing } = this;
-    if (!previewing) return;
-    this.scrollIntoViewIfNeeded();
+    if (this.previewing) {
+      this.scrollIntoViewIfNeeded();
+    }
   }
 
   @action
   scrollIntoViewIfNeeded() {
     let { element, scrollTarget } = this;
 
-    if (this.lastCurrentItem?.id === this.currentItem?.id && !this.previewing)
+    if (this.lastCurrentItem?.id === this.currentItem?.id && !this.previewing) {
       return;
+    }  
     if (!this.previewing) {
       this.lastCurrentItem = this.currentItem;
     }
