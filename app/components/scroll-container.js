@@ -10,7 +10,9 @@ export default class ScrollContainerComponent extends Component {
 
   @tracked collection;
   @tracked currentItem;
+  @tracked previewing;
   @tracked itemHeight;
+  lastCurrentItem;
 
   lastIndex = -1;
   lastItem = undefined;
@@ -43,7 +45,7 @@ export default class ScrollContainerComponent extends Component {
   }
 
   get index() {
-    return this.collection.indexOf(this.currentItem);
+    return this.collection.indexOf(this.previewing || this.currentItem);
   }
 
   get scrollTarget() {
@@ -63,8 +65,23 @@ export default class ScrollContainerComponent extends Component {
   }
 
   @action
+  scrollPreviewIntoViewIfNeeded() {
+    if (this.previewing) {
+      this.scrollIntoViewIfNeeded();
+    }
+  }
+
+  @action
   scrollIntoViewIfNeeded() {
     let { element, scrollTarget } = this;
+
+    if (this.lastCurrentItem?.id === this.currentItem?.id && !this.previewing) {
+      return;
+    }
+
+    if (!this.previewing) {
+      this.lastCurrentItem = this.currentItem;
+    }
 
     if (needsScroll(element, scrollTarget)) {
       scrollTarget.scrollIntoView({
