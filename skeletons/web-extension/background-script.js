@@ -92,7 +92,7 @@
     if (isEmberApp && !contextMenuAdded) {
       chrome.contextMenus.create({
         id: 'inspect-ember-component',
-        title: 'Inspect Ember Component',
+        title: 'Select Ember Component',
         contexts: ['all'],
         onclick: function() {
           chrome.tabs.sendMessage(activeTabId, {
