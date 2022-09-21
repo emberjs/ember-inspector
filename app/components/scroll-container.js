@@ -78,7 +78,7 @@ export default class ScrollContainerComponent extends Component {
     if (this.lastCurrentItem?.id === this.currentItem?.id && !this.previewing) {
       return;
     }
-    
+
     if (!this.previewing) {
       this.lastCurrentItem = this.currentItem;
     }
