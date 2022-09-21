@@ -271,6 +271,10 @@ export default class RenderTree {
   _serializeDict(dict) {
     let result = Object.create(null);
 
+    if ('__ARGS__' in dict) {
+      dict = dict['__ARGS__'];
+    }
+
     Object.keys(dict).forEach((key) => {
       result[key] = this._serializeItem(dict[key]);
     });
