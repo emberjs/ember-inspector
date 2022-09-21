@@ -42,7 +42,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       sendVersionMiss();
       return;
     }
-    
+
     // prevent from injecting twice
     if (!window.EmberInspector) {
       // Make sure we only work for the supported version
@@ -53,7 +53,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
           }
         };
       });
-      
+
       let emberDebugMainModule = requireModule('ember-debug/main');
       if (!emberDebugMainModule['default']) {
         return;
@@ -131,7 +131,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     };
 
     // Newest Ember versions >= 1.10
-   
+
     const later = () => setTimeout(triggerOnce, 0);
     window.addEventListener('Ember', later, { once: true });
     // Oldest Ember versions or if this was injected after Ember has loaded.
@@ -157,7 +157,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
         let current = window.EmberInspector._application;
         let selected = getApplications().find(app => Ember.guidFor(app) === message.applicationId);
 
-        if (current !== selected && selected.__deprecatedInstance__) {
+        if (selected && current !== selected && selected.__deprecatedInstance__) {
           bootEmberInspector(selected.__deprecatedInstance__);
         }
       }

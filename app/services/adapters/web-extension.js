@@ -151,6 +151,24 @@ function loadEmberDebug() {
       window.addEventListener('Ember', resolve, { once: true });
     });
     waitForEmberLoad.then(() => 'replace-with-ember-debug');
+    const emberInspectorDebug =
+      '(' + loadEmberDebugInWebpage.toString() + ')()';
+    const injectIntoIframe = () => {
+      for (let i = 0; i < window.frames.length; i++) {
+        window.frames[i].postMessage(
+          {
+            type: 'inject-ember-debug',
+            value: emberInspectorDebug,
+          },
+          '*'
+        );
+      }
+    };
+    window.addEventListener('message', (event) => {
+      if (event.data?.type === 'ember-inspector-iframe-ready') {
+        injectIntoIframe();
+      }
+    });
   }
   return new Promise((resolve) => {
     if (!emberDebug) {

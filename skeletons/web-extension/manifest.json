@@ -25,14 +25,16 @@
     "matches": ["<all_urls>"],
     "js": ["boot.js"],
     "run_at": "document_start",
+    "match_about_blank": true,
     "all_frames": true
   },
-  {
-    "matches": ["<all_urls>"],
-    "js": ["content-script.js"],
-    "run_at": "document_end",
-    "all_frames": true
-  }],
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-script.js"],
+      "run_at": "document_end",
+      "match_about_blank": true,
+      "all_frames": true
+    }],
 
   "background": {
     "scripts": ["background-script.js"]
