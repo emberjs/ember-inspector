@@ -11,7 +11,16 @@ import { hbs } from 'ember-cli-htmlbars';
 import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 
-const templateOnlyComponent = require('ember').default._templateOnlyComponent;
+let templateOnlyComponent = null;
+try {
+  // eslint-disable-next-line no-undef,ember/new-module-imports
+  templateOnlyComponent = Ember._templateOnlyComponent;
+  // eslint-disable-next-line no-empty
+} catch (e) {}
+try {
+  templateOnlyComponent = require('ember').default._templateOnlyComponent;
+  // eslint-disable-next-line no-empty
+} catch (e) {}
 
 // TODO make the debounce configurable for tests
 async function timeout(ms) {
