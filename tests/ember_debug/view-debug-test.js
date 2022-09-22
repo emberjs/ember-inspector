@@ -11,6 +11,17 @@ import { hbs } from 'ember-cli-htmlbars';
 import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 
+let templateOnlyComponent = null;
+try {
+  // eslint-disable-next-line no-undef,ember/new-module-imports
+  templateOnlyComponent = Ember._templateOnlyComponent;
+  // eslint-disable-next-line no-empty
+} catch (e) {}
+try {
+  templateOnlyComponent = require('ember').default._templateOnlyComponent;
+  // eslint-disable-next-line no-empty
+} catch (e) {}
+
 // TODO make the debounce configurable for tests
 async function timeout(ms) {
   return new Promise((resolve) => {
@@ -367,12 +378,13 @@ module('Ember Debug - View', function (hooks) {
 
     this.owner.register(
       'component:test-bar',
-      EmberComponent.extend({
-        tagName: '',
-        toString() {
-          return 'App.TestBarComponent';
-        },
-      })
+      templateOnlyComponent?.() ||
+        EmberComponent.extend({
+          tagName: '',
+          toString() {
+            return 'App.TestBarComponent';
+          },
+        })
     );
 
     /*
@@ -609,7 +621,7 @@ module('Ember Debug - View', function (hooks) {
       .hasText('my-app/templates/components/test-bar.hbs');
     assert
       .dom('.ember-inspector-tooltip-detail-instance', tooltip)
-      .hasText('App.TestBarComponent');
+      .hasText(templateOnlyComponent ? '(unknown)' : 'App.TestBarComponent');
 
     actual = highlight.getBoundingClientRect();
     expected = bar.getBoundingClientRect();
