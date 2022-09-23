@@ -255,9 +255,7 @@ export default class RenderTree {
         instance: this._serializeItem(
           node.instance ||
             (node.type === 'component'
-              ? this._createTemplateOnlyComponent(
-                  this._serializeArgs(node.args).named
-                )
+              ? this._createTemplateOnlyComponent(node.args.named)
               : undefined)
         ),
         bounds: this._serializeBounds(node.bounds),
