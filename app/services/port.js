@@ -1,8 +1,10 @@
 import { set } from '@ember/object';
 import Evented from '@ember/object/evented';
 import Service, { inject as service } from '@ember/service';
+
 export default class PortService extends Service.extend(Evented) {
   @service adapter;
+  @service router;
 
   applicationId = undefined;
   applicationName = undefined;
@@ -52,7 +54,12 @@ export default class PortService extends Service.extend(Evented) {
       applicationId !== this.applicationId
     ) {
       let applicationName = this.detectedApplications[applicationId];
+      const currentApplication = this.applicationId;
       this.setProperties({ applicationId, applicationName });
+      if (currentApplication) {
+        // this is only required when switching apps
+        this.router.transitionTo('app-detected');
+      }
       this.send('app-selected', { applicationId, applicationName });
     }
   }

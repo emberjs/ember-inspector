@@ -52,7 +52,20 @@ module('App Picker', function (hooks) {
   });
 
   test('Both apps show up in picker', async function (assert) {
-    // TODO: shouldn't this be called again when the app changes?
+    respondWith('view:getTree', {
+      type: 'view:renderTree',
+      applicationId: 'app-one',
+      applicationName: 'First App',
+      tree: [],
+    });
+
+    respondWith('view:getTree', {
+      type: 'view:renderTree',
+      applicationId: 'app-two',
+      applicationName: 'Second App',
+      tree: [],
+    });
+
     respondWith('view:getTree', {
       type: 'view:renderTree',
       applicationId: 'app-one',
@@ -79,6 +92,7 @@ module('App Picker', function (hooks) {
     assert.notOk(options[1].selected, 'Second App is not selected');
 
     await fillIn('.app-picker select', 'app-two');
+    await visit('/component-tree');
 
     assert.strictEqual(options.length, 2);
     assert.dom(options[0]).hasText('First App');
@@ -93,6 +107,7 @@ module('App Picker', function (hooks) {
     assert.ok(options[1].selected, 'Second App is selected');
 
     await fillIn('.app-picker select', 'app-one');
+    await visit('/component-tree');
 
     assert.strictEqual(options.length, 2);
     assert.dom(options[0]).hasText('First App');

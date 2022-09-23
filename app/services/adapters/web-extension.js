@@ -164,6 +164,7 @@ function loadEmberDebug() {
         );
       }
     };
+    injectIntoIframe();
     window.addEventListener('message', (event) => {
       if (event.data?.type === 'ember-inspector-iframe-ready') {
         injectIntoIframe();
