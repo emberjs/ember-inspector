@@ -60,6 +60,16 @@ async function captureMessage(type, callback) {
   }
 }
 
+async function digDeeper(objectId, property) {
+  return await captureMessage('objectInspector:updateObject', async () => {
+    EmberDebug.port.trigger('objectInspector:digDeeper', {
+      objectId,
+      property,
+    });
+    await timeout(300);
+  });
+}
+
 async function getRenderTree() {
   let message = await captureMessage('view:renderTree', async () => {
     EmberDebug.port.trigger('view:getTree', {});
@@ -401,7 +411,7 @@ module('Ember Debug - View', function (hooks) {
     );
     this.owner.register(
       'template:simple',
-      hbs('Simple {{test-foo}} {{test-bar}}', {
+      hbs('Simple {{test-foo}} {{test-bar value=(hash x=123)}}', {
         moduleName: 'my-app/templates/simple.hbs',
       })
     );
@@ -431,7 +441,7 @@ module('Ember Debug - View', function (hooks) {
     this.owner.register(
       'template:components/test-bar',
       hbs(
-        '<!-- before --><div class="another-component"><span>test</span> <span class="bar-inner">bar</span></div><!-- after -->',
+        '<!-- before --><div class="another-component">{{@value}}<span>test</span> <span class="bar-inner">bar</span></div><!-- after -->',
         { moduleName: 'my-app/templates/components/test-bar.hbs' }
       )
     );
@@ -480,6 +490,8 @@ module('Ember Debug - View', function (hooks) {
 
     let tree = await getRenderTree();
 
+    let argsTestPromise;
+
     matchTree(tree, [
       TopLevel(
         Route(
@@ -487,11 +499,31 @@ module('Ember Debug - View', function (hooks) {
           Route(
             { name: 'simple' },
             Component({ name: 'test-foo', bounds: 'single' }),
-            Component({ name: 'test-bar', bounds: 'range' })
+            Component({
+              name: 'test-bar',
+              bounds: 'range',
+              args: Args({ names: ['value'], positionals: 0 }),
+              instance: (actual) => {
+                async function testArgsValue() {
+                  const value = await digDeeper(actual.id, 'args');
+                  QUnit.assert.equal(
+                    value.details[0].properties[0].value.inspect,
+                    '{ x: 123 }',
+                    'value inspect should be correct'
+                  );
+                }
+                argsTestPromise = testArgsValue();
+              },
+            })
           )
         )
       ),
     ]);
+    QUnit.assert.ok(
+      argsTestPromise instanceof Promise,
+      'args should be tested'
+    );
+    await argsTestPromise;
   });
 
   test("Supports applications that don't have the ember-application CSS class", async function (assert) {
@@ -527,7 +559,11 @@ module('Ember Debug - View', function (hooks) {
           Route(
             { name: 'simple' },
             Component({ name: 'test-foo', bounds: 'single' }),
-            Component({ name: 'test-bar', bounds: 'range' })
+            Component({
+              name: 'test-bar',
+              bounds: 'range',
+              args: Args({ names: ['value'], positionals: 0 }),
+            })
           )
         )
       ),
