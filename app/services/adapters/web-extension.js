@@ -59,7 +59,6 @@ export default class WebExtension extends BasicAdapter {
           throw error;
         }
       });
-      this.onResourceAdded();
     });
   }
 
@@ -73,8 +72,6 @@ export default class WebExtension extends BasicAdapter {
     }
     document.body.classList.add(theme);
   }
-
-  onResourceAdded /*callback*/() {}
 
   willReload() {
     this._injectDebugger();
