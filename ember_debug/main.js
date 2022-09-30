@@ -15,7 +15,10 @@ import Ember from 'ember-debug/utils/ember';
 import Application from 'ember-debug/utils/ember/application';
 import EmberObject, { computed } from 'ember-debug/utils/ember/object';
 import { or } from 'ember-debug/utils/ember/object/computed';
-import { guidFor } from 'ember-debug/utils/ember/object/internals';
+import {
+  guidFor,
+  setGuidPrefix,
+} from 'ember-debug/utils/ember/object/internals';
 import { run } from 'ember-debug/utils/ember/runloop';
 
 const { Namespace } = Ember;
@@ -53,9 +56,9 @@ const EmberDebug = EmberObject.extend({
    */
   applicationId: computed('_application', 'isTesting', 'owner', function () {
     if (!this.isTesting) {
-      return guidFor(this._application);
+      return guidFor(this._application, 'ember');
     }
-    return guidFor(this.owner);
+    return guidFor(this.owner, 'ember');
   }),
 
   // Using object shorthand syntax here is somehow having strange side effects.
@@ -115,6 +118,7 @@ const EmberDebug = EmberObject.extend({
   },
 
   reset($keepAdapter) {
+    setGuidPrefix(Math.random().toString());
     if (!this.isTesting && !this.owner) {
       this.set('owner', getOwner(this._application));
     }
