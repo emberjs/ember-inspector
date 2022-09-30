@@ -21,7 +21,7 @@ export default EmberObject.extend(Evented, {
    * @type {String}
    */
   uniqueId: computed('namespace._application', function () {
-    return guidFor(this.get('namespace._application'));
+    return guidFor(this.get('namespace._application'), 'ember');
   }),
 
   init() {

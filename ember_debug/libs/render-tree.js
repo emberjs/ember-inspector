@@ -1,4 +1,5 @@
 import captureRenderTree from './capture-render-tree';
+import { guidFor } from 'ember-debug/utils/ember/object/internals';
 
 export default class RenderTree {
   /**
@@ -15,6 +16,10 @@ export default class RenderTree {
     this.releaseObject = releaseObject;
     this.inspectNode = inspectNode;
     this._reset();
+    // need to have different ids per application / iframe
+    // to distinguish the render nodes it in the inspector
+    // between apps
+    this.renderNodeIdPrefix = guidFor(this);
   }
 
   /**
@@ -240,6 +245,9 @@ export default class RenderTree {
   }
 
   _serializeRenderNode(node, parentNode = null) {
+    if (!node.id.startsWith(this.renderNodeIdPrefix)) {
+      node.id = `${this.renderNodeIdPrefix}-${node.id}`;
+    }
     let serialized = this.serialized[node.id];
 
     if (serialized === undefined) {
