@@ -268,6 +268,11 @@ export default DebugPort.extend({
   currentObject: null,
 
   updateCurrentObject() {
+    Object.values(this.sentObjects).forEach((obj) => {
+      if (obj instanceof CoreObject && obj.isDestroyed) {
+        this.dropObject(guidFor(obj));
+      }
+    });
     if (this.currentObject) {
       const { object, mixinDetails, objectId } = this.currentObject;
       mixinDetails.forEach((mixin, mixinIndex) => {
@@ -544,18 +549,6 @@ export default DebugPort.extend({
 
     this.sentObjects[guid] = object;
 
-    if (meta._debugReferences === 1 && object.reopen) {
-      // drop object on destruction
-      let _oldWillDestroy = (object._oldWillDestroy = object.willDestroy);
-      let self = this;
-      object.reopen({
-        willDestroy() {
-          self.dropObject(guid);
-          return _oldWillDestroy.apply(this, arguments);
-        },
-      });
-    }
-
     return guid;
   },
 
@@ -575,16 +568,10 @@ export default DebugPort.extend({
   },
 
   dropObject(objectId) {
-    let object = this.sentObjects[objectId];
     if (this.parentObjects[objectId]) {
       this.currentObject = this.parentObjects[objectId];
     }
     delete this.parentObjects[objectId];
-
-    if (object && object.reopen) {
-      object.reopen({ willDestroy: object._oldWillDestroy });
-      delete object._oldWillDestroy;
-    }
 
     delete this.sentObjects[objectId];
     delete this.objectPropertyValues[objectId];
@@ -1021,7 +1008,6 @@ function isInternalProperty(property) {
       '_states',
       '_target',
       '_currentState',
-      '_oldWillDestroy',
       '_super',
       '_debugContainerKey',
       '_transitionTo',
