@@ -130,7 +130,7 @@ export default class RenderTree {
     if (isSingleNode(bounds) && firstNode.getBoundingClientRect) {
       rect = firstNode.getBoundingClientRect();
     } else {
-      rect = this.getRange(id).getBoundingClientRect();
+      rect = this.getRange(id)?.getBoundingClientRect();
     }
 
     if (rect && !isEmptyRect(rect)) {
