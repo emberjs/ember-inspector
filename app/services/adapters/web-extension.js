@@ -40,9 +40,6 @@ export default class WebExtension extends BasicAdapter {
     chromePort.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
 
     chromePort.onMessage.addListener((message) => {
-      if (typeof message.type === 'string' && message.type === 'iframes') {
-        this.sendIframes(message.urls);
-      }
       this._messageReceived(message);
     });
   }
@@ -62,7 +59,6 @@ export default class WebExtension extends BasicAdapter {
           throw error;
         }
       });
-      this.onResourceAdded();
     });
   }
 
@@ -76,8 +72,6 @@ export default class WebExtension extends BasicAdapter {
     }
     document.body.classList.add(theme);
   }
-
-  onResourceAdded /*callback*/() {}
 
   willReload() {
     this._injectDebugger();
@@ -116,14 +110,6 @@ export default class WebExtension extends BasicAdapter {
   reloadTab() {
     loadEmberDebug().then((emberDebug) => {
       chrome.devtools.inspectedWindow.reload({ injectedScript: emberDebug });
-    });
-  }
-
-  sendIframes(urls) {
-    loadEmberDebug().then((emberDebug) => {
-      urls.forEach((url) => {
-        chrome.devtools.inspectedWindow.eval(emberDebug, { frameURL: url });
-      });
     });
   }
 }
