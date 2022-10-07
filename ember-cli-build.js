@@ -51,6 +51,11 @@ module.exports = function (defaults) {
     options.vendorFiles = { 'jquery.js': null };
   }
 
+  if (process.env.EMBER_ENV !== 'test') {
+    // https://github.com/ef4/ember-auto-import/issues/540
+    options.autoImport.publicAssetURL = 'assets/';
+  }
+
   // When running ember-try on Ember < 3.13, colocation support is
   // disabled in ember-cli-htmlbars and causes a build error. When
   // running ember-try, we actually don't care about the "app" side
