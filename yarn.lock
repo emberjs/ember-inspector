@@ -4821,10 +4821,10 @@ chrome-trace-event@^1.0.2:
   resolved "https://registry.yarnpkg.com/chrome-trace-event/-/chrome-trace-event-1.0.3.tgz#1015eced4741e15d06664a957dbbf50d041e26ac"
   integrity sha512-p3KULyQg4S7NIHixdwbGX+nFHkoBiA4YQmyWtjb8XngSKV124nJmRysgAeujbUVb15vh+RvFUfCPqU7rXk+hZg==
 
-ci-info@^3.2.0, ci-info@^3.3.1, ci-info@^3.3.2:
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-3.3.2.tgz#6d2967ffa407466481c6c90b6e16b3098f080128"
-  integrity sha512-xmDt/QIAdeZ9+nfdPsaBCpMvHNLFiLdjj59qjqn+6iPe6YmHGQ35sBnQ8uslRBXFmXkiZQOJRjvQeoGppoTjjg==
+ci-info@^3.2.0, ci-info@^3.3.1, ci-info@^3.4.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-3.5.0.tgz#bfac2a29263de4c829d806b1ab478e35091e171f"
+  integrity sha512-yH4RezKOGlOhxkmhbeNuC4eYZKAUsEaGtBuBzDDP1eFUKiccDWzBABxBfOx31IDwDIXMTxWuwAxUGModvkbuVw==
 
 class-utils@^0.3.5:
   version "0.3.6"
@@ -6790,14 +6790,14 @@ ember-template-imports@^3.1.1:
     validate-peer-dependencies "^1.1.0"
 
 ember-template-lint@^4.10.1:
-  version "4.14.0"
-  resolved "https://registry.yarnpkg.com/ember-template-lint/-/ember-template-lint-4.14.0.tgz#7807ad19fc88c99de451a639ded2e3bbd14baa74"
-  integrity sha512-kr7jvAx74y4CZxMJ+B8AYszYZjdyE0opSPo+6vLW43jKyq2oowjqPDEBd6upsUALvYtNAPn8b6D+Vbiy7UP+Kg==
+  version "4.15.0"
+  resolved "https://registry.yarnpkg.com/ember-template-lint/-/ember-template-lint-4.15.0.tgz#0316240076e3e92349dd083ef58ae2fae91f21d7"
+  integrity sha512-+43ka0qcVzA7KUbUby7VJHm/KoKkSQCbEYWdjiKlDaYNEYxjNMOFdPo3AcGJ50RxTx55A74p0RDYdTTxJV7u+A==
   dependencies:
     "@lint-todo/utils" "^13.0.3"
     aria-query "^5.0.2"
     chalk "^4.1.2"
-    ci-info "^3.3.2"
+    ci-info "^3.4.0"
     date-fns "^2.29.2"
     ember-template-imports "^3.1.1"
     ember-template-recast "^6.1.3"
