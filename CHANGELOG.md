@@ -1,5 +1,33 @@
 # Changelog
 
+
+## v4.8.0 (2022-10-12)
+
+#### :rocket: Enhancement
+* [#2161](https://github.com/emberjs/ember-inspector/pull/2161) fix app switching ([@patricklx](https://github.com/patricklx))
+* [#2147](https://github.com/emberjs/ember-inspector/pull/2147) show args for template only components ([@patricklx](https://github.com/patricklx))
+* [#2158](https://github.com/emberjs/ember-inspector/pull/2158) scroll into view while previewing or selecting from page ([@patricklx](https://github.com/patricklx))
+* [#2156](https://github.com/emberjs/ember-inspector/pull/2156) correctly serialize args for internal components like Input ([@patricklx](https://github.com/patricklx))
+
+#### :bug: Bug Fix
+* [#2186](https://github.com/emberjs/ember-inspector/pull/2186) [bug] data tab does not load if there are no models ([@patricklx](https://github.com/patricklx))
+* [#2178](https://github.com/emberjs/ember-inspector/pull/2178) fix some pages not loading ([@patricklx](https://github.com/patricklx))
+* [#2177](https://github.com/emberjs/ember-inspector/pull/2177) getRange might return null ([@patricklx](https://github.com/patricklx))
+* [#2176](https://github.com/emberjs/ember-inspector/pull/2176) iterate check over retained objects if they are destroyed ([@patricklx](https://github.com/patricklx))
+* [#2169](https://github.com/emberjs/ember-inspector/pull/2169) fix some more app switching issues ([@patricklx](https://github.com/patricklx))
+* [#2162](https://github.com/emberjs/ember-inspector/pull/2162) fix args of template only components ([@patricklx](https://github.com/patricklx))
+* [#2157](https://github.com/emberjs/ember-inspector/pull/2157) fix iframes without src, e.g. twiddle ([@patricklx](https://github.com/patricklx))
+
+#### :house: Internal
+* [#2168](https://github.com/emberjs/ember-inspector/pull/2168) cleanup iframes & firefox skeleton ([@patricklx](https://github.com/patricklx))
+* [#2133](https://github.com/emberjs/ember-inspector/pull/2133) Update all master refs to main ([@rwwagner90](https://github.com/rwwagner90))
+* [#2126](https://github.com/emberjs/ember-inspector/pull/2126) Refactor List to glimmer, remove lifecycle hooks ([@rwwagner90](https://github.com/rwwagner90))
+* [#2128](https://github.com/emberjs/ember-inspector/pull/2128) Target Ember 3.16+ for main branch ([@rwwagner90](https://github.com/rwwagner90))
+
+#### Committers: 2
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+- Robert Wagner ([@rwwagner90](https://github.com/rwwagner90))
+
 ## v4.7.1 (2022-08-31)
 
 #### :house: Internal
