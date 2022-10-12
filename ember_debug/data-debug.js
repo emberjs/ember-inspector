@@ -136,6 +136,7 @@ export default DebugPort.extend({
     },
 
     getModelTypes() {
+      this.modelTypesAdded([]);
       this.releaseTypes();
       this.releaseTypesMethod = this.adapter.watchModelTypes(
         (types) => {
@@ -161,6 +162,7 @@ export default DebugPort.extend({
         typeOrName = type.name;
       }
 
+      this.recordsAdded([]);
       let releaseMethod = this.adapter.watchRecords(
         typeOrName,
         (recordsReceived) => {
