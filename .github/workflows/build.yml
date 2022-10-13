@@ -20,7 +20,7 @@ jobs:
       CI: 'true'
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
       # Code Climate expects these variables to be set
       - name: Set up commit metadata
         if: github.event_name == 'push'
@@ -94,7 +94,7 @@ jobs:
   
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
       - name: Set up Volta
         uses: volta-cli/action@v1
       - name: Install dependencies (yarn)
@@ -118,7 +118,7 @@ jobs:
       CI: 'true'
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
       - name: Set up Volta
         uses: volta-cli/action@v1
       - name: Install dependencies (yarn)
