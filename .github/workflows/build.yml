@@ -39,7 +39,7 @@ jobs:
           echo "GIT_COMMIT_SHA=${GIT_COMMIT_SHA}" >> $GITHUB_ENV
           echo "GIT_BRANCH=${GIT_BRANCH}" >> $GITHUB_ENV
       - name: Set up Volta
-        uses: volta-cli/action@v1
+        uses: volta-cli/action@v4
       - name: Install dependencies (yarn)
         run: yarn install
       - name: Lint (hbs)
@@ -96,7 +96,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Set up Volta
-        uses: volta-cli/action@v1
+        uses: volta-cli/action@v4
       - name: Install dependencies (yarn)
         run: yarn install
       - name: Set NO_EXTEND_PROTOTYPES
@@ -120,7 +120,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Set up Volta
-        uses: volta-cli/action@v1
+        uses: volta-cli/action@v4
       - name: Install dependencies (yarn)
         run: yarn install
       - name: Download panes
@@ -258,7 +258,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Volta
-        uses: volta-cli/action@v1
+        uses: volta-cli/action@v4
         with:
           node-version: 14.x
       - name: Install dependencies (chrome-webstore-upload-cli)
@@ -291,7 +291,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Volta
-        uses: volta-cli/action@v1
+        uses: volta-cli/action@v4
         with:
           node-version: 14.x
       - name: Install dependencies (web-ext)
@@ -323,7 +323,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Volta
-        uses: volta-cli/action@v1
+        uses: volta-cli/action@v4
       - name: Set up NPM
         run: |
           echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}"> ~/.npmrc
