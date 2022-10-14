@@ -86,15 +86,25 @@
   let injected = false;
 
   window.addEventListener('message', (event) => {
-    if (event.data?.type === 'inject-ember-debug' && !injected) {
-      // cannot use eval here, as the context is limited to the content script-
-      const elem = document.createElement('script') ;
-      elem.textContent = event.data.value;
-      document.head.appendChild(elem) ;
-      injected = true;
+    try {
+      const data = JSON.parse(event.data);
+      if (data?.type === 'inject-ember-debug') {
+        if (!injected) {
+          // cannot use eval here, as the context is limited to the content script-
+          const elem = document.createElement('script') ;
+          elem.textContent = data.value;
+          document.head.appendChild(elem) ;
+          injected = true;
+        }
+        event.stopImmediatePropagation();
+      }
+    } catch {
+      // noop
     }
+  }, {
+    capture: true
   });
-  window.parent.postMessage({
-    type: 'ember-inspector-iframe-ready'
-  }, '*');
+  if (window.top !== window) {
+    window.parent.postMessage('"ember-inspector-iframe-ready"', '*');
+  }
 })();

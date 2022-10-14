@@ -139,23 +139,29 @@ function loadEmberDebug() {
     waitForEmberLoad.then(() => 'replace-with-ember-debug');
     const emberInspectorDebug =
       '(' + loadEmberDebugInWebpage.toString() + ')()';
-    const injectIntoIframe = () => {
-      for (let i = 0; i < window.frames.length; i++) {
-        window.frames[i].postMessage(
-          {
+    const injectIntoIframe = (iframe) => {
+      const frames = iframe ? [iframe] : window.frames;
+      for (let i = 0; i < frames.length; i++) {
+        frames[i].postMessage(
+          JSON.stringify({
             type: 'inject-ember-debug',
             value: emberInspectorDebug,
-          },
+          }),
           '*'
         );
       }
     };
     injectIntoIframe();
-    window.addEventListener('message', (event) => {
-      if (event.data?.type === 'ember-inspector-iframe-ready') {
-        injectIntoIframe();
-      }
-    });
+    window.addEventListener(
+      'message',
+      (event) => {
+        if (event.data === '"ember-inspector-iframe-ready"') {
+          injectIntoIframe(event.source);
+          event.stopImmediatePropagation();
+        }
+      },
+      { capture: true }
+    );
   }
   return new Promise((resolve) => {
     if (!emberDebug) {
