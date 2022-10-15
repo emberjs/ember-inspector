@@ -235,6 +235,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: bookmarklet
+          path: bookmarklet
       - name: Upload to S3
         uses: jakejarvis/s3-sync-action@master
         with:
@@ -267,6 +268,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: chrome
+          path: chrome
       - name: Set Environment Variables
         run: |
           if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
@@ -334,6 +336,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: npm
+          path: npm
       - name: Publish to npm
         working-directory: npm
         run: |
