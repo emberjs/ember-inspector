@@ -136,7 +136,7 @@
       } else if (message.from === 'devtools') {
         // all other messages from EmberInspector are forwarded to the content-script
         // https://developer.chrome.com/extensions/tabs#method-sendMessage
-        chrome.tabs.sendMessage(appId, message);
+        chrome.tabs.sendMessage(message.tabId || appId, message, { frameId: message.frameId });
       }
     });
   });

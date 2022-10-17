@@ -93,9 +93,9 @@ export default class Basic extends Service {
     this._messageCallbacks.push(callback);
   }
 
-  _messageReceived(message) {
+  _messageReceived(...args) {
     this._messageCallbacks.forEach((callback) => {
-      callback(message);
+      callback(...args);
     });
   }
 
