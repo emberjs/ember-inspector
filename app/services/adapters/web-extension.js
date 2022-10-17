@@ -19,8 +19,8 @@ export default class WebExtension extends BasicAdapter {
   init() {
     this._connect();
     this._handleReload();
-    this._injectDebugger();
     this._setThemeColors();
+    this._sendEmberDebug();
 
     return super.init(...arguments);
   }
@@ -28,6 +28,29 @@ export default class WebExtension extends BasicAdapter {
   sendMessage(options) {
     options = options || {};
     this._chromePort.postMessage(options);
+  }
+
+  _sendEmberDebug() {
+    loadEmberDebug().then((emberDebug) => {
+      // first send to all frames in current tab
+      this.sendMessage({
+        from: 'devtools',
+        tabId: chrome.devtools.inspectedWindow.tabId,
+        type: 'inject-ember-debug',
+        value: emberDebug,
+      });
+      this.onMessageReceived((message, sender) => {
+        if (message === 'ember-content-script-ready') {
+          this.sendMessage({
+            from: 'devtools',
+            type: 'inject-ember-debug',
+            value: emberDebug,
+            tabId: chrome.devtools.inspectedWindow.tabId,
+            frameId: sender.frameId,
+          });
+        }
+      });
+    });
   }
 
   @computed
@@ -39,8 +62,8 @@ export default class WebExtension extends BasicAdapter {
     let chromePort = this._chromePort;
     chromePort.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
 
-    chromePort.onMessage.addListener((message) => {
-      this._messageReceived(message);
+    chromePort.onMessage.addListener((...args) => {
+      this._messageReceived(...args);
     });
   }
 
@@ -137,31 +160,6 @@ function loadEmberDebug() {
       window.addEventListener('Ember', resolve, { once: true });
     });
     waitForEmberLoad.then(() => 'replace-with-ember-debug');
-    const emberInspectorDebug =
-      '(' + loadEmberDebugInWebpage.toString() + ')()';
-    const injectIntoIframe = (iframe) => {
-      const frames = iframe ? [iframe] : window.frames;
-      for (let i = 0; i < frames.length; i++) {
-        frames[i].postMessage(
-          JSON.stringify({
-            type: 'inject-ember-debug',
-            value: emberInspectorDebug,
-          }),
-          '*'
-        );
-      }
-    };
-    injectIntoIframe();
-    window.addEventListener(
-      'message',
-      (event) => {
-        if (event.data === '"ember-inspector-iframe-ready"') {
-          injectIntoIframe(event.source);
-          event.stopImmediatePropagation();
-        }
-      },
-      { capture: true }
-    );
   }
   return new Promise((resolve) => {
     if (!emberDebug) {

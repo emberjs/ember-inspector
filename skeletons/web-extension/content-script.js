@@ -85,26 +85,16 @@
 
   let injected = false;
 
-  window.addEventListener('message', (event) => {
-    try {
-      const data = JSON.parse(event.data);
-      if (data?.type === 'inject-ember-debug') {
-        if (!injected) {
-          // cannot use eval here, as the context is limited to the content script-
-          const elem = document.createElement('script') ;
-          elem.textContent = data.value;
-          document.head.appendChild(elem) ;
-          injected = true;
-        }
-        event.stopImmediatePropagation();
+  chrome.runtime.onMessage.addListener((message) => {
+    if (message?.type === 'inject-ember-debug') {
+      if (!injected) {
+        // cannot use eval here, as the context is limited to the content script-
+        const elem = document.createElement('script') ;
+        elem.textContent = message.value;
+        document.head.appendChild(elem) ;
+        injected = true;
       }
-    } catch {
-      // noop
     }
-  }, {
-    capture: true
   });
-  if (window.top !== window) {
-    window.parent.postMessage('"ember-inspector-iframe-ready"', '*');
-  }
+  chrome.runtime.sendMessage('ember-content-script-ready');
 })();
