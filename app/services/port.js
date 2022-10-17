@@ -72,4 +72,12 @@ export default class PortService extends Service.extend(Evented) {
     message.applicationName = this.applicationName;
     this.adapter.sendMessage(message);
   }
+
+  off(...args) {
+    try {
+      super.off(...args);
+    } catch (e) {
+      console.error(e);
+    }
+  }
 }
