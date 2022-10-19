@@ -54,6 +54,35 @@ try {
   tagValue = GlimmerValidator.value || GlimmerValidator.valueForTag;
   tagValidate = GlimmerValidator.validate || GlimmerValidator.validateTag;
   track = GlimmerValidator.track;
+
+  // patch tagFor to add debug info, older versions already have _propertyKey
+  const tagFor = GlimmerValidator.tagFor;
+  GlimmerValidator.tagFor = function (...args) {
+    const tag = tagFor.call(this, ...args);
+    const [obj, key] = args;
+    if (
+      (!tag._propertyKey || !tag._object) &&
+      typeof obj === 'object' &&
+      typeof key === 'string'
+    ) {
+      tag._propertyKey = key;
+      tag._object = obj;
+    }
+    return tag;
+  };
+  const trackedData = GlimmerValidator.trackedData;
+  GlimmerValidator.trackedData = function (...args) {
+    const r = trackedData.call(this, ...args);
+    if (r.getter && args.length === 2) {
+      const [key] = args;
+      const getter = r.getter;
+      r.getter = function (self) {
+        GlimmerValidator.tagFor(self, key);
+        return getter.call(this, self);
+      };
+    }
+    return r;
+  };
 } catch (e) {
   try {
     // Fallback to the previous implementation
@@ -228,14 +257,22 @@ function getTagTrackedProps(tag, ownTag, level = 0) {
   if (!tag || level > 1) {
     return props;
   }
-  if (tag.subtag) {
-    if (tag.subtag._propertyKey) props.push(tag.subtag._propertyKey);
+  const subtags = tag.subtags || (Array.isArray(tag.subtag) ? tag.subtag : []);
+  if (tag.subtag && !Array.isArray(tag.subtag)) {
+    if (tag.subtag._propertyKey)
+      props.push(
+        (tag.subtag._object ? getClassName(tag.subtag._object) + '.' : '') +
+          tag.subtag._propertyKey
+      );
     props.push(...getTagTrackedProps(tag.subtag, ownTag, level + 1));
   }
-  if (tag.subtags) {
-    tag.subtags.forEach((t) => {
+  if (subtags) {
+    subtags.forEach((t) => {
       if (t === ownTag) return;
-      if (t._propertyKey) props.push(t._propertyKey);
+      if (t._propertyKey)
+        props.push(
+          (t._object ? getClassName(t._object) + '.' : '') + t._propertyKey
+        );
       props.push(...getTagTrackedProps(t, ownTag, level + 1));
     });
   }
@@ -252,7 +289,28 @@ function getTrackedDependencies(object, property, tag) {
   }
   if (HAS_GLIMMER_TRACKING) {
     const ownTag = tagForProperty(object, property);
-    dependentKeys.push(...getTagTrackedProps(tag, ownTag));
+    const props = getTagTrackedProps(tag, ownTag);
+    const mapping = {};
+    props.forEach((p) => {
+      const [objName, ...props] = p.split('.');
+      mapping[objName] = mapping[objName] || new Set();
+      props.forEach((p) => mapping[objName].add(p));
+    });
+
+    Object.entries(mapping).forEach(([objName, props]) => {
+      if (props.size > 1) {
+        dependentKeys.push(objName);
+        props.forEach((p) => {
+          dependentKeys.push('  •  --  ' + p);
+        });
+      }
+      if (props.size === 1) {
+        dependentKeys.push(objName + '.' + [...props][0]);
+      }
+      if (props.size === 0) {
+        dependentKeys.push(objName);
+      }
+    });
   }
 
   return [...new Set([...dependentKeys])];
@@ -769,6 +827,15 @@ function getClassName(object) {
     (object.constructor &&
       (emberNames.get(object.constructor) || object.constructor.name)) ||
     '';
+
+  // check if object is a primitive value
+  if (object !== Object(object)) {
+    return typeof object;
+  }
+
+  if (Array.isArray(object)) {
+    return 'array';
+  }
 
   if (object.constructor && object.constructor.prototype === object) {
     let { constructor } = object;

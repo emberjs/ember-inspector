@@ -176,17 +176,30 @@ module('Ember Debug - Object Inspector', function (hooks) {
     }
     let date = new Date();
 
+    class ObjectWithTracked {
+      @tracked item1 = 'item1';
+      @tracked item2 = 'item2';
+    }
+
     class Parent {
       // eslint-disable-next-line constructor-super
       constructor(param) {
         Object.assign(this, param);
       }
 
+      @tracked trackedProperty = 'tracked';
+      objectWithTracked = new ObjectWithTracked();
+
       id = null;
       name = 'My Object';
 
       toString() {
         return 'Parent Object';
+      }
+
+      get getterWithTracked() {
+        const a = this.objectWithTracked.item1 + this.objectWithTracked.item2;
+        return a + this.trackedProperty;
       }
 
       get(k) {
@@ -219,31 +232,36 @@ module('Ember Debug - Object Inspector', function (hooks) {
 
     assert.strictEqual(
       firstDetail.properties.length,
-      5,
+      6,
       'methods are included'
     );
 
-    let idProperty = firstDetail.properties[0];
+    let objectWithTrackedProperty = firstDetail.properties[0];
+    assert.strictEqual(objectWithTrackedProperty.name, 'objectWithTracked');
+    assert.strictEqual(objectWithTrackedProperty.value.type, 'type-object');
+    assert.strictEqual(objectWithTrackedProperty.value.inspect, '{  }');
+
+    let idProperty = firstDetail.properties[1];
     assert.strictEqual(idProperty.name, 'id');
     assert.strictEqual(idProperty.value.type, 'type-number');
     assert.strictEqual(idProperty.value.inspect, '1');
 
-    let nullProperty = firstDetail.properties[1];
+    let nullProperty = firstDetail.properties[2];
     assert.strictEqual(nullProperty.name, 'name');
     assert.strictEqual(nullProperty.value.type, 'type-string');
     assert.strictEqual(nullProperty.value.inspect, '"My Object"');
 
-    let prop = firstDetail.properties[2];
+    let prop = firstDetail.properties[3];
 
     assert.strictEqual(prop.name, 'toString');
     assert.strictEqual(prop.value.type, 'type-function');
 
-    prop = firstDetail.properties[3];
+    prop = firstDetail.properties[4];
     assert.strictEqual(prop.name, 'nullVal');
     assert.strictEqual(prop.value.type, 'type-null');
     assert.strictEqual(prop.value.inspect, 'null');
 
-    prop = firstDetail.properties[4];
+    prop = firstDetail.properties[5];
     assert.strictEqual(prop.name, 'dateVal');
     assert.strictEqual(prop.value.type, 'type-date');
     assert.strictEqual(prop.value.inspect, date.toString());
@@ -254,12 +272,23 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.strictEqual(prop.value.type, 'type-function');
 
     prop = secondDetail.properties[1];
+    assert.strictEqual(prop.name, 'getterWithTracked');
+    assert.strictEqual(prop.value.type, 'type-string');
+    assert.strictEqual(prop.value.inspect, '"item1item2tracked"');
+    const dependentKeys =
+      compareVersion(VERSION, '3.16.10') === 0
+        ? 'item1,item2,trackedProperty'
+        : 'ObjectWithTracked,  •  --  item1,  •  --  item2,Object:My Object.trackedProperty';
+    assert.strictEqual(prop.dependentKeys.toString(), dependentKeys);
+
+    prop = secondDetail.properties[2];
     assert.strictEqual(prop.name, 'get');
     assert.strictEqual(prop.value.type, 'type-function');
 
-    prop = secondDetail.properties[2];
+    prop = secondDetail.properties[3];
     assert.strictEqual(prop.name, 'aCP');
     assert.strictEqual(prop.value.type, 'type-boolean');
+    assert.strictEqual(prop.dependentKeys.toString(), '');
   });
 
   skip('Correct mixin order with es6 class', async function (assert) {

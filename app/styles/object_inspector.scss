@@ -53,6 +53,11 @@
   }
 }
 
+.mixin__property-dependency-name.subkey {
+  left: -11px;
+  position: relative;
+}
+
 .mixin__property-dependency-item:first-child:before {
   display: none;
 }
