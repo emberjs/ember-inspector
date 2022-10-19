@@ -2,6 +2,8 @@ import DebugPort from './debug-port';
 import ProfileManager from './models/profile-manager';
 
 import { subscribe } from 'ember-debug/utils/ember/instrumentation';
+import { _backburner } from 'ember-debug/utils/ember/runloop';
+import bound from 'ember-debug/utils/bound-method';
 
 // Initial setup, that has to occur before the EmberObject init for some reason
 let profileManager = new ProfileManager();
@@ -18,7 +20,7 @@ export default DebugPort.extend({
 
     this.profileManager.wrapForErrors = (context, callback) =>
       this.port.wrap(() => callback.call(context));
-    this.profileManager.onProfilesAdded(this, this._updateComponentTree);
+    _backburner.on('end', bound(this, this._updateComponentTree));
   },
 
   willDestroy() {
@@ -29,8 +31,9 @@ export default DebugPort.extend({
     };
 
     this.profileManager.offProfilesAdded(this, this.sendAdded);
-    this.profileManager.offProfilesAdded(this, this._updateComponentTree);
     this.profileManager.teardown();
+
+    _backburner.off('end', bound(this, this._updateComponentTree));
   },
 
   sendAdded(profiles) {
@@ -45,7 +48,7 @@ export default DebugPort.extend({
    * @private
    */
   _updateComponentTree() {
-    this.namespace.viewDebug.sendTree();
+    this.namespace.viewDebug?.sendTree();
   },
 
   messages: {
