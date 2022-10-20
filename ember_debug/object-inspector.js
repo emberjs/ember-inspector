@@ -331,7 +331,10 @@ export default DebugPort.extend({
               }
               this.sendMessage('updateProperty', {
                 objectId,
-                property: item.name,
+                property:
+                  Array.isArray(object) && !Number.isNaN(parseInt(item.name))
+                    ? parseInt(item.name)
+                    : item.name,
                 value,
                 mixinIndex,
                 dependentKeys,
