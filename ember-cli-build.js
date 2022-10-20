@@ -328,7 +328,7 @@ module.exports = function (defaults) {
   if (env === 'test') {
     // `ember test` expects the index.html file to be in the
     // output directory.
-    output = dists.basic;
+    output = mergeTrees([dists.basic, dists.chrome]);
   } else {
     // Change base tag for running tests in development env.
     dists.basic = replace(dists.basic, {
@@ -341,12 +341,14 @@ module.exports = function (defaults) {
       ],
     });
 
+    dists.testing = mergeTrees([dists.basic, dists.chrome]);
+
     output = mergeTrees([
       mv(dists.bookmarklet, 'bookmarklet'),
       mv(dists.firefox, 'firefox'),
       mv(dists.chrome, 'chrome'),
       mv(dists.websocket, 'websocket'),
-      mv(dists.basic, 'testing'),
+      mv(dists.testing, 'testing'),
     ]);
   }
 
