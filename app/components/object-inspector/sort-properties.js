@@ -1,13 +1,13 @@
 import { map, sort } from '@ember/object/computed';
 import Component from '@glimmer/component';
-import { get, set, computed } from '@ember/object';
+import { set, computed } from '@ember/object';
 import { A } from '@ember/array';
 
 export default class SortProperties extends Component {
   @computed('args.properties')
   get isArray() {
     const props = A(this.args.properties || []);
-    return props.findBy('name', 'length') && props.findBy('name', 0);
+    return props.findBy('name', 'length') && props.findBy('name', '0');
   }
 
   /**
@@ -19,14 +19,20 @@ export default class SortProperties extends Component {
   @computed('isArray', 'sorted.length')
   get sortedProperties() {
     // limit arrays
-    if (this.isArray && get(this, 'sorted.length') > 100) {
+    let props = A(this.sorted);
+    if (this.isArray) {
+      const item = props.findBy('name', 'length');
+      props.removeObject(item);
+      props.splice(0, 0, item);
+    }
+    if (this.isArray && this.sorted.length > 100) {
       const indicator = {
         name: '...',
         value: {
           inspect: 'there are more items, send to console to see all',
         },
       };
-      const props = this.sorted.slice(0, 100);
+      props = props.slice(0, 100);
       props.push(indicator);
       return props;
     }
