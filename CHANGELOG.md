@@ -1,6 +1,28 @@
 # Changelog
 
 
+
+## v4.9.0 (2022-10-23)
+
+#### :rocket: Enhancement
+* [#2201](https://github.com/emberjs/ember-inspector/pull/2201) bring back tracked dependencies ([@patricklx](https://github.com/patricklx))
+
+#### :bug: Bug Fix
+* [#1086](https://github.com/emberjs/ember-inspector/pull/1086) Fix more items indicator sometimes not appearing ([@patricklx](https://github.com/patricklx))
+* [#2202](https://github.com/emberjs/ember-inspector/pull/2202) [bug] component tree sometimes does not update ([@patricklx](https://github.com/patricklx))
+* [#2199](https://github.com/emberjs/ember-inspector/pull/2199) [bug] tree view sometimes not updating children ([@patricklx](https://github.com/patricklx))
+* [#2192](https://github.com/emberjs/ember-inspector/pull/2192) fix evented off  ([@patricklx](https://github.com/patricklx))
+* [#2189](https://github.com/emberjs/ember-inspector/pull/2189) fix post message for testem ([@patricklx](https://github.com/patricklx))
+
+#### :house: Internal
+* [#2191](https://github.com/emberjs/ember-inspector/pull/2191) use internal messaging to setup iframes ([@patricklx](https://github.com/patricklx))
+* [#2190](https://github.com/emberjs/ember-inspector/pull/2190) fix publishing  ([@patricklx](https://github.com/patricklx))
+* [#2187](https://github.com/emberjs/ember-inspector/pull/2187) Bump Github actions ([@ctjhoa](https://github.com/ctjhoa))
+
+#### Committers: 2
+- Camille TJHOA ([@ctjhoa](https://github.com/ctjhoa))
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
 ## v4.8.0 (2022-10-12)
 
 #### :rocket: Enhancement
