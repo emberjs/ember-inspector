@@ -305,6 +305,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: firefox
+          path: firefox
       - name: Upload to AMO
         working-directory: firefox
         run: web-ext-submit --channel=listed
