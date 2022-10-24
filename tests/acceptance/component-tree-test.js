@@ -7,6 +7,7 @@ import {
   triggerKeyEvent,
   visit,
   settled,
+  rerender,
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
@@ -100,7 +101,7 @@ function Component(
   };
 }
 
-function getRenderTree() {
+function getRenderTree(withChildren) {
   return [
     TopLevel(
       { id: 0 },
@@ -110,12 +111,20 @@ function getRenderTree() {
           { id: 2, name: 'todos' },
           Component(
             { id: 3, name: 'todo-list', instance: Serialized('ember456') },
-            Component({
-              id: 4,
-              name: 'todo-item',
-              args: Args({ names: ['subTasks'], positionals: 0 }),
-              instance: Serialized('ember789'),
-            })
+            Component(
+              {
+                id: 4,
+                name: 'todo-item',
+                args: Args({ names: ['subTasks'], positionals: 0 }),
+                instance: Serialized('ember789'),
+              },
+              ...(withChildren
+                ? [
+                    Component({ id: 5, name: 'sub-task' }),
+                    Component({ id: 6, name: 'sub-task' }),
+                  ]
+                : [])
+            )
           )
         )
       )
@@ -347,13 +356,51 @@ module('Component Tab', function (hooks) {
 
     // resend the same view tree
     await sendMessage({
-      type: 'view:viewTree',
+      type: 'view:renderTree',
       tree: getRenderTree(),
     });
+
+    await rerender();
 
     assert
       .dom('.component-tree-item')
       .exists({ count: 3 }, 'the last node should still be hidden');
+  });
+
+  test('It should update the view tree when the port triggers a change, adding new children', async function (assert) {
+    await visit('/component-tree');
+
+    assert
+      .dom('.component-tree-item')
+      .exists({ count: 4 }, 'the last node should still be collapsed');
+
+    assert
+      .dom('.component-tree-item__expand')
+      .exists({ count: 3 }, 'last item should not have expander yet');
+
+    // send a view tree with children
+    await sendMessage({
+      type: 'view:renderTree',
+      tree: getRenderTree(true),
+    });
+
+    await rerender();
+
+    assert
+      .dom('.component-tree-item__expand')
+      .exists({ count: 4 }, 'it should have a new expander');
+
+    assert
+      .dom('.component-tree-item')
+      .exists({ count: 4 }, 'the last node should still be collapsed');
+
+    let expanders = findAll('.component-tree-item__expand');
+    let expanderEl = expanders[expanders.length - 1];
+    await click(expanderEl);
+
+    assert
+      .dom('.component-tree-item')
+      .exists({ count: 6 }, 'it should show the children');
   });
 
   test('Previewing / showing a view on the client', async function (assert) {

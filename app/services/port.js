@@ -43,6 +43,9 @@ export default class PortService extends Service.extend(Evented) {
       }
 
       if (this.applicationId === applicationId) {
+        if (!this.has(message.type)) {
+          throw new Error('unknown message type ' + message.type);
+        }
         this.trigger(message.type, message, applicationId);
       }
     });

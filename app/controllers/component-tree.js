@@ -274,7 +274,7 @@ function arrowKeyPressed(keyCode) {
 
 class RenderItem {
   @tracked isExpanded;
-  @tracked renderNode;
+  // @tracked renderNode;
 
   constructor(controller, parentItem, renderNode) {
     this.controller = controller;

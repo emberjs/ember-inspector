@@ -140,7 +140,7 @@ export function sendMessage(message) {
     throw new Error('Cannot call sendMessage outside of a test');
   }
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     next(() => {
       let normalized = {
         applicationId: 'my-app',
@@ -148,7 +148,12 @@ export function sendMessage(message) {
         ...message,
         from: 'inspectedWindow',
       };
-      adapter._messageReceived(normalized);
+      try {
+        adapter._messageReceived(normalized);
+      } catch (e) {
+        return reject(e);
+      }
+
       resolve(normalized);
     });
   });
