@@ -141,6 +141,7 @@ function loadEmberDebug() {
   let minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
   let xhr;
 
+  /* istanbul ignore next */
   function loadEmberDebugInWebpage() {
     const waitForEmberLoad = new Promise((resolve) => {
       if (window.requireModule && window.requireModule.has('ember')) {
