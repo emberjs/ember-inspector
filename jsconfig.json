@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "paths": {
+      "ember-debug/*": ["ember_debug/*"]
+    }
   },
   "exclude": ["node_modules", "dist"]
 }

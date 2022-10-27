@@ -56,10 +56,31 @@ class ChromeApi {
     this.onRemovedListeners = [];
     this.onNavigatedListeners = [];
     this.onConnectListeners = [];
+    this.onTabActivatedListeners = [];
+
+    this.registeredContextMenus = {};
+
+    this.storage = {
+      sync: {
+        get() {},
+      },
+    };
+
+    this.contextMenus = {
+      remove(name) {
+        delete self.registeredContextMenus[name];
+      },
+
+      create(menu) {
+        self.registeredContextMenus[menu.id] = menu;
+      },
+    };
 
     this.tabs = {
       onActivated: {
-        addListener() {},
+        addListener(l) {
+          self.onTabActivatedListeners.push(l);
+        },
       },
       onRemoved: {
         addListener(l) {
@@ -100,7 +121,10 @@ class ChromeApi {
         },
       },
       getURL(url) {
-        return url;
+        if (url.startsWith('/')) {
+          url = url.slice(1);
+        }
+        return '/testing/' + url;
       },
       connect() {
         const other = self.connectToOther;
@@ -189,27 +213,17 @@ function getLoader(def, req) {
 module('Integration | Injection', function (hooks) {
   setupApplicationTest(hooks);
 
+  /**
+   * @type {ChromeApi}
+   */
   let contentChromeApi, inspectorChromeApi, backgroundChromeApi;
   const olddefine = window.define;
   const olddrequireModule = window.requireModule;
-  hooks.before(() => {
-    contentChromeApi = new ChromeApi('content');
-    inspectorChromeApi = new ChromeApi('inspector');
-    backgroundChromeApi = new ChromeApi('background');
-    backgroundChromeApi.contentScript = contentChromeApi;
-    backgroundChromeApi.inspector = inspectorChromeApi;
 
-    contentChromeApi.backgroundScript = backgroundChromeApi;
-    inspectorChromeApi.backgroundScript = backgroundChromeApi;
-  });
+  let injected;
 
-  hooks.after(() => {
-    window.define = olddefine;
-    window.requireModule = olddrequireModule;
-  });
-
-  // eslint-disable-next-line qunit/require-expect
-  test('inject ember debug via content and backround scripts', async function (assert) {
+  async function inject(owner, assert) {
+    if (injected) return;
     const backgroundScript = await (
       await fetch('/background-script.js')
     ).text();
@@ -239,6 +253,9 @@ module('Integration | Injection', function (hooks) {
     {
       // eslint-disable-next-line no-unused-vars
       const chrome = contentChromeApi;
+      backgroundChromeApi.onTabActivatedListeners.forEach((act) =>
+        act({ tabId: 1 })
+      );
       eval(contentScript);
     }
 
@@ -249,6 +266,15 @@ module('Integration | Injection', function (hooks) {
     );
 
     window.chrome = inspectorChromeApi;
+
+    const emberDebugStarted = new Promise((resolve) => {
+      inspectorChromeApi.runtime.onMessage.addListener((msg) => {
+        if (msg.type === 'general:applicationBooted') {
+          resolve();
+        }
+      });
+    });
+
     const p = new Promise((resolve) => {
       window.addEventListener('message', (msg) => {
         if (msg.data === 'debugger-client') {
@@ -256,13 +282,69 @@ module('Integration | Injection', function (hooks) {
         }
       });
     });
-    this.owner.lookup('service:adapters/web-extension');
+    owner.lookup('service:adapters/web-extension');
     await p;
+    await emberDebugStarted;
+    injected = true;
+  }
+
+  hooks.before(() => {
+    window.NO_EMBER_DEBUG = false;
+    contentChromeApi = new ChromeApi('content');
+    inspectorChromeApi = new ChromeApi('inspector');
+    backgroundChromeApi = new ChromeApi('background');
+    backgroundChromeApi.contentScript = contentChromeApi;
+    backgroundChromeApi.inspector = inspectorChromeApi;
+
+    contentChromeApi.backgroundScript = backgroundChromeApi;
+    inspectorChromeApi.backgroundScript = backgroundChromeApi;
+  });
+
+  hooks.after(() => {
+    window.define = olddefine;
+    window.requireModule = olddrequireModule;
+    window.NO_EMBER_DEBUG = true;
+  });
+
+  // eslint-disable-next-line qunit/require-expect
+  test('inject ember debug via content and background scripts', async function (assert) {
+    await inject(this.owner, assert);
+    const { requireModule } = getLoader(window.define, window.requireModule);
     const emberDebug = requireModule('ember-debug/main');
     assert.notStrictEqual(
       emberDebug,
       undefined,
       'ember debug should be loaded'
     );
+  });
+
+  // eslint-disable-next-line qunit/require-expect
+  test('add Inspect Ember Component Context Menu Item', async function (assert) {
+    await inject(this.owner, assert);
+    assert.true(
+      !!backgroundChromeApi.registeredContextMenus['inspect-ember-component'],
+      'should have registered context menu'
+    );
+  });
+
+  // eslint-disable-next-line qunit/require-expect
+  test('triggering Ember Component Context Menu Item should call inspect nearest', async function (assert) {
+    await inject(this.owner, assert);
+    assert.timeout(10);
+
+    const viewInspection = window.EmberInspector.viewDebug.viewInspection;
+
+    const inspectNearestCalled = new Promise((resolve) => {
+      viewInspection.inspectNearest = () => {
+        resolve();
+      };
+    });
+
+    backgroundChromeApi.registeredContextMenus[
+      'inspect-ember-component'
+    ].onclick();
+
+    await inspectNearestCalled;
+    assert.true(true);
   });
 });
