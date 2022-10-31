@@ -12,14 +12,14 @@
 
 {{#if this.filtered.length}}
   <div class="list__content js-deprecations">
-    {{#vertical-collection this.filtered estimateHeight=20 as |content|}}
+    <VerticalCollection @items={{this.filtered}} @estimateHeight={{20}} as |content|>
       <DeprecationItem
         @model={{content}}
         @openResource={{this.openResource}}
         @traceSource={{this.traceSource}}
         @traceDeprecations={{this.traceDeprecations}}
       />
-    {{/vertical-collection}}
+      </VerticalCollection>
   </div>
 {{else}}
   <Ui::EmptyMessage class="js-page-refresh">
