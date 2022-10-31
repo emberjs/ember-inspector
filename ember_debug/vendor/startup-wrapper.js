@@ -112,9 +112,13 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
 
       if (!Ember) {
         try {
-          Ember = requireModule('ember')['default'];
+          Ember = requireModule('ember/index')['default'];
         } catch {
-          Ember = window.Ember;
+          try {
+            Ember = requireModule('ember')['default'];
+          } catch {
+            Ember = window.Ember;
+          }
         }
       }
 
