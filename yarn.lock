@@ -604,9 +604,9 @@
     "@babel/plugin-syntax-class-static-block" "^7.14.5"
 
 "@babel/plugin-proposal-decorators@^7.13.5", "@babel/plugin-proposal-decorators@^7.16.0", "@babel/plugin-proposal-decorators@^7.16.7":
-  version "7.19.3"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-decorators/-/plugin-proposal-decorators-7.19.3.tgz#c1977e4902a18cdf9051bf7bf08d97db2fd8b110"
-  integrity sha512-MbgXtNXqo7RTKYIXVchVJGPvaVufQH3pxvQyfbGvNw1DObIhph+PesYXJTcd8J4DdWibvf6Z2eanOyItX8WnJg==
+  version "7.20.0"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-decorators/-/plugin-proposal-decorators-7.20.0.tgz#3acef1f1206d7a6a1436aa6ccf9ed7b1bd06aff7"
+  integrity sha512-vnuRRS20ygSxclEYikHzVrP9nZDFXaSzvJxGLQNAiBX041TmhS4hOUHWNIpq/q4muENuEP9XPJFXTNFejhemkg==
   dependencies:
     "@babel/helper-create-class-features-plugin" "^7.19.0"
     "@babel/helper-plugin-utils" "^7.19.0"
