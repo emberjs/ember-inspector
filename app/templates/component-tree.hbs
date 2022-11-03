@@ -20,11 +20,10 @@
   {{did-insert this.arrowKeysSetup}}
   {{will-destroy this.arrowKeysTeardown}}
 >
-  {{#vertical-collection
-    this.visibleItems
-    estimateHeight=this.itemHeight
-    key="id" as |item|
-  }}
+  <VerticalCollection
+    @estimateHeight={{this.itemHeight}}
+    @items={{this.visibleItems}}
+    @key="id" as |item|>
     <ComponentTreeItem @item={{item}} />
-  {{/vertical-collection}}
+  </VerticalCollection>
 </ScrollContainer>

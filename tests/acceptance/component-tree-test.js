@@ -384,8 +384,6 @@ module('Component Tab', function (hooks) {
       tree: getRenderTree(true),
     });
 
-    await rerender();
-
     assert
       .dom('.component-tree-item__expand')
       .exists({ count: 4 }, 'it should have a new expander');

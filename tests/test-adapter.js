@@ -2,6 +2,7 @@
 import QUnit from 'qunit';
 import { next } from '@ember/runloop';
 import BasicAdapter from 'ember-inspector/services/adapters/basic';
+import { settled } from '@ember/test-helpers';
 
 let adapter = null;
 let resourcesEnabled = false;
@@ -135,13 +136,13 @@ export function expectOpenResource(file, line, options = {}) {
  * @param {Object} message    The message.
  * @return {Promise}          Resolves when the message is delivered.
  */
-export function sendMessage(message) {
+export async function sendMessage(message) {
   if (adapter === null) {
     throw new Error('Cannot call sendMessage outside of a test');
   }
 
-  return new Promise((resolve, reject) => {
-    next(() => {
+  const msg = await new Promise((resolve, reject) => {
+    next(async () => {
       let normalized = {
         applicationId: 'my-app',
         applicationName: 'My App',
@@ -157,6 +158,9 @@ export function sendMessage(message) {
       resolve(normalized);
     });
   });
+
+  await settled();
+  return msg;
 }
 
 /**

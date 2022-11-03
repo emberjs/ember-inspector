@@ -1721,21 +1721,6 @@
   resolved "https://registry.yarnpkg.com/@handlebars/parser/-/parser-2.0.0.tgz#5e8b7298f31ff8f7b260e6b7363c7e9ceed7d9c5"
   integrity sha512-EP9uEDZv/L5Qh9IWuMUGJRfwhXJ4h1dqKTT4/3+tY0eu7sPis7xh23j61SYUnNF4vqCQvvUXpDo9Bh/+q1zASA==
 
-"@html-next/vertical-collection@^3.0.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@html-next/vertical-collection/-/vertical-collection-3.1.0.tgz#3e271fe36bbf381b5e6f7702fde72f8c6880ae0d"
-  integrity sha512-7mzdEhPA0SzIAqZA/HUwmAYVxzbsKp4l8vB7oBc6A71IGusrNZQUMLl09Vi9wgHahvhBV89LST474cu9k2Iw1Q==
-  dependencies:
-    babel6-plugin-strip-class-callcheck "^6.0.0"
-    broccoli-funnel "^2.0.2"
-    broccoli-merge-trees "^3.0.1"
-    broccoli-rollup "^4.1.1"
-    ember-cli-babel "^7.12.0"
-    ember-cli-htmlbars "^5.0.0"
-    ember-cli-version-checker "^3.1.3"
-    ember-compatibility-helpers "^1.2.1"
-    ember-raf-scheduler "^0.3.0"
-
 "@html-next/vertical-collection@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@html-next/vertical-collection/-/vertical-collection-4.0.0.tgz#b3b3d52358e15e7ed46e028d12424dab994690ed"
@@ -2136,11 +2121,6 @@
   dependencies:
     "@types/connect" "*"
     "@types/node" "*"
-
-"@types/broccoli-plugin@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@types/broccoli-plugin/-/broccoli-plugin-1.3.0.tgz#38f8462fecaebc4e09a32e4d4ed1b9808f75bbca"
-  integrity sha512-SLk4/hFc2kGvgwNFrpn2O1juxFOllcHAywvlo7VwxfExLzoz1GGJ0oIZCwj5fwSpvHw4AWpZjJ1fUvb62PDayQ==
 
 "@types/broccoli-plugin@^3.0.0":
   version "3.0.0"
@@ -2582,11 +2562,6 @@ acorn@^5.0.0, acorn@^5.5.3:
   version "5.7.4"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.7.4.tgz#3e8d8a9947d0599a1796d10225d7432f4a4acf5e"
   integrity sha512-1D++VG7BhrtvQpNbBzovKNc1FLGGEE/oGe7b9xJm/RFHMBeUaUGpluV9RLjZa47YFdPcDAenEYuq9pQPcMdLJg==
-
-acorn@^7.1.0:
-  version "7.4.1"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.1.tgz#feaed255973d2e77555b83dbc08851a6c63520fa"
-  integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
 acorn@^8.5.0, acorn@^8.7.0, acorn@^8.7.1, acorn@^8.8.0:
   version "8.8.0"
@@ -4032,7 +4007,7 @@ broccoli-plugin@^1.0.0, broccoli-plugin@^1.1.0, broccoli-plugin@^1.2.0, broccoli
     rimraf "^2.3.4"
     symlink-or-copy "^1.1.8"
 
-broccoli-plugin@^2.0.0, broccoli-plugin@^2.1.0:
+broccoli-plugin@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/broccoli-plugin/-/broccoli-plugin-2.1.0.tgz#2fab6c578219cfcc64f773e9616073313fc8b334"
   integrity sha512-ElE4caljW4slapyEhSD9jU9Uayc8SoSABWdmY9SqbV8DHNxU6xg1jJsPcMm+cXOvggR3+G+OXAYQeFjWVnznaw==
@@ -4058,21 +4033,6 @@ broccoli-rollup@^2.1.1:
     rollup "^0.57.1"
     symlink-or-copy "^1.1.8"
     walk-sync "^0.3.1"
-
-broccoli-rollup@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/broccoli-rollup/-/broccoli-rollup-4.1.1.tgz#7531a24d88ddab9f1bace1c6ee6e6ca74a38d36f"
-  integrity sha512-hkp0dB5chiemi32t6hLe5bJvxuTOm1TU+SryFlZIs95KT9+94uj0C8w6k6CsZ2HuIdIZg6D252t4gwOlcTXrpA==
-  dependencies:
-    "@types/broccoli-plugin" "^1.3.0"
-    broccoli-plugin "^2.0.0"
-    fs-tree-diff "^2.0.1"
-    heimdalljs "^0.2.6"
-    node-modules-path "^1.0.1"
-    rollup "^1.12.0"
-    rollup-pluginutils "^2.8.1"
-    symlink-or-copy "^1.2.0"
-    walk-sync "^1.1.3"
 
 broccoli-rollup@^5.0.0:
   version "5.0.0"
@@ -5848,7 +5808,7 @@ ember-cache-primitive-polyfill@^1.0.0:
     ember-compatibility-helpers "^1.2.1"
     silent-error "^1.1.1"
 
-ember-classy-page-object@^0.8.0-beta:
+ember-classy-page-object@^0.8.0-beta.2:
   version "0.8.0-beta.2"
   resolved "https://registry.yarnpkg.com/ember-classy-page-object/-/ember-classy-page-object-0.8.0-beta.2.tgz#241d71bf7e6d3d5d1efdc18d6ae8bf16a81b5059"
   integrity sha512-rnGP5/7Gid+ShgTcLB0SR16IlxtTtdZq/pvtAZGwWvEWF8dJOl33vH1/Zc3052mHs9oN2gbZ8mOoBPYbF8ZA2g==
@@ -5948,7 +5908,7 @@ ember-cli-get-component-path-option@^1.0.0:
   resolved "https://registry.yarnpkg.com/ember-cli-get-component-path-option/-/ember-cli-get-component-path-option-1.0.0.tgz#0d7b595559e2f9050abed804f1d8eff1b08bc771"
   integrity sha1-DXtZVVni+QUKvtgE8djv8bCLx3E=
 
-ember-cli-htmlbars@^5.0.0, ember-cli-htmlbars@^5.0.1, ember-cli-htmlbars@^5.3.1, ember-cli-htmlbars@^5.3.2, ember-cli-htmlbars@^5.7.1:
+ember-cli-htmlbars@^5.3.1, ember-cli-htmlbars@^5.3.2, ember-cli-htmlbars@^5.7.1:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/ember-cli-htmlbars/-/ember-cli-htmlbars-5.7.2.tgz#e0cd2fb3c20d85fe4c3e228e6f0590ee1c645ba8"
   integrity sha512-Uj6R+3TtBV5RZoJY14oZn/sNPnc+UgmC8nb5rI4P3fR/gYoyTFIZSXiIM7zl++IpMoIrocxOrgt+mhonKphgGg==
@@ -6309,6 +6269,17 @@ ember-compatibility-helpers@^1.1.2, ember-compatibility-helpers@^1.2.0, ember-co
     fs-extra "^9.1.0"
     semver "^5.4.1"
 
+ember-compatibility-helpers@^1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/ember-compatibility-helpers/-/ember-compatibility-helpers-1.2.6.tgz#603579ab2fb14be567ef944da3fc2d355f779cd8"
+  integrity sha512-2UBUa5SAuPg8/kRVaiOfTwlXdeVweal1zdNPibwItrhR0IvPrXpaqwJDlEZnWKEoB+h33V0JIfiWleSG6hGkkA==
+  dependencies:
+    babel-plugin-debug-macros "^0.2.0"
+    ember-cli-version-checker "^5.1.1"
+    find-up "^5.0.0"
+    fs-extra "^9.1.0"
+    semver "^5.4.1"
+
 ember-concurrency@^2.0.3:
   version "2.3.7"
   resolved "https://registry.yarnpkg.com/ember-concurrency/-/ember-concurrency-2.3.7.tgz#52d786e37704b9054da1952638797e23714ec0e1"
@@ -6591,10 +6562,10 @@ ember-svg-jar@^2.3.4:
     lodash "^4.17.15"
     safe-stable-stringify "^2.2.0"
 
-ember-table@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/ember-table/-/ember-table-4.0.0.tgz#53c5c477ce82d3b9e5ffcbf66a83ab6616d8cb8e"
-  integrity sha512-6uTjNaAdlp+W6K8uE255B1RxvwFUP7P1sHq10DS6TVigPk3PWSesQwBfsWoX1g2rFx8+JYY8iRsbcV/bjblYQQ==
+ember-table@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/ember-table/-/ember-table-5.0.0.tgz#2ed304ced2195e51a5a51d02481dc629bec5ddc6"
+  integrity sha512-4CpEqVL3NQc28yipzb1ch1croaGlyWnkUQQ0k7vwQVgyKLehgfQLKhu3lrmTo79ySWuXDH5VLkljHUb0i1taAw==
   dependencies:
     "@babel/core" "^7.0.0-0"
     "@babel/plugin-proposal-nullish-coalescing-operator" "^7.12.13"
@@ -6602,15 +6573,14 @@ ember-table@^4.0.0:
     "@babel/plugin-proposal-object-rest-spread" "^7.12.13"
     "@babel/plugin-proposal-optional-catch-binding" "^7.12.13"
     "@babel/plugin-proposal-optional-chaining" "^7.12.13"
-    "@html-next/vertical-collection" "^3.0.0"
-    broccoli-string-replace "^0.1.2"
+    "@html-next/vertical-collection" "^4.0.0"
     css-element-queries "^0.4.0"
-    ember-classy-page-object "^0.8.0-beta"
+    ember-classy-page-object "^0.8.0-beta.2"
     ember-cli-babel "^7.12.0"
-    ember-cli-htmlbars "^5.0.1"
+    ember-cli-htmlbars "^6.0.0"
     ember-cli-node-assets "^0.2.2"
     ember-cli-version-checker "^5.1.2"
-    ember-compatibility-helpers "^1.2.0"
+    ember-compatibility-helpers "^1.2.6"
     ember-raf-scheduler "^0.3.0"
     ember-test-selectors "^6.0.0"
     hammerjs "^2.0.8"
@@ -13637,15 +13607,6 @@ rollup@^0.57.1:
     rollup-pluginutils "^2.0.1"
     signal-exit "^3.0.2"
     sourcemap-codec "^1.4.1"
-
-rollup@^1.12.0:
-  version "1.32.1"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-1.32.1.tgz#4480e52d9d9e2ae4b46ba0d9ddeaf3163940f9c4"
-  integrity sha512-/2HA0Ec70TvQnXdzynFffkjA6XN+1e2pEv/uKS5Ulca40g2L7KuOE3riasHoNVHOsFD5KKZgDsMk1CP3Tw9s+A==
-  dependencies:
-    "@types/estree" "*"
-    "@types/node" "*"
-    acorn "^7.1.0"
 
 rollup@^2.50.0:
   version "2.79.0"

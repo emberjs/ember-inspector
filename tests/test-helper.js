@@ -6,9 +6,12 @@ import { setup } from 'qunit-dom';
 import { start } from 'ember-qunit';
 import TestAdapter from './test-adapter';
 import setupSinon from 'ember-sinon-qunit';
+import registerWaiter from 'ember-raf-scheduler/test-support/register-waiter';
 
 // ensure ember-debug is required
 import 'ember-debug/main';
+
+registerWaiter();
 
 Application.initializer({
   name: `00-override-adapter`,
