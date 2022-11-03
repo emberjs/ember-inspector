@@ -1,3 +1,4 @@
+import registerWaiter from 'ember-raf-scheduler/test-support/register-waiter';
 import {
   click,
   currentURL,
@@ -16,6 +17,8 @@ import { setupTestAdapter, respondWith, sendMessage } from '../test-adapter';
 function textFor(selector, context) {
   return context.querySelector(selector).textContent.trim();
 }
+
+registerWaiter();
 
 let GUID = 1;
 
@@ -101,7 +104,19 @@ function Component(
   };
 }
 
-function getRenderTree(withChildren) {
+function getRenderTree({ withChildren, withManyChildren } = {}) {
+  const children = [];
+  if (withChildren) {
+    children.push(
+      Component({ id: 5, name: 'sub-task' }),
+      Component({ id: 6, name: 'sub-task' })
+    );
+  }
+  if (withManyChildren) {
+    for (let i = 5; i < 105; i++) {
+      children.push(Component({ id: i, name: 'sub-task-' + i }));
+    }
+  }
   return [
     TopLevel(
       { id: 0 },
@@ -118,12 +133,7 @@ function getRenderTree(withChildren) {
                 args: Args({ names: ['subTasks'], positionals: 0 }),
                 instance: Serialized('ember789'),
               },
-              ...(withChildren
-                ? [
-                    Component({ id: 5, name: 'sub-task' }),
-                    Component({ id: 6, name: 'sub-task' }),
-                  ]
-                : [])
+              ...children
             )
           )
         )
@@ -381,7 +391,7 @@ module('Component Tab', function (hooks) {
     // send a view tree with children
     await sendMessage({
       type: 'view:renderTree',
-      tree: getRenderTree(true),
+      tree: getRenderTree({ withChildren: true }),
     });
 
     assert
@@ -399,6 +409,121 @@ module('Component Tab', function (hooks) {
     assert
       .dom('.component-tree-item')
       .exists({ count: 6 }, 'it should show the children');
+  });
+
+  test('Scrolling a component tree into view', async function (assert) {
+    await visit('/component-tree');
+
+    function isInViewport(element) {
+      const rect = element?.getBoundingClientRect();
+      // if its not, then all is 0
+      return rect?.top >= 0 && rect?.left >= 0;
+    }
+
+    respondWith('view:showInspection', false, { count: 3 });
+
+    await sendMessage({
+      type: 'view:renderTree',
+      tree: getRenderTree({ withManyChildren: true }),
+    });
+
+    await settled();
+
+    await sendMessage({
+      type: 'view:inspectComponent',
+      id: `render-node:90`,
+    });
+
+    await settled();
+
+    assert
+      .dom('.component-tree-item--pinned')
+      .exists({ count: 1 }, 'it should pinn the selected item');
+
+    assert.true(
+      isInViewport(
+        document.getElementsByClassName('component-tree-item--pinned').item(0)
+      ),
+      'it should show the pinned item'
+    );
+
+    await sendMessage({
+      type: 'view:previewComponent',
+      id: `render-node:10`,
+    });
+
+    await settled();
+
+    assert
+      .dom('.component-tree-item--highlighted')
+      .exists({ count: 1 }, 'it should show the previewing item');
+
+    assert.true(
+      isInViewport(
+        document
+          .getElementsByClassName('component-tree-item--highlighted')
+          .item(0)
+      ),
+      'it should show the preview item'
+    );
+
+    await sendMessage({
+      type: 'view:cancelSelection',
+      id: `render-node:10`,
+    });
+
+    await settled();
+
+    assert
+      .dom('.component-tree-item--pinned')
+      .exists(
+        { count: 0 },
+        'it should not scroll back to the pinned component after preview finished'
+      );
+
+    await sendMessage({
+      type: 'view:renderTree',
+      tree: getRenderTree({ withManyChildren: true }),
+    });
+
+    await settled();
+
+    assert
+      .dom('.component-tree-item--pinned')
+      .exists(
+        { count: 0 },
+        'it should not scroll back to the pinned component after new render tree'
+      );
+
+    const scrollTarget = document
+      .getElementsByClassName('scroll-target')
+      .item(0);
+
+    const scrolledPromise = new Promise((res) => {
+      scrollTarget.parentElement.addEventListener('scroll', () => {
+        res();
+      });
+    });
+
+    scrollTarget.scrollIntoView({
+      behavior: 'auto',
+      block: 'nearest',
+      inline: 'nearest',
+    });
+
+    await scrolledPromise;
+    await settled();
+
+    assert
+      .dom('.component-tree-item--pinned')
+      .exists({ count: 1 }, 'it should show the pinned item after scrolling');
+
+    assert.true(
+      isInViewport(
+        document.getElementsByClassName('component-tree-item--pinned').item(0)
+      ),
+      'it should show the pinned item'
+    );
   });
 
   test('Previewing / showing a view on the client', async function (assert) {
