@@ -2,6 +2,23 @@
 
 
 
+
+## v4.9.1 (2022-11-04)
+
+#### :bug: Bug Fix
+* [#2227](https://github.com/emberjs/ember-inspector/pull/2227) check if ember is loaded via registry ([@patricklx](https://github.com/patricklx))
+
+#### :house: Internal
+* [#2215](https://github.com/emberjs/ember-inspector/pull/2215) add context menu test ([@patricklx](https://github.com/patricklx))
+* [#2214](https://github.com/emberjs/ember-inspector/pull/2214) test auto scrolling to previewing/pinned ([@patricklx](https://github.com/patricklx))
+* [#2219](https://github.com/emberjs/ember-inspector/pull/2219) update vertical-collection & ember-table ([@patricklx](https://github.com/patricklx))
+* [#2216](https://github.com/emberjs/ember-inspector/pull/2216) add minimal data debug test ([@patricklx](https://github.com/patricklx))
+* [#2213](https://github.com/emberjs/ember-inspector/pull/2213) test injection with content&background script ([@patricklx](https://github.com/patricklx))
+* [#2203](https://github.com/emberjs/ember-inspector/pull/2203) fix publishing firefox ([@patricklx](https://github.com/patricklx))
+
+#### Committers: 1
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
 ## v4.9.0 (2022-10-23)
 
 #### :rocket: Enhancement
