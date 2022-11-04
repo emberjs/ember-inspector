@@ -34,6 +34,7 @@ setApplication(Application.create(config.APP));
 setupSinon();
 
 window.NO_EMBER_DEBUG = true;
+QUnit.config.testTimeout = 60000;
 
 setup(QUnit.assert);
 

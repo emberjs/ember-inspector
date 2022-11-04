@@ -144,8 +144,18 @@ function loadEmberDebug() {
   /* istanbul ignore next */
   function loadEmberDebugInWebpage() {
     const waitForEmberLoad = new Promise((resolve) => {
-      if (window.requireModule && window.requireModule.has('ember')) {
-        return resolve();
+      if (window.requireModule) {
+        const has =
+          window.requireModule.has ||
+          function has(id) {
+            return !!(
+              window.requireModule.entries[id] ||
+              window.requireModule.entries[id + '/index']
+            );
+          };
+        if (has('ember')) {
+          return resolve();
+        }
       }
 
       /**
