@@ -168,7 +168,8 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     sendApps(adapterInstance, apps);
 
     function loadInstance(app) {
-      let instance = app.__deprecatedInstance__ || (app._applicationInstances && app._applicationInstances[0]);
+      const applicationInstances = app._applicationInstances && [...app._applicationInstances]
+      let instance = app.__deprecatedInstance__ || applicationInstances[0];
       if (instance) {
         // App started
         setupInstanceInitializer(app, callback);
