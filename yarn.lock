@@ -1722,9 +1722,9 @@
   integrity sha512-EP9uEDZv/L5Qh9IWuMUGJRfwhXJ4h1dqKTT4/3+tY0eu7sPis7xh23j61SYUnNF4vqCQvvUXpDo9Bh/+q1zASA==
 
 "@html-next/vertical-collection@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@html-next/vertical-collection/-/vertical-collection-4.0.0.tgz#b3b3d52358e15e7ed46e028d12424dab994690ed"
-  integrity sha512-/c4y6ASmkMwyG+rcoXH3kx50LiK2MuPX0bsktd+j9LhOD6zkJyT4wJ73m20dCEvxjgwA/nCQ8hj3lApQlHG0CQ==
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@html-next/vertical-collection/-/vertical-collection-4.0.2.tgz#7e9885423eb8c445bce0cc110ac3be281ca6ff87"
+  integrity sha512-S8cgntEDdXrOwdylVGDh1BFe+nX5uuUzzb3teh1FE++/kbqsOfUpXOYRUsEzsqb0fRqcm6eLxvtNb282Zr67rQ==
   dependencies:
     babel6-plugin-strip-class-callcheck "^6.0.0"
     broccoli-funnel "^3.0.8"
