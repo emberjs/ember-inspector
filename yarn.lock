@@ -6473,13 +6473,12 @@ ember-router-generator@^2.0.0:
     recast "^0.18.1"
 
 ember-router-service-refresh-polyfill@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/ember-router-service-refresh-polyfill/-/ember-router-service-refresh-polyfill-1.0.1.tgz#fd97bdfc8038c96056d4b1eab2e4a26f601fc218"
-  integrity sha512-gZoTEATNNsqBa/xBtSheOD1C+9pgqkO1Ge34EvzfeYjir7KzD9QSCqpXyZQr9AkMlcqwf6jVFHhw2+cYKeOGUQ==
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/ember-router-service-refresh-polyfill/-/ember-router-service-refresh-polyfill-1.1.0.tgz#cfed655c68040ad163a4d17225eae6d666da5454"
+  integrity sha512-MhrJnpyTTie+Uo9PWiEX4f0t5y70vBjjgcS56aLOvwlSwfInNCtOEgQ/zH89J2dnYUVidebm/1FTubQ2meSjbw==
   dependencies:
     "@embroider/macros" "^1.0.0"
     ember-cli-babel "^7.26.11"
-    ember-cli-htmlbars "^6.0.1"
 
 ember-showdown@^1.0.0-beta.1:
   version "1.0.0-beta.1"
