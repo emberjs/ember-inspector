@@ -76,10 +76,10 @@
   var script = document.createElement('script');
   script.type = "text/javascript";
   script.src = chrome.runtime.getURL("scripts/in-page-script.js");
-  if (document.body && document.contentType !== "application/pdf") {
-    document.body.appendChild(script);
+  if (document.head && document.contentType !== "application/pdf") {
+    document.head.appendChild(script);
     script.onload = function() {
-      document.body.removeChild(script);
+      document.head.removeChild(script);
     };
   }
 
