@@ -4457,7 +4457,7 @@ caseless@~0.12.0:
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
   integrity sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
 
-chalk@5.0.1, chalk@^5.0.0, chalk@^5.0.1:
+chalk@5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-5.0.1.tgz#ca57d71e82bb534a296df63bbacc4a1c22b2a4b6"
   integrity sha512-Fo07WOYGqMfCWHOzSXOt2CxDbC6skS/jO9ynEcmpANMoPrD+W1r1K6Vx7iNm+AQmETU1Xr2t+n8nzkV9t6xh3w==
@@ -4489,6 +4489,11 @@ chalk@^4.0.0, chalk@^4.1.0, chalk@^4.1.1, chalk@^4.1.2:
   dependencies:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
+
+chalk@^5.0.0, chalk@^5.0.1, chalk@^5.1.2:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/chalk/-/chalk-5.1.2.tgz#d957f370038b75ac572471e83be4c5ca9f8e8c45"
+  integrity sha512-E5CkT4jWURs1Vy5qGJye+XwCkNj7Od3Af7CP6SujMetSMkLs8Do2RWJK5yx1wamHV/op8Rz+9rltjaTQWDnEFQ==
 
 chalk@~3.0.0:
   version "3.0.0"
@@ -6595,10 +6600,10 @@ ember-table@^5.0.0:
     ember-test-selectors "^6.0.0"
     hammerjs "^2.0.8"
 
-ember-template-imports@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/ember-template-imports/-/ember-template-imports-3.1.1.tgz#9b7a4f37c0a638b3d3d9894dade494efceb30f9a"
-  integrity sha512-ZsujuOwaF6lWDDeKC0NleCUAC8f06CfxWQPmejNnxg5gUdqHFTfW9L++X9RLLV/pJZ6eCtax7L94XkXQJ1LfBA==
+ember-template-imports@^3.1.1, ember-template-imports@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/ember-template-imports/-/ember-template-imports-3.4.0.tgz#c40757e2d41e289ce08c0fe80671000bf216e0ef"
+  integrity sha512-3Cwcj3NXA129g3ZhmrQ/nYOxksFonTmB/qxyaSNTHrLBSoc93UZys47hBz13DlcfoeSCCrNt2Qpq1j890I04PQ==
   dependencies:
     babel-import-util "^0.2.0"
     broccoli-stew "^3.0.0"
@@ -6610,17 +6615,17 @@ ember-template-imports@^3.1.1:
     string.prototype.matchall "^4.0.6"
     validate-peer-dependencies "^1.1.0"
 
-ember-template-lint@^4.10.1:
-  version "4.17.0"
-  resolved "https://registry.yarnpkg.com/ember-template-lint/-/ember-template-lint-4.17.0.tgz#cb779321267fe6bb00e888a7daa27c14abaf7d43"
-  integrity sha512-9Ove2WM6mPF3WRu4+ikLhdTHQAeK031dJp4WlVYzbCl1YFbtoUeKojH+/0U98hJCjiQg/dRb0baSTr+VevEyzw==
+ember-template-lint@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/ember-template-lint/-/ember-template-lint-5.0.1.tgz#6b736e9ba824b6f01f125970e7072c28a5c11c09"
+  integrity sha512-LnFemz8BzdNcvtGlYMKPbimlt9KZYR4zGpKiUkDYHNaNkrG0jG99vYiLVRNhadqOTkc5kGWm3YswJ0hkgQMZKg==
   dependencies:
     "@lint-todo/utils" "^13.0.3"
     aria-query "^5.0.2"
-    chalk "^4.1.2"
+    chalk "^5.1.2"
     ci-info "^3.4.0"
     date-fns "^2.29.2"
-    ember-template-imports "^3.1.1"
+    ember-template-imports "^3.4.0"
     ember-template-recast "^6.1.3"
     find-up "^6.3.0"
     fuse.js "^6.5.3"
