@@ -6514,9 +6514,9 @@ ember-source-channel-url@^3.0.0:
     node-fetch "^2.6.0"
 
 ember-source@~4.9.1:
-  version "4.9.1"
-  resolved "https://registry.yarnpkg.com/ember-source/-/ember-source-4.9.1.tgz#1b5d84d753ebeab7f372dbd7f39c98123e98cd41"
-  integrity sha512-45dobRcQapTpWa6VWgDcAv6bP6iDxCVi5pJAf04NSRjDLHsjVGUCTdRslOl5rt3sX8dZJqakMnqYD2DwVjDf3A==
+  version "4.9.3"
+  resolved "https://registry.yarnpkg.com/ember-source/-/ember-source-4.9.3.tgz#bd8d09452460a008e2a0c0ba943ca22859dcc458"
+  integrity sha512-oF4rx9sMWk3rNjljOaLkCYwwFXvBn0QUnxV/Jxa/I1FWYXsdiIAoQD9+PU8l7Q5GZh57Mq/M0rjztxj+CYc/2w==
   dependencies:
     "@babel/helper-module-imports" "^7.16.7"
     "@babel/plugin-transform-block-scoping" "^7.16.0"
