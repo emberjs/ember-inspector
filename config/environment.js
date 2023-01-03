@@ -3,7 +3,7 @@
 let packageJson = require('../package.json');
 
 module.exports = function (environment) {
-  let ENV = {
+  const ENV = {
     modulePrefix: 'ember-inspector',
     environment,
     rootURL: '',
@@ -12,6 +12,7 @@ module.exports = function (environment) {
     emberVersionsSupported: packageJson.emberVersionsSupported,
     previousEmberVersionsSupported: packageJson.previousEmberVersionsSupported,
     EmberENV: {
+      // EXTEND_PROTOTYPES: false,
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
         // e.g. EMBER_NATIVE_DECORATOR_SUPPORT: true
