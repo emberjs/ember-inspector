@@ -96,7 +96,10 @@ module('Ember Debug - Object Inspector', function (hooks) {
     this.owner.register('component:x-simple', Component);
     this.owner.register(
       'template:simple',
-      hbs`Simple <Input class="simple-input"/> {{x-simple class="simple-view"}}`
+      hbs`
+      {{! template-lint-disable}}
+      Simple <Input class="simple-input"/> {{x-simple class="simple-view"}}
+      `
     );
 
     objectInspector = EmberDebug.get('objectInspector');

@@ -10,11 +10,8 @@
         {{svg-jar "arrow-back" width="21px" height="21px"}}
       </button>
 
-      <code
-        class="flex-auto truncate font-bold"
-        data-test-object-name
-      >
-        {{@model.firstObject.name}}
+      <code class="flex-auto truncate font-bold" data-test-object-name>
+        {{get @model "0.name"}}
       </code>
 
       <button
@@ -22,17 +19,17 @@
         class="send-to-console"
         title="Send to Console"
         type="button"
-        {{on "click" (fn this.sendObjectToConsole @model.lastObject)}}
+        {{on
+          "click"
+          (fn this.sendObjectToConsole (get @model (sub @model.length 1)))
+        }}
       >
         {{svg-jar "send-with-text" width="20px" height="10px"}}
       </button>
     </div>
 
     {{#if this.trail}}
-      <code
-        class="object-trail mb-1 break-all"
-        data-test-object-trail
-      >
+      <code class="object-trail mb-1 break-all" data-test-object-trail>
         {{this.trail}}
       </code>
     {{/if}}
@@ -42,7 +39,9 @@
     <div class="toolbar object-inspector-toolbar">
       <button
         data-test-object-display-type-grouped
-        class="toolbar__radio toolbar__radio--first {{if (eq this.propDisplayType "grouped") "active"}}"
+        class="toolbar__radio toolbar__radio--first {{
+          if (eq this.propDisplayType "grouped") "active"
+        }}"
         type="button"
         {{on "click" (fn this.setPropDisplay "grouped")}}
       >
@@ -64,17 +63,17 @@
           id={{this.searchInputId}}
           @type="text"
           @value={{this.customFilter}}
-          {{on "keydown" this.setCustomFilter}}
           placeholder="Search"
           class="box-border m-0 rounded pt-0 pr-4 pb-0 pl-1 text-base leading-none outline-none bg-base00"
+          {{on "keydown" this.setCustomFilter}}
         />
         {{#if this.customFilter}}
           <button
             class="toolbar__icon-button toolbar__search-clear-button absolute right-0 w-auto h-auto"
             title="clear"
-            {{on "click" this.clearCustomFilter}}
             data-test-object-inspector-custom-search-clear
             type="button"
+            {{on "click" this.clearCustomFilter}}
           >
             {{svg-jar "clear" width="14px" height="14px"}}
           </button>

@@ -46,7 +46,12 @@
   </ListContent>
 
   {{#each this.columns key="id" as |column|}}
-    {{#if (and column.visible (not-eq column this.columns.lastObject))}}
+    {{#if
+      (and
+        column.visible
+        (not-eq column (get this.columns (sub this.columns.length 1)))
+      )
+    }}
       <Ui::DragHandle
         @faded={{true}}
         @left={{column.left}}
