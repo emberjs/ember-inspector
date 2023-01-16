@@ -1079,6 +1079,26 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.strictEqual(plainProperty.value.inspect, '123');
   });
 
+  test('Plain properties with period in name do not use nested value', async function (assert) {
+    let inspected = EmberObject.create({
+      'hi.there': 123,
+      hi: { there: 456 },
+    });
+    let message = await inspectObject(inspected);
+
+    let plainProperty = message.details[0].properties[0];
+    assert.strictEqual(plainProperty.name, 'hi.there');
+    assert.ok(plainProperty.isProperty);
+    assert.strictEqual(plainProperty.value.type, 'type-number');
+    assert.strictEqual(plainProperty.value.inspect, '123');
+
+    plainProperty = message.details[0].properties[1];
+    assert.strictEqual(plainProperty.name, 'hi');
+    assert.ok(plainProperty.isProperty);
+    assert.strictEqual(plainProperty.value.type, 'type-object');
+    assert.strictEqual(plainProperty.value.inspect, '{ there: 456 }');
+  });
+
   test('Getters work', async function (assert) {
     class Foo {
       get hi() {

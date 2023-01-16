@@ -70,6 +70,18 @@ function objectToInspect() {
           },
         ],
       },
+      {
+        name: 'Third Detail',
+        properties: [
+          {
+            name: 'property.with.dot',
+            value: {
+              inspect: 'String Value',
+              type: 'type-ember-string',
+            },
+          },
+        ],
+      },
     ],
   });
 }
@@ -105,7 +117,9 @@ module('Object Inspector', function (hooks) {
     });
 
     assert.dom('[data-test-object-name]').hasText('My Object');
-    let [firstDetail, secondDetail] = findAll('[data-test-object-detail]');
+    let [firstDetail, secondDetail, thirdDetail] = findAll(
+      '[data-test-object-detail]'
+    );
     assert
       .dom(firstDetail.querySelector('[data-test-object-detail-name]'))
       .hasText('First Detail');
@@ -121,6 +135,9 @@ module('Object Inspector', function (hooks) {
     assert
       .dom(secondDetail)
       .hasNoClass('mixin_state_expanded', 'Second detail does not expand.');
+    assert
+      .dom(thirdDetail)
+      .hasNoClass('mixin_state_expanded', 'Third detail does not expand.');
     assert.strictEqual(
       firstDetail.querySelectorAll('[data-test-object-property]').length,
       1
@@ -161,6 +178,19 @@ module('Object Inspector', function (hooks) {
       .dom(
         secondDetail.querySelectorAll('[data-test-object-property-value]')[1]
       )
+      .hasText('String Value');
+    await click(thirdDetail.querySelector('[data-test-object-detail-name]'));
+
+    assert.dom(thirdDetail).hasClass('mixin_state_expanded');
+    assert.strictEqual(
+      thirdDetail.querySelectorAll('[data-test-object-property]').length,
+      1
+    );
+    assert
+      .dom(thirdDetail.querySelectorAll('[data-test-object-property-name]')[0])
+      .hasText('property.with.dot');
+    assert
+      .dom(thirdDetail.querySelectorAll('[data-test-object-property-value]')[0])
       .hasText('String Value');
   });
 
@@ -215,6 +245,132 @@ module('Object Inspector', function (hooks) {
 
     assert.dom('[data-test-object-detail]').hasClass('mixin_state_expanded');
     assert.dom('[data-test-object-property-name]').hasText('nestedProp');
+    assert.dom('[data-test-object-property-value]').hasText('Nested Prop');
+
+    respondWith('objectInspector:releaseObject', ({ objectId }) => {
+      assert.strictEqual(objectId, 'nestedObject');
+      return false;
+    });
+
+    await click('[data-test-object-inspector-back]');
+
+    assert.dom('[data-test-object-trail]').doesNotExist(0);
+  });
+
+  test('Digging deeper into objects works when digging into nested object with periods in name', async function (assert) {
+    assert.expect(8);
+
+    await visit('/');
+
+    await sendMessage({
+      type: 'objectInspector:updateObject',
+      ...objectToInspect(),
+    });
+
+    respondWith('objectInspector:digDeeper', {
+      type: 'objectInspector:updateObject',
+      parentObject: 'objectId',
+      name: 'Nested Object',
+      objectId: 'nestedObject',
+      property: 'object.Property',
+      details: [
+        {
+          name: 'Nested Detail',
+          properties: [
+            {
+              name: 'nestedProp',
+              value: {
+                inspect: 'Nested Prop',
+                type: 'type-string',
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    let secondDetail = findAll('[data-test-object-detail]')[1];
+
+    await click(secondDetail.querySelector('[data-test-object-detail-name]'));
+    await click(
+      '[data-test-object-property] [data-test-object-property-value]'
+    );
+
+    assert
+      .dom('[data-test-object-name]')
+      .hasText('My Object', 'Title stays as the initial object.');
+    assert
+      .dom('[data-test-object-trail]')
+      .hasText('.object.Property', 'Nested property shows below title');
+    assert.dom('[data-test-object-detail-name]').hasText('Nested Detail');
+
+    await click('[data-test-object-detail-name]');
+
+    assert.dom('[data-test-object-detail]').hasClass('mixin_state_expanded');
+    assert.dom('[data-test-object-property-name]').hasText('nestedProp');
+    assert.dom('[data-test-object-property-value]').hasText('Nested Prop');
+
+    respondWith('objectInspector:releaseObject', ({ objectId }) => {
+      assert.strictEqual(objectId, 'nestedObject');
+      return false;
+    });
+
+    await click('[data-test-object-inspector-back]');
+
+    assert.dom('[data-test-object-trail]').doesNotExist(0);
+  });
+
+  test('Digging deeper into objects works with nested objects containing properties with periods in name', async function (assert) {
+    assert.expect(8);
+
+    await visit('/');
+
+    await sendMessage({
+      type: 'objectInspector:updateObject',
+      ...objectToInspect(),
+    });
+
+    respondWith('objectInspector:digDeeper', {
+      type: 'objectInspector:updateObject',
+      parentObject: 'objectId',
+      name: 'Nested Object',
+      objectId: 'nestedObject',
+      property: 'objectProperty',
+      details: [
+        {
+          name: 'Nested Detail',
+          properties: [
+            {
+              name: 'nested.Prop',
+              value: {
+                inspect: 'Nested Prop',
+                type: 'type-string',
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    let secondDetail = findAll('[data-test-object-detail]')[1];
+
+    await click(secondDetail.querySelector('[data-test-object-detail-name]'));
+    await click(
+      '[data-test-object-property] [data-test-object-property-value]'
+    );
+
+    assert
+      .dom('[data-test-object-name]')
+      .hasText('My Object', 'Title stays as the initial object.');
+    assert
+      .dom('[data-test-object-trail]')
+      .hasText('.objectProperty', 'Nested property shows below title');
+    assert.dom('[data-test-object-detail-name]').hasText('Nested Detail');
+
+    await click('[data-test-object-detail-name]');
+
+    assert.dom('[data-test-object-detail]').hasClass('mixin_state_expanded');
+    assert.dom('[data-test-object-property-name]').hasText('nested.Prop');
     assert.dom('[data-test-object-property-value]').hasText('Nested Prop');
 
     respondWith('objectInspector:releaseObject', ({ objectId }) => {

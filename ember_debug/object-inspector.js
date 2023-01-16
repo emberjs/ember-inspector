@@ -1404,7 +1404,9 @@ function calculateCP(object, item, errorsForObject) {
     if (object instanceof Ember.ArrayProxy && property == parseInt(property)) {
       return object.objectAt(property);
     }
-    return item.isGetter ? object[property] : get(object, property);
+    return item.isGetter || property.includes('.')
+      ? object[property]
+      : get(object, property);
   } catch (error) {
     errorsForObject[property] = { property, error };
     return new CalculateCPError();

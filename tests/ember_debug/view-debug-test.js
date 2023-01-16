@@ -411,7 +411,7 @@ module('Ember Debug - View', function (hooks) {
     );
     this.owner.register(
       'template:simple',
-      hbs('Simple {{test-foo}} {{test-bar value=(hash x=123)}}', {
+      hbs('Simple {{test-foo}} {{test-bar value=(hash x=123 [x.y]=456)}}', {
         moduleName: 'my-app/templates/simple.hbs',
       })
     );
@@ -508,7 +508,7 @@ module('Ember Debug - View', function (hooks) {
                   const value = await digDeeper(actual.id, 'args');
                   QUnit.assert.equal(
                     value.details[0].properties[0].value.inspect,
-                    '{ x: 123 }',
+                    '{ x: 123, x.y: 456 }',
                     'value inspect should be correct'
                   );
                 }
