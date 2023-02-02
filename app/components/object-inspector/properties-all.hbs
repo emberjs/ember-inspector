@@ -1,13 +1,14 @@
 {{#if this.flatPropertyList.length}}
   <ul class="mixin__properties m-0 text-base font-mono list-none">
     <ObjectInspector::SortProperties
-      @properties={{this.flatPropertyList}} as |sortedProperties|
+      @properties={{this.flatPropertyList}}
+      as |sortedProperties|
     >
       {{#each sortedProperties as |prop|}}
         <ObjectInspector::Property
-          @model={{prop}}
           @calculate={{fn this.calculate prop}}
           @digDeeper={{fn this.digDeeper prop}}
+          @model={{prop}}
           @saveProperty={{this.saveProperty}}
           @sendToConsole={{fn this.sendToConsole prop}}
         />

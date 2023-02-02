@@ -93,7 +93,7 @@
     {{/if}}
     {{#if this.isDate}}
       <span
-        class="{{this.valueType}} mixin__property-value truncate"
+        class="{{@model.value.type}} mixin__property-value truncate"
         role="button"
         {{on "click" this.dateClick}}
         data-test-object-property-value
@@ -102,7 +102,7 @@
       </span>
     {{else}}
       <span
-        class="{{this.valueType}} {{if this.isService "type-service"}} mixin__property-value truncate"
+        class="{{@model.value.type}} {{if this.isService "type-service"}} mixin__property-value truncate"
         role="button"
         {{on "click" this.valueClick}}
         data-test-object-property-value
