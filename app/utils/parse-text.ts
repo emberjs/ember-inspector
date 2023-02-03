@@ -1,11 +1,9 @@
 /**
  * If the value is already wrapped in quotes, remove them, then add them back
  * to avoid double quotes issues
- * @param {string} value The string to remove and add quotes to
- * @return {string}
- * @private
+ * @param value The string to remove and add quotes to
  */
-export default function parseText(value) {
+export default function parseText(value: string): string {
   let parsedValue;
   try {
     parsedValue = JSON.parse(value);
