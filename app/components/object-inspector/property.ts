@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
+import { action, computed } from '@ember/object';
+import { alias, equal } from '@ember/object/computed';
 import { next } from '@ember/runloop';
 import parseText from 'ember-inspector/utils/parse-text';
 
@@ -21,9 +22,22 @@ export default class ObjectInspectorProperty extends Component<ObjectInspectorPr
   // Bound to editing textbox
   @tracked txtValue: string | null = null;
 
-  get isCalculated() {
-    return this.args.model?.value?.isCalculated;
-  }
+  @alias('args.model.value.isCalculated') isCalculated!: boolean;
+
+  @equal('args.model.value.type', 'type-array')
+  isArray!: boolean;
+
+  @equal('args.model.value.type', 'type-date')
+  isDate!: boolean;
+
+  @equal('args.model.value.type', 'type-ember-object')
+  isEmberObject!: boolean;
+
+  @equal('args.model.value.type', 'type-object')
+  isObject!: boolean;
+
+  @equal('args.model.value.type', 'type-string')
+  isString!: boolean;
 
   get isService() {
     return this.args.model?.isService;
@@ -37,14 +51,6 @@ export default class ObjectInspectorProperty extends Component<ObjectInspectorPr
     return this.args.model?.readOnly;
   }
 
-  get isEmberObject() {
-    return this.args.model?.value?.type === 'type-ember-object';
-  }
-
-  get isObject() {
-    return this.args.model?.value?.type === 'type-object';
-  }
-
   get isComputedProperty() {
     return this.args.model?.isComputed;
   }
@@ -56,20 +62,12 @@ export default class ObjectInspectorProperty extends Component<ObjectInspectorPr
     );
   }
 
-  get isArray() {
-    return this.args.model?.value?.type === 'type-array';
-  }
-
-  get isDate() {
-    return this.args.model?.value?.type === 'type-date';
-  }
-
-  get isString() {
-    return this.args.model?.value?.type === 'type-string';
-  }
-
+  @computed('args.model.dependentKeys.[]', 'isCalculated')
   get hasDependentKeys() {
-    return this.args.model?.dependentKeys?.length && this.isCalculated;
+    return (
+      this.args.model?.dependentKeys?.length &&
+      this.isCalculated
+    );
   }
 
   get showDependentKeys() {
