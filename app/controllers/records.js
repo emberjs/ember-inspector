@@ -14,7 +14,7 @@ export default class RecordsController extends Controller {
   filterValue = null;
 
   recordToString(record) {
-    return (get(record, 'searchKeywords') || []).join(' ').toLowerCase();
+    return (record.searchKeywords || []).join(' ').toLowerCase();
   }
 
   /**
@@ -82,7 +82,7 @@ export default class RecordsController extends Controller {
   @action
   inspectModel([record]) {
     this.set('selection', record);
-    this.port.send('data:inspectModel', { objectId: get(record, 'objectId') });
+    this.port.send('data:inspectModel', { objectId: record.objectId });
   }
 
   @action

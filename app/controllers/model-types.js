@@ -1,5 +1,5 @@
 import Controller from '@ember/controller';
-import { action, get, computed } from '@ember/object';
+import { action, computed } from '@ember/object';
 import { sort } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 
@@ -47,7 +47,7 @@ export default class ModelTypesController extends Controller {
       let hideEmptyModels = this.hideEmptyModelTypes;
 
       if (hideEmptyModels) {
-        return !!get(item, 'count');
+        return !!item.count;
       } else {
         return true;
       }

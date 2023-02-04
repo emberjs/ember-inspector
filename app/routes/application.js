@@ -1,5 +1,5 @@
 import { inject as service } from '@ember/service';
-import { set, get, action } from '@ember/object';
+import { action, set } from '@ember/object';
 import Route from '@ember/routing/route';
 import Ember from 'ember';
 const { NativeArray } = Ember;
@@ -79,7 +79,7 @@ export default class ApplicationRoute extends Route {
       const detail = this.get('controller.mixinDetails.mixins').objectAt(
         options.mixinIndex
       );
-      let property = get(detail, 'properties').findBy('name', options.property);
+      let property = detail.properties.findBy('name', options.property);
       if (!property) return;
       set(property, 'value', options.value);
       if (options.dependentKeys) {
@@ -91,7 +91,7 @@ export default class ApplicationRoute extends Route {
   updateErrors(options) {
     let mixinDetails = this.get('controller.mixinDetails');
     if (mixinDetails) {
-      if (get(mixinDetails, 'objectId') === options.objectId) {
+      if (mixinDetails.objectId === options.objectId) {
         set(mixinDetails, 'errors', options.errors);
       }
     }

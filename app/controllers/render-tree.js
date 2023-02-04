@@ -1,4 +1,4 @@
-import { action, computed, get } from '@ember/object';
+import { action, computed } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { isEmpty } from '@ember/utils';
 import Controller from '@ember/controller';
@@ -63,16 +63,16 @@ export default class RenderTreeController extends Controller {
 
   @computed('model.isHighlightSupported')
   get isHighlightEnabled() {
-    return get(this.model, 'isHighlightSupported');
+    return this.model.isHighlightSupported;
   }
 
   @computed('escapedSearch', 'model.profiles.@each.name', 'search')
   get filtered() {
     if (isEmpty(this.escapedSearch)) {
-      return get(this.model, 'profiles');
+      return this.model.profiles;
     }
 
-    return get(this.model, 'profiles').filter((item) => {
+    return this.model.profiles.filter((item) => {
       const regExp = new RegExp(this.escapedSearch);
       return recursiveMatch(item, regExp);
     });
@@ -100,11 +100,11 @@ export default class RenderTreeController extends Controller {
 
 function recursiveMatch(item, regExp) {
   let children, child;
-  let name = get(item, 'name');
+  let name = item.name;
   if (name.toLowerCase().match(regExp)) {
     return true;
   }
-  children = get(item, 'children');
+  children = item.children;
   for (let i = 0; i < children.length; i++) {
     child = children[i];
     if (recursiveMatch(child, regExp)) {

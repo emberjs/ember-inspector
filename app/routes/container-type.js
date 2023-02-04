@@ -1,6 +1,6 @@
 import { inject as service } from '@ember/service';
 import { Promise } from 'rsvp';
-import { get, action } from '@ember/object';
+import { action } from '@ember/object';
 import TabRoute from 'ember-inspector/routes/tab';
 
 export default class ContainerTypeRoute extends TabRoute {
@@ -41,7 +41,7 @@ export default class ContainerTypeRoute extends TabRoute {
   @action
   sendInstanceToConsole(obj) {
     this.port.send('container:sendInstanceToConsole', {
-      name: get(obj, 'fullName'),
+      name: obj.fullName,
     });
   }
 }

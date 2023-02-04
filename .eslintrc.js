@@ -30,7 +30,6 @@ module.exports = {
     'ember/no-jquery': 'error',
 
     // Temporarily turn these off
-    'ember/avoid-leaking-state-in-ember-objects': 'off',
     'ember/classic-decorator-hooks': 'off',
     'ember/classic-decorator-no-classic-methods': 'off',
     'ember/no-classic-classes': 'off',
