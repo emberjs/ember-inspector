@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { action, get } from '@ember/object';
+import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
@@ -49,7 +49,7 @@ export default class ObjectInspector extends Component {
   }
 
   @action sendObjectToConsole(obj) {
-    let objectId = get(obj, 'objectId');
+    let objectId = obj.objectId;
     this.port.send('objectInspector:sendToConsole', {
       objectId,
     });

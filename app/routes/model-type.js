@@ -1,4 +1,3 @@
-import { get } from '@ember/object';
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 import { Promise } from 'rsvp';
@@ -32,6 +31,6 @@ export default class ModelTypeRoute extends Route {
   }
 
   serialize(model) {
-    return { type_id: get(model, 'name') };
+    return { type_id: model.name };
   }
 }
