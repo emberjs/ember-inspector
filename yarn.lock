@@ -6054,7 +6054,7 @@ electron-to-chromium@^1.4.251:
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.284.tgz#61046d1e4cab3a25238f6bf7413795270f125592"
   integrity sha512-M8WEXFuKXMYMVr45fo8mq0wUrrJHheiKZf6BArTKk9ZBYCKJEOU5H8cdWgDT+qCVZf7Na4lVUaZsA+h6uA9+PA==
 
-ember-auto-import@^2.2.4, ember-auto-import@^2.4.0, ember-auto-import@^2.4.1, ember-auto-import@^2.4.3, ember-auto-import@^2.5.0:
+ember-auto-import@^2.2.4, ember-auto-import@^2.4.0, ember-auto-import@^2.4.1, ember-auto-import@^2.5.0, ember-auto-import@^2.6.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/ember-auto-import/-/ember-auto-import-2.6.0.tgz#c7a2f799c9b700d74648cb02e35cf7bc1b44ac02"
   integrity sha512-xUyypxlaqWvrx2KSseLus0H8K7Dt+sXNCvcxtquT2EmIM6r67NuQUT9woiEMa9UBvqcaX2k9hNLeubDl78saig==
@@ -6690,19 +6690,19 @@ ember-on-resize-modifier@^1.0.0:
     ember-resize-observer-service "^1.1.0"
 
 ember-qunit@*, ember-qunit@^6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/ember-qunit/-/ember-qunit-6.1.1.tgz#9e2b7835239e7ffd176e08e536975f66e59f75e5"
-  integrity sha512-3/jCpoecltFV6vm7GCtSDNRxBzWx96nP+QrbereJAnioSaGeLe+slKL3l80mGzMYDTvn7ESobZ+Ba+OQ1vMMKQ==
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/ember-qunit/-/ember-qunit-6.2.0.tgz#4d492951035d1df5c7802c4ae6cf299c8f41d75b"
+  integrity sha512-mC+0bp8DwWzJLn8SW3GS8KDZIkl4yLsNYwMi5Dw6+aFllq7FM2crd/dfY4MuOIHK7GKdjtmWJTMGnjSpeSayaw==
   dependencies:
     broccoli-funnel "^3.0.8"
     broccoli-merge-trees "^3.0.2"
     common-tags "^1.8.0"
-    ember-auto-import "^2.4.3"
+    ember-auto-import "^2.6.0"
     ember-cli-babel "^7.26.11"
     ember-cli-test-loader "^3.0.0"
     resolve-package-path "^4.0.3"
     silent-error "^1.1.1"
-    validate-peer-dependencies "^2.1.0"
+    validate-peer-dependencies "^2.2.0"
 
 ember-raf-scheduler@^0.3.0:
   version "0.3.0"
@@ -13733,7 +13733,7 @@ resolve-package-path@^3.1.0:
     path-root "^0.1.1"
     resolve "^1.17.0"
 
-resolve-package-path@^4.0.0, resolve-package-path@^4.0.1, resolve-package-path@^4.0.3:
+resolve-package-path@^4.0.1, resolve-package-path@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/resolve-package-path/-/resolve-package-path-4.0.3.tgz#31dab6897236ea6613c72b83658d88898a9040aa"
   integrity sha512-SRpNAPW4kewOaNUt8VPqhJ0UMxawMwzJD8V7m1cJfdSTK9ieZwS6K7Dabsm4bmLFM96Z5Y/UznrpG5kt1im8yA==
@@ -14081,7 +14081,7 @@ semver@7.0.0:
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.0.0.tgz#5f3ca35761e47e05b206c6daff2cf814f0316b8e"
   integrity sha512-+GB6zVA9LWh6zovYQLALHwv5rb2PHGlJi3lfiqIHxR0uuwCgefcOJc59v9fv1w8GbStwxuuqqAjI9NMAOOgq1A==
 
-semver@7.3.8, semver@^7.0.0, semver@^7.3.2, semver@^7.3.4, semver@^7.3.5, semver@^7.3.7:
+semver@7.3.8, semver@^7.0.0, semver@^7.3.2, semver@^7.3.4, semver@^7.3.5, semver@^7.3.7, semver@^7.3.8:
   version "7.3.8"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.3.8.tgz#07a78feafb3f7b32347d725e33de7e2a2df67798"
   integrity sha512-NB1ctGL5rlHrPJtFDVIVzTyQylMLu9N9VICA6HSFJo8MCGVTMW6gfpicwKmmK/dAjTOrqu5l63JJOpDSrAis3A==
@@ -15963,13 +15963,13 @@ validate-peer-dependencies@^1.1.0:
     resolve-package-path "^3.1.0"
     semver "^7.3.2"
 
-validate-peer-dependencies@^2.0.0, validate-peer-dependencies@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/validate-peer-dependencies/-/validate-peer-dependencies-2.1.0.tgz#1ad8218b1b168aeb500165f9de2a3f53269ece56"
-  integrity sha512-x+M+mp16g4N+jDQJO6a+AKnMHAViov9mRzYfgMYR6Bq+UTwewf8aTQsP+e1QH0oZrADqP7fuI/bEbl3CzRFhOQ==
+validate-peer-dependencies@^2.0.0, validate-peer-dependencies@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/validate-peer-dependencies/-/validate-peer-dependencies-2.2.0.tgz#47b8ff008f66a66fc5d8699123844522c1d874f4"
+  integrity sha512-8X1OWlERjiUY6P6tdeU9E0EwO8RA3bahoOVG7ulOZT5MqgNDUO/BQoVjYiHPcNe+v8glsboZRIw9iToMAA2zAA==
   dependencies:
-    resolve-package-path "^4.0.0"
-    semver "^7.3.2"
+    resolve-package-path "^4.0.3"
+    semver "^7.3.8"
 
 value-or-function@^3.0.0:
   version "3.0.0"
