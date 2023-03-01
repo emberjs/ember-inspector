@@ -1682,7 +1682,7 @@
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.2.tgz#30aa825f11d438671d585bd44e7fd564535fc210"
   integrity sha512-82cpyJyKRoQoRi+14ibCeGPu0CwypgtBAdBhq1WfvagpCZNKqwXbKwXllYSMG91DhmG4jt9gN8eP6lGOtozuaw==
 
-"@glimmer/component@^1.0.4", "@glimmer/component@^1.1.0", "@glimmer/component@^1.1.2":
+"@glimmer/component@^1.1.0", "@glimmer/component@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@glimmer/component/-/component-1.1.2.tgz#892ec0c9f0b6b3e41c112be502fde073cf24d17c"
   integrity sha512-XyAsEEa4kWOPy+gIdMjJ8XlzA3qrGH55ZDv6nA16ibalCR17k74BI0CztxuRds+Rm6CtbUVgheCVlcCULuqD7A==
@@ -6251,7 +6251,7 @@ ember-cli-htmlbars@^5.3.1, ember-cli-htmlbars@^5.3.2, ember-cli-htmlbars@^5.7.1:
     strip-bom "^4.0.0"
     walk-sync "^2.2.0"
 
-ember-cli-htmlbars@^6.0.0, ember-cli-htmlbars@^6.0.1, ember-cli-htmlbars@^6.1.1:
+ember-cli-htmlbars@^6.0.0, ember-cli-htmlbars@^6.1.1, ember-cli-htmlbars@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/ember-cli-htmlbars/-/ember-cli-htmlbars-6.2.0.tgz#18ec48ee1c93f9eed862a64eb24a9d14604f1dfc"
   integrity sha512-j5EGixjGau23HrqRiW/JjoAovg5UBHfjbyN7wX5ekE90knIEqUUj1z/Mo/cTx/J2VepQ2lE6HdXW9LWQ/WdMtw==
@@ -6645,19 +6645,19 @@ ember-fetch@^8.1.2:
     node-fetch "^2.6.1"
     whatwg-fetch "^3.6.2"
 
-ember-flatpickr@^3.2.2:
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/ember-flatpickr/-/ember-flatpickr-3.2.3.tgz#4ec405d03853d67316fb1813e4e39bca487f1b83"
-  integrity sha512-ON6FNh3gFSxDTam2UOyPOSeYki5qNqPqPEB+SS/Q+L+kPEvxmDMPeG/lWLLvdDsPR0X55W9q7uSjzZZAD/UxqA==
+ember-flatpickr@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/ember-flatpickr/-/ember-flatpickr-4.0.0.tgz#602516b349598a9c8b00cb2d1edc2298a53b5408"
+  integrity sha512-NWCGFZENEcJ5GgtkuAtlAad3uyik4E0wD+/k40tNrlNd+XcGdMVQ4t90ku3GwfTrH9gNR5iq5LajL0dzA5Uhrw==
   dependencies:
     "@ember/render-modifiers" "^2.0.3"
-    "@glimmer/component" "^1.0.4"
-    "@glimmer/tracking" "^1.0.4"
+    "@glimmer/component" "^1.1.2"
+    "@glimmer/tracking" "^1.1.2"
     broccoli-funnel "^3.0.3"
     broccoli-merge-trees "^4.2.0"
     broccoli-stew "^3.0.0"
     ember-cli-babel "^7.26.11"
-    ember-cli-htmlbars "^6.0.1"
+    ember-cli-htmlbars "^6.2.0"
     ember-cli-typescript "^5.0.0"
     flatpickr "^4.6.9"
 
