@@ -2369,9 +2369,9 @@
     "@types/ember__object" "*"
 
 "@types/ember__component@*", "@types/ember__component@^4.0.12":
-  version "4.0.12"
-  resolved "https://registry.yarnpkg.com/@types/ember__component/-/ember__component-4.0.12.tgz#ee2852a644a41c32b869af566a25e7183ad8631d"
-  integrity sha512-qHjCGo1p9I4VJR3qfil7h0jJWTy52uNJw87MNwNEi1SYk+EaVJaqyyyoZHJmZGdn8hw3JjXvyFt/zeFZpbK/6A==
+  version "4.0.13"
+  resolved "https://registry.yarnpkg.com/@types/ember__component/-/ember__component-4.0.13.tgz#3ad900c7b95e603c457f2a77e63d44db139ac169"
+  integrity sha512-mxPme8PexMrv/GPUOE9uPzxjVhHhrznGG4HRUsZNvrHwBbvVwJ/ClgDxz1NZeaYrKhAstQ6QjorssoEXaoer+A==
   dependencies:
     "@types/ember" "*"
     "@types/ember__component" "*"
