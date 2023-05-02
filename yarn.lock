@@ -6882,9 +6882,9 @@ ember-svg-jar@^2.3.4:
     safe-stable-stringify "^2.2.0"
 
 ember-table@^5.0.1:
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/ember-table/-/ember-table-5.0.3.tgz#73440f4fc480864a67f9f5d05a4e4448986d33d6"
-  integrity sha512-1MlPhN1f5kKWS82a7SloMbiy3TVP0OJ6xhx67LaUQSK9amIK2i6EiYKwyUBAT5M/0hZ+Z2hkhjXwQh19FFj/lA==
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/ember-table/-/ember-table-5.0.4.tgz#fb46ce7a775bea46dd8dc93587ab4e50c0909a73"
+  integrity sha512-mdZWHGiRid4+Lkp7E09ad5TO02CK8ivkuIlyrjeSDrOhw0XvnCyU4xXcHtqjVHi97NQ2Cpakelq5ew3FJspMhw==
   dependencies:
     "@babel/core" "^7.0.0-0"
     "@babel/plugin-proposal-nullish-coalescing-operator" "^7.12.13"
