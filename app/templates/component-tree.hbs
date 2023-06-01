@@ -10,6 +10,10 @@
   {{/in-element}}
 {{/if}}
 
+{{#if this.searchSelect}}
+  <div class='component-tree-search'> selecting: <strong>{{this.searchSelect}}</strong></div>
+{{/if}}
+
 <ScrollContainer
   @collection={{this.visibleItems}}
   @currentItem={{this.currentItem}}
@@ -24,6 +28,6 @@
     @estimateHeight={{this.itemHeight}}
     @items={{this.visibleItems}}
     @key="id" as |item|>
-    <ComponentTreeItem @item={{item}} />
+    <ComponentTreeItem @item={{item}} @searchTerm={{this.searchSelect}}/>
   </VerticalCollection>
 </ScrollContainer>

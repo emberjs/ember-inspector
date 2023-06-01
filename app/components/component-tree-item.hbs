@@ -1,6 +1,7 @@
 {{!-- template-lint-disable no-invalid-interactive --}}
 <div
   style={{@item.style}}
+  data-test-id={{@item.instance}}
   class="
     component-tree-item relative flex items-center mx-1 rounded
     {{if @item.hasInstance "cursor-pointer" "cursor-default"}}
@@ -40,7 +41,7 @@
       {{#if @item.isComponent}}
         {{#if @item.isCurlyInvocation}}
           <span class="component-name">
-            {{@item.name}}
+            {{mark-match @item.name @searchTerm}}
           </span>
 
           {{#each @item.args.positional as |value|}}
@@ -63,7 +64,7 @@
           {{/each-in}}
         {{else}}
           <span class="component-name">
-            {{classify @item.name}}
+            {{mark-match (classify @item.name) @searchTerm}}
           </span>
 
           {{#each-in @item.args.named as |name value|}}
@@ -78,11 +79,11 @@
           {{/each-in}}
         {{/if}}
       {{else if @item.isOutlet}}
-        \{{outlet "{{@item.name}}"}}
+        \{{outlet "{{mark-match @item.name @searchTerm}}"}}
       {{else if @item.isEngine}}
-        \{{mount "{{@item.name}}"}}
+        \{{mount "{{mark-match @item.name @searchTerm}}"}}
       {{else if @item.isRouteTemplate}}
-        {{@item.name}} route
+        {{mark-match @item.name @searchTerm}} route
       {{/if}}
     </code>
   </div>

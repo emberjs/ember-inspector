@@ -10,5 +10,5 @@ export default function (text, searchQuery) {
     return true;
   }
   let regExp = new RegExp(escapeRegExp(sanitize(searchQuery)));
-  return !!sanitize(text).match(regExp);
+  return sanitize(text).match(regExp);
 }
