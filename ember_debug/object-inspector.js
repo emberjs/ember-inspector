@@ -9,9 +9,7 @@ import {
 } from 'ember-debug/utils/type-check';
 import { compareVersion } from 'ember-debug/utils/version';
 import Ember from 'ember-debug/utils/ember';
-import MutableArray from 'ember-debug/utils/ember/array/mutable';
 import ArrayProxy from 'ember-debug/utils/ember/array/proxy';
-import Component from 'ember-debug/utils/ember/component';
 import { inspect as emberInspect } from 'ember-debug/utils/ember/debug';
 import EmberObject, {
   computed,
@@ -19,23 +17,13 @@ import EmberObject, {
   set,
 } from 'ember-debug/utils/ember/object';
 import { oneWay } from 'ember-debug/utils/ember/object/computed';
-import Observable from 'ember-debug/utils/ember/object/observable';
-import Evented from 'ember-debug/utils/ember/object/evented';
 import { cacheFor, guidFor } from 'ember-debug/utils/ember/object/internals';
-import PromiseProxyMixin from 'ember-debug/utils/ember/object/promise-proxy-mixin';
 import { _backburner, join } from 'ember-debug/utils/ember/runloop';
 import { isNone } from 'ember-debug/utils/ember/utils';
+import emberNames from './utils/ember-object-names';
+import getObjectName from './utils/get-object-name';
 
-const {
-  meta: emberMeta,
-  VERSION,
-  ActionHandler,
-  ControllerMixin,
-  CoreObject,
-  MutableEnumerable,
-  NativeArray,
-  ObjectProxy,
-} = Ember;
+const { meta: emberMeta, VERSION, CoreObject, ObjectProxy } = Ember;
 
 const GlimmerComponent = (() => {
   try {
@@ -110,41 +98,6 @@ const HAS_GLIMMER_TRACKING = tagValue && tagValidate && track && tagForProperty;
 const keys = Object.keys || Ember.keys;
 
 /**
- * Add Known Ember Mixins and Classes so we can label them correctly in the inspector
- */
-const emberNames = new Map([
-  [Evented, 'Evented Mixin'],
-  [PromiseProxyMixin, 'PromiseProxy Mixin'],
-  [MutableArray, 'MutableArray Mixin'],
-  [MutableEnumerable, 'MutableEnumerable Mixin'],
-  [NativeArray, 'NativeArray Mixin'],
-  [Observable, 'Observable Mixin'],
-  [ControllerMixin, 'Controller Mixin'],
-  [ActionHandler, 'ActionHandler Mixin'],
-  [CoreObject, 'CoreObject'],
-  [EmberObject, 'EmberObject'],
-  [Component, 'Component'],
-]);
-
-if (compareVersion(VERSION, '3.27.0') === -1) {
-  emberNames.set(Ember.TargetActionSupport, 'TargetActionSupport Mixin');
-}
-
-try {
-  const Views = Ember.__loader.require('@ember/-internals/views');
-  emberNames.set(Views.ViewStateSupport, 'ViewStateSupport Mixin');
-  emberNames.set(Views.ViewMixin, 'View Mixin');
-  emberNames.set(Views.ActionSupport, 'ActionSupport Mixin');
-  emberNames.set(Views.ClassNamesSupport, 'ClassNamesSupport Mixin');
-  emberNames.set(Views.ChildViewsSupport, 'ChildViewsSupport Mixin');
-  emberNames.set(Views.ViewStateSupport, 'ViewStateSupport  Mixin');
-  // this one is not a Mixin, but an .extend({}), which results in a class
-  emberNames.set(Views.CoreView, 'CoreView');
-} catch (e) {
-  // do nothing
-}
-
-/**
  * Determine the type and get the value of the passed property
  * @param {*} object The parent object we will look for `key` on
  * @param {string} key The key for the property which points to a computed, EmberObject, etc
@@ -205,7 +158,11 @@ function inspect(value) {
       value.toString !== Object.prototype.toString &&
       value.toString !== Function.prototype.toString
     ) {
-      return `<Object:${value.toString()}>`;
+      try {
+        return `<Object:${value.toString()}>`;
+      } catch (e) {
+        //
+      }
     }
     let ret = [];
     let v;
@@ -269,7 +226,7 @@ function getTagTrackedProps(tag, ownTag, level = 0) {
   if (tag.subtag && !Array.isArray(tag.subtag)) {
     if (tag.subtag._propertyKey)
       props.push(
-        (tag.subtag._object ? getClassName(tag.subtag._object) + '.' : '') +
+        (tag.subtag._object ? getObjectName(tag.subtag._object) + '.' : '') +
           tag.subtag._propertyKey
       );
     props.push(...getTagTrackedProps(tag.subtag, ownTag, level + 1));
@@ -279,7 +236,7 @@ function getTagTrackedProps(tag, ownTag, level = 0) {
       if (t === ownTag) return;
       if (t._propertyKey)
         props.push(
-          (t._object ? getClassName(t._object) + '.' : '') + t._propertyKey
+          (t._object ? getObjectName(t._object) + '.' : '') + t._propertyKey
         );
       props.push(...getTagTrackedProps(t, ownTag, level + 1));
     });
@@ -587,7 +544,7 @@ export default DebugPort.extend({
         parentObject: objectId,
         property,
         objectId: details.objectId,
-        name: getClassName(object),
+        name: getObjectName(object),
         details: details.mixins,
         errors: details.errors,
       });
@@ -603,7 +560,7 @@ export default DebugPort.extend({
     let details = this.mixinsForObject(object);
     this.sendMessage('updateObject', {
       objectId: details.objectId,
-      name: getClassName(object),
+      name: getObjectName(object),
       details: details.mixins,
       errors: details.errors,
     });
@@ -700,7 +657,7 @@ export default DebugPort.extend({
 
     const objectMixin = {
       id: guidFor(object),
-      name: getClassName(object),
+      name: getObjectName(object),
       properties: ownProperties(object, own),
     };
 
@@ -831,66 +788,6 @@ export default DebugPort.extend({
   inspect,
   inspectValue,
 });
-
-function getClassName(object) {
-  let name = '';
-  let className =
-    (object.constructor &&
-      (emberNames.get(object.constructor) || object.constructor.name)) ||
-    '';
-
-  // check if object is a primitive value
-  if (object !== Object(object)) {
-    return typeof object;
-  }
-
-  if (Array.isArray(object)) {
-    return 'array';
-  }
-
-  if (object.constructor && object.constructor.prototype === object) {
-    let { constructor } = object;
-
-    if (
-      constructor.toString &&
-      constructor.toString !== Object.prototype.toString &&
-      constructor.toString !== Function.prototype.toString
-    ) {
-      try {
-        name = constructor.toString();
-      } catch (e) {
-        name = constructor.name;
-      }
-    } else {
-      name = constructor.name;
-    }
-  } else if (
-    'toString' in object &&
-    object.toString !== Object.prototype.toString &&
-    object.toString !== Function.prototype.toString
-  ) {
-    try {
-      name = object.toString();
-    } catch (e) {
-      //
-    }
-  }
-
-  // If the class has a decent looking name, and the `toString` is one of the
-  // default Ember toStrings, replace the constructor portion of the toString
-  // with the class name. We check the length of the class name to prevent doing
-  // this when the value is minified.
-  if (
-    name.match(/<.*:.*>/) &&
-    !className.startsWith('_') &&
-    className.length > 2 &&
-    className !== 'Class'
-  ) {
-    return name.replace(/<.*:/, `<${className}:`);
-  }
-
-  return name || className || '(unknown class)';
-}
 
 function ownMixins(object) {
   // TODO: We need to expose an API for getting _just_ the own mixins directly
