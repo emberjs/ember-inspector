@@ -39,7 +39,7 @@ const {
 
 const GlimmerComponent = (() => {
   try {
-    return window.require('@glimmer/component').default;
+    return requireModule('@glimmer/component').default;
   } catch (e) {
     // ignore, return undefined
   }
