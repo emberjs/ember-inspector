@@ -102,7 +102,7 @@
     "ember-in-element-polyfill": "^1.0.1",
     "ember-load-initializers": "^2.1.2",
     "ember-math-helpers": "^3.0.0",
-    "ember-on-resize-modifier": "^1.0.0",
+    "ember-on-resize-modifier": "^2.0.2",
     "ember-qunit": "^6.1.1",
     "ember-resolver": "^10.0.0",
     "ember-router-service-refresh-polyfill": "^1.0.1",
