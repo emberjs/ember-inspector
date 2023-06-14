@@ -11,6 +11,9 @@ module.exports = function () {
   ]).then((urls) => {
     return {
       useYarn: true,
+      buildManagerOptions(scenario) {
+        return [];
+      },
       scenarios: [
         {
           name: 'ember-lts-3.16',

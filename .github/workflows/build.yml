@@ -79,6 +79,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: 'true'
+      YARN_ENABLE_IMMUTABLE_INSTALLS: 'false'
     strategy:
       fail-fast: false
       matrix:
@@ -198,7 +199,7 @@ jobs:
         run: |
           VERSION="$(jq -r '.version | split("+") | .[0]' package.json)"
 
-          yarn pack
+          yarn pack --filename "ember-inspector-v$VERSION.tgz"
           mkdir -p dist/npm
           tar xvzf "ember-inspector-v$VERSION.tgz" -C dist/npm --strip-components 1
       - name: Upload artifacts (bookmarklet)
