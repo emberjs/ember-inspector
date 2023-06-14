@@ -144,10 +144,6 @@
     "webpack": "^5.75.0",
     "yauzl": "^2.10.0"
   },
-  "resolutions": {
-    "**/ember-auto-import": "^2.2.4",
-    "**/ember-test-selectors": "^6.0.0"
-  },
   "engines": {
     "node": "14.* || 16.* || >= 18"
   },
@@ -190,7 +186,8 @@
     }
   },
   "volta": {
-    "node": "14.18.2",
+    "node": "18.16.0",
     "yarn": "1.22.11"
-  }
+  },
+  "packageManager": "yarn@1.22.11"
 }
