@@ -40,14 +40,16 @@ jobs:
           echo "GIT_BRANCH=${GIT_BRANCH}" >> $GITHUB_ENV
       - name: Set up Volta
         uses: volta-cli/action@v4
-      - name: Install dependencies (yarn)
-        run: yarn install
+      - name: setup pnpm
+        uses: NullVoxPopuli/action-setup-pnpm@v2
+      - name: Install dependencies (pnpm)
+        run: pnpm install
       - name: Lint (hbs)
-        run: yarn lint:hbs
+        run: pnpm lint:hbs
       - name: Lint (js)
-        run: yarn lint:js
+        run: pnpm lint:js
       - name: Run test
-        run: yarn test
+        run: pnpm test
         env:
           COVERAGE: 'true'
       # Ideally, we would split up the test task into separate build and run
@@ -57,11 +59,11 @@ jobs:
       # See https://github.com/kategengler/ember-cli-code-coverage/issues/210
       #
       # - name: Build
-      #   run: yarn ember build --environment test
+      #   run: pnpm ember build --environment test
       #   env:
       #     COVERAGE: 'true'
       # - name: Run test
-      #   run: COVERAGEyarn ember test --path dist
+      #   run: COVERAGE pnpm ember test --path dist
       #   env:
       #     # Due to a bug in ember-cli, running `ember test` with `--path` doesn't set `EMBER_ENV=test`
       #     # See https://github.com/ember-cli/ember-cli/issues/8922
@@ -69,7 +71,7 @@ jobs:
       #     COVERAGE: 'true'
       - name: Report coverage
         if: github.event_name != 'schedule'
-        run: yarn codeclimate-test-reporter < coverage/lcov.info
+        run: pnpm codeclimate-test-reporter < coverage/lcov.info
         env:
           CODECLIMATE_REPO_TOKEN: 59edcfd1ffc778791af49ca594b503e7179f6bbe1991b2cc0c0a6987d103253d
 
@@ -91,25 +93,27 @@ jobs:
           - ember-beta
           - ember-canary
           - ember-default-no-prototype-extensions
-  
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Set up Volta
         uses: volta-cli/action@v4
-      - name: Install dependencies (yarn)
-        run: yarn install
+      - name: setup pnpm
+        uses: NullVoxPopuli/action-setup-pnpm@v2
+      - name: Install dependencies (pnpm)
+        run: pnpm install
       - name: Set NO_EXTEND_PROTOTYPES
         if: matrix.scenario == 'ember-default-no-prototype-extensions'
         run: echo "NO_EXTEND_PROTOTYPES==true" >> .GITHUB_ENV
       - name: Setup ember-try scenario
-        run: yarn ember try:one ${{ matrix.scenario }} --skip-cleanup --- cat package.json
+        run: pnpm ember try:one ${{ matrix.scenario }} --skip-cleanup --- cat package.json
       - name: Build
-        run: yarn ember build --environment test
+        run: pnpm ember build --environment test
       - name: Run test
         # Due to a bug in ember-cli, running `ember test` with `--path` doesn't set `EMBER_ENV=test`
         # See https://github.com/ember-cli/ember-cli/issues/8922
-        run: EMBER_ENV=test yarn ember test --path dist --filter="Ember Debug"
+        run: EMBER_ENV=test pnpm ember test --path dist --filter="Ember Debug"
 
   build:
     name: Build extensions
@@ -121,8 +125,10 @@ jobs:
         uses: actions/checkout@v3
       - name: Set up Volta
         uses: volta-cli/action@v4
-      - name: Install dependencies (yarn)
-        run: yarn install
+      - name: setup pnpm
+        uses: NullVoxPopuli/action-setup-pnpm@v2
+      - name: Install dependencies (pnpm)
+        run: pnpm install
       - name: Download panes
         run: node scripts/download-panes.js
         env:
@@ -193,14 +199,14 @@ jobs:
         env:
           PR: ${{ github.event.pull_request.number }}
       - name: Build
-        run: yarn ember build --environment production
+        run: pnpm ember build --environment production
       - name: Pack
         run: |
-          VERSION="$(jq -r '.version | split("+") | .[0]' package.json)"
+          VERSION="$(jq -r '.version' package.json)"
 
-          yarn pack
+          pnpm pack
           mkdir -p dist/npm
-          tar xvzf "ember-inspector-v$VERSION.tgz" -C dist/npm --strip-components 1
+          tar xvzf "ember-inspector-$VERSION.tgz" -C dist/npm --strip-components 1
       - name: Upload artifacts (bookmarklet)
         uses: actions/upload-artifact@master
         with:
