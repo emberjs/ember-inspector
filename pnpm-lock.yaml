@@ -24,7 +24,7 @@ devDependencies:
     version: 2.0.0(@babel/core@7.22.5)
   '@ember/string':
     specifier: ^3.0.0
-    version: 3.0.0
+    version: 3.1.1
   '@ember/test-helpers':
     specifier: ^2.8.1
     version: 2.8.1(@babel/core@7.22.5)(ember-source@4.12.0)
@@ -48,7 +48,7 @@ devDependencies:
     version: 6.1.1(ember-source@4.12.0)(qunit@2.19.3)(webpack@5.87.0)
   '@types/ember-resolver':
     specifier: ^9.0.0
-    version: 9.0.0(@ember/string@3.0.0)(ember-source@4.12.0)
+    version: 9.0.0(@ember/string@3.1.1)(ember-source@4.12.0)
   '@types/ember__application':
     specifier: ^4.0.5
     version: 4.0.5(@babel/core@7.22.5)
@@ -90,7 +90,7 @@ devDependencies:
     version: 4.0.2(@babel/core@7.22.5)
   '@types/ember__string':
     specifier: ^3.0.10
-    version: 3.0.10
+    version: 3.0.11
   '@types/ember__template':
     specifier: ^4.0.1
     version: 4.0.1
@@ -231,7 +231,7 @@ devDependencies:
     version: 6.1.1(ember-source@4.12.0)(qunit@2.19.3)(webpack@5.87.0)
   ember-resolver:
     specifier: ^10.0.0
-    version: 10.0.0(@ember/string@3.0.0)(ember-source@4.12.0)
+    version: 10.0.0(@ember/string@3.1.1)(ember-source@4.12.0)
   ember-router-service-refresh-polyfill:
     specifier: ^1.0.1
     version: 1.0.1(ember-source@4.12.0)
@@ -1951,8 +1951,8 @@ packages:
       - supports-color
     dev: true
 
-  /@ember/string@3.0.0:
-    resolution: {integrity: sha512-T+7QYDp8ItlQseNveK2lL6OsOO5wg7aNQ/M2RpO8cGwM80oZOnr/Y35HmMfu4ejFEc+F1LPegvu7LGfeJOicWA==}
+  /@ember/string@3.1.1:
+    resolution: {integrity: sha512-UbXJ+k3QOrYN4SRPHgXCqYIJ+yWWUg1+vr0H4DhdQPTy8LJfyqwZ2tc5uqpSSnEXE+/1KopHBE5J8GDagAg5cg==}
     engines: {node: 12.* || 14.* || >= 16}
     dependencies:
       ember-cli-babel: 7.26.11
@@ -2659,11 +2659,11 @@ packages:
       - webpack
     dev: true
 
-  /@types/ember-resolver@9.0.0(@ember/string@3.0.0)(ember-source@4.12.0):
+  /@types/ember-resolver@9.0.0(@ember/string@3.1.1)(ember-source@4.12.0):
     resolution: {integrity: sha512-lEuC2QD8K6rRAbELMejrALFBgelRPt6OQtapny4Oke07ZtK/Lbf9zn5KIDl7PNkirxMD0AStsQTdUqFu6eVbVw==}
     deprecated: This is a stub types definition. ember-resolver provides its own type definitions, so you do not need this installed.
     dependencies:
-      ember-resolver: 10.0.0(@ember/string@3.0.0)(ember-source@4.12.0)
+      ember-resolver: 10.0.0(@ember/string@3.1.1)(ember-source@4.12.0)
     transitivePeerDependencies:
       - '@ember/string'
       - ember-source
@@ -2685,7 +2685,7 @@ packages:
       '@types/ember__routing': 4.0.12(@babel/core@7.22.5)
       '@types/ember__runloop': 4.0.2(@babel/core@7.22.5)
       '@types/ember__service': 4.0.2(@babel/core@7.22.5)
-      '@types/ember__string': 3.0.10
+      '@types/ember__string': 3.0.11
       '@types/ember__template': 4.0.1
       '@types/ember__test': 4.0.1(@babel/core@7.22.5)
       '@types/ember__utils': 4.0.2(@babel/core@7.22.5)
@@ -2815,8 +2815,8 @@ packages:
       - supports-color
     dev: true
 
-  /@types/ember__string@3.0.10:
-    resolution: {integrity: sha512-dxbW06IqPdieA4SEyUfyCUnL8iqUnzdcLUtrfkf8g+DSP2K/RGiexfG6w2NOyOetq8gw8F/WUpNYfMmBcB6Smw==}
+  /@types/ember__string@3.0.11:
+    resolution: {integrity: sha512-Z2bHbA/z6u+niTXamdHBCXIMI8d8k7K1WyERDmgB/uG7HLkGDO6CGmeNmbHKjdxzYR52kvKHFoYoK9EavVvpYA==}
     dev: true
 
   /@types/ember__template@4.0.1:
@@ -7486,7 +7486,7 @@ packages:
       - supports-color
     dev: true
 
-  /ember-resolver@10.0.0(@ember/string@3.0.0)(ember-source@4.12.0):
+  /ember-resolver@10.0.0(@ember/string@3.1.1)(ember-source@4.12.0):
     resolution: {integrity: sha512-e99wFJ4ZpleJ6JMEcIk4WEYP4s3nc+9/iNSXtwBHXC8ADJHJTeN3HjnT/eEbFbswdui4FYxIYuK+UCdP09811Q==}
     engines: {node: 14.* || 16.* || >= 18}
     peerDependencies:
@@ -7496,7 +7496,7 @@ packages:
       ember-source:
         optional: true
     dependencies:
-      '@ember/string': 3.0.0
+      '@ember/string': 3.1.1
       ember-cli-babel: 7.26.11
       ember-source: 4.12.0(@babel/core@7.22.5)(@glimmer/component@1.1.2)(webpack@5.87.0)
     transitivePeerDependencies:
