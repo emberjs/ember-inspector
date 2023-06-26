@@ -261,7 +261,7 @@ devDependencies:
     version: 6.0.0
   ember-truth-helpers:
     specifier: ^3.0.0
-    version: 3.0.0
+    version: 3.1.1
   ember-try:
     specifier: ^2.0.0
     version: 2.0.0
@@ -7750,9 +7750,9 @@ packages:
       - supports-color
     dev: true
 
-  /ember-truth-helpers@3.0.0:
-    resolution: {integrity: sha512-hPKG9QqruAELh0li5xaiLZtr88ioWYxWCXisAWHWE0qCP4a2hgtuMzKUPpiTCkltvKjuqpzTZCU4VhQ+IlRmew==}
-    engines: {node: 10.* || >= 12.*}
+  /ember-truth-helpers@3.1.1:
+    resolution: {integrity: sha512-FHwJAx77aA5q27EhdaaiBFuy9No+8yaWNT5A7zs0sIFCmf14GbcLn69vJEp6mW7vkITezizGAWhw7gL0Wbk7DA==}
+    engines: {node: 10.* || >= 12}
     dependencies:
       ember-cli-babel: 7.26.11
     transitivePeerDependencies:
