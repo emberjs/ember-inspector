@@ -166,7 +166,7 @@ devDependencies:
     version: 6.1.1
   ember-auto-import:
     specifier: ^2.5.0
-    version: 2.5.0(webpack@5.87.0)
+    version: 2.6.3(webpack@5.87.0)
   ember-cli:
     specifier: ~4.9.2
     version: 4.9.2
@@ -6620,46 +6620,6 @@ packages:
 
   /electron-to-chromium@1.4.431:
     resolution: {integrity: sha512-m232JTVmCawA2vG+1azVxhKZ9Sv1Q//xxNv5PkP5rWxGgQE8c3CiZFrh8Xnp+d1NmNxlu3QQrGIfdeW5TtXX5w==}
-    dev: true
-
-  /ember-auto-import@2.5.0(webpack@5.87.0):
-    resolution: {integrity: sha512-fKERUmpZLn4RJiCwTjS7D5zJxgnbF4E6GiSp1GYh53K96S+5UBs06r7ScDI52rq34z0+qdSrA6qiDJ3i/lWqKg==}
-    engines: {node: 12.* || 14.* || >= 16}
-    dependencies:
-      '@babel/core': 7.22.5
-      '@babel/plugin-proposal-class-properties': 7.18.6(@babel/core@7.22.5)
-      '@babel/plugin-proposal-decorators': 7.22.5(@babel/core@7.22.5)
-      '@babel/preset-env': 7.22.5(@babel/core@7.22.5)
-      '@embroider/macros': 1.11.1
-      '@embroider/shared-internals': 2.1.0
-      babel-loader: 8.3.0(@babel/core@7.22.5)(webpack@5.87.0)
-      babel-plugin-ember-modules-api-polyfill: 3.5.0
-      babel-plugin-htmlbars-inline-precompile: 5.3.1
-      babel-plugin-syntax-dynamic-import: 6.18.0
-      broccoli-debug: 0.6.5
-      broccoli-funnel: 3.0.8
-      broccoli-merge-trees: 4.2.0
-      broccoli-plugin: 4.0.7
-      broccoli-source: 3.0.1
-      css-loader: 5.2.7(webpack@5.87.0)
-      debug: 4.3.4
-      fs-extra: 10.1.0
-      fs-tree-diff: 2.0.1
-      handlebars: 4.7.7
-      js-string-escape: 1.0.1
-      lodash: 4.17.21
-      mini-css-extract-plugin: 2.7.6(webpack@5.87.0)
-      parse5: 6.0.1
-      resolve: 1.22.2
-      resolve-package-path: 4.0.3
-      semver: 7.5.1
-      style-loader: 2.0.0(webpack@5.87.0)
-      typescript-memoize: 1.1.1
-      walk-sync: 3.0.0
-    transitivePeerDependencies:
-      - '@glint/template'
-      - supports-color
-      - webpack
     dev: true
 
   /ember-auto-import@2.6.3(webpack@5.87.0):
