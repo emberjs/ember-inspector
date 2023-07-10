@@ -199,6 +199,14 @@ function inspect(value) {
     // `Ember.inspect` is able to handle this use case,
     // but it is very slow as it loops over all props,
     // so summarize to just first 2 props
+    // if it defines a toString, we use that instead
+    if (
+      typeof value.toString === 'function' &&
+      value.toString !== Object.prototype.toString &&
+      value.toString !== Function.prototype.toString
+    ) {
+      return `<Object:${value.toString()}>`;
+    }
     let ret = [];
     let v;
     let count = 0;
