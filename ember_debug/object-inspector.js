@@ -848,7 +848,11 @@ function getClassName(object) {
       constructor.toString !== Object.prototype.toString &&
       constructor.toString !== Function.prototype.toString
     ) {
-      name = constructor.toString();
+      try {
+        name = constructor.toString();
+      } catch (e) {
+        name = constructor.name;
+      }
     } else {
       name = constructor.name;
     }
@@ -857,7 +861,11 @@ function getClassName(object) {
     object.toString !== Object.prototype.toString &&
     object.toString !== Function.prototype.toString
   ) {
-    name = object.toString();
+    try {
+      name = object.toString();
+    } catch (e) {
+      //
+    }
   }
 
   // If the class has a decent looking name, and the `toString` is one of the
