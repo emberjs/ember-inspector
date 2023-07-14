@@ -18,7 +18,7 @@ const path = require('path');
 
 const yauzlFromBuffer = promisify(yauzl.fromBuffer);
 const pipeline = promisify(stream.pipeline);
-const rimraf = promisify(require('rimraf'));
+const { rimraf } = require('rimraf');
 
 async function main() {
   await rimraf('dist_prev');
