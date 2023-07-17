@@ -97,7 +97,7 @@ devDependencies:
     version: 3.0.11
   '@types/ember__template':
     specifier: ^4.0.1
-    version: 4.0.1
+    version: 4.0.2
   '@types/ember__test':
     specifier: ^4.0.1
     version: 4.0.1(@babel/core@7.22.5)
@@ -2762,7 +2762,7 @@ packages:
       '@types/ember__runloop': 4.0.2(@babel/core@7.22.5)
       '@types/ember__service': 4.0.3(@babel/core@7.22.5)
       '@types/ember__string': 3.0.11
-      '@types/ember__template': 4.0.1
+      '@types/ember__template': 4.0.2
       '@types/ember__test': 4.0.1(@babel/core@7.22.5)
       '@types/ember__utils': 4.0.2(@babel/core@7.22.5)
       '@types/htmlbars-inline-precompile': 3.0.0
@@ -2895,8 +2895,8 @@ packages:
     resolution: {integrity: sha512-Z2bHbA/z6u+niTXamdHBCXIMI8d8k7K1WyERDmgB/uG7HLkGDO6CGmeNmbHKjdxzYR52kvKHFoYoK9EavVvpYA==}
     dev: true
 
-  /@types/ember__template@4.0.1:
-    resolution: {integrity: sha512-hAxzdJa0zNvZSoHoCbtd0KGt6Dls4Aph9EwdtbUcdnlMiSUtEDUdKTtDbUrysqJjxGBr4vWIdJEqWtZ0/Y8KBw==}
+  /@types/ember__template@4.0.2:
+    resolution: {integrity: sha512-kQWkak5Sy8m4xcXiXNO2A5+N12qoYK9EK2WtGQYG5pN0wSl6iYFGuz8iq7wEcOyiQ0BH9xSv3uCURukv3U+Txw==}
     dev: true
 
   /@types/ember__test-helpers@2.9.1(@babel/core@7.22.5)(ember-source@4.12.3):
