@@ -3,7 +3,7 @@
 /**
  * Long lived background script running in the browser, works in tandem with the
  * client-script to coordinate messaging between EmberDebug, EmberInspector and the
- * ClientApp.  The background-script serves as a proxy between the EmberInspector
+ * ClientApp. The background.js script serves as a proxy between the EmberInspector
  * and the content-script.
  *
  * It is also responsible for showing the Ember icon and tooltip in the url bar.
