@@ -78,6 +78,22 @@ function makeStylesheet(id) {
       color: rgb(168, 148, 166);
     }
 
+    #${prefix}-tooltip-${id} .${prefix}-tooltip-detail-instance > .${prefix}-tooltip-token-tag {
+      cursor: pointer;
+    }
+
+    #${prefix}-tooltip-${id} .${prefix}-tooltip-detail-instance > .${prefix}-tooltip-token-tag:after {
+      content: "\\1F517"
+    }
+
+    #${prefix}-tooltip-${id} .${prefix}-tooltip-detail-controller > .${prefix}-tooltip-token-tag {
+      cursor: pointer;
+    }
+
+    #${prefix}-tooltip-${id} .${prefix}-tooltip-detail-controller > .${prefix}-tooltip-token-tag:after {
+      content: "\\1F517"
+    }
+
     #${prefix}-tooltip-${id} .${prefix}-tooltip-token-name {
       /* https://github.com/ChromeDevTools/devtools-frontend/blob/103326238685ac582d3bf2a02f1627a80e3fce5f/front_end/ui/inspectorSyntaxHighlight.css#L60 */
       color: rgb(136, 18, 128);
@@ -504,6 +520,18 @@ export default class ViewInspection {
           'Instance',
           this._tokenizeItem(node.instance)
         );
+      }
+      const detail =
+        tbody.querySelector(
+          '.ember-inspector-tooltip-detail-instance > .ember-inspector-tooltip-token-tag'
+        ) ||
+        tbody.querySelector(
+          '.ember-inspector-tooltip-detail-controller > .ember-inspector-tooltip-token-tag'
+        );
+      if (detail) {
+        detail.onclick = () => {
+          this.objectInspector.sendToConsole(node.instance.id);
+        };
       }
     }
   }

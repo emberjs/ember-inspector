@@ -132,7 +132,7 @@ export default class extends DebugPort {
    * @param  {Node} node The DOM node to inspect
    */
   inspectNode(node) {
-    this.adapter.inspectNode(node);
+    this.adapter.inspectValue(node);
   }
 
   sendTree(immediate = false) {

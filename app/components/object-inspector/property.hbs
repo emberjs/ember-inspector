@@ -119,12 +119,23 @@
   <button
     data-test-send-to-console-btn
     class="mixin__send-btn flex-shrink-0 send-to-console"
-    title="Send to console"
+    title="Send To Console"
     type="button"
     {{on "click" @sendToConsole}}
   >
     {{svg-jar "send-with-text" width="20px" height="10px"}}
   </button>
+  {{#if this.isFunction}}
+    <button
+      data-test-goto-source-btn
+      class="mixin__send-btn flex-shrink-0 goto-source"
+      title="Goto Source"
+      type="button"
+      {{on "click" @gotoSource}}
+    >
+      {{svg-jar "code-source" width="20px" height="10px"}}
+    </button>
+  {{/if}}
 </li>
 
 {{#if this.showDependentKeys}}

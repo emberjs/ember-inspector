@@ -107,12 +107,12 @@ export default class WebExtension extends BasicAdapter {
   }
 
   /**
-   * Open the devtools "Elements" tab and select a specific DOM node.
+   * Open the devtools "Elements" or "Sources" tab and select a specific DOM node or function.
    *
-   * @method inspectDOMNode
+   * @method inspectJSValue
    * @param {String} name
    */
-  inspectDOMNode(name) {
+  inspectJSValue(name) {
     chrome.devtools.inspectedWindow.eval(`
       inspect(window[${JSON.stringify(name)}]);
       delete window[${JSON.stringify(name)}];
