@@ -26,6 +26,15 @@ function getLatestEntry(doc) {
   return '';
 }
 
+function patchLernaIcons(text) {
+  return text
+    .replace(':breaking:', '💥')
+    .replace(':rocket:', '🚀')
+    .replace(':bug:', '🐛')
+    .replace(':documentation:', '📝')
+    .replace(':house:', '🏠');
+}
+
 export default class WhatsNewRoute extends TabRoute {
   @service config;
   @tracked error = false;
@@ -41,7 +50,8 @@ export default class WhatsNewRoute extends TabRoute {
     return fetch(url)
       .then(checkStatus)
       .then((response) => response.text())
-      .then((text) => getLatestEntry(text))
+      .then(getLatestEntry)
+      .then(patchLernaIcons)
       .catch((error) => {
         this.error = error;
       });
