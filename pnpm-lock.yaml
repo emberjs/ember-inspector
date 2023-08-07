@@ -118,7 +118,7 @@ devDependencies:
     version: 1.3.1
   aws-sdk:
     specifier: ^2.1205.0
-    version: 2.1400.0
+    version: 2.1430.0
   babel-plugin-module-resolver:
     specifier: ^4.1.0
     version: 4.1.0
@@ -3840,8 +3840,8 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /aws-sdk@2.1400.0:
-    resolution: {integrity: sha512-pHv+EqLINYk9VZZE9cbd+LxNPNeGdNz/QlUdZdpAaWpy4hQeCxvxpzO/38B6nomhEq/1U58+wZF7BRehOCUO5g==}
+  /aws-sdk@2.1430.0:
+    resolution: {integrity: sha512-827BjW9Q9NwUucZBHHU64dh96ihE857LC0ZOEub0C5wjxujoEqET0i4qJR7k+/wn8tFMNtWO0rIGCSGSmgrm5A==}
     engines: {node: '>= 10.0.0'}
     dependencies:
       buffer: 4.9.2
