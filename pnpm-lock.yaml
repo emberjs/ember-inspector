@@ -252,8 +252,8 @@ devDependencies:
     specifier: ^3.0.0
     version: 3.0.0
   ember-svg-jar:
-    specifier: ^2.3.4
-    version: 2.4.3
+    specifier: ^2.4.4
+    version: 2.4.4
   ember-table:
     specifier: ^5.0.1
     version: 5.0.1(@ember/test-helpers@2.8.1)(webpack@5.88.1)
@@ -7678,8 +7678,8 @@ packages:
       - webpack
     dev: true
 
-  /ember-svg-jar@2.4.3:
-    resolution: {integrity: sha512-dY3tA+7iKHa1C8x5MnAM+2kVLbb8j1ECdFAdR4Sys74nje79UFWtJDGERizW2ZSALnsqb3uRgEFINP0V3vCeeg==}
+  /ember-svg-jar@2.4.4:
+    resolution: {integrity: sha512-hzSMuyc6A4FbPBaT9JFYicInq+hVJCgS+1EeoK1zQSMEITiEEzjOGCrAd31GZh8L3g8GOLxpdNBpv982D4loyA==}
     engines: {node: 12.* || 14.* || >= 16}
     dependencies:
       '@embroider/macros': 1.12.3
