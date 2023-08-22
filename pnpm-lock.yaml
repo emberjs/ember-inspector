@@ -42,8 +42,8 @@ devDependencies:
     specifier: ^4.0.2
     version: 4.0.2
   '@tsconfig/ember':
-    specifier: ^2.0.0
-    version: 2.0.0
+    specifier: ^3.0.0
+    version: 3.0.0
   '@types/ember':
     specifier: ^4.0.3
     version: 4.0.3(@babel/core@7.22.5)
@@ -2661,8 +2661,8 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /@tsconfig/ember@2.0.0:
-    resolution: {integrity: sha512-RzbDYYcjxVdG8Ki0xe99HN3+nHTZe6EBgw6N7B3yup7QogVFQQxA9nY7X80j1XzF15xqetwWiYfAjv5lkkp0/A==}
+  /@tsconfig/ember@3.0.0:
+    resolution: {integrity: sha512-KF9F9f4i+8LE31OKS014n5uEDt1mB/6ZvyQz/Mam28nAKDTSMBlOWHgTOj0TY8l4BfbEE+BgUuWCSoUHhb2BMw==}
     dev: true
 
   /@types/acorn@4.0.6:
