@@ -1,5 +1,6 @@
 import classify from 'ember-debug/utils/classify';
 import bound from 'ember-debug/utils/bound-method';
+import getObjectName from '../utils/get-object-name';
 
 function makeHighlight(id) {
   return `<div id="ember-inspector-highlight-${id}" role="presentation"></div>`;
@@ -592,7 +593,7 @@ export default class ViewInspection {
     let stringified;
 
     try {
-      stringified = String(object);
+      stringified = getObjectName(object);
     } catch {
       // nope!
     }
