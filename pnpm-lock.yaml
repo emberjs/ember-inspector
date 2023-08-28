@@ -238,7 +238,7 @@ devDependencies:
     version: 10.0.0(@ember/string@3.1.1)(ember-source@4.12.3)
   ember-router-service-refresh-polyfill:
     specifier: ^1.0.1
-    version: 1.0.1(ember-source@4.12.3)
+    version: 1.1.0(ember-source@4.12.3)
   ember-showdown:
     specifier: ^1.0.0-beta.1
     version: 1.0.0-beta.1
@@ -7632,15 +7632,14 @@ packages:
       - supports-color
     dev: true
 
-  /ember-router-service-refresh-polyfill@1.0.1(ember-source@4.12.3):
-    resolution: {integrity: sha512-gZoTEATNNsqBa/xBtSheOD1C+9pgqkO1Ge34EvzfeYjir7KzD9QSCqpXyZQr9AkMlcqwf6jVFHhw2+cYKeOGUQ==}
+  /ember-router-service-refresh-polyfill@1.1.0(ember-source@4.12.3):
+    resolution: {integrity: sha512-MhrJnpyTTie+Uo9PWiEX4f0t5y70vBjjgcS56aLOvwlSwfInNCtOEgQ/zH89J2dnYUVidebm/1FTubQ2meSjbw==}
     engines: {node: 12.* || 14.* || >= 16}
     peerDependencies:
       ember-source: ^3.4 || 4
     dependencies:
-      '@embroider/macros': 1.11.1
+      '@embroider/macros': 1.12.3
       ember-cli-babel: 7.26.11
-      ember-cli-htmlbars: 6.1.1
       ember-source: 4.12.3(@babel/core@7.22.5)(@glimmer/component@1.1.2)(webpack@5.88.1)
     transitivePeerDependencies:
       - '@glint/template'
