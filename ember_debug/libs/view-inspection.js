@@ -522,7 +522,6 @@ export default class ViewInspection {
       this._renderTokens(td, value);
     } else {
       td.innerText = value;
-      td.title = value;
     }
 
     tr.appendChild(th);
