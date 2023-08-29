@@ -43,7 +43,7 @@ jobs:
       - name: setup pnpm
         uses: NullVoxPopuli/action-setup-pnpm@v2
       - name: Install dependencies (pnpm)
-        run: pnpm install
+        run: pnpm install && cd ember_debug && pnpm i && cd ..
       - name: Lint (hbs)
         run: pnpm lint:hbs
       - name: Lint (js)
@@ -102,7 +102,7 @@ jobs:
       - name: setup pnpm
         uses: NullVoxPopuli/action-setup-pnpm@v2
       - name: Install dependencies (pnpm)
-        run: pnpm install
+        run: pnpm install && cd ember_debug && pnpm i && cd ..
       - name: Set NO_EXTEND_PROTOTYPES
         if: matrix.scenario == 'ember-default-no-prototype-extensions'
         run: echo "NO_EXTEND_PROTOTYPES==true" >> .GITHUB_ENV
