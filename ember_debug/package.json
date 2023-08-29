@@ -3,7 +3,8 @@
   "version": "4.9.1",
   "devDependencies": {
     "@ember/string": "^3.1.1",
-    "ember-source": "~4.12.0"
+    "ember-source": "~4.12.0",
+    "dag-map": '^2.0.2"
   },
   "engines": {
     "node": "14.* || 16.* || >= 18"
