@@ -161,6 +161,8 @@ function makeStylesheet(id) {
       text-align: right;
       color: #000;
       background: transparent;
+      max-width: 400px;
+      word-break: break-word;
     }
 
     #${prefix}-tooltip-${id} .${prefix}-tooltip-arrow {
@@ -520,6 +522,7 @@ export default class ViewInspection {
       this._renderTokens(td, value);
     } else {
       td.innerText = value;
+      td.title = value;
     }
 
     tr.appendChild(th);
