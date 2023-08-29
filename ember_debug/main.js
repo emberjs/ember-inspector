@@ -12,9 +12,9 @@ import DeprecationDebug from 'ember-debug/deprecation-debug';
 import Session from 'ember-debug/services/session';
 
 import Ember from 'ember-debug/utils/ember';
-import Application from 'ember-debug/utils/ember/application';
-import EmberObject, { computed } from 'ember-debug/utils/ember/object';
-import { or } from 'ember-debug/utils/ember/object/computed';
+import Application from '@ember/application';
+import EmberObject, { computed } from '@ember/object';
+import { or } from '@ember/object/computed';
 import {
   guidFor,
   setGuidPrefix,

@@ -1,4 +1,4 @@
-import Ember from './ember';
+import Ember from 'ember-debug/utils/ember';
 const { meta: emberMeta, ComputedProperty } = Ember;
 
 /**
@@ -42,8 +42,9 @@ export function getDescriptorFor(object, key) {
   }
 
   if (Ember.Debug.isComputed) {
-    const { descriptorForDecorator, descriptorForProperty } =
-      Ember.__loader.require('@ember/-internals/metal');
+    const { descriptorForDecorator, descriptorForProperty } = requireModule(
+      '@ember/-internals/metal'
+    );
     return (
       descriptorForDecorator(object[key]) || descriptorForProperty(object, key)
     );

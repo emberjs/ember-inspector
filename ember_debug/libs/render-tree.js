@@ -1,7 +1,8 @@
 import captureRenderTree from './capture-render-tree';
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
-import { A } from 'ember-debug/utils/ember/array';
-import Ember from 'ember-debug/utils/ember';
+import { A } from '@ember/array';
+
+const Ember = requireModule('ember');
 
 class InElementSupportProvider {
   constructor(owner) {
@@ -36,7 +37,7 @@ class InElementSupportProvider {
 
   buildInElementNode(node) {
     const obj = Object.create(null);
-    obj.index = this.currentNode.refs.size;
+    obj.index = this.currentNode?.refs?.size || 0;
     obj.name = 'in-element';
     obj.type = 'component';
     obj.template = null;
@@ -63,6 +64,10 @@ class InElementSupportProvider {
   }
 
   patch() {
+    if (this.debugRenderTree.__inspector_patched) {
+      this.debugRenderTree.__inspector_patched = this;
+      return;
+    }
     const self = this;
 
     const captureNode = this.debugRenderTree.captureNode;
@@ -130,9 +135,14 @@ class InElementSupportProvider {
       pushRemoteElement,
       didAppendNode,
     };
+
+    this.debugRenderTree.__inspector_patched = this;
   }
 
   teardown() {
+    if (this.debugRenderTree.__inspector_patched !== this) {
+      return;
+    }
     if (!this.debugRenderTreeFunctions) {
       return;
     }

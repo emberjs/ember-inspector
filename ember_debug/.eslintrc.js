@@ -1,6 +1,9 @@
 module.exports = {
   root: true,
   extends: '../.eslintrc.js',
+  globals: {
+    define: true,
+  },
   rules: {
     'no-useless-escape': 'off',
 

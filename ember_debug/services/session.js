@@ -1,4 +1,4 @@
-import EmberObject from 'ember-debug/utils/ember/object';
+import EmberObject from '@ember/object';
 
 const Session = EmberObject.extend({
   setItem(/*key, val*/) {},

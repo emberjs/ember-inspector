@@ -7,15 +7,32 @@ const concatFiles = require('broccoli-concat');
 const stew = require('broccoli-stew');
 const writeFile = require('broccoli-file-creator');
 const replace = require('broccoli-string-replace');
-const Babel = require('broccoli-babel-transpiler');
-const moduleResolver = require('amd-name-resolver').resolveModules({
-  throwOnRootAccess: false,
-});
 const Funnel = require('broccoli-funnel');
-const ensurePosix = require('ensure-posix-path');
-const path = require('path');
+const BrocolliPlugin = require('broccoli-plugin');
 const packageJson = require('./package.json');
 const { map, mv } = stew;
+const { build } = require('vite');
+const viteConfig = require('./ember_debug/vite.config');
+
+class ViteBuildPlugin extends BrocolliPlugin {
+  constructor(inputs, options = {}) {
+    const inputNodes = Array.isArray(inputs) ? inputs : [inputs];
+    super(inputNodes, {
+      persistentOutput: true,
+      needsCache: false,
+      annotation: options.annotation,
+    });
+    this.inputNodes = inputNodes;
+    this.options = options;
+  }
+
+  async build() {
+    viteConfig.build.outDir = `${this.outputPath}${
+      this.options.destDir ? '/' + this.options.destDir : ''
+    }`;
+    await build(viteConfig);
+  }
+}
 
 const options = {
   autoImport: {
@@ -32,16 +49,6 @@ const options = {
 // Firefox requires non-minified assets for review :(
 options.minifyJS = { enabled: false };
 options.minifyCSS = { enabled: false };
-
-// Stolen from relative-module-paths.js in ember-cli-babel
-function getRelativeModulePath(modulePath) {
-  return ensurePosix(path.relative(process.cwd(), modulePath));
-}
-
-// Stolen from relative-module-paths.js in ember-cli-babel
-function resolveRelativeModulePath(name, child) {
-  return moduleResolver(name, getRelativeModulePath(child));
-}
 
 module.exports = function (defaults) {
   let checker = new VersionChecker(defaults);
@@ -103,25 +110,7 @@ module.exports = function (defaults) {
   // Ember Debug
 
   let emberDebug = 'ember_debug';
-
-  emberDebug = new Funnel(emberDebug, {
-    destDir: 'ember-debug',
-    include: ['**/*.js'],
-    exclude: [
-      'vendor/loader.js',
-      'vendor/source-map.js',
-      'vendor/startup-wrapper.js',
-    ],
-  });
-
-  emberDebug = new Babel(emberDebug, {
-    moduleIds: true,
-    getModuleId: getRelativeModulePath,
-    plugins: [
-      ['module-resolver', { resolvePath: resolveRelativeModulePath }],
-      ['transform-es2015-modules-amd', { noInterop: true }],
-    ],
-  });
+  emberDebug = new ViteBuildPlugin(emberDebug);
 
   const previousEmberVersionsSupportedString = `[${packageJson.previousEmberVersionsSupported
     .map(function (item) {

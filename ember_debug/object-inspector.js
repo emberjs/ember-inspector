@@ -9,17 +9,12 @@ import {
 } from 'ember-debug/utils/type-check';
 import { compareVersion } from 'ember-debug/utils/version';
 import Ember from 'ember-debug/utils/ember';
-import ArrayProxy from 'ember-debug/utils/ember/array/proxy';
-import { inspect as emberInspect } from 'ember-debug/utils/ember/debug';
-import EmberObject, {
-  computed,
-  get,
-  set,
-} from 'ember-debug/utils/ember/object';
-import { oneWay } from 'ember-debug/utils/ember/object/computed';
+import { inspect as emberInspect } from '@ember/debug';
+import EmberObject, { computed, get, set } from '@ember/object';
+import { oneWay } from '@ember/object/computed';
 import { cacheFor, guidFor } from 'ember-debug/utils/ember/object/internals';
 import { _backburner, join } from 'ember-debug/utils/ember/runloop';
-import { isNone } from 'ember-debug/utils/ember/utils';
+import { isNone } from '@ember/utils';
 import emberNames from './utils/ember-object-names';
 import getObjectName from './utils/get-object-name';
 
@@ -713,7 +708,7 @@ export default DebugPort.extend({
     }
 
     if (
-      object instanceof ArrayProxy &&
+      object instanceof Ember.ArrayProxy &&
       object.content &&
       !object._showProxyDetails
     ) {

@@ -1,10 +1,10 @@
 import Ember from 'ember-debug/utils/ember';
-import MutableArray from 'ember-debug/utils/ember/array/mutable';
-import Component from 'ember-debug/utils/ember/component';
-import Observable from 'ember-debug/utils/ember/object/observable';
-import Evented from 'ember-debug/utils/ember/object/evented';
-import PromiseProxyMixin from 'ember-debug/utils/ember/object/promise-proxy-mixin';
-import EmberObject from 'ember-debug/utils/ember/object';
+import MutableArray from '@ember/array/mutable';
+import Component from '@ember/component';
+import Observable from '@ember/object/observable';
+import Evented from '@ember/object/evented';
+import PromiseProxyMixin from '@ember/object/promise-proxy-mixin';
+import EmberObject from '@ember/object';
 import { compareVersion } from 'ember-debug/utils/version';
 
 const {

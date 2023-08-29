@@ -1,10 +1,10 @@
 import DebugPort from './debug-port';
 import SourceMap from 'ember-debug/libs/source-map';
 
-import { A } from 'ember-debug/utils/ember/array';
+import { A } from '@ember/array';
 import { registerDeprecationHandler } from 'ember-debug/utils/ember/debug';
-import { computed } from 'ember-debug/utils/ember/object';
-import { readOnly } from 'ember-debug/utils/ember/object/computed';
+import { computed } from '@ember/object';
+import { readOnly } from '@ember/object/computed';
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
 import { cancel, debounce } from 'ember-debug/utils/ember/runloop';
 import { all, resolve } from 'ember-debug/utils/rsvp';

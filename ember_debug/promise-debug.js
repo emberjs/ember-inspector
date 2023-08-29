@@ -1,9 +1,9 @@
 import DebugPort from './debug-port';
 import PromiseAssembler from 'ember-debug/libs/promise-assembler';
 
-import { A } from 'ember-debug/utils/ember/array';
-import { computed } from 'ember-debug/utils/ember/object';
-import { readOnly } from 'ember-debug/utils/ember/object/computed';
+import { A } from '@ember/array';
+import { computed } from '@ember/object';
+import { readOnly } from '@ember/object/computed';
 import { debounce } from 'ember-debug/utils/ember/runloop';
 import RSVP from 'ember-debug/utils/rsvp';
 

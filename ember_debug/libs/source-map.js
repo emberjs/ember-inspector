@@ -3,8 +3,8 @@
  * A lot of the code is inspired by/taken from
  * https://github.com/evanw/node-source-map-support
  */
-import { A } from 'ember-debug/utils/ember/array';
-import EmberObject, { computed } from 'ember-debug/utils/ember/object';
+import { A } from '@ember/array';
+import EmberObject, { computed } from '@ember/object';
 import { Promise, resolve } from 'ember-debug/utils/rsvp';
 
 const notFoundError = new Error('Source map url not found');

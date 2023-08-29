@@ -1,7 +1,7 @@
 import BasicAdapter from './basic';
 import { onReady } from 'ember-debug/utils/on-ready';
 
-import { computed } from 'ember-debug/utils/ember/object';
+import { computed } from '@ember/object';
 import { run } from 'ember-debug/utils/ember/runloop';
 import { Promise } from 'ember-debug/utils/rsvp';
 

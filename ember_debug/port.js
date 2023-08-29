@@ -1,6 +1,6 @@
-import EmberObject, { computed } from 'ember-debug/utils/ember/object';
-import { or, readOnly } from 'ember-debug/utils/ember/object/computed';
-import Evented from 'ember-debug/utils/ember/object/evented';
+import EmberObject, { computed } from '@ember/object';
+import { or, readOnly } from '@ember/object/computed';
+import Evented from '@ember/object/evented';
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
 import { run } from 'ember-debug/utils/ember/runloop';
 

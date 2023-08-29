@@ -1,7 +1,7 @@
 import DebugPort from './debug-port';
 
-import { computed } from 'ember-debug/utils/ember/object';
-import { reads, readOnly } from 'ember-debug/utils/ember/object/computed';
+import { computed } from '@ember/object';
+import { reads, readOnly } from '@ember/object/computed';
 
 export default DebugPort.extend({
   namespace: null,
