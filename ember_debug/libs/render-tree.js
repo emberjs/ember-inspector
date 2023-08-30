@@ -1,7 +1,7 @@
 import captureRenderTree from './capture-render-tree';
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
 import { A } from '@ember/array';
-import Ember from 'ember-debug/utils/ember';
+import { EmberLoader } from 'ember-debug/utils/ember/loader';
 
 class InElementSupportProvider {
   constructor(owner) {
@@ -155,7 +155,7 @@ class InElementSupportProvider {
   require(req) {
     return requireModule.has(req)
       ? requireModule(req)
-      : Ember.__loader.require(req);
+      : EmberLoader.require(req);
   }
 
   enter(node) {

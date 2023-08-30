@@ -17,6 +17,7 @@ import { _backburner, join } from 'ember-debug/utils/ember/runloop';
 import { isNone } from '@ember/utils';
 import emberNames from './utils/ember-object-names';
 import getObjectName from './utils/get-object-name';
+import { EmberLoader } from 'ember-debug/utils/ember/loader';
 
 const { meta: emberMeta, VERSION, CoreObject, ObjectProxy } = Ember;
 
@@ -69,7 +70,7 @@ try {
 } catch (e) {
   try {
     // Fallback to the previous implementation
-    let GlimmerReference = Ember.__loader.require('@glimmer/reference');
+    let GlimmerReference = EmberLoader.require('@glimmer/reference');
 
     tagValue = GlimmerReference.value;
     tagValidate = GlimmerReference.validate;
@@ -79,7 +80,7 @@ try {
 }
 
 try {
-  let metal = Ember.__loader.require('@ember/-internals/metal');
+  let metal = EmberLoader.require('@ember/-internals/metal');
 
   tagForProperty = metal.tagForProperty;
   // If track was not already loaded, use metal's version (the previous version)
