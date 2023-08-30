@@ -1,8 +1,7 @@
 import captureRenderTree from './capture-render-tree';
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
 import { A } from '@ember/array';
-
-const Ember = requireModule('ember');
+import Ember from 'ember-debug/utils/ember';
 
 class InElementSupportProvider {
   constructor(owner) {
