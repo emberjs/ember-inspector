@@ -13,7 +13,7 @@ module.exports = {
   },
   root: 'ember_debug',
   build: {
-    minify: false,
+    minify: true,
     lib: {
       // formats: ['amd'],
       entry: path.resolve('.', 'ember_debug/vite.entry.js'),
