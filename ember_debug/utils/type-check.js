@@ -46,7 +46,8 @@ export function getDescriptorFor(object, key) {
     const { descriptorForDecorator, descriptorForProperty } =
       emberSafeRequire('@ember/-internals/metal') || {};
     return (
-      descriptorForDecorator(object[key]) || descriptorForProperty(object, key)
+      descriptorForDecorator?.(object[key]) ||
+      descriptorForProperty?.(object, key)
     );
   }
 
