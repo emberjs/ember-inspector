@@ -52,7 +52,7 @@ devDependencies:
     version: 4.0.3(@babel/core@7.22.5)
   '@types/ember-qunit':
     specifier: ^6.1.1
-    version: 6.1.1(@ember/test-helpers@2.8.1)(ember-source@4.12.3)(qunit@2.19.3)(webpack@5.88.1)
+    version: 6.1.1(ember-source@4.12.3)(qunit@2.19.3)(webpack@5.88.1)
   '@types/ember-resolver':
     specifier: ^9.0.0
     version: 9.0.0(@ember/string@3.1.1)(ember-source@4.12.3)
@@ -241,7 +241,7 @@ devDependencies:
     version: 1.0.0(@babel/core@7.22.5)
   ember-qunit:
     specifier: ^6.1.1
-    version: 6.2.0(@ember/test-helpers@2.8.1)(ember-source@4.12.3)(qunit@2.19.3)(webpack@5.88.1)
+    version: 6.1.1(ember-source@4.12.3)(qunit@2.19.3)(webpack@5.88.1)
   ember-resolver:
     specifier: ^10.0.0
     version: 10.0.0(@ember/string@3.1.1)(ember-source@4.12.3)
@@ -1912,7 +1912,7 @@ packages:
       '@babel/helper-environment-visitor': 7.22.5
       '@babel/helper-function-name': 7.22.5
       '@babel/helper-hoist-variables': 7.22.5
-      '@babel/helper-split-export-declaration': 7.22.6
+      '@babel/helper-split-export-declaration': 7.22.5
       '@babel/parser': 7.22.5
       '@babel/types': 7.22.5
       debug: 4.3.4
@@ -3050,13 +3050,12 @@ packages:
       '@types/ms': 0.7.31
     dev: true
 
-  /@types/ember-qunit@6.1.1(@ember/test-helpers@2.8.1)(ember-source@4.12.3)(qunit@2.19.3)(webpack@5.88.1):
+  /@types/ember-qunit@6.1.1(ember-source@4.12.3)(qunit@2.19.3)(webpack@5.88.1):
     resolution: {integrity: sha512-1g5A3vPKhvB/CuN/EP9rBLXYaJOjzKyLYWeBtNDEQNkTuG1dAo/Hg0CCixgbBgLlzaDP8mR/n1xpg8HqQ8SUKg==}
     deprecated: This is a stub types definition. ember-qunit provides its own type definitions, so you do not need this installed.
     dependencies:
-      ember-qunit: 6.2.0(@ember/test-helpers@2.8.1)(ember-source@4.12.3)(qunit@2.19.3)(webpack@5.88.1)
+      ember-qunit: 6.1.1(ember-source@4.12.3)(qunit@2.19.3)(webpack@5.88.1)
     transitivePeerDependencies:
-      - '@ember/test-helpers'
       - '@glint/template'
       - ember-source
       - qunit
@@ -7874,15 +7873,13 @@ packages:
       - supports-color
     dev: true
 
-  /ember-qunit@6.2.0(@ember/test-helpers@2.8.1)(ember-source@4.12.3)(qunit@2.19.3)(webpack@5.88.1):
-    resolution: {integrity: sha512-mC+0bp8DwWzJLn8SW3GS8KDZIkl4yLsNYwMi5Dw6+aFllq7FM2crd/dfY4MuOIHK7GKdjtmWJTMGnjSpeSayaw==}
+  /ember-qunit@6.1.1(ember-source@4.12.3)(qunit@2.19.3)(webpack@5.88.1):
+    resolution: {integrity: sha512-3/jCpoecltFV6vm7GCtSDNRxBzWx96nP+QrbereJAnioSaGeLe+slKL3l80mGzMYDTvn7ESobZ+Ba+OQ1vMMKQ==}
     engines: {node: 14.* || 16.* || >= 18}
     peerDependencies:
-      '@ember/test-helpers': ^2.9.3
-      ember-source: '>=3.28'
+      ember-source: ^3.28 || ^4.0
       qunit: ^2.13.0
     dependencies:
-      '@ember/test-helpers': 2.8.1(@babel/core@7.22.5)(ember-source@4.12.3)
       broccoli-funnel: 3.0.8
       broccoli-merge-trees: 3.0.2
       common-tags: 1.8.2
@@ -8044,7 +8041,7 @@ packages:
       ember-cli-version-checker: 5.1.2
       ember-router-generator: 2.0.0
       inflection: 1.13.4
-      resolve: 1.22.4
+      resolve: 1.22.2
       semver: 7.5.1
       silent-error: 1.1.1
     transitivePeerDependencies:
@@ -14076,8 +14073,8 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
-  /postcss@8.4.28:
-    resolution: {integrity: sha512-Z7V5j0cq8oEKyejIKfpD8b4eBy9cwW2JWPk0+fB1HOAMsfHbnAXLLS+PfVWlzMSLQaWttKDt607I0XHmpE67Vw==}
+  /postcss@8.4.29:
+    resolution: {integrity: sha512-cbI+jaqIeu/VGqXEarWkRCCffhjgXc0qjBtXpqJhTBohMUjUQnbBr0xqX3vEKudc4iviTewcJo5ajcec5+wdJw==}
     engines: {node: ^10 || ^12 || >=14}
     dependencies:
       nanoid: 3.3.6
@@ -17358,7 +17355,7 @@ packages:
         optional: true
     dependencies:
       esbuild: 0.18.20
-      postcss: 8.4.28
+      postcss: 8.4.29
       rollup: 3.28.1
       sass: 1.63.6
     optionalDependencies:
