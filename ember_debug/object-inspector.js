@@ -8,9 +8,9 @@ import {
   typeOf,
 } from 'ember-debug/utils/type-check';
 import { compareVersion } from 'ember-debug/utils/version';
-import Ember from 'ember-debug/utils/ember';
 import { inspect as emberInspect } from '@ember/debug';
-import EmberObject, { computed, get, set } from '@ember/object';
+import { computed } from '@ember/object';
+import Ember, { get, set, EmberObject } from 'ember-debug/utils/ember';
 import { oneWay } from '@ember/object/computed';
 import { cacheFor, guidFor } from 'ember-debug/utils/ember/object/internals';
 import { _backburner, join } from 'ember-debug/utils/ember/runloop';
@@ -23,7 +23,7 @@ const { meta: emberMeta, VERSION, CoreObject, ObjectProxy } = Ember;
 
 const GlimmerComponent = (() => {
   try {
-    return requireModule('@glimmer/component').default;
+    return EmberLoader.require('@glimmer/component').default;
   } catch (e) {
     // ignore, return undefined
   }

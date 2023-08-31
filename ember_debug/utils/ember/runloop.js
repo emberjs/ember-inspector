@@ -13,6 +13,7 @@ try {
   _backburner = module._backburner || runloop._backburner;
 } catch {
   _backburner = Ember?.run?.backburner || runloop._backburner;
+  module = Ember?.run || module;
 }
 
 // if it is our own, run a internal to trigger `end`
