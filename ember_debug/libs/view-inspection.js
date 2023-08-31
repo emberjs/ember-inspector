@@ -154,7 +154,6 @@ function makeStylesheet(id) {
       border: none;
       border-spacing: 0px;
       border-collapse: collapse;
-      white-space: nowrap;
       font-family: sans-serif;
       font-size: 12px;
       font-weight: normal;
@@ -373,8 +372,9 @@ export default class ViewInspection {
     let rect = this.renderTree.getBoundingClientRect(id);
 
     if (node && rect) {
-      this._showHighlight(node, rect);
       this._showTooltip(node, rect);
+      rect = this.renderTree.getBoundingClientRect(id);
+      this._showHighlight(node, rect);
 
       this.isShowing = true;
       this.isPinned = pin;
@@ -522,7 +522,6 @@ export default class ViewInspection {
       this._renderTokens(td, value);
     } else {
       td.innerText = value;
-      td.title = value;
     }
 
     tr.appendChild(th);
