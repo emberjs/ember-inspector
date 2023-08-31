@@ -63,10 +63,6 @@ class InElementSupportProvider {
   }
 
   patch() {
-    if (this.debugRenderTree.__inspector_patched) {
-      this.debugRenderTree.__inspector_patched = this;
-      return;
-    }
     const self = this;
 
     const captureNode = this.debugRenderTree.captureNode;
@@ -134,14 +130,9 @@ class InElementSupportProvider {
       pushRemoteElement,
       didAppendNode,
     };
-
-    this.debugRenderTree.__inspector_patched = this;
   }
 
   teardown() {
-    if (this.debugRenderTree.__inspector_patched !== this) {
-      return;
-    }
     if (!this.debugRenderTreeFunctions) {
       return;
     }
