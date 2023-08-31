@@ -5,7 +5,10 @@ let module;
 try {
   module = Ember.__loader;
 } catch {
-  module = requireModule;
+  module = {
+    require,
+    requireModule,
+  };
 }
 
 export function emberSafeRequire(id) {

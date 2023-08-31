@@ -33,7 +33,7 @@ let tagValue, tagValidate, track, tagForProperty;
 
 try {
   // Try to load the most recent library
-  let GlimmerValidator = Ember.__loader.require('@glimmer/validator');
+  let GlimmerValidator = EmberLoader.require('@glimmer/validator');
 
   tagValue = GlimmerValidator.value || GlimmerValidator.valueForTag;
   tagValidate = GlimmerValidator.validate || GlimmerValidator.validateTag;
