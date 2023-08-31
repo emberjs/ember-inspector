@@ -372,8 +372,9 @@ export default class ViewInspection {
     let rect = this.renderTree.getBoundingClientRect(id);
 
     if (node && rect) {
-      this._showHighlight(node, rect);
       this._showTooltip(node, rect);
+      rect = this.renderTree.getBoundingClientRect(id);
+      this._showHighlight(node, rect);
 
       this.isShowing = true;
       this.isPinned = pin;
