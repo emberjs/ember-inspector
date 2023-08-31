@@ -154,7 +154,6 @@ function makeStylesheet(id) {
       border: none;
       border-spacing: 0px;
       border-collapse: collapse;
-      white-space: nowrap;
       font-family: sans-serif;
       font-size: 12px;
       font-weight: normal;
