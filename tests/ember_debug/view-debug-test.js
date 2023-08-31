@@ -803,7 +803,12 @@ module('Ember Debug - View', function (hooks) {
         .hasText('<TestFoo>');
       assert
         .dom('.ember-inspector-tooltip-detail-template', tooltip)
-        .hasText('my-app/templates/components/test-foo.hbs');
+        .hasText(
+          'my-app/templates/components/test-foo.hbs'.replace(
+            /\//g,
+            '\u200B/\u200B'
+          )
+        );
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
         .hasText('App.TestFooComponent');
@@ -833,7 +838,12 @@ module('Ember Debug - View', function (hooks) {
         .hasText('<TestBar>');
       assert
         .dom('.ember-inspector-tooltip-detail-template', tooltip)
-        .hasText('my-app/templates/components/test-bar.hbs');
+        .hasText(
+          'my-app/templates/components/test-bar.hbs'.replace(
+            /\//g,
+            '\u200B/\u200B'
+          )
+        );
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
         .hasText(
@@ -874,7 +884,12 @@ module('Ember Debug - View', function (hooks) {
         .hasText('<TestFoo>');
       assert
         .dom('.ember-inspector-tooltip-detail-template', tooltip)
-        .hasText('my-app/templates/components/test-foo.hbs');
+        .hasText(
+          'my-app/templates/components/test-foo.hbs'.replace(
+            /\//g,
+            '\u200B/\u200B'
+          )
+        );
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
         .hasText('App.TestFooComponent');
@@ -898,7 +913,12 @@ module('Ember Debug - View', function (hooks) {
         .hasText('<TestFoo>');
       assert
         .dom('.ember-inspector-tooltip-detail-template', tooltip)
-        .hasText('my-app/templates/components/test-foo.hbs');
+        .hasText(
+          'my-app/templates/components/test-foo.hbs'.replace(
+            /\//g,
+            '\u200B/\u200B'
+          )
+        );
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
         .hasText('App.TestFooComponent');

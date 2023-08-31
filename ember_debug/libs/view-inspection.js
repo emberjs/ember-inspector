@@ -161,7 +161,7 @@ function makeStylesheet(id) {
       color: #000;
       background: transparent;
       max-width: 400px;
-      word-break: break-word;
+      word-wrap: break-word;
     }
 
     #${prefix}-tooltip-${id} .${prefix}-tooltip-arrow {
@@ -521,7 +521,7 @@ export default class ViewInspection {
     if (Array.isArray(value)) {
       this._renderTokens(td, value);
     } else {
-      td.innerText = value;
+      td.innerText = value.replace(/\//g, '\u200B/\u200B');
     }
 
     tr.appendChild(th);
