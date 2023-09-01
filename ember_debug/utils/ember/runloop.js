@@ -31,4 +31,4 @@ if (_backburner === runloop._backburner) {
   loop();
 }
 
-export let { cancel, debounce, join, later, scheduleOnce } = runloop;
+export let { cancel, debounce, join, later, scheduleOnce } = module;
