@@ -1,46 +1,43 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
 
   "name": "Ember Inspector",
   "description": "Tool for debugging Ember applications.",
   "version": "{{EMBER_INSPECTOR_VERSION}}",
 
   "icons": {
-    "16":  "{{PANE_ROOT}}/assets/images/icon16.png",
+    "16": "{{PANE_ROOT}}/assets/images/icon16.png",
     "32": "{{PANE_ROOT}}/assets/images/icon38.png",
-    "48":  "{{PANE_ROOT}}/assets/images/icon48.png",
+    "48": "{{PANE_ROOT}}/assets/images/icon48.png",
     "128": "{{PANE_ROOT}}/assets/images/icon128.png"
   },
 
-  "permissions": [
-    "<all_urls>",
-    "storage",
-    "contextMenus"
-  ],
+  "permissions": ["<all_urls>", "storage", "contextMenus"],
 
-  "content_security_policy": "script-src 'self'; object-src 'self'",
-  "devtools_page": "devtools.html",
-
-  "content_scripts": [{
-    "matches": ["<all_urls>"],
-    "js": ["boot.js"],
-    "run_at": "document_start",
-    "match_about_blank": true,
-    "all_frames": true
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
   },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["boot.js"],
+      "run_at": "document_start",
+      "match_about_blank": true,
+      "all_frames": true
+    },
     {
       "matches": ["<all_urls>"],
       "js": ["content-script.js"],
       "run_at": "document_end",
       "match_about_blank": true,
       "all_frames": true
-    }],
+    }
+  ],
 
-  "background": {
-    "scripts": ["background-script.js"]
-  },
+  "devtools_page": "devtools.html",
 
-  "page_action": {
+  "action": {
     "default_icon": {
       "19": "{{PANE_ROOT}}/assets/images/icon19.png",
       "38": "{{PANE_ROOT}}/assets/images/icon38.png"
@@ -48,11 +45,17 @@
     "default_title": "This webpage is not running Ember.js"
   },
 
-  "web_accessible_resources": [
-    "scripts/in-page-script.js"
-  ],
+  "background": {
+    "service_worker": "background.js"
+  },
 
   "options_ui": {
     "page": "options-dialog.html"
-  }
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["scripts/in-page-script.js"]
+    }
+  ]
 }

@@ -224,9 +224,7 @@ module('Integration | Injection', function (hooks) {
 
   async function inject(owner, assert) {
     if (injected) return;
-    const backgroundScript = await (
-      await fetch('/background-script.js')
-    ).text();
+    const backgroundScript = await (await fetch('/background.js')).text();
     {
       // eslint-disable-next-line no-unused-vars
       const chrome = backgroundChromeApi;

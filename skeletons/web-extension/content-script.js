@@ -1,10 +1,10 @@
 /* global chrome*/
 
 /**
- * Content script injected into the app page by chrome, works in tandem with the
- * background-script to coordinate messaging between EmberDebug, EmberInspector and the
+ * Content script injected into the app page by chrome, works in tandem with
+ * background.js to coordinate messaging between EmberDebug, EmberInspector and the
  * ClientApp.  The content-script serves as a proxy between EmberDebug
- * and the background-script.
+ * and background.js.
  *
  * Content scripts are loaded into every page, and have access to the DOM.  This uses that
  * to inject the in-page-script to determine the ClientApp version onLoad.
@@ -18,7 +18,7 @@
    * that proxies between the content-script and EmberDebug using a MessagingChannel.
    *
    * All events from the window are filtered by checking that data and data.type
-   * properties exist before sending messages on to the background-script.
+   * properties exist before sending messages on to the background script.
    *
    * See:
    *     https://developer.mozilla.org/en-US/docs/Web/API/Channel_Messaging_API
@@ -38,7 +38,7 @@
    * @param {Object} emberDebugPort
    */
   function listenToEmberDebugPort(emberDebugPort) {
-    // listen for messages from EmberDebug, and pass them on to the background-script
+    // listen for messages from EmberDebug, and pass them on to the background script
     emberDebugPort.addEventListener('message', function(event) {
       chrome.runtime.sendMessage(event.data);
     });

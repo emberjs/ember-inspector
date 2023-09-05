@@ -3,7 +3,7 @@
 /**
  * Long lived background script running in the browser, works in tandem with the
  * client-script to coordinate messaging between EmberDebug, EmberInspector and the
- * ClientApp.  The background-script serves as a proxy between the EmberInspector
+ * ClientApp. The background.js script serves as a proxy between the EmberInspector
  * and the content-script.
  *
  * It is also responsible for showing the Ember icon and tooltip in the url bar.
@@ -32,18 +32,18 @@
   }
 
   /**
-   * Creates the title for the pageAction for the current ClientApp
+   * Creates the title for the action for the current ClientApp
    * @param {Number} tabId - the current tab
    */
   function setActionTitle(tabId) {
-    chrome.pageAction.setTitle({
+    chrome.action.setTitle({
       tabId: tabId,
       title: generateVersionsTooltip(activeTabs[tabId])
     });
   }
 
   /**
-   * Update the tab's pageAction: https://developer.chrome.com/extensions/pageAction
+   * Update the tab's action: https://developer.chrome.com/extensions/pageAction
    * If the user has choosen to display it, the icon is shown and the title
    * is updated to display the ClientApp's information in the tooltip.
    * @param {Number} tabId - the current tab
@@ -51,7 +51,7 @@
   function updateTabAction(tabId) {
     chrome.storage.sync.get("options", function(data) {
       if (!data.options || !data.options.showTomster) { return; }
-      chrome.pageAction.show(tabId);
+      chrome.action.show(tabId);
       setActionTitle(tabId);
     });
   }
@@ -66,7 +66,7 @@
       return;
     }
 
-    chrome.pageAction.hide(tabId);
+    chrome.action.hide(tabId);
   }
 
   /**
