@@ -33,8 +33,8 @@ OR:
 - run `pnpm add -g ember-cli`
 - run `pnpm install`
 - run `pnpm build` to build the `dist` directory
-- Visit `about:debugging` in Firefox
-- Click on 'Load Temporary Addon-on'
+- Visit `about:debugging#/runtime/this-firefox` in Firefox
+- Click on 'Load Temporary Add-on…'
 - Choose the `dist/firefox/manifest.json` file in the cloned repo
 
 ### Opera
