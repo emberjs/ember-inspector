@@ -4,6 +4,7 @@
     // The combination of `baseUrl` with `paths` allows Ember's classic package
     // layout, which is not resolvable with the Node resolution algorithm, to
     // work with TypeScript.
+    "allowJs": true,
     "baseUrl": ".",
     "paths": {
       "ember-debug/deps/*": ["node_modules/*"],
@@ -17,5 +18,5 @@
       "*": ["types/*"]
     }
   },
-  "include": ["app/**/*", "tests/**/*", "types/**/*", "lib/ui/**/*"]
+  "include": ["app/**/*", "tests/**/*", "types/**/*", "lib/ui/**/*", "ember_debug/**/*"]
 }

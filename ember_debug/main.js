@@ -11,41 +11,26 @@ import ContainerDebug from 'ember-debug/container-debug';
 import DeprecationDebug from 'ember-debug/deprecation-debug';
 import Session from 'ember-debug/services/session';
 
-import Ember from 'ember-debug/utils/ember';
-import Application from 'ember-debug/utils/ember/application';
-import EmberObject, { computed } from 'ember-debug/utils/ember/object';
-import { or } from 'ember-debug/utils/ember/object/computed';
+import { Application, Namespace } from 'ember-debug/utils/ember';
 import {
   guidFor,
   setGuidPrefix,
 } from 'ember-debug/utils/ember/object/internals';
 import { run } from 'ember-debug/utils/ember/runloop';
+import BaseObject from 'ember-debug/utils/base-object';
 
-const { Namespace } = Ember;
-
-const EmberDebug = EmberObject.extend({
+class EmberDebug extends BaseObject {
   /**
    * Set to true during testing.
    *
    * @type {Boolean}
    * @default false
    */
-  isTesting: false,
+  isTesting = false;
 
-  /**
-   * @private
-   * @property _application
-   * @type {Application}
-   */
-  _application: null,
-
-  owner: null,
-  started: false,
-
-  applicationName: or(
-    '_application.name',
-    '_application.modulePrefix'
-  ).readOnly(),
+  get applicationName() {
+    return this._application.name || this._application.modulePrefix;
+  }
 
   /**
    * We use the application's id instead of the owner's id so that we use the same inspector
@@ -54,17 +39,17 @@ const EmberDebug = EmberObject.extend({
    * @property applicationId
    * @type {String}
    */
-  applicationId: computed('_application', 'isTesting', 'owner', function () {
+  get applicationId() {
     if (!this.isTesting) {
       return guidFor(this._application, 'ember');
     }
     return guidFor(this.owner, 'ember');
-  }),
+  }
 
   // Using object shorthand syntax here is somehow having strange side effects.
   // eslint-disable-next-line object-shorthand
-  Port: Port,
-  Adapter: BasicAdapter,
+  Port = Port;
+  Adapter = BasicAdapter;
 
   start($keepAdapter) {
     if (this.started) {
@@ -72,9 +57,9 @@ const EmberDebug = EmberObject.extend({
       return;
     }
     if (!this._application && !this.isTesting) {
-      this.set('_application', getApplication());
+      this._application = getApplication();
     }
-    this.set('started', true);
+    this.started = true;
 
     this.reset();
 
@@ -82,7 +67,7 @@ const EmberDebug = EmberObject.extend({
     this.adapter.sendMessage({
       type: 'inspectorLoaded',
     });
-  },
+  }
 
   destroyContainer() {
     if (this.generalDebug) {
@@ -100,27 +85,27 @@ const EmberDebug = EmberObject.extend({
       'objectInspector',
       'session',
     ].forEach((prop) => {
-      let handler = this.get(prop);
+      let handler = this[prop];
       if (handler) {
         run(handler, 'destroy');
-        this.set(prop, null);
+        this[prop] = null;
       }
     });
-  },
+  }
 
   startModule(prop, Module) {
-    this.set(prop, Module.create({ namespace: this }));
-  },
+    this[prop] = new Module({ namespace: this });
+  }
 
   willDestroy() {
     this.destroyContainer();
-    this._super(...arguments);
-  },
+    super.willDestroy();
+  }
 
   reset($keepAdapter) {
     setGuidPrefix(Math.random().toString());
     if (!this.isTesting && !this.owner) {
-      this.set('owner', getOwner(this._application));
+      this.owner = getOwner(this._application);
     }
     this.destroyContainer();
     run(() => {
@@ -147,21 +132,21 @@ const EmberDebug = EmberObject.extend({
 
       this.generalDebug.sendBooted();
     });
-  },
+  }
 
   inspect(obj) {
     this.objectInspector.sendObject(obj);
     this.adapter.log('Sent to the Object Inspector');
     return obj;
-  },
+  }
 
   clear() {
-    this.setProperties({
+    Object.assign(this, {
       _application: null,
       owner: null,
     });
-  },
-}).create();
+  }
+}
 
 function getApplication() {
   let namespaces = Namespace.NAMESPACES;
@@ -184,4 +169,4 @@ function getOwner(application) {
   }
 }
 
-export default EmberDebug;
+export default new EmberDebug();

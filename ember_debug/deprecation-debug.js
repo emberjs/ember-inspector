@@ -1,37 +1,89 @@
 import DebugPort from './debug-port';
 import SourceMap from 'ember-debug/libs/source-map';
 
-import { A } from 'ember-debug/utils/ember/array';
 import { registerDeprecationHandler } from 'ember-debug/utils/ember/debug';
-import { computed } from 'ember-debug/utils/ember/object';
-import { readOnly } from 'ember-debug/utils/ember/object/computed';
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
 import { cancel, debounce } from 'ember-debug/utils/ember/runloop';
-import { all, resolve } from 'ember-debug/utils/rsvp';
 
-export default DebugPort.extend({
-  portNamespace: 'deprecation',
+export default class extends DebugPort {
+  static {
+    this.prototype.portNamespace = 'deprecation';
+    this.prototype.sourceMap = new SourceMap();
+    this.prototype.messages = {
+      watch() {
+        this._watching = true;
+        let grouped = this.groupedDeprecations;
+        let deprecations = [];
+        for (let i in grouped) {
+          if (!grouped.hasOwnProperty(i)) {
+            continue;
+          }
+          deprecations.push(grouped[i]);
+        }
+        this.sendMessage('deprecationsAdded', {
+          deprecations,
+        });
+        this.sendPending();
+      },
 
-  adapter: readOnly('port.adapter'),
+      sendStackTraces(message) {
+        let deprecation = message.deprecation;
+        deprecation.sources.forEach((source) => {
+          let stack = source.stackStr;
+          stack = stack.split('\n');
+          stack.unshift(
+            `Ember Inspector (Deprecation Trace): ${deprecation.message || ''}`
+          );
+          this.adapter.log(stack.join('\n'));
+        });
+      },
 
-  sourceMap: computed(function () {
-    return SourceMap.create();
-  }),
+      getCount() {
+        this.sendCount();
+      },
 
-  emberCliConfig: readOnly('namespace.generalDebug.emberCliConfig'),
+      clear() {
+        cancel(this.debounce);
+        this.deprecations.length = 0;
+        this.groupedDeprecations = {};
+        this.sendCount();
+      },
 
-  init() {
-    this._super();
+      release() {
+        this._watching = false;
+      },
 
-    this.deprecations = A();
-    this.deprecationsToSend = A();
+      setOptions({ options }) {
+        this.options.toggleDeprecationWorkflow =
+          options.toggleDeprecationWorkflow;
+      },
+    };
+  }
+
+  get adapter() {
+    return this.port?.adapter;
+  }
+
+  get emberCliConfig() {
+    return this.__emberCliConfig || this.namespace?.generalDebug.emberCliConfig;
+  }
+
+  set emberCliConfig(value) {
+    this.__emberCliConfig = value;
+  }
+
+  constructor(data) {
+    super(data);
+
+    this.deprecations = [];
+    this.deprecationsToSend = [];
     this.groupedDeprecations = {};
     this.options = {
       toggleDeprecationWorkflow: false,
     };
 
     this.handleDeprecations();
-  },
+  }
 
   /**
    * Checks if ember-cli and looks for source maps.
@@ -39,7 +91,7 @@ export default DebugPort.extend({
   fetchSourceMap(stackStr) {
     if (
       this.emberCliConfig &&
-      this.get('emberCliConfig.environment') === 'development'
+      this.emberCliConfig.environment === 'development'
     ) {
       return this.sourceMap.map(stackStr).then(
         (mapped) => {
@@ -48,14 +100,14 @@ export default DebugPort.extend({
               (item) =>
                 item.source &&
                 !!item.source.match(
-                  new RegExp(this.get('emberCliConfig.modulePrefix'))
+                  new RegExp(this.emberCliConfig.modulePrefix)
                 )
             );
 
             if (source) {
               source.found = true;
             } else {
-              source = mapped.get('firstObject');
+              source = mapped.firstObject;
               source.found = false;
             }
             return source;
@@ -65,23 +117,23 @@ export default DebugPort.extend({
         'ember-inspector'
       );
     } else {
-      return resolve(null, 'ember-inspector');
+      return Promise.resolve(null);
     }
-  },
+  }
 
   sendPending() {
     if (this.isDestroyed) {
       return;
     }
 
-    let deprecations = A();
+    let deprecations = [];
 
-    let promises = all(
+    let promises = Promise.all(
       this.deprecationsToSend.map((deprecation) => {
         let obj;
-        let promise = resolve(undefined, 'ember-inspector');
+        let promise = Promise.resolve(undefined);
         let grouped = this.groupedDeprecations;
-        this.deprecations.pushObject(deprecation);
+        this.deprecations.push(deprecation);
         const id = guidFor(deprecation.message);
         obj = grouped[id];
         if (obj) {
@@ -91,15 +143,17 @@ export default DebugPort.extend({
           obj = deprecation;
           obj.count = 1;
           obj.id = id;
-          obj.sources = A();
+          obj.sources = [];
           grouped[id] = obj;
         }
-        let found = obj.sources.findBy('stackStr', deprecation.stackStr);
+        let found = obj.sources.find(
+          (s) => s.stackStr === deprecation.stackStr
+        );
         if (!found) {
           let stackStr = deprecation.stackStr;
           promise = this.fetchSourceMap(stackStr).then(
             (map) => {
-              obj.sources.pushObject({ map, stackStr });
+              obj.sources.push({ map, stackStr });
               if (map) {
                 obj.hasSourceMap = true;
               }
@@ -108,27 +162,21 @@ export default DebugPort.extend({
             'ember-inspector'
           );
         }
-        return promise.then(
-          () => {
-            delete obj.stackStr;
-            deprecations.addObject(obj);
-          },
-          null,
-          'ember-inspector'
-        );
+        return promise.then(() => {
+          delete obj.stackStr;
+          if (!deprecations.includes(obj)) {
+            deprecations.push(obj);
+          }
+        }, null);
       })
     );
 
-    promises.then(
-      () => {
-        this.sendMessage('deprecationsAdded', { deprecations });
-        this.deprecationsToSend.clear();
-        this.sendCount();
-      },
-      null,
-      'ember-inspector'
-    );
-  },
+    promises.then(() => {
+      this.sendMessage('deprecationsAdded', { deprecations });
+      this.deprecationsToSend.length = 0;
+      this.sendCount();
+    }, null);
+  }
 
   sendCount() {
     if (this.isDestroyed) {
@@ -136,65 +184,14 @@ export default DebugPort.extend({
     }
 
     this.sendMessage('count', {
-      count:
-        this.get('deprecations.length') + this.get('deprecationsToSend.length'),
+      count: this.deprecations.length + this.deprecationsToSend.length,
     });
-  },
-
-  messages: {
-    watch() {
-      this._watching = true;
-      let grouped = this.groupedDeprecations;
-      let deprecations = [];
-      for (let i in grouped) {
-        if (!grouped.hasOwnProperty(i)) {
-          continue;
-        }
-        deprecations.push(grouped[i]);
-      }
-      this.sendMessage('deprecationsAdded', {
-        deprecations,
-      });
-      this.sendPending();
-    },
-
-    sendStackTraces(message) {
-      let deprecation = message.deprecation;
-      deprecation.sources.forEach((source) => {
-        let stack = source.stackStr;
-        stack = stack.split('\n');
-        stack.unshift(
-          `Ember Inspector (Deprecation Trace): ${deprecation.message || ''}`
-        );
-        this.adapter.log(stack.join('\n'));
-      });
-    },
-
-    getCount() {
-      this.sendCount();
-    },
-
-    clear() {
-      cancel(this.debounce);
-      this.deprecations.clear();
-      this.set('groupedDeprecations', {});
-      this.sendCount();
-    },
-
-    release() {
-      this._watching = false;
-    },
-
-    setOptions({ options }) {
-      this.options.toggleDeprecationWorkflow =
-        options.toggleDeprecationWorkflow;
-    },
-  },
+  }
 
   willDestroy() {
     cancel(this.debounce);
-    return this._super(...arguments);
-  },
+    return super.willDestroy();
+  }
 
   handleDeprecations() {
     registerDeprecationHandler((message, options, next) => {
@@ -246,8 +243,8 @@ export default DebugPort.extend({
 
       // For ember-debug testing we usually don't want
       // to catch deprecations
-      if (!this.namespace.IGNORE_DEPRECATIONS) {
-        this.deprecationsToSend.pushObject(deprecation);
+      if (!this.namespace?.IGNORE_DEPRECATIONS) {
+        this.deprecationsToSend.push(deprecation);
         cancel(this.debounce);
         if (this._watching) {
           this.debounce = debounce(this, 'sendPending', 100);
@@ -266,5 +263,5 @@ export default DebugPort.extend({
         next(message, options);
       }
     });
-  },
-});
+  }
+}

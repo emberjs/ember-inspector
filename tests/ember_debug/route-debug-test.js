@@ -26,7 +26,7 @@ module('Ember Debug - Route Tree', function (hooks) {
     this.owner.register('route:loading', Route);
     this.owner.register('route:error', Route);
 
-    EmberDebug.get('generalDebug').reopen({
+    EmberDebug.generalDebug.reopen({
       emberCliConfig: null,
     });
   });

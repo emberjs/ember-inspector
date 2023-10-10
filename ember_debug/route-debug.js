@@ -5,53 +5,68 @@ import classify from 'ember-debug/utils/classify';
 import dasherize from 'ember-debug/utils/dasherize';
 
 import Ember from 'ember-debug/utils/ember';
-import { computed, observer } from 'ember-debug/utils/ember/object';
-import { readOnly } from 'ember-debug/utils/ember/object/computed';
 import { later } from 'ember-debug/utils/ember/runloop';
 
 const { hasOwnProperty } = Object.prototype;
 
-export default DebugPort.extend({
-  namespace: null,
+export default class extends DebugPort {
+  init() {
+    super.init();
+    this.__currentURL = this.currentURL;
+    this.observer = setInterval(() => {
+      if (this.__currentURL !== this.currentURL) {
+        this.sendCurrentRoute();
+        this.__currentURL = this.currentURL;
+      }
+    }, 150);
+  }
 
-  router: computed('namespace.owner', function () {
-    return this.get('namespace.owner').lookup('router:main');
-  }),
+  willDestroy() {
+    clearInterval(this.observer);
+    super.willDestroy();
+  }
 
-  applicationController: computed('namespace.owner', function () {
-    const container = this.get('namespace.owner');
+  get router() {
+    return this.namespace?.owner.lookup('router:main');
+  }
+
+  get applicationController() {
+    const container = this.namespace?.owner;
     return container.lookup('controller:application');
-  }),
+  }
 
-  currentPath: readOnly('namespace.owner.router.currentPath'),
-  currentURL: readOnly('namespace.owner.router.currentURL'),
+  get currentPath() {
+    return this.namespace?.owner.router.currentPath;
+  }
+  get currentURL() {
+    return this.namespace?.owner.router.currentURL;
+  }
 
-  portNamespace: 'route',
+  get emberCliConfig() {
+    return this.namespace?.generalDebug.emberCliConfig;
+  }
 
-  emberCliConfig: readOnly('namespace.generalDebug.emberCliConfig'),
-
-  messages: {
-    getTree() {
-      this.sendTree();
-    },
-    getCurrentRoute() {
-      this.sendCurrentRoute();
-    },
-  },
+  static {
+    this.prototype.portNamespace = 'route';
+    this.prototype.messages = {
+      getTree() {
+        this.sendTree();
+      },
+      getCurrentRoute() {
+        this.sendCurrentRoute();
+      },
+    };
+  }
 
   // eslint-disable-next-line ember/no-observers
-  sendCurrentRoute: observer('currentURL', function () {
-    const { currentPath: name, currentURL: url } = this.getProperties(
-      'currentPath',
-      'currentURL'
-    );
-
+  sendCurrentRoute() {
+    const { currentPath: name, currentURL: url } = this;
     later(() => {
       this.sendMessage('currentRoute', { name, url });
     }, 50);
-  }),
+  }
 
-  routeTree: computed('router', function () {
+  get routeTree() {
     const router = this.router;
     const routerLib = router._routerMicrolib || router.router;
     let routeNames = routerLib.recognizer.names;
@@ -64,19 +79,19 @@ export default DebugPort.extend({
       buildSubTree.call(this, routeTree, route);
     }
     return arrayizeChildren({ children: routeTree });
-  }),
+  }
 
   sendTree() {
     const routeTree = this.routeTree;
     this.sendMessage('routeTree', { tree: routeTree });
-  },
+  }
 
   getClassName(name, type) {
-    let container = this.get('namespace.owner');
+    let container = this.namespace.owner;
     let resolver = container.application.__registry__.resolver;
-    let prefix = this.get('emberCliConfig.modulePrefix');
-    let podPrefix = this.get('emberCliConfig.podModulePrefix');
-    let usePodsByDefault = this.get('emberCliConfig.usePodsByDefault');
+    let prefix = this.emberCliConfig?.modulePrefix;
+    let podPrefix = this.emberCliConfig?.podModulePrefix;
+    let usePodsByDefault = this.emberCliConfig?.usePodsByDefault;
     let className;
     if (prefix || podPrefix) {
       // Uses modules
@@ -121,8 +136,8 @@ export default DebugPort.extend({
       }
     }
     return className;
-  },
-});
+  }
+}
 
 /**
  *
@@ -132,7 +147,7 @@ export default DebugPort.extend({
  */
 function buildSubTree(routeTree, route) {
   let handlers = route.handlers;
-  let owner = this.get('namespace.owner');
+  let owner = this.namespace.owner;
   let subTree = routeTree;
   let item;
   let routeClassName;
@@ -177,8 +192,7 @@ function buildSubTree(routeTree, route) {
         controllerClassName = '(unresolved)';
         templateName = '(unresolved)';
       } else {
-        controllerName =
-          routeHandler.get('controllerName') || routeHandler.get('routeName');
+        controllerName = routeHandler.controllerName || routeHandler.routeName;
         controllerFactory = owner.factoryFor
           ? owner.factoryFor(`controller:${controllerName}`)
           : owner._lookupFactory(`controller:${controllerName}`);

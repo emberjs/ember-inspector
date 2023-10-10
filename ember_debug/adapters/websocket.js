@@ -1,18 +1,15 @@
 import BasicAdapter from './basic';
 import { onReady } from 'ember-debug/utils/on-ready';
-
-import { computed } from 'ember-debug/utils/ember/object';
 import { run } from 'ember-debug/utils/ember/runloop';
-import { Promise } from 'ember-debug/utils/rsvp';
 
-export default BasicAdapter.extend({
+export default class extends BasicAdapter {
   sendMessage(options = {}) {
     this.socket.emit('emberInspectorMessage', options);
-  },
+  }
 
-  socket: computed(function () {
+  get socket() {
     return window.EMBER_INSPECTOR_CONFIG.remoteDebugSocket;
-  }),
+  }
 
   _listen() {
     this.socket.on('emberInspectorMessage', (message) => {
@@ -35,11 +32,11 @@ export default BasicAdapter.extend({
         });
       }
     });
-  },
+  }
 
   _disconnect() {
     this.socket.removeAllListeners('emberInspectorMessage');
-  },
+  }
 
   connect() {
     return new Promise((resolve, reject) => {
@@ -58,9 +55,9 @@ export default BasicAdapter.extend({
     }).then(() => {
       this._listen();
     });
-  },
+  }
 
   willDestroy() {
     this._disconnect();
-  },
-});
+  }
+}

@@ -11,13 +11,13 @@ module('Ember Debug - Container', function (hooks) {
   let name, message;
 
   setupEmberDebugTest(hooks, {
-    Port: Port.extend({
-      init() {},
+    Port: class extends Port {
+      init() {}
       send(n, m) {
         name = n;
         message = m;
-      },
-    }),
+      }
+    },
   });
 
   skip('#getTypes', async function t(assert) {

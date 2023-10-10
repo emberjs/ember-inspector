@@ -9,16 +9,16 @@ module('Ember Debug', function (hooks) {
   let name, adapter;
 
   setupEmberDebugTest(hooks, {
-    Port: Port.extend({
-      init() {},
+    Port: class extends Port {
+      init() {}
       send(n) {
         name = n;
-      },
-    }),
+      }
+    },
   });
 
   hooks.beforeEach(async function () {
-    adapter = EmberDebug.get('port.adapter');
+    adapter = EmberDebug.port.adapter;
   });
 
   function cantSend(obj, assert) {

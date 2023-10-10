@@ -102,7 +102,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
       `
     );
 
-    objectInspector = EmberDebug.get('objectInspector');
+    objectInspector = EmberDebug.objectInspector;
   });
 
   test('An Ember Object is correctly transformed into an inspection hash', async function (assert) {

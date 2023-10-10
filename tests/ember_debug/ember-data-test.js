@@ -12,10 +12,8 @@ module('Ember Debug - Data', function (hooks) {
 
   hooks.beforeEach(function () {
     this.owner.register('data-adapter:main', Adapter);
-    EmberDebug.setProperties({
-      isTesting: true,
-      owner: this.owner,
-    });
+    EmberDebug.isTesting = true;
+    EmberDebug.owner = this.owner;
     EmberDebug.start();
   });
 
@@ -26,12 +24,10 @@ module('Ember Debug - Data', function (hooks) {
 
   test('data adapter sends models, even if there are none or no respone from ember data', function (assert) {
     let called = false;
-    EmberDebug.get('dataDebug').modelTypesAdded = () => {
+    EmberDebug.dataDebug.modelTypesAdded = () => {
       called = true;
     };
-    EmberDebug.get('dataDebug.messages.getModelTypes').bind(
-      EmberDebug.get('dataDebug')
-    )();
+    EmberDebug.dataDebug.messages.getModelTypes.bind(EmberDebug.dataDebug)();
     assert.true(called);
   });
 });
