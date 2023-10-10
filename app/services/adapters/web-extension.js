@@ -20,7 +20,8 @@ export default class WebExtension extends BasicAdapter {
     this._connect();
     this._handleReload();
     this._setThemeColors();
-    this._sendEmberDebug();
+
+    Promise.resolve().then(() => this._sendEmberDebug());
 
     return super.init(...arguments);
   }
@@ -31,25 +32,25 @@ export default class WebExtension extends BasicAdapter {
   }
 
   _sendEmberDebug() {
-    loadEmberDebug().then((emberDebug) => {
-      // first send to all frames in current tab
-      this.sendMessage({
-        from: 'devtools',
-        tabId: chrome.devtools.inspectedWindow.tabId,
-        type: 'inject-ember-debug',
-        value: emberDebug,
-      });
-      this.onMessageReceived((message, sender) => {
-        if (message === 'ember-content-script-ready') {
-          this.sendMessage({
-            from: 'devtools',
-            type: 'inject-ember-debug',
-            value: emberDebug,
-            tabId: chrome.devtools.inspectedWindow.tabId,
-            frameId: sender.frameId,
-          });
-        }
-      });
+    let minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
+    let url = chrome.runtime.getURL(`/panes-${minimumVersion}/ember_debug.js`);
+    // first send to all frames in current tab
+    this.sendMessage({
+      from: 'devtools',
+      tabId: chrome.devtools.inspectedWindow.tabId,
+      type: 'inject-ember-debug',
+      value: url,
+    });
+    this.onMessageReceived((message, sender) => {
+      if (message === 'ember-content-script-ready') {
+        this.sendMessage({
+          from: 'devtools',
+          type: 'inject-ember-debug',
+          value: url,
+          tabId: chrome.devtools.inspectedWindow.tabId,
+          frameId: sender.frameId,
+        });
+      }
     });
   }
 
@@ -141,37 +142,6 @@ function loadEmberDebug() {
   let minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
   let xhr;
 
-  /* istanbul ignore next */
-  function loadEmberDebugInWebpage() {
-    const waitForEmberLoad = new Promise((resolve) => {
-      if (window.requireModule) {
-        const has =
-          window.requireModule.has ||
-          function has(id) {
-            return !!(
-              window.requireModule.entries[id] ||
-              window.requireModule.entries[id + '/index']
-            );
-          };
-        if (has('ember')) {
-          return resolve();
-        }
-      }
-
-      /**
-       * NOTE: if the above (for some reason) fails and the consuming app has
-       *       deprecation-workflow's throwOnUnhandled: true
-       *         or set `ember-global`'s handler to 'throw'
-       *       and is using at least `ember-source@3.27`
-       *
-       *       this will throw an exception in the consuming project
-       */
-      if (window.Ember) return resolve();
-
-      window.addEventListener('Ember', resolve, { once: true });
-    });
-    waitForEmberLoad.then(() => 'replace-with-ember-debug');
-  }
   return new Promise((resolve) => {
     if (!emberDebug) {
       xhr = new XMLHttpRequest();
@@ -183,16 +153,6 @@ function loadEmberDebug() {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
             emberDebug = xhr.responseText;
-            // prepare for usage in replace, dollar signs are part of special replacement patterns...
-            // wrap in curly braces to be usable in arrow function
-            emberDebug = '{' + emberDebug.replace(/\$/g, '$$$$') + '}';
-            emberDebug =
-              '(' +
-              loadEmberDebugInWebpage
-                .toString()
-                // Use regex to support different cases in dev and prod builds
-                .replace(/['"]replace-with-ember-debug['"];*/, emberDebug) +
-              ')()';
             resolve(emberDebug);
           }
         }
