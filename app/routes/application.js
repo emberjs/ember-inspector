@@ -58,7 +58,7 @@ export default class ApplicationRoute extends Route {
     let controller = this.controller;
 
     if (options.parentObject) {
-      controller.pushMixinDetails(name, property, objectId, details);
+      controller.pushMixinDetails(name, property, objectId, details, errors);
     } else {
       controller.activateMixinDetails(name, objectId, details, errors);
     }
