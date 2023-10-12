@@ -55,7 +55,14 @@
 
   "web_accessible_resources": [
     {
-      "resources": ["scripts/in-page-script.js"]
+      "resources": [
+        "scripts/in-page-script.js",        
+        "scripts/boot.js",
+        "panes-*/ember_debug.js"
+      ],
+      "matches": [
+        "*://*/*"
+      ]
     }
   ]
 }
