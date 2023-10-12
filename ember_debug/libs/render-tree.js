@@ -67,10 +67,30 @@ class InElementSupportProvider {
 
     const captureNode = this.debugRenderTree.captureNode;
     this.debugRenderTree.captureNode = function (...args) {
-      const capture = captureNode.call(this, ...args);
+      const nodeFor = this.nodeFor;
       const [id, state] = args;
       const node = this.nodeFor(state);
-      self.setupNodeRemotes(node, id, capture);
+      let capture;
+      try {
+        capture = captureNode.call(this, ...args);
+        self.setupNodeRemotes(node, id, capture);
+      } catch (e) {
+        this.nodeFor = () => {
+          this.nodeFor = nodeFor;
+          return {
+            ...node,
+            args: {
+              named: {},
+              positional: [],
+            },
+          };
+        };
+        capture = captureNode.call(this, ...args);
+        capture.args = { named: { e }, positional: [] };
+        self.setupNodeRemotes(node, id, capture);
+      } finally {
+        this.nodeFor = nodeFor;
+      }
       return capture;
     };
 
