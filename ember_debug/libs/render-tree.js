@@ -71,6 +71,7 @@ class InElementSupportProvider {
       const [id, state] = args;
       const node = this.nodeFor(state);
       let capture;
+      // workaround for https://github.com/glimmerjs/glimmer-vm/pull/1447
       try {
         capture = captureNode.call(this, ...args);
         self.setupNodeRemotes(node, id, capture);
