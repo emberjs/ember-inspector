@@ -13,9 +13,9 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `yarn global add ember-cli`
-- run `yarn install`
-- run `yarn build` to build the `dist` directory
+- run `pnpm add -g ember-cli`
+- run `pnpm install`
+- run `pnpm build` to build the `dist` directory
 - Visit `chrome://extensions` in Chrome
 - Make sure `Developer mode` is checked
 - Click on 'Load unpacked extension...'
@@ -30,20 +30,20 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `yarn global add ember-cli`
-- run `yarn install`
-- run `yarn build` to build the `dist` directory
-- Visit `about:debugging` in Firefox
-- Click on 'Load Temporary Addon-on'
+- run `pnpm add -g ember-cli`
+- run `pnpm install`
+- run `pnpm build` to build the `dist` directory
+- Visit `about:debugging#/runtime/this-firefox` in Firefox
+- Click on 'Load Temporary Add-on…'
 - Choose the `dist/firefox/manifest.json` file in the cloned repo
 
 ### Opera
 
 - Clone the repository
 - cd into the repo directory
-- run `yarn global add ember-cli`
-- run `yarn install`
-- run `yarn build` to build the `dist` directory
+- run `pnpm add -g ember-cli`
+- run `pnpm install`
+- run `pnpm build` to build the `dist` directory
 - Visit `chrome://extensions` in Opera
 - Make sure `Developer mode` is checked
 - Click on 'Load unpacked extension...'
@@ -60,7 +60,7 @@ Internet explorer will open an iframe instead of a popup due to the lack of supp
 
 For development:
 
-- run `yarn serve:bookmarklet`
+- run `pnpm serve:bookmarklet`
 - create a bookmark (make sure you unblock the popup when you run the bookmarklet):
 
 ```javascript
@@ -69,12 +69,12 @@ javascript: (function() { var s = document.createElement('script'); s.src = 'htt
 
 ## Building and Testing:
 
-Run `yarn install && yarn global add ember-cli to install the required modules.
+Run `pnpm install && pnpm add -g ember-cli` to install the required modules.
 
-- `yarn build` to build the files in the `dist` directory
-- `yarn watch` To watch the files and re-build in `dist` when anything changes (useful during development).
-- `yarn test` To run the tests in the terminal
-- `yarn start` To start the test server at `localhost:4200/testing/tests`
+- `pnpm build` to build the files in the `dist` directory
+- `pnpm watch` To watch the files and re-build in `dist` when anything changes (useful during development).
+- `pnpm test` To run the tests in the terminal
+- `pnpm start` To start the test server at `localhost:4200/testing/tests`
 
 
 ## Deploy new version:
@@ -95,7 +95,7 @@ Here are the steps to lock an inspector version:
 - Create a new branch (from `main`) named after the Ember version range that will be supported by this branch. The min version in the range is the first element in the `emberVersionsSupported` array in `package.json`. The max version in the range is the first version that will *not* be supported. For example, a branch named `ember-0.0.0-2.7.0` means it supports Ember 0.0.0 -> 2.6.0, and a branch named `ember-2.7.0-3.4.0` means it supports Ember 2.7.0 -> Ember 3.3.2.
 - Update `package.json`'s `emberVersionsSupported`: add a second element that indicates the minimum Ember version the `main` branch *will not* support.
 - Commit the branch.
-- Run `yarn lock-version`. This will build, and compress the panes.
+- Run `pnpm lock-version`. This will build, and compress the panes.
 - To upload the panes to GitHub:
   - Create a folder locally with the naming convention `panes-x-x-x`
   - Copy the 3 zip files (chrome.zip, firefox.zip, and bookmarklet.zip) into the folder you just created.
@@ -113,7 +113,7 @@ Below is an example scenario that assumes the current `main` branch supports Emb
 - Create a new branch from `main` called `ember-2.7.0-3.4.0`.
 - Update `package.json`'s `emberVersionsSupported` from `["2.7.0", ""]` to `["2.7.0", "3.4.0"]`.
 - Commit with message "Lock Ember version at 2.7.0-3.4.0" and push the branch.
-- Run `yarn lock-version`.
+- Run `pnpm lock-version`.
 - Checkout the `main` branch.
 - Create a new branch *from main* called `lock-3.4.0` (branch name here is not important).
 - Update `package.json`'s `previousEmberVersionsSupported` from `["0.0.0"]` to `["0.0.0", "2.7.0"]`.

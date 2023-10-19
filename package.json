@@ -19,7 +19,7 @@
     "lint:hbs": "ember-template-lint .",
     "lint:hbs:fix": "ember-template-lint . --fix",
     "lint:js": "eslint . --cache",
-    "lock-version": "yarn build:production && yarn compress:panes",
+    "lock-version": "pnpm build:production && pnpm compress:panes",
     "serve:bookmarklet": "ember serve --port 9191",
     "lint:js:fix": "eslint . --fix",
     "start": "ember serve",
