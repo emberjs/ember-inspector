@@ -22,7 +22,7 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
   hooks.beforeEach(() => {
     stubRSVP();
     run(function () {
-      assembler = PromiseAssembler.create({
+      assembler = new PromiseAssembler({
         RSVP: fakeRSVP,
       });
     });
@@ -53,15 +53,15 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
 
     assert.ok(event);
     let promise = event.promise;
-    assert.strictEqual(event.promise, assembler.find(promise.get('guid')));
+    assert.strictEqual(event.promise, assembler.find(promise['guid']));
 
     assert.strictEqual(assembler.find().get('length'), 1);
 
-    assert.strictEqual(promise.get('guid'), 1);
-    assert.strictEqual(promise.get('label'), 'label');
-    assert.strictEqual(promise.get('createdAt'), date);
-    assert.strictEqual(promise.get('stack'), 'stack');
-    assert.strictEqual(promise.get('state'), 'created');
+    assert.strictEqual(promise['guid'], 1);
+    assert.strictEqual(promise['label'], 'label');
+    assert.strictEqual(promise['createdAt'], date);
+    assert.strictEqual(promise['stack'], 'stack');
+    assert.strictEqual(promise['state'], 'created');
   });
 
   test('Chains a promise correctly (parent and child not-existing)', function (assert) {
@@ -85,17 +85,17 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
     let parent = event.promise;
     let child = event.child;
 
-    assert.strictEqual(assembler.find(parent.get('guid')), parent);
-    assert.strictEqual(assembler.find(child.get('guid')), child);
+    assert.strictEqual(assembler.find(parent['guid']), parent);
+    assert.strictEqual(assembler.find(child['guid']), child);
 
     assert.strictEqual(assembler.find().get('length'), 2);
 
-    assert.strictEqual(parent.get('guid'), 1);
-    assert.strictEqual(parent.get('label'), 'label');
-    assert.strictEqual(parent.get('chainedAt'), date);
-    assert.strictEqual(parent.get('children.length'), 1);
-    assert.strictEqual(child.get('guid'), 2);
-    assert.strictEqual(child.get('parent'), parent);
+    assert.strictEqual(parent['guid'], 1);
+    assert.strictEqual(parent['label'], 'label');
+    assert.strictEqual(parent['chainedAt'], date);
+    assert.strictEqual(parent.children.length, 1);
+    assert.strictEqual(child['guid'], 2);
+    assert.strictEqual(child['parent'], parent);
     assembler.off('chained', captureEvent);
   });
 
@@ -144,17 +144,17 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
     assert.strictEqual(parent, event.promise);
     assert.strictEqual(child, event.child);
 
-    assert.strictEqual(assembler.find(parent.get('guid')), parent);
-    assert.strictEqual(assembler.find(child.get('guid')), child);
+    assert.strictEqual(assembler.find(parent['guid']), parent);
+    assert.strictEqual(assembler.find(child['guid']), child);
 
     assert.strictEqual(assembler.find().get('length'), 2);
 
-    assert.strictEqual(parent.get('guid'), 1);
-    assert.strictEqual(parent.get('label'), 'label');
-    assert.strictEqual(parent.get('chainedAt'), date);
-    assert.strictEqual(parent.get('children.length'), 1);
-    assert.strictEqual(child.get('guid'), 2);
-    assert.strictEqual(child.get('parent'), parent);
+    assert.strictEqual(parent['guid'], 1);
+    assert.strictEqual(parent['label'], 'label');
+    assert.strictEqual(parent['chainedAt'], date);
+    assert.strictEqual(parent.children.length, 1);
+    assert.strictEqual(child['guid'], 2);
+    assert.strictEqual(child['parent'], parent);
     assembler.off('chained', captureEvent);
     assembler.off('created', captureChild);
   });
@@ -177,7 +177,7 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
 
     assembler.off('created', capturePromise);
 
-    assert.strictEqual(promise.get('state'), 'created');
+    assert.strictEqual(promise['state'], 'created');
 
     assembler.on('fulfilled', function (e) {
       event = e;
@@ -190,10 +190,10 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
     });
 
     assert.strictEqual(event.promise, promise);
-    assert.strictEqual(promise.get('state'), 'fulfilled');
-    assert.strictEqual(promise.get('value'), 'value');
-    assert.strictEqual(promise.get('settledAt'), date);
-    assert.strictEqual(assembler.find().get('length'), 1);
+    assert.strictEqual(promise['state'], 'fulfilled');
+    assert.strictEqual(promise['value'], 'value');
+    assert.strictEqual(promise['settledAt'], date);
+    assert.strictEqual(assembler.find().length, 1);
   });
 
   test('Rejects a promise correctly', function (assert) {
@@ -214,7 +214,7 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
 
     assembler.off('created', capturePromise);
 
-    assert.strictEqual(promise.get('state'), 'created');
+    assert.strictEqual(promise['state'], 'created');
 
     assembler.on('rejected', function (e) {
       event = e;
@@ -227,9 +227,9 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
     });
 
     assert.strictEqual(event.promise, promise);
-    assert.strictEqual(promise.get('state'), 'rejected');
-    assert.strictEqual(promise.get('reason'), 'reason');
-    assert.strictEqual(promise.get('settledAt'), date);
+    assert.strictEqual(promise['state'], 'rejected');
+    assert.strictEqual(promise['reason'], 'reason');
+    assert.strictEqual(promise['settledAt'], date);
     assert.strictEqual(assembler.find().get('length'), 1);
   });
 

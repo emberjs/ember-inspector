@@ -1,15 +1,14 @@
 import captureRenderTree from './capture-render-tree';
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
-import { A } from 'ember-debug/utils/ember/array';
-import Ember from 'ember-debug/utils/ember';
+import { EmberLoader } from 'ember-debug/utils/ember/loader';
 
 class InElementSupportProvider {
   constructor(owner) {
     this.nodeMap = new Map();
-    this.remoteRoots = A([]);
+    this.remoteRoots = [];
     this.currentNode = null;
-    this.nodeStack = A([]);
-    this.remoteNodeStack = A([]);
+    this.nodeStack = [];
+    this.remoteNodeStack = [];
     this.runtime = this.require('@glimmer/runtime');
     try {
       this.Wormhole = requireModule('ember-wormhole/components/ember-wormhole');
@@ -27,16 +26,16 @@ class InElementSupportProvider {
 
   reset() {
     this.nodeMap.clear();
-    this.remoteRoots.clear();
-    this.nodeStack.clear();
-    this.remoteNodeStack.clear();
+    this.remoteRoots.length = 0;
+    this.nodeStack.length = 0;
+    this.remoteNodeStack.length = 0;
     this.currentRemoteNode = null;
     this.currentNode = null;
   }
 
   buildInElementNode(node) {
     const obj = Object.create(null);
-    obj.index = this.currentNode.refs.size;
+    obj.index = this.currentNode?.refs?.size || 0;
     obj.name = 'in-element';
     obj.type = 'component';
     obj.template = null;
@@ -146,7 +145,7 @@ class InElementSupportProvider {
   require(req) {
     return requireModule.has(req)
       ? requireModule(req)
-      : Ember.__loader.require(req);
+      : EmberLoader.require(req);
   }
 
   enter(node) {
@@ -166,7 +165,7 @@ class InElementSupportProvider {
   registerRemote(block, node) {
     const obj = this.buildInElementNode(node);
     if (this.currentNode) {
-      this.currentNode.remotes = this.currentNode.remotes || A([]);
+      this.currentNode.remotes = this.currentNode.remotes || [];
       this.currentNode.remotes.push(obj);
     }
     this.remoteRoots.push(obj);

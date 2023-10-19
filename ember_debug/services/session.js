@@ -1,10 +1,10 @@
-import EmberObject from 'ember-debug/utils/ember/object';
+import BaseObject from 'ember-debug/utils/base-object';
 
-const Session = EmberObject.extend({
-  setItem(/*key, val*/) {},
-  removeItem(/*key*/) {},
-  getItem(/*key*/) {},
-});
+class Session extends BaseObject {
+  setItem(/*key, val*/) {}
+  removeItem(/*key*/) {}
+  getItem(/*key*/) {}
+}
 
 let SESSION_STORAGE_SUPPORTED = false;
 
@@ -29,7 +29,7 @@ try {
 
 // Feature detection
 if (SESSION_STORAGE_SUPPORTED) {
-  Session.reopen({
+  Object.assign(Session.prototype, {
     sessionStorage,
     prefix: '__ember__inspector__',
     makeKey(key) {

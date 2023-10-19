@@ -1,16 +1,27 @@
-import EmberObject, { computed } from 'ember-debug/utils/ember/object';
-import { or, readOnly } from 'ember-debug/utils/ember/object/computed';
-import Evented from 'ember-debug/utils/ember/object/evented';
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
 import { run } from 'ember-debug/utils/ember/runloop';
+import BaseObject from 'ember-debug/utils/base-object';
+import Evented from 'ember-debug/utils/evented';
 
-export default EmberObject.extend(Evented, {
-  adapter: readOnly('namespace.adapter'),
-  applicationId: readOnly('namespace.applicationId'),
-  applicationName: or(
-    'namespace._application.name',
-    'namespace._application.modulePrefix'
-  ).readOnly(),
+export default class extends BaseObject {
+  constructor(data) {
+    super(data);
+    Evented.applyTo(this);
+  }
+
+  get adapter() {
+    return this.namespace?.adapter;
+  }
+  get applicationId() {
+    return this.namespace?.applicationId;
+  }
+
+  get applicationName() {
+    return (
+      this.namespace?._application?.name ||
+      this.namespace?._application?.modulePrefix
+    );
+  }
 
   /**
    * Unique id per application (not application instance). It's very important
@@ -20,9 +31,9 @@ export default EmberObject.extend(Evented, {
    * @property uniqueId
    * @type {String}
    */
-  uniqueId: computed('namespace._application', function () {
-    return guidFor(this.get('namespace._application'), 'ember');
-  }),
+  get uniqueId() {
+    return guidFor(this.namespace?._application, 'ember');
+  }
 
   init() {
     /**
@@ -38,7 +49,7 @@ export default EmberObject.extend(Evented, {
         this.messageReceived(message.type, message);
       }
     });
-  },
+  }
 
   messageReceived(name, message) {
     // We should generally not be run-wrapping here. Starting a runloop in
@@ -63,7 +74,7 @@ export default EmberObject.extend(Evented, {
         this.trigger(name, message);
       });
     }
-  },
+  }
 
   send(messageType, options = {}) {
     options.type = messageType;
@@ -71,7 +82,7 @@ export default EmberObject.extend(Evented, {
     options.applicationId = this.uniqueId;
     options.applicationName = this.applicationName;
     this.adapter.send(options);
-  },
+  }
 
   /**
    * Wrap all code triggered from outside of
@@ -97,5 +108,5 @@ export default EmberObject.extend(Evented, {
         this.adapter.handleError(error);
       }
     });
-  },
-});
+  }
+}

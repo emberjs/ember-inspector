@@ -1,49 +1,45 @@
 import DebugPort from './debug-port';
-
-import { A } from 'ember-debug/utils/ember/array';
-import { computed, set } from 'ember-debug/utils/ember/object';
-import { alias } from 'ember-debug/utils/ember/object/computed';
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
 
-export default DebugPort.extend({
+export default class extends DebugPort {
   init() {
-    this._super();
+    super.init();
     this.sentTypes = {};
     this.sentRecords = {};
-  },
+  }
 
-  releaseTypesMethod: null,
-  releaseRecordsMethod: null,
+  releaseTypesMethod = null;
+  releaseRecordsMethod = null;
 
   /* eslint-disable ember/no-side-effects */
-  adapter: computed('namespace.owner', function () {
-    const owner = this.get('namespace.owner');
+  get adapter() {
+    const owner = this.namespace?.owner;
 
     // dataAdapter:main is deprecated
     let adapter =
       this._resolve('data-adapter:main') && owner.lookup('data-adapter:main');
     // column limit is now supported at the inspector level
     if (adapter) {
-      set(adapter, 'attributeLimit', 100);
+      adapter.attributeLimit = 100;
       return adapter;
     }
 
     return null;
-  }),
+  }
   /* eslint-enable ember/no-side-effects */
 
   _resolve(name) {
-    const owner = this.get('namespace.owner');
+    const owner = this.namespace?.owner;
 
     return owner.resolveRegistration(name);
-  },
+  }
 
-  namespace: null,
-
-  port: alias('namespace.port'),
-  objectInspector: alias('namespace.objectInspector'),
-
-  portNamespace: 'data',
+  get port() {
+    return this.namespace?.port;
+  }
+  get objectInspector() {
+    return this.namespace?.objectInspector;
+  }
 
   modelTypesAdded(types) {
     let typesToSend;
@@ -51,14 +47,14 @@ export default DebugPort.extend({
     this.sendMessage('modelTypesAdded', {
       modelTypes: typesToSend,
     });
-  },
+  }
 
   modelTypesUpdated(types) {
     let typesToSend = types.map((type) => this.wrapType(type));
     this.sendMessage('modelTypesUpdated', {
       modelTypes: typesToSend,
     });
-  },
+  }
 
   wrapType(type) {
     const objectId = guidFor(type.object);
@@ -70,21 +66,21 @@ export default DebugPort.extend({
       name: type.name,
       objectId,
     };
-  },
+  }
 
   recordsAdded(recordsReceived) {
     let records = recordsReceived.map((record) => this.wrapRecord(record));
     this.sendMessage('recordsAdded', { records });
-  },
+  }
 
   recordsUpdated(recordsReceived) {
     let records = recordsReceived.map((record) => this.wrapRecord(record));
     this.sendMessage('recordsUpdated', { records });
-  },
+  }
 
   recordsRemoved(index, count) {
     this.sendMessage('recordsRemoved', { index, count });
-  },
+  }
 
   wrapRecord(record) {
     const objectId = guidFor(record.object);
@@ -96,9 +92,11 @@ export default DebugPort.extend({
       columnValues[i] = this.objectInspector.inspect(record.columnValues[i]);
     }
     // make sure keywords can be searched and clonable
-    searchKeywords = A(record.searchKeywords).filter(
-      (keyword) => typeof keyword === 'string' || typeof keyword === 'number'
-    );
+    searchKeywords = record.searchKeywords
+      .toArray()
+      .filter(
+        (keyword) => typeof keyword === 'string' || typeof keyword === 'number'
+      );
     return {
       columnValues,
       searchKeywords,
@@ -106,7 +104,7 @@ export default DebugPort.extend({
       color: record.color,
       objectId,
     };
-  },
+  }
 
   releaseTypes() {
     if (this.releaseTypesMethod) {
@@ -114,7 +112,7 @@ export default DebugPort.extend({
       this.releaseTypesMethod = null;
       this.sentTypes = {};
     }
-  },
+  }
 
   releaseRecords() {
     if (this.releaseRecordsMethod) {
@@ -122,76 +120,79 @@ export default DebugPort.extend({
       this.releaseRecordsMethod = null;
       this.sentRecords = {};
     }
-  },
+  }
 
   willDestroy() {
-    this._super();
+    super.willDestroy();
     this.releaseRecords();
     this.releaseTypes();
-  },
+  }
 
-  messages: {
-    checkAdapter() {
-      this.sendMessage('hasAdapter', { hasAdapter: !!this.adapter });
-    },
+  static {
+    this.prototype.portNamespace = 'data';
+    this.prototype.messages = {
+      checkAdapter() {
+        this.sendMessage('hasAdapter', { hasAdapter: !!this.adapter });
+      },
 
-    getModelTypes() {
-      this.modelTypesAdded([]);
-      this.releaseTypes();
-      this.releaseTypesMethod = this.adapter.watchModelTypes(
-        (types) => {
-          this.modelTypesAdded(types);
-        },
-        (types) => {
-          this.modelTypesUpdated(types);
+      getModelTypes() {
+        this.modelTypesAdded([]);
+        this.releaseTypes();
+        this.releaseTypesMethod = this.adapter.watchModelTypes(
+          (types) => {
+            this.modelTypesAdded(types);
+          },
+          (types) => {
+            this.modelTypesUpdated(types);
+          }
+        );
+      },
+
+      releaseModelTypes() {
+        this.releaseTypes();
+      },
+
+      getRecords(message) {
+        const type = this.sentTypes[message.objectId];
+        this.releaseRecords();
+
+        let typeOrName;
+        if (this.adapter.acceptsModelName) {
+          // Ember >= 1.3
+          typeOrName = type.name;
         }
-      );
-    },
 
-    releaseModelTypes() {
-      this.releaseTypes();
-    },
+        this.recordsAdded([]);
+        let releaseMethod = this.adapter.watchRecords(
+          typeOrName,
+          (recordsReceived) => {
+            this.recordsAdded(recordsReceived);
+          },
+          (recordsUpdated) => {
+            this.recordsUpdated(recordsUpdated);
+          },
+          (...args) => {
+            this.recordsRemoved(...args);
+          }
+        );
+        this.releaseRecordsMethod = releaseMethod;
+      },
 
-    getRecords(message) {
-      const type = this.sentTypes[message.objectId];
-      this.releaseRecords();
+      releaseRecords() {
+        this.releaseRecords();
+      },
 
-      let typeOrName;
-      if (this.get('adapter.acceptsModelName')) {
-        // Ember >= 1.3
-        typeOrName = type.name;
-      }
+      inspectModel(message) {
+        this.objectInspector.sendObject(
+          this.sentRecords[message.objectId].object
+        );
+      },
 
-      this.recordsAdded([]);
-      let releaseMethod = this.adapter.watchRecords(
-        typeOrName,
-        (recordsReceived) => {
-          this.recordsAdded(recordsReceived);
-        },
-        (recordsUpdated) => {
-          this.recordsUpdated(recordsUpdated);
-        },
-        (...args) => {
-          this.recordsRemoved(...args);
-        }
-      );
-      this.releaseRecordsMethod = releaseMethod;
-    },
-
-    releaseRecords() {
-      this.releaseRecords();
-    },
-
-    inspectModel(message) {
-      this.objectInspector.sendObject(
-        this.sentRecords[message.objectId].object
-      );
-    },
-
-    getFilters() {
-      this.sendMessage('filters', {
-        filters: this.adapter.getFilters(),
-      });
-    },
-  },
-});
+      getFilters() {
+        this.sendMessage('filters', {
+          filters: this.adapter.getFilters(),
+        });
+      },
+    };
+  }
+}

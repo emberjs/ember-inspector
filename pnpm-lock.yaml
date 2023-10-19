@@ -125,6 +125,9 @@ devDependencies:
   babel-plugin-transform-es2015-modules-amd:
     specifier: ^6.24.1
     version: 6.24.1
+  backburner.js:
+    specifier: ^2.7.0
+    version: 2.7.0
   basiccontext:
     specifier: ^3.5.1
     version: 3.5.1
@@ -252,7 +255,7 @@ devDependencies:
     specifier: ^3.0.0
     version: 3.0.0
   ember-svg-jar:
-    specifier: ^2.4.4
+    specifier: ^2.4.6
     version: 2.4.6
   ember-table:
     specifier: ^5.0.1
@@ -335,6 +338,9 @@ devDependencies:
   sass:
     specifier: ^1.63.6
     version: 1.66.1
+  source-map:
+    specifier: ^0.7.4
+    version: 0.7.4
   stylelint:
     specifier: ^15.10.1
     version: 15.10.3
@@ -4127,6 +4133,10 @@ packages:
     resolution: {integrity: sha512-ADy1ztN074YkWbHi8ojJVFe3vAanO/lrzMGZWUClIP7oDD/Pjy2vrASraUP+2EVCfIiTtCW4FChVow01XneivA==}
     dependencies:
       underscore: 1.13.6
+    dev: true
+
+  /backburner.js@2.7.0:
+    resolution: {integrity: sha512-eBZC6r7wT+YYAOKeru8IqgzOimz3VgyspXiZ1k6MI8i10zUdU8cnNII56rlnItQ89cHgQO3C/nPuFW3V9di+zg==}
     dev: true
 
   /bail@1.0.5:
@@ -15262,6 +15272,11 @@ packages:
   /source-map@0.6.1:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
+    dev: true
+
+  /source-map@0.7.4:
+    resolution: {integrity: sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==}
+    engines: {node: '>= 8'}
     dev: true
 
   /sourcemap-codec@1.4.8:

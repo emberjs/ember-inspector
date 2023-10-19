@@ -104,22 +104,32 @@ module.exports = function (defaults) {
 
   let emberDebug = 'ember_debug';
 
+  let sourceMap = new Funnel('node_modules/source-map/dist', {
+    files: ['source-map.js'],
+    destDir: 'ember-debug/deps',
+  });
+
+  const backburner = new Funnel('node_modules/backburner.js/dist/es6', {
+    files: ['backburner.js'],
+    destDir: 'ember-debug/deps',
+  });
+
   emberDebug = new Funnel(emberDebug, {
     destDir: 'ember-debug',
     include: ['**/*.js'],
-    exclude: [
-      'vendor/loader.js',
-      'vendor/source-map.js',
-      'vendor/startup-wrapper.js',
-    ],
+    exclude: ['vendor/startup-wrapper.js', 'vendor/loader.js'],
   });
+
+  emberDebug = mergeTrees([sourceMap, backburner, emberDebug]);
 
   emberDebug = new Babel(emberDebug, {
     moduleIds: true,
     getModuleId: getRelativeModulePath,
     plugins: [
+      ['@babel/plugin-transform-class-properties'],
+      ['@babel/plugin-transform-class-static-block'],
       ['module-resolver', { resolvePath: resolveRelativeModulePath }],
-      ['transform-es2015-modules-amd', { noInterop: true }],
+      ['@babel/plugin-transform-modules-amd', { noInterop: true }],
     ],
   });
 
@@ -149,21 +159,12 @@ module.exports = function (defaults) {
     ],
   });
 
-  let sourceMap = new Funnel('ember_debug', {
-    srcDir: 'vendor',
-    files: ['source-map.js'],
-  });
-
   const loader = new Funnel('ember_debug', {
     srcDir: 'vendor',
     files: ['loader.js'],
   });
 
-  sourceMap = map(sourceMap, '**/*.js', function (content) {
-    return `(function() {\n${content}\n}());`;
-  });
-
-  emberDebug = mergeTrees([loader, startupWrapper, sourceMap, emberDebug]);
+  emberDebug = mergeTrees([startupWrapper, emberDebug, loader]);
 
   emberDebug = concatFiles(emberDebug, {
     headerFiles: ['loader.js'],

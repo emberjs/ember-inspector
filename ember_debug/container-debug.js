@@ -1,37 +1,53 @@
 import DebugPort from './debug-port';
 
-import { computed } from 'ember-debug/utils/ember/object';
-import { reads, readOnly } from 'ember-debug/utils/ember/object/computed';
+export default class extends DebugPort {
+  get objectInspector() {
+    return this.namespace?.objectInspector;
+  }
 
-export default DebugPort.extend({
-  namespace: null,
+  get container() {
+    return this.namespace?.owner?.__container__;
+  }
 
-  objectInspector: readOnly('namespace.objectInspector'),
-
-  container: reads('namespace.owner.__container__'),
-
-  portNamespace: 'container',
-
-  TYPES_TO_SKIP: computed(function () {
-    return [
-      'component-lookup',
-      'container-debug-adapter',
-      'resolver-for-debugging',
-      'event_dispatcher',
-    ];
-  }),
+  static {
+    this.prototype.portNamespace = 'container';
+    this.messages = {
+      getTypes() {
+        this.sendMessage('types', {
+          types: this.getTypes(),
+        });
+      },
+      getInstances(message) {
+        let instances = this.getInstances(message.containerType);
+        if (instances) {
+          this.sendMessage('instances', {
+            instances,
+            status: 200,
+          });
+        } else {
+          this.sendMessage('instances', {
+            status: 404,
+          });
+        }
+      },
+      sendInstanceToConsole(message) {
+        const instance = this.container.lookup(message.name);
+        this.objectToConsole.sendValueToConsole(instance);
+      },
+    };
+  }
 
   typeFromKey(key) {
     return key.split(':').shift();
-  },
+  }
 
   nameFromKey(key) {
     return key.split(':').pop();
-  },
+  }
 
   shouldHide(type) {
     return type[0] === '-' || this.TYPES_TO_SKIP.indexOf(type) !== -1;
-  },
+  }
 
   instancesByType() {
     let key;
@@ -58,7 +74,7 @@ export default DebugPort.extend({
       });
     }
     return instancesByType;
-  },
+  }
 
   getTypes() {
     let key;
@@ -68,7 +84,7 @@ export default DebugPort.extend({
       types.push({ name: key, count: instancesByType[key].length });
     }
     return types;
-  },
+  }
 
   getInstances(type) {
     const instances = this.instancesByType()[type];
@@ -80,30 +96,5 @@ export default DebugPort.extend({
       fullName: item.fullName,
       inspectable: this.objectInspector.canSend(item.instance),
     }));
-  },
-
-  messages: {
-    getTypes() {
-      this.sendMessage('types', {
-        types: this.getTypes(),
-      });
-    },
-    getInstances(message) {
-      let instances = this.getInstances(message.containerType);
-      if (instances) {
-        this.sendMessage('instances', {
-          instances,
-          status: 200,
-        });
-      } else {
-        this.sendMessage('instances', {
-          status: 404,
-        });
-      }
-    },
-    sendInstanceToConsole(message) {
-      const instance = this.container.lookup(message.name);
-      this.objectToConsole.sendValueToConsole(instance);
-    },
-  },
-});
+  }
+}

@@ -77,7 +77,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
           instance.reopen({
             // Clean up on instance destruction
             willDestroy() {
-              if (window.EmberInspector.get('owner') === instance) {
+              if (window.EmberInspector.owner === instance) {
                 window.EmberInspector.destroyContainer();
                 window.EmberInspector.clear();
               }
@@ -98,8 +98,8 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     appInstance.__inspector__booted = true;
 
     // Boot the inspector (or re-boot if already booted, for example in tests)
-    window.EmberInspector.set('_application', appInstance.application);
-    window.EmberInspector.set('owner', appInstance);
+    window.EmberInspector._application = appInstance.application;
+    window.EmberInspector.owner = appInstance;
     window.EmberInspector.start(true);
   }
 
@@ -146,7 +146,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       return;
     }
 
-    const adapterInstance = requireModule('ember-debug/adapters/' + currentAdapter)['default'].create();
+    const adapterInstance = new (requireModule('ember-debug/adapters/' + currentAdapter)['default']);
 
     adapterInstance.onMessageReceived(function(message) {
       if (message.type === 'app-picker-loaded') {

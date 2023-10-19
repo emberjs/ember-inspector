@@ -1,29 +1,26 @@
-import EmberObject from 'ember-debug/utils/ember/object';
+import BaseObject from 'ember-debug/utils/base-object';
 
-export default EmberObject.extend({
-  port: null,
+export default class extends BaseObject {
+  port = null;
 
-  messages: {},
-
-  portNamespace: null,
-
-  init() {
-    this._super(...arguments);
-
-    this.set('port', this.get('namespace.port'));
-
+  constructor(data) {
+    super(data);
+    if (!data) {
+      throw new Error('need to pass data');
+    }
+    this.port = this.namespace?.port;
     this.setupOrRemovePortListeners('on');
-  },
+  }
 
   willDestroy() {
-    this._super(...arguments);
-
+    super.willDestroy();
     this.setupOrRemovePortListeners('off');
-  },
+  }
 
   sendMessage(name, message) {
+    if (this.isDestroyed) return;
     this.port.send(this.messageName(name), message);
-  },
+  }
 
   messageName(name) {
     let messageName = name;
@@ -31,7 +28,7 @@ export default EmberObject.extend({
       messageName = `${this.portNamespace}:${messageName}`;
     }
     return messageName;
-  },
+  }
 
   /**
    * Setup or tear down port listeners. Call on `init` and `willDestroy`
@@ -46,5 +43,5 @@ export default EmberObject.extend({
         port[onOrOff](this.messageName(name), this, messages[name]);
       }
     }
-  },
-});
+  }
+}

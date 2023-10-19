@@ -17,3 +17,4 @@ if (!inspect) {
 }
 
 export let { registerDeprecationHandler } = module;
+export default module;

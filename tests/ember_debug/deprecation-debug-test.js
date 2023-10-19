@@ -90,7 +90,7 @@ module('Ember Debug - Deprecation', function (hooks) {
     assert.expect(2);
     let count = 0;
     run(EmberDebug.port, 'trigger', 'deprecation:watch');
-    EmberDebug.port.get('adapter').reopen({
+    EmberDebug.port.adapter.reopen({
       warn(message) {
         assert.strictEqual(
           message,

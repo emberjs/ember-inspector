@@ -8,26 +8,19 @@ import {
   typeOf,
 } from 'ember-debug/utils/type-check';
 import { compareVersion } from 'ember-debug/utils/version';
-import Ember from 'ember-debug/utils/ember';
-import ArrayProxy from 'ember-debug/utils/ember/array/proxy';
 import { inspect as emberInspect } from 'ember-debug/utils/ember/debug';
-import EmberObject, {
-  computed,
-  get,
-  set,
-} from 'ember-debug/utils/ember/object';
-import { oneWay } from 'ember-debug/utils/ember/object/computed';
+import Ember, { EmberObject } from 'ember-debug/utils/ember';
 import { cacheFor, guidFor } from 'ember-debug/utils/ember/object/internals';
 import { _backburner, join } from 'ember-debug/utils/ember/runloop';
-import { isNone } from 'ember-debug/utils/ember/utils';
 import emberNames from './utils/ember-object-names';
 import getObjectName from './utils/get-object-name';
+import { EmberLoader } from 'ember-debug/utils/ember/loader';
 
 const { meta: emberMeta, VERSION, CoreObject, ObjectProxy } = Ember;
 
 const GlimmerComponent = (() => {
   try {
-    return requireModule('@glimmer/component').default;
+    return EmberLoader.require('@glimmer/component').default;
   } catch (e) {
     // ignore, return undefined
   }
@@ -37,7 +30,7 @@ let tagValue, tagValidate, track, tagForProperty;
 
 try {
   // Try to load the most recent library
-  let GlimmerValidator = Ember.__loader.require('@glimmer/validator');
+  let GlimmerValidator = EmberLoader.require('@glimmer/validator');
 
   tagValue = GlimmerValidator.value || GlimmerValidator.valueForTag;
   tagValidate = GlimmerValidator.validate || GlimmerValidator.validateTag;
@@ -74,7 +67,7 @@ try {
 } catch (e) {
   try {
     // Fallback to the previous implementation
-    let GlimmerReference = Ember.__loader.require('@glimmer/reference');
+    let GlimmerReference = EmberLoader.require('@glimmer/reference');
 
     tagValue = GlimmerReference.value;
     tagValidate = GlimmerReference.validate;
@@ -84,7 +77,7 @@ try {
 }
 
 try {
-  let metal = Ember.__loader.require('@ember/-internals/metal');
+  let metal = EmberLoader.require('@ember/-internals/metal');
 
   tagForProperty = metal.tagForProperty;
   // If track was not already loaded, use metal's version (the previous version)
@@ -281,14 +274,16 @@ function getTrackedDependencies(object, property, tag) {
   return [...new Set([...dependentKeys])];
 }
 
-export default DebugPort.extend({
-  namespace: null,
+export default class extends DebugPort {
+  get adapter() {
+    return this.namespace?.adapter;
+  }
 
-  adapter: oneWay('namespace.adapter'),
+  get port() {
+    return this.namespace?.port;
+  }
 
-  port: oneWay('namespace.port'),
-
-  currentObject: null,
+  currentObject = null;
 
   updateCurrentObject() {
     Object.values(this.sentObjects).forEach((obj) => {
@@ -328,7 +323,7 @@ export default DebugPort.extend({
               changed = !tagValidate(tagInfo.tag, tagInfo.revision);
               if (changed) {
                 tagInfo.tag = track(() => {
-                  value = get(object, item.name);
+                  value = object.get?.(item.name) || object[item.name];
                 });
                 tagInfo.revision = tagValue(tagInfo.tag);
               }
@@ -369,128 +364,130 @@ export default DebugPort.extend({
         });
       });
     }
-  },
+  }
 
   init() {
-    this._super();
-    this.set('sentObjects', {});
+    super.init();
+    this.sentObjects = {};
     _backburner.on('end', bound(this, this.updateCurrentObject));
-  },
+  }
 
   willDestroy() {
-    this._super();
+    super.willDestroy();
     for (let objectId in this.sentObjects) {
       this.releaseObject(objectId);
     }
     _backburner.off('end', bound(this, this.updateCurrentObject));
-  },
+  }
 
-  sentObjects: {},
+  sentObjects = {};
 
-  parentObjects: {},
+  parentObjects = {};
 
-  objectPropertyValues: {},
+  objectPropertyValues = {};
 
-  trackedTags: {},
+  trackedTags = {};
 
-  _errorsFor: computed(function () {
-    return {};
-  }),
+  _errorsFor = {};
 
-  portNamespace: 'objectInspector',
-
-  messages: {
-    digDeeper(message) {
-      this.digIntoObject(message.objectId, message.property);
-    },
-    releaseObject(message) {
-      this.releaseObject(message.objectId);
-    },
-    calculate(message) {
-      let value;
-      value = this.valueForObjectProperty(
-        message.objectId,
-        message.property,
-        message.mixinIndex
-      );
-      if (value) {
-        this.sendMessage('updateProperty', value);
-        message.isCalculated = true;
-      }
-      this.sendMessage('updateErrors', {
-        objectId: message.objectId,
-        errors: errorsToSend(this._errorsFor[message.objectId]),
-      });
-    },
-    saveProperty(message) {
-      let value = message.value;
-      if (message.dataType && message.dataType === 'date') {
-        value = new Date(value);
-      }
-      this.saveProperty(message.objectId, message.property, value);
-    },
-    sendToConsole(message) {
-      this.sendToConsole(message.objectId, message.property);
-    },
-    sendControllerToConsole(message) {
-      const container = this.get('namespace.owner');
-      this.sendValueToConsole(container.lookup(`controller:${message.name}`));
-    },
-    sendRouteHandlerToConsole(message) {
-      const container = this.get('namespace.owner');
-      this.sendValueToConsole(container.lookup(`route:${message.name}`));
-    },
-    sendContainerToConsole() {
-      const container = this.get('namespace.owner');
-      this.sendValueToConsole(container);
-    },
-    /**
-     * Lookup the router instance, and find the route with the given name
-     * @param message The message sent
-     * @param {string} messsage.name The name of the route to lookup
-     */
-    inspectRoute(message) {
-      const container = this.get('namespace.owner');
-      const router = container.lookup('router:main');
-      const routerLib = router._routerMicrolib || router.router;
-      // 3.9.0 removed intimate APIs from router
-      // https://github.com/emberjs/ember.js/pull/17843
-      // https://deprecations.emberjs.com/v3.x/#toc_remove-handler-infos
-      if (compareVersion(VERSION, '3.9.0') !== -1) {
-        // Ember >= 3.9.0
-        this.sendObject(routerLib.getRoute(message.name));
-      } else {
-        // Ember < 3.9.0
-        this.sendObject(routerLib.getHandler(message.name));
-      }
-    },
-    inspectController(message) {
-      const container = this.get('namespace.owner');
-      this.sendObject(container.lookup(`controller:${message.name}`));
-    },
-    inspectById(message) {
-      const obj = this.sentObjects[message.objectId];
-      if (obj) {
-        this.sendObject(obj);
-      }
-    },
-    inspectByContainerLookup(message) {
-      const container = this.get('namespace.owner');
-      this.sendObject(container.lookup(message.name));
-    },
-    traceErrors(message) {
-      let errors = this._errorsFor[message.objectId];
-      toArray(errors).forEach((error) => {
-        let stack = error.error;
-        if (stack && stack.stack) {
-          stack = stack.stack;
-        } else {
-          stack = error;
+  static {
+    this.prototype.portNamespace = 'objectInspector';
+    this.prototype.messages = {
+      digDeeper(message) {
+        this.digIntoObject(message.objectId, message.property);
+      },
+      releaseObject(message) {
+        this.releaseObject(message.objectId);
+      },
+      calculate(message) {
+        let value;
+        value = this.valueForObjectProperty(
+          message.objectId,
+          message.property,
+          message.mixinIndex
+        );
+        if (value) {
+          this.sendMessage('updateProperty', value);
+          message.isCalculated = true;
         }
-        this.adapter.log(`Object Inspector error for ${error.property}`, stack);
-      });
-    },
-  },
+        this.sendMessage('updateErrors', {
+          objectId: message.objectId,
+          errors: errorsToSend(this._errorsFor[message.objectId]),
+        });
+      },
+      saveProperty(message) {
+        let value = message.value;
+        if (message.dataType && message.dataType === 'date') {
+          value = new Date(value);
+        }
+        this.saveProperty(message.objectId, message.property, value);
+      },
+      sendToConsole(message) {
+        this.sendToConsole(message.objectId, message.property);
+      },
+      sendControllerToConsole(message) {
+        const container = this.namespace?.owner;
+        this.sendValueToConsole(container.lookup(`controller:${message.name}`));
+      },
+      sendRouteHandlerToConsole(message) {
+        const container = this.namespace?.owner;
+        this.sendValueToConsole(container.lookup(`route:${message.name}`));
+      },
+      sendContainerToConsole() {
+        const container = this.namespace?.owner;
+        this.sendValueToConsole(container);
+      },
+      /**
+       * Lookup the router instance, and find the route with the given name
+       * @param message The message sent
+       * @param {string} messsage.name The name of the route to lookup
+       */
+      inspectRoute(message) {
+        const container = this.namespace?.owner;
+        const router = container.lookup('router:main');
+        const routerLib = router._routerMicrolib || router.router;
+        // 3.9.0 removed intimate APIs from router
+        // https://github.com/emberjs/ember.js/pull/17843
+        // https://deprecations.emberjs.com/v3.x/#toc_remove-handler-infos
+        if (compareVersion(VERSION, '3.9.0') !== -1) {
+          // Ember >= 3.9.0
+          this.sendObject(routerLib.getRoute(message.name));
+        } else {
+          // Ember < 3.9.0
+          this.sendObject(routerLib.getHandler(message.name));
+        }
+      },
+      inspectController(message) {
+        const container = this.namespace?.owner;
+        this.sendObject(container.lookup(`controller:${message.name}`));
+      },
+      inspectById(message) {
+        const obj = this.sentObjects[message.objectId];
+        if (obj) {
+          this.sendObject(obj);
+        }
+      },
+      inspectByContainerLookup(message) {
+        const container = this.namespace?.owner;
+        this.sendObject(container.lookup(message.name));
+      },
+      traceErrors(message) {
+        let errors = this._errorsFor[message.objectId];
+        toArray(errors).forEach((error) => {
+          let stack = error.error;
+          if (stack && stack.stack) {
+            stack = stack.stack;
+          } else {
+            stack = error;
+          }
+          this.adapter.log(
+            `Object Inspector error for ${error.property}`,
+            stack
+          );
+        });
+      },
+    };
+  }
 
   canSend(val) {
     return (
@@ -500,25 +497,31 @@ export default DebugPort.extend({
         typeOf(val) === 'object' ||
         typeOf(val) === 'array')
     );
-  },
+  }
 
   saveProperty(objectId, prop, val) {
     let object = this.sentObjects[objectId];
-    join(() => set(object, prop, val));
-  },
+    join(() => {
+      if (object.set) {
+        object.set(prop, val);
+      } else {
+        object[prop] = val;
+      }
+    });
+  }
 
   sendToConsole(objectId, prop) {
     let object = this.sentObjects[objectId];
     let value;
 
-    if (isNone(prop)) {
+    if (prop === null || prop === undefined) {
       value = this.sentObjects[objectId];
     } else {
       value = calculateCP(object, { name: prop }, {});
     }
 
     this.sendValueToConsole(value);
-  },
+  }
 
   sendValueToConsole(value) {
     window.$E = value;
@@ -530,7 +533,7 @@ export default DebugPort.extend({
       args.unshift(inspect(value));
     }
     this.adapter.log('Ember Inspector ($E): ', ...args);
-  },
+  }
 
   digIntoObject(objectId, property) {
     let parentObject = this.sentObjects[objectId];
@@ -549,7 +552,7 @@ export default DebugPort.extend({
         errors: details.errors,
       });
     }
-  },
+  }
 
   sendObject(object) {
     if (!this.canSend(object)) {
@@ -564,7 +567,7 @@ export default DebugPort.extend({
       details: details.mixins,
       errors: details.errors,
     });
-  },
+  }
 
   retainObject(object) {
     let meta = emberMeta(object);
@@ -576,7 +579,7 @@ export default DebugPort.extend({
     this.sentObjects[guid] = object;
 
     return guid;
-  },
+  }
 
   releaseObject(objectId) {
     let object = this.sentObjects[objectId];
@@ -591,7 +594,7 @@ export default DebugPort.extend({
     if (meta._debugReferences === 0) {
       this.dropObject(guid);
     }
-  },
+  }
 
   dropObject(objectId) {
     if (this.parentObjects[objectId]) {
@@ -609,7 +612,7 @@ export default DebugPort.extend({
     delete this._errorsFor[objectId];
 
     this.sendMessage('droppedObject', { objectId });
-  },
+  }
 
   /**
    * This function, and the rest of Ember Inspector, currently refer to the
@@ -701,7 +704,7 @@ export default DebugPort.extend({
     }
 
     return mixins;
-  },
+  }
 
   mixinsForObject(object) {
     if (
@@ -713,7 +716,7 @@ export default DebugPort.extend({
     }
 
     if (
-      object instanceof ArrayProxy &&
+      object instanceof Ember.ArrayProxy &&
       object.content &&
       !object._showProxyDetails
     ) {
@@ -761,7 +764,7 @@ export default DebugPort.extend({
 
     let errors = errorsToSend(errorsForObject);
     return { objectId, mixins: mixinDetails, errors };
-  },
+  }
 
   valueForObjectProperty(objectId, property, mixinIndex) {
     let object = this.sentObjects[objectId],
@@ -783,11 +786,11 @@ export default DebugPort.extend({
 
       return { objectId, property, value, mixinIndex };
     }
-  },
+  }
 
-  inspect,
-  inspectValue,
-});
+  inspect = inspect;
+  inspectValue = inspectValue;
+}
 
 function ownMixins(object) {
   // TODO: We need to expose an API for getting _just_ the own mixins directly
@@ -923,10 +926,7 @@ function addProperties(properties, hash) {
 
     if (typeof hash[prop] === 'object' && hash[prop] !== null) {
       options.isService =
-        !('type' in hash[prop]) &&
-        typeof hash[prop].unknownProperty === 'function'
-          ? get(hash[prop], 'type') === 'service'
-          : hash[prop].type === 'service';
+        !('type' in hash[prop]) && hash[prop].type === 'service';
 
       if (!options.isService) {
         if (hash[prop].constructor) {
@@ -1264,7 +1264,7 @@ function customizeProperties(mixinDetails, propertyInfo) {
 
 function getDebugInfo(object) {
   let debugInfo = null;
-  let objectDebugInfo = get(object, '_debugInfo');
+  let objectDebugInfo = object._debugInfo;
   if (objectDebugInfo && typeof objectDebugInfo === 'function') {
     if (object instanceof Ember.ObjectProxy && object.content) {
       object = object.content;
@@ -1319,7 +1319,7 @@ function calculateCP(object, item, errorsForObject) {
     }
     return item.isGetter || property.includes('.')
       ? object[property]
-      : get(object, property);
+      : object.get?.(property) || object[property]; // need to use `get` to be able to detect tracked props
   } catch (error) {
     errorsForObject[property] = { property, error };
     return new CalculateCPError();

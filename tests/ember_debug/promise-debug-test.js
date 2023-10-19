@@ -18,17 +18,17 @@ module('Ember Debug - Promise Debug', function (hooks) {
   let name, message;
 
   setupEmberDebugTest(hooks, {
-    Port: Port.extend({
-      init() {},
+    Port: class extends Port {
+      init() {}
       send(n, m) {
         name = n;
         message = m;
-      },
-    }),
+      }
+    },
   });
 
   hooks.beforeEach(async function () {
-    EmberDebug.get('promiseDebug').reopen({
+    EmberDebug.promiseDebug.reopen({
       delay: 5,
       session: {
         getItem() {},
@@ -109,7 +109,7 @@ module('Ember Debug - Promise Debug', function (hooks) {
 
   test('Instrumentation with stack is persisted to session storage', async function (assert) {
     let withStack = false;
-    EmberDebug.get('promiseDebug').reopen({
+    EmberDebug.promiseDebug.reopen({
       session: {
         getItem(/*key*/) {
           return withStack;

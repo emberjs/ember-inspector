@@ -1,19 +1,12 @@
-/**
- * Used to map a stack trace to its original sources.
- * A lot of the code is inspired by/taken from
- * https://github.com/evanw/node-source-map-support
- */
-import { A } from 'ember-debug/utils/ember/array';
-import EmberObject, { computed } from 'ember-debug/utils/ember/object';
-import { Promise, resolve } from 'ember-debug/utils/rsvp';
-
+import BaseObject from 'ember-debug/utils/base-object';
+import SourceMap from 'ember-debug/deps/source-map';
 const notFoundError = new Error('Source map url not found');
 
-export default EmberObject.extend({
+export default class extends BaseObject {
   init() {
-    this._super(...arguments);
-    this.set('_lastPromise', resolve(undefined, 'ember-inspector'));
-  },
+    super.init();
+    this._lastPromise = Promise.resolve(undefined);
+  }
 
   /**
    * Returns a promise that resolves to an array
@@ -23,51 +16,45 @@ export default EmberObject.extend({
    * @return {RSVP.Promise}
    */
   map(stack) {
-    let parsed = A(fromStackProperty(stack));
-    let array = A();
+    let parsed = fromStackProperty(stack);
+    let array = [];
     let lastPromise = null;
     parsed.forEach((item) => {
       lastPromise = this._lastPromise
         .then(() => this.getSourceMap(item.url), null, 'ember-inspector')
-        .then(
-          (smc) => {
-            if (smc) {
-              let source = smc.originalPositionFor({
-                line: item.line,
-                column: item.column,
-              });
-              source.fullSource = relativeToAbsolute(item.url, source.source);
-              array.push(source);
-              return array;
-            }
-          },
-          null,
-          'ember-inspector'
-        );
-      this.set('_lastPromise', lastPromise);
+        .then((smc) => {
+          if (smc) {
+            let source = smc.originalPositionFor({
+              line: item.line,
+              column: item.column,
+            });
+            source.fullSource = relativeToAbsolute(item.url, source.source);
+            array.push(source);
+            return array;
+          }
+        }, null);
+      this._lastPromise = lastPromise;
     });
-    return resolve(lastPromise, 'ember-inspector').catch(function (e) {
+    return Promise.resolve(lastPromise).catch(function (e) {
       if (e === notFoundError) {
         return null;
       }
       throw e;
-    }, 'ember-inspector');
-  },
+    });
+  }
 
-  sourceMapCache: computed(function () {
-    return {};
-  }),
+  sourceMapCache = {};
 
   getSourceMap(url) {
     let sourceMaps = this.sourceMapCache;
     if (sourceMaps[url] !== undefined) {
-      return resolve(sourceMaps[url], 'ember-inspector');
+      return Promise.resolve(sourceMaps[url]);
     }
     return retrieveSourceMap(url).then(
       (response) => {
         if (response) {
           const map = JSON.parse(response.map);
-          const sm = new window.sourceMap.SourceMapConsumer(map);
+          const sm = new SourceMap.SourceMapConsumer(map);
           sourceMaps[url] = sm;
           return sm;
         }
@@ -77,8 +64,8 @@ export default EmberObject.extend({
       },
       'ember-inspector'
     );
-  },
-});
+  }
+}
 
 function retrieveSourceMap(source) {
   let mapURL;

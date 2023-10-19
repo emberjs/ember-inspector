@@ -51,18 +51,16 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     this.owner.register('service:adapter', BasicAdapter);
 
     run(() => {
-      EmberDebug.setProperties({
-        isTesting: true,
-        owner: this.owner,
-      });
+      EmberDebug.isTesting = true;
+      EmberDebug.owner = this.owner;
     });
 
     EmberDebug.Port =
       options.Port ||
-      Port.extend({
-        init() {},
-        send() {},
-      });
+      class extends Port {
+        init() {}
+        send() {}
+      };
 
     run(EmberDebug, 'start');
   });
@@ -76,9 +74,7 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     EmberDebug.IGNORE_DEPRECATIONS = originalIgnoreDeprecations;
 
     run(() => {
-      EmberDebug.setProperties({
-        isTesting: false,
-      });
+      EmberDebug.isTesting = false;
     });
 
     EmberDebug.Port = originalPort;

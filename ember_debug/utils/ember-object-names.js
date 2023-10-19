@@ -1,20 +1,19 @@
-import Ember from 'ember-debug/utils/ember';
-import MutableArray from 'ember-debug/utils/ember/array/mutable';
-import Component from 'ember-debug/utils/ember/component';
-import Observable from 'ember-debug/utils/ember/object/observable';
-import Evented from 'ember-debug/utils/ember/object/evented';
-import PromiseProxyMixin from 'ember-debug/utils/ember/object/promise-proxy-mixin';
-import EmberObject from 'ember-debug/utils/ember/object';
 import { compareVersion } from 'ember-debug/utils/version';
-
-const {
+import { emberSafeRequire } from 'ember-debug/utils/ember/loader';
+import {
   VERSION,
   ActionHandler,
   ControllerMixin,
   CoreObject,
   MutableEnumerable,
   NativeArray,
-} = Ember;
+  MutableArray,
+  Component,
+  Evented,
+  PromiseProxyMixin,
+  EmberObject,
+  Observable,
+} from 'ember-debug/utils/ember';
 
 /**
  * Add Known Ember Mixins and Classes so we can label them correctly in the inspector
@@ -34,11 +33,14 @@ const emberNames = new Map([
 ]);
 
 if (compareVersion(VERSION, '3.27.0') === -1) {
-  emberNames.set(Ember.TargetActionSupport, 'TargetActionSupport Mixin');
+  const TargetActionSupport = emberSafeRequire(
+    '@ember/-internals/runtime'
+  )?.TargetActionSupport;
+  emberNames.set(TargetActionSupport, 'TargetActionSupport Mixin');
 }
 
 try {
-  const Views = Ember.__loader.require('@ember/-internals/views');
+  const Views = emberSafeRequire('@ember/-internals/views') || {};
   emberNames.set(Views.ViewStateSupport, 'ViewStateSupport Mixin');
   emberNames.set(Views.ViewMixin, 'View Mixin');
   emberNames.set(Views.ActionSupport, 'ActionSupport Mixin');
