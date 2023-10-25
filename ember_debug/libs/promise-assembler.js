@@ -93,7 +93,7 @@ class PromiseAssembler extends BaseObject {
     if (guid) {
       const index = this.promiseIndex[guid];
       if (index !== undefined) {
-        return this.all.get(index);
+        return this.all[index];
       }
     } else {
       return this.all;
