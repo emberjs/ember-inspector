@@ -17,13 +17,11 @@ export default class extends DebugPort {
    * Fetches the ember-cli configuration info and sets them on
    * the `emberCliConfig` property.
    */
-  init() {
-    super.init();
+  getAppConfig() {
     let found = findMetaTag('name', /environment$/);
     if (found) {
       try {
-        let config = JSON.parse(unescape(found.getAttribute('content')));
-        this.emberCliConfig = config;
+        return JSON.parse(unescape(found.getAttribute('content')));
       } catch (e) {}
     }
   }
@@ -46,7 +44,7 @@ export default class extends DebugPort {
    *  {String} podModulePrefix ex: 'my-app/pods'
    *  {Boolean} usePodsByDefault
    */
-  emberCliConfig = null;
+  emberCliConfig = this.getAppConfig();
 
   /**
    * Sends a reply back indicating if the app has been booted.
