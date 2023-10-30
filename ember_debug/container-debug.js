@@ -9,9 +9,16 @@ export default class extends DebugPort {
     return this.namespace?.owner?.__container__;
   }
 
+  TYPES_TO_SKIP = [
+    'component-lookup',
+    'container-debug-adapter',
+    'resolver-for-debugging',
+    'event_dispatcher',
+  ];
+
   static {
     this.prototype.portNamespace = 'container';
-    this.messages = {
+    this.prototype.messages = {
       getTypes() {
         this.sendMessage('types', {
           types: this.getTypes(),
