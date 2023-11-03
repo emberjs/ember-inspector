@@ -52,7 +52,6 @@ if (!Ember) {
     '@ember/-internals/metal'
   )?.ComputedProperty;
   meta = emberSafeRequire('@ember/-internals/meta')?.meta;
-  computed = emberSafeRequire('@ember/object/computed')?.default;
   set = emberSafeRequire('@ember/object')?.set;
   get = emberSafeRequire('@ember/object')?.get;
 }
