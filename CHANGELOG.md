@@ -3,6 +3,46 @@
 
 
 
+
+## v4.10.0 (2023-11-03)
+
+#### :rocket: Enhancement
+* [#2460](https://github.com/emberjs/ember-inspector/pull/2460) use word-wrap and add line break controls ([@patricklx](https://github.com/patricklx))
+* [#2459](https://github.com/emberjs/ember-inspector/pull/2459) remove title ([@patricklx](https://github.com/patricklx))
+* [#2426](https://github.com/emberjs/ember-inspector/pull/2426) limit max width of tooltips ([@patricklx](https://github.com/patricklx))
+* [#2402](https://github.com/emberjs/ember-inspector/pull/2402) support in-element & wormhole ([@patricklx](https://github.com/patricklx))
+* [#2444](https://github.com/emberjs/ember-inspector/pull/2444) show icons in whats-new page ([@patricklx](https://github.com/patricklx))
+* [#2241](https://github.com/emberjs/ember-inspector/pull/2241) allow setting custom object display value ([@patricklx](https://github.com/patricklx))
+* [#2315](https://github.com/emberjs/ember-inspector/pull/2315) Start adding TypeScript ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+
+#### :bug: Bug Fix
+* [#2487](https://github.com/emberjs/ember-inspector/pull/2487) [container debug] fix missing message handling ([@patricklx](https://github.com/patricklx))
+* [#2488](https://github.com/emberjs/ember-inspector/pull/2488) [app-info] fix missing app config ([@patricklx](https://github.com/patricklx))
+* [#2484](https://github.com/emberjs/ember-inspector/pull/2484) fix .get is not defined ([@patricklx](https://github.com/patricklx))
+* [#2476](https://github.com/emberjs/ember-inspector/pull/2476) fix manifest ([@patricklx](https://github.com/patricklx))
+* [#2477](https://github.com/emberjs/ember-inspector/pull/2477) fix missing errors when digging into props ([@patricklx](https://github.com/patricklx))
+* [#2432](https://github.com/emberjs/ember-inspector/pull/2432) do not fail on bad toString call ([@patricklx](https://github.com/patricklx))
+* [#2270](https://github.com/emberjs/ember-inspector/pull/2270) fix: Use correct value path in object inspector (#2237) ([@rossketron](https://github.com/rossketron))
+* [#2244](https://github.com/emberjs/ember-inspector/pull/2244) add script tag to the head instead ([@patricklx](https://github.com/patricklx))
+
+#### :memo: Documentation
+* [#2471](https://github.com/emberjs/ember-inspector/pull/2471) Update README.md with pnpm usage ([@CvX](https://github.com/CvX))
+
+#### :house: Internal
+* [#2475](https://github.com/emberjs/ember-inspector/pull/2475) modernize ember debug ([@patricklx](https://github.com/patricklx))
+* [#2111](https://github.com/emberjs/ember-inspector/pull/2111) Convert to manifest v3 ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+* [#2433](https://github.com/emberjs/ember-inspector/pull/2433) Bump some deps ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+* [#2411](https://github.com/emberjs/ember-inspector/pull/2411) use pnpm ([@patricklx](https://github.com/patricklx))
+* [#2403](https://github.com/emberjs/ember-inspector/pull/2403) use requireModule instead of require ([@patricklx](https://github.com/patricklx))
+* [#2316](https://github.com/emberjs/ember-inspector/pull/2316) Various lint fixes ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+* [#2284](https://github.com/emberjs/ember-inspector/pull/2284) ember-cli-update to 4.9.2 ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+
+#### Committers: 4
+- Jarek Radosz ([@CvX](https://github.com/CvX))
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+- Robbie Wagner ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+- Ross Ketron ([@rossketron](https://github.com/rossketron))
+
 ## v4.9.1 (2022-11-04)
 
 #### :bug: Bug Fix
