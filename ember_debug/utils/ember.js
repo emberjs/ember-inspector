@@ -35,7 +35,7 @@ if (!Ember) {
   Namespace = emberSafeRequire('@ember/application/namespace')?.default;
   MutableEnumerable = emberSafeRequire(
     '@ember/enumerable/mutable'
-  )?.NativeArray;
+  )?.default;
   NativeArray = emberSafeRequire('@ember/array')?.NativeArray;
   ControllerMixin = emberSafeRequire('@ember/controller')?.ControllerMixin;
   CoreObject = emberSafeRequire('@ember/object/core')?.default;
