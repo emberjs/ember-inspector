@@ -33,12 +33,10 @@ let {
 if (!Ember) {
   MutableArray = emberSafeRequire('@ember/array/mutable')?.default;
   Namespace = emberSafeRequire('@ember/application/namespace')?.default;
-  MutableEnumerable = emberSafeRequire(
-    '@ember/enumerable/mutable'
-  )?.NativeArray;
-  CoreObject = emberSafeRequire('@ember/array')?.NativeArray;
+  MutableEnumerable = emberSafeRequire('@ember/enumerable/mutable')?.default;
+  NativeArray = emberSafeRequire('@ember/array')?.NativeArray;
   ControllerMixin = emberSafeRequire('@ember/controller')?.ControllerMixin;
-  NativeArray = emberSafeRequire('@ember/object/core')?.NativeArray;
+  CoreObject = emberSafeRequire('@ember/object/core')?.default;
   Application = emberSafeRequire('@ember/application')?.default;
   Component = emberSafeRequire('@ember/component')?.default;
   Observable = emberSafeRequire('@ember/object/observable')?.default;
@@ -52,7 +50,6 @@ if (!Ember) {
     '@ember/-internals/metal'
   )?.ComputedProperty;
   meta = emberSafeRequire('@ember/-internals/meta')?.meta;
-  computed = emberSafeRequire('@ember/object/computed')?.default;
   set = emberSafeRequire('@ember/object')?.set;
   get = emberSafeRequire('@ember/object')?.get;
 }
