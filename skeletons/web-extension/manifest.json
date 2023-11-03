@@ -49,6 +49,12 @@
     "service_worker": "background.js"
   },
 
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "ember-inspector@emberjs.com"
+    }
+  },
+
   "options_ui": {
     "page": "options-dialog.html"
   },
