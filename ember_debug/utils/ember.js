@@ -36,9 +36,9 @@ if (!Ember) {
   MutableEnumerable = emberSafeRequire(
     '@ember/enumerable/mutable'
   )?.NativeArray;
-  CoreObject = emberSafeRequire('@ember/array')?.NativeArray;
+  NativeArray = emberSafeRequire('@ember/array')?.NativeArray;
   ControllerMixin = emberSafeRequire('@ember/controller')?.ControllerMixin;
-  NativeArray = emberSafeRequire('@ember/object/core')?.NativeArray;
+  CoreObject = emberSafeRequire('@ember/object/core')?.default;
   Application = emberSafeRequire('@ember/application')?.default;
   Component = emberSafeRequire('@ember/component')?.default;
   Observable = emberSafeRequire('@ember/object/observable')?.default;
