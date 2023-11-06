@@ -1,4 +1,7 @@
-let define = window.define,
+let define = window.define && (...args) => window.define(...args),
+  exports = undefined,
+  module = undefined,
+  require = window.requireModule,
   requireModule = window.requireModule;
 if (typeof define !== 'function' || typeof requireModule !== 'function') {
   (function () {
