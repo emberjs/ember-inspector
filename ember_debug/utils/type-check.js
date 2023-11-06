@@ -42,6 +42,7 @@ export function getDescriptorFor(object, key) {
     return object[key];
   }
 
+  // exists longeer than ember 3.10
   if (Debug.isComputed) {
     const { descriptorForDecorator, descriptorForProperty } =
       emberSafeRequire('@ember/-internals/metal') || {};

@@ -104,9 +104,13 @@ module.exports = function (defaults) {
 
   let emberDebug = 'ember_debug';
 
-  let sourceMap = new Funnel('node_modules/source-map/dist', {
-    files: ['source-map.js'],
+  let sourceMap = new Funnel('node_modules/source-map-js', {
+    files: ['**/*.js'],
     destDir: 'ember-debug/deps',
+  });
+
+  sourceMap = new Babel(sourceMap, {
+    plugins: ['transform-commonjs'],
   });
 
   const backburner = new Funnel('node_modules/backburner.js/dist/es6', {
