@@ -266,8 +266,6 @@ jobs:
     steps:
       - name: Set up Volta
         uses: volta-cli/action@v4
-        with:
-          node-version: 14.x
       - name: Install dependencies (chrome-webstore-upload-cli)
         run: volta install chrome-webstore-upload-cli
       - name: Download artifacts (Chrome)
@@ -300,8 +298,6 @@ jobs:
     steps:
       - name: Set up Volta
         uses: volta-cli/action@v4
-        with:
-          node-version: 14.x
       - name: Install dependencies (web-ext)
         run: |
           volta install web-ext
