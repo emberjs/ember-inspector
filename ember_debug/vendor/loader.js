@@ -1,4 +1,4 @@
-let define = window.define && (...args) => window.define(...args),
+let define = window.define && ((...args) => window.define(...args)),
   exports = undefined,
   module = undefined,
   require = window.requireModule,
