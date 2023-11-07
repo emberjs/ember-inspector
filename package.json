@@ -41,6 +41,7 @@
     "@glimmer/tracking": "^1.1.2",
     "@html-next/vertical-collection": "^4.0.2",
     "@tsconfig/ember": "^3.0.0",
+    "@types/chrome": "^0.0.250",
     "@types/ember": "^4.0.3",
     "@types/ember-qunit": "^6.1.1",
     "@types/ember-resolver": "^9.0.0",
@@ -145,7 +146,8 @@
     "tracked-toolbox": "^2.0.0",
     "typescript": "^5.1.6",
     "webpack": "^5.88.1",
-    "yauzl": "^2.10.0"
+    "yauzl": "^2.10.0",
+    "source-map-js": "^1.0.2"
   },
   "engines": {
     "node": "14.* || 16.* || >= 18"
@@ -191,9 +193,5 @@
   "volta": {
     "node": "18.18.2",
     "pnpm": "8.10.2"
-  },
-  "dependencies": {
-    "browserify": "^17.0.0",
-    "source-map-js": "^1.0.2"
   }
 }
