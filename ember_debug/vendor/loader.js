@@ -1,8 +1,10 @@
+/* eslint-disable */
 let define = window.define && ((...args) => window.define(...args)),
   exports = undefined,
   module = undefined,
   require = window.requireModule,
   requireModule = window.requireModule;
+/* eslint-enable */
 if (typeof define !== 'function' || typeof requireModule !== 'function') {
   (function () {
     let registry = {},
