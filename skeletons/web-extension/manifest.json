@@ -7,7 +7,7 @@
 
   "icons": {
     "16": "{{PANE_ROOT}}/assets/images/icon16.png",
-    "32": "{{PANE_ROOT}}/assets/images/icon38.png",
+    "38": "{{PANE_ROOT}}/assets/images/icon38.png",
     "48": "{{PANE_ROOT}}/assets/images/icon48.png",
     "128": "{{PANE_ROOT}}/assets/images/icon128.png"
   },
@@ -39,8 +39,8 @@
 
   "action": {
     "default_icon": {
-      "19": "{{PANE_ROOT}}/assets/images/icon19.png",
-      "38": "{{PANE_ROOT}}/assets/images/icon38.png"
+      "19": "{{PANE_ROOT}}/assets/images/icon19_grey.png",
+      "38": "{{PANE_ROOT}}/assets/images/icon38_grey.png"
     },
     "default_title": "This webpage is not running Ember.js"
   },
@@ -62,7 +62,7 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "scripts/in-page-script.js",        
+        "scripts/in-page-script.js",
         "scripts/boot.js",
         "panes-*/ember_debug.js"
       ],

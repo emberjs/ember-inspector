@@ -66,6 +66,8 @@ class ChromeApi {
       },
     };
 
+    const contextMenuListeners = [];
+
     this.contextMenus = {
       remove(name) {
         delete self.registeredContextMenus[name];
@@ -73,6 +75,14 @@ class ChromeApi {
 
       create(menu) {
         self.registeredContextMenus[menu.id] = menu;
+        self.registeredContextMenus[menu.id].onclick = () =>
+          contextMenuListeners.forEach((fn) => fn({ menuItemId: menu.id }));
+      },
+
+      onClicked: {
+        addListener(fn) {
+          contextMenuListeners.push(fn);
+        },
       },
     };
 

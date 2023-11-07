@@ -36,7 +36,7 @@
    * @param {Number} tabId - the current tab
    */
   function setActionTitle(tabId) {
-    chrome.action.setTitle({
+    void chrome.action.setTitle({
       tabId: tabId,
       title: generateVersionsTooltip(activeTabs[tabId])
     });
@@ -49,9 +49,15 @@
    * @param {Number} tabId - the current tab
    */
   function updateTabAction(tabId) {
-    chrome.storage.sync.get("options", function(data) {
-      if (!data.options || !data.options.showTomster) { return; }
-      chrome.action.show(tabId);
+    chrome.storage.sync.get("options", async function(data) {
+      void chrome.action.enable(tabId);
+      void chrome.action.setIcon({
+        tabId,
+        path: {
+          19: '{{PANE_ROOT}}/assets/images/icon19.png',
+          38: '{{PANE_ROOT}}/assets/images/icon38.png',
+        }
+      });
       setActionTitle(tabId);
     });
   }
@@ -66,8 +72,25 @@
       return;
     }
 
-    chrome.action.hide(tabId);
+    void chrome.action.disable(tabId);
+    void chrome.action.setIcon({
+      tabId,
+      path: {
+        19: '{{PANE_ROOT}}/assets/images/icon19_grey.png',
+        38: '{{PANE_ROOT}}/assets/images/icon38_grey.png',
+      }
+    });
   }
+
+  function genericOnClick(info) {
+    if (info.menuItemId !== 'inspect-ember-component') return;
+    void chrome.tabs.sendMessage(activeTabId, {
+      from: 'devtools',
+      type: 'view:contextMenu'
+    });
+  }
+
+  chrome.contextMenus.onClicked.addListener(genericOnClick);
 
   /**
    * Update the tab's contextMenu: https://developer.chrome.com/extensions/contextMenus
@@ -94,12 +117,6 @@
         id: 'inspect-ember-component',
         title: 'Inspect Ember Component',
         contexts: ['all'],
-        onclick: function() {
-          chrome.tabs.sendMessage(activeTabId, {
-            from: 'devtools',
-            type: 'view:contextMenu'
-          });
-        }
       });
       contextMenuAdded = true;
     }
