@@ -273,9 +273,21 @@ module.exports = function (defaults) {
 
   replacementPattern = replacementPattern.concat(emberInspectorVersionPattern);
 
+  const firefoxBackgroundServiceReplacement = [
+    {
+      match: /"service_worker": "background.js"/g,
+      replacement: '"scripts": ["background.js"]',
+    },
+  ];
+
   const skeletonWebExtension = replace('skeletons/web-extension', {
     files: ['*'],
     patterns: replacementPattern,
+  });
+
+  const skeletonFirefoxWebExtension = replace('skeletons/web-extension', {
+    files: ['*'],
+    patterns: replacementPattern.concat(firefoxBackgroundServiceReplacement),
   });
 
   const skeletonBookmarklet = replace('skeletons/bookmarklet', {
@@ -285,7 +297,7 @@ module.exports = function (defaults) {
 
   let firefox = mergeTrees([
     mv(mergeTrees([tree, emberDebugs.firefox]), webExtensionRoot),
-    skeletonWebExtension,
+    skeletonFirefoxWebExtension,
   ]);
 
   let chrome = mergeTrees([
