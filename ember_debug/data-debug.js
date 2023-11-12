@@ -92,11 +92,9 @@ export default class extends DebugPort {
       columnValues[i] = this.objectInspector.inspect(record.columnValues[i]);
     }
     // make sure keywords can be searched and clonable
-    searchKeywords = record.searchKeywords
-      .toArray()
-      .filter(
-        (keyword) => typeof keyword === 'string' || typeof keyword === 'number'
-      );
+    searchKeywords = record.searchKeywords.filter(
+      (keyword) => typeof keyword === 'string' || typeof keyword === 'number'
+    );
     return {
       columnValues,
       searchKeywords,
