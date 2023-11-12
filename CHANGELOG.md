@@ -4,6 +4,25 @@
 
 
 
+
+## v4.10.1 (2023-11-12)
+
+#### :bug: Bug Fix
+* [#2501](https://github.com/emberjs/ember-inspector/pull/2501) correctly load scripts in chrome & firefox ([@patricklx](https://github.com/patricklx))
+* [#2503](https://github.com/emberjs/ember-inspector/pull/2503) fix inspecting ember data records ([@patricklx](https://github.com/patricklx))
+* [#2499](https://github.com/emberjs/ember-inspector/pull/2499) fix inspector not showing up in certain cases ([@patricklx](https://github.com/patricklx))
+* [#2497](https://github.com/emberjs/ember-inspector/pull/2497) make amd safe ([@patricklx](https://github.com/patricklx))
+* [#2495](https://github.com/emberjs/ember-inspector/pull/2495) switch to source-map-js ([@patricklx](https://github.com/patricklx))
+* [#2489](https://github.com/emberjs/ember-inspector/pull/2489) Add id for manifest v3 support in Firefox ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+* [#2490](https://github.com/emberjs/ember-inspector/pull/2490) fix some ember names detection ([@patricklx](https://github.com/patricklx))
+
+#### :house: Internal
+* [#2494](https://github.com/emberjs/ember-inspector/pull/2494) Update node and pnpm versions ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+
+#### Committers: 2
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+- Robbie Wagner ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+
 ## v4.10.0 (2023-11-03)
 
 #### :rocket: Enhancement
