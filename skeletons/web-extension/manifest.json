@@ -22,6 +22,7 @@
     {
       "matches": ["<all_urls>"],
       "js": ["boot.js"],
+      "world": "MAIN",
       "run_at": "document_start",
       "match_about_blank": true,
       "all_frames": true
@@ -63,7 +64,6 @@
     {
       "resources": [
         "scripts/in-page-script.js",
-        "scripts/boot.js",
         "panes-*/ember_debug.js"
       ],
       "matches": [
