@@ -255,7 +255,6 @@ jobs:
       - build    
     runs-on: ubuntu-latest
     steps:
-      - run: echo '{}' > package.json
       - name: Set up node
         uses: actions/setup-node@v4
       - name: Install dependencies (chrome-webstore-upload-cli)
@@ -290,7 +289,6 @@ jobs:
       - build    
     runs-on: ubuntu-latest
     steps:
-      - run: echo '{}' > package.json
       - name: Set up nod
         uses: actions/setup-node@v4
       - name: Install dependencies (web-ext)
