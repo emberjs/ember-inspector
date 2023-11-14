@@ -6,6 +6,15 @@
 
 
 
+
+## v4.10.3 (2023-11-14)
+
+#### :house: Internal
+* [#2510](https://github.com/emberjs/ember-inspector/pull/2510) Remove custom id setting since it is in manifest ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+
+#### Committers: 1
+- Robbie Wagner ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+
 ## v4.10.2 (2023-11-14)
 
 #### :house: Internal
