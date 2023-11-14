@@ -5,6 +5,15 @@
 
 
 
+
+## v4.10.2 (2023-11-14)
+
+#### :house: Internal
+* [#2509](https://github.com/emberjs/ember-inspector/pull/2509) fix publish - remove volta ([@patricklx](https://github.com/patricklx))
+
+#### Committers: 1
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
 ## v4.10.1 (2023-11-12)
 
 #### :bug: Bug Fix
