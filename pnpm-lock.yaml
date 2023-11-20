@@ -186,8 +186,8 @@ devDependencies:
     specifier: ^8.2.0
     version: 8.2.0(@babel/core@7.22.5)
   ember-cli-code-coverage:
-    specifier: ^1.0.2
-    version: 1.0.2
+    specifier: ^2.0.2
+    version: 2.0.2
   ember-cli-dependency-checker:
     specifier: ^3.3.1
     version: 3.3.2(ember-cli@4.9.2)
@@ -7003,17 +7003,26 @@ packages:
       - supports-color
     dev: true
 
-  /ember-cli-code-coverage@1.0.2:
-    resolution: {integrity: sha512-uD0RA6A4p/AOpPGq8JXIiZeDFWjzEm5fyWZLU5W8nCF//t3wbkly8tZukiYchJNNYEeESzd6gqdwgDkLMRzZYA==}
-    engines: {node: 10.* || >= 12}
+  /ember-cli-code-coverage@2.0.2:
+    resolution: {integrity: sha512-SmsisTdgLxXf8u6Qb2MsPju+CL2Ktta6V6UwKvupnJGgkKgGOHg3yzMv0TqXg87yNWEw7LH2HcXqO1lSwmyr2A==}
+    engines: {node: 14.* || 16.* || >= 18}
+    peerDependencies:
+      '@embroider/compat': ^0.47.0 || ^1.0.0 || ^2.0.0 || >=3.0.0
+      '@embroider/core': ^0.47.0 || ^1.0.0 || ^2.0.0 || >=3.0.0
+    peerDependenciesMeta:
+      '@embroider/compat':
+        optional: true
+      '@embroider/core':
+        optional: true
     dependencies:
       babel-plugin-istanbul: 6.1.1
       body-parser: 1.20.2
-      ember-cli-version-checker: 5.1.2
+      ember-cli-babel: 7.26.11
+      express: 4.18.2
       fs-extra: 9.1.0
-      istanbul-lib-coverage: 3.2.0
-      istanbul-lib-report: 3.0.0
-      istanbul-reports: 3.1.5
+      istanbul-lib-coverage: 3.2.2
+      istanbul-lib-report: 3.0.1
+      istanbul-reports: 3.1.6
       node-dir: 0.1.17
       walk-sync: 2.2.0
     transitivePeerDependencies:
@@ -11158,8 +11167,8 @@ packages:
       lodash.uniqby: 4.7.0
     dev: true
 
-  /istanbul-lib-coverage@3.2.0:
-    resolution: {integrity: sha512-eOeJ5BHCmHYvQK7xt9GkdHuzuCGS1Y6g9Gvnx3Ym33fz/HpLRYxiS0wHNr+m/MBC8B647Xt608vCDEvhl9c6Mw==}
+  /istanbul-lib-coverage@3.2.2:
+    resolution: {integrity: sha512-O8dpsF+r0WV/8MNRKfnmrtCWhuKjxrq2w+jpzBL5UZKTi2LeVWnWOmWRxFlesJONmc+wLAGvKQZEOanko0LFTg==}
     engines: {node: '>=8'}
     dev: true
 
@@ -11170,27 +11179,27 @@ packages:
       '@babel/core': 7.22.5
       '@babel/parser': 7.23.0
       '@istanbuljs/schema': 0.1.3
-      istanbul-lib-coverage: 3.2.0
+      istanbul-lib-coverage: 3.2.2
       semver: 6.3.1
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /istanbul-lib-report@3.0.0:
-    resolution: {integrity: sha512-wcdi+uAKzfiGT2abPpKZ0hSU1rGQjUQnLvtY5MpQ7QCTahD3VODhcu4wcfY1YtkGaDD5yuydOLINXsfbus9ROw==}
-    engines: {node: '>=8'}
+  /istanbul-lib-report@3.0.1:
+    resolution: {integrity: sha512-GCfE1mtsHGOELCU8e/Z7YWzpmybrx/+dSTfLrvY8qRmaY6zXTKWn6WQIjaAFw069icm6GVMNkgu0NzI4iPZUNw==}
+    engines: {node: '>=10'}
     dependencies:
-      istanbul-lib-coverage: 3.2.0
-      make-dir: 3.1.0
+      istanbul-lib-coverage: 3.2.2
+      make-dir: 4.0.0
       supports-color: 7.2.0
     dev: true
 
-  /istanbul-reports@3.1.5:
-    resolution: {integrity: sha512-nUsEMa9pBt/NOHqbcbeJEgqIlY/K7rVWUX6Lql2orY5e9roQOthbR3vtY4zzf2orPELg80fnxxk9zUyPlgwD1w==}
+  /istanbul-reports@3.1.6:
+    resolution: {integrity: sha512-TLgnMkKg3iTDsQ9PbPTdpfAK2DzjF9mqUG7RMgcQl8oFjad8ob4laGxv5XV5U9MAfx8D6tSJiUyuAwzLicaxlg==}
     engines: {node: '>=8'}
     dependencies:
       html-escaper: 2.0.2
-      istanbul-lib-report: 3.0.0
+      istanbul-lib-report: 3.0.1
     dev: true
 
   /istextorbinary@2.1.0:
@@ -11945,6 +11954,13 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       semver: 6.3.1
+    dev: true
+
+  /make-dir@4.0.0:
+    resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
+    engines: {node: '>=10'}
+    dependencies:
+      semver: 7.5.4
     dev: true
 
   /make-fetch-happen@9.1.0:
