@@ -262,7 +262,7 @@ devDependencies:
     version: 3.0.0
   ember-svg-jar:
     specifier: ^2.4.6
-    version: 2.4.6
+    version: 2.4.7
   ember-table:
     specifier: ^5.0.1
     version: 5.0.6(@ember/test-helpers@2.8.1)(webpack@5.89.0)
@@ -2005,7 +2005,7 @@ packages:
     resolution: {integrity: sha512-pDgpdTsC9i/+5hHziygK5VIZc64OG8bupiqL0OxJp+bnINURalHMbu5B3Gikq/a0QIvMPzDFWzKxIZCBpeiHkg==}
     engines: {node: 12.* || 14.* || >= 16}
     dependencies:
-      '@embroider/shared-internals': 2.2.3
+      '@embroider/shared-internals': 2.5.1
       broccoli-funnel: 3.0.8
       semver: 7.5.4
     transitivePeerDependencies:
@@ -7877,8 +7877,8 @@ packages:
       - webpack
     dev: true
 
-  /ember-svg-jar@2.4.6:
-    resolution: {integrity: sha512-W+t6sRAiPhRl4imGKEMWsQDiCV8Nl2GRwzUpqZ1a+CZoW+2aCkF+kcngeDlHn5XzT16bQXg/QYXUvwtKJlSLfg==}
+  /ember-svg-jar@2.4.7:
+    resolution: {integrity: sha512-W1PWqiQOAcNvUIomkZP5oi4JdV2eQPEuGLa1ic0LPhpx/OHKwtW35M1TTDQ+YWwCnKJf0uh/Bl8ZumVw38YXBQ==}
     engines: {node: 12.* || 14.* || >= 16}
     dependencies:
       '@embroider/macros': 1.12.3
