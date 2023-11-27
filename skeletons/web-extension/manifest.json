@@ -12,7 +12,8 @@
     "128": "{{PANE_ROOT}}/assets/images/icon128.png"
   },
 
-  "permissions": ["<all_urls>", "storage", "contextMenus"],
+  "permissions": ["storage", "contextMenus"],
+  "host_permissions": ["<all_urls>"],
 
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
