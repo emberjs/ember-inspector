@@ -7,6 +7,16 @@
 
 
 
+
+## v4.10.4 (2023-11-27)
+
+#### :bug: Bug Fix
+* [#2505](https://github.com/emberjs/ember-inspector/pull/2505) fix lazy routes debug ([@patricklx](https://github.com/patricklx))
+* [#2517](https://github.com/emberjs/ember-inspector/pull/2517) [firefox] set access permissions for all websites  ([@patricklx](https://github.com/patricklx))
+
+#### Committers: 1
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
 ## v4.10.3 (2023-11-14)
 
 #### :house: Internal
