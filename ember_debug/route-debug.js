@@ -9,14 +9,20 @@ import { later } from 'ember-debug/utils/ember/runloop';
 
 const { hasOwnProperty } = Object.prototype;
 
-export default class extends DebugPort {
+export default class RouteDebug extends DebugPort {
+  _cachedRouteTree = null;
   init() {
     super.init();
     this.__currentURL = this.currentURL;
+    this.__currentRouter = this.router;
     this.observer = setInterval(() => {
       if (this.__currentURL !== this.currentURL) {
         this.sendCurrentRoute();
         this.__currentURL = this.currentURL;
+      }
+      if (this.__currentRouter !== this.router) {
+        this._cachedRouteTree = null;
+        this.__currentRouter = this.router;
       }
     }, 150);
   }
@@ -67,18 +73,21 @@ export default class extends DebugPort {
   }
 
   get routeTree() {
-    const router = this.router;
-    const routerLib = router._routerMicrolib || router.router;
-    let routeNames = routerLib.recognizer.names;
-    let routeTree = {};
-    for (let routeName in routeNames) {
-      if (!hasOwnProperty.call(routeNames, routeName)) {
-        continue;
+    if (!this._cachedRouteTree) {
+      const router = this.router;
+      const routerLib = router._routerMicrolib || router.router;
+      let routeNames = routerLib.recognizer.names;
+      let routeTree = {};
+      for (let routeName in routeNames) {
+        if (!hasOwnProperty.call(routeNames, routeName)) {
+          continue;
+        }
+        let route = routeNames[routeName];
+        buildSubTree.call(this, routeTree, route);
       }
-      let route = routeNames[routeName];
-      buildSubTree.call(this, routeTree, route);
+      this._cachedRouteTree = arrayizeChildren({ children: routeTree });
     }
-    return arrayizeChildren({ children: routeTree });
+    return this._cachedRouteTree;
   }
 
   sendTree() {
@@ -143,6 +152,7 @@ export default class extends DebugPort {
  *
  * @param {*} routeTree
  * @param {*} route
+ * @this {RouteDebug}
  * @return {Void}
  */
 function buildSubTree(routeTree, route) {
@@ -187,7 +197,7 @@ function buildSubTree(routeTree, route) {
       // Skip when route is an unresolved promise
       if (typeof routeHandler?.then === 'function') {
         // ensure we rebuild the route tree when this route is resolved
-        routeHandler.then(() => this.notifyPropertyChange('routeTree'));
+        routeHandler.then(() => (this._cachedRouteTree = null));
         controllerName = '(unresolved)';
         controllerClassName = '(unresolved)';
         templateName = '(unresolved)';

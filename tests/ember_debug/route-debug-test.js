@@ -25,6 +25,13 @@ module('Ember Debug - Route Tree', function (hooks) {
   hooks.beforeEach(async function () {
     this.owner.register('route:loading', Route);
     this.owner.register('route:error', Route);
+    this.owner.register(
+      'route:posts',
+      class extends Route {
+        promise = Promise.resolve(Route);
+        then = this.promise.then.bind(this.promise);
+      }
+    );
 
     EmberDebug.generalDebug.reopen({
       emberCliConfig: null,
