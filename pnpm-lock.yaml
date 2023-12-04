@@ -109,7 +109,7 @@ devDependencies:
     version: 2.9.1(@babel/core@7.22.5)(ember-source@4.12.3)
   '@types/ember__utils':
     specifier: ^4.0.2
-    version: 4.0.3(@babel/core@7.22.5)
+    version: 4.0.6(@babel/core@7.22.5)
   '@types/qunit':
     specifier: ^2.19.4
     version: 2.19.4
@@ -2821,7 +2821,7 @@ packages:
       '@types/ember__string': 3.0.12
       '@types/ember__template': 4.0.2
       '@types/ember__test': 4.0.1(@babel/core@7.22.5)
-      '@types/ember__utils': 4.0.3(@babel/core@7.22.5)
+      '@types/ember__utils': 4.0.6(@babel/core@7.22.5)
       '@types/htmlbars-inline-precompile': 3.0.0
       '@types/rsvp': 4.0.4
     transitivePeerDependencies:
@@ -2978,8 +2978,8 @@ packages:
       - supports-color
     dev: true
 
-  /@types/ember__utils@4.0.3(@babel/core@7.22.5):
-    resolution: {integrity: sha512-o+0oRoT72wcxq4aqZTVEcPJKkKORig6mggs6OWrssCKF+cFZIkO7MNSkHy8ad88xNuyiGETIrBaXkr7XpNY1qg==}
+  /@types/ember__utils@4.0.6(@babel/core@7.22.5):
+    resolution: {integrity: sha512-Wtte/RJ93q1cz7CgCdGqMwqPsvf9W5P9mVUBAs8kGF6j2dHV0ajRLtRwrDcMjjsFFq6X7dKOOBFErU+IFQQ6Xw==}
     dependencies:
       '@types/ember': 4.0.3(@babel/core@7.22.5)
     transitivePeerDependencies:
