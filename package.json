@@ -128,7 +128,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-qunit": "^7.3.4",
     "fstream": "^1.0.12",
-    "got": "^11.8.2",
+    "got": "^14.0.0",
     "gulp": "^4.0.2",
     "gulp-zip": "^5.1.0",
     "loader.js": "^4.7.0",
