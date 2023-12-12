@@ -165,9 +165,11 @@ class InElementSupportProvider {
   registerRemote(block, node) {
     const obj = this.buildInElementNode(node);
     if (this.currentNode) {
-      if (!this.currentNode.remotes) Object.defineProperty(this.currentNode, 'remotes', {
-        value: []
-      });
+      if (!this.currentNode.remotes) {
+        Object.defineProperty(this.currentNode, 'remotes', {
+          value: [],
+        });
+      }
       this.currentNode.remotes.push(obj);
     }
     this.remoteRoots.push(obj);
