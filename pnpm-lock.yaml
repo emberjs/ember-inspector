@@ -85,7 +85,7 @@ devDependencies:
     version: 4.0.6(@babel/core@7.22.5)
   '@types/ember__polyfills':
     specifier: ^4.0.1
-    version: 4.0.2
+    version: 4.0.5
   '@types/ember__routing':
     specifier: ^4.0.12
     version: 4.0.12(@babel/core@7.22.5)
@@ -2814,7 +2814,7 @@ packages:
       '@types/ember__engine': 4.0.8(@babel/core@7.22.5)
       '@types/ember__error': 4.0.3
       '@types/ember__object': 4.0.6(@babel/core@7.22.5)
-      '@types/ember__polyfills': 4.0.2
+      '@types/ember__polyfills': 4.0.5
       '@types/ember__routing': 4.0.12(@babel/core@7.22.5)
       '@types/ember__runloop': 4.0.2(@babel/core@7.22.5)
       '@types/ember__service': 4.0.6(@babel/core@7.22.5)
@@ -2913,8 +2913,8 @@ packages:
     resolution: {integrity: sha512-FD0XuAlIfeVEwpKcAeGczQxa6D0huKxvPHuPE+FIm+zWZmqnI6yhxDhZgeGjnhmCCLAHRp8+1HRoKOFwnmaW3Q==}
     dev: true
 
-  /@types/ember__polyfills@4.0.2:
-    resolution: {integrity: sha512-DMtjEhCHgrMion+qDWQVC9gW5SIY5wElueFbAmBLghTcUOgLWLTFzah3PxKln9cQNRO36699Irg2UdYOJsY6Jg==}
+  /@types/ember__polyfills@4.0.5:
+    resolution: {integrity: sha512-KOdgOFGCIMtBb6bMEsze7LDA2+h588qJCmFTsFBdicZFMX7lWg3hju5568bD7SXBpXvBF2a9a1Xv4fpNdRntWA==}
     dev: true
 
   /@types/ember__routing@4.0.12(@babel/core@7.22.5):
