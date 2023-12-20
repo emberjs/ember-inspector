@@ -60,12 +60,23 @@ export default class WebExtension extends BasicAdapter {
   }
 
   _connect() {
+    if (this._isConnected) {
+      return;
+    }
     let chromePort = this._chromePort;
     chromePort.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
 
     chromePort.onMessage.addListener((...args) => {
       this._messageReceived(...args);
     });
+
+    chromePort.onDisconnect.addListener(() => {
+      this._isConnected = false;
+      this.notifyPropertyChange('_chromePort');
+      this._connect();
+    });
+
+    this._isConnected = true;
   }
 
   _handleReload() {
