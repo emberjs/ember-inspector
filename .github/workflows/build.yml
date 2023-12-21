@@ -202,22 +202,22 @@ jobs:
           mkdir -p dist/npm
           tar xvzf "ember-inspector-$VERSION.tgz" -C dist/npm --strip-components 1
       - name: Upload artifacts (bookmarklet)
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: bookmarklet
           path: dist/bookmarklet
       - name: Upload artifacts (Chrome)
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: chrome
           path: dist/chrome
       - name: Upload artifacts (Firefox)
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: firefox
           path: dist/firefox
       - name: Upload artifacts (npm)
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: npm
           path: dist/npm
@@ -232,12 +232,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts (bookmarklet)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: bookmarklet
           path: bookmarklet
       - name: Upload to S3
-        uses: jakejarvis/s3-sync-action@master
+        uses: jakejarvis/s3-sync-action@v0.5.1
         with:
           args: --acl public-read --cache-control "max-age=86400000,public"
         env:
@@ -260,7 +260,7 @@ jobs:
       - name: Install dependencies (chrome-webstore-upload-cli)
         run: npm install -g chrome-webstore-upload-cli
       - name: Download artifacts (Chrome)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: chrome
           path: chrome
@@ -297,7 +297,7 @@ jobs:
           # https://github.com/mozilla/web-ext/issues/804
           npm install -g web-ext-submit
       - name: Download artifacts (Firefox)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: firefox
           path: firefox
@@ -320,7 +320,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v4
       - name: Download artifacts (npm)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: npm
           path: npm
