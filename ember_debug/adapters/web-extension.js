@@ -28,7 +28,11 @@ export default class extends BasicAdapter {
     // "clone" them through postMessage unless they are converted to a
     // native array.
     options = deepClone(options);
-    this._chromePort.postMessage(options);
+    try {
+      this._chromePort.postMessage(options);
+    } catch (e) {
+      console.log('failed to send message', e);
+    }
   }
 
   /**

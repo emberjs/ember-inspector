@@ -12,6 +12,7 @@ import EmberComponent from '@ember/component';
 import EmberRoute from '@ember/routing/route';
 import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
+import didInsert from '@ember/render-modifiers/modifiers/did-insert';
 import QUnit, { module, test } from 'qunit';
 import { hbs } from 'ember-cli-htmlbars';
 import EmberDebug from 'ember-debug/main';
@@ -265,6 +266,47 @@ function Component(
   );
 }
 
+function Modifier(
+  {
+    name,
+    instance = Serialized(),
+    template = null,
+    bounds = 'single',
+    ...options
+  },
+  ...children
+) {
+  return RenderNode(
+    { name, instance, template, bounds, ...options, type: 'modifier' },
+    ...children
+  );
+}
+
+function HtmlElement(
+  {
+    name,
+    instance = Serialized(),
+    args = Args(),
+    template = null,
+    bounds = 'single',
+    ...options
+  },
+  ...children
+) {
+  return RenderNode(
+    {
+      name,
+      instance,
+      args,
+      template,
+      bounds,
+      ...options,
+      type: 'html-element',
+    },
+    ...children
+  );
+}
+
 function Route(
   {
     name,
@@ -430,6 +472,7 @@ module('Ember Debug - View', function (hooks) {
     this.owner.register(
       'controller:simple',
       Controller.extend({
+        foo() {},
         get elementTarget() {
           return document.querySelector('#target');
         },
@@ -501,7 +544,11 @@ module('Ember Debug - View', function (hooks) {
     this.owner.register(
       'template:simple',
       hbs(
-        'Simple {{test-foo}} {{test-bar value=(hash x=123 [x.y]=456)}} {{#in-element this.elementTarget}}<TestComponentInInElement />{{/in-element}}',
+        `
+        <div {{did-insert this.foo}}>
+          Simple {{test-foo}} {{test-bar value=(hash x=123 [x.y]=456)}} {{#in-element this.elementTarget}}<TestComponentInInElement />{{/in-element}}
+        </div>
+        `,
         {
           moduleName: 'my-app/templates/simple.hbs',
         }
@@ -587,6 +634,8 @@ module('Ember Debug - View', function (hooks) {
                 {{/in-element}}
               `)
     );
+
+    this.owner.register('modifier:did-insert', didInsert);
   });
 
   test('Simple Inputs Tree', async function () {
@@ -596,6 +645,43 @@ module('Ember Debug - View', function (hooks) {
 
     const inputChildren = [];
     // https://github.com/emberjs/ember.js/commit/e6cf1766f8e02ddb24bf67833c148e7d7c93182f
+    const modifiers = [
+      Modifier({
+        name: 'on',
+        args: Args({ positionals: 2 }),
+      }),
+      Modifier({
+        name: 'on',
+        args: Args({ positionals: 2 }),
+      }),
+      Modifier({
+        name: 'on',
+        args: Args({ positionals: 2 }),
+      }),
+      Modifier({
+        name: 'on',
+        args: Args({ positionals: 2 }),
+      }),
+      Modifier({
+        name: 'on',
+        args: Args({ positionals: 2 }),
+      }),
+    ];
+    if (hasEmberVersion(3, 28) && !hasEmberVersion(4, 0)) {
+      modifiers.push(
+        Modifier({
+          name: 'deprecated-event-handlers',
+          args: Args({ positionals: 1 }),
+        })
+      );
+    }
+    const htmlElement = HtmlElement(
+      {
+        name: 'input',
+        args: Args({ names: ['id', 'class', 'type'] }),
+      },
+      ...modifiers
+    );
     if (!hasEmberVersion(3, 26)) {
       inputChildren.push(
         Component({
@@ -604,6 +690,8 @@ module('Ember Debug - View', function (hooks) {
           args: Args({ names: ['target', 'value'], positionals: 0 }),
         })
       );
+    } else {
+      inputChildren.push(htmlElement);
     }
 
     matchTree(tree, [
@@ -640,44 +728,53 @@ module('Ember Debug - View', function (hooks) {
           { name: 'application' },
           Route(
             { name: 'simple' },
-            Component({ name: 'test-foo', bounds: 'single' }),
-            Component({
-              name: 'test-bar',
-              bounds: 'range',
-              args: Args({ names: ['value'], positionals: 0 }),
-              instance: (actual) => {
-                async function testArgsValue() {
-                  const value = await digDeeper(actual.id, 'args');
-                  QUnit.assert.equal(
-                    value.details[0].properties[0].value.inspect,
-                    '{ x: 123, x.y: 456 }',
-                    'value inspect should be correct'
-                  );
-                }
-                argsTestPromise = testArgsValue();
-              },
-            }),
-            Component(
+            HtmlElement(
               {
-                name: 'in-element',
-                args: (actual) => {
-                  QUnit.assert.ok(actual.positional[0]);
+                name: 'div',
+              },
+              Modifier({
+                name: 'did-insert',
+                args: Args({ positionals: 1 }),
+              }),
+              Component({ name: 'test-foo', bounds: 'single' }),
+              Component({
+                name: 'test-bar',
+                bounds: 'range',
+                args: Args({ names: ['value'], positionals: 0 }),
+                instance: (actual) => {
                   async function testArgsValue() {
-                    const value = await inspectById(actual.positional[0].id);
+                    const value = await digDeeper(actual.id, 'args');
                     QUnit.assert.equal(
-                      value.details[1].name,
-                      'HTMLDivElement',
-                      'in-element args value inspect should be correct'
+                      value.details[0].properties[0].value.inspect,
+                      '{ x: 123, x.y: 456 }',
+                      'test-bar args value inspect should be correct'
                     );
                   }
                   argsTestPromise = testArgsValue();
                 },
-                template: null,
-              },
-              Component({
-                name: 'test-component-in-in-element',
-                template: () => null,
-              })
+              }),
+              Component(
+                {
+                  name: 'in-element',
+                  args: (actual) => {
+                    QUnit.assert.ok(actual.positional[0]);
+                    async function testArgsValue() {
+                      const value = await inspectById(actual.positional[0].id);
+                      QUnit.assert.equal(
+                        value.details[1].name,
+                        'HTMLDivElement',
+                        'in-element args value inspect should be correct'
+                      );
+                    }
+                    argsTestPromise = testArgsValue();
+                  },
+                  template: null,
+                },
+                Component({
+                  name: 'test-component-in-in-element',
+                  template: () => null,
+                })
+              )
             )
           )
         )
@@ -722,22 +819,31 @@ module('Ember Debug - View', function (hooks) {
           { name: 'application' },
           Route(
             { name: 'simple' },
-            Component({ name: 'test-foo', bounds: 'single' }),
-            Component({
-              name: 'test-bar',
-              bounds: 'range',
-              args: Args({ names: ['value'], positionals: 0 }),
-            }),
-            Component(
+            HtmlElement(
               {
-                name: 'in-element',
-                args: Args({ names: [], positionals: 1 }),
-                template: null,
+                name: 'div',
               },
+              Modifier({
+                name: 'did-insert',
+                args: Args({ positionals: 1 }),
+              }),
+              Component({ name: 'test-foo', bounds: 'single' }),
               Component({
-                name: 'test-component-in-in-element',
-                template: () => null,
-              })
+                name: 'test-bar',
+                bounds: 'range',
+                args: Args({ names: ['value'], positionals: 0 }),
+              }),
+              Component(
+                {
+                  name: 'in-element',
+                  args: Args({ names: [], positionals: 1 }),
+                  template: null,
+                },
+                Component({
+                  name: 'test-component-in-in-element',
+                  template: () => null,
+                })
+              )
             )
           )
         )

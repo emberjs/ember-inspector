@@ -141,6 +141,19 @@
   color: var(--base09);
 }
 
+.component-tree-item__has_modifier:after {
+  content: '' !important;
+}
+
+.component-tree-item__closing:before {
+  content: '>';
+  margin-left: -13px;
+}
+
+.component-tree-item__self-closing:before {
+  content: '/>';
+}
+
 .component-tree-item__bracket:before {
   content: '<';
 }

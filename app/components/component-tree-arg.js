@@ -12,6 +12,15 @@ export default class ComponentTreeArg extends Component {
 
   get displayValue() {
     if (this.isObject) {
+      if (this.args.value.inspect) {
+        if (this.args.value.type === 'function') {
+          return this.args.value.inspect
+            .replace(/"/g, '\\"')
+            .replace('bound ', '')
+            .replace('{ ... }', '');
+        }
+        return truncate(this.args.value.inspect.replace(/"/g, '\\"'));
+      }
       return '...';
     } else if (typeof this.args.value === 'string') {
       // Escape any interior quotes – we will add the surrounding quotes in the template
