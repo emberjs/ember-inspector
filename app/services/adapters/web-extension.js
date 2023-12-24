@@ -66,6 +66,11 @@ export default class WebExtension extends BasicAdapter {
     chromePort.onMessage.addListener((...args) => {
       this._messageReceived(...args);
     });
+
+    chromePort.onDisconnect.addListener(() => {
+      this.notifyPropertyChange('_chromePort');
+      this._connect();
+    });
   }
 
   _handleReload() {
