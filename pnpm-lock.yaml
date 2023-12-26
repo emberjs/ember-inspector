@@ -193,7 +193,7 @@ devDependencies:
     version: 3.3.2(ember-cli@4.9.2)
   ember-cli-deprecation-workflow:
     specifier: ^2.0.0
-    version: 2.0.0
+    version: 2.2.0
   ember-cli-htmlbars:
     specifier: ^6.1.1
     version: 6.1.1
@@ -7031,14 +7031,14 @@ packages:
       - supports-color
     dev: true
 
-  /ember-cli-deprecation-workflow@2.0.0:
-    resolution: {integrity: sha512-pkBKvVtqIJFMPn1JAS74UYW2d8z293qwukPrUE37Z4oTbWdjCYXEPV55WUjA2MPpzkOMuHSgy+D5ZhgD3PKSOA==}
-    engines: {node: 12.* || >= 14}
+  /ember-cli-deprecation-workflow@2.2.0:
+    resolution: {integrity: sha512-23bXZqZJBJSKBTfT0LK7qzSJX861TgafL6RVdMfn/iubpLnoZIWergYwEdgs24CNTUbuehVbHy2Q71o8jYfwfw==}
+    engines: {node: 12.* || 14.* || >= 16}
     dependencies:
+      '@ember/string': 3.1.1
       broccoli-funnel: 3.0.8
       broccoli-merge-trees: 4.2.0
       broccoli-plugin: 4.0.7
-      ember-cli-htmlbars: 5.7.2
     transitivePeerDependencies:
       - supports-color
     dev: true
