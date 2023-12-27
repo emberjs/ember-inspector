@@ -25,6 +25,9 @@ export default class RouteTreeController extends Controller {
     'searchValue'
   )
   get filtered() {
+    if (!Array.isArray(this.model)) {
+      return [];
+    }
     return this.model.filter((routeItem) => {
       let currentRoute = this.currentRoute;
       let hideRoutes = this.get('options.hideRoutes');
