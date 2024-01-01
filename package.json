@@ -130,7 +130,7 @@
     "fstream": "^1.0.12",
     "got": "^11.8.2",
     "gulp": "^4.0.2",
-    "gulp-zip": "^5.1.0",
+    "gulp-zip": "^6.0.0",
     "loader.js": "^4.7.0",
     "normalize.css": "8.0.1",
     "pretender": "^3.4.3",
