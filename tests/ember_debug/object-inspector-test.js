@@ -278,7 +278,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.strictEqual(prop.name, 'getterWithTracked');
     assert.strictEqual(prop.value.type, 'type-string');
     assert.strictEqual(prop.value.inspect, '"item1item2tracked"');
-    const dependentKeys =
+    let dependentKeys =
       compareVersion(VERSION, '3.16.10') === 0
         ? 'item1,item2,trackedProperty'
         : 'ObjectWithTracked,  •  --  item1,  •  --  item2,Object:My Object.trackedProperty';
@@ -292,6 +292,22 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.strictEqual(prop.name, 'aCP');
     assert.strictEqual(prop.value.type, 'type-boolean');
     assert.strictEqual(prop.dependentKeys.toString(), '');
+
+    inspected.objectWithTracked.item1 = 'item1-changed';
+    message = await captureMessage('objectInspector:updateObject', () => {
+      objectInspector.sendObject(inspected);
+    });
+
+    secondDetail = message.details[1];
+    prop = secondDetail.properties[1];
+    assert.strictEqual(prop.name, 'getterWithTracked');
+    assert.strictEqual(prop.value.type, 'type-string');
+    assert.strictEqual(prop.value.inspect, '"item1-changeditem2tracked"');
+    dependentKeys =
+      compareVersion(VERSION, '3.16.10') === 0
+        ? 'item1,item2,trackedProperty'
+        : 'ObjectWithTracked,  •  --  item1 🔸,  •  --  item2,Object:My Object.trackedProperty';
+    assert.strictEqual(prop.dependentKeys.toString(), dependentKeys);
   });
 
   skip('Correct mixin order with es6 class', async function (assert) {

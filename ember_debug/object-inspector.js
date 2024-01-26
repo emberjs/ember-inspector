@@ -217,27 +217,22 @@ function getTagTrackedProps(tag, ownTag, level = 0) {
   }
   const subtags = tag.subtags || (Array.isArray(tag.subtag) ? tag.subtag : []);
   if (tag.subtag && !Array.isArray(tag.subtag)) {
-    if (tag.subtag._propertyKey)
-      props.push(
-        (tag.subtag._object ? getObjectName(tag.subtag._object) + '.' : '') +
-          tag.subtag._propertyKey
-      );
+    if (tag.subtag._propertyKey) props.push(tag.subtag);
+
     props.push(...getTagTrackedProps(tag.subtag, ownTag, level + 1));
   }
   if (subtags) {
     subtags.forEach((t) => {
       if (t === ownTag) return;
-      if (t._propertyKey)
-        props.push(
-          (t._object ? getObjectName(t._object) + '.' : '') + t._propertyKey
-        );
+      if (t._propertyKey) props.push(t);
       props.push(...getTagTrackedProps(t, ownTag, level + 1));
     });
   }
   return props;
 }
 
-function getTrackedDependencies(object, property, tag) {
+function getTrackedDependencies(object, property, tagInfo) {
+  const tag = tagInfo.tag;
   const proto = Object.getPrototypeOf(object);
   if (!proto) return [];
   const cpDesc = emberMeta(object).peekDescriptors(property);
@@ -249,21 +244,32 @@ function getTrackedDependencies(object, property, tag) {
     const ownTag = tagForProperty(object, property);
     const props = getTagTrackedProps(tag, ownTag);
     const mapping = {};
-    props.forEach((p) => {
+    let maxRevision = tagInfo.revision ?? 0;
+    let minRevision = Infinity;
+    props.forEach((t) => {
+      const p =
+        (t._object ? getObjectName(t._object) + '.' : '') + t._propertyKey;
       const [objName, ...props] = p.split('.');
       mapping[objName] = mapping[objName] || new Set();
-      props.forEach((p) => mapping[objName].add(p));
+      maxRevision = Math.max(maxRevision, t.revision);
+      minRevision = Math.min(minRevision, t.revision);
+      props.forEach((p) => mapping[objName].add([p, t.revision]));
     });
+
+    const hasChange = maxRevision !== minRevision;
 
     Object.entries(mapping).forEach(([objName, props]) => {
       if (props.size > 1) {
         dependentKeys.push(objName);
         props.forEach((p) => {
-          dependentKeys.push('  •  --  ' + p);
+          const changed = hasChange && p[1] >= maxRevision ? ' 🔸' : '';
+          dependentKeys.push('  •  --  ' + p[0] + changed);
         });
       }
       if (props.size === 1) {
-        dependentKeys.push(objName + '.' + [...props][0]);
+        const p = [...props][0];
+        const changed = hasChange && p[1] >= maxRevision ? ' 🔸' : '';
+        dependentKeys.push(objName + '.' + p[0] + changed);
       }
       if (props.size === 0) {
         dependentKeys.push(objName);
@@ -325,7 +331,6 @@ export default class extends DebugPort {
                 tagInfo.tag = track(() => {
                   value = object.get?.(item.name) || object[item.name];
                 });
-                tagInfo.revision = tagValue(tagInfo.tag);
               }
               tracked[item.name] = tagInfo;
             } else {
@@ -344,8 +349,9 @@ export default class extends DebugPort {
                 dependentKeys = getTrackedDependencies(
                   object,
                   item.name,
-                  tracked[item.name].tag
+                  tracked[item.name]
                 );
+                tracked[item.name].revision = tagValue(tracked[item.name].tag);
               }
               this.sendMessage('updateProperty', {
                 objectId,
@@ -1121,12 +1127,12 @@ function calculateCPs(
                 item.isTracked = true;
               }
             }
-            tagInfo.revision = tagValue(tagInfo.tag);
             item.dependentKeys = getTrackedDependencies(
               object,
               item.name,
-              tagInfo.tag
+              tagInfo
             );
+            tagInfo.revision = tagValue(tagInfo.tag);
           } else {
             value = calculateCP(object, item, errorsForObject);
           }
