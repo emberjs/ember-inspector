@@ -152,7 +152,7 @@ export default class extends DebugPort {
   }
 
   send() {
-    if (this.isDestroying) {
+    if (this.isDestroying || this.isDestroyed) {
       return;
     }
 
