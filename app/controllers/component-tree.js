@@ -301,7 +301,15 @@ class RenderItem {
   }
 
   get isComponent() {
-    return this.renderNode.type === 'component';
+    return this.renderNode.type === 'component' || this.renderNode.type === 'remote-element';
+  }
+
+  get isModifier() {
+    return this.renderNode.type === 'modifier';
+  }
+
+  get isHtmlTag() {
+    return this.renderNode.type === 'htmlTag';
   }
 
   get name() {
@@ -313,6 +321,9 @@ class RenderItem {
   }
 
   get isCurlyInvocation() {
+    if (this.isModifier) {
+      return true;
+    }
     return this.renderNode.args && this.renderNode.args.positional;
   }
 
