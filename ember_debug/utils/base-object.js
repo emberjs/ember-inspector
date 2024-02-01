@@ -6,7 +6,9 @@ export default class BaseObject {
   }
 
   init() {}
-  willDestroy() {}
+  willDestroy() {
+    this.isDestroying = true;
+  }
 
   destroy() {
     this.willDestroy();
