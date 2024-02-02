@@ -301,7 +301,7 @@ class RenderItem {
   }
 
   get isComponent() {
-    return this.renderNode.type === 'component' || this.renderNode.type === 'remote-element';
+    return this.renderNode.type === 'component';
   }
 
   get isModifier() {
@@ -309,7 +309,7 @@ class RenderItem {
   }
 
   get isHtmlTag() {
-    return this.renderNode.type === 'htmlTag';
+    return this.renderNode.type === 'html-element';
   }
 
   get name() {

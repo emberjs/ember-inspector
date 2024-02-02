@@ -1,6 +1,9 @@
-import captureRenderTree from "./capture-render-tree";
-import { guidFor } from "ember-debug/utils/ember/object/internals";
-import { EmberLoader } from "ember-debug/utils/ember/loader";
+import captureRenderTree from './capture-render-tree';
+import { guidFor } from 'ember-debug/utils/ember/object/internals';
+import { EmberLoader } from 'ember-debug/utils/ember/loader';
+import { inspect } from 'ember-debug/utils/type-check';
+import { isInVersionSpecifier } from 'ember-debug/utils/version';
+import { VERSION } from 'ember-debug/utils/ember';
 
 class InElementSupportProvider {
   constructor(owner) {
@@ -31,62 +34,209 @@ class InElementSupportProvider {
     const self = this;
 
     const NewElementBuilder = this.NewElementBuilder;
-    const remoteStack = [];
+    const componentStack = [];
+
+    if (isInVersionSpecifier('~3.16.0', VERSION)) {
+      const glimmer = this.require('@ember/-internals/glimmer');
+      const insertKlass = this.require(
+        '@ember/render-modifiers/modifiers/did-insert'
+      ).default;
+      const updateKlass = this.require(
+        '@ember/render-modifiers/modifiers/did-update'
+      ).default;
+      const destroyKlass = this.require(
+        '@ember/render-modifiers/modifiers/will-destroy'
+      ).default;
+      const insert = glimmer.getModifierManager(insertKlass)();
+      const update = glimmer.getModifierManager(updateKlass)();
+      const destroy = glimmer.getModifierManager(destroyKlass)();
+      glimmer.setModifierManager(
+        () => ({
+          ...insert,
+          name: 'did-insert',
+        }),
+        insertKlass
+      );
+      glimmer.setModifierManager(
+        () => ({
+          ...update,
+          name: 'did-update',
+        }),
+        updateKlass
+      );
+      glimmer.setModifierManager(
+        () => ({
+          ...destroy,
+          name: 'will-remove',
+        }),
+        destroyKlass
+      );
+    }
+
+    function createRef(value) {
+      if (self.reference.createUnboundRef) {
+        return self.reference.createUnboundRef(value);
+      } else {
+        return value;
+      }
+    }
+
+    function createArgs(args) {
+      if (self.reference.createUnboundRef) {
+        return args;
+      } else {
+        return {
+          value: () => args,
+        };
+      }
+    }
+
+    const appendChild = this.debugRenderTree.appendChild;
+    this.debugRenderTree.appendChild = function (node, state) {
+      if (node.type === 'component') {
+        componentStack.push(node);
+      }
+      return appendChild.call(this, node, state);
+    };
+
+    const exit = this.debugRenderTree.exit;
+    this.debugRenderTree.exit = function (state) {
+      const node = this.nodeFor(this.stack.current);
+      if (node?.type === 'component') {
+        componentStack.pop();
+      }
+      return exit.call(this, state);
+    };
 
     const didAppendNode = NewElementBuilder.prototype.didAppendNode;
     NewElementBuilder.prototype.didAppendNode = function (...args) {
-      args[0].__emberInspectorParentNode = self.currentNode;
+      args[0].__emberInspectorParentNode = componentStack.at(-1);
       return didAppendNode.call(this, ...args);
     };
 
     const pushElement = NewElementBuilder.prototype.pushElement;
     NewElementBuilder.prototype.pushElement = function (...args) {
-      args[0].__emberInspectorParentNode = self.currentNode;
-      return pushElement.call(this, ...args);
+      pushElement.call(this, ...args);
+      args[0].__emberInspectorParentNode = componentStack.at(-1);
     };
 
     const pushRemoteElement = NewElementBuilder.prototype.pushRemoteElement;
-    NewElementBuilder.prototype.pushRemoteElement = function (...args) {
-      const element = args[0];
-      remoteStack.push({});
-      const ref = self.reference.createUnboundRef(element);
-      this.env.debugRenderTree?.create(remoteStack.at(-1), {
-        type: 'remote-element',
-        name: 'InElement',
-        args: {
-          positional: [],
-          named: {
-            destination: ref,
-          },
-        },
+    NewElementBuilder.prototype.pushRemoteElement = function (
+      element,
+      guid,
+      insertBefore
+    ) {
+      const ref = createRef(element);
+      const capturedArgs = {
+        positional: [ref],
+        named: {},
+      };
+      if (insertBefore) {
+        capturedArgs.named.insertBefore = insertBefore;
+      }
+      const debugRenderTree = self.debugRenderTree;
+
+      const r = pushRemoteElement.call(this, element, guid, insertBefore);
+      debugRenderTree?.create(this.blockStack.current, {
+        type: 'keyword',
+        name: 'in-element',
+        args: createArgs(capturedArgs),
         instance: {
           args: {
-            destination: ref,
+            named: {
+              insertBefore,
+            },
+            positional: [element],
           },
           constructor: {
             name: 'InElement',
           },
         },
       });
-      return pushRemoteElement.call(this, ...args);
+      return r;
+    };
+
+    const pushModifiers = NewElementBuilder.prototype.pushModifiers;
+    NewElementBuilder.prototype.pushModifiers = function (modifiers) {
+      const debugRenderTree = self.debugRenderTree;
+      if (debugRenderTree) {
+        modifiers = modifiers || [];
+        const modifier = modifiers[0];
+        let element = null;
+        if (modifiers.length) {
+          element = modifier[1]?.element || modifier.state.element;
+        }
+        for (const modifier of modifiers) {
+          const state = {};
+          const modifierState =
+            modifier.state.instance || modifier.state || modifier[1];
+          const instance = modifierState?.instance || modifierState?.delegate;
+          const name =
+            modifier.definition?.resolvedName ||
+            modifier.manager?.getDebugName?.() ||
+            modifierState?.debugName ||
+            instance?.name ||
+            'unknown-modifier';
+          const args = {
+            positional: [],
+            named: {},
+          };
+          const positional =
+            modifierState?.args?.positional?.references ||
+            modifierState?.args?.positional ||
+            [];
+          for (const value of positional) {
+            if (value && value[self.reference.REFERENCE]) {
+              args.positional.push(value);
+            } else {
+              args.positional.push(createRef(value));
+            }
+          }
+          const named = modifierState?.args?.named?.constructor
+            ? modifierState?.args?.named?.map
+            : modifierState?.args?.named;
+          for (const [key, value] of Object.entries(named || {})) {
+            args.named[key] = createRef(value);
+          }
+          debugRenderTree?.create(state, {
+            type: 'modifier',
+            name,
+            args: createArgs(args),
+            instance: instance,
+          });
+          debugRenderTree?.didRender(state, {
+            parentElement: () => element.parentElement,
+            firstNode: () => element,
+            lastNode: () => element,
+          });
+        }
+      }
+      return pushModifiers.call(this, modifiers);
     };
 
     const popRemoteElement = NewElementBuilder.prototype.popRemoteElement;
     NewElementBuilder.prototype.popRemoteElement = function (...args) {
-      this.env.debugRenderTree?.didRender(remoteStack.at(-1), {
-        parentElement: () => this.element.parentElement,
-        firstNode: () => this.element,
-        lastNode: () => this.element,
+      const block = this.blockStack.current;
+      popRemoteElement.call(this, ...args);
+      const parentElement = this.element;
+      const debugRenderTree = self.debugRenderTree;
+      debugRenderTree?.didRender(block, {
+        parentElement: () => parentElement,
+        firstNode: () => block.firstNode(),
+        lastNode: () => block.lastNode(),
       });
-      remoteStack.pop();
-      return popRemoteElement.call(this, ...args);
-    }
+    };
 
+    this.debugRenderTreeFunctions = {
+      appendChild,
+      exit,
+    };
     this.NewElementBuilderFunctions = {
       pushElement,
       pushRemoteElement,
       popRemoteElement,
       didAppendNode,
+      pushModifiers,
     };
   }
 
@@ -94,6 +244,7 @@ class InElementSupportProvider {
     if (!this.NewElementBuilderFunctions) {
       return;
     }
+    Object.assign(this.debugRenderTree, this.debugRenderTreeFunctions);
     Object.assign(
       this.NewElementBuilder.prototype,
       this.NewElementBuilderFunctions
@@ -125,6 +276,7 @@ export default class RenderTree {
     try {
       this.inElementSupport = new InElementSupportProvider(owner);
     } catch (e) {
+      console.error('failed to setup in element support', e);
       // not supported
     }
 
@@ -208,7 +360,7 @@ export default class RenderTree {
     let hintNode = this._findUp(this.nodes[hint]);
     let hints = [hintNode];
     if (node.__emberInspectorParentNode) {
-      const remoteNode = this.inElementSupport.nodeMap.get(node);
+      const remoteNode = this.inElementSupport?.nodeMap.get(node);
       const n = remoteNode && this.nodes[remoteNode];
       hints.push(n);
     }
@@ -357,18 +509,47 @@ export default class RenderTree {
     this.retainedObjects = new Map();
   }
 
-  _createTemplateOnlyComponent(args) {
+  _createSimpleInstance(name, args) {
     const obj = Object.create(null);
     obj.args = args;
     obj.constructor = {
-      name: 'TemplateOnlyComponent',
+      name: name,
       comment: 'fake constructor',
     };
     return obj;
   }
 
+  _insertHtmlElementNode(node, parentNode) {
+    const element = node.bounds.firstNode;
+    const htmlNode = {
+      id: node.id + 'html-element',
+      type: 'html-element',
+      name: element.tagName.toLowerCase(),
+      instance: element,
+      template: null,
+      bounds: {
+        firstNode: element,
+        lastNode: element,
+        parentElement: element.parentElement,
+      },
+      args: {
+        named: {},
+        positional: [],
+      },
+      children: [],
+    };
+    const idx = parentNode.children.indexOf(node);
+    parentNode.children.splice(idx, 0, htmlNode);
+    return this._serializeRenderNode(htmlNode, parentNode);
+  }
+
   _serializeRenderNodes(nodes, parentNode = null) {
-    return nodes.map((node) => this._serializeRenderNode(node, parentNode));
+    const mapped = [];
+    // nodes can be mutated during serialize, which is why we use indexing instead of .map
+    for (let i = 0; i < nodes.length; i++) {
+      mapped.push(this._serializeRenderNode(nodes[i], parentNode));
+    }
+    return mapped;
   }
 
   _serializeRenderNode(node, parentNode = null) {
@@ -379,12 +560,16 @@ export default class RenderTree {
 
     if (serialized === undefined) {
       this.nodes[node.id] = node;
-      if (node.type === 'remote-element') {
+      if (node.type === 'keyword') {
+        node.type = 'component';
         this.inElementSupport?.nodeMap.set(node, node.id);
         this.inElementSupport?.remoteRoots.push(node);
       }
 
-      if (this.inElementSupport?.Wormhole && node.instance instanceof this.inElementSupport?.Wormhole.default) {
+      if (
+        this.inElementSupport?.Wormhole &&
+        node.instance instanceof this.inElementSupport.Wormhole.default
+      ) {
         this.inElementSupport?.remoteRoots.push(node);
         const bounds = node.bounds;
         Object.defineProperty(node, 'bounds', {
@@ -405,15 +590,49 @@ export default class RenderTree {
         this.parentNodes[node.id] = parentNode;
       }
 
+      if (node.type === 'html-element') {
+        // show set attributes in inspector
+        Array.from(node.instance.attributes).forEach((attr) => {
+          node.args.named[attr.nodeName] = attr.nodeValue;
+        });
+        // move modifiers and components into the element children
+        parentNode.children.forEach((child) => {
+          if (
+            child.bounds.parentElement === node.instance ||
+            (child.type === 'modifier' &&
+              child.bounds.firstNode === node.instance)
+          ) {
+            node.children.push(child);
+          }
+        });
+        node.children.forEach((child) => {
+          const idx = parentNode.children.indexOf(child);
+          if (idx >= 0) {
+            parentNode.children.splice(idx, 1);
+          }
+        });
+      }
+
+      if (node.type === 'component' && !node.instance) {
+        node.instance = this._createSimpleInstance(
+          'TemplateOnlyComponent',
+          node.args.named
+        );
+      }
+
+      if (node.type === 'modifier') {
+        node.instance =
+          node.instance || this._createSimpleInstance(node.name, node.args);
+        node.instance.toString = () => node.name;
+        if (parentNode.instance !== node.bounds.firstNode) {
+          return this._insertHtmlElementNode(node, parentNode);
+        }
+      }
+
       this.serialized[node.id] = serialized = {
         ...node,
         args: this._serializeArgs(node.args),
-        instance: this._serializeItem(
-          node.instance ||
-          (node.type === 'component'
-            ? this._createTemplateOnlyComponent(node.args.named)
-            : undefined)
-        ),
+        instance: this._serializeItem(node.instance),
         bounds: this._serializeBounds(node.bounds),
         children: this._serializeRenderNodes(node.children, node),
       };
@@ -480,7 +699,7 @@ export default class RenderTree {
 
     this.retainedObjects.set(object, id);
 
-    return { id };
+    return { id, type: typeof object, inspect: inspect(object) };
   }
 
   _releaseStaleObjects() {
@@ -523,8 +742,15 @@ export default class RenderTree {
     while (candidates.length > 0) {
       let candidate = candidates.shift();
       let range = this.getRange(candidate.id);
+      const isAllowed =
+        candidate.type !== 'modifier' && candidate.type !== 'html-element';
 
-      if (range && range.isPointInRange(dom, 0)) {
+      if (!isAllowed) {
+        candidates.push(...candidate.children);
+        continue;
+      }
+
+      if (isAllowed && range && range.isPointInRange(dom, 0)) {
         // We may be able to find a more exact match in one of the children.
         return (
           this._matchRenderNodes(candidate.children, dom, false) || candidate
@@ -587,11 +813,8 @@ function isSingleNode({ firstNode, lastNode }) {
   return firstNode === lastNode;
 }
 
-function isAttached({ parentElement, firstNode, lastNode }) {
-  return (
-    parentElement === firstNode.parentElement &&
-    parentElement === lastNode.parentElement
-  );
+function isAttached({ firstNode, lastNode }) {
+  return firstNode.isConnected && lastNode.isConnected;
 }
 
 function isEmptyRect({ x, y, width, height }) {

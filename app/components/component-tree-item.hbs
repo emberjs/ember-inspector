@@ -87,6 +87,16 @@
         <span class="component-name">
           {{@item.name}}
         </span>
+        {{#each-in @item.args.named as |name value|}}
+          <div class="arg-token flex ml-2">
+              <span class="key-token">
+                {{name}}
+              </span>
+            ={{if (is-string value) "\""}}
+            <ComponentTreeArg @value={{value}} />
+            {{if (is-string value) "\""}}
+          </div>
+        {{/each-in}}
       {{/if}}
     </code>
   </div>
