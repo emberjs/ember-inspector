@@ -76,8 +76,10 @@ try {
   }
 }
 
+let TrackedDescriptor;
 try {
   let metal = EmberLoader.require('@ember/-internals/metal');
+  TrackedDescriptor = metal.TrackedDescriptor;
 
   tagForProperty = metal.tagForProperty;
   // If track was not already loaded, use metal's version (the previous version)
@@ -968,6 +970,12 @@ function addProperties(properties, hash) {
     if (desc.get) {
       options.isGetter = true;
       options.canTrack = true;
+      options.isTracked =
+        desc.isTracked ||
+        (TrackedDescriptor && desc instanceof TrackedDescriptor);
+      if (options.isTracked) {
+        options.code = '';
+      }
       if (!desc.set) {
         options.readOnly = true;
       }
@@ -1115,12 +1123,6 @@ function calculateCPs(
             tagInfo.tag = track(() => {
               value = calculateCP(object, item, errorsForObject);
             });
-            if (tagInfo.tag === tagForProperty(object, item.name)) {
-              if (!item.isComputed && !item.isService) {
-                item.code = '';
-                item.isTracked = true;
-              }
-            }
             tagInfo.revision = tagValue(tagInfo.tag);
             item.dependentKeys = getTrackedDependencies(
               object,
