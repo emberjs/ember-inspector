@@ -103,7 +103,7 @@ devDependencies:
     version: 4.0.2
   '@types/ember__test':
     specifier: ^4.0.1
-    version: 4.0.1(@babel/core@7.22.5)
+    version: 4.0.6(@babel/core@7.22.5)
   '@types/ember__test-helpers':
     specifier: ^2.9.1
     version: 2.9.1(@babel/core@7.22.5)(ember-source@4.12.3)
@@ -2820,7 +2820,7 @@ packages:
       '@types/ember__service': 4.0.9(@babel/core@7.22.5)
       '@types/ember__string': 3.0.13
       '@types/ember__template': 4.0.2
-      '@types/ember__test': 4.0.1(@babel/core@7.22.5)
+      '@types/ember__test': 4.0.6(@babel/core@7.22.5)
       '@types/ember__utils': 4.0.6(@babel/core@7.22.5)
       '@types/rsvp': 4.0.4
     transitivePeerDependencies:
@@ -2968,8 +2968,8 @@ packages:
       - supports-color
     dev: true
 
-  /@types/ember__test@4.0.1(@babel/core@7.22.5):
-    resolution: {integrity: sha512-EXFbZcROB9mUNHiDRyhyoJGXRIzxgo++smS3/kmmDlhM8/pIdULLKJSelTcFOy3e/VuZhf8y8ZCJLXKP74oCBQ==}
+  /@types/ember__test@4.0.6(@babel/core@7.22.5):
+    resolution: {integrity: sha512-Nswm/epfTepXknT8scZvWyyop1aqJcZcyzY4THGHFcXvYQQfA9rgmgrx6vo9vCJmYHh3jm0TTAIAIfoCvGaX5g==}
     dependencies:
       '@types/ember__application': 4.0.5(@babel/core@7.22.5)
     transitivePeerDependencies:
