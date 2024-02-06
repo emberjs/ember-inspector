@@ -73,6 +73,14 @@ async function digDeeper(objectId, property) {
   });
 }
 
+async function inspectById(objectId) {
+  return await captureMessage('objectInspector:updateObject', async () => {
+    EmberDebug.port.trigger('objectInspector:inspectById', {
+      objectId,
+    });
+  });
+}
+
 async function getRenderTree() {
   let message = await captureMessage('view:renderTree', async () => {
     EmberDebug.port.trigger('view:getTree', {});
@@ -652,7 +660,18 @@ module('Ember Debug - View', function (hooks) {
             Component(
               {
                 name: 'in-element',
-                args: Args({ names: ['destination'], positionals: 0 }),
+                args: (actual) => {
+                  QUnit.assert.ok(actual.positional[0]);
+                  async function testArgsValue() {
+                    const value = await inspectById(actual.positional[0].id);
+                    QUnit.assert.equal(
+                      value.details[1].name,
+                      'HTMLDivElement',
+                      'in-element args value inspect should be correct'
+                    );
+                  }
+                  argsTestPromise = testArgsValue();
+                },
                 template: null,
               },
               Component({
@@ -712,7 +731,7 @@ module('Ember Debug - View', function (hooks) {
             Component(
               {
                 name: 'in-element',
-                args: Args({ names: ['destination'], positionals: 0 }),
+                args: Args({ names: [], positionals: 1 }),
                 template: null,
               },
               Component({
@@ -951,7 +970,7 @@ module('Ember Debug - View', function (hooks) {
 
       assert
         .dom('.ember-inspector-tooltip-header', tooltip)
-        .hasText('<InElement>');
+        .hasText('{{in-element}}');
 
       let actual = highlight.getBoundingClientRect();
       let expected = inElement.getBoundingClientRect();
