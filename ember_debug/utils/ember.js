@@ -27,6 +27,7 @@ let {
   meta,
   get,
   set,
+  runloop,
   computed,
 } = Ember || {};
 
@@ -46,34 +47,78 @@ if (!Ember) {
   )?.default;
   EmberObject = emberSafeRequire('@ember/object')?.default;
   VERSION = emberSafeRequire('ember/version')?.default;
-  ComputedProperty = emberSafeRequire(
+  metal = emberSafeRequire(
     '@ember/-internals/metal'
-  )?.ComputedProperty;
+  );
   meta = emberSafeRequire('@ember/-internals/meta')?.meta;
   set = emberSafeRequire('@ember/object')?.set;
   get = emberSafeRequire('@ember/object')?.get;
+  runloop = emberSafeRequire('@ember/runloop');
+  cacheFor = emberSafeRequire('@ember/object/internals').cacheFor;
+  guidFor = emberSafeRequire('@ember/object/internals').guidFor;
+  getOwner = emberSafeRequire('@ember/owner').getOwner;
 }
 
-export {
-  Namespace,
-  ActionHandler,
-  Application,
-  ControllerMixin,
-  MutableArray,
-  MutableEnumerable,
-  NativeArray,
-  CoreObject,
-  Component,
-  Observable,
-  Evented,
-  PromiseProxyMixin,
-  EmberObject,
+const { ComputedProperty, isComputed, descriptorForProperty, descriptorForDecorator, tagForProperty } = metal;
+const { _backburner, cancel, debounce, join, later, scheduleOnce } = runloop;
+export const ember =  {
+  runloop: {
+    _backburner, cancel, debounce, join, later, scheduleOnce
+  },
+  object: {
+    cacheFor,
+    guidFor,
+    getOwner,
+    set,
+    get,
+    meta
+  },
+  debug: {
+    isComputed,
+    isTrackedProperty,
+    isCachedProperty,
+    descriptorForProperty,
+    descriptorForDecorator,
+    isMandatorySetter,
+    meta,
+    captureRenderTree,
+    isTesting,
+    inspect,
+    registerDeprecationHandler,
+    tagForProperty,
+    ComputedProperty,
+  },
+  classes: {
+    EmberObject,
+    MutableArray,
+    Namespace,
+    MutableEnumerable,
+    NativeArray,
+    TargetActionSupport,
+    ControllerMixin,
+    CoreObject,
+    Application,
+    EmberComponent,
+    GlimmerComponent,
+    Observable,
+    Evented,
+    PromiseProxyMixin,
+  },
   VERSION,
-  ComputedProperty,
-  meta,
-  computed,
-  get,
-  set,
-};
+  instrumentation: {
+    subscribe
+  },
+  Views: {
+    ViewStateSupport,
+    ViewMixin,
+    ActionSupport,
+    ClassNamesSupport,
+    ChildViewsSupport,
+    CoreView
+  },
+  GlimmerValidator,
+  GlimmerRuntime,
+  RSVP
+}
 
 export default Ember;
