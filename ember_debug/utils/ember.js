@@ -26,15 +26,19 @@ let {
   Object: EmberObject,
   ObjectProxy,
   VERSION,
-  ComputedProperty,
   meta,
   get,
   set,
+  runloop,
   computed,
+  _metal: metal,
   _captureRenderTree: captureRenderTree,
+  inspect,
+  getOwner,
 } = Ember || {};
 
 let getEnv = () => Ember.ENV;
+let cacheFor = () => null;
 
 if (!Ember) {
   captureRenderTree = emberSafeRequire('@ember/debug')?.captureRenderTree;
@@ -57,39 +61,80 @@ if (!Ember) {
   Service = emberSafeRequire('@ember/service')?.default;
   EmberObject = emberSafeRequire('@ember/object')?.default;
   VERSION = emberSafeRequire('ember/version')?.default;
-  ComputedProperty = emberSafeRequire(
+  metal = emberSafeRequire(
     '@ember/-internals/metal'
-  )?.ComputedProperty;
+  );
   meta = emberSafeRequire('@ember/-internals/meta')?.meta;
   set = emberSafeRequire('@ember/object')?.set;
   get = emberSafeRequire('@ember/object')?.get;
+  runloop = emberSafeRequire('@ember/runloop');
+  cacheFor = emberSafeRequire('@ember/object/internals').cacheFor;
+  guidFor = emberSafeRequire('@ember/object/internals').guidFor;
+  getOwner = emberSafeRequire('@ember/owner').getOwner;
+  inspect = emberSafeRequire('@ember/debug').inspect;
 }
 
-export {
-  ArrayProxy,
-  Namespace,
-  ActionHandler,
-  Application,
-  ControllerMixin,
-  MutableArray,
-  MutableEnumerable,
-  NativeArray,
-  CoreObject,
-  ObjectProxy,
-  Component,
-  Observable,
-  Evented,
-  Service,
-  PromiseProxyMixin,
-  EmberObject,
+const { ComputedProperty, isComputed, descriptorForProperty, descriptorForDecorator, tagForProperty } = metal;
+const { _backburner, cancel, debounce, join, later, scheduleOnce } = runloop;
+export const ember =  {
+  runloop: {
+    _backburner, cancel, debounce, join, later, scheduleOnce
+  },
+  object: {
+    cacheFor,
+    guidFor,
+    getOwner,
+    set,
+    get,
+    meta
+  },
+  debug: {
+    isComputed,
+    isTrackedProperty,
+    isCachedProperty,
+    descriptorForProperty,
+    descriptorForDecorator,
+    isMandatorySetter,
+    meta,
+    captureRenderTree,
+    isTesting,
+    inspect,
+    registerDeprecationHandler,
+    tagForProperty,
+    ComputedProperty,
+  },
+  classes: {
+    EmberObject,
+    MutableArray,
+    Namespace,
+    MutableEnumerable,
+    NativeArray,
+    TargetActionSupport,
+    ControllerMixin,
+    CoreObject,
+    Application,
+    EmberComponent,
+    GlimmerComponent,
+    Observable,
+    Evented,
+    PromiseProxyMixin,
+  },
   VERSION,
-  ComputedProperty,
-  meta,
-  computed,
-  get,
-  set,
-  captureRenderTree,
-  getEnv,
-};
+  instrumentation: {
+    subscribe
+  },
+  Views: {
+    ViewStateSupport,
+    ViewMixin,
+    ActionSupport,
+    ClassNamesSupport,
+    ChildViewsSupport,
+    CoreView
+  },
+  GlimmerValidator,
+  GlimmerRuntime,
+  RSVP,
+  getEnv
+}
 
 export default Ember;
