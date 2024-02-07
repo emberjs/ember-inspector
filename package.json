@@ -1,6 +1,6 @@
 {
   "name": "ember-inspector",
-  "version": "4.10.4",
+  "version": "4.11.0",
   "description": "Extends developer tools to allow you to better inspect your Ember.js apps.",
   "repository": "https://github.com/emberjs/ember-inspector",
   "license": "MIT",

@@ -8,6 +8,25 @@
 
 
 
+
+## v4.11.0 (2024-02-07)
+
+#### :rocket: Enhancement
+* [#2546](https://github.com/emberjs/ember-inspector/pull/2546) add 🔸 to tracked dependencies that caused the last invalidation ([@patricklx](https://github.com/patricklx))
+* [#2549](https://github.com/emberjs/ember-inspector/pull/2549) improve in element support ([@patricklx](https://github.com/patricklx))
+
+#### :bug: Bug Fix
+* [#2547](https://github.com/emberjs/ember-inspector/pull/2547) fix render tree triggering when already destroyed ([@patricklx](https://github.com/patricklx))
+* [#2533](https://github.com/emberjs/ember-inspector/pull/2533) ensure port is connected ([@patricklx](https://github.com/patricklx))
+* [#2531](https://github.com/emberjs/ember-inspector/pull/2531) fix cannot access array values ([@patricklx](https://github.com/patricklx))
+* [#2527](https://github.com/emberjs/ember-inspector/pull/2527) exclude remotes from serialization ([@patricklx](https://github.com/patricklx))
+
+#### :house: Internal
+* [#2534](https://github.com/emberjs/ember-inspector/pull/2534) fix ci artifact upload & download ([@patricklx](https://github.com/patricklx))
+
+#### Committers: 1
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
 ## v4.10.4 (2023-11-27)
 
 #### :bug: Bug Fix
