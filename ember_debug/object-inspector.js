@@ -238,7 +238,9 @@ function getTrackedDependencies(object, property, tagInfo) {
   const cpDesc = emberMeta(object).peekDescriptors(property);
   const dependentKeys = [];
   if (cpDesc) {
-    dependentKeys.push(...(cpDesc._dependentKeys || []));
+    dependentKeys.push(
+      ...(cpDesc._dependentKeys || []).map((k) => ({ name: k }))
+    );
   }
   if (HAS_GLIMMER_TRACKING) {
     const ownTag = tagForProperty(object, property);
@@ -258,26 +260,44 @@ function getTrackedDependencies(object, property, tagInfo) {
 
     const hasChange = maxRevision !== minRevision;
 
+    const names = new Set();
+
     Object.entries(mapping).forEach(([objName, props]) => {
+      if (names.has(objName)) {
+        return;
+      }
+      names.add(objName);
       if (props.size > 1) {
-        dependentKeys.push(objName);
+        dependentKeys.push({ name: objName });
         props.forEach((p) => {
-          const changed = hasChange && p[1] >= maxRevision ? ' 🔸' : '';
-          dependentKeys.push('  •  --  ' + p[0] + changed);
+          const changed = hasChange && p[1] >= maxRevision;
+          const obj = {
+            child: p[0],
+          };
+          if (changed) {
+            obj.changed = true;
+          }
+          dependentKeys.push(obj);
         });
       }
       if (props.size === 1) {
         const p = [...props][0];
-        const changed = hasChange && p[1] >= maxRevision ? ' 🔸' : '';
-        dependentKeys.push(objName + '.' + p[0] + changed);
+        const changed = hasChange && p[1] >= maxRevision;
+        const obj = {
+          name: objName + '.' + p[0],
+        };
+        if (changed) {
+          obj.changed = true;
+        }
+        dependentKeys.push(obj);
       }
       if (props.size === 0) {
-        dependentKeys.push(objName);
+        dependentKeys.push({ name: objName });
       }
     });
   }
 
-  return [...new Set([...dependentKeys])];
+  return [...dependentKeys];
 }
 
 export default class extends DebugPort {
