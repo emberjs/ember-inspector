@@ -105,10 +105,18 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
 
   function onEmberReady(callback) {
     var triggered = false;
-    var triggerOnce = function(string) {
+    const event = new Event("ember-inspector-debug-request");
+    var triggerOnce = function(e) {
       if (triggered) {
         return;
       }
+
+      if (e && typeof e.detail === 'object') {
+        triggered = true;
+        requireModule('ember-debug/utils/ember').assignEmberInfo(e.detail);
+        callback();
+      }
+      window.dispatchEvent(event);
 
       if (!Ember) {
         try {
@@ -132,8 +140,10 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
 
     // Newest Ember versions >= 1.10
 
-    const later = () => setTimeout(triggerOnce, 0);
+    const later = (data) => setTimeout(() => triggerOnce(data), 0);
     window.addEventListener('Ember', later, { once: true });
+    window.addEventListener('ember-inspector-debug-response', later, { once: true });
+    window.dispatchEvent(event);
     // Oldest Ember versions or if this was injected after Ember has loaded.
     onReady(triggerOnce);
   }
