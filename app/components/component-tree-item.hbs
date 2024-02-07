@@ -11,6 +11,7 @@
   {{on "mouseenter" @item.showPreview}}
   {{on "mouseleave" @item.hidePreview}}
 >
+  {{resource @item.id create=@item.load update=@item.update teardown=@item.unload}}
   <div class="component-tree-item-background flex items-center pr-2 rounded">
     {{#if @item.hasChildren}}
       <Ui::DisclosureTriangle

@@ -20,6 +20,10 @@ export default class extends DebugPort {
         this.sendTree(immediate);
       },
 
+      getTreeItem({ id }) {
+        this.sendTreeItem(id);
+      },
+
       showInspection({ id, pin }) {
         this.viewInspection.show(id, pin);
       },
@@ -149,6 +153,12 @@ export default class extends DebugPort {
       this.send();
       this.scheduledSendTree = null;
     }, 250);
+  }
+
+  sendTreeItem(id) {
+    this.sendMessage('renderTreeItem', {
+      treeItem: this.renderTree._serializeRenderNode(id),
+    });
   }
 
   send() {

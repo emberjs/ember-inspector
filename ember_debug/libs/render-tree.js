@@ -314,11 +314,7 @@ export default class RenderTree {
     this._reset();
 
     this.tree = captureRenderTree(this.owner);
-    let serialized = this._serializeRenderNodes(this.tree);
-
-    this._releaseStaleObjects();
-
-    return serialized;
+    return this._createSimpleNodes(this.tree);
   }
 
   /**
@@ -540,7 +536,7 @@ export default class RenderTree {
     };
     const idx = parentNode.children.indexOf(node);
     parentNode.children.splice(idx, 0, htmlNode);
-    return this._serializeRenderNode(htmlNode, parentNode);
+    return this._createSimpleNode(htmlNode, parentNode);
   }
 
   _serializeRenderNodes(nodes, parentNode = null) {
@@ -552,14 +548,66 @@ export default class RenderTree {
     return mapped;
   }
 
-  _serializeRenderNode(node, parentNode = null) {
+  _createSimpleNode(node, parentNode) {
     if (!node.id.startsWith(this.renderNodeIdPrefix)) {
       node.id = `${this.renderNodeIdPrefix}-${node.id}`;
     }
+
+    this.nodes[node.id] = node;
+    this.parentNodes[node.id] = parentNode;
+
+    if (node.type === 'modifier') {
+      if (parentNode.instance !== node.bounds.firstNode) {
+        return this._insertHtmlElementNode(node, parentNode);
+      }
+    }
+
+    if (node.type === 'html-element') {
+      // show set attributes in inspector
+      Array.from(node.instance.attributes).forEach((attr) => {
+        node.args.named[attr.nodeName] = attr.nodeValue;
+      });
+      // move modifiers and components into the element children
+      parentNode.children.forEach((child) => {
+        if (
+          child.bounds.parentElement === node.instance ||
+          (child.type === 'modifier' &&
+            child.bounds.firstNode === node.instance)
+        ) {
+          node.children.push(child);
+        }
+      });
+      node.children.forEach((child) => {
+        const idx = parentNode.children.indexOf(child);
+        if (idx >= 0) {
+          parentNode.children.splice(idx, 1);
+        }
+      });
+    }
+
+    return {
+      id: node.id,
+      type: node.type,
+      name: node.name,
+      children: this._createSimpleNodes(node.children, node),
+    };
+  }
+
+  _createSimpleNodes(nodes, parentNode = null) {
+    const mapped = [];
+    // nodes can be mutated during serialize, which is why we use indexing instead of .map
+    for (let i = 0; i < nodes.length; i++) {
+      mapped.push(this._createSimpleNode(nodes[i], parentNode));
+    }
+    return mapped;
+  }
+
+  _serializeRenderNode(nodeId) {
+    const node = this.nodes[nodeId];
+    if (!node) return null;
     let serialized = this.serialized[node.id];
 
     if (serialized === undefined) {
-      this.nodes[node.id] = node;
       if (node.type === 'keyword') {
         node.type = 'component';
         this.inElementSupport?.nodeMap.set(node, node.id);
@@ -586,33 +634,6 @@ export default class RenderTree {
         });
       }
 
-      if (parentNode) {
-        this.parentNodes[node.id] = parentNode;
-      }
-
-      if (node.type === 'html-element') {
-        // show set attributes in inspector
-        Array.from(node.instance.attributes).forEach((attr) => {
-          node.args.named[attr.nodeName] = attr.nodeValue;
-        });
-        // move modifiers and components into the element children
-        parentNode.children.forEach((child) => {
-          if (
-            child.bounds.parentElement === node.instance ||
-            (child.type === 'modifier' &&
-              child.bounds.firstNode === node.instance)
-          ) {
-            node.children.push(child);
-          }
-        });
-        node.children.forEach((child) => {
-          const idx = parentNode.children.indexOf(child);
-          if (idx >= 0) {
-            parentNode.children.splice(idx, 1);
-          }
-        });
-      }
-
       if (node.type === 'component' && !node.instance) {
         node.instance = this._createSimpleInstance(
           'TemplateOnlyComponent',
@@ -624,9 +645,6 @@ export default class RenderTree {
         node.instance =
           node.instance || this._createSimpleInstance(node.name, node.args);
         node.instance.toString = () => node.name;
-        if (parentNode.instance !== node.bounds.firstNode) {
-          return this._insertHtmlElementNode(node, parentNode);
-        }
       }
 
       this.serialized[node.id] = serialized = {
@@ -634,8 +652,8 @@ export default class RenderTree {
         args: this._serializeArgs(node.args),
         instance: this._serializeItem(node.instance),
         bounds: this._serializeBounds(node.bounds),
-        children: this._serializeRenderNodes(node.children, node),
       };
+      delete serialized.children;
     }
 
     return serialized;
@@ -691,12 +709,7 @@ export default class RenderTree {
   }
 
   _serializeObject(object) {
-    let id = this.previouslyRetainedObjects.get(object);
-
-    if (id === undefined) {
-      id = this.retainObject(object);
-    }
-
+    let id = this.retainObject(object);
     this.retainedObjects.set(object, id);
 
     return { id, type: typeof object, inspect: inspect(object) };

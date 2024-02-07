@@ -28,6 +28,7 @@ export default class ComponentTreeRoute extends TabRoute {
     super.activate(...arguments);
 
     this.port.on('view:renderTree', this, this.setRenderTree);
+    this.port.on('view:renderTreeItem', this, this.setRenderTreeItem);
     this.port.on('view:cancelSelection', this, this.cancelSelection);
     this.port.on('view:startInspecting', this, this.startInspecting);
     this.port.on('view:stopInspecting', this, this.stopInspecting);
@@ -38,6 +39,7 @@ export default class ComponentTreeRoute extends TabRoute {
     super.deactivate(...arguments);
 
     this.port.off('view:renderTree', this, this.setRenderTree);
+    this.port.off('view:renderTreeItem', this, this.setRenderTreeItem);
     this.port.off('view:cancelSelection', this, this.cancelSelection);
     this.port.off('view:startInspecting', this, this.startInspecting);
     this.port.off('view:stopInspecting', this, this.stopInspecting);
@@ -46,6 +48,10 @@ export default class ComponentTreeRoute extends TabRoute {
 
   setRenderTree({ tree }) {
     this.controller.renderTree = tree;
+  }
+
+  setRenderTreeItem({ treeItem }) {
+    this.controller.setRenderTreeItem(treeItem);
   }
 
   cancelSelection({ id, pin }) {

@@ -87,6 +87,23 @@ async function getRenderTree() {
     EmberDebug.port.trigger('view:getTree', {});
   });
 
+  const all = [];
+  const stack = [...message.tree];
+  while (stack.length) {
+    const item = stack.pop();
+    all.push(item);
+    stack.push(...item.children);
+  }
+
+  const fetchAll = all.map(async (item) => {
+    const message = await captureMessage('view:renderTreeItem', async () => {
+      EmberDebug.port.trigger('view:getTreeItem', { id: item.id });
+    });
+    Object.assign(item, message.treeItem);
+  });
+
+  await Promise.all(fetchAll);
+
   if (message) {
     return message.tree;
   }
