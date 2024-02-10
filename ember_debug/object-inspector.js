@@ -209,7 +209,7 @@ function isMandatorySetter(descriptor) {
   return false;
 }
 
-function getTagTrackedProps(tag, ownTag, level = 0) {
+function getTagTrackedTags(tag, ownTag, level = 0) {
   const props = [];
   // do not include tracked properties from dependencies
   if (!tag || level > 1) {
@@ -219,13 +219,13 @@ function getTagTrackedProps(tag, ownTag, level = 0) {
   if (tag.subtag && !Array.isArray(tag.subtag)) {
     if (tag.subtag._propertyKey) props.push(tag.subtag);
 
-    props.push(...getTagTrackedProps(tag.subtag, ownTag, level + 1));
+    props.push(...getTagTrackedTags(tag.subtag, ownTag, level + 1));
   }
   if (subtags) {
     subtags.forEach((t) => {
       if (t === ownTag) return;
       if (t._propertyKey) props.push(t);
-      props.push(...getTagTrackedProps(t, ownTag, level + 1));
+      props.push(...getTagTrackedTags(t, ownTag, level + 1));
     });
   }
   return props;
@@ -244,21 +244,22 @@ function getTrackedDependencies(object, property, tagInfo) {
   }
   if (HAS_GLIMMER_TRACKING) {
     const ownTag = tagForProperty(object, property);
-    const props = getTagTrackedProps(tag, ownTag);
+    const tags = getTagTrackedTags(tag, ownTag);
     const mapping = {};
-    let maxRevision = tagInfo.revision ?? 0;
-    let minRevision = Infinity;
-    props.forEach((t) => {
+    let maxRevision = tagValue(tag);
+    tags.forEach((t) => {
       const p =
         (t._object ? getObjectName(t._object) + '.' : '') + t._propertyKey;
-      const [objName, ...props] = p.split('.');
+      const [objName, prop] = p.split('.');
       mapping[objName] = mapping[objName] || new Set();
-      maxRevision = Math.max(maxRevision, t.revision);
-      minRevision = Math.min(minRevision, t.revision);
-      props.forEach((p) => mapping[objName].add([p, t.revision]));
+      const value = tagValue(t);
+      if (prop) {
+        mapping[objName].add([prop, value]);
+      }
     });
 
-    const hasChange = maxRevision !== minRevision;
+    const hasChange =
+      (tagInfo.revision && maxRevision !== tagInfo.revision) || false;
 
     const names = new Set();
 
@@ -270,7 +271,7 @@ function getTrackedDependencies(object, property, tagInfo) {
       if (props.size > 1) {
         dependentKeys.push({ name: objName });
         props.forEach((p) => {
-          const changed = hasChange && p[1] >= maxRevision;
+          const changed = hasChange && p[1] > tagInfo.revision;
           const obj = {
             child: p[0],
           };
@@ -282,7 +283,7 @@ function getTrackedDependencies(object, property, tagInfo) {
       }
       if (props.size === 1) {
         const p = [...props][0];
-        const changed = hasChange && p[1] >= maxRevision;
+        const changed = hasChange && p[1] > tagInfo.revision;
         const obj = {
           name: objName + '.' + p[0],
         };
@@ -1137,7 +1138,8 @@ function calculateCPs(
         if (cache !== undefined || !item.isExpensive) {
           let value;
           if (item.canTrack && HAS_GLIMMER_TRACKING) {
-            const tagInfo = (tracked[item.name] = {});
+            tracked[item.name] = tracked[item.name] || {};
+            const tagInfo = tracked[item.name];
             tagInfo.tag = track(() => {
               value = calculateCP(object, item, errorsForObject);
             });
