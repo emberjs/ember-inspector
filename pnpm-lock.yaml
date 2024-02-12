@@ -88,7 +88,7 @@ devDependencies:
     version: 4.0.5
   '@types/ember__routing':
     specifier: ^4.0.12
-    version: 4.0.12(@babel/core@7.22.5)
+    version: 4.0.21(@babel/core@7.22.5)
   '@types/ember__runloop':
     specifier: ^4.0.2
     version: 4.0.2(@babel/core@7.22.5)
@@ -2815,7 +2815,7 @@ packages:
       '@types/ember__error': 4.0.3
       '@types/ember__object': 4.0.6(@babel/core@7.22.5)
       '@types/ember__polyfills': 4.0.5
-      '@types/ember__routing': 4.0.12(@babel/core@7.22.5)
+      '@types/ember__routing': 4.0.21(@babel/core@7.22.5)
       '@types/ember__runloop': 4.0.2(@babel/core@7.22.5)
       '@types/ember__service': 4.0.9(@babel/core@7.22.5)
       '@types/ember__string': 3.0.13
@@ -2836,7 +2836,7 @@ packages:
       '@types/ember__engine': 4.0.8(@babel/core@7.22.5)
       '@types/ember__object': 4.0.6(@babel/core@7.22.5)
       '@types/ember__owner': 4.0.4
-      '@types/ember__routing': 4.0.12(@babel/core@7.22.5)
+      '@types/ember__routing': 4.0.21(@babel/core@7.22.5)
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
@@ -2917,8 +2917,8 @@ packages:
     resolution: {integrity: sha512-KOdgOFGCIMtBb6bMEsze7LDA2+h588qJCmFTsFBdicZFMX7lWg3hju5568bD7SXBpXvBF2a9a1Xv4fpNdRntWA==}
     dev: true
 
-  /@types/ember__routing@4.0.12(@babel/core@7.22.5):
-    resolution: {integrity: sha512-zxPS43JP8/dEmNrSucN5KzTvOm+JUrbFGWsJ1m5a395FwxYbpgs7JujV0JWl+eVhnCh/PmsNcCdJT16+jouktQ==}
+  /@types/ember__routing@4.0.21(@babel/core@7.22.5):
+    resolution: {integrity: sha512-eXXHDsStB77oFss+P7PoLoI4nfcD/ePQckB3taWe8wf80sVY4WnkFw990anG1A9tGCnRqRhIaEY8h3/6WP6TEw==}
     dependencies:
       '@types/ember': 4.0.10(@babel/core@7.22.5)
       '@types/ember__controller': 4.0.11(@babel/core@7.22.5)
