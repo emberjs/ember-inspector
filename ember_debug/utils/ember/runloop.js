@@ -1,4 +1,4 @@
-import Ember from '../ember';
+import { runloop as EmberRunloop } from '../ember';
 import * as runloop from './own-runloop';
 
 let module = runloop;
@@ -12,8 +12,8 @@ try {
   // then we need to use our own
   _backburner = module._backburner;
 } catch {
-  _backburner = Ember?.run?.backburner || module._backburner;
-  module = Ember?.run || module;
+  _backburner = EmberRunloop?._backburner || module._backburner;
+  module = EmberRunloop || module;
 }
 
 if (!keys.every((k) => k in module)) {

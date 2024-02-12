@@ -6,7 +6,7 @@
  */
 
 import Promise from 'ember-debug/models/promise';
-import RSVP from 'ember-debug/utils/rsvp';
+import { classes } from 'ember-debug/utils/ember';
 import BaseObject from 'ember-debug/utils/base-object';
 import Evented from 'ember-debug/utils/evented';
 
@@ -15,7 +15,7 @@ class PromiseAssembler extends BaseObject {
   isStarted = false;
 
   static {
-    this.prototype.RSVP = RSVP;
+    this.prototype.RSVP = classes.RSVP;
   }
 
   constructor(data) {

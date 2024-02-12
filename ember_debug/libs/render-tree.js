@@ -1,6 +1,6 @@
-import captureRenderTree from './capture-render-tree';
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
 import { EmberLoader } from 'ember-debug/utils/ember/loader';
+import { debug } from 'ember-debug/utils/ember';
 
 class InElementSupportProvider {
   constructor(owner) {
@@ -278,7 +278,7 @@ export default class RenderTree {
   build() {
     this._reset();
 
-    this.tree = captureRenderTree(this.owner);
+    this.tree = debug.captureRenderTree(this.owner);
     let serialized = this._serializeRenderNodes(this.tree);
 
     this._releaseStaleObjects();

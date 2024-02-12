@@ -4,7 +4,7 @@ import { compareVersion } from 'ember-debug/utils/version';
 import classify from 'ember-debug/utils/classify';
 import dasherize from 'ember-debug/utils/dasherize';
 
-import Ember from 'ember-debug/utils/ember';
+import Ember, { ember } from 'ember-debug/utils/ember';
 import { later } from 'ember-debug/utils/ember/runloop';
 
 const { hasOwnProperty } = Object.prototype;
@@ -186,7 +186,7 @@ function buildSubTree(routeTree, route) {
       // 3.9.0 removed intimate APIs from router
       // https://github.com/emberjs/ember.js/pull/17843
       // https://deprecations.emberjs.com/v3.x/#toc_remove-handler-infos
-      if (compareVersion(Ember.VERSION, '3.9.0') !== -1) {
+      if (compareVersion(ember.VERSION, '3.9.0') !== -1) {
         // Ember >= 3.9.0
         routeHandler = routerLib.getRoute(handler);
       } else {
