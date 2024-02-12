@@ -101,7 +101,7 @@ class EmberDebug extends BaseObject {
 
   reset($keepAdapter) {
     setGuidPrefix(Math.random().toString());
-    this.owner = getOwner(this._application);
+    this.owner = this._application && getOwner(this._application);
     this.destroyContainer();
     run(() => {
       // Adapters don't have state depending on the application itself.
