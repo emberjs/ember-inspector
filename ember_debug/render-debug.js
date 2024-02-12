@@ -1,8 +1,8 @@
 import DebugPort from './debug-port';
 import ProfileManager from './models/profile-manager';
 
-import { subscribe } from 'ember-debug/utils/ember/instrumentation';
 import { _backburner } from 'ember-debug/utils/ember/runloop';
+import { instrumentation } from 'ember-debug/utils/ember';
 import bound from 'ember-debug/utils/bound-method';
 
 // Initial setup, that has to occur before the EmberObject init for some reason
@@ -78,7 +78,7 @@ export default class extends DebugPort {
  * @private
  */
 function _subscribeToRenderEvents() {
-  subscribe('render', {
+  instrumentation.subscribe('render', {
     before(name, timestamp, payload) {
       const info = {
         type: 'began',

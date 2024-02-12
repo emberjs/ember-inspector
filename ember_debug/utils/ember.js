@@ -9,7 +9,10 @@ try {
 }
 
 let {
+  libraries,
   ArrayProxy,
+  ObjectProxy,
+  ActionHandler,
   Namespace,
   _captureRenderTree: captureRenderTree,
   ControllerMixin,
@@ -21,15 +24,14 @@ let {
   Component: EmberComponent,
   Observable,
   Evented,
-  PromiseProxyMixin,
   Service,
+  PromiseProxyMixin,
   Object: EmberObject,
-  ObjectProxy,
   VERSION,
   meta,
   get,
   set,
-  runloop,
+  runloop: runloop_,
   cacheFor,
   metal,
   guidFor,
@@ -39,17 +41,22 @@ let {
   isMandatorySetter,
   isTesting,
   inspect,
-  registerDeprecationHandler,
+  Debug: { registerDeprecationHandler },
   TargetActionSupport,
   GlimmerComponent,
-  instrumentation,
+  Instrumentation: instrumentation_,
   RSVP,
+  ENV: ENV_,
 } = Ember || {};
 
 let getEnv = () => Ember.ENV;
 let cacheFor = () => null;
 
 if (!Ember) {
+  ActionHandler = emberSafeRequire('@ember/-internals/runtime')?.ActionHandler;
+  ObjectProxy = emberSafeRequire('@ember/object/proxy')?.default;
+  ArrayProxy = emberSafeRequire('@ember/array/proxy')?.default;
+  libraries = emberSafeRequire('@ember/-internals/metal')?.libraries;
   MutableArray = emberSafeRequire('@ember/array/mutable')?.default;
   Namespace = emberSafeRequire('@ember/application/namespace')?.default;
   MutableEnumerable = emberSafeRequire('@ember/enumerable/mutable')?.default;
@@ -61,6 +68,7 @@ if (!Ember) {
   GlimmerComponent = emberSafeRequire('@glimmer/component')?.default;
   Observable = emberSafeRequire('@ember/object/observable')?.default;
   Evented = emberSafeRequire('@ember/object/evented')?.default;
+  Service = emberSafeRequire('@ember/service')?.default;
   PromiseProxyMixin = emberSafeRequire(
     '@ember/object/promise-proxy-mixin'
   )?.default;
@@ -73,7 +81,7 @@ if (!Ember) {
   meta = emberSafeRequire('@ember/-internals/meta')?.meta;
   set = emberSafeRequire('@ember/object')?.set;
   get = emberSafeRequire('@ember/object')?.get;
-  runloop = emberSafeRequire('@ember/runloop');
+  runloop_ = emberSafeRequire('@ember/runloop');
   cacheFor = emberSafeRequire('@ember/object/internals')?.cacheFor;
   guidFor = emberSafeRequire('@ember/object/internals')?.guidFor;
   getOwner = emberSafeRequire('@ember/owner')?.getOwner;
@@ -82,8 +90,9 @@ if (!Ember) {
     emberSafeRequire('@ember/-internals/utils')?.inspect;
   registerDeprecationHandler =
     emberSafeRequire('@ember/debug')?.registerDeprecationHandler;
-  instrumentation = emberSafeRequire('@ember/instrumentation');
+  instrumentation_ = emberSafeRequire('@ember/instrumentation');
   RSVP = emberSafeRequire('rsvp');
+  ENV_ = emberSafeRequire('@ember/-internals/environment')?.ENV;
 }
 
 const {
@@ -94,7 +103,7 @@ const {
   tagForProperty,
 } = (metal || {});
 
-const { _backburner, cancel, debounce, join, later, scheduleOnce } = (runloop || {});
+const { _backburner, cancel, debounce, join, later, scheduleOnce } = (runloop_ || {});
 const {
   ViewStateSupport,
   ViewMixin,
@@ -104,75 +113,131 @@ const {
   CoreView,
 } = emberSafeRequire('@ember/-internals/views') || Ember || {};
 
-const GlimmerValidator = emberSafeRequire('@glimmer/validator');
-const GlimmerRuntime = emberSafeRequire('@glimmer/runtime');
+const GlimmerValidator_ = emberSafeRequire('@glimmer/validator') || {};
+const GlimmerRuntime_ = emberSafeRequire('@glimmer/runtime') || {};
 
 export function assignEmberInfo(data) {
   Object.assign(ember, data);
+  Object.assign(utils, data.utils);
+  Object.assign(runloop, data.runloop);
+  Object.assign(object, data.object);
+  Object.assign(debug, data.debug);
+  Object.assign(classes, data.classes);
+  Object.assign(glimmer, data.glimmer);
+  Object.assign(Views, data.Views);
+  Object.assign(instrumentation, data.instrumentation);
+  Object.assign(ENV_, data.ENV);
 }
 
-export const ember = {
-  runloop: {
-    _backburner,
-    cancel,
-    debounce,
-    join,
-    later,
-    scheduleOnce,
-  },
-  object: {
-    cacheFor,
-    guidFor,
-    getOwner,
-    set,
-    get,
-    meta,
-  },
-  debug: {
-    isComputed,
-    isTrackedProperty,
-    isCachedProperty,
-    descriptorForProperty,
-    descriptorForDecorator,
-    isMandatorySetter,
-    meta,
-    captureRenderTree,
-    isTesting,
-    inspect,
-    registerDeprecationHandler,
-    tagForProperty,
-    ComputedProperty,
-  },
-  classes: {
-    EmberObject,
-    MutableArray,
-    Namespace,
-    MutableEnumerable,
-    NativeArray,
-    TargetActionSupport,
-    ControllerMixin,
-    CoreObject,
-    Application,
-    EmberComponent,
-    GlimmerComponent,
-    Observable,
-    Evented,
-    PromiseProxyMixin,
-  },
-  VERSION,
-  instrumentation: instrumentation,
-  Views: {
-    ViewStateSupport,
-    ViewMixin,
-    ActionSupport,
-    ClassNamesSupport,
-    ChildViewsSupport,
-    CoreView,
-  },
-  GlimmerValidator,
-  GlimmerRuntime,
-  RSVP,
-  getEnv,
+export const utils = {
+  libraries
+}
+
+export const runloop = {
+  _backburner,
+  cancel,
+  debounce,
+  join,
+  later,
+  scheduleOnce,
 };
 
-export default Ember;
+export const object = {
+  cacheFor,
+  guidFor,
+  getOwner,
+  set,
+  get,
+  meta,
+};
+
+
+if (!isMandatorySetter) {
+  isMandatorySetter = function(obj, prop) {
+    const descriptor = Object.getOwnPropertyDescriptor(obj, prop)
+    if (descriptor.set && descriptor.set === Ember.MANDATORY_SETTER_FUNCTION) {
+      return true;
+    }
+    if (
+      descriptor.set &&
+      Function.prototype.toString
+        .call(descriptor.set)
+        .includes('You attempted to update')
+    ) {
+      return true;
+    }
+    return false;
+  }
+}
+
+
+export const debug = {
+  isComputed,
+  isTrackedProperty,
+  isCachedProperty,
+  descriptorForProperty,
+  descriptorForDecorator,
+  isMandatorySetter,
+  meta,
+  captureRenderTree,
+  isTesting,
+  inspect,
+  registerDeprecationHandler,
+  tagForProperty,
+  instrumentation: instrumentation_
+};
+
+export const classes = {
+  ArrayProxy,
+  ObjectProxy,
+  ActionHandler,
+  ComputedProperty,
+  EmberObject,
+  MutableArray,
+  Namespace,
+  MutableEnumerable,
+  NativeArray,
+  TargetActionSupport,
+  ControllerMixin,
+  CoreObject,
+  Application,
+  EmberComponent,
+  GlimmerComponent,
+  Observable,
+  Evented,
+  Service,
+  PromiseProxyMixin,
+  RSVP,
+};
+
+export const Views = {
+  ViewStateSupport,
+  ViewMixin,
+  ActionSupport,
+  ClassNamesSupport,
+  ChildViewsSupport,
+  CoreView,
+};
+
+export const glimmer = {
+  validator: GlimmerValidator_,
+  runtime: GlimmerRuntime_,
+}
+
+export const instrumentation = instrumentation_;
+
+export const ENV = ENV_;
+
+export const ember = {
+  runloop,
+  object,
+  debug,
+  classes,
+  VERSION,
+  instrumentation: instrumentation_,
+  Views,
+  glimmer,
+  env: ENV_,
+};
+
+export default ember;

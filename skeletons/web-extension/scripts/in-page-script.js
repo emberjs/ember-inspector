@@ -24,15 +24,23 @@
       window.removeEventListener("load", completed, false);
       callback();
     }
+
+    window.addEventListener('ember-inspector-debug-response', callback, { once: true });
   }
 
-  onReady(function() {
+  onReady(function(e) {
     let Ember;
     try {
       Ember = requireModule('ember')['default'];
     } catch {
       Ember = window.Ember;
     }
+
+    if (!Ember) {
+      const event = new Event("ember-inspector-debug-request");
+      document.dispatchEvent(event);
+    }
+
     var libraries = Ember && Ember.libraries;
     if (libraries) {
       // Ember has changed where the array of libraries is located.
