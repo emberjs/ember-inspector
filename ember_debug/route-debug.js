@@ -5,7 +5,8 @@ import classify from 'ember-debug/utils/classify';
 import dasherize from 'ember-debug/utils/dasherize';
 
 import Ember from 'ember-debug/utils/ember';
-import { later } from 'ember-debug/utils/ember/runloop';
+import { _backburner, later } from 'ember-debug/utils/ember/runloop';
+import bound from 'ember-debug/utils/bound-method';
 
 const { hasOwnProperty } = Object.prototype;
 
@@ -15,30 +16,33 @@ export default class RouteDebug extends DebugPort {
     super.init();
     this.__currentURL = this.currentURL;
     this.__currentRouter = this.router;
-    this.observer = setInterval(() => {
-      if (this.__currentURL !== this.currentURL) {
-        this.sendCurrentRoute();
-        this.__currentURL = this.currentURL;
-      }
-      if (this.__currentRouter !== this.router) {
-        this._cachedRouteTree = null;
-        this.__currentRouter = this.router;
-      }
-    }, 150);
+    _backburner.on('end', bound(this, this.checkForUpdate));
+  }
+
+  checkForUpdate() {
+    if (this.__currentURL !== this.currentURL) {
+      this.sendCurrentRoute();
+      this.__currentURL = this.currentURL;
+    }
+    if (this.__currentRouter !== this.router) {
+      this._cachedRouteTree = null;
+      this.__currentRouter = this.router;
+    }
   }
 
   willDestroy() {
-    clearInterval(this.observer);
+    _backburner.off('end', bound(this, this.checkForUpdate));
     super.willDestroy();
   }
 
   get router() {
+    if (
+      this.namespace?.owner.isDestroyed ||
+      this.namespace?.owner.isDestroying
+    ) {
+      return null;
+    }
     return this.namespace?.owner.lookup('router:main');
-  }
-
-  get applicationController() {
-    const container = this.namespace?.owner;
-    return container.lookup('controller:application');
   }
 
   get currentPath() {
@@ -73,7 +77,13 @@ export default class RouteDebug extends DebugPort {
   }
 
   get routeTree() {
-    if (!this._cachedRouteTree) {
+    if (
+      this.namespace?.owner.isDestroyed ||
+      this.namespace?.owner.isDestroying
+    ) {
+      return null;
+    }
+    if (!this._cachedRouteTree && this.router) {
       const router = this.router;
       const routerLib = router._routerMicrolib || router.router;
       let routeNames = routerLib.recognizer.names;
@@ -91,8 +101,14 @@ export default class RouteDebug extends DebugPort {
   }
 
   sendTree() {
-    const routeTree = this.routeTree;
-    this.sendMessage('routeTree', { tree: routeTree });
+    let routeTree;
+    let error;
+    try {
+      routeTree = this.routeTree;
+    } catch (e) {
+      error = e.message;
+    }
+    this.sendMessage('routeTree', { tree: routeTree, error });
   }
 
   getClassName(name, type) {
@@ -113,7 +129,7 @@ export default class RouteDebug extends DebugPort {
       }
       if (className === fullName) {
         // full name returned as is - this resolver does not look for the module.
-        className = className.replace(new RegExp(`^${type}\:`), '');
+        className = className.replace(new RegExp(`^${type}:`), '');
       } else if (className) {
         // Module exists and found
         className = className.replace(
@@ -202,7 +218,13 @@ function buildSubTree(routeTree, route) {
         controllerClassName = '(unresolved)';
         templateName = '(unresolved)';
       } else {
-        controllerName = routeHandler.controllerName || routeHandler.routeName;
+        const get =
+          routeHandler.get ||
+          function (prop) {
+            return this[prop];
+          };
+        controllerName =
+          get.call(routeHandler, 'controllerName') || routeHandler.routeName;
         controllerFactory = owner.factoryFor
           ? owner.factoryFor(`controller:${controllerName}`)
           : owner._lookupFactory(`controller:${controllerName}`);

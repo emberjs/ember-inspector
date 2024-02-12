@@ -7,6 +7,13 @@
   {{/in-element}}
 {{/if}}
 
+{{#if this.model.error}}
+  <p>
+      Routes could not be loaded.
+      {{this.model.error}}
+  </p>
+{{/if}}
+
 <EmberTable as |t|>
   <t.head @columns={{schema-for "route-tree"}} @enableReorder={{false}} />
 

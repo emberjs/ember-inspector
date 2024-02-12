@@ -25,6 +25,10 @@ export default class RouteTreeRoute extends TabRoute {
   }
 
   setTree(options) {
+    if (options.error) {
+      set(this, 'controller.model', options);
+      return;
+    }
     let routeArray = topSort(options.tree);
     set(this, 'controller.model', routeArray);
   }
