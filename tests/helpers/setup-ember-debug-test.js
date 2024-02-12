@@ -50,11 +50,6 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     this.owner.register('router:main', Router);
     this.owner.register('service:adapter', BasicAdapter);
 
-    run(() => {
-      EmberDebug.isTesting = true;
-      EmberDebug.owner = this.owner;
-    });
-
     EmberDebug.Port =
       options.Port ||
       class extends Port {
@@ -72,10 +67,6 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     await teardownContext(this);
 
     EmberDebug.IGNORE_DEPRECATIONS = originalIgnoreDeprecations;
-
-    run(() => {
-      EmberDebug.isTesting = false;
-    });
 
     EmberDebug.Port = originalPort;
 
