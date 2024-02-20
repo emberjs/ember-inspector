@@ -381,19 +381,18 @@ module.exports = function (defaults) {
   if (env === 'test') {
     // `ember test` expects the index.html file to be in the
     // output directory.
-    output = mergeTrees([dists.basic, dists.chrome]);
-  } else {
     // Change base tag for running tests in development env.
     dists.basic = replace(dists.basic, {
       files: ['tests/index.html'],
       patterns: [
         {
           match: /<base.*\/>/,
-          replacement: '<base href="../" />',
+          replacement: '',
         },
       ],
     });
-
+    output = mergeTrees([dists.basic, dists.chrome]);
+  } else {
     dists.testing = mergeTrees([dists.basic, dists.chrome]);
 
     output = mergeTrees([

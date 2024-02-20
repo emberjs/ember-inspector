@@ -11,6 +11,7 @@
   {{on "mouseenter" @item.showPreview}}
   {{on "mouseleave" @item.hidePreview}}
 >
+  {{resource @item.id create=@item.load update=@item.update teardown=@item.unload}}
   <div class="component-tree-item-background flex items-center pr-2 rounded">
     {{#if @item.hasChildren}}
       <Ui::DisclosureTriangle
@@ -24,7 +25,7 @@
     <code
       class="component-tree-item__tag flex whitespace-no-wrap
         {{if
-          @item.isComponent
+        (or @item.isComponent @item.isModifier @item.isHtmlTag)
           (if
             @item.isCurlyInvocation
             "component-tree-item-classic__bracket"
@@ -37,7 +38,7 @@
         }}"
     >
       {{!-- template-lint-disable no-unbalanced-curlies --}}
-      {{#if @item.isComponent}}
+      {{#if (or @item.isComponent @item.isModifier)}}
         {{#if @item.isCurlyInvocation}}
           <span class="component-name">
             {{@item.name}}
@@ -83,6 +84,20 @@
         \{{mount "{{@item.name}}"}}
       {{else if @item.isRouteTemplate}}
         {{@item.name}} route
+      {{else if @item.isHtmlTag}}
+        <span class="component-name">
+          {{@item.name}}
+        </span>
+        {{#each-in @item.args.named as |name value|}}
+          <div class="arg-token flex ml-2">
+              <span class="key-token">
+                {{name}}
+              </span>
+            ={{if (is-string value) "\""}}
+            <ComponentTreeArg @value={{value}} />
+            {{if (is-string value) "\""}}
+          </div>
+        {{/each-in}}
       {{/if}}
     </code>
   </div>

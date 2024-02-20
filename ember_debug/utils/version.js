@@ -24,6 +24,35 @@ export function compareVersion(version1, version2) {
 }
 
 /**
+ *
+ * @param specifier e.g. ^5.12.0
+ * @param version 5.13
+ * @return {boolean}
+ */
+export function isInVersionSpecifier(specifier, version) {
+  let compared, i, version2;
+  let operator = specifier[0];
+  if (Number.isNaN(operator)) {
+    specifier = specifier.slice(1);
+  }
+  specifier = cleanupVersion(specifier).split('.');
+  version2 = cleanupVersion(version).split('.');
+  if (operator === '~' && specifier[1] !== version2[1]) {
+    return false;
+  }
+  if (operator === '^' && specifier[0] !== version2[0]) {
+    return false;
+  }
+  for (i = 0; i < 3; i++) {
+    compared = compare(+specifier[i], +version2[i]);
+    if (compared > 0) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
  * Remove -alpha, -beta, etc from versions
  *
  * @param {String} version

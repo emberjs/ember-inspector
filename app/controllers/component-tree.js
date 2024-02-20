@@ -1,6 +1,6 @@
 import Controller, { inject as controller } from '@ember/controller';
 import { action } from '@ember/object';
-import { debounce } from '@ember/runloop';
+import { debounce, next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { htmlSafe } from '@ember/template';
 import { tracked } from '@glimmer/tracking';
@@ -42,6 +42,9 @@ export default class ComponentTreeController extends Controller {
           item = new RenderItem(this, parent, renderNode);
         } else {
           item.renderNode = renderNode;
+          if (item.isRendered) {
+            item.load();
+          }
         }
 
         store[renderNode.id] = item;
@@ -57,6 +60,15 @@ export default class ComponentTreeController extends Controller {
     this._store = store;
 
     this.renderItems = renderItems;
+  }
+
+  setRenderTreeItem(item) {
+    if (item && this._store[item.id]) {
+      this._store[item.id].renderNode = Object.assign(
+        this._store[item.id].renderNode,
+        item
+      );
+    }
   }
 
   findItem(id) {
@@ -275,6 +287,7 @@ function arrowKeyPressed(keyCode) {
 class RenderItem {
   @tracked isExpanded;
   @tracked renderNode;
+  @tracked renderCounter = 0;
 
   constructor(controller, parentItem, renderNode) {
     this.controller = controller;
@@ -282,6 +295,42 @@ class RenderItem {
     this.renderNode = renderNode;
 
     this.isExpanded = this.isExpandable;
+  }
+
+  get isRendered() {
+    return this.renderCounter > 0;
+  }
+
+  @action
+  load() {
+    next(() => {
+      this.renderCounter += 1;
+      if (this.renderNode.args) {
+        return;
+      }
+      console.log('load', this.id);
+      this.send('view:getTreeItem', { id: this.id });
+    });
+  }
+
+  @action
+  async update(prevId) {
+    next(() => {
+      this.controller._store[prevId].renderCounter -= 1;
+      this.renderCounter += 1;
+      if (this.renderNode.args) {
+        return;
+      }
+      console.log('load', this.id);
+      this.send('view:getTreeItem', { id: this.id });
+    });
+  }
+
+  @action
+  async unload() {
+    next(() => {
+      this.renderCounter -= 1;
+    });
   }
 
   get id() {
@@ -304,6 +353,14 @@ class RenderItem {
     return this.renderNode.type === 'component';
   }
 
+  get isModifier() {
+    return this.renderNode.type === 'modifier';
+  }
+
+  get isHtmlTag() {
+    return this.renderNode.type === 'html-element';
+  }
+
   get name() {
     return this.renderNode.name;
   }
@@ -313,6 +370,9 @@ class RenderItem {
   }
 
   get isCurlyInvocation() {
+    if (this.isModifier) {
+      return true;
+    }
     return this.renderNode.args && this.renderNode.args.positional;
   }
 

@@ -6,9 +6,9 @@ import {
   isDescriptor,
   getDescriptorFor,
   typeOf,
+  inspect,
 } from 'ember-debug/utils/type-check';
 import { compareVersion } from 'ember-debug/utils/version';
-import { inspect as emberInspect } from 'ember-debug/utils/ember/debug';
 import Ember, { EmberObject } from 'ember-debug/utils/ember';
 import { cacheFor, guidFor } from 'ember-debug/utils/ember/object/internals';
 import { _backburner, join } from 'ember-debug/utils/ember/runloop';
@@ -107,6 +107,12 @@ function inspectValue(object, key, computedValue) {
 
   // TODO: this is not very clean. We should refactor calculateCP, etc, rather than passing computedValue
   if (computedValue !== undefined) {
+    if (value instanceof HTMLElement) {
+      return {
+        type: 'type-object',
+        inspect: `<${value.tagName.toLowerCase()}>`,
+      };
+    }
     return { type: `type-${typeOf(value)}`, inspect: inspect(value) };
   }
 
@@ -117,80 +123,10 @@ function inspectValue(object, key, computedValue) {
     return { type: 'type-descriptor', inspect: string };
   } else if (isDescriptor(value)) {
     return { type: 'type-descriptor', inspect: value.toString() };
+  } else if (value instanceof HTMLElement) {
+    return { type: 'type-object', inspect: value.tagName.toLowerCase() };
   } else {
     return { type: `type-${typeOf(value)}`, inspect: inspect(value) };
-  }
-}
-
-function inspect(value) {
-  if (typeof value === 'function') {
-    return 'function() { ... }';
-  } else if (value instanceof EmberObject) {
-    return value.toString();
-  } else if (typeOf(value) === 'array') {
-    if (value.length === 0) {
-      return '[]';
-    } else if (value.length === 1) {
-      return `[ ${inspect(value[0])} ]`;
-    } else {
-      return `[ ${inspect(value[0])}, ... ]`;
-    }
-  } else if (value instanceof Error) {
-    return `Error: ${value.message}`;
-  } else if (value === null) {
-    return 'null';
-  } else if (typeOf(value) === 'date') {
-    return value.toString();
-  } else if (typeof value === 'object') {
-    // `Ember.inspect` is able to handle this use case,
-    // but it is very slow as it loops over all props,
-    // so summarize to just first 2 props
-    // if it defines a toString, we use that instead
-    if (
-      typeof value.toString === 'function' &&
-      value.toString !== Object.prototype.toString &&
-      value.toString !== Function.prototype.toString
-    ) {
-      try {
-        return `<Object:${value.toString()}>`;
-      } catch (e) {
-        //
-      }
-    }
-    let ret = [];
-    let v;
-    let count = 0;
-    let broken = false;
-
-    for (let key in value) {
-      if (!('hasOwnProperty' in value) || value.hasOwnProperty(key)) {
-        if (count++ > 1) {
-          broken = true;
-          break;
-        }
-        v = value[key];
-        if (v === 'toString') {
-          continue;
-        } // ignore useless items
-        if (typeOf(v).includes('function')) {
-          v = 'function() { ... }';
-        }
-        if (typeOf(v) === 'array') {
-          v = `[Array : ${v.length}]`;
-        }
-        if (typeOf(v) === 'object') {
-          v = '[Object]';
-        }
-        ret.push(`${key}: ${v}`);
-      }
-    }
-    let suffix = ' }';
-    if (broken) {
-      suffix = ' ...}';
-    }
-    return `{ ${ret.join(', ')}${suffix}`;
-  } else {
-    return emberInspect(value);
   }
 }
 

@@ -119,8 +119,8 @@ export default class ObjectInspectorProperty extends Component<ObjectInspectorPr
   }
 
   get cannotEdit() {
-    if (this.args.model.name === '...' || !this.isCalculated) return true;
-    return this.isFunction || this.isOverridden || this.readOnly;
+    if (this.args.model.name === '...' || !this.isCalculated || this.readOnly) return true;
+    return this.args.model?.value?.type !== 'type-string' && this.args.model?.value?.type !== 'type-number';
   }
 
   @action
