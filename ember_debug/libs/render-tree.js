@@ -20,7 +20,8 @@ class InElementSupportProvider {
     this.DESTROY = emberSafeRequire('@glimmer/util')?.DESTROY;
     this.registerDestructor =
       emberSafeRequire('@glimmer/destroyable')?.registerDestructor ||
-      emberSafeRequire('@ember/destroyable')?.registerDestructor;
+      emberSafeRequire('@ember/destroyable')?.registerDestructor ||
+      emberSafeRequire('@ember/runtime')?.registerDestructor;
 
     this.debugRenderTree =
       owner.lookup('renderer:-dom')?.debugRenderTree ||
@@ -198,6 +199,9 @@ class InElementSupportProvider {
             parentElement: () => element.parentElement,
             firstNode: () => element,
             lastNode: () => element,
+          });
+          self.registerDestructor(modifier.state, () => {
+            debugRenderTree?.willDestroy(state);
           });
         }
       }
