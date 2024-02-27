@@ -42,47 +42,7 @@ class InElementSupportProvider {
     const NewElementBuilder = this.NewElementBuilder;
     const componentStack = [];
 
-    if (
-      isInVersionSpecifier('~3.16.0', VERSION) ||
-      isInVersionSpecifier('~3.20.0', VERSION)
-    ) {
-      const glimmer = this.require('@ember/-internals/glimmer');
-      const insertKlass = this.require(
-        '@ember/render-modifiers/modifiers/did-insert'
-      )?.default;
-      if (insertKlass) {
-        const updateKlass = this.require(
-          '@ember/render-modifiers/modifiers/did-update'
-        ).default;
-        const destroyKlass = this.require(
-          '@ember/render-modifiers/modifiers/will-destroy'
-        ).default;
-        const insert = glimmer.getModifierManager(insertKlass)();
-        const update = glimmer.getModifierManager(updateKlass)();
-        const destroy = glimmer.getModifierManager(destroyKlass)();
-        glimmer.setModifierManager(
-          () => ({
-            ...insert,
-            name: 'did-insert',
-          }),
-          insertKlass
-        );
-        glimmer.setModifierManager(
-          () => ({
-            ...update,
-            name: 'did-update',
-          }),
-          updateKlass
-        );
-        glimmer.setModifierManager(
-          () => ({
-            ...destroy,
-            name: 'will-remove',
-          }),
-          destroyKlass
-        );
-      }
-    }
+    const enableModifierSupport = isInVersionSpecifier('>3.28.0', VERSION);
 
     function createRef(value) {
       if (self.reference.createUnboundRef) {
@@ -132,81 +92,83 @@ class InElementSupportProvider {
     };
 
     const pushModifiers = NewElementBuilder.prototype.pushModifiers;
-    NewElementBuilder.prototype.pushModifiers = function (modifiers) {
-      const debugRenderTree = self.debugRenderTree;
-      if (debugRenderTree) {
-        modifiers = modifiers || [];
-        const modifier = modifiers[0];
-        let element = null;
-        if (modifiers.length) {
-          element = modifier[1]?.element || modifier.state.element;
+    if (enableModifierSupport) {
+      NewElementBuilder.prototype.pushModifiers = function (modifiers) {
+        const debugRenderTree = self.debugRenderTree;
+        if (debugRenderTree) {
+          modifiers = modifiers || [];
+          const modifier = modifiers[0];
+          let element = null;
+          if (modifiers.length) {
+            element = modifier[1]?.element || modifier.state.element;
+          }
+          for (const modifier of modifiers) {
+            const state = {};
+            const modifierState =
+              modifier.state?.instance || modifier.state || modifier[1];
+            const instance = modifierState?.instance || modifierState?.delegate;
+            let name =
+              modifier.definition?.resolvedName ||
+              modifierState?.debugName ||
+              instance?.name;
+            if (!name) {
+              try {
+                name = modifier.manager?.getDebugName?.();
+              } catch (e) {
+                // failed
+              }
+              name = name || 'unknown-modifier';
+            }
+            const args = {
+              positional: [],
+              named: {},
+            };
+            const positional =
+              modifierState?.args?.positional?.references ||
+              modifierState?.args?.positional ||
+              [];
+            for (const value of positional) {
+              if (value && value[self.reference.REFERENCE]) {
+                args.positional.push(value);
+              } else {
+                args.positional.push(createRef(value));
+              }
+            }
+            let named = modifierState?.args?.named;
+            if (!self.reference.createUnboundRef) {
+              try {
+                named = modifierState?.args?.named?.constructor;
+              } catch (e) {
+                //
+              }
+              try {
+                named = named || modifierState?.args?.named?.map;
+              } catch (e) {
+                //
+              }
+            }
+            for (const [key, value] of Object.entries(named || {})) {
+              args.named[key] = createRef(value);
+            }
+            debugRenderTree?.create(state, {
+              type: 'modifier',
+              name,
+              args: createArgs(args),
+              instance: instance,
+            });
+            debugRenderTree?.didRender(state, {
+              parentElement: () => element.parentElement,
+              firstNode: () => element,
+              lastNode: () => element,
+            });
+            self.registerDestructor(modifier.state, () => {
+              debugRenderTree?.willDestroy(state);
+            });
+          }
         }
-        for (const modifier of modifiers) {
-          const state = {};
-          const modifierState =
-            modifier.state?.instance || modifier.state || modifier[1];
-          const instance = modifierState?.instance || modifierState?.delegate;
-          let name =
-            modifier.definition?.resolvedName ||
-            modifierState?.debugName ||
-            instance?.name;
-          if (!name) {
-            try {
-              name = modifier.manager?.getDebugName?.();
-            } catch (e) {
-              // failed
-            }
-            name = name || 'unknown-modifier';
-          }
-          const args = {
-            positional: [],
-            named: {},
-          };
-          const positional =
-            modifierState?.args?.positional?.references ||
-            modifierState?.args?.positional ||
-            [];
-          for (const value of positional) {
-            if (value && value[self.reference.REFERENCE]) {
-              args.positional.push(value);
-            } else {
-              args.positional.push(createRef(value));
-            }
-          }
-          let named = modifierState?.args?.named;
-          if (!self.reference.createUnboundRef) {
-            try {
-              named = modifierState?.args?.named?.constructor;
-            } catch (e) {
-              //
-            }
-            try {
-              named = named || modifierState?.args?.named?.map;
-            } catch (e) {
-              //
-            }
-          }
-          for (const [key, value] of Object.entries(named || {})) {
-            args.named[key] = createRef(value);
-          }
-          debugRenderTree?.create(state, {
-            type: 'modifier',
-            name,
-            args: createArgs(args),
-            instance: instance,
-          });
-          debugRenderTree?.didRender(state, {
-            parentElement: () => element.parentElement,
-            firstNode: () => element,
-            lastNode: () => element,
-          });
-          self.registerDestructor(modifier.state, () => {
-            debugRenderTree?.willDestroy(state);
-          });
-        }
-      }
-      return pushModifiers.call(this, modifiers);
-    };
+        return pushModifiers.call(this, modifiers);
+      };
+    }
 
     const pushRemoteElement = NewElementBuilder.prototype.pushRemoteElement;
     NewElementBuilder.prototype.pushRemoteElement = function (
@@ -293,6 +255,7 @@ class InElementSupportProvider {
       this.NewElementBuilder.prototype,
       this.NewElementBuilderFunctions
     );
+    this.NewElementBuilderFunctions = null;
   }
 
   require(req) {

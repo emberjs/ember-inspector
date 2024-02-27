@@ -17,6 +17,8 @@ import QUnit, { module, test } from 'qunit';
 import { hbs } from 'ember-cli-htmlbars';
 import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
+import { isInVersionSpecifier } from 'ember-debug/utils/version';
+import { VERSION } from 'ember-debug/utils/ember';
 
 let templateOnlyComponent = null;
 try {
@@ -675,13 +677,11 @@ module('Ember Debug - View', function (hooks) {
         })
       );
     }
-    const htmlElement = HtmlElement(
-      {
-        name: 'input',
-        args: Args({ names: ['id', 'class', 'type'] }),
-      },
-      ...modifiers
-    );
+    const enableModifierSupport = isInVersionSpecifier('>3.28.0', VERSION);
+    if (!enableModifierSupport) {
+      modifiers.length = 0;
+    }
+
     if (!hasEmberVersion(3, 26)) {
       inputChildren.push(
         Component({
@@ -690,8 +690,19 @@ module('Ember Debug - View', function (hooks) {
           args: Args({ names: ['target', 'value'], positionals: 0 }),
         })
       );
-    } else {
-      inputChildren.push(htmlElement);
+    }
+
+    if (enableModifierSupport) {
+      const htmlElement = HtmlElement(
+        {
+          name: 'input',
+          args: Args({ names: ['id', 'class', 'type'] }),
+        },
+        ...modifiers
+      );
+      if (hasEmberVersion(3, 26)) {
+        inputChildren.push(htmlElement);
+      }
     }
 
     matchTree(tree, [
@@ -722,64 +733,77 @@ module('Ember Debug - View', function (hooks) {
 
     let argsTestPromise;
 
+    const enableModifierSupport = isInVersionSpecifier('>3.28.0', VERSION);
+
+    const children = [
+      Component({ name: 'test-foo', bounds: 'single' }),
+      Component({
+        name: 'test-bar',
+        bounds: 'range',
+        args: Args({ names: ['value'], positionals: 0 }),
+        instance: (actual) => {
+          async function testArgsValue() {
+            const value = await digDeeper(actual.id, 'args');
+            QUnit.assert.equal(
+              value.details[0].properties[0].value.inspect,
+              '{ x: 123, x.y: 456 }',
+              'test-bar args value inspect should be correct'
+            );
+          }
+          argsTestPromise = testArgsValue();
+        },
+      }),
+      Component(
+        {
+          name: 'in-element',
+          args: (actual) => {
+            QUnit.assert.ok(actual.positional[0]);
+            async function testArgsValue() {
+              const value = await inspectById(actual.positional[0].id);
+              QUnit.assert.equal(
+                value.details[1].name,
+                'HTMLDivElement',
+                'in-element args value inspect should be correct'
+              );
+            }
+            argsTestPromise = testArgsValue();
+          },
+          template: null,
+        },
+        Component({
+          name: 'test-component-in-in-element',
+          template: () => null,
+        })
+      ),
+    ];
+
+    const root = [];
+
+    if (enableModifierSupport) {
+      root.push(
+        ...[
+          HtmlElement(
+            {
+              name: 'div',
+            },
+            Modifier({
+              name: 'did-insert',
+              args: Args({ positionals: 1 }),
+            }),
+            ...children
+          ),
+        ]
+      );
+    } else {
+      root.push(...children);
+    }
+
     matchTree(tree, [
       TopLevel(
-        Route(
-          { name: 'application' },
-          Route(
-            { name: 'simple' },
-            HtmlElement(
-              {
-                name: 'div',
-              },
-              Modifier({
-                name: 'did-insert',
-                args: Args({ positionals: 1 }),
-              }),
-              Component({ name: 'test-foo', bounds: 'single' }),
-              Component({
-                name: 'test-bar',
-                bounds: 'range',
-                args: Args({ names: ['value'], positionals: 0 }),
-                instance: (actual) => {
-                  async function testArgsValue() {
-                    const value = await digDeeper(actual.id, 'args');
-                    QUnit.assert.equal(
-                      value.details[0].properties[0].value.inspect,
-                      '{ x: 123, x.y: 456 }',
-                      'test-bar args value inspect should be correct'
-                    );
-                  }
-                  argsTestPromise = testArgsValue();
-                },
-              }),
-              Component(
-                {
-                  name: 'in-element',
-                  args: (actual) => {
-                    QUnit.assert.ok(actual.positional[0]);
-                    async function testArgsValue() {
-                      const value = await inspectById(actual.positional[0].id);
-                      QUnit.assert.equal(
-                        value.details[1].name,
-                        'HTMLDivElement',
-                        'in-element args value inspect should be correct'
-                      );
-                    }
-                    argsTestPromise = testArgsValue();
-                  },
-                  template: null,
-                },
-                Component({
-                  name: 'test-component-in-in-element',
-                  template: () => null,
-                })
-              )
-            )
-          )
-        )
+        Route({ name: 'application' }, Route({ name: 'simple' }, ...root))
       ),
     ]);
+
     QUnit.assert.ok(
       argsTestPromise instanceof Promise,
       'args should be tested'
@@ -813,40 +837,52 @@ module('Ember Debug - View', function (hooks) {
 
     let tree = await getRenderTree();
 
+    const root = [];
+
+    const children = [
+      Component({ name: 'test-foo', bounds: 'single' }),
+      Component({
+        name: 'test-bar',
+        bounds: 'range',
+        args: Args({ names: ['value'], positionals: 0 }),
+      }),
+      Component(
+        {
+          name: 'in-element',
+          args: Args({ names: [], positionals: 1 }),
+          template: null,
+        },
+        Component({
+          name: 'test-component-in-in-element',
+          template: () => null,
+        })
+      ),
+    ];
+
+    const enableModifierSupport = isInVersionSpecifier('>3.28.0', VERSION);
+
+    if (enableModifierSupport) {
+      root.push(
+        ...[
+          HtmlElement(
+            {
+              name: 'div',
+            },
+            Modifier({
+              name: 'did-insert',
+              args: Args({ positionals: 1 }),
+            }),
+            ...children
+          ),
+        ]
+      );
+    } else {
+      root.push(...children);
+    }
+
     matchTree(tree, [
       TopLevel(
-        Route(
-          { name: 'application' },
-          Route(
-            { name: 'simple' },
-            HtmlElement(
-              {
-                name: 'div',
-              },
-              Modifier({
-                name: 'did-insert',
-                args: Args({ positionals: 1 }),
-              }),
-              Component({ name: 'test-foo', bounds: 'single' }),
-              Component({
-                name: 'test-bar',
-                bounds: 'range',
-                args: Args({ names: ['value'], positionals: 0 }),
-              }),
-              Component(
-                {
-                  name: 'in-element',
-                  args: Args({ names: [], positionals: 1 }),
-                  template: null,
-                },
-                Component({
-                  name: 'test-component-in-in-element',
-                  template: () => null,
-                })
-              )
-            )
-          )
-        )
+        Route({ name: 'application' }, Route({ name: 'simple' }, ...root))
       ),
     ]);
   });
