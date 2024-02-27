@@ -1,6 +1,6 @@
 import captureRenderTree from './capture-render-tree';
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
-import { EmberLoader } from 'ember-debug/utils/ember/loader';
+import { EmberLoader, emberSafeRequire } from 'ember-debug/utils/ember/loader';
 import { inspect } from 'ember-debug/utils/type-check';
 import { isInVersionSpecifier } from 'ember-debug/utils/version';
 import { VERSION } from 'ember-debug/utils/ember';
@@ -16,6 +16,11 @@ class InElementSupportProvider {
     } catch (e) {
       // nope
     }
+
+    this.DESTROY = emberSafeRequire('@glimmer/util')?.DESTROY;
+    this.registerDestructor =
+      emberSafeRequire('@glimmer/destroyable')?.registerDestructor ||
+      emberSafeRequire('@ember/destroyable')?.registerDestructor;
 
     this.debugRenderTree =
       owner.lookup('renderer:-dom')?.debugRenderTree ||
@@ -125,42 +130,6 @@ class InElementSupportProvider {
       args[0].__emberInspectorParentNode = componentStack.at(-1);
     };
 
-    const pushRemoteElement = NewElementBuilder.prototype.pushRemoteElement;
-    NewElementBuilder.prototype.pushRemoteElement = function (
-      element,
-      guid,
-      insertBefore
-    ) {
-      const ref = createRef(element);
-      const capturedArgs = {
-        positional: [ref],
-        named: {},
-      };
-      if (insertBefore) {
-        capturedArgs.named.insertBefore = insertBefore;
-      }
-      const debugRenderTree = self.debugRenderTree;
-
-      const r = pushRemoteElement.call(this, element, guid, insertBefore);
-      debugRenderTree?.create(this.blockStack.current, {
-        type: 'keyword',
-        name: 'in-element',
-        args: createArgs(capturedArgs),
-        instance: {
-          args: {
-            named: {
-              insertBefore,
-            },
-            positional: [element],
-          },
-          constructor: {
-            name: 'InElement',
-          },
-        },
-      });
-      return r;
-    };
-
     const pushModifiers = NewElementBuilder.prototype.pushModifiers;
     NewElementBuilder.prototype.pushModifiers = function (modifiers) {
       const debugRenderTree = self.debugRenderTree;
@@ -203,9 +172,19 @@ class InElementSupportProvider {
               args.positional.push(createRef(value));
             }
           }
-          const named = modifierState?.args?.named?.constructor
-            ? modifierState?.args?.named?.map
-            : modifierState?.args?.named;
+          let named = modifierState?.args?.named;
+          if (!self.reference.createUnboundRef) {
+            try {
+              named = modifierState?.args?.named?.constructor;
+            } catch (e) {
+              //
+            }
+            try {
+              named = named || modifierState?.args?.named?.map;
+            } catch (e) {
+              //
+            }
+          }
           for (const [key, value] of Object.entries(named || {})) {
             args.named[key] = createRef(value);
           }
@@ -223,6 +202,56 @@ class InElementSupportProvider {
         }
       }
       return pushModifiers.call(this, modifiers);
+    };
+
+    const pushRemoteElement = NewElementBuilder.prototype.pushRemoteElement;
+    NewElementBuilder.prototype.pushRemoteElement = function (
+      element,
+      guid,
+      insertBefore
+    ) {
+      const ref = createRef(element);
+      const capturedArgs = {
+        positional: [ref],
+        named: {},
+      };
+      if (insertBefore) {
+        capturedArgs.named.insertBefore = insertBefore;
+      }
+      const debugRenderTree = self.debugRenderTree;
+
+      const r = pushRemoteElement.call(this, element, guid, insertBefore);
+      const block = this.blockStack.current;
+
+      if (this.DESTROY) {
+        const destructor = block[this.DESTROY];
+        block[this.DESTROY] = function () {
+          self.debugRenderTree?.willDestroy(block);
+          destructor.call(this);
+        };
+      } else {
+        self.registerDestructor?.(block, () => {
+          self.debugRenderTree?.willDestroy(block);
+        });
+      }
+
+      debugRenderTree?.create(block, {
+        type: 'keyword',
+        name: 'in-element',
+        args: createArgs(capturedArgs),
+        instance: {
+          args: {
+            named: {
+              insertBefore,
+            },
+            positional: [element],
+          },
+          constructor: {
+            name: 'InElement',
+          },
+        },
+      });
+      return r;
     };
 
     const popRemoteElement = NewElementBuilder.prototype.popRemoteElement;

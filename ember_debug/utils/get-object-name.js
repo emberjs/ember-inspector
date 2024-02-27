@@ -7,6 +7,10 @@ export default function getObjectName(object) {
       (emberNames.get(object.constructor) || object.constructor.name)) ||
     '';
 
+  if (object instanceof Function) {
+    return 'Function ' + object.name;
+  }
+
   // check if object is a primitive value
   if (object !== Object(object)) {
     return typeof object;
