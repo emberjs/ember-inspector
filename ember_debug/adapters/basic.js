@@ -61,17 +61,17 @@ export default class BasicAdapter extends BaseObject {
   }
 
   /**
-    Inspect a specific DOM node. This usually
+    Inspect a js value or specific DOM node. This usually
     means using the current environment's tools
     to inspect the node in the DOM.
 
     For example, in chrome, `inspect(node)`
     will open the Elements tab in dev tools
     and highlight the DOM node.
-
-    @param {Node} node
+    For functions, it will open the sources tab and goto the definition
+    @param {Node|Function} node
   */
-  inspectNode(/* node */) {}
+  inspectValue(/* value */) {}
 
   _messageReceived(message) {
     this._messageCallbacks.forEach((callback) => {

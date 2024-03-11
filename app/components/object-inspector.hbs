@@ -21,11 +21,25 @@
         type="button"
         {{on
           "click"
-          (fn this.sendObjectToConsole (get @model (sub @model.length 1)))
+          (fn this.sendObjectToConsole this.current)
         }}
       >
         {{svg-jar "send-with-text" width="20px" height="10px"}}
       </button>
+      {{#if this.isClass}}
+        <button
+          data-test-goto-class-source-btn
+          class="goto-source"
+          title="Goto Source"
+          type="button"
+          {{on
+            "click"
+            (fn this.gotoSource this.current)
+          }}
+        >
+          {{svg-jar "code-source" width="20px" height="10px"}}
+        </button>
+      {{/if}}
     </div>
 
     {{#if this.trail}}

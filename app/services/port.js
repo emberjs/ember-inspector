@@ -49,6 +49,10 @@ export default class PortService extends Service.extend(Evented) {
         this.trigger(message.type, message, applicationId);
       }
     });
+
+    this.on('view:inspectJSValue', this, ({ name }) =>
+      this.adapter.inspectJSValue(name)
+    );
   }
 
   selectApplication(applicationId) {

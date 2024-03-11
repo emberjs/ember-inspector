@@ -785,6 +785,74 @@ module('Object Inspector', function (hooks) {
     await click('[data-test-send-object-to-console-btn]');
   });
 
+  test('Goto Source', async function (assert) {
+    assert.expect(6);
+
+    await visit('/');
+
+    await sendMessage({
+      type: 'objectInspector:updateObject',
+      name: 'My Object',
+      objectId: 'object-id',
+      details: [
+        {
+          name: 'Own Properties',
+          expand: true,
+          properties: [
+            {
+              name: 'myProp',
+              value: {
+                inspect: 'func',
+                type: 'type-function',
+              },
+            },
+          ],
+        },
+        {
+          name: 'prototype',
+          expand: true,
+          properties: [
+            {
+              name: 'abc',
+              value: {
+                inspect: 'Teddy',
+                type: 'type-string',
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    respondWith('objectInspector:gotoSource', ({ objectId, property }) => {
+      assert.strictEqual(objectId, 'object-id');
+      assert.strictEqual(property, undefined);
+      return false;
+    });
+
+    // Grouped View
+    await click('[data-test-goto-class-source-btn]');
+
+    respondWith('objectInspector:gotoSource', ({ objectId, property }) => {
+      assert.strictEqual(objectId, 'object-id');
+      assert.strictEqual(property, 'myProp');
+      return false;
+    });
+
+    await click('[data-test-goto-source-btn]');
+
+    // All View
+    await click('[data-test-object-display-type-all]');
+
+    respondWith('objectInspector:gotoSource', ({ objectId, property }) => {
+      assert.strictEqual(objectId, 'object-id');
+      assert.strictEqual(property, 'myProp');
+      return false;
+    });
+
+    await click('[data-test-goto-source-btn]');
+  });
+
   test('Read only CPs cannot be edited', async function (assert) {
     await visit('/');
 

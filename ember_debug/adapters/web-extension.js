@@ -34,9 +34,9 @@ export default class extends BasicAdapter {
   /**
    * Open the devtools "Elements" and select an DOM node.
    *
-   * @param  {Node} node The DOM node to select
+   * @param  {Node|Function} value The DOM node to select
    */
-  inspectNode(node) {
+  inspectValue(value) {
     // NOTE:
     //
     // Basically, we are just trying to call `inspect(node)` here.
@@ -58,9 +58,9 @@ export default class extends BasicAdapter {
 
     let name = `__EMBER_INSPECTOR_${(Math.random() * 100000000).toFixed(0)}`;
 
-    window[name] = node;
+    window[name] = value;
 
-    this.namespace.port.send('view:inspectDOMNode', { name });
+    this.namespace.port.send('view:inspectJSValue', { name });
   }
 
   _listen() {

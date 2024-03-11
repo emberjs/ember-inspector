@@ -18,3 +18,4 @@ export default function parseText(value: string): string {
   }
   return parsedValue;
 }
+

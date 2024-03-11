@@ -8,6 +8,8 @@ import parseText from 'ember-inspector/utils/parse-text';
 interface ObjectInspectorPropertyArgs {
   model: any;
   digDeeper: () => unknown;
+  gotoSource: () => void;
+  sendToConsole: () => void;
   saveProperty: (
     property: unknown,
     value: unknown,

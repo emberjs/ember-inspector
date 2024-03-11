@@ -439,6 +439,12 @@ class RenderItem {
     this.send('view:inspectElement', { id: this.id });
   }
 
+  @action inspectValue(event) {
+    event.stopPropagation();
+
+    this.send('view:inspectValue', { id: this.id });
+  }
+
   show() {
     let item = this.parentItem;
 

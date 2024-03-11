@@ -434,6 +434,9 @@ export default class extends DebugPort {
       sendToConsole(message) {
         this.sendToConsole(message.objectId, message.property);
       },
+      gotoSource(message) {
+        this.gotoSource(message.objectId, message.property);
+      },
       sendControllerToConsole(message) {
         const container = this.namespace?.owner;
         this.sendValueToConsole(container.lookup(`controller:${message.name}`));
@@ -517,6 +520,26 @@ export default class extends DebugPort {
         object[prop] = val;
       }
     });
+  }
+
+  gotoSource(objectId, prop) {
+    let object = this.sentObjects[objectId];
+    let value;
+
+    if (prop === null || prop === undefined) {
+      value = this.sentObjects[objectId];
+    } else {
+      value = calculateCP(object, { name: prop }, {});
+    }
+    // for functions and classes we want to show the source
+    if (typeof value === 'function') {
+      this.adapter.inspectValue(value);
+    }
+    // use typeOf to distinguish basic objects/classes and Date, Error etc.
+    // objects like {...} have the constructor set to Object
+    if (typeOf(value) === 'object' && value.constructor !== Object) {
+      this.adapter.inspectValue(value.constructor);
+    }
   }
 
   sendToConsole(objectId, prop) {
