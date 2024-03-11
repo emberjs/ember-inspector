@@ -831,7 +831,7 @@ module('Object Inspector', function (hooks) {
     });
 
     // Grouped View
-    await click('[data-test-goto-source-btn]');
+    await click('[data-test-goto-class-source-btn]');
 
     respondWith('objectInspector:gotoSource', ({ objectId, property }) => {
       assert.strictEqual(objectId, 'object-id');
