@@ -803,7 +803,7 @@ module('Object Inspector', function (hooks) {
               name: 'myProp',
               value: {
                 inspect: 'func',
-                type: 'type-function'
+                type: 'type-function',
               },
             },
           ],
@@ -816,7 +816,7 @@ module('Object Inspector', function (hooks) {
               name: 'abc',
               value: {
                 inspect: 'Teddy',
-                type: 'type-string'
+                type: 'type-string',
               },
             },
           ],
