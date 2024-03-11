@@ -3,20 +3,26 @@ import DebugPort from './debug-port';
 import bound from 'ember-debug/utils/bound-method';
 import {
   isComputed,
-  isDescriptor,
   getDescriptorFor,
   typeOf,
 } from 'ember-debug/utils/type-check';
 import { compareVersion } from 'ember-debug/utils/version';
 import { inspect as emberInspect } from 'ember-debug/utils/ember/debug';
-import Ember, { EmberObject } from 'ember-debug/utils/ember';
+import {
+  EmberObject,
+  meta as emberMeta,
+  VERSION,
+  CoreObject,
+  ObjectProxy,
+  ArrayProxy,
+  Service,
+  Component,
+} from 'ember-debug/utils/ember';
 import { cacheFor, guidFor } from 'ember-debug/utils/ember/object/internals';
 import { _backburner, join } from 'ember-debug/utils/ember/runloop';
 import emberNames from './utils/ember-object-names';
 import getObjectName from './utils/get-object-name';
 import { EmberLoader } from 'ember-debug/utils/ember/loader';
-
-const { meta: emberMeta, VERSION, CoreObject, ObjectProxy } = Ember;
 
 const GlimmerComponent = (() => {
   try {
@@ -88,7 +94,7 @@ try {
 
 const HAS_GLIMMER_TRACKING = tagValue && tagValidate && track && tagForProperty;
 
-const keys = Object.keys || Ember.keys;
+const keys = Object.keys;
 
 /**
  * Determine the type and get the value of the passed property
@@ -115,7 +121,7 @@ function inspectValue(object, key, computedValue) {
   } else if (isComputed(object, key)) {
     string = '<computed>';
     return { type: 'type-descriptor', inspect: string };
-  } else if (isDescriptor(value)) {
+  } else if (value?.isDescriptor) {
     return { type: 'type-descriptor', inspect: value.toString() };
   } else {
     return { type: `type-${typeOf(value)}`, inspect: inspect(value) };
@@ -195,9 +201,6 @@ function inspect(value) {
 }
 
 function isMandatorySetter(descriptor) {
-  if (descriptor.set && descriptor.set === Ember.MANDATORY_SETTER_FUNCTION) {
-    return true;
-  }
   if (
     descriptor.set &&
     Function.prototype.toString
@@ -675,7 +678,6 @@ export default class extends DebugPort {
     // insert ember mixins
     for (let mixin of own) {
       let name = (
-        mixin[Ember.NAME_KEY] ||
         mixin.ownerConstructor ||
         emberNames.get(mixin) ||
         ''
@@ -722,7 +724,7 @@ export default class extends DebugPort {
     }
 
     if (
-      object instanceof Ember.ArrayProxy &&
+      object instanceof ArrayProxy &&
       object.content &&
       !object._showProxyDetails
     ) {
@@ -941,7 +943,7 @@ function addProperties(properties, hash) {
       }
 
       if (!options.isService) {
-        options.isService = desc.value instanceof Ember.Service;
+        options.isService = desc.value instanceof Service;
       }
     }
     if (options.isService) {
@@ -1272,7 +1274,7 @@ function getDebugInfo(object) {
   let debugInfo = null;
   let objectDebugInfo = object._debugInfo;
   if (objectDebugInfo && typeof objectDebugInfo === 'function') {
-    if (object instanceof Ember.ObjectProxy && object.content) {
+    if (object instanceof ObjectProxy && object.content) {
       object = object.content;
     }
     debugInfo = objectDebugInfo.call(object);
@@ -1285,7 +1287,7 @@ function getDebugInfo(object) {
   skipProperties.push('isDestroyed', 'isDestroying', 'container');
   // 'currentState' and 'state' are un-observable private properties.
   // The rest are skipped to reduce noise in the inspector.
-  if (Ember.Component && object instanceof Ember.Component) {
+  if (Component && object instanceof Component) {
     skipProperties.push(
       'currentState',
       'state',
@@ -1320,7 +1322,7 @@ function calculateCP(object, item, errorsForObject) {
   const property = item.name;
   delete errorsForObject[property];
   try {
-    if (object instanceof Ember.ArrayProxy && property == parseInt(property)) {
+    if (object instanceof ArrayProxy && property == parseInt(property)) {
       return object.objectAt(property);
     }
     return item.isGetter || property.includes?.('.')

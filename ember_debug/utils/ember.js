@@ -9,6 +9,7 @@ try {
 }
 
 let {
+  ArrayProxy,
   Namespace,
   ActionHandler,
   ControllerMixin,
@@ -21,16 +22,25 @@ let {
   Observable,
   Evented,
   PromiseProxyMixin,
+  Service,
   Object: EmberObject,
+  ObjectProxy,
   VERSION,
   ComputedProperty,
   meta,
   get,
   set,
   computed,
+  _captureRenderTree: captureRenderTree,
 } = Ember || {};
 
+let getEnv = () => Ember.ENV;
+
 if (!Ember) {
+  captureRenderTree = emberSafeRequire('@ember/debug')?.captureRenderTree;
+  getEnv = emberSafeRequire('@ember/-internals/environment')?.getENV;
+  ArrayProxy = emberSafeRequire('@ember/array/proxy')?.default;
+  ObjectProxy = emberSafeRequire('@ember/object/proxy')?.default;
   MutableArray = emberSafeRequire('@ember/array/mutable')?.default;
   Namespace = emberSafeRequire('@ember/application/namespace')?.default;
   MutableEnumerable = emberSafeRequire('@ember/enumerable/mutable')?.default;
@@ -44,6 +54,7 @@ if (!Ember) {
   PromiseProxyMixin = emberSafeRequire(
     '@ember/object/promise-proxy-mixin'
   )?.default;
+  Service = emberSafeRequire('@ember/service')?.default;
   EmberObject = emberSafeRequire('@ember/object')?.default;
   VERSION = emberSafeRequire('ember/version')?.default;
   ComputedProperty = emberSafeRequire(
@@ -55,6 +66,7 @@ if (!Ember) {
 }
 
 export {
+  ArrayProxy,
   Namespace,
   ActionHandler,
   Application,
@@ -63,9 +75,11 @@ export {
   MutableEnumerable,
   NativeArray,
   CoreObject,
+  ObjectProxy,
   Component,
   Observable,
   Evented,
+  Service,
   PromiseProxyMixin,
   EmberObject,
   VERSION,
@@ -74,6 +88,8 @@ export {
   computed,
   get,
   set,
+  captureRenderTree,
+  getEnv,
 };
 
 export default Ember;

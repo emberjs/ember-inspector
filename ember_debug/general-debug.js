@@ -87,7 +87,9 @@ export default class extends DebugPort {
        * the info tab.
        */
       getLibraries() {
-        this.sendMessage('libraries', { libraries: Ember.libraries._registry });
+        this.sendMessage('libraries', {
+          libraries: Ember.libraries?._registry,
+        });
       },
 
       getEmberCliConfig() {
