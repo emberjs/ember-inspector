@@ -280,9 +280,14 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.strictEqual(prop.value.inspect, '"item1item2tracked"');
     let dependentKeys =
       compareVersion(VERSION, '3.16.10') === 0
-        ? 'item1,item2,trackedProperty'
-        : 'ObjectWithTracked,  •  --  item1,  •  --  item2,Object:My Object.trackedProperty';
-    assert.strictEqual(prop.dependentKeys.toString(), dependentKeys);
+        ? [{ name: 'item1' }, { name: 'item2' }, { name: 'trackedProperty' }]
+        : [
+            { name: 'ObjectWithTracked' },
+            { child: 'item1' },
+            { child: 'item2' },
+            { name: 'Object:My Object.trackedProperty' },
+          ];
+    assert.deepEqual(prop.dependentKeys, dependentKeys);
 
     prop = secondDetail.properties[2];
     assert.strictEqual(prop.name, 'get');
@@ -305,9 +310,14 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.strictEqual(prop.value.inspect, '"item1-changeditem2tracked"');
     dependentKeys =
       compareVersion(VERSION, '3.16.10') === 0
-        ? 'item1,item2,trackedProperty'
-        : 'ObjectWithTracked,  •  --  item1 🔸,  •  --  item2,Object:My Object.trackedProperty';
-    assert.strictEqual(prop.dependentKeys.toString(), dependentKeys);
+        ? [{ name: 'item1' }, { name: 'item2' }, { name: 'trackedProperty' }]
+        : [
+            { name: 'ObjectWithTracked' },
+            { child: 'item1', changed: true },
+            { child: 'item2' },
+            { name: 'Object:My Object.trackedProperty' },
+          ];
+    assert.deepEqual(prop.dependentKeys, dependentKeys);
   });
 
   skip('Correct mixin order with es6 class', async function (assert) {
@@ -937,8 +947,8 @@ module('Ember Debug - Object Inspector', function (hooks) {
     let serializedComputedProperty = message.details[1].properties[2];
 
     assert.strictEqual(serializedComputedProperty.code, computedFn.toString());
-    assert.strictEqual(serializedComputedProperty.dependentKeys[0], 'foo');
-    assert.strictEqual(serializedComputedProperty.dependentKeys[1], 'bar');
+    assert.strictEqual(serializedComputedProperty.dependentKeys[0].name, 'foo');
+    assert.strictEqual(serializedComputedProperty.dependentKeys[1].name, 'bar');
   });
 
   test('Views are correctly handled when destroyed during transitions', async function (assert) {
