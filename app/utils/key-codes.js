@@ -5,6 +5,7 @@ const KEYS = {
   right: 39,
   down: 40,
   left: 37,
+  backspace: 8,
 };
 
 export { KEYS };
