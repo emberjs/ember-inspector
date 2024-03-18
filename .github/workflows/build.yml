@@ -252,7 +252,7 @@ jobs:
     needs:
       - test
       - ember-try
-      - build    
+      - build
     runs-on: ubuntu-latest
     steps:
       - name: Set up node
@@ -272,8 +272,8 @@ jobs:
             echo "REFRESH_TOKEN=${{ secrets.GOOGLE_NIGHTLY_REFRESH_TOKEN }}" >> $GITHUB_ENV
           else
             echo "EXTENSION_ID=bmdblncegkenkacieihfhpjfppoconhi" >> $GITHUB_ENV
-            echo "CLIENT_ID=${{ secrets.GOOGLE_STABLE_CLIENT_ID }}" >> $GITHUB_ENV
-            echo "REFRESH_TOKEN=${{ secrets.GOOGLE_STABLE_REFRESH_TOKEN }}" >> $GITHUB_ENV
+            echo "CLIENT_ID=${{ secrets.GOOGLE_NIGHTLY_CLIENT_ID }}" >> $GITHUB_ENV
+            echo "REFRESH_TOKEN=${{ secrets.GOOGLE_NIGHTLY_REFRESH_TOKEN }}" >> $GITHUB_ENV
           fi
       - name: Upload to Chrome Web Store
         if: >-
@@ -286,7 +286,7 @@ jobs:
     needs:
       - test
       - ember-try
-      - build    
+      - build
     runs-on: ubuntu-latest
     steps:
       - name: Set up nod
@@ -314,7 +314,7 @@ jobs:
     needs:
       - test
       - ember-try
-      - build    
+      - build
     runs-on: ubuntu-latest
     steps:
       - name: Set up node
@@ -336,25 +336,4 @@ jobs:
           npm whoami
           if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
             npm publish --tag alpha
-          else
-            npm publish
           fi
-
-  publish-github:
-    name: Publish GitHub release
-    needs:
-      - test
-      - ember-try
-      - build
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          draft: false
-          prerelease: false
