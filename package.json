@@ -10,6 +10,7 @@
     "test": "tests"
   },
   "scripts": {
+    "prepublishOnly": "node -e 'process.exit(!require(\"fs\").existsSync(\"./dist\"))' || pnpm build:production",
     "build": "ember build",
     "build:production": "EMBER_ENV=production node scripts/download-panes.js && ember build --environment production && gulp compress:chrome && gulp compress:firefox && gulp clean-tmp",
     "changelog": "github_changelog_generator -u emberjs -p ember-inspector --since-tag v3.8.0",
@@ -28,6 +29,7 @@
     "watch": "ember build --watch"
   },
   "devDependencies": {
+    "release-plan": "^0.8.0",
     "@babel/eslint-parser": "^7.16.0",
     "@babel/helper-call-delegate": "^7.12.13",
     "@babel/plugin-proposal-decorators": "^7.16.0",
