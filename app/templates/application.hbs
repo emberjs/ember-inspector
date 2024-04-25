@@ -83,6 +83,9 @@
       <ul>
         <li>This is not an Ember application.</li>
         <li>You are using an old version of Ember (&lt; rc5).</li>
+        <li>You did not have set up the addons permissions.
+          <a target='_blank' rel="noopener noreferrer" href={{this.targetTabOrigin}}>request permissions</a>
+        </li>
         {{#if this.isChrome}}
           <li>
             You are using the file:// protocol (instead of http://), in which case:

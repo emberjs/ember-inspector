@@ -32,6 +32,7 @@ export default class ApplicationController extends Controller {
   @tracked _navWidthExpanded = 180;
   @tracked _navWidthCollapsed = 48;
   @tracked navIsCollapsed = false;
+  @tracked inspectingTabOrigin = null;
 
   get navWidth() {
     return this.navIsCollapsed
@@ -51,6 +52,25 @@ export default class ApplicationController extends Controller {
 
     this.mixinStack = [];
     this.mixinDetails = [];
+  }
+
+  get targetTabOrigin() {
+    if (!this.inspectingTabOrigin) {
+      void this.requestTargetTabOrigin();
+      return null;
+    }
+    return `${window.location.origin}/request.html?tabOrigin=${this.inspectingTabOrigin}`;
+  }
+
+  requestTargetTabOrigin() {
+    // during tests
+    if (typeof chrome === 'undefined') {
+      return;
+    }
+    chrome.devtools.inspectedWindow.eval('window.location', (resp) => {
+      const origin = resp.origin;
+      this.inspectingTabOrigin = origin;
+    });
   }
 
   /*
@@ -189,5 +209,26 @@ export default class ApplicationController extends Controller {
     } else {
       this.set('mixinDetails', null);
     }
+  }
+
+  @action
+  requestPermissionForAll() {
+    function onResponse(response) {
+      if (response) {
+        console.log('Permission was granted');
+      } else {
+        console.log('Permission was refused');
+      }
+      return chrome.permissions.getAll();
+    }
+
+    const permissionsToRequest = {
+      origins: ['<all_urls>'],
+    };
+
+    chrome.permissions.request(permissionsToRequest).then(async (response) => {
+      const currentPermissions = await onResponse(response);
+      console.log(`Current permissions:`, currentPermissions);
+    });
   }
 }
