@@ -17,6 +17,15 @@ class InElementSupportProvider {
       // nope
     }
 
+    try {
+      requireModule(
+        '@glimmer/manager'
+      ).CustomModifierManager.prototype.getDebugInstance = (args) =>
+        args.modifier || args.delegate;
+    } catch (e) {
+      // nope
+    }
+
     this.DESTROY = emberSafeRequire('@glimmer/util')?.DESTROY;
     this.registerDestructor =
       emberSafeRequire('@glimmer/destroyable')?.registerDestructor ||
@@ -42,7 +51,13 @@ class InElementSupportProvider {
     const NewElementBuilder = this.NewElementBuilder;
     const componentStack = [];
 
-    const enableModifierSupport = isInVersionSpecifier('>3.28.0', VERSION);
+    const enableModifierSupport =
+      isInVersionSpecifier('>3.28.0', VERSION) &&
+      !isInVersionSpecifier('>5.9.0', VERSION);
+    const hasModifierAndInElementSupport = isInVersionSpecifier(
+      '>5.9.0',
+      VERSION
+    );
 
     function createRef(value) {
       if (self.reference.createUnboundRef) {
@@ -64,19 +79,41 @@ class InElementSupportProvider {
 
     const appendChild = this.debugRenderTree.appendChild;
     this.debugRenderTree.appendChild = function (node, state) {
-      if (node.type === 'component') {
+      if (node.type === 'component' || node.type === 'keyword') {
         componentStack.push(node);
       }
       return appendChild.call(this, node, state);
     };
 
+    let currentElement = null;
+
+    const captureNode = this.debugRenderTree.captureNode;
+    this.debugRenderTree.captureNode = function (id, state) {
+      const node = this.nodeFor(state);
+      const res = captureNode.call(this, id, state);
+      res.meta = node.meta;
+      return res;
+    };
+
     const exit = this.debugRenderTree.exit;
     this.debugRenderTree.exit = function (state) {
       const node = this.nodeFor(this.stack.current);
-      if (node?.type === 'component') {
+      if (node?.type === 'component' || node.type === 'keyword') {
         componentStack.pop();
       }
       return exit.call(this, state);
+    };
+
+    const enter = this.debugRenderTree.enter;
+    this.debugRenderTree.enter = function (...args) {
+      enter.call(this, ...args);
+      const node = this.nodeFor(args[0]);
+      if (node?.type === 'keyword' && node.name === 'in-element') {
+        node.meta = {
+          parentElement: currentElement,
+        };
+      }
+      return node;
     };
 
     const didAppendNode = NewElementBuilder.prototype.didAppendNode;
@@ -92,7 +129,7 @@ class InElementSupportProvider {
     };
 
     const pushModifiers = NewElementBuilder.prototype.pushModifiers;
-    if (enableModifierSupport) {
+    if (enableModifierSupport && !hasModifierAndInElementSupport) {
       NewElementBuilder.prototype.pushModifiers = function (modifiers) {
         const debugRenderTree = self.debugRenderTree;
         if (debugRenderTree) {
@@ -171,68 +208,63 @@ class InElementSupportProvider {
     }
 
     const pushRemoteElement = NewElementBuilder.prototype.pushRemoteElement;
-    NewElementBuilder.prototype.pushRemoteElement = function (
-      element,
-      guid,
-      insertBefore
-    ) {
-      const ref = createRef(element);
-      const capturedArgs = {
-        positional: [ref],
-        named: {},
-      };
-      if (insertBefore) {
-        capturedArgs.named.insertBefore = insertBefore;
-      }
-      const debugRenderTree = self.debugRenderTree;
-
-      const r = pushRemoteElement.call(this, element, guid, insertBefore);
-      const block = this.blockStack.current;
-
-      if (this.DESTROY) {
-        const destructor = block[this.DESTROY];
-        block[this.DESTROY] = function () {
-          self.debugRenderTree?.willDestroy(block);
-          destructor.call(this);
-        };
-      } else {
-        self.registerDestructor?.(block, () => {
-          self.debugRenderTree?.willDestroy(block);
-        });
-      }
-
-      debugRenderTree?.create(block, {
-        type: 'keyword',
-        name: 'in-element',
-        args: createArgs(capturedArgs),
-        instance: {
-          args: {
-            named: {
-              insertBefore,
-            },
-            positional: [element],
-          },
-          constructor: {
-            name: 'InElement',
-          },
-        },
-      });
-      return r;
-    };
-
     const popRemoteElement = NewElementBuilder.prototype.popRemoteElement;
-    NewElementBuilder.prototype.popRemoteElement = function (...args) {
-      const block = this.blockStack.current;
-      popRemoteElement.call(this, ...args);
-      const parentElement = this.element;
-      const debugRenderTree = self.debugRenderTree;
-      debugRenderTree?.didRender(block, {
-        parentElement: () => parentElement,
-        firstNode: () => block.firstNode(),
-        lastNode: () => block.lastNode(),
-      });
-    };
+    if (!hasModifierAndInElementSupport) {
+      NewElementBuilder.prototype.pushRemoteElement = function (
+        element,
+        guid,
+        insertBefore
+      ) {
+        const ref = createRef(element);
+        const capturedArgs = {
+          positional: [ref],
+          named: {},
+        };
+        if (insertBefore) {
+          capturedArgs.named.insertBefore = insertBefore;
+        }
+        const debugRenderTree = self.debugRenderTree;
 
+        const r = pushRemoteElement.call(this, element, guid, insertBefore);
+        const block = this.blockStack.current;
+
+        if (this.DESTROY) {
+          const destructor = block[this.DESTROY];
+          block[this.DESTROY] = function () {
+            self.debugRenderTree?.willDestroy(block);
+            destructor.call(this);
+          };
+        } else {
+          self.registerDestructor?.(block, () => {
+            self.debugRenderTree?.willDestroy(block);
+          });
+        }
+
+        debugRenderTree?.create(block, {
+          type: 'keyword',
+          name: 'in-element',
+          args: createArgs(capturedArgs),
+        });
+        return r;
+      };
+
+      NewElementBuilder.prototype.popRemoteElement = function (...args) {
+        const block = this.blockStack.current;
+        popRemoteElement.call(this, ...args);
+        const parentElement = this.element;
+        const debugRenderTree = self.debugRenderTree;
+        debugRenderTree?.didRender(block, {
+          parentElement: () => parentElement,
+          firstNode: () => block.firstNode(),
+          lastNode: () => block.lastNode(),
+        });
+      };
+    } else {
+      NewElementBuilder.prototype.pushRemoteElement = function (...args) {
+        currentElement = this.element;
+        return pushRemoteElement.call(this, ...args);
+      };
+    }
     this.debugRenderTreeFunctions = {
       appendChild,
       exit,
@@ -568,8 +600,14 @@ export default class RenderTree {
 
     if (serialized === undefined) {
       this.nodes[node.id] = node;
-      if (node.type === 'keyword') {
+      if (node.type === 'keyword' && node.name === 'in-element') {
         node.type = 'component';
+        node.instance = {
+          args: node.args,
+          constructor: {
+            name: 'InElement',
+          },
+        };
         this.inElementSupport?.nodeMap.set(node, node.id);
         this.inElementSupport?.remoteRoots.push(node);
       }
@@ -607,6 +645,7 @@ export default class RenderTree {
         parentNode.children.forEach((child) => {
           if (
             child.bounds.parentElement === node.instance ||
+            child.meta?.parentElement === node.instance ||
             (child.type === 'modifier' &&
               child.bounds.firstNode === node.instance)
           ) {
@@ -629,6 +668,10 @@ export default class RenderTree {
       }
 
       if (node.type === 'modifier') {
+        node.name = node.name
+          ?.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase())
+          .replace(/^-/, '')
+          .replace('-modifier', '');
         node.instance =
           node.instance || this._createSimpleInstance(node.name, node.args);
         node.instance.toString = () => node.name;
@@ -639,6 +682,7 @@ export default class RenderTree {
 
       this.serialized[node.id] = serialized = {
         ...node,
+        meta: null,
         args: this._serializeArgs(node.args),
         instance: this._serializeItem(node.instance),
         bounds: this._serializeBounds(node.bounds),
@@ -790,14 +834,15 @@ export default class RenderTree {
       }
     } while (node && node !== bounds.lastNode);
 
-    return bounds.parentElement;
+    return node.meta?.parentElement || bounds.parentElement;
   }
 
   _findUp(node) {
     // Find the first parent render node with a different enclosing DOM element.
     // Usually, this is just the first parent render node, but there are cases where
     // multiple render nodes share the same bounds (e.g. outlet -> route template).
-    let parentElement = node && node.bounds && node.bounds.parentElement;
+    let parentElement =
+      node?.meta?.parentElement || node?.bounds?.parentElement;
 
     while (node && parentElement) {
       let parentNode = this._getParent(node.id);
@@ -805,7 +850,10 @@ export default class RenderTree {
       if (parentNode) {
         node = parentNode;
 
-        if (parentElement === node.bounds && node.bounds.parentElement) {
+        if (
+          parentElement ===
+          (node?.meta?.parentElement || node?.bounds?.parentElement)
+        ) {
           continue;
         }
       }
