@@ -1,5 +1,32 @@
 # Changelog
 
+## Release (2024-05-06)
+
+ember-inspector 4.12.0 (minor)
+
+#### :rocket: Enhancement
+* `ember-inspector`
+  * [#2553](https://github.com/emberjs/ember-inspector/pull/2553) Mark dependent keys that updated ([@patricklx](https://github.com/patricklx))
+  * [#2548](https://github.com/emberjs/ember-inspector/pull/2548) add modifiers to render tree ([@patricklx](https://github.com/patricklx))
+  * [#2443](https://github.com/emberjs/ember-inspector/pull/2443) Add ability to jump to source for functions and classes ([@patricklx](https://github.com/patricklx))
+  * [#2536](https://github.com/emberjs/ember-inspector/pull/2536) improve route debug ([@patricklx](https://github.com/patricklx))
+
+#### :house: Internal
+* `ember-inspector`
+  * [#2571](https://github.com/emberjs/ember-inspector/pull/2571) fix beta & canary tests ([@patricklx](https://github.com/patricklx))
+  * [#2567](https://github.com/emberjs/ember-inspector/pull/2567) add internal to dependabot prs ([@patricklx](https://github.com/patricklx))
+  * [#2563](https://github.com/emberjs/ember-inspector/pull/2563) add release plan ([@patricklx](https://github.com/patricklx))
+  * [#2565](https://github.com/emberjs/ember-inspector/pull/2565) build(deps-dev): bump express from 4.18.2 to 4.19.2 ([@dependabot[bot]](https://github.com/apps/dependabot))
+  * [#2564](https://github.com/emberjs/ember-inspector/pull/2564) build(deps-dev): bump follow-redirects from 1.15.4 to 1.15.6 ([@dependabot[bot]](https://github.com/apps/dependabot))
+  * [#2560](https://github.com/emberjs/ember-inspector/pull/2560) build(deps-dev): bump ip from 1.1.8 to 1.1.9 ([@dependabot[bot]](https://github.com/apps/dependabot))
+  * [#2498](https://github.com/emberjs/ember-inspector/pull/2498) Remove outdated code and unnecessary captureRenderTree patching ([@patricklx](https://github.com/patricklx))
+  * [#2511](https://github.com/emberjs/ember-inspector/pull/2511) chore(deps): remove unused AWS SDK for JavaScript ([@trivikr](https://github.com/trivikr))
+  * [#2556](https://github.com/emberjs/ember-inspector/pull/2556) build(deps-dev): bump @types/ember__routing from 4.0.12 to 4.0.21 ([@dependabot[bot]](https://github.com/apps/dependabot))
+
+#### Committers: 2
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+- Trivikram Kamat ([@trivikr](https://github.com/trivikr))
+
 
 
 
