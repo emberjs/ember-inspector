@@ -49,7 +49,6 @@ let {
   ENV: ENV_,
 } = Ember || {};
 
-let getEnv = () => Ember.ENV;
 let cacheFor = () => null;
 
 if (!Ember) {

@@ -1,3 +1,5 @@
+import { object } from 'ember-debug/utils/ember';
+
 let Ember;
 let guidFor;
 
@@ -125,7 +127,7 @@ let EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
 
       Ember = requireModule('ember-debug/utils/ember');
 
-      if (!Ember.VERSION) {
+      if (!Ember.ember.VERSION) {
         return;
       }
       // `Ember.Application` load hook triggers before all of Ember is ready.
@@ -164,7 +166,7 @@ let EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
 
       if (message.type === 'app-selected') {
         let current = window.EmberInspector._application;
-        let selected = getApplications().find(app => guidFor(app) === message.applicationId);
+        let selected = getApplications().find(app => Ember.object.guidFor(app) === message.applicationId);
 
         if (selected && current !== selected && selected.__deprecatedInstance__) {
           bootEmberInspector(selected.__deprecatedInstance__);

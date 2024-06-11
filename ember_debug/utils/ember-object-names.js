@@ -25,7 +25,7 @@ try {
   emberNames.set(Views.ClassNamesSupport, 'ClassNamesSupport Mixin');
   emberNames.set(Views.ChildViewsSupport, 'ChildViewsSupport Mixin');
   emberNames.set(Views.ViewStateSupport, 'ViewStateSupport  Mixin');
-  emberNames.set(TargetActionSupport, 'TargetActionSupport Mixin')
+  emberNames.set(classes.TargetActionSupport, 'TargetActionSupport Mixin')
   // this one is not a Mixin, but an .extend({}), which results in a class
   emberNames.set(Views.CoreView, 'CoreView');
 } catch (e) {

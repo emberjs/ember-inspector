@@ -1,7 +1,7 @@
 import BasicAdapter from './basic';
 import { typeOf } from 'ember-debug/utils/type-check';
 
-import Ember, { ENV } from 'ember-debug/utils/ember';
+import { ember } from 'ember-debug/utils/ember';
 import { run } from 'ember-debug/utils/ember/runloop';
 
 const { isArray } = Array;
@@ -105,7 +105,7 @@ export default class extends BasicAdapter {
 // adapter later. See GH #1114.
 const HAS_ARRAY_PROTOTYPE_EXTENSIONS = (() => {
   try {
-    return ENV.EXTEND_PROTOTYPES.Array === true;
+    return ember.env.EXTEND_PROTOTYPES.Array === true;
   } catch (e) {
     return false;
   }
