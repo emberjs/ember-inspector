@@ -33,7 +33,6 @@ let {
   set,
   runloop: runloop_,
   cacheFor,
-  metal,
   guidFor,
   getOwner,
   isTrackedProperty,
@@ -49,7 +48,9 @@ let {
   ENV: ENV_,
 } = Ember || {};
 
-if (!Ember) {
+let metal = emberSafeRequire('@ember/-internals/metal');
+
+if (metal) {
   ActionHandler = emberSafeRequire('@ember/-internals/runtime')?.ActionHandler;
   ObjectProxy = emberSafeRequire('@ember/object/proxy')?.default;
   ArrayProxy = emberSafeRequire('@ember/array/proxy')?.default;
@@ -152,11 +153,11 @@ export const object = {
 if (!isMandatorySetter) {
   isMandatorySetter = function (obj, prop) {
     const descriptor = Object.getOwnPropertyDescriptor(obj, prop);
-    if (descriptor.set && descriptor.set === Ember.MANDATORY_SETTER_FUNCTION) {
+    if (descriptor?.set === Ember.MANDATORY_SETTER_FUNCTION) {
       return true;
     }
     if (
-      descriptor.set &&
+      descriptor?.set &&
       Function.prototype.toString
         .call(descriptor.set)
         .includes('You attempted to update')
