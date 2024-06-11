@@ -677,7 +677,10 @@ module('Ember Debug - View', function (hooks) {
         })
       );
     }
-    const enableModifierSupport = isInVersionSpecifier('>3.28.0', ember.VERSION);
+    const enableModifierSupport = isInVersionSpecifier(
+      '>3.28.0',
+      ember.VERSION
+    );
     if (!enableModifierSupport) {
       modifiers.length = 0;
     }
@@ -733,7 +736,10 @@ module('Ember Debug - View', function (hooks) {
 
     let argsTestPromise;
 
-    const enableModifierSupport = isInVersionSpecifier('>3.28.0', ember.VERSION);
+    const enableModifierSupport = isInVersionSpecifier(
+      '>3.28.0',
+      ember.VERSION
+    );
 
     const children = [
       Component({ name: 'test-foo', bounds: 'single' }),
@@ -859,7 +865,10 @@ module('Ember Debug - View', function (hooks) {
       ),
     ];
 
-    const enableModifierSupport = isInVersionSpecifier('>3.28.0', ember.VERSION);
+    const enableModifierSupport = isInVersionSpecifier(
+      '>3.28.0',
+      ember.VERSION
+    );
 
     if (enableModifierSupport) {
       root.push(
