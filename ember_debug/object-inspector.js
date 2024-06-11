@@ -9,14 +9,11 @@ import {
 } from 'ember-debug/utils/type-check';
 import { compareVersion } from 'ember-debug/utils/version';
 import {
-  EmberObject,
-  meta as emberMeta,
-  VERSION,
-  CoreObject,
-  ObjectProxy,
-  ArrayProxy,
-  Service,
-  Component,
+  classes,
+  debug,
+  object,
+  ember,
+  glimmer,
 } from 'ember-debug/utils/ember';
 import { cacheFor, guidFor } from 'ember-debug/utils/ember/object/internals';
 import { _backburner, join } from 'ember-debug/utils/ember/runloop';
@@ -24,19 +21,15 @@ import emberNames from './utils/ember-object-names';
 import getObjectName from './utils/get-object-name';
 import { EmberLoader } from 'ember-debug/utils/ember/loader';
 
-const GlimmerComponent = (() => {
-  try {
-    return EmberLoader.require('@glimmer/component').default;
-  } catch (e) {
-    // ignore, return undefined
-  }
-})();
+const { CoreObject, ObjectProxy } = classes;
+const { VERSION } = ember;
+const { meta: emberMeta } = object;
 
 let tagValue, tagValidate, track, tagForProperty;
 
 try {
   // Try to load the most recent library
-  let GlimmerValidator = EmberLoader.require('@glimmer/validator');
+  let GlimmerValidator = glimmer.validator;
 
   tagValue = GlimmerValidator.value || GlimmerValidator.valueForTag;
   tagValidate = GlimmerValidator.validate || GlimmerValidator.validateTag;
@@ -83,11 +76,9 @@ try {
 }
 
 try {
-  let metal = EmberLoader.require('@ember/-internals/metal');
-
-  tagForProperty = metal.tagForProperty;
+  tagForProperty = debug.tagForProperty;
   // If track was not already loaded, use metal's version (the previous version)
-  track = track || metal.track;
+  track = track || debug.track;
 } catch (e) {
   // ignore
 }
@@ -122,7 +113,7 @@ function inspectValue(object, key, computedValue) {
     return { type: `type-${typeOf(value)}`, inspect: inspect(value) };
   }
 
-  if (value instanceof EmberObject) {
+  if (value instanceof classes.EmberObject) {
     return { type: 'type-ember-object', inspect: value.toString() };
   } else if (isComputed(object, key)) {
     string = '<computed>';
@@ -134,18 +125,6 @@ function inspectValue(object, key, computedValue) {
   } else {
     return { type: `type-${typeOf(value)}`, inspect: inspect(value) };
   }
-}
-
-function isMandatorySetter(descriptor) {
-  if (
-    descriptor.set &&
-    Function.prototype.toString
-      .call(descriptor.set)
-      .includes('You attempted to update')
-  ) {
-    return true;
-  }
-  return false;
 }
 
 function getTagTrackedTags(tag, ownTag, level = 0) {
@@ -276,8 +255,7 @@ export default class extends DebugPort {
             const tracked = (this.trackedTags[objectId] =
               this.trackedTags[objectId] || {});
 
-            const desc = Object.getOwnPropertyDescriptor(object, item.name);
-            const isSetter = desc && isMandatorySetter(desc);
+            const isSetter = debug.isMandatorySetter(object, item.name);
 
             if (HAS_GLIMMER_TRACKING && item.canTrack && !isSetter) {
               let tagInfo = tracked[item.name] || {
@@ -461,7 +439,7 @@ export default class extends DebugPort {
   canSend(val) {
     return (
       val &&
-      (val instanceof EmberObject ||
+      (val instanceof classes.EmberObject ||
         val instanceof Object ||
         typeOf(val) === 'object' ||
         typeOf(val) === 'array')
@@ -518,7 +496,7 @@ export default class extends DebugPort {
       value = value.stack;
     }
     let args = [value];
-    if (value instanceof EmberObject) {
+    if (value instanceof classes.EmberObject) {
       args.unshift(inspect(value));
     }
     this.adapter.log('Ember Inspector ($E): ', ...args);
@@ -704,7 +682,7 @@ export default class extends DebugPort {
     }
 
     if (
-      object instanceof ArrayProxy &&
+      object instanceof classes.ArrayProxy &&
       object.content &&
       !object._showProxyDetails
     ) {
@@ -910,7 +888,7 @@ function addProperties(properties, hash) {
       continue;
     }
 
-    let options = { isMandatorySetter: isMandatorySetter(desc) };
+    let options = { isMandatorySetter: debug.isMandatorySetter(desc) };
 
     if (typeof hash[prop] === 'object' && hash[prop] !== null) {
       options.isService =
@@ -923,7 +901,7 @@ function addProperties(properties, hash) {
       }
 
       if (!options.isService) {
-        options.isService = desc.value instanceof Service;
+        options.isService = desc.value instanceof classes.Service;
       }
     }
     if (options.isService) {
@@ -933,9 +911,9 @@ function addProperties(properties, hash) {
 
     if (isComputed(hash, prop)) {
       options.isComputed = true;
-      options.dependentKeys = (desc._dependentKeys || []).map((key) =>
-        key.toString()
-      );
+      options.dependentKeys = (desc._dependentKeys || []).map((key) => ({
+        name: key.toString(),
+      }));
 
       if (typeof desc.get === 'function') {
         options.code = Function.prototype.toString.call(desc.get);
@@ -1255,7 +1233,7 @@ function getDebugInfo(object) {
   let debugInfo = null;
   let objectDebugInfo = object._debugInfo;
   if (objectDebugInfo && typeof objectDebugInfo === 'function') {
-    if (object instanceof ObjectProxy && object.content) {
+    if (object instanceof classes.ObjectProxy && object.content) {
       object = object.content;
     }
     debugInfo = objectDebugInfo.call(object);
@@ -1268,7 +1246,7 @@ function getDebugInfo(object) {
   skipProperties.push('isDestroyed', 'isDestroying', 'container');
   // 'currentState' and 'state' are un-observable private properties.
   // The rest are skipped to reduce noise in the inspector.
-  if (Component && object instanceof Component) {
+  if (classes.EmberComponent && object instanceof classes.EmberComponent) {
     skipProperties.push(
       'currentState',
       'state',
@@ -1284,7 +1262,10 @@ function getDebugInfo(object) {
       'element',
       'targetObject'
     );
-  } else if (GlimmerComponent && object instanceof GlimmerComponent) {
+  } else if (
+    classes.GlimmerComponent &&
+    object instanceof classes.GlimmerComponent
+  ) {
     // These properties don't really exist on Glimmer Components, but
     // reading their values trigger a development mode assertion. The
     // more correct long term fix is to make getters lazy (shows "..."
@@ -1303,7 +1284,10 @@ function calculateCP(object, item, errorsForObject) {
   const property = item.name;
   delete errorsForObject[property];
   try {
-    if (object instanceof ArrayProxy && property == parseInt(property)) {
+    if (
+      object instanceof classes.ArrayProxy &&
+      property == parseInt(property)
+    ) {
       return object.objectAt(property);
     }
     return item.isGetter || property.includes?.('.')

@@ -18,7 +18,7 @@ import { hbs } from 'ember-cli-htmlbars';
 import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import { isInVersionSpecifier } from 'ember-debug/utils/version';
-import { VERSION } from 'ember-debug/utils/ember';
+import { ember } from 'ember-debug/utils/ember';
 
 let templateOnlyComponent = null;
 try {
@@ -677,7 +677,10 @@ module('Ember Debug - View', function (hooks) {
         })
       );
     }
-    const enableModifierSupport = isInVersionSpecifier('>3.28.0', VERSION);
+    const enableModifierSupport = isInVersionSpecifier(
+      '>3.28.0',
+      ember.VERSION
+    );
     if (!enableModifierSupport) {
       modifiers.length = 0;
     }
@@ -733,7 +736,10 @@ module('Ember Debug - View', function (hooks) {
 
     let argsTestPromise;
 
-    const enableModifierSupport = isInVersionSpecifier('>3.28.0', VERSION);
+    const enableModifierSupport = isInVersionSpecifier(
+      '>3.28.0',
+      ember.VERSION
+    );
 
     const children = [
       Component({ name: 'test-foo', bounds: 'single' }),
@@ -859,7 +865,10 @@ module('Ember Debug - View', function (hooks) {
       ),
     ];
 
-    const enableModifierSupport = isInVersionSpecifier('>3.28.0', VERSION);
+    const enableModifierSupport = isInVersionSpecifier(
+      '>3.28.0',
+      ember.VERSION
+    );
 
     if (enableModifierSupport) {
       root.push(

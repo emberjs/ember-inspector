@@ -5,7 +5,7 @@ let module;
 try {
   module = requireModule('@ember/object/internals');
 } catch {
-  module = Ember;
+  module = Ember.object;
 }
 
 let { cacheFor, guidFor: emberGuidFor } = module;
