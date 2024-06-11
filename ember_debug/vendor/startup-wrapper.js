@@ -1,5 +1,3 @@
-import { object } from 'ember-debug/utils/ember';
-
 let Ember;
 let guidFor;
 
