@@ -102,7 +102,7 @@ const {
   track,
 } = metal || {};
 
-const { _backburner, cancel, debounce, join, later, scheduleOnce } =
+const { _backburner, cancel, debounce, join, later, scheduleOnce, run } =
   runloop_ || {};
 const {
   ViewStateSupport,
@@ -140,6 +140,7 @@ export const runloop = {
   join,
   later,
   scheduleOnce,
+  run,
 };
 
 export const object = {
