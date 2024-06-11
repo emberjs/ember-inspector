@@ -8,7 +8,7 @@ import {
   inspect,
 } from 'ember-debug/utils/type-check';
 import { compareVersion } from 'ember-debug/utils/version';
-import { classes, debug, object, ember } from 'ember-debug/utils/ember';
+import { classes, debug, object, ember, glimmer } from 'ember-debug/utils/ember';
 import { cacheFor, guidFor } from 'ember-debug/utils/ember/object/internals';
 import { _backburner, join } from 'ember-debug/utils/ember/runloop';
 import emberNames from './utils/ember-object-names';
@@ -23,7 +23,7 @@ let tagValue, tagValidate, track, tagForProperty;
 
 try {
   // Try to load the most recent library
-  let GlimmerValidator = EmberLoader.require('@glimmer/validator');
+  let GlimmerValidator = glimmer.validator;
 
   tagValue = GlimmerValidator.value || GlimmerValidator.valueForTag;
   tagValidate = GlimmerValidator.validate || GlimmerValidator.validateTag;
@@ -70,11 +70,9 @@ try {
 }
 
 try {
-  let metal = EmberLoader.require('@ember/-internals/metal');
-
-  tagForProperty = metal.tagForProperty;
+  tagForProperty = debug.tagForProperty;
   // If track was not already loaded, use metal's version (the previous version)
-  track = track || metal.track;
+  track = track || debug.track;
 } catch (e) {
   // ignore
 }
@@ -908,7 +906,7 @@ function addProperties(properties, hash) {
     if (isComputed(hash, prop)) {
       options.isComputed = true;
       options.dependentKeys = (desc._dependentKeys || []).map((key) =>
-        key.toString()
+        ({ name: key.toString() })
       );
 
       if (typeof desc.get === 'function') {

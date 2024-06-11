@@ -99,6 +99,7 @@ const {
   descriptorForProperty,
   descriptorForDecorator,
   tagForProperty,
+  track,
 } = metal || {};
 
 const { _backburner, cancel, debounce, join, later, scheduleOnce } =
@@ -153,7 +154,7 @@ export const object = {
 if (!isMandatorySetter) {
   isMandatorySetter = function (obj, prop) {
     const descriptor = Object.getOwnPropertyDescriptor(obj, prop);
-    if (descriptor?.set === Ember.MANDATORY_SETTER_FUNCTION) {
+    if (Ember.MANDATORY_SETTER_FUNCTION && descriptor?.set === Ember.MANDATORY_SETTER_FUNCTION) {
       return true;
     }
     if (
@@ -181,6 +182,7 @@ export const debug = {
   inspect,
   registerDeprecationHandler,
   tagForProperty,
+  track,
   instrumentation: instrumentation_,
 };
 
