@@ -154,7 +154,10 @@ export const object = {
 if (!isMandatorySetter) {
   isMandatorySetter = function (obj, prop) {
     const descriptor = Object.getOwnPropertyDescriptor(obj, prop);
-    if (Ember.MANDATORY_SETTER_FUNCTION && descriptor?.set === Ember.MANDATORY_SETTER_FUNCTION) {
+    if (
+      Ember.MANDATORY_SETTER_FUNCTION &&
+      descriptor?.set === Ember.MANDATORY_SETTER_FUNCTION
+    ) {
       return true;
     }
     if (

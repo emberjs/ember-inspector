@@ -8,7 +8,13 @@ import {
   inspect,
 } from 'ember-debug/utils/type-check';
 import { compareVersion } from 'ember-debug/utils/version';
-import { classes, debug, object, ember, glimmer } from 'ember-debug/utils/ember';
+import {
+  classes,
+  debug,
+  object,
+  ember,
+  glimmer,
+} from 'ember-debug/utils/ember';
 import { cacheFor, guidFor } from 'ember-debug/utils/ember/object/internals';
 import { _backburner, join } from 'ember-debug/utils/ember/runloop';
 import emberNames from './utils/ember-object-names';
@@ -905,9 +911,9 @@ function addProperties(properties, hash) {
 
     if (isComputed(hash, prop)) {
       options.isComputed = true;
-      options.dependentKeys = (desc._dependentKeys || []).map((key) =>
-        ({ name: key.toString() })
-      );
+      options.dependentKeys = (desc._dependentKeys || []).map((key) => ({
+        name: key.toString(),
+      }));
 
       if (typeof desc.get === 'function') {
         options.code = Function.prototype.toString.call(desc.get);
