@@ -49,8 +49,6 @@ let {
   ENV: ENV_,
 } = Ember || {};
 
-let cacheFor = () => null;
-
 if (!Ember) {
   ActionHandler = emberSafeRequire('@ember/-internals/runtime')?.ActionHandler;
   ObjectProxy = emberSafeRequire('@ember/object/proxy')?.default;
@@ -100,9 +98,10 @@ const {
   descriptorForProperty,
   descriptorForDecorator,
   tagForProperty,
-} = (metal || {});
+} = metal || {};
 
-const { _backburner, cancel, debounce, join, later, scheduleOnce } = (runloop_ || {});
+const { _backburner, cancel, debounce, join, later, scheduleOnce } =
+  runloop_ || {};
 const {
   ViewStateSupport,
   ViewMixin,
@@ -129,8 +128,8 @@ export function assignEmberInfo(data) {
 }
 
 export const utils = {
-  libraries
-}
+  libraries,
+};
 
 export const runloop = {
   _backburner,
@@ -150,10 +149,9 @@ export const object = {
   meta,
 };
 
-
 if (!isMandatorySetter) {
-  isMandatorySetter = function(obj, prop) {
-    const descriptor = Object.getOwnPropertyDescriptor(obj, prop)
+  isMandatorySetter = function (obj, prop) {
+    const descriptor = Object.getOwnPropertyDescriptor(obj, prop);
     if (descriptor.set && descriptor.set === Ember.MANDATORY_SETTER_FUNCTION) {
       return true;
     }
@@ -166,9 +164,8 @@ if (!isMandatorySetter) {
       return true;
     }
     return false;
-  }
+  };
 }
-
 
 export const debug = {
   isComputed,
@@ -183,7 +180,7 @@ export const debug = {
   inspect,
   registerDeprecationHandler,
   tagForProperty,
-  instrumentation: instrumentation_
+  instrumentation: instrumentation_,
 };
 
 export const classes = {
@@ -221,7 +218,7 @@ export const Views = {
 export const glimmer = {
   validator: GlimmerValidator_,
   runtime: GlimmerRuntime_,
-}
+};
 
 export const instrumentation = instrumentation_;
 

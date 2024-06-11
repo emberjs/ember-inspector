@@ -53,7 +53,7 @@ export function typeOf(obj) {
 export function inspect(value) {
   if (typeof value === 'function') {
     return `${value.name || 'function'}() { ... }`;
-  } else if (value instanceof EmberObject) {
+  } else if (value instanceof classes.EmberObject) {
     return value.toString();
   } else if (value instanceof HTMLElement) {
     return `<${value.tagName.toLowerCase()}>`;
@@ -120,6 +120,6 @@ export function inspect(value) {
     }
     return `{ ${ret.join(', ')}${suffix}`;
   } else {
-    return emberInspect(value);
+    return debug.inspect(value);
   }
 }

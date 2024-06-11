@@ -1,12 +1,14 @@
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
-import { EmberLoader } from 'ember-debug/utils/ember/loader';
-import { debug } from 'ember-debug/utils/ember';
+import { EmberLoader, emberSafeRequire } from 'ember-debug/utils/ember/loader';
+import { debug, glimmer, ember } from 'ember-debug/utils/ember';
+import { inspect } from 'ember-debug/utils/type-check';
+import { isInVersionSpecifier } from 'ember-debug/utils/version';
 
 class InElementSupportProvider {
   constructor(owner) {
     this.nodeMap = new Map();
     this.remoteRoots = [];
-    this.runtime = this.require('@glimmer/runtime');
+    this.runtime = this.require('@glimmer/runtime') || glimmer.runtime;
     this.reference = this.require('@glimmer/reference');
     try {
       this.Wormhole = requireModule('ember-wormhole/components/ember-wormhole');
@@ -27,7 +29,8 @@ class InElementSupportProvider {
     this.registerDestructor =
       emberSafeRequire('@glimmer/destroyable')?.registerDestructor ||
       emberSafeRequire('@ember/destroyable')?.registerDestructor ||
-      emberSafeRequire('@ember/runtime')?.registerDestructor;
+      emberSafeRequire('@ember/runtime')?.registerDestructor ||
+      glimmer.runtime.registerDestructor;
 
     this.debugRenderTree =
       owner.lookup('renderer:-dom')?.debugRenderTree ||
@@ -49,11 +52,11 @@ class InElementSupportProvider {
     const componentStack = [];
 
     const enableModifierSupport =
-      isInVersionSpecifier('>3.28.0', VERSION) &&
-      !isInVersionSpecifier('>5.9.0', VERSION);
+      isInVersionSpecifier('>3.28.0', ember.VERSION) &&
+      !isInVersionSpecifier('>5.9.0', ember.VERSION);
     const hasModifierAndInElementSupport = isInVersionSpecifier(
       '>5.9.0',
-      VERSION
+      ember.VERSION
     );
 
     function createRef(value) {

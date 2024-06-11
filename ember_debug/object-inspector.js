@@ -123,18 +123,6 @@ function inspectValue(object, key, computedValue) {
   }
 }
 
-function isMandatorySetter(descriptor) {
-  if (
-    descriptor.set &&
-    Function.prototype.toString
-      .call(descriptor.set)
-      .includes('You attempted to update')
-  ) {
-    return true;
-  }
-  return false;
-}
-
 function getTagTrackedTags(tag, ownTag, level = 0) {
   const props = [];
   // do not include tracked properties from dependencies
@@ -1270,7 +1258,10 @@ function getDebugInfo(object) {
       'element',
       'targetObject'
     );
-  } else if (classes.GlimmerComponent && object instanceof classes.GlimmerComponent) {
+  } else if (
+    classes.GlimmerComponent &&
+    object instanceof classes.GlimmerComponent
+  ) {
     // These properties don't really exist on Glimmer Components, but
     // reading their values trigger a development mode assertion. The
     // more correct long term fix is to make getters lazy (shows "..."
@@ -1289,7 +1280,10 @@ function calculateCP(object, item, errorsForObject) {
   const property = item.name;
   delete errorsForObject[property];
   try {
-    if (object instanceof classes.ArrayProxy && property == parseInt(property)) {
+    if (
+      object instanceof classes.ArrayProxy &&
+      property == parseInt(property)
+    ) {
       return object.objectAt(property);
     }
     return item.isGetter || property.includes?.('.')
