@@ -49,6 +49,8 @@ let {
 } = Ember || {};
 
 let metal = emberSafeRequire('@ember/-internals/metal');
+runloop_ = Ember?.runloop || Ember?.run;
+runloop_.run = Ember?.run || runloop_.run;
 
 if (metal) {
   ActionHandler = emberSafeRequire('@ember/-internals/runtime')?.ActionHandler;
