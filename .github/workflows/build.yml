@@ -77,20 +77,25 @@ jobs:
     name: ember-try (${{ matrix.scenario }})
     needs: test
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
     env:
       CI: 'true'
     strategy:
       fail-fast: false
       matrix:
+        experimental: [false]
         scenario:
           - ember-lts-3.16
           - ember-lts-3.20
           - ember-lts-3.24
           - ember-lts-3.28
           - ember-release
-          - ember-beta
-          - ember-canary
           - ember-default-no-prototype-extensions
+        include:
+          - scenario: ember-beta
+            experimental: true
+          - scenario: ember-canary
+            experimental: true
 
     steps:
       - name: Checkout
