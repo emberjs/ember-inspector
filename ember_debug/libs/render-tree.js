@@ -663,7 +663,7 @@ export default class RenderTree {
       if (node.type === 'component' && !node.instance) {
         if (
           node.name === '(unknown template-only component)' &&
-          node.template.endsWith('.hbs')
+          node.template?.endsWith('.hbs')
         ) {
           node.name = node.template
             .split(/\\|\//)
