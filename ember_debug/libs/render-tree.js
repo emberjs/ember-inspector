@@ -661,8 +661,14 @@ export default class RenderTree {
       }
 
       if (node.type === 'component' && !node.instance) {
-        if (node.name === '(unknown template-only component)' && node.template.endsWith('.hbs')) {
-          node.name = node.template.split(/\\|\//).slice(-1)[0].slice(0, -'.hbs'.length);
+        if (
+          node.name === '(unknown template-only component)' &&
+          node.template.endsWith('.hbs')
+        ) {
+          node.name = node.template
+            .split(/\\|\//)
+            .slice(-1)[0]
+            .slice(0, -'.hbs'.length);
         }
         node.instance = this._createSimpleInstance(
           'TemplateOnlyComponent',
