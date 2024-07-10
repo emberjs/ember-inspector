@@ -1,14 +1,10 @@
 {
   "solution": {
     "ember-inspector": {
-      "impact": "minor",
-      "oldVersion": "4.11.0",
-      "newVersion": "4.12.0",
+      "impact": "patch",
+      "oldVersion": "4.12.0",
+      "newVersion": "4.12.1",
       "constraints": [
-        {
-          "impact": "minor",
-          "reason": "Appears in changelog section :rocket: Enhancement"
-        },
         {
           "impact": "patch",
           "reason": "Appears in changelog section :house: Internal"
@@ -17,5 +13,5 @@
       "pkgJSONPath": "./package.json"
     }
   },
-  "description": "## Release (2024-05-06)\n\nember-inspector 4.12.0 (minor)\n\n#### :rocket: Enhancement\n* `ember-inspector`\n  * [#2553](https://github.com/emberjs/ember-inspector/pull/2553) Mark dependent keys that updated ([@patricklx](https://github.com/patricklx))\n  * [#2548](https://github.com/emberjs/ember-inspector/pull/2548) add modifiers to render tree ([@patricklx](https://github.com/patricklx))\n  * [#2443](https://github.com/emberjs/ember-inspector/pull/2443) Add ability to jump to source for functions and classes ([@patricklx](https://github.com/patricklx))\n  * [#2536](https://github.com/emberjs/ember-inspector/pull/2536) improve route debug ([@patricklx](https://github.com/patricklx))\n\n#### :house: Internal\n* `ember-inspector`\n  * [#2571](https://github.com/emberjs/ember-inspector/pull/2571) fix beta & canary tests ([@patricklx](https://github.com/patricklx))\n  * [#2567](https://github.com/emberjs/ember-inspector/pull/2567) add internal to dependabot prs ([@patricklx](https://github.com/patricklx))\n  * [#2563](https://github.com/emberjs/ember-inspector/pull/2563) add release plan ([@patricklx](https://github.com/patricklx))\n  * [#2565](https://github.com/emberjs/ember-inspector/pull/2565) build(deps-dev): bump express from 4.18.2 to 4.19.2 ([@dependabot[bot]](https://github.com/apps/dependabot))\n  * [#2564](https://github.com/emberjs/ember-inspector/pull/2564) build(deps-dev): bump follow-redirects from 1.15.4 to 1.15.6 ([@dependabot[bot]](https://github.com/apps/dependabot))\n  * [#2560](https://github.com/emberjs/ember-inspector/pull/2560) build(deps-dev): bump ip from 1.1.8 to 1.1.9 ([@dependabot[bot]](https://github.com/apps/dependabot))\n  * [#2498](https://github.com/emberjs/ember-inspector/pull/2498) Remove outdated code and unnecessary captureRenderTree patching ([@patricklx](https://github.com/patricklx))\n  * [#2511](https://github.com/emberjs/ember-inspector/pull/2511) chore(deps): remove unused AWS SDK for JavaScript ([@trivikr](https://github.com/trivikr))\n  * [#2556](https://github.com/emberjs/ember-inspector/pull/2556) build(deps-dev): bump @types/ember__routing from 4.0.12 to 4.0.21 ([@dependabot[bot]](https://github.com/apps/dependabot))\n\n#### Committers: 2\n- Patrick Pircher ([@patricklx](https://github.com/patricklx))\n- Trivikram Kamat ([@trivikr](https://github.com/trivikr))\n"
+  "description": "## Release (2024-07-10)\n\nember-inspector 4.12.1 (patch)\n\n#### :house: Internal\n* `ember-inspector`\n  * [#2582](https://github.com/emberjs/ember-inspector/pull/2582) skip failing test ([@patricklx](https://github.com/patricklx))\n\n#### Committers: 1\n- Patrick Pircher ([@patricklx](https://github.com/patricklx))\n"
 }

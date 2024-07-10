@@ -1,5 +1,16 @@
 # Changelog
 
+## Release (2024-07-10)
+
+ember-inspector 4.12.1 (patch)
+
+#### :house: Internal
+* `ember-inspector`
+  * [#2582](https://github.com/emberjs/ember-inspector/pull/2582) skip failing test ([@patricklx](https://github.com/patricklx))
+
+#### Committers: 1
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
 ## Release (2024-05-06)
 
 ember-inspector 4.12.0 (minor)
