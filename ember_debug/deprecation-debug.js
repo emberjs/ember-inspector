@@ -107,7 +107,7 @@ export default class extends DebugPort {
             if (source) {
               source.found = true;
             } else {
-              source = mapped.firstObject;
+              source = mapped[0];
               source.found = false;
             }
             return source;
