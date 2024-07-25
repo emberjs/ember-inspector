@@ -2,9 +2,13 @@
   "solution": {
     "ember-inspector": {
       "impact": "patch",
-      "oldVersion": "4.12.0",
-      "newVersion": "4.12.1",
+      "oldVersion": "4.12.1",
+      "newVersion": "4.12.2",
       "constraints": [
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :bug: Bug Fix"
+        },
         {
           "impact": "patch",
           "reason": "Appears in changelog section :house: Internal"
@@ -13,5 +17,5 @@
       "pkgJSONPath": "./package.json"
     }
   },
-  "description": "## Release (2024-07-10)\n\nember-inspector 4.12.1 (patch)\n\n#### :house: Internal\n* `ember-inspector`\n  * [#2582](https://github.com/emberjs/ember-inspector/pull/2582) skip failing test ([@patricklx](https://github.com/patricklx))\n\n#### Committers: 1\n- Patrick Pircher ([@patricklx](https://github.com/patricklx))\n"
+  "description": "## Release (2024-07-25)\n\nember-inspector 4.12.2 (patch)\n\n#### :bug: Bug Fix\n* `ember-inspector`\n  * [#2587](https://github.com/emberjs/ember-inspector/pull/2587) do not use prototype extension ([@patricklx](https://github.com/patricklx))\n\n#### :house: Internal\n* `ember-inspector`\n  * [#2591](https://github.com/emberjs/ember-inspector/pull/2591) Use Personal Access Token ([@kategengler](https://github.com/kategengler))\n\n#### Committers: 2\n- Katie Gengler ([@kategengler](https://github.com/kategengler))\n- Patrick Pircher ([@patricklx](https://github.com/patricklx))\n"
 }
