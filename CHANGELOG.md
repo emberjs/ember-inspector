@@ -1,5 +1,21 @@
 # Changelog
 
+## Release (2024-07-25)
+
+ember-inspector 4.12.2 (patch)
+
+#### :bug: Bug Fix
+* `ember-inspector`
+  * [#2587](https://github.com/emberjs/ember-inspector/pull/2587) do not use prototype extension ([@patricklx](https://github.com/patricklx))
+
+#### :house: Internal
+* `ember-inspector`
+  * [#2591](https://github.com/emberjs/ember-inspector/pull/2591) Use Personal Access Token ([@kategengler](https://github.com/kategengler))
+
+#### Committers: 2
+- Katie Gengler ([@kategengler](https://github.com/kategengler))
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
 ## Release (2024-07-10)
 
 ember-inspector 4.12.1 (patch)
