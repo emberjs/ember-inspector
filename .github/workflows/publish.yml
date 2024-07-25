@@ -54,5 +54,5 @@ jobs:
       - name: npm publish
         run: pnpm release-plan publish --singlePackage=ember-inspector
         env:
-          GITHUB_AUTH: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_AUTH: ${{ secrets.GH_PAT }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
