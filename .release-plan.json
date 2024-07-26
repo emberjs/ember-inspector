@@ -1,13 +1,13 @@
 {
   "solution": {
     "ember-inspector": {
-      "impact": "patch",
-      "oldVersion": "4.12.1",
-      "newVersion": "4.12.2",
+      "impact": "minor",
+      "oldVersion": "4.12.2",
+      "newVersion": "4.13.0",
       "constraints": [
         {
-          "impact": "patch",
-          "reason": "Appears in changelog section :bug: Bug Fix"
+          "impact": "minor",
+          "reason": "Appears in changelog section :rocket: Enhancement"
         },
         {
           "impact": "patch",
@@ -17,5 +17,5 @@
       "pkgJSONPath": "./package.json"
     }
   },
-  "description": "## Release (2024-07-25)\n\nember-inspector 4.12.2 (patch)\n\n#### :bug: Bug Fix\n* `ember-inspector`\n  * [#2587](https://github.com/emberjs/ember-inspector/pull/2587) do not use prototype extension ([@patricklx](https://github.com/patricklx))\n\n#### :house: Internal\n* `ember-inspector`\n  * [#2591](https://github.com/emberjs/ember-inspector/pull/2591) Use Personal Access Token ([@kategengler](https://github.com/kategengler))\n\n#### Committers: 2\n- Katie Gengler ([@kategengler](https://github.com/kategengler))\n- Patrick Pircher ([@patricklx](https://github.com/patricklx))\n"
+  "description": "## Release (2024-07-26)\n\nember-inspector 4.13.0 (minor)\n\n#### :rocket: Enhancement\n* `ember-inspector`\n  * [#2581](https://github.com/emberjs/ember-inspector/pull/2581) provide name for hbs template only components ([@patricklx](https://github.com/patricklx))\n\n#### :house: Internal\n* `ember-inspector`\n  * [#2585](https://github.com/emberjs/ember-inspector/pull/2585) Use GH_PAT token to hopefully fix releases ([@patricklx](https://github.com/patricklx))\n\n#### Committers: 1\n- Patrick Pircher ([@patricklx](https://github.com/patricklx))\n"
 }
