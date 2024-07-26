@@ -25,7 +25,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GH_PAT }}
           fetch-depth: 0
           ref: 'main'
       # This will only cause the `check-plan` job to have a result of `success`
