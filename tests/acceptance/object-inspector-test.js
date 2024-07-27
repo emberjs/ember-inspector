@@ -1006,6 +1006,85 @@ module('Object Inspector', function (hooks) {
     assert.dom('[data-test-object-property-value]').hasText(date.toString());
   });
 
+  test('Boolean fields are editable', async function (assert) {
+    assert.expect(5);
+
+    await visit('/');
+
+    await sendMessage({
+      type: 'objectInspector:updateObject',
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [
+        {
+          name: 'First Detail',
+          expand: false,
+          properties: [
+            {
+              name: 'booleanProperty',
+              value: {
+                inspect: true.toString(),
+                type: 'type-boolean',
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    respondWith(
+      'objectInspector:saveProperty',
+      ({ objectId, property, value }) => {
+        assert.strictEqual(typeof value, 'boolean', 'sent as boolean');
+
+        return {
+          type: 'objectInspector:updateProperty',
+          objectId,
+          property,
+          mixinIndex: 0,
+          value: {
+            inspect: false.toString(),
+            type: 'type-boolean',
+            isCalculated: false,
+          },
+        };
+      }
+    );
+
+    await click('[data-test-object-detail-name]');
+
+    assert.dom('[data-test-object-property-value]').hasText(true.toString());
+
+    await click('[data-test-object-property-value]');
+
+    let field = find('.js-object-property-value-boolean');
+    assert.ok(field);
+
+    respondWith(
+      'objectInspector:saveProperty',
+      ({ objectId, property, value }) => {
+        assert.strictEqual(typeof value, 'boolean', 'sent as boolean');
+
+        return {
+          type: 'objectInspector:updateProperty',
+          objectId,
+          property,
+          mixinIndex: 0,
+          value: {
+            inspect: false.toString(),
+            type: 'type-boolean',
+            isCalculated: false,
+          },
+        };
+      }
+    );
+
+    await fillIn(field, 'false');
+    await triggerKeyEvent(field, 'keydown', 13);
+
+    assert.dom('[data-test-object-property-value]').hasText(false.toString());
+  });
+
   test('Errors are correctly displayed', async function (assert) {
     assert.expect(8);
 
