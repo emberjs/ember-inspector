@@ -122,7 +122,10 @@ export default class ObjectInspectorProperty extends Component<ObjectInspectorPr
 
   get cannotEdit() {
     if (this.args.model.name === '...' || !this.isCalculated || this.readOnly) return true;
-    return this.args.model?.value?.type !== 'type-string' && this.args.model?.value?.type !== 'type-number';
+    return
+      this.args.model?.value?.type !== 'type-string' &&
+        this.args.model?.value?.type !== 'type-number' &&
+        this.args.model?.value.type !== 'type-boolean';
   }
 
   @action
