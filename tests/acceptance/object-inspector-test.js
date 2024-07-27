@@ -1057,7 +1057,7 @@ module('Object Inspector', function (hooks) {
 
     await click('[data-test-object-property-value]');
 
-    let field = find('.js-object-property-value-boolean');
+    let field = find('[data-test-object-property-value-txt]');
     assert.ok(field);
 
     respondWith(
