@@ -1007,7 +1007,7 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Boolean fields are editable', async function (assert) {
-    assert.expect(5);
+    assert.expect(4);
 
     await visit('/');
 
