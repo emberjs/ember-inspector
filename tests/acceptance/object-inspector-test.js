@@ -1025,7 +1025,7 @@ module('Object Inspector', function (hooks) {
               value: {
                 inspect: true.toString(),
                 type: 'type-boolean',
-                isCalculated: true
+                isCalculated: true,
               },
             },
           ],
@@ -1046,7 +1046,7 @@ module('Object Inspector', function (hooks) {
           value: {
             inspect: false.toString(),
             type: 'type-boolean',
-            isCalculated: false
+            isCalculated: false,
           },
         };
       }
