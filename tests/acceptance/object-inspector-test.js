@@ -1061,25 +1061,6 @@ module('Object Inspector', function (hooks) {
     let field = find('[data-test-object-property-value-txt]');
     assert.ok(field);
 
-    respondWith(
-      'objectInspector:saveProperty',
-      ({ objectId, property, value }) => {
-        assert.strictEqual(typeof value, 'boolean', 'sent as boolean');
-
-        return {
-          type: 'objectInspector:updateProperty',
-          objectId,
-          property,
-          mixinIndex: 0,
-          value: {
-            inspect: false.toString(),
-            type: 'type-boolean',
-            isCalculated: false,
-          },
-        };
-      }
-    );
-
     await fillIn(field, 'false');
     await triggerKeyEvent(field, 'keyup', 13);
 
