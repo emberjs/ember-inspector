@@ -1025,6 +1025,7 @@ module('Object Inspector', function (hooks) {
               value: {
                 inspect: true.toString(),
                 type: 'type-boolean',
+                isCalculated: true
               },
             },
           ],
@@ -1081,6 +1082,7 @@ module('Object Inspector', function (hooks) {
 
     await fillIn(field, 'false');
     await triggerKeyEvent(field, 'keydown', 13);
+
 
     assert.dom('[data-test-object-property-value]').hasText(false.toString());
   });
