@@ -1,5 +1,16 @@
 # Changelog
 
+## Release (2024-07-30)
+
+ember-inspector 4.13.1 (patch)
+
+#### :bug: Bug Fix
+* `ember-inspector`
+  * [#2595](https://github.com/emberjs/ember-inspector/pull/2595) fix boolean edit ([@patricklx](https://github.com/patricklx))
+
+#### Committers: 1
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
 ## Release (2024-07-26)
 
 ember-inspector 4.13.0 (minor)
