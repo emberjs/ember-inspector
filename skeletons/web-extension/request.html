@@ -1,0 +1,31 @@
+<html>
+<head>
+  <link rel="stylesheet" href="./panes-3-16-0/assets/ember-inspector.css">
+  <link rel="stylesheet" href="./panes-3-16-0/assets/vendor.css">
+</head>
+<body class='theme--light'>
+<div class="error-page box-border overflow-auto absolute inset-0 flex text-base13 text-md bg-base02">
+  <div class="error-page__content box-border relative m-auto px-6 pb-6 rounded bg-base00"  style='border: 1px solid orangered'>
+    <div class="error-page__header overflow-hidden relative flex items-center font-bold text-4xl">
+      <div class="flex-grow pt-6">
+        <br />
+        Request permission to enable ember inspector
+        <img style='position: absolute; right: 0; top: 0' src='./panes-3-16-0/assets/images/icon48.png'/>
+        <br />
+        <br />
+      </div>
+    </div>
+
+    <div class="error-page__body pb-2">
+      <button style='padding: 5px' id='request-all'>request permission for all sites</button>
+      <br />
+      <br />
+      <button style='padding: 5px' id='request-one'>request permission for </button>
+      <br />
+      <br />
+    </div>
+  </div>
+</div>
+</body>
+<script src='./request.js'></script>
+</html>

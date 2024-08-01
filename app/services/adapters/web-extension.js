@@ -1,4 +1,3 @@
-/* globals chrome */
 import { computed } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
