@@ -1,7 +1,7 @@
 /* eslint no-empty:0 */
 import DebugPort from './debug-port';
 
-import Ember from 'ember-debug/utils/ember';
+import { utils } from 'ember-debug/utils/ember';
 
 /**
  * Class that handles gathering general information of the inspected app.
@@ -87,9 +87,7 @@ export default class extends DebugPort {
        * the info tab.
        */
       getLibraries() {
-        this.sendMessage('libraries', {
-          libraries: Ember.libraries?._registry,
-        });
+        this.sendMessage('libraries', { libraries: utils.libraries._registry });
       },
 
       getEmberCliConfig() {
