@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
-  extends: 'stylelint-config-ship-shape',
+  extends: ['stylelint-config-standard', 'stylelint-prettier/recommended'],
 };
