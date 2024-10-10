@@ -104,7 +104,7 @@ module('Object Inspector', function (hooks) {
       .dom('[data-test-object-detail]')
       .hasClass(
         'mixin_state_expanded',
-        'The "Own Properties" detail is expanded by default'
+        'The "Own Properties" detail is expanded by default',
       );
   });
 
@@ -118,7 +118,7 @@ module('Object Inspector', function (hooks) {
 
     assert.dom('[data-test-object-name]').hasText('My Object');
     let [firstDetail, secondDetail, thirdDetail] = findAll(
-      '[data-test-object-detail]'
+      '[data-test-object-detail]',
     );
     assert
       .dom(firstDetail.querySelector('[data-test-object-detail-name]'))
@@ -140,7 +140,7 @@ module('Object Inspector', function (hooks) {
       .hasNoClass('mixin_state_expanded', 'Third detail does not expand.');
     assert.strictEqual(
       firstDetail.querySelectorAll('[data-test-object-property]').length,
-      1
+      1,
     );
     assert
       .dom(firstDetail.querySelector('[data-test-object-property-name]'))
@@ -154,21 +154,21 @@ module('Object Inspector', function (hooks) {
       .dom(firstDetail)
       .hasNoClass(
         'mixin_state_expanded',
-        'Expanded detail minimizes on click.'
+        'Expanded detail minimizes on click.',
       );
     await click(secondDetail.querySelector('[data-test-object-detail-name]'));
 
     assert.dom(secondDetail).hasClass('mixin_state_expanded');
     assert.strictEqual(
       secondDetail.querySelectorAll('[data-test-object-property]').length,
-      2
+      2,
     );
     assert
       .dom(secondDetail.querySelectorAll('[data-test-object-property-name]')[0])
       .hasText('objectProperty');
     assert
       .dom(
-        secondDetail.querySelectorAll('[data-test-object-property-value]')[0]
+        secondDetail.querySelectorAll('[data-test-object-property-value]')[0],
       )
       .hasText('Ember Object Name');
     assert
@@ -176,7 +176,7 @@ module('Object Inspector', function (hooks) {
       .hasText('stringProperty');
     assert
       .dom(
-        secondDetail.querySelectorAll('[data-test-object-property-value]')[1]
+        secondDetail.querySelectorAll('[data-test-object-property-value]')[1],
       )
       .hasText('String Value');
     await click(thirdDetail.querySelector('[data-test-object-detail-name]'));
@@ -184,7 +184,7 @@ module('Object Inspector', function (hooks) {
     assert.dom(thirdDetail).hasClass('mixin_state_expanded');
     assert.strictEqual(
       thirdDetail.querySelectorAll('[data-test-object-property]').length,
-      1
+      1,
     );
     assert
       .dom(thirdDetail.querySelectorAll('[data-test-object-property-name]')[0])
@@ -230,7 +230,7 @@ module('Object Inspector', function (hooks) {
 
     await click(secondDetail.querySelector('[data-test-object-detail-name]'));
     await click(
-      '[data-test-object-property] [data-test-object-property-value]'
+      '[data-test-object-property] [data-test-object-property-value]',
     );
 
     assert
@@ -293,7 +293,7 @@ module('Object Inspector', function (hooks) {
 
     await click(secondDetail.querySelector('[data-test-object-detail-name]'));
     await click(
-      '[data-test-object-property] [data-test-object-property-value]'
+      '[data-test-object-property] [data-test-object-property-value]',
     );
 
     assert
@@ -356,7 +356,7 @@ module('Object Inspector', function (hooks) {
 
     await click(secondDetail.querySelector('[data-test-object-detail-name]'));
     await click(
-      '[data-test-object-property] [data-test-object-property-value]'
+      '[data-test-object-property] [data-test-object-property-value]',
     );
 
     assert
@@ -420,7 +420,7 @@ module('Object Inspector', function (hooks) {
           inspect: 'Computed value',
           isCalculated: true,
         },
-      })
+      }),
     );
 
     await click('[data-test-calculate]');
@@ -460,7 +460,7 @@ module('Object Inspector', function (hooks) {
     assert.dom('.mixin__property-dependency-item').doesNotExist();
     assert
       .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name'
+        '.mixin__property-dependency-item > .mixin__property-dependency-name',
       )
       .doesNotExist();
   });
@@ -504,7 +504,7 @@ module('Object Inspector', function (hooks) {
           inspect: 'Computed value',
           computed: 'foo-bar',
         },
-      })
+      }),
     );
 
     await click('[data-test-calculate]');
@@ -517,7 +517,7 @@ module('Object Inspector', function (hooks) {
     assert.dom('.mixin__property-dependency-item').doesNotExist();
     assert
       .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name'
+        '.mixin__property-dependency-item > .mixin__property-dependency-name',
       )
       .doesNotExist();
 
@@ -527,7 +527,7 @@ module('Object Inspector', function (hooks) {
     assert.dom('.mixin__property-dependency-item').doesNotExist();
     assert
       .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name'
+        '.mixin__property-dependency-item > .mixin__property-dependency-name',
       )
       .doesNotExist();
   });
@@ -570,7 +570,7 @@ module('Object Inspector', function (hooks) {
           inspect: 'Computed value',
           isCalculated: true,
         },
-      })
+      }),
     );
 
     await click('[data-test-calculate]');
@@ -583,7 +583,7 @@ module('Object Inspector', function (hooks) {
     assert.dom('.mixin__property-dependency-item').exists({ count: 1 });
     assert
       .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name'
+        '.mixin__property-dependency-item > .mixin__property-dependency-name',
       )
       .exists({ count: 1 });
 
@@ -593,7 +593,7 @@ module('Object Inspector', function (hooks) {
     assert.dom('.mixin__property-dependency-item').doesNotExist();
     assert
       .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name'
+        '.mixin__property-dependency-item > .mixin__property-dependency-name',
       )
       .doesNotExist();
 
@@ -606,7 +606,7 @@ module('Object Inspector', function (hooks) {
     assert.dom('.mixin__property-dependency-item').exists({ count: 1 });
     assert
       .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name'
+        '.mixin__property-dependency-item > .mixin__property-dependency-name',
       )
       .exists({ count: 1 });
   });
@@ -667,7 +667,7 @@ module('Object Inspector', function (hooks) {
           type: 'type-string',
           isCalculated: false,
         },
-      })
+      }),
     );
 
     await fillIn(txtField, '"Joey"');
@@ -720,7 +720,7 @@ module('Object Inspector', function (hooks) {
           type: 'type-string',
           isCalculated: false,
         },
-      })
+      }),
     );
 
     await fillIn(txtField, '"{"name":"joey"}"');
@@ -968,7 +968,7 @@ module('Object Inspector', function (hooks) {
             isCalculated: false,
           },
         };
-      }
+      },
     );
 
     await click('[data-test-object-detail-name]');
@@ -997,7 +997,7 @@ module('Object Inspector', function (hooks) {
             isCalculated: false,
           },
         };
-      }
+      },
     );
 
     await fillIn(field, '2015-01-01');
@@ -1049,7 +1049,7 @@ module('Object Inspector', function (hooks) {
             isCalculated: false,
           },
         };
-      }
+      },
     );
 
     await click('[data-test-object-detail-name]');

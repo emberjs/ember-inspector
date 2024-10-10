@@ -28,7 +28,7 @@ export default class PromiseTreeRoute extends TabRoute {
     this.port.on(
       'promise:instrumentWithStack',
       this,
-      this.setInstrumentWithStack
+      this.setInstrumentWithStack,
     );
     this.port.send('promise:getInstrumentWithStack');
   }
@@ -38,7 +38,7 @@ export default class PromiseTreeRoute extends TabRoute {
     this.port.off(
       'promise:instrumentWithStack',
       this,
-      this.setInstrumentWithStack
+      this.setInstrumentWithStack,
     );
   }
 

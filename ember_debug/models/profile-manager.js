@@ -222,7 +222,7 @@ export default class ProfileManager {
           this.queue[entry.endedIndex].profileNode = this.began(
             entry.timestamp,
             entry.payload,
-            entry.now
+            entry.now,
           );
         }
       } else {

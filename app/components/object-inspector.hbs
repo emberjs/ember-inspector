@@ -53,7 +53,7 @@
     <div class="toolbar object-inspector-toolbar">
       <button
         data-test-object-display-type-grouped
-        class="toolbar__radio toolbar__radio--first {{
+        class="toolbar-radio toolbar-radio--first {{
           if (eq this.propDisplayType "grouped") "active"
         }}"
         type="button"
@@ -63,7 +63,7 @@
       </button>
       <button
         data-test-object-display-type-all
-        class="toolbar__radio {{if (eq this.propDisplayType "all") "active"}}"
+        class="toolbar-radio {{if (eq this.propDisplayType "all") "active"}}"
         type="button"
         {{on "click" (fn this.setPropDisplay "all")}}
       >

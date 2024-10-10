@@ -32,7 +32,7 @@ export default class extends DebugPort {
           let stack = source.stackStr;
           stack = stack.split('\n');
           stack.unshift(
-            `Ember Inspector (Deprecation Trace): ${deprecation.message || ''}`
+            `Ember Inspector (Deprecation Trace): ${deprecation.message || ''}`,
           );
           this.adapter.log(stack.join('\n'));
         });
@@ -100,8 +100,8 @@ export default class extends DebugPort {
               (item) =>
                 item.source &&
                 !!item.source.match(
-                  new RegExp(this.emberCliConfig.modulePrefix)
-                )
+                  new RegExp(this.emberCliConfig.modulePrefix),
+                ),
             );
 
             if (source) {
@@ -114,7 +114,7 @@ export default class extends DebugPort {
           }
         },
         null,
-        'ember-inspector'
+        'ember-inspector',
       );
     } else {
       return Promise.resolve(null);
@@ -147,7 +147,7 @@ export default class extends DebugPort {
           grouped[id] = obj;
         }
         let found = obj.sources.find(
-          (s) => s.stackStr === deprecation.stackStr
+          (s) => s.stackStr === deprecation.stackStr,
         );
         if (!found) {
           let stackStr = deprecation.stackStr;
@@ -159,7 +159,7 @@ export default class extends DebugPort {
               }
             },
             null,
-            'ember-inspector'
+            'ember-inspector',
           );
         }
         return promise.then(() => {
@@ -168,7 +168,7 @@ export default class extends DebugPort {
             deprecations.push(obj);
           }
         }, null);
-      })
+      }),
     );
 
     promises.then(() => {
@@ -253,7 +253,7 @@ export default class extends DebugPort {
         }
         if (!this._warned) {
           this.adapter.warn(
-            'Deprecations were detected, see the Ember Inspector deprecations tab for more details.'
+            'Deprecations were detected, see the Ember Inspector deprecations tab for more details.',
           );
           this._warned = true;
         }

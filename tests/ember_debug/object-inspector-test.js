@@ -89,8 +89,8 @@ module('Ember Debug - Object Inspector', function (hooks) {
       'template:application',
       hbs(
         '<div class="application" style="line-height: normal;">{{outlet}}</div>',
-        { moduleName: 'my-app/templates/application.hbs' }
-      )
+        { moduleName: 'my-app/templates/application.hbs' },
+      ),
     );
     this.owner.register('route:simple', EmberRoute);
     this.owner.register('component:x-simple', Component);
@@ -99,7 +99,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
       hbs`
       {{! template-lint-disable}}
       Simple <Input class="simple-input"/> {{x-simple class="simple-view"}}
-      `
+      `,
     );
 
     objectInspector = EmberDebug.objectInspector;
@@ -138,7 +138,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.strictEqual(
       firstDetail.properties.length,
       4,
-      'methods are included'
+      'methods are included',
     );
 
     let idProperty = firstDetail.properties[0];
@@ -236,7 +236,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.strictEqual(
       firstDetail.properties.length,
       6,
-      'methods are included'
+      'methods are included',
     );
 
     let objectWithTrackedProperty = firstDetail.properties[0];
@@ -370,7 +370,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
     expectedMixinNames.forEach((expectedMixinName, i) => {
       assert.ok(
         mixinNames[i].includes(expectedMixinName),
-        `${mixinNames[i]} : ${expectedMixinName}`
+        `${mixinNames[i]} : ${expectedMixinName}`,
       );
     });
   });
@@ -463,7 +463,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.strictEqual(
       details[0].properties.length,
       1,
-      'should not show mixin properties'
+      'should not show mixin properties',
     );
     assert.strictEqual(details[0].properties[0].name, 'ownProp');
 
@@ -471,22 +471,22 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.strictEqual(
       details[2].properties.length,
       1,
-      'should only show own mixin properties'
+      'should only show own mixin properties',
     );
     assert.strictEqual(
       details[2].properties[0].value.inspect,
-      inspect('custom1')
+      inspect('custom1'),
     );
 
     assert.strictEqual(details[3].name, 'MyMixin2');
     assert.strictEqual(
       details[3].properties.length,
       1,
-      'should only show own mixin properties'
+      'should only show own mixin properties',
     );
     assert.strictEqual(
       details[3].properties[0].value.inspect,
-      inspect('custom2')
+      inspect('custom2'),
     );
   });
 
@@ -746,42 +746,42 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.strictEqual(
       message.details[2].properties.length,
       0,
-      'Correctly skips properties'
+      'Correctly skips properties',
     );
 
     assert.strictEqual(message.details[3].name, 'TestObject');
     assert.strictEqual(
       message.details[3].properties.length,
       3,
-      'Correctly merges properties'
+      'Correctly merges properties',
     );
 
     const toString = message.details[3].properties.find(
-      (p) => p.name === 'toString'
+      (p) => p.name === 'toString',
     );
     const hasChildren = message.details[3].properties.find(
-      (p) => p.name === 'hasChildren'
+      (p) => p.name === 'hasChildren',
     );
     const expensiveProperty = message.details[3].properties.find(
-      (p) => p.name === 'expensiveProperty'
+      (p) => p.name === 'expensiveProperty',
     );
     assert.ok(toString, 'has toString');
     assert.ok(hasChildren, 'has hasChildren');
     assert.strictEqual(
       expensiveProperty.name,
       'expensiveProperty',
-      'property name is correct'
+      'property name is correct',
     );
     assert.strictEqual(
       expensiveProperty.value.isCalculated,
       undefined,
-      'Does not calculate expensive properties'
+      'Does not calculate expensive properties',
     );
 
     assert.notStrictEqual(
       message.details[3].name,
       'MixinToSkip',
-      'Correctly skips mixins'
+      'Correctly skips mixins',
     );
   });
 
@@ -846,7 +846,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
 
     assert.ok(
       message.name.includes('ObjectProxy'),
-      'object name should start with <ObjectProxy:'
+      'object name should start with <ObjectProxy:',
     );
 
     assert.strictEqual(message.details[0].name, 'Basic Info');
@@ -861,38 +861,38 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.strictEqual(
       message.details[2].properties.length,
       0,
-      'Correctly skips properties'
+      'Correctly skips properties',
     );
 
     assert.strictEqual(message.details[3].name, 'TestObject');
     assert.strictEqual(
       message.details[3].properties.length,
       3,
-      'Correctly merges properties'
+      'Correctly merges properties',
     );
 
     const hasChildren = message.details[3].properties.find(
-      (p) => p.name === 'hasChildren'
+      (p) => p.name === 'hasChildren',
     );
     const expensiveProperty = message.details[3].properties.find(
-      (p) => p.name === 'expensiveProperty'
+      (p) => p.name === 'expensiveProperty',
     );
     assert.strictEqual(hasChildren.name, 'hasChildren');
     assert.strictEqual(
       expensiveProperty.name,
       'expensiveProperty',
-      'property name is correct'
+      'property name is correct',
     );
     assert.strictEqual(
       expensiveProperty.value.isCalculated,
       undefined,
-      'Does not calculate expensive properties'
+      'Does not calculate expensive properties',
     );
 
     assert.notStrictEqual(
       message.details[3].name,
       'MixinToSkip',
-      'Correctly skips mixins'
+      'Correctly skips mixins',
     );
   });
 
@@ -962,7 +962,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
 
     assert.ok(
       objectInspector.sentObjects[objectId],
-      'Object successfully retained.'
+      'Object successfully retained.',
     );
 
     await visit('/');
@@ -985,7 +985,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
 
     assert.ok(
       objectInspector.sentObjects[objectId],
-      'Object successfully retained.'
+      'Object successfully retained.',
     );
 
     message = await captureMessage('objectInspector:droppedObject', () => {
@@ -1011,14 +1011,14 @@ module('Ember Debug - Object Inspector', function (hooks) {
       assert.strictEqual(
         props.length,
         2,
-        'Props should be foo and bar without fooBinding'
+        'Props should be foo and bar without fooBinding',
       );
       assert.strictEqual(props[1].name, 'foo');
     } else {
       assert.strictEqual(
         props.length,
         1,
-        'Props should be only bar without fooBinding, in Ember 3.0+'
+        'Props should be only bar without fooBinding, in Ember 3.0+',
       );
     }
     assert.strictEqual(props[0].name, 'bar');
@@ -1058,7 +1058,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
           }
           return 'bar';
         }),
-      }).create()
+      }).create(),
     );
 
     let message = await inspectObject(object);
@@ -1253,7 +1253,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
         `template:components/foo`,
         hbs('text only', {
           moduleName: 'my-app/templates/components/foo.hbs',
-        })
+        }),
       );
       await visit('/simple');
 
@@ -1280,17 +1280,17 @@ module('Ember Debug - Object Inspector', function (hooks) {
       assert.strictEqual(
         properties.indexOf('bounds'),
         -1,
-        'does not contain bounds'
+        'does not contain bounds',
       );
       assert.strictEqual(
         properties.indexOf('element'),
         -1,
-        'does not contain element'
+        'does not contain element',
       );
       assert.strictEqual(
         properties.indexOf('debugName'),
         -1,
-        'does not contain debugName'
+        'does not contain debugName',
       );
     });
   }

@@ -59,7 +59,7 @@ export default class ListContent extends Component.extend(Evented) {
     this.layoutService.on(
       'content-height-update',
       this,
-      this.updateContentHeight
+      this.updateContentHeight,
     );
   }
 
@@ -92,7 +92,7 @@ export default class ListContent extends Component.extend(Evented) {
     this.layoutService.off(
       'content-height-update',
       this,
-      this.updateContentHeight
+      this.updateContentHeight,
     );
     return super.willDestroy(...arguments);
   }

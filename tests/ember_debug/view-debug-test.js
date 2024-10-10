@@ -103,7 +103,7 @@ function matchTree(tree, matchers, name) {
   QUnit.assert.strictEqual(
     tree.length,
     matchers.length,
-    `${name} tree and matcher should have the same length`
+    `${name} tree and matcher should have the same length`,
   );
 
   for (let i = 0; i < matchers.length; i++) {
@@ -117,7 +117,7 @@ function match(actual, matcher, message) {
   } else if (Array.isArray(matcher)) {
     QUnit.assert.ok(
       matcher.indexOf(actual) > -1,
-      `${actual} should be one of ${matcher.join('/')}`
+      `${actual} should be one of ${matcher.join('/')}`,
     );
   } else if (matcher instanceof RegExp && actual !== null) {
     QUnit.assert.ok(actual.match(matcher), `${actual} should match ${matcher}`);
@@ -146,23 +146,23 @@ function Serialized(id) {
   return (actual) => {
     QUnit.assert.ok(
       typeof actual === 'object' && actual !== null,
-      'serialized object should be an object'
+      'serialized object should be an object',
     );
     QUnit.assert.ok(
       typeof actual.id === 'string',
-      'serialized object should have a string id'
+      'serialized object should have a string id',
     );
 
     if (id === undefined) {
       QUnit.assert.ok(
         actual.id.match(/^ember[0-9]+$/),
-        'serialized object should have an ember guid'
+        'serialized object should have an ember guid',
       );
     } else {
       QUnit.assert.strictEqual(
         actual.id,
         id,
-        'serialized object should have an ember guid'
+        'serialized object should have an ember guid',
       );
     }
   };
@@ -172,13 +172,13 @@ function RenderNodeID(id) {
   return (actual) => {
     QUnit.assert.ok(
       typeof actual === 'string',
-      'render node id should be a string'
+      'render node id should be a string',
     );
 
     if (id === undefined) {
       QUnit.assert.ok(
         actual.match(/^.+render-node:.+$/),
-        `render node id should have the right format, actual: ${actual}`
+        `render node id should have the right format, actual: ${actual}`,
       );
     } else {
       QUnit.assert.strictEqual(actual, id, 'render node id should match');
@@ -190,32 +190,32 @@ function Args({ names = [], positionals = 0 } = {}) {
   return (actual) => {
     QUnit.assert.ok(
       typeof actual === 'object' && actual !== null,
-      'serialized args should be an object'
+      'serialized args should be an object',
     );
 
     QUnit.assert.ok(
       actual !== null && !actual.named.__ARGS__,
-      'serialized named args should not have __ARGS__'
+      'serialized named args should not have __ARGS__',
     );
 
     QUnit.assert.ok(
       typeof actual.named === 'object' && actual !== null,
-      'serialized named args should be an object'
+      'serialized named args should be an object',
     );
     QUnit.assert.deepEqual(
       Object.keys(actual.named),
       names,
-      'serialized named args should have the right keys'
+      'serialized named args should have the right keys',
     );
 
     QUnit.assert.ok(
       Array.isArray(actual.positional),
-      'serialized positional args should be an array'
+      'serialized positional args should be an array',
     );
     QUnit.assert.strictEqual(
       actual.positional.length,
       positionals,
-      'serialized positional args should have the right number of items'
+      'serialized positional args should have the right number of items',
     );
   };
 }
@@ -240,12 +240,12 @@ function RenderNode(
     match(
       actual.instance,
       instance,
-      `${name} ${type} should have correct instance`
+      `${name} ${type} should have correct instance`,
     );
     match(
       actual.template,
       template,
-      `${name} ${type} should have correct template`
+      `${name} ${type} should have correct template`,
     );
     match(actual.bounds, bounds, `${name} ${type} should have correct bounds`);
     matchTree(actual.children, children, `${name} ${type}`);
@@ -264,7 +264,7 @@ function Component(
 ) {
   return RenderNode(
     { name, instance, template, bounds, ...options, type: 'component' },
-    ...children
+    ...children,
   );
 }
 
@@ -280,7 +280,7 @@ function Modifier(
 ) {
   return RenderNode(
     { name, instance, template, bounds, ...options, type: 'modifier' },
-    ...children
+    ...children,
   );
 }
 
@@ -305,7 +305,7 @@ function HtmlElement(
       ...options,
       type: 'html-element',
     },
-    ...children
+    ...children,
   );
 }
 
@@ -323,8 +323,8 @@ function Route(
     { type: 'outlet', name: 'main', instance: undefined, template: null },
     RenderNode(
       { name, args, instance, template, ...options, type: 'route-template' },
-      ...children
-    )
+      ...children,
+    ),
   );
 }
 
@@ -336,7 +336,7 @@ function TopLevel(...children) {
       instance: Undefined(),
       template: /^packages\/.+\/templates\/outlet\.hbs$/,
     },
-    ...children
+    ...children,
   );
 }
 
@@ -376,7 +376,7 @@ module('Ember Debug - View', function (hooks) {
             },
           });
         },
-      })
+      }),
     );
 
     this.owner.register(
@@ -389,7 +389,7 @@ module('Ember Debug - View', function (hooks) {
             },
           });
         },
-      })
+      }),
     );
 
     this.owner.register(
@@ -402,7 +402,7 @@ module('Ember Debug - View', function (hooks) {
             },
           });
         },
-      })
+      }),
     );
 
     this.owner.register(
@@ -415,7 +415,7 @@ module('Ember Debug - View', function (hooks) {
             },
           });
         },
-      })
+      }),
     );
 
     this.owner.register(
@@ -428,7 +428,7 @@ module('Ember Debug - View', function (hooks) {
             },
           });
         },
-      })
+      }),
     );
 
     this.owner.register(
@@ -441,7 +441,7 @@ module('Ember Debug - View', function (hooks) {
             },
           });
         },
-      })
+      }),
     );
 
     this.owner.register(
@@ -450,7 +450,7 @@ module('Ember Debug - View', function (hooks) {
         model() {
           return A(['first comment', 'second comment', 'third comment']);
         },
-      })
+      }),
     );
 
     this.owner.register(
@@ -459,7 +459,7 @@ module('Ember Debug - View', function (hooks) {
         model() {
           return 'String as model';
         },
-      })
+      }),
     );
 
     this.owner.register(
@@ -468,7 +468,7 @@ module('Ember Debug - View', function (hooks) {
         toString() {
           return 'App.ApplicationController';
         },
-      })
+      }),
     );
 
     this.owner.register(
@@ -481,7 +481,7 @@ module('Ember Debug - View', function (hooks) {
         toString() {
           return 'App.SimpleController';
         },
-      })
+      }),
     );
 
     this.owner.register(
@@ -491,7 +491,7 @@ module('Ember Debug - View', function (hooks) {
         toString() {
           return 'App.TestFooComponent';
         },
-      })
+      }),
     );
 
     this.owner.register(
@@ -502,7 +502,7 @@ module('Ember Debug - View', function (hooks) {
           toString() {
             return 'App.TestBarComponent';
           },
-        })
+        }),
     );
 
     this.owner.register(
@@ -515,7 +515,7 @@ module('Ember Debug - View', function (hooks) {
         toString() {
           return 'App.TestInElementInComponent';
         },
-      })
+      }),
     );
 
     this.owner.register(
@@ -524,7 +524,7 @@ module('Ember Debug - View', function (hooks) {
         toString() {
           return 'App.TestComponentInElement';
         },
-      })
+      }),
     );
 
     /*
@@ -539,8 +539,8 @@ module('Ember Debug - View', function (hooks) {
           <div id="target"></div>
           {{outlet}}
         </div>`,
-        { moduleName: 'my-app/templates/application.hbs' }
-      )
+        { moduleName: 'my-app/templates/application.hbs' },
+      ),
     );
 
     this.owner.register(
@@ -553,22 +553,22 @@ module('Ember Debug - View', function (hooks) {
         `,
         {
           moduleName: 'my-app/templates/simple.hbs',
-        }
-      )
+        },
+      ),
     );
 
     this.owner.register(
       'template:test-in-element-in-component',
       hbs('<TestInElementInComponent />', {
         moduleName: 'my-app/templates/test-in-element-in-component.hbs',
-      })
+      }),
     );
 
     this.owner.register(
       'template:test-component-in-in-element',
       hbs('<TestComponentInInElement />', {
         moduleName: 'my-app/templates/test-component-in-in-element.hbs',
-      })
+      }),
     );
 
     this.owner.register(
@@ -577,31 +577,31 @@ module('Ember Debug - View', function (hooks) {
         '<EmberWormhole @to="target"><div class="in-wormhole">Wormhole</div></EmberWormhole>',
         {
           moduleName: 'my-app/templates/wormhole.hbs',
-        }
-      )
+        },
+      ),
     );
     this.owner.register(
       'template:inputs',
       hbs('Simple <Input @value="987" />', {
         moduleName: 'my-app/templates/inputs.hbs',
-      })
+      }),
     );
 
     this.owner.register(
       'template:comments/index',
       hbs('{{#each this.comments as |comment|}}{{comment}}{{/each}}', {
         moduleName: 'my-app/templates/comments/index.hbs',
-      })
+      }),
     );
     this.owner.register(
       'template:posts',
-      hbs('Posts', { moduleName: 'my-app/templates/posts.hbs' })
+      hbs('Posts', { moduleName: 'my-app/templates/posts.hbs' }),
     );
     this.owner.register(
       'template:components/test-foo',
       hbs('test-foo', {
         moduleName: 'my-app/templates/components/test-foo.hbs',
-      })
+      }),
     );
     this.owner.register(
       'template:components/test-bar',
@@ -613,8 +613,8 @@ module('Ember Debug - View', function (hooks) {
           <span class="bar-inner">bar</span>
         </div>
         <!-- after -->`,
-        { moduleName: 'my-app/templates/components/test-bar.hbs' }
-      )
+        { moduleName: 'my-app/templates/components/test-bar.hbs' },
+      ),
     );
 
     this.owner.register(
@@ -623,7 +623,7 @@ module('Ember Debug - View', function (hooks) {
             <p class='test-component-in-in-element'>
               App.TestComponentInElement
             </p>
-        `)
+        `),
     );
 
     this.owner.register(
@@ -634,7 +634,7 @@ module('Ember Debug - View', function (hooks) {
                     App.TestInElementInComponent
                   </p>
                 {{/in-element}}
-              `)
+              `),
     );
 
     this.owner.register('modifier:did-insert', didInsert);
@@ -674,7 +674,7 @@ module('Ember Debug - View', function (hooks) {
         Modifier({
           name: 'deprecated-event-handlers',
           args: Args({ positionals: 1 }),
-        })
+        }),
       );
     }
     const enableModifierSupport = isInVersionSpecifier('>3.28.0', VERSION);
@@ -688,7 +688,7 @@ module('Ember Debug - View', function (hooks) {
           name: '-text-field',
           template: /.*/,
           args: Args({ names: ['target', 'value'], positionals: 0 }),
-        })
+        }),
       );
     }
 
@@ -698,7 +698,7 @@ module('Ember Debug - View', function (hooks) {
           name: 'input',
           args: Args({ names: ['id', 'class', 'type'] }),
         },
-        ...modifiers
+        ...modifiers,
       );
       if (hasEmberVersion(3, 26)) {
         inputChildren.push(htmlElement);
@@ -718,10 +718,10 @@ module('Ember Debug - View', function (hooks) {
                 args: Args({ names: ['value'], positionals: 0 }),
                 template: /.*/,
               },
-              ...inputChildren
-            )
-          )
-        )
+              ...inputChildren,
+            ),
+          ),
+        ),
       ),
     ]);
   });
@@ -747,7 +747,7 @@ module('Ember Debug - View', function (hooks) {
             QUnit.assert.equal(
               value.details[0].properties[0].value.inspect,
               '{ x: 123, x.y: 456 }',
-              'test-bar args value inspect should be correct'
+              'test-bar args value inspect should be correct',
             );
           }
           argsTestPromise = testArgsValue();
@@ -763,7 +763,7 @@ module('Ember Debug - View', function (hooks) {
               QUnit.assert.equal(
                 value.details[1].name,
                 'HTMLDivElement',
-                'in-element args value inspect should be correct'
+                'in-element args value inspect should be correct',
               );
             }
             argsTestPromise = testArgsValue();
@@ -773,7 +773,7 @@ module('Ember Debug - View', function (hooks) {
         Component({
           name: 'test-component-in-in-element',
           template: () => null,
-        })
+        }),
       ),
     ];
 
@@ -790,9 +790,9 @@ module('Ember Debug - View', function (hooks) {
               name: 'did-insert',
               args: Args({ positionals: 1 }),
             }),
-            ...children
+            ...children,
           ),
-        ]
+        ],
       );
     } else {
       root.push(...children);
@@ -800,13 +800,13 @@ module('Ember Debug - View', function (hooks) {
 
     matchTree(tree, [
       TopLevel(
-        Route({ name: 'application' }, Route({ name: 'simple' }, ...root))
+        Route({ name: 'application' }, Route({ name: 'simple' }, ...root)),
       ),
     ]);
 
     QUnit.assert.ok(
       argsTestPromise instanceof Promise,
-      'args should be tested'
+      'args should be tested',
     );
     await argsTestPromise;
   });
@@ -818,7 +818,7 @@ module('Ember Debug - View', function (hooks) {
       .dom(this.element)
       .hasClass(
         'ember-application',
-        'The rootElement has the .ember-application CSS class'
+        'The rootElement has the .ember-application CSS class',
       );
 
     this.element.classList.remove('ember-application');
@@ -832,7 +832,7 @@ module('Ember Debug - View', function (hooks) {
       .dom(this.element)
       .doesNotHaveClass(
         'ember-application',
-        'The rootElement no longer has the .ember-application CSS class'
+        'The rootElement no longer has the .ember-application CSS class',
       );
 
     let tree = await getRenderTree();
@@ -855,7 +855,7 @@ module('Ember Debug - View', function (hooks) {
         Component({
           name: 'test-component-in-in-element',
           template: () => null,
-        })
+        }),
       ),
     ];
 
@@ -872,9 +872,9 @@ module('Ember Debug - View', function (hooks) {
               name: 'did-insert',
               args: Args({ positionals: 1 }),
             }),
-            ...children
+            ...children,
           ),
-        ]
+        ],
       );
     } else {
       root.push(...children);
@@ -882,7 +882,7 @@ module('Ember Debug - View', function (hooks) {
 
     matchTree(tree, [
       TopLevel(
-        Route({ name: 'application' }, Route({ name: 'simple' }, ...root))
+        Route({ name: 'application' }, Route({ name: 'simple' }, ...root)),
       ),
     ]);
   });
@@ -895,19 +895,19 @@ module('Ember Debug - View', function (hooks) {
       'template:posts',
       hbs('{{#x-first}}Foo{{/x-first}}', {
         moduleName: 'my-app/templates/posts.hbs',
-      })
+      }),
     );
     this.owner.register(
       'template:components/x-first',
       hbs('{{#x-second}}{{yield}}{{/x-second}}', {
         moduleName: 'my-app/templates/components/x-first.hbs',
-      })
+      }),
     );
     this.owner.register(
       'template:components/x-second',
       hbs('{{yield}}', {
         moduleName: 'my-app/templates/components/x-second.hbs',
-      })
+      }),
     );
 
     await visit('/posts');
@@ -920,9 +920,9 @@ module('Ember Debug - View', function (hooks) {
           { name: 'application' },
           Route(
             { name: 'posts' },
-            Component({ name: 'x-first' }, Component({ name: 'x-second' }))
-          )
-        )
+            Component({ name: 'x-first' }, Component({ name: 'x-second' })),
+          ),
+        ),
       ),
     ]);
   });
@@ -947,7 +947,7 @@ module('Ember Debug - View', function (hooks) {
       assert.ok(!isVisible(highlight), 'highlight is not visible');
 
       run(() =>
-        EmberDebug.port.trigger('view:inspectViews', { inspect: true })
+        EmberDebug.port.trigger('view:inspectViews', { inspect: true }),
       );
     });
 
@@ -967,8 +967,8 @@ module('Ember Debug - View', function (hooks) {
         .hasText(
           'my-app/templates/components/test-foo.hbs'.replace(
             /\//g,
-            '\u200B/\u200B'
-          )
+            '\u200B/\u200B',
+          ),
         );
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
@@ -983,12 +983,12 @@ module('Ember Debug - View', function (hooks) {
       assert.strictEqual(
         actual.width,
         expected.width,
-        'same width as component'
+        'same width as component',
       );
       assert.strictEqual(
         actual.height,
         expected.height,
-        'same height as component'
+        'same height as component',
       );
 
       await triggerEvent('.bar-inner', 'mousemove');
@@ -1002,15 +1002,15 @@ module('Ember Debug - View', function (hooks) {
         .hasText(
           'my-app/templates/components/test-bar.hbs'.replace(
             /\//g,
-            '\u200B/\u200B'
-          )
+            '\u200B/\u200B',
+          ),
         );
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
         .hasText(
           templateOnlyComponent
             ? 'TemplateOnlyComponent'
-            : 'App.TestBarComponent'
+            : 'App.TestBarComponent',
         );
 
       actual = highlight.getBoundingClientRect();
@@ -1022,12 +1022,12 @@ module('Ember Debug - View', function (hooks) {
       assert.strictEqual(
         actual.width,
         expected.width,
-        'same width as component'
+        'same width as component',
       );
       assert.strictEqual(
         actual.height,
         expected.height,
-        'same height as component'
+        'same height as component',
       );
 
       await triggerEvent(document.body, 'mousemove');
@@ -1048,8 +1048,8 @@ module('Ember Debug - View', function (hooks) {
         .hasText(
           'my-app/templates/components/test-foo.hbs'.replace(
             /\//g,
-            '\u200B/\u200B'
-          )
+            '\u200B/\u200B',
+          ),
         );
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
@@ -1065,7 +1065,7 @@ module('Ember Debug - View', function (hooks) {
       assert.deepEqual(
         actual.height,
         expected.height,
-        'same height as component'
+        'same height as component',
       );
 
       assert.ok(isVisible(tooltip), 'tooltip is visible');
@@ -1077,8 +1077,8 @@ module('Ember Debug - View', function (hooks) {
         .hasText(
           'my-app/templates/components/test-foo.hbs'.replace(
             /\//g,
-            '\u200B/\u200B'
-          )
+            '\u200B/\u200B',
+          ),
         );
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
@@ -1127,7 +1127,7 @@ module('Ember Debug - View', function (hooks) {
       assert.deepEqual(
         actual.height,
         expected.height,
-        'same height as component'
+        'same height as component',
       );
 
       assert
@@ -1161,7 +1161,7 @@ module('Ember Debug - View', function (hooks) {
       assert.deepEqual(
         actual.height,
         expected.height,
-        'same height as component'
+        'same height as component',
       );
 
       assert
@@ -1195,7 +1195,7 @@ module('Ember Debug - View', function (hooks) {
       assert.deepEqual(
         actual.height,
         expected.height,
-        'same height as component'
+        'same height as component',
       );
 
       assert

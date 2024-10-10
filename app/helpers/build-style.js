@@ -15,7 +15,7 @@ const { keys } = Object;
 
 export function buildStyle(_, options) {
   return htmlSafe(
-    keys(options).reduce((style, key) => `${style}${key}:${options[key]};`, '')
+    keys(options).reduce((style, key) => `${style}${key}:${options[key]};`, ''),
   );
 }
 

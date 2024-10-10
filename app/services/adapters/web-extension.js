@@ -128,7 +128,7 @@ export default class WebExtension extends BasicAdapter {
   onVersionMismatch(goToVersion) {
     window.location.href = `../panes-${goToVersion.replace(
       /\./g,
-      '-'
+      '-',
     )}/index.html`;
   }
 
@@ -152,7 +152,7 @@ function loadEmberDebug() {
       xhr = new XMLHttpRequest();
       xhr.open(
         'GET',
-        chrome.runtime.getURL(`/panes-${minimumVersion}/ember_debug.js`)
+        chrome.runtime.getURL(`/panes-${minimumVersion}/ember_debug.js`),
       );
       xhr.onload = function () {
         if (xhr.readyState === 4) {

@@ -22,7 +22,7 @@ export function setupTestAdapter(hooks) {
         applicationName: 'My App',
         booted: true,
       },
-      { isDefault: true }
+      { isDefault: true },
     );
 
     respondWith(
@@ -38,7 +38,7 @@ export function setupTestAdapter(hooks) {
           },
         ],
       },
-      { isDefault: true }
+      { isDefault: true },
     );
 
     respondWith('app-selected', false, { isDefault: true });
@@ -51,7 +51,7 @@ export function setupTestAdapter(hooks) {
         applicationName,
         count: 0,
       }),
-      { isDefault: true }
+      { isDefault: true },
     );
   });
 
@@ -62,10 +62,10 @@ export function setupTestAdapter(hooks) {
         assert.strictEqual(
           actual,
           expected,
-          `Expceting resouce ${file}:${line} to be opened ${expected} time(s)`
+          `Expceting resouce ${file}:${line} to be opened ${expected} time(s)`,
         );
         reject(
-          `Expceting resouce ${file}:${line} to be opened ${expected} time(s), was opened ${actual} time(s)`
+          `Expceting resouce ${file}:${line} to be opened ${expected} time(s), was opened ${actual} time(s)`,
         );
       }
     }
@@ -75,7 +75,7 @@ export function setupTestAdapter(hooks) {
         assert.strictEqual(
           actual,
           expected,
-          `The correct amount of ${type} messages are sent`
+          `The correct amount of ${type} messages are sent`,
         );
         reject(`Expecting ${expected} ${type} messages, got ${actual}`);
       }
@@ -210,7 +210,7 @@ export function disableDefaultResponseFor(type) {
     if (responder.type === type && responder.isDefault) {
       if (responder.actual > 0) {
         throw new Error(
-          `Cannot remove default responder for ${type}: a response has already been sent!`
+          `Cannot remove default responder for ${type}: a response has already been sent!`,
         );
       }
 
@@ -220,7 +220,7 @@ export function disableDefaultResponseFor(type) {
   }
 
   throw new Error(
-    `Cannot remove default responder for ${type}: no such responder!`
+    `Cannot remove default responder for ${type}: no such responder!`,
   );
 }
 
@@ -248,7 +248,7 @@ export default class TestAdapter extends BasicAdapter {
     if (!file) {
       QUnit.assert.ok(
         file,
-        `resource has valid "file" field: ${JSON.stringify(file)}`
+        `resource has valid "file" field: ${JSON.stringify(file)}`,
       );
       return;
     }
@@ -256,7 +256,7 @@ export default class TestAdapter extends BasicAdapter {
     if (!line) {
       QUnit.assert.ok(
         file,
-        `resource has valid "line" field: ${JSON.stringify(line)}`
+        `resource has valid "line" field: ${JSON.stringify(line)}`,
       );
       return;
     }
@@ -287,7 +287,7 @@ export default class TestAdapter extends BasicAdapter {
     if (!message.type) {
       QUnit.assert.ok(
         false,
-        `message has valid "type" field: ${JSON.stringify(message)}`
+        `message has valid "type" field: ${JSON.stringify(message)}`,
       );
       return;
     }
@@ -296,7 +296,7 @@ export default class TestAdapter extends BasicAdapter {
       QUnit.assert.strictEqual(
         message.from,
         'devtools',
-        `message has valid "from" field: ${JSON.stringify(message)}`
+        `message has valid "from" field: ${JSON.stringify(message)}`,
       );
       return;
     }
@@ -320,13 +320,13 @@ export default class TestAdapter extends BasicAdapter {
         if (response) {
           console.debug(
             'Received response (inspectedWindow -> devtools)',
-            response
+            response,
           );
           didRespond = sendMessage(response);
         } else if (response === false) {
           console.debug(
             'Ignoreing message (devtools -> inspectedWindow)',
-            message
+            message,
           );
           didRespond = Promise.resolve();
         }

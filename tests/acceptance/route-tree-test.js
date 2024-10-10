@@ -111,7 +111,7 @@ module('Route Tree Tab', function (outer) {
         function () {
           return findAll('.js-route-tree-item').length === 6;
         },
-        { timeout: 2000 }
+        { timeout: 2000 },
       );
 
       let routeNodes = findAll('.js-route-tree-item');
@@ -130,14 +130,14 @@ module('Route Tree Tab', function (outer) {
           'post.edit',
           'comments',
         ],
-        'route name displayed'
+        'route name displayed',
       );
 
-      let routeHandlers = findAll('[data-test-route-handler]').map(function (
-        item
-      ) {
-        return item.getAttribute('title').trim();
-      });
+      let routeHandlers = findAll('[data-test-route-handler]').map(
+        function (item) {
+          return item.getAttribute('title').trim();
+        },
+      );
       assert.deepEqual(
         routeHandlers,
         [
@@ -148,7 +148,7 @@ module('Route Tree Tab', function (outer) {
           'PostEditRoute',
           'CommentsRoute',
         ],
-        'route class name in title attribute'
+        'route class name in title attribute',
       );
 
       let controllers = findAll('.js-route-controller').map(function (item) {
@@ -165,7 +165,7 @@ module('Route Tree Tab', function (outer) {
           'PostEditController',
           'CommentsController',
         ],
-        'controller class name in title attribute'
+        'controller class name in title attribute',
       );
     });
 
@@ -196,7 +196,7 @@ module('Route Tree Tab', function (outer) {
 
       let routeNodes = findAll('.js-route-tree-item .js-route-name');
       let isCurrent = [...routeNodes].map((item) =>
-        item.classList.contains('pill')
+        item.classList.contains('pill'),
       );
       assert.deepEqual(isCurrent, [true, true, false, false, true, false]);
 
@@ -208,12 +208,12 @@ module('Route Tree Tab', function (outer) {
 
       routeNodes = findAll('.js-route-tree-item .js-route-name');
       isCurrent = [...routeNodes].map((item) =>
-        item.classList.contains('pill')
+        item.classList.contains('pill'),
       );
       assert.deepEqual(
         isCurrent,
         [true, true, false, true, false, false],
-        'Current route is bound'
+        'Current route is bound',
       );
     });
 

@@ -79,14 +79,14 @@ const mockedComponents = {
     }),
     template: hbs(
       '<div class="simple-component">one</div><div class="another-component">two</div>',
-      { moduleName: 'my-app/templates/components/two-root.hbs' }
+      { moduleName: 'my-app/templates/components/two-root.hbs' },
     ),
   },
   'two-root-glimmer': {
     component: GlimmerComponent,
     template: hbs(
       '<div class="simple-component">one</div><div class="another-component">two</div>',
-      { moduleName: 'my-app/templates/components/two-root-glimmer.hbs' }
+      { moduleName: 'my-app/templates/components/two-root-glimmer.hbs' },
     ),
   },
   'root-comment-root': {
@@ -95,7 +95,7 @@ const mockedComponents = {
     }),
     template: hbs(
       '<div class="simple-component">one</div><!-- comment --><div class="another-component">two</div>',
-      { moduleName: 'my-app/templates/components/root-comment-root.hbs' }
+      { moduleName: 'my-app/templates/components/root-comment-root.hbs' },
     ),
   },
   'root-comment-root-glimmer': {
@@ -104,7 +104,7 @@ const mockedComponents = {
       '<div class="simple-component">one</div><!-- comment --><div class="another-component">two</div>',
       {
         moduleName: 'my-app/templates/components/root-comment-root-glimmer.hbs',
-      }
+      },
     ),
   },
   'comment-root-comment': {
@@ -113,14 +113,14 @@ const mockedComponents = {
     }),
     template: hbs(
       '<!-- comment 1 --><div class="simple-component">one</div><!-- comment 2 -->',
-      { moduleName: 'my-app/templates/components/comment-root-comment.hbs' }
+      { moduleName: 'my-app/templates/components/comment-root-comment.hbs' },
     ),
   },
   'comment-root-comment-glimmer': {
     component: GlimmerComponent,
     template: hbs(
       '<!-- comment 1 --><div class="simple-component">one</div><!-- comment 2 -->',
-      { moduleName: 'my-app/templates/components/comment-root-comment.hbs' }
+      { moduleName: 'my-app/templates/components/comment-root-comment.hbs' },
     ),
   },
   'div-tag': {
@@ -237,15 +237,15 @@ const constructBase = (owner) => {
     'template:application',
     hbs(
       '<div class="application" style="line-height: normal;">{{outlet}}</div>',
-      { moduleName: 'my-app/templates/application.hbs' }
-    )
+      { moduleName: 'my-app/templates/application.hbs' },
+    ),
   );
 
   owner.register('route:home', EmberRoute);
 
   owner.register(
     'template:home',
-    hbs('Home', { moduleName: 'my-app/templates/home.hbs' })
+    hbs('Home', { moduleName: 'my-app/templates/home.hbs' }),
   );
 };
 
@@ -254,13 +254,13 @@ const constructComponents = (owner, componentsMap) => {
     if (componentsMap[componentKey].component) {
       owner.register(
         `component:${componentKey}`,
-        componentsMap[componentKey].component
+        componentsMap[componentKey].component,
       );
     }
     if (componentsMap[componentKey].template) {
       owner.register(
         `template:components/${componentKey}`,
-        componentsMap[componentKey].template
+        componentsMap[componentKey].template,
       );
     }
   }
@@ -274,7 +274,7 @@ const constructRoutes = (owner, routes) => {
     if (mockedRoutes[routeKey].controller) {
       owner.register(
         `controller:${routeKey}`,
-        mockedRoutes[routeKey].controller
+        mockedRoutes[routeKey].controller,
       );
     }
     if (mockedRoutes[routeKey].template) {
@@ -296,7 +296,7 @@ const assertNodeSizes = (assert, synthetic, real) => {
     assert.strictEqual(
       getRounded(style[styleKey]),
       getRounded(box[boxKey]),
-      `same ${boxKey} as component`
+      `same ${boxKey} as component`,
     );
   }
 };
@@ -305,7 +305,7 @@ const matchHighlights = (
   assert,
   testedRoute,
   newHighlights,
-  isGlimmerComponent
+  isGlimmerComponent,
 ) => {
   const renderedComponents = mockedRoutes[testedRoute].expectedRender.map(
     (selector) => {
@@ -314,10 +314,10 @@ const matchHighlights = (
         component,
         isComponentHighlightSupported
           ? 'expected component is rendered'
-          : 'expected component is rendered but the component highlight is not supported'
+          : 'expected component is rendered but the component highlight is not supported',
       );
       return component;
-    }
+    },
   );
 
   if (isComponentHighlightSupported && !isGlimmerComponent) {
@@ -327,7 +327,7 @@ const matchHighlights = (
   } else {
     assert.notOk(
       newHighlights.length,
-      'Should not have any highlight if highlight is not supported'
+      'Should not have any highlight if highlight is not supported',
     );
   }
 };
@@ -336,7 +336,7 @@ const enableHighlight = () => {
   run(() =>
     EmberDebug.port.trigger('render:updateShouldHighlightRender', {
       shouldHighlightRender: true,
-    })
+    }),
   );
 };
 
@@ -400,12 +400,12 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
 
   hooks.afterEach(function (assert) {
     const highlights = document.getElementsByClassName(
-      'ember-inspector-render-highlight'
+      'ember-inspector-render-highlight',
     );
 
     assert.notOk(
       highlights?.length,
-      'highlights should be destroyed after execution'
+      'highlights should be destroyed after execution',
     );
   });
 

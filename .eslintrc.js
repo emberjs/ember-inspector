@@ -39,6 +39,7 @@ module.exports = {
     'ember/no-classic-components': 'off',
     'ember/no-computed-properties-in-native-classes': 'off',
     'ember/no-get': 'off',
+    'ember/no-runloop': 'off',
 
     // Best practice
     'no-duplicate-imports': 'error',

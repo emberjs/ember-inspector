@@ -149,14 +149,14 @@ module('Deprecation Tab', function (outer) {
       assert.strictEqual(sources.length, 2, 'shows all sources');
       assert.notOk(
         sources[0].querySelector('[data-test-deprecation-source-link]'),
-        'source not clickable'
+        'source not clickable',
       );
       assert
         .dom(sources[0].querySelector('[data-test-deprecation-source-text]'))
         .hasText('path-to-file.js:1');
       assert.notOk(
         sources[1].querySelector('[data-test-deprecation-source-link]'),
-        'source not clickable'
+        'source not clickable',
       );
       assert
         .dom(sources[1].querySelector('[data-test-deprecation-source-text]'))
@@ -169,7 +169,7 @@ module('Deprecation Tab', function (outer) {
       });
 
       await click(
-        sources[0].querySelector('[data-test-trace-deprecations-btn]')
+        sources[0].querySelector('[data-test-trace-deprecations-btn]'),
       );
 
       respondWith('deprecation:sendStackTraces', ({ deprecation }) => {
@@ -179,7 +179,7 @@ module('Deprecation Tab', function (outer) {
       });
 
       await click(
-        sources[1].querySelector('[data-test-trace-deprecations-btn]')
+        sources[1].querySelector('[data-test-trace-deprecations-btn]'),
       );
     });
 
@@ -202,14 +202,14 @@ module('Deprecation Tab', function (outer) {
       assert.strictEqual(sources.length, 2, 'shows all sources');
       assert.notOk(
         sources[0].querySelector('[data-test-deprecation-source-text]'),
-        'source clickable'
+        'source clickable',
       );
       assert
         .dom(sources[0].querySelector('[data-test-deprecation-source-link]'))
         .hasText('path-to-file.js:1');
       assert.notOk(
         sources[1].querySelector('[data-test-deprecation-source-text]'),
-        'source clickable'
+        'source clickable',
       );
       assert
         .dom(sources[1].querySelector('[data-test-deprecation-source-link]'))
@@ -218,13 +218,13 @@ module('Deprecation Tab', function (outer) {
       expectOpenResource('http://path-to-file.js', 1);
 
       await click(
-        sources[0].querySelector('[data-test-deprecation-source-link]')
+        sources[0].querySelector('[data-test-deprecation-source-link]'),
       );
 
       expectOpenResource('http://path-to-second-file.js', 2);
 
       await click(
-        sources[1].querySelector('[data-test-deprecation-source-link]')
+        sources[1].querySelector('[data-test-deprecation-source-link]'),
       );
     });
 

@@ -62,7 +62,7 @@ export default class extends BaseObject {
       function () {
         sourceMaps[url] = null;
       },
-      'ember-inspector'
+      'ember-inspector',
     );
   }
 }
@@ -81,7 +81,7 @@ function retrieveSourceMap(source) {
         return mapURL;
       },
       null,
-      'ember-inspector'
+      'ember-inspector',
     )
     .then(retrieveFile, null, 'ember-inspector')
     .then(
@@ -95,7 +95,7 @@ function retrieveSourceMap(source) {
         };
       },
       null,
-      'ember-inspector'
+      'ember-inspector',
     );
 }
 
@@ -142,7 +142,7 @@ function retrieveSourceMapURL(source) {
       return url;
     },
     null,
-    'ember-inspector'
+    'ember-inspector',
   );
 }
 

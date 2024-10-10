@@ -60,7 +60,7 @@ export default Controller.extend({
         return item.matches(search);
       }
       return true;
-    }
+    },
   ),
   /* jscs:enable validateIndentation */
 

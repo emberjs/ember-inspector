@@ -82,34 +82,34 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
     assert.strictEqual(
       resizableColumns.columns[0].width,
       5,
-      'first column should have the correct width'
+      'first column should have the correct width',
     );
     assert.strictEqual(
       resizableColumns.columns[1].width,
       10,
-      'second column should have the correct width'
+      'second column should have the correct width',
     );
     assert.strictEqual(
       resizableColumns.columns[2].width,
       15,
-      'last column should have the correct width'
+      'last column should have the correct width',
     );
 
     resizableColumns.updateColumnWidth('1', 15);
     assert.strictEqual(
       resizableColumns.columns[0].width,
       15,
-      'first column should have the correct width'
+      'first column should have the correct width',
     );
     assert.strictEqual(
       resizableColumns.columns[1].width,
       10,
-      'second column should have the correct width'
+      'second column should have the correct width',
     );
     assert.strictEqual(
       resizableColumns.columns[2].width,
       5,
-      'last column should have the correct width'
+      'last column should have the correct width',
     );
 
     // Check if it caches the updated widths
@@ -118,34 +118,34 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
     assert.strictEqual(
       resizableColumns.columns[0].width,
       15,
-      'first column should have the correct width'
+      'first column should have the correct width',
     );
     assert.strictEqual(
       resizableColumns.columns[1].width,
       10,
-      'second column should have the correct width'
+      'second column should have the correct width',
     );
     assert.strictEqual(
       resizableColumns.columns[2].width,
       5,
-      'last column should have the correct width'
+      'last column should have the correct width',
     );
 
     resizableColumns.resetWidths();
     assert.strictEqual(
       resizableColumns.columns[0].width,
       10,
-      'first column should have the correct width'
+      'first column should have the correct width',
     );
     assert.strictEqual(
       resizableColumns.columns[1].width,
       10,
-      'second column should have the correct width'
+      'second column should have the correct width',
     );
     assert.strictEqual(
       resizableColumns.columns[2].width,
       10,
-      'last column should have the correct width'
+      'last column should have the correct width',
     );
 
     // Table width upate
@@ -153,17 +153,17 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
     assert.strictEqual(
       resizableColumns.columns[0].width,
       5,
-      'first column should have the correct width'
+      'first column should have the correct width',
     );
     assert.strictEqual(
       resizableColumns.columns[1].width,
       5,
-      'second column should have the correct width'
+      'second column should have the correct width',
     );
     assert.strictEqual(
       resizableColumns.columns[2].width,
       5,
-      'last column should have the correct width'
+      'last column should have the correct width',
     );
   });
 
@@ -173,12 +173,12 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
     assert.strictEqual(
       this.options.storage.keys().length,
       1,
-      'Only uses one key'
+      'Only uses one key',
     );
     assert.strictEqual(
       this.options.storage.keys()[0],
       'list__my-key',
-      'Uses the correct key'
+      'Uses the correct key',
     );
   });
 
@@ -190,7 +190,7 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
     assert.deepEqual(
       resizableColumns.columns.filterBy('visible').mapBy('id'),
       ['1', '2'],
-      'shows/hides according to schema'
+      'shows/hides according to schema',
     );
     assert.deepEqual(resizableColumns.getColumnVisibility().mapBy('visible'), [
       true,
@@ -202,7 +202,7 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
     assert.deepEqual(
       resizableColumns.columns.filterBy('visible').mapBy('id'),
       ['1', '2', '3'],
-      'toggles the third column correctly'
+      'toggles the third column correctly',
     );
     assert.deepEqual(resizableColumns.getColumnVisibility().mapBy('visible'), [
       true,
@@ -214,7 +214,7 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
     assert.deepEqual(
       resizableColumns.columns.filterBy('visible').mapBy('id'),
       ['2', '3'],
-      'toggles the first column correctly'
+      'toggles the first column correctly',
     );
     assert.deepEqual(resizableColumns.getColumnVisibility().mapBy('visible'), [
       false,
@@ -228,7 +228,7 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
     assert.deepEqual(
       resizableColumns.columns.filterBy('visible').mapBy('id'),
       ['2', '3'],
-      'caching overrides schema visibility settings'
+      'caching overrides schema visibility settings',
     );
     assert.deepEqual(resizableColumns.getColumnVisibility().mapBy('visible'), [
       false,

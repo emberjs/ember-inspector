@@ -59,7 +59,7 @@ module('Ember Debug - Deprecation', function (hooks) {
           });
           EmberDebug.IGNORE_DEPRECATIONS = true;
         },
-      })
+      }),
     );
 
     run(EmberDebug.port, 'trigger', 'deprecation:watch');
@@ -74,7 +74,7 @@ module('Ember Debug - Deprecation', function (hooks) {
     assert.strictEqual(
       deprecation.sources.length,
       2,
-      'Correctly separated by source'
+      'Correctly separated by source',
     );
 
     deprecation = deprecations[1];
@@ -94,7 +94,7 @@ module('Ember Debug - Deprecation', function (hooks) {
       warn(message) {
         assert.strictEqual(
           message,
-          'Deprecations were detected, see the Ember Inspector deprecations tab for more details.'
+          'Deprecations were detected, see the Ember Inspector deprecations tab for more details.',
         );
         assert.strictEqual(++count, 1, 'Warns once');
       },
@@ -119,7 +119,7 @@ module('Ember Debug - Deprecation', function (hooks) {
           });
           EmberDebug.IGNORE_DEPRECATIONS = true;
         },
-      })
+      }),
     );
 
     await visit('/');

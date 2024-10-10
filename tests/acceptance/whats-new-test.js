@@ -6,7 +6,7 @@ import { setupTestAdapter } from '../test-adapter';
 
 function urlFor(ref) {
   return `https://raw.githubusercontent.com/emberjs/ember-inspector/${encodeURIComponent(
-    ref
+    ref,
   )}/CHANGELOG.md`;
 }
 
@@ -92,7 +92,7 @@ module('Whats New', function (outer) {
       assert.strictEqual(
         find('.whats-new h2').textContent,
         'v4.5.3 (2021-11-18)',
-        'correct section of markdown is rendered'
+        'correct section of markdown is rendered',
       );
     });
 
@@ -132,7 +132,7 @@ module('Whats New', function (outer) {
       assert.strictEqual(
         find('.whats-new h2 a').text,
         'Unreleased',
-        'correct section of markdown is rendered'
+        'correct section of markdown is rendered',
       );
     });
 

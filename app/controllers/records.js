@@ -43,7 +43,7 @@ export default class RecordsController extends Controller {
   @computed(
     'searchValue',
     'model.@each.{columnValues,filterValues}',
-    'filterValue'
+    'filterValue',
   )
   get filteredRecords() {
     let search = this.searchValue;
@@ -59,7 +59,7 @@ export default class RecordsController extends Controller {
       if (!isEmpty(search)) {
         let searchString = this.recordToString(item);
         return !!searchString.match(
-          new RegExp(`.*${escapeRegExp(search.toLowerCase())}.*`)
+          new RegExp(`.*${escapeRegExp(search.toLowerCase())}.*`),
         );
       }
       return true;

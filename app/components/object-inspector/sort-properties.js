@@ -46,7 +46,7 @@ export default class SortProperties extends Component {
     set(
       p,
       'isFunction',
-      p.value.type === 'type-function' || p.value.type === 'type-asyncfunction'
+      p.value.type === 'type-function' || p.value.type === 'type-asyncfunction',
     );
     if (p.name == parseInt(p.name)) {
       set(p, 'name', parseInt(p.name));

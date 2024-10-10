@@ -29,7 +29,7 @@ export default class PromiseItem extends Component {
 
   @computed(
     'args.{effectiveSearch,filter}',
-    'args.model.{isFulfilled,isPending,isRejected,state}'
+    'args.model.{isFulfilled,isPending,isRejected,state}',
   )
   get nodeStyle() {
     let relevant;
@@ -61,7 +61,7 @@ export default class PromiseItem extends Component {
     return htmlSafe(
       `padding-left: ${+get(this, 'args.model.level') * 20 + 5}px;${
         this.nodeStyle
-      }`
+      }`,
     );
   }
 

@@ -84,7 +84,7 @@ function TopLevel({ id }, ...children) {
       instance: null,
       template: 'packages/@ember/-internals/glimmer/lib/templates/outlet.hbs',
     },
-    ...children
+    ...children,
   );
 }
 
@@ -109,7 +109,7 @@ function getRenderTree({ withChildren, withManyChildren } = {}) {
   if (withChildren) {
     children.push(
       Component({ id: 5, name: 'sub-task' }),
-      Component({ id: 6, name: 'sub-task' })
+      Component({ id: 6, name: 'sub-task' }),
     );
   }
   if (withManyChildren) {
@@ -133,11 +133,11 @@ function getRenderTree({ withChildren, withManyChildren } = {}) {
                 args: Args({ names: ['subTasks'], positionals: 0 }),
                 instance: Serialized('ember789'),
               },
-              ...children
-            )
-          )
-        )
-      )
+              ...children,
+            ),
+          ),
+        ),
+      ),
     ),
   ];
 }
@@ -165,7 +165,7 @@ module('Component Tab', function (hooks) {
     assert.strictEqual(
       expandedNodes.length,
       3,
-      'all nodes should be expanded except the leaf node'
+      'all nodes should be expanded except the leaf node',
     );
 
     let names = [];
@@ -183,7 +183,7 @@ module('Component Tab', function (hooks) {
         'TodoList',
         'TodoItem @subTasks ={{ ... }}',
       ],
-      'expected names for all views/components'
+      'expected names for all views/components',
     );
   });
 
@@ -290,7 +290,7 @@ module('Component Tab', function (hooks) {
     assert.strictEqual(
       expanders.length,
       3,
-      'disclosure triangles all in expanded state'
+      'disclosure triangles all in expanded state',
     );
 
     // Click second component with alt key;
@@ -301,7 +301,7 @@ module('Component Tab', function (hooks) {
     assert.strictEqual(
       expanders.length,
       1,
-      'clicked disclosure triangle no longer expanded'
+      'clicked disclosure triangle no longer expanded',
     );
 
     expanders = findAll('.component-tree-item__expand');
@@ -335,7 +335,7 @@ module('Component Tab', function (hooks) {
     assert.deepEqual(
       visibleComponentNames,
       ['application route', 'todos route', 'TodoList'],
-      'expected names for all views/components'
+      'expected names for all views/components',
     );
   });
 
@@ -442,9 +442,9 @@ module('Component Tab', function (hooks) {
 
     assert.true(
       isInViewport(
-        document.getElementsByClassName('component-tree-item--pinned').item(0)
+        document.getElementsByClassName('component-tree-item--pinned').item(0),
       ),
-      'it should show the pinned item'
+      'it should show the pinned item',
     );
 
     await sendMessage({
@@ -462,9 +462,9 @@ module('Component Tab', function (hooks) {
       isInViewport(
         document
           .getElementsByClassName('component-tree-item--highlighted')
-          .item(0)
+          .item(0),
       ),
-      'it should show the preview item'
+      'it should show the preview item',
     );
 
     await sendMessage({
@@ -478,7 +478,7 @@ module('Component Tab', function (hooks) {
       .dom('.component-tree-item--pinned')
       .exists(
         { count: 0 },
-        'it should not scroll back to the pinned component after preview finished'
+        'it should not scroll back to the pinned component after preview finished',
       );
 
     await sendMessage({
@@ -492,7 +492,7 @@ module('Component Tab', function (hooks) {
       .dom('.component-tree-item--pinned')
       .exists(
         { count: 0 },
-        'it should not scroll back to the pinned component after new render tree'
+        'it should not scroll back to the pinned component after new render tree',
       );
 
     const scrollTarget = document
@@ -520,9 +520,9 @@ module('Component Tab', function (hooks) {
 
     assert.true(
       isInViewport(
-        document.getElementsByClassName('component-tree-item--pinned').item(0)
+        document.getElementsByClassName('component-tree-item--pinned').item(0),
       ),
-      'it should show the pinned item'
+      'it should show the pinned item',
     );
   });
 
@@ -585,7 +585,7 @@ module('Component Tab', function (hooks) {
       assert.strictEqual(
         objectId,
         'ember456',
-        'Client asked to inspect the application controller'
+        'Client asked to inspect the application controller',
       );
       return false;
     });
@@ -619,7 +619,7 @@ module('Component Tab', function (hooks) {
       assert.strictEqual(
         objectId,
         'ember789',
-        'Client asked to inspect the <TodoItem> component'
+        'Client asked to inspect the <TodoItem> component',
       );
       return false;
     });
@@ -632,7 +632,7 @@ module('Component Tab', function (hooks) {
     assert.strictEqual(
       currentURL(),
       '/component-tree?pinned=render-node%3A4',
-      'It pins the element id as a query param'
+      'It pins the element id as a query param',
     );
 
     await settled();
@@ -641,7 +641,7 @@ module('Component Tab', function (hooks) {
       .dom('.component-tree-item--pinned')
       .hasText(
         'TodoItem @subTasks ={{ ... }}',
-        'It selects the item in the tree corresponding to the element'
+        'It selects the item in the tree corresponding to the element',
       );
 
     treeNodes = findAll('.component-tree-item');
@@ -657,7 +657,7 @@ module('Component Tab', function (hooks) {
       assert.strictEqual(
         objectId,
         'ember1',
-        'Client asked to inspect the <TodoList> component argument'
+        'Client asked to inspect the <TodoList> component argument',
       );
       return false;
     });

@@ -279,7 +279,7 @@ module('Promise Tab', function (outer) {
             applicationName,
             instrumentWithStack,
           };
-        }
+        },
       );
 
       await click(input);

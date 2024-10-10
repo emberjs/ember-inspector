@@ -8,7 +8,7 @@
   <Ui::ToolbarDivider />
 
   <button
-    class="{{if (is-empty @filterValue) "active"}} toolbar__radio js-filter"
+    class="{{if (is-empty @filterValue) "active"}} toolbar-radio js-filter"
     type="button"
     {{on "click" (fn @setFilter "")}}
   >
@@ -19,7 +19,7 @@
     <button
       class="{{
         if (eq @filterValue filter.name) "active"
-      }} toolbar__radio js-filter"
+      }} toolbar-radio js-filter"
       type="button"
       {{on "click" (fn @setFilter filter.name)}}
     >

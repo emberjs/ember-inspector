@@ -195,7 +195,7 @@ export default class {
     this._columnVisibility = this.columnSchema.map((column) =>
       Object.assign({}, column, {
         visible: this.isColumnVisible(column.id),
-      })
+      }),
     );
   }
 
@@ -317,7 +317,7 @@ export default class {
         obj[id] = visible;
         return obj;
       },
-      {}
+      {},
     );
     this.storage.setItem(this.getStorageKey(), saved);
   }

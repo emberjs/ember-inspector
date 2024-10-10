@@ -22,7 +22,7 @@ export default class RouteTreeController extends Controller {
     'model.[]',
     'options.{hideRoutes,hideSubstates}',
     'currentRoute.{name,url}',
-    'searchValue'
+    'searchValue',
   )
   get filtered() {
     if (!Array.isArray(this.model)) {
