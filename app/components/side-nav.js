@@ -92,7 +92,7 @@ export default class SideNav extends Component {
 
   handleResize() {
     const containerHeight = this.element.clientHeight;
-    const item = this.element.querySelector('.nav__item');
+    const item = this.element.querySelector('.nav-item');
     const itemHeight = item.clientHeight;
 
     this.displayCount = Math.floor(containerHeight / itemHeight) - 1;

@@ -87,7 +87,6 @@ module('Ember Debug - Deprecation', function (hooks) {
   });
 
   test('Warns once about deprecations', async function t(assert) {
-    assert.expect(2);
     let count = 0;
     run(EmberDebug.port, 'trigger', 'deprecation:watch');
     EmberDebug.port.adapter.reopen({

@@ -7,6 +7,16 @@ settings:
 importers:
 
   .:
+    dependencies:
+      got:
+        specifier: ^11.8.6
+        version: 11.8.6
+      rimraf:
+        specifier: ^5.0.10
+        version: 5.0.10
+      yauzl:
+        specifier: ^2.10.0
+        version: 2.10.0
     devDependencies:
       '@babel/core':
         specifier: ^7.25.8
@@ -314,9 +324,6 @@ importers:
       fstream:
         specifier: ^1.0.12
         version: 1.0.12
-      got:
-        specifier: ^11.8.6
-        version: 11.8.6
       gulp:
         specifier: ^4.0.2
         version: 4.0.2
@@ -350,9 +357,6 @@ importers:
       release-plan:
         specifier: ^0.8.0
         version: 0.8.0(encoding@0.1.13)
-      rimraf:
-        specifier: ^5.0.10
-        version: 5.0.10
       sass:
         specifier: ^1.79.4
         version: 1.79.4
@@ -380,9 +384,6 @@ importers:
       webpack:
         specifier: ^5.95.0
         version: 5.95.0
-      yauzl:
-        specifier: ^2.10.0
-        version: 2.10.0
 
 packages:
 

@@ -1,4 +1,4 @@
-<div class="toolbar__search relative mx-1" ...attributes>
+<div class="toolbar-search relative mx-1" ...attributes>
   <Input
     id={{this.inputId}}
     @type="text"
@@ -9,7 +9,7 @@
 
   {{#if @value}}
     <button
-      class="toolbar__icon-button toolbar__search-clear-button absolute right-0 w-auto h-auto"
+      class="toolbar__icon-button toolbar-search-clear-button absolute right-0 w-auto h-auto"
       title="clear"
       data-test-search-field-clear-button
       {{on "click" this.clear}}

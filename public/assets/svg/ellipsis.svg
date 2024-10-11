@@ -1,5 +1,5 @@
 <svg aria-hidden="true" version="1.1" width="20" height="20" viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-  <circle class="nav__icon-stroke" cx="3.75" cy="10" r="1.25" />
-  <circle class="nav__icon-stroke" cx="10" cy="10" r="1.25" />
-  <circle class="nav__icon-stroke" cx="16.25" cy="10" r="1.25" />
+  <circle class="nav-icon-stroke" cx="3.75" cy="10" r="1.25" />
+  <circle class="nav-icon-stroke" cx="10" cy="10" r="1.25" />
+  <circle class="nav-icon-stroke" cx="16.25" cy="10" r="1.25" />
 </svg>

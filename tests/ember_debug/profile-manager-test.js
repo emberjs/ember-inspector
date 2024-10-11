@@ -410,8 +410,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should not show highlights for text component - Ember component', async function (assert) {
-    assert.expect(2);
-
     const testedRoute = 'text-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -421,8 +419,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should not show highlights for text component - Glimmer component', async function (assert) {
-    assert.expect(2);
-
     const testedRoute = 'text-glimmer-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -432,8 +428,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should not show highlights for comment component - Ember component', async function (assert) {
-    assert.expect(2);
-
     const testedRoute = 'comment-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -443,8 +437,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should not show highlights for comment component - Glimmer component', async function (assert) {
-    assert.expect(2);
-
     const testedRoute = 'comment-glimmer-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -454,8 +446,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should highlight one rootNode Ember component', async function (assert) {
-    assert.expect(isComponentHighlightSupported ? 6 : 3);
-
     const testedRoute = 'one-root-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -465,8 +455,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Highlight is not supported, should not highlight one rootNode Glimmer component', async function (assert) {
-    assert.expect(3);
-
     const testedRoute = 'one-root-glimmer-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -476,8 +464,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should highlight two rootNode ([rootNode, rootNode] and no tagName) Ember component', async function (assert) {
-    assert.expect(isComponentHighlightSupported ? 11 : 4);
-
     const testedRoute = 'two-root-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -487,8 +473,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Highlight is not supported, should not highlight two rootNode ([rootNode, rootNode] and no tagName) Glimmer component', async function (assert) {
-    assert.expect(4);
-
     const testedRoute = 'two-root-glimmer-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -498,8 +482,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should highlight two rootNode with one comment ([rootNode, commentNode, rootNode] and no tagName) Ember component', async function (assert) {
-    assert.expect(isComponentHighlightSupported ? 11 : 4);
-
     const testedRoute = 'root-comment-root-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -509,8 +491,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Highlight is not supported, should not highlight two rootNode with one comment ([rootNode, commentNode, rootNode] and no tagName) Glimmer component', async function (assert) {
-    assert.expect(4);
-
     const testedRoute = 'root-comment-root-glimmer-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -520,8 +500,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should highlight one rootNode with two comment ([commentNode, rootNode, commentNode] and no tagName) Ember component', async function (assert) {
-    assert.expect(isComponentHighlightSupported ? 6 : 3);
-
     const testedRoute = 'comment-root-comment-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -531,8 +509,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Highlight is not supported, should not highlight one rootNode with two comment ([commentNode, rootNode, commentNode] and no tagName) Glimmer component', async function (assert) {
-    assert.expect(3);
-
     const testedRoute = 'comment-root-comment-glimmer-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -542,8 +518,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should highlight tagName div Ember component', async function (assert) {
-    assert.expect(isComponentHighlightSupported ? 6 : 3);
-
     const testedRoute = 'div-tag-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -553,8 +527,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should highlight two rootNode ([rootNode, rootNode] and tagName div) Ember component', async function (assert) {
-    assert.expect(isComponentHighlightSupported ? 6 : 3);
-
     const testedRoute = 'div-roots-route';
     constructRoutes(this.owner, [testedRoute]);
 

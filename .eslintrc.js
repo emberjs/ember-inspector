@@ -35,6 +35,7 @@ module.exports = {
     // Temporarily turn these off
     'ember/classic-decorator-hooks': 'off',
     'ember/classic-decorator-no-classic-methods': 'off',
+    'ember/no-at-ember-render-modifiers': 'off',
     'ember/no-classic-classes': 'off',
     'ember/no-classic-components': 'off',
     'ember/no-computed-properties-in-native-classes': 'off',

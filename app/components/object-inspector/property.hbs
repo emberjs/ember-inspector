@@ -1,11 +1,11 @@
 <li
-  class="{{if this.isOverridden "mixin__property-state-overridden line-through"}} mixin__property flex flex-row relative items-center truncate"
+  class="{{if this.isOverridden "mixin-property-state-overridden line-through"}} mixin-property flex flex-row relative items-center truncate"
   data-test-object-property
 >
   {{!-- Disclosure Triangle --}}
   {{#if this.hasDependentKeys}}
     <button
-      class="mixin__cp-toggle {{if this.showDependentKeys "mixin__cp-toggle--expanded"}}"
+      class="mixin-cp-toggle {{if this.showDependentKeys "mixin-cp-toggle--expanded"}}"
       {{on "click" this.toggleDeps}}
       type="button"
     >
@@ -22,23 +22,23 @@
 
   {{!-- Property Icon --}}
   <span
-    class="mixin__property-icon-container flex-shrink-0"
+    class="mixin-property-icon-container flex-shrink-0"
     role="button"
     title={{if @model.code @model.code this.iconInfo.title}}
     {{on "click" this.toggleDeps}}
   >
-    <span class="mixin__property-icon mixin__property-icon--{{this.iconInfo.type}} inline-block rounded font-mono text-md text-white text-center select-none"></span>
+    <span class="mixin-property-icon mixin-property-icon--{{this.iconInfo.type}} inline-block rounded font-mono text-md text-white text-center select-none"></span>
   </span>
 
   {{!-- Property Name --}}
   <span
-    class="mixin__property-name text-base14 truncate"
+    class="mixin-property-name text-base14 truncate"
     data-test-object-property-name
   >
     {{#if this.isService}}
       <span
         title="service"
-        class="mixin__property--group"
+        class="mixin-property--group"
         data-test-property-name-service
       >
         {{@model.name}}
@@ -47,7 +47,7 @@
       {{#if this.hasDependentKeys}}
         <span
           title="computed"
-          class="mixin__property--group"
+          class="mixin-property--group"
         >
           {{@model.name}}
         </span>
@@ -62,7 +62,7 @@
   {{#if this.isEdit}}
     {{#if this.isDate}}
       <DatePropertyField
-        class="mixin__property-value-txt flex-1 text-base14 outline-none text-base bg-base01 js-object-property-value-date"
+        class="mixin-property-value-txt flex-1 text-base14 outline-none text-base bg-base01 js-object-property-value-date"
         @allowInput={{true}}
         @date={{readonly this.dateValue}}
         @dateFormat="Y-m-d"
@@ -71,7 +71,7 @@
       />
     {{else}}
       <ObjectInspector::PropertyField
-        class="mixin__property-value-txt flex-1 text-base14 text-base bg-base01 outline-none"
+        class="mixin-property-value-txt flex-1 text-base14 text-base bg-base01 outline-none"
         @value={{this.txtValue}}
         @insert-newline={{this.save}}
         @escape-press={{this.finishedEditing}}
@@ -93,7 +93,7 @@
     {{/if}}
     {{#if this.isDate}}
       <span
-        class="{{@model.value.type}} mixin__property-value truncate"
+        class="{{@model.value.type}} mixin-property-value truncate"
         role="button"
         {{on "click" this.dateClick}}
         data-test-object-property-value
@@ -102,7 +102,7 @@
       </span>
     {{else}}
       <span
-        class="{{@model.value.type}} {{if this.isService "type-service"}} mixin__property-value truncate"
+        class="{{@model.value.type}} {{if this.isService "type-service"}} mixin-property-value truncate"
         role="button"
         {{on "click" this.valueClick}}
         data-test-object-property-value
@@ -112,7 +112,7 @@
     {{/if}}
   {{/if}}
 
-  <span class="mixin__property-overridden-by absolute right-0 no-underline bg-spec00">
+  <span class="mixin-property-overridden-by absolute right-0 no-underline bg-spec00">
     (Overridden by {{@model.overridden}})
   </span>
 

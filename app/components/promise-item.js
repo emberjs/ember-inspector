@@ -72,9 +72,9 @@ export default class PromiseItem extends Component {
     }
 
     if (get(this, 'args.model.isExpanded')) {
-      return 'list__cell_arrow_expanded';
+      return 'list-cell_arrow_expanded';
     } else {
-      return 'list__cell_arrow_collapsed';
+      return 'list-cell_arrow_collapsed';
     }
   }
 

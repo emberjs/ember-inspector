@@ -1,14 +1,14 @@
-<li class="mixin__property-dependency-list relative">
+<li class="mixin-property-dependency-list relative">
   {{svg-jar "dependent-key-connection" width="20px" height="10px"}}
   <ul class="m-0 p-0 list-none">
     {{#each @keys as |dep|}}
       <li
-        class="mixin__property-dependency-item relative text-base12 text-sm {{if dep.changed 'text-spec01'}}"
+        class="mixin-property-dependency-item relative text-base12 text-sm {{if dep.changed 'text-spec01'}}"
         title={{if dep.changed 'this property changed'}}
       >
       {{#if dep.child}}
         <span
-          class="mixin__property-dependency-name subkey"
+          class="mixin-property-dependency-name subkey"
           data-label="object-property-name"
         >
           • -- {{dep.child}}
@@ -20,7 +20,7 @@
           height="9px"
         }}
         <span
-          class="mixin__property-dependency-name"
+          class="mixin-property-dependency-name"
           data-label="object-property-name"
         >
           {{dep.name}}

@@ -16,7 +16,7 @@
     "changelog": "github_changelog_generator -u emberjs -p ember-inspector --since-tag v3.8.0",
     "compress:panes": "gulp compress:chrome-pane && gulp compress:firefox-pane && gulp compress:bookmarklet-pane",
     "lint": "concurrently \"pnpm:lint:*(!fix)\" --names \"lint:\"",
-    "lint:css": "stylelint \"**/*.css\"",
+    "lint:css": "stylelint \"**/*.scss\"",
     "lint:css:fix": "concurrently \"pnpm:lint:css -- --fix\"",
     "lint:fix": "concurrently \"pnpm:lint:*:fix\" --names \"fix:\"",
     "lint:hbs": "ember-template-lint .",
@@ -29,6 +29,11 @@
     "test": "concurrently \"pnpm:lint\" \"pnpm:test:*\" --names \"lint,test:\"",
     "test:ember": "COVERAGE=true ember test",
     "watch": "ember build --watch"
+  },
+  "dependencies": {
+    "got": "^11.8.6",
+    "rimraf": "^5.0.10",
+    "yauzl": "^2.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.8",
@@ -133,7 +138,6 @@
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-qunit": "^8.1.2",
     "fstream": "^1.0.12",
-    "got": "^11.8.6",
     "gulp": "^4.0.2",
     "gulp-zip": "^5.1.0",
     "loader.js": "^4.7.0",
@@ -145,7 +149,6 @@
     "release-it": "^15.11.0",
     "release-it-lerna-changelog": "^5.0.0",
     "release-plan": "^0.8.0",
-    "rimraf": "^5.0.10",
     "sass": "^1.79.4",
     "source-map-js": "^1.2.1",
     "stylelint": "^15.11.0",
@@ -154,8 +157,7 @@
     "tracked-built-ins": "^3.3.0",
     "tracked-toolbox": "^2.0.0",
     "typescript": "^5.6.3",
-    "webpack": "^5.95.0",
-    "yauzl": "^2.10.0"
+    "webpack": "^5.95.0"
   },
   "engines": {
     "node": ">= 18"

@@ -1,5 +1,5 @@
 {{#if @model.length}}
-  <div class="split__panel__hd">
+  <div class="split-panel-hd">
     <div class="toolbar">
       <button
         data-test-object-inspector-back
@@ -49,11 +49,11 @@
     {{/if}}
   </div>
 
-  <div class="split__panel__bd">
+  <div class="split-panel__bd">
     <div class="toolbar object-inspector-toolbar">
       <button
         data-test-object-display-type-grouped
-        class="toolbar-radio toolbar-radio--first {{
+        class="toolbar-radio toolbar-radio-first {{
           if (eq this.propDisplayType "grouped") "active"
         }}"
         type="button"
@@ -72,7 +72,7 @@
 
       <Ui::ToolbarDivider />
 
-      <div class="toolbar__search relative mx-1">
+      <div class="toolbar-search relative mx-1">
         <Input
           id={{this.searchInputId}}
           @type="text"
@@ -83,7 +83,7 @@
         />
         {{#if this.customFilter}}
           <button
-            class="toolbar__icon-button toolbar__search-clear-button absolute right-0 w-auto h-auto"
+            class="toolbar__icon-button toolbar-search-clear-button absolute right-0 w-auto h-auto"
             title="clear"
             data-test-object-inspector-custom-search-clear
             type="button"
@@ -112,7 +112,7 @@
     {{/if}}
   </div>
 {{else}}
-  <div class="split__panel__bd">
+  <div class="split-panel__bd">
     <Ui::EmptyMessage>
       No object selected
     </Ui::EmptyMessage>

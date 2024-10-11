@@ -195,8 +195,6 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Digging deeper into objects', async function (assert) {
-    assert.expect(8);
-
     await visit('/');
 
     await sendMessage({
@@ -258,8 +256,6 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Digging deeper into objects works when digging into nested object with periods in name', async function (assert) {
-    assert.expect(8);
-
     await visit('/');
 
     await sendMessage({
@@ -321,8 +317,6 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Digging deeper into objects works with nested objects containing properties with periods in name', async function (assert) {
-    assert.expect(8);
-
     await visit('/');
 
     await sendMessage({
@@ -453,15 +447,13 @@ module('Object Inspector', function (hooks) {
 
     await click('[data-test-object-detail-name]');
 
-    assert.dom('.mixin__property--group').exists({ count: 1 });
-    assert.dom('.mixin__property-icon--service').exists({ count: 1 });
+    assert.dom('.mixin-property--group').exists({ count: 1 });
+    assert.dom('.mixin-property-icon--service').exists({ count: 1 });
     assert.dom('[data-test-property-name-service]').exists({ count: 1 });
-    assert.dom('.mixin__property-dependency-list').doesNotExist();
-    assert.dom('.mixin__property-dependency-item').doesNotExist();
+    assert.dom('.mixin-property-dependency-list').doesNotExist();
+    assert.dom('.mixin-property-dependency-item').doesNotExist();
     assert
-      .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name',
-      )
+      .dom('.mixin-property-dependency-item > .mixin-property-dependency-name')
       .doesNotExist();
   });
 
@@ -509,26 +501,22 @@ module('Object Inspector', function (hooks) {
 
     await click('[data-test-calculate]');
 
-    assert.dom('.mixin__property--group').doesNotExist();
+    assert.dom('.mixin-property--group').doesNotExist();
 
-    await click('.mixin__property-icon--computed');
+    await click('.mixin-property-icon--computed');
 
-    assert.dom('.mixin__property-dependency-list').doesNotExist();
-    assert.dom('.mixin__property-dependency-item').doesNotExist();
+    assert.dom('.mixin-property-dependency-list').doesNotExist();
+    assert.dom('.mixin-property-dependency-item').doesNotExist();
     assert
-      .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name',
-      )
+      .dom('.mixin-property-dependency-item > .mixin-property-dependency-name')
       .doesNotExist();
 
-    await click('.mixin__property-icon--computed');
+    await click('.mixin-property-icon--computed');
 
-    assert.dom('.mixin__property-dependency-list').doesNotExist();
-    assert.dom('.mixin__property-dependency-item').doesNotExist();
+    assert.dom('.mixin-property-dependency-list').doesNotExist();
+    assert.dom('.mixin-property-dependency-item').doesNotExist();
     assert
-      .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name',
-      )
+      .dom('.mixin-property-dependency-item > .mixin-property-dependency-name')
       .doesNotExist();
   });
 
@@ -575,39 +563,33 @@ module('Object Inspector', function (hooks) {
 
     await click('[data-test-calculate]');
 
-    assert.dom('.mixin__property--group').exists({ count: 1 });
+    assert.dom('.mixin-property--group').exists({ count: 1 });
 
-    await click('.mixin__property-icon--computed');
+    await click('.mixin-property-icon--computed');
 
-    assert.dom('.mixin__property-dependency-list').exists({ count: 1 });
-    assert.dom('.mixin__property-dependency-item').exists({ count: 1 });
+    assert.dom('.mixin-property-dependency-list').exists({ count: 1 });
+    assert.dom('.mixin-property-dependency-item').exists({ count: 1 });
     assert
-      .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name',
-      )
+      .dom('.mixin-property-dependency-item > .mixin-property-dependency-name')
       .exists({ count: 1 });
 
-    await click('.mixin__property-icon--computed');
+    await click('.mixin-property-icon--computed');
 
-    assert.dom('.mixin__property-dependency-list').doesNotExist();
-    assert.dom('.mixin__property-dependency-item').doesNotExist();
+    assert.dom('.mixin-property-dependency-list').doesNotExist();
+    assert.dom('.mixin-property-dependency-item').doesNotExist();
     assert
-      .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name',
-      )
+      .dom('.mixin-property-dependency-item > .mixin-property-dependency-name')
       .doesNotExist();
 
     // All View
 
     await click('[data-test-object-display-type-all]');
-    await click('.mixin__property-icon--computed');
+    await click('.mixin-property-icon--computed');
 
-    assert.dom('.mixin__property-dependency-list').exists({ count: 1 });
-    assert.dom('.mixin__property-dependency-item').exists({ count: 1 });
+    assert.dom('.mixin-property-dependency-list').exists({ count: 1 });
+    assert.dom('.mixin-property-dependency-item').exists({ count: 1 });
     assert
-      .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name',
-      )
+      .dom('.mixin-property-dependency-item > .mixin-property-dependency-name')
       .exists({ count: 1 });
   });
 
@@ -730,8 +712,6 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Send to console', async function (assert) {
-    assert.expect(6);
-
     await visit('/');
 
     await sendMessage({
@@ -786,8 +766,6 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Goto Source', async function (assert) {
-    assert.expect(6);
-
     await visit('/');
 
     await sendMessage({
@@ -924,8 +902,6 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Date fields are editable', async function (assert) {
-    assert.expect(5);
-
     await visit('/');
 
     let date = new Date(2019, 7, 13); // 2019-08-13
@@ -1007,8 +983,6 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Boolean fields are editable', async function (assert) {
-    assert.expect(4);
-
     await visit('/');
 
     await sendMessage({
@@ -1068,8 +1042,6 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Errors are correctly displayed', async function (assert) {
-    assert.expect(8);
-
     await visit('/');
 
     await sendMessage({
@@ -1136,7 +1108,7 @@ module('Object Inspector', function (hooks) {
 
     await click('[data-test-object-detail-name]');
 
-    assert.dom('.mixin__property-icon--tracked').exists();
+    assert.dom('.mixin-property-icon--tracked').exists();
     assert.dom('[data-test-object-property-value]').hasText('123');
 
     await sendMessage({
@@ -1149,7 +1121,7 @@ module('Object Inspector', function (hooks) {
       mixinIndex: 0,
     });
 
-    assert.dom('.mixin__property-icon--tracked').exists();
+    assert.dom('.mixin-property-icon--tracked').exists();
     assert.dom('[data-test-object-property-value]').hasText('456');
   });
 
@@ -1179,7 +1151,7 @@ module('Object Inspector', function (hooks) {
 
     await click('[data-test-object-detail-name]');
 
-    assert.dom('.mixin__property-icon--property').exists();
+    assert.dom('.mixin-property-icon--property').exists();
     assert.dom('[data-test-object-property-value]').hasText('123');
 
     await sendMessage({
@@ -1192,7 +1164,7 @@ module('Object Inspector', function (hooks) {
       mixinIndex: 0,
     });
 
-    assert.dom('.mixin__property-icon--property').exists();
+    assert.dom('.mixin-property-icon--property').exists();
     assert.dom('[data-test-object-property-value]').hasText('456');
   });
 
@@ -1222,7 +1194,7 @@ module('Object Inspector', function (hooks) {
 
     await click('[data-test-object-detail-name]');
 
-    assert.dom('.mixin__property-icon--getter').exists();
+    assert.dom('.mixin-property-icon--getter').exists();
     assert.dom('[data-test-object-property-value]').hasText('123');
 
     await sendMessage({
@@ -1235,7 +1207,7 @@ module('Object Inspector', function (hooks) {
       mixinIndex: 0,
     });
 
-    assert.dom('.mixin__property-icon--getter').exists();
+    assert.dom('.mixin-property-icon--getter').exists();
     assert.dom('[data-test-object-property-value]').hasText('456');
   });
 

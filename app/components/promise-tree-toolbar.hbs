@@ -23,7 +23,7 @@
   <button
     class="{{
       if (eq @filter "all") "active"
-    }} toolbar-radio toolbar-radio--first js-filter"
+    }} toolbar-radio toolbar-radio-first js-filter"
     type="button"
     {{on "click" (fn @setFilter "all")}}
   >
@@ -47,7 +47,7 @@
   <button
     class="{{
       if (eq @filter "fulfilled") "active"
-    }} toolbar-radio toolbar-radio--last js-filter"
+    }} toolbar-radio toolbar-radio-last js-filter"
     type="button"
     {{on "click" (fn @setFilter "fullfilled")}}
   >

@@ -1,10 +1,10 @@
-.toolbar__search input {
+.toolbar-search input {
   border: 1px solid var(--base05);
   height: calc(var(--toolbar-height) - 7px);
   width: 175px;
 }
 
-.toolbar__search-clear-button {
+.toolbar-search-clear-button {
   top: 3px;
 
   svg {

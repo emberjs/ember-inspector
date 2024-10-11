@@ -43,7 +43,7 @@ $mixin-left-padding: 22px;
   padding: 3px 0 5px;
 }
 
-.mixin__property {
+.mixin-property {
   min-height: 19px;
   padding-bottom: 1px;
   padding-top: 1px;
@@ -72,7 +72,7 @@ $mixin-left-padding: 22px;
     padding-right: 6px;
   }
 
-  .mixin__cp-toggle {
+  .mixin-cp-toggle {
     outline: none;
     width: $mixin-left-padding;
 
@@ -82,7 +82,7 @@ $mixin-left-padding: 22px;
     }
   }
 
-  .mixin__cp-toggle--expanded {
+  .mixin-cp-toggle--expanded {
     svg {
       transform: rotate(0deg);
     }
@@ -91,60 +91,60 @@ $mixin-left-padding: 22px;
 
 /* Buttons */
 
-.mixin__property-overridden-by {
+.mixin-property-overridden-by {
   display: none;
 }
 
-.mixin__property-name {
+.mixin-property-name {
   max-width: 50%;
 }
 
-.mixin__property-value {
+.mixin-property-value {
   flex: 1;
   min-height: 14px;
 }
 
-.mixin__property-value-txt {
+.mixin-property-value-txt {
   border: 1px solid var(--base09);
 }
 
-.mixin__property .type-function {
+.mixin-property .type-function {
   color: var(--base08);
 }
 
-.mixin__property .type-object {
+.mixin-property .type-object {
   color: var(--base11);
 }
 
-.mixin__property .type-ember-object,
-.mixin__property .type-object,
-.mixin__property .type-array {
+.mixin-property .type-ember-object,
+.mixin-property .type-object,
+.mixin-property .type-array {
   cursor: pointer;
 }
 
-.mixin__property .type-null,
-.mixin__property .type-boolean {
+.mixin-property .type-null,
+.mixin-property .type-boolean {
   color: var(--spec03);
 }
 
-.mixin__property .type-descriptor {
+.mixin-property .type-descriptor {
   color: var(--spec02);
   cursor: pointer;
 }
 
-.mixin__property .type-service {
+.mixin-property .type-service {
   color: var(--spec09);
 }
 
-.mixin__property:not(.mixin__property-state-overridden):hover {
+.mixin-property:not(.mixin-property-state-overridden):hover {
   background-color: var(--base01);
 }
 
-.mixin__property-state-overridden:hover .mixin__property-overridden-by {
+.mixin-property-state-overridden:hover .mixin-property-overridden-by {
   display: inline;
 }
 
-.mixin__property:not(.mixin__property-state-overridden):hover .mixin__send-btn {
+.mixin-property:not(.mixin-property-state-overridden):hover .mixin__send-btn {
   opacity: 1;
 
   &:active {

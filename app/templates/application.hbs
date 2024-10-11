@@ -7,24 +7,24 @@
 >
   {{#if this.isEmberApplication}}
     <div class="split">
-      <div class="split__panel">
+      <div class="split-panel">
         <div class="split split--main">
           <Ui::DraggableColumn
-            @classes="split__panel split__panel--sidebar-1"
+            @classes="split-panel split-panel--sidebar-1"
             @side="left"
             @width={{this.navWidth}}
           >
-            <div class="split__panel__hd">
+            <div class="split-panel-hd">
               <AppPicker @collapsed={{this.navIsCollapsed}} />
             </div>
 
             <SideNav
-              class="split__panel__bd"
+              class="split-panel__bd"
               @collapsed={{this.navIsCollapsed}}
               @deprecationCount={{this.deprecationCount}}
             />
 
-            <div class="split__panel__ft nav__footer {{if this.navIsCollapsed "nav--collapsed" "nav--expanded"}}">
+            <div class="split-panel-ft nav-footer {{if this.navIsCollapsed "nav--collapsed" "nav--expanded"}}">
               <a
                 target="_blank"
                 title="Submit an Issue"
@@ -44,8 +44,8 @@
             </div>
           </Ui::DraggableColumn>
 
-          <div class="split__panel">
-            <div class="split__panel__hd">
+          <div class="split-panel">
+            <div class="split-panel-hd">
               <div id="toolbar"></div>
               <button
                 class="object-inspector-toggle toolbar__icon-button absolute top-0 right-0"
@@ -57,7 +57,7 @@
               </button>
             </div>
 
-            <div class="split__panel__bd" {{did-insert this.setupContentElement}}>
+            <div class="split-panel__bd" {{did-insert this.setupContentElement}}>
               {{outlet}}
             </div>
           </div>
@@ -66,7 +66,7 @@
 
       {{#if this.inspectorExpanded}}
         <Ui::DraggableColumn
-          @classes="split__panel"
+          @classes="split-panel"
           @side="right"
           @width={{this.inspectorWidth}}
         >

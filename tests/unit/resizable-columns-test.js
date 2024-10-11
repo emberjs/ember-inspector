@@ -238,7 +238,6 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
   });
 
   test("resets cache correctly if schema doesn't match cache", function (assert) {
-    assert.expect(1);
     this.options.storage.removeItem = (key) => {
       assert.strictEqual(key, 'list__my-key', 'cache was cleared');
     };
@@ -258,7 +257,6 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
   test('clears expired cache', function (assert) {
     let sixtyDaysAgo = 1000 * 60 * 60 * 24 * 30 * 2;
     storage['list__my-key'] = { updatedAt: Date.now() - sixtyDaysAgo };
-    assert.expect(1);
     this.options.storage.removeItem = (key) => {
       assert.strictEqual(key, 'list__my-key', 'cache was cleared');
     };

@@ -33,11 +33,11 @@
   text-align: left;
   user-select: none;
 
-  .list__row {
+  .list-row {
     background: var(--base00);
   }
 
-  .list__cell {
+  .list-cell {
     color: var(--inherit);
     font-weight: normal;
     opacity: 1;
@@ -48,7 +48,7 @@
 }
 
 .list:not(.list_no-alternate-color) .list__content {
-  .list__row {
+  .list-row {
     background: var(--base02);
 
     &.striped {
@@ -58,16 +58,16 @@
 }
 
 .list.list--css-striping {
-  .list__row:nth-child(even) {
+  .list-row:nth-child(even) {
     background: var(--base00);
   }
 }
 
-.list__cell-content {
+.list-cell-content {
   width: 100%;
 }
 
-.list__cell {
+.list-cell {
   box-sizing: border-box;
   line-height: 30px;
   min-height: 30px;
@@ -128,7 +128,7 @@
  * Content in a cell that should not take the entire
  * space. Usually because it has a $E after it.
  */
-.list__cell-partial {
+.list-cell-partial {
   display: inline-block;
   float: left;
   max-width: calc(100% - 40px);
@@ -137,11 +137,11 @@
   white-space: nowrap;
 }
 
-.list__cell-partial_clickable {
+.list-cell-partial_clickable {
   cursor: pointer;
 }
 
-.list__cell-partial_size_medium {
+.list-cell-partial_size_medium {
   max-width: calc(100% - 60px);
 }
 
@@ -149,17 +149,17 @@
  * For example a $E icon to the right
  * of a cell.
  */
-.list__cell-helper {
+.list-cell-helper {
   float: right;
   margin-right: 5px;
 }
 
-.list__link {
+.list-link {
   cursor: pointer;
 }
 
-.list__row:hover {
-  .list__cell {
+.list-row:hover {
+  .list-cell {
     opacity: 1;
 
     &_clickable {
@@ -167,22 +167,22 @@
     }
   }
 
-  .list__cell-partial_clickable {
+  .list-cell-partial_clickable {
     text-decoration: underline;
   }
 
-  .list__link {
+  .list-link {
     text-decoration: underline;
   }
 }
 
-.list__row_highlight .list__cell,
-.list__cell_highlight {
+.list-row_highlight .list-cell,
+.list-cell_highlight {
   opacity: 1;
 }
 
 /* ARROW FOR COLLAPSING AND EXPANDING */
-.list__cell-arrow {
+.list-cell-arrow {
   cursor: pointer;
   display: block;
   float: left;
@@ -200,37 +200,37 @@
 }
 
 /* cell expanding/collapsing */
-.list__cell_arrow_expanded,
-.list__cell_arrow_collapsed {
+.list-cell_arrow_expanded,
+.list-cell_arrow_collapsed {
   cursor: pointer;
 }
 
-.list__cell_arrow_collapsed {
-  .list__cell-arrow:before {
+.list-cell_arrow_collapsed {
+  .list-cell-arrow:before {
     content: "\25B6";
   }
 }
 
-.list__cell_arrow_expanded {
-  .list__cell-arrow:before {
+.list-cell_arrow_expanded {
+  .list-cell-arrow:before {
     content: "\25BC";
   }
 }
 
-.list__row_arrow_collapsed,
-.list__row_arrow_expanded {
+.list-row_arrow_collapsed,
+.list-row_arrow_expanded {
   cursor: pointer;
   position: relative;
 }
 
-.list__row_arrow_collapsed {
-  .list__cell-arrow:before {
+.list-row_arrow_collapsed {
+  .list-cell-arrow:before {
     content: "\25B6";
   }
 }
 
-.list__row_arrow_expanded {
-  .list__cell-arrow:before {
+.list-row_arrow_expanded {
+  .list-cell-arrow:before {
     content: "\25BC";
   }
 }

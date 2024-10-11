@@ -1,11 +1,11 @@
 <div class="split">
   <Ui::DraggableColumn
-    @classes="split__panel split__panel--sidebar-2 nav"
+    @classes="split-panel split-panel--sidebar-2 nav"
     @side="left"
     @width={{@width}}
   >
-    <div class="split__panel__bd">
-      <h1 class="nav__title">{{@header}}</h1>
+    <div class="split-panel__bd">
+      <h1 class="nav-title">{{@header}}</h1>
 
       <ul>
         {{#each @sorted as |itemType|}}
@@ -13,9 +13,9 @@
             <LinkTo
               @route={{if (eq @type "model") "records" "container-type"}}
               @model={{escape-url itemType.name}}
-              class="nav__item"
+              class="nav-item"
             >
-              <span class={{concat this.typeClass "-name" " nav__item-label"}}>
+              <span class={{concat this.typeClass "-name" " nav-item-label"}}>
                 {{itemType.name}}
               </span>
 
@@ -27,8 +27,8 @@
     </div>
   </Ui::DraggableColumn>
 
-  <div class="split__panel">
-    <div class="split__panel__bd">
+  <div class="split-panel">
+    <div class="split-panel__bd">
       {{yield}}
     </div>
   </div>
