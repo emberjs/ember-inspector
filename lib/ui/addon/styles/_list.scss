@@ -190,7 +190,7 @@
   position: relative;
   width: 15px;
 
-  &:before {
+  &::before {
     color: var(--base10);
     font-size: 75%;
     position: absolute;
@@ -206,13 +206,13 @@
 }
 
 .list-cell_arrow_collapsed {
-  .list-cell-arrow:before {
+  .list-cell-arrow::before {
     content: "\25B6";
   }
 }
 
 .list-cell_arrow_expanded {
-  .list-cell-arrow:before {
+  .list-cell-arrow::before {
     content: "\25BC";
   }
 }
@@ -224,13 +224,13 @@
 }
 
 .list-row_arrow_collapsed {
-  .list-cell-arrow:before {
+  .list-cell-arrow::before {
     content: "\25B6";
   }
 }
 
 .list-row_arrow_expanded {
-  .list-cell-arrow:before {
+  .list-cell-arrow::before {
     content: "\25BC";
   }
 }

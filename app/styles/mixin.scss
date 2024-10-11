@@ -17,7 +17,7 @@ $mixin-left-padding: 22px;
     background-color: var(--base02);
   }
 
-  &:before {
+  &::before {
     color: var(--base10);
     content: "\25B6";
     font-size: 75%;
@@ -30,11 +30,11 @@ $mixin-left-padding: 22px;
   }
 }
 
-.mixin_props_no .mixin__name:before {
+.mixin_props_no .mixin__name::before {
   opacity: 0;
 }
 
-.mixin_state_expanded .mixin__name:before {
+.mixin_state_expanded .mixin__name::before {
   transform: rotate(90deg);
 }
 

@@ -39,7 +39,9 @@ $nav--main-item-height: 38px;
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  &:focus { outline: none; }
+  &:focus {
+    outline: none;
+  }
 }
 
 .nav-item.active {
@@ -134,7 +136,7 @@ $nav--main-item-height: 38px;
   display: grid;
   grid-template:
     "left" $nav--main-item-height - 6px
-    "right" $nav--main-item-height  - 6px;
+    "right" $nav--main-item-height - 6px;
   height: auto;
 }
 

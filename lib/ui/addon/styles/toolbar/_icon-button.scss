@@ -24,38 +24,55 @@
   }
 }
 
-
 /*
   SVG colors
 */
 .toolbar__icon-button {
-  .svg-stroke { stroke: var(--base11); }
-  .svg-fill { fill: var(--base11); }
+  .svg-stroke {
+    stroke: var(--base11);
+  }
+  .svg-fill {
+    fill: var(--base11);
+  }
 
   &:hover {
-    .svg-stroke { stroke: var(--base13); }
-    .svg-fill { fill: var(--base13); }
+    .svg-stroke {
+      stroke: var(--base13);
+    }
+    .svg-fill {
+      fill: var(--base13);
+    }
   }
 }
-
 
 /*
   Modifier:
   .active (highlighted)
 */
 .toolbar__icon-button {
-  &.active .svg-stroke { stroke: var(--focus); }
-  &.active .svg-fill { fill: var(--focus); }
+  &.active .svg-stroke {
+    stroke: var(--focus);
+  }
+  &.active .svg-fill {
+    fill: var(--focus);
+  }
 }
-
 
 /*
   Modifier
   .disabled
 */
 .toolbar__icon-button {
-  &.disabled { pointer-events: none; }
-  &.disabled:active { transform: none; }
-  &.disabled .svg-stroke { stroke: var(--base05); }
-  &.disabled .svg-fill { fill: var(--base05); }
+  &.disabled {
+    pointer-events: none;
+  }
+  &.disabled:active {
+    transform: none;
+  }
+  &.disabled .svg-stroke {
+    stroke: var(--base05);
+  }
+  &.disabled .svg-fill {
+    fill: var(--base05);
+  }
 }

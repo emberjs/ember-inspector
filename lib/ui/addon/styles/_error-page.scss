@@ -13,7 +13,7 @@
     list-style-type: disc;
     padding-left: var(--unit4);
   }
-  
+
   li {
     padding: 2px 0;
   }
@@ -33,7 +33,7 @@
     flex-shrink: 0;
     height: 89px;
     width: 128px;
-    animation: tomsterReveal 0.4s cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    animation: tomsterReveal 0.4s cubic-bezier(0.19, 1, 0.22, 1);
     animation-delay: 0.75s;
     animation-fill-mode: forwards;
   }

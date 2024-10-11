@@ -20,7 +20,7 @@
       border-bottom-right-radius: var(--unit1);
       border-top-right-radius: var(--unit1);
       bottom: 0;
-      content: '';
+      content: "";
       left: calc(var(--unit1) * -1);
       position: absolute;
       right: calc(var(--unit1) * -1);
@@ -33,7 +33,7 @@
     */
     &:before {
       bottom: 0;
-      content: '';
+      content: "";
       left: calc(var(--unit3) * -1);
       position: absolute;
       top: 0;
@@ -79,7 +79,11 @@
       }
 
       &:before {
-        background: linear-gradient(to right, var(--transparent), var(--component-highlighted-bg) 75%);
+        background: linear-gradient(
+          to right,
+          var(--transparent),
+          var(--component-highlighted-bg) 75%
+        );
       }
     }
   }
@@ -142,36 +146,36 @@
 }
 
 .component-tree-item__has_modifier:after {
-  content: '' !important;
+  content: "" !important;
 }
 
 .component-tree-item__closing:before {
-  content: '>';
+  content: ">";
   margin-left: -13px;
 }
 
 .component-tree-item__self-closing:before {
-  content: '/>';
+  content: "/>";
 }
 
 .component-tree-item__bracket:before {
-  content: '<';
+  content: "<";
 }
 
 .component-tree-item__bracket:after {
-  content: '>';
+  content: ">";
 }
 
 .component-tree-item__bracket.component-tree-item__bracket--self-closing:after {
-  content: '/>';
+  content: "/>";
 }
 
 .component-tree-item-classic__bracket:before {
-  content: '{{';
+  content: "{{";
 }
 
 .component-tree-item-classic__bracket:after {
-  content: '}}';
+  content: "}}";
 }
 
 /**
@@ -199,7 +203,11 @@
     }
 
     &:before {
-      background: linear-gradient(to right, var(--transparent), var(--focus) 75%);
+      background: linear-gradient(
+        to right,
+        var(--transparent),
+        var(--focus) 75%
+      );
     }
   }
 
