@@ -13,7 +13,7 @@ export default class RenderTreeRoute extends TabRoute {
         'render:profilesAdded',
         function ({ profiles, isHighlightSupported }) {
           resolve(EmberObject.create({ profiles, isHighlightSupported }));
-        }
+        },
       );
       port.send('render:watchProfiles');
     });
@@ -54,7 +54,7 @@ export default class RenderTreeRoute extends TabRoute {
       set(
         this,
         'controller.model.isHighlightSupported',
-        message.isHighlightSupported
+        message.isHighlightSupported,
       );
     }
 

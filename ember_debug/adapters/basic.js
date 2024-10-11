@@ -100,7 +100,7 @@ export default class BasicAdapter extends BaseObject {
       this.warn(
         `Ember Inspector has errored.\n` +
           `This is likely a bug in the inspector itself.\n` +
-          `You can report bugs at https://github.com/emberjs/ember-inspector.\n${error}`
+          `You can report bugs at https://github.com/emberjs/ember-inspector.\n${error}`,
       );
     } else {
       this.warn('EmberDebug has errored:');

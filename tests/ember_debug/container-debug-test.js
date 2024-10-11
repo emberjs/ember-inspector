@@ -30,7 +30,7 @@ module('Ember Debug - Container', function (hooks) {
       function () {
         return name === 'container:types';
       },
-      { timeout: 3000 }
+      { timeout: 3000 },
     );
 
     assert.strictEqual(name, 'container:types');

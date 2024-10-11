@@ -1,7 +1,9 @@
 :root {
   /* stylelint-disable value-keyword-case */
-  --font-sans-serif: "Inter", -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Cantarell', 'Oxygen', 'Ubuntu', 'Helvetica Neue', helvetica, arial, sans-serif;
-  --font-monospace: 'SF Mono', Menlo, Monaco, monospace;
+  --font-sans-serif: "Inter", -apple-system, system-ui, BlinkMacSystemFont,
+    "Segoe UI", "Roboto", "Cantarell", "Oxygen", "Ubuntu", "Helvetica Neue",
+    helvetica, arial, sans-serif;
+  --font-monospace: "SF Mono", Menlo, Monaco, monospace;
   /* stylelint-enable value-keyword-case */
   --inherit: inherit;
   --unit0: 0;

@@ -30,7 +30,7 @@ module('Ember Debug - Route Tree', function (hooks) {
       class extends Route {
         promise = Promise.resolve(Route);
         then = this.promise.then.bind(this.promise);
-      }
+      },
     );
 
     EmberDebug.generalDebug.reopen({
@@ -54,7 +54,7 @@ module('Ember Debug - Route Tree', function (hooks) {
       () => {
         return name === 'view:renderTree';
       },
-      { timeout: 3000 }
+      { timeout: 3000 },
     );
 
     run(EmberDebug.port, 'trigger', 'route:getTree');
@@ -68,7 +68,7 @@ module('Ember Debug - Route Tree', function (hooks) {
     assert.strictEqual(route.value.controller.name, 'application');
     assert.strictEqual(
       route.value.controller.className,
-      'ApplicationController'
+      'ApplicationController',
     );
     assert.strictEqual(route.value.routeHandler.name, 'application');
     assert.strictEqual(route.value.routeHandler.className, 'ApplicationRoute');
@@ -94,11 +94,11 @@ module('Ember Debug - Route Tree', function (hooks) {
     assert.strictEqual(commentsRoute.value.type, 'resource');
     assert.strictEqual(
       commentsRoute.value.controller.className,
-      'CommentsController'
+      'CommentsController',
     );
     assert.strictEqual(
       commentsRoute.value.routeHandler.className,
-      'CommentsRoute'
+      'CommentsRoute',
     );
 
     assert.deepEqual(getChildrenProperty(commentsRoute, 'name'), [
@@ -123,11 +123,11 @@ module('Ember Debug - Route Tree', function (hooks) {
         'CommentsNewController',
         'CommentsEditController',
         'CommentsIndexController',
-      ]
+      ],
     );
     assert.deepEqual(
       getChildrenProperty(commentsRoute, 'routeHandler.className'),
-      ['CommentsNewRoute', 'CommentsEditRoute', 'CommentsIndexRoute']
+      ['CommentsNewRoute', 'CommentsEditRoute', 'CommentsIndexRoute'],
     );
     assert.deepEqual(getChildrenProperty(commentsRoute, 'template.name'), [
       'comments/new',

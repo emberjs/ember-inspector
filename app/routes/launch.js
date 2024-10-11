@@ -54,7 +54,7 @@ export default class LaunchRoute extends Route {
           },
           function () {
             resolve();
-          }
+          },
         );
       });
     } else {

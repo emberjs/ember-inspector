@@ -45,7 +45,7 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
       function () {
         this.destroyPromises(all);
       },
-      500
+      500,
     );
     this.set('all', []);
   }

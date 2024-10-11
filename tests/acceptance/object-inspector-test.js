@@ -103,8 +103,8 @@ module('Object Inspector', function (hooks) {
     assert
       .dom('[data-test-object-detail]')
       .hasClass(
-        'mixin_state_expanded',
-        'The "Own Properties" detail is expanded by default'
+        'mixin-state-expanded',
+        'The "Own Properties" detail is expanded by default',
       );
   });
 
@@ -118,29 +118,29 @@ module('Object Inspector', function (hooks) {
 
     assert.dom('[data-test-object-name]').hasText('My Object');
     let [firstDetail, secondDetail, thirdDetail] = findAll(
-      '[data-test-object-detail]'
+      '[data-test-object-detail]',
     );
     assert
       .dom(firstDetail.querySelector('[data-test-object-detail-name]'))
       .hasText('First Detail');
     assert
       .dom(firstDetail)
-      .hasNoClass('mixin_state_expanded', 'Detail not expanded by default');
+      .hasNoClass('mixin-state-expanded', 'Detail not expanded by default');
 
     await click('[data-test-object-detail-name]', firstDetail);
 
     assert
       .dom(firstDetail)
-      .hasClass('mixin_state_expanded', 'Detail expands on click.');
+      .hasClass('mixin-state-expanded', 'Detail expands on click.');
     assert
       .dom(secondDetail)
-      .hasNoClass('mixin_state_expanded', 'Second detail does not expand.');
+      .hasNoClass('mixin-state-expanded', 'Second detail does not expand.');
     assert
       .dom(thirdDetail)
-      .hasNoClass('mixin_state_expanded', 'Third detail does not expand.');
+      .hasNoClass('mixin-state-expanded', 'Third detail does not expand.');
     assert.strictEqual(
       firstDetail.querySelectorAll('[data-test-object-property]').length,
-      1
+      1,
     );
     assert
       .dom(firstDetail.querySelector('[data-test-object-property-name]'))
@@ -153,22 +153,22 @@ module('Object Inspector', function (hooks) {
     assert
       .dom(firstDetail)
       .hasNoClass(
-        'mixin_state_expanded',
-        'Expanded detail minimizes on click.'
+        'mixin-state-expanded',
+        'Expanded detail minimizes on click.',
       );
     await click(secondDetail.querySelector('[data-test-object-detail-name]'));
 
-    assert.dom(secondDetail).hasClass('mixin_state_expanded');
+    assert.dom(secondDetail).hasClass('mixin-state-expanded');
     assert.strictEqual(
       secondDetail.querySelectorAll('[data-test-object-property]').length,
-      2
+      2,
     );
     assert
       .dom(secondDetail.querySelectorAll('[data-test-object-property-name]')[0])
       .hasText('objectProperty');
     assert
       .dom(
-        secondDetail.querySelectorAll('[data-test-object-property-value]')[0]
+        secondDetail.querySelectorAll('[data-test-object-property-value]')[0],
       )
       .hasText('Ember Object Name');
     assert
@@ -176,15 +176,15 @@ module('Object Inspector', function (hooks) {
       .hasText('stringProperty');
     assert
       .dom(
-        secondDetail.querySelectorAll('[data-test-object-property-value]')[1]
+        secondDetail.querySelectorAll('[data-test-object-property-value]')[1],
       )
       .hasText('String Value');
     await click(thirdDetail.querySelector('[data-test-object-detail-name]'));
 
-    assert.dom(thirdDetail).hasClass('mixin_state_expanded');
+    assert.dom(thirdDetail).hasClass('mixin-state-expanded');
     assert.strictEqual(
       thirdDetail.querySelectorAll('[data-test-object-property]').length,
-      1
+      1,
     );
     assert
       .dom(thirdDetail.querySelectorAll('[data-test-object-property-name]')[0])
@@ -195,8 +195,6 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Digging deeper into objects', async function (assert) {
-    assert.expect(8);
-
     await visit('/');
 
     await sendMessage({
@@ -230,7 +228,7 @@ module('Object Inspector', function (hooks) {
 
     await click(secondDetail.querySelector('[data-test-object-detail-name]'));
     await click(
-      '[data-test-object-property] [data-test-object-property-value]'
+      '[data-test-object-property] [data-test-object-property-value]',
     );
 
     assert
@@ -243,7 +241,7 @@ module('Object Inspector', function (hooks) {
 
     await click('[data-test-object-detail-name]');
 
-    assert.dom('[data-test-object-detail]').hasClass('mixin_state_expanded');
+    assert.dom('[data-test-object-detail]').hasClass('mixin-state-expanded');
     assert.dom('[data-test-object-property-name]').hasText('nestedProp');
     assert.dom('[data-test-object-property-value]').hasText('Nested Prop');
 
@@ -258,8 +256,6 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Digging deeper into objects works when digging into nested object with periods in name', async function (assert) {
-    assert.expect(8);
-
     await visit('/');
 
     await sendMessage({
@@ -293,7 +289,7 @@ module('Object Inspector', function (hooks) {
 
     await click(secondDetail.querySelector('[data-test-object-detail-name]'));
     await click(
-      '[data-test-object-property] [data-test-object-property-value]'
+      '[data-test-object-property] [data-test-object-property-value]',
     );
 
     assert
@@ -306,7 +302,7 @@ module('Object Inspector', function (hooks) {
 
     await click('[data-test-object-detail-name]');
 
-    assert.dom('[data-test-object-detail]').hasClass('mixin_state_expanded');
+    assert.dom('[data-test-object-detail]').hasClass('mixin-state-expanded');
     assert.dom('[data-test-object-property-name]').hasText('nestedProp');
     assert.dom('[data-test-object-property-value]').hasText('Nested Prop');
 
@@ -321,8 +317,6 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Digging deeper into objects works with nested objects containing properties with periods in name', async function (assert) {
-    assert.expect(8);
-
     await visit('/');
 
     await sendMessage({
@@ -356,7 +350,7 @@ module('Object Inspector', function (hooks) {
 
     await click(secondDetail.querySelector('[data-test-object-detail-name]'));
     await click(
-      '[data-test-object-property] [data-test-object-property-value]'
+      '[data-test-object-property] [data-test-object-property-value]',
     );
 
     assert
@@ -369,7 +363,7 @@ module('Object Inspector', function (hooks) {
 
     await click('[data-test-object-detail-name]');
 
-    assert.dom('[data-test-object-detail]').hasClass('mixin_state_expanded');
+    assert.dom('[data-test-object-detail]').hasClass('mixin-state-expanded');
     assert.dom('[data-test-object-property-name]').hasText('nested.Prop');
     assert.dom('[data-test-object-property-value]').hasText('Nested Prop');
 
@@ -420,7 +414,7 @@ module('Object Inspector', function (hooks) {
           inspect: 'Computed value',
           isCalculated: true,
         },
-      })
+      }),
     );
 
     await click('[data-test-calculate]');
@@ -453,15 +447,13 @@ module('Object Inspector', function (hooks) {
 
     await click('[data-test-object-detail-name]');
 
-    assert.dom('.mixin__property--group').exists({ count: 1 });
-    assert.dom('.mixin__property-icon--service').exists({ count: 1 });
+    assert.dom('.mixin-property--group').exists({ count: 1 });
+    assert.dom('.mixin-property-icon-service').exists({ count: 1 });
     assert.dom('[data-test-property-name-service]').exists({ count: 1 });
-    assert.dom('.mixin__property-dependency-list').doesNotExist();
-    assert.dom('.mixin__property-dependency-item').doesNotExist();
+    assert.dom('.mixin-property-dependency-list').doesNotExist();
+    assert.dom('.mixin-property-dependency-item').doesNotExist();
     assert
-      .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name'
-      )
+      .dom('.mixin-property-dependency-item > .mixin-property-dependency-name')
       .doesNotExist();
   });
 
@@ -504,31 +496,27 @@ module('Object Inspector', function (hooks) {
           inspect: 'Computed value',
           computed: 'foo-bar',
         },
-      })
+      }),
     );
 
     await click('[data-test-calculate]');
 
-    assert.dom('.mixin__property--group').doesNotExist();
+    assert.dom('.mixin-property--group').doesNotExist();
 
-    await click('.mixin__property-icon--computed');
+    await click('.mixin-property-icon-computed');
 
-    assert.dom('.mixin__property-dependency-list').doesNotExist();
-    assert.dom('.mixin__property-dependency-item').doesNotExist();
+    assert.dom('.mixin-property-dependency-list').doesNotExist();
+    assert.dom('.mixin-property-dependency-item').doesNotExist();
     assert
-      .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name'
-      )
+      .dom('.mixin-property-dependency-item > .mixin-property-dependency-name')
       .doesNotExist();
 
-    await click('.mixin__property-icon--computed');
+    await click('.mixin-property-icon-computed');
 
-    assert.dom('.mixin__property-dependency-list').doesNotExist();
-    assert.dom('.mixin__property-dependency-item').doesNotExist();
+    assert.dom('.mixin-property-dependency-list').doesNotExist();
+    assert.dom('.mixin-property-dependency-item').doesNotExist();
     assert
-      .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name'
-      )
+      .dom('.mixin-property-dependency-item > .mixin-property-dependency-name')
       .doesNotExist();
   });
 
@@ -570,44 +558,38 @@ module('Object Inspector', function (hooks) {
           inspect: 'Computed value',
           isCalculated: true,
         },
-      })
+      }),
     );
 
     await click('[data-test-calculate]');
 
-    assert.dom('.mixin__property--group').exists({ count: 1 });
+    assert.dom('.mixin-property--group').exists({ count: 1 });
 
-    await click('.mixin__property-icon--computed');
+    await click('.mixin-property-icon-computed');
 
-    assert.dom('.mixin__property-dependency-list').exists({ count: 1 });
-    assert.dom('.mixin__property-dependency-item').exists({ count: 1 });
+    assert.dom('.mixin-property-dependency-list').exists({ count: 1 });
+    assert.dom('.mixin-property-dependency-item').exists({ count: 1 });
     assert
-      .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name'
-      )
+      .dom('.mixin-property-dependency-item > .mixin-property-dependency-name')
       .exists({ count: 1 });
 
-    await click('.mixin__property-icon--computed');
+    await click('.mixin-property-icon-computed');
 
-    assert.dom('.mixin__property-dependency-list').doesNotExist();
-    assert.dom('.mixin__property-dependency-item').doesNotExist();
+    assert.dom('.mixin-property-dependency-list').doesNotExist();
+    assert.dom('.mixin-property-dependency-item').doesNotExist();
     assert
-      .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name'
-      )
+      .dom('.mixin-property-dependency-item > .mixin-property-dependency-name')
       .doesNotExist();
 
     // All View
 
     await click('[data-test-object-display-type-all]');
-    await click('.mixin__property-icon--computed');
+    await click('.mixin-property-icon-computed');
 
-    assert.dom('.mixin__property-dependency-list').exists({ count: 1 });
-    assert.dom('.mixin__property-dependency-item').exists({ count: 1 });
+    assert.dom('.mixin-property-dependency-list').exists({ count: 1 });
+    assert.dom('.mixin-property-dependency-item').exists({ count: 1 });
     assert
-      .dom(
-        '.mixin__property-dependency-item > .mixin__property-dependency-name'
-      )
+      .dom('.mixin-property-dependency-item > .mixin-property-dependency-name')
       .exists({ count: 1 });
   });
 
@@ -667,7 +649,7 @@ module('Object Inspector', function (hooks) {
           type: 'type-string',
           isCalculated: false,
         },
-      })
+      }),
     );
 
     await fillIn(txtField, '"Joey"');
@@ -720,7 +702,7 @@ module('Object Inspector', function (hooks) {
           type: 'type-string',
           isCalculated: false,
         },
-      })
+      }),
     );
 
     await fillIn(txtField, '"{"name":"joey"}"');
@@ -730,8 +712,6 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Send to console', async function (assert) {
-    assert.expect(6);
-
     await visit('/');
 
     await sendMessage({
@@ -786,8 +766,6 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Goto Source', async function (assert) {
-    assert.expect(6);
-
     await visit('/');
 
     await sendMessage({
@@ -924,8 +902,6 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Date fields are editable', async function (assert) {
-    assert.expect(5);
-
     await visit('/');
 
     let date = new Date(2019, 7, 13); // 2019-08-13
@@ -950,26 +926,6 @@ module('Object Inspector', function (hooks) {
         },
       ],
     });
-
-    respondWith(
-      'objectInspector:saveProperty',
-      ({ objectId, property, value }) => {
-        assert.strictEqual(typeof value, 'number', 'sent as timestamp');
-        date = new Date(value);
-
-        return {
-          type: 'objectInspector:updateProperty',
-          objectId,
-          property,
-          mixinIndex: 0,
-          value: {
-            inspect: date.toString(),
-            type: 'type-date',
-            isCalculated: false,
-          },
-        };
-      }
-    );
 
     await click('[data-test-object-detail-name]');
 
@@ -997,7 +953,7 @@ module('Object Inspector', function (hooks) {
             isCalculated: false,
           },
         };
-      }
+      },
     );
 
     await fillIn(field, '2015-01-01');
@@ -1007,8 +963,6 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Boolean fields are editable', async function (assert) {
-    assert.expect(4);
-
     await visit('/');
 
     await sendMessage({
@@ -1049,7 +1003,7 @@ module('Object Inspector', function (hooks) {
             isCalculated: false,
           },
         };
-      }
+      },
     );
 
     await click('[data-test-object-detail-name]');
@@ -1068,8 +1022,6 @@ module('Object Inspector', function (hooks) {
   });
 
   test('Errors are correctly displayed', async function (assert) {
-    assert.expect(8);
-
     await visit('/');
 
     await sendMessage({
@@ -1136,7 +1088,7 @@ module('Object Inspector', function (hooks) {
 
     await click('[data-test-object-detail-name]');
 
-    assert.dom('.mixin__property-icon--tracked').exists();
+    assert.dom('.mixin-property-icon-tracked').exists();
     assert.dom('[data-test-object-property-value]').hasText('123');
 
     await sendMessage({
@@ -1149,7 +1101,7 @@ module('Object Inspector', function (hooks) {
       mixinIndex: 0,
     });
 
-    assert.dom('.mixin__property-icon--tracked').exists();
+    assert.dom('.mixin-property-icon-tracked').exists();
     assert.dom('[data-test-object-property-value]').hasText('456');
   });
 
@@ -1179,7 +1131,7 @@ module('Object Inspector', function (hooks) {
 
     await click('[data-test-object-detail-name]');
 
-    assert.dom('.mixin__property-icon--property').exists();
+    assert.dom('.mixin-property-icon-property').exists();
     assert.dom('[data-test-object-property-value]').hasText('123');
 
     await sendMessage({
@@ -1192,7 +1144,7 @@ module('Object Inspector', function (hooks) {
       mixinIndex: 0,
     });
 
-    assert.dom('.mixin__property-icon--property').exists();
+    assert.dom('.mixin-property-icon-property').exists();
     assert.dom('[data-test-object-property-value]').hasText('456');
   });
 
@@ -1222,7 +1174,7 @@ module('Object Inspector', function (hooks) {
 
     await click('[data-test-object-detail-name]');
 
-    assert.dom('.mixin__property-icon--getter').exists();
+    assert.dom('.mixin-property-icon-getter').exists();
     assert.dom('[data-test-object-property-value]').hasText('123');
 
     await sendMessage({
@@ -1235,7 +1187,7 @@ module('Object Inspector', function (hooks) {
       mixinIndex: 0,
     });
 
-    assert.dom('.mixin__property-icon--getter').exists();
+    assert.dom('.mixin-property-icon-getter').exists();
     assert.dom('[data-test-object-property-value]').hasText('456');
   });
 

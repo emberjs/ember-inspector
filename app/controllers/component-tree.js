@@ -53,7 +53,7 @@ export default class ComponentTreeController extends Controller {
           renderNode.children.some((c) => c.type === 'modifier')
         ) {
           const idx = renderNode.children.findLastIndex(
-            (c) => c.type === 'modifier'
+            (c) => c.type === 'modifier',
           );
           renderNode.children.splice(idx + 1, 0, {
             type: 'placeholder-closing-tag',
@@ -279,7 +279,7 @@ function isInternalRenderNode(renderNode) {
 
 function focusedInInput() {
   return ['input', 'textarea'].includes(
-    document.activeElement.tagName.toLowerCase()
+    document.activeElement.tagName.toLowerCase(),
   );
 }
 

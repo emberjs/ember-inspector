@@ -133,7 +133,7 @@ export default class RouteDebug extends DebugPort {
         // Module exists and found
         className = className.replace(
           new RegExp(`^/?(${prefix}|${podPrefix})/${type}s/`),
-          ''
+          '',
         );
       } else {
         // Module does not exist

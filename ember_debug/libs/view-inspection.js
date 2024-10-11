@@ -308,7 +308,7 @@ export default class ViewInspection {
     document.body.removeEventListener(
       'mousemove',
       bound(this, this.onMouseMove),
-      { capture: true }
+      { capture: true },
     );
 
     this.didStopInspecting();
@@ -480,7 +480,7 @@ export default class ViewInspection {
 
   _renderTooltipCategory(node) {
     let category = this.tooltip.querySelector(
-      '.ember-inspector-tooltip-category'
+      '.ember-inspector-tooltip-category',
     );
 
     switch (node.type) {
@@ -498,7 +498,7 @@ export default class ViewInspection {
 
   _renderTooltipDetails(node) {
     let tbody = this.tooltip.querySelector(
-      '.ember-inspector-tooltip-details tbody'
+      '.ember-inspector-tooltip-details tbody',
     );
 
     tbody.innerHTML = '';
@@ -512,21 +512,21 @@ export default class ViewInspection {
         this._renderTooltipDetail(
           tbody,
           'Controller',
-          this._tokenizeItem(node.instance)
+          this._tokenizeItem(node.instance),
         );
       } else {
         this._renderTooltipDetail(
           tbody,
           'Instance',
-          this._tokenizeItem(node.instance)
+          this._tokenizeItem(node.instance),
         );
       }
       const detail =
         tbody.querySelector(
-          '.ember-inspector-tooltip-detail-instance > .ember-inspector-tooltip-token-tag'
+          '.ember-inspector-tooltip-detail-instance > .ember-inspector-tooltip-token-tag',
         ) ||
         tbody.querySelector(
-          '.ember-inspector-tooltip-detail-controller > .ember-inspector-tooltip-token-tag'
+          '.ember-inspector-tooltip-detail-controller > .ember-inspector-tooltip-token-tag',
         );
       if (detail) {
         detail.onclick = () => {
@@ -635,7 +635,7 @@ export default class ViewInspection {
     {
       // <my-app@component:foo-bar::ember123>
       let match = stringified.match(
-        /<([a-z0-9-_]+)@([a-z0-9-_]+):([a-z0-9-_]+)::([a-z0-9-_]+)>/i
+        /<([a-z0-9-_]+)@([a-z0-9-_]+):([a-z0-9-_]+)::([a-z0-9-_]+)>/i,
       );
 
       if (match) {
@@ -691,12 +691,12 @@ export default class ViewInspection {
       attachmentTop = top;
       this.tooltip.setAttribute(
         'class',
-        `ember-inspector-tooltip-attach-above`
+        `ember-inspector-tooltip-attach-above`,
       );
     } else {
       this.tooltip.setAttribute(
         'class',
-        `ember-inspector-tooltip-attach-below`
+        `ember-inspector-tooltip-attach-below`,
       );
     }
 
@@ -709,7 +709,7 @@ export default class ViewInspection {
       // within the viewport, but not so much that it will become detached.
       leftOffset = Math.max(
         highlightRect.left - safetyMargin,
-        safetyMargin - highlightRect.width
+        safetyMargin - highlightRect.width,
       );
     } else if (tooltipRect.right > viewportWidth) {
       // If the tooltip is partially offscreen to the right (because the tooltip
@@ -717,7 +717,7 @@ export default class ViewInspection {
       // not so much that it will become detached.
       leftOffset = Math.min(
         tooltipRect.right - viewportWidth,
-        tooltipRect.width - safetyMargin * 2
+        tooltipRect.width - safetyMargin * 2,
       );
       tooltipStyle.left = `${scrollX + attachmentLeft - leftOffset}px`;
     }

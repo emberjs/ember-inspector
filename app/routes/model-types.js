@@ -39,7 +39,7 @@ export default class ModelTypesRoute extends TabRoute {
     message.modelTypes.forEach(function (modelType) {
       const currentType = route.currentModel.findBy(
         'objectId',
-        modelType.objectId
+        modelType.objectId,
       );
       set(currentType, 'count', modelType.count);
     });

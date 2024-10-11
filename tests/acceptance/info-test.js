@@ -23,7 +23,7 @@ module('Info Tab', function (hooks) {
     assert.strictEqual(
       libraries.length,
       3,
-      'The correct number of libraries is displayed'
+      'The correct number of libraries is displayed',
     );
     assert
       .dom(libraries[0].querySelector('.js-lib-library'))
@@ -54,7 +54,7 @@ module('Info Tab', function (hooks) {
     assert.strictEqual(
       configs.length,
       2,
-      'The correct number of configurations is displayed'
+      'The correct number of configurations is displayed',
     );
     assert
       .dom(configs[0].querySelector('.js-config-key'))

@@ -234,8 +234,6 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
   });
 
   test('#stop', function (assert) {
-    assert.expect(3);
-
     startAssembler();
 
     fakeRSVP.trigger('created', {

@@ -17,7 +17,7 @@ export default class ContainerTypeContoller extends Controller {
   @computed('model.@each.name', 'search')
   get rows() {
     return this.model.filter((instance) =>
-      searchMatch(instance.name, this.search)
+      searchMatch(instance.name, this.search),
     );
   }
 

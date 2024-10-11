@@ -1,3 +1,4 @@
+/* eslint-disable n/no-unpublished-require */
 'use strict';
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
@@ -212,15 +213,15 @@ module.exports = function (defaults) {
   }
 
   const emberDebugs = [];
-  ['basic', 'chrome', 'firefox', 'bookmarklet', 'websocket'].forEach(function (
-    dist
-  ) {
-    emberDebugs[dist] = map(emberDebug, '**/*.js', function (content) {
-      return wrapWithLoader(
-        `(function(adapter, env) {\n${content}\n}('${dist}', '${env}'))`
-      );
-    });
-  });
+  ['basic', 'chrome', 'firefox', 'bookmarklet', 'websocket'].forEach(
+    function (dist) {
+      emberDebugs[dist] = map(emberDebug, '**/*.js', function (content) {
+        return wrapWithLoader(
+          `(function(adapter, env) {\n${content}\n}('${dist}', '${env}'))`,
+        );
+      });
+    },
+  );
 
   let tree = app.toTree();
 
@@ -238,7 +239,7 @@ module.exports = function (defaults) {
 
   const minimumVersion = packageJson.emberVersionsSupported[0].replace(
     /\./g,
-    '-'
+    '-',
   );
   const webExtensionRoot = `panes-${minimumVersion}`;
 
@@ -330,7 +331,7 @@ module.exports = function (defaults) {
     } else {
       const file = writeFile(
         'index.html',
-        'This Ember version is not supported in development environment.'
+        'This Ember version is not supported in development environment.',
       );
       const emberDebugFile = writeFile('ember_debug.js', 'void(0);');
       chrome = mergeTrees([mv(file, `panes-${version}`), chrome]);

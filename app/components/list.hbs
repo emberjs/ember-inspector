@@ -5,8 +5,8 @@
   {{did-update this.schemaUpdated this.schema}}
 >
   {{#if this.schema.columns.length}}
-    <div class="list__header">
-      <div class="list__table-container">
+    <div class="list-header">
+      <div class="list-table-container">
         <table>
           <colgroup>
             {{#each this.columns key="id" as |column|}}
@@ -14,7 +14,7 @@
             {{/each}}
           </colgroup>
           <tbody>
-            <tr class="list__row">
+            <tr class="list-row">
               {{#each this.columns key="id" as |column|}}
                 <ListCell class="js-header-column" @tagName="th">
                   {{column.name}}

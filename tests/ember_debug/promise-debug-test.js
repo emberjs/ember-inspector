@@ -74,8 +74,6 @@ module('Ember Debug - Promise Debug', function (hooks) {
   });
 
   test('Updates are published when they happen', function (assert) {
-    assert.expect(8);
-
     EmberDebug.port.trigger('promise:getAndObservePromises');
 
     let p;

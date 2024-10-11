@@ -41,7 +41,7 @@ export default class Bookmarklet extends BasicAdapter {
     this.sendMessage({ name: 'version-mismatch', version: goToVersion });
     window.location.href = `../panes-${goToVersion.replace(
       /\./g,
-      '-'
+      '-',
     )}/index.html${window.location.search}`;
   }
 
@@ -68,11 +68,11 @@ function loadPageVar(sVar) {
       new RegExp(
         `^(?:.*[&\\?]${encodeURI(sVar).replace(
           /[\.\+\*]/g,
-          '\\$&'
+          '\\$&',
         )}(?:\\=([^&]*))?)?.*$`,
-        'i'
+        'i',
       ),
-      '$1'
-    )
+      '$1',
+    ),
   );
 }

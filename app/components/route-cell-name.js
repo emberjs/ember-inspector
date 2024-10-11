@@ -7,7 +7,7 @@ export default class RouteCellName extends Component {
   @computed('args.route.parentCount')
   get labelStyle() {
     return htmlSafe(
-      `padding-left: ${+get(this, 'args.route.parentCount') * 20 + 5}px;`
+      `padding-left: ${+get(this, 'args.route.parentCount') * 20 + 5}px;`,
     );
   }
 
