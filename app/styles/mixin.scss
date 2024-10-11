@@ -8,7 +8,7 @@
 
 $mixin-left-padding: 22px;
 
-.mixin__name {
+.mixin-name {
   border-bottom: 1px solid var(--base03);
   padding: 4px 2px 4px $mixin-left-padding;
   z-index: 1;
@@ -30,15 +30,15 @@ $mixin-left-padding: 22px;
   }
 }
 
-.mixin_props_no .mixin__name::before {
+.mixin-props-no .mixin-name::before {
   opacity: 0;
 }
 
-.mixin_state_expanded .mixin__name::before {
+.mixin-state-expanded .mixin-name::before {
   transform: rotate(90deg);
 }
 
-.mixin__properties {
+.mixin-properties {
   border-bottom: 1px solid var(--base03);
   padding: 3px 0 5px;
 }
@@ -60,14 +60,14 @@ $mixin-left-padding: 22px;
     width: $mixin-left-padding;
   }
 
-  .mixin__calc-btn svg {
+  .mixin-calc-btn svg {
     path,
     circle {
       fill: var(--spec07);
     }
   }
 
-  .mixin__send-btn {
+  .mixin-send-btn {
     opacity: 0;
     padding-right: 6px;
   }
@@ -82,7 +82,7 @@ $mixin-left-padding: 22px;
     }
   }
 
-  .mixin-cp-toggle--expanded {
+  .mixin-cp-toggle-expanded {
     svg {
       transform: rotate(0deg);
     }
@@ -144,7 +144,7 @@ $mixin-left-padding: 22px;
   display: inline;
 }
 
-.mixin-property:not(.mixin-property-state-overridden):hover .mixin__send-btn {
+.mixin-property:not(.mixin-property-state-overridden):hover .mixin-send-btn {
   opacity: 1;
 
   &:active {

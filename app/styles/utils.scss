@@ -7,41 +7,43 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .absolute {
   position: absolute;
 }
+
 .relative {
   position: relative;
 }
+
 .grid {
   display: grid;
 }
 
 .sticky {
-  position: -webkit-sticky;
   position: sticky;
 }
 
 .top-0 {
   top: 0;
 }
+
 .right-0 {
   right: 0;
 }
+
 .bottom-0 {
   bottom: 0;
 }
+
 .left-0 {
   left: 0;
 }
 
 .inset-0 {
-  bottom: 0;
-  left: 0;
-  right: 0;
-  top: 0;
+  inset: 0;
 }
 
 .overflow-auto {
   overflow: auto;
 }
+
 .overflow-hidden {
   overflow: hidden;
 }
@@ -49,15 +51,19 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .block {
   display: block;
 }
+
 .inline {
   display: inline;
 }
+
 .inline-block {
   display: inline-block;
 }
+
 .flex {
   display: flex;
 }
+
 .inline-flex {
   display: inline-flex;
 }
@@ -65,18 +71,23 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .flex-1 {
   flex: 1 1 0%;
 }
+
 .flex-auto {
   flex: 1 1 auto;
 }
+
 .flex-grow {
   flex-grow: 1;
 }
+
 .flex-grow-0 {
   flex-grow: 0;
 }
+
 .flex-shrink {
   flex-shrink: 1;
 }
+
 .flex-shrink-0 {
   flex-shrink: 0;
 }
@@ -84,18 +95,23 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .flex-row {
   flex-direction: row;
 }
+
 .flex-col {
   flex-direction: column;
 }
+
 .items-center {
   align-items: center;
 }
+
 .self-stretch {
   align-self: stretch;
 }
+
 .justify-start {
   justify-content: flex-start;
 }
+
 .justify-center {
   justify-content: center;
 }
@@ -103,24 +119,31 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .w-7 {
   width: var(--unit7);
 }
+
 .w-8 {
   width: var(--unit8);
 }
+
 .w-9 {
   width: var(--unit9);
 }
+
 .w-10 {
   width: var(--unit10);
 }
+
 .w-11 {
   width: var(--unit11);
 }
+
 .w-12 {
   width: var(--unit12);
 }
+
 .w-full {
   width: 100%;
 }
+
 .w-auto {
   width: auto;
 }
@@ -128,9 +151,11 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .h-7 {
   height: var(--unit7);
 }
+
 .h-full {
   height: 100%;
 }
+
 .h-auto {
   height: auto;
 }
@@ -138,6 +163,7 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .m-auto {
   margin: auto;
 }
+
 .border-0 {
   border-width: 0;
 }
@@ -206,15 +232,19 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .rounded-none {
   border-radius: 0;
 }
+
 .rounded-sm {
   border-radius: calc(var(--unit1) / 2);
 }
+
 .rounded {
   border-radius: var(--unit1);
 }
+
 .rounded-lg {
   border-radius: var(--unit2);
 }
+
 .rounded-full {
   border-radius: 9999px;
 }
@@ -222,33 +252,43 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .font-bold {
   font-weight: bold;
 }
+
 .font-mono {
   font-family: var(--font-monospace);
 }
+
 .leading-none {
   line-height: 1;
 }
+
 .no-underline {
   text-decoration: none;
 }
+
 .underline {
   text-decoration: underline;
 }
+
 .line-through {
   text-decoration: line-through;
 }
+
 .text-left {
   text-align: left;
 }
+
 .text-center {
   text-align: center;
 }
+
 .text-right {
   text-align: right;
 }
+
 .whitespace-no-wrap {
   white-space: nowrap;
 }
+
 .break-all {
   word-break: break-all;
 }
@@ -264,15 +304,17 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 }
 
 .fill-current {
-  fill: currentColor;
+  fill: currentcolor;
 }
 
 .cursor-default {
   cursor: default;
 }
+
 .cursor-pointer {
   cursor: pointer;
 }
+
 .cursor-col-resize {
   cursor: col-resize;
 }
@@ -284,6 +326,7 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .z-0 {
   z-index: 0;
 }
+
 .z-10 {
   z-index: 10;
 }
@@ -305,15 +348,19 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .opacity-100 {
   opacity: 1;
 }
+
 .opacity-75 {
   opacity: 0.75;
 }
+
 .opacity-50 {
   opacity: 0.5;
 }
+
 .opacity-25 {
   opacity: 0.25;
 }
+
 .opacity-0 {
   opacity: 0;
 }
@@ -333,15 +380,19 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .bg-base00 {
   background-color: var(--base00);
 }
+
 .bg-base01 {
   background-color: var(--base01);
 }
+
 .bg-base02 {
   background-color: var(--base02);
 }
+
 .bg-base05 {
   background-color: var(--base05);
 }
+
 .bg-spec00 {
   background-color: var(--spec00);
 }
@@ -349,27 +400,35 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .text-white {
   color: var(--white);
 }
+
 .text-base09 {
   color: var(--base09);
 }
+
 .text-base10 {
   color: var(--base10);
 }
+
 .text-base11 {
   color: var(--base11);
 }
+
 .text-base12 {
   color: var(--base12);
 }
+
 .text-base13 {
   color: var(--base13);
 }
+
 .text-base14 {
   color: var(--base14);
 }
+
 .text-base15 {
   color: var(--base15);
 }
+
 .text-spec01 {
   color: var(--spec01);
 }
@@ -377,30 +436,39 @@ $units: 0, 1, 2, 3, 4, 5, 6;
 .text-xs {
   font-size: 1rem;
 }
+
 .text-sm {
   font-size: 1.1rem;
 }
+
 .text-base {
   font-size: 1.2rem;
 }
+
 .text-md {
   font-size: 1.3rem;
 }
+
 .text-lg {
   font-size: 1.4rem;
 }
+
 .text-xl {
   font-size: 1.5rem;
 }
+
 .text-2xl {
   font-size: 1.6rem;
 }
+
 .text-3xl {
   font-size: 1.7rem;
 }
+
 .text-4xl {
   font-size: 1.8rem;
 }
+
 .text-5xl {
   font-size: 1.9rem;
 }

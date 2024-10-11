@@ -5,7 +5,7 @@
   {{!-- Disclosure Triangle --}}
   {{#if this.hasDependentKeys}}
     <button
-      class="mixin-cp-toggle {{if this.showDependentKeys "mixin-cp-toggle--expanded"}}"
+      class="mixin-cp-toggle {{if this.showDependentKeys "mixin-cp-toggle-expanded"}}"
       {{on "click" this.toggleDeps}}
       type="button"
     >
@@ -27,7 +27,7 @@
     title={{if @model.code @model.code this.iconInfo.title}}
     {{on "click" this.toggleDeps}}
   >
-    <span class="mixin-property-icon mixin-property-icon--{{this.iconInfo.type}} inline-block rounded font-mono text-md text-white text-center select-none"></span>
+    <span class="mixin-property-icon mixin-property-icon-{{this.iconInfo.type}} inline-block rounded font-mono text-md text-white text-center select-none"></span>
   </span>
 
   {{!-- Property Name --}}
@@ -83,7 +83,7 @@
     {{#if this.canCalculate}}
       <button
         data-test-calculate
-        class="mixin__calc-btn"
+        class="mixin-calc-btn"
         title="compute property"
         type="button"
         {{on "click" @calculate bubbles=false}}
@@ -118,7 +118,7 @@
 
   <button
     data-test-send-to-console-btn
-    class="mixin__send-btn flex-shrink-0 send-to-console"
+    class="mixin-send-btn flex-shrink-0 send-to-console"
     title="Send To Console"
     type="button"
     {{on "click" @sendToConsole}}
@@ -128,7 +128,7 @@
   {{#if this.isFunction}}
     <button
       data-test-goto-source-btn
-      class="mixin__send-btn flex-shrink-0 goto-source"
+      class="mixin-send-btn flex-shrink-0 goto-source"
       title="Goto Source"
       type="button"
       {{on "click" @gotoSource}}

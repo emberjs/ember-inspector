@@ -8,9 +8,9 @@
   {{#if this.isEmberApplication}}
     <div class="split">
       <div class="split-panel">
-        <div class="split split--main">
+        <div class="split split-main">
           <Ui::DraggableColumn
-            @classes="split-panel split-panel--sidebar-1"
+            @classes="split-panel split-panel-sidebar-1"
             @side="left"
             @width={{this.navWidth}}
           >
@@ -19,12 +19,12 @@
             </div>
 
             <SideNav
-              class="split-panel__bd"
+              class="split-panel-bd"
               @collapsed={{this.navIsCollapsed}}
               @deprecationCount={{this.deprecationCount}}
             />
 
-            <div class="split-panel-ft nav-footer {{if this.navIsCollapsed "nav--collapsed" "nav--expanded"}}">
+            <div class="split-panel-ft nav-footer {{if this.navIsCollapsed "nav-collapsed" "nav-expanded"}}">
               <a
                 target="_blank"
                 title="Submit an Issue"
@@ -48,7 +48,7 @@
             <div class="split-panel-hd">
               <div id="toolbar"></div>
               <button
-                class="object-inspector-toggle toolbar__icon-button absolute top-0 right-0"
+                class="object-inspector-toggle toolbar-icon-button absolute top-0 right-0"
                 {{on "click" this.toggleInspector}}
                 type="button"
                 title="{{if this.inspectorExpanded "hide" "show"}} object inspector"
@@ -57,7 +57,7 @@
               </button>
             </div>
 
-            <div class="split-panel__bd" {{did-insert this.setupContentElement}}>
+            <div class="split-panel-bd" {{did-insert this.setupContentElement}}>
               {{outlet}}
             </div>
           </div>

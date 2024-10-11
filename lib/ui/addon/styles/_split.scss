@@ -25,7 +25,7 @@
 }
 
 .split-panel-hd,
-.split-panel__bd,
+.split-panel-bd,
 .split-panel-ft {
   position: relative;
 }
@@ -46,7 +46,7 @@
   min-height: 29px;
 }
 
-.split-panel__bd {
+.split-panel-bd {
   background: var(--base00);
   flex: auto;
   overflow: scroll;
@@ -63,25 +63,25 @@
 }
 
 .split-panel,
-.split-panel__bd {
+.split-panel-bd {
   height: 100%;
 }
 
 /* Custom panels */
 
-.split-panel--sidebar-1 .split-panel__bd {
+.split-panel-sidebar-1 .split-panel-bd {
   background: var(--base01);
 }
 
-.split-panel--sidebar-2 .split-panel__bd {
+.split-panel-sidebar-2 .split-panel-bd {
   background: var(--base01);
 }
 
 /* Fix main list-view scrolling */
-.split--main > .split-panel > .split-panel__bd {
+.split-main > .split-panel > .split-panel-bd {
   overflow: hidden;
 }
 
-.split--main > .split-panel--sidebar-1 > .split-panel__bd {
+.split-main > .split-panel-sidebar-1 > .split-panel-bd {
   overflow-y: auto;
 }

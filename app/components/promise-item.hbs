@@ -1,9 +1,9 @@
 <@list.cell
-  class={{concat "list-cell_main " this.expandedClass}}
+  class={{concat "list-cell-main " this.expandedClass}}
   style={{this.labelStyle}}
   @on-click={{fn @toggleExpand @model}}
 >
-  <div class="list-cell-partial list-cell-partial_size_medium">
+  <div class="list-cell-partial list-cell-partial-size-medium">
     <span
       title={{this.label}}
       class="js-promise-label"
@@ -14,7 +14,7 @@
   <div class="list-cell-helper">
     {{#if @model.hasStack}}
       <button
-        class="send-to-console send-to-console--chevron-only js-trace-promise-btn"
+        class="send-to-console send-to-console-chevron-only js-trace-promise-btn"
         title="Trace promise in console"
         {{on "click" (fn @tracePromise @model)}}
         type="button"
@@ -28,7 +28,7 @@
 
 <@list.cell>
   <div
-    class="pill pill--text font-bold js-promise-state"
+    class="pill pill-text font-bold js-promise-state"
     style={{this.style}}
   >
     {{this.state}}
@@ -38,7 +38,7 @@
 <@list.cell class="js-promise-value">
   {{#if this.hasValue}}
     <div
-      class="list-cell-partial list-cell-partial_size_medium"
+      class="list-cell-partial list-cell-partial-size-medium"
       title={{this.settledValue.inspect}}
     >
       {{#if this.isValueInspectable}}
@@ -58,7 +58,7 @@
       {{#if this.isError}}
         <button
           data-test-send-to-console-btn
-          class="send-to-console send-to-console--chevron-only"
+          class="send-to-console send-to-console-chevron-only"
           title="Send stack trace to the console"
           type="button"
           {{on "click" (fn @sendValueToConsole @model)}}
@@ -75,6 +75,6 @@
   {{/if}}
 </@list.cell>
 
-<@list.cell class="list-cell list-cell_value_numeric js-promise-time">
+<@list.cell class="list-cell list-cell-value_numeric js-promise-time">
   {{ms-to-time this.timeToSettle}}
 </@list.cell>

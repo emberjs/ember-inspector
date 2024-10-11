@@ -177,7 +177,7 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
     );
     assert.strictEqual(
       this.options.storage.keys()[0],
-      'list__my-key',
+      'list-my-key',
       'Uses the correct key',
     );
   });
@@ -239,7 +239,7 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
 
   test("resets cache correctly if schema doesn't match cache", function (assert) {
     this.options.storage.removeItem = (key) => {
-      assert.strictEqual(key, 'list__my-key', 'cache was cleared');
+      assert.strictEqual(key, 'list-my-key', 'cache was cleared');
     };
     let resizableColumns = new ResizableColumns(this.options);
     resizableColumns.build();
@@ -256,9 +256,9 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
 
   test('clears expired cache', function (assert) {
     let sixtyDaysAgo = 1000 * 60 * 60 * 24 * 30 * 2;
-    storage['list__my-key'] = { updatedAt: Date.now() - sixtyDaysAgo };
+    storage['list-my-key'] = { updatedAt: Date.now() - sixtyDaysAgo };
     this.options.storage.removeItem = (key) => {
-      assert.strictEqual(key, 'list__my-key', 'cache was cleared');
+      assert.strictEqual(key, 'list-my-key', 'cache was cleared');
     };
     let resizableColumns = new ResizableColumns(this.options);
     resizableColumns.build();

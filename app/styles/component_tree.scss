@@ -3,35 +3,32 @@
   font-size: 1.2rem;
   min-height: 22px;
 
-  &__actions {
+  &-actions {
     min-height: 22px;
     opacity: 0;
     right: var(--unit1);
 
     /**
-      * __actions is position:sticky so it is always visible and on top.
+      * -actions is position:sticky so it is always visible and on top.
       * Due to margins and padding on various elements, it was
-      * difficult to keep the background of __actions on top
+      * difficult to keep the background of -actions on top
       * of .tree-item text and align with the .tree-item background.
-      * This pseudo element is 100% of the width of __actions plus
+      * This pseudo element is 100% of the width of -actions plus
       * a little extra to guarantee alignment.
     */
-    &:after {
+    &::after {
       border-bottom-right-radius: var(--unit1);
       border-top-right-radius: var(--unit1);
-      bottom: 0;
+      inset: 0 calc(var(--unit1) * -1);
       content: "";
-      left: calc(var(--unit1) * -1);
       position: absolute;
-      right: calc(var(--unit1) * -1);
-      top: 0;
     }
 
     /**
-      * __actions is position:sticky so it is always visible and on top.
+      * -actions is position:sticky so it is always visible and on top.
       * :before is a gradient to soften the edge when overlaying text.
     */
-    &:before {
+    &::before {
       bottom: 0;
       content: "";
       left: calc(var(--unit3) * -1);
@@ -41,7 +38,7 @@
     }
   }
 
-  &__action {
+  &-action {
     &:focus {
       outline: none;
     }
@@ -71,14 +68,14 @@
       background-color: var(--component-highlighted-bg);
     }
 
-    .component-tree-item__actions {
+    .component-tree-item-actions {
       opacity: 1;
 
-      &:after {
+      &::after {
         background-color: var(--component-highlighted-bg);
       }
 
-      &:before {
+      &::before {
         background: linear-gradient(
           to right,
           var(--transparent),
@@ -89,7 +86,7 @@
   }
 }
 
-.component-tree-item__tag {
+.component-tree-item-tag {
   .component-name {
     color: var(--component-name);
   }
@@ -124,12 +121,12 @@
  * highlighted - the component currently being previewed
  */
 
-.component-tree-item.component-tree-item--highlighted {
+.component-tree-item.component-tree-item-highlighted {
   background-color: var(--component-highlighted-bg);
   border-radius: 0;
 }
 
-.component-tree-item--pinned .component-tree-item__tag {
+.component-tree-item-pinned .component-tree-item-tag {
   .component-name,
   .bracket-token,
   .key-token,
@@ -138,43 +135,43 @@
   }
 }
 
-.component-tree-item__bracket:before,
-.component-tree-item__bracket:after,
-.component-tree-item-classic__bracket:before,
-.component-tree-item-classic__bracket:after {
+.component-tree-item-bracket::before,
+.component-tree-item-bracket::after,
+.component-tree-item-classic-bracket::before,
+.component-tree-item-classic-bracket::after {
   color: var(--base09);
 }
 
-.component-tree-item__has_modifier:after {
+.component-tree-item-has-modifier::after {
   content: "" !important;
 }
 
-.component-tree-item__closing:before {
+.component-tree-item-closing::before {
   content: ">";
   margin-left: -13px;
 }
 
-.component-tree-item__self-closing:before {
+.component-tree-item-self-closing::before {
   content: "/>";
 }
 
-.component-tree-item__bracket:before {
+.component-tree-item-bracket::before {
   content: "<";
 }
 
-.component-tree-item__bracket:after {
+.component-tree-item-bracket::after {
   content: ">";
 }
 
-.component-tree-item__bracket.component-tree-item__bracket--self-closing:after {
+.component-tree-item-bracket.component-tree-item-bracket-self-closing::after {
   content: "/>";
 }
 
-.component-tree-item-classic__bracket:before {
+.component-tree-item-classic-bracket::before {
   content: "{{";
 }
 
-.component-tree-item-classic__bracket:after {
+.component-tree-item-classic-bracket::after {
   content: "}}";
 }
 
@@ -183,7 +180,7 @@
  * selected - user clicked on component
  */
 
-.component-tree-item.component-tree-item--pinned {
+.component-tree-item.component-tree-item-pinned {
   background: var(--focus);
   color: var(--focus-text);
 
@@ -195,14 +192,14 @@
     background: var(--focus);
   }
 
-  .component-tree-item__actions {
+  .component-tree-item-actions {
     opacity: 1;
 
-    &:after {
+    &::after {
       background: var(--focus);
     }
 
-    &:before {
+    &::before {
       background: linear-gradient(
         to right,
         var(--transparent),
@@ -211,13 +208,13 @@
     }
   }
 
-  .component-tree-item__bracket:before,
-  .component-tree-item__bracket:after {
+  .component-tree-item-bracket::before,
+  .component-tree-item-bracket::after {
     color: var(--component-backets-selected);
   }
 
-  .component-tree-item__expand,
-  .component-tree-item__action {
+  .component-tree-item-expand,
+  .component-tree-item-action {
     opacity: 1;
 
     polygon,
@@ -228,6 +225,6 @@
   }
 }
 
-.component-tree-item--component {
+.component-tree-item-component {
   color: var(--base09);
 }

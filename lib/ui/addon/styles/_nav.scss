@@ -1,4 +1,4 @@
-$nav--main-item-height: 38px;
+$nav-main-item-height: 38px;
 
 .nav-title {
   color: var(--base09);
@@ -64,8 +64,8 @@ $nav--main-item-height: 38px;
   font-size: 1.3rem;
 }
 
-.nav--collapsed .nav-item-label,
-.nav--collapsed .nav-item .pill {
+.nav-collapsed .nav-item-label,
+.nav-collapsed .nav-item .pill {
   display: none;
 }
 
@@ -86,18 +86,18 @@ $nav--main-item-height: 38px;
 
 /* Custom navs */
 
-.nav--main .nav-item {
-  height: $nav--main-item-height;
-  line-height: $nav--main-item-height;
+.nav-main .nav-item {
+  height: $nav-main-item-height;
+  line-height: $nav-main-item-height;
   padding-left: 12px;
 }
 
-.nav--main .pill {
+.nav-main .pill {
   margin-right: var(--unit1);
   margin-left: var(--unit1);
 }
 
-.nav.nav--main .nav-title {
+.nav.nav-main .nav-title {
   padding-left: 14px;
 }
 
@@ -125,22 +125,22 @@ $nav--main-item-height: 38px;
 }
 
 // when nav is expaned, layout horizontally
-.nav-footer.nav--expanded {
+.nav-footer.nav-expanded {
   display: grid;
-  grid-template: "left center right" $nav--main-item-height / auto 1fr auto;
-  height: $nav--main-item-height;
+  grid-template: "left center right" $nav-main-item-height / auto 1fr auto;
+  height: $nav-main-item-height;
 }
 
 // when nav is collapsed, layout vertically
-.nav-footer.nav--collapsed {
+.nav-footer.nav-collapsed {
   display: grid;
   grid-template:
-    "left" $nav--main-item-height - 6px
-    "right" $nav--main-item-height - 6px;
+    "left" $nav-main-item-height - 6px
+    "right" $nav-main-item-height - 6px;
   height: auto;
 }
 
-.nav-overflow.nav-overflow--active {
+.nav-overflow.nav-overflow-active {
   background-color: var(--focus);
 
   .nav-icon-stroke {
@@ -150,5 +150,5 @@ $nav--main-item-height: 38px;
 
 // force select to cover clickable area
 .nav-overflow select {
-  height: $nav--main-item-height;
+  height: $nav-main-item-height;
 }

@@ -5,7 +5,7 @@
   For example: when application is not detected.
 */
 
-.error-page__content {
+.error-page-content {
   border: 1px solid var(--base04);
   width: 530px;
 
@@ -24,7 +24,7 @@
   }
 }
 
-.error-page__header {
+.error-page-header {
   border-bottom: 1px solid var(--base04);
   top: -25px;
 
@@ -33,21 +33,22 @@
     flex-shrink: 0;
     height: 89px;
     width: 128px;
-    animation: tomsterReveal 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    animation: tomster-reveal 0.4s cubic-bezier(0.19, 1, 0.22, 1);
     animation-delay: 0.75s;
     animation-fill-mode: forwards;
   }
 }
 
-@keyframes tomsterReveal {
+@keyframes tomster-reveal {
   from {
     transform: translateY(90px);
   }
+
   to {
-    transform: translateY(0px);
+    transform: translateY(0);
   }
 }
 
-.error-page__body {
+.error-page-body {
   border-bottom: 1px solid var(--base04);
 }

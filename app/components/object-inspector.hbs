@@ -3,7 +3,7 @@
     <div class="toolbar">
       <button
         data-test-object-inspector-back
-        class="toolbar__icon-button {{if this.isNested "enabled" "disabled"}}"
+        class="toolbar-icon-button {{if this.isNested "enabled" "disabled"}}"
         type="button"
         {{on "click" this.popStack}}
       >
@@ -49,7 +49,7 @@
     {{/if}}
   </div>
 
-  <div class="split-panel__bd">
+  <div class="split-panel-bd">
     <div class="toolbar object-inspector-toolbar">
       <button
         data-test-object-display-type-grouped
@@ -83,7 +83,7 @@
         />
         {{#if this.customFilter}}
           <button
-            class="toolbar__icon-button toolbar-search-clear-button absolute right-0 w-auto h-auto"
+            class="toolbar-icon-button toolbar-search-clear-button absolute right-0 w-auto h-auto"
             title="clear"
             data-test-object-inspector-custom-search-clear
             type="button"
@@ -112,7 +112,7 @@
     {{/if}}
   </div>
 {{else}}
-  <div class="split-panel__bd">
+  <div class="split-panel-bd">
     <Ui::EmptyMessage>
       No object selected
     </Ui::EmptyMessage>

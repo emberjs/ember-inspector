@@ -4,6 +4,7 @@
 
 .object-inspector-toolbar.toolbar {
   border-bottom: 1px solid var(--base03);
+
   // override default .toolbar height
   // based on table view header height
   min-height: 30px;
@@ -31,7 +32,7 @@
   margin-bottom: 2px;
   margin-left: 55px;
 
-  &:before {
+  &::before {
     background-color: var(--base08);
     content: "";
     height: 8px;
@@ -58,7 +59,7 @@
   position: relative;
 }
 
-.mixin-property-dependency-item:first-child:before {
+.mixin-property-dependency-item:first-child::before {
   display: none;
 }
 
@@ -72,50 +73,50 @@
   width: 17px;
 }
 
-.mixin-property-icon--service {
+.mixin-property-icon-service {
   background-color: var(--spec08);
 
-  &:before {
+  &::before {
     content: "S";
   }
 }
 
-.mixin-property-icon--computed {
+.mixin-property-icon-computed {
   background-color: var(--spec07);
 
-  &:before {
+  &::before {
     content: "C";
   }
 }
 
-.mixin-property-icon--property {
+.mixin-property-icon-property {
   background-color: var(--base06);
 
-  &:before {
+  &::before {
     content: "P";
   }
 }
 
-.mixin-property-icon--getter {
+.mixin-property-icon-getter {
   background-color: var(--spec07);
 
-  &:before {
+  &::before {
     content: "G";
   }
 }
 
-.mixin-property-icon--function {
+.mixin-property-icon-function {
   background-color: var(--base08);
 
-  &:before {
+  &::before {
     content: "ƒ";
   }
 }
 
-.mixin-property-icon--tracked {
+.mixin-property-icon-tracked {
   background-color: var(--tracked-icon-bg);
 
-  &:before {
+  &::before {
     content: "T";
   }
 }

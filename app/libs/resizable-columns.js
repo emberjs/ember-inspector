@@ -362,7 +362,7 @@ export default class {
    * @method getStorageKey
    */
   getStorageKey() {
-    return `list__${this.key}`;
+    return `lis-${this.key}`;
   }
 
   /**

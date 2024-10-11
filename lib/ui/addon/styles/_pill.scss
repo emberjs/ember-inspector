@@ -16,16 +16,16 @@
   background: var(--pill-bg-active);
 }
 
-.pill--small {
+.pill-small {
   font-size: 1rem;
   padding: 2px 4px;
 }
 
-.pill--text {
+.pill-text {
   font-family: var(--font-sans-serif);
 }
 
-.pill--blue {
+.pill-blue {
   background: var(--focus);
   color: var(--focus-text);
 }

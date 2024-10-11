@@ -3,7 +3,7 @@
   {{did-insert this.setupListeners}}
   {{will-destroy this.destroyListeners}}
 >
-  <nav class="absolute inset-0 nav nav--main {{if @collapsed "nav--collapsed overflow-hidden"}}">
+  <nav class="absolute inset-0 nav nav-main {{if @collapsed "nav-collapsed overflow-hidden"}}">
     <ul>
       {{#each this.itemsToDisplay as |item|}}
         <li>
@@ -18,7 +18,7 @@
       {{/each}}
       {{#if (and @collapsed this.overflowItems.length)}}
         <li
-          class="{{if this.overflowItemIsActive "nav-overflow--active"}} nav-overflow relative flex items-center justify-center cursor-pointer"
+          class="{{if this.overflowItemIsActive "nav-overflow-active"}} nav-overflow relative flex items-center justify-center cursor-pointer"
           title="More options"
         >
           <select
