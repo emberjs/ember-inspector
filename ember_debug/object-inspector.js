@@ -993,7 +993,7 @@ function isInternalProperty(property) {
     '__LEGACY_OWNER',
     '__ARGS__',
     '__HAS_BLOCK__',
-    '-property_DID_CHANGE__',
+    '__PROPERTY_DID_CHANGE__',
   ].some((internalProp) => property.startsWith(internalProp));
 
   return isInternalProp;
