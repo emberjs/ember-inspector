@@ -108,6 +108,7 @@
     "ember-cli-version-checker": "^5.1.2",
     "ember-concurrency": "^3.1.1",
     "ember-decorators": "^6.1.1",
+    "ember-event-helpers": "^0.1.1",
     "ember-fetch": "^8.1.2",
     "ember-flatpickr": "^4.0.0",
     "ember-in-element-polyfill": "^1.0.1",

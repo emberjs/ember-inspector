@@ -86,7 +86,7 @@
         class="mixin-calc-btn"
         title="compute property"
         type="button"
-        {{on "click" @calculate bubbles=false}}
+        {{on "click" (stop-propagation @calculate)}}
       >
         {{svg-jar "calculate" width="16px" height="16px"}}
       </button>

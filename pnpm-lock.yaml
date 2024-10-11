@@ -234,6 +234,9 @@ importers:
       ember-decorators:
         specifier: ^6.1.1
         version: 6.1.1
+      ember-event-helpers:
+        specifier: ^0.1.1
+        version: 0.1.1
       ember-fetch:
         specifier: ^8.1.2
         version: 8.1.2(encoding@0.1.13)
@@ -3724,6 +3727,10 @@ packages:
     peerDependenciesMeta:
       '@typescript-eslint/parser':
         optional: true
+
+  ember-event-helpers@0.1.1:
+    resolution: {integrity: sha512-fWcbWd4W4nRv8bbato8JB6oGRpATkR+oGYxMIqnfgTgPWaCS0ww7CuUVNpwg1TulojKMCuTXi8Fem2b1NSF1ZQ==}
+    engines: {node: 8.* || >= 10.*}
 
   ember-fetch@8.1.2:
     resolution: {integrity: sha512-TVx24/jrvDIuPL296DV0hBwp7BWLcSMf0I8464KGz01sPytAB+ZAePbc9ooBTJDkKZEGFgatJa4nj3yF1S9Bpw==}
@@ -13289,6 +13296,12 @@ snapshots:
       html-tags: 3.3.1
     transitivePeerDependencies:
       - eslint
+
+  ember-event-helpers@0.1.1:
+    dependencies:
+      ember-cli-babel: 7.26.11
+    transitivePeerDependencies:
+      - supports-color
 
   ember-fetch@8.1.2(encoding@0.1.13):
     dependencies:
