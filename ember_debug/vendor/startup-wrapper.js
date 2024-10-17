@@ -26,10 +26,9 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
 // @formatter:on
 
 (function(adapter) {
-  onEmberReady(function() {
 
-    if (window.EMBER_INSPECTOR_SUPPORT_BUNDLED) {
-      function sendLoadedEvent() {
+  onReady(() => {
+    function sendLoadedEvent() {
         const e = new CustomEvent('ember-inspector-loaded', {
           detail: {
             adapter: adapter,
@@ -42,6 +41,10 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       window.addEventListener('ember-inspector-support-setup', () => {
         sendLoadedEvent();
       });
+  });
+  
+  onEmberReady(function() {
+    if (window.EMBER_INSPECTOR_SUPPORT_BUNDLED) {      
       return;
     }
 
