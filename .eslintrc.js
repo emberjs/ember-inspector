@@ -4,10 +4,13 @@ module.exports = {
   root: true,
   parser: '@babel/eslint-parser',
   parserOptions: {
-    ecmaVersion: 2020,
+    ecmaVersion: 'latest',
     sourceType: 'module',
-    ecmaFeatures: {
-      legacyDecorators: true,
+    requireConfigFile: false,
+    babelOptions: {
+      plugins: [
+        ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true }],
+      ],
     },
   },
   plugins: ['ember'],
@@ -32,10 +35,12 @@ module.exports = {
     // Temporarily turn these off
     'ember/classic-decorator-hooks': 'off',
     'ember/classic-decorator-no-classic-methods': 'off',
+    'ember/no-at-ember-render-modifiers': 'off',
     'ember/no-classic-classes': 'off',
     'ember/no-classic-components': 'off',
     'ember/no-computed-properties-in-native-classes': 'off',
     'ember/no-get': 'off',
+    'ember/no-runloop': 'off',
 
     // Best practice
     'no-duplicate-imports': 'error',
@@ -65,13 +70,7 @@ module.exports = {
         browser: false,
         node: true,
       },
-      plugins: ['node'],
-      extends: ['plugin:node/recommended'],
-      rules: {
-        // this can be removed once the following is fixed
-        // https://github.com/mysticatea/eslint-plugin-node/issues/77
-        'node/no-unpublished-require': 'off',
-      },
+      extends: ['plugin:n/recommended'],
     },
     {
       // test files

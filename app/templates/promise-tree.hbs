@@ -28,7 +28,7 @@
 {{else}}
   <List class="js-promise-tree" @schema={{schema-for "promise-tree"}} as |list|>
     <list.vertical-collection @items={{this.filtered}} as |content index|>
-      <tr class="list__row js-promise-tree-item {{if (mod index 2) "striped"}}">
+      <tr class="list-row js-promise-tree-item {{if (mod index 2) "striped"}}">
         <PromiseItem
           @model={{content}}
           @filter={{this.filter}}

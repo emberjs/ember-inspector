@@ -34,7 +34,7 @@ function getModelTypes() {
 
 function recordFactory(
   { objectId, ...attrs },
-  filterValues = { isNew: false }
+  filterValues = { isNew: false },
 ) {
   filterValues = filterValues || { isNew: false };
   let searchKeywords = [];
@@ -60,7 +60,7 @@ function getRecords(type) {
       }),
       recordFactory(
         { objectId: 'post-2', id: 2, title: 'Hello', body: '' },
-        { isNew: true }
+        { isNew: true },
       ),
     ];
   }
@@ -250,7 +250,7 @@ module('Data Tab', function (outer) {
           applicationId,
           applicationName,
           modelTypes: getModelTypes(),
-        })
+        }),
       );
 
       await click('[data-test-reload-container-btn]');
@@ -259,8 +259,6 @@ module('Data Tab', function (outer) {
     });
 
     test('Can inspect store in data pane', async function (assert) {
-      assert.expect(1);
-
       respondWith('data:getModelTypes', {
         type: 'data:modelTypesAdded',
         modelTypes: getModelTypes(),
@@ -321,7 +319,7 @@ module('Data Tab', function (outer) {
 
       let secondRow = recordRows[1];
       let secondRowColumns = secondRow.querySelectorAll(
-        '[data-test-table-cell]'
+        '[data-test-table-cell]',
       );
       assert.dom(secondRowColumns[0]).hasText('2');
       assert.dom(secondRowColumns[1]).hasText('Hello');
@@ -350,7 +348,7 @@ module('Data Tab', function (outer) {
             },
             {
               isNew: true,
-            }
+            },
           ),
         ],
       });
@@ -461,7 +459,7 @@ module('Data Tab', function (outer) {
       let filters = findAll('.js-filter');
       assert.strictEqual(filters.length, 2);
       let newFilter = [...filters].find(
-        (e) => e.textContent.indexOf('New') > -1
+        (e) => e.textContent.indexOf('New') > -1,
       );
       await click(newFilter);
 

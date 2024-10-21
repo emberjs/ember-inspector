@@ -166,7 +166,7 @@ export default class ListComponent extends Component {
       basicContext.show(menu, e);
     };
 
-    const listHeader = this.el.querySelector('.list__header');
+    const listHeader = this.el.querySelector('.list-header');
     if (listHeader) {
       listHeader.addEventListener('contextmenu', this.showBasicContext);
     }
@@ -184,7 +184,7 @@ export default class ListComponent extends Component {
   @action
   toggleColumnVisibility(id) {
     this.resizableColumns.toggleVisibility(id);
-    const listHeader = this.el.querySelector('.list__header');
+    const listHeader = this.el.querySelector('.list-header');
     if (listHeader) {
       listHeader.removeEventListener('contextmenu', this.showBasicContext);
     }
@@ -212,7 +212,7 @@ export default class ListComponent extends Component {
    * @method willDestroy
    */
   willDestroy() {
-    const listHeader = this.el.querySelector('.list__header');
+    const listHeader = this.el.querySelector('.list-header');
     if (listHeader) {
       listHeader.removeEventListener('contextmenu', this.showBasicContext);
     }
@@ -228,7 +228,7 @@ export default class ListComponent extends Component {
    */
   @action
   getTableWidth() {
-    return this.el.querySelector('.list__table-container').clientWidth;
+    return this.el.querySelector('.list-table-container').clientWidth;
   }
 
   /**

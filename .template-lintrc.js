@@ -3,10 +3,11 @@
 module.exports = {
   extends: 'recommended',
   rules: {
-    'no-down-event-binding': false,
+    'no-at-ember-render-modifiers': false,
     'no-negated-condition': false,
 
     // TODO: enable these rules
+    'no-builtin-form-components': false,
     'no-positive-tabindex': false,
   },
 };

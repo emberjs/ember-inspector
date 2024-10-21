@@ -1,4 +1,4 @@
-.toolbar__checkbox {
+.toolbar-checkbox {
   height: 100%;
   margin-left: 4px;
   margin-right: 4px;
@@ -6,24 +6,24 @@
   white-space: nowrap;
 }
 
-.toolbar__checkbox label {
+.toolbar-checkbox label {
   display: block;
   height: 100%;
   line-height: var(--toolbar-height);
 }
 
-.toolbar__checkbox input {
+.toolbar-checkbox input {
   margin: 0;
 }
 
 /*
   if first item in toolbar, create extra clickable space
 */
-.toolbar__checkbox:first-child {
+.toolbar-checkbox:first-child {
   margin-left: 0;
 }
 
-.toolbar__checkbox:first-child label {
+.toolbar-checkbox:first-child label {
   margin-left: 0;
   padding-left: 8px;
 }

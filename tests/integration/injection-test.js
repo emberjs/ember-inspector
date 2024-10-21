@@ -122,7 +122,7 @@ class ChromeApi {
       },
       sendMessage(msg) {
         (self.backgroundScript || self.inspector).subscribers.forEach((sub) =>
-          sub(msg, self.sender)
+          sub(msg, self.sender),
         );
       },
       onMessage: {
@@ -254,7 +254,7 @@ module('Integration | Injection', function (hooks) {
     // eslint-disable-next-line no-unused-vars
     const { define, requireModule } = getLoader(
       window.define,
-      window.requireModule
+      window.requireModule,
     );
     window.define = define;
     window.requireModule = requireModule;
@@ -262,7 +262,7 @@ module('Integration | Injection', function (hooks) {
       // eslint-disable-next-line no-unused-vars
       const chrome = contentChromeApi;
       backgroundChromeApi.onTabActivatedListeners.forEach((act) =>
-        act({ tabId: 1 })
+        act({ tabId: 1 }),
       );
       eval(contentScript);
     }
@@ -270,7 +270,7 @@ module('Integration | Injection', function (hooks) {
     assert.strictEqual(
       windowMessages,
       0,
-      'content script should not send window messages'
+      'content script should not send window messages',
     );
 
     window.chrome = inspectorChromeApi;
@@ -322,7 +322,7 @@ module('Integration | Injection', function (hooks) {
     assert.notStrictEqual(
       emberDebug,
       undefined,
-      'ember debug should be loaded'
+      'ember debug should be loaded',
     );
   });
 
@@ -331,7 +331,7 @@ module('Integration | Injection', function (hooks) {
     await inject(this.owner, assert);
     assert.true(
       !!backgroundChromeApi.registeredContextMenus['inspect-ember-component'],
-      'should have registered context menu'
+      'should have registered context menu',
     );
   });
 

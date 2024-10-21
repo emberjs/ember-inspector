@@ -135,7 +135,7 @@ export default class ApplicationController extends Controller {
 
         if (this.contentElement) {
           this.layoutService.updateContentHeight(
-            this.contentElement.clientHeight
+            this.contentElement.clientHeight,
           );
         }
       }

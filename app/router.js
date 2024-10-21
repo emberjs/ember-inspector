@@ -19,7 +19,7 @@ Router.map(function () {
           { path: '/:type_id', resetNamespace: true },
           function () {
             this.route('records', { resetNamespace: true });
-          }
+          },
         );
       });
     });

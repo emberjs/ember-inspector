@@ -35,12 +35,12 @@ module('Ember Debug - ProfileNode', function () {
 
     assert.notOk(
       p1.parent,
-      'Without a parent parameter, the attribute is not set'
+      'Without a parent parameter, the attribute is not set',
     );
     assert.strictEqual(
       p2.parent,
       p1,
-      "If passed, p2's parent is assigned to p1"
+      "If passed, p2's parent is assigned to p1",
     );
     assert.notOk(p1.time, "p1 has no time because it's unfinished");
     assert.notOk(p2.time, "p2 has no time because it's unfinished");
@@ -70,7 +70,7 @@ module('Ember Debug - ProfileNode', function () {
 
     assert.ok(
       JSON.stringify(p1),
-      'it can serialize due to no cycles in the object'
+      'it can serialize due to no cycles in the object',
     );
   });
 

@@ -30,7 +30,7 @@ export default class DeprecationsController extends Controller {
   @computed('deprecations.@each.message', 'search')
   get filtered() {
     return this.deprecations.filter((item) =>
-      searchMatch(item.message, this.search)
+      searchMatch(item.message, this.search),
     );
   }
 

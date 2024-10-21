@@ -1,10 +1,10 @@
 <Ui::Disclosure as |disclosure|>
   <tr
     style={{this.nodeStyle}}
-    class="list__row js-render-profile-item"
+    class="list-row js-render-profile-item"
   >
     <@list.cell
-      class="list__cell_main js-render-main-cell"
+      class="list-cell-main js-render-main-cell"
       @on-click={{disclosure.toggle}}
       style={{this.nameStyle}}
     >
@@ -17,13 +17,13 @@
       </span>
     </@list.cell>
 
-    <@list.cell class="list__cell_value_numeric">
+    <@list.cell class="list-cell-value_numeric">
       <span class="pill js-render-profile-duration">
         {{ms-to-time @model.duration}}
       </span>
     </@list.cell>
 
-    <@list.cell class="list__cell_value_numeric js-render-profile-timestamp">
+    <@list.cell class="list-cell-value_numeric js-render-profile-timestamp">
       {{this.readableTime}}
     </@list.cell>
   </tr>

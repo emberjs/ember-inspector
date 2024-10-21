@@ -23,7 +23,7 @@
   <button
     class="{{
       if (eq @filter "all") "active"
-    }} toolbar__radio toolbar__radio--first js-filter"
+    }} toolbar-radio toolbar-radio-first js-filter"
     type="button"
     {{on "click" (fn @setFilter "all")}}
   >
@@ -31,14 +31,14 @@
   </button>
 
   <button
-    class="{{if (eq @filter "rejected") "active"}} toolbar__radio js-filter"
+    class="{{if (eq @filter "rejected") "active"}} toolbar-radio js-filter"
     type="button"
     {{on "click" (fn @setFilter "rejected")}}
   >
     Rejected
   </button>
   <button
-    class="{{if (eq @filter "pending") "active"}} toolbar__radio js-filter"
+    class="{{if (eq @filter "pending") "active"}} toolbar-radio js-filter"
     type="button"
     {{on "click" (fn @setFilter "pending")}}
   >
@@ -47,7 +47,7 @@
   <button
     class="{{
       if (eq @filter "fulfilled") "active"
-    }} toolbar__radio toolbar__radio--last js-filter"
+    }} toolbar-radio toolbar-radio-last js-filter"
     type="button"
     {{on "click" (fn @setFilter "fullfilled")}}
   >
@@ -56,7 +56,7 @@
 
   <Ui::ToolbarDivider />
 
-  <div class="toolbar__checkbox js-with-stack">
+  <div class="toolbar-checkbox js-with-stack">
     <label>
       <Input
         @type="checkbox"

@@ -1,7 +1,9 @@
 .disclosure-triangle {
   padding: 0 2px;
 
-  &:focus { outline: none; }
+  &:focus {
+    outline: none;
+  }
 
   svg {
     transition-duration: 0.1s;

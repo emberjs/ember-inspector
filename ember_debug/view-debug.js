@@ -59,11 +59,11 @@ export default class extends DebugPort {
       owner: this.getOwner(),
       retainObject: bound(
         this.objectInspector,
-        this.objectInspector.retainObject
+        this.objectInspector.retainObject,
       ),
       releaseObject: bound(
         this.objectInspector,
-        this.objectInspector.releaseObject
+        this.objectInspector.releaseObject,
       ),
       inspectNode: bound(this, this.inspectNode),
     }));

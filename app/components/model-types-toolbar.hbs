@@ -6,7 +6,7 @@
 
   <Ui::ToolbarDivider />
 
-  <div class="toolbar__checkbox js-filter-hide-empty-model-types">
+  <div class="toolbar-checkbox js-filter-hide-empty-model-types">
     <label>
       <Input
         data-test-options-hideEmptyModelTypes
@@ -16,7 +16,7 @@
       Hide Empty Model Types
     </label>
   </div>
-  <div class="toolbar__checkbox js-filter-order-records-by-count">
+  <div class="toolbar-checkbox js-filter-order-records-by-count">
     <label>
       <Input
         data-test-options-orderByRecordCount
@@ -26,7 +26,7 @@
       Order Models By Record Count
     </label>
   </div>
-  <button class="toolbar__radio js-filter" {{on "click" @getStore}} data-test-inspect-store type="button">
+  <button class="toolbar-radio js-filter" {{on "click" @getStore}} data-test-inspect-store type="button">
     Inspect Store
   </button>
 </div>

@@ -1,4 +1,4 @@
-.toolbar__radio {
+.toolbar-radio {
   background: var(--base02);
   border: none;
   border-radius: 2px;
@@ -14,30 +14,30 @@
   vertical-align: middle;
 }
 
-.toolbar__radio:active,
-.toolbar__radio:hover,
-.toolbar__radio:focus,
-.toolbar__radio.active {
+.toolbar-radio:active,
+.toolbar-radio:hover,
+.toolbar-radio:focus,
+.toolbar-radio.active {
   outline: none;
 }
 
-.toolbar__radio--first {
+.toolbar-radio-first {
   margin-left: 4px;
 }
 
-.toolbar__radio--last {
+.toolbar-radio-last {
   margin-right: 4px;
 }
 
-.toolbar__radio:hover {
+.toolbar-radio:hover {
   background: var(--base04);
 }
 
-.toolbar__radio:active {
+.toolbar-radio:active {
   background: var(--base00);
 }
 
-.toolbar__radio.active {
+.toolbar-radio.active {
   background: var(--focus);
   color: var(--focus-text);
 }

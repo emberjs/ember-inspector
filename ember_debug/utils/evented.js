@@ -40,7 +40,7 @@ export default class Evented {
     }
     const listeners = this[ListenersSymbol][name] || [];
     const idx = listeners.findIndex(
-      (l) => l.target === target && l.method === method
+      (l) => l.target === target && l.method === method,
     );
     if (idx >= 0) {
       listeners.splice(idx, 1);

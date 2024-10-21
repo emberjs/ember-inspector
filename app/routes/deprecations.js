@@ -32,7 +32,7 @@ export default class DeprecationsRoute extends TabRoute {
     this.port.off(
       'deprecation:deprecationsAdded',
       this,
-      this.deprecationsAdded
+      this.deprecationsAdded,
     );
   }
 

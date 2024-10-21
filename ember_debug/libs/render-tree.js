@@ -19,7 +19,7 @@ class InElementSupportProvider {
 
     try {
       requireModule(
-        '@glimmer/manager'
+        '@glimmer/manager',
       ).CustomModifierManager.prototype.getDebugInstance = (args) =>
         args.modifier || args.delegate;
     } catch (e) {
@@ -56,7 +56,7 @@ class InElementSupportProvider {
       !isInVersionSpecifier('>5.9.0', VERSION);
     const hasModifierAndInElementSupport = isInVersionSpecifier(
       '>5.9.0',
-      VERSION
+      VERSION,
     );
 
     function createRef(value) {
@@ -213,7 +213,7 @@ class InElementSupportProvider {
       NewElementBuilder.prototype.pushRemoteElement = function (
         element,
         guid,
-        insertBefore
+        insertBefore,
       ) {
         const ref = createRef(element);
         const capturedArgs = {
@@ -285,7 +285,7 @@ class InElementSupportProvider {
     Object.assign(this.debugRenderTree, this.debugRenderTreeFunctions);
     Object.assign(
       this.NewElementBuilder.prototype,
-      this.NewElementBuilderFunctions
+      this.NewElementBuilderFunctions,
     );
     this.NewElementBuilderFunctions = null;
   }
@@ -412,7 +412,7 @@ export default class RenderTree {
 
     renderNode = this._matchRenderNodes(
       [...hints, ...remoteRoots, ...this.tree],
-      node
+      node,
     );
 
     if (renderNode) {
@@ -672,7 +672,7 @@ export default class RenderTree {
         }
         node.instance = this._createSimpleInstance(
           'TemplateOnlyComponent',
-          node.args.named
+          node.args.named,
         );
       }
 

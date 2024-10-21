@@ -1,3 +1,4 @@
+/* stylelint-disable no-duplicate-selectors */
 .list {
   background: var(--base00);
   box-sizing: border-box;
@@ -7,7 +8,7 @@
   position: relative;
 }
 
-.list__content {
+.list-content {
   overflow: scroll;
   transform: translateZ(0);
 }
@@ -24,7 +25,7 @@
   }
 }
 
-.list__header {
+.list-header {
   border-bottom: 1px solid var(--base05);
   height: 30px;
   overflow: hidden;
@@ -33,11 +34,11 @@
   text-align: left;
   user-select: none;
 
-  .list__row {
+  .list-row {
     background: var(--base00);
   }
 
-  .list__cell {
+  .list-cell {
     color: var(--inherit);
     font-weight: normal;
     opacity: 1;
@@ -47,8 +48,8 @@
   }
 }
 
-.list:not(.list_no-alternate-color) .list__content {
-  .list__row {
+.list:not(.list-no-alternate-color) .list-content {
+  .list-row {
     background: var(--base02);
 
     &.striped {
@@ -57,17 +58,17 @@
   }
 }
 
-.list.list--css-striping {
-  .list__row:nth-child(even) {
+.list.list-css-striping {
+  .list-row:nth-child(even) {
     background: var(--base00);
   }
 }
 
-.list__cell-content {
+.list-cell-content {
   width: 100%;
 }
 
-.list__cell {
+.list-cell {
   box-sizing: border-box;
   line-height: 30px;
   min-height: 30px;
@@ -77,49 +78,49 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  &_size_small {
+  &-size-small {
     flex: none;
     width: 50px;
   }
 
-  &_size_medium {
+  &-size-medium {
     flex: none;
     width: 130px;
   }
 
-  &_size_larger {
+  &-size-larger {
     flex: none;
     width: 350px;
   }
 
-  &_size_large {
+  &-size-large {
     flex: none;
     width: 250px;
   }
 
-  &_size_huge {
+  &-size-huge {
     flex: none;
     width: 450px;
   }
 
-  &_value_numeric {
+  &-value-numeric {
     font-family: var(--font-monospace);
     min-width: 65px;
     padding-right: 10px;
     text-align: right;
   }
 
-  &_main {
+  &-main {
     font-weight: bold;
   }
 
-  &_spacer {
+  &-spacer {
     border: none;
     flex: none;
     width: 0;
   }
 
-  &_clickable {
+  &-clickable {
     cursor: pointer;
   }
 }
@@ -128,7 +129,7 @@
  * Content in a cell that should not take the entire
  * space. Usually because it has a $E after it.
  */
-.list__cell-partial {
+.list-cell-partial {
   display: inline-block;
   float: left;
   max-width: calc(100% - 40px);
@@ -137,11 +138,11 @@
   white-space: nowrap;
 }
 
-.list__cell-partial_clickable {
+.list-cell-partial-clickable {
   cursor: pointer;
 }
 
-.list__cell-partial_size_medium {
+.list-cell-partial-size-medium {
   max-width: calc(100% - 60px);
 }
 
@@ -149,40 +150,40 @@
  * For example a $E icon to the right
  * of a cell.
  */
-.list__cell-helper {
+.list-cell-helper {
   float: right;
   margin-right: 5px;
 }
 
-.list__link {
+.list-link {
   cursor: pointer;
 }
 
-.list__row:hover {
-  .list__cell {
+.list-row:hover {
+  .list-cell {
     opacity: 1;
 
-    &_clickable {
+    &-clickable {
       text-decoration: underline;
     }
   }
 
-  .list__cell-partial_clickable {
+  .list-cell-partial-clickable {
     text-decoration: underline;
   }
 
-  .list__link {
+  .list-link {
     text-decoration: underline;
   }
 }
 
-.list__row_highlight .list__cell,
-.list__cell_highlight {
+.list-row-highlight .list-cell,
+.list-cell-highlight {
   opacity: 1;
 }
 
 /* ARROW FOR COLLAPSING AND EXPANDING */
-.list__cell-arrow {
+.list-cell-arrow {
   cursor: pointer;
   display: block;
   float: left;
@@ -190,7 +191,7 @@
   position: relative;
   width: 15px;
 
-  &:before {
+  &::before {
     color: var(--base10);
     font-size: 75%;
     position: absolute;
@@ -200,37 +201,37 @@
 }
 
 /* cell expanding/collapsing */
-.list__cell_arrow_expanded,
-.list__cell_arrow_collapsed {
+.list-cell-arrow-expanded,
+.list-cell-arrow-collapsed {
   cursor: pointer;
 }
 
-.list__cell_arrow_collapsed {
-  .list__cell-arrow:before {
+.list-cell-arrow-collapsed {
+  .list-cell-arrow::before {
     content: "\25B6";
   }
 }
 
-.list__cell_arrow_expanded {
-  .list__cell-arrow:before {
+.list-cell-arrow-expanded {
+  .list-cell-arrow::before {
     content: "\25BC";
   }
 }
 
-.list__row_arrow_collapsed,
-.list__row_arrow_expanded {
+.list-row-arrow-collapsed,
+.list-row-arrow-expanded {
   cursor: pointer;
   position: relative;
 }
 
-.list__row_arrow_collapsed {
-  .list__cell-arrow:before {
+.list-row-arrow-collapsed {
+  .list-cell-arrow::before {
     content: "\25B6";
   }
 }
 
-.list__row_arrow_expanded {
-  .list__cell-arrow:before {
+.list-row-arrow-expanded {
+  .list-cell-arrow::before {
     content: "\25BC";
   }
 }

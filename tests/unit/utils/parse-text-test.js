@@ -7,18 +7,18 @@ module('Unit | Utility | parseText', function () {
     assert.strictEqual(
       parseText('foo'),
       'foo',
-      'does not add quotes for string'
+      'does not add quotes for string',
     );
     assert.strictEqual(
       parseText('"foo"'),
       'foo',
-      'removes quotes when simple string is already wrapped in quotes'
+      'removes quotes when simple string is already wrapped in quotes',
     );
     assert.strictEqual(parseText('1'), 1);
     assert.strictEqual(
       parseText('"{"name":"teddy"}"'),
       '{"name":"teddy"}',
-      'removes quotes around JSON strings'
+      'removes quotes around JSON strings',
     );
   });
 });

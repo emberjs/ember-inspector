@@ -1,11 +1,11 @@
-.object-inspector-toggle.toolbar__icon-button {
-  margin-right: 0; // .toolbar__icon-button override
+.object-inspector-toggle.toolbar-icon-button {
+  margin-right: 0; // .toolbar-icon-button override
   max-height: var(--toolbar-height);
-  padding-right: 6px; // .toolbar__icon-button override
-  padding-left: 6px; // .toolbar__icon-button override
+  padding-right: 6px; // .toolbar-icon-button override
+  padding-left: 6px; // .toolbar-icon-button override
   transform: scaleX(-1);
 
-  // use .toolbar__icon-button active style AND flip horizontally
+  // use .toolbar-icon-button active style AND flip horizontally
   &:active {
     transform: translate(1px, 1px) scaleX(-1);
   }

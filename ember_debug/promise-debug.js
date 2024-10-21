@@ -134,7 +134,7 @@ export default class extends DebugPort {
     }
     // Remove inspector-created promises
     uniquePromises = uniquePromises.filter(
-      (promise) => promise.label !== 'ember-inspector'
+      (promise) => promise.label !== 'ember-inspector',
     );
     const serialized = this.serializeArray(uniquePromises);
     this.sendMessage('promisesUpdated', {

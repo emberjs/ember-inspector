@@ -93,11 +93,11 @@ export default class WebExtension extends BasicAdapter {
 
   _setThemeColors() {
     // Remove old theme colors to ensure switching themes works
-    document.body.classList.remove('theme--light', 'theme--dark');
+    document.body.classList.remove('theme-light', 'theme-dark');
 
-    let theme = 'theme--light';
+    let theme = 'theme-light';
     if (chrome.devtools.panels.themeName === 'dark') {
-      theme = 'theme--dark';
+      theme = 'theme-dark';
     }
     document.body.classList.add(theme);
   }
@@ -128,7 +128,7 @@ export default class WebExtension extends BasicAdapter {
   onVersionMismatch(goToVersion) {
     window.location.href = `../panes-${goToVersion.replace(
       /\./g,
-      '-'
+      '-',
     )}/index.html`;
   }
 
@@ -152,7 +152,7 @@ function loadEmberDebug() {
       xhr = new XMLHttpRequest();
       xhr.open(
         'GET',
-        chrome.runtime.getURL(`/panes-${minimumVersion}/ember_debug.js`)
+        chrome.runtime.getURL(`/panes-${minimumVersion}/ember_debug.js`),
       );
       xhr.onload = function () {
         if (xhr.readyState === 4) {

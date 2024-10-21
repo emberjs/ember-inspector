@@ -178,7 +178,7 @@ function getTrackedDependencies(object, property, tagInfo) {
   const dependentKeys = [];
   if (cpDesc) {
     dependentKeys.push(
-      ...(cpDesc._dependentKeys || []).map((k) => ({ name: k }))
+      ...(cpDesc._dependentKeys || []).map((k) => ({ name: k })),
     );
   }
   if (HAS_GLIMMER_TRACKING) {
@@ -309,7 +309,7 @@ export default class extends DebugPort {
                 dependentKeys = getTrackedDependencies(
                   object,
                   item.name,
-                  tracked[item.name]
+                  tracked[item.name],
                 );
                 tracked[item.name].revision = tagValue(tracked[item.name].tag);
               }
@@ -370,7 +370,7 @@ export default class extends DebugPort {
         value = this.valueForObjectProperty(
           message.objectId,
           message.property,
-          message.mixinIndex
+          message.mixinIndex,
         );
         if (value) {
           this.sendMessage('updateProperty', value);
@@ -451,7 +451,7 @@ export default class extends DebugPort {
           }
           this.adapter.log(
             `Object Inspector error for ${error.property}`,
-            stack
+            stack,
           );
         });
       },
@@ -546,7 +546,7 @@ export default class extends DebugPort {
   sendObject(object) {
     if (!this.canSend(object)) {
       throw new Error(
-        `Can't inspect ${object}. Only Ember objects and arrays are supported.`
+        `Can't inspect ${object}. Only Ember objects and arrays are supported.`,
       );
     }
     let details = this.mixinsForObject(object);
@@ -745,7 +745,7 @@ export default class extends DebugPort {
       mixinDetails,
       errorsForObject,
       expensiveProperties,
-      tracked
+      tracked,
     );
 
     this.currentObject = { object, mixinDetails, objectId };
@@ -764,7 +764,7 @@ export default class extends DebugPort {
       value = calculateCP(
         object,
         { name: property },
-        this._errorsFor[objectId]
+        this._errorsFor[objectId],
       );
     }
 
@@ -934,7 +934,7 @@ function addProperties(properties, hash) {
     if (isComputed(hash, prop)) {
       options.isComputed = true;
       options.dependentKeys = (desc._dependentKeys || []).map((key) =>
-        key.toString()
+        key.toString(),
       );
 
       if (typeof desc.get === 'function') {
@@ -1085,7 +1085,7 @@ function calculateCPs(
   mixinDetails,
   errorsForObject,
   expensiveProperties,
-  tracked
+  tracked,
 ) {
   expensiveProperties = expensiveProperties || [];
   mixinDetails.forEach((mixin) => {
@@ -1113,7 +1113,7 @@ function calculateCPs(
             item.dependentKeys = getTrackedDependencies(
               object,
               item.name,
-              tagInfo
+              tagInfo,
             );
             tagInfo.revision = tagValue(tagInfo.tag);
           } else {
@@ -1282,7 +1282,7 @@ function getDebugInfo(object) {
       'domManager',
       'states',
       'element',
-      'targetObject'
+      'targetObject',
     );
   } else if (GlimmerComponent && object instanceof GlimmerComponent) {
     // These properties don't really exist on Glimmer Components, but
