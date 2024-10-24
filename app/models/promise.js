@@ -76,7 +76,7 @@ export default class Promise extends EmberObject {
       return true;
     }
     for (let i = 0; i < this.get('children.length'); i++) {
-      if (this.children.objectAt(i).get(cp)) {
+      if (this.children.at(i).get(cp)) {
         return true;
       }
     }

@@ -4,6 +4,8 @@ import EmberObject from '@ember/object';
 import EventedMixin from '@ember/object/evented';
 import Promise from 'ember-inspector/models/promise';
 
+import { TrackedArray } from 'tracked-built-ins';
+
 export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
   // Used to track whether current message received
   // is the first in the request
@@ -13,8 +15,8 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
   init() {
     super.init(...arguments);
 
-    this.all = [];
-    this.topSort = [];
+    this.all = new TrackedArray([]);
+    this.topSort = new TrackedArray([]);
     this.topSortMeta = {};
     this.promiseIndex = {};
   }
@@ -121,7 +123,7 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
       let parentIndex = topSort.indexOf(promise.get('parent'));
       topSort.insertAt(parentIndex + 1, promise);
     } else {
-      topSort.pushObject(promise);
+      this.topSort.push(promise);
     }
     promise.get('children').forEach((child) => {
       topSort.removeObject(child);
@@ -144,7 +146,7 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
     let promise = Promise.create(props);
     let index = this.get('all.length');
 
-    this.all.pushObject(promise);
+    this.all.push(promise);
     this.promiseIndex[promise.get('guid')] = index;
     return promise;
   }
@@ -153,7 +155,7 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
     if (guid) {
       let index = this.promiseIndex[guid];
       if (index !== undefined) {
-        return this.all.objectAt(index);
+        return this.all.at(index);
       }
     } else {
       return this.all;
