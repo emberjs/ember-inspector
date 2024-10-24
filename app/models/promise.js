@@ -5,6 +5,7 @@ import { typeOf, isEmpty } from '@ember/utils';
 // eslint-disable-next-line ember/no-observers
 import EmberObject, { computed } from '@ember/object';
 import escapeRegExp from 'ember-inspector/utils/escape-reg-exp';
+import { tracked } from '@glimmer/tracking';
 
 const dateComputed = function () {
   return computed({
@@ -29,6 +30,7 @@ export default class Promise extends EmberObject {
   @dateComputed()
   settledAt;
 
+  @tracked branchLabel = '';
   parent = null;
 
   @computed('parent.level')
@@ -70,11 +72,11 @@ export default class Promise extends EmberObject {
   }
 
   recursiveState(prop, cp) {
-    if (this.get(prop)) {
+    if (this[prop]) {
       return true;
     }
-    for (let i = 0; i < this.get('children.length'); i++) {
-      if (this.children.at(i).get(cp)) {
+    for (let i = 0; i < this.children.length; i++) {
+      if (this.children.at(i)[cp]) {
         return true;
       }
     }
@@ -111,9 +113,9 @@ export default class Promise extends EmberObject {
       return;
     }
     if (replace) {
-      this.set('branchLabel', label);
+      this.branchLabel = label;
     } else {
-      this.set('branchLabel', `${this.branchLabel} ${label}`);
+      this.branchLabel = `${this.branchLabel} ${label}`;
     }
 
     let parent = this.parent;
@@ -121,8 +123,6 @@ export default class Promise extends EmberObject {
       parent.addBranchLabel(label);
     }
   }
-
-  branchLabel = '';
 
   matches(val) {
     return !!this.branchLabel

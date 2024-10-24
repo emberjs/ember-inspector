@@ -5,18 +5,20 @@ import EventedMixin from '@ember/object/evented';
 import Promise from 'ember-inspector/models/promise';
 
 import { TrackedArray } from 'tracked-built-ins';
+import { tracked } from '@glimmer/tracking';
 
 export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
   // Used to track whether current message received
   // is the first in the request
   // Mainly helps in triggering 'firstMessageReceived' event
-  firstMessageReceived = false;
+  @tracked firstMessageReceived = false;
+
+  all = new TrackedArray([]);
+  topSort = new TrackedArray([]);
 
   init() {
     super.init(...arguments);
 
-    this.all = new TrackedArray([]);
-    this.topSort = new TrackedArray([]);
     this.topSortMeta = {};
     this.promiseIndex = {};
   }
@@ -35,9 +37,9 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
   reset() {
     this.set('topSortMeta', {});
     this.set('promiseIndex', {});
-    this.topSort.clear();
+    this.topSort.splice(0, this.topSort.length);
 
-    this.set('firstMessageReceived', false);
+    this.firstMessageReceived = false;
     let all = this.all;
     // Lazily destroy promises
     // Allows for a smooth transition on deactivate,
@@ -49,7 +51,7 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
       },
       500,
     );
-    this.set('all', []);
+    this.set('all', new TrackedArray([]));
   }
 
   destroyPromises(promises) {
@@ -62,7 +64,7 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
     this.rebuildPromises(message.promises);
 
     if (!this.firstMessageReceived) {
-      this.set('firstMessageReceived', true);
+      this.firstMessageReceived = true;
       this.trigger('firstMessageReceived');
     }
   }
@@ -108,7 +110,10 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
     }
     if (!isNew && hasParent !== hadParent) {
       // todo: implement recursion to reposition children
-      topSort.removeObject(promise);
+      const index = topSort.indexOf(promise);
+      if (index !== -1) {
+        topSort.splice(index, 1);
+      }
       parentChanged = true;
     }
     meta.hasParent = hasParent;
@@ -121,12 +126,15 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
     let topSort = this.topSort;
     if (promise.get('parent')) {
       let parentIndex = topSort.indexOf(promise.get('parent'));
-      topSort.insertAt(parentIndex + 1, promise);
+      topSort.splice(parentIndex + 1, 0, promise);
     } else {
       this.topSort.push(promise);
     }
     promise.get('children').forEach((child) => {
-      topSort.removeObject(child);
+      const index = topSort.indexOf(child);
+      if (index !== -1) {
+        topSort.splice(index, 1);
+      }
       this.insertInTopSort(child);
     });
   }

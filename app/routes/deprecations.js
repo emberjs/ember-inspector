@@ -50,11 +50,4 @@ export default class DeprecationsRoute extends TabRoute {
       }
     });
   }
-
-  @action
-  clear() {
-    this.port.send('deprecation:clear');
-    // eslint-disable-next-line ember/no-controller-access-in-routes
-    this.controller.deprecations.splice(0, this.controller.deprecations.length);
-  }
 }
