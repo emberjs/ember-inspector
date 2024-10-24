@@ -4,6 +4,8 @@ import Controller from '@ember/controller';
 import debounceComputed from 'ember-inspector/computed/debounce';
 import searchMatch from 'ember-inspector/utils/search-match';
 
+import { TrackedArray } from 'tracked-built-ins';
+
 export default class DeprecationsController extends Controller {
   @service adapter;
   @service port;
@@ -15,7 +17,7 @@ export default class DeprecationsController extends Controller {
 
   constructor() {
     super(...arguments);
-    set(this, 'deprecations', []);
+    set(this, 'deprecations', new TrackedArray([]));
   }
 
   @action

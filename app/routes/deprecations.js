@@ -37,25 +37,24 @@ export default class DeprecationsRoute extends TabRoute {
   }
 
   deprecationsAdded(message) {
-    // eslint-disable-next-line ember/no-controller-access-in-routes
-    let { deprecations } = this.controller;
-
     message.deprecations.forEach((item) => {
-      let record = deprecations.find((x) => x.id === item.id);
+      let record = this.controller.deprecations.find(
+        (deprecation) => deprecation.id === item.id,
+      );
+
       if (record) {
         setProperties(record, item);
       } else {
-        deprecations.pushObject(item);
+        // eslint-disable-next-line ember/no-controller-access-in-routes
+        this.controller.deprecations.push(item);
       }
     });
   }
 
   @action
   clear() {
-    // eslint-disable-next-line ember/no-controller-access-in-routes
-    let { deprecations } = this.controller;
-
     this.port.send('deprecation:clear');
-    deprecations.clear();
+    // eslint-disable-next-line ember/no-controller-access-in-routes
+    this.controller.deprecations.splice(0, this.controller.deprecations.length);
   }
 }

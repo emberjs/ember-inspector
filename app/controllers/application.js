@@ -5,6 +5,8 @@ import { equal } from '@ember/object/computed';
 import { debounce, schedule } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 
+import { TrackedArray } from 'tracked-built-ins';
+
 export default class ApplicationController extends Controller {
   /**
    * Service used to broadcast changes to the application's layout
@@ -49,7 +51,7 @@ export default class ApplicationController extends Controller {
   constructor() {
     super(...arguments);
 
-    this.mixinStack = [];
+    this.mixinStack = new TrackedArray([]);
     this.mixinDetails = [];
   }
 
@@ -67,15 +69,14 @@ export default class ApplicationController extends Controller {
       errors,
     };
 
-    this.mixinStack.pushObject(details);
+    this.mixinStack.push(details);
     this.set('mixinDetails', details);
   }
 
   @action
   popMixinDetails() {
-    let mixinStack = this.mixinStack;
-    let item = mixinStack.popObject();
-    this.set('mixinDetails', mixinStack.get('lastObject'));
+    const item = this.mixinStack.pop();
+    this.set('mixinDetails', this.mixinStack.at(-1));
     this.port.send('objectInspector:releaseObject', {
       objectId: item.objectId,
     });
@@ -166,26 +167,28 @@ export default class ApplicationController extends Controller {
       });
     });
 
-    this.set('mixinStack', []);
+    this.set('mixinStack', new TrackedArray([]));
     this.pushMixinDetails(name, undefined, objectId, details, errors);
   }
 
   @action
   droppedObject(objectId) {
-    let mixinStack = this.mixinStack;
-    let obj = mixinStack.find((x) => x.objectId === objectId);
+    let obj = this.mixinStack.find((mixin) => mixin.objectId === objectId);
     if (obj) {
-      let index = mixinStack.indexOf(obj);
-      let objectsToRemove = [];
+      let index = this.mixinStack.indexOf(obj);
+      let objectsToRemove = new TrackedArray([]);
       for (let i = index; i >= 0; i--) {
-        objectsToRemove.pushObject(mixinStack.objectAt(i));
+        objectsToRemove.push(this.mixinStack.at(i));
       }
       objectsToRemove.forEach((item) => {
-        mixinStack.removeObject(item);
+        const index = this.mixinStack.indexOf(item);
+        if (index !== -1) {
+          this.mixinStack.splice(index, 1);
+        }
       });
     }
-    if (mixinStack.get('length') > 0) {
-      this.set('mixinDetails', mixinStack.get('lastObject'));
+    if (this.mixinStack.get('length') > 0) {
+      this.set('mixinDetails', this.mixinStack.at(-1));
     } else {
       this.set('mixinDetails', null);
     }
