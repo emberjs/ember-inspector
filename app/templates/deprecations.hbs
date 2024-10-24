@@ -1,9 +1,8 @@
-{{! template-lint-disable no-action}}
 {{#if this.toolbarContainer}}
   {{#in-element this.toolbarContainer}}
     <DeprecationsToolbar
       @changeDeprecationWorkflow={{this.changeDeprecationWorkflow}}
-      @clear={{action this.send "clear"}}
+      @clear={{this.clear}}
       @searchValue={{this.searchValue}}
       @toggleDeprecationWorkflow={{this.toggleDeprecationWorkflow}}
     />
