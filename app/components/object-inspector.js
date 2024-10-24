@@ -26,7 +26,7 @@ export default class ObjectInspector extends Component {
     if (nested.length === 0) {
       return '';
     }
-    return `.${nested.mapBy('property').join('.')}`;
+    return `.${nested.map((item) => item.property).join('.')}`;
   }
 
   get isNested() {

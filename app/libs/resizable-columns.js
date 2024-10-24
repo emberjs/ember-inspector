@@ -81,7 +81,7 @@ export default class {
     let saved = this.storage.getItem(this.getStorageKey());
     if (saved && saved.columnVisibility) {
       let savedIds = keys(saved.columnVisibility).sort();
-      let schemaIds = this.columnSchema.mapBy('id').sort();
+      let schemaIds = this.columnSchema.map((col) => col.id).sort();
       if (!compareArrays(savedIds, schemaIds)) {
         // Clear saved items
         this.storage.removeItem(this.getStorageKey());
@@ -221,7 +221,7 @@ export default class {
       let diff = this.tableWidth - totalWidth;
       while (diff > 0) {
         columns
-          .filterBy('visible')
+          .filter((col) => col.visible)
           .sortBy('width')
           .forEach((column) => {
             if (diff > 0) {

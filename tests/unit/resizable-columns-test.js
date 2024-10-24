@@ -188,53 +188,57 @@ module('Unit | Lib | ResizableColumns', function (hooks) {
     resizableColumns.build();
 
     assert.deepEqual(
-      resizableColumns.columns.filterBy('visible').mapBy('id'),
+      resizableColumns.columns
+        .filter((col) => col.visible)
+        .map((col) => col.id),
       ['1', '2'],
       'shows/hides according to schema',
     );
-    assert.deepEqual(resizableColumns.getColumnVisibility().mapBy('visible'), [
-      true,
-      true,
-      false,
-    ]);
+    assert.deepEqual(
+      resizableColumns.getColumnVisibility().map((col) => col.visible),
+      [true, true, false],
+    );
 
     resizableColumns.toggleVisibility('3');
     assert.deepEqual(
-      resizableColumns.columns.filterBy('visible').mapBy('id'),
+      resizableColumns.columns
+        .filter((col) => col.visible)
+        .map((col) => col.id),
       ['1', '2', '3'],
       'toggles the third column correctly',
     );
-    assert.deepEqual(resizableColumns.getColumnVisibility().mapBy('visible'), [
-      true,
-      true,
-      true,
-    ]);
+    assert.deepEqual(
+      resizableColumns.getColumnVisibility().map((col) => col.visible),
+      [true, true, true],
+    );
 
     resizableColumns.toggleVisibility('1');
     assert.deepEqual(
-      resizableColumns.columns.filterBy('visible').mapBy('id'),
+      resizableColumns.columns
+        .filter((col) => col.visible)
+        .map((col) => col.id),
       ['2', '3'],
       'toggles the first column correctly',
     );
-    assert.deepEqual(resizableColumns.getColumnVisibility().mapBy('visible'), [
-      false,
-      true,
-      true,
-    ]);
+    assert.deepEqual(
+      resizableColumns.getColumnVisibility().map((col) => col.visible),
+      [false, true, true],
+    );
 
     // Confirm correct caching
     resizableColumns = new ResizableColumns(this.options);
     resizableColumns.build();
     assert.deepEqual(
-      resizableColumns.columns.filterBy('visible').mapBy('id'),
+      resizableColumns.columns
+        .filter((col) => col.visible)
+        .map((col) => col.id),
       ['2', '3'],
       'caching overrides schema visibility settings',
     );
-    assert.deepEqual(resizableColumns.getColumnVisibility().mapBy('visible'), [
-      false,
-      true,
-      true,
-    ]);
+    assert.deepEqual(
+      resizableColumns.getColumnVisibility().map((col) => col.visible),
+      [false, true, true],
+    );
   });
 
   test("resets cache correctly if schema doesn't match cache", function (assert) {
