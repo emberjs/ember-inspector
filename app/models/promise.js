@@ -202,7 +202,7 @@ export default class Promise extends EmberObject {
   _allChildren() {
     let children = [...this.children];
     children.forEach((item) => {
-      children = [...children, item._allChildren()];
+      children = [...children, ...item._allChildren()];
     });
     return children;
   }
