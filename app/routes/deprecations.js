@@ -41,7 +41,7 @@ export default class DeprecationsRoute extends TabRoute {
     let { deprecations } = this.controller;
 
     message.deprecations.forEach((item) => {
-      let record = deprecations.findBy('id', item.id);
+      let record = deprecations.find((x) => x.id === item.id);
       if (record) {
         setProperties(record, item);
       } else {

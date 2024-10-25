@@ -43,7 +43,9 @@ export default class RecordsRoute extends TabRoute {
 
   updateRecords(message) {
     message.records.forEach((record) => {
-      let currentRecord = this.currentModel.findBy('objectId', record.objectId);
+      let currentRecord = this.currentModel.find(
+        (x) => x.objectId === record.objectId,
+      );
       if (currentRecord) {
         set(currentRecord, 'columnValues', record.columnValues);
         set(currentRecord, 'filterValues', record.filterValues);

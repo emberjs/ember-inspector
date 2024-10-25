@@ -173,7 +173,7 @@ export default class ApplicationController extends Controller {
   @action
   droppedObject(objectId) {
     let mixinStack = this.mixinStack;
-    let obj = mixinStack.findBy('objectId', objectId);
+    let obj = mixinStack.find((x) => x.objectId === objectId);
     if (obj) {
       let index = mixinStack.indexOf(obj);
       let objectsToRemove = [];
