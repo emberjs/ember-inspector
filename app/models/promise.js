@@ -1,5 +1,4 @@
 import { observes } from '@ember-decorators/object';
-import { or, equal, not } from '@ember/object/computed';
 import { once } from '@ember/runloop';
 import { typeOf, isEmpty } from '@ember/utils';
 // eslint-disable-next-line ember/no-observers
@@ -31,7 +30,9 @@ export default class Promise extends EmberObject {
   settledAt;
 
   @tracked branchLabel = '';
-  parent = null;
+  @tracked isExpanded = false;
+  @tracked isManuallyExpanded = undefined;
+  @tracked parent = null;
 
   @computed('parent.level')
   get level() {
@@ -42,17 +43,21 @@ export default class Promise extends EmberObject {
     return parent.get('level') + 1;
   }
 
-  @or('isFulfilled', 'isRejected')
-  isSettled;
+  get isSettled() {
+    return this.isFulfilled || this.isRejected;
+  }
 
-  @equal('state', 'fulfilled')
-  isFulfilled;
+  get isFulfilled() {
+    return this.state === 'fulfilled';
+  }
 
-  @equal('state', 'rejected')
-  isRejected;
+  get isRejected() {
+    return this.state === 'rejected';
+  }
 
-  @not('isSettled')
-  isPending;
+  get isPending() {
+    return !this.isSettled;
+  }
 
   children = [];
 
@@ -138,10 +143,6 @@ export default class Promise extends EmberObject {
 
   // EXPANDED / COLLAPSED PROMISES
 
-  isExpanded = false;
-
-  isManuallyExpanded = undefined;
-
   // eslint-disable-next-line ember/no-observers
   @observes('isPending', 'isFulfilled', 'isRejected', 'parent')
   stateOrParentChanged() {
@@ -187,7 +188,7 @@ export default class Promise extends EmberObject {
         this.parent.recalculateExpanded();
       }
     }
-    this.set('isExpanded', isExpanded);
+    this.isExpanded = isExpanded;
     return isExpanded;
   }
 

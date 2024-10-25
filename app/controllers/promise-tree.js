@@ -2,7 +2,6 @@ import { action } from '@ember/object';
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
-import { filter } from '@ember/object/computed';
 import { debounce, next, once } from '@ember/runloop';
 import { tracked } from '@glimmer/tracking';
 
@@ -38,9 +37,8 @@ export default class PromiseTreeController extends Controller {
   // It is opt-in due to performance reasons.
   @tracked instrumentWithStack = false;
 
-  filtered = filter(
-    'model.@each.{createdAt,fulfilledBranch,rejectedBranch,pendingBranch,isVisible}',
-    function (item) {
+  get filtered() {
+    return this.model.filter((item) => {
       // exclude cleared promises
       if (this.createdAfter && item.get('createdAt') < this.createdAfter) {
         return false;
@@ -73,8 +71,8 @@ export default class PromiseTreeController extends Controller {
         return item.matches(search);
       }
       return true;
-    },
-  );
+    });
+  }
 
   // eslint-disable-next-line ember/no-observers
   @observes('searchValue')
