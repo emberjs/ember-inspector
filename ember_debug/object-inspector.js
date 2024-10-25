@@ -1304,7 +1304,7 @@ function calculateCP(object, item, errorsForObject) {
   delete errorsForObject[property];
   try {
     if (object instanceof ArrayProxy && property == parseInt(property)) {
-      return object.objectAt(property);
+      return object.at(property);
     }
     return item.isGetter || property.includes?.('.')
       ? object[property]

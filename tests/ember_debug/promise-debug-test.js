@@ -56,9 +56,9 @@ module('Ember Debug - Promise Debug', function (hooks) {
 
     let promises = emberA(message.promises);
 
-    promise1 = promises.findBy('label', 'Promise1');
-    child1 = promises.findBy('label', 'Child1');
-    promise2 = promises.findBy('label', 'Promise2');
+    promise1 = promises.find((x) => x.label === 'Promise1');
+    child1 = promises.find((x) => x.label === 'Child1');
+    promise2 = promises.find((x) => x.label === 'Promise2');
 
     assert.strictEqual(promise1.label, 'Promise1');
     assert.strictEqual(promise1.state, 'fulfilled');
@@ -86,7 +86,7 @@ module('Ember Debug - Promise Debug', function (hooks) {
     later(function () {
       assert.strictEqual(name, 'promise:promisesUpdated');
       let promises = emberA(message.promises);
-      let promise = promises.findBy('label', 'Promise1');
+      let promise = promises.find((x) => x.label === 'Promise1');
       assert.ok(!!promise);
       if (promise) {
         assert.strictEqual(promise.label, 'Promise1');

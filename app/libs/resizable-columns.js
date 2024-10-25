@@ -165,7 +165,7 @@ export default class {
     if (saved.columnVisibility && !isNone(saved.columnVisibility[id])) {
       return saved.columnVisibility[id];
     }
-    return this.columnSchema.findBy('id', id).visible;
+    return this.columnSchema.find((x) => x.id === id).visible;
   }
 
   /**
@@ -221,8 +221,8 @@ export default class {
       let diff = this.tableWidth - totalWidth;
       while (diff > 0) {
         columns
-          .filter((col) => col.visible)
-          .sortBy('width')
+          .filter((col) => !!col.visible)
+          .sort((a, b) => a.width - b.width)
           .forEach((column) => {
             if (diff > 0) {
               column.width++;
@@ -245,7 +245,7 @@ export default class {
    * @param {Number} width The column's new width
    */
   updateColumnWidth(id, width) {
-    let column = this._columns.findBy('id', id);
+    let column = this._columns.find((x) => x.id === id);
     let previousWidth = column.width;
     column.width = width;
     let last = this._columns[this._columns.length - 1];
@@ -265,7 +265,7 @@ export default class {
    * @param {String} id
    */
   toggleVisibility(id) {
-    let column = this._columnVisibility.findBy('id', id);
+    let column = this._columnVisibility.find((x) => x.id === id);
     column.visible = !column.visible;
     if (!this._columnVisibility.isAny('visible')) {
       // If this column was the last visible column

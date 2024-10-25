@@ -76,10 +76,10 @@ export default class ApplicationRoute extends Route {
 
   updateProperty(options) {
     if (this.get('controller.mixinDetails.mixins')) {
-      const detail = this.get('controller.mixinDetails.mixins').objectAt(
+      const detail = this.get('controller.mixinDetails.mixins').at(
         options.mixinIndex,
       );
-      let property = detail.properties.findBy('name', options.property);
+      let property = detail.properties.find((x) => x.name === options.property);
       if (!property) return;
       set(property, 'value', options.value);
       if (options.dependentKeys) {

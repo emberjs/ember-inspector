@@ -7,9 +7,8 @@ export default class ModelTypeRoute extends Route {
 
   model(params) {
     return new Promise((resolve) => {
-      const type = this.modelFor('model-types').findBy(
-        'name',
-        decodeURIComponent(params.type_id),
+      const type = this.modelFor('model-types').find(
+        (x) => x.name === decodeURIComponent(params.type_id),
       );
       if (type) {
         resolve(type);
