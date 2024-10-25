@@ -1,31 +1,44 @@
-// eslint-disable-next-line ember/no-observers
-import { action, observer } from '@ember/object';
+import { action } from '@ember/object';
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
-import { equal, bool, and, not, filter } from '@ember/object/computed';
+import { filter } from '@ember/object/computed';
 import { debounce, next, once } from '@ember/runloop';
+import { tracked } from '@glimmer/tracking';
 
-export default Controller.extend({
-  queryParams: ['filter'],
+// eslint-disable-next-line ember/no-observers
+import { observes } from '@ember-decorators/object';
 
-  adapter: service(),
-  port: service(),
+export default class PromiseTreeController extends Controller {
+  queryParams = ['filter'];
 
-  createdAfter: null,
+  @service adapter;
+  @service port;
+
+  @tracked createdAfter = null;
+  @tracked filter = 'all';
+  @tracked searchValue = null;
+  @tracked effectiveSearch = null;
 
   // below used to show the "refresh" message
-  isEmpty: equal('model.length', 0),
-  wasCleared: bool('createdAfter'),
-  neverCleared: not('wasCleared'),
-  shouldRefresh: and('isEmpty', 'neverCleared'),
+  get isEmpty() {
+    return this.model.length === 0;
+  }
+  get wasCleared() {
+    return !this.createdAfter;
+  }
+  get neverCleared() {
+    return !this.wasCleared;
+  }
+  get shouldRefresh() {
+    return this.isEmpty && this.neverCleared;
+  }
 
   // Keep track of promise stack traces.
   // It is opt-in due to performance reasons.
-  instrumentWithStack: false,
+  @tracked instrumentWithStack = false;
 
-  /* jscs:disable validateIndentation */
-  filtered: filter(
+  filtered = filter(
     'model.@each.{createdAt,fulfilledBranch,rejectedBranch,pendingBranch,isVisible}',
     function (item) {
       // exclude cleared promises
@@ -61,26 +74,24 @@ export default Controller.extend({
       }
       return true;
     },
-  ),
-  /* jscs:enable validateIndentation */
-
-  filter: 'all',
-  searchValue: null,
-  effectiveSearch: null,
+  );
 
   // eslint-disable-next-line ember/no-observers
-  searchChanged: observer('searchValue', function () {
+  @observes('searchValue')
+  searchChanged() {
     debounce(this, this.notifyChange, 500);
-  }),
+  }
 
+  @action
   notifyChange() {
-    this.set('effectiveSearch', this.searchValue);
+    this.effectiveSearch = this.searchValue;
     next(() => {
       this.notifyPropertyChange('model');
     });
-  },
+  }
 
-  toggleExpand: action(function (promise) {
+  @action
+  toggleExpand(promise) {
     let isExpanded = !promise.get('isExpanded');
     promise.set('isManuallyExpanded', isExpanded);
     promise.recalculateExpanded();
@@ -94,37 +105,43 @@ export default Controller.extend({
         }
       });
     }
-  }),
+  }
 
-  tracePromise: action(function (promise) {
+  @action
+  tracePromise(promise) {
     this.port.send('promise:tracePromise', { promiseId: promise.get('guid') });
-  }),
+  }
 
-  inspectObject: action(function () {
+  @action
+  inspectObject() {
     this.target.send('inspectObject', ...arguments);
-  }),
+  }
 
-  sendValueToConsole: action(function (promise) {
+  @action
+  sendValueToConsole(promise) {
     this.port.send('promise:sendValueToConsole', {
       promiseId: promise.get('guid'),
     });
-  }),
+  }
 
-  setFilter: action(function (filter) {
-    this.set('filter', filter);
+  @action
+  setFilter(filter) {
+    this.filter = filter;
     next(() => {
       this.notifyPropertyChange('filtered');
     });
-  }),
+  }
 
-  updateInstrumentWithStack: action(function (bool) {
+  @action
+  updateInstrumentWithStack(bool) {
     this.port.send('promise:setInstrumentWithStack', {
       instrumentWithStack: bool,
     });
-  }),
+  }
 
-  clear: action(function () {
-    this.set('createdAfter', new Date());
+  @action
+  clear() {
+    this.createdAfter = new Date();
     once(this, this.notifyChange);
-  }),
-});
+  }
+}
