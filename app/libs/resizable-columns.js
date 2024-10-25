@@ -221,7 +221,7 @@ export default class {
       let diff = this.tableWidth - totalWidth;
       while (diff > 0) {
         columns
-          .filter((x) => !!x.visible)
+          .filter((col) => !!col.visible)
           .sort((a, b) => a.width - b.width)
           .forEach((column) => {
             if (diff > 0) {
