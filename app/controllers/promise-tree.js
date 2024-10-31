@@ -24,7 +24,7 @@ export default class PromiseTreeController extends Controller {
     return this.model.length === 0;
   }
   get wasCleared() {
-    return !this.createdAfter;
+    return Boolean(this.createdAfter);
   }
   get neverCleared() {
     return !this.wasCleared;
