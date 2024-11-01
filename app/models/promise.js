@@ -1,10 +1,10 @@
 import { observes } from '@ember-decorators/object';
-import { or, equal, not } from '@ember/object/computed';
 import { once } from '@ember/runloop';
 import { typeOf, isEmpty } from '@ember/utils';
 // eslint-disable-next-line ember/no-observers
 import EmberObject, { computed } from '@ember/object';
 import escapeRegExp from 'ember-inspector/utils/escape-reg-exp';
+import { tracked } from '@glimmer/tracking';
 
 const dateComputed = function () {
   return computed({
@@ -29,7 +29,10 @@ export default class Promise extends EmberObject {
   @dateComputed()
   settledAt;
 
-  parent = null;
+  @tracked branchLabel = '';
+  @tracked isExpanded = false;
+  @tracked isManuallyExpanded = undefined;
+  @tracked parent = null;
 
   @computed('parent.level')
   get level() {
@@ -40,17 +43,21 @@ export default class Promise extends EmberObject {
     return parent.get('level') + 1;
   }
 
-  @or('isFulfilled', 'isRejected')
-  isSettled;
+  get isSettled() {
+    return this.isFulfilled || this.isRejected;
+  }
 
-  @equal('state', 'fulfilled')
-  isFulfilled;
+  get isFulfilled() {
+    return this.state === 'fulfilled';
+  }
 
-  @equal('state', 'rejected')
-  isRejected;
+  get isRejected() {
+    return this.state === 'rejected';
+  }
 
-  @not('isSettled')
-  isPending;
+  get isPending() {
+    return !this.isSettled;
+  }
 
   children = [];
 
@@ -70,11 +77,11 @@ export default class Promise extends EmberObject {
   }
 
   recursiveState(prop, cp) {
-    if (this.get(prop)) {
+    if (this[prop]) {
       return true;
     }
-    for (let i = 0; i < this.get('children.length'); i++) {
-      if (this.children.at(i).get(cp)) {
+    for (let i = 0; i < this.children.length; i++) {
+      if (this.children.at(i)[cp]) {
         return true;
       }
     }
@@ -111,9 +118,9 @@ export default class Promise extends EmberObject {
       return;
     }
     if (replace) {
-      this.set('branchLabel', label);
+      this.branchLabel = label;
     } else {
-      this.set('branchLabel', `${this.branchLabel} ${label}`);
+      this.branchLabel = `${this.branchLabel} ${label}`;
     }
 
     let parent = this.parent;
@@ -121,8 +128,6 @@ export default class Promise extends EmberObject {
       parent.addBranchLabel(label);
     }
   }
-
-  branchLabel = '';
 
   matches(val) {
     return !!this.branchLabel
@@ -137,10 +142,6 @@ export default class Promise extends EmberObject {
   }
 
   // EXPANDED / COLLAPSED PROMISES
-
-  isExpanded = false;
-
-  isManuallyExpanded = undefined;
 
   // eslint-disable-next-line ember/no-observers
   @observes('isPending', 'isFulfilled', 'isRejected', 'parent')
@@ -187,7 +188,7 @@ export default class Promise extends EmberObject {
         this.parent.recalculateExpanded();
       }
     }
-    this.set('isExpanded', isExpanded);
+    this.isExpanded = isExpanded;
     return isExpanded;
   }
 
