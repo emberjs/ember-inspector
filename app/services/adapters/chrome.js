@@ -6,7 +6,6 @@ export default class Chrome extends WebExtension {
   @tracked canOpenResource = true;
 
   openResource(file, line) {
-    /*global chrome */
     // For some reason it opens the line after the one specified
     chrome.devtools.panels.openResource(file, line - 1);
   }

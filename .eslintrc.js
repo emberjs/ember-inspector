@@ -23,6 +23,7 @@ module.exports = {
     browser: true,
   },
   globals: {
+    chrome: false,
     basicContext: false,
     require: false,
     requireModule: false,
