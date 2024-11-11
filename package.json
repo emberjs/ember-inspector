@@ -31,7 +31,7 @@
     "watch": "ember build --watch"
   },
   "dependencies": {
-    "got": "^11.8.6",
+    "got": "^14.4.4",
     "rimraf": "^5.0.10",
     "yauzl": "^2.10.0"
   },
