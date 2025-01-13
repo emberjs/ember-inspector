@@ -1,11 +1,7 @@
 import { action, set } from '@ember/object';
-import {
-  addListener,
-  // @ts-expect-error TODO: figure out why this is not typed
-  hasListeners,
-  removeListener,
-  sendEvent,
-} from '@ember/object/events';
+import { addListener, removeListener, sendEvent } from '@ember/object/events';
+// @ts-expect-error TODO: maybe move away from this one day, but for now import from secret location
+import { hasListeners } from '@ember/-internals/metal';
 import Service, { inject as service } from '@ember/service';
 import type RouterService from '@ember/routing/router-service';
 
