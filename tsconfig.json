@@ -15,7 +15,8 @@
       "ui/test-support": ["lib/ui/addon-test-support"],
       "ui/test-support/*": ["lib/ui/addon-test-support/*"],
       "*": ["types/*"]
-    }
+    },
+    "types": ["chrome"]
   },
   "include": ["app/**/*", "tests/**/*", "types/**/*", "lib/ui/**/*"]
 }
