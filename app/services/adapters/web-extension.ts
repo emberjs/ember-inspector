@@ -1,11 +1,10 @@
-/* globals chrome */
-import { computed } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
 import BasicAdapter from './basic';
 import config from 'ember-inspector/config/environment';
+import type { Message } from '../port';
 
-let emberDebug = null;
+let emberDebug: string | null = null;
 
 export default class WebExtension extends BasicAdapter {
   @tracked canOpenResource = false;
@@ -13,22 +12,19 @@ export default class WebExtension extends BasicAdapter {
 
   /**
    * Called when the adapter is created.
-   *
-   * @method init
    */
-  init() {
+  constructor(properties?: object) {
+    super(properties);
+
     this._connect();
     this._handleReload();
     this._setThemeColors();
 
     Promise.resolve().then(() => this._sendEmberDebug());
-
-    return super.init(...arguments);
   }
 
-  sendMessage(options) {
-    options = options || {};
-    this._chromePort.postMessage(options);
+  sendMessage(message?: Partial<Message>) {
+    this._chromePort.postMessage(message ?? {});
   }
 
   _sendEmberDebug() {
@@ -44,17 +40,16 @@ export default class WebExtension extends BasicAdapter {
     this.onMessageReceived((message, sender) => {
       if (message === 'ember-content-script-ready') {
         this.sendMessage({
+          frameId: sender.frameId,
           from: 'devtools',
+          tabId: chrome.devtools.inspectedWindow.tabId,
           type: 'inject-ember-debug',
           value: url,
-          tabId: chrome.devtools.inspectedWindow.tabId,
-          frameId: sender.frameId,
         });
       }
     });
   }
 
-  @computed
   get _chromePort() {
     return chrome.runtime.connect();
   }
@@ -77,17 +72,20 @@ export default class WebExtension extends BasicAdapter {
     let self = this;
     chrome.devtools.network.onNavigated.addListener(function () {
       self._injectDebugger();
-      location.reload(true);
+      location.reload();
     });
   }
 
   _injectDebugger() {
     loadEmberDebug().then((emberDebug) => {
-      chrome.devtools.inspectedWindow.eval(emberDebug, (success, error) => {
-        if (success === undefined && error) {
-          throw error;
-        }
-      });
+      chrome.devtools.inspectedWindow.eval(
+        emberDebug as string,
+        (success, error) => {
+          if (success === undefined && error) {
+            throw error;
+          }
+        },
+      );
     });
   }
 
@@ -108,11 +106,8 @@ export default class WebExtension extends BasicAdapter {
 
   /**
    * Open the devtools "Elements" or "Sources" tab and select a specific DOM node or function.
-   *
-   * @method inspectJSValue
-   * @param {String} name
    */
-  inspectJSValue(name) {
+  inspectJSValue(name: string) {
     chrome.devtools.inspectedWindow.eval(`
       inspect(window[${JSON.stringify(name)}]);
       delete window[${JSON.stringify(name)}];
@@ -121,11 +116,8 @@ export default class WebExtension extends BasicAdapter {
 
   /**
    * Redirect to the correct inspector version.
-   *
-   * @method onVersionMismatch
-   * @param {String} goToVersion
    */
-  onVersionMismatch(goToVersion) {
+  onVersionMismatch(goToVersion: string) {
     window.location.href = `../panes-${goToVersion.replace(
       /\./g,
       '-',
@@ -138,14 +130,16 @@ export default class WebExtension extends BasicAdapter {
   */
   reloadTab() {
     loadEmberDebug().then((emberDebug) => {
-      chrome.devtools.inspectedWindow.reload({ injectedScript: emberDebug });
+      chrome.devtools.inspectedWindow.reload({
+        injectedScript: emberDebug as string,
+      });
     });
   }
 }
 
 function loadEmberDebug() {
   let minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
-  let xhr;
+  let xhr: XMLHttpRequest;
 
   return new Promise((resolve) => {
     if (!emberDebug) {

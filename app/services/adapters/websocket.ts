@@ -1,20 +1,23 @@
 import { run } from '@ember/runloop';
 import BasicAdapter from './basic';
+import type { Message } from '../port';
 
 export default class Websocket extends BasicAdapter {
-  init() {
-    super.init();
+  socket: any;
+
+  constructor(properties?: object) {
+    super(properties);
+    // @ts-expect-error TODO: figure out how to type this stuff
     this.socket = window.EMBER_INSPECTOR_CONFIG.remoteDebugSocket;
     this._connect();
   }
 
-  sendMessage(options) {
-    options = options || {};
-    this.socket.emit('emberInspectorMessage', options);
+  sendMessage(message?: Partial<Message>) {
+    this.socket.emit('emberInspectorMessage', message ?? {});
   }
 
   _connect() {
-    this.socket.on('emberInspectorMessage', (message) => {
+    this.socket.on('emberInspectorMessage', (message: Message) => {
       run(() => {
         this._messageReceived(message);
       });
