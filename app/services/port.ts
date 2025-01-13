@@ -128,6 +128,6 @@ export default class PortService extends Service {
 
   @action
   trigger(eventName: string, ...args: Array<any>) {
-    sendEvent(this, eventName, ...args);
+    sendEvent(this, eventName, args);
   }
 }
