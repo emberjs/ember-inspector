@@ -1,17 +1,22 @@
+// @ts-expect-error This does not seem to be typed
 import { observes } from '@ember-decorators/object';
 import { once } from '@ember/runloop';
-import { typeOf, isEmpty } from '@ember/utils';
+import { typeOf } from '@ember/utils';
 // eslint-disable-next-line ember/no-observers
 import EmberObject, { computed } from '@ember/object';
-import escapeRegExp from 'ember-inspector/utils/escape-reg-exp';
 import { tracked } from '@glimmer/tracking';
+
+import { TrackedArray } from 'tracked-built-ins';
+
+import escapeRegExp from '../utils/escape-reg-exp';
+import { isNullish } from '../utils/nullish';
 
 const dateComputed = function () {
   return computed({
     get() {
       return null;
     },
-    set(key, date) {
+    set(_key, date: Date | number | string) {
       if (typeOf(date) === 'date') {
         return date;
       } else if (typeof date === 'number' || typeof date === 'string') {
@@ -22,25 +27,27 @@ const dateComputed = function () {
   });
 };
 
-export default class Promise extends EmberObject {
-  @dateComputed()
-  createdAt;
-
-  @dateComputed()
-  settledAt;
+export default class PromiseModel extends EmberObject {
+  children = new TrackedArray<PromiseModel>([]);
+  declare label?: string;
+  declare guid: string;
+  declare state: string;
+  // @ts-expect-error TODO: figure out types for this
+  @dateComputed() createdAt;
+  // @ts-expect-error TODO: figure out types for this
+  @dateComputed() settledAt;
 
   @tracked branchLabel = '';
   @tracked isExpanded = false;
   @tracked isManuallyExpanded = undefined;
-  @tracked parent = null;
+  @tracked parent: PromiseModel | null = null;
 
-  @computed('parent.level')
-  get level() {
+  get level(): number {
     let parent = this.parent;
     if (!parent) {
       return 0;
     }
-    return parent.get('level') + 1;
+    return parent.level + 1;
   }
 
   get isSettled() {
@@ -59,29 +66,24 @@ export default class Promise extends EmberObject {
     return !this.isSettled;
   }
 
-  children = [];
-
-  @computed('isPending', 'children.@each.pendingBranch')
   get pendingBranch() {
     return this.recursiveState('isPending', 'pendingBranch');
   }
 
-  @computed('isRejected', 'children.@each.rejectedBranch')
   get rejectedBranch() {
     return this.recursiveState('isRejected', 'rejectedBranch');
   }
 
-  @computed('isFulfilled', 'children.@each.fulfilledBranch')
   get fulfilledBranch() {
     return this.recursiveState('isFulfilled', 'fulfilledBranch');
   }
 
-  recursiveState(prop, cp) {
+  recursiveState(prop: keyof PromiseModel, cp: keyof PromiseModel) {
     if (this[prop]) {
       return true;
     }
     for (let i = 0; i < this.children.length; i++) {
-      if (this.children.at(i)[cp]) {
+      if (this.children.at(i)?.[cp]) {
         return true;
       }
     }
@@ -97,9 +99,9 @@ export default class Promise extends EmberObject {
       return;
     }
     if (
-      (this.pendingBranch && !this.get('parent.pendingBranch')) ||
-      (this.fulfilledBranch && !this.get('parent.fulfilledBranch')) ||
-      (this.rejectedBranch && !this.get('parent.rejectedBranch'))
+      (this.pendingBranch && !this.parent.pendingBranch) ||
+      (this.fulfilledBranch && !this.parent.fulfilledBranch) ||
+      (this.rejectedBranch && !this.parent.rejectedBranch)
     ) {
       this.parent.notifyPropertyChange('fulfilledBranch');
       this.parent.notifyPropertyChange('rejectedBranch');
@@ -113,8 +115,8 @@ export default class Promise extends EmberObject {
     this.addBranchLabel(this.label, true);
   }
 
-  addBranchLabel(label, replace) {
-    if (isEmpty(label)) {
+  addBranchLabel(label?: string, replace?: boolean) {
+    if (isNullish(label)) {
       return;
     }
     if (replace) {
@@ -129,13 +131,13 @@ export default class Promise extends EmberObject {
     }
   }
 
-  matches(val) {
+  matches(val: string) {
     return !!this.branchLabel
       .toLowerCase()
       .match(new RegExp(`.*${escapeRegExp(val.toLowerCase())}.*`));
   }
 
-  matchesExactly(val) {
+  matchesExactly(val: string) {
     return !!(this.label || '')
       .toLowerCase()
       .match(new RegExp(`.*${escapeRegExp(val.toLowerCase())}.*`));
@@ -152,7 +154,7 @@ export default class Promise extends EmberObject {
     }
   }
 
-  _findTopParent() {
+  _findTopParent(): PromiseModel {
     let parent = this.parent;
     if (!parent) {
       return this;
@@ -167,12 +169,12 @@ export default class Promise extends EmberObject {
       isExpanded = this.isManuallyExpanded;
     } else {
       let children = this._allChildren();
-      for (let i = 0, l = children.length; i < l; i++) {
-        let child = children[i];
-        if (child.get('isRejected')) {
+      for (let i = 0; i < children.length; i++) {
+        let child = children[i] as PromiseModel;
+        if (child.isRejected) {
           isExpanded = true;
         }
-        if (child.get('isPending') && !child.get('parent.isPending')) {
+        if (child.isPending && !child.parent!.isPending) {
           isExpanded = true;
         }
         if (isExpanded) {
@@ -184,7 +186,7 @@ export default class Promise extends EmberObject {
         parents.forEach((parent) => {
           parent.set('isExpanded', true);
         });
-      } else if (this.get('parent.isExpanded')) {
+      } else if (this.parent?.isExpanded) {
         this.parent.recalculateExpanded();
       }
     }
@@ -192,10 +194,9 @@ export default class Promise extends EmberObject {
     return isExpanded;
   }
 
-  @computed('parent.{isExpanded,isVisible}', 'parent')
-  get isVisible() {
+  get isVisible(): boolean {
     if (this.parent) {
-      return this.get('parent.isExpanded') && this.get('parent.isVisible');
+      return this.parent.isExpanded && this.parent.isVisible;
     }
     return true;
   }
@@ -208,7 +209,7 @@ export default class Promise extends EmberObject {
     return children;
   }
 
-  _allParents() {
+  _allParents(): Array<PromiseModel> {
     let parent = this.parent;
     if (parent) {
       return [parent, ...parent._allParents()];

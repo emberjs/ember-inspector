@@ -107,20 +107,44 @@ export default class PortService extends Service {
 
   // Manually implement Evented functionality, so we can move away from the mixin
 
-  @action
-  on(eventName: string, target: unknown, method: AnyFn) {
-    addListener(this, eventName, target, method);
-  }
+  on(eventName: string, method: AnyFn): void;
+  on(eventName: string, target: unknown, method: AnyFn): void;
 
   @action
-  one(eventName: string, target: unknown, method: AnyFn) {
-    addListener(this, eventName, target, method, true);
+  on(eventName: string, targetOrMethod: unknown | AnyFn, method?: AnyFn): void {
+    if (typeof targetOrMethod === 'function') {
+      // If we did not pass a target, default to `this`
+      addListener(this, eventName, this, targetOrMethod as AnyFn);
+    } else {
+      addListener(this, eventName, targetOrMethod, method!);
+    }
   }
 
+  one(eventName: string, method: AnyFn): void;
+  one(eventName: string, target: unknown, method: AnyFn): void;
+
   @action
-  off(eventName: string, target: unknown, method: AnyFn) {
+  one(eventName: string, targetOrMethod: unknown | AnyFn, method?: AnyFn) {
+    if (typeof targetOrMethod === 'function') {
+      // If we did not pass a target, default to `this`
+      addListener(this, eventName, this, targetOrMethod as AnyFn, true);
+    } else {
+      addListener(this, eventName, targetOrMethod, method!, true);
+    }
+  }
+
+  off(eventName: string, method: AnyFn): void;
+  off(eventName: string, target: unknown, method: AnyFn): void;
+
+  @action
+  off(eventName: string, targetOrMethod: unknown | AnyFn, method?: AnyFn) {
     try {
-      removeListener(this, eventName, target, method);
+      if (typeof targetOrMethod === 'function') {
+        // If we did not pass a target, default to `this`
+        removeListener(this, eventName, this, targetOrMethod as AnyFn);
+      } else {
+        removeListener(this, eventName, targetOrMethod, method!);
+      }
     } catch (e) {
       console.error(e);
     }
