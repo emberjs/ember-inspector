@@ -1,5 +1,7 @@
 import Service, { inject as service } from '@ember/service';
 import { LOCAL_STORAGE_SUPPORTED } from './storage/local';
+import type LocalStorageService from './storage/local';
+import type MemoryStorageService from './storage/memory';
 
 /**
  * Service that wraps either the LocalStorageService or
@@ -12,16 +14,14 @@ import { LOCAL_STORAGE_SUPPORTED } from './storage/local';
  */
 export default class StorageService extends Service {
   @service(LOCAL_STORAGE_SUPPORTED ? 'storage/local' : 'storage/memory')
-  backend;
+  declare backend: LocalStorageService | MemoryStorageService;
 
   /**
    * Reads a stored object for a give key, if any.
    *
-   * @method getItem
-   * @param  {String} key
    * @return {Option<String>} The value, if found
    */
-  getItem(key) {
+  getItem(key: string) {
     let serialized = this.backend.getItem(key);
 
     if (serialized === null) {
@@ -34,12 +34,8 @@ export default class StorageService extends Service {
 
   /**
    * Store a string for a given key.
-   *
-   * @method setItem
-   * @param {String} key
-   * @param {String} value
    */
-  setItem(key, value) {
+  setItem(key: string, value: string) {
     if (value === undefined) {
       this.removeItem(key);
     } else {
@@ -50,18 +46,14 @@ export default class StorageService extends Service {
 
   /**
    * Deletes the stored string for a given key.
-   *
-   * @method removeItem
-   * @param  {String} key
    */
-  removeItem(key) {
+  removeItem(key: string) {
     this.backend.removeItem(key);
   }
 
   /**
    * Returns the list of stored keys.
    *
-   * @method keys
    * @return {Array<String>} The array of keys
    */
   keys() {

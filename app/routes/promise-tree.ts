@@ -1,22 +1,31 @@
-import { get, set } from '@ember/object';
+import { set } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { Promise } from 'rsvp';
+// @ts-expect-error TODO: not yet typed
 import TabRoute from 'ember-inspector/routes/tab';
-import PromiseAssembler from 'ember-inspector/libs/promise-assembler';
+
+import PromiseAssembler from '../libs/promise-assembler';
+import type PortService from '../services/port';
 
 export default class PromiseTreeRoute extends TabRoute {
-  @service port;
+  @service declare port: PortService;
 
-  assembler = PromiseAssembler.create({
-    port: this.port,
-  });
+  assembler: PromiseAssembler;
+
+  constructor() {
+    super(...arguments);
+
+    this.assembler = PromiseAssembler.create({
+      port: this.port,
+    });
+  }
 
   model() {
     // block rendering until first batch arrives
     // Helps prevent flashing of "please refresh the page"
     return new Promise((resolve) => {
       this.assembler.one('firstMessageReceived', () => {
-        resolve(get(this, 'assembler.topSort'));
+        resolve(this.assembler.topSort);
       });
       this.assembler.start();
     });

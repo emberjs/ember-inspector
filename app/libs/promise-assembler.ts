@@ -1,27 +1,36 @@
 import { assert } from '@ember/debug';
 import { later } from '@ember/runloop';
-import EmberObject from '@ember/object';
-import EventedMixin from '@ember/object/evented';
-import Promise from 'ember-inspector/models/promise';
+import EmberObject, { action, setProperties } from '@ember/object';
+import { addListener, removeListener, sendEvent } from '@ember/object/events';
+import type { AnyFn } from 'ember/-private/type-utils';
 
-import { TrackedArray } from 'tracked-built-ins';
+import { TrackedArray, TrackedObject } from 'tracked-built-ins';
 import { tracked } from '@glimmer/tracking';
 
-export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
+import PromiseModel from '../models/promise';
+import type PortService from '../services/port';
+
+interface SerializedPromise {
+  children?: Array<string>;
+  guid: string;
+  label: string;
+  parent?: string;
+  reason: string;
+  state: string;
+  value: string;
+}
+
+export default class PromiseAssembler extends EmberObject {
+  declare port: PortService;
   // Used to track whether current message received
   // is the first in the request
   // Mainly helps in triggering 'firstMessageReceived' event
   @tracked firstMessageReceived = false;
 
-  all = new TrackedArray([]);
-  topSort = new TrackedArray([]);
-
-  init() {
-    super.init(...arguments);
-
-    this.topSortMeta = {};
-    this.promiseIndex = {};
-  }
+  all = new TrackedArray<PromiseModel>([]);
+  promiseIndex = new TrackedObject<Record<string, number>>({});
+  topSort = new TrackedArray<PromiseModel>([]);
+  topSortMeta = new TrackedObject<Record<string, { hasParent?: boolean }>>({});
 
   start() {
     this.port.on('promise:promisesUpdated', this, this.addOrUpdatePromises);
@@ -35,8 +44,10 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
   }
 
   reset() {
-    this.set('topSortMeta', {});
-    this.set('promiseIndex', {});
+    this.topSortMeta = new TrackedObject<
+      Record<string, { hasParent?: boolean }>
+    >({});
+    this.promiseIndex = new TrackedObject<Record<string, number>>({});
     this.topSort.splice(0, this.topSort.length);
 
     this.firstMessageReceived = false;
@@ -54,13 +65,13 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
     this.set('all', new TrackedArray([]));
   }
 
-  destroyPromises(promises) {
+  destroyPromises(promises: Array<EmberObject>) {
     promises.forEach(function (item) {
       item.destroy();
     });
   }
 
-  addOrUpdatePromises(message) {
+  addOrUpdatePromises(message: { promises: Array<SerializedPromise> }) {
     this.rebuildPromises(message.promises);
 
     if (!this.firstMessageReceived) {
@@ -69,7 +80,7 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
     }
   }
 
-  rebuildPromises(promises) {
+  rebuildPromises(promises: Array<SerializedPromise | PromiseModel>) {
     promises.forEach((props) => {
       props = Object.assign({}, props);
       let childrenIds = props.children;
@@ -87,26 +98,26 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
             return;
           }
           let child = this.updateOrCreate({ guid: childId, parent: promise });
-          promise.get('children').pushObject(child);
+          promise.children.push(child);
         });
       }
     });
   }
 
-  updateTopSort(promise) {
+  updateTopSort(promise: PromiseModel) {
     let topSortMeta = this.topSortMeta;
-    let guid = promise.get('guid');
-    let meta = topSortMeta[guid];
+    let guid = promise.guid;
+    let meta = topSortMeta[guid] ?? {};
     let isNew = !meta;
     let hadParent = false;
-    let hasParent = !!promise.get('parent');
+    let hasParent = !!promise.parent;
     let topSort = this.topSort;
     let parentChanged = isNew;
 
     if (isNew) {
       meta = topSortMeta[guid] = {};
     } else {
-      hadParent = meta.hasParent;
+      hadParent = Boolean(meta.hasParent);
     }
     if (!isNew && hasParent !== hadParent) {
       // todo: implement recursion to reposition children
@@ -122,15 +133,15 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
     }
   }
 
-  insertInTopSort(promise) {
+  insertInTopSort(promise: PromiseModel) {
     let topSort = this.topSort;
-    if (promise.get('parent')) {
-      let parentIndex = topSort.indexOf(promise.get('parent'));
+    if (promise.parent) {
+      let parentIndex = topSort.indexOf(promise.parent);
       topSort.splice(parentIndex + 1, 0, promise);
     } else {
       this.topSort.push(promise);
     }
-    promise.get('children').forEach((child) => {
+    promise.children.forEach((child) => {
       const index = topSort.indexOf(child);
       if (index !== -1) {
         topSort.splice(index, 1);
@@ -139,29 +150,29 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
     });
   }
 
-  updateOrCreate(props) {
+  updateOrCreate(props: any) {
     let guid = props.guid;
     let promise = this.findOrCreate(guid);
 
-    promise.setProperties(props);
+    setProperties(promise, props);
 
     this.updateTopSort(promise);
 
     return promise;
   }
 
-  createPromise(props) {
-    let promise = Promise.create(props);
-    let index = this.get('all.length');
+  createPromise(props: any): PromiseModel {
+    let promise = PromiseModel.create(props);
+    let index = this.all.length;
 
     this.all.push(promise);
-    this.promiseIndex[promise.get('guid')] = index;
+    this.promiseIndex[promise.guid as keyof object] = index;
     return promise;
   }
 
-  find(guid) {
+  find(guid?: string) {
     if (guid) {
-      let index = this.promiseIndex[guid];
+      let index = this.promiseIndex[guid as keyof object];
       if (index !== undefined) {
         return this.all.at(index);
       }
@@ -170,10 +181,36 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
     }
   }
 
-  findOrCreate(guid) {
+  findOrCreate(guid?: string) {
     if (!guid) {
       assert('You have tried to findOrCreate without a guid');
     }
-    return this.find(guid) || this.createPromise({ guid });
+    return (this.find(guid) as PromiseModel) || this.createPromise({ guid });
+  }
+
+  // Manually implement Evented functionality, so we can move away from the mixin
+
+  @action
+  on(eventName: string, target: unknown = this, method: AnyFn) {
+    addListener(this, eventName, target, method);
+  }
+
+  @action
+  one(eventName: string, target: unknown = this, method: AnyFn) {
+    addListener(this, eventName, target, method, true);
+  }
+
+  @action
+  off(eventName: string, target: unknown = this, method: AnyFn) {
+    try {
+      removeListener(this, eventName, target, method);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  @action
+  trigger(eventName: string, ...args: Array<any>) {
+    sendEvent(this, eventName, args);
   }
 }

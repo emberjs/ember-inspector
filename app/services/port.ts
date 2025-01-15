@@ -108,17 +108,17 @@ export default class PortService extends Service {
   // Manually implement Evented functionality, so we can move away from the mixin
 
   @action
-  on(eventName: string, target: unknown, method: AnyFn) {
+  on(eventName: string, target: unknown = this, method: AnyFn) {
     addListener(this, eventName, target, method);
   }
 
   @action
-  one(eventName: string, target: unknown, method: AnyFn) {
+  one(eventName: string, target: unknown = this, method: AnyFn) {
     addListener(this, eventName, target, method, true);
   }
 
   @action
-  off(eventName: string, target: unknown, method: AnyFn) {
+  off(eventName: string, target: unknown = this, method: AnyFn) {
     try {
       removeListener(this, eventName, target, method);
     } catch (e) {

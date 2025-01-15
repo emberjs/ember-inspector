@@ -5,6 +5,7 @@
     // layout, which is not resolvable with the Node resolution algorithm, to
     // work with TypeScript.
     "baseUrl": ".",
+    "lib": ["ES2023", "DOM"],
     "paths": {
       "ember-debug/deps/*": ["node_modules/*"],
       "ember-debug/*": ["ember_debug/*"],
