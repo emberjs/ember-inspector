@@ -19,7 +19,7 @@ import config from 'ember-inspector/config/environment';
 import type PortService from '../port';
 import type { Message } from '../port';
 
-export default abstract class Basic extends Service {
+export default class Basic extends Service {
   @service declare port: PortService;
 
   _messageCallbacks: Array<AnyFn>;
@@ -100,7 +100,7 @@ export default abstract class Basic extends Service {
     });
   }
 
-  abstract reloadTab(): void;
+  reloadTab?(): void;
   // Called when the "Reload" is clicked by the user
   willReload() {}
   openResource(_file: string, _line: number) {}

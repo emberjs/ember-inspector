@@ -51,7 +51,8 @@ export default class PromiseTreeRoute extends TabRoute {
     );
   }
 
-  setInstrumentWithStack(message) {
+  setInstrumentWithStack(message: { instrumentWithStack: boolean }) {
+    // @ts-expect-error TODO: fix this type later
     set(this, 'controller.instrumentWithStack', message.instrumentWithStack);
   }
 }
