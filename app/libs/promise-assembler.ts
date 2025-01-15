@@ -109,7 +109,7 @@ export default class PromiseAssembler extends EmberObject {
     let guid = promise.guid;
     let meta = topSortMeta[guid] ?? {};
     let isNew = !meta;
-    let hadParent = false;
+    let hadParent: boolean | undefined = false;
     let hasParent = !!promise.parent;
     let topSort = this.topSort;
     let parentChanged = isNew;
@@ -117,7 +117,7 @@ export default class PromiseAssembler extends EmberObject {
     if (isNew) {
       meta = topSortMeta[guid] = {};
     } else {
-      hadParent = Boolean(meta.hasParent);
+      hadParent = meta.hasParent;
     }
     if (!isNew && hasParent !== hadParent) {
       // todo: implement recursion to reposition children
