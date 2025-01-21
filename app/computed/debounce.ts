@@ -6,7 +6,7 @@ import type { AnyFn } from 'ember/-private/type-utils';
 // another property with a certain delay.
 // This means that every time this prop changes,
 // the other prop will change to the same val after [delay]
-export default function (prop: string, delay: number, callback: AnyFn) {
+export default function (prop: string, delay: number, callback?: AnyFn) {
   let value: unknown;
 
   let updateVal = function (this: any) {

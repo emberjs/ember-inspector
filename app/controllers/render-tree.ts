@@ -1,11 +1,9 @@
 import { action, computed } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
-import { isEmpty } from '@ember/utils';
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 
 import escapeRegExp from '../utils/escape-reg-exp';
-// @ts-expect-error TODO: not yet typed
 import debounceComputed from '../computed/debounce';
 import type WebExtension from '../services/adapters/web-extension';
 import type PortService from '../services/port';
@@ -64,7 +62,7 @@ export default class RenderTreeController extends Controller {
   // bound to the input field, updates the `search` property
   // 300ms after changing
   @debounceComputed('search', 300)
-  searchValue: any;
+  declare searchValue: string;
 
   @computed('model.isHighlightSupported')
   get isHighlightEnabled() {
