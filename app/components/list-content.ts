@@ -1,11 +1,9 @@
 import { action } from '@ember/object';
-import { addListener, removeListener, sendEvent } from '@ember/object/events';
 import { inject as service } from '@ember/service';
 import Component from '@glimmer/component';
 import { htmlSafe } from '@ember/template';
 import { schedule } from '@ember/runloop';
 import { tracked } from '@glimmer/tracking';
-import type { AnyFn } from 'ember/-private/type-utils';
 
 import type LayoutService from '../services/layout';
 
@@ -95,56 +93,5 @@ export default class ListContent extends Component<ListContentSignature> {
   @action
   updateContentHeight(height: number) {
     this.contentHeight = height;
-  }
-
-  // Manually implement Evented functionality, so we can move away from the mixin
-  // TODO: Do we even need any evented-like things in this component?
-
-  on(eventName: string, method: AnyFn): void;
-  on(eventName: string, target: unknown, method: AnyFn): void;
-
-  @action
-  on(eventName: string, targetOrMethod: unknown | AnyFn, method?: AnyFn): void {
-    if (typeof targetOrMethod === 'function') {
-      // If we did not pass a target, default to `this`
-      addListener(this, eventName, this, targetOrMethod as AnyFn);
-    } else {
-      addListener(this, eventName, targetOrMethod, method!);
-    }
-  }
-
-  one(eventName: string, method: AnyFn): void;
-  one(eventName: string, target: unknown, method: AnyFn): void;
-
-  @action
-  one(eventName: string, targetOrMethod: unknown | AnyFn, method?: AnyFn) {
-    if (typeof targetOrMethod === 'function') {
-      // If we did not pass a target, default to `this`
-      addListener(this, eventName, this, targetOrMethod as AnyFn, true);
-    } else {
-      addListener(this, eventName, targetOrMethod, method!, true);
-    }
-  }
-
-  off(eventName: string, method: AnyFn): void;
-  off(eventName: string, target: unknown, method: AnyFn): void;
-
-  @action
-  off(eventName: string, targetOrMethod: unknown | AnyFn, method?: AnyFn) {
-    try {
-      if (typeof targetOrMethod === 'function') {
-        // If we did not pass a target, default to `this`
-        removeListener(this, eventName, this, targetOrMethod as AnyFn);
-      } else {
-        removeListener(this, eventName, targetOrMethod, method!);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  @action
-  trigger(eventName: string, ...args: Array<any>) {
-    sendEvent(this, eventName, args);
   }
 }
