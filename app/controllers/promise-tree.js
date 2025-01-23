@@ -40,11 +40,11 @@ export default class PromiseTreeController extends Controller {
   get filtered() {
     return this.model.filter((item) => {
       // exclude cleared promises
-      if (this.createdAfter && item.get('createdAt') < this.createdAfter) {
+      if (this.createdAfter && item.createdAt < this.createdAfter) {
         return false;
       }
 
-      if (!item.get('isVisible')) {
+      if (!item.isVisible) {
         return false;
       }
 
@@ -53,11 +53,11 @@ export default class PromiseTreeController extends Controller {
       // then they pass
       let include = true;
       if (this.filter === 'pending') {
-        include = item.get('pendingBranch');
+        include = item.pendingBranch;
       } else if (this.filter === 'rejected') {
-        include = item.get('rejectedBranch');
+        include = item.rejectedBranch;
       } else if (this.filter === 'fulfilled') {
-        include = item.get('fulfilledBranch');
+        include = item.fulfilledBranch;
       }
       if (!include) {
         return false;
