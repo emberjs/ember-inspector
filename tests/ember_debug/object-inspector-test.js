@@ -27,7 +27,7 @@ import Controller from '@ember/controller';
 const GlimmerComponent = (function () {
   try {
     return require('@glimmer/component').default;
-  } catch (e) {
+  } catch {
     // ignore, return undefined
   }
 })();

@@ -27,7 +27,7 @@ import { EmberLoader } from 'ember-debug/utils/ember/loader';
 const GlimmerComponent = (() => {
   try {
     return EmberLoader.require('@glimmer/component').default;
-  } catch (e) {
+  } catch {
     // ignore, return undefined
   }
 })();
@@ -671,7 +671,7 @@ export default class extends DebugPort {
           if (name === '(unknown)') {
             name = '(unknown mixin)';
           }
-        } catch (e) {
+        } catch {
           name = '(Unable to convert Object to string)';
         }
       }

@@ -1,4 +1,5 @@
-/*global chrome*/
+/* global chrome */
+/* eslint-disable no-unused-vars */
 
 /**
  * Run when devtools.html is automatically added to the Chrome devtools panels.

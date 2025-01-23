@@ -20,7 +20,7 @@ export default class WebExtension extends BasicAdapter {
     this._handleReload();
     this._setThemeColors();
 
-    Promise.resolve().then(() => this._sendEmberDebug());
+    void Promise.resolve().then(() => this._sendEmberDebug());
   }
 
   sendMessage(message?: Partial<Message>) {
@@ -42,6 +42,7 @@ export default class WebExtension extends BasicAdapter {
     this.onMessageReceived((message, sender) => {
       if (message === 'ember-content-script-ready') {
         this.sendMessage({
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
           frameId: sender.frameId,
           from: 'devtools',
           tabId: chrome.devtools.inspectedWindow.tabId,
@@ -65,7 +66,6 @@ export default class WebExtension extends BasicAdapter {
     });
 
     chromePort.onDisconnect.addListener(() => {
-      this.notifyPropertyChange('_chromePort');
       this._connect();
     });
   }

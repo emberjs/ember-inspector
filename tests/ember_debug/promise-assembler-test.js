@@ -9,18 +9,21 @@ let assembler;
 let fakeRSVP;
 
 function stubRSVP() {
+  // eslint-disable-next-line ember/no-classic-classes
   fakeRSVP = EmberObject.extend(Evented, {
     configure() {},
   }).create();
 }
 
 function startAssembler() {
+  // eslint-disable-next-line ember/no-runloop
   run(assembler, 'start');
 }
 
 module('Ember Debug - PromiseAssembler', function (hooks) {
   hooks.beforeEach(() => {
     stubRSVP();
+    // eslint-disable-next-line ember/no-runloop
     run(function () {
       assembler = new PromiseAssembler({
         RSVP: fakeRSVP,
@@ -30,6 +33,7 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
 
   hooks.afterEach(() => {
     if (assembler) {
+      // eslint-disable-next-line ember/no-runloop
       run(assembler, 'destroy');
       assembler = null;
     }
@@ -241,6 +245,7 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
     });
     assert.strictEqual(assembler.find().length, 1);
 
+    // eslint-disable-next-line ember/no-runloop
     run(assembler, 'stop');
 
     assert.strictEqual(assembler.find().length, 0);

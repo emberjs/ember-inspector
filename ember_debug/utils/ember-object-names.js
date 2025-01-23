@@ -49,7 +49,7 @@ try {
   emberNames.set(Views.ViewStateSupport, 'ViewStateSupport  Mixin');
   // this one is not a Mixin, but an .extend({}), which results in a class
   emberNames.set(Views.CoreView, 'CoreView');
-} catch (e) {
+} catch {
   // do nothing
 }
 

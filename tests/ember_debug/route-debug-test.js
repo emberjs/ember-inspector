@@ -57,6 +57,7 @@ module('Ember Debug - Route Tree', function (hooks) {
       { timeout: 3000 },
     );
 
+    // eslint-disable-next-line ember/no-runloop
     run(EmberDebug.port, 'trigger', 'route:getTree');
     await settled();
 

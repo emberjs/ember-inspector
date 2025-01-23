@@ -64,9 +64,9 @@ export default ts.config(
       'coverage/',
       '!**/.*',
       'vendor/',
-      '/dist_prev/',
-      '/skeletons/',
-      '/ember_debug/vendor/startup-wrapper.js',
+      'dist_prev/',
+      'skeletons/',
+      'ember_debug/vendor/startup-wrapper.js',
     ],
   },
   /**
@@ -77,7 +77,7 @@ export default ts.config(
       reportUnusedDisableDirectives: 'error',
     },
   },
-  { rules: { 'no-prototype-builtins': 'off' } },
+  { rules: { 'no-prototype-builtins': 'off', 'no-useless-escape': 'off' } },
   {
     files: ['**/*.js'],
     languageOptions: {

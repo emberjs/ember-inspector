@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-escape */
 import BasicAdapter from './basic';
 import type { Message } from '../port';
 

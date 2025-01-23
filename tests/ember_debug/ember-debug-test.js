@@ -25,7 +25,7 @@ module('Ember Debug', function (hooks) {
     try {
       EmberDebug.inspect(obj);
       assert.ok(false);
-    } catch (e) {
+    } catch {
       // Intentionally empty
     }
   }
