@@ -16,7 +16,7 @@ export default class RenderItem extends Component<RenderItemArgs> {
   }
 
   get level() {
-    let parentLevel = this.args.target?.level ?? -1;
+    const parentLevel = this.args.target?.level ?? -1;
 
     return parentLevel + 1;
   }
@@ -34,26 +34,26 @@ export default class RenderItem extends Component<RenderItemArgs> {
   }
 
   get readableTime() {
-    let d = new Date(this.args.model?.timestamp);
-    let ms = d.getMilliseconds();
-    let seconds = d.getSeconds();
-    let minutes =
+    const d = new Date(this.args.model?.timestamp);
+    const ms = d.getMilliseconds();
+    const seconds = d.getSeconds();
+    const minutes =
       d.getMinutes().toString().length === 1
         ? `0${d.getMinutes()}`
         : d.getMinutes();
-    let hours =
+    const hours =
       d.getHours().toString().length === 1 ? `0${d.getHours()}` : d.getHours();
 
     return `${hours}:${minutes}:${seconds}:${ms}`;
   }
 
   get searchMatch() {
-    let search = this.args.search;
+    const search = this.args.search;
     if (isEmpty(search)) {
       return true;
     }
-    let name = this.args.model?.name;
-    let regExp = new RegExp(escapeRegExp(search.toLowerCase()) as string);
+    const name = this.args.model?.name;
+    const regExp = new RegExp(escapeRegExp(search.toLowerCase()) as string);
     return !!name.toLowerCase().match(regExp);
   }
 }

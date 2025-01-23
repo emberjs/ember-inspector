@@ -8,25 +8,28 @@
  * @namespace EmberInspector/Shared
  * @class InPageScript
  */
-(function() {
-  "use strict";
+(function () {
+  'use strict';
   function onReady(callback) {
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    if (
+      document.readyState === 'complete' ||
+      document.readyState === 'interactive'
+    ) {
       setTimeout(completed);
     } else {
-      document.addEventListener("DOMContentLoaded", completed, false);
+      document.addEventListener('DOMContentLoaded', completed, false);
       // For some reason DOMContentLoaded doesn't always work
-      window.addEventListener("load", completed, false);
+      window.addEventListener('load', completed, false);
     }
 
     function completed() {
-      document.removeEventListener("DOMContentLoaded", completed, false);
-      window.removeEventListener("load", completed, false);
+      document.removeEventListener('DOMContentLoaded', completed, false);
+      window.removeEventListener('load', completed, false);
       callback();
     }
   }
 
-  onReady(function() {
+  onReady(function () {
     let Ember;
     try {
       Ember = requireModule('ember')['default'];
@@ -43,10 +46,13 @@
       }
 
       var versions = Array.prototype.slice.call(libraries, 0);
-      window.postMessage({
-        type: 'emberVersion',
-        versions: versions
-      }, '*');
+      window.postMessage(
+        {
+          type: 'emberVersion',
+          versions: versions,
+        },
+        '*',
+      );
     }
   });
-}());
+})();

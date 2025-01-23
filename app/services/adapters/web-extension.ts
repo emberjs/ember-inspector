@@ -28,8 +28,10 @@ export default class WebExtension extends BasicAdapter {
   }
 
   _sendEmberDebug() {
-    let minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
-    let url = chrome.runtime.getURL(`/panes-${minimumVersion}/ember_debug.js`);
+    const minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
+    const url = chrome.runtime.getURL(
+      `/panes-${minimumVersion}/ember_debug.js`,
+    );
     // first send to all frames in current tab
     this.sendMessage({
       from: 'devtools',
@@ -55,7 +57,7 @@ export default class WebExtension extends BasicAdapter {
   }
 
   _connect() {
-    let chromePort = this._chromePort;
+    const chromePort = this._chromePort;
     chromePort.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
 
     chromePort.onMessage.addListener((...args) => {
@@ -69,7 +71,7 @@ export default class WebExtension extends BasicAdapter {
   }
 
   _handleReload() {
-    let self = this;
+    const self = this;
     chrome.devtools.network.onNavigated.addListener(function () {
       self._injectDebugger();
       location.reload();
@@ -138,7 +140,7 @@ export default class WebExtension extends BasicAdapter {
 }
 
 function loadEmberDebug() {
-  let minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
+  const minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
   let xhr: XMLHttpRequest;
 
   return new Promise((resolve) => {

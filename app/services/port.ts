@@ -1,12 +1,11 @@
 import { action, set } from '@ember/object';
 import { addListener, removeListener, sendEvent } from '@ember/object/events';
-// @ts-expect-error TODO: maybe move away from this one day, but for now import from secret location
 import { hasListeners } from '@ember/-internals/metal';
 import Service, { inject as service } from '@ember/service';
 import type RouterService from '@ember/routing/router-service';
 
 import type WebExtension from './adapters/web-extension';
-import type { AnyFn } from 'ember/-private/type-utils';
+import type { AnyFn } from '@ember/-internals/utility-types';
 
 export interface Message {
   applicationId: string;
@@ -55,7 +54,7 @@ export default class PortService extends Service {
           return;
         }
 
-        let { applicationId, applicationName } = message;
+        const { applicationId, applicationName } = message;
 
         if (!applicationId) {
           return;
@@ -87,7 +86,9 @@ export default class PortService extends Service {
       applicationId in this.detectedApplications &&
       applicationId !== this.applicationId
     ) {
-      let applicationName = this.detectedApplications[applicationId] as string;
+      const applicationName = this.detectedApplications[
+        applicationId
+      ] as string;
       const currentApplication = this.applicationId;
       this.setProperties({ applicationId, applicationName });
       if (currentApplication) {
@@ -119,7 +120,7 @@ export default class PortService extends Service {
       // If we did not pass a target, default to `this`
       addListener(this, eventName, this, targetOrMethod as AnyFn);
     } else {
-      addListener(this, eventName, targetOrMethod, method!);
+      addListener(this, eventName, targetOrMethod, method);
     }
   }
 
@@ -132,7 +133,7 @@ export default class PortService extends Service {
       // If we did not pass a target, default to `this`
       addListener(this, eventName, this, targetOrMethod as AnyFn, true);
     } else {
-      addListener(this, eventName, targetOrMethod, method!, true);
+      addListener(this, eventName, targetOrMethod, method, true);
     }
   }
 
@@ -146,7 +147,7 @@ export default class PortService extends Service {
         // If we did not pass a target, default to `this`
         removeListener(this, eventName, this, targetOrMethod as AnyFn);
       } else {
-        removeListener(this, eventName, targetOrMethod, method!);
+        removeListener(this, eventName, targetOrMethod, method);
       }
     } catch (e) {
       console.error(e);

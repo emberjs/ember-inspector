@@ -22,7 +22,7 @@ export default class StorageService extends Service {
    * @return {Option<String>} The value, if found
    */
   getItem(key: string) {
-    let serialized = this.backend.getItem(key);
+    const serialized = this.backend.getItem(key);
 
     if (serialized === null) {
       // Actual `null` values would have been serialized as `"null"`
@@ -39,7 +39,7 @@ export default class StorageService extends Service {
     if (value === undefined) {
       this.removeItem(key);
     } else {
-      let serialized = JSON.stringify(value);
+      const serialized = JSON.stringify(value);
       this.backend.setItem(key, serialized);
     }
   }

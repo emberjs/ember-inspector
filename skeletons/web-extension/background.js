@@ -12,13 +12,13 @@
  *     https://developer.chrome.com/extensions/background_pages
  *     https://developer.chrome.com/extensions/messaging
  */
-(function() {
-  "use strict";
+(function () {
+  'use strict';
 
   var activeTabs = {},
-      activeTabId,
-      contextMenuAdded = false,
-      emberInspectorChromePorts = {};
+    activeTabId,
+    contextMenuAdded = false,
+    emberInspectorChromePorts = {};
 
   /**
    * Creates the tooltip string to show the version of libraries used in the ClientApp
@@ -26,9 +26,11 @@
    * @return {String} - string of library names and versions
    */
   function generateVersionsTooltip(versions) {
-    return versions.map(function(lib) {
-      return lib.name + " " + lib.version;
-    }).join("\n");
+    return versions
+      .map(function (lib) {
+        return lib.name + ' ' + lib.version;
+      })
+      .join('\n');
   }
 
   /**
@@ -38,7 +40,7 @@
   function setActionTitle(tabId) {
     void chrome.action.setTitle({
       tabId: tabId,
-      title: generateVersionsTooltip(activeTabs[tabId])
+      title: generateVersionsTooltip(activeTabs[tabId]),
     });
   }
 
@@ -49,14 +51,14 @@
    * @param {Number} tabId - the current tab
    */
   function updateTabAction(tabId) {
-    chrome.storage.sync.get("options", async function(data) {
+    chrome.storage.sync.get('options', async function (data) {
       void chrome.action.enable(tabId);
       void chrome.action.setIcon({
         tabId,
         path: {
           19: '{{PANE_ROOT}}/assets/images/icon19.png',
           38: '{{PANE_ROOT}}/assets/images/icon38.png',
-        }
+        },
       });
       setActionTitle(tabId);
     });
@@ -78,7 +80,7 @@
       path: {
         19: '{{PANE_ROOT}}/assets/images/icon19_grey.png',
         38: '{{PANE_ROOT}}/assets/images/icon38_grey.png',
-      }
+      },
     });
   }
 
@@ -86,7 +88,7 @@
     if (info.menuItemId !== 'inspect-ember-component') return;
     void chrome.tabs.sendMessage(activeTabId, {
       from: 'devtools',
-      type: 'view:contextMenu'
+      type: 'view:contextMenu',
     });
   }
 
@@ -130,7 +132,7 @@
    *
    * @param {Port} emberInspectorChromePort
    */
-  chrome.runtime.onConnect.addListener(function(emberInspectorChromePort) {
+  chrome.runtime.onConnect.addListener(function (emberInspectorChromePort) {
     var appId;
 
     /**
@@ -139,7 +141,7 @@
      * to the content-script.
      * @param {Message} message
      */
-    emberInspectorChromePort.onMessage.addListener(function(message) {
+    emberInspectorChromePort.onMessage.addListener(function (message) {
       // if the message contains the appId, this is the first
       // message and the appId is used to map the port for this app.
       if (message.appId) {
@@ -147,13 +149,15 @@
 
         emberInspectorChromePorts[appId] = emberInspectorChromePort;
 
-        emberInspectorChromePort.onDisconnect.addListener(function() {
+        emberInspectorChromePort.onDisconnect.addListener(function () {
           delete emberInspectorChromePorts[appId];
         });
       } else if (message.from === 'devtools') {
         // all other messages from EmberInspector are forwarded to the content-script
         // https://developer.chrome.com/extensions/tabs#method-sendMessage
-        chrome.tabs.sendMessage(message.tabId || appId, message, { frameId: message.frameId });
+        chrome.tabs.sendMessage(message.tabId || appId, message, {
+          frameId: message.frameId,
+        });
       }
     });
   });
@@ -164,7 +168,7 @@
    * @param {Object} request
    * @param {MessageSender} sender
    */
-  chrome.runtime.onMessage.addListener(function(request, sender) {
+  chrome.runtime.onMessage.addListener(function (request, sender) {
     // only listen to messages from the content-script
     if (!sender.tab) {
       // noop
@@ -182,7 +186,9 @@
     } else {
       // forward the message to EmberInspector
       var emberInspectorChromePort = emberInspectorChromePorts[sender.tab.id];
-      if (emberInspectorChromePort) { emberInspectorChromePort.postMessage(request); }
+      if (emberInspectorChromePort) {
+        emberInspectorChromePort.postMessage(request);
+      }
     }
   });
 
@@ -203,5 +209,4 @@
   chrome.tabs.onRemoved.addListener(({ tabId }) => {
     delete activeTabs[tabId];
   });
-
-}());
+})();

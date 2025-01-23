@@ -37,7 +37,7 @@ export default class LocalStorageService extends Service {
    * @return The array of keys
    */
   keys() {
-    let keys = [];
+    const keys = [];
     for (let i = 0; i < localStorage.length; i++) {
       keys.push(localStorage.key(i));
     }

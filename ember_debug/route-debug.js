@@ -67,7 +67,6 @@ export default class RouteDebug extends DebugPort {
     };
   }
 
-  // eslint-disable-next-line ember/no-observers
   sendCurrentRoute() {
     const { currentPath: name, currentURL: url } = this;
     later(() => {

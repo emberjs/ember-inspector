@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 // @ts-expect-error This does not seem to be typed
 import { observes } from '@ember-decorators/object';
 import { once } from '@ember/runloop';
 import { typeOf } from '@ember/utils';
-// eslint-disable-next-line ember/no-observers
+
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import EmberObject, { computed } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
@@ -43,7 +45,7 @@ export default class PromiseModel extends EmberObject {
   @tracked parent: PromiseModel | null = null;
 
   get level(): number {
-    let parent = this.parent;
+    const parent = this.parent;
     if (!parent) {
       return 0;
     }
@@ -125,7 +127,7 @@ export default class PromiseModel extends EmberObject {
       this.branchLabel = `${this.branchLabel} ${label}`;
     }
 
-    let parent = this.parent;
+    const parent = this.parent;
     if (parent) {
       parent.addBranchLabel(label);
     }
@@ -148,14 +150,15 @@ export default class PromiseModel extends EmberObject {
   // eslint-disable-next-line ember/no-observers
   @observes('isPending', 'isFulfilled', 'isRejected', 'parent')
   stateOrParentChanged() {
-    let parent = this.parent;
+    const parent = this.parent;
     if (parent) {
+      // eslint-disable-next-line ember/no-runloop
       once(parent, 'recalculateExpanded');
     }
   }
 
   _findTopParent(): PromiseModel {
-    let parent = this.parent;
+    const parent = this.parent;
     if (!parent) {
       return this;
     } else {
@@ -168,9 +171,9 @@ export default class PromiseModel extends EmberObject {
     if (this.isManuallyExpanded !== undefined) {
       isExpanded = this.isManuallyExpanded;
     } else {
-      let children = this._allChildren();
+      const children = this._allChildren();
       for (let i = 0; i < children.length; i++) {
-        let child = children[i] as PromiseModel;
+        const child = children[i] as PromiseModel;
         if (child.isRejected) {
           isExpanded = true;
         }
@@ -181,7 +184,7 @@ export default class PromiseModel extends EmberObject {
           break;
         }
       }
-      let parents = this._allParents();
+      const parents = this._allParents();
       if (isExpanded) {
         parents.forEach((parent) => {
           parent.set('isExpanded', true);
@@ -210,7 +213,7 @@ export default class PromiseModel extends EmberObject {
   }
 
   _allParents(): Array<PromiseModel> {
-    let parent = this.parent;
+    const parent = this.parent;
     if (parent) {
       return [parent, ...parent._allParents()];
     } else {

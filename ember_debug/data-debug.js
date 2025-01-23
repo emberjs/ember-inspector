@@ -11,7 +11,6 @@ export default class extends DebugPort {
   releaseTypesMethod = null;
   releaseRecordsMethod = null;
 
-  /* eslint-disable ember/no-side-effects */
   get adapter() {
     const owner = this.namespace?.owner;
 
@@ -26,7 +25,6 @@ export default class extends DebugPort {
 
     return null;
   }
-  /* eslint-enable ember/no-side-effects */
 
   _resolve(name) {
     const owner = this.namespace?.owner;

@@ -1,10 +1,12 @@
-/* eslint-disable ember/avoid-leaking-state-in-ember-objects, ember/no-new-mixins */
+/* eslint-disable ember/avoid-leaking-state-in-ember-objects, ember/no-classic-classes, ember/no-new-mixins, ember/no-runloop */
 import { find, visit } from '@ember/test-helpers';
 import Mixin from '@ember/object/mixin';
+// eslint-disable-next-line ember/no-classic-components
 import Component from '@ember/component';
 import { inspect } from '@ember/debug';
 import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import EmberObject, { computed } from '@ember/object';
 import MutableArray from '@ember/array/mutable';
 import ArrayProxy from '@ember/array/proxy';
@@ -185,7 +187,6 @@ module('Ember Debug - Object Inspector', function (hooks) {
     }
 
     class Parent {
-      // eslint-disable-next-line constructor-super
       constructor(param) {
         Object.assign(this, param);
       }
@@ -997,7 +998,6 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.deepEqual(message, { objectId });
   });
 
-  // eslint-disable-next-line qunit/require-expect
   test('Properties ending with `Binding` are skipped', async function (assert) {
     let object = EmberObject.create({
       bar: 'test',

@@ -9,7 +9,7 @@ export default function parseText(value: string): string {
     parsedValue = JSON.parse(value);
   } catch (e) {
     // if surrounded by quotes, remove quotes
-    let match = value.match(/^"(.*)"$/);
+    const match = value.match(/^"(.*)"$/);
     if (match && match.length > 1) {
       parsedValue = match[1];
     } else {
@@ -18,4 +18,3 @@ export default function parseText(value: string): string {
   }
   return parsedValue;
 }
-

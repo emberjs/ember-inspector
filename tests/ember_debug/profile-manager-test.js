@@ -1,4 +1,6 @@
+/* eslint-disable ember/no-classic-classes */
 import { find, visit, waitUntil, getSettledState } from '@ember/test-helpers';
+// eslint-disable-next-line ember/no-classic-components
 import EmberComponent from '@ember/component';
 import GlimmerComponent from '@glimmer/component';
 import EmberRoute from '@ember/routing/route';
@@ -333,6 +335,7 @@ const matchHighlights = (
 };
 
 const enableHighlight = () => {
+  // eslint-disable-next-line ember/no-runloop
   run(() =>
     EmberDebug.port.trigger('render:updateShouldHighlightRender', {
       shouldHighlightRender: true,

@@ -70,14 +70,14 @@ try {
     }
     return r;
   };
-} catch (e) {
+} catch {
   try {
     // Fallback to the previous implementation
     let GlimmerReference = EmberLoader.require('@glimmer/reference');
 
     tagValue = GlimmerReference.value;
     tagValidate = GlimmerReference.validate;
-  } catch (e) {
+  } catch {
     // ignore
   }
 }
@@ -88,7 +88,7 @@ try {
   tagForProperty = metal.tagForProperty;
   // If track was not already loaded, use metal's version (the previous version)
   track = track || metal.track;
-} catch (e) {
+} catch {
   // ignore
 }
 
@@ -324,7 +324,7 @@ export default class extends DebugPort {
                 dependentKeys,
               });
             }
-          } catch (e) {
+          } catch {
             // dont do anything
           }
         });
@@ -332,6 +332,7 @@ export default class extends DebugPort {
     }
   }
 
+  // eslint-disable-next-line ember/classic-decorator-hooks
   init() {
     super.init();
     this.sentObjects = {};

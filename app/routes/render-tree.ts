@@ -1,4 +1,4 @@
-import EmberObject, { get, set } from '@ember/object';
+import EmberObject, { set } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { Promise } from 'rsvp';
 import type Transition from '@ember/routing/transition';
@@ -64,17 +64,17 @@ export default class RenderTreeRoute extends TabRoute {
     this.port.send('render:releaseProfiles');
   }
 
-  profilesUpdated(message: RenderTreeModel) {
+  profilesUpdated = (message: RenderTreeModel) => {
     set(this.controller.model, 'profiles', message.profiles);
-  }
+  };
 
-  profilesAdded(message: RenderTreeModel) {
-    const currentProfiles = get(this.controller.model, 'profiles');
+  profilesAdded = (message: RenderTreeModel) => {
+    const currentProfiles = this.controller.model.profiles;
     const profiles = message.profiles;
     if (
       message.isHighlightSupported !== undefined &&
       message.isHighlightSupported !==
-        get(this.controller.model, 'isHighlightSupported')
+        this.controller.model.isHighlightSupported
     ) {
       set(
         this.controller.model,
@@ -88,5 +88,5 @@ export default class RenderTreeRoute extends TabRoute {
     if (currentProfiles.length > 100) {
       set(this.controller.model, 'profiles', currentProfiles.slice(0, 100));
     }
-  }
+  };
 }

@@ -45,7 +45,6 @@ export default class DeprecationsRoute extends TabRoute {
       if (record) {
         setProperties(record, item);
       } else {
-        // eslint-disable-next-line ember/no-controller-access-in-routes
         this.controller.deprecations.push(item);
       }
     });

@@ -34,7 +34,7 @@ export default class RecordsController extends Controller {
    */
   @computed('modelType.columns')
   get columns() {
-    return this.get('modelType.columns').map(({ desc, name }) => ({
+    return this.modelType.columns.map(({ desc, name }) => ({
       valuePath: `columnValues.${name}`,
       name: desc,
     }));

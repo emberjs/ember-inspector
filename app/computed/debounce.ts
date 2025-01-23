@@ -1,6 +1,6 @@
 import { debounce } from '@ember/runloop';
 import { computed } from '@ember/object';
-import type { AnyFn } from 'ember/-private/type-utils';
+import type { AnyFn } from '@ember/-internals/utility-types';
 
 // Use this if you want a property to debounce
 // another property with a certain delay.
@@ -9,7 +9,7 @@ import type { AnyFn } from 'ember/-private/type-utils';
 export default function (prop: string, delay: number, callback?: AnyFn) {
   let value: unknown;
 
-  let updateVal = function (this: any) {
+  const updateVal = function (this: any) {
     this.set(prop, value);
     if (callback) {
       callback.call(this);
@@ -21,6 +21,7 @@ export default function (prop: string, delay: number, callback?: AnyFn) {
     get() {},
     set(key, val) {
       value = val;
+      // eslint-disable-next-line ember/no-runloop
       debounce(this, updateVal, delay);
       return val;
     },

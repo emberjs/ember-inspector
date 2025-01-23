@@ -38,7 +38,7 @@ export default class Bookmarklet extends BasicAdapter {
 
   _connect() {
     window.addEventListener('message', (e) => {
-      let message = e.data as Message;
+      const message = e.data as Message;
       if (e.origin !== this.inspectedWindowURL) {
         return;
       }

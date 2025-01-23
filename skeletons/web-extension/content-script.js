@@ -9,8 +9,8 @@
  * Content scripts are loaded into every page, and have access to the DOM.  This uses that
  * to inject the in-page-script to determine the ClientApp version onLoad.
  */
-(function() {
-  "use strict";
+(function () {
+  'use strict';
 
   /**
    * Add an event listener for window.messages.
@@ -23,7 +23,7 @@
    * See:
    *     https://developer.mozilla.org/en-US/docs/Web/API/Channel_Messaging_API
    */
-  window.addEventListener('message', function(event) {
+  window.addEventListener('message', function (event) {
     // received initial message from EmberDebug
     if (event.data === 'debugger-client') {
       var emberDebugPort = event.ports[0];
@@ -39,12 +39,12 @@
    */
   function listenToEmberDebugPort(emberDebugPort) {
     // listen for messages from EmberDebug, and pass them on to the background script
-    emberDebugPort.addEventListener('message', function(event) {
+    emberDebugPort.addEventListener('message', function (event) {
       chrome.runtime.sendMessage(event.data);
     });
 
     // listen for messages from the EmberInspector, and pass them on to EmberDebug
-    chrome.runtime.onMessage.addListener(function(message) {
+    chrome.runtime.onMessage.addListener(function (message) {
       if (message.from === 'devtools') {
         // forward message to EmberDebug
         emberDebugPort.postMessage(message);
@@ -74,11 +74,11 @@
    * the libraries running in the ClientApp
    */
   var script = document.createElement('script');
-  script.type = "text/javascript";
-  script.src = chrome.runtime.getURL("scripts/in-page-script.js");
-  if (document.head && document.contentType !== "application/pdf") {
+  script.type = 'text/javascript';
+  script.src = chrome.runtime.getURL('scripts/in-page-script.js');
+  if (document.head && document.contentType !== 'application/pdf') {
     document.head.appendChild(script);
-    script.onload = function() {
+    script.onload = function () {
       document.head.removeChild(script);
     };
   }
@@ -89,9 +89,9 @@
     if (message?.type === 'inject-ember-debug') {
       if (!injected) {
         // cannot use eval here, as the context is limited to the content script-
-        const elem = document.createElement('script') ;
+        const elem = document.createElement('script');
         elem.src = message.value;
-        document.head.appendChild(elem) ;
+        document.head.appendChild(elem);
         injected = true;
       }
     }

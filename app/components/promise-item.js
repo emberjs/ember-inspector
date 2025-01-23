@@ -1,4 +1,7 @@
+/* eslint-disable ember/no-get */
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { computed, get } from '@ember/object';
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { equal, gt, notEmpty } from '@ember/object/computed';
 import Component from '@glimmer/component';
 import { htmlSafe } from '@ember/template';
@@ -139,8 +142,7 @@ export default class PromiseItem extends Component {
     let startedAt =
       get(this, 'args.model.parent.settledAt') ||
       get(this, 'args.model.createdAt');
-    let remaining =
-      get(this, 'args.model.settledAt').getTime() - startedAt.getTime();
+    let remaining = this.args.model.settledAt.getTime() - startedAt.getTime();
     return remaining;
   }
 }
