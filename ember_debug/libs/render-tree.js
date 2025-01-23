@@ -13,7 +13,7 @@ class InElementSupportProvider {
     this.reference = this.require('@glimmer/reference');
     try {
       this.Wormhole = requireModule('ember-wormhole/components/ember-wormhole');
-    } catch (e) {
+    } catch {
       // nope
     }
 
@@ -22,7 +22,7 @@ class InElementSupportProvider {
         '@glimmer/manager',
       ).CustomModifierManager.prototype.getDebugInstance = (args) =>
         args.modifier || args.delegate;
-    } catch (e) {
+    } catch {
       // nope
     }
 
@@ -151,7 +151,7 @@ class InElementSupportProvider {
             if (!name) {
               try {
                 name = modifier.manager?.getDebugName?.();
-              } catch (e) {
+              } catch {
                 // failed
               }
               name = name || 'unknown-modifier';
@@ -175,12 +175,12 @@ class InElementSupportProvider {
             if (!self.reference.createUnboundRef) {
               try {
                 named = modifierState?.args?.named?.constructor;
-              } catch (e) {
+              } catch {
                 //
               }
               try {
                 named = named || modifierState?.args?.named?.map;
-              } catch (e) {
+              } catch {
                 //
               }
             }

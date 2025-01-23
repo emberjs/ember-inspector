@@ -71,19 +71,19 @@ export default class WebExtension extends BasicAdapter {
   }
 
   _handleReload() {
-    const self = this;
-    chrome.devtools.network.onNavigated.addListener(function () {
-      self._injectDebugger();
+    chrome.devtools.network.onNavigated.addListener(() => {
+      this._injectDebugger();
       location.reload();
     });
   }
 
   _injectDebugger() {
-    loadEmberDebug().then((emberDebug) => {
+    void loadEmberDebug().then((emberDebug) => {
       chrome.devtools.inspectedWindow.eval(
         emberDebug as string,
         (success, error) => {
           if (success === undefined && error) {
+            // eslint-disable-next-line @typescript-eslint/only-throw-error
             throw error;
           }
         },
@@ -131,7 +131,7 @@ export default class WebExtension extends BasicAdapter {
     scripts as soon as possible into the new page.
   */
   reloadTab() {
-    loadEmberDebug().then((emberDebug) => {
+    void loadEmberDebug().then((emberDebug) => {
       chrome.devtools.inspectedWindow.reload({
         injectedScript: emberDebug as string,
       });

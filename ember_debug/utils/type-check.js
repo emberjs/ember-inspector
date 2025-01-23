@@ -91,7 +91,7 @@ export function inspect(value) {
     ) {
       try {
         return `<Object:${value.toString()}>`;
-      } catch (e) {
+      } catch {
         //
       }
     }

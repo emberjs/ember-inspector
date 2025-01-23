@@ -1,10 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import Component from '@glimmer/component';
 import { isEmpty } from '@ember/utils';
 import { htmlSafe } from '@ember/template';
 import escapeRegExp from 'ember-inspector/utils/escape-reg-exp';
 
 interface RenderItemArgs {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   list: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   model: any;
   search: string;
   target: { level: number };
@@ -34,7 +37,7 @@ export default class RenderItem extends Component<RenderItemArgs> {
   }
 
   get readableTime() {
-    const d = new Date(this.args.model?.timestamp);
+    const d = new Date(this.args.model?.timestamp as string);
     const ms = d.getMilliseconds();
     const seconds = d.getSeconds();
     const minutes =
@@ -52,7 +55,7 @@ export default class RenderItem extends Component<RenderItemArgs> {
     if (isEmpty(search)) {
       return true;
     }
-    const name = this.args.model?.name;
+    const name = this.args.model?.name as string;
     const regExp = new RegExp(escapeRegExp(search.toLowerCase()) as string);
     return !!name.toLowerCase().match(regExp);
   }

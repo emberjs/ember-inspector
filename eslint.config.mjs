@@ -77,6 +77,7 @@ export default ts.config(
       reportUnusedDisableDirectives: 'error',
     },
   },
+  { rules: { 'no-prototype-builtins': 'off' } },
   {
     files: ['**/*.js'],
     languageOptions: {

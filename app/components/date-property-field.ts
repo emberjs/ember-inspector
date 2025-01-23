@@ -7,10 +7,11 @@ export default class DatePropertyFieldComponent extends DatePicker {
   onInsert(element: HTMLInputElement) {
     super.onInsert(element);
 
+    // eslint-disable-next-line ember/no-runloop
     scheduleOnce('afterRender', this, this._openFlatpickr);
   }
 
-  _openFlatpickr() {
+  _openFlatpickr = () => {
     this.flatpickrRef?.open();
-  }
+  };
 }

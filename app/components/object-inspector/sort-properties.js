@@ -1,5 +1,7 @@
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { map, sort } from '@ember/object/computed';
 import Component from '@glimmer/component';
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { set, computed } from '@ember/object';
 import { A } from '@ember/array';
 
