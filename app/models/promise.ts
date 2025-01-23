@@ -39,7 +39,7 @@ export default class PromiseModel extends EmberObject {
 
   @tracked branchLabel = '';
   @tracked isExpanded = false;
-  @tracked isManuallyExpanded = undefined;
+  @tracked isManuallyExpanded?: boolean = undefined;
   @tracked parent: PromiseModel | null = null;
 
   get level(): number {

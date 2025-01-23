@@ -55,7 +55,7 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
     let promise = event.promise;
     assert.strictEqual(event.promise, assembler.find(promise['guid']));
 
-    assert.strictEqual(assembler.find().get('length'), 1);
+    assert.strictEqual(assembler.find().length, 1);
 
     assert.strictEqual(promise['guid'], 1);
     assert.strictEqual(promise['label'], 'label');
@@ -88,7 +88,7 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
     assert.strictEqual(assembler.find(parent['guid']), parent);
     assert.strictEqual(assembler.find(child['guid']), child);
 
-    assert.strictEqual(assembler.find().get('length'), 2);
+    assert.strictEqual(assembler.find().length, 2);
 
     assert.strictEqual(parent['guid'], 1);
     assert.strictEqual(parent['label'], 'label');
@@ -147,7 +147,7 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
     assert.strictEqual(assembler.find(parent['guid']), parent);
     assert.strictEqual(assembler.find(child['guid']), child);
 
-    assert.strictEqual(assembler.find().get('length'), 2);
+    assert.strictEqual(assembler.find().length, 2);
 
     assert.strictEqual(parent['guid'], 1);
     assert.strictEqual(parent['label'], 'label');
@@ -230,7 +230,7 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
     assert.strictEqual(promise['state'], 'rejected');
     assert.strictEqual(promise['reason'], 'reason');
     assert.strictEqual(promise['settledAt'], date);
-    assert.strictEqual(assembler.find().get('length'), 1);
+    assert.strictEqual(assembler.find().length, 1);
   });
 
   test('#stop', function (assert) {
@@ -239,15 +239,15 @@ module('Ember Debug - PromiseAssembler', function (hooks) {
     fakeRSVP.trigger('created', {
       guid: 1,
     });
-    assert.strictEqual(assembler.find().get('length'), 1);
+    assert.strictEqual(assembler.find().length, 1);
 
     run(assembler, 'stop');
 
-    assert.strictEqual(assembler.find().get('length'), 0);
+    assert.strictEqual(assembler.find().length, 0);
     assembler.on('created', function () {
       assert.ok(false);
     });
     fakeRSVP.trigger('created', { guid: 1 });
-    assert.strictEqual(assembler.find().get('length'), 0);
+    assert.strictEqual(assembler.find().length, 0);
   });
 });

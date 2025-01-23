@@ -187,7 +187,7 @@ export default class ApplicationController extends Controller {
         }
       });
     }
-    if (this.mixinStack.get('length') > 0) {
+    if (this.mixinStack.length > 0) {
       this.set('mixinDetails', this.mixinStack.at(-1));
     } else {
       this.set('mixinDetails', null);

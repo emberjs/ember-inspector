@@ -648,7 +648,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
       });
     });
 
-    assert.strictEqual(inspected.get('name'), 'Alex');
+    assert.strictEqual(inspected.name, 'Alex');
 
     assert.strictEqual(message.property, 'name');
     assert.strictEqual(message.value.inspect, inspect('Alex'));
@@ -674,9 +674,9 @@ module('Ember Debug - Object Inspector', function (hooks) {
       });
     });
 
-    assert.strictEqual(inspected.get('date').getFullYear(), 2015);
-    assert.strictEqual(inspected.get('date').getMonth(), 0);
-    assert.strictEqual(inspected.get('date').getDate(), 1);
+    assert.strictEqual(inspected.date.getFullYear(), 2015);
+    assert.strictEqual(inspected.date.getMonth(), 0);
+    assert.strictEqual(inspected.date.getDate(), 1);
 
     assert.strictEqual(message.property, 'date');
     assert.strictEqual(message.value.inspect, inspect(newDate));
