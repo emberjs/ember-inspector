@@ -1,11 +1,12 @@
+import type Controller from '@ember/controller';
 import { set } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { Promise } from 'rsvp';
-// @ts-expect-error TODO: not yet typed
-import TabRoute from 'ember-inspector/routes/tab';
+import type Transition from '@ember/routing/transition';
 
 import PromiseAssembler from '../libs/promise-assembler';
 import type PortService from '../services/port';
+import TabRoute from '../routes/tab';
 
 export default class PromiseTreeRoute extends TabRoute {
   @service declare port: PortService;
@@ -31,8 +32,12 @@ export default class PromiseTreeRoute extends TabRoute {
     });
   }
 
-  setupController() {
-    super.setupController(...arguments);
+  setupController(
+    controller: Controller,
+    model: unknown,
+    transition: Transition,
+  ) {
+    super.setupController(controller, model, transition);
 
     this.port.on(
       'promise:instrumentWithStack',

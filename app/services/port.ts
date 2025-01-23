@@ -14,6 +14,7 @@ export interface Message {
   frameId?: any;
   from: string;
   name?: string;
+  shouldHighlightRender?: boolean;
   tabId?: number;
   type: string;
   unloading?: boolean;
