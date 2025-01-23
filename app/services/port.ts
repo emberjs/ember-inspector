@@ -13,7 +13,9 @@ export interface Message {
   applicationName: string;
   frameId?: any;
   from: string;
+  instrumentWithStack?: boolean;
   name?: string;
+  promiseId?: string;
   shouldHighlightRender?: boolean;
   tabId?: number;
   type: string;
