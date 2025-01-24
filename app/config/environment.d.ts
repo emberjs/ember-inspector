@@ -11,6 +11,7 @@ declare const config: {
   previousEmberVersionsSupported: Array<string>;
   rootURL: string;
   APP: Record<string, unknown>;
+  VERSION: string;
 };
 
 export default config;
