@@ -1,8 +1,11 @@
 import { isEmpty } from '@ember/utils';
-import { action, computed, get } from '@ember/object';
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
+import { action, computed, get, set } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import { inject as service } from '@ember/service';
-import escapeRegExp from 'ember-inspector/utils/escape-reg-exp';
+import { tracked } from '@glimmer/tracking';
+
+import escapeRegExp from '../utils/escape-reg-exp';
 
 export default class RecordsController extends Controller {
   @controller application;
@@ -11,7 +14,7 @@ export default class RecordsController extends Controller {
   queryParams = ['filterValue', 'searchValue'];
 
   searchValue = '';
-  filterValue = null;
+  @tracked filterValue = null;
 
   recordToString(record) {
     return (record.searchKeywords || []).join(' ').toLowerCase();
@@ -76,17 +79,17 @@ export default class RecordsController extends Controller {
   @action
   setFilter(val) {
     val = val || null;
-    this.set('filterValue', val);
+    this.filterValue = val;
   }
 
   @action
   inspectModel([record]) {
-    this.set('selection', record);
+    set(this, 'selection', record);
     this.port.send('data:inspectModel', { objectId: record.objectId });
   }
 
   @action
   updateSorts(newSorts) {
-    this.set('sorts', newSorts);
+    set(this, 'sorts', newSorts);
   }
 }

@@ -52,8 +52,8 @@ export default class extends DebugPort {
     };
   }
 
-  init() {
-    super.init();
+  constructor() {
+    super(...arguments);
 
     let renderTree = (this.renderTree = new RenderTree({
       owner: this.getOwner(),

@@ -1,5 +1,5 @@
 import { debounce } from '@ember/runloop';
-import { computed } from '@ember/object';
+import { computed, set } from '@ember/object';
 import type { AnyFn } from '@ember/-internals/utility-types';
 
 // Use this if you want a property to debounce
@@ -9,8 +9,8 @@ import type { AnyFn } from '@ember/-internals/utility-types';
 export default function (prop: string, delay: number, callback?: AnyFn) {
   let value: unknown;
 
-  const updateVal = function (this: any) {
-    this.set(prop, value);
+  const updateVal = function (this: object) {
+    set(this, prop, value);
     if (callback) {
       callback.call(this);
     }

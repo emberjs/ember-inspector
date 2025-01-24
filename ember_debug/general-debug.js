@@ -22,7 +22,7 @@ export default class extends DebugPort {
     if (found) {
       try {
         return JSON.parse(unescape(found.getAttribute('content')));
-      } catch (e) {}
+      } catch {}
     }
   }
 

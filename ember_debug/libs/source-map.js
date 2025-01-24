@@ -3,8 +3,9 @@ import * as SourceMap from 'ember-debug/deps/source-map';
 const notFoundError = new Error('Source map url not found');
 
 export default class extends BaseObject {
-  init() {
-    super.init();
+  constructor() {
+    super(...arguments);
+
     this._lastPromise = Promise.resolve(undefined);
   }
 

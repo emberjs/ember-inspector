@@ -13,8 +13,8 @@ export default class WebExtension extends BasicAdapter {
   /**
    * Called when the adapter is created.
    */
-  constructor(properties?: object) {
-    super(properties);
+  constructor() {
+    super();
 
     this._connect();
     this._handleReload();

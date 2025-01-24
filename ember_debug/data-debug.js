@@ -2,8 +2,9 @@ import DebugPort from './debug-port';
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
 
 export default class extends DebugPort {
-  init() {
-    super.init();
+  constructor() {
+    super(...arguments);
+
     this.sentTypes = {};
     this.sentRecords = {};
   }

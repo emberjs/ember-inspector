@@ -30,7 +30,7 @@ export default function getObjectName(object) {
     ) {
       try {
         name = constructor.toString();
-      } catch (e) {
+      } catch {
         name = constructor.name;
       }
     } else {
@@ -43,7 +43,7 @@ export default function getObjectName(object) {
   ) {
     try {
       name = object.toString();
-    } catch (e) {
+    } catch {
       //
     }
   }

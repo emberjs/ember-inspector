@@ -1,3 +1,4 @@
+/* eslint-disable ember/no-computed-properties-in-native-classes */
 import Controller from '@ember/controller';
 import { action, computed } from '@ember/object';
 import { sort } from '@ember/object/computed';

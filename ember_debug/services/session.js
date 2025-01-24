@@ -12,7 +12,7 @@ try {
   if (typeof sessionStorage !== 'undefined') {
     SESSION_STORAGE_SUPPORTED = true;
   }
-} catch (e) {
+} catch {
   // This can be reached with the following succession of events:
   //
   //   1. On Google Chrome

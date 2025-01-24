@@ -1,3 +1,4 @@
+/* eslint-disable no-this-before-super */
 import BasicAdapter from './basic';
 import { typeOf } from 'ember-debug/utils/type-check';
 
@@ -8,10 +9,10 @@ const { isArray } = Array;
 const { keys } = Object;
 
 export default class extends BasicAdapter {
-  init() {
+  constructor() {
     this._channel = new MessageChannel();
     this._chromePort = this._channel?.port1;
-    super.init();
+    super(...arguments);
   }
 
   connect() {
@@ -106,7 +107,7 @@ export default class extends BasicAdapter {
 const HAS_ARRAY_PROTOTYPE_EXTENSIONS = (() => {
   try {
     return Ember.ENV.EXTEND_PROTOTYPES.Array === true;
-  } catch (e) {
+  } catch {
     return false;
   }
 })();

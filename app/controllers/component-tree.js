@@ -182,6 +182,7 @@ export default class ComponentTreeController extends Controller {
   }
 
   syncInspection() {
+    // eslint-disable-next-line ember/no-runloop
     debounce(this, this._syncInspection, 50);
   }
 

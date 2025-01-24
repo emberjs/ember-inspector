@@ -11,8 +11,10 @@ const { hasOwnProperty } = Object.prototype;
 
 export default class RouteDebug extends DebugPort {
   _cachedRouteTree = null;
-  init() {
-    super.init();
+
+  constructor() {
+    super(...arguments);
+
     this.__currentURL = this.currentURL;
     this.__currentRouter = this.router;
     _backburner.on('end', bound(this, this.checkForUpdate));

@@ -1,8 +1,9 @@
 import BasicAdapter from './basic';
 
 export default class extends BasicAdapter {
-  init() {
-    super.init();
+  constructor() {
+    super(...arguments);
+
     this._listen();
   }
 

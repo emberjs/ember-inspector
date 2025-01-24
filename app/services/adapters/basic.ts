@@ -31,8 +31,10 @@ export default class Basic extends Service {
    * Called when the adapter is created (when
    * the inspector app boots).
    */
-  constructor(properties?: object) {
-    super(properties);
+  constructor() {
+    // eslint-disable-next-line prefer-rest-params
+    super(...arguments);
+
     this._messageCallbacks = [];
     this._checkVersion();
   }
@@ -47,16 +49,19 @@ export default class Basic extends Service {
    * @private
    */
   _checkVersion() {
-    this.onMessageReceived((message) => {
+    this.onMessageReceived((message: Message) => {
       const { name, version } = message;
       if (name === 'version-mismatch') {
         const previousVersions = config.previousEmberVersionsSupported;
         const [fromVersion, tillVersion] = config.emberVersionsSupported;
         let neededVersion;
 
-        if (compareVersion(version, fromVersion) === -1) {
+        if (compareVersion(version as string, fromVersion) === -1) {
           neededVersion = previousVersions[previousVersions.length - 1];
-        } else if (tillVersion && compareVersion(version, tillVersion) !== -1) {
+        } else if (
+          tillVersion &&
+          compareVersion(version as string, tillVersion) !== -1
+        ) {
           neededVersion = tillVersion;
         } else {
           return;
@@ -94,7 +99,7 @@ export default class Basic extends Service {
     this._messageCallbacks.push(callback);
   }
 
-  _messageReceived(...args: Array<any>) {
+  _messageReceived(...args: Array<unknown>) {
     this._messageCallbacks.forEach((callback) => {
       callback(...args);
     });

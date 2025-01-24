@@ -28,9 +28,10 @@ export default class RenderTreeRoute extends TabRoute {
     return new Promise((resolve) => {
       this.port.one(
         'render:profilesAdded',
-        function ({ profiles, isHighlightSupported }) {
+        function ({ profiles, isHighlightSupported }: RenderTreeModel) {
           resolve(
             EmberObject.create({
+              // @ts-expect-error TODO: fix this
               profiles: new TrackedArray(profiles),
               isHighlightSupported,
             }),

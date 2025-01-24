@@ -48,12 +48,12 @@ export default class LocalStorageService extends Service {
 try {
   localStorage.setItem('test', 'testing');
   LOCAL_STORAGE_SUPPORTED = localStorage.getItem('test') === 'testing';
-} catch (e) {
+} catch {
   // ignore
 } finally {
   try {
     localStorage.removeItem('test');
-  } catch (e) {
+  } catch {
     // ignore
   }
 }

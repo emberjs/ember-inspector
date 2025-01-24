@@ -30,6 +30,7 @@ try {
   // eslint-disable-next-line no-empty
 } catch {}
 try {
+  // eslint-disable-next-line no-undef
   templateOnlyComponent = require('ember').default._templateOnlyComponent;
   // eslint-disable-next-line no-empty
 } catch {}

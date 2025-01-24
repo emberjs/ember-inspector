@@ -18,15 +18,11 @@ class PromiseAssembler extends BaseObject {
     this.prototype.RSVP = RSVP;
   }
 
-  constructor(data) {
-    super(data);
-    Evented.applyTo(this);
-  }
-
-  init() {
-    super.init();
+  constructor() {
+    super(...arguments);
     this.all = [];
     this.promiseIndex = {};
+    Evented.applyTo(this);
   }
 
   start() {

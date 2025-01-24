@@ -12,7 +12,9 @@ try {
   // then we need to use our own
   _backburner = module._backburner;
 } catch {
+  // eslint-disable-next-line ember/new-module-imports
   _backburner = Ember?.run?.backburner || module._backburner;
+  // eslint-disable-next-line ember/new-module-imports
   module = Ember?.run || module;
 }
 

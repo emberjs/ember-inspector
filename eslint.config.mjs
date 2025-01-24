@@ -102,6 +102,14 @@ export default ts.config(
       parserOptions: parserOptions.esm.ts,
     },
     extends: [...ts.configs.recommendedTypeChecked, ember.configs.gts],
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+        },
+      ],
+    },
   },
   {
     files: ['tests/**/*-test.{js,gjs,ts,gts}'],
@@ -123,6 +131,7 @@ export default ts.config(
       '.prettierrc.js',
       '.stylelintrc.js',
       '.template-lintrc.js',
+      'babel.config.js',
       'ember-cli-build.js',
       'gulpfile.js',
     ],

@@ -3,7 +3,9 @@ import { onReady } from 'ember-debug/utils/on-ready';
 import BaseObject from '../utils/base-object';
 
 export default class BasicAdapter extends BaseObject {
-  init() {
+  constructor() {
+    super(...arguments);
+
     Promise.resolve(this.connect()).then(() => {
       this.onConnectionReady();
     }, null);

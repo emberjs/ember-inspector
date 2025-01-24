@@ -1,4 +1,5 @@
 import { inject as service } from '@ember/service';
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { readOnly } from '@ember/object/computed';
 import { Promise } from 'rsvp';
 import TabRoute from 'ember-inspector/routes/tab';
