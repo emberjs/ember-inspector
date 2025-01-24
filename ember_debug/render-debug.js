@@ -10,8 +10,9 @@ let profileManager = new ProfileManager();
 _subscribeToRenderEvents();
 
 export default class extends DebugPort {
-  constructor(data) {
-    super(data);
+  constructor() {
+    super(...arguments);
+
     this.profileManager = profileManager;
     this.profileManager.wrapForErrors = (context, callback) =>
       this.port.wrap(() => callback.call(context));
