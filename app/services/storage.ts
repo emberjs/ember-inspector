@@ -25,7 +25,7 @@ export default class StorageService extends Service {
       // Actual `null` values would have been serialized as `"null"`
       return undefined;
     } else {
-      return JSON.parse(serialized) as string;
+      return JSON.parse(serialized as string) as string;
     }
   }
 

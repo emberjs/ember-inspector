@@ -7,8 +7,10 @@ export default class Websocket extends BasicAdapter {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   socket: any;
 
-  constructor(properties?: object) {
-    super(properties);
+  constructor() {
+    // @ts-expect-error Using ...arguments is fine.
+    // eslint-disable-next-line prefer-rest-params
+    super(...arguments);
     // @ts-expect-error TODO: figure out how to type this stuff
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.socket = window.EMBER_INSPECTOR_CONFIG.remoteDebugSocket;

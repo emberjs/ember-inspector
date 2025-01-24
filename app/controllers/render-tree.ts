@@ -44,7 +44,9 @@ export default class RenderTreeController extends Controller {
    * Checks if the user previously closed the warning by referencing localStorage
    */
   get isWarningClosed() {
-    return !!this.storage.getItem('is-render-tree-warning-closed');
+    return !!this.storage.getItem(
+      'is-render-tree-warning-closed' as keyof object,
+    );
   }
 
   set isWarningClosed(value) {

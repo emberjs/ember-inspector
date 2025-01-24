@@ -125,7 +125,7 @@ export default class PortService extends Service {
       // If we did not pass a target, default to `this`
       addListener(this, eventName, this, targetOrMethod as AnyFn);
     } else {
-      addListener(this, eventName, targetOrMethod, method);
+      addListener(this, eventName, targetOrMethod as object, method);
     }
   }
 
@@ -139,7 +139,7 @@ export default class PortService extends Service {
       // If we did not pass a target, default to `this`
       addListener(this, eventName, this, targetOrMethod as AnyFn, true);
     } else {
-      addListener(this, eventName, targetOrMethod, method, true);
+      addListener(this, eventName, targetOrMethod as object, method, true);
     }
   }
 
@@ -154,7 +154,7 @@ export default class PortService extends Service {
         // If we did not pass a target, default to `this`
         removeListener(this, eventName, this, targetOrMethod as AnyFn);
       } else {
-        removeListener(this, eventName, targetOrMethod, method);
+        removeListener(this, eventName, targetOrMethod as object, method);
       }
     } catch (e) {
       console.error(e);
