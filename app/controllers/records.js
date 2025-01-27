@@ -14,6 +14,7 @@ export default class RecordsController extends Controller {
 
   @tracked filterValue = null;
   @tracked filters = [];
+  @tracked modelType;
   @tracked searchValue = '';
   @tracked sorts = undefined;
 

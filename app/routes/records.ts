@@ -29,7 +29,8 @@ export default class RecordsRoute extends TabRoute {
 
     const type = this.modelFor('model_type') as ModelType;
 
-    controller.set('modelType', type);
+    // @ts-expect-error TODO this should be resolved when we type the controller
+    controller.modelType = type;
 
     this.port.on('data:recordsAdded', this, this.addRecords);
     this.port.on('data:recordsUpdated', this, this.updateRecords);

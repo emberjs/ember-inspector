@@ -8,6 +8,7 @@ import type WebExtension from './adapters/web-extension';
 import type { AnyFn } from '@ember/-internals/utility-types';
 
 export interface ModelType {
+  columns: Array<{ name: string; desc: string }>;
   count: number;
   name: string;
   objectId: string;

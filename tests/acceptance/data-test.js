@@ -515,7 +515,7 @@ module('Data Tab', function (outer) {
     test('Columns successfully updated when switching model types', async function (assert) {
       await visit('/data/model-types/App.Post/records');
       let columns = findAll('[data-test-table-header-column]');
-      assert.dom(columns[columns.length - 1]).includesText('Body');
+      assert.dom(columns.at(-1)).includesText('Body');
 
       respondWith('data:getFilters', {
         type: 'data:filters',
@@ -529,7 +529,7 @@ module('Data Tab', function (outer) {
 
       await visit('/data/model-types/App.Comment/records');
       columns = findAll('[data-test-table-header-column]');
-      assert.dom(columns[columns.length - 1]).includesText('Content');
+      assert.dom(columns.at(-1)).includesText('Content');
     });
   });
 });
