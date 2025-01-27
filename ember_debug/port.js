@@ -4,22 +4,8 @@ import BaseObject from 'ember-debug/utils/base-object';
 import Evented from 'ember-debug/utils/evented';
 
 export default class extends BaseObject {
-  constructor() {
-    super(...arguments);
-
-    /**
-     * Stores the timestamp when it was first accessed.
-     *
-     * @property now
-     * @type {Number}
-     */
-    this.now = Date.now();
-
-    this.adapter.onMessageReceived((message) => {
-      if (this.uniqueId === message.applicationId || !message.applicationId) {
-        this.messageReceived(message.type, message);
-      }
-    });
+  constructor(data) {
+    super(data);
     Evented.applyTo(this);
   }
 
@@ -47,6 +33,23 @@ export default class extends BaseObject {
    */
   get uniqueId() {
     return guidFor(this.namespace?._application, 'ember');
+  }
+
+  // eslint-disable-next-line ember/classic-decorator-hooks
+  init() {
+    /**
+     * Stores the timestamp when it was first accessed.
+     *
+     * @property now
+     * @type {Number}
+     */
+    this.now = Date.now();
+
+    this.adapter.onMessageReceived((message) => {
+      if (this.uniqueId === message.applicationId || !message.applicationId) {
+        this.messageReceived(message.type, message);
+      }
+    });
   }
 
   messageReceived(name, message) {

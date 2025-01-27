@@ -2,9 +2,9 @@ import DebugPort from './debug-port';
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
 
 export default class extends DebugPort {
-  constructor() {
-    super(...arguments);
-
+  // eslint-disable-next-line ember/classic-decorator-hooks
+  init() {
+    super.init();
     this.sentTypes = {};
     this.sentRecords = {};
   }

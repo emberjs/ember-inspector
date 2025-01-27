@@ -52,8 +52,9 @@ export default class extends DebugPort {
     };
   }
 
-  constructor() {
-    super(...arguments);
+  // eslint-disable-next-line ember/classic-decorator-hooks
+  init() {
+    super.init();
 
     let renderTree = (this.renderTree = new RenderTree({
       owner: this.getOwner(),

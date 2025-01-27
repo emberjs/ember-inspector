@@ -2,8 +2,10 @@ export default class BaseObject {
   isDestroyed = false;
   constructor(data) {
     Object.assign(this, data || {});
+    this.init();
   }
 
+  init() {}
   willDestroy() {
     this.isDestroying = true;
   }

@@ -1,9 +1,9 @@
 import BasicAdapter from './basic';
 
 export default class extends BasicAdapter {
-  constructor() {
-    super(...arguments);
-
+  // eslint-disable-next-line ember/classic-decorator-hooks
+  init() {
+    super.init();
     this._listen();
   }
 

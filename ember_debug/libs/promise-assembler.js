@@ -18,11 +18,16 @@ class PromiseAssembler extends BaseObject {
     this.prototype.RSVP = RSVP;
   }
 
-  constructor() {
-    super(...arguments);
+  constructor(data) {
+    super(data);
+    Evented.applyTo(this);
+  }
+
+  // eslint-disable-next-line ember/classic-decorator-hooks
+  init() {
+    super.init();
     this.all = [];
     this.promiseIndex = {};
-    Evented.applyTo(this);
   }
 
   start() {

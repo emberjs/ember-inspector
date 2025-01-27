@@ -1,4 +1,3 @@
-/* eslint-disable no-this-before-super */
 import BasicAdapter from './basic';
 import { typeOf } from 'ember-debug/utils/type-check';
 
@@ -9,10 +8,11 @@ const { isArray } = Array;
 const { keys } = Object;
 
 export default class extends BasicAdapter {
-  constructor() {
+  // eslint-disable-next-line ember/classic-decorator-hooks
+  init() {
     this._channel = new MessageChannel();
     this._chromePort = this._channel?.port1;
-    super(...arguments);
+    super.init();
   }
 
   connect() {

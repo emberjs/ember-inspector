@@ -3,9 +3,8 @@ import { onReady } from 'ember-debug/utils/on-ready';
 import BaseObject from '../utils/base-object';
 
 export default class BasicAdapter extends BaseObject {
-  constructor() {
-    super(...arguments);
-
+  // eslint-disable-next-line ember/classic-decorator-hooks
+  init() {
     Promise.resolve(this.connect()).then(() => {
       this.onConnectionReady();
     }, null);

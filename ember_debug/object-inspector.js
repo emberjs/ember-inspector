@@ -332,20 +332,18 @@ export default class extends DebugPort {
     }
   }
 
-  constructor() {
-    super(...arguments);
-
+  // eslint-disable-next-line ember/classic-decorator-hooks
+  init() {
+    super.init();
     this.sentObjects = {};
     _backburner.on('end', bound(this, this.updateCurrentObject));
   }
 
   willDestroy() {
     super.willDestroy();
-
     for (let objectId in this.sentObjects) {
       this.releaseObject(objectId);
     }
-
     _backburner.off('end', bound(this, this.updateCurrentObject));
   }
 

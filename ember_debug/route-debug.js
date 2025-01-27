@@ -12,9 +12,9 @@ const { hasOwnProperty } = Object.prototype;
 export default class RouteDebug extends DebugPort {
   _cachedRouteTree = null;
 
-  constructor() {
-    super(...arguments);
-
+  // eslint-disable-next-line ember/classic-decorator-hooks
+  init() {
+    super.init();
     this.__currentURL = this.currentURL;
     this.__currentRouter = this.router;
     _backburner.on('end', bound(this, this.checkForUpdate));
