@@ -7,14 +7,40 @@ import type RouterService from '@ember/routing/router-service';
 import type WebExtension from './adapters/web-extension';
 import type { AnyFn } from '@ember/-internals/utility-types';
 
+export interface ModelType {
+  count: number;
+  objectId: string;
+}
+
+export interface RecordType {
+  color: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  columnValues: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  filterValues: any;
+  objectId: string;
+  searchIndex: number;
+}
+
+/**
+ * This interface is a catch-all of a bunch of things we
+ * pass around via messages.
+ */
 export interface Message {
   applicationId: string;
   applicationName: string;
+  count: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  filters: any;
   frameId?: string;
   from: string;
+  index: number;
   instrumentWithStack?: boolean;
+  modelTypes: Array<ModelType>;
   name?: string;
+  objectId?: string;
   promiseId?: string;
+  records: Array<RecordType>;
   shouldHighlightRender?: boolean;
   tabId?: number;
   type: string;

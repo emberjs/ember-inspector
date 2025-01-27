@@ -27,7 +27,10 @@ export default class SortProperties extends Component {
     let props = A(this.sorted);
     if (this.isArray) {
       const item = props.find((x) => x.name === 'length');
-      props.removeObject(item);
+      const index = props.indexOf(item);
+      if (index !== -1) {
+        props.splice(index, 1);
+      }
       props.splice(0, 0, item);
     }
     if (this.isArray && this.sorted.length > 100) {

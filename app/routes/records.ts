@@ -1,25 +1,36 @@
+import type Controller from '@ember/controller';
+import type Transition from '@ember/routing/transition';
 import { inject as service } from '@ember/service';
 import { set } from '@ember/object';
-import TabRoute from 'ember-inspector/routes/tab';
+
+import { TrackedArray } from 'tracked-built-ins';
+
+import type PortService from '../services/port';
+import type { Message, ModelType, RecordType } from '../services/port';
+import TabRoute from '../routes/tab';
 
 export default class RecordsRoute extends TabRoute {
-  @service port;
+  @service declare port: PortService;
 
   model() {
-    return [];
+    return new TrackedArray([]);
   }
 
-  setupController(controller, model) {
-    super.setupController(controller, model);
+  setupController(
+    controller: Controller,
+    model: unknown,
+    transition: Transition,
+  ) {
+    super.setupController(controller, model, transition);
 
-    const type = this.modelFor('model_type');
+    const type = this.modelFor('model_type') as ModelType;
 
     controller.set('modelType', type);
 
     this.port.on('data:recordsAdded', this, this.addRecords);
     this.port.on('data:recordsUpdated', this, this.updateRecords);
     this.port.on('data:recordsRemoved', this, this.removeRecords);
-    this.port.one('data:filters', this, function (message) {
+    this.port.one('data:filters', this, (message: Message) => {
       set(this, 'controller.filters', message.filters);
     });
     this.port.send('data:getFilters');
@@ -33,17 +44,21 @@ export default class RecordsRoute extends TabRoute {
     this.port.send('data:releaseRecords');
   }
 
-  addRecords(message) {
-    this.currentModel.pushObjects(message.records);
+  get _currentModel(): Array<RecordType> {
+    return this.modelFor(this.routeName) as Array<RecordType>;
   }
 
-  removeRecords(message) {
-    this.currentModel.removeAt(message.index, message.count);
-  }
+  addRecords = (message: Message) => {
+    this._currentModel.push(...message.records);
+  };
 
-  updateRecords(message) {
+  removeRecords = (message: Message) => {
+    this._currentModel.splice(message.index, message.count);
+  };
+
+  updateRecords = (message: Message) => {
     message.records.forEach((record) => {
-      let currentRecord = this.currentModel.find(
+      const currentRecord = this._currentModel.find(
         (x) => x.objectId === record.objectId,
       );
       if (currentRecord) {
@@ -53,5 +68,5 @@ export default class RecordsRoute extends TabRoute {
         set(currentRecord, 'color', record.color);
       }
     });
-  }
+  };
 }

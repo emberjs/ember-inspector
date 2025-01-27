@@ -15,7 +15,7 @@ export default class LibrariesRoute extends TabRoute {
     const port = this.port;
     return new Promise((resolve) => {
       port.one('general:libraries', (message) => {
-        message.libraries.insertAt(0, {
+        message.libraries.splice(0, 0, {
           name: 'Ember Inspector',
           version,
         });
