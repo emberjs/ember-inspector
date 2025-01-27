@@ -8,9 +8,13 @@ import { TrackedArray } from 'tracked-built-ins';
 import type PortService from '../services/port';
 import type { Message, ModelType, RecordType } from '../services/port';
 import TabRoute from '../routes/tab';
+// @ts-expect-error TODO: not yet typed
+import type RecordsController from '../controllers/records';
 
 export default class RecordsRoute extends TabRoute {
   @service declare port: PortService;
+
+  declare controller: RecordsController;
 
   model() {
     return new TrackedArray([]);
@@ -31,7 +35,8 @@ export default class RecordsRoute extends TabRoute {
     this.port.on('data:recordsUpdated', this, this.updateRecords);
     this.port.on('data:recordsRemoved', this, this.removeRecords);
     this.port.one('data:filters', this, (message: Message) => {
-      set(this, 'controller.filters', message.filters);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      this.controller.filters = new TrackedArray(message.filters);
     });
     this.port.send('data:getFilters');
     this.port.send('data:getRecords', { objectId: type.objectId });

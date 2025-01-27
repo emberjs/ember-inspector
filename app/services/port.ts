@@ -9,6 +9,7 @@ import type { AnyFn } from '@ember/-internals/utility-types';
 
 export interface ModelType {
   count: number;
+  name: string;
   objectId: string;
 }
 
@@ -30,8 +31,7 @@ export interface Message {
   applicationId: string;
   applicationName: string;
   count: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  filters: any;
+  filters: Array<unknown>;
   frameId?: string;
   from: string;
   index: number;

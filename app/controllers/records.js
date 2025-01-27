@@ -1,6 +1,5 @@
 import { isEmpty } from '@ember/utils';
-// eslint-disable-next-line ember/no-computed-properties-in-native-classes
-import { action, computed, get, set } from '@ember/object';
+import { action, get, set } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
@@ -8,13 +7,15 @@ import { tracked } from '@glimmer/tracking';
 import escapeRegExp from '../utils/escape-reg-exp';
 
 export default class RecordsController extends Controller {
+  queryParams = ['filterValue', 'searchValue'];
+
   @controller application;
   @service port;
 
-  queryParams = ['filterValue', 'searchValue'];
-
-  searchValue = '';
   @tracked filterValue = null;
+  @tracked filters = [];
+  @tracked searchValue = '';
+  @tracked sorts = undefined;
 
   recordToString(record) {
     return (record.searchKeywords || []).join(' ').toLowerCase();
@@ -35,7 +36,6 @@ export default class RecordsController extends Controller {
    * @property schema
    * @type {Object}
    */
-  @computed('modelType.columns')
   get columns() {
     return this.modelType.columns.map(({ desc, name }) => ({
       valuePath: `columnValues.${name}`,
@@ -43,14 +43,9 @@ export default class RecordsController extends Controller {
     }));
   }
 
-  @computed(
-    'searchValue',
-    'model.@each.{columnValues,filterValues}',
-    'filterValue',
-  )
   get filteredRecords() {
-    let search = this.searchValue;
-    let filter = this.filterValue;
+    const search = this.searchValue;
+    const filter = this.filterValue;
 
     return this.model.filter((item) => {
       // check filters
@@ -69,13 +64,6 @@ export default class RecordsController extends Controller {
     });
   }
 
-  constructor() {
-    super(...arguments);
-
-    this.filters = [];
-    this.sorts = undefined;
-  }
-
   @action
   setFilter(val) {
     val = val || null;
@@ -90,6 +78,6 @@ export default class RecordsController extends Controller {
 
   @action
   updateSorts(newSorts) {
-    set(this, 'sorts', newSorts);
+    this.sorts = newSorts;
   }
 }
