@@ -1,17 +1,22 @@
 import { isEmpty } from '@ember/utils';
-import { action, computed, get } from '@ember/object';
+import { action, get, set } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import { inject as service } from '@ember/service';
-import escapeRegExp from 'ember-inspector/utils/escape-reg-exp';
+import { tracked } from '@glimmer/tracking';
+
+import escapeRegExp from '../utils/escape-reg-exp';
 
 export default class RecordsController extends Controller {
+  queryParams = ['filterValue', 'searchValue'];
+
   @controller application;
   @service port;
 
-  queryParams = ['filterValue', 'searchValue'];
-
-  searchValue = '';
-  filterValue = null;
+  @tracked filterValue = null;
+  @tracked filters = [];
+  @tracked modelType;
+  @tracked searchValue = '';
+  @tracked sorts = undefined;
 
   recordToString(record) {
     return (record.searchKeywords || []).join(' ').toLowerCase();
@@ -32,22 +37,16 @@ export default class RecordsController extends Controller {
    * @property schema
    * @type {Object}
    */
-  @computed('modelType.columns')
   get columns() {
-    return this.get('modelType.columns').map(({ desc, name }) => ({
+    return this.modelType.columns.map(({ desc, name }) => ({
       valuePath: `columnValues.${name}`,
       name: desc,
     }));
   }
 
-  @computed(
-    'searchValue',
-    'model.@each.{columnValues,filterValues}',
-    'filterValue',
-  )
   get filteredRecords() {
-    let search = this.searchValue;
-    let filter = this.filterValue;
+    const search = this.searchValue;
+    const filter = this.filterValue;
 
     return this.model.filter((item) => {
       // check filters
@@ -66,27 +65,20 @@ export default class RecordsController extends Controller {
     });
   }
 
-  constructor() {
-    super(...arguments);
-
-    this.filters = [];
-    this.sorts = undefined;
-  }
-
   @action
   setFilter(val) {
     val = val || null;
-    this.set('filterValue', val);
+    this.filterValue = val;
   }
 
   @action
   inspectModel([record]) {
-    this.set('selection', record);
+    set(this, 'selection', record);
     this.port.send('data:inspectModel', { objectId: record.objectId });
   }
 
   @action
   updateSorts(newSorts) {
-    this.set('sorts', newSorts);
+    this.sorts = newSorts;
   }
 }

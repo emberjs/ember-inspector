@@ -13,14 +13,14 @@ export default class WebExtension extends BasicAdapter {
   /**
    * Called when the adapter is created.
    */
-  constructor(properties?: object) {
-    super(properties);
+  constructor() {
+    super();
 
     this._connect();
     this._handleReload();
     this._setThemeColors();
 
-    Promise.resolve().then(() => this._sendEmberDebug());
+    void Promise.resolve().then(() => this._sendEmberDebug());
   }
 
   sendMessage(message?: Partial<Message>) {
@@ -28,8 +28,10 @@ export default class WebExtension extends BasicAdapter {
   }
 
   _sendEmberDebug() {
-    let minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
-    let url = chrome.runtime.getURL(`/panes-${minimumVersion}/ember_debug.js`);
+    const minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
+    const url = chrome.runtime.getURL(
+      `/panes-${minimumVersion}/ember_debug.js`,
+    );
     // first send to all frames in current tab
     this.sendMessage({
       from: 'devtools',
@@ -40,6 +42,7 @@ export default class WebExtension extends BasicAdapter {
     this.onMessageReceived((message, sender) => {
       if (message === 'ember-content-script-ready') {
         this.sendMessage({
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
           frameId: sender.frameId,
           from: 'devtools',
           tabId: chrome.devtools.inspectedWindow.tabId,
@@ -55,7 +58,7 @@ export default class WebExtension extends BasicAdapter {
   }
 
   _connect() {
-    let chromePort = this._chromePort;
+    const chromePort = this._chromePort;
     chromePort.postMessage({ appId: chrome.devtools.inspectedWindow.tabId });
 
     chromePort.onMessage.addListener((...args) => {
@@ -63,25 +66,24 @@ export default class WebExtension extends BasicAdapter {
     });
 
     chromePort.onDisconnect.addListener(() => {
-      this.notifyPropertyChange('_chromePort');
       this._connect();
     });
   }
 
   _handleReload() {
-    let self = this;
-    chrome.devtools.network.onNavigated.addListener(function () {
-      self._injectDebugger();
+    chrome.devtools.network.onNavigated.addListener(() => {
+      this._injectDebugger();
       location.reload();
     });
   }
 
   _injectDebugger() {
-    loadEmberDebug().then((emberDebug) => {
+    void loadEmberDebug().then((emberDebug) => {
       chrome.devtools.inspectedWindow.eval(
         emberDebug as string,
         (success, error) => {
           if (success === undefined && error) {
+            // eslint-disable-next-line @typescript-eslint/only-throw-error
             throw error;
           }
         },
@@ -129,7 +131,7 @@ export default class WebExtension extends BasicAdapter {
     scripts as soon as possible into the new page.
   */
   reloadTab() {
-    loadEmberDebug().then((emberDebug) => {
+    void loadEmberDebug().then((emberDebug) => {
       chrome.devtools.inspectedWindow.reload({
         injectedScript: emberDebug as string,
       });
@@ -138,7 +140,7 @@ export default class WebExtension extends BasicAdapter {
 }
 
 function loadEmberDebug() {
-  let minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
+  const minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
   let xhr: XMLHttpRequest;
 
   return new Promise((resolve) => {

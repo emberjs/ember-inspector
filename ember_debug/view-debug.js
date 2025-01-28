@@ -52,6 +52,7 @@ export default class extends DebugPort {
     };
   }
 
+  // eslint-disable-next-line ember/classic-decorator-hooks
   init() {
     super.init();
 

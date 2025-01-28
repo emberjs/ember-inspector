@@ -1,4 +1,3 @@
-/* eslint-disable n/no-unpublished-require */
 'use strict';
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');

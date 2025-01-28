@@ -12,14 +12,14 @@ export default class MemoryStorageService extends Service {
    *
    * @private
    */
-  store = Object.create(null);
+  store = Object.create(null) as Record<string, unknown>;
 
   /**
    * Reads a stored string for a give key, if any.
    *
    * @return {Option<String>} The value, if found
    */
-  getItem(key: string) {
+  getItem(key: keyof object) {
     if (key in this.store) {
       return this.store[key];
     } else {
@@ -30,14 +30,14 @@ export default class MemoryStorageService extends Service {
   /**
    * Store a string for a given key.
    */
-  setItem(key: string, value: string) {
+  setItem(key: keyof object, value: unknown) {
     this.store[key] = value;
   }
 
   /**
    * Deletes the stored string for a given key.
    */
-  removeItem(key: string) {
+  removeItem(key: keyof object) {
     delete this.store[key];
   }
 

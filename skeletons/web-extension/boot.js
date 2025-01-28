@@ -9,7 +9,7 @@ if (document.contentType === 'text/html') {
   //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Sharing_objects_with_page_scripts
   if (window.wrappedJSObject) {
     const EmberENV = new window.Object();
-    EmberENV._DEBUG_RENDER_TREE = true
+    EmberENV._DEBUG_RENDER_TREE = true;
     window.wrappedJSObject.EmberENV = EmberENV;
   }
 }

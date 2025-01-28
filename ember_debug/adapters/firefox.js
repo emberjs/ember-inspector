@@ -1,4 +1,4 @@
-/* eslint no-empty:0 */
+/* eslint-disable no-empty */
 import WebExtension from './web-extension';
 
 export default class extends WebExtension {
@@ -9,7 +9,7 @@ export default class extends WebExtension {
     // - https://code.google.com/p/fbug/issues/detail?id=7045
     try {
       super.debug(...arguments);
-    } catch (e) {}
+    } catch {}
   }
 
   log() {
@@ -19,6 +19,6 @@ export default class extends WebExtension {
     // - https://code.google.com/p/fbug/issues/detail?id=7045
     try {
       super.log(...arguments);
-    } catch (e) {}
+    } catch {}
   }
 }

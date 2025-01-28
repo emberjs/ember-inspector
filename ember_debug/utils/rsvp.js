@@ -12,6 +12,7 @@ try {
     module = RSVP;
   }
 } catch {
+  // eslint-disable-next-line ember/new-module-imports
   module = RSVP = Ember.RSVP;
 }
 

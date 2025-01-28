@@ -1,3 +1,4 @@
+/* eslint-disable ember/no-computed-properties-in-native-classes */
 import { action, computed } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import Controller from '@ember/controller';
@@ -43,7 +44,9 @@ export default class RenderTreeController extends Controller {
    * Checks if the user previously closed the warning by referencing localStorage
    */
   get isWarningClosed() {
-    return !!this.storage.getItem('is-render-tree-warning-closed');
+    return !!this.storage.getItem(
+      'is-render-tree-warning-closed' as keyof object,
+    );
   }
 
   set isWarningClosed(value) {

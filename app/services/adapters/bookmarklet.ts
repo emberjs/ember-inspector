@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-escape */
 import BasicAdapter from './basic';
 import type { Message } from '../port';
 
@@ -8,13 +7,16 @@ export default class Bookmarklet extends BasicAdapter {
   /**
    * Called when the adapter is created.
    */
-  constructor(properties?: object) {
-    super(properties);
+  constructor() {
+    // @ts-expect-error Using ...arguments is fine.
+    // eslint-disable-next-line prefer-rest-params
+    super(...arguments);
+
     this._connect();
   }
 
   get inspectedWindow() {
-    return window.opener || window.parent;
+    return (window.opener as Window | undefined) || window.parent;
   }
 
   get inspectedWindowURL() {
@@ -38,7 +40,7 @@ export default class Bookmarklet extends BasicAdapter {
 
   _connect() {
     window.addEventListener('message', (e) => {
-      let message = e.data as Message;
+      const message = e.data as Message;
       if (e.origin !== this.inspectedWindowURL) {
         return;
       }

@@ -1,3 +1,4 @@
+/* eslint-disable ember/no-classic-classes */
 import {
   click,
   find,
@@ -8,10 +9,12 @@ import {
 import hasEmberVersion from '@ember/test-helpers/has-ember-version';
 import { A } from '@ember/array';
 import { run } from '@ember/runloop';
+// eslint-disable-next-line ember/no-classic-components
 import EmberComponent from '@ember/component';
 import EmberRoute from '@ember/routing/route';
 import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
+// eslint-disable-next-line ember/no-at-ember-render-modifiers
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
 import QUnit, { module, test } from 'qunit';
 import { hbs } from 'ember-cli-htmlbars';
@@ -25,11 +28,12 @@ try {
   // eslint-disable-next-line no-undef,ember/new-module-imports
   templateOnlyComponent = Ember._templateOnlyComponent;
   // eslint-disable-next-line no-empty
-} catch (e) {}
+} catch {}
 try {
+  // eslint-disable-next-line no-undef
   templateOnlyComponent = require('ember').default._templateOnlyComponent;
   // eslint-disable-next-line no-empty
-} catch (e) {}
+} catch {}
 
 // TODO switch to an adapter architecture, similar to the acceptance tests
 async function captureMessage(type, callback) {
@@ -946,6 +950,7 @@ module('Ember Debug - View', function (hooks) {
       assert.ok(!isVisible(tooltip), 'tooltip is not visible');
       assert.ok(!isVisible(highlight), 'highlight is not visible');
 
+      // eslint-disable-next-line ember/no-runloop
       run(() =>
         EmberDebug.port.trigger('view:inspectViews', { inspect: true }),
       );
@@ -1117,7 +1122,6 @@ module('Ember Debug - View', function (hooks) {
       let actual = highlight.getBoundingClientRect();
       let expected = inElement.getBoundingClientRect();
 
-      // await this.pauseTest();
       assert.ok(isVisible(tooltip), 'tooltip is visible');
       assert.ok(isVisible(highlight), 'highlight is visible');
 
@@ -1151,7 +1155,6 @@ module('Ember Debug - View', function (hooks) {
       let actual = highlight.getBoundingClientRect();
       let expected = inElement.getBoundingClientRect();
 
-      // await this.pauseTest();
       assert.ok(isVisible(tooltip), 'tooltip is visible');
       assert.ok(isVisible(highlight), 'highlight is visible');
 
@@ -1185,7 +1188,6 @@ module('Ember Debug - View', function (hooks) {
       let actual = highlight.getBoundingClientRect();
       let expected = inElement.getBoundingClientRect();
 
-      // await this.pauseTest();
       assert.ok(isVisible(tooltip), 'tooltip is visible');
       assert.ok(isVisible(highlight), 'highlight is visible');
 

@@ -3,6 +3,7 @@ import * as SourceMap from 'ember-debug/deps/source-map';
 const notFoundError = new Error('Source map url not found');
 
 export default class extends BaseObject {
+  // eslint-disable-next-line ember/classic-decorator-hooks
   init() {
     super.init();
     this._lastPromise = Promise.resolve(undefined);

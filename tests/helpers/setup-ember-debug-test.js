@@ -1,3 +1,4 @@
+/* eslint-disable ember/no-runloop */
 import Application from '@ember/application';
 import Resolver from 'ember-resolver';
 import EmberRouter from '@ember/routing/router';
@@ -33,6 +34,7 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     await setupContext(this);
     await setupApplicationContext(this);
 
+    // eslint-disable-next-line ember/no-classic-classes
     const Router = EmberRouter.extend({
       location: 'none',
     });

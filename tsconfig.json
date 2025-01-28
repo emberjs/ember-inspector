@@ -17,7 +17,7 @@
       "ui/test-support/*": ["lib/ui/addon-test-support/*"],
       "*": ["types/*"]
     },
-    "types": ["chrome"]
+    "types": ["chrome", "./node_modules/ember-source/types/stable"]
   },
   "include": ["app/**/*", "tests/**/*", "types/**/*", "lib/ui/**/*"]
 }

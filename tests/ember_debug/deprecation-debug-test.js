@@ -35,6 +35,7 @@ module('Ember Debug - Deprecation', function (hooks) {
 
     this.owner.register(
       'route:application',
+      // eslint-disable-next-line ember/no-classic-classes
       Route.extend({
         setupController() {
           EmberDebug.IGNORE_DEPRECATIONS = false;
@@ -62,6 +63,7 @@ module('Ember Debug - Deprecation', function (hooks) {
       }),
     );
 
+    // eslint-disable-next-line ember/no-runloop
     run(EmberDebug.port, 'trigger', 'deprecation:watch');
 
     await visit('/');
@@ -88,6 +90,7 @@ module('Ember Debug - Deprecation', function (hooks) {
 
   test('Warns once about deprecations', async function t(assert) {
     let count = 0;
+    // eslint-disable-next-line ember/no-runloop
     run(EmberDebug.port, 'trigger', 'deprecation:watch');
     EmberDebug.port.adapter.reopen({
       warn(message) {
@@ -101,6 +104,7 @@ module('Ember Debug - Deprecation', function (hooks) {
 
     this.owner.register(
       'route:application',
+      // eslint-disable-next-line ember/no-classic-classes
       Route.extend({
         setupController() {
           EmberDebug.IGNORE_DEPRECATIONS = false;

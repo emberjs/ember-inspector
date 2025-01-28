@@ -8,6 +8,7 @@ const { isArray } = Array;
 const { keys } = Object;
 
 export default class extends BasicAdapter {
+  // eslint-disable-next-line ember/classic-decorator-hooks
   init() {
     this._channel = new MessageChannel();
     this._chromePort = this._channel?.port1;
@@ -106,7 +107,7 @@ export default class extends BasicAdapter {
 const HAS_ARRAY_PROTOTYPE_EXTENSIONS = (() => {
   try {
     return Ember.ENV.EXTEND_PROTOTYPES.Array === true;
-  } catch (e) {
+  } catch {
     return false;
   }
 })();

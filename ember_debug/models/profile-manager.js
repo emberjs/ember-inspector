@@ -75,6 +75,7 @@ export default class ProfileManager {
     this.stylesheet = insertStylesheet();
     // keep track of all the active highlights
     this.highlights = [];
+    // eslint-disable-next-line ember/new-module-imports
     this.isHighlightEnabled = compareVersion(Ember?.VERSION, '3.20.0') !== -1;
   }
 

@@ -12,10 +12,10 @@ export default class TabRoute extends Route {
     super.setupController(controller, model, transition);
 
     function setToolbarContainer() {
-      // @ts-expect-error The controller could be different types.
       controller.set('toolbarContainer', document.querySelector('#toolbar'));
     }
 
+    // eslint-disable-next-line ember/no-runloop
     scheduleOnce('afterRender', this, setToolbarContainer);
   }
 }

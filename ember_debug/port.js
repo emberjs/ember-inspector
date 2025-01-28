@@ -35,6 +35,7 @@ export default class extends BaseObject {
     return guidFor(this.namespace?._application, 'ember');
   }
 
+  // eslint-disable-next-line ember/classic-decorator-hooks
   init() {
     /**
      * Stores the timestamp when it was first accessed.

@@ -14,7 +14,7 @@
 import Service, { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
-import type { AnyFn } from 'ember/-private/type-utils';
+import type { AnyFn } from '@ember/-internals/utility-types';
 import config from 'ember-inspector/config/environment';
 import type PortService from '../port';
 import type { Message } from '../port';
@@ -31,8 +31,10 @@ export default class Basic extends Service {
    * Called when the adapter is created (when
    * the inspector app boots).
    */
-  constructor(properties?: object) {
-    super(properties);
+  constructor() {
+    // eslint-disable-next-line prefer-rest-params
+    super(...arguments);
+
     this._messageCallbacks = [];
     this._checkVersion();
   }
@@ -47,16 +49,19 @@ export default class Basic extends Service {
    * @private
    */
   _checkVersion() {
-    this.onMessageReceived((message) => {
-      let { name, version } = message;
+    this.onMessageReceived((message: Message) => {
+      const { name, version } = message;
       if (name === 'version-mismatch') {
-        let previousVersions = config.previousEmberVersionsSupported;
-        let [fromVersion, tillVersion] = config.emberVersionsSupported;
+        const previousVersions = config.previousEmberVersionsSupported;
+        const [fromVersion, tillVersion] = config.emberVersionsSupported;
         let neededVersion;
 
-        if (compareVersion(version, fromVersion) === -1) {
+        if (compareVersion(version as string, fromVersion) === -1) {
           neededVersion = previousVersions[previousVersions.length - 1];
-        } else if (tillVersion && compareVersion(version, tillVersion) !== -1) {
+        } else if (
+          tillVersion &&
+          compareVersion(version as string, tillVersion) !== -1
+        ) {
           neededVersion = tillVersion;
         } else {
           return;
@@ -94,7 +99,7 @@ export default class Basic extends Service {
     this._messageCallbacks.push(callback);
   }
 
-  _messageReceived(...args: Array<any>) {
+  _messageReceived(...args: Array<unknown>) {
     this._messageCallbacks.forEach((callback) => {
       callback(...args);
     });
@@ -135,7 +140,7 @@ function compareVersion(version1: string, version2: string) {
   const v2 = cleanupVersion(version2).split('.');
   for (let i = 0; i < 3; i++) {
     // @ts-expect-error TODO: refactor this to make TS happy
-    let compared = compare(+v1[i], +v2[i]);
+    const compared = compare(+v1[i], +v2[i]);
     if (compared !== 0) {
       return compared;
     }

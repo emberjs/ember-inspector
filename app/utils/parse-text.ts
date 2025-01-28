@@ -6,16 +6,15 @@
 export default function parseText(value: string): string {
   let parsedValue;
   try {
-    parsedValue = JSON.parse(value);
-  } catch (e) {
+    parsedValue = JSON.parse(value) as string;
+  } catch {
     // if surrounded by quotes, remove quotes
-    let match = value.match(/^"(.*)"$/);
+    const match = value.match(/^"(.*)"$/);
     if (match && match.length > 1) {
-      parsedValue = match[1];
+      parsedValue = match[1] as string;
     } else {
       parsedValue = value;
     }
   }
   return parsedValue;
 }
-

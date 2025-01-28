@@ -267,7 +267,7 @@ export default class {
   toggleVisibility(id) {
     let column = this._columnVisibility.find((x) => x.id === id);
     column.visible = !column.visible;
-    if (!this._columnVisibility.isAny('visible')) {
+    if (!this._columnVisibility.some((col) => col.visible)) {
       // If this column was the last visible column
       // cancel toggling and set back to `true`.
       column.visible = true;

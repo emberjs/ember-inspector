@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import QUnit from 'qunit';
 import { next } from '@ember/runloop';
 import BasicAdapter from 'ember-inspector/services/adapters/basic';
@@ -142,6 +141,7 @@ export async function sendMessage(message) {
   }
 
   const msg = await new Promise((resolve, reject) => {
+    // eslint-disable-next-line ember/no-runloop
     next(async () => {
       let normalized = {
         applicationId: 'my-app',

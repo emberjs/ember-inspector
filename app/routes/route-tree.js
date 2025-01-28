@@ -20,7 +20,6 @@ export default class RouteTreeRoute extends TabRoute {
   }
 
   setCurrentRoute(message) {
-    // eslint-disable-next-line ember/no-controller-access-in-routes
     this.controller.set('currentRoute', message);
   }
 

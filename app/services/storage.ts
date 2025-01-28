@@ -8,9 +8,6 @@ import type MemoryStorageService from './storage/memory';
  * MemoryStorageService (depending on availability) and
  * provide support for storing (JSON-serializable) objects
  * on top of the lower level backends.
- *
- * @class StorageService
- * @extends Service
  */
 export default class StorageService extends Service {
   @service(LOCAL_STORAGE_SUPPORTED ? 'storage/local' : 'storage/memory')
@@ -21,25 +18,25 @@ export default class StorageService extends Service {
    *
    * @return {Option<String>} The value, if found
    */
-  getItem(key: string) {
-    let serialized = this.backend.getItem(key);
+  getItem(key: keyof object) {
+    const serialized = this.backend.getItem(key);
 
     if (serialized === null) {
       // Actual `null` values would have been serialized as `"null"`
       return undefined;
     } else {
-      return JSON.parse(serialized);
+      return JSON.parse(serialized as string) as string;
     }
   }
 
   /**
    * Store a string for a given key.
    */
-  setItem(key: string, value: string) {
+  setItem(key: keyof object, value: string) {
     if (value === undefined) {
       this.removeItem(key);
     } else {
-      let serialized = JSON.stringify(value);
+      const serialized = JSON.stringify(value);
       this.backend.setItem(key, serialized);
     }
   }
@@ -47,7 +44,7 @@ export default class StorageService extends Service {
   /**
    * Deletes the stored string for a given key.
    */
-  removeItem(key: string) {
+  removeItem(key: keyof object) {
     this.backend.removeItem(key);
   }
 

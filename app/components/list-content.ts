@@ -67,21 +67,21 @@ export default class ListContent extends Component<ListContentSignature> {
    */
   @action
   elementInserted() {
+    // eslint-disable-next-line ember/no-runloop
     schedule('afterRender', this, this.setupHeight);
   }
 
   /**
    * Set up the content height and listen to any updates to that property.
    */
-  @action
-  setupHeight() {
+  setupHeight = () => {
     this.contentHeight = this.layoutService.contentHeight;
     this.layoutService.on(
       'content-height-update',
       this,
       this.updateContentHeight,
     );
-  }
+  };
 
   /**
    * Triggered whenever the app's content height changes. This usually happens
@@ -90,8 +90,7 @@ export default class ListContent extends Component<ListContentSignature> {
    *
    * @param height The app's new content height
    */
-  @action
-  updateContentHeight(height: number) {
+  updateContentHeight = (height: number) => {
     this.contentHeight = height;
-  }
+  };
 }

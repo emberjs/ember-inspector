@@ -1,4 +1,3 @@
-/* eslint-disable n/no-unpublished-require */
 'use strict';
 
 const getChannelURL = require('ember-source-channel-url');
@@ -73,6 +72,14 @@ module.exports = async function () {
         npm: {
           devDependencies: {
             'ember-source': '~4.12.0',
+          },
+        },
+      },
+      {
+        name: 'ember-lts-5.4',
+        npm: {
+          devDependencies: {
+            'ember-source': '~5.4.0',
           },
         },
       },

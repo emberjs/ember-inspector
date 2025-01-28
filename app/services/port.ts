@@ -1,21 +1,47 @@
-import { action, set } from '@ember/object';
+import { action, set, setProperties } from '@ember/object';
 import { addListener, removeListener, sendEvent } from '@ember/object/events';
-// @ts-expect-error TODO: maybe move away from this one day, but for now import from secret location
 import { hasListeners } from '@ember/-internals/metal';
 import Service, { inject as service } from '@ember/service';
 import type RouterService from '@ember/routing/router-service';
 
 import type WebExtension from './adapters/web-extension';
-import type { AnyFn } from 'ember/-private/type-utils';
+import type { AnyFn } from '@ember/-internals/utility-types';
 
+export interface ModelType {
+  columns: Array<{ name: string; desc: string }>;
+  count: number;
+  name: string;
+  objectId: string;
+}
+
+export interface RecordType {
+  color: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  columnValues: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  filterValues: any;
+  objectId: string;
+  searchIndex: number;
+}
+
+/**
+ * This interface is a catch-all of a bunch of things we
+ * pass around via messages.
+ */
 export interface Message {
   applicationId: string;
   applicationName: string;
-  frameId?: any;
+  count: number;
+  filters: Array<unknown>;
+  frameId?: string;
   from: string;
+  index: number;
   instrumentWithStack?: boolean;
+  modelTypes: Array<ModelType>;
   name?: string;
+  objectId?: string;
   promiseId?: string;
+  records: Array<RecordType>;
   shouldHighlightRender?: boolean;
   tabId?: number;
   type: string;
@@ -33,6 +59,7 @@ export default class PortService extends Service {
   detectedApplications: { [key: string]: string };
 
   constructor() {
+    // eslint-disable-next-line prefer-rest-params
     super(...arguments);
 
     /*
@@ -55,7 +82,7 @@ export default class PortService extends Service {
           return;
         }
 
-        let { applicationId, applicationName } = message;
+        const { applicationId, applicationName } = message;
 
         if (!applicationId) {
           return;
@@ -77,8 +104,11 @@ export default class PortService extends Service {
       },
     );
 
-    addListener(this, 'view:inspectJSValue', this, ({ name }) =>
-      this.adapter.inspectJSValue(name),
+    addListener(
+      this,
+      'view:inspectJSValue',
+      this,
+      ({ name }: { name: string }) => this.adapter.inspectJSValue(name),
     );
   }
 
@@ -87,9 +117,11 @@ export default class PortService extends Service {
       applicationId in this.detectedApplications &&
       applicationId !== this.applicationId
     ) {
-      let applicationName = this.detectedApplications[applicationId] as string;
+      const applicationName = this.detectedApplications[
+        applicationId
+      ] as string;
       const currentApplication = this.applicationId;
-      this.setProperties({ applicationId, applicationName });
+      setProperties(this, { applicationId, applicationName });
       if (currentApplication) {
         // this is only required when switching apps
         this.router.transitionTo('app-detected');
@@ -114,12 +146,13 @@ export default class PortService extends Service {
   on(eventName: string, target: unknown, method: AnyFn): void;
 
   @action
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   on(eventName: string, targetOrMethod: unknown | AnyFn, method?: AnyFn): void {
     if (typeof targetOrMethod === 'function') {
       // If we did not pass a target, default to `this`
       addListener(this, eventName, this, targetOrMethod as AnyFn);
     } else {
-      addListener(this, eventName, targetOrMethod, method!);
+      addListener(this, eventName, targetOrMethod as object, method);
     }
   }
 
@@ -127,12 +160,13 @@ export default class PortService extends Service {
   one(eventName: string, target: unknown, method: AnyFn): void;
 
   @action
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   one(eventName: string, targetOrMethod: unknown | AnyFn, method?: AnyFn) {
     if (typeof targetOrMethod === 'function') {
       // If we did not pass a target, default to `this`
       addListener(this, eventName, this, targetOrMethod as AnyFn, true);
     } else {
-      addListener(this, eventName, targetOrMethod, method!, true);
+      addListener(this, eventName, targetOrMethod as object, method, true);
     }
   }
 
@@ -140,13 +174,14 @@ export default class PortService extends Service {
   off(eventName: string, target: unknown, method: AnyFn): void;
 
   @action
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   off(eventName: string, targetOrMethod: unknown | AnyFn, method?: AnyFn) {
     try {
       if (typeof targetOrMethod === 'function') {
         // If we did not pass a target, default to `this`
         removeListener(this, eventName, this, targetOrMethod as AnyFn);
       } else {
-        removeListener(this, eventName, targetOrMethod, method!);
+        removeListener(this, eventName, targetOrMethod as object, method);
       }
     } catch (e) {
       console.error(e);
@@ -154,7 +189,7 @@ export default class PortService extends Service {
   }
 
   @action
-  trigger(eventName: string, ...args: Array<any>) {
+  trigger(eventName: string, ...args: Array<unknown>) {
     sendEvent(this, eventName, args);
   }
 }

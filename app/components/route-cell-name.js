@@ -1,4 +1,5 @@
-import { computed, get } from '@ember/object';
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
+import { computed } from '@ember/object';
 import Component from '@glimmer/component';
 import { htmlSafe } from '@ember/template';
 import checkCurrentRoute from 'ember-inspector/utils/check-current-route';
@@ -7,7 +8,7 @@ export default class RouteCellName extends Component {
   @computed('args.route.parentCount')
   get labelStyle() {
     return htmlSafe(
-      `padding-left: ${+get(this, 'args.route.parentCount') * 20 + 5}px;`,
+      `padding-left: ${+this.args.route?.parentCount * 20 + 5}px;`,
     );
   }
 

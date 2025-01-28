@@ -1,10 +1,9 @@
 import { action } from '@ember/object';
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
-import { debounce, next, once } from '@ember/runloop';
+import { debounce, once } from '@ember/runloop';
 import { tracked } from '@glimmer/tracking';
 
-// eslint-disable-next-line ember/no-observers
 // @ts-expect-error We should move away from observers.
 import { observes } from '@ember-decorators/object';
 
@@ -75,7 +74,7 @@ export default class PromiseTreeController extends Controller {
       // Search filter
       // If they or at least one of their children
       // match the search, then include them
-      let search = this.effectiveSearch;
+      const search = this.effectiveSearch;
       if (!isNullish(search)) {
         return item.matches(search);
       }
@@ -83,26 +82,23 @@ export default class PromiseTreeController extends Controller {
     });
   }
 
-  // eslint-disable-next-line ember/no-observers
+  // eslint-disable-next-line ember/no-observers, @typescript-eslint/no-unsafe-call
   @observes('searchValue')
   searchChanged() {
-    debounce(this, this.notifyChange, 500);
+    // eslint-disable-next-line ember/no-runloop
+    debounce(this, this.updateEffectiveSearch, 500);
   }
 
-  @action
-  notifyChange() {
+  updateEffectiveSearch = () => {
     this.effectiveSearch = this.searchValue;
-    next(() => {
-      this.notifyPropertyChange('model');
-    });
-  }
+  };
 
   @action
   toggleExpand(promise: PromiseModel) {
-    let isExpanded = !promise.isExpanded;
+    const isExpanded = !promise.isExpanded;
     promise.isManuallyExpanded = isExpanded;
     promise.recalculateExpanded();
-    let children = promise._allChildren();
+    const children = promise._allChildren();
     if (isExpanded) {
       children.forEach((child) => {
         if (isNullish(child.isManuallyExpanded)) {
@@ -121,6 +117,7 @@ export default class PromiseTreeController extends Controller {
   @action
   inspectObject() {
     // @ts-expect-error TODO: figure this out later
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, prefer-rest-params
     this.target.send('inspectObject', ...arguments);
   }
 
@@ -146,6 +143,7 @@ export default class PromiseTreeController extends Controller {
   @action
   clear() {
     this.createdAfter = new Date();
-    once(this, this.notifyChange);
+    // eslint-disable-next-line ember/no-runloop
+    once(this, this.updateEffectiveSearch);
   }
 }
