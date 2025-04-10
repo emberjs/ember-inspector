@@ -1,0 +1,16 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+deleted file mode 100644
+index 6b246174165e3519b57dbb1fdd16a05731175763..0000000000000000000000000000000000000000
+diff --git a/lib/index.js b/lib/index.js
+index f28830e01df9778fcef712ccd546566bfc34a0cc..cd38a87d6b90ebe0d7154d6a8d5a27d011098a64 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -48,7 +48,7 @@ module.exports = {
+ 
+     let self = this;
+     // maintaining `baseURL` for backwards compatibility. See: http://emberjs.com/blog/2016/04/28/baseURL.html
+-    let baseURL = options.liveReloadBaseUrl || options.rootURL || options.baseURL;
++    let baseURL = options.liveReloadBaseUrl || options.rootURL;
+     if (this.parent) {
+       let checker = new VersionChecker(this.parent);
+       let depedency = checker.for('ember-cli');
