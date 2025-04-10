@@ -20,10 +20,16 @@ export default class BasicAdapter extends BaseObject {
    * @type {String}
    */
   get environment() {
-    if (!this.__environment) {
-      this.__environment =
-        requireModule('ember-debug/config')['default'].environment;
+    // Not a real fix, waiting for the new start wrapper
+    try {
+      if (!this.__environment) {
+        this.__environment =
+          requireModule('ember-debug/config')['default'].environment;
+      }
+    } catch {
+      this.__environment = 'development';
     }
+
     return this.__environment;
   }
 
