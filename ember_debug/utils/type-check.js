@@ -119,6 +119,10 @@ export function inspect(value) {
         if (typeOf(v) === 'object') {
           v = '[Object]';
         }
+        // to avoid TypeError: Cannot convert a Symbol value to a string
+        if (typeOf(v) === 'symbol') {
+          v = v.toString();
+        }
         ret.push(`${key}: ${v}`);
       }
     }
