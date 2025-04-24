@@ -36,6 +36,12 @@ let {
 
 let getEnv = () => Ember.ENV;
 
+let Debug = emberSafeRequire('@ember/debug')?.default;
+let InternalsUtils = emberSafeRequire('@ember/-internals/utils')?.default;
+let ObjectInternals = emberSafeRequire('@ember/object/internals')?.default;
+let Instrumentation = emberSafeRequire('@ember/instrumentation')?.default;
+let RSVP = emberSafeRequire('rsvp')?.default;
+
 if (!Ember) {
   captureRenderTree = emberSafeRequire('@ember/debug')?.captureRenderTree;
   getEnv = emberSafeRequire('@ember/-internals/environment')?.getENV;
@@ -65,7 +71,45 @@ if (!Ember) {
   get = emberSafeRequire('@ember/object')?.get;
 }
 
+// this is for versions of ember not using requirejs or a global
+if (!captureRenderTree) {
+  const internalEmberModules = await globalThis.emberInspectorLoader.load();
+
+  Debug = internalEmberModules.Debug;
+  InternalsUtils = internalEmberModules.InternalsUtils;
+  ObjectInternals = internalEmberModules.ObjectInternals;
+  Instrumentation = internalEmberModules.Instrumentation;
+  captureRenderTree = internalEmberModules.Debug.captureRenderTree;
+  getEnv = internalEmberModules.InternalsEnvironment.getENV;
+  ArrayProxy = internalEmberModules.ArrayProxy.default;
+  ObjectProxy = internalEmberModules.ObjectProxy.default;
+  MutableArray = internalEmberModules.ArrayMutable.default;
+  Namespace = internalEmberModules.ApplicationNamespace.default;
+  MutableEnumerable = internalEmberModules.EnumerableMutable.default;
+  NativeArray = internalEmberModules.Array.NativeArray;
+  ControllerMixin = internalEmberModules.Controller.ControllerMixin;
+  CoreObject = internalEmberModules.ObjectCore.default;
+  Application = internalEmberModules.Application.default;
+  Component = internalEmberModules.Component.default;
+  Observable = internalEmberModules.ObjectObservable.default;
+  Evented = internalEmberModules.ObjectEvented.default;
+  PromiseProxyMixin = internalEmberModules.ObjectPromiseProxyMixin.default;
+  Service = internalEmberModules.Service.default;
+  EmberObject = internalEmberModules.Object.default;
+  VERSION = internalEmberModules.VERSION.default;
+  ComputedProperty = internalEmberModules.InternalsMetal.ComputedProperty;
+  meta = internalEmberModules.InternalsMeta?.meta;
+  set = internalEmberModules.Object.set;
+  get = internalEmberModules.Object.get;
+  RSVP = internalEmberModules.RSVP;
+}
+
 export {
+  Debug,
+  InternalsUtils,
+  ObjectInternals,
+  Instrumentation,
+  RSVP,
   ArrayProxy,
   Namespace,
   ActionHandler,
