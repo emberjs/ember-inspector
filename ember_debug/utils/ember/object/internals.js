@@ -1,10 +1,10 @@
-import Ember from '../../ember';
+import Ember, { ObjectInternals } from '../../ember';
 
 let module;
 
-try {
-  module = requireModule('@ember/object/internals');
-} catch {
+if (ObjectInternals) {
+  module = ObjectInternals;
+} else {
   module = Ember;
 }
 
