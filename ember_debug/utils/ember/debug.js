@@ -1,13 +1,12 @@
-import Ember from '../ember';
+import Ember, { Debug, InternalsUtils } from '../ember';
 
 let module;
-
 export let inspect;
 
-try {
-  module = requireModule('@ember/debug');
-  inspect = module.inspect || requireModule('@ember/-internals/utils').inspect;
-} catch {
+if (Debug) {
+  module = Debug;
+  inspect = Debug.inspect || InternalsUtils.inspect;
+} else {
   module = Ember.Debug;
   // eslint-disable-next-line ember/new-module-imports
   inspect = Ember.inspect;
