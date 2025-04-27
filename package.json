@@ -127,7 +127,7 @@
     "fstream": "^1.0.12",
     "globals": "^15.14.0",
     "gulp": "^4.0.2",
-    "gulp-zip": "^5.1.0",
+    "gulp-zip": "^6.1.0",
     "loader.js": "^4.7.0",
     "normalize.css": "8.0.1",
     "pretender": "^3.4.7",
