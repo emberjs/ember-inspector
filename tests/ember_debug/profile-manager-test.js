@@ -12,6 +12,7 @@ import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import { run } from '@ember/runloop';
 import Ember from 'ember-debug/utils/ember';
 import { compareVersion } from 'ember-debug/utils/version';
+import * as EmberComponentAll from '@ember/component';
 
 const { VERSION } = Ember;
 
@@ -251,6 +252,7 @@ const constructBase = (owner) => {
   );
 };
 
+const didSetup = new Set();
 const constructComponents = (owner, componentsMap) => {
   for (const componentKey in componentsMap) {
     if (componentsMap[componentKey].component) {
@@ -264,6 +266,11 @@ const constructComponents = (owner, componentsMap) => {
         `template:components/${componentKey}`,
         componentsMap[componentKey].template,
       );
+    }
+    const needsSetComponent = compareVersion(VERSION, '6.4.0') !== -1;
+    if (needsSetComponent && componentsMap[componentKey].component && componentsMap[componentKey].template && !didSetup.has(componentsMap[componentKey].component)) {
+      EmberComponentAll.setComponentTemplate(componentsMap[componentKey].template, componentsMap[componentKey].component);
+      didSetup.add(componentsMap[componentKey].component);
     }
   }
 };
@@ -369,6 +376,7 @@ async function highlightsPromise(testedRoute, isGlimmerComponent) {
   if (numberOfHighlights > 0) {
     await waitUntil(() => observedHighlights.length === numberOfHighlights, {
       timeout: 2000,
+      timeoutMessage: `not observedHighlights ${observedHighlights.length} != ${numberOfHighlights}`,
     });
   } else {
     await waitUntil(() => {
@@ -379,6 +387,8 @@ async function highlightsPromise(testedRoute, isGlimmerComponent) {
         return false;
       }
       return true;
+    }, {
+      timeoutMessage: "settled state failed",
     });
   }
   observer.disconnect();

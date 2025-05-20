@@ -313,10 +313,20 @@ function HtmlElement(
   );
 }
 
+function RouteArgs() {
+  if (hasEmberVersion(6, 4)) {
+    return Args({ names: ['controller', 'model'] });
+  }
+  if (hasEmberVersion(3, 14)) {
+    return Args({ names: ['model'] });
+  }
+  return Args();
+}
+
 function Route(
   {
     name,
-    args = hasEmberVersion(3, 14) ? Args({ names: ['model'] }) : Args(),
+    args = RouteArgs(),
     instance = Serialized(),
     template = `my-app/templates/${name}.hbs`,
     ...options
