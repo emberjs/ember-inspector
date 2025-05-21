@@ -7,7 +7,7 @@ import { setupTestAdapter } from '../test-adapter';
 function urlFor(ref) {
   return `https://raw.githubusercontent.com/emberjs/ember-inspector/${encodeURIComponent(
     ref,
-  )}/CHANGELOG.md`;
+  )}-ember-inspector/CHANGELOG.md`;
 }
 
 function generateContent(main = false) {
