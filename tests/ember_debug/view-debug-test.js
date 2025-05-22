@@ -653,10 +653,19 @@ module('Ember Debug - View', function (hooks) {
               `),
     );
 
-    EmberComponentAll.setComponentTemplate?.(this.owner.lookup('template:components/test-foo'), this.owner.lookup('component:test-foo'));
+    EmberComponentAll.setComponentTemplate?.(
+      this.owner.lookup('template:components/test-foo'),
+      this.owner.lookup('component:test-foo'),
+    );
     // EmberComponentAll.setComponentTemplate?.(this.owner.lookup('template:components/test-bar'), this.owner.lookup('component:test-bar'));
-    EmberComponentAll.setComponentTemplate?.(this.owner.lookup('template:components/test-component-in-in-element'), this.owner.lookup('component:test-component-in-in-element'));
-    EmberComponentAll.setComponentTemplate?.(this.owner.lookup('template:components/test-in-element-in-component'), this.owner.lookup('component:test-in-element-in-component'));
+    EmberComponentAll.setComponentTemplate?.(
+      this.owner.lookup('template:components/test-component-in-in-element'),
+      this.owner.lookup('component:test-component-in-in-element'),
+    );
+    EmberComponentAll.setComponentTemplate?.(
+      this.owner.lookup('template:components/test-in-element-in-component'),
+      this.owner.lookup('component:test-in-element-in-component'),
+    );
 
     this.owner.register('modifier:did-insert', didInsert);
   });
@@ -930,8 +939,14 @@ module('Ember Debug - View', function (hooks) {
         moduleName: 'my-app/templates/components/x-second.hbs',
       }),
     );
-    EmberComponentAll.setComponentTemplate?.(this.owner.lookup('template:components/x-first'), this.owner.lookup('component:x-first'));
-    EmberComponentAll.setComponentTemplate?.(this.owner.lookup('template:components/x-second'), this.owner.lookup('component:x-second'));
+    EmberComponentAll.setComponentTemplate?.(
+      this.owner.lookup('template:components/x-first'),
+      this.owner.lookup('component:x-first'),
+    );
+    EmberComponentAll.setComponentTemplate?.(
+      this.owner.lookup('template:components/x-second'),
+      this.owner.lookup('component:x-second'),
+    );
 
     await visit('/posts');
 

@@ -268,8 +268,16 @@ const constructComponents = (owner, componentsMap) => {
       );
     }
     const needsSetComponent = compareVersion(VERSION, '6.4.0') !== -1;
-    if (needsSetComponent && componentsMap[componentKey].component && componentsMap[componentKey].template && !didSetup.has(componentsMap[componentKey].component)) {
-      EmberComponentAll.setComponentTemplate(componentsMap[componentKey].template, componentsMap[componentKey].component);
+    if (
+      needsSetComponent &&
+      componentsMap[componentKey].component &&
+      componentsMap[componentKey].template &&
+      !didSetup.has(componentsMap[componentKey].component)
+    ) {
+      EmberComponentAll.setComponentTemplate(
+        componentsMap[componentKey].template,
+        componentsMap[componentKey].component,
+      );
       didSetup.add(componentsMap[componentKey].component);
     }
   }
@@ -379,17 +387,20 @@ async function highlightsPromise(testedRoute, isGlimmerComponent) {
       timeoutMessage: `not observedHighlights ${observedHighlights.length} != ${numberOfHighlights}`,
     });
   } else {
-    await waitUntil(() => {
-      // Check for the settled state minus hasPendingTimers
-      let { hasRunLoop, hasPendingRequests, hasPendingWaiters } =
-        getSettledState();
-      if (hasRunLoop || hasPendingRequests || hasPendingWaiters) {
-        return false;
-      }
-      return true;
-    }, {
-      timeoutMessage: "settled state failed",
-    });
+    await waitUntil(
+      () => {
+        // Check for the settled state minus hasPendingTimers
+        let { hasRunLoop, hasPendingRequests, hasPendingWaiters } =
+          getSettledState();
+        if (hasRunLoop || hasPendingRequests || hasPendingWaiters) {
+          return false;
+        }
+        return true;
+      },
+      {
+        timeoutMessage: 'settled state failed',
+      },
+    );
   }
   observer.disconnect();
   return observedHighlights;
