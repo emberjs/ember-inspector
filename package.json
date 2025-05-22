@@ -30,12 +30,14 @@
     "start": "ember serve",
     "test": "concurrently \"pnpm:lint\" \"pnpm:test:*\" --names \"lint,test:\" --prefixColors auto",
     "test:ember": "pnpm build:ember-debug && COVERAGE=true ember test",
-    "watch": "pnpm '/watch:/'",
     "watch-test": "pnpm '/watch-test:/'",
     "watch-test:ember-debug": "pnpm --filter ember-debug watch",
     "watch-test:inspector-ui": "ember test --serv",
+    "watch": "pnpm '/watch:/'",
+    "watch:inspector-ui": "ember build --watch",
     "watch:ember-debug": "pnpm --filter ember-debug watch",
-    "watch:inspector-ui": "ember build --watch"
+    "ember-debug:try:one": "pnpm --filter '*' ember:try:one",
+    "ember-debug:test": "pnpm --filter '*' ember-debug-test"
   },
   "dependencies": {
     "got": "^11.8.6",

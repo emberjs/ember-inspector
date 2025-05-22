@@ -1,3 +1,4 @@
 packages:
   - .
   - ember_debug
+  - test-apps/*
