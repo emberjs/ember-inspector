@@ -134,8 +134,6 @@
     "prettier-plugin-ember-template-tag": "^2.0.4",
     "qunit": "^2.23.1",
     "qunit-dom": "^3.4.0",
-    "release-it": "^15.11.0",
-    "release-it-lerna-changelog": "^5.0.0",
     "release-plan": "^0.8.0",
     "sass": "^1.79.4",
     "source-map-js": "^1.2.1",

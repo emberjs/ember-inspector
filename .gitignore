@@ -8,6 +8,8 @@
 
 # dependencies
 /node_modules/
+ember_debug_test_app/node_modules/
+ember_debug_test_app/dist/
 
 # misc
 /.env*
