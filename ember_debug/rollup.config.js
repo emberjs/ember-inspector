@@ -10,6 +10,7 @@ export default {
     'utils/version.js',
     'port.js',
     'utils/ember.js',
+    'utils/type-check',
     'models/profile-node.js',
     'libs/promise-assembler.js',
   ],
