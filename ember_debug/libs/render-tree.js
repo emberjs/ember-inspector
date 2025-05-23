@@ -1,6 +1,6 @@
 import captureRenderTree from './capture-render-tree';
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
-import { EmberLoader, emberSafeRequire } from 'ember-debug/utils/ember/loader';
+import { EmberLoader } from 'ember-debug/utils/ember/loader';
 import { inspect } from 'ember-debug/utils/type-check';
 import { isInVersionSpecifier } from 'ember-debug/utils/version';
 import {

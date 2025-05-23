@@ -67,7 +67,9 @@ if (!Ember) {
 
 let Debug = emberSafeRequire('@ember/debug')?.default;
 let InternalsMetal = emberSafeRequire('@ember/-internals/metal')?.default;
+let InternalsRuntime = emberSafeRequire('@ember/-internals/runtime')?.default;
 let InternalsUtils = emberSafeRequire('@ember/-internals/utils')?.default;
+let InternalsViews = emberSafeRequire('@ember/-internals/views');
 let EmberDestroyable = emberSafeRequire('@ember/destroyable')?.default;
 let ObjectInternals = emberSafeRequire('@ember/object/internals')?.default;
 let Instrumentation = emberSafeRequire('@ember/instrumentation')?.default;
@@ -84,7 +86,9 @@ if (!captureRenderTree) {
 
   Debug = internalEmberModules.Debug;
   InternalsMetal = internalEmberModules.InternalsMetal;
+  InternalsRuntime = internalEmberModules.InternalsRuntime;
   InternalsUtils = internalEmberModules.InternalsUtils;
+  InternalsViews = internalEmberModules.InternalViews;
   ObjectInternals = internalEmberModules.ObjectInternals;
   Instrumentation = internalEmberModules.Instrumentation;
   captureRenderTree = internalEmberModules.Debug.captureRenderTree;
@@ -121,7 +125,9 @@ if (!captureRenderTree) {
 export {
   Debug,
   InternalsMetal,
+  InternalsRuntime,
   InternalsUtils,
+  InternalsViews,
   ObjectInternals,
   Instrumentation,
   RSVP,
