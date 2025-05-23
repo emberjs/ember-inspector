@@ -36,12 +36,6 @@ let {
 
 let getEnv = () => Ember.ENV;
 
-let Debug = emberSafeRequire('@ember/debug')?.default;
-let InternalsUtils = emberSafeRequire('@ember/-internals/utils')?.default;
-let ObjectInternals = emberSafeRequire('@ember/object/internals')?.default;
-let Instrumentation = emberSafeRequire('@ember/instrumentation')?.default;
-let RSVP = emberSafeRequire('rsvp')?.default;
-
 if (!Ember) {
   captureRenderTree = emberSafeRequire('@ember/debug')?.captureRenderTree;
   getEnv = emberSafeRequire('@ember/-internals/environment')?.getENV;
@@ -71,11 +65,25 @@ if (!Ember) {
   get = emberSafeRequire('@ember/object')?.get;
 }
 
+let Debug = emberSafeRequire('@ember/debug')?.default;
+let InternalsMetal = emberSafeRequire('@ember/-internals/metal')?.default;
+let InternalsUtils = emberSafeRequire('@ember/-internals/utils')?.default;
+let EmberDestroyable = emberSafeRequire('@ember/destroyable')?.default;
+let ObjectInternals = emberSafeRequire('@ember/object/internals')?.default;
+let Instrumentation = emberSafeRequire('@ember/instrumentation')?.default;
+
+let RSVP = emberSafeRequire('rsvp')?.default;
+let GlimmerManager = emberSafeRequire('@glimmer/manager')?.default;
+let GlimmerReference = emberSafeRequire('@glimmer/reference')?.default;
+let GlimmerRuntime = emberSafeRequire('@glimmer/runtime')?.default;
+let GlimmerUtil = emberSafeRequire('@glimmer/util')?.default;
+
 // this is for versions of ember not using requirejs or a global
 if (!captureRenderTree) {
   const internalEmberModules = await globalThis.emberInspectorLoader.load();
 
   Debug = internalEmberModules.Debug;
+  InternalsMetal = internalEmberModules.InternalsMetal;
   InternalsUtils = internalEmberModules.InternalsUtils;
   ObjectInternals = internalEmberModules.ObjectInternals;
   Instrumentation = internalEmberModules.Instrumentation;
@@ -95,17 +103,24 @@ if (!captureRenderTree) {
   Evented = internalEmberModules.ObjectEvented.default;
   PromiseProxyMixin = internalEmberModules.ObjectPromiseProxyMixin.default;
   Service = internalEmberModules.Service.default;
+  EmberDestroyable = internalEmberModules.EmberDestroyable;
   EmberObject = internalEmberModules.Object.default;
   VERSION = internalEmberModules.VERSION.default;
   ComputedProperty = internalEmberModules.InternalsMetal.ComputedProperty;
   meta = internalEmberModules.InternalsMeta?.meta;
   set = internalEmberModules.Object.set;
   get = internalEmberModules.Object.get;
+
   RSVP = internalEmberModules.RSVP;
+  GlimmerManager = internalEmberModules.GlimmerManager;
+  GlimmerReference = internalEmberModules.GlimmerReference;
+  GlimmerRuntime = internalEmberModules.GlimmerRuntime;
+  GlimmerUtil = internalEmberModules.GlimmerUtil;
 }
 
 export {
   Debug,
+  InternalsMetal,
   InternalsUtils,
   ObjectInternals,
   Instrumentation,
@@ -126,6 +141,7 @@ export {
   Service,
   PromiseProxyMixin,
   EmberObject,
+  EmberDestroyable,
   VERSION,
   ComputedProperty,
   meta,
@@ -134,6 +150,10 @@ export {
   set,
   captureRenderTree,
   getEnv,
+  GlimmerManager,
+  GlimmerReference,
+  GlimmerRuntime,
+  GlimmerUtil,
 };
 
 export default Ember;
