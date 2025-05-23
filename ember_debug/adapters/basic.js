@@ -21,8 +21,13 @@ export default class BasicAdapter extends BaseObject {
    */
   get environment() {
     if (!this.__environment) {
-      this.__environment =
-        requireModule('ember-debug/config')['default'].environment;
+      try {
+        this.__environment =
+          requireModule('ember-debug/config')['default'].environment;
+      } catch (_) {
+        // TODO: tmp
+        this.__environment = 'development';
+      }
     }
     return this.__environment;
   }
