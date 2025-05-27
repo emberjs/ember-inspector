@@ -73,6 +73,7 @@ let InternalsViews = emberSafeRequire('@ember/-internals/views');
 let EmberDestroyable = emberSafeRequire('@ember/destroyable')?.default;
 let ObjectInternals = emberSafeRequire('@ember/object/internals')?.default;
 let Instrumentation = emberSafeRequire('@ember/instrumentation')?.default;
+let Runloop = emberSafeRequire('@ember/runloop');
 
 let RSVP = emberSafeRequire('rsvp')?.default;
 let GlimmerManager = emberSafeRequire('@glimmer/manager')?.default;
@@ -106,6 +107,7 @@ if (!captureRenderTree) {
   Observable = internalEmberModules.ObjectObservable.default;
   Evented = internalEmberModules.ObjectEvented.default;
   PromiseProxyMixin = internalEmberModules.ObjectPromiseProxyMixin.default;
+  Runloop = internalEmberModules.Runloop.default;
   Service = internalEmberModules.Service.default;
   EmberDestroyable = internalEmberModules.EmberDestroyable;
   EmberObject = internalEmberModules.Object.default;
@@ -144,6 +146,7 @@ export {
   Component,
   Observable,
   Evented,
+  Runloop,
   Service,
   PromiseProxyMixin,
   EmberObject,
