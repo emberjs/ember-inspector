@@ -1,4 +1,10 @@
 import BasicAdapter from 'ember-debug/adapters/basic';
+import BookmarkletAdapter from 'ember-debug/adapters/bookmarklet';
+import ChromeAdapter from 'ember-debug/adapters/chrome';
+import FirefoxAdapter from 'ember-debug/adapters/firefox';
+import WebExtensionAdapter from 'ember-debug/adapters/web-extension';
+import WebSocketAdapter from 'ember-debug/adapters/websocket';
+
 import Port from 'ember-debug/port';
 import ObjectInspector from 'ember-debug/object-inspector';
 import GeneralDebug from 'ember-debug/general-debug';
@@ -169,4 +175,29 @@ function getOwner(application) {
   }
 }
 
-export default new EmberDebug();
+export function getEmberDebugAdapter(adapter) {
+  switch (adapter) {
+    case 'basic':
+      return BasicAdapter;
+    case 'bookmarklet':
+      return BookmarkletAdapter;
+    case 'chrome':
+      return ChromeAdapter;
+    case 'firefox':
+      return FirefoxAdapter;
+    case 'web-extension':
+      return WebExtensionAdapter;
+    case 'websocket':
+      return WebSocketAdapter;
+    default:
+      throw new Error(`unknown adapter ${adapter}`);
+  }
+}
+
+let mainModule = new EmberDebug();
+
+export function getEmberDebugMainModule() {
+  return mainModule;
+}
+
+export default mainModule;
