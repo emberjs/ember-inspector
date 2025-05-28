@@ -11,15 +11,13 @@
  * });
  * ```
  */
-import Service, { inject as service } from '@ember/service';
+import Service from '@ember/service';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
 const config = {};
 
 export default class Basic extends Service {
-  @service port;
-
   _messageCallbacks;
   name = 'basic';
 

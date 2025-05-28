@@ -10,7 +10,11 @@ import hasEmberVersion from '@ember/test-helpers/has-ember-version';
 import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 // eslint-disable-next-line ember/no-classic-components
-import EmberComponent from '@ember/component';
+import EmberComponent, {
+  setComponentTemplate,
+  getComponentTemplate,
+} from '@ember/component';
+import GlimmerComponent from '@glimmer/component';
 import EmberRoute from '@ember/routing/route';
 import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
@@ -313,10 +317,20 @@ function HtmlElement(
   );
 }
 
+function RouteArgs() {
+  if (hasEmberVersion(6, 4)) {
+    return Args({ names: ['controller', 'model'] });
+  }
+  if (hasEmberVersion(3, 14)) {
+    return Args({ names: ['model'] });
+  }
+  return Args();
+}
+
 function Route(
   {
     name,
-    args = hasEmberVersion(3, 14) ? Args({ names: ['model'] }) : Args(),
+    args = RouteArgs(),
     instance = Serialized(),
     template = `my-app/templates/${name}.hbs`,
     ...options
@@ -369,6 +383,11 @@ module('Ember Debug - View', function (hooks) {
 
   hooks.beforeEach(async function () {
     EmberDebug.IGNORE_DEPRECATIONS = true;
+    const registry = {};
+
+    function register(spec, value, opts) {
+      registry[spec] = { value, opts };
+    }
 
     this.owner.register(
       'route:application',
@@ -488,17 +507,17 @@ module('Ember Debug - View', function (hooks) {
       }),
     );
 
-    this.owner.register(
+    register(
       'component:test-foo',
-      EmberComponent.extend({
-        classNames: ['simple-component'],
+      class extends GlimmerComponent {
+        classNames = ['simple-component'];
         toString() {
           return 'App.TestFooComponent';
-        },
-      }),
+        }
+      },
     );
 
-    this.owner.register(
+    register(
       'component:test-bar',
       templateOnlyComponent?.() ||
         EmberComponent.extend({
@@ -509,26 +528,26 @@ module('Ember Debug - View', function (hooks) {
         }),
     );
 
-    this.owner.register(
+    register(
       'component:test-in-element-in-component',
-      EmberComponent.extend({
-        init(...args) {
-          this._super(...args);
+      class extends GlimmerComponent {
+        constructor(...args) {
+          super(...args);
           this.elementTarget = document.querySelector('#target');
-        },
+        }
         toString() {
           return 'App.TestInElementInComponent';
-        },
-      }),
+        }
+      },
     );
 
-    this.owner.register(
+    register(
       'component:test-component-in-in-element',
-      EmberComponent.extend({
+      class extends GlimmerComponent {
         toString() {
           return 'App.TestComponentInElement';
-        },
-      }),
+        }
+      },
     );
 
     /*
@@ -552,7 +571,7 @@ module('Ember Debug - View', function (hooks) {
       hbs(
         `
         <div {{did-insert this.foo}}>
-          Simple {{test-foo}} {{test-bar value=(hash x=123 [x.y]=456)}} {{#in-element this.elementTarget}}<TestComponentInInElement />{{/in-element}}
+          Simple <TestFoo /> <TestBar @value={{hash x=123 [x.y]=456}} /> {{#in-element this.elementTarget}}<TestComponentInInElement />{{/in-element}}
         </div>
         `,
         {
@@ -601,13 +620,13 @@ module('Ember Debug - View', function (hooks) {
       'template:posts',
       hbs('Posts', { moduleName: 'my-app/templates/posts.hbs' }),
     );
-    this.owner.register(
+    register(
       'template:components/test-foo',
-      hbs('test-foo', {
+      hbs('<div class={{concat this.classNames}}>test-foo</div>', {
         moduleName: 'my-app/templates/components/test-foo.hbs',
       }),
     );
-    this.owner.register(
+    register(
       'template:components/test-bar',
       hbs(
         `<!-- before -->
@@ -621,7 +640,7 @@ module('Ember Debug - View', function (hooks) {
       ),
     );
 
-    this.owner.register(
+    register(
       'template:components/test-component-in-in-element',
       hbs(`
             <p class='test-component-in-in-element'>
@@ -630,7 +649,7 @@ module('Ember Debug - View', function (hooks) {
         `),
     );
 
-    this.owner.register(
+    register(
       'template:components/test-in-element-in-component',
       hbs(`
                 {{#in-element this.elementTarget}}
@@ -642,6 +661,18 @@ module('Ember Debug - View', function (hooks) {
     );
 
     this.owner.register('modifier:did-insert', didInsert);
+
+    for (const [spec, t] of Object.entries(registry)) {
+      this.owner.register(spec, t.value);
+      const compSpec = spec.replace('template:components/', 'component:');
+      if (!registry[compSpec]) {
+        throw new Error('missing comp: ' + compSpec);
+      }
+      const isTpl = spec.includes('template:');
+      if (isTpl && !getComponentTemplate?.(registry[compSpec].value)) {
+        setComponentTemplate?.(t.value, registry[compSpec].value);
+      }
+    }
   });
 
   test('Simple Inputs Tree', async function () {
@@ -760,6 +791,7 @@ module('Ember Debug - View', function (hooks) {
       Component(
         {
           name: 'in-element',
+          bounds: 'range',
           args: (actual) => {
             QUnit.assert.ok(actual.positional[0]);
             async function testArgsValue() {
@@ -775,6 +807,7 @@ module('Ember Debug - View', function (hooks) {
           template: null,
         },
         Component({
+          bounds: 'range',
           name: 'test-component-in-in-element',
           template: () => null,
         }),
@@ -852,11 +885,13 @@ module('Ember Debug - View', function (hooks) {
       }),
       Component(
         {
+          bounds: 'range',
           name: 'in-element',
           args: Args({ names: [], positionals: 1 }),
           template: null,
         },
         Component({
+          bounds: 'range',
           name: 'test-component-in-in-element',
           template: () => null,
         }),
@@ -892,27 +927,32 @@ module('Ember Debug - View', function (hooks) {
   });
 
   test('Does not list nested {{yield}} views', async function () {
-    this.owner.register('component:x-first', EmberComponent.extend());
-    this.owner.register('component:x-second', EmberComponent.extend());
+    const cXFirst = templateOnlyComponent?.();
+    const cXSecond = templateOnlyComponent?.();
+    const xTplPost = hbs('{{#x-first}}Foo{{/x-first}}', {
+      moduleName: 'my-app/templates/posts.hbs',
+    });
+    const xTplFirst = hbs('{{#x-second}}{{yield}}{{/x-second}}', {
+      moduleName: 'my-app/templates/components/x-first.hbs',
+    });
+    const xTplSecond = hbs('{{yield}}', {
+      moduleName: 'my-app/templates/components/x-second.hbs',
+    });
+    this.owner.register(
+      'component:x-first',
+      cXFirst || EmberComponent.extend(),
+    );
+    this.owner.register(
+      'component:x-second',
+      cXSecond || EmberComponent.extend(),
+    );
 
-    this.owner.register(
-      'template:posts',
-      hbs('{{#x-first}}Foo{{/x-first}}', {
-        moduleName: 'my-app/templates/posts.hbs',
-      }),
-    );
-    this.owner.register(
-      'template:components/x-first',
-      hbs('{{#x-second}}{{yield}}{{/x-second}}', {
-        moduleName: 'my-app/templates/components/x-first.hbs',
-      }),
-    );
-    this.owner.register(
-      'template:components/x-second',
-      hbs('{{yield}}', {
-        moduleName: 'my-app/templates/components/x-second.hbs',
-      }),
-    );
+    this.owner.register('template:posts', xTplPost);
+    this.owner.register('template:components/x-first', xTplFirst);
+    this.owner.register('template:components/x-second', xTplSecond);
+
+    setComponentTemplate?.(xTplFirst, cXFirst);
+    setComponentTemplate?.(xTplSecond, cXSecond);
 
     await visit('/posts');
 

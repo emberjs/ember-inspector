@@ -96,6 +96,7 @@ export default ts.config(
         ...globals.browser,
         basicContext: false,
         requireModule: false,
+        chrome: true,
       },
     },
   },
@@ -122,6 +123,14 @@ export default ts.config(
     ],
     plugins: {
       qunit,
+    },
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        basicContext: false,
+        requireModule: false,
+        chrome: true,
+      },
     },
   },
   /**
