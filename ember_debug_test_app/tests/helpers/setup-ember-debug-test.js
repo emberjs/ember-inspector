@@ -50,7 +50,6 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     }
 
     this.owner.register('router:main', Router);
-    this.owner.register('service:adapter', BasicAdapter);
 
     run(() => {
       EmberDebug.isTesting = true;
