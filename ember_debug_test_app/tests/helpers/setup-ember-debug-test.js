@@ -10,7 +10,6 @@ import {
   teardownContext,
 } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
-import BasicAdapter from 'test-app/services/adapters/basic';
 import config from 'test-app/config/environment';
 import EmberDebug from 'ember-debug/main';
 import { hbs } from 'ember-cli-htmlbars';
