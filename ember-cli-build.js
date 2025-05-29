@@ -7,13 +7,7 @@ const concatFiles = require('broccoli-concat');
 const stew = require('broccoli-stew');
 const writeFile = require('broccoli-file-creator');
 const replace = require('broccoli-string-replace');
-const Babel = require('broccoli-babel-transpiler');
-const moduleResolver = require('amd-name-resolver').resolveModules({
-  throwOnRootAccess: false,
-});
 const Funnel = require('broccoli-funnel');
-const ensurePosix = require('ensure-posix-path');
-const path = require('path');
 const packageJson = require('./package.json');
 const { map, mv } = stew;
 
@@ -32,16 +26,6 @@ const options = {
 // Firefox requires non-minified assets for review :(
 options.minifyJS = { enabled: false };
 options.minifyCSS = { enabled: false };
-
-// Stolen from relative-module-paths.js in ember-cli-babel
-function getRelativeModulePath(modulePath) {
-  return ensurePosix(path.relative(process.cwd(), modulePath));
-}
-
-// Stolen from relative-module-paths.js in ember-cli-babel
-function resolveRelativeModulePath(name, child) {
-  return moduleResolver(name, getRelativeModulePath(child));
-}
 
 module.exports = function (defaults) {
   let checker = new VersionChecker(defaults);
@@ -100,41 +84,11 @@ module.exports = function (defaults) {
   app.import('node_modules/compare-versions/index.js');
   app.import('node_modules/normalize.css/normalize.css');
 
-  // Ember Debug
-
-  let emberDebug = 'ember_debug';
-
-  let sourceMap = new Funnel('node_modules/source-map-js', {
-    files: ['**/*.js'],
-    destDir: 'ember-debug/deps',
-  });
-
-  sourceMap = new Babel(sourceMap, {
-    plugins: ['transform-commonjs'],
-  });
-
-  const backburner = new Funnel('node_modules/backburner.js/dist/es6', {
-    files: ['backburner.js'],
-    destDir: 'ember-debug/deps',
-  });
+  let emberDebug = 'ember_debug/dist';
 
   emberDebug = new Funnel(emberDebug, {
     destDir: 'ember-debug',
     include: ['**/*.js'],
-    exclude: ['vendor/startup-wrapper.js', 'vendor/loader.js'],
-  });
-
-  emberDebug = mergeTrees([sourceMap, backburner, emberDebug]);
-
-  emberDebug = new Babel(emberDebug, {
-    moduleIds: true,
-    getModuleId: getRelativeModulePath,
-    plugins: [
-      ['@babel/plugin-transform-class-properties'],
-      ['@babel/plugin-transform-class-static-block'],
-      ['module-resolver', { resolvePath: resolveRelativeModulePath }],
-      ['@babel/plugin-transform-modules-amd', { noInterop: true }],
-    ],
   });
 
   const previousEmberVersionsSupportedString = `[${packageJson.previousEmberVersionsSupported

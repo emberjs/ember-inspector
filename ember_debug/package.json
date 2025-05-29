@@ -1,0 +1,25 @@
+{
+  "name": "ember-debug",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "watch": "pnpm build --watch",
+    "build": "rollup --config",
+    "prepare": "pnpm build"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^7.25.9",
+    "@babel/plugin-transform-class-properties": "^7.25.9",
+    "@babel/plugin-transform-class-static-block": "^7.26.0",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^28.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "backburner.js": "^2.8.0",
+    "rollup": "^4.39.0",
+    "source-map-js": "^1.2.1"
+  },
+  "exports": {
+    "./*": "./*.js"
+  },
+  "main": "dist/bundle.js"
+}

@@ -1,4 +1,4 @@
-import Backburner from 'ember-debug/deps/backburner';
+import Backburner from 'backburner.js';
 
 let currentRunLoop = null;
 export function _getCurrentRunLoop() {
