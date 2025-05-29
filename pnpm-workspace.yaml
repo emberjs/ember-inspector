@@ -1,0 +1,3 @@
+packages:
+  - .
+  - ember_debug
