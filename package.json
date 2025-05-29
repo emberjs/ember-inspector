@@ -194,5 +194,6 @@
   "volta": {
     "node": "18.20.4",
     "pnpm": "9.12.1"
-  }
+  },
+  "packageManager": "pnpm@9.12.1"
 }
