@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import ProfileNode from 'ember-debug/models/profile-node';
+import ProfileNode from 'ember-debug/profile-node';
 
 module('Ember Debug - ProfileNode', function () {
   test('It can create a ProfileNode', function (assert) {

@@ -20,8 +20,8 @@ import QUnit, { module, test } from 'qunit';
 import { hbs } from 'ember-cli-htmlbars';
 import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
-import { isInVersionSpecifier } from 'ember-debug/utils/version';
-import { VERSION } from 'ember-debug/utils/ember';
+import { isInVersionSpecifier } from 'ember-debug/version';
+import { VERSION } from 'ember-debug/ember';
 
 let templateOnlyComponent = null;
 try {

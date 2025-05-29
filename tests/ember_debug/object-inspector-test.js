@@ -18,7 +18,7 @@ import { module, skip, test } from 'qunit';
 import { hbs } from 'ember-cli-htmlbars';
 import require from 'require';
 import hasEmberVersion from '@ember/test-helpers/has-ember-version';
-import { compareVersion } from 'ember-debug/utils/version';
+import { compareVersion } from 'ember-debug/version';
 import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import EmberRoute from '@ember/routing/route';

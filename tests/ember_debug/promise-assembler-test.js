@@ -2,7 +2,7 @@ import { run } from '@ember/runloop';
 import Evented from '@ember/object/evented';
 import EmberObject from '@ember/object';
 import { module, test } from 'qunit';
-import PromiseAssembler from 'ember-debug/libs/promise-assembler';
+import PromiseAssembler from 'ember-debug/promise-assembler';
 
 let assembler;
 
