@@ -124,6 +124,7 @@
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-qunit": "^8.1.2",
     "fstream": "^1.0.12",
+    "glob": "^11.0.2",
     "globals": "^15.14.0",
     "gulp": "^4.0.2",
     "gulp-zip": "^5.1.0",
