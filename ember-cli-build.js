@@ -12,6 +12,8 @@ const packageJson = require('./package.json');
 const { readFileSync } = require('fs');
 const { map, mv } = stew;
 
+const { globSync } = require('glob');
+
 const options = {
   autoImport: {
     forbidEval: true,
@@ -125,7 +127,11 @@ module.exports = function (defaults) {
     sourceMapConfig: { enabled: false },
   });
 
-  const mainContent = readFileSync('./ember_debug/dist/main.js', 'utf8');
+  // TODO convert this to a braoccoli funnel to allow it to reload better with ember-cli
+  // alternatively move the wrapper out into ember-debug too
+  const mainContent = globSync('ember_debug/dist/*.js')
+    .map((file) => readFileSync(file, 'utf8'))
+    .join('\n');
 
   function wrapWithLoader(content) {
     return `${mainContent}
