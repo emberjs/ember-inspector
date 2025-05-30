@@ -11,7 +11,6 @@ import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 // eslint-disable-next-line ember/no-classic-components
 import EmberComponent from '@ember/component';
-import * as EmberComponentAll from '@ember/component';
 import EmberRoute from '@ember/routing/route';
 import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
@@ -23,6 +22,8 @@ import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import { isInVersionSpecifier } from 'ember-debug/utils/version';
 import { VERSION } from 'ember-debug/utils/ember';
+
+const EmberComponentAll = required ('@ember/component');
 
 let templateOnlyComponent = null;
 try {
