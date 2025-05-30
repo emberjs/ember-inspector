@@ -255,6 +255,8 @@ const constructBase = (owner) => {
 const constructComponents = (owner, componentsMap) => {
   for (const componentKey in componentsMap) {
     if (componentsMap[componentKey].component) {
+      class X extends componentsMap[componentKey].component {};
+      componentsMap[componentKey].component = X;
       owner.register(
         `component:${componentKey}`,
         componentsMap[componentKey].component,
