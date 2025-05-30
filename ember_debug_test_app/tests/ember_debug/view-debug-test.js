@@ -921,11 +921,11 @@ module('Ember Debug - View', function (hooks) {
   test('Does not list nested {{yield}} views', async function () {
     this.owner.register(
       'component:x-first',
-      templateOnlyComponent?.() || EmberComponent.extend()
+      templateOnlyComponent?.() || EmberComponent.extend(),
     );
     this.owner.register(
       'component:x-second',
-      templateOnlyComponent?.() || EmberComponent.extend()
+      templateOnlyComponent?.() || EmberComponent.extend(),
     );
 
     this.owner.register(
