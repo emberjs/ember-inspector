@@ -12,6 +12,7 @@ import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import { run } from '@ember/runloop';
 import Ember from 'ember-debug/utils/ember';
 import { compareVersion } from 'ember-debug/utils/version';
+import { setComponentTemplate, getComponentTemplate } from '@ember/component';
 
 const { VERSION } = Ember;
 
@@ -264,6 +265,9 @@ const constructComponents = (owner, componentsMap) => {
         `template:components/${componentKey}`,
         componentsMap[componentKey].template,
       );
+      if (!getComponentTemplate(componentsMap[componentKey].component)) {
+        setComponentTemplate(componentsMap[componentKey].template, componentsMap[componentKey].component);
+      }
     }
   }
 };
