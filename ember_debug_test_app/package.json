@@ -12,11 +12,10 @@
   },
   "scripts": {
     "build": "ember build --environment=testing",
-    "test": "pnpm copy-ember-debug && ember test",
-    "copy-ember-debug": "cp ../dist/ember_debug.js ./public",
+    "test": "ember test",
     "test:ember": "ember test",
     "ember": "ember",
-    "test-server:ember": "ember test --serve"
+    "test-server:ember": "ember test --serve --watcher node"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
