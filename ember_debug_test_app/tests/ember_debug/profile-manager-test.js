@@ -266,7 +266,10 @@ const constructComponents = (owner, componentsMap) => {
         componentsMap[componentKey].template,
       );
       if (!getComponentTemplate(componentsMap[componentKey].component)) {
-        setComponentTemplate(componentsMap[componentKey].template, componentsMap[componentKey].component);
+        setComponentTemplate(
+          componentsMap[componentKey].template,
+          componentsMap[componentKey].component,
+        );
       }
     }
   }
