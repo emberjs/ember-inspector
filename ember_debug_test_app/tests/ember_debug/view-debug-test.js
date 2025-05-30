@@ -23,7 +23,7 @@ import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import { isInVersionSpecifier } from 'ember-debug/utils/version';
 import { VERSION } from 'ember-debug/utils/ember';
 
-const EmberComponentAll = required ('@ember/component');
+const EmberComponentAll = require('@ember/component');
 
 let templateOnlyComponent = null;
 try {
