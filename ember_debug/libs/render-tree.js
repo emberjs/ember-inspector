@@ -49,9 +49,6 @@ class InElementSupportProvider {
     const self = this;
 
     const NewElementBuilder = this.NewElementBuilder;
-    if (!NewElementBuilder) {
-      return;
-    }
     const componentStack = [];
 
     const enableModifierSupport =
