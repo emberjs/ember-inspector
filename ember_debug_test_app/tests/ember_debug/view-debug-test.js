@@ -662,7 +662,7 @@ module('Ember Debug - View', function (hooks) {
     this.owner.register('modifier:did-insert', didInsert);
 
     for (const [spec, t] of Object.entries(templates)) {
-      this.owner.register(spec, t.tpl, t.opts);
+      this.owner.register(spec, t.tpl);
       EmberComponentAll.setComponentTemplate?.(
         t.tpl,
         this.owner.lookup(spec.replace('template:components/', 'component:')),
