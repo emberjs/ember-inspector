@@ -926,7 +926,7 @@ module('Ember Debug - View', function (hooks) {
     });
     const xTplFirst = hbs('{{#x-second}}{{yield}}{{/x-second}}', {
       moduleName: 'my-app/templates/components/x-first.hbs',
-    })
+    });
     const xTplSecond = hbs('{{yield}}', {
       moduleName: 'my-app/templates/components/x-second.hbs',
     });
