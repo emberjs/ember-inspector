@@ -919,20 +919,23 @@ module('Ember Debug - View', function (hooks) {
   });
 
   test('Does not list nested {{yield}} views', async function () {
+    const cXFirst = templateOnlyComponent?.();
+    const cXSecond = templateOnlyComponent?.();
+    const xTplFirst = hbs('{{#x-first}}Foo{{/x-first}}', {
+      moduleName: 'my-app/templates/posts.hbs',
+    }),
     this.owner.register(
       'component:x-first',
-      templateOnlyComponent?.() || EmberComponent.extend(),
+      cXFirst || EmberComponent.extend(),
     );
     this.owner.register(
       'component:x-second',
-      templateOnlyComponent?.() || EmberComponent.extend(),
+      cXFirst || EmberComponent.extend(),
     );
 
     this.owner.register(
       'template:posts',
-      hbs('{{#x-first}}Foo{{/x-first}}', {
-        moduleName: 'my-app/templates/posts.hbs',
-      }),
+      xTplFirst,
     );
     this.owner.register(
       'template:components/x-first',
@@ -948,8 +951,8 @@ module('Ember Debug - View', function (hooks) {
     );
 
     EmberComponentAll.setComponentTemplate?.(
-      this.owner.lookup('template:components/x-first'),
-      this.owner.lookup('component:x-first'),
+      xTplFirst,
+      cXFirst,
     );
     EmberComponentAll.setComponentTemplate?.(
       this.owner.lookup('template:components/x-second'),
