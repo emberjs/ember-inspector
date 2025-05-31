@@ -933,7 +933,7 @@ module('Ember Debug - View', function (hooks) {
       cXSecond || EmberComponent.extend(),
     );
 
-    this.owner.register('template:posts', xTplFirst,);
+    this.owner.register('template:posts', xTplFirst);
     this.owner.register(
       'template:components/x-first',
       hbs('{{#x-second}}{{yield}}{{/x-second}}', {
