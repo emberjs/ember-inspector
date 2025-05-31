@@ -941,10 +941,7 @@ module('Ember Debug - View', function (hooks) {
     this.owner.register('template:components/x-second', xTplSecond);
 
     EmberComponentAll.setComponentTemplate?.(xTplFirst, cXFirst);
-    EmberComponentAll.setComponentTemplate?.(
-      this.owner.lookup('template:components/x-second'),
-      this.owner.lookup('component:x-second'),
-    );
+    EmberComponentAll.setComponentTemplate?.(xTplSecond, cXSecond);
 
     await visit('/posts');
 
