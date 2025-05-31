@@ -679,6 +679,8 @@ module('Ember Debug - View', function (hooks) {
         EmberComponentAll.setComponentTemplate?.(t.tpl, registry[compSpec]);
       }
     }
+    // emberjs delas set component template...
+    await new Promise(res => setTimeout(res, 1));
   });
 
   test('Simple Inputs Tree', async function () {
