@@ -382,6 +382,11 @@ module('Ember Debug - View', function (hooks) {
 
   hooks.beforeEach(async function () {
     EmberDebug.IGNORE_DEPRECATIONS = true;
+    const templates = {};
+
+    function registerTemplate(spec, tpl, opts) {
+      templates[spec] = { tpl, opts };
+    }
 
     this.owner.register(
       'route:application',
@@ -614,13 +619,13 @@ module('Ember Debug - View', function (hooks) {
       'template:posts',
       hbs('Posts', { moduleName: 'my-app/templates/posts.hbs' }),
     );
-    this.owner.register(
+    registerTemplate(
       'template:components/test-foo',
       hbs('test-foo', {
         moduleName: 'my-app/templates/components/test-foo.hbs',
       }),
     );
-    this.owner.register(
+    registerTemplate(
       'template:components/test-bar',
       hbs(
         `<!-- before -->
@@ -634,7 +639,7 @@ module('Ember Debug - View', function (hooks) {
       ),
     );
 
-    this.owner.register(
+    registerTemplate(
       'template:components/test-component-in-in-element',
       hbs(`
             <p class='test-component-in-in-element'>
@@ -643,7 +648,7 @@ module('Ember Debug - View', function (hooks) {
         `),
     );
 
-    this.owner.register(
+    registerTemplate(
       'template:components/test-in-element-in-component',
       hbs(`
                 {{#in-element this.elementTarget}}
@@ -656,19 +661,13 @@ module('Ember Debug - View', function (hooks) {
 
     this.owner.register('modifier:did-insert', didInsert);
 
-    EmberComponentAll.setComponentTemplate?.(
-      this.owner.lookup('template:components/test-foo'),
-      this.owner.lookup('component:test-foo'),
-    );
-    // EmberComponentAll.setComponentTemplate?.(this.owner.lookup('template:components/test-bar'), this.owner.lookup('component:test-bar'));
-    EmberComponentAll.setComponentTemplate?.(
-      this.owner.lookup('template:components/test-component-in-in-element'),
-      this.owner.lookup('component:test-component-in-in-element'),
-    );
-    EmberComponentAll.setComponentTemplate?.(
-      this.owner.lookup('template:components/test-in-element-in-component'),
-      this.owner.lookup('component:test-in-element-in-component'),
-    );
+    for (const [spec, t] of Object.entries(templates)) {
+      this.owner.register(spec, t.tpl, t.opts);
+      EmberComponentAll.setComponentTemplate?.(
+        t.tpl,
+        this.owner.lookup(spec.replace('template:components/', 'component:')),
+      );
+    }
   });
 
   test('Simple Inputs Tree', async function () {
