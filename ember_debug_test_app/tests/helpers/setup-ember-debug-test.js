@@ -10,8 +10,7 @@ import {
   teardownContext,
 } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
-import BasicAdapter from 'ember-inspector/services/adapters/basic';
-import config from 'ember-inspector/config/environment';
+import config from 'test-app/config/environment';
 import EmberDebug from 'ember-debug/main';
 import { hbs } from 'ember-cli-htmlbars';
 import Port from 'ember-debug/port';
@@ -50,7 +49,6 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     }
 
     this.owner.register('router:main', Router);
-    this.owner.register('service:adapter', BasicAdapter);
 
     run(() => {
       EmberDebug.isTesting = true;
