@@ -11,6 +11,7 @@ import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 // eslint-disable-next-line ember/no-classic-components
 import EmberComponent from '@ember/component';
+import GlimmerComponent from '@glimmer/component';
 import EmberRoute from '@ember/routing/route';
 import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
@@ -512,8 +513,8 @@ module('Ember Debug - View', function (hooks) {
 
     register(
       'component:test-foo',
-      EmberComponent.extend({
-        classNames: ['simple-component'],
+      class extends GlimmerComponent {
+        classNames = ['simple-component'],
         toString() {
           return 'App.TestFooComponent';
         },
@@ -533,9 +534,9 @@ module('Ember Debug - View', function (hooks) {
 
     register(
       'component:test-in-element-in-component',
-      EmberComponent.extend({
-        init(...args) {
-          this._super(...args);
+      class extends GlimmerComponent {
+        constructor(...args) {
+          super(...args);
           this.elementTarget = document.querySelector('#target');
         },
         toString() {
@@ -546,7 +547,7 @@ module('Ember Debug - View', function (hooks) {
 
     register(
       'component:test-component-in-in-element',
-      EmberComponent.extend({
+      class extends GlimmerComponent {
         toString() {
           return 'App.TestComponentInElement';
         },
@@ -625,7 +626,7 @@ module('Ember Debug - View', function (hooks) {
     );
     register(
       'template:components/test-foo',
-      hbs('test-foo', {
+      hbs('<div class={{concat this.classNames}}>test-foo</div>', {
         moduleName: 'my-app/templates/components/test-foo.hbs',
       }),
     );
