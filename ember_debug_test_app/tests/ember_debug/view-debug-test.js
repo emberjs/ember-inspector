@@ -663,7 +663,9 @@ module('Ember Debug - View', function (hooks) {
     this.owner.register('modifier:did-insert', didInsert);
 
     for (const [spec, t] of Object.entries(registry)) {
-      this.owner.register(spec, t.tpl);
+      if (isInVersionSpecifier('<6.0.0')) {
+        this.owner.register(spec, t.tpl);
+      }
       const compSpec = spec.replace('template:components/', 'component:');
       if (!registry[compSpec]) {
         throw new Error('missing comp: ' + compSpec);
@@ -672,8 +674,6 @@ module('Ember Debug - View', function (hooks) {
         setComponentTemplate?.(t.tpl, registry[compSpec]);
       }
     }
-    // emberjs delas set component template...
-    await new Promise((res) => setTimeout(res, 100));
   });
 
   test('Simple Inputs Tree', async function () {
