@@ -23,8 +23,11 @@ import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import { isInVersionSpecifier } from 'ember-debug/utils/version';
 import { VERSION } from 'ember-debug/utils/ember';
 
-// eslint-disable-next-line no-undef
-const EmberComponentAll = require('@ember/component');
+let EmberComponentAll = {};
+try {
+  // eslint-disable-next-line no-undef
+  EmberComponentAll = require('@ember/component');
+} catch {}
 
 let templateOnlyComponent = null;
 try {
