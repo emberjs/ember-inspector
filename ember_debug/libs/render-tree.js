@@ -35,7 +35,8 @@ class InElementSupportProvider {
     this.debugRenderTree =
       owner.lookup('renderer:-dom')?.debugRenderTree ||
       owner.lookup('service:-glimmer-environment')._debugRenderTree;
-    this.NewElementBuilder = this.runtime.NewElementBuilder || this.runtimr.NewTreeBuilder;
+    this.NewElementBuilder =
+      this.runtime.NewElementBuilder || this.runtimr.NewTreeBuilder;
     this.patch();
   }
 
