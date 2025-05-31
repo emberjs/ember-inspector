@@ -797,6 +797,7 @@ module('Ember Debug - View', function (hooks) {
       Component(
         {
           name: 'in-element',
+          bounds: 'range',
           args: (actual) => {
             QUnit.assert.ok(actual.positional[0]);
             async function testArgsValue() {
@@ -890,6 +891,7 @@ module('Ember Debug - View', function (hooks) {
       Component(
         {
           name: 'in-element',
+          bounds: 'range',
           args: Args({ names: [], positionals: 1 }),
           template: null,
         },
