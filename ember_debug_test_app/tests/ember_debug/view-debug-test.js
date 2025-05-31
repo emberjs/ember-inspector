@@ -923,7 +923,7 @@ module('Ember Debug - View', function (hooks) {
     const cXSecond = templateOnlyComponent?.();
     const xTplFirst = hbs('{{#x-first}}Foo{{/x-first}}', {
       moduleName: 'my-app/templates/posts.hbs',
-    }),
+    });
     this.owner.register(
       'component:x-first',
       cXFirst || EmberComponent.extend(),
