@@ -388,7 +388,7 @@ module('Ember Debug - View', function (hooks) {
       registry[spec] = { tpl, opts };
     }
 
-    this.ownee.register(
+    this.owner.register(
       'route:application',
       EmberRoute.extend({
         model() {
