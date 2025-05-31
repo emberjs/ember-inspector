@@ -663,9 +663,7 @@ module('Ember Debug - View', function (hooks) {
     this.owner.register('modifier:did-insert', didInsert);
 
     for (const [spec, t] of Object.entries(registry)) {
-      if (isInVersionSpecifier('<6.0.0', VERSION) && !spec.includes('component:')) {
-        this.owner.register(spec, t.tpl);
-      }
+      this.owner.register(spec, t.tpl);
       const compSpec = spec.replace('template:components/', 'component:');
       if (!registry[compSpec]) {
         throw new Error('missing comp: ' + compSpec);
