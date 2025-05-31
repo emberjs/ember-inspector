@@ -382,13 +382,13 @@ module('Ember Debug - View', function (hooks) {
 
   hooks.beforeEach(async function () {
     EmberDebug.IGNORE_DEPRECATIONS = true;
-    const templates = {};
+    const registry = {};
 
-    function registerTemplate(spec, tpl, opts) {
-      templates[spec] = { tpl, opts };
+    function register(spec, tpl, opts) {
+      registry[spec] = { tpl, opts };
     }
 
-    this.owner.register(
+    this.ownee.register(
       'route:application',
       EmberRoute.extend({
         model() {
@@ -506,7 +506,7 @@ module('Ember Debug - View', function (hooks) {
       }),
     );
 
-    this.owner.register(
+    register(
       'component:test-foo',
       EmberComponent.extend({
         classNames: ['simple-component'],
@@ -516,7 +516,7 @@ module('Ember Debug - View', function (hooks) {
       }),
     );
 
-    this.owner.register(
+    register(
       'component:test-bar',
       templateOnlyComponent?.() ||
         EmberComponent.extend({
@@ -527,7 +527,7 @@ module('Ember Debug - View', function (hooks) {
         }),
     );
 
-    this.owner.register(
+    register(
       'component:test-in-element-in-component',
       EmberComponent.extend({
         init(...args) {
@@ -540,7 +540,7 @@ module('Ember Debug - View', function (hooks) {
       }),
     );
 
-    this.owner.register(
+    register(
       'component:test-component-in-in-element',
       EmberComponent.extend({
         toString() {
@@ -619,13 +619,13 @@ module('Ember Debug - View', function (hooks) {
       'template:posts',
       hbs('Posts', { moduleName: 'my-app/templates/posts.hbs' }),
     );
-    registerTemplate(
+    register(
       'template:components/test-foo',
       hbs('test-foo', {
         moduleName: 'my-app/templates/components/test-foo.hbs',
       }),
     );
-    registerTemplate(
+    register(
       'template:components/test-bar',
       hbs(
         `<!-- before -->
@@ -639,7 +639,7 @@ module('Ember Debug - View', function (hooks) {
       ),
     );
 
-    registerTemplate(
+    register(
       'template:components/test-component-in-in-element',
       hbs(`
             <p class='test-component-in-in-element'>
@@ -648,7 +648,7 @@ module('Ember Debug - View', function (hooks) {
         `),
     );
 
-    registerTemplate(
+    register(
       'template:components/test-in-element-in-component',
       hbs(`
                 {{#in-element this.elementTarget}}
@@ -661,11 +661,11 @@ module('Ember Debug - View', function (hooks) {
 
     this.owner.register('modifier:did-insert', didInsert);
 
-    for (const [spec, t] of Object.entries(templates)) {
+    for (const [spec, t] of Object.entries(registry)) {
       this.owner.register(spec, t.tpl);
       EmberComponentAll.setComponentTemplate?.(
         t.tpl,
-        this.owner.lookup(spec.replace('template:components/', 'component:')),
+        registry[spec.replace('template:components/', 'component:')],
       );
     }
   });
