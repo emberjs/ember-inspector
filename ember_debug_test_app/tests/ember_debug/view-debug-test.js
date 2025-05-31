@@ -813,7 +813,7 @@ module('Ember Debug - View', function (hooks) {
           template: null,
         },
         Component({
-          bounds: 'single',
+          bounds: 'range',
           name: 'test-component-in-in-element',
           template: () => null,
         }),
@@ -897,7 +897,7 @@ module('Ember Debug - View', function (hooks) {
           template: null,
         },
         Component({
-          bounds: 'single',
+          bounds: 'range',
           name: 'test-component-in-in-element',
           template: () => null,
         }),
