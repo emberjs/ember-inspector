@@ -930,13 +930,10 @@ module('Ember Debug - View', function (hooks) {
     );
     this.owner.register(
       'component:x-second',
-      cXFirst || EmberComponent.extend(),
+      cXSecond || EmberComponent.extend(),
     );
 
-    this.owner.register(
-      'template:posts',
-      xTplFirst,
-    );
+    this.owner.register('template:posts', xTplFirst,);
     this.owner.register(
       'template:components/x-first',
       hbs('{{#x-second}}{{yield}}{{/x-second}}', {
@@ -950,10 +947,7 @@ module('Ember Debug - View', function (hooks) {
       }),
     );
 
-    EmberComponentAll.setComponentTemplate?.(
-      xTplFirst,
-      cXFirst,
-    );
+    EmberComponentAll.setComponentTemplate?.(xTplFirst, cXFirst);
     EmberComponentAll.setComponentTemplate?.(
       this.owner.lookup('template:components/x-second'),
       this.owner.lookup('component:x-second'),
