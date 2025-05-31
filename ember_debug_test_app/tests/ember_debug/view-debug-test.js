@@ -518,7 +518,7 @@ module('Ember Debug - View', function (hooks) {
         toString() {
           return 'App.TestFooComponent';
         }
-      }),
+      }
     );
 
     register(
@@ -542,7 +542,7 @@ module('Ember Debug - View', function (hooks) {
         toString() {
           return 'App.TestInElementInComponent';
         }
-      }),
+      }
     );
 
     register(
@@ -551,7 +551,7 @@ module('Ember Debug - View', function (hooks) {
         toString() {
           return 'App.TestComponentInElement';
         }
-      }),
+      }
     );
 
     /*
