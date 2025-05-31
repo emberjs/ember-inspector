@@ -666,10 +666,7 @@ module('Ember Debug - View', function (hooks) {
       const compSpec = spec.replace('template:components/', 'component:');
       registry[compSpec] = class extends registry[compSpec] {};
 
-      EmberComponentAll.setComponentTemplate?.(
-        t.tpl,
-        registry[compSpec],
-      );
+      EmberComponentAll.setComponentTemplate?.(t.tpl, registry[compSpec]);
     }
   });
 
