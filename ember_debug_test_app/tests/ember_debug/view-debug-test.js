@@ -680,7 +680,7 @@ module('Ember Debug - View', function (hooks) {
       }
     }
     // emberjs delas set component template...
-    await new Promise((res) => setTimeout(res, 1));
+    await new Promise((res) => setTimeout(res, 100));
   });
 
   test('Simple Inputs Tree', async function () {
