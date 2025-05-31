@@ -517,7 +517,7 @@ module('Ember Debug - View', function (hooks) {
         classNames = ['simple-component'];
         toString() {
           return 'App.TestFooComponent';
-        },
+        }
       }),
     );
 
@@ -538,10 +538,10 @@ module('Ember Debug - View', function (hooks) {
         constructor(...args) {
           super(...args);
           this.elementTarget = document.querySelector('#target');
-        },
+        }
         toString() {
           return 'App.TestInElementInComponent';
-        },
+        }
       }),
     );
 
@@ -550,7 +550,7 @@ module('Ember Debug - View', function (hooks) {
       class extends GlimmerComponent {
         toString() {
           return 'App.TestComponentInElement';
-        },
+        }
       }),
     );
 
