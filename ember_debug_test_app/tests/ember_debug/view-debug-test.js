@@ -27,6 +27,7 @@ let EmberComponentAll = {};
 try {
   // eslint-disable-next-line no-undef
   EmberComponentAll = require('@ember/component');
+  // eslint-disable-next-line no-empty
 } catch {}
 
 let templateOnlyComponent = null;
