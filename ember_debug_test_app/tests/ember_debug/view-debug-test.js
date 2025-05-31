@@ -664,6 +664,9 @@ module('Ember Debug - View', function (hooks) {
     for (const [spec, t] of Object.entries(registry)) {
       this.owner.register(spec, t.tpl);
       const compSpec = spec.replace('template:components/', 'component:');
+      if (!registry[compSpec]) {
+        throw new Error('missing comp: ' + compSpec);
+      }
       if (
         registry[compSpec] &&
         !EmberComponentAll.getComponentTemplate?.(registry[compSpec])
