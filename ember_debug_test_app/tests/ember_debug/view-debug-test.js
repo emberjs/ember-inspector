@@ -514,7 +514,7 @@ module('Ember Debug - View', function (hooks) {
     register(
       'component:test-foo',
       class extends GlimmerComponent {
-        classNames = ['simple-component'],
+        classNames = ['simple-component'];
         toString() {
           return 'App.TestFooComponent';
         },
