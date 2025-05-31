@@ -10,7 +10,10 @@ import hasEmberVersion from '@ember/test-helpers/has-ember-version';
 import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 // eslint-disable-next-line ember/no-classic-components
-import EmberComponent from '@ember/component';
+import EmberComponent, {
+  setComponentTemplate,
+  getComponentTemplate,
+} from '@ember/component';
 import GlimmerComponent from '@glimmer/component';
 import EmberRoute from '@ember/routing/route';
 import EmberObject from '@ember/object';
@@ -23,13 +26,6 @@ import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import { isInVersionSpecifier } from 'ember-debug/utils/version';
 import { VERSION } from 'ember-debug/utils/ember';
-
-let EmberComponentAll = {};
-try {
-  // eslint-disable-next-line no-undef
-  EmberComponentAll = require('@ember/component');
-  // eslint-disable-next-line no-empty
-} catch {}
 
 let templateOnlyComponent = null;
 try {
@@ -672,11 +668,8 @@ module('Ember Debug - View', function (hooks) {
       if (!registry[compSpec]) {
         throw new Error('missing comp: ' + compSpec);
       }
-      if (
-        registry[compSpec] &&
-        !EmberComponentAll.getComponentTemplate?.(registry[compSpec])
-      ) {
-        EmberComponentAll.setComponentTemplate?.(t.tpl, registry[compSpec]);
+      if (registry[compSpec] && !getComponentTemplate?.(registry[compSpec])) {
+        setComponentTemplate?.(t.tpl, registry[compSpec]);
       }
     }
     // emberjs delas set component template...
@@ -959,8 +952,8 @@ module('Ember Debug - View', function (hooks) {
     this.owner.register('template:components/x-first', xTplFirst);
     this.owner.register('template:components/x-second', xTplSecond);
 
-    EmberComponentAll.setComponentTemplate?.(xTplFirst, cXFirst);
-    EmberComponentAll.setComponentTemplate?.(xTplSecond, cXSecond);
+    setComponentTemplate?.(xTplFirst, cXFirst);
+    setComponentTemplate?.(xTplSecond, cXSecond);
 
     await visit('/posts');
 
