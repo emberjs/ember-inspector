@@ -924,6 +924,9 @@ module('Ember Debug - View', function (hooks) {
     const xTplFirst = hbs('{{#x-first}}Foo{{/x-first}}', {
       moduleName: 'my-app/templates/posts.hbs',
     });
+    const xTplSecond = hbs('{{yield}}', {
+      moduleName: 'my-app/templates/components/x-second.hbs',
+    });
     this.owner.register(
       'component:x-first',
       cXFirst || EmberComponent.extend(),
@@ -934,18 +937,8 @@ module('Ember Debug - View', function (hooks) {
     );
 
     this.owner.register('template:posts', xTplFirst);
-    this.owner.register(
-      'template:components/x-first',
-      hbs('{{#x-second}}{{yield}}{{/x-second}}', {
-        moduleName: 'my-app/templates/components/x-first.hbs',
-      }),
-    );
-    this.owner.register(
-      'template:components/x-second',
-      hbs('{{yield}}', {
-        moduleName: 'my-app/templates/components/x-second.hbs',
-      }),
-    );
+    this.owner.register('template:components/x-first', xTplFirst);
+    this.owner.register('template:components/x-second', xTplSecond);
 
     EmberComponentAll.setComponentTemplate?.(xTplFirst, cXFirst);
     EmberComponentAll.setComponentTemplate?.(
