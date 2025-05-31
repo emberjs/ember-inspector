@@ -666,8 +666,8 @@ module('Ember Debug - View', function (hooks) {
       const compSpec = spec.replace('template:components/', 'component:');
       if (
         registry[compSpec] &&
-        !EmberComponentAll.hasComponentTemplate?.(registry[compSpec]))
-      {
+        !EmberComponentAll.hasComponentTemplate?.(registry[compSpec])
+        ){
         EmberComponentAll.setComponentTemplate?.(t.tpl, registry[compSpec]);
       }
     }
