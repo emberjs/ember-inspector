@@ -228,9 +228,6 @@ module('Integration | Injection', function (hooks) {
   if (isInVersionSpecifier('~3.16.0', VERSION)) {
     return;
   }
-  if (isInVersionSpecifier('>6.4.1', VERSION)) {
-    return;
-  }
 
   /**
    * @type {ChromeApi}
@@ -343,9 +340,10 @@ module('Integration | Injection', function (hooks) {
 
   test('triggering Ember Component Context Menu Item should call inspect nearest', async function (assert) {
     await inject(this.owner, assert);
-    assert.timeout(10);
+    assert.timeout(100);
 
-    const viewInspection = window.EmberInspector.viewDebug.viewInspection;
+    const emberDebug = requireModule('ember-debug/main')['default'];
+    const viewInspection = emberDebug.viewDebug.viewInspection;
 
     const inspectNearestCalled = new Promise((resolve) => {
       viewInspection.inspectNearest = () => {
