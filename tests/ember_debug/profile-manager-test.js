@@ -12,6 +12,7 @@ import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import { run } from '@ember/runloop';
 import Ember from 'ember-debug/utils/ember';
 import { compareVersion } from 'ember-debug/utils/version';
+import { setComponentTemplate } from '@ember/component';
 
 const { VERSION } = Ember;
 
@@ -28,119 +29,123 @@ const getRounded = (value) => {
   }
   return Math.floor(data);
 };
-class OneRootGlimmer extends GlimmerComponent {
-  classNames = 'simple-component';
-}
 
-const mockedComponents = {
-  text: {
-    component: EmberComponent.extend({
-      tagName: '',
-    }),
-    template: hbs('text only', {
-      moduleName: 'my-app/templates/components/text.hbs',
-    }),
-  },
-  'text-glimmer': {
-    component: GlimmerComponent,
-    template: hbs('text only', {
-      moduleName: 'my-app/templates/components/text-glimmer.hbs',
-    }),
-  },
-  comment: {
-    component: EmberComponent.extend({
-      tagName: '',
-    }),
-    template: hbs('<!-- comment -->', {
-      moduleName: 'my-app/templates/components/comment.hbs',
-    }),
-  },
-  'comment-glimmer': {
-    component: GlimmerComponent,
-    template: hbs('<!-- comment -->', {
-      moduleName: 'my-app/templates/components/comment-glimmer.hbs',
-    }),
-  },
-  'one-root': {
-    component: EmberComponent.extend({
-      tagName: '',
-    }),
-    template: hbs('<div class="simple-component">one root</div>', {
-      moduleName: 'my-app/templates/components/one-root.hbs',
-    }),
-  },
-  'one-root-glimmer': {
-    component: OneRootGlimmer,
-    template: hbs('<div class={{this.classNames}}>one root</div>', {
-      moduleName: 'my-app/templates/components/one-root-glimmer.hbs',
-    }),
-  },
-  'two-root': {
-    component: EmberComponent.extend({
-      tagName: '',
-    }),
-    template: hbs(
-      '<div class="simple-component">one</div><div class="another-component">two</div>',
-      { moduleName: 'my-app/templates/components/two-root.hbs' },
-    ),
-  },
-  'two-root-glimmer': {
-    component: GlimmerComponent,
-    template: hbs(
-      '<div class="simple-component">one</div><div class="another-component">two</div>',
-      { moduleName: 'my-app/templates/components/two-root-glimmer.hbs' },
-    ),
-  },
-  'root-comment-root': {
-    component: EmberComponent.extend({
-      tagName: '',
-    }),
-    template: hbs(
-      '<div class="simple-component">one</div><!-- comment --><div class="another-component">two</div>',
-      { moduleName: 'my-app/templates/components/root-comment-root.hbs' },
-    ),
-  },
-  'root-comment-root-glimmer': {
-    component: GlimmerComponent,
-    template: hbs(
-      '<div class="simple-component">one</div><!-- comment --><div class="another-component">two</div>',
-      {
-        moduleName: 'my-app/templates/components/root-comment-root-glimmer.hbs',
-      },
-    ),
-  },
-  'comment-root-comment': {
-    component: EmberComponent.extend({
-      tagName: '',
-    }),
-    template: hbs(
-      '<!-- comment 1 --><div class="simple-component">one</div><!-- comment 2 -->',
-      { moduleName: 'my-app/templates/components/comment-root-comment.hbs' },
-    ),
-  },
-  'comment-root-comment-glimmer': {
-    component: GlimmerComponent,
-    template: hbs(
-      '<!-- comment 1 --><div class="simple-component">one</div><!-- comment 2 -->',
-      { moduleName: 'my-app/templates/components/comment-root-comment.hbs' },
-    ),
-  },
-  'div-tag': {
-    component: EmberComponent.extend({
-      classNames: ['simple-component'],
-    }),
-    template: hbs('text in div', {
-      moduleName: 'my-app/templates/components/div-tag.hbs',
-    }),
-  },
-  'div-roots': {
-    component: EmberComponent.extend({
-      classNames: ['simple-component'],
-    }),
-    template: hbs('<div>one</div><div>two</div>', {
-      moduleName: 'my-app/templates/components/div-roots.hbs',
-    }),
-  },
+const mockedComponents = () => {
+  class OneRootGlimmer extends GlimmerComponent {
+    classNames = 'simple-component';
+  }
+
+  return {
+    text: {
+      component: EmberComponent.extend({
+        tagName: '',
+      }),
+      template: hbs('text only', {
+        moduleName: 'my-app/templates/components/text.hbs',
+      }),
+    },
+    'text-glimmer': {
+      component: class extends GlimmerComponent {},
+      template: hbs('text only', {
+        moduleName: 'my-app/templates/components/text-glimmer.hbs',
+      }),
+    },
+    comment: {
+      component: EmberComponent.extend({
+        tagName: '',
+      }),
+      template: hbs('<!-- comment -->', {
+        moduleName: 'my-app/templates/components/comment.hbs',
+      }),
+    },
+    'comment-glimmer': {
+      component: class extends GlimmerComponent {},
+      template: hbs('<!-- comment -->', {
+        moduleName: 'my-app/templates/components/comment-glimmer.hbs',
+      }),
+    },
+    'one-root': {
+      component: EmberComponent.extend({
+        tagName: '',
+      }),
+      template: hbs('<div class="simple-component">one root</div>', {
+        moduleName: 'my-app/templates/components/one-root.hbs',
+      }),
+    },
+    'one-root-glimmer': {
+      component: OneRootGlimmer,
+      template: hbs('<div class={{this.classNames}}>one root</div>', {
+        moduleName: 'my-app/templates/components/one-root-glimmer.hbs',
+      }),
+    },
+    'two-root': {
+      component: EmberComponent.extend({
+        tagName: '',
+      }),
+      template: hbs(
+        '<div class="simple-component">one</div><div class="another-component">two</div>',
+        { moduleName: 'my-app/templates/components/two-root.hbs' },
+      ),
+    },
+    'two-root-glimmer': {
+      component: class extends GlimmerComponent {},
+      template: hbs(
+        '<div class="simple-component">one</div><div class="another-component">two</div>',
+        { moduleName: 'my-app/templates/components/two-root-glimmer.hbs' },
+      ),
+    },
+    'root-comment-root': {
+      component: EmberComponent.extend({
+        tagName: '',
+      }),
+      template: hbs(
+        '<div class="simple-component">one</div><!-- comment --><div class="another-component">two</div>',
+        { moduleName: 'my-app/templates/components/root-comment-root.hbs' },
+      ),
+    },
+    'root-comment-root-glimmer': {
+      component: class extends GlimmerComponent {},
+      template: hbs(
+        '<div class="simple-component">one</div><!-- comment --><div class="another-component">two</div>',
+        {
+          moduleName:
+            'my-app/templates/components/root-comment-root-glimmer.hbs',
+        },
+      ),
+    },
+    'comment-root-comment': {
+      component: EmberComponent.extend({
+        tagName: '',
+      }),
+      template: hbs(
+        '<!-- comment 1 --><div class="simple-component">one</div><!-- comment 2 -->',
+        { moduleName: 'my-app/templates/components/comment-root-comment.hbs' },
+      ),
+    },
+    'comment-root-comment-glimmer': {
+      component: class extends GlimmerComponent {},
+      template: hbs(
+        '<!-- comment 1 --><div class="simple-component">one</div><!-- comment 2 -->',
+        { moduleName: 'my-app/templates/components/comment-root-comment.hbs' },
+      ),
+    },
+    'div-tag': {
+      component: EmberComponent.extend({
+        classNames: ['simple-component'],
+      }),
+      template: hbs('text in div', {
+        moduleName: 'my-app/templates/components/div-tag.hbs',
+      }),
+    },
+    'div-roots': {
+      component: EmberComponent.extend({
+        classNames: ['simple-component'],
+      }),
+      template: hbs('<div>one</div><div>two</div>', {
+        moduleName: 'my-app/templates/components/div-roots.hbs',
+      }),
+    },
+  };
 };
 
 const mockedRoutes = {
@@ -260,9 +265,9 @@ const constructComponents = (owner, componentsMap) => {
       );
     }
     if (componentsMap[componentKey].template) {
-      owner.register(
-        `template:components/${componentKey}`,
+      setComponentTemplate(
         componentsMap[componentKey].template,
+        componentsMap[componentKey].component,
       );
     }
   }
@@ -398,7 +403,7 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   hooks.beforeEach(async function () {
     EmberDebug.IGNORE_DEPRECATIONS = true;
     constructBase(this.owner);
-    constructComponents(this.owner, mockedComponents);
+    constructComponents(this.owner, mockedComponents());
   });
 
   hooks.afterEach(function (assert) {
