@@ -1,3 +1,4 @@
+/* eslint-disable ember/new-module-imports */
 import { emberSafeRequire } from 'ember-debug/utils/ember/loader';
 
 let Ember;
@@ -14,31 +15,29 @@ try {
   Ember = window.Ember;
 }
 
-let {
-  ArrayProxy,
-  Namespace,
-  ActionHandler,
-  ControllerMixin,
-  CoreObject,
-  Application,
-  MutableArray,
-  MutableEnumerable,
-  NativeArray,
-  Component,
-  Observable,
-  Evented,
-  PromiseProxyMixin,
-  Service,
-  Object: EmberObject,
-  ObjectProxy,
-  VERSION,
-  ComputedProperty,
-  meta,
-  get,
-  set,
-  computed,
-  _captureRenderTree: captureRenderTree,
-} = Ember || {};
+let ArrayProxy = Ember.ArrayProxy;
+let Namespace = Ember.Namespace;
+let ActionHandler = Ember.ActionHandler;
+let ControllerMixin = Ember.ControllerMixin;
+let CoreObject = Ember.CoreObject;
+let Application = Ember.Application;
+let MutableArray = Ember.MutableArray;
+let MutableEnumerable = Ember.MutableEnumerable;
+let NativeArray = Ember.NativeArray;
+let Component = Ember.Component;
+let Observable = Ember.Observable;
+let Evented = Ember.Evented;
+let PromiseProxyMixin = Ember.PromiseProxyMixin;
+let Service = Ember.Service;
+let ObjectProxy = Ember.ObjectProxy;
+let VERSION = Ember.VERSION;
+let ComputedProperty = Ember.ComputedProperty;
+let meta = Ember.meta;
+let get = Ember.get;
+let set = Ember.set;
+let computed = Ember.computed;
+let EmberObject = Ember.Object;
+let captureRenderTree = Ember._captureRenderTree;
 
 let getEnv = () => Ember.ENV;
 
