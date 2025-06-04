@@ -1,10 +1,10 @@
-import Ember from '../ember';
+import Ember, { Instrumentation } from '../ember';
 
 let module;
 
-try {
-  module = requireModule('@ember/instrumentation');
-} catch {
+if (Instrumentation) {
+  module = Instrumentation;
+} else {
   module = Ember;
 }
 
