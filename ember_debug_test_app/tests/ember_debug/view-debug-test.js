@@ -10,11 +10,7 @@ import hasEmberVersion from '@ember/test-helpers/has-ember-version';
 import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 // eslint-disable-next-line ember/no-classic-components
-import EmberComponent, {
-  setComponentTemplate,
-  getComponentTemplate,
-} from '@ember/component';
-import GlimmerComponent from '@glimmer/component';
+import EmberComponent, { setComponentTemplate } from '@ember/component';
 import EmberRoute from '@ember/routing/route';
 import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
@@ -509,12 +505,12 @@ module('Ember Debug - View', function (hooks) {
 
     register(
       'component:test-foo',
-      class extends GlimmerComponent {
-        classNames = ['simple-component'];
+      EmberComponent.extend({
+        classNames: ['simple-component'],
         toString() {
           return 'App.TestFooComponent';
-        }
-      },
+        },
+      }),
     );
 
     register(
@@ -530,24 +526,24 @@ module('Ember Debug - View', function (hooks) {
 
     register(
       'component:test-in-element-in-component',
-      class extends GlimmerComponent {
-        constructor(...args) {
-          super(...args);
+      EmberComponent.extend({
+        init(...args) {
+          this._super(...args);
           this.elementTarget = document.querySelector('#target');
-        }
+        },
         toString() {
           return 'App.TestInElementInComponent';
-        }
-      },
+        },
+      }),
     );
 
     register(
       'component:test-component-in-in-element',
-      class extends GlimmerComponent {
+      EmberComponent.extend({
         toString() {
           return 'App.TestComponentInElement';
-        }
-      },
+        },
+      }),
     );
 
     /*
@@ -571,7 +567,7 @@ module('Ember Debug - View', function (hooks) {
       hbs(
         `
         <div {{did-insert this.foo}}>
-          Simple <TestFoo /> <TestBar @value={{hash x=123 [x.y]=456}} /> {{#in-element this.elementTarget}}<TestComponentInInElement />{{/in-element}}
+          Simple {{test-foo}} {{test-bar value=(hash x=123 [x.y]=456)}} {{#in-element this.elementTarget}}<TestComponentInInElement />{{/in-element}}
         </div>
         `,
         {
@@ -622,7 +618,7 @@ module('Ember Debug - View', function (hooks) {
     );
     register(
       'template:components/test-foo',
-      hbs('<div class={{concat this.classNames}}>test-foo</div>', {
+      hbs('test-foo', {
         moduleName: 'my-app/templates/components/test-foo.hbs',
       }),
     );
@@ -668,8 +664,8 @@ module('Ember Debug - View', function (hooks) {
       if (!registry[compSpec]) {
         throw new Error('missing comp: ' + compSpec);
       }
-      const isTpl = spec.includes('template:');
-      if (isTpl && !getComponentTemplate?.(registry[compSpec].value)) {
+      const isTemplate = spec.includes('template:');
+      if (isTemplate) {
         setComponentTemplate?.(t.value, registry[compSpec].value);
       }
     }
@@ -791,7 +787,6 @@ module('Ember Debug - View', function (hooks) {
       Component(
         {
           name: 'in-element',
-          bounds: 'range',
           args: (actual) => {
             QUnit.assert.ok(actual.positional[0]);
             async function testArgsValue() {
@@ -807,7 +802,6 @@ module('Ember Debug - View', function (hooks) {
           template: null,
         },
         Component({
-          bounds: 'range',
           name: 'test-component-in-in-element',
           template: () => null,
         }),
@@ -885,13 +879,11 @@ module('Ember Debug - View', function (hooks) {
       }),
       Component(
         {
-          bounds: 'range',
           name: 'in-element',
           args: Args({ names: [], positionals: 1 }),
           template: null,
         },
         Component({
-          bounds: 'range',
           name: 'test-component-in-in-element',
           template: () => null,
         }),
