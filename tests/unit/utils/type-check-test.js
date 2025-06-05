@@ -1,4 +1,4 @@
-import { inspect } from 'ember-debug/utils/type-check';
+import { inspect } from 'ember-debug/type-check';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | type-check', function () {
