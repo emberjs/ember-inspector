@@ -258,18 +258,13 @@ const constructBase = (owner) => {
 
 const constructComponents = (owner, componentsMap) => {
   for (const componentKey in componentsMap) {
-    if (componentsMap[componentKey].component) {
-      owner.register(
-        `component:${componentKey}`,
-        componentsMap[componentKey].component,
-      );
-    }
-    if (componentsMap[componentKey].template) {
+    owner.register(
+      `component:${componentKey}`,
       setComponentTemplate(
         componentsMap[componentKey].template,
         componentsMap[componentKey].component,
-      );
-    }
+      ),
+    );
   }
 };
 
