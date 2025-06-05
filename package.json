@@ -10,7 +10,6 @@
     "test": "tests"
   },
   "scripts": {
-    "prepublishOnly": "node -e 'process.exit(!require(\"fs\").existsSync(\"./dist\"))' || pnpm build:production",
     "build": "ember build",
     "build:production": "EMBER_ENV=production node scripts/download-panes.js && ember build --environment production && gulp compress:chrome && gulp compress:firefox && gulp clean-tmp",
     "changelog": "github_changelog_generator -u emberjs -p ember-inspector --since-tag v3.8.0",
@@ -25,6 +24,7 @@
     "lint:js:fix": "eslint . --fix",
     "lint:types": "tsc --noEmit",
     "lock-version": "pnpm build:production && pnpm compress:panes",
+    "prepublishOnly": "node -e 'process.exit(!require(\"fs\").existsSync(\"./dist\"))' || pnpm build:production",
     "serve:bookmarklet": "ember serve --port 9191",
     "start": "ember serve",
     "test": "concurrently \"pnpm:lint\" \"pnpm:test:*\" --names \"lint,test:\" --prefixColors auto",
@@ -49,10 +49,10 @@
     "@eslint/js": "^9.17.0",
     "@glimmer/component": "^1.1.2",
     "@glimmer/tracking": "^1.1.2",
-    "@html-next/vertical-collection": "^4.0.2",
     "@glint/environment-ember-loose": "^1.5.0",
     "@glint/environment-ember-template-imports": "^1.5.0",
     "@glint/template": "^1.5.0",
+    "@html-next/vertical-collection": "^4.0.2",
     "@tsconfig/ember": "^3.0.8",
     "@types/chrome": "^0.0.250",
     "@types/eslint__js": "^8.42.3",
@@ -136,7 +136,7 @@
     "qunit-dom": "^3.4.0",
     "release-it": "^15.11.0",
     "release-it-lerna-changelog": "^5.0.0",
-    "release-plan": "^0.8.0",
+    "release-plan": "^0.16.0",
     "sass": "^1.79.4",
     "source-map-js": "^1.2.1",
     "stylelint": "^16.13.2",
@@ -148,9 +148,14 @@
     "typescript-eslint": "^8.18.2",
     "webpack": "^5.97.1"
   },
+  "packageManager": "pnpm@9.12.1",
   "engines": {
     "node": ">= 18",
     "pnpm": "^9.0.0"
+  },
+  "volta": {
+    "node": "18.20.4",
+    "pnpm": "9.12.1"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
@@ -189,10 +194,5 @@
     "npm": {
       "publish": false
     }
-  },
-  "volta": {
-    "node": "18.20.4",
-    "pnpm": "9.12.1"
-  },
-  "packageManager": "pnpm@9.12.1"
+  }
 }
