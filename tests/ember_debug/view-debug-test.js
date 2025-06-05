@@ -10,7 +10,7 @@ import hasEmberVersion from '@ember/test-helpers/has-ember-version';
 import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 // eslint-disable-next-line ember/no-classic-components
-import EmberComponent from '@ember/component';
+import EmberComponent, { setComponentTemplate } from '@ember/component';
 import EmberRoute from '@ember/routing/route';
 import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
@@ -260,7 +260,7 @@ function Component(
   {
     name,
     instance = Serialized(),
-    template = `my-app/templates/components/${name}.hbs`,
+    template = `my-app/components/${name}.hbs`,
     bounds = 'single',
     ...options
   },
@@ -490,45 +490,78 @@ module('Ember Debug - View', function (hooks) {
 
     this.owner.register(
       'component:test-foo',
-      EmberComponent.extend({
-        classNames: ['simple-component'],
-        toString() {
-          return 'App.TestFooComponent';
-        },
-      }),
+      setComponentTemplate(
+        hbs('test-foo', {
+          moduleName: 'my-app/components/test-foo.hbs',
+        }),
+        EmberComponent.extend({
+          classNames: ['simple-component'],
+          toString() {
+            return 'App.TestFooComponent';
+          },
+        }),
+      ),
     );
 
     this.owner.register(
       'component:test-bar',
-      templateOnlyComponent?.() ||
-        EmberComponent.extend({
-          tagName: '',
-          toString() {
-            return 'App.TestBarComponent';
-          },
-        }),
+      setComponentTemplate(
+        hbs(
+          `<!-- before -->
+          <div class="another-component">
+          {{@value}}
+            <span>test</span>
+            <span class="bar-inner">bar</span>
+          </div>
+          <!-- after -->`,
+          { moduleName: 'my-app/components/test-bar.hbs' },
+        ),
+        templateOnlyComponent?.() ||
+          EmberComponent.extend({
+            tagName: '',
+            toString() {
+              return 'App.TestBarComponent';
+            },
+          }),
+      ),
     );
 
     this.owner.register(
       'component:test-in-element-in-component',
-      EmberComponent.extend({
-        init(...args) {
-          this._super(...args);
-          this.elementTarget = document.querySelector('#target');
-        },
-        toString() {
-          return 'App.TestInElementInComponent';
-        },
-      }),
+      setComponentTemplate(
+        hbs(`
+          {{#in-element this.elementTarget}}
+            <p class='test-in-element-in-component'>
+              App.TestInElementInComponent
+            </p>
+          {{/in-element}}
+        `),
+        EmberComponent.extend({
+          init(...args) {
+            this._super(...args);
+            this.elementTarget = document.querySelector('#target');
+          },
+          toString() {
+            return 'App.TestInElementInComponent';
+          },
+        }),
+      ),
     );
 
     this.owner.register(
       'component:test-component-in-in-element',
-      EmberComponent.extend({
-        toString() {
-          return 'App.TestComponentInElement';
-        },
-      }),
+      setComponentTemplate(
+        hbs(`
+          <p class='test-component-in-in-element'>
+            App.TestComponentInElement
+          </p>
+        `),
+        EmberComponent.extend({
+          toString() {
+            return 'App.TestComponentInElement';
+          },
+        }),
+      ),
     );
 
     /*
@@ -600,45 +633,6 @@ module('Ember Debug - View', function (hooks) {
     this.owner.register(
       'template:posts',
       hbs('Posts', { moduleName: 'my-app/templates/posts.hbs' }),
-    );
-    this.owner.register(
-      'template:components/test-foo',
-      hbs('test-foo', {
-        moduleName: 'my-app/templates/components/test-foo.hbs',
-      }),
-    );
-    this.owner.register(
-      'template:components/test-bar',
-      hbs(
-        `<!-- before -->
-        <div class="another-component">
-        {{@value}}
-          <span>test</span>
-          <span class="bar-inner">bar</span>
-        </div>
-        <!-- after -->`,
-        { moduleName: 'my-app/templates/components/test-bar.hbs' },
-      ),
-    );
-
-    this.owner.register(
-      'template:components/test-component-in-in-element',
-      hbs(`
-            <p class='test-component-in-in-element'>
-              App.TestComponentInElement
-            </p>
-        `),
-    );
-
-    this.owner.register(
-      'template:components/test-in-element-in-component',
-      hbs(`
-                {{#in-element this.elementTarget}}
-                  <p class='test-in-element-in-component'>
-                    App.TestInElementInComponent
-                  </p>
-                {{/in-element}}
-              `),
     );
 
     this.owner.register('modifier:did-insert', didInsert);
@@ -892,25 +886,28 @@ module('Ember Debug - View', function (hooks) {
   });
 
   test('Does not list nested {{yield}} views', async function () {
-    this.owner.register('component:x-first', EmberComponent.extend());
-    this.owner.register('component:x-second', EmberComponent.extend());
-
+    this.owner.register(
+      'component:x-first',
+      setComponentTemplate(
+        hbs('{{#x-second}}{{yield}}{{/x-second}}', {
+          moduleName: 'my-app/components/x-first.hbs',
+        }),
+        EmberComponent.extend(),
+      ),
+    );
+    this.owner.register(
+      'component:x-second',
+      setComponentTemplate(
+        hbs('{{yield}}', {
+          moduleName: 'my-app/components/x-second.hbs',
+        }),
+        EmberComponent.extend(),
+      ),
+    );
     this.owner.register(
       'template:posts',
       hbs('{{#x-first}}Foo{{/x-first}}', {
         moduleName: 'my-app/templates/posts.hbs',
-      }),
-    );
-    this.owner.register(
-      'template:components/x-first',
-      hbs('{{#x-second}}{{yield}}{{/x-second}}', {
-        moduleName: 'my-app/templates/components/x-first.hbs',
-      }),
-    );
-    this.owner.register(
-      'template:components/x-second',
-      hbs('{{yield}}', {
-        moduleName: 'my-app/templates/components/x-second.hbs',
       }),
     );
 
@@ -970,10 +967,7 @@ module('Ember Debug - View', function (hooks) {
       assert
         .dom('.ember-inspector-tooltip-detail-template', tooltip)
         .hasText(
-          'my-app/templates/components/test-foo.hbs'.replace(
-            /\//g,
-            '\u200B/\u200B',
-          ),
+          'my-app/components/test-foo.hbs'.replace(/\//g, '\u200B/\u200B'),
         );
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
@@ -1005,10 +999,7 @@ module('Ember Debug - View', function (hooks) {
       assert
         .dom('.ember-inspector-tooltip-detail-template', tooltip)
         .hasText(
-          'my-app/templates/components/test-bar.hbs'.replace(
-            /\//g,
-            '\u200B/\u200B',
-          ),
+          'my-app/components/test-bar.hbs'.replace(/\//g, '\u200B/\u200B'),
         );
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
@@ -1051,10 +1042,7 @@ module('Ember Debug - View', function (hooks) {
       assert
         .dom('.ember-inspector-tooltip-detail-template', tooltip)
         .hasText(
-          'my-app/templates/components/test-foo.hbs'.replace(
-            /\//g,
-            '\u200B/\u200B',
-          ),
+          'my-app/components/test-foo.hbs'.replace(/\//g, '\u200B/\u200B'),
         );
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
@@ -1080,10 +1068,7 @@ module('Ember Debug - View', function (hooks) {
       assert
         .dom('.ember-inspector-tooltip-detail-template', tooltip)
         .hasText(
-          'my-app/templates/components/test-foo.hbs'.replace(
-            /\//g,
-            '\u200B/\u200B',
-          ),
+          'my-app/components/test-foo.hbs'.replace(/\//g, '\u200B/\u200B'),
         );
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
