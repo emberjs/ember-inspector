@@ -55,11 +55,11 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       });
 
       let emberDebugMainModule = requireModule('ember-debug/main');
-      if (!emberDebugMainModule['default']) {
+      if (!emberDebugMainModule) {
         return;
       }
-      window.EmberInspector = emberDebugMainModule['default'];
-      window.EmberInspector.Adapter = requireModule('ember-debug/adapters/' + adapter)['default'];
+      window.EmberInspector = emberDebugMainModule;
+      window.EmberInspector.Adapter = requireModule('ember-debug/' + adapter);
 
       onApplicationStart(function appStarted(instance) {
         let app = instance.application;
@@ -149,7 +149,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       return;
     }
 
-    const adapterInstance = new (requireModule('ember-debug/adapters/' + currentAdapter)['default']);
+    const adapterInstance = new (requireModule('ember-debug/' + currentAdapter));
 
     adapterInstance.onMessageReceived(function(message) {
       if (message.type === 'app-picker-loaded') {
