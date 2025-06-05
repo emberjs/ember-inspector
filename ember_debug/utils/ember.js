@@ -3,7 +3,13 @@ import { emberSafeRequire } from 'ember-debug/utils/ember/loader';
 let Ember;
 
 try {
-  Ember = requireModule('ember').default;
+  Ember = requireModule('ember/barrel').default;
+} catch {
+  // pass through
+}
+
+try {
+  Ember = Ember || requireModule('ember').default;
 } catch {
   Ember = window.Ember;
 }
