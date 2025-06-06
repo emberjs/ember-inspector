@@ -13,8 +13,9 @@ export default class WebExtension extends BasicAdapter {
   /**
    * Called when the adapter is created.
    */
-  constructor() {
-    super();
+  constructor(...args: unknown[]) {
+    // @ts-expect-error ignore
+    super(...args);
 
     this._connect();
     this._handleReload();

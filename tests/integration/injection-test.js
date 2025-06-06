@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
+import Service from '@ember/service';
 
 class ChromePort {
   constructor(self, other) {
@@ -289,6 +290,7 @@ module('Integration | Injection', function (hooks) {
         }
       });
     });
+    owner.register('service:port', class extends Service {});
     owner.lookup('service:adapters/web-extension');
     await p;
     await emberDebugStarted;
