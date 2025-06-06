@@ -37,8 +37,6 @@ class InElementSupportProvider {
       owner.lookup('service:-glimmer-environment')._debugRenderTree;
     this.NewElementBuilder =
       this.runtime.NewElementBuilder || this.runtime.NewTreeBuilder;
-
-    this.patch();
   }
 
   reset() {
@@ -117,6 +115,9 @@ class InElementSupportProvider {
       return node;
     };
 
+    if (!NewElementBuilder) {
+      return;
+    }
     const didAppendNode = NewElementBuilder.prototype.didAppendNode;
     NewElementBuilder.prototype.didAppendNode = function (...args) {
       args[0].__emberInspectorParentNode = componentStack.at(-1);
@@ -315,6 +316,7 @@ export default class RenderTree {
     this._reset();
     try {
       this.inElementSupport = new InElementSupportProvider(owner);
+      this.inElementSupport.patch();
     } catch (e) {
       console.error('failed to setup in element support');
       console.error(e);
@@ -804,8 +806,7 @@ export default class RenderTree {
     while (candidates.length > 0) {
       let candidate = candidates.shift();
       let range = this.getRange(candidate.id);
-      const isAllowed =
-        candidate.type !== 'modifier' && candidate.type !== 'html-element';
+      const isAllowed = candidate.type !== 'modifier';
 
       if (!isAllowed) {
         candidates.push(...candidate.children);
