@@ -71,7 +71,7 @@ For development:
 javascript: (function() { var s = document.createElement('script'); s.src = 'http://localhost:9191/bookmarklet/load_inspector.js'; document.body.appendChild(s); }());
 ```
 
-- Or to do this more easily in the future, create a new bookmark in your browser, and copy the above script as the URL.
+Or to do this more easily in the future, create a new bookmark in your browser, and copy the above script as the URL.
 
 The expected behavior is a new window opening with the URL `http://localhost:9191/bookmarklet/<pane-root>/index.html?inspectedWindowURL=<inspected-app-url>`, running your local ember-inspector. The content should be the same as the one you see when using the published extension, but not properly styled.
 
