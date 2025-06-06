@@ -24,7 +24,7 @@ export function markMatch([str, regex]) {
     str,
     match.index,
     match.index + match[0].length,
-    `<mark>${matchedText}</mark>`
+    `<mark>${matchedText}</mark>`,
   );
   return htmlSafe(str);
 }
