@@ -1,5 +1,10 @@
-import Ember from './ember';
-const { meta: emberMeta, ComputedProperty } = Ember;
+import Debug, { inspect as emberInspect } from 'ember-debug/utils/ember/debug';
+import {
+  ComputedProperty,
+  EmberObject,
+  meta as emberMeta,
+} from 'ember-debug/utils/ember';
+import { emberSafeRequire } from 'ember-debug/utils/ember/loader';
 
 /**
  * Check if given key on the passed object is a computed property
@@ -9,7 +14,7 @@ const { meta: emberMeta, ComputedProperty } = Ember;
  */
 export function isComputed(object, key) {
   // Ember > 3.10
-  if (Ember.Debug.isComputed && Ember.Debug.isComputed(object, key)) {
+  if (Debug.isComputed && Debug.isComputed(object, key)) {
     return true;
   }
 
@@ -20,14 +25,6 @@ export function isComputed(object, key) {
   if (getDescriptorFor(object, key) instanceof ComputedProperty) {
     return true;
   }
-
-  // Ember < 3.10
-  return object[key] instanceof ComputedProperty;
-}
-
-export function isDescriptor(value) {
-  // Ember >= 1.11
-  return value && typeof value === 'object' && value.isDescriptor;
 }
 
 /**
@@ -37,15 +34,17 @@ export function isDescriptor(value) {
  * @param {String} key The key for the property on the object
  */
 export function getDescriptorFor(object, key) {
-  if (isDescriptor(object[key])) {
+  if (object[key]?.isDescriptor) {
     return object[key];
   }
 
-  if (Ember.Debug.isComputed) {
+  // exists longer than ember 3.10
+  if (Debug.isComputed) {
     const { descriptorForDecorator, descriptorForProperty } =
-      Ember.__loader.require('@ember/-internals/metal');
+      emberSafeRequire('@ember/-internals/metal') || {};
     return (
-      descriptorForDecorator(object[key]) || descriptorForProperty(object, key)
+      descriptorForDecorator?.(object[key]) ||
+      descriptorForProperty?.(object, key)
     );
   }
 
@@ -57,4 +56,82 @@ export function typeOf(obj) {
     .call(obj)
     .match(/\s([a-zA-Z]+)/)[1]
     .toLowerCase();
+}
+
+export function inspect(value) {
+  if (typeof value === 'function') {
+    return `${value.name || 'function'}() { ... }`;
+  } else if (value instanceof EmberObject) {
+    return value.toString();
+  } else if (value instanceof HTMLElement) {
+    return `<${value.tagName.toLowerCase()}>`;
+  } else if (typeOf(value) === 'array') {
+    if (value.length === 0) {
+      return '[]';
+    } else if (value.length === 1) {
+      return `[ ${inspect(value[0])} ]`;
+    } else {
+      return `[ ${inspect(value[0])}, ... ]`;
+    }
+  } else if (value instanceof Error) {
+    return `Error: ${value.message}`;
+  } else if (value === null) {
+    return 'null';
+  } else if (typeOf(value) === 'date') {
+    return value.toString();
+  } else if (typeof value === 'object') {
+    // `Ember.inspect` is able to handle this use case,
+    // but it is very slow as it loops over all props,
+    // so summarize to just first 2 props
+    // if it defines a toString, we use that instead
+    if (
+      typeof value.toString === 'function' &&
+      value.toString !== Object.prototype.toString &&
+      value.toString !== Function.prototype.toString
+    ) {
+      try {
+        return `<Object:${value.toString()}>`;
+      } catch {
+        //
+      }
+    }
+    let ret = [];
+    let v;
+    let count = 0;
+    let broken = false;
+
+    for (let key in value) {
+      if (!('hasOwnProperty' in value) || value.hasOwnProperty(key)) {
+        if (count++ > 1) {
+          broken = true;
+          break;
+        }
+        v = value[key];
+        if (v === 'toString') {
+          continue;
+        } // ignore useless items
+        if (typeOf(v).includes('function')) {
+          v = `function ${v.name}() { ... }`;
+        }
+        if (typeOf(v) === 'array') {
+          v = `[Array : ${v.length}]`;
+        }
+        if (typeOf(v) === 'object') {
+          v = '[Object]';
+        }
+        // to avoid TypeError: Cannot convert a Symbol value to a string
+        if (typeOf(v) === 'symbol') {
+          v = v.toString();
+        }
+        ret.push(`${key}: ${v}`);
+      }
+    }
+    let suffix = ' }';
+    if (broken) {
+      suffix = ' ...}';
+    }
+    return `{ ${ret.join(', ')}${suffix}`;
+  } else {
+    return emberInspect(value);
+  }
 }

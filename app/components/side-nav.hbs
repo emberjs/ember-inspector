@@ -3,13 +3,13 @@
   {{did-insert this.setupListeners}}
   {{will-destroy this.destroyListeners}}
 >
-  <nav class="absolute inset-0 nav nav--main {{if @collapsed "nav--collapsed overflow-hidden"}}">
+  <nav class="absolute inset-0 nav nav-main {{if @collapsed "nav-collapsed overflow-hidden"}}">
     <ul>
       {{#each this.itemsToDisplay as |item|}}
         <li>
-          <LinkTo @route={{item.route}} class="nav__item" title={{item.title}}>
-            {{svg-jar item.icon width="20px" height="20px" class="nav__item-icon"}}
-            <span class="nav__item-label">{{item.label}}</span>
+          <LinkTo @route={{item.route}} class="nav-item" title={{item.title}}>
+            {{svg-jar item.icon width="20px" height="20px" class="nav-item-icon"}}
+            <span class="nav-item-label">{{item.label}}</span>
             {{#if item.pillCount}}
               <span class="pill">{{item.pillCount}}</span>
             {{/if}}
@@ -18,7 +18,7 @@
       {{/each}}
       {{#if (and @collapsed this.overflowItems.length)}}
         <li
-          class="{{if this.overflowItemIsActive "nav__overflow--active"}} nav__overflow relative flex items-center justify-center cursor-pointer"
+          class="{{if this.overflowItemIsActive "nav-overflow-active"}} nav-overflow relative flex items-center justify-center cursor-pointer"
           title="More options"
         >
           <select

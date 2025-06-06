@@ -1,5 +1,6 @@
 import classify from 'ember-debug/utils/classify';
 import bound from 'ember-debug/utils/bound-method';
+import getObjectName from '../utils/get-object-name';
 
 function makeHighlight(id) {
   return `<div id="ember-inspector-highlight-${id}" role="presentation"></div>`;
@@ -75,6 +76,22 @@ function makeStylesheet(id) {
     #${prefix}-tooltip-${id} .${prefix}-tooltip-token-namespace {
       /* https://github.com/ChromeDevTools/devtools-frontend/blob/103326238685ac582d3bf2a02f1627a80e3fce5f/front_end/ui/inspectorSyntaxHighlight.css#L69-L71 */
       color: rgb(168, 148, 166);
+    }
+
+    #${prefix}-tooltip-${id} .${prefix}-tooltip-detail-instance > .${prefix}-tooltip-token-tag {
+      cursor: pointer;
+    }
+
+    #${prefix}-tooltip-${id} .${prefix}-tooltip-detail-instance > .${prefix}-tooltip-token-tag:after {
+      content: "\\1F517"
+    }
+
+    #${prefix}-tooltip-${id} .${prefix}-tooltip-detail-controller > .${prefix}-tooltip-token-tag {
+      cursor: pointer;
+    }
+
+    #${prefix}-tooltip-${id} .${prefix}-tooltip-detail-controller > .${prefix}-tooltip-token-tag:after {
+      content: "\\1F517"
     }
 
     #${prefix}-tooltip-${id} .${prefix}-tooltip-token-name {
@@ -153,13 +170,14 @@ function makeStylesheet(id) {
       border: none;
       border-spacing: 0px;
       border-collapse: collapse;
-      white-space: nowrap;
       font-family: sans-serif;
       font-size: 12px;
       font-weight: normal;
       text-align: right;
       color: #000;
       background: transparent;
+      max-width: 400px;
+      word-wrap: break-word;
     }
 
     #${prefix}-tooltip-${id} .${prefix}-tooltip-arrow {
@@ -290,7 +308,7 @@ export default class ViewInspection {
     document.body.removeEventListener(
       'mousemove',
       bound(this, this.onMouseMove),
-      { capture: true }
+      { capture: true },
     );
 
     this.didStopInspecting();
@@ -370,8 +388,9 @@ export default class ViewInspection {
     let rect = this.renderTree.getBoundingClientRect(id);
 
     if (node && rect) {
-      this._showHighlight(node, rect);
       this._showTooltip(node, rect);
+      rect = this.renderTree.getBoundingClientRect(id);
+      this._showHighlight(node, rect);
 
       this.isShowing = true;
       this.isPinned = pin;
@@ -461,7 +480,7 @@ export default class ViewInspection {
 
   _renderTooltipCategory(node) {
     let category = this.tooltip.querySelector(
-      '.ember-inspector-tooltip-category'
+      '.ember-inspector-tooltip-category',
     );
 
     switch (node.type) {
@@ -479,7 +498,7 @@ export default class ViewInspection {
 
   _renderTooltipDetails(node) {
     let tbody = this.tooltip.querySelector(
-      '.ember-inspector-tooltip-details tbody'
+      '.ember-inspector-tooltip-details tbody',
     );
 
     tbody.innerHTML = '';
@@ -493,14 +512,26 @@ export default class ViewInspection {
         this._renderTooltipDetail(
           tbody,
           'Controller',
-          this._tokenizeItem(node.instance)
+          this._tokenizeItem(node.instance),
         );
       } else {
         this._renderTooltipDetail(
           tbody,
           'Instance',
-          this._tokenizeItem(node.instance)
+          this._tokenizeItem(node.instance),
         );
+      }
+      const detail =
+        tbody.querySelector(
+          '.ember-inspector-tooltip-detail-instance > .ember-inspector-tooltip-token-tag',
+        ) ||
+        tbody.querySelector(
+          '.ember-inspector-tooltip-detail-controller > .ember-inspector-tooltip-token-tag',
+        );
+      if (detail) {
+        detail.onclick = () => {
+          this.objectInspector.sendToConsole(node.instance.id);
+        };
       }
     }
   }
@@ -518,7 +549,7 @@ export default class ViewInspection {
     if (Array.isArray(value)) {
       this._renderTokens(td, value);
     } else {
-      td.innerText = value;
+      td.innerText = value.replace(/\//g, '\u200B/\u200B');
     }
 
     tr.appendChild(th);
@@ -592,7 +623,7 @@ export default class ViewInspection {
     let stringified;
 
     try {
-      stringified = String(object);
+      stringified = getObjectName(object);
     } catch {
       // nope!
     }
@@ -604,7 +635,7 @@ export default class ViewInspection {
     {
       // <my-app@component:foo-bar::ember123>
       let match = stringified.match(
-        /<([a-z0-9-_]+)@([a-z0-9-_]+):([a-z0-9-_]+)::([a-z0-9-_]+)>/i
+        /<([a-z0-9-_]+)@([a-z0-9-_]+):([a-z0-9-_]+)::([a-z0-9-_]+)>/i,
       );
 
       if (match) {
@@ -660,12 +691,12 @@ export default class ViewInspection {
       attachmentTop = top;
       this.tooltip.setAttribute(
         'class',
-        `ember-inspector-tooltip-attach-above`
+        `ember-inspector-tooltip-attach-above`,
       );
     } else {
       this.tooltip.setAttribute(
         'class',
-        `ember-inspector-tooltip-attach-below`
+        `ember-inspector-tooltip-attach-below`,
       );
     }
 
@@ -678,7 +709,7 @@ export default class ViewInspection {
       // within the viewport, but not so much that it will become detached.
       leftOffset = Math.max(
         highlightRect.left - safetyMargin,
-        safetyMargin - highlightRect.width
+        safetyMargin - highlightRect.width,
       );
     } else if (tooltipRect.right > viewportWidth) {
       // If the tooltip is partially offscreen to the right (because the tooltip
@@ -686,7 +717,7 @@ export default class ViewInspection {
       // not so much that it will become detached.
       leftOffset = Math.min(
         tooltipRect.right - viewportWidth,
-        tooltipRect.width - safetyMargin * 2
+        tooltipRect.width - safetyMargin * 2,
       );
       tooltipStyle.left = `${scrollX + attachmentLeft - leftOffset}px`;
     }

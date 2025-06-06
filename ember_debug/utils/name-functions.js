@@ -12,7 +12,7 @@ export function modelName(model) {
   }
 
   if (name.length > 50) {
-    name = `${name.substr(0, 50)}...`;
+    name = `${name.slice(0, 50)}...`;
   }
   return name;
 }

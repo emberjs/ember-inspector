@@ -16,18 +16,16 @@ export default class AppDetectedRoute extends Route {
    * @return {Promise}
    */
   model() {
-    let port = this.port;
-
     return new Promise((resolve) => {
       this.applicationBooted = ({ booted }) => {
         if (booted) {
-          port.off('general:applicationBooted', this.applicationBooted);
+          this.port.off('general:applicationBooted', this.applicationBooted);
           this.applicationBooted = null;
           resolve();
         }
       };
-      port.on('general:applicationBooted', this.applicationBooted);
-      port.send('general:applicationBooted');
+      this.port.on('general:applicationBooted', this.applicationBooted);
+      this.port.send('general:applicationBooted');
     });
   }
 

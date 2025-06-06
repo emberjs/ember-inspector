@@ -1,4 +1,6 @@
+/* eslint-disable ember/no-classic-classes */
 import { find, visit, waitUntil, getSettledState } from '@ember/test-helpers';
+// eslint-disable-next-line ember/no-classic-components
 import EmberComponent from '@ember/component';
 import GlimmerComponent from '@glimmer/component';
 import EmberRoute from '@ember/routing/route';
@@ -10,6 +12,7 @@ import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import { run } from '@ember/runloop';
 import Ember from 'ember-debug/utils/ember';
 import { compareVersion } from 'ember-debug/utils/version';
+import { setComponentTemplate } from '@ember/component';
 
 const { VERSION } = Ember;
 
@@ -26,119 +29,123 @@ const getRounded = (value) => {
   }
   return Math.floor(data);
 };
-class OneRootGlimmer extends GlimmerComponent {
-  classNames = 'simple-component';
-}
 
-const mockedComponents = {
-  text: {
-    component: EmberComponent.extend({
-      tagName: '',
-    }),
-    template: hbs('text only', {
-      moduleName: 'my-app/templates/components/text.hbs',
-    }),
-  },
-  'text-glimmer': {
-    component: GlimmerComponent,
-    template: hbs('text only', {
-      moduleName: 'my-app/templates/components/text-glimmer.hbs',
-    }),
-  },
-  comment: {
-    component: EmberComponent.extend({
-      tagName: '',
-    }),
-    template: hbs('<!-- comment -->', {
-      moduleName: 'my-app/templates/components/comment.hbs',
-    }),
-  },
-  'comment-glimmer': {
-    component: GlimmerComponent,
-    template: hbs('<!-- comment -->', {
-      moduleName: 'my-app/templates/components/comment-glimmer.hbs',
-    }),
-  },
-  'one-root': {
-    component: EmberComponent.extend({
-      tagName: '',
-    }),
-    template: hbs('<div class="simple-component">one root</div>', {
-      moduleName: 'my-app/templates/components/one-root.hbs',
-    }),
-  },
-  'one-root-glimmer': {
-    component: OneRootGlimmer,
-    template: hbs('<div class={{this.classNames}}>one root</div>', {
-      moduleName: 'my-app/templates/components/one-root-glimmer.hbs',
-    }),
-  },
-  'two-root': {
-    component: EmberComponent.extend({
-      tagName: '',
-    }),
-    template: hbs(
-      '<div class="simple-component">one</div><div class="another-component">two</div>',
-      { moduleName: 'my-app/templates/components/two-root.hbs' }
-    ),
-  },
-  'two-root-glimmer': {
-    component: GlimmerComponent,
-    template: hbs(
-      '<div class="simple-component">one</div><div class="another-component">two</div>',
-      { moduleName: 'my-app/templates/components/two-root-glimmer.hbs' }
-    ),
-  },
-  'root-comment-root': {
-    component: EmberComponent.extend({
-      tagName: '',
-    }),
-    template: hbs(
-      '<div class="simple-component">one</div><!-- comment --><div class="another-component">two</div>',
-      { moduleName: 'my-app/templates/components/root-comment-root.hbs' }
-    ),
-  },
-  'root-comment-root-glimmer': {
-    component: GlimmerComponent,
-    template: hbs(
-      '<div class="simple-component">one</div><!-- comment --><div class="another-component">two</div>',
-      {
-        moduleName: 'my-app/templates/components/root-comment-root-glimmer.hbs',
-      }
-    ),
-  },
-  'comment-root-comment': {
-    component: EmberComponent.extend({
-      tagName: '',
-    }),
-    template: hbs(
-      '<!-- comment 1 --><div class="simple-component">one</div><!-- comment 2 -->',
-      { moduleName: 'my-app/templates/components/comment-root-comment.hbs' }
-    ),
-  },
-  'comment-root-comment-glimmer': {
-    component: GlimmerComponent,
-    template: hbs(
-      '<!-- comment 1 --><div class="simple-component">one</div><!-- comment 2 -->',
-      { moduleName: 'my-app/templates/components/comment-root-comment.hbs' }
-    ),
-  },
-  'div-tag': {
-    component: EmberComponent.extend({
-      classNames: ['simple-component'],
-    }),
-    template: hbs('text in div', {
-      moduleName: 'my-app/templates/components/div-tag.hbs',
-    }),
-  },
-  'div-roots': {
-    component: EmberComponent.extend({
-      classNames: ['simple-component'],
-    }),
-    template: hbs('<div>one</div><div>two</div>', {
-      moduleName: 'my-app/templates/components/div-roots.hbs',
-    }),
-  },
+const mockedComponents = () => {
+  class OneRootGlimmer extends GlimmerComponent {
+    classNames = 'simple-component';
+  }
+
+  return {
+    text: {
+      component: EmberComponent.extend({
+        tagName: '',
+      }),
+      template: hbs('text only', {
+        moduleName: 'my-app/templates/components/text.hbs',
+      }),
+    },
+    'text-glimmer': {
+      component: class extends GlimmerComponent {},
+      template: hbs('text only', {
+        moduleName: 'my-app/templates/components/text-glimmer.hbs',
+      }),
+    },
+    comment: {
+      component: EmberComponent.extend({
+        tagName: '',
+      }),
+      template: hbs('<!-- comment -->', {
+        moduleName: 'my-app/templates/components/comment.hbs',
+      }),
+    },
+    'comment-glimmer': {
+      component: class extends GlimmerComponent {},
+      template: hbs('<!-- comment -->', {
+        moduleName: 'my-app/templates/components/comment-glimmer.hbs',
+      }),
+    },
+    'one-root': {
+      component: EmberComponent.extend({
+        tagName: '',
+      }),
+      template: hbs('<div class="simple-component">one root</div>', {
+        moduleName: 'my-app/templates/components/one-root.hbs',
+      }),
+    },
+    'one-root-glimmer': {
+      component: OneRootGlimmer,
+      template: hbs('<div class={{this.classNames}}>one root</div>', {
+        moduleName: 'my-app/templates/components/one-root-glimmer.hbs',
+      }),
+    },
+    'two-root': {
+      component: EmberComponent.extend({
+        tagName: '',
+      }),
+      template: hbs(
+        '<div class="simple-component">one</div><div class="another-component">two</div>',
+        { moduleName: 'my-app/templates/components/two-root.hbs' },
+      ),
+    },
+    'two-root-glimmer': {
+      component: class extends GlimmerComponent {},
+      template: hbs(
+        '<div class="simple-component">one</div><div class="another-component">two</div>',
+        { moduleName: 'my-app/templates/components/two-root-glimmer.hbs' },
+      ),
+    },
+    'root-comment-root': {
+      component: EmberComponent.extend({
+        tagName: '',
+      }),
+      template: hbs(
+        '<div class="simple-component">one</div><!-- comment --><div class="another-component">two</div>',
+        { moduleName: 'my-app/templates/components/root-comment-root.hbs' },
+      ),
+    },
+    'root-comment-root-glimmer': {
+      component: class extends GlimmerComponent {},
+      template: hbs(
+        '<div class="simple-component">one</div><!-- comment --><div class="another-component">two</div>',
+        {
+          moduleName:
+            'my-app/templates/components/root-comment-root-glimmer.hbs',
+        },
+      ),
+    },
+    'comment-root-comment': {
+      component: EmberComponent.extend({
+        tagName: '',
+      }),
+      template: hbs(
+        '<!-- comment 1 --><div class="simple-component">one</div><!-- comment 2 -->',
+        { moduleName: 'my-app/templates/components/comment-root-comment.hbs' },
+      ),
+    },
+    'comment-root-comment-glimmer': {
+      component: class extends GlimmerComponent {},
+      template: hbs(
+        '<!-- comment 1 --><div class="simple-component">one</div><!-- comment 2 -->',
+        { moduleName: 'my-app/templates/components/comment-root-comment.hbs' },
+      ),
+    },
+    'div-tag': {
+      component: EmberComponent.extend({
+        classNames: ['simple-component'],
+      }),
+      template: hbs('text in div', {
+        moduleName: 'my-app/templates/components/div-tag.hbs',
+      }),
+    },
+    'div-roots': {
+      component: EmberComponent.extend({
+        classNames: ['simple-component'],
+      }),
+      template: hbs('<div>one</div><div>two</div>', {
+        moduleName: 'my-app/templates/components/div-roots.hbs',
+      }),
+    },
+  };
 };
 
 const mockedRoutes = {
@@ -237,32 +244,27 @@ const constructBase = (owner) => {
     'template:application',
     hbs(
       '<div class="application" style="line-height: normal;">{{outlet}}</div>',
-      { moduleName: 'my-app/templates/application.hbs' }
-    )
+      { moduleName: 'my-app/templates/application.hbs' },
+    ),
   );
 
   owner.register('route:home', EmberRoute);
 
   owner.register(
     'template:home',
-    hbs('Home', { moduleName: 'my-app/templates/home.hbs' })
+    hbs('Home', { moduleName: 'my-app/templates/home.hbs' }),
   );
 };
 
 const constructComponents = (owner, componentsMap) => {
   for (const componentKey in componentsMap) {
-    if (componentsMap[componentKey].component) {
-      owner.register(
-        `component:${componentKey}`,
-        componentsMap[componentKey].component
-      );
-    }
-    if (componentsMap[componentKey].template) {
-      owner.register(
-        `template:components/${componentKey}`,
-        componentsMap[componentKey].template
-      );
-    }
+    owner.register(
+      `component:${componentKey}`,
+      setComponentTemplate(
+        componentsMap[componentKey].template,
+        componentsMap[componentKey].component,
+      ),
+    );
   }
 };
 
@@ -274,7 +276,7 @@ const constructRoutes = (owner, routes) => {
     if (mockedRoutes[routeKey].controller) {
       owner.register(
         `controller:${routeKey}`,
-        mockedRoutes[routeKey].controller
+        mockedRoutes[routeKey].controller,
       );
     }
     if (mockedRoutes[routeKey].template) {
@@ -296,7 +298,7 @@ const assertNodeSizes = (assert, synthetic, real) => {
     assert.strictEqual(
       getRounded(style[styleKey]),
       getRounded(box[boxKey]),
-      `same ${boxKey} as component`
+      `same ${boxKey} as component`,
     );
   }
 };
@@ -305,7 +307,7 @@ const matchHighlights = (
   assert,
   testedRoute,
   newHighlights,
-  isGlimmerComponent
+  isGlimmerComponent,
 ) => {
   const renderedComponents = mockedRoutes[testedRoute].expectedRender.map(
     (selector) => {
@@ -314,10 +316,10 @@ const matchHighlights = (
         component,
         isComponentHighlightSupported
           ? 'expected component is rendered'
-          : 'expected component is rendered but the component highlight is not supported'
+          : 'expected component is rendered but the component highlight is not supported',
       );
       return component;
-    }
+    },
   );
 
   if (isComponentHighlightSupported && !isGlimmerComponent) {
@@ -327,16 +329,17 @@ const matchHighlights = (
   } else {
     assert.notOk(
       newHighlights.length,
-      'Should not have any highlight if highlight is not supported'
+      'Should not have any highlight if highlight is not supported',
     );
   }
 };
 
 const enableHighlight = () => {
+  // eslint-disable-next-line ember/no-runloop
   run(() =>
     EmberDebug.port.trigger('render:updateShouldHighlightRender', {
       shouldHighlightRender: true,
-    })
+    }),
   );
 };
 
@@ -395,23 +398,21 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   hooks.beforeEach(async function () {
     EmberDebug.IGNORE_DEPRECATIONS = true;
     constructBase(this.owner);
-    constructComponents(this.owner, mockedComponents);
+    constructComponents(this.owner, mockedComponents());
   });
 
   hooks.afterEach(function (assert) {
     const highlights = document.getElementsByClassName(
-      'ember-inspector-render-highlight'
+      'ember-inspector-render-highlight',
     );
 
     assert.notOk(
       highlights?.length,
-      'highlights should be destroyed after execution'
+      'highlights should be destroyed after execution',
     );
   });
 
   test('Should not show highlights for text component - Ember component', async function (assert) {
-    assert.expect(2);
-
     const testedRoute = 'text-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -421,8 +422,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should not show highlights for text component - Glimmer component', async function (assert) {
-    assert.expect(2);
-
     const testedRoute = 'text-glimmer-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -432,8 +431,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should not show highlights for comment component - Ember component', async function (assert) {
-    assert.expect(2);
-
     const testedRoute = 'comment-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -443,8 +440,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should not show highlights for comment component - Glimmer component', async function (assert) {
-    assert.expect(2);
-
     const testedRoute = 'comment-glimmer-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -454,8 +449,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should highlight one rootNode Ember component', async function (assert) {
-    assert.expect(isComponentHighlightSupported ? 6 : 3);
-
     const testedRoute = 'one-root-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -465,8 +458,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Highlight is not supported, should not highlight one rootNode Glimmer component', async function (assert) {
-    assert.expect(3);
-
     const testedRoute = 'one-root-glimmer-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -476,8 +467,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should highlight two rootNode ([rootNode, rootNode] and no tagName) Ember component', async function (assert) {
-    assert.expect(isComponentHighlightSupported ? 11 : 4);
-
     const testedRoute = 'two-root-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -487,8 +476,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Highlight is not supported, should not highlight two rootNode ([rootNode, rootNode] and no tagName) Glimmer component', async function (assert) {
-    assert.expect(4);
-
     const testedRoute = 'two-root-glimmer-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -498,8 +485,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should highlight two rootNode with one comment ([rootNode, commentNode, rootNode] and no tagName) Ember component', async function (assert) {
-    assert.expect(isComponentHighlightSupported ? 11 : 4);
-
     const testedRoute = 'root-comment-root-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -509,8 +494,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Highlight is not supported, should not highlight two rootNode with one comment ([rootNode, commentNode, rootNode] and no tagName) Glimmer component', async function (assert) {
-    assert.expect(4);
-
     const testedRoute = 'root-comment-root-glimmer-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -520,8 +503,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should highlight one rootNode with two comment ([commentNode, rootNode, commentNode] and no tagName) Ember component', async function (assert) {
-    assert.expect(isComponentHighlightSupported ? 6 : 3);
-
     const testedRoute = 'comment-root-comment-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -531,8 +512,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Highlight is not supported, should not highlight one rootNode with two comment ([commentNode, rootNode, commentNode] and no tagName) Glimmer component', async function (assert) {
-    assert.expect(3);
-
     const testedRoute = 'comment-root-comment-glimmer-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -542,8 +521,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should highlight tagName div Ember component', async function (assert) {
-    assert.expect(isComponentHighlightSupported ? 6 : 3);
-
     const testedRoute = 'div-tag-route';
     constructRoutes(this.owner, [testedRoute]);
 
@@ -553,8 +530,6 @@ module('Ember Debug - profile manager component highlight', function (hooks) {
   });
 
   test('Should highlight two rootNode ([rootNode, rootNode] and tagName div) Ember component', async function (assert) {
-    assert.expect(isComponentHighlightSupported ? 6 : 3);
-
     const testedRoute = 'div-roots-route';
     constructRoutes(this.owner, [testedRoute]);
 

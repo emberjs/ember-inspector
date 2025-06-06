@@ -1,22 +1,16 @@
 /* eslint no-console: 0 */
 import { onReady } from 'ember-debug/utils/on-ready';
+import BaseObject from '../utils/base-object';
 
-import { A } from 'ember-debug/utils/ember/array';
-import EmberObject, { computed } from 'ember-debug/utils/ember/object';
-import { Promise, resolve } from 'ember-debug/utils/rsvp';
-
-export default EmberObject.extend({
+export default class BasicAdapter extends BaseObject {
+  // eslint-disable-next-line ember/classic-decorator-hooks
   init() {
-    resolve(this.connect(), 'ember-inspector').then(
-      () => {
-        this.onConnectionReady();
-      },
-      null,
-      'ember-inspector'
-    );
+    Promise.resolve(this.connect()).then(() => {
+      this.onConnectionReady();
+    }, null);
 
     this._messageCallbacks = [];
-  },
+  }
 
   /**
    * Uses the current build's config module to determine
@@ -25,17 +19,21 @@ export default EmberObject.extend({
    * @property environment
    * @type {String}
    */
-  environment: computed(function () {
-    return requireModule('ember-debug/config')['default'].environment;
-  }),
+  get environment() {
+    if (!this.__environment) {
+      this.__environment =
+        requireModule('ember-debug/config')['default'].environment;
+    }
+    return this.__environment;
+  }
 
   debug() {
     return console.debug(...arguments);
-  },
+  }
 
   log() {
     return console.log(...arguments);
-  },
+  }
 
   /**
    * A wrapper for `console.warn`.
@@ -44,14 +42,14 @@ export default EmberObject.extend({
    */
   warn() {
     return console.warn(...arguments);
-  },
+  }
 
   /**
     Used to send messages to EmberExtension
 
     @param {Object} type the message to the send
   */
-  sendMessage(/* options */) {},
+  sendMessage(/* options */) {}
 
   /**
     Register functions to be called
@@ -61,26 +59,26 @@ export default EmberObject.extend({
   */
   onMessageReceived(callback) {
     this._messageCallbacks.push(callback);
-  },
+  }
 
   /**
-    Inspect a specific DOM node. This usually
+    Inspect a js value or specific DOM node. This usually
     means using the current environment's tools
     to inspect the node in the DOM.
 
     For example, in chrome, `inspect(node)`
     will open the Elements tab in dev tools
     and highlight the DOM node.
-
-    @param {Node} node
+    For functions, it will open the sources tab and goto the definition
+    @param {Node|Function} node
   */
-  inspectNode(/* node */) {},
+  inspectValue(/* value */) {}
 
   _messageReceived(message) {
     this._messageCallbacks.forEach((callback) => {
       callback(message);
     });
-  },
+  }
 
   /**
    * Handle an error caused by EmberDebug.
@@ -103,13 +101,13 @@ export default EmberObject.extend({
       this.warn(
         `Ember Inspector has errored.\n` +
           `This is likely a bug in the inspector itself.\n` +
-          `You can report bugs at https://github.com/emberjs/ember-inspector.\n${error}`
+          `You can report bugs at https://github.com/emberjs/ember-inspector.\n${error}`,
       );
     } else {
       this.warn('EmberDebug has errored:');
       throw error;
     }
-  },
+  }
 
   /**
 
@@ -131,18 +129,16 @@ export default EmberObject.extend({
           }
         }, 10);
       });
-    }, 'ember-inspector');
-  },
+    });
+  }
 
   willDestroy() {
-    this._super();
+    super.willDestroy();
     clearInterval(this.interval);
-  },
+  }
 
-  _isReady: false,
-  _pendingMessages: computed(function () {
-    return A();
-  }),
+  _isReady = false;
+  _pendingMessages = [];
 
   send(options) {
     if (this._isReady) {
@@ -150,7 +146,7 @@ export default EmberObject.extend({
     } else {
       this._pendingMessages.push(options);
     }
-  },
+  }
 
   /**
     Called when the connection is set up.
@@ -160,7 +156,7 @@ export default EmberObject.extend({
     // Flush pending messages
     const messages = this._pendingMessages;
     messages.forEach((options) => this.sendMessage(options));
-    messages.clear();
+    messages.length = 0;
     this._isReady = true;
-  },
-});
+  }
+}

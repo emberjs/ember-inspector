@@ -14,12 +14,19 @@ export default class ObjectInspector extends Component {
     this.searchInputId = 'custom-filter-input';
   }
 
+  get isClass() {
+    return this.current.mixins.length > 1;
+  }
+
+  get current() {
+    return this.args.model[this.args.model.length - 1];
+  }
   get trail() {
     let nested = this.args.model.slice(1);
     if (nested.length === 0) {
       return '';
     }
-    return `.${nested.mapBy('property').join('.')}`;
+    return `.${nested.map((item) => item.property).join('.')}`;
   }
 
   get isNested() {
@@ -51,6 +58,13 @@ export default class ObjectInspector extends Component {
   @action sendObjectToConsole(obj) {
     let objectId = obj.objectId;
     this.port.send('objectInspector:sendToConsole', {
+      objectId,
+    });
+  }
+
+  @action gotoSource(obj) {
+    let objectId = obj.objectId;
+    this.port.send('objectInspector:gotoSource', {
       objectId,
     });
   }

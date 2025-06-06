@@ -15,6 +15,16 @@ export default class PropertiesBase extends Component {
     this.port.send('objectInspector:sendToConsole', data);
   }
 
+  @action gotoSource({ name }) {
+    const data = {
+      objectId: this.args.model.objectId,
+    };
+    if (name !== '...') {
+      data.property = name;
+    }
+    this.port.send('objectInspector:gotoSource', data);
+  }
+
   @action digDeeper({ name }) {
     this.port.send('objectInspector:digDeeper', {
       objectId: this.args.model.objectId,

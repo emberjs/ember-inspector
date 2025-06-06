@@ -1,21 +1,29 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { action, computed } from '@ember/object';
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { alias, equal } from '@ember/object/computed';
 import { next } from '@ember/runloop';
 import parseText from 'ember-inspector/utils/parse-text';
 
-interface ObjectInspectorPropertyArgs {
-  model: any;
-  digDeeper: () => unknown;
-  saveProperty: (
-    property: unknown,
-    value: unknown,
-    dataType: unknown
-  ) => unknown;
+interface ObjectInspectorPropertySignature {
+  Args: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    model: any;
+    digDeeper: () => unknown;
+    gotoSource: () => void;
+    sendToConsole: () => void;
+    saveProperty: (
+      property: unknown,
+      value: unknown,
+      dataType: unknown,
+    ) => unknown;
+  };
 }
 
-export default class ObjectInspectorProperty extends Component<ObjectInspectorPropertyArgs> {
+export default class ObjectInspectorProperty extends Component<ObjectInspectorPropertySignature> {
   @tracked dateValue: Date | null = null;
   @tracked isDepsExpanded = false;
   @tracked isEdit = false;
@@ -64,10 +72,7 @@ export default class ObjectInspectorProperty extends Component<ObjectInspectorPr
 
   @computed('args.model.dependentKeys.[]', 'isCalculated')
   get hasDependentKeys() {
-    return (
-      this.args.model?.dependentKeys?.length &&
-      this.isCalculated
-    );
+    return this.args.model?.dependentKeys?.length && this.isCalculated;
   }
 
   get showDependentKeys() {
@@ -119,8 +124,11 @@ export default class ObjectInspectorProperty extends Component<ObjectInspectorPr
   }
 
   get cannotEdit() {
-    if (this.args.model.name === '...' || !this.isCalculated) return true;
-    return this.isFunction || this.isOverridden || this.readOnly;
+    if (this.args.model.name === '...' || !this.isCalculated || this.readOnly)
+      return true;
+    return !['type-string', 'type-number', 'type-boolean'].includes(
+      this.args.model?.value?.type,
+    );
   }
 
   @action
@@ -141,12 +149,14 @@ export default class ObjectInspectorProperty extends Component<ObjectInspectorPr
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     let value = this.args.model.value.inspect;
 
     if (this.isString) {
       value = this._quotedString(value);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.txtValue = value;
     this.isEdit = true;
   }
@@ -166,6 +176,7 @@ export default class ObjectInspectorProperty extends Component<ObjectInspectorPr
 
   @action
   finishedEditing() {
+    // eslint-disable-next-line ember/no-runloop
     next(() => {
       this.isEdit = false;
     });

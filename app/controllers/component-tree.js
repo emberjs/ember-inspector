@@ -57,6 +57,21 @@ export default class ComponentTreeController extends Controller {
 
         renderItems.push(item);
 
+        if (
+          item.isHtmlTag &&
+          renderNode.children.some((c) => c.type === 'modifier')
+        ) {
+          const idx = renderNode.children.findLastIndex(
+            (c) => c.type === 'modifier',
+          );
+          renderNode.children.splice(idx + 1, 0, {
+            type: 'placeholder-closing-tag',
+            id: renderNode.id + '-closing-tag',
+            name: '',
+            children: [],
+          });
+        }
+
         renderNode.children.forEach((node) => flatten(item, node));
       }
     };
@@ -197,6 +212,7 @@ export default class ComponentTreeController extends Controller {
   }
 
   syncInspection() {
+    // eslint-disable-next-line ember/no-runloop
     debounce(this, this._syncInspection, 50);
   }
 
@@ -322,7 +338,7 @@ function isInternalRenderNode(renderNode) {
 
 function focusedInInput() {
   return ['input', 'textarea'].includes(
-    document.activeElement.tagName.toLowerCase()
+    document.activeElement.tagName.toLowerCase(),
   );
 }
 
@@ -359,7 +375,32 @@ class RenderItem {
   }
 
   get isComponent() {
-    return this.renderNode.type === 'component';
+    return (
+      this.renderNode.type === 'component' ||
+      this.renderNode.type === 'remote-element'
+    );
+  }
+
+  get isModifier() {
+    return this.renderNode.type === 'modifier';
+  }
+
+  get hasModifiers() {
+    return this.childItems.some((item) => item.isModifier);
+  }
+
+  get isLastModifier() {
+    return (
+      this.parentItem.childItems.findLast((item) => item.isModifier) === this
+    );
+  }
+
+  get isHtmlTag() {
+    return this.renderNode.type === 'html-element';
+  }
+
+  get isClosingTag() {
+    return this.renderNode.type === 'placeholder-closing-tag';
   }
 
   get name() {
@@ -371,12 +412,15 @@ class RenderItem {
   }
 
   get isCurlyInvocation() {
+    if (this.isModifier) {
+      return true;
+    }
     return this.renderNode.args && this.renderNode.args.positional;
   }
 
   get hasInstance() {
     let { instance } = this.renderNode;
-    return typeof instance === 'object' && instance !== null;
+    return typeof instance === 'object' && instance;
   }
 
   get instance() {
@@ -388,7 +432,7 @@ class RenderItem {
   }
 
   get hasBounds() {
-    return this.renderNode.bounds !== null;
+    return this.renderNode.bounds;
   }
 
   get isRoot() {
@@ -458,6 +502,7 @@ class RenderItem {
   }
 
   @action showPreview() {
+    if (this.isClosingTag) return;
     this.controller.previewing = this.id;
   }
 
@@ -468,6 +513,7 @@ class RenderItem {
   }
 
   @action toggleInspection() {
+    if (this.isClosingTag) return;
     if (this.isPinned) {
       this.controller.pinned = undefined;
     } else {
@@ -495,6 +541,12 @@ class RenderItem {
     event.stopPropagation();
 
     this.send('view:inspectElement', { id: this.id });
+  }
+
+  @action inspectValue(event) {
+    event.stopPropagation();
+
+    this.send('view:inspectValue', { id: this.id });
   }
 
   show() {

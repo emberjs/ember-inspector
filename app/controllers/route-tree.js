@@ -1,4 +1,6 @@
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { alias } from '@ember/object/computed';
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { action, computed, set } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import { inject as service } from '@ember/service';
@@ -22,13 +24,16 @@ export default class RouteTreeController extends Controller {
     'model.[]',
     'options.{hideRoutes,hideSubstates}',
     'currentRoute.{name,url}',
-    'searchValue'
+    'searchValue',
   )
   get filtered() {
+    if (!Array.isArray(this.model)) {
+      return [];
+    }
     return this.model.filter((routeItem) => {
       let currentRoute = this.currentRoute;
-      let hideRoutes = this.get('options.hideRoutes');
-      let hideSubstates = this.get('options.hideSubstates');
+      let hideRoutes = this.options.hideRoutes;
+      let hideSubstates = this.options.hideSubstates;
 
       if (hideRoutes && currentRoute) {
         return checkCurrentRoute(currentRoute, routeItem.value);
@@ -57,8 +62,8 @@ export default class RouteTreeController extends Controller {
     });
   }
 
-  init() {
-    super.init(...arguments);
+  constructor() {
+    super(...arguments);
 
     set(this, 'model', []);
     set(this, 'options', {

@@ -47,7 +47,7 @@ module('App Picker', function (hooks) {
         this.currentApplicationId = applicationId;
         return false;
       },
-      { count: 3 }
+      { count: 3 },
     );
   });
 
@@ -86,7 +86,7 @@ module('App Picker', function (hooks) {
     assert.strictEqual(
       this.currentApplicationId,
       'app-one',
-      'First App is selected'
+      'First App is selected',
     );
     assert.ok(options[0].selected, 'First App is selected');
     assert.notOk(options[1].selected, 'Second App is not selected');
@@ -101,7 +101,7 @@ module('App Picker', function (hooks) {
     assert.strictEqual(
       this.currentApplicationId,
       'app-two',
-      'Second App is selected'
+      'Second App is selected',
     );
     assert.notOk(options[0].selected, 'First App is not selected');
     assert.ok(options[1].selected, 'Second App is selected');
@@ -116,7 +116,7 @@ module('App Picker', function (hooks) {
     assert.strictEqual(
       this.currentApplicationId,
       'app-one',
-      'First App is selected'
+      'First App is selected',
     );
     assert.ok(options[0].selected, 'First App is selected');
     assert.notOk(options[1].selected, 'Second App is not selected');

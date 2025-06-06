@@ -3,8 +3,12 @@
 
   @class ProfileNode
 **/
-import { get } from 'ember-debug/utils/ember/object';
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
+
+function get(obj, key) {
+  return obj.get ? obj.get(key) : obj[key];
+}
+
 const ProfileNode = function (start, payload, parent, now) {
   let name;
   this.start = start;

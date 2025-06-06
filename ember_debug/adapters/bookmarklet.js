@@ -1,15 +1,16 @@
 import BasicAdapter from './basic';
 
-export default BasicAdapter.extend({
+export default class extends BasicAdapter {
+  // eslint-disable-next-line ember/classic-decorator-hooks
   init() {
-    this._super();
+    super.init();
     this._listen();
-  },
+  }
 
   sendMessage(options) {
     options = options || {};
     window.emberInspector.w.postMessage(options, window.emberInspector.url);
-  },
+  }
 
   _listen() {
     window.addEventListener('message', (e) => {
@@ -27,5 +28,5 @@ export default BasicAdapter.extend({
         unloading: true,
       });
     };
-  },
-});
+  }
+}

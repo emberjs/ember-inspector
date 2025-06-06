@@ -12,35 +12,25 @@ import Ember from 'ember-debug/utils/ember';
  *
  * @module ember-debug/general-debug
  */
-export default DebugPort.extend({
+export default class extends DebugPort {
   /**
    * Fetches the ember-cli configuration info and sets them on
    * the `emberCliConfig` property.
    */
-  init() {
-    this._super(...arguments);
+  getAppConfig() {
     let found = findMetaTag('name', /environment$/);
     if (found) {
       try {
-        let config = JSON.parse(unescape(found.getAttribute('content')));
-        this.set('emberCliConfig', config);
-      } catch (e) {}
+        return JSON.parse(unescape(found.getAttribute('content')));
+      } catch {}
     }
-  },
+  }
 
   /**
    * Passed on creation.
    *
    * @type {EmberDebug}
    */
-  namespace: null,
-
-  /**
-   * Used by the DebugPort
-   *
-   * @type {String}
-   */
-  portNamespace: 'general',
 
   /**
    * Set on creation.
@@ -54,7 +44,7 @@ export default DebugPort.extend({
    *  {String} podModulePrefix ex: 'my-app/pods'
    *  {Boolean} usePodsByDefault
    */
-  emberCliConfig: null,
+  emberCliConfig = this.getAppConfig();
 
   /**
    * Sends a reply back indicating if the app has been booted.
@@ -65,9 +55,9 @@ export default DebugPort.extend({
    */
   sendBooted() {
     this.sendMessage('applicationBooted', {
-      booted: this.get('namespace.owner.__inspector__booted'),
+      booted: this.namespace.owner.__inspector__booted,
     });
-  },
+  }
 
   /**
    * Sends a reply back indicating that ember-debug has been reset.
@@ -75,40 +65,50 @@ export default DebugPort.extend({
    */
   sendReset() {
     this.sendMessage('reset');
-  },
+  }
 
-  messages: {
+  static {
     /**
-     * Called from the inspector to check if the inspected app has been booted.
+     * Used by the DebugPort
+     *
+     * @type {String}
      */
-    applicationBooted() {
-      this.sendBooted();
-    },
+    this.prototype.portNamespace = 'general';
+    this.prototype.messages = {
+      /**
+       * Called from the inspector to check if the inspected app has been booted.
+       */
+      applicationBooted() {
+        this.sendBooted();
+      },
 
-    /**
-     * Called from the inspector to fetch the libraries that are displayed in
-     * the info tab.
-     */
-    getLibraries() {
-      this.sendMessage('libraries', { libraries: Ember.libraries._registry });
-    },
+      /**
+       * Called from the inspector to fetch the libraries that are displayed in
+       * the info tab.
+       */
+      getLibraries() {
+        this.sendMessage('libraries', {
+          libraries: Ember.libraries?._registry,
+        });
+      },
 
-    getEmberCliConfig() {
-      this.sendMessage('emberCliConfig', {
-        emberCliConfig: this.emberCliConfig,
-      });
-    },
+      getEmberCliConfig() {
+        this.sendMessage('emberCliConfig', {
+          emberCliConfig: this.emberCliConfig,
+        });
+      },
 
-    /**
-     * Called from the inspector to refresh the inspected app.
-     * Used in case the inspector was opened late and therefore missed capturing
-     * all info.
-     */
-    refresh() {
-      window.location.reload();
-    },
-  },
-});
+      /**
+       * Called from the inspector to refresh the inspected app.
+       * Used in case the inspector was opened late and therefore missed capturing
+       * all info.
+       */
+      refresh() {
+        window.location.reload();
+      },
+    };
+  }
+}
 
 /**
  * Finds a meta tag by searching through a certain meta attribute.

@@ -1,0 +1,17 @@
+{
+  "solution": {
+    "ember-inspector": {
+      "impact": "patch",
+      "oldVersion": "4.13.0",
+      "newVersion": "4.13.1",
+      "constraints": [
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :bug: Bug Fix"
+        }
+      ],
+      "pkgJSONPath": "./package.json"
+    }
+  },
+  "description": "## Release (2024-07-30)\n\nember-inspector 4.13.1 (patch)\n\n#### :bug: Bug Fix\n* `ember-inspector`\n  * [#2595](https://github.com/emberjs/ember-inspector/pull/2595) fix boolean edit ([@patricklx](https://github.com/patricklx))\n\n#### Committers: 1\n- Patrick Pircher ([@patricklx](https://github.com/patricklx))\n"
+}

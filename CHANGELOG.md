@@ -1,7 +1,193 @@
 # Changelog
 
+## Release (2024-07-30)
+
+ember-inspector 4.13.1 (patch)
+
+#### :bug: Bug Fix
+* `ember-inspector`
+  * [#2595](https://github.com/emberjs/ember-inspector/pull/2595) fix boolean edit ([@patricklx](https://github.com/patricklx))
+
+#### Committers: 1
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
+## Release (2024-07-26)
+
+ember-inspector 4.13.0 (minor)
+
+#### :rocket: Enhancement
+* `ember-inspector`
+  * [#2581](https://github.com/emberjs/ember-inspector/pull/2581) provide name for hbs template only components ([@patricklx](https://github.com/patricklx))
+
+#### :house: Internal
+* `ember-inspector`
+  * [#2585](https://github.com/emberjs/ember-inspector/pull/2585) Use GH_PAT token to hopefully fix releases ([@patricklx](https://github.com/patricklx))
+
+#### Committers: 1
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
+## Release (2024-07-25)
+
+ember-inspector 4.12.2 (patch)
+
+#### :bug: Bug Fix
+* `ember-inspector`
+  * [#2587](https://github.com/emberjs/ember-inspector/pull/2587) do not use prototype extension ([@patricklx](https://github.com/patricklx))
+
+#### :house: Internal
+* `ember-inspector`
+  * [#2591](https://github.com/emberjs/ember-inspector/pull/2591) Use Personal Access Token ([@kategengler](https://github.com/kategengler))
+
+#### Committers: 2
+- Katie Gengler ([@kategengler](https://github.com/kategengler))
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
+## Release (2024-07-10)
+
+ember-inspector 4.12.1 (patch)
+
+#### :house: Internal
+* `ember-inspector`
+  * [#2582](https://github.com/emberjs/ember-inspector/pull/2582) skip failing test ([@patricklx](https://github.com/patricklx))
+
+#### Committers: 1
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
+## Release (2024-05-06)
+
+ember-inspector 4.12.0 (minor)
+
+#### :rocket: Enhancement
+* `ember-inspector`
+  * [#2553](https://github.com/emberjs/ember-inspector/pull/2553) Mark dependent keys that updated ([@patricklx](https://github.com/patricklx))
+  * [#2548](https://github.com/emberjs/ember-inspector/pull/2548) add modifiers to render tree ([@patricklx](https://github.com/patricklx))
+  * [#2443](https://github.com/emberjs/ember-inspector/pull/2443) Add ability to jump to source for functions and classes ([@patricklx](https://github.com/patricklx))
+  * [#2536](https://github.com/emberjs/ember-inspector/pull/2536) improve route debug ([@patricklx](https://github.com/patricklx))
+
+#### :house: Internal
+* `ember-inspector`
+  * [#2571](https://github.com/emberjs/ember-inspector/pull/2571) fix beta & canary tests ([@patricklx](https://github.com/patricklx))
+  * [#2567](https://github.com/emberjs/ember-inspector/pull/2567) add internal to dependabot prs ([@patricklx](https://github.com/patricklx))
+  * [#2563](https://github.com/emberjs/ember-inspector/pull/2563) add release plan ([@patricklx](https://github.com/patricklx))
+  * [#2565](https://github.com/emberjs/ember-inspector/pull/2565) build(deps-dev): bump express from 4.18.2 to 4.19.2 ([@dependabot[bot]](https://github.com/apps/dependabot))
+  * [#2564](https://github.com/emberjs/ember-inspector/pull/2564) build(deps-dev): bump follow-redirects from 1.15.4 to 1.15.6 ([@dependabot[bot]](https://github.com/apps/dependabot))
+  * [#2560](https://github.com/emberjs/ember-inspector/pull/2560) build(deps-dev): bump ip from 1.1.8 to 1.1.9 ([@dependabot[bot]](https://github.com/apps/dependabot))
+  * [#2498](https://github.com/emberjs/ember-inspector/pull/2498) Remove outdated code and unnecessary captureRenderTree patching ([@patricklx](https://github.com/patricklx))
+  * [#2511](https://github.com/emberjs/ember-inspector/pull/2511) chore(deps): remove unused AWS SDK for JavaScript ([@trivikr](https://github.com/trivikr))
+  * [#2556](https://github.com/emberjs/ember-inspector/pull/2556) build(deps-dev): bump @types/ember__routing from 4.0.12 to 4.0.21 ([@dependabot[bot]](https://github.com/apps/dependabot))
+
+#### Committers: 2
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+- Trivikram Kamat ([@trivikr](https://github.com/trivikr))
 
 
+
+
+
+
+
+
+
+
+## v4.11.0 (2024-02-07)
+
+#### :rocket: Enhancement
+* [#2546](https://github.com/emberjs/ember-inspector/pull/2546) add 🔸 to tracked dependencies that caused the last invalidation ([@patricklx](https://github.com/patricklx))
+* [#2549](https://github.com/emberjs/ember-inspector/pull/2549) improve in element support ([@patricklx](https://github.com/patricklx))
+
+#### :bug: Bug Fix
+* [#2547](https://github.com/emberjs/ember-inspector/pull/2547) fix render tree triggering when already destroyed ([@patricklx](https://github.com/patricklx))
+* [#2533](https://github.com/emberjs/ember-inspector/pull/2533) ensure port is connected ([@patricklx](https://github.com/patricklx))
+* [#2531](https://github.com/emberjs/ember-inspector/pull/2531) fix cannot access array values ([@patricklx](https://github.com/patricklx))
+* [#2527](https://github.com/emberjs/ember-inspector/pull/2527) exclude remotes from serialization ([@patricklx](https://github.com/patricklx))
+
+#### :house: Internal
+* [#2534](https://github.com/emberjs/ember-inspector/pull/2534) fix ci artifact upload & download ([@patricklx](https://github.com/patricklx))
+
+#### Committers: 1
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
+## v4.10.4 (2023-11-27)
+
+#### :bug: Bug Fix
+* [#2505](https://github.com/emberjs/ember-inspector/pull/2505) fix lazy routes debug ([@patricklx](https://github.com/patricklx))
+* [#2517](https://github.com/emberjs/ember-inspector/pull/2517) [firefox] set access permissions for all websites  ([@patricklx](https://github.com/patricklx))
+
+#### Committers: 1
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
+## v4.10.3 (2023-11-14)
+
+#### :house: Internal
+* [#2510](https://github.com/emberjs/ember-inspector/pull/2510) Remove custom id setting since it is in manifest ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+
+#### Committers: 1
+- Robbie Wagner ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+
+## v4.10.2 (2023-11-14)
+
+#### :house: Internal
+* [#2509](https://github.com/emberjs/ember-inspector/pull/2509) fix publish - remove volta ([@patricklx](https://github.com/patricklx))
+
+#### Committers: 1
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
+## v4.10.1 (2023-11-12)
+
+#### :bug: Bug Fix
+* [#2501](https://github.com/emberjs/ember-inspector/pull/2501) correctly load scripts in chrome & firefox ([@patricklx](https://github.com/patricklx))
+* [#2503](https://github.com/emberjs/ember-inspector/pull/2503) fix inspecting ember data records ([@patricklx](https://github.com/patricklx))
+* [#2499](https://github.com/emberjs/ember-inspector/pull/2499) fix inspector not showing up in certain cases ([@patricklx](https://github.com/patricklx))
+* [#2497](https://github.com/emberjs/ember-inspector/pull/2497) make amd safe ([@patricklx](https://github.com/patricklx))
+* [#2495](https://github.com/emberjs/ember-inspector/pull/2495) switch to source-map-js ([@patricklx](https://github.com/patricklx))
+* [#2489](https://github.com/emberjs/ember-inspector/pull/2489) Add id for manifest v3 support in Firefox ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+* [#2490](https://github.com/emberjs/ember-inspector/pull/2490) fix some ember names detection ([@patricklx](https://github.com/patricklx))
+
+#### :house: Internal
+* [#2494](https://github.com/emberjs/ember-inspector/pull/2494) Update node and pnpm versions ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+
+#### Committers: 2
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+- Robbie Wagner ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+
+## v4.10.0 (2023-11-03)
+
+#### :rocket: Enhancement
+* [#2460](https://github.com/emberjs/ember-inspector/pull/2460) use word-wrap and add line break controls ([@patricklx](https://github.com/patricklx))
+* [#2459](https://github.com/emberjs/ember-inspector/pull/2459) remove title ([@patricklx](https://github.com/patricklx))
+* [#2426](https://github.com/emberjs/ember-inspector/pull/2426) limit max width of tooltips ([@patricklx](https://github.com/patricklx))
+* [#2402](https://github.com/emberjs/ember-inspector/pull/2402) support in-element & wormhole ([@patricklx](https://github.com/patricklx))
+* [#2444](https://github.com/emberjs/ember-inspector/pull/2444) show icons in whats-new page ([@patricklx](https://github.com/patricklx))
+* [#2241](https://github.com/emberjs/ember-inspector/pull/2241) allow setting custom object display value ([@patricklx](https://github.com/patricklx))
+* [#2315](https://github.com/emberjs/ember-inspector/pull/2315) Start adding TypeScript ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+
+#### :bug: Bug Fix
+* [#2487](https://github.com/emberjs/ember-inspector/pull/2487) [container debug] fix missing message handling ([@patricklx](https://github.com/patricklx))
+* [#2488](https://github.com/emberjs/ember-inspector/pull/2488) [app-info] fix missing app config ([@patricklx](https://github.com/patricklx))
+* [#2484](https://github.com/emberjs/ember-inspector/pull/2484) fix .get is not defined ([@patricklx](https://github.com/patricklx))
+* [#2476](https://github.com/emberjs/ember-inspector/pull/2476) fix manifest ([@patricklx](https://github.com/patricklx))
+* [#2477](https://github.com/emberjs/ember-inspector/pull/2477) fix missing errors when digging into props ([@patricklx](https://github.com/patricklx))
+* [#2432](https://github.com/emberjs/ember-inspector/pull/2432) do not fail on bad toString call ([@patricklx](https://github.com/patricklx))
+* [#2270](https://github.com/emberjs/ember-inspector/pull/2270) fix: Use correct value path in object inspector (#2237) ([@rossketron](https://github.com/rossketron))
+* [#2244](https://github.com/emberjs/ember-inspector/pull/2244) add script tag to the head instead ([@patricklx](https://github.com/patricklx))
+
+#### :memo: Documentation
+* [#2471](https://github.com/emberjs/ember-inspector/pull/2471) Update README.md with pnpm usage ([@CvX](https://github.com/CvX))
+
+#### :house: Internal
+* [#2475](https://github.com/emberjs/ember-inspector/pull/2475) modernize ember debug ([@patricklx](https://github.com/patricklx))
+* [#2111](https://github.com/emberjs/ember-inspector/pull/2111) Convert to manifest v3 ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+* [#2433](https://github.com/emberjs/ember-inspector/pull/2433) Bump some deps ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+* [#2411](https://github.com/emberjs/ember-inspector/pull/2411) use pnpm ([@patricklx](https://github.com/patricklx))
+* [#2403](https://github.com/emberjs/ember-inspector/pull/2403) use requireModule instead of require ([@patricklx](https://github.com/patricklx))
+* [#2316](https://github.com/emberjs/ember-inspector/pull/2316) Various lint fixes ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+* [#2284](https://github.com/emberjs/ember-inspector/pull/2284) ember-cli-update to 4.9.2 ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+
+#### Committers: 4
+- Jarek Radosz ([@CvX](https://github.com/CvX))
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+- Robbie Wagner ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+- Ross Ketron ([@rossketron](https://github.com/rossketron))
 
 ## v4.9.1 (2022-11-04)
 

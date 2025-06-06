@@ -1,9 +1,8 @@
-{{! template-lint-disable no-action}}
 {{#if this.toolbarContainer}}
   {{#in-element this.toolbarContainer}}
     <DeprecationsToolbar
       @changeDeprecationWorkflow={{this.changeDeprecationWorkflow}}
-      @clear={{action this.send "clear"}}
+      @clear={{this.clear}}
       @searchValue={{this.searchValue}}
       @toggleDeprecationWorkflow={{this.toggleDeprecationWorkflow}}
     />
@@ -11,7 +10,7 @@
 {{/if}}
 
 {{#if this.filtered.length}}
-  <div class="list__content js-deprecations">
+  <div class="list-content js-deprecations">
     <VerticalCollection @items={{this.filtered}} @estimateHeight={{20}} as |content|>
       <DeprecationItem
         @model={{content}}

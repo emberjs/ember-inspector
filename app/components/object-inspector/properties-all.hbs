@@ -1,5 +1,5 @@
 {{#if this.flatPropertyList.length}}
-  <ul class="mixin__properties m-0 text-base font-mono list-none">
+  <ul class="mixin-properties m-0 text-base font-mono list-none">
     <ObjectInspector::SortProperties
       @properties={{this.flatPropertyList}}
       as |sortedProperties|
@@ -11,6 +11,7 @@
           @model={{prop}}
           @saveProperty={{this.saveProperty}}
           @sendToConsole={{fn this.sendToConsole prop}}
+          @gotoSource={{fn this.gotoSource prop}}
         />
       {{/each}}
     </ObjectInspector::SortProperties>

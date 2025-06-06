@@ -1,17 +1,15 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { equal } from '@ember/object/computed';
 import { debounce, schedule } from '@ember/runloop';
 import { inject as service } from '@ember/service';
+
+import { TrackedArray, TrackedObject } from 'tracked-built-ins';
 
 export default class ApplicationController extends Controller {
   /**
    * Service used to broadcast changes to the application's layout
    * such as toggling of the object inspector.
-   *
-   * @property layoutService
-   * @type {Service}
    */
   @service('layout') layoutService;
   @service port;
@@ -25,13 +23,13 @@ export default class ApplicationController extends Controller {
   @tracked inspectorWidth = 360;
   /**
    * Indicates if the inspector has detected an ember app.
-   *
-   * @type {Boolean}
    */
   isEmberApplication = false;
   @tracked _navWidthExpanded = 180;
   @tracked _navWidthCollapsed = 48;
   @tracked navIsCollapsed = false;
+  @tracked mixinDetails = new TrackedObject({});
+  @tracked mixinStack = new TrackedArray([]);
 
   get navWidth() {
     return this.navIsCollapsed
@@ -43,14 +41,8 @@ export default class ApplicationController extends Controller {
     this._navWidthExpanded = value;
   }
 
-  @equal('port.adapter.name', 'chrome')
-  isChrome;
-
-  constructor() {
-    super(...arguments);
-
-    this.mixinStack = [];
-    this.mixinDetails = [];
+  get isChrome() {
+    return this.port?.adapter?.name === 'chrome';
   }
 
   /*
@@ -67,15 +59,14 @@ export default class ApplicationController extends Controller {
       errors,
     };
 
-    this.mixinStack.pushObject(details);
-    this.set('mixinDetails', details);
+    this.mixinStack.push(details);
+    this.mixinDetails = details;
   }
 
   @action
   popMixinDetails() {
-    let mixinStack = this.mixinStack;
-    let item = mixinStack.popObject();
-    this.set('mixinDetails', mixinStack.get('lastObject'));
+    const item = this.mixinStack.pop();
+    this.mixinDetails = this.mixinStack.at(-1);
     this.port.send('objectInspector:releaseObject', {
       objectId: item.objectId,
     });
@@ -84,8 +75,9 @@ export default class ApplicationController extends Controller {
   @action
   showInspector() {
     if (this.inspectorExpanded === false) {
-      this.set('inspectorExpanded', true);
+      this.inspectorExpanded = true;
       // Broadcast that tables have been resized (used by `x-list`).
+      // eslint-disable-next-line ember/no-runloop
       schedule('afterRender', () => {
         this.layoutService.trigger('resize', { source: 'object-inspector' });
       });
@@ -95,8 +87,9 @@ export default class ApplicationController extends Controller {
   @action
   hideInspector() {
     if (this.inspectorExpanded === true) {
-      this.set('inspectorExpanded', false);
+      this.inspectorExpanded = false;
       // Broadcast that tables have been resized (used by `x-list`).
+      // eslint-disable-next-line ember/no-runloop
       schedule('afterRender', () => {
         this.layoutService.trigger('resize', { source: 'object-inspector' });
       });
@@ -114,8 +107,9 @@ export default class ApplicationController extends Controller {
 
   @action
   setActive(bool) {
+    // eslint-disable-next-line ember/no-runloop
     schedule('afterRender', () => {
-      this.set('active', bool);
+      this.active = bool;
     });
   }
 
@@ -127,6 +121,7 @@ export default class ApplicationController extends Controller {
 
   @action
   _windowDidResize() {
+    // eslint-disable-next-line ember/no-runloop
     schedule('afterRender', () => {
       if (!this.isDestroyed && !this.isDestroying) {
         this.layoutService.trigger('resize', {
@@ -135,7 +130,7 @@ export default class ApplicationController extends Controller {
 
         if (this.contentElement) {
           this.layoutService.updateContentHeight(
-            this.contentElement.clientHeight
+            this.contentElement.clientHeight,
           );
         }
       }
@@ -144,12 +139,14 @@ export default class ApplicationController extends Controller {
 
   @action
   windowDidResize() {
+    // eslint-disable-next-line ember/no-runloop
     debounce(this, this._windowDidResize, 250);
   }
 
   @action
   toggleNavCollapsed() {
-    this.set('navIsCollapsed', !this.navIsCollapsed);
+    this.navIsCollapsed = !this.navIsCollapsed;
+    // eslint-disable-next-line ember/no-runloop
     schedule('afterRender', () => {
       this.layoutService.trigger('resize', { source: 'navigation' });
     });
@@ -166,28 +163,30 @@ export default class ApplicationController extends Controller {
       });
     });
 
-    this.set('mixinStack', []);
+    this.mixinStack = new TrackedArray([]);
     this.pushMixinDetails(name, undefined, objectId, details, errors);
   }
 
   @action
   droppedObject(objectId) {
-    let mixinStack = this.mixinStack;
-    let obj = mixinStack.findBy('objectId', objectId);
+    let obj = this.mixinStack.find((mixin) => mixin.objectId === objectId);
     if (obj) {
-      let index = mixinStack.indexOf(obj);
-      let objectsToRemove = [];
+      let index = this.mixinStack.indexOf(obj);
+      let objectsToRemove = new TrackedArray([]);
       for (let i = index; i >= 0; i--) {
-        objectsToRemove.pushObject(mixinStack.objectAt(i));
+        objectsToRemove.push(this.mixinStack.at(i));
       }
       objectsToRemove.forEach((item) => {
-        mixinStack.removeObject(item);
+        const index = this.mixinStack.indexOf(item);
+        if (index !== -1) {
+          this.mixinStack.splice(index, 1);
+        }
       });
     }
-    if (mixinStack.get('length') > 0) {
-      this.set('mixinDetails', mixinStack.get('lastObject'));
+    if (this.mixinStack.length > 0) {
+      this.mixinDetails = this.mixinStack.at(-1);
     } else {
-      this.set('mixinDetails', null);
+      this.mixinDetails = null;
     }
   }
 }

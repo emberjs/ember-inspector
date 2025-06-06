@@ -1,4 +1,5 @@
 import { inject as service } from '@ember/service';
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { readOnly } from '@ember/object/computed';
 import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
@@ -54,7 +55,7 @@ export default class LaunchRoute extends Route {
           },
           function () {
             resolve();
-          }
+          },
         );
       });
     } else {

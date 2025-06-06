@@ -81,7 +81,7 @@ export default class {
     let saved = this.storage.getItem(this.getStorageKey());
     if (saved && saved.columnVisibility) {
       let savedIds = keys(saved.columnVisibility).sort();
-      let schemaIds = this.columnSchema.mapBy('id').sort();
+      let schemaIds = this.columnSchema.map((col) => col.id).sort();
       if (!compareArrays(savedIds, schemaIds)) {
         // Clear saved items
         this.storage.removeItem(this.getStorageKey());
@@ -165,7 +165,7 @@ export default class {
     if (saved.columnVisibility && !isNone(saved.columnVisibility[id])) {
       return saved.columnVisibility[id];
     }
-    return this.columnSchema.findBy('id', id).visible;
+    return this.columnSchema.find((x) => x.id === id).visible;
   }
 
   /**
@@ -195,7 +195,7 @@ export default class {
     this._columnVisibility = this.columnSchema.map((column) =>
       Object.assign({}, column, {
         visible: this.isColumnVisible(column.id),
-      })
+      }),
     );
   }
 
@@ -221,8 +221,8 @@ export default class {
       let diff = this.tableWidth - totalWidth;
       while (diff > 0) {
         columns
-          .filterBy('visible')
-          .sortBy('width')
+          .filter((col) => !!col.visible)
+          .sort((a, b) => a.width - b.width)
           .forEach((column) => {
             if (diff > 0) {
               column.width++;
@@ -245,7 +245,7 @@ export default class {
    * @param {Number} width The column's new width
    */
   updateColumnWidth(id, width) {
-    let column = this._columns.findBy('id', id);
+    let column = this._columns.find((x) => x.id === id);
     let previousWidth = column.width;
     column.width = width;
     let last = this._columns[this._columns.length - 1];
@@ -265,9 +265,9 @@ export default class {
    * @param {String} id
    */
   toggleVisibility(id) {
-    let column = this._columnVisibility.findBy('id', id);
+    let column = this._columnVisibility.find((x) => x.id === id);
     column.visible = !column.visible;
-    if (!this._columnVisibility.isAny('visible')) {
+    if (!this._columnVisibility.some((col) => col.visible)) {
       // If this column was the last visible column
       // cancel toggling and set back to `true`.
       column.visible = true;
@@ -317,7 +317,7 @@ export default class {
         obj[id] = visible;
         return obj;
       },
-      {}
+      {},
     );
     this.storage.setItem(this.getStorageKey(), saved);
   }
@@ -362,7 +362,7 @@ export default class {
    * @method getStorageKey
    */
   getStorageKey() {
-    return `list__${this.key}`;
+    return `list-${this.key}`;
   }
 
   /**

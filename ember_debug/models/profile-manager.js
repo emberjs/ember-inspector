@@ -75,6 +75,7 @@ export default class ProfileManager {
     this.stylesheet = insertStylesheet();
     // keep track of all the active highlights
     this.highlights = [];
+    // eslint-disable-next-line ember/new-module-imports
     this.isHighlightEnabled = compareVersion(Ember?.VERSION, '3.20.0') !== -1;
   }
 
@@ -222,7 +223,7 @@ export default class ProfileManager {
           this.queue[entry.endedIndex].profileNode = this.began(
             entry.timestamp,
             entry.payload,
-            entry.now
+            entry.now,
           );
         }
       } else {

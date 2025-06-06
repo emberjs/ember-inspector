@@ -7,25 +7,21 @@ import { run } from 'ember-debug/utils/ember/runloop';
 const { isArray } = Array;
 const { keys } = Object;
 
-export default BasicAdapter.extend({
+export default class extends BasicAdapter {
+  // eslint-disable-next-line ember/classic-decorator-hooks
   init() {
-    this.set('_channel', new MessageChannel());
-    this.set('_chromePort', this.get('_channel.port1'));
-
-    this._super(...arguments);
-  },
+    this._channel = new MessageChannel();
+    this._chromePort = this._channel?.port1;
+    super.init();
+  }
 
   connect() {
     const channel = this._channel;
-    return this._super(...arguments).then(
-      () => {
-        window.postMessage('debugger-client', '*', [channel.port2]);
-        this._listen();
-      },
-      null,
-      'ember-inspector'
-    );
-  },
+    return super.connect().then(() => {
+      window.postMessage('debugger-client', '*', [channel.port2]);
+      this._listen();
+    }, null);
+  }
 
   sendMessage(options = {}) {
     // If prototype extensions are disabled, `Ember.A()` arrays
@@ -33,15 +29,19 @@ export default BasicAdapter.extend({
     // "clone" them through postMessage unless they are converted to a
     // native array.
     options = deepClone(options);
-    this._chromePort.postMessage(options);
-  },
+    try {
+      this._chromePort.postMessage(options);
+    } catch (e) {
+      console.log('failed to send message', e);
+    }
+  }
 
   /**
    * Open the devtools "Elements" and select an DOM node.
    *
-   * @param  {Node} node The DOM node to select
+   * @param  {Node|Function} value The DOM node to select
    */
-  inspectNode(node) {
+  inspectValue(value) {
     // NOTE:
     //
     // Basically, we are just trying to call `inspect(node)` here.
@@ -63,10 +63,10 @@ export default BasicAdapter.extend({
 
     let name = `__EMBER_INSPECTOR_${(Math.random() * 100000000).toFixed(0)}`;
 
-    window[name] = node;
+    window[name] = value;
 
-    this.get('namespace.port').send('view:inspectDOMNode', { name });
-  },
+    this.namespace.port.send('view:inspectJSValue', { name });
+  }
 
   _listen() {
     let chromePort = this._chromePort;
@@ -95,8 +95,8 @@ export default BasicAdapter.extend({
     });
 
     chromePort.start();
-  },
-});
+  }
+}
 
 // On some older Ember version `Ember.ENV.EXTEND_PROTOTYPES` is not
 // guarenteed to be an object. While this code only support 3.4+ (all
@@ -107,7 +107,7 @@ export default BasicAdapter.extend({
 const HAS_ARRAY_PROTOTYPE_EXTENSIONS = (() => {
   try {
     return Ember.ENV.EXTEND_PROTOTYPES.Array === true;
-  } catch (e) {
+  } catch {
     return false;
   }
 })();

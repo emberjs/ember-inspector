@@ -66,15 +66,15 @@ $red: #ff2717;
     background: var(--base04);
   }
 
-  .et-sort-indicator:before {
-    content: '\25be';
+  .et-sort-indicator::before {
+    content: "\25be";
     display: inline-block;
     font-size: 1.4rem;
     line-height: 1;
     transform: rotate(0);
   }
 
-  .et-sort-indicator.is-ascending:before {
+  .et-sort-indicator.is-ascending::before {
     transform: rotate(180deg);
   }
 

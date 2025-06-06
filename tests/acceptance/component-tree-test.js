@@ -85,7 +85,7 @@ function TopLevel({ id }, ...children) {
       instance: null,
       template: 'packages/@ember/-internals/glimmer/lib/templates/outlet.hbs',
     },
-    ...children
+    ...children,
   );
 }
 
@@ -134,11 +134,11 @@ function getRenderTree({ withChildren, withManyChildren } = {}) {
                 args: Args({ names: ['subTasks'], positionals: 0 }),
                 instance: Serialized('ember789'),
               },
-              ...children
-            )
-          )
-        )
-      )
+              ...children,
+            ),
+          ),
+        ),
+      ),
     ),
   ];
 }
@@ -166,7 +166,7 @@ module('Component Tab', function (hooks) {
     assert.strictEqual(
       expandedNodes.length,
       3,
-      'all nodes should be expanded except the leaf node'
+      'all nodes should be expanded except the leaf node',
     );
 
     let names = [];
@@ -184,7 +184,7 @@ module('Component Tab', function (hooks) {
         'TodoList',
         'TodoItem @subTasks ={{ ... }}',
       ],
-      'expected names for all views/components'
+      'expected names for all views/components',
     );
   });
 
@@ -194,7 +194,7 @@ module('Component Tab', function (hooks) {
     let treeNodes = findAll('.component-tree-item');
     assert.strictEqual(treeNodes.length, 4, 'expected some tree nodes');
 
-    let expanders = findAll('.component-tree-item__expand');
+    let expanders = findAll('.component-tree-item-expand');
     let expanderEl = expanders[expanders.length - 1];
     await click(expanderEl);
 
@@ -231,8 +231,6 @@ module('Component Tab', function (hooks) {
   });
 
   test('It allows users to navigate nodes with arrow keys', async function (assert) {
-    assert.expect(6);
-
     await visit('/component-tree');
 
     // select first node with down arrow key
@@ -287,31 +285,31 @@ module('Component Tab', function (hooks) {
   test('It allows users to expand and collapse children with alt key', async function (assert) {
     await visit('/component-tree');
 
-    let expanders = findAll('.component-tree-item__expand.expanded');
+    let expanders = findAll('.component-tree-item-expand.expanded');
     assert.strictEqual(
       expanders.length,
       3,
-      'disclosure triangles all in expanded state'
+      'disclosure triangles all in expanded state',
     );
 
     // Click second component with alt key;
     // this should collapse itself and children
     let expanderEl = expanders[1];
     await click(expanderEl, { altKey: true });
-    expanders = findAll('.component-tree-item__expand.expanded');
+    expanders = findAll('.component-tree-item-expand.expanded');
     assert.strictEqual(
       expanders.length,
       1,
-      'clicked disclosure triangle no longer expanded'
+      'clicked disclosure triangle no longer expanded',
     );
 
-    expanders = findAll('.component-tree-item__expand');
+    expanders = findAll('.component-tree-item-expand');
     expanderEl = expanders[1];
     await click(expanderEl);
 
     // After expanding second component without alt key
     // the children should be collapsed
-    expanders = findAll('.component-tree-item__expand');
+    expanders = findAll('.component-tree-item-expand');
     expanderEl = expanders[2];
     assert
       .dom(expanderEl)
@@ -336,7 +334,7 @@ module('Component Tab', function (hooks) {
     assert.deepEqual(
       visibleComponentNames,
       ['application route', 'todos route', 'TodoList'],
-      'expected names for all views/components'
+      'expected names for all views/components',
     );
   });
 
@@ -449,7 +447,7 @@ module('Component Tab', function (hooks) {
   test('It should update the view tree when the port triggers a change, preserving the expanded state of existing nodes', async function (assert) {
     await visit('/component-tree');
 
-    let expanders = findAll('.component-tree-item__expand');
+    let expanders = findAll('.component-tree-item-expand');
     let expanderEl = expanders[expanders.length - 1];
     await click(expanderEl);
 
@@ -477,7 +475,7 @@ module('Component Tab', function (hooks) {
       .exists({ count: 4 }, 'the last node should still be collapsed');
 
     assert
-      .dom('.component-tree-item__expand')
+      .dom('.component-tree-item-expand')
       .exists({ count: 3 }, 'last item should not have expander yet');
 
     // send a view tree with children
@@ -487,14 +485,14 @@ module('Component Tab', function (hooks) {
     });
 
     assert
-      .dom('.component-tree-item__expand')
+      .dom('.component-tree-item-expand')
       .exists({ count: 4 }, 'it should have a new expander');
 
     assert
       .dom('.component-tree-item')
       .exists({ count: 4 }, 'the last node should still be collapsed');
 
-    let expanders = findAll('.component-tree-item__expand');
+    let expanders = findAll('.component-tree-item-expand');
     let expanderEl = expanders[expanders.length - 1];
     await click(expanderEl);
 
@@ -529,14 +527,14 @@ module('Component Tab', function (hooks) {
     await settled();
 
     assert
-      .dom('.component-tree-item--pinned')
+      .dom('.component-tree-item-pinned')
       .exists({ count: 1 }, 'it should pinn the selected item');
 
     assert.true(
       isInViewport(
-        document.getElementsByClassName('component-tree-item--pinned').item(0)
+        document.getElementsByClassName('component-tree-item-pinned').item(0),
       ),
-      'it should show the pinned item'
+      'it should show the pinned item',
     );
 
     await sendMessage({
@@ -547,16 +545,16 @@ module('Component Tab', function (hooks) {
     await settled();
 
     assert
-      .dom('.component-tree-item--highlighted')
+      .dom('.component-tree-item-highlighted')
       .exists({ count: 1 }, 'it should show the previewing item');
 
     assert.true(
       isInViewport(
         document
-          .getElementsByClassName('component-tree-item--highlighted')
-          .item(0)
+          .getElementsByClassName('component-tree-item-highlighted')
+          .item(0),
       ),
-      'it should show the preview item'
+      'it should show the preview item',
     );
 
     await sendMessage({
@@ -567,10 +565,10 @@ module('Component Tab', function (hooks) {
     await settled();
 
     assert
-      .dom('.component-tree-item--pinned')
+      .dom('.component-tree-item-pinned')
       .exists(
         { count: 0 },
-        'it should not scroll back to the pinned component after preview finished'
+        'it should not scroll back to the pinned component after preview finished',
       );
 
     await sendMessage({
@@ -581,10 +579,10 @@ module('Component Tab', function (hooks) {
     await settled();
 
     assert
-      .dom('.component-tree-item--pinned')
+      .dom('.component-tree-item-pinned')
       .exists(
         { count: 0 },
-        'it should not scroll back to the pinned component after new render tree'
+        'it should not scroll back to the pinned component after new render tree',
       );
 
     const scrollTarget = document
@@ -607,20 +605,18 @@ module('Component Tab', function (hooks) {
     await settled();
 
     assert
-      .dom('.component-tree-item--pinned')
+      .dom('.component-tree-item-pinned')
       .exists({ count: 1 }, 'it should show the pinned item after scrolling');
 
     assert.true(
       isInViewport(
-        document.getElementsByClassName('component-tree-item--pinned').item(0)
+        document.getElementsByClassName('component-tree-item-pinned').item(0),
       ),
-      'it should show the pinned item'
+      'it should show the pinned item',
     );
   });
 
   test('Previewing / showing a view on the client', async function (assert) {
-    assert.expect(2);
-
     await visit('/component-tree');
 
     respondWith('view:showInspection', ({ id, pin }) => {
@@ -637,8 +633,6 @@ module('Component Tab', function (hooks) {
   });
 
   test('Scrolling an element into view', async function (assert) {
-    assert.expect(1);
-
     await visit('/component-tree');
 
     respondWith('view:scrollIntoView', ({ id }) => {
@@ -650,8 +644,6 @@ module('Component Tab', function (hooks) {
   });
 
   test('View DOM element in Elements panel', async function (assert) {
-    assert.expect(1);
-
     await visit('/component-tree');
 
     respondWith('view:inspectElement', ({ id }) => {
@@ -663,8 +655,6 @@ module('Component Tab', function (hooks) {
   });
 
   test('Inspects the component in the object inspector on click and shows tooltip', async function (assert) {
-    assert.expect(3);
-
     await visit('/component-tree');
 
     respondWith('view:showInspection', ({ id, pin }) => {
@@ -677,24 +667,22 @@ module('Component Tab', function (hooks) {
       assert.strictEqual(
         objectId,
         'ember456',
-        'Client asked to inspect the application controller'
+        'Client asked to inspect the application controller',
       );
       return false;
     });
 
-    await click('.component-tree-item--component code');
+    await click('.component-tree-item-component code');
   });
 
   test('Selects a component in the tree in response to a message from the context menu', async function (assert) {
-    assert.expect(8);
-
     // Go to the component tree and populate it before sending the message from the context menu
     // also collapse the tree to test auto expanding to pinned item
     await visit('/component-tree');
     let treeNodes = findAll('.component-tree-item');
     assert.strictEqual(treeNodes.length, 4, 'expected some tree nodes');
 
-    let expanders = findAll('.component-tree-item__expand');
+    let expanders = findAll('.component-tree-item-expand');
     let expanderEl = expanders[expanders.length - 1];
     await click(expanderEl);
 
@@ -711,7 +699,7 @@ module('Component Tab', function (hooks) {
       assert.strictEqual(
         objectId,
         'ember789',
-        'Client asked to inspect the <TodoItem> component'
+        'Client asked to inspect the <TodoItem> component',
       );
       return false;
     });
@@ -724,16 +712,16 @@ module('Component Tab', function (hooks) {
     assert.strictEqual(
       currentURL(),
       '/component-tree?pinned=render-node%3A4',
-      'It pins the element id as a query param'
+      'It pins the element id as a query param',
     );
 
     await settled();
 
     assert
-      .dom('.component-tree-item--pinned')
+      .dom('.component-tree-item-pinned')
       .hasText(
         'TodoItem @subTasks ={{ ... }}',
-        'It selects the item in the tree corresponding to the element'
+        'It selects the item in the tree corresponding to the element',
       );
 
     treeNodes = findAll('.component-tree-item');
@@ -741,15 +729,13 @@ module('Component Tab', function (hooks) {
   });
 
   test('Can inspect component arguments that are objects in component tree', async function (assert) {
-    assert.expect(1);
-
     await visit('/component-tree');
 
     respondWith('objectInspector:inspectById', ({ objectId }) => {
       assert.strictEqual(
         objectId,
         'ember1',
-        'Client asked to inspect the <TodoList> component argument'
+        'Client asked to inspect the <TodoList> component argument',
       );
       return false;
     });

@@ -1,2 +1,2 @@
 import WebExtension from './web-extension';
-export default WebExtension.extend();
+export default class extends WebExtension {}

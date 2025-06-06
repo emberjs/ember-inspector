@@ -1,4 +1,5 @@
 /* eslint-disable ember/require-tagless-components */
+// eslint-disable-next-line ember/no-classic-components
 import Component from '@ember/component';
 import { action } from '@ember/object';
 import { debounce } from '@ember/runloop';
@@ -60,6 +61,7 @@ export default class ScrollContainerComponent extends Component {
       this.lastIndex = index;
       this.lastItem = currentItem;
 
+      // eslint-disable-next-line ember/no-runloop
       debounce(this, this.scrollIntoViewIfNeeded, 50);
     }
   }

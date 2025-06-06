@@ -9,22 +9,17 @@ import bound from 'ember-debug/utils/bound-method';
 let profileManager = new ProfileManager();
 _subscribeToRenderEvents();
 
-export default DebugPort.extend({
-  namespace: null,
-  portNamespace: 'render',
-
-  profileManager,
-
-  init() {
-    this._super();
-
+export default class extends DebugPort {
+  constructor(data) {
+    super(data);
+    this.profileManager = profileManager;
     this.profileManager.wrapForErrors = (context, callback) =>
       this.port.wrap(() => callback.call(context));
     _backburner.on('end', bound(this, this._updateComponentTree));
-  },
+  }
 
   willDestroy() {
-    this._super();
+    super.willDestroy();
 
     this.profileManager.wrapForErrors = function (context, callback) {
       return callback.call(context);
@@ -34,45 +29,48 @@ export default DebugPort.extend({
     this.profileManager.teardown();
 
     _backburner.off('end', bound(this, this._updateComponentTree));
-  },
+  }
 
   sendAdded(profiles) {
     this.sendMessage('profilesAdded', {
       profiles,
       isHighlightSupported: this.profileManager.isHighlightEnabled,
     });
-  },
+  }
 
   /**
    * Update the components tree. Called on each `render.component` event.
    * @private
    */
   _updateComponentTree() {
-    this.namespace.viewDebug?.sendTree();
-  },
+    this.namespace?.viewDebug?.sendTree();
+  }
 
-  messages: {
-    clear() {
-      this.profileManager.clearProfiles();
-      this.sendMessage('profilesUpdated', { profiles: [] });
-    },
+  static {
+    this.prototype.portNamespace = 'render';
+    this.prototype.messages = {
+      clear() {
+        this.profileManager.clearProfiles();
+        this.sendMessage('profilesUpdated', { profiles: [] });
+      },
 
-    releaseProfiles() {
-      this.profileManager.offProfilesAdded(this, this.sendAdded);
-    },
+      releaseProfiles() {
+        this.profileManager.offProfilesAdded(this, this.sendAdded);
+      },
 
-    watchProfiles() {
-      this.sendMessage('profilesAdded', {
-        profiles: this.profileManager.profiles,
-      });
-      this.profileManager.onProfilesAdded(this, this.sendAdded);
-    },
+      watchProfiles() {
+        this.sendMessage('profilesAdded', {
+          profiles: this.profileManager.profiles,
+        });
+        this.profileManager.onProfilesAdded(this, this.sendAdded);
+      },
 
-    updateShouldHighlightRender({ shouldHighlightRender }) {
-      this.profileManager.shouldHighlightRender = shouldHighlightRender;
-    },
-  },
-});
+      updateShouldHighlightRender({ shouldHighlightRender }) {
+        this.profileManager.shouldHighlightRender = shouldHighlightRender;
+      },
+    };
+  }
+}
 
 /**
  * This subscribes to render events, so every time the page rerenders, it will push a new profile

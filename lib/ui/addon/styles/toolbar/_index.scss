@@ -18,8 +18,13 @@
   margin-right: 5px;
 }
 
-@import 'checkbox';
-@import 'divider';
-@import 'icon-button';
-@import 'radio';
-@import 'search';
+.toolbar .goto-source {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+@import "checkbox";
+@import "divider";
+@import "icon-button";
+@import "radio";
+@import "search";

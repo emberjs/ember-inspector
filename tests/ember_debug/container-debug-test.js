@@ -11,13 +11,13 @@ module('Ember Debug - Container', function (hooks) {
   let name, message;
 
   setupEmberDebugTest(hooks, {
-    Port: Port.extend({
-      init() {},
+    Port: class extends Port {
+      init() {}
       send(n, m) {
         name = n;
         message = m;
-      },
-    }),
+      }
+    },
   });
 
   skip('#getTypes', async function t(assert) {
@@ -30,13 +30,13 @@ module('Ember Debug - Container', function (hooks) {
       function () {
         return name === 'container:types';
       },
-      { timeout: 3000 }
+      { timeout: 3000 },
     );
 
     assert.strictEqual(name, 'container:types');
     let types = emberA(message.types);
-    assert.ok(types.findBy('name', 'controller'));
-    assert.ok(types.findBy('name', 'route'));
+    assert.ok(types.find((x) => x.name === 'controller'));
+    assert.ok(types.find((x) => x.name === 'route'));
   });
 
   skip('#getInstances', async function t(assert) {
@@ -49,7 +49,7 @@ module('Ember Debug - Container', function (hooks) {
 
     assert.strictEqual(name, 'container:instances');
     let instances = emberA(message.instances);
-    assert.ok(instances.findBy('name', 'simple'));
+    assert.ok(instances.find((x) => x.name === 'simple'));
   });
 
   skip('#getInstances on a non existing type', async function t(assert) {

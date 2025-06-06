@@ -18,6 +18,6 @@ export default function classify(str) {
   return parts
     .join('/')
     .replace(STRING_CLASSIFY_REGEXP_3, (match /*, separator, chr */) =>
-      match.toUpperCase()
+      match.toUpperCase(),
     );
 }

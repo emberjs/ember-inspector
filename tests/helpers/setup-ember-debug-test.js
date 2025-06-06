@@ -1,3 +1,4 @@
+/* eslint-disable ember/no-runloop */
 import Application from '@ember/application';
 import Resolver from 'ember-resolver';
 import EmberRouter from '@ember/routing/router';
@@ -9,6 +10,8 @@ import {
   teardownContext,
 } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
+import Route from '@ember/routing/route';
+import Controller from '@ember/controller';
 import BasicAdapter from 'ember-inspector/services/adapters/basic';
 import config from 'ember-inspector/config/environment';
 import EmberDebug from 'ember-debug/main';
@@ -33,6 +36,7 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     await setupContext(this);
     await setupApplicationContext(this);
 
+    // eslint-disable-next-line ember/no-classic-classes
     const Router = EmberRouter.extend({
       location: 'none',
     });
@@ -49,20 +53,28 @@ export default function setupEmberDebugTest(hooks, options = {}) {
 
     this.owner.register('router:main', Router);
     this.owner.register('service:adapter', BasicAdapter);
+    /**
+     * preferably, ember debug tests should use their own test app
+     * but currently its mangled with the inspector ui app, which is not compatible with all ember versions being tested.
+     * we do filter the tests to only run the ember_debug tests, but that does not prevent the app merging.
+     * The application route/controller/template of inspector ui was being indirectly used in ember_debug tests,
+     * which is not required and broke older lts tests
+     */
+    this.owner.register('route:application', class extends Route {});
+    this.owner.register('controller:application', class extends Controller {});
+    this.owner.register('template:application', hbs('{{outlet}}'));
 
     run(() => {
-      EmberDebug.setProperties({
-        isTesting: true,
-        owner: this.owner,
-      });
+      EmberDebug.isTesting = true;
+      EmberDebug.owner = this.owner;
     });
 
     EmberDebug.Port =
       options.Port ||
-      Port.extend({
-        init() {},
-        send() {},
-      });
+      class extends Port {
+        init() {}
+        send() {}
+      };
 
     run(EmberDebug, 'start');
   });
@@ -76,9 +88,7 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     EmberDebug.IGNORE_DEPRECATIONS = originalIgnoreDeprecations;
 
     run(() => {
-      EmberDebug.setProperties({
-        isTesting: false,
-      });
+      EmberDebug.isTesting = false;
     });
 
     EmberDebug.Port = originalPort;

@@ -13,9 +13,6 @@ export default class ListComponent extends Component {
   /**
    * Layout service used to listen to changes to the application
    * layout such as resizing of the main nav or object inspector.
-   *
-   * @property layoutService
-   * @type {Service}
    */
   @service('layout') layoutService;
 
@@ -120,6 +117,7 @@ export default class ListComponent extends Component {
     let oldSchema = this.oldSchema;
     let newSchema = this.schema;
     if (newSchema && newSchema !== oldSchema) {
+      // eslint-disable-next-line ember/no-runloop
       scheduleOnce('actions', this, this.setupColumns);
     }
     this.oldSchema = newSchema;
@@ -128,6 +126,7 @@ export default class ListComponent extends Component {
   @action
   elementInserted(el) {
     this.el = el;
+    // eslint-disable-next-line ember/no-runloop
     scheduleOnce('afterRender', this, this.setupColumns);
     this.onResize = () => {
       this.debounceColumnWidths.perform();
@@ -157,6 +156,7 @@ export default class ListComponent extends Component {
         arr.push({
           name,
           title: name,
+          // eslint-disable-next-line ember/no-runloop
           fn: bind(this, this.toggleColumnVisibility, id),
         });
         return arr;
@@ -166,7 +166,7 @@ export default class ListComponent extends Component {
       basicContext.show(menu, e);
     };
 
-    const listHeader = this.el.querySelector('.list__header');
+    const listHeader = this.el.querySelector('.list-header');
     if (listHeader) {
       listHeader.addEventListener('contextmenu', this.showBasicContext);
     }
@@ -184,7 +184,7 @@ export default class ListComponent extends Component {
   @action
   toggleColumnVisibility(id) {
     this.resizableColumns.toggleVisibility(id);
-    const listHeader = this.el.querySelector('.list__header');
+    const listHeader = this.el.querySelector('.list-header');
     if (listHeader) {
       listHeader.removeEventListener('contextmenu', this.showBasicContext);
     }
@@ -212,7 +212,7 @@ export default class ListComponent extends Component {
    * @method willDestroy
    */
   willDestroy() {
-    const listHeader = this.el.querySelector('.list__header');
+    const listHeader = this.el.querySelector('.list-header');
     if (listHeader) {
       listHeader.removeEventListener('contextmenu', this.showBasicContext);
     }
@@ -228,7 +228,7 @@ export default class ListComponent extends Component {
    */
   @action
   getTableWidth() {
-    return this.el.querySelector('.list__table-container').clientWidth;
+    return this.el.querySelector('.list-table-container').clientWidth;
   }
 
   /**

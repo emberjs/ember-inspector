@@ -7,19 +7,16 @@
 /* .split: The container for one or more panels */
 
 .split {
-  bottom: 0;
+  inset: 0;
   display: flex;
   flex: auto;
   flex-direction: row;
-  left: 0;
   position: absolute;
-  right: 0;
-  top: 0;
 }
 
-/* .split__panel: Contains a body, and optional header and footer elements */
+/* .split-panel: Contains a body, and optional header and footer elements */
 
-.split__panel {
+.split-panel {
   display: flex;
   flex: auto;
   flex-direction: column;
@@ -27,14 +24,14 @@
   overflow: hidden;
 }
 
-.split__panel__hd,
-.split__panel__bd,
-.split__panel__ft {
+.split-panel-hd,
+.split-panel-bd,
+.split-panel-ft {
   position: relative;
 }
 
-.split__panel__hd,
-.split__panel__ft {
+.split-panel-hd,
+.split-panel-ft {
   border-color: var(--base03);
   box-sizing: border-box;
   display: flex;
@@ -42,14 +39,14 @@
   flex-direction: column;
 }
 
-.split__panel__hd {
+.split-panel-hd {
   background: var(--base00);
   border-bottom-style: solid;
   border-bottom-width: 1px;
   min-height: 29px;
 }
 
-.split__panel__bd {
+.split-panel-bd {
   background: var(--base00);
   flex: auto;
   overflow: scroll;
@@ -57,7 +54,7 @@
   width: auto;
 }
 
-.split__panel__ft {
+.split-panel-ft {
   background: var(--base01);
   border-top-style: solid;
   border-top-width: 1px;
@@ -65,26 +62,26 @@
   justify-content: center;
 }
 
-.split__panel,
-.split__panel__bd {
+.split-panel,
+.split-panel-bd {
   height: 100%;
 }
 
 /* Custom panels */
 
-.split__panel--sidebar-1 .split__panel__bd {
+.split-panel-sidebar-1 .split-panel-bd {
   background: var(--base01);
 }
 
-.split__panel--sidebar-2 .split__panel__bd {
+.split-panel-sidebar-2 .split-panel-bd {
   background: var(--base01);
 }
 
 /* Fix main list-view scrolling */
-.split--main > .split__panel > .split__panel__bd {
+.split-main > .split-panel > .split-panel-bd {
   overflow: hidden;
 }
 
-.split--main > .split__panel--sidebar-1 > .split__panel__bd {
+.split-main > .split-panel-sidebar-1 > .split-panel-bd {
   overflow-y: auto;
 }

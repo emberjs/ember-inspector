@@ -5,7 +5,7 @@ export default {
   initialize(instance) {
     // {{EMBER_DIST}} is replaced by the build process (basic, chrome, etc)
     let Adapter = instance.resolveRegistration(
-      `service:adapters/{{EMBER_DIST}}`
+      `service:adapters/{{EMBER_DIST}}`,
     );
 
     // register the adapter service

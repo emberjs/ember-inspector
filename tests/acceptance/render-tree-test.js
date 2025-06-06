@@ -110,7 +110,7 @@ module('Render Tree Tab', function (outer) {
       assert.strictEqual(
         rows.length,
         2,
-        'Child is hidden when parent collapses'
+        'Child is hidden when parent collapses',
       );
     });
 
@@ -133,7 +133,7 @@ module('Render Tree Tab', function (outer) {
       assert.strictEqual(
         rows.length,
         1,
-        'The second row is the only one showing'
+        'The second row is the only one showing',
       );
       assert
         .dom(rows[0].querySelector('.js-render-profile-name'))

@@ -8,17 +8,18 @@
  * see:
  *     https://developer.chrome.com/extensions/options
  */
-(function() {
-  "use strict";
+(function () {
+  'use strict';
 
   /**
    * Load the options from storage.
    */
   function loadOptions() {
-    chrome.storage.sync.get('options', function(data) {
+    chrome.storage.sync.get('options', function (data) {
       var options = data.options;
 
-      document.querySelector('[data-settings=tomster]').checked = options && options.showTomster;
+      document.querySelector('[data-settings=tomster]').checked =
+        options && options.showTomster;
     });
   }
 
@@ -28,14 +29,18 @@
   function storeOptions() {
     var showTomster = this.checked;
 
-    chrome.storage.sync.set({
-      options: { showTomster: showTomster }
-    }, function optionsSaved() {
-      console.log("saved!");
-    });
+    chrome.storage.sync.set(
+      {
+        options: { showTomster: showTomster },
+      },
+      function optionsSaved() {
+        console.log('saved!');
+      },
+    );
   }
 
   document.addEventListener('DOMContentLoaded', loadOptions);
-  document.querySelector('[data-settings=tomster]').addEventListener('click', storeOptions);
-
-}());
+  document
+    .querySelector('[data-settings=tomster]')
+    .addEventListener('click', storeOptions);
+})();

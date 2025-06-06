@@ -1,16 +1,16 @@
 /* global chrome*/
 
 /**
- * Content script injected into the app page by chrome, works in tandem with the
- * background-script to coordinate messaging between EmberDebug, EmberInspector and the
+ * Content script injected into the app page by chrome, works in tandem with
+ * background.js to coordinate messaging between EmberDebug, EmberInspector and the
  * ClientApp.  The content-script serves as a proxy between EmberDebug
- * and the background-script.
+ * and background.js.
  *
  * Content scripts are loaded into every page, and have access to the DOM.  This uses that
  * to inject the in-page-script to determine the ClientApp version onLoad.
  */
-(function() {
-  "use strict";
+(function () {
+  'use strict';
 
   /**
    * Add an event listener for window.messages.
@@ -18,12 +18,12 @@
    * that proxies between the content-script and EmberDebug using a MessagingChannel.
    *
    * All events from the window are filtered by checking that data and data.type
-   * properties exist before sending messages on to the background-script.
+   * properties exist before sending messages on to the background script.
    *
    * See:
    *     https://developer.mozilla.org/en-US/docs/Web/API/Channel_Messaging_API
    */
-  window.addEventListener('message', function(event) {
+  window.addEventListener('message', function (event) {
     // received initial message from EmberDebug
     if (event.data === 'debugger-client') {
       var emberDebugPort = event.ports[0];
@@ -38,13 +38,13 @@
    * @param {Object} emberDebugPort
    */
   function listenToEmberDebugPort(emberDebugPort) {
-    // listen for messages from EmberDebug, and pass them on to the background-script
-    emberDebugPort.addEventListener('message', function(event) {
+    // listen for messages from EmberDebug, and pass them on to the background script
+    emberDebugPort.addEventListener('message', function (event) {
       chrome.runtime.sendMessage(event.data);
     });
 
     // listen for messages from the EmberInspector, and pass them on to EmberDebug
-    chrome.runtime.onMessage.addListener(function(message) {
+    chrome.runtime.onMessage.addListener(function (message) {
       if (message.from === 'devtools') {
         // forward message to EmberDebug
         emberDebugPort.postMessage(message);
@@ -74,11 +74,11 @@
    * the libraries running in the ClientApp
    */
   var script = document.createElement('script');
-  script.type = "text/javascript";
-  script.src = chrome.runtime.getURL("scripts/in-page-script.js");
-  if (document.head && document.contentType !== "application/pdf") {
+  script.type = 'text/javascript';
+  script.src = chrome.runtime.getURL('scripts/in-page-script.js');
+  if (document.head && document.contentType !== 'application/pdf') {
     document.head.appendChild(script);
-    script.onload = function() {
+    script.onload = function () {
       document.head.removeChild(script);
     };
   }
@@ -89,9 +89,9 @@
     if (message?.type === 'inject-ember-debug') {
       if (!injected) {
         // cannot use eval here, as the context is limited to the content script-
-        const elem = document.createElement('script') ;
-        elem.textContent = message.value;
-        document.head.appendChild(elem) ;
+        const elem = document.createElement('script');
+        elem.src = message.value;
+        document.head.appendChild(elem);
         injected = true;
       }
     }

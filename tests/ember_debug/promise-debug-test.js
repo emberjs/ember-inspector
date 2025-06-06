@@ -1,3 +1,4 @@
+/* eslint-disable ember/no-runloop */
 /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
 import { run, later } from '@ember/runloop';
 import { A as emberA } from '@ember/array';
@@ -18,17 +19,17 @@ module('Ember Debug - Promise Debug', function (hooks) {
   let name, message;
 
   setupEmberDebugTest(hooks, {
-    Port: Port.extend({
-      init() {},
+    Port: class extends Port {
+      init() {}
       send(n, m) {
         name = n;
         message = m;
-      },
-    }),
+      }
+    },
   });
 
   hooks.beforeEach(async function () {
-    EmberDebug.get('promiseDebug').reopen({
+    EmberDebug.promiseDebug.reopen({
       delay: 5,
       session: {
         getItem() {},
@@ -56,9 +57,9 @@ module('Ember Debug - Promise Debug', function (hooks) {
 
     let promises = emberA(message.promises);
 
-    promise1 = promises.findBy('label', 'Promise1');
-    child1 = promises.findBy('label', 'Child1');
-    promise2 = promises.findBy('label', 'Promise2');
+    promise1 = promises.find((x) => x.label === 'Promise1');
+    child1 = promises.find((x) => x.label === 'Child1');
+    promise2 = promises.find((x) => x.label === 'Promise2');
 
     assert.strictEqual(promise1.label, 'Promise1');
     assert.strictEqual(promise1.state, 'fulfilled');
@@ -74,8 +75,6 @@ module('Ember Debug - Promise Debug', function (hooks) {
   });
 
   test('Updates are published when they happen', function (assert) {
-    assert.expect(8);
-
     EmberDebug.port.trigger('promise:getAndObservePromises');
 
     let p;
@@ -88,7 +87,7 @@ module('Ember Debug - Promise Debug', function (hooks) {
     later(function () {
       assert.strictEqual(name, 'promise:promisesUpdated');
       let promises = emberA(message.promises);
-      let promise = promises.findBy('label', 'Promise1');
+      let promise = promises.find((x) => x.label === 'Promise1');
       assert.ok(!!promise);
       if (promise) {
         assert.strictEqual(promise.label, 'Promise1');
@@ -109,7 +108,7 @@ module('Ember Debug - Promise Debug', function (hooks) {
 
   test('Instrumentation with stack is persisted to session storage', async function (assert) {
     let withStack = false;
-    EmberDebug.get('promiseDebug').reopen({
+    EmberDebug.promiseDebug.reopen({
       session: {
         getItem(/*key*/) {
           return withStack;

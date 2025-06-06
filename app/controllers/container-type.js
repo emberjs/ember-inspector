@@ -1,5 +1,6 @@
 import Controller, { inject as controller } from '@ember/controller';
 import { inject as service } from '@ember/service';
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { action, computed, set } from '@ember/object';
 import debounceComputed from 'ember-inspector/computed/debounce';
 import searchMatch from 'ember-inspector/utils/search-match';
@@ -17,7 +18,7 @@ export default class ContainerTypeContoller extends Controller {
   @computed('model.@each.name', 'search')
   get rows() {
     return this.model.filter((instance) =>
-      searchMatch(instance.name, this.search)
+      searchMatch(instance.name, this.search),
     );
   }
 

@@ -3,16 +3,13 @@
 // TODO: make this conditional, only do it when requested.
 // only inject boot script when on an HTML page
 if (document.contentType === 'text/html') {
-  let id = `ember-inspector-boot-${(Math.random() * 100000000).toFixed(0)}`;
-
-  let script = document.createElement('script');
-
-  script.setAttribute('id', id);
-
-  script.appendChild(document.createTextNode(`
   window.EmberENV = { _DEBUG_RENDER_TREE: true };
-  document.getElementById(${JSON.stringify(id)}).remove();
-`));
 
-  document.documentElement.appendChild(script);
+  // for firefox
+  //https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Sharing_objects_with_page_scripts
+  if (window.wrappedJSObject) {
+    const EmberENV = new window.Object();
+    EmberENV._DEBUG_RENDER_TREE = true;
+    window.wrappedJSObject.EmberENV = EmberENV;
+  }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable ember/no-controller-access-in-routes */
 import { inject as service } from '@ember/service';
 import { action, set } from '@ember/object';
 import Route from '@ember/routing/route';
@@ -54,32 +55,25 @@ export default class ApplicationRoute extends Route {
     NativeArray.apply(details);
     details.forEach(arrayize);
 
-    // eslint-disable-next-line ember/no-controller-access-in-routes
     let controller = this.controller;
 
     if (options.parentObject) {
-      controller.pushMixinDetails(name, property, objectId, details);
+      controller.pushMixinDetails(name, property, objectId, details, errors);
     } else {
       controller.activateMixinDetails(name, objectId, details, errors);
     }
 
-    // eslint-disable-next-line ember/no-controller-access-in-routes
     this.controller.showInspector();
   }
 
   setDeprecationCount(message) {
-    // eslint-disable-next-line ember/no-controller-access-in-routes
     this.controller.set('deprecationCount', message.count);
   }
 
-  // eslint-enable ember/no-controller-access-in-routes
-
   updateProperty(options) {
-    if (this.get('controller.mixinDetails.mixins')) {
-      const detail = this.get('controller.mixinDetails.mixins').objectAt(
-        options.mixinIndex
-      );
-      let property = detail.properties.findBy('name', options.property);
+    if (this.controller.mixinDetails?.mixins) {
+      const detail = this.controller.mixinDetails.mixins.at(options.mixinIndex);
+      let property = detail.properties.find((x) => x.name === options.property);
       if (!property) return;
       set(property, 'value', options.value);
       if (options.dependentKeys) {
@@ -89,7 +83,8 @@ export default class ApplicationRoute extends Route {
   }
 
   updateErrors(options) {
-    let mixinDetails = this.get('controller.mixinDetails');
+    let mixinDetails = this.controller.mixinDetails;
+
     if (mixinDetails) {
       if (mixinDetails.objectId === options.objectId) {
         set(mixinDetails, 'errors', options.errors);
@@ -98,7 +93,6 @@ export default class ApplicationRoute extends Route {
   }
 
   droppedObject(message) {
-    // eslint-disable-next-line ember/no-controller-access-in-routes
     this.controller.droppedObject(message.objectId);
   }
 

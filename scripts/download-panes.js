@@ -18,7 +18,7 @@ const path = require('path');
 
 const yauzlFromBuffer = promisify(yauzl.fromBuffer);
 const pipeline = promisify(stream.pipeline);
-const rimraf = promisify(require('rimraf'));
+const { rimraf } = require('rimraf');
 
 async function main() {
   await rimraf('dist_prev');
@@ -40,7 +40,7 @@ async function downloadPane(paneFolder, dist) {
     `https://github.com/emberjs/ember-inspector/blob/panes/${paneFolder}/${dist}.zip?raw=true`,
     {
       responseType: 'buffer',
-    }
+    },
   );
 
   await unzip(response.body, `dist_prev/production/${dist}/${paneFolder}`);

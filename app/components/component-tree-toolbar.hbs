@@ -1,6 +1,6 @@
 <div class="toolbar">
   <button
-    class="{{if @isInspecting "active"}} toolbar__icon-button"
+    class="{{if @isInspecting "active"}} toolbar-icon-button"
     type="button"
     {{on "click" @toggleInspect}}
   >
@@ -10,7 +10,7 @@
   <Ui::ToolbarDivider />
 
   <button
-    class="toolbar__icon-button"
+    class="toolbar-icon-button"
     title="expand all"
     type="button"
     {{on "click" @expandAll}}
@@ -19,7 +19,7 @@
   </button>
 
   <button
-    class="toolbar__icon-button"
+    class="toolbar-icon-button"
     title="collapse all"
     type="button"
     {{on "click" @collapseAll}}

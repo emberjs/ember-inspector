@@ -104,22 +104,36 @@ module.exports = function (defaults) {
 
   let emberDebug = 'ember_debug';
 
+  let sourceMap = new Funnel('node_modules/source-map-js', {
+    files: ['**/*.js'],
+    destDir: 'ember-debug/deps',
+  });
+
+  sourceMap = new Babel(sourceMap, {
+    plugins: ['transform-commonjs'],
+  });
+
+  const backburner = new Funnel('node_modules/backburner.js/dist/es6', {
+    files: ['backburner.js'],
+    destDir: 'ember-debug/deps',
+  });
+
   emberDebug = new Funnel(emberDebug, {
     destDir: 'ember-debug',
     include: ['**/*.js'],
-    exclude: [
-      'vendor/loader.js',
-      'vendor/source-map.js',
-      'vendor/startup-wrapper.js',
-    ],
+    exclude: ['vendor/startup-wrapper.js', 'vendor/loader.js'],
   });
+
+  emberDebug = mergeTrees([sourceMap, backburner, emberDebug]);
 
   emberDebug = new Babel(emberDebug, {
     moduleIds: true,
     getModuleId: getRelativeModulePath,
     plugins: [
+      ['@babel/plugin-transform-class-properties'],
+      ['@babel/plugin-transform-class-static-block'],
       ['module-resolver', { resolvePath: resolveRelativeModulePath }],
-      ['transform-es2015-modules-amd', { noInterop: true }],
+      ['@babel/plugin-transform-modules-amd', { noInterop: true }],
     ],
   });
 
@@ -149,21 +163,12 @@ module.exports = function (defaults) {
     ],
   });
 
-  let sourceMap = new Funnel('ember_debug', {
-    srcDir: 'vendor',
-    files: ['source-map.js'],
-  });
-
   const loader = new Funnel('ember_debug', {
     srcDir: 'vendor',
     files: ['loader.js'],
   });
 
-  sourceMap = map(sourceMap, '**/*.js', function (content) {
-    return `(function() {\n${content}\n}());`;
-  });
-
-  emberDebug = mergeTrees([loader, startupWrapper, sourceMap, emberDebug]);
+  emberDebug = mergeTrees([startupWrapper, emberDebug, loader]);
 
   emberDebug = concatFiles(emberDebug, {
     headerFiles: ['loader.js'],
@@ -172,14 +177,50 @@ module.exports = function (defaults) {
     sourceMapConfig: { enabled: false },
   });
 
-  const emberDebugs = [];
-  ['basic', 'chrome', 'firefox', 'bookmarklet', 'websocket'].forEach(function (
-    dist
-  ) {
-    emberDebugs[dist] = map(emberDebug, '**/*.js', function (content) {
-      return `(function(adapter, env) {\n${content}\n}('${dist}', '${env}'));`;
+  function wrapWithLoader(content) {
+    return `(function loadEmberDebugInWebpage() {
+    const waitForEmberLoad = new Promise((resolve) => {
+      if (window.requireModule) {
+        const has =
+          window.requireModule.has ||
+          function has(id) {
+            return !!(
+              window.requireModule.entries[id] ||
+              window.requireModule.entries[id + '/index']
+            );
+          };
+        if (has('ember')) {
+          return resolve();
+        }
+      }
+
+      /**
+       * NOTE: if the above (for some reason) fails and the consuming app has
+       *       deprecation-workflow's throwOnUnhandled: true
+       *         or set \`ember-global\`'s handler to 'throw'
+       *       and is using at least \`ember-source@3.27\`
+       *
+       *       this will throw an exception in the consuming project
+       */
+      if (window.Ember) return resolve();
+
+      window.addEventListener('Ember', resolve, { once: true });
     });
-  });
+    waitForEmberLoad.then(() => ${content});
+  })()
+  `;
+  }
+
+  const emberDebugs = [];
+  ['basic', 'chrome', 'firefox', 'bookmarklet', 'websocket'].forEach(
+    function (dist) {
+      emberDebugs[dist] = map(emberDebug, '**/*.js', function (content) {
+        return wrapWithLoader(
+          `(function(adapter, env) {\n${content}\n}('${dist}', '${env}'))`,
+        );
+      });
+    },
+  );
 
   let tree = app.toTree();
 
@@ -197,7 +238,7 @@ module.exports = function (defaults) {
 
   const minimumVersion = packageJson.emberVersionsSupported[0].replace(
     /\./g,
-    '-'
+    '-',
   );
   const webExtensionRoot = `panes-${minimumVersion}`;
 
@@ -232,9 +273,21 @@ module.exports = function (defaults) {
 
   replacementPattern = replacementPattern.concat(emberInspectorVersionPattern);
 
+  const firefoxBackgroundServiceReplacement = [
+    {
+      match: /"service_worker": "background.js"/g,
+      replacement: '"scripts": ["background.js"]',
+    },
+  ];
+
   const skeletonWebExtension = replace('skeletons/web-extension', {
     files: ['*'],
     patterns: replacementPattern,
+  });
+
+  const skeletonFirefoxWebExtension = replace('skeletons/web-extension', {
+    files: ['*'],
+    patterns: replacementPattern.concat(firefoxBackgroundServiceReplacement),
   });
 
   const skeletonBookmarklet = replace('skeletons/bookmarklet', {
@@ -244,7 +297,7 @@ module.exports = function (defaults) {
 
   let firefox = mergeTrees([
     mv(mergeTrees([tree, emberDebugs.firefox]), webExtensionRoot),
-    skeletonWebExtension,
+    skeletonFirefoxWebExtension,
   ]);
 
   let chrome = mergeTrees([
@@ -277,7 +330,7 @@ module.exports = function (defaults) {
     } else {
       const file = writeFile(
         'index.html',
-        'This Ember version is not supported in development environment.'
+        'This Ember version is not supported in development environment.',
       );
       const emberDebugFile = writeFile('ember_debug.js', 'void(0);');
       chrome = mergeTrees([mv(file, `panes-${version}`), chrome]);
@@ -328,19 +381,18 @@ module.exports = function (defaults) {
   if (env === 'test') {
     // `ember test` expects the index.html file to be in the
     // output directory.
-    output = mergeTrees([dists.basic, dists.chrome]);
-  } else {
     // Change base tag for running tests in development env.
     dists.basic = replace(dists.basic, {
       files: ['tests/index.html'],
       patterns: [
         {
           match: /<base.*\/>/,
-          replacement: '<base href="../" />',
+          replacement: '',
         },
       ],
     });
-
+    output = mergeTrees([dists.basic, dists.chrome]);
+  } else {
     dists.testing = mergeTrees([dists.basic, dists.chrome]);
 
     output = mergeTrees([

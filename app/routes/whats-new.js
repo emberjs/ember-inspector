@@ -26,6 +26,15 @@ function getLatestEntry(doc) {
   return '';
 }
 
+function patchLernaIcons(text) {
+  return text
+    .replace(':breaking:', '💥')
+    .replace(':rocket:', '🚀')
+    .replace(':bug:', '🐛')
+    .replace(':documentation:', '📝')
+    .replace(':house:', '🏠');
+}
+
 export default class WhatsNewRoute extends TabRoute {
   @service config;
   @tracked error = false;
@@ -35,13 +44,14 @@ export default class WhatsNewRoute extends TabRoute {
 
     let ref = version.indexOf('alpha') === -1 ? `v${version}` : 'main';
     let url = `https://raw.githubusercontent.com/emberjs/ember-inspector/${encodeURIComponent(
-      ref
+      ref,
     )}/CHANGELOG.md`;
 
     return fetch(url)
       .then(checkStatus)
       .then((response) => response.text())
-      .then((text) => getLatestEntry(text))
+      .then(getLatestEntry)
+      .then(patchLernaIcons)
       .catch((error) => {
         this.error = error;
       });

@@ -7,6 +7,7 @@ updates:
   open-pull-requests-limit: 10
   labels:
   - dependencies
+  - internal
   ignore:
   - dependency-name: ember-cli
     versions:

@@ -5,7 +5,9 @@
     // layout, which is not resolvable with the Node resolution algorithm, to
     // work with TypeScript.
     "baseUrl": ".",
+    "lib": ["ES2023", "DOM"],
     "paths": {
+      "ember-debug/deps/*": ["node_modules/*"],
       "ember-debug/*": ["ember_debug/*"],
       "ember-inspector/tests/*": ["tests/*"],
       "ember-inspector/*": ["app/*", "lib/ui/app/*"],
@@ -14,7 +16,8 @@
       "ui/test-support": ["lib/ui/addon-test-support"],
       "ui/test-support/*": ["lib/ui/addon-test-support/*"],
       "*": ["types/*"]
-    }
+    },
+    "types": ["chrome", "./node_modules/ember-source/types/stable"]
   },
   "include": ["app/**/*", "tests/**/*", "types/**/*", "lib/ui/**/*"]
 }

@@ -1,5 +1,7 @@
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { map, sort } from '@ember/object/computed';
 import Component from '@glimmer/component';
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { set, computed } from '@ember/object';
 import { A } from '@ember/array';
 
@@ -7,7 +9,10 @@ export default class SortProperties extends Component {
   @computed('args.properties')
   get isArray() {
     const props = A(this.args.properties || []);
-    return props.findBy('name', 'length') && props.findBy('name', '0');
+    return (
+      props.find((x) => x.name === 'length') &&
+      props.find((x) => x.name === '0')
+    );
   }
 
   /**
@@ -21,8 +26,11 @@ export default class SortProperties extends Component {
     // limit arrays
     let props = A(this.sorted);
     if (this.isArray) {
-      const item = props.findBy('name', 'length');
-      props.removeObject(item);
+      const item = props.find((x) => x.name === 'length');
+      const index = props.indexOf(item);
+      if (index !== -1) {
+        props.splice(index, 1);
+      }
       props.splice(0, 0, item);
     }
     if (this.isArray && this.sorted.length > 100) {
@@ -46,7 +54,7 @@ export default class SortProperties extends Component {
     set(
       p,
       'isFunction',
-      p.value.type === 'type-function' || p.value.type === 'type-asyncfunction'
+      p.value.type === 'type-function' || p.value.type === 'type-asyncfunction',
     );
     if (p.name == parseInt(p.name)) {
       set(p, 'name', parseInt(p.name));

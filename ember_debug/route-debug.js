@@ -1,82 +1,122 @@
 /* eslint-disable ember/no-private-routing-service */
 import DebugPort from './debug-port';
 import { compareVersion } from 'ember-debug/utils/version';
+import { VERSION } from 'ember-debug/utils/ember';
 import classify from 'ember-debug/utils/classify';
 import dasherize from 'ember-debug/utils/dasherize';
-
-import Ember from 'ember-debug/utils/ember';
-import { computed, observer } from 'ember-debug/utils/ember/object';
-import { readOnly } from 'ember-debug/utils/ember/object/computed';
-import { later } from 'ember-debug/utils/ember/runloop';
+import { _backburner, later } from 'ember-debug/utils/ember/runloop';
+import bound from 'ember-debug/utils/bound-method';
 
 const { hasOwnProperty } = Object.prototype;
 
-export default DebugPort.extend({
-  namespace: null,
+export default class RouteDebug extends DebugPort {
+  _cachedRouteTree = null;
 
-  router: computed('namespace.owner', function () {
-    return this.get('namespace.owner').lookup('router:main');
-  }),
+  // eslint-disable-next-line ember/classic-decorator-hooks
+  init() {
+    super.init();
+    this.__currentURL = this.currentURL;
+    this.__currentRouter = this.router;
+    _backburner.on('end', bound(this, this.checkForUpdate));
+  }
 
-  applicationController: computed('namespace.owner', function () {
-    const container = this.get('namespace.owner');
-    return container.lookup('controller:application');
-  }),
-
-  currentPath: readOnly('namespace.owner.router.currentPath'),
-  currentURL: readOnly('namespace.owner.router.currentURL'),
-
-  portNamespace: 'route',
-
-  emberCliConfig: readOnly('namespace.generalDebug.emberCliConfig'),
-
-  messages: {
-    getTree() {
-      this.sendTree();
-    },
-    getCurrentRoute() {
+  checkForUpdate() {
+    if (this.__currentURL !== this.currentURL) {
       this.sendCurrentRoute();
-    },
-  },
+      this.__currentURL = this.currentURL;
+    }
+    if (this.__currentRouter !== this.router) {
+      this._cachedRouteTree = null;
+      this.__currentRouter = this.router;
+    }
+  }
 
-  // eslint-disable-next-line ember/no-observers
-  sendCurrentRoute: observer('currentURL', function () {
-    const { currentPath: name, currentURL: url } = this.getProperties(
-      'currentPath',
-      'currentURL'
-    );
+  willDestroy() {
+    _backburner.off('end', bound(this, this.checkForUpdate));
+    super.willDestroy();
+  }
 
+  get router() {
+    if (
+      this.namespace?.owner.isDestroyed ||
+      this.namespace?.owner.isDestroying
+    ) {
+      return null;
+    }
+    return this.namespace?.owner.lookup('router:main');
+  }
+
+  get currentPath() {
+    return this.namespace?.owner.router.currentPath;
+  }
+  get currentURL() {
+    return this.namespace?.owner.router.currentURL;
+  }
+
+  get emberCliConfig() {
+    return this.namespace?.generalDebug.emberCliConfig;
+  }
+
+  static {
+    this.prototype.portNamespace = 'route';
+    this.prototype.messages = {
+      getTree() {
+        this.sendTree();
+      },
+      getCurrentRoute() {
+        this.sendCurrentRoute();
+      },
+    };
+  }
+
+  sendCurrentRoute() {
+    const { currentPath: name, currentURL: url } = this;
     later(() => {
       this.sendMessage('currentRoute', { name, url });
     }, 50);
-  }),
+  }
 
-  routeTree: computed('router', function () {
-    const router = this.router;
-    const routerLib = router._routerMicrolib || router.router;
-    let routeNames = routerLib.recognizer.names;
-    let routeTree = {};
-    for (let routeName in routeNames) {
-      if (!hasOwnProperty.call(routeNames, routeName)) {
-        continue;
-      }
-      let route = routeNames[routeName];
-      buildSubTree.call(this, routeTree, route);
+  get routeTree() {
+    if (
+      this.namespace?.owner.isDestroyed ||
+      this.namespace?.owner.isDestroying
+    ) {
+      return null;
     }
-    return arrayizeChildren({ children: routeTree });
-  }),
+    if (!this._cachedRouteTree && this.router) {
+      const router = this.router;
+      const routerLib = router._routerMicrolib || router.router;
+      let routeNames = routerLib.recognizer.names;
+      let routeTree = {};
+      for (let routeName in routeNames) {
+        if (!hasOwnProperty.call(routeNames, routeName)) {
+          continue;
+        }
+        let route = routeNames[routeName];
+        buildSubTree.call(this, routeTree, route);
+      }
+      this._cachedRouteTree = arrayizeChildren({ children: routeTree });
+    }
+    return this._cachedRouteTree;
+  }
 
   sendTree() {
-    const routeTree = this.routeTree;
-    this.sendMessage('routeTree', { tree: routeTree });
-  },
+    let routeTree;
+    let error;
+    try {
+      routeTree = this.routeTree;
+    } catch (e) {
+      error = e.message;
+    }
+    this.sendMessage('routeTree', { tree: routeTree, error });
+  }
 
   getClassName(name, type) {
-    let container = this.get('namespace.owner');
+    let container = this.namespace.owner;
     let resolver = container.application.__registry__.resolver;
-    let prefix = this.get('emberCliConfig.modulePrefix');
-    let podPrefix = this.get('emberCliConfig.podModulePrefix');
-    let usePodsByDefault = this.get('emberCliConfig.usePodsByDefault');
+    let prefix = this.emberCliConfig?.modulePrefix;
+    let podPrefix = this.emberCliConfig?.podModulePrefix;
+    let usePodsByDefault = this.emberCliConfig?.usePodsByDefault;
     let className;
     if (prefix || podPrefix) {
       // Uses modules
@@ -89,12 +129,12 @@ export default DebugPort.extend({
       }
       if (className === fullName) {
         // full name returned as is - this resolver does not look for the module.
-        className = className.replace(new RegExp(`^${type}\:`), '');
+        className = className.replace(new RegExp(`^${type}:`), '');
       } else if (className) {
         // Module exists and found
         className = className.replace(
           new RegExp(`^/?(${prefix}|${podPrefix})/${type}s/`),
-          ''
+          '',
         );
       } else {
         // Module does not exist
@@ -121,18 +161,19 @@ export default DebugPort.extend({
       }
     }
     return className;
-  },
-});
+  }
+}
 
 /**
  *
  * @param {*} routeTree
  * @param {*} route
+ * @this {RouteDebug}
  * @return {Void}
  */
 function buildSubTree(routeTree, route) {
   let handlers = route.handlers;
-  let owner = this.get('namespace.owner');
+  let owner = this.namespace.owner;
   let subTree = routeTree;
   let item;
   let routeClassName;
@@ -161,7 +202,7 @@ function buildSubTree(routeTree, route) {
       // 3.9.0 removed intimate APIs from router
       // https://github.com/emberjs/ember.js/pull/17843
       // https://deprecations.emberjs.com/v3.x/#toc_remove-handler-infos
-      if (compareVersion(Ember.VERSION, '3.9.0') !== -1) {
+      if (compareVersion(VERSION, '3.9.0') !== -1) {
         // Ember >= 3.9.0
         routeHandler = routerLib.getRoute(handler);
       } else {
@@ -172,13 +213,18 @@ function buildSubTree(routeTree, route) {
       // Skip when route is an unresolved promise
       if (typeof routeHandler?.then === 'function') {
         // ensure we rebuild the route tree when this route is resolved
-        routeHandler.then(() => this.notifyPropertyChange('routeTree'));
+        routeHandler.then(() => (this._cachedRouteTree = null));
         controllerName = '(unresolved)';
         controllerClassName = '(unresolved)';
         templateName = '(unresolved)';
       } else {
+        const get =
+          routeHandler.get ||
+          function (prop) {
+            return this[prop];
+          };
         controllerName =
-          routeHandler.get('controllerName') || routeHandler.get('routeName');
+          get.call(routeHandler, 'controllerName') || routeHandler.routeName;
         controllerFactory = owner.factoryFor
           ? owner.factoryFor(`controller:${controllerName}`)
           : owner._lookupFactory(`controller:${controllerName}`);

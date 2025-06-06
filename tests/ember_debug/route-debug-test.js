@@ -25,8 +25,15 @@ module('Ember Debug - Route Tree', function (hooks) {
   hooks.beforeEach(async function () {
     this.owner.register('route:loading', Route);
     this.owner.register('route:error', Route);
+    this.owner.register(
+      'route:posts',
+      class extends Route {
+        promise = Promise.resolve(Route);
+        then = this.promise.then.bind(this.promise);
+      },
+    );
 
-    EmberDebug.get('generalDebug').reopen({
+    EmberDebug.generalDebug.reopen({
       emberCliConfig: null,
     });
   });
@@ -47,9 +54,10 @@ module('Ember Debug - Route Tree', function (hooks) {
       () => {
         return name === 'view:renderTree';
       },
-      { timeout: 3000 }
+      { timeout: 3000 },
     );
 
+    // eslint-disable-next-line ember/no-runloop
     run(EmberDebug.port, 'trigger', 'route:getTree');
     await settled();
 
@@ -61,7 +69,7 @@ module('Ember Debug - Route Tree', function (hooks) {
     assert.strictEqual(route.value.controller.name, 'application');
     assert.strictEqual(
       route.value.controller.className,
-      'ApplicationController'
+      'ApplicationController',
     );
     assert.strictEqual(route.value.routeHandler.name, 'application');
     assert.strictEqual(route.value.routeHandler.className, 'ApplicationRoute');
@@ -87,11 +95,11 @@ module('Ember Debug - Route Tree', function (hooks) {
     assert.strictEqual(commentsRoute.value.type, 'resource');
     assert.strictEqual(
       commentsRoute.value.controller.className,
-      'CommentsController'
+      'CommentsController',
     );
     assert.strictEqual(
       commentsRoute.value.routeHandler.className,
-      'CommentsRoute'
+      'CommentsRoute',
     );
 
     assert.deepEqual(getChildrenProperty(commentsRoute, 'name'), [
@@ -116,11 +124,11 @@ module('Ember Debug - Route Tree', function (hooks) {
         'CommentsNewController',
         'CommentsEditController',
         'CommentsIndexController',
-      ]
+      ],
     );
     assert.deepEqual(
       getChildrenProperty(commentsRoute, 'routeHandler.className'),
-      ['CommentsNewRoute', 'CommentsEditRoute', 'CommentsIndexRoute']
+      ['CommentsNewRoute', 'CommentsEditRoute', 'CommentsIndexRoute'],
     );
     assert.deepEqual(getChildrenProperty(commentsRoute, 'template.name'), [
       'comments/new',

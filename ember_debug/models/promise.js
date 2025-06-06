@@ -1,47 +1,49 @@
 import { typeOf } from 'ember-debug/utils/type-check';
-
-import { A } from 'ember-debug/utils/ember/array';
-import EmberObject, { computed } from 'ember-debug/utils/ember/object';
-import { equal, or } from 'ember-debug/utils/ember/object/computed';
+import BaseObject from 'ember-debug/utils/base-object';
 
 const dateComputed = function () {
-  return computed({
-    get() {
-      return null;
-    },
-    set(key, date) {
-      if (typeOf(date) === 'date') {
-        return date;
-      } else if (typeof date === 'number' || typeof date === 'string') {
-        return new Date(date);
-      }
-      return null;
-    },
-  });
+  return function (target, propertyKey) {
+    return {
+      get() {
+        return this[`__${propertyKey}__`];
+      },
+      set(date) {
+        if (typeOf(date) === 'date') {
+          this[`__${propertyKey}__`] = date;
+          return;
+        } else if (typeof date === 'number' || typeof date === 'string') {
+          this[`__${propertyKey}__`] = new Date(date);
+          return;
+        }
+        this[`__${propertyKey}__`] = null;
+      },
+    };
+  };
 };
 
-export default EmberObject.extend({
-  createdAt: dateComputed(),
-  settledAt: dateComputed(),
-  chainedAt: dateComputed(),
+export default class extends BaseObject {
+  @dateComputed() createdAt;
+  @dateComputed() settledAt;
+  @dateComputed() chainedAt;
 
-  parent: null,
+  parent = null;
+  children = [];
 
-  children: computed(function () {
-    return A();
-  }),
-
-  level: computed('parent.level', function () {
+  get level() {
     const parent = this.parent;
     if (!parent) {
       return 0;
     }
-    return parent.get('level') + 1;
-  }),
+    return parent.level + 1;
+  }
 
-  isSettled: or('isFulfilled', 'isRejected'),
-
-  isFulfilled: equal('state', 'fulfilled'),
-
-  isRejected: equal('state', 'rejected'),
-});
+  get isSettled() {
+    return this.isFulfilled || this.isRejected;
+  }
+  get isFulfilled() {
+    return this.state === 'fulfilled';
+  }
+  get isRejected() {
+    return this.state === 'rejected';
+  }
+}

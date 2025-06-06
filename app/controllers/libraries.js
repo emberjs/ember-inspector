@@ -1,3 +1,4 @@
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { computed } from '@ember/object';
 import Controller from '@ember/controller';
 

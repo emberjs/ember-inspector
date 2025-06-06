@@ -161,8 +161,6 @@ module('Container Tab', function (outer) {
     });
 
     test('Successfully redirects if the container type is not found', async function (assert) {
-      assert.expect(1);
-
       respondWith('container:getInstances', ({ containerType }) => {
         if (containerType === 'random-type') {
           return {

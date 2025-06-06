@@ -5,7 +5,7 @@ const del = require('del');
 const pkg = require('./package.json');
 let versionedPane = `panes-${pkg.emberVersionsSupported[0].replace(
   /\./g,
-  '-'
+  '-',
 )}`;
 
 function compress(baseSrc, archiveName) {

@@ -38,16 +38,16 @@ jobs:
         run: |
           echo "GIT_COMMIT_SHA=${GIT_COMMIT_SHA}" >> $GITHUB_ENV
           echo "GIT_BRANCH=${GIT_BRANCH}" >> $GITHUB_ENV
-      - name: Set up Volta
-        uses: volta-cli/action@v4
-      - name: Install dependencies (yarn)
-        run: yarn install
+      - name: setup pnpm & node
+        uses: wyvox/action-setup-pnpm@v3
+      - name: Install dependencies (pnpm)
+        run: pnpm install
       - name: Lint (hbs)
-        run: yarn lint:hbs
+        run: pnpm lint:hbs
       - name: Lint (js)
-        run: yarn lint:js
+        run: pnpm lint:js
       - name: Run test
-        run: yarn test
+        run: pnpm test
         env:
           COVERAGE: 'true'
       # Ideally, we would split up the test task into separate build and run
@@ -57,11 +57,11 @@ jobs:
       # See https://github.com/kategengler/ember-cli-code-coverage/issues/210
       #
       # - name: Build
-      #   run: yarn ember build --environment test
+      #   run: pnpm ember build --environment test
       #   env:
       #     COVERAGE: 'true'
       # - name: Run test
-      #   run: COVERAGEyarn ember test --path dist
+      #   run: COVERAGE pnpm ember test --path dist
       #   env:
       #     # Due to a bug in ember-cli, running `ember test` with `--path` doesn't set `EMBER_ENV=test`
       #     # See https://github.com/ember-cli/ember-cli/issues/8922
@@ -69,7 +69,7 @@ jobs:
       #     COVERAGE: 'true'
       - name: Report coverage
         if: github.event_name != 'schedule'
-        run: yarn codeclimate-test-reporter < coverage/lcov.info
+        run: pnpm codeclimate-test-reporter < coverage/lcov.info
         env:
           CODECLIMATE_REPO_TOKEN: 59edcfd1ffc778791af49ca594b503e7179f6bbe1991b2cc0c0a6987d103253d
 
@@ -87,29 +87,34 @@ jobs:
           - ember-lts-3.20
           - ember-lts-3.24
           - ember-lts-3.28
+          - ember-lts-4.8
+          - ember-lts-4.12
+          - ember-lts-5.4
+          - ember-lts-5.8
+          - ember-lts-5.12
           - ember-release
           - ember-beta
           - ember-canary
           - ember-default-no-prototype-extensions
-  
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Set up Volta
-        uses: volta-cli/action@v4
-      - name: Install dependencies (yarn)
-        run: yarn install
+      - name: setup pnpm & node
+        uses: wyvox/action-setup-pnpm@v3
+      - name: Install dependencies (pnpm)
+        run: pnpm install
       - name: Set NO_EXTEND_PROTOTYPES
         if: matrix.scenario == 'ember-default-no-prototype-extensions'
         run: echo "NO_EXTEND_PROTOTYPES==true" >> .GITHUB_ENV
       - name: Setup ember-try scenario
-        run: yarn ember try:one ${{ matrix.scenario }} --skip-cleanup --- cat package.json
+        run: pnpm ember try:one ${{ matrix.scenario }} --skip-cleanup --- cat package.json
       - name: Build
-        run: yarn ember build --environment test
+        run: pnpm ember build --environment test
       - name: Run test
         # Due to a bug in ember-cli, running `ember test` with `--path` doesn't set `EMBER_ENV=test`
         # See https://github.com/ember-cli/ember-cli/issues/8922
-        run: EMBER_ENV=test yarn ember test --path dist --filter="Ember Debug"
+        run: EMBER_ENV=test pnpm ember test --path dist --filter="Ember Debug"
 
   build:
     name: Build extensions
@@ -119,10 +124,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Set up Volta
-        uses: volta-cli/action@v4
-      - name: Install dependencies (yarn)
-        run: yarn install
+      - name: setup pnpm & node
+        uses: wyvox/action-setup-pnpm@v3
+      - name: Install dependencies (pnpm)
+        run: pnpm install
       - name: Download panes
         run: node scripts/download-panes.js
         env:
@@ -193,31 +198,31 @@ jobs:
         env:
           PR: ${{ github.event.pull_request.number }}
       - name: Build
-        run: yarn ember build --environment production
+        run: pnpm ember build --environment production
       - name: Pack
         run: |
-          VERSION="$(jq -r '.version | split("+") | .[0]' package.json)"
+          VERSION="$(jq -r '.version' package.json)"
 
-          yarn pack
+          pnpm pack
           mkdir -p dist/npm
-          tar xvzf "ember-inspector-v$VERSION.tgz" -C dist/npm --strip-components 1
+          tar xvzf "ember-inspector-$VERSION.tgz" -C dist/npm --strip-components 1
       - name: Upload artifacts (bookmarklet)
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: bookmarklet
           path: dist/bookmarklet
       - name: Upload artifacts (Chrome)
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: chrome
           path: dist/chrome
       - name: Upload artifacts (Firefox)
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: firefox
           path: dist/firefox
       - name: Upload artifacts (npm)
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: npm
           path: dist/npm
@@ -232,12 +237,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts (bookmarklet)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: bookmarklet
           path: bookmarklet
       - name: Upload to S3
-        uses: jakejarvis/s3-sync-action@master
+        uses: jakejarvis/s3-sync-action@v0.5.1
         with:
           args: --acl public-read --cache-control "max-age=86400000,public"
         env:
@@ -253,19 +258,14 @@ jobs:
       - test
       - ember-try
       - build
-    if: >-
-      github.event_name == 'schedule' ||
-      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Volta
-        uses: volta-cli/action@v4
-        with:
-          node-version: 14.x
+      - name: Set up node
+        uses: actions/setup-node@v4
       - name: Install dependencies (chrome-webstore-upload-cli)
-        run: volta install chrome-webstore-upload-cli
+        run: npm install -g chrome-webstore-upload-cli
       - name: Download artifacts (Chrome)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: chrome
           path: chrome
@@ -277,10 +277,13 @@ jobs:
             echo "REFRESH_TOKEN=${{ secrets.GOOGLE_NIGHTLY_REFRESH_TOKEN }}" >> $GITHUB_ENV
           else
             echo "EXTENSION_ID=bmdblncegkenkacieihfhpjfppoconhi" >> $GITHUB_ENV
-            echo "CLIENT_ID=${{ secrets.GOOGLE_STABLE_CLIENT_ID }}" >> $GITHUB_ENV
-            echo "REFRESH_TOKEN=${{ secrets.GOOGLE_STABLE_REFRESH_TOKEN }}" >> $GITHUB_ENV
+            echo "CLIENT_ID=${{ secrets.GOOGLE_NIGHTLY_CLIENT_ID }}" >> $GITHUB_ENV
+            echo "REFRESH_TOKEN=${{ secrets.GOOGLE_NIGHTLY_REFRESH_TOKEN }}" >> $GITHUB_ENV
           fi
       - name: Upload to Chrome Web Store
+        if: >-
+          github.event_name == 'schedule' ||
+          (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
         run: chrome-webstore-upload upload --source chrome --auto-publish
 
   publish-firefox:
@@ -289,30 +292,27 @@ jobs:
       - test
       - ember-try
       - build
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Volta
-        uses: volta-cli/action@v4
-        with:
-          node-version: 14.x
+      - name: Set up nod
+        uses: actions/setup-node@v4
       - name: Install dependencies (web-ext)
         run: |
-          volta install web-ext
+          npm install -g web-ext
           # https://github.com/mozilla/web-ext/issues/804
-          volta install web-ext-submit
+          npm install -g web-ext-submit
       - name: Download artifacts (Firefox)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: firefox
           path: firefox
       - name: Upload to AMO
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         working-directory: firefox
         run: web-ext-submit --channel=listed
         env:
           WEB_EXT_API_KEY: ${{ secrets.FIREFOX_API_KEY }}
           WEB_EXT_API_SECRET: ${{ secrets.FIREFOX_API_SECRET }}
-          WEB_EXT_ID: ember-inspector@emberjs.com
 
   publish-npm:
     name: Publish npm package
@@ -320,48 +320,25 @@ jobs:
       - test
       - ember-try
       - build
-    if: >-
-      github.event_name == 'schedule' ||
-      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Volta
-        uses: volta-cli/action@v4
-      - name: Set up NPM
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}"> ~/.npmrc
-          npm whoami
-        env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      - name: Set up node
+        uses: actions/setup-node@v4
       - name: Download artifacts (npm)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: npm
           path: npm
       - name: Publish to npm
+        if: >-
+          github.event_name == 'schedule' ||
+          (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         working-directory: npm
         run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}"> ~/.npmrc
+          npm whoami
           if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
             npm publish --tag alpha
-          else
-            npm publish
           fi
-
-  publish-github:
-    name: Publish GitHub release
-    needs:
-      - test
-      - ember-try
-      - build
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          draft: false
-          prerelease: false
