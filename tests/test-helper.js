@@ -13,8 +13,13 @@ import 'ember-debug/main';
 
 registerWaiter();
 
+/**
+ * we need to override the adapter that is set up in initializers/setup.js
+ * for that we suffix the name of setup initializer with `-2` so that
+ * this initializer comes right after it
+ */
 Application.initializer({
-  name: `00-override-adapter`,
+  name: `setup-2-override-adapter`,
   initialize(app) {
     app.register('service:adapter', TestAdapter);
   },
