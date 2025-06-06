@@ -60,12 +60,20 @@ Internet explorer will open an iframe instead of a popup due to the lack of supp
 
 For development:
 
-- run `pnpm serve:bookmarklet`
-- create a bookmark (make sure you unblock the popup when you run the bookmarklet):
+- In a terminal:
+  - run `pnpm serve:bookmarklet`
+- In your browser:
+  - If Ember Inspector is installed as an active extension, deactivate it
+  - Visit the Ember app you want to inspect
+  - Open the developer tool console and execute the following (make sure you unblock the popup when you run the bookmarklet):
 
 ```javascript
 javascript: (function() { var s = document.createElement('script'); s.src = 'http://localhost:9191/bookmarklet/load_inspector.js'; document.body.appendChild(s); }());
 ```
+
+Or to do this more easily in the future, create a new bookmark in your browser, and copy the above script as the URL.
+
+The expected behavior is a new window opening with the URL `http://localhost:9191/bookmarklet/<pane-root>/index.html?inspectedWindowURL=<inspected-app-url>`, running your local ember-inspector. The content should be the same as the one you see when using the published extension, but not properly styled.
 
 ## Building and Testing:
 
