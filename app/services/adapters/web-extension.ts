@@ -25,6 +25,9 @@ export default class WebExtension extends BasicAdapter {
   }
 
   sendMessage(message?: Partial<Message>) {
+    if (message) {
+      message.tabId = chrome.devtools.inspectedWindow.tabId;
+    }
     this._chromePort.postMessage(message ?? {});
   }
 
