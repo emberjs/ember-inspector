@@ -2,16 +2,25 @@
   "solution": {
     "ember-inspector": {
       "impact": "patch",
-      "oldVersion": "4.13.0",
-      "newVersion": "4.13.1",
+      "oldVersion": "4.13.1",
+      "newVersion": "4.13.2",
+      "tagName": "latest",
       "constraints": [
         {
           "impact": "patch",
           "reason": "Appears in changelog section :bug: Bug Fix"
+        },
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :memo: Documentation"
+        },
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :house: Internal"
         }
       ],
       "pkgJSONPath": "./package.json"
     }
   },
-  "description": "## Release (2024-07-30)\n\nember-inspector 4.13.1 (patch)\n\n#### :bug: Bug Fix\n* `ember-inspector`\n  * [#2595](https://github.com/emberjs/ember-inspector/pull/2595) fix boolean edit ([@patricklx](https://github.com/patricklx))\n\n#### Committers: 1\n- Patrick Pircher ([@patricklx](https://github.com/patricklx))\n"
+  "description": "## Release (2025-06-06)\n\n* ember-inspector 4.13.2 (patch)\n\n#### :bug: Bug Fix\n* `ember-inspector`\n  * [#2646](https://github.com/emberjs/ember-inspector/pull/2646) Fix ember 6 ([@mansona](https://github.com/mansona))\n  * [#2627](https://github.com/emberjs/ember-inspector/pull/2627) fix: Cannot convert a Symbol value to a string ([@lifeart](https://github.com/lifeart))\n\n#### :memo: Documentation\n* `ember-inspector`\n  * [#2626](https://github.com/emberjs/ember-inspector/pull/2626) docs: add precisions about running for development with bookmarklet ([@BlueCutOfficial](https://github.com/BlueCutOfficial))\n\n#### :house: Internal\n* `ember-inspector`\n  * [#2648](https://github.com/emberjs/ember-inspector/pull/2648) fix ember 3.x-lts ([@patricklx](https://github.com/patricklx))\n  * [#2652](https://github.com/emberjs/ember-inspector/pull/2652) prepare profile manager tests for ember 6 ([@patricklx](https://github.com/patricklx))\n  * [#2650](https://github.com/emberjs/ember-inspector/pull/2650) Prepare ember 6+ support/ view-debug ([@BlueCutOfficial](https://github.com/BlueCutOfficial))\n  * [#2649](https://github.com/emberjs/ember-inspector/pull/2649) update release-plan ([@mansona](https://github.com/mansona))\n  * [#2647](https://github.com/emberjs/ember-inspector/pull/2647) Remove unused file `trigger-port.js` ([@BlueCutOfficial](https://github.com/BlueCutOfficial))\n  * [#2644](https://github.com/emberjs/ember-inspector/pull/2644) add packageManager for people not using volta ([@mansona](https://github.com/mansona))\n  * [#2643](https://github.com/emberjs/ember-inspector/pull/2643) test ember 5.8 and 5.12 ([@mansona](https://github.com/mansona))\n  * [#2624](https://github.com/emberjs/ember-inspector/pull/2624) ember-cli-update to latest blueprints ([@RobbieTheWagner](https://github.com/RobbieTheWagner))\n  * [#2623](https://github.com/emberjs/ember-inspector/pull/2623) Remove gets and access props directly ([@RobbieTheWagner](https://github.com/RobbieTheWagner))\n  * [#2620](https://github.com/emberjs/ember-inspector/pull/2620) Remove pushObjects from RenderTree ([@RobbieTheWagner](https://github.com/RobbieTheWagner))\n  * [#2621](https://github.com/emberjs/ember-inspector/pull/2621) Remove unused evented from ListContent ([@RobbieTheWagner](https://github.com/RobbieTheWagner))\n  * [#2619](https://github.com/emberjs/ember-inspector/pull/2619) Remove Evented from ListContent ([@RobbieTheWagner](https://github.com/RobbieTheWagner))\n  * [#2618](https://github.com/emberjs/ember-inspector/pull/2618) Remove Evented from PromiseAssembler ([@RobbieTheWagner](https://github.com/RobbieTheWagner))\n  * [#2617](https://github.com/emberjs/ember-inspector/pull/2617) Convert adapters and port to TS, remove Evented from port ([@RobbieTheWagner](https://github.com/RobbieTheWagner))\n  * [#2601](https://github.com/emberjs/ember-inspector/pull/2601) More progress removing prototype extensions ([@RobbieTheWagner](https://github.com/RobbieTheWagner))\n  * [#2602](https://github.com/emberjs/ember-inspector/pull/2602) cleanup filterBy & mapBy prototype extensions ([@patricklx](https://github.com/patricklx))\n  * [#2600](https://github.com/emberjs/ember-inspector/pull/2600) Remove mapBy and filterBy ([@RobbieTheWagner](https://github.com/RobbieTheWagner))\n  * [#2598](https://github.com/emberjs/ember-inspector/pull/2598) Update to Ember 5.12 ([@RobbieTheWagner](https://github.com/RobbieTheWagner))\n\n#### Committers: 5\n- Alex Kanunnikov ([@lifeart](https://github.com/lifeart))\n- Chris Manson ([@mansona](https://github.com/mansona))\n- Marine Dunstetter ([@BlueCutOfficial](https://github.com/BlueCutOfficial))\n- Patrick Pircher ([@patricklx](https://github.com/patricklx))\n- Robbie Wagner ([@RobbieTheWagner](https://github.com/RobbieTheWagner))\n"
 }
