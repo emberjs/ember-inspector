@@ -3,30 +3,33 @@ import { guidFor } from 'ember-debug/utils/ember/object/internals';
 import { emberSafeRequire } from 'ember-debug/utils/ember';
 import { inspect } from 'ember-debug/utils/type-check';
 import { isInVersionSpecifier } from 'ember-debug/utils/version';
-import { VERSION } from 'ember-debug/utils/ember';
+import {
+  VERSION,
+  GlimmerManager,
+  GlimmerReference,
+  GlimmerRuntime,
+  GlimmerUtil,
+} from 'ember-debug/utils/ember';
 
 class InElementSupportProvider {
   constructor(owner) {
     this.nodeMap = new Map();
     this.remoteRoots = [];
-    this.runtime = emberSafeRequire('@glimmer/runtime');
-    this.reference = emberSafeRequire('@glimmer/reference');
+    this.runtime = GlimmerRuntime;
+    this.reference = GlimmerReference;
     try {
       this.Wormhole = requireModule('ember-wormhole/components/ember-wormhole');
     } catch {
       // nope
     }
 
-    try {
-      requireModule(
-        '@glimmer/manager',
-      ).CustomModifierManager.prototype.getDebugInstance = (args) =>
-        args.modifier || args.delegate;
-    } catch {
-      // nope
+    if (GlimmerManager) {
+      GlimmerManager.CustomModifierManager.prototype.getDebugInstance = (
+        args,
+      ) => args.modifier || args.delegate;
     }
 
-    this.DESTROY = emberSafeRequire('@glimmer/util')?.DESTROY;
+    this.DESTROY = GlimmerUtil?.DESTROY;
     this.registerDestructor =
       emberSafeRequire('@glimmer/destroyable')?.registerDestructor ||
       emberSafeRequire('@ember/destroyable')?.registerDestructor ||

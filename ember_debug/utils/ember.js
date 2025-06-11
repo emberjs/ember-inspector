@@ -61,6 +61,10 @@ let ObjectInternals = emberSafeRequire('@ember/object/internals');
 let Instrumentation = emberSafeRequire('@ember/instrumentation');
 let Runloop = emberSafeRequire('@ember/runloop');
 let RSVP = emberSafeRequire('rsvp');
+let GlimmerManager = emberSafeRequire('@glimmer/manager');
+let GlimmerReference = emberSafeRequire('@glimmer/reference');
+let GlimmerRuntime = emberSafeRequire('@glimmer/runtime');
+let GlimmerUtil = emberSafeRequire('@glimmer/util');
 
 if (!Ember) {
   captureRenderTree = emberSafeRequire('@ember/debug')?.captureRenderTree;
@@ -122,6 +126,10 @@ export {
   set,
   captureRenderTree,
   getEnv,
+  GlimmerManager,
+  GlimmerReference,
+  GlimmerRuntime,
+  GlimmerUtil,
 };
 
 export default Ember;
