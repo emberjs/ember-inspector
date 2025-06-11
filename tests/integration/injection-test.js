@@ -338,7 +338,7 @@ module('Integration | Injection', function (hooks) {
     await inject(this.owner, assert);
     assert.timeout(100);
 
-    const emberDebug = requireModule('ember-debug/main')['default'];
+    const emberDebug = requireModule('ember-debug/main');
     const viewInspection = emberDebug.viewDebug.viewInspection;
 
     const inspectNearestCalled = new Promise((resolve) => {

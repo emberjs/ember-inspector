@@ -3,6 +3,7 @@
 
 # compiled output
 /dist/
+/ember_debug/dist/
 
 # misc
 /coverage/

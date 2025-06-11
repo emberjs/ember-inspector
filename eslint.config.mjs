@@ -60,6 +60,7 @@ export default ts.config(
   {
     ignores: [
       'dist/',
+      'ember_debug/dist/',
       'node_modules/',
       'coverage/',
       '!**/.*',
