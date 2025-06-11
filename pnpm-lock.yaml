@@ -279,9 +279,6 @@ importers:
       fstream:
         specifier: ^1.0.12
         version: 1.0.12
-      glob:
-        specifier: ^11.0.2
-        version: 11.0.2
       globals:
         specifier: ^15.14.0
         version: 15.14.0

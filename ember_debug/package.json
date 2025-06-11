@@ -21,6 +21,5 @@
   },
   "exports": {
     "./*": "./*.js"
-  },
-  "main": "dist/bundle.js"
+  }
 }
