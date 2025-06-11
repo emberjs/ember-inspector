@@ -1,10 +1,10 @@
 import captureRenderTree from './capture-render-tree';
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
-import { emberSafeRequire } from 'ember-debug/utils/ember';
 import { inspect } from 'ember-debug/utils/type-check';
 import { isInVersionSpecifier } from 'ember-debug/utils/version';
 import {
   VERSION,
+  EmberDestroyable,
   GlimmerManager,
   GlimmerReference,
   GlimmerRuntime,
@@ -30,10 +30,7 @@ class InElementSupportProvider {
     }
 
     this.DESTROY = GlimmerUtil?.DESTROY;
-    this.registerDestructor =
-      emberSafeRequire('@glimmer/destroyable')?.registerDestructor ||
-      emberSafeRequire('@ember/destroyable')?.registerDestructor ||
-      emberSafeRequire('@ember/runtime')?.registerDestructor;
+    this.registerDestructor = EmberDestroyable?.registerDestructor;
 
     this.debugRenderTree =
       owner.lookup('renderer:-dom')?.debugRenderTree ||

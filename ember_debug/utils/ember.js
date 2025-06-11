@@ -57,6 +57,7 @@ let getEnv = () => Ember.ENV;
 
 let Debug = emberSafeRequire('@ember/debug');
 let InternalsUtils = emberSafeRequire('@ember/-internals/utils');
+let EmberDestroyable = emberSafeRequire('@ember/destroyable');
 let ObjectInternals = emberSafeRequire('@ember/object/internals');
 let Instrumentation = emberSafeRequire('@ember/instrumentation');
 let Runloop = emberSafeRequire('@ember/runloop');
@@ -117,6 +118,7 @@ export {
   Evented,
   Service,
   PromiseProxyMixin,
+  EmberDestroyable,
   EmberObject,
   VERSION,
   ComputedProperty,
