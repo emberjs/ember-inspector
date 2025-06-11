@@ -42,6 +42,13 @@ let {
 
 let getEnv = () => Ember.ENV;
 
+let Debug = emberSafeRequire('@ember/debug')?.default;
+let InternalsUtils = emberSafeRequire('@ember/-internals/utils')?.default;
+let ObjectInternals = emberSafeRequire('@ember/object/internals')?.default;
+let Instrumentation = emberSafeRequire('@ember/instrumentation')?.default;
+let RSVP = emberSafeRequire('rsvp')?.default;
+let Runloop = emberSafeRequire('@ember/runloop')?.default;
+
 if (!Ember) {
   captureRenderTree = emberSafeRequire('@ember/debug')?.captureRenderTree;
   getEnv = emberSafeRequire('@ember/-internals/environment')?.getENV;
@@ -72,6 +79,12 @@ if (!Ember) {
 }
 
 export {
+  Runloop,
+  Debug,
+  InternalsUtils,
+  ObjectInternals,
+  Instrumentation,
+  RSVP,
   ArrayProxy,
   Namespace,
   ActionHandler,
