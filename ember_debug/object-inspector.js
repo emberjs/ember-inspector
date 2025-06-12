@@ -17,16 +17,16 @@ import {
   ArrayProxy,
   Service,
   Component,
+  emberSafeRequire,
 } from 'ember-debug/utils/ember';
 import { cacheFor, guidFor } from 'ember-debug/utils/ember/object/internals';
 import { _backburner, join } from 'ember-debug/utils/ember/runloop';
 import emberNames from './utils/ember-object-names';
 import getObjectName from './utils/get-object-name';
-import { EmberLoader } from 'ember-debug/utils/ember/loader';
 
 const GlimmerComponent = (() => {
   try {
-    return EmberLoader.require('@glimmer/component').default;
+    return emberSafeRequire('@glimmer/component').default;
   } catch {
     // ignore, return undefined
   }
@@ -36,7 +36,7 @@ let tagValue, tagValidate, track, tagForProperty;
 
 try {
   // Try to load the most recent library
-  let GlimmerValidator = EmberLoader.require('@glimmer/validator');
+  let GlimmerValidator = emberSafeRequire('@glimmer/validator');
 
   tagValue = GlimmerValidator.value || GlimmerValidator.valueForTag;
   tagValidate = GlimmerValidator.validate || GlimmerValidator.validateTag;
@@ -73,7 +73,7 @@ try {
 } catch {
   try {
     // Fallback to the previous implementation
-    let GlimmerReference = EmberLoader.require('@glimmer/reference');
+    let GlimmerReference = emberSafeRequire('@glimmer/reference');
 
     tagValue = GlimmerReference.value;
     tagValidate = GlimmerReference.validate;
@@ -83,7 +83,7 @@ try {
 }
 
 try {
-  let metal = EmberLoader.require('@ember/-internals/metal');
+  let metal = emberSafeRequire('@ember/-internals/metal');
 
   tagForProperty = metal.tagForProperty;
   // If track was not already loaded, use metal's version (the previous version)

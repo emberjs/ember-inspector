@@ -10,7 +10,7 @@ const keys = ['cancel', 'debounce', 'join', 'later', 'scheduleOnce'];
 
 if (EmberRunloop) {
   module = EmberRunloop;
-  _backburner = EmberRunloop._backburner;
+  _backburner = EmberRunloop._backburner || EmberRunloop.backburner;
 } else {
   // eslint-disable-next-line ember/new-module-imports
   module = Ember?.run || module;

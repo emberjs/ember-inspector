@@ -1,5 +1,5 @@
 import { compareVersion } from 'ember-debug/utils/version';
-import { emberSafeRequire } from 'ember-debug/utils/ember/loader';
+import { emberSafeRequire } from 'ember-debug/utils/ember';
 import {
   VERSION,
   ActionHandler,

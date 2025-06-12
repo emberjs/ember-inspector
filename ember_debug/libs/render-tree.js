@@ -1,6 +1,6 @@
 import captureRenderTree from './capture-render-tree';
 import { guidFor } from 'ember-debug/utils/ember/object/internals';
-import { EmberLoader, emberSafeRequire } from 'ember-debug/utils/ember/loader';
+import { emberSafeRequire } from 'ember-debug/utils/ember';
 import { inspect } from 'ember-debug/utils/type-check';
 import { isInVersionSpecifier } from 'ember-debug/utils/version';
 import { VERSION } from 'ember-debug/utils/ember';
@@ -9,8 +9,8 @@ class InElementSupportProvider {
   constructor(owner) {
     this.nodeMap = new Map();
     this.remoteRoots = [];
-    this.runtime = this.require('@glimmer/runtime');
-    this.reference = this.require('@glimmer/reference');
+    this.runtime = emberSafeRequire('@glimmer/runtime');
+    this.reference = emberSafeRequire('@glimmer/reference');
     try {
       this.Wormhole = requireModule('ember-wormhole/components/ember-wormhole');
     } catch {
@@ -289,12 +289,6 @@ class InElementSupportProvider {
       this.NewElementBuilderFunctions,
     );
     this.NewElementBuilderFunctions = null;
-  }
-
-  require(req) {
-    return requireModule.has(req)
-      ? requireModule(req)
-      : EmberLoader.require(req);
   }
 }
 
