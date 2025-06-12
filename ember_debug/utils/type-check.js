@@ -3,8 +3,8 @@ import {
   ComputedProperty,
   EmberObject,
   meta as emberMeta,
+  emberSafeRequire,
 } from 'ember-debug/utils/ember';
-import { emberSafeRequire } from 'ember-debug/utils/ember/loader';
 
 /**
  * Check if given key on the passed object is a computed property
