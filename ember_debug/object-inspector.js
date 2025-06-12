@@ -16,11 +16,11 @@ import {
   ObjectProxy,
   ArrayProxy,
   Service,
+  InternalsMetal,
   Component,
   GlimmerComponent,
   GlimmerReference,
   GlimmerValidator,
-  emberSafeRequire,
 } from 'ember-debug/utils/ember';
 import { cacheFor, guidFor } from 'ember-debug/utils/ember/object/internals';
 import { _backburner, join } from 'ember-debug/utils/ember/runloop';
@@ -71,14 +71,10 @@ if (GlimmerValidator) {
   tagValidate = GlimmerReference.validate;
 }
 
-try {
-  let metal = emberSafeRequire('@ember/-internals/metal');
-
-  tagForProperty = metal.tagForProperty;
+if (InternalsMetal) {
+  tagForProperty = InternalsMetal.tagForProperty;
   // If track was not already loaded, use metal's version (the previous version)
-  track = track || metal.track;
-} catch {
-  // ignore
+  track = track || InternalsMetal.track;
 }
 
 const HAS_GLIMMER_TRACKING = tagValue && tagValidate && track && tagForProperty;
