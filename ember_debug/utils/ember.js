@@ -56,6 +56,7 @@ let captureRenderTree = Ember._captureRenderTree;
 let getEnv = () => Ember.ENV;
 
 let Debug = emberSafeRequire('@ember/debug');
+let InternalsMetal = emberSafeRequire('@ember/-internals/metal');
 let InternalsUtils = emberSafeRequire('@ember/-internals/utils');
 let EmberDestroyable = emberSafeRequire('@ember/destroyable');
 let ObjectInternals = emberSafeRequire('@ember/object/internals');
@@ -101,6 +102,7 @@ if (!Ember) {
 export {
   Runloop,
   Debug,
+  InternalsMetal,
   InternalsUtils,
   ObjectInternals,
   Instrumentation,
