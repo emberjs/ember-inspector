@@ -17,6 +17,9 @@ import {
   ArrayProxy,
   Service,
   Component,
+  GlimmerComponent,
+  GlimmerReference,
+  GlimmerValidator,
   emberSafeRequire,
 } from 'ember-debug/utils/ember';
 import { cacheFor, guidFor } from 'ember-debug/utils/ember/object/internals';
@@ -24,20 +27,13 @@ import { _backburner, join } from 'ember-debug/utils/ember/runloop';
 import emberNames from './utils/ember-object-names';
 import getObjectName from './utils/get-object-name';
 
-const GlimmerComponent = (() => {
-  try {
-    return emberSafeRequire('@glimmer/component').default;
-  } catch {
-    // ignore, return undefined
-  }
-})();
-
 let tagValue, tagValidate, track, tagForProperty;
 
-try {
-  // Try to load the most recent library
-  let GlimmerValidator = emberSafeRequire('@glimmer/validator');
+const GlimmerDebugComponent = (() => GlimmerComponent?.default)();
 
+// Try to use the most recent library (GlimmerValidator), else
+// fallback on the previous implementation (GlimmerReference).
+if (GlimmerValidator) {
   tagValue = GlimmerValidator.value || GlimmerValidator.valueForTag;
   tagValidate = GlimmerValidator.validate || GlimmerValidator.validateTag;
   track = GlimmerValidator.track;
@@ -70,16 +66,9 @@ try {
     }
     return r;
   };
-} catch {
-  try {
-    // Fallback to the previous implementation
-    let GlimmerReference = emberSafeRequire('@glimmer/reference');
-
-    tagValue = GlimmerReference.value;
-    tagValidate = GlimmerReference.validate;
-  } catch {
-    // ignore
-  }
+} else if (GlimmerReference) {
+  tagValue = GlimmerReference.value;
+  tagValidate = GlimmerReference.validate;
 }
 
 try {
@@ -1285,7 +1274,7 @@ function getDebugInfo(object) {
       'element',
       'targetObject',
     );
-  } else if (GlimmerComponent && object instanceof GlimmerComponent) {
+  } else if (GlimmerDebugComponent && object instanceof GlimmerDebugComponent) {
     // These properties don't really exist on Glimmer Components, but
     // reading their values trigger a development mode assertion. The
     // more correct long term fix is to make getters lazy (shows "..."
