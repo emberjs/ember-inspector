@@ -34,4 +34,17 @@
     @value={{@query}}
     data-test-filter-views
   />
+
+  <Ui::ToolbarDivider />
+
+  {{#if @pinned}}
+    <button
+      class="toolbar-icon-button"
+      type="button"
+      title="toggle parents only"
+      {{on "click" @showParentsOnly}}
+    >
+      Toggle Parents Only
+    </button>
+  {{/if}}
 </div>
