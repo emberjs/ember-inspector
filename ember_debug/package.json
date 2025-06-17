@@ -4,8 +4,7 @@
   "type": "module",
   "scripts": {
     "watch": "pnpm build --watch",
-    "build": "rollup --config",
-    "prepare": "pnpm build"
+    "build": "rollup --config"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.25.9",
