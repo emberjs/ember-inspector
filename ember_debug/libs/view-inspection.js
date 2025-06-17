@@ -346,7 +346,11 @@ export default class ViewInspection {
     } else if (this.isInspecting && event.button === 0) {
       event.preventDefault();
       event.stopPropagation();
-      this.inspectNearest(event.target, true);
+      let target = event.target;
+      if (target.shadowRoot) {
+        target = target.shadowRoot.elementFromPoint(event.x, event.y) || target;
+      }
+      this.inspectNearest(target, true);
       this.stop(false);
     }
   }

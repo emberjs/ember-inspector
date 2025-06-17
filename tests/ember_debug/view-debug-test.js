@@ -1,23 +1,29 @@
 /* eslint-disable ember/no-classic-classes */
-import { click, find, rerender, triggerEvent, visit } from "@ember/test-helpers";
-import hasEmberVersion from "@ember/test-helpers/has-ember-version";
-import { A } from "@ember/array";
-import { run } from "@ember/runloop";
+import {
+  click,
+  find,
+  rerender,
+  triggerEvent,
+  visit,
+} from '@ember/test-helpers';
+import hasEmberVersion from '@ember/test-helpers/has-ember-version';
+import { A } from '@ember/array';
+import { run } from '@ember/runloop';
 // eslint-disable-next-line ember/no-classic-components
-import EmberComponent, { setComponentTemplate } from "@ember/component";
-import EmberRoute from "@ember/routing/route";
-import EmberObject from "@ember/object";
-import Controller from "@ember/controller";
+import EmberComponent, { setComponentTemplate } from '@ember/component';
+import EmberRoute from '@ember/routing/route';
+import EmberObject from '@ember/object';
+import Controller from '@ember/controller';
 // eslint-disable-next-line ember/no-at-ember-render-modifiers
-import didInsert from "@ember/render-modifiers/modifiers/did-insert";
-import QUnit, { module, test } from "qunit";
-import { hbs } from "ember-cli-htmlbars";
-import EmberDebug from "ember-debug/main";
-import setupEmberDebugTest from "../helpers/setup-ember-debug-test";
-import { isInVersionSpecifier } from "ember-debug/version";
-import { VERSION } from "ember-debug/ember";
-import GlimmerComponent from "@glimmer/component";
-import { tracked } from "@glimmer/tracking";
+import didInsert from '@ember/render-modifiers/modifiers/did-insert';
+import QUnit, { module, test } from 'qunit';
+import { hbs } from 'ember-cli-htmlbars';
+import EmberDebug from 'ember-debug/main';
+import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
+import { isInVersionSpecifier } from 'ember-debug/version';
+import { VERSION } from 'ember-debug/ember';
+import GlimmerComponent from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 
 let templateOnlyComponent = null;
 try {
@@ -513,9 +519,10 @@ module('Ember Debug - View', function (hooks) {
         ),
         class extends GlimmerComponent {
           @tracked shadow;
-          setupRoot(element) {
+          setupRoot = (element) => {
             this.shadow = element.attachShadow({ mode: 'open' });
-          }
+            window.testShadow = this.shadow;
+          };
         },
       ),
     );
@@ -658,7 +665,7 @@ module('Ember Debug - View', function (hooks) {
 
     this.owner.register(
       'template:component-in-shadow-dom',
-      hbs('<ShadoDom><TestFoo /></ShadoDom>', {
+      hbs('<ShadowDom><TestFoo /></ShadowDom>', {
         moduleName: 'my-app/templates/component-in-shadow-dom.hbs',
       }),
     );
@@ -1230,20 +1237,27 @@ module('Ember Debug - View', function (hooks) {
     });
 
     test('component inside shadow dom', async function (assert) {
+      if (isInVersionSpecifier('^5.8.0', VERSION)) {
+        assert.expect(2);
+        return;
+      }
       await visit('component-in-shadow-dom');
       await rerender();
       await getRenderTree();
 
-      inElement = find('.simple-component');
+      const inShadow = window.testShadow.querySelector('.simple-component');
 
-      await click('.simple-component');
+      await click(window.testShadow.host, {
+        clientX: inShadow.getBoundingClientRect().x,
+        clientY: inShadow.getBoundingClientRect().y,
+      });
 
       assert
         .dom('.ember-inspector-tooltip-header', tooltip)
         .hasText('<TestFoo>');
 
       let actual = highlight.getBoundingClientRect();
-      let expected = inElement.getBoundingClientRect();
+      let expected = inShadow.getBoundingClientRect();
 
       assert.ok(isVisible(tooltip), 'tooltip is visible');
       assert.ok(isVisible(highlight), 'highlight is visible');
