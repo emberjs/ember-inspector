@@ -637,10 +637,11 @@ export default class RenderTree {
           node.args.named[attr.nodeName] = attr.nodeValue;
         });
         // move modifiers and components into the element children
+
         parentNode.children.forEach((child) => {
           if (
-            child.bounds.parentElement === node.instance ||
-            child.meta?.parentElement === node.instance ||
+            node.instance.contains(child.bounds.parentElement) ||
+            node.instance.contains(child.meta?.parentElement) ||
             (child.type === 'modifier' &&
               child.bounds.firstNode === node.instance)
           ) {
