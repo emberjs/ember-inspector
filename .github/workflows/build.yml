@@ -198,7 +198,7 @@ jobs:
         env:
           PR: ${{ github.event.pull_request.number }}
       - name: Build
-        run: pnpm ember build --environment production
+        run: pnpm build:production
       - name: Pack
         run: |
           VERSION="$(jq -r '.version' package.json)"
