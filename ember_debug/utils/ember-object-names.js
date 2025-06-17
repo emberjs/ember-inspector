@@ -1,5 +1,4 @@
 import { compareVersion } from 'ember-debug/utils/version';
-import { emberSafeRequire } from 'ember-debug/utils/ember';
 import {
   VERSION,
   ActionHandler,
@@ -10,6 +9,8 @@ import {
   MutableArray,
   Component,
   Evented,
+  InternalsRuntime,
+  InternalsViews,
   PromiseProxyMixin,
   EmberObject,
   Observable,
@@ -33,14 +34,12 @@ const emberNames = new Map([
 ]);
 
 if (compareVersion(VERSION, '3.27.0') === -1) {
-  const TargetActionSupport = emberSafeRequire(
-    '@ember/-internals/runtime',
-  )?.TargetActionSupport;
+  const TargetActionSupport = InternalsRuntime?.TargetActionSupport;
   emberNames.set(TargetActionSupport, 'TargetActionSupport Mixin');
 }
 
 try {
-  const Views = emberSafeRequire('@ember/-internals/views') || {};
+  const Views = InternalsViews || {};
   emberNames.set(Views.ViewStateSupport, 'ViewStateSupport Mixin');
   emberNames.set(Views.ViewMixin, 'View Mixin');
   emberNames.set(Views.ActionSupport, 'ActionSupport Mixin');

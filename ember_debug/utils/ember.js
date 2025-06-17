@@ -57,7 +57,9 @@ let getEnv = () => Ember.ENV;
 
 let Debug = emberSafeRequire('@ember/debug');
 let InternalsMetal = emberSafeRequire('@ember/-internals/metal');
+let InternalsRuntime = emberSafeRequire('@ember/-internals/runtime');
 let InternalsUtils = emberSafeRequire('@ember/-internals/utils');
+let InternalsViews = emberSafeRequire('@ember/-internals/views');
 let EmberDestroyable = emberSafeRequire('@ember/destroyable');
 let ObjectInternals = emberSafeRequire('@ember/object/internals');
 let Instrumentation = emberSafeRequire('@ember/instrumentation');
@@ -103,7 +105,9 @@ export {
   Runloop,
   Debug,
   InternalsMetal,
+  InternalsRuntime,
   InternalsUtils,
+  InternalsViews,
   ObjectInternals,
   Instrumentation,
   RSVP,
