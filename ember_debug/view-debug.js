@@ -103,6 +103,11 @@ export default class extends DebugPort {
   onRightClick(event) {
     if (event.button === 2) {
       this.lastRightClicked = event.target;
+      if (event.target.shadowRoot) {
+        this.lastRightClicked =
+          event.target.shadowRoot.elementFromPoint(event.x, event.y) ||
+          event.target;
+      }
     }
   }
 
