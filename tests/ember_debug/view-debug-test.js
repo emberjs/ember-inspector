@@ -22,6 +22,8 @@ import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import { isInVersionSpecifier } from 'ember-debug/version';
 import { VERSION } from 'ember-debug/ember';
+import GlimmerComponent from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 
 let templateOnlyComponent = null;
 try {
@@ -373,6 +375,7 @@ module('Ember Debug - View', function (hooks) {
       this.route('test-component-in-in-element');
       this.route('wormhole');
       this.route('inputs');
+      this.route('component-in-shadow-dom');
       this.route('comments', { resetNamespace: true }, function () {});
       this.route('posts', { resetNamespace: true });
     },
@@ -497,6 +500,31 @@ module('Ember Debug - View', function (hooks) {
           return 'App.SimpleController';
         },
       }),
+    );
+
+    this.owner.register(
+      'component:shadow-dom',
+      setComponentTemplate(
+        hbs(
+          `<div {{did-insert this.setupRoot}} />
+    {{#if this.shadow}}
+      {{#in-element this.shadow}}
+        {{yield}}
+      {{/in-element}}
+    {{/if}}
+        `,
+          {
+            moduleName: 'my-app/components/shadow-dom.hbs',
+          },
+        ),
+        class extends GlimmerComponent {
+          @tracked shadow;
+          setupRoot = (element) => {
+            this.shadow = element.attachShadow({ mode: 'open' });
+            window.testShadow = this.shadow;
+          };
+        },
+      ),
     );
 
     this.owner.register(
@@ -632,6 +660,13 @@ module('Ember Debug - View', function (hooks) {
       'template:inputs',
       hbs('Simple <Input @value="987" />', {
         moduleName: 'my-app/templates/inputs.hbs',
+      }),
+    );
+
+    this.owner.register(
+      'template:component-in-shadow-dom',
+      hbs('<ShadowDom><TestFoo /></ShadowDom>', {
+        moduleName: 'my-app/templates/component-in-shadow-dom.hbs',
       }),
     );
 
@@ -1199,6 +1234,46 @@ module('Ember Debug - View', function (hooks) {
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
         .hasText(/ember-wormhole/);
+    });
+
+    test('component inside shadow dom', async function (assert) {
+      if (isInVersionSpecifier('^5.8.0', VERSION)) {
+        assert.expect(2);
+        return;
+      }
+      await visit('component-in-shadow-dom');
+      await rerender();
+      await getRenderTree();
+
+      const inShadow = window.testShadow.querySelector('.simple-component');
+
+      await click(window.testShadow.host, {
+        clientX: inShadow.getBoundingClientRect().x,
+        clientY: inShadow.getBoundingClientRect().y,
+      });
+
+      assert
+        .dom('.ember-inspector-tooltip-header', tooltip)
+        .hasText('<TestFoo>');
+
+      let actual = highlight.getBoundingClientRect();
+      let expected = inShadow.getBoundingClientRect();
+
+      assert.ok(isVisible(tooltip), 'tooltip is visible');
+      assert.ok(isVisible(highlight), 'highlight is visible');
+
+      assert.deepEqual(actual.x, expected.x, 'same x as component');
+      assert.deepEqual(actual.y, expected.y, 'same y as component');
+      assert.deepEqual(actual.width, expected.width, 'same width as component');
+      assert.deepEqual(
+        actual.height,
+        expected.height,
+        'same height as component',
+      );
+
+      assert
+        .dom('.ember-inspector-tooltip-detail-instance', tooltip)
+        .hasText('App.TestFooComponent');
     });
   });
 });
