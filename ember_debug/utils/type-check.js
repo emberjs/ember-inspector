@@ -3,7 +3,7 @@ import {
   ComputedProperty,
   EmberObject,
   meta as emberMeta,
-  emberSafeRequire,
+  InternalsMetal,
 } from 'ember-debug/utils/ember';
 
 /**
@@ -41,7 +41,7 @@ export function getDescriptorFor(object, key) {
   // exists longer than ember 3.10
   if (Debug.isComputed) {
     const { descriptorForDecorator, descriptorForProperty } =
-      emberSafeRequire('@ember/-internals/metal') || {};
+      InternalsMetal || {};
     return (
       descriptorForDecorator?.(object[key]) ||
       descriptorForProperty?.(object, key)
