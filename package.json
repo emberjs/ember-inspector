@@ -1,6 +1,6 @@
 {
   "name": "ember-inspector",
-  "version": "4.13.1",
+  "version": "4.14.0",
   "description": "Extends developer tools to allow you to better inspect your Ember.js apps.",
   "repository": "https://github.com/emberjs/ember-inspector",
   "license": "MIT",
@@ -10,7 +10,7 @@
     "test": "tests"
   },
   "scripts": {
-    "build":"pnpm build:ember-debug && ember build",
+    "build": "pnpm build:ember-debug && ember build",
     "build:ember-debug": "pnpm --filter ember-debug build",
     "build:production": "pnpm build:ember-debug && EMBER_ENV=production node scripts/download-panes.js && ember build --environment production && gulp compress:chrome && gulp compress:firefox && gulp clean-tmp",
     "changelog": "github_changelog_generator -u emberjs -p ember-inspector --since-tag v3.8.0",
