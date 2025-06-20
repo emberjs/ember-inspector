@@ -45,7 +45,7 @@
             {{@item.name}}
           </span>
 
-          {{#each @item.args.positional as |value|}}
+          {{#each @item.args.positional key="@index" as |value|}}
             <div class="arg-token flex ml-2">
               {{if (is-string value) "\""}}
               <ComponentTreeArg @value={{value}} />
