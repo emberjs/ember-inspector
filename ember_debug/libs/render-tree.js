@@ -17,11 +17,6 @@ class InElementSupportProvider {
     this.remoteRoots = [];
     this.runtime = GlimmerRuntime;
     this.reference = GlimmerReference;
-    try {
-      this.Wormhole = requireModule('ember-wormhole/components/ember-wormhole');
-    } catch {
-      // nope
-    }
 
     if (GlimmerManager) {
       GlimmerManager.CustomModifierManager.prototype.getDebugInstance = (
@@ -607,9 +602,11 @@ export default class RenderTree {
         this.inElementSupport?.remoteRoots.push(node);
       }
 
+      // EmberWormhole component from ember-wormhole was used to provide
+      // rendering into a given DOM element prior to built-in in-element.
       if (
-        this.inElementSupport?.Wormhole &&
-        node.instance instanceof this.inElementSupport.Wormhole.default
+        node.template ===
+        'ember-wormhole/templates/components/ember-wormhole.hbs'
       ) {
         this.inElementSupport?.remoteRoots.push(node);
         const bounds = node.bounds;
