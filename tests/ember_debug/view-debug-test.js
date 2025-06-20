@@ -624,7 +624,9 @@ module('Ember Debug - View', function (hooks) {
       hbs(
         `
         <div {{did-insert this.foo}}>
-          Simple {{test-foo}} {{test-bar value=(hash x=123 [x.y]=456)}} {{#in-element this.elementTarget}}<TestComponentInInElement />{{/in-element}}
+          <div>
+            Simple {{test-foo}} {{test-bar value=(hash x=123 [x.y]=456)}} {{#in-element this.elementTarget}}<TestComponentInInElement />{{/in-element}}
+          </div>
         </div>
         `,
         {
