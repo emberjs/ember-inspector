@@ -39,12 +39,12 @@
 
   {{#if @pinned}}
     <button
-      class="toolbar-icon-button"
+      class="{{if @showParentsOnly "active"}} toolbar-icon-button"
       type="button"
-      title="toggle parents only"
-      {{on "click" @showParentsOnly}}
+      title="toggle focus mode"
+      {{on "click" @toggleParentsOnly}}
     >
-      Toggle Parents Only
+      {{svg-jar "focus-point-round" width="16px" height="16px"}}
     </button>
   {{/if}}
 </div>

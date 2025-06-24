@@ -271,7 +271,6 @@ export default class ComponentTreeController extends Controller {
     document.removeEventListener('keydown', this.handleKeyDown);
   }
 
-
   @action toggleParentsOnly() {
     this.showParentsOnly = !this.showParentsOnly;
   }
@@ -424,10 +423,17 @@ class RenderItem {
     if (this.isRoot) {
       return true;
     } else if (this.controller.showParentsOnly) {
-      return this.hasPinnedChild();
+      return (
+        this.hasPinnedChild() ||
+        (this.hasPinnedParent() && this.parentItem.isExpanded)
+      );
     } else {
       return this.parentItem.isVisible && this.parentItem.isExpanded;
     }
+  }
+
+  hasPinnedParent() {
+    return this.isPinned || this.parentItem?.hasPinnedParent();
   }
 
   hasPinnedChild() {
