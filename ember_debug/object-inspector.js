@@ -67,7 +67,7 @@ if (GlimmerValidator) {
       }
       return r;
     };
-  } catch (_e) {
+  } catch {
     // cannot patch
   }
 } else if (GlimmerReference) {
