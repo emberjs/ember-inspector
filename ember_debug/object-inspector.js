@@ -1101,6 +1101,9 @@ function calculateCPs(
               item.code = '';
             }
           }
+          if (value instanceof Service) {
+            item.isService = true;
+          }
         }
       }
     });

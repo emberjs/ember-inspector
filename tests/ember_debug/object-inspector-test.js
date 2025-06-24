@@ -11,7 +11,7 @@ import EmberObject, { computed } from '@ember/object';
 import MutableArray from '@ember/array/mutable';
 import ArrayProxy from '@ember/array/proxy';
 import ObjectProxy from '@ember/object/proxy';
-import Service from '@ember/service';
+import Service, { service } from '@ember/service';
 import { VERSION } from '@ember/version';
 import { tracked } from '@glimmer/tracking';
 import { module, skip, test } from 'qunit';
@@ -902,17 +902,23 @@ module('Ember Debug - Object Inspector', function (hooks) {
       fooBoo() {
         return true;
       },
-    }).create();
+    });
+
+    this.owner.register('service:test-inspect-service', inspectedService);
 
     let inspected = EmberObject.extend({
-      service: inspectedService,
-    }).create();
+      service: inspectedService.create(),
+      service2: service('test-inspect-service'),
+    }).create(this);
 
     let message = await inspectObject(inspected);
+    console.log('mesg', message);
 
     let serializedServiceProperty = message.details[1].properties[0];
+    let serializedService2Property = message.details[1].properties[1];
 
     assert.true(serializedServiceProperty.isService);
+    assert.true(serializedService2Property.isService);
   });
 
   test('Proxy Service should be successfully tagged as service on serialization', async function (assert) {
