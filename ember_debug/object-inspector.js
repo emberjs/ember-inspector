@@ -39,33 +39,38 @@ if (GlimmerValidator) {
   track = GlimmerValidator.track;
 
   // patch tagFor to add debug info, older versions already have _propertyKey
-  const tagFor = GlimmerValidator.tagFor;
-  GlimmerValidator.tagFor = function (...args) {
-    const tag = tagFor.call(this, ...args);
-    const [obj, key] = args;
-    if (
-      (!tag._propertyKey || !tag._object) &&
-      typeof obj === 'object' &&
-      typeof key === 'string'
-    ) {
-      tag._propertyKey = key;
-      tag._object = obj;
-    }
-    return tag;
-  };
-  const trackedData = GlimmerValidator.trackedData;
-  GlimmerValidator.trackedData = function (...args) {
-    const r = trackedData.call(this, ...args);
-    if (r.getter && args.length === 2) {
-      const [key] = args;
-      const getter = r.getter;
-      r.getter = function (self) {
-        GlimmerValidator.tagFor(self, key);
-        return getter.call(this, self);
-      };
-    }
-    return r;
-  };
+  try {
+    const tagFor = GlimmerValidator.tagFor;
+    GlimmerValidator.tagFor = function (...args) {
+      const tag = tagFor.call(this, ...args);
+      const [obj, key] = args;
+      if (
+        (!tag._propertyKey || !tag._object) &&
+        typeof obj === 'object' &&
+        typeof key === 'string'
+      ) {
+        tag._propertyKey = key;
+        tag._object = obj;
+      }
+      return tag;
+    };
+    const trackedData = GlimmerValidator.trackedData;
+    GlimmerValidator.trackedData = function (...args) {
+      const r = trackedData.call(this, ...args);
+      if (r.getter && args.length === 2) {
+        const [key] = args;
+        const getter = r.getter;
+        r.getter = function (self) {
+          GlimmerValidator.tagFor(self, key);
+          return getter.call(this, self);
+        };
+      }
+      return r;
+    };
+  } catch (e) {
+    // cannot patch
+  }
+
 } else if (GlimmerReference) {
   tagValue = GlimmerReference.value;
   tagValidate = GlimmerReference.validate;
