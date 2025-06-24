@@ -67,10 +67,9 @@ if (GlimmerValidator) {
       }
       return r;
     };
-  } catch (e) {
+  } catch (_e) {
     // cannot patch
   }
-
 } else if (GlimmerReference) {
   tagValue = GlimmerReference.value;
   tagValidate = GlimmerReference.validate;
