@@ -19,10 +19,15 @@ export default class ComponentTreeController extends Controller {
 
   @tracked query = '';
   @tracked isInspecting = false;
+  /**
+   *
+   * @type {RenderItem[]}
+   */
   @tracked renderItems = [];
 
   @tracked _pinned = undefined;
   @tracked _previewing = undefined;
+  @tracked searchSelect = undefined;
 
   _store = Object.create(null);
 
@@ -30,6 +35,10 @@ export default class ComponentTreeController extends Controller {
     let { _store } = this;
 
     let store = Object.create(null);
+    /**
+     *
+     * @type {RenderItem[]}
+     */
     let renderItems = [];
 
     let flatten = (parent, renderNode) => {
@@ -95,6 +104,16 @@ export default class ComponentTreeController extends Controller {
   }
 
   get nextItem() {
+    if (this.searchSelect) {
+      const items = this.matchingItems;
+      const index = items.indexOf(this.findItem(this.pinned)) + 1;
+      return (
+        items
+          .slice(index)
+          .find((i) => searchMatch(i.name, this.searchSelect)) ||
+        this.currentItem
+      );
+    }
     const items = this.visibleItems;
     return (
       items[items.indexOf(this.findItem(this.pinned)) + 1] ||
@@ -103,6 +122,17 @@ export default class ComponentTreeController extends Controller {
   }
 
   get previousItem() {
+    if (this.searchSelect) {
+      const items = this.matchingItems;
+      const index = items.indexOf(this.findItem(this.pinned));
+      return (
+        items
+          .slice(0, index)
+          .reverse()
+          .find((i) => searchMatch(i.name, this.searchSelect)) ||
+        this.currentItem
+      );
+    }
     const items = this.visibleItems;
     return items[items.indexOf(this.findItem(this.pinned)) - 1] || items[0];
   }
@@ -209,6 +239,10 @@ export default class ComponentTreeController extends Controller {
     }
   }
 
+  @action handleClick() {
+    this.searchSelect = false;
+  }
+
   @action handleKeyDown(event) {
     if (focusedInInput()) {
       return;
@@ -220,13 +254,16 @@ export default class ComponentTreeController extends Controller {
 
     switch (event.keyCode) {
       case KEYS.up:
-        this.pinned = this.previousItem.id;
+        this.pinned = this.previousItem?.id;
         break;
       case KEYS.right: {
+        if (this.searchSelect) {
+          break;
+        }
         const pinnedItem = this.findItem(this.pinned);
 
         if (pinnedItem.isExpanded) {
-          this.pinned = this.nextItem.id;
+          this.pinned = this.nextItem?.id;
         } else {
           pinnedItem.expand();
         }
@@ -234,9 +271,12 @@ export default class ComponentTreeController extends Controller {
         break;
       }
       case KEYS.down:
-        this.pinned = this.nextItem.id;
+        this.pinned = this.nextItem?.id;
         break;
       case KEYS.left: {
+        if (this.searchSelect) {
+          break;
+        }
         const pinnedItem = this.findItem(this.pinned);
 
         if (pinnedItem.isExpanded) {
@@ -247,6 +287,22 @@ export default class ComponentTreeController extends Controller {
 
         break;
       }
+      case KEYS.escape:
+        this.searchSelect = undefined;
+        break;
+      case KEYS.backspace:
+        this.searchSelect = (this.searchSelect || '').slice(0, -1);
+        break;
+      default:
+        if (event.key.length === 1) {
+          this.searchSelect = (this.searchSelect || '') + event.key;
+          if (
+            !this.currentItem ||
+            !searchMatch(this.currentItem.name, this.searchSelect)
+          ) {
+            this.pinned = this.nextItem?.id;
+          }
+        }
     }
   }
 
@@ -264,10 +320,12 @@ export default class ComponentTreeController extends Controller {
 
   @action arrowKeysSetup() {
     document.addEventListener('keydown', this.handleKeyDown);
+    document.addEventListener('click', this.handleClick);
   }
 
   @action arrowKeysTeardown() {
     document.removeEventListener('keydown', this.handleKeyDown);
+    document.removeEventListener('click', this.handleClick);
   }
 }
 

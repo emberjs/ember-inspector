@@ -13,6 +13,7 @@ import {
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupTestAdapter, respondWith, sendMessage } from '../test-adapter';
+import { KEYS } from 'ember-inspector/utils/key-codes';
 
 function textFor(selector, context) {
   return context.querySelector(selector).textContent.trim();
@@ -108,8 +109,8 @@ function getRenderTree({ withChildren, withManyChildren } = {}) {
   const children = [];
   if (withChildren) {
     children.push(
-      Component({ id: 5, name: 'sub-task' }),
-      Component({ id: 6, name: 'sub-task' }),
+      Component({ id: 5, name: 'sub-task-' + 5 }),
+      Component({ id: 6, name: 'sub-task-' + 6 }),
     );
   }
   if (withManyChildren) {
@@ -350,6 +351,97 @@ module('Component Tab', function (hooks) {
     await click('[data-test-search-field-clear-button]');
     treeNodes = findAll('.component-tree-item');
     assert.strictEqual(treeNodes.length, 4, 'expected all tree nodes');
+  });
+
+  test('It should search select when typing characters', async function (assert) {
+    assert.expect(26);
+    await visit('/component-tree');
+
+    respondWith('view:showInspection', false, { count: 12 });
+
+    await sendMessage({
+      type: 'view:renderTree',
+      tree: getRenderTree({ withManyChildren: true }),
+    });
+
+    let expanders = findAll('.component-tree-item-expand');
+    let expanderEl = expanders[expanders.length - 1];
+    await click(expanderEl);
+
+    async function triggerCharCodes(text) {
+      for (let t of text) {
+        await triggerKeyEvent(document, 'keydown', t.toUpperCase());
+      }
+    }
+
+    let treeNodes = findAll('.component-tree-item');
+    assert.ok(treeNodes.length > 30, 'expected all tree nodes');
+
+    respondWith('view:showInspection', false);
+    respondWith('objectInspector:inspectById', ({ objectId }) => {
+      const result = findAll(
+        `[data-test-id=${objectId}] .component-tree-item-tag`,
+      )[0];
+      // matching initial character s
+      assert.strictEqual(
+        result.textContent.trim(),
+        'todos route',
+        'should first select todos route',
+      );
+      return false;
+    });
+
+    await triggerCharCodes('sub-task-1');
+    await rerender();
+
+    treeNodes = findAll('mark');
+    treeNodes.forEach((node) => {
+      assert.strictEqual(
+        node.textContent.trim(),
+        'SubTask1',
+        'SubTask1 text part should be marked',
+      );
+    });
+    assert.strictEqual(
+      treeNodes.length,
+      10,
+      'expected nodes with sub-task-1 name to be marked',
+    );
+
+    treeNodes = findAll('.component-tree-item');
+    assert.ok(treeNodes.length > 30, 'expected all tree nodes');
+
+    respondWith('view:showInspection', false);
+
+    let subTaskNumber = 11;
+    for (let i = 0; i < 10; i++) {
+      await triggerKeyEvent(document, 'keydown', KEYS.down);
+      const node = findAll(
+        '.component-tree-item-pinned .component-tree-item-tag',
+      )[0];
+      assert.strictEqual(
+        node.textContent.trim(),
+        'SubTask' + subTaskNumber,
+        'should include SubTask1',
+      );
+      subTaskNumber++;
+      if (subTaskNumber === 20) {
+        subTaskNumber = 100;
+      }
+    }
+
+    await triggerKeyEvent(document, 'keydown', KEYS.up);
+    const node = findAll(
+      '.component-tree-item-pinned .component-tree-item-tag',
+    )[0];
+    assert.strictEqual(
+      node.textContent.trim(),
+      'SubTask19',
+      'should include SubTask1',
+    );
+
+    treeNodes = findAll('.component-tree-item');
+    assert.ok(treeNodes.length > 30, 'expected all tree nodes');
   });
 
   test('It should update the view tree when the port triggers a change, preserving the expanded state of existing nodes', async function (assert) {

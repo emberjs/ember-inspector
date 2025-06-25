@@ -228,3 +228,14 @@
 .component-tree-item-component {
   color: var(--base09);
 }
+
+.component-tree-search {
+  background-color: var(--base00);
+  border: 1px solid var(--base10);
+  box-shadow: 0 0 3px var(--base15);
+  padding: 3px;
+  position: absolute;
+  right: 20px;
+  top: 3px;
+  z-index: 1;
+}
