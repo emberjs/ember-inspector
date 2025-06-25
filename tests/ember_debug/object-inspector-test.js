@@ -912,7 +912,6 @@ module('Ember Debug - Object Inspector', function (hooks) {
     }).create(this);
 
     let message = await inspectObject(inspected);
-    console.log('mesg', message);
 
     let serializedServiceProperty = message.details[1].properties[0];
     let serializedService2Property = message.details[1].properties[1];
