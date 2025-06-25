@@ -36,8 +36,8 @@
     "watch": "pnpm '/watch:/'",
     "watch:inspector-ui": "ember build --watch",
     "watch:ember-debug": "pnpm --filter ember-debug watch",
-    "ember-debug:try:one": "pnpm --filter '*' ember:try:one",
-    "ember-debug:test": "pnpm --filter '*' ember-debug-test"
+    "ember-debug:try:one": "pnpm run --sequential --filter '*' ember:try:one",
+    "ember-debug:test": "pnpm run --sequential --filter '*' ember-debug-test"
   },
   "dependencies": {
     "got": "^11.8.6",
