@@ -62,9 +62,9 @@ export default ts.config(
       'dist/',
       'ember_debug/dist/',
       'node_modules/',
-      'test-apps/classic/node_modules/',
-      'test-apps/classic/dist/',
-      'test-apps/classic/public/',
+      'test-apps/*/node_modules/',
+      'test-apps/*/dist/',
+      'test-apps/*/public/',
       'test-apps/tests/helpers/index.ts',
       'coverage/',
       '!**/.*',
@@ -120,7 +120,7 @@ export default ts.config(
   {
     files: [
       'tests/**/*-test.{js,gjs,ts,gts}',
-      'test-apps/classic/tests/**/*-test.{js,gjs,ts,gts}',
+      'test-apps/*/tests/**/*-test.{js,gjs,ts,gts}',
     ],
     plugins: {
       qunit,
@@ -141,18 +141,18 @@ export default ts.config(
     files: [
       '**/*.cjs',
       'config/**/*.js',
-      'test-apps/classic/config/**/*.js',
+      'test-apps/*/config/**/*.js',
       'lib/*/index.js',
       'scripts/**/*.js',
       'testem.js',
-      'test-apps/classic/testem.js',
+      'test-apps/*/testem.js',
       'testem*.js',
       '.prettierrc.js',
       '.stylelintrc.js',
       '.template-lintrc.js',
       'babel.config.js',
       'ember-cli-build.js',
-      'test-apps/classic/ember-cli-build.js',
+      'test-apps/*/ember-cli-build.js',
       'gulpfile.js',
     ],
     plugins: {
