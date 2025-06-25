@@ -1,5 +1,5 @@
 {
-  "name": "classic-test-app",
+  "name": "embroider-static-source-test-app",
   "version": "0.0.0",
   "private": true,
   "description": "Small description for test-app goes here",
@@ -14,6 +14,9 @@
     "build": "ember build --environment=testing",
     "test": "EMBER_ENV=test ember test",
     "ember-debug-test": "pnpm test",
+    "lts-3-apply-override": "jq '.pnpm.overrides.\"babel-plugin-ember-template-compilation\" = \"^1.0.2\"' ../../package.json > tmp.json && mv tmp.json ../../package.json",
+    "lts-3-remove-override": "jq 'del(.pnpm)' ../../package.json > tmp.json && mv tmp.json ../../package.json",
+    "test-lts-3": "pnpm lts-3-apply-override; pnpm test; pnpm lts-3-remove-override",
     "ember:try:one": "ember try:one",
     "test-server:ember": "ember test --serve --watcher node"
   },
@@ -52,7 +55,7 @@
     "ember-template-lint": "^6.0.0",
     "ember-welcome-page": "^7.0.2",
     "ember-wormhole": "^0.6.0",
-    "ember-try": "^3.0.0",
+    "ember-try": "^4.0.0",
     "loader.js": "^4.7.0",
     "tracked-built-ins": "^3.4.0",
     "ember-in-element-polyfill": "^1.0.1",

@@ -28,6 +28,6 @@ module.exports = function (defaults) {
   });
 
   return compatBuild(app, require('@embroider/webpack').Webpack, {
-    emberStaticSource: true,
+    staticEmberSource: true,
   });
 };

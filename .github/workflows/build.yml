@@ -119,7 +119,7 @@ jobs:
       - name: Setup ember-try scenario
         run: pnpm ember-debug:try:one ${{ matrix.scenario }} --skip-cleanup --- cat package.json
       - name: Run test
-        run: pnpm ember-debug:test
+        run: pnpm ember-debug:try:one ${{ matrix.scenario }} --skip-cleanup
 
   build:
     name: Build extensions
