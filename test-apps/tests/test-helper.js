@@ -7,9 +7,6 @@ import { start } from 'ember-qunit';
 import TestAdapter from './test-adapter';
 import setupSinon from 'ember-sinon-qunit';
 
-// ensure ember-debug is required
-import 'ember-debug/main';
-
 Application.initializer({
   name: `00-override-adapter`,
   initialize(app) {
@@ -26,4 +23,10 @@ QUnit.config.testTimeout = 60000;
 
 setup(QUnit.assert);
 
-start();
+export async function waitForEmberDebug() {
+  while (true) {
+    if (requireModule.has('ember-debug/main')) return;
+    await new Promise((res) => setTimeout(res, 1));
+  }
+}
+waitForEmberDebug().then(() => start());
