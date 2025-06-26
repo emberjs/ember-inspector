@@ -14,7 +14,10 @@ module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
     'ember-cli-babel': { enableTypeScriptTransform: true },
     trees: {
-      tests: new Funnel(path.resolve(__dirname, '../tests')),
+      tests: new Funnel(path.resolve(__dirname, '../shared/tests')),
+      app: new Funnel(path.resolve(__dirname, '../shared/app')),
+      styles: new Funnel(path.resolve(__dirname, '../shared/app/styles')),
+      templates: new Funnel(path.resolve(__dirname, '../shared/app/templates')),
       public: new Funnel(testingFolderExists ? testingDir : distDir, {
         files: [
           'ember_debug.js',
