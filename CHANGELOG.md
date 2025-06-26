@@ -1,5 +1,62 @@
 # Changelog
 
+## Release (2025-06-26)
+
+* ember-inspector 4.14.0 (minor)
+
+#### :rocket: Enhancement
+* `ember-inspector`
+  * [#2655](https://github.com/emberjs/ember-inspector/pull/2655) implement show parents only (focus mode) ([@patricklx](https://github.com/patricklx))
+  * [#2658](https://github.com/emberjs/ember-inspector/pull/2658) perf: do not re-render positionals ([@patricklx](https://github.com/patricklx))
+  * [#2659](https://github.com/emberjs/ember-inspector/pull/2659) support shadow dom for click to select & inspect component ([@patricklx](https://github.com/patricklx))
+
+#### :bug: Bug Fix
+* `ember-inspector`
+  * [#2657](https://github.com/emberjs/ember-inspector/pull/2657) fix html element tree when not a direct child ([@patricklx](https://github.com/patricklx))
+  * [#2639](https://github.com/emberjs/ember-inspector/pull/2639) fix `whats new` not showing latest changes ([@patricklx](https://github.com/patricklx))
+  * [#2640](https://github.com/emberjs/ember-inspector/pull/2640) fix for chrome bfcache ([@patricklx](https://github.com/patricklx))
+  * [#2646](https://github.com/emberjs/ember-inspector/pull/2646) Fix ember 6 ([@mansona](https://github.com/mansona))
+  * [#2627](https://github.com/emberjs/ember-inspector/pull/2627) fix: Cannot convert a Symbol value to a string ([@lifeart](https://github.com/lifeart))
+
+#### :memo: Documentation
+* `ember-inspector`
+  * [#2626](https://github.com/emberjs/ember-inspector/pull/2626) docs: add precisions about running for development with bookmarklet ([@BlueCutOfficial](https://github.com/BlueCutOfficial))
+
+#### :house: Internal
+* `ember-inspector`
+  * [#2662](https://github.com/emberjs/ember-inspector/pull/2662) fix watch test script ([@patricklx](https://github.com/patricklx))
+  * [#2656](https://github.com/emberjs/ember-inspector/pull/2656) fix local dev ([@patricklx](https://github.com/patricklx))
+  * [#2660](https://github.com/emberjs/ember-inspector/pull/2660) Centralize interactions with ember-source: wormhole ([@BlueCutOfficial](https://github.com/BlueCutOfficial))
+  * [#2653](https://github.com/emberjs/ember-inspector/pull/2653) Refactor: Centralize calls to `emberSafeRequire` ([@BlueCutOfficial](https://github.com/BlueCutOfficial))
+  * [#2654](https://github.com/emberjs/ember-inspector/pull/2654) Remove loader ([@BlueCutOfficial](https://github.com/BlueCutOfficial))
+  * [#2645](https://github.com/emberjs/ember-inspector/pull/2645) move build of ember-debug to rollup ([@mansona](https://github.com/mansona))
+  * [#2628](https://github.com/emberjs/ember-inspector/pull/2628) require all ember modules in one place ([@mansona](https://github.com/mansona))
+  * [#2648](https://github.com/emberjs/ember-inspector/pull/2648) fix ember 3.x-lts ([@patricklx](https://github.com/patricklx))
+  * [#2652](https://github.com/emberjs/ember-inspector/pull/2652) prepare profile manager tests for ember 6 ([@patricklx](https://github.com/patricklx))
+  * [#2650](https://github.com/emberjs/ember-inspector/pull/2650) Prepare ember 6+ support/ view-debug ([@BlueCutOfficial](https://github.com/BlueCutOfficial))
+  * [#2649](https://github.com/emberjs/ember-inspector/pull/2649) update release-plan ([@mansona](https://github.com/mansona))
+  * [#2647](https://github.com/emberjs/ember-inspector/pull/2647) Remove unused file `trigger-port.js` ([@BlueCutOfficial](https://github.com/BlueCutOfficial))
+  * [#2644](https://github.com/emberjs/ember-inspector/pull/2644) add packageManager for people not using volta ([@mansona](https://github.com/mansona))
+  * [#2643](https://github.com/emberjs/ember-inspector/pull/2643) test ember 5.8 and 5.12 ([@mansona](https://github.com/mansona))
+  * [#2624](https://github.com/emberjs/ember-inspector/pull/2624) ember-cli-update to latest blueprints ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+  * [#2623](https://github.com/emberjs/ember-inspector/pull/2623) Remove gets and access props directly ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+  * [#2620](https://github.com/emberjs/ember-inspector/pull/2620) Remove pushObjects from RenderTree ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+  * [#2621](https://github.com/emberjs/ember-inspector/pull/2621) Remove unused evented from ListContent ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+  * [#2619](https://github.com/emberjs/ember-inspector/pull/2619) Remove Evented from ListContent ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+  * [#2618](https://github.com/emberjs/ember-inspector/pull/2618) Remove Evented from PromiseAssembler ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+  * [#2617](https://github.com/emberjs/ember-inspector/pull/2617) Convert adapters and port to TS, remove Evented from port ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+  * [#2601](https://github.com/emberjs/ember-inspector/pull/2601) More progress removing prototype extensions ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+  * [#2602](https://github.com/emberjs/ember-inspector/pull/2602) cleanup filterBy & mapBy prototype extensions ([@patricklx](https://github.com/patricklx))
+  * [#2600](https://github.com/emberjs/ember-inspector/pull/2600) Remove mapBy and filterBy ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+  * [#2598](https://github.com/emberjs/ember-inspector/pull/2598) Update to Ember 5.12 ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+
+#### Committers: 5
+- Alex Kanunnikov ([@lifeart](https://github.com/lifeart))
+- Chris Manson ([@mansona](https://github.com/mansona))
+- Marine Dunstetter ([@BlueCutOfficial](https://github.com/BlueCutOfficial))
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+- Robbie Wagner ([@RobbieTheWagner](https://github.com/RobbieTheWagner))
+
 ## Release (2024-07-30)
 
 ember-inspector 4.13.1 (patch)
