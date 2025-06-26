@@ -46,7 +46,11 @@ jobs:
         run: pnpm lint:hbs
       - name: Lint (js)
         run: pnpm lint:js
-      - name: Run test
+      - name: build
+        run: EMBER_ENV=test pnpm ember build --environment test
+      - name: test ember debug
+        run: pnpm ember-debug:test
+      - name: Run test inspector ui
         run: pnpm test
         env:
           COVERAGE: 'true'
@@ -107,14 +111,12 @@ jobs:
       - name: Set NO_EXTEND_PROTOTYPES
         if: matrix.scenario == 'ember-default-no-prototype-extensions'
         run: echo "NO_EXTEND_PROTOTYPES==true" >> .GITHUB_ENV
-      - name: Setup ember-try scenario
-        run: pnpm ember try:one ${{ matrix.scenario }} --skip-cleanup --- cat package.json
-      - name: Build
+      - name: Build Inspector
         run: pnpm ember build --environment test
+      - name: Setup ember-try scenario
+        run: pnpm ember-debug:try:one ${{ matrix.scenario }} --skip-cleanup --- cat package.json
       - name: Run test
-        # Due to a bug in ember-cli, running `ember test` with `--path` doesn't set `EMBER_ENV=test`
-        # See https://github.com/ember-cli/ember-cli/issues/8922
-        run: EMBER_ENV=test pnpm ember test --path dist --filter="Ember Debug"
+        run: pnpm ember-debug:try:one ${{ matrix.scenario }} --skip-cleanup
 
   build:
     name: Build extensions

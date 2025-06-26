@@ -34,6 +34,8 @@ export function isInVersionSpecifier(specifier, version) {
   let operator = specifier[0];
   if (Number.isNaN(+operator)) {
     specifier = specifier.slice(1);
+  } else {
+    return specifier === version;
   }
   specifier = cleanupVersion(specifier).split('.');
   version2 = cleanupVersion(version).split('.');
