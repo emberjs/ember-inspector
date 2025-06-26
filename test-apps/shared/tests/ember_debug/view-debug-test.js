@@ -24,18 +24,7 @@ import { isInVersionSpecifier } from 'ember-debug/version';
 import { VERSION } from 'ember-debug/ember';
 import GlimmerComponent from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-
-let templateOnlyComponent = null;
-try {
-  // eslint-disable-next-line no-undef,ember/new-module-imports
-  templateOnlyComponent = Ember._templateOnlyComponent;
-  // eslint-disable-next-line no-empty
-} catch {}
-try {
-  // eslint-disable-next-line no-undef
-  templateOnlyComponent = require('ember').default._templateOnlyComponent;
-  // eslint-disable-next-line no-empty
-} catch {}
+import templateOnlyComponent from '@ember/component/template-only';
 
 // TODO switch to an adapter architecture, similar to the acceptance tests
 async function captureMessage(type, callback) {

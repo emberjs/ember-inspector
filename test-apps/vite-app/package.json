@@ -24,7 +24,7 @@
     "lint:hbs:fix": "ember-template-lint . --fix",
     "lint:js": "eslint . --cache",
     "lint:js:fix": "eslint . --fix",
-    "start": "ember serve",
+    "start": "vite",
     "test": "concurrently \"npm:lint\" \"npm:test:*\" --names \"lint,test:\"",
     "test:ember": "ember test"
   },
@@ -75,6 +75,8 @@
     "ember-resolver": "^13.1.0",
     "ember-source": "~5.12.0",
     "ember-try": "^4.0.0",
+    "loader.js": "^4.7.0",
+    "send": "^1.2.0",
     "eslint-plugin-n": "^16.1.0",
     "prettier": "^3.0.3",
     "qunit": "^2.19.4",

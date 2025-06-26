@@ -2,7 +2,7 @@
 
 module.exports = function (environment) {
   const ENV = {
-    modulePrefix: 'test-app',
+    modulePrefix: 'vite-app',
     environment,
     rootURL: '/',
     locationType: 'history',

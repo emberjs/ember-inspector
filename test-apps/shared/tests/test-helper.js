@@ -29,4 +29,9 @@ export async function waitForEmberDebug() {
     await new Promise((res) => setTimeout(res, 1));
   }
 }
-waitForEmberDebug().then(() => start());
+
+if (!globalThis.NO_TEST_AUTO_START) {
+  waitForEmberDebug().then(() => start());
+}
+
+export { start };

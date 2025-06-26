@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import Application from '@ember/application';
 import compatModules from '@embroider/virtual/compat-modules';
 import Resolver from 'ember-resolver';

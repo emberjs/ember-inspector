@@ -16,7 +16,8 @@ module.exports = {
           'ember-cli-htmlbars-inline-precompile',
           'htmlbars-inline-precompile',
         ],
-        transforms: [...templateCompatSupport()],
+        // remove resolver-transform so that it does not change the hbs
+        transforms: [...templateCompatSupport()].slice(0, -1),
       },
     ],
     [
