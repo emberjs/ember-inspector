@@ -337,6 +337,59 @@ module('Component Tab', function (hooks) {
     );
   });
 
+  test('it should only show parents and children of selected item in focus mode', async function (assert) {
+    await visit('/component-tree');
+
+    function findTreeItem(children, id) {
+      for (const child of children) {
+        if (child.id.includes(`render-node:${id}`)) {
+          return child;
+        }
+        const found = findTreeItem(child.children, id);
+        if (found) {
+          return found;
+        }
+      }
+    }
+
+    function getCustomRenderTree() {
+      const tree = getRenderTree({ withChildren: true });
+      const subtask = findTreeItem(tree, 6);
+      const todo = findTreeItem(tree, 3);
+      subtask.children.push(Component({ id: 7, name: 'sub-task-child' }));
+      subtask.children.push(Component({ id: 8, name: 'sub-task-child' }));
+      todo.children.push(Component({ id: 9, name: 'todo-list-2' }));
+      return tree;
+    }
+
+    await sendMessage({
+      type: 'view:renderTree',
+      tree: getCustomRenderTree(),
+    });
+
+    await rerender();
+
+    let treeNodes = findAll('.component-tree-item');
+    assert.strictEqual(treeNodes.length, 5, 'expected all tree nodes');
+
+    let expanders = findAll('.component-tree-item-expand');
+    let expanderEl = expanders[expanders.length - 1];
+    await click(expanderEl);
+
+    treeNodes = findAll('.component-tree-item');
+    const subTask = treeNodes
+      .filter((t) => t.textContent.toLowerCase().includes('subtask'))
+      .at(-1);
+
+    respondWith('view:showInspection', false, { count: 1 });
+    await click(subTask);
+
+    await click('[data-test-toggle-focus]');
+
+    treeNodes = findAll('.component-tree-item');
+    assert.strictEqual(treeNodes.length, 6, 'expected all tree nodes');
+  });
+
   test('It should clear the search filter when the clear button is clicked', async function (assert) {
     await visit('/component-tree');
 

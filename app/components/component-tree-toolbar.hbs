@@ -42,6 +42,7 @@
       class="{{if @showParentsOnly "active"}} toolbar-icon-button"
       type="button"
       title="toggle focus mode"
+      data-test-toggle-focus
       {{on "click" @toggleParentsOnly}}
     >
       {{svg-jar "focus-point-round" width="16px" height="16px"}}
