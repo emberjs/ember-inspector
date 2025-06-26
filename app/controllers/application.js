@@ -31,6 +31,10 @@ export default class ApplicationController extends Controller {
   @tracked mixinDetails = new TrackedObject({});
   @tracked mixinStack = new TrackedArray([]);
 
+  get componentTreeController() {
+    return this.router.controllerFor('component-tree');
+  }
+
   get navWidth() {
     return this.navIsCollapsed
       ? this._navWidthCollapsed

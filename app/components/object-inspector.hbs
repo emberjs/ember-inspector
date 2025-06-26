@@ -110,6 +110,8 @@
     {{else if (eq this.propDisplayType "grouped")}}
       <ObjectInspector::PropertiesGrouped @model={{@mixinDetails}} />
     {{/if}}
+    <Ui::ToolbarDivider />
+    <ObjectInspector::ComponentParents @select={{@selectComponent}} @item={{@item}}/>
   </div>
 {{else}}
   <div class="split-panel-bd">
