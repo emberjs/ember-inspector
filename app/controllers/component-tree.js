@@ -19,6 +19,7 @@ export default class ComponentTreeController extends Controller {
 
   @tracked query = '';
   @tracked isInspecting = false;
+  @tracked showParentsOnly = false;
   @tracked renderItems = [];
 
   @tracked _pinned = undefined;
@@ -269,6 +270,10 @@ export default class ComponentTreeController extends Controller {
   @action arrowKeysTeardown() {
     document.removeEventListener('keydown', this.handleKeyDown);
   }
+
+  @action toggleParentsOnly() {
+    this.showParentsOnly = !this.showParentsOnly;
+  }
 }
 
 function isInternalRenderNode(renderNode) {
@@ -417,9 +422,22 @@ class RenderItem {
   get isVisible() {
     if (this.isRoot) {
       return true;
+    } else if (this.controller.showParentsOnly) {
+      return (
+        this.hasPinnedChild() ||
+        (this.hasPinnedParent() && this.parentItem.isExpanded)
+      );
     } else {
       return this.parentItem.isVisible && this.parentItem.isExpanded;
     }
+  }
+
+  hasPinnedParent() {
+    return this.isPinned || this.parentItem?.hasPinnedParent();
+  }
+
+  hasPinnedChild() {
+    return this.isPinned || this.childItems.some((c) => c.hasPinnedChild());
   }
 
   get isPinned() {
