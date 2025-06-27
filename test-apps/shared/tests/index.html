@@ -25,7 +25,8 @@
     {{content-for "test-head"}}
 
     <link rel="stylesheet" href="{{rootURL}}assets/vendor.css">
-    <link rel="stylesheet" href="{{rootURL}}assets/ember-inspector.css">
+    <link rel="stylesheet" href="{{rootURL}}assets/test-app.css">
+    <link rel="stylesheet" href="{{rootURL}}assets/test-support.css">
 
     {{content-for "head-footer"}}
     {{content-for "test-head-footer"}}
@@ -42,11 +43,20 @@
       </div>
     </div>
 
+    <script>
+      var metaName = 'test-app/config/environment';
+      var rawConfig = document.querySelector('meta[name="' + metaName + '"]').getAttribute('content');
+      var meta = document.createElement('meta');
+      meta.name = 'ember-inspector/config/environment';
+      meta.setAttribute('content', rawConfig);
+      document.head.appendChild(meta);
+    </script>
+
+    <script src="{{rootURL}}ember_debug.js"></script>
     <script src="/testem.js" integrity="" data-embroider-ignore></script>
     <script src="{{rootURL}}assets/vendor.js"></script>
     <script src="{{rootURL}}assets/test-support.js"></script>
-    <script src="{{rootURL}}assets/ember-inspector.js"></script>
-    <script src="{{rootURL}}ember_debug.js"></script>
+    <script src="{{rootURL}}assets/test-app.js"></script>
     <script src="{{rootURL}}assets/tests.js"></script>
 
     {{content-for "body-footer"}}

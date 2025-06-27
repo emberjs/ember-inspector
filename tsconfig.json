@@ -19,5 +19,5 @@
     },
     "types": ["chrome", "./node_modules/ember-source/types/stable"]
   },
-  "include": ["app/**/*", "tests/**/*", "types/**/*", "lib/ui/**/*"]
+  "include": ["app/**/*", "test-apps/**/*", "tests/**/*", "types/**/*", "lib/ui/**/*"]
 }
