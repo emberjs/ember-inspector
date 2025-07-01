@@ -899,18 +899,7 @@ function addProperties(properties, hash) {
     let options = { isMandatorySetter: isMandatorySetter(desc) };
 
     if (typeof hash[prop] === 'object' && hash[prop] !== null) {
-      options.isService =
-        !('type' in hash[prop]) && hash[prop].type === 'service';
-
-      if (!options.isService) {
-        if (hash[prop].constructor) {
-          options.isService = hash[prop].constructor.isServiceFactory;
-        }
-      }
-
-      if (!options.isService) {
-        options.isService = desc.value instanceof Service;
-      }
+      options.isService = desc.value instanceof Service;
     }
     if (options.isService) {
       replaceProperty(properties, prop, inspectValue(hash, prop), options);
@@ -1111,6 +1100,9 @@ function calculateCPs(
             if (item.value.type === 'type-function') {
               item.code = '';
             }
+          }
+          if (value instanceof Service) {
+            item.isService = true;
           }
         }
       }
