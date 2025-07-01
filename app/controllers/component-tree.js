@@ -293,7 +293,7 @@ function arrowKeyPressed(keyCode) {
   return [KEYS.up, KEYS.right, KEYS.down, KEYS.left].includes(keyCode);
 }
 
-class RenderItem {
+export class RenderItem {
   @tracked isExpanded;
   @tracked renderNode;
 
