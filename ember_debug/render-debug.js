@@ -1,7 +1,7 @@
 import DebugPort from './debug-port';
 import ProfileManager from './models/profile-manager';
 
-import { subscribe } from 'ember-debug/utils/ember/instrumentation';
+import { subscribe } from 'ember-debug/utils/ember';
 import { _backburner } from 'ember-debug/utils/ember/runloop';
 import bound from 'ember-debug/utils/bound-method';
 

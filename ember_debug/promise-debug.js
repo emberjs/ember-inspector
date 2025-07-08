@@ -1,7 +1,7 @@
 import DebugPort from './debug-port';
 import PromiseAssembler from 'ember-debug/libs/promise-assembler';
 import { debounce } from 'ember-debug/utils/ember/runloop';
-import RSVP from 'ember-debug/utils/rsvp';
+import { RSVP } from 'ember-debug/utils/ember';
 
 export default class extends DebugPort {
   get objectInspector() {
