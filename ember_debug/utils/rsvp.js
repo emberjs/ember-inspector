@@ -1,14 +1,5 @@
-import Ember, { RSVP as emberRSVP } from './ember';
+import { RSVP as emberRSVP } from './ember';
 
-let module;
+export let { Promise, all, resolve } = emberRSVP;
 
-if (emberRSVP) {
-  module = emberRSVP;
-} else {
-  // eslint-disable-next-line ember/new-module-imports
-  module = Ember.RSVP;
-}
-
-export let { Promise, all, resolve } = module;
-
-export default module;
+export default emberRSVP;

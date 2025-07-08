@@ -1,11 +1,3 @@
-import Ember, { Instrumentation } from '../ember';
+import { subscribe as emberSubscribe } from '../ember';
 
-let module;
-
-if (Instrumentation) {
-  module = Instrumentation;
-} else {
-  module = Ember;
-}
-
-export let { subscribe } = module;
+export let subscribe = emberSubscribe;

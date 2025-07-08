@@ -1,5 +1,5 @@
 import ProfileNode from './profile-node';
-import Ember from 'ember-debug/utils/ember';
+import { VERSION } from 'ember-debug/utils/ember';
 import { compareVersion } from 'ember-debug/utils/version';
 
 import { later, scheduleOnce, cancel } from 'ember-debug/utils/ember/runloop';
@@ -75,8 +75,7 @@ export default class ProfileManager {
     this.stylesheet = insertStylesheet();
     // keep track of all the active highlights
     this.highlights = [];
-    // eslint-disable-next-line ember/new-module-imports
-    this.isHighlightEnabled = compareVersion(Ember?.VERSION, '3.20.0') !== -1;
+    this.isHighlightEnabled = compareVersion(VERSION, '3.20.0') !== -1;
   }
 
   began(timestamp, payload, now) {

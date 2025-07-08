@@ -63,13 +63,21 @@ let EmberDestroyable = emberSafeRequire('@ember/destroyable');
 let ObjectInternals = emberSafeRequire('@ember/object/internals');
 let Instrumentation = emberSafeRequire('@ember/instrumentation');
 let Runloop = emberSafeRequire('@ember/runloop');
+
 let RSVP = emberSafeRequire('rsvp');
+
 let GlimmerComponent = emberSafeRequire('@glimmer/component');
 let GlimmerManager = emberSafeRequire('@glimmer/manager');
 let GlimmerReference = emberSafeRequire('@glimmer/reference');
 let GlimmerRuntime = emberSafeRequire('@glimmer/runtime');
 let GlimmerUtil = emberSafeRequire('@glimmer/util');
 let GlimmerValidator = emberSafeRequire('@glimmer/validator');
+
+let inspect = Debug?.inspect || InternalsUtils?.inspect;
+let subscribe = Instrumentation?.subscribe;
+let cacheFor = ObjectInternals?.cacheFor;
+let guidFor = ObjectInternals?.guidFor;
+let libraries = InternalsMetal?.libraries;
 
 if (Ember) {
   captureRenderTree = Ember._captureRenderTree;
@@ -96,6 +104,15 @@ if (Ember) {
   set = Ember.set;
   computed = Ember.computed;
   ActionHandler = Ember.ActionHandler;
+  Debug = Debug ?? Ember.Debug;
+  inspect = inspect ?? Ember.inspect;
+  Instrumentation = Instrumentation ?? Ember.Instrumentation;
+  subscribe = subscribe ?? Ember.subscribe;
+  RSVP = RSVP ?? Ember.RSVP;
+  Runloop = Runloop ?? Ember.run;
+  cacheFor = cacheFor ?? Ember.cacheFor;
+  guidFor = guidFor ?? Ember.guidFor;
+  libraries = libraries ?? Ember.libraries;
 } else {
   captureRenderTree = emberSafeRequire('@ember/debug')?.captureRenderTree;
   getEnv = emberSafeRequire('@ember/-internals/environment')?.getENV;
@@ -160,6 +177,11 @@ export {
   set,
   captureRenderTree,
   getEnv,
+  inspect,
+  subscribe,
+  cacheFor,
+  guidFor,
+  libraries,
   GlimmerComponent,
   GlimmerManager,
   GlimmerReference,
