@@ -29,31 +29,30 @@ export function emberSafeRequire(id) {
   }
 }
 
-let ArrayProxy = Ember.ArrayProxy;
-let Namespace = Ember.Namespace;
-let ActionHandler = Ember.ActionHandler;
-let ControllerMixin = Ember.ControllerMixin;
-let CoreObject = Ember.CoreObject;
-let Application = Ember.Application;
-let MutableArray = Ember.MutableArray;
-let MutableEnumerable = Ember.MutableEnumerable;
-let NativeArray = Ember.NativeArray;
-let Component = Ember.Component;
-let Observable = Ember.Observable;
-let Evented = Ember.Evented;
-let PromiseProxyMixin = Ember.PromiseProxyMixin;
-let Service = Ember.Service;
-let ObjectProxy = Ember.ObjectProxy;
-let VERSION = Ember.VERSION;
-let ComputedProperty = Ember.ComputedProperty;
-let meta = Ember.meta;
-let get = Ember.get;
-let set = Ember.set;
-let computed = Ember.computed;
-let EmberObject = Ember.Object;
-let captureRenderTree = Ember._captureRenderTree;
-
-let getEnv = () => Ember.ENV;
+let ArrayProxy,
+  Namespace,
+  ActionHandler,
+  ControllerMixin,
+  CoreObject,
+  Application,
+  MutableArray,
+  MutableEnumerable,
+  NativeArray,
+  Component,
+  Observable,
+  Evented,
+  PromiseProxyMixin,
+  Service,
+  ObjectProxy,
+  VERSION,
+  ComputedProperty,
+  meta,
+  get,
+  set,
+  computed,
+  EmberObject,
+  captureRenderTree,
+  getEnv;
 
 let Debug = emberSafeRequire('@ember/debug');
 let InternalsMetal = emberSafeRequire('@ember/-internals/metal');
@@ -64,7 +63,9 @@ let EmberDestroyable = emberSafeRequire('@ember/destroyable');
 let ObjectInternals = emberSafeRequire('@ember/object/internals');
 let Instrumentation = emberSafeRequire('@ember/instrumentation');
 let Runloop = emberSafeRequire('@ember/runloop');
+
 let RSVP = emberSafeRequire('rsvp');
+
 let GlimmerComponent = emberSafeRequire('@glimmer/component');
 let GlimmerManager = emberSafeRequire('@glimmer/manager');
 let GlimmerReference = emberSafeRequire('@glimmer/reference');
@@ -72,7 +73,47 @@ let GlimmerRuntime = emberSafeRequire('@glimmer/runtime');
 let GlimmerUtil = emberSafeRequire('@glimmer/util');
 let GlimmerValidator = emberSafeRequire('@glimmer/validator');
 
-if (!Ember) {
+let inspect = Debug?.inspect || InternalsUtils?.inspect;
+let subscribe = Instrumentation?.subscribe;
+let cacheFor = ObjectInternals?.cacheFor;
+let guidFor = ObjectInternals?.guidFor;
+let libraries = InternalsMetal?.libraries;
+
+if (Ember) {
+  captureRenderTree = Ember._captureRenderTree;
+  getEnv = () => Ember.ENV;
+  ArrayProxy = Ember.ArrayProxy;
+  ObjectProxy = Ember.ObjectProxy;
+  MutableArray = Ember.MutableArray;
+  Namespace = Ember.Namespace;
+  MutableEnumerable = Ember.MutableEnumerable;
+  NativeArray = Ember.NativeArray;
+  ControllerMixin = Ember.ControllerMixin;
+  CoreObject = Ember.CoreObject;
+  Application = Ember.Application;
+  Component = Ember.Component;
+  Observable = Ember.Observable;
+  Evented = Ember.Evented;
+  PromiseProxyMixin = Ember.PromiseProxyMixin;
+  Service = Ember.Service;
+  EmberObject = Ember.Object;
+  VERSION = Ember.VERSION;
+  ComputedProperty = Ember.ComputedProperty;
+  meta = Ember.meta;
+  get = Ember.get;
+  set = Ember.set;
+  computed = Ember.computed;
+  ActionHandler = Ember.ActionHandler;
+  Debug = Debug ?? Ember.Debug;
+  inspect = inspect ?? Ember.inspect;
+  Instrumentation = Instrumentation ?? Ember.Instrumentation;
+  subscribe = subscribe ?? Ember.subscribe;
+  RSVP = RSVP ?? Ember.RSVP;
+  Runloop = Runloop ?? Ember.run;
+  cacheFor = cacheFor ?? Ember.cacheFor;
+  guidFor = guidFor ?? Ember.guidFor;
+  libraries = libraries ?? Ember.libraries;
+} else {
   captureRenderTree = emberSafeRequire('@ember/debug')?.captureRenderTree;
   getEnv = emberSafeRequire('@ember/-internals/environment')?.getENV;
   ArrayProxy = emberSafeRequire('@ember/array/proxy')?.default;
@@ -136,6 +177,11 @@ export {
   set,
   captureRenderTree,
   getEnv,
+  inspect,
+  subscribe,
+  cacheFor,
+  guidFor,
+  libraries,
   GlimmerComponent,
   GlimmerManager,
   GlimmerReference,

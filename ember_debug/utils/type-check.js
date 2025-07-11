@@ -1,4 +1,4 @@
-import Debug, { inspect as emberInspect } from 'ember-debug/utils/ember/debug';
+import { Debug, inspect as emberInspect } from 'ember-debug/utils/ember';
 import {
   ComputedProperty,
   EmberObject,
