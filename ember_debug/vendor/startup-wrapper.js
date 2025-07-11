@@ -32,20 +32,22 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       return;
     }
 
-    /*
-     * The commented block below relies on the existence of Ember in the startup wrapper.
-     * We need to change that for Vite support because Ember will never be defined. We
-     * should know what inspector version to load without accessing Ember.VERSION.
-     */
-    // // If Ember doesn't exist, we should stop here to avoid issues with accessing `Ember.VERSION`
-    // if (!Ember) {
-    //   return;
-    // }
-    // if (!versionTest(Ember.VERSION, EMBER_VERSIONS_SUPPORTED)) {
-    //   // Wrong inspector version. Redirect to the correct version.
-    //   sendVersionMiss();
-    //   return;
-    // }
+    // If we don't have a way to know the Ember version at this point
+    // because the Ember app has not loaded and provided it somehow,
+    // we can't continue (we need the version to know what version of
+    // the Inspector to load).
+    if (!Ember && !globalThis.emberInspectorApps) {
+      return;
+    }
+
+    // This is used to redirect to an old snapshot of the Inspector if the
+    // inspected app uses an older Ember version than supported versions.
+    // The code fits the Inspector supporting Ember back to 3.16: any version
+    // before 3.16 is necessarily a classic Ember app with Ember defined.
+    if (Ember && !versionTest(Ember.VERSION, EMBER_VERSIONS_SUPPORTED)) {
+      sendVersionMiss();
+      return;
+    }
 
     // prevent from injecting twice
     if (!window.EmberInspector) {
