@@ -9,6 +9,7 @@ const writeFile = require('broccoli-file-creator');
 const replace = require('broccoli-string-replace');
 const Funnel = require('broccoli-funnel');
 const packageJson = require('./package.json');
+const { readFileSync } = require('fs');
 const { map, mv } = stew;
 
 const options = {
@@ -84,13 +85,6 @@ module.exports = function (defaults) {
   app.import('node_modules/compare-versions/index.js');
   app.import('node_modules/normalize.css/normalize.css');
 
-  let emberDebug = 'ember_debug/dist';
-
-  emberDebug = new Funnel(emberDebug, {
-    destDir: 'ember-debug',
-    include: ['**/*.js'],
-  });
-
   const previousEmberVersionsSupportedString = `[${packageJson.previousEmberVersionsSupported
     .map(function (item) {
       return `'${item}'`;
@@ -122,7 +116,7 @@ module.exports = function (defaults) {
     files: ['loader.js'],
   });
 
-  emberDebug = mergeTrees([startupWrapper, emberDebug, loader]);
+  let emberDebug = mergeTrees([startupWrapper, loader]);
 
   emberDebug = concatFiles(emberDebug, {
     headerFiles: ['loader.js'],
@@ -131,8 +125,11 @@ module.exports = function (defaults) {
     sourceMapConfig: { enabled: false },
   });
 
+  const mainContent = readFileSync('./ember_debug/dist/main.js', 'utf8');
+
   function wrapWithLoader(content) {
-    return `(function loadEmberDebugInWebpage() {
+    return `${mainContent}
+    (function loadEmberDebugInWebpage() {
     const waitForEmberLoad = new Promise((resolve) => {
       if (window.requireModule) {
         const has =
@@ -157,6 +154,8 @@ module.exports = function (defaults) {
        *       this will throw an exception in the consuming project
        */
       if (window.Ember) return resolve();
+
+      if (globalThis.emberInspectorApps) return resolve();
 
       window.addEventListener('Ember', resolve, { once: true });
     });
