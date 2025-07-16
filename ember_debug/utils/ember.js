@@ -75,10 +75,10 @@ let Application,
 // This global is defined in Embroider to bring Vite support to the Inspector.
 // Having it defined is enough to assert the inspected app runs with Vite.
 if (globalThis.emberInspectorApps) {
-  // emberInspectorApps has been implemented as a map to support multiple apps
-  // in the future. So far, the inspector has supported only one app, so we
-  // rely on the first item in the map to keep the current behavior.
-  const appLoader = globalThis.emberInspectorApps.entries().next().value[1];
+  // emberInspectorApps has been implemented as an array to support multiple
+  // apps in the future. So far, the inspector has supported only one app, so
+  // we rely on the first item in the array to keep the current behavior.
+  const appLoader = globalThis.emberInspectorApps[0];
   const internalEmberModules = await appLoader.loadCompatInspector();
 
   Application = internalEmberModules.Application.default;
@@ -97,7 +97,7 @@ if (globalThis.emberInspectorApps) {
   ComputedProperty = InternalsMetal?.ComputedProperty;
   InternalsRuntime = internalEmberModules.InternalsRuntime;
   InternalsUtils = internalEmberModules.InternalsUtils;
-  InternalsViews = internalEmberModules.InternalViews;
+  InternalsViews = internalEmberModules.InternalsViews;
   ObjectInternals = internalEmberModules.ObjectInternals;
   Instrumentation = internalEmberModules.Instrumentation;
   captureRenderTree = internalEmberModules.Debug.captureRenderTree;
