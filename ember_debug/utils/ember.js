@@ -189,5 +189,3 @@ export {
   GlimmerUtil,
   GlimmerValidator,
 };
-
-export default Ember;

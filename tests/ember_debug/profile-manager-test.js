@@ -10,11 +10,9 @@ import { hbs } from 'ember-cli-htmlbars';
 import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import { run } from '@ember/runloop';
-import Ember from 'ember-debug/ember';
+import { VERSION } from 'ember-debug/ember';
 import { compareVersion } from 'ember-debug/version';
 import { setComponentTemplate } from '@ember/component';
-
-const { VERSION } = Ember;
 
 const isComponentHighlightSupported = compareVersion(VERSION, '3.20.0') !== -1;
 

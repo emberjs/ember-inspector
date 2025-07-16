@@ -8,9 +8,10 @@ let _backburner = runloop._backburner;
 
 const keys = ['cancel', 'debounce', 'join', 'later', 'scheduleOnce'];
 
-module = EmberRunloop;
-_backburner =
-  EmberRunloop._backburner || EmberRunloop.backburner || _backburner;
+if (EmberRunloop) {
+  module = EmberRunloop;
+  _backburner = EmberRunloop._backburner || EmberRunloop.backburner;
+}
 
 if (!keys.every((k) => k in module)) {
   module = runloop;
