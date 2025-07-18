@@ -45,14 +45,6 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
 
     // prevent from injecting twice
     if (!window.EmberInspector) {
-      // Make sure we only work for the supported version
-      define('ember-debug/config', function() {
-        return {
-          default: {
-            environment: currentEnv
-          }
-        };
-      });
 
       let emberDebugMainModule = requireModule('ember-debug/main');
       if (!emberDebugMainModule) {
