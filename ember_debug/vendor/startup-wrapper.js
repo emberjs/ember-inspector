@@ -11,14 +11,10 @@ let Ember;
  Also responsible for sending the first tree.
  **/
 /*eslint prefer-spread: 0 */
-/* globals adapter, env */
+/* globals adapter */
 var currentAdapter = 'basic';
 if (typeof adapter !== 'undefined') {
   currentAdapter = adapter;
-}
-var currentEnv = 'production';
-if (typeof env !== 'undefined') {
-  currentEnv = env;
 }
 
 // @formatter:off
