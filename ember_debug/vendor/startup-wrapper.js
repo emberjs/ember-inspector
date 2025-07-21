@@ -11,14 +11,10 @@ let Ember;
  Also responsible for sending the first tree.
  **/
 /*eslint prefer-spread: 0 */
-/* globals adapter, env */
+/* globals adapter */
 var currentAdapter = 'basic';
 if (typeof adapter !== 'undefined') {
   currentAdapter = adapter;
-}
-var currentEnv = 'production';
-if (typeof env !== 'undefined') {
-  currentEnv = env;
 }
 
 // @formatter:off
@@ -45,14 +41,6 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
 
     // prevent from injecting twice
     if (!window.EmberInspector) {
-      // Make sure we only work for the supported version
-      define('ember-debug/config', function() {
-        return {
-          default: {
-            environment: currentEnv
-          }
-        };
-      });
 
       let emberDebugMainModule = requireModule('ember-debug/main');
       if (!emberDebugMainModule) {

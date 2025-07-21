@@ -170,7 +170,7 @@ module.exports = function (defaults) {
     function (dist) {
       emberDebugs[dist] = map(emberDebug, '**/*.js', function (content) {
         return wrapWithLoader(
-          `(function(adapter, env) {\n${content}\n}('${dist}', '${env}'))`,
+          `(function(adapter) {\n${content}\n}('${dist}'))`,
         );
       });
     },
