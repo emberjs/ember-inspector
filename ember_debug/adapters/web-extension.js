@@ -1,8 +1,8 @@
 import BasicAdapter from './basic';
-import { typeOf } from 'ember-debug/utils/type-check';
+import { typeOf } from '../utils/type-check';
 
-import { getEnv } from 'ember-debug/utils/ember';
-import { run } from 'ember-debug/utils/ember/runloop';
+import { getEnv } from '../utils/ember';
+import { run } from '../utils/ember/runloop';
 
 const { isArray } = Array;
 const { keys } = Object;

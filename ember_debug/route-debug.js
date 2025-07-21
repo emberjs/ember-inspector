@@ -1,11 +1,11 @@
 /* eslint-disable ember/no-private-routing-service */
-import DebugPort from './debug-port';
-import { compareVersion } from 'ember-debug/utils/version';
-import { VERSION } from 'ember-debug/utils/ember';
-import classify from 'ember-debug/utils/classify';
-import dasherize from 'ember-debug/utils/dasherize';
-import { _backburner, later } from 'ember-debug/utils/ember/runloop';
-import bound from 'ember-debug/utils/bound-method';
+import DebugPort from './debug-port.js';
+import { compareVersion } from './utils/version';
+import { VERSION } from './utils/ember';
+import classify from './utils/classify';
+import dasherize from './utils/dasherize';
+import { _backburner, later } from './utils/ember/runloop';
+import bound from './utils/bound-method';
 
 const { hasOwnProperty } = Object.prototype;
 

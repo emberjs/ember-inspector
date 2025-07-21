@@ -1,4 +1,4 @@
-import BaseObject from 'ember-debug/utils/base-object';
+import BaseObject from '../utils/base-object';
 import * as SourceMap from 'source-map-js';
 const notFoundError = new Error('Source map url not found');
 

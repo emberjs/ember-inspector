@@ -1,4 +1,4 @@
-import DebugPort from './debug-port';
+import DebugPort from './debug-port.js';
 
 export default class extends DebugPort {
   get objectInspector() {

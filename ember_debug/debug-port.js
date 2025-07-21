@@ -1,4 +1,4 @@
-import BaseObject from 'ember-debug/utils/base-object';
+import BaseObject from './utils/base-object';
 
 export default class extends BaseObject {
   port = null;
