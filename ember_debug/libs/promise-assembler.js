@@ -5,10 +5,10 @@
  and Yapp Labs (@yapplabs).
  */
 
-import Promise from 'ember-debug/models/promise';
-import { RSVP } from 'ember-debug/utils/ember';
-import BaseObject from 'ember-debug/utils/base-object';
-import Evented from 'ember-debug/utils/evented';
+import Promise from '../models/promise';
+import { RSVP } from '../utils/ember';
+import BaseObject from '../utils/base-object';
+import Evented from '../utils/evented';
 
 class PromiseAssembler extends BaseObject {
   // RSVP lib to debug

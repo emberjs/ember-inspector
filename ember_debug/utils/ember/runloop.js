@@ -1,5 +1,5 @@
-import { Runloop as EmberRunloop } from '../ember';
-import * as runloop from './own-runloop';
+import { Runloop as EmberRunloop } from '../ember.js';
+import * as runloop from './own-runloop.js';
 
 // it could happen that runloop is available but _backburner is not exported (dead code)
 // then we need to use our own.

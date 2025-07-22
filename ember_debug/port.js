@@ -1,7 +1,7 @@
-import { guidFor } from 'ember-debug/utils/ember/object/internals';
-import { run } from 'ember-debug/utils/ember/runloop';
-import BaseObject from 'ember-debug/utils/base-object';
-import Evented from 'ember-debug/utils/evented';
+import { guidFor } from './utils/ember/object/internals';
+import { run } from './utils/ember/runloop';
+import BaseObject from './utils/base-object';
+import Evented from './utils/evented';
 
 export default class extends BaseObject {
   constructor(data) {

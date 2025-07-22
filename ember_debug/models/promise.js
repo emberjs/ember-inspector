@@ -1,5 +1,5 @@
-import { typeOf } from 'ember-debug/utils/type-check';
-import BaseObject from 'ember-debug/utils/base-object';
+import { typeOf } from '../utils/type-check';
+import BaseObject from '../utils/base-object';
 
 const dateComputed = function () {
   return function (target, propertyKey) {

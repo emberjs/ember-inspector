@@ -1,9 +1,9 @@
-import DebugPort from './debug-port';
-import ProfileManager from './models/profile-manager';
+import DebugPort from './debug-port.js';
+import ProfileManager from './models/profile-manager.js';
 
-import { subscribe } from 'ember-debug/utils/ember';
-import { _backburner } from 'ember-debug/utils/ember/runloop';
-import bound from 'ember-debug/utils/bound-method';
+import { subscribe } from './utils/ember';
+import { _backburner } from './utils/ember/runloop';
+import bound from './utils/bound-method';
 
 // Initial setup, that has to occur before the EmberObject init for some reason
 let profileManager = new ProfileManager();

@@ -1,4 +1,4 @@
-import emberNames from './ember-object-names';
+import emberNames from './ember-object-names.js';
 
 export default function getObjectName(object) {
   let name = '';

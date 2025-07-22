@@ -1,8 +1,8 @@
 /* eslint no-cond-assign:0 */
-import DebugPort from './debug-port';
-import RenderTree from 'ember-debug/libs/render-tree';
-import ViewInspection from 'ember-debug/libs/view-inspection';
-import bound from 'ember-debug/utils/bound-method';
+import DebugPort from './debug-port.js';
+import RenderTree from './libs/render-tree';
+import ViewInspection from './libs/view-inspection';
+import bound from './utils/bound-method';
 
 export default class extends DebugPort {
   get adapter() {

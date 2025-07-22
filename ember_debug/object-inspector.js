@@ -1,13 +1,13 @@
 /* eslint-disable ember/no-private-routing-service */
-import DebugPort from './debug-port';
-import bound from 'ember-debug/utils/bound-method';
+import DebugPort from './debug-port.js';
+import bound from './utils/bound-method';
 import {
   isComputed,
   getDescriptorFor,
   typeOf,
   inspect,
-} from 'ember-debug/utils/type-check';
-import { compareVersion } from 'ember-debug/utils/version';
+} from './utils/type-check';
+import { compareVersion } from './utils/version';
 import {
   EmberObject,
   meta as emberMeta,
@@ -21,11 +21,11 @@ import {
   GlimmerComponent,
   GlimmerReference,
   GlimmerValidator,
-} from 'ember-debug/utils/ember';
-import { cacheFor, guidFor } from 'ember-debug/utils/ember/object/internals';
-import { _backburner, join } from 'ember-debug/utils/ember/runloop';
-import emberNames from './utils/ember-object-names';
-import getObjectName from './utils/get-object-name';
+} from './utils/ember';
+import { cacheFor, guidFor } from './utils/ember/object/internals';
+import { _backburner, join } from './utils/ember/runloop';
+import emberNames from './utils/ember-object-names.js';
+import getObjectName from './utils/get-object-name.js';
 
 let tagValue, tagValidate, track, tagForProperty;
 
