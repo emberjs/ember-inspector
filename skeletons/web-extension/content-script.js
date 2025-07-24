@@ -90,6 +90,7 @@
       if (!injected) {
         // cannot use eval here, as the context is limited to the content script-
         const elem = document.createElement('script');
+        elem.type = 'module';
         elem.src = message.value;
         document.head.appendChild(elem);
         injected = true;

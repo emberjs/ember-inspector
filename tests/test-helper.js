@@ -8,9 +8,6 @@ import TestAdapter from './test-adapter';
 import setupSinon from 'ember-sinon-qunit';
 import registerWaiter from 'ember-raf-scheduler/test-support/register-waiter';
 
-// ensure ember-debug is required
-import 'ember-debug/main';
-
 registerWaiter();
 
 /**

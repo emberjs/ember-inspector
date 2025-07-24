@@ -72,6 +72,7 @@
 
   function injectEmberDebug(fileName) {
     var script = document.createElement('script');
+    script.type = 'module';
     script.src = url + '/' + fileName;
     document.body.appendChild(script);
   }

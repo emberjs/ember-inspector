@@ -156,11 +156,11 @@
   },
   "packageManager": "pnpm@9.12.1",
   "engines": {
-    "node": ">= 18",
+    "node": ">= 22",
     "pnpm": "^9.0.0"
   },
   "volta": {
-    "node": "18.20.4",
+    "node": "22.17.1",
     "pnpm": "9.12.1"
   },
   "publishConfig": {

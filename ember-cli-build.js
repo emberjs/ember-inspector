@@ -9,7 +9,12 @@ const writeFile = require('broccoli-file-creator');
 const replace = require('broccoli-string-replace');
 const Funnel = require('broccoli-funnel');
 const packageJson = require('./package.json');
-const { map, mv } = stew;
+const { mv } = stew;
+
+const {
+  EMBER_VERSIONS_SUPPORTED,
+  PREVIOUS_EMBER_VERSIONS_SUPPORTED,
+} = require('ember-debug/versions');
 
 const options = {
   autoImport: {
@@ -84,95 +89,30 @@ module.exports = function (defaults) {
   app.import('node_modules/compare-versions/index.js');
   app.import('node_modules/normalize.css/normalize.css');
 
-  let emberDebug = 'ember_debug/dist';
-
-  emberDebug = new Funnel(emberDebug, {
-    destDir: 'ember-debug',
-    include: ['**/*.js'],
-  });
-
-  const previousEmberVersionsSupportedString = `[${packageJson.previousEmberVersionsSupported
-    .map(function (item) {
-      return `'${item}'`;
-    })
-    .join(',')}]`;
-  const emberVersionsSupportedString = `[${packageJson.emberVersionsSupported
-    .map(function (item) {
-      return `'${item}'`;
-    })
-    .join(',')}]`;
-
-  let startupWrapper = new Funnel('ember_debug', {
-    srcDir: 'vendor',
-    files: ['startup-wrapper.js'],
-  });
-
-  startupWrapper = replace(startupWrapper, {
-    files: ['startup-wrapper.js'],
-    patterns: [
-      {
-        match: /{{EMBER_VERSIONS_SUPPORTED}}/,
-        replacement: emberVersionsSupportedString,
-      },
-    ],
-  });
-
-  const loader = new Funnel('ember_debug', {
-    srcDir: 'vendor',
-    files: ['loader.js'],
-  });
-
-  emberDebug = mergeTrees([startupWrapper, emberDebug, loader]);
-
-  emberDebug = concatFiles(emberDebug, {
-    headerFiles: ['loader.js'],
-    inputFiles: ['**/*.js'],
-    outputFile: '/ember_debug.js',
-    sourceMapConfig: { enabled: false },
-  });
-
-  function wrapWithLoader(content) {
-    return `(function loadEmberDebugInWebpage() {
-    const waitForEmberLoad = new Promise((resolve) => {
-      if (window.requireModule) {
-        const has =
-          window.requireModule.has ||
-          function has(id) {
-            return !!(
-              window.requireModule.entries[id] ||
-              window.requireModule.entries[id + '/index']
-            );
-          };
-        if (has('ember')) {
-          return resolve();
-        }
-      }
-
-      /**
-       * NOTE: if the above (for some reason) fails and the consuming app has
-       *       deprecation-workflow's throwOnUnhandled: true
-       *         or set \`ember-global\`'s handler to 'throw'
-       *       and is using at least \`ember-source@3.27\`
-       *
-       *       this will throw an exception in the consuming project
-       */
-      if (window.Ember) return resolve();
-
-      window.addEventListener('Ember', resolve, { once: true });
-    });
-    waitForEmberLoad.then(() => ${content});
-  })()
-  `;
-  }
+  const previousEmberVersionsSupportedString = JSON.stringify(
+    PREVIOUS_EMBER_VERSIONS_SUPPORTED,
+  );
+  const emberVersionsSupportedString = JSON.stringify(EMBER_VERSIONS_SUPPORTED);
 
   const emberDebugs = [];
+
   ['basic', 'chrome', 'firefox', 'bookmarklet', 'websocket'].forEach(
     function (dist) {
-      emberDebugs[dist] = map(emberDebug, '**/*.js', function (content) {
-        return wrapWithLoader(
-          `(function(adapter) {\n${content}\n}('${dist}'))`,
-        );
-      });
+      let emberDebug = 'ember_debug/dist';
+
+      let entryPoint = concatFiles(
+        new Funnel(emberDebug, {
+          destDir: 'ember-debug',
+          include: [`${dist}-debug.js`],
+        }),
+        {
+          inputFiles: ['**/*.js'],
+          outputFile: '/ember_debug.js',
+          sourceMapConfig: { enabled: false },
+        },
+      );
+
+      emberDebugs[dist] = mergeTrees([emberDebug, entryPoint]);
     },
   );
 
@@ -190,10 +130,7 @@ module.exports = function (defaults) {
     patterns: emberInspectorVersionPattern,
   });
 
-  const minimumVersion = packageJson.emberVersionsSupported[0].replace(
-    /\./g,
-    '-',
-  );
+  const minimumVersion = EMBER_VERSIONS_SUPPORTED[0].replace(/\./g, '-');
   const webExtensionRoot = `panes-${minimumVersion}`;
 
   let tabLabel;
@@ -264,7 +201,7 @@ module.exports = function (defaults) {
     skeletonBookmarklet,
   ]);
 
-  packageJson.previousEmberVersionsSupported.forEach(function (version) {
+  PREVIOUS_EMBER_VERSIONS_SUPPORTED.forEach(function (version) {
     version = version.replace(/\./g, '-');
     if (env === 'production') {
       const prevDist = `dist_prev/${env}`;

@@ -317,8 +317,8 @@ module('Integration | Injection', function (hooks) {
 
   test('inject ember debug via content and background scripts', async function (assert) {
     await inject(this.owner, assert);
-    const { requireModule } = getLoader(window.define, window.requireModule);
-    const emberDebug = requireModule('ember-debug/main');
+    const emberDebug = globalThis.EmberInspector;
+
     assert.notStrictEqual(
       emberDebug,
       undefined,
@@ -338,7 +338,7 @@ module('Integration | Injection', function (hooks) {
     await inject(this.owner, assert);
     assert.timeout(100);
 
-    const emberDebug = requireModule('ember-debug/main');
+    const emberDebug = globalThis.EmberInspector;
     const viewInspection = emberDebug.viewDebug.viewInspection;
 
     const inspectNearestCalled = new Promise((resolve) => {
