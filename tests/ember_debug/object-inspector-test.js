@@ -174,7 +174,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
     assert.strictEqual(nameProperty.value.inspect, inspect('My Object'));
   });
 
-  test.skip('An ES6 Class is correctly transformed into an inspection hash', async function (assert) {
+  test('An ES6 Class is correctly transformed into an inspection hash', async function (assert) {
     if (compareVersion(VERSION, '3.9.0') === -1) {
       assert.expect(0);
       return;
