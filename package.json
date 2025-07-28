@@ -99,6 +99,7 @@
     "ember-cli-typescript": "^5.3.0",
     "ember-cli-version-checker": "^5.1.2",
     "ember-concurrency": "^3.1.1",
+    "ember-debug": "workspace:*",
     "ember-decorators": "^6.1.1",
     "ember-event-helpers": "^0.1.1",
     "ember-fetch": "^8.1.2",
