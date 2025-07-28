@@ -7,7 +7,6 @@ import del from 'rollup-plugin-delete';
 export default {
   input: [
     'main.js',
-    ...globSync('adapters/**/*.js'),
     'utils/version.js',
     'utils/type-check.js',
     'port.js',
