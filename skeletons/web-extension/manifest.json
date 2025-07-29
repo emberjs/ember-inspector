@@ -65,7 +65,7 @@
     {
       "resources": [
         "scripts/in-page-script.js",
-        "panes-*/ember_debug.js"
+        "panes-*/*.js"
       ],
       "matches": [
         "*://*/*"

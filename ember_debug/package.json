@@ -1,5 +1,6 @@
 {
   "name": "ember-debug",
+  "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -17,6 +18,7 @@
     "backburner.js": "^2.8.0",
     "glob": "^11.0.2",
     "rollup": "^4.39.0",
+    "rollup-plugin-delete": "^3.0.1",
     "source-map-js": "^1.2.1"
   },
   "exports": {

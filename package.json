@@ -99,6 +99,7 @@
     "ember-cli-typescript": "^5.3.0",
     "ember-cli-version-checker": "^5.1.2",
     "ember-concurrency": "^3.1.1",
+    "ember-debug": "workspace:*",
     "ember-decorators": "^6.1.1",
     "ember-event-helpers": "^0.1.1",
     "ember-fetch": "^8.1.2",
@@ -156,11 +157,11 @@
   },
   "packageManager": "pnpm@9.12.1",
   "engines": {
-    "node": ">= 18",
+    "node": ">= 22",
     "pnpm": "^9.0.0"
   },
   "volta": {
-    "node": "18.20.4",
+    "node": "22.17.1",
     "pnpm": "9.12.1"
   },
   "publishConfig": {
