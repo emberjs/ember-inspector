@@ -1,10 +1,12 @@
 :root {
   /* stylelint-disable value-keyword-case */
-  --font-sans-serif: "Inter", -apple-system, system-ui, BlinkMacSystemFont,
-    "Segoe UI", "Roboto", "Cantarell", "Oxygen", "Ubuntu", "Helvetica Neue",
-    helvetica, arial, sans-serif;
-  --font-monospace: "SF Mono", Menlo, Monaco, monospace;
+  --font-sans-serif: system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-monospace: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo,
+    Consolas, "DejaVu Sans Mono", monospace, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   /* stylelint-enable value-keyword-case */
+
   --inherit: inherit;
   --unit0: 0;
   --unit1: 4px;
