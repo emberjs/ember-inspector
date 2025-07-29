@@ -170,11 +170,6 @@
   "ember": {
     "edition": "octane"
   },
-  "ember-addon": {
-    "paths": [
-      "lib/ui"
-    ]
-  },
   "emberVersionsSupported": [
     "3.16.0",
     ""
