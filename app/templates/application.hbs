@@ -47,14 +47,7 @@
           <div class="split-panel">
             <div class="split-panel-hd">
               <div id="toolbar"></div>
-              <button
-                class="object-inspector-toggle toolbar-icon-button absolute top-0 right-0"
-                {{on "click" this.layoutService.toggleInspector}}
-                type="button"
-                title="{{if this.layoutService.inspectorExpanded "hide" "show"}} object inspector"
-              >
-                {{svg-jar "sidebar-toggle" width="16" height="16"}}
-              </button>
+              <ObjectInspector::Toggle class="align-end" />
             </div>
 
             <div class="split-panel-bd" {{did-insert this.setupContentElement}}>
