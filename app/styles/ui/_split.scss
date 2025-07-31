@@ -69,6 +69,10 @@
 
 /* Custom panels */
 
+.split-panel-hd-row {
+  flex-flow: row;
+}
+
 .split-panel-sidebar-1 .split-panel-bd {
   background: var(--base01);
 }
@@ -84,4 +88,12 @@
 
 .split-main > .split-panel-sidebar-1 > .split-panel-bd {
   overflow-y: auto;
+}
+
+.split-panel-hd-row .end {
+  margin-inline-start: auto;
+}
+
+.split-panel-hd-row:has(:only-child.end) {
+  justify-content: end;
 }

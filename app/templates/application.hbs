@@ -45,9 +45,11 @@
           </Ui::DraggableColumn>
 
           <div class="split-panel">
-            <div class="split-panel-hd">
+            <div class="split-panel-hd split-panel-hd-row">
               <div id="toolbar"></div>
-              <ObjectInspector::Toggle class="align-end" />
+              {{#if (not this.layoutService.inspectorExpanded)}}
+                <ObjectInspector::Toggle class="end" />
+              {{/if}}
             </div>
 
             <div class="split-panel-bd" {{did-insert this.setupContentElement}}>
@@ -63,6 +65,10 @@
           @side="right"
           @width={{this.inspectorWidth}}
         >
+          <div class="split-panel-hd split-panel-hd-row">
+            <ObjectInspector::Toggle class="end" />
+            {{!-- TODO: Create a target to place additional buttons here --}}
+          </div>
           <ObjectInspector
             @popMixinDetails={{this.popMixinDetails}}
             @model={{this.mixinStack}}
