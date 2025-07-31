@@ -49,9 +49,9 @@
               <div id="toolbar"></div>
               <button
                 class="object-inspector-toggle toolbar-icon-button absolute top-0 right-0"
-                {{on "click" this.toggleInspector}}
+                {{on "click" this.layoutService.toggleInspector}}
                 type="button"
-                title="{{if this.inspectorExpanded "hide" "show"}} object inspector"
+                title="{{if this.layoutService.inspectorExpanded "hide" "show"}} object inspector"
               >
                 {{svg-jar "sidebar-toggle" width="16" height="16"}}
               </button>
@@ -64,7 +64,7 @@
         </div>
       </div>
 
-      {{#if this.inspectorExpanded}}
+      {{#if this.layoutService.inspectorExpanded}}
         <Ui::DraggableColumn
           @classes="split-panel"
           @side="right"

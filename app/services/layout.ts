@@ -12,8 +12,11 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { addListener, removeListener, sendEvent } from '@ember/object/events';
 import type { AnyFn } from '@ember/-internals/utility-types';
+import { schedule } from '@ember/runloop';
 
 export default class LayoutService extends Service {
+  @tracked inspectorExpanded = false;
+
   /**
    * Stores the app's content height. This property is kept up-to-date
    * by the `monitor-content-height` component.
@@ -84,5 +87,38 @@ export default class LayoutService extends Service {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   trigger(eventName: string, ...args: Array<any>) {
     sendEvent(this, eventName, args);
+  }
+
+  @action
+  showInspector() {
+    if (this.inspectorExpanded === false) {
+      this.inspectorExpanded = true;
+      // Broadcast that tables have been resized (used by `x-list`).
+      // eslint-disable-next-line ember/no-runloop
+      schedule('afterRender', () => {
+        this.trigger('resize', { source: 'object-inspector' });
+      });
+    }
+  }
+
+  @action
+  hideInspector() {
+    if (this.inspectorExpanded === true) {
+      this.inspectorExpanded = false;
+      // Broadcast that tables have been resized (used by `x-list`).
+      // eslint-disable-next-line ember/no-runloop
+      schedule('afterRender', () => {
+        this.trigger('resize', { source: 'object-inspector' });
+      });
+    }
+  }
+
+  @action
+  toggleInspector() {
+    if (this.inspectorExpanded) {
+      this.hideInspector();
+    } else {
+      this.showInspector();
+    }
   }
 }

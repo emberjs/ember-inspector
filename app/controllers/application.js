@@ -21,7 +21,6 @@ export default class ApplicationController extends Controller {
   @tracked isDragging = false;
   @tracked contentHeight = null;
   @tracked deprecationCount = 0;
-  @tracked inspectorExpanded = false;
   @tracked inspectorWidth = 360;
   /**
    * Indicates if the inspector has detected an ember app.
@@ -72,39 +71,6 @@ export default class ApplicationController extends Controller {
     this.port.send('objectInspector:releaseObject', {
       objectId: item.objectId,
     });
-  }
-
-  @action
-  showInspector() {
-    if (this.inspectorExpanded === false) {
-      this.inspectorExpanded = true;
-      // Broadcast that tables have been resized (used by `x-list`).
-      // eslint-disable-next-line ember/no-runloop
-      schedule('afterRender', () => {
-        this.layoutService.trigger('resize', { source: 'object-inspector' });
-      });
-    }
-  }
-
-  @action
-  hideInspector() {
-    if (this.inspectorExpanded === true) {
-      this.inspectorExpanded = false;
-      // Broadcast that tables have been resized (used by `x-list`).
-      // eslint-disable-next-line ember/no-runloop
-      schedule('afterRender', () => {
-        this.layoutService.trigger('resize', { source: 'object-inspector' });
-      });
-    }
-  }
-
-  @action
-  toggleInspector() {
-    if (this.inspectorExpanded) {
-      this.hideInspector();
-    } else {
-      this.showInspector();
-    }
   }
 
   @action
