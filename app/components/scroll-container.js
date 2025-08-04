@@ -5,6 +5,7 @@ import { action } from '@ember/object';
 import { debounce } from '@ember/runloop';
 import { htmlSafe } from '@ember/template';
 import { tracked } from '@glimmer/tracking';
+import { indentItem } from './render-item';
 
 export default class ScrollContainerComponent extends Component {
   attributeBindings = ['style'];
@@ -26,11 +27,13 @@ export default class ScrollContainerComponent extends Component {
   }
 
   get scrollTargetStyle() {
-    let { index, itemHeight } = this;
+    let { index, itemHeight, previewing, currentItem } = this;
 
     if (index === -1) {
       return htmlSafe('display: none;');
     } else {
+      const level = previewing?.level ?? currentItem?.level ?? 0;
+      const left = indentItem(level) + 10;
       const height = itemHeight ?? 0;
 
       return htmlSafe(`
@@ -39,8 +42,8 @@ export default class ScrollContainerComponent extends Component {
         height: ${height}px;
         margin: 0px;
         padding: 0px;
-        left: 0px;
         top: ${index * height}px;
+        left: ${left}px;
         z-index: -9999;
         pointer-events: none;
       `);
@@ -98,10 +101,25 @@ export default class ScrollContainerComponent extends Component {
 }
 
 function needsScroll(container, target) {
-  if (!container || !target) return false;
+  if (!container || !target) {
+    return false;
+  }
 
-  let { top: containerTop, bottom: containerBottom } =
-    container.getBoundingClientRect();
-  let { top: targetTop, bottom: targetBottom } = target.getBoundingClientRect();
-  return targetTop < containerTop || targetBottom > containerBottom;
+  let {
+    top: containerTop,
+    bottom: containerBottom,
+    left: containerLeft,
+  } = container.getBoundingClientRect();
+
+  let {
+    top: targetTop,
+    bottom: targetBottom,
+    left: targetLeft,
+  } = target.getBoundingClientRect();
+
+  return (
+    targetTop < containerTop ||
+    targetBottom > containerBottom ||
+    targetLeft > containerLeft
+  );
 }
