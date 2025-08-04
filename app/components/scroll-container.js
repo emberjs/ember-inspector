@@ -31,14 +31,16 @@ export default class ScrollContainerComponent extends Component {
     if (index === -1) {
       return htmlSafe('display: none;');
     } else {
+      const height = itemHeight ?? 0;
+
       return htmlSafe(`
         position: absolute;
         width: 100%;
-        height: ${itemHeight || 0}px;
+        height: ${height}px;
         margin: 0px;
         padding: 0px;
-        top: ${index * itemHeight || 0}px;
         left: 0px;
+        top: ${index * height}px;
         z-index: -9999;
         pointer-events: none;
       `);
