@@ -1,4 +1,4 @@
-import Controller, { inject as controller } from '@ember/controller';
+import Controller from '@ember/controller';
 import { action } from '@ember/object';
 import { debounce } from '@ember/runloop';
 import { inject as service } from '@ember/service';
@@ -14,8 +14,8 @@ export default class ComponentTreeController extends Controller {
   // Estimated height for each row
   itemHeight = 22;
 
-  @controller application;
   @service port;
+  @service layout;
 
   @tracked query = '';
   @tracked isInspecting = false;
@@ -146,14 +146,14 @@ export default class ComponentTreeController extends Controller {
           objectId: item.instance,
         });
       } else {
-        this.application.hideInspector();
+        this.layout.hideInspector();
       }
     } else {
       this._pinned = undefined;
       this._previewing = undefined;
 
       this.port.send('view:hideInspection');
-      this.application.hideInspector();
+      this.layout.hideInspector();
     }
 
     this.syncInspection();

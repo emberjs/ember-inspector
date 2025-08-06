@@ -45,16 +45,11 @@
           </Ui::DraggableColumn>
 
           <div class="split-panel">
-            <div class="split-panel-hd">
+            <div class="split-panel-hd split-panel-hd-row">
               <div id="toolbar"></div>
-              <button
-                class="object-inspector-toggle toolbar-icon-button absolute top-0 right-0"
-                {{on "click" this.toggleInspector}}
-                type="button"
-                title="{{if this.inspectorExpanded "hide" "show"}} object inspector"
-              >
-                {{svg-jar "sidebar-toggle" width="16" height="16"}}
-              </button>
+              {{#if (not this.layoutService.inspectorExpanded)}}
+                <ObjectInspector::Toggle class="end" />
+              {{/if}}
             </div>
 
             <div class="split-panel-bd" {{did-insert this.setupContentElement}}>
@@ -64,12 +59,16 @@
         </div>
       </div>
 
-      {{#if this.inspectorExpanded}}
+      {{#if this.layoutService.inspectorExpanded}}
         <Ui::DraggableColumn
           @classes="split-panel"
           @side="right"
           @width={{this.inspectorWidth}}
         >
+          <div class="split-panel-hd split-panel-hd-row">
+            <ObjectInspector::Toggle class="end" />
+            {{!-- TODO: Create a target to place additional buttons here --}}
+          </div>
           <ObjectInspector
             @popMixinDetails={{this.popMixinDetails}}
             @model={{this.mixinStack}}
