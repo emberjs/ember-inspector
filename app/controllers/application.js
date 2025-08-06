@@ -1,4 +1,4 @@
-import Controller from '@ember/controller';
+import Controller, { inject as controller } from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { debounce, schedule } from '@ember/runloop';
@@ -7,6 +7,8 @@ import { inject as service } from '@ember/service';
 import { TrackedArray, TrackedObject } from 'tracked-built-ins';
 
 export default class ApplicationController extends Controller {
+  @controller('component-tree') componentTreeController;
+
   /**
    * Service used to broadcast changes to the application's layout
    * such as toggling of the object inspector.

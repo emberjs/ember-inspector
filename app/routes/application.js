@@ -12,6 +12,7 @@ export default class ApplicationRoute extends Route {
 
   setupController(controller) {
     controller.set('mixinStack', []);
+
     let port = this.port;
     port.on('objectInspector:updateObject', this, this.updateObject);
     port.on('objectInspector:updateProperty', this, this.updateProperty);
