@@ -1,0 +1,7 @@
+# Unlabeled Changes
+
+* `ember-inspector`
+  * [#2667](https://github.com/emberjs/ember-inspector/pull/2667) show parents in sidebar ([@patricklx](https://github.com/patricklx))
+
+
+*Cannot plan release until the above changes are labeled*.
