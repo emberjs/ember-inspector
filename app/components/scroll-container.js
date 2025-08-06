@@ -27,12 +27,12 @@ export default class ScrollContainerComponent extends Component {
   }
 
   get scrollTargetStyle() {
-    let { index, itemHeight, previewing, currentItem } = this;
+    let { index, itemHeight, currentItem } = this;
 
     if (index === -1) {
       return htmlSafe('display: none;');
     } else {
-      const level = previewing?.level ?? currentItem?.level ?? 0;
+      const level = currentItem?.level ?? 0;
       const left = indentItem(level) + 10;
       const height = itemHeight ?? 0;
 
