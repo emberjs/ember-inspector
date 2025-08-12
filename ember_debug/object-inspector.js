@@ -615,6 +615,7 @@ export default class extends DebugPort {
    * - Bar
    * - Foo
    * - EmberObject
+   * - Owner (Container)
    * ```
    *
    * The "mixins" returned by this function directly represent these things too.
@@ -733,6 +734,27 @@ export default class extends DebugPort {
       expensiveProperties,
       tracked,
     );
+
+    const owner = this.namespace?.owner;
+    const ownerId = guidFor(owner);
+
+    if (owner && !mixinDetails.find((mixin) => mixin.id === ownerId)) {
+      mixinDetails.push({
+        name: 'Container',
+        id: ownerId,
+        expand: false,
+        properties: [
+          {
+            name: 'owner',
+            value: {
+              inspect: `<Owner:${ownerId}>`,
+              type: 'type-owner',
+              objectId: ownerId,
+            },
+          },
+        ],
+      });
+    }
 
     this.currentObject = { object, mixinDetails, objectId };
 

@@ -12,6 +12,12 @@ export default class PropertiesBase extends Component {
     if (name !== '...') {
       data.property = name;
     }
+
+    if (name === 'owner') {
+      this.port.send('objectInspector:sendContainerToConsole');
+      return;
+    }
+
     this.port.send('objectInspector:sendToConsole', data);
   }
 

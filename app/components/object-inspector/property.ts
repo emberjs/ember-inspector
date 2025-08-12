@@ -47,6 +47,10 @@ export default class ObjectInspectorProperty extends Component<ObjectInspectorPr
   @equal('args.model.value.type', 'type-string')
   isString!: boolean;
 
+  get isOwner() {
+    return this.args.model?.value?.type === 'type-owner';
+  }
+
   get isService() {
     return this.args.model?.isService;
   }
@@ -114,6 +118,10 @@ export default class ObjectInspectorProperty extends Component<ObjectInspectorPr
 
     if (this.args.model.isGetter) {
       return { type: 'getter', title: 'Getter' };
+    }
+
+    if (this.isOwner) {
+      return { type: 'owner', title: 'Owner' };
     }
 
     return { type: 'n/a', title: 'N/A' };
