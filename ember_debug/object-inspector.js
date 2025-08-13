@@ -21,6 +21,7 @@ import {
   GlimmerComponent,
   GlimmerReference,
   GlimmerValidator,
+  getOwner,
 } from './utils/ember';
 import { cacheFor, guidFor } from './utils/ember/object/internals';
 import { _backburner, join } from './utils/ember/runloop';
@@ -735,7 +736,7 @@ export default class extends DebugPort {
       tracked,
     );
 
-    const owner = this.namespace?.owner;
+    const owner = getOwner(object);
     const ownerId = guidFor(owner);
 
     if (owner && !mixinDetails.find((mixin) => mixin.id === ownerId)) {
