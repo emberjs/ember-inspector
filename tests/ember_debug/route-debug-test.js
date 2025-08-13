@@ -4,13 +4,18 @@ import { run } from '@ember/runloop';
 import Route from '@ember/routing/route';
 import { module, test } from 'qunit';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
-import EmberDebug from 'ember-debug/main';
+import EmberDebugImport from 'ember-debug/main';
+let EmberDebug;
 
 function getChildrenProperty(route, prop) {
   return route.children.map((item) => get(item.value, prop));
 }
 
 module('Ember Debug - Route Tree', function (hooks) {
+  hooks.before(async function () {
+    EmberDebug = (await EmberDebugImport).default;
+  });
+
   setupEmberDebugTest(hooks, {
     routes() {
       this.route('simple');

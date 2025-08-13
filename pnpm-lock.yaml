@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  ember-cli-inject-live-reload:
+    hash: enhtbujp77hfcye7o4pfeqcdua
+    path: patches/ember-cli-inject-live-reload.patch
+
 importers:
 
   .:
@@ -173,7 +178,7 @@ importers:
         version: 6.3.0
       ember-cli-inject-live-reload:
         specifier: ^2.1.0
-        version: 2.1.0
+        version: 2.1.0(patch_hash=enhtbujp77hfcye7o4pfeqcdua)
       ember-cli-sass:
         specifier: ^11.0.1
         version: 11.0.1
@@ -14161,7 +14166,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  ember-cli-inject-live-reload@2.1.0:
+  ember-cli-inject-live-reload@2.1.0(patch_hash=enhtbujp77hfcye7o4pfeqcdua):
     dependencies:
       clean-base-url: 1.0.0
       ember-cli-version-checker: 3.1.3

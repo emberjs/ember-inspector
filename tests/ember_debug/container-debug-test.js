@@ -3,22 +3,20 @@ import { settled, visit, waitUntil } from '@ember/test-helpers';
 import { A as emberA } from '@ember/array';
 
 import EmberDebug from 'ember-debug/main';
-import Port from 'ember-debug/port';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
+
+// import PortImport from 'ember-debug/port';
+// let Port = PortImport;
 
 // TODO: Figure out why these tests are flaky and enable them again
 module('Ember Debug - Container', function (hooks) {
   let name, message;
 
-  setupEmberDebugTest(hooks, {
-    Port: class extends Port {
-      init() {}
-      send(n, m) {
-        name = n;
-        message = m;
-      }
-    },
-  });
+  // hooks.before(async () => {
+  //   Port = (await PortImport).default;
+  // });
+
+  setupEmberDebugTest(hooks);
 
   skip('#getTypes', async function t(assert) {
     await visit('/simple');

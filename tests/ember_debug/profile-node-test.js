@@ -1,7 +1,11 @@
 import { module, test } from 'qunit';
-import ProfileNode from 'ember-debug/profile-node';
+import ProfileNodeImport from 'ember-debug/profile-node';
+let ProfileNode;
 
-module('Ember Debug - ProfileNode', function () {
+module('Ember Debug - ProfileNode', function (hooks) {
+  hooks.before(async function () {
+    ProfileNode = (await ProfileNodeImport).default;
+  });
   test('It can create a ProfileNode', function (assert) {
     let p = new ProfileNode(1001, { template: 'application' });
 
