@@ -18,12 +18,16 @@ import Controller from '@ember/controller';
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
 import QUnit, { module, test } from 'qunit';
 import { hbs } from 'ember-cli-htmlbars';
-import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import { isInVersionSpecifier } from 'ember-debug/version';
-import { VERSION } from 'ember-debug/ember';
 import GlimmerComponent from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+
+import EmberImport from 'ember-debug/ember';
+import EmberDebugImport from 'ember-debug/main';
+
+let EmberDebug;
+let VERSION;
 
 let templateOnlyComponent = null;
 try {
@@ -368,6 +372,11 @@ function findInspectorElement(kind) {
 }
 
 module('Ember Debug - View', function (hooks) {
+  hooks.before(async function () {
+    EmberDebug = (await EmberDebugImport).default;
+    VERSION = (await EmberImport).VERSION;
+  });
+
   setupEmberDebugTest(hooks, {
     routes() {
       this.route('simple');

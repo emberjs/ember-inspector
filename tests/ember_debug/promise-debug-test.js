@@ -5,9 +5,13 @@ import { A as emberA } from '@ember/array';
 import RSVP from 'rsvp';
 import { module, skip, test } from 'qunit';
 import { settled } from '@ember/test-helpers';
-import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
-import Port from 'ember-debug/port';
+
+import EmberDebugImport from 'ember-debug/main';
+import PortImport from 'ember-debug/port';
+
+let Port;
+let EmberDebug;
 
 // RSVP instrumentation is out of band (50 ms delay)
 async function rsvpDelay() {
@@ -18,17 +22,21 @@ async function rsvpDelay() {
 module('Ember Debug - Promise Debug', function (hooks) {
   let name, message;
 
-  setupEmberDebugTest(hooks, {
-    Port: class extends Port {
-      init() {}
+  hooks.before(async function () {
+    Port = (await PortImport).default;
+    EmberDebug = (await EmberDebugImport).default;
+  });
+
+  setupEmberDebugTest(hooks);
+
+  hooks.beforeEach(async function () {
+    EmberDebug.port.reopen({
       send(n, m) {
         name = n;
         message = m;
-      }
-    },
-  });
+      },
+    });
 
-  hooks.beforeEach(async function () {
     EmberDebug.promiseDebug.reopen({
       delay: 5,
       session: {

@@ -19,11 +19,13 @@ import { hbs } from 'ember-cli-htmlbars';
 import require from 'require';
 import hasEmberVersion from '@ember/test-helpers/has-ember-version';
 import { compareVersion } from 'ember-debug/version';
-import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import EmberRoute from '@ember/routing/route';
 import Controller from '@ember/controller';
 import { setOwner } from '@ember/application';
+
+import EmberDebugImport from 'ember-debug/main';
+let EmberDebug = EmberDebugImport;
 
 const GlimmerComponent = (function () {
   try {
@@ -77,6 +79,10 @@ async function inspectObject(object) {
 }
 
 module('Ember Debug - Object Inspector', function (hooks) {
+  hooks.before(async function () {
+    EmberDebug = (await EmberDebugImport).default;
+  });
+
   setupEmberDebugTest(hooks, {
     routes() {
       this.route('simple');
