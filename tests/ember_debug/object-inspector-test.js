@@ -23,6 +23,7 @@ import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import EmberRoute from '@ember/routing/route';
 import Controller from '@ember/controller';
+import { setOwner } from '@ember/application';
 
 const GlimmerComponent = (function () {
   try {
@@ -1223,6 +1224,54 @@ module('Ember Debug - Object Inspector', function (hooks) {
         'inspector: update value',
         'inspector: updateProperty',
       ]);
+    });
+
+    test('Inspected objects pass along their owner they have one', async function (assert) {
+      class Owner {}
+      class Foo {
+        bar = 'baz';
+      }
+
+      let owner = new Owner();
+      let inspected = new Foo();
+      let message = await inspectObject(inspected);
+      let ownerId = guidFor(owner);
+
+      assert.notStrictEqual(
+        message.details.at(-1).name,
+        'Container',
+        "Objects without an owner don' report an undefined owner in their last details object",
+      );
+      assert.strictEqual(message.details.length, 2);
+
+      setOwner(inspected, owner);
+
+      message = await inspectObject(inspected);
+
+      assert.strictEqual(
+        message.details.length,
+        3,
+        'Object with owner have an additional details object',
+      );
+      assert.deepEqual(
+        message.details.at(-1),
+        {
+          id: ownerId,
+          name: 'Container',
+          expand: false,
+          properties: [
+            {
+              name: '__owner__',
+              value: {
+                inspect: `<Owner:${ownerId}>`,
+                objectId: ownerId,
+                type: 'type-owner',
+              },
+            },
+          ],
+        },
+        'the last mixin is for the container',
+      );
     });
   }
 
