@@ -21,6 +21,7 @@ import {
   GlimmerComponent,
   GlimmerReference,
   GlimmerValidator,
+  getOwner,
 } from './utils/ember';
 import { cacheFor, guidFor } from './utils/ember/object/internals';
 import { _backburner, join } from './utils/ember/runloop';
@@ -30,6 +31,8 @@ import getObjectName from './utils/get-object-name.js';
 let tagValue, tagValidate, track, tagForProperty;
 
 const GlimmerDebugComponent = (() => GlimmerComponent?.default)();
+
+const OWNER_SYMBOL = '__owner__'; // can't use actual symbol because it can't be cloned
 
 // Try to use the most recent library (GlimmerValidator), else
 // fallback on the previous implementation (GlimmerReference).
@@ -491,6 +494,8 @@ export default class extends DebugPort {
 
     if (prop === null || prop === undefined) {
       value = this.sentObjects[objectId];
+    } else if (prop === OWNER_SYMBOL) {
+      value = getOwner(this.sentObjects[objectId]);
     } else {
       value = calculateCP(object, { name: prop }, {});
     }
@@ -615,6 +620,7 @@ export default class extends DebugPort {
    * - Bar
    * - Foo
    * - EmberObject
+   * - Owner (Container)
    * ```
    *
    * The "mixins" returned by this function directly represent these things too.
@@ -733,6 +739,27 @@ export default class extends DebugPort {
       expensiveProperties,
       tracked,
     );
+
+    const owner = getOwner(object);
+    const ownerId = guidFor(owner);
+
+    if (owner && !mixinDetails.find((mixin) => mixin.id === ownerId)) {
+      mixinDetails.push({
+        name: 'Container',
+        id: ownerId,
+        expand: false,
+        properties: [
+          {
+            name: OWNER_SYMBOL,
+            value: {
+              inspect: `<Owner:${ownerId}>`,
+              type: 'type-owner',
+              objectId: ownerId,
+            },
+          },
+        ],
+      });
+    }
 
     this.currentObject = { object, mixinDetails, objectId };
 
@@ -1284,6 +1311,7 @@ function calculateCP(object, item, errorsForObject) {
     if (object instanceof ArrayProxy && property == parseInt(property)) {
       return object.at(property);
     }
+
     return item.isGetter || property.includes?.('.')
       ? object[property]
       : object.get?.(property) || object[property]; // need to use `get` to be able to detect tracked props

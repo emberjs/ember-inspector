@@ -43,6 +43,8 @@
       >
         {{@model.name}}
       </span>
+    {{else if this.isOwner}}
+      {{!-- empty --}}
     {{else}}
       {{#if this.hasDependentKeys}}
         <span
@@ -57,7 +59,9 @@
     {{/if}}
   </span>
 
-  <span class="mr-1">: </span>
+  {{#unless this.isOwner}}
+    <span class="mr-1">: </span>
+  {{/unless}}
 
   {{#if this.isEdit}}
     {{#if this.isDate}}

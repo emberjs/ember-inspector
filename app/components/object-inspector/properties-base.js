@@ -9,9 +9,11 @@ export default class PropertiesBase extends Component {
     const data = {
       objectId: this.args.model.objectId,
     };
+
     if (name !== '...') {
       data.property = name;
     }
+
     this.port.send('objectInspector:sendToConsole', data);
   }
 
