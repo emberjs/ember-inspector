@@ -1237,10 +1237,9 @@ module('Ember Debug - Object Inspector', function (hooks) {
       let message = await inspectObject(inspected);
       let ownerId = guidFor(owner);
 
-      assert.notStrictEqual(
-        message.details.at(-1).name,
-        'Container',
-        "Objects without an owner don' report an undefined owner in their last details object",
+      assert.false(
+        message.details.some(({ name }) => name === 'Container'),
+        "Objects without an owner don't report an undefined owner in their last details object",
       );
       assert.strictEqual(message.details.length, 2);
 
@@ -1252,6 +1251,12 @@ module('Ember Debug - Object Inspector', function (hooks) {
         message.details.length,
         3,
         'Object with owner have an additional details object',
+      );
+
+      assert.strictEqual(
+        message.details.filter(({ name }) => name === 'Container').length,
+        1,
+        'Objects with an owner have exactly one container item in their details',
       );
       assert.deepEqual(
         message.details.at(-1),
@@ -1270,7 +1275,7 @@ module('Ember Debug - Object Inspector', function (hooks) {
             },
           ],
         },
-        'the last mixin is for the container',
+        'the container is the last mixin in the list',
       );
     });
   }
