@@ -1,0 +1,9 @@
+# Unlabeled Changes
+
+* `ember-inspector`
+  * [#2678](https://github.com/emberjs/ember-inspector/pull/2678) Move Object Inspector toggle so it remains visible in edge cases ([@pichfl](https://github.com/pichfl))
+  * [#2680](https://github.com/emberjs/ember-inspector/pull/2680) Add owner to the list of properties of an object ([@pichfl](https://github.com/pichfl))
+  * [#2667](https://github.com/emberjs/ember-inspector/pull/2667) show parents in sidebar ([@patricklx](https://github.com/patricklx))
+
+
+*Cannot plan release until the above changes are labeled*.
