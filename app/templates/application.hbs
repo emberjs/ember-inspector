@@ -47,9 +47,9 @@
           <div class="split-panel">
             <div class="split-panel-hd split-panel-hd-row">
               <div id="toolbar"></div>
-              {{#if (not this.layoutService.inspectorExpanded)}}
+              {{#unless this.layout.inspectorExpanded}}
                 <ObjectInspector::Toggle class="end" />
-              {{/if}}
+              {{/unless}}
             </div>
 
             <div class="split-panel-bd" {{did-insert this.setupContentElement}}>
@@ -59,7 +59,7 @@
         </div>
       </div>
 
-      {{#if this.layoutService.inspectorExpanded}}
+      {{#if this.layout.inspectorExpanded}}
         <Ui::DraggableColumn
           @classes="split-panel"
           @side="right"

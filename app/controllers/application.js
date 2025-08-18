@@ -13,7 +13,7 @@ export default class ApplicationController extends Controller {
    * Service used to broadcast changes to the application's layout
    * such as toggling of the object inspector.
    */
-  @service('layout') layoutService;
+  @service layout;
   @service port;
 
   // Indicates that the extension window is focused,
@@ -84,7 +84,7 @@ export default class ApplicationController extends Controller {
   @action
   setupContentElement(element) {
     this.contentElement = element;
-    this.layoutService.updateContentHeight(this.contentElement.clientHeight);
+    this.layout.updateContentHeight(this.contentElement.clientHeight);
   }
 
   @action
@@ -92,14 +92,12 @@ export default class ApplicationController extends Controller {
     // eslint-disable-next-line ember/no-runloop
     schedule('afterRender', () => {
       if (!this.isDestroyed && !this.isDestroying) {
-        this.layoutService.trigger('resize', {
+        this.layout.trigger('resize', {
           source: 'application-controller',
         });
 
         if (this.contentElement) {
-          this.layoutService.updateContentHeight(
-            this.contentElement.clientHeight,
-          );
+          this.layout.updateContentHeight(this.contentElement.clientHeight);
         }
       }
     });
@@ -116,7 +114,7 @@ export default class ApplicationController extends Controller {
     this.navIsCollapsed = !this.navIsCollapsed;
     // eslint-disable-next-line ember/no-runloop
     schedule('afterRender', () => {
-      this.layoutService.trigger('resize', { source: 'navigation' });
+      this.layout.trigger('resize', { source: 'navigation' });
     });
   }
 
