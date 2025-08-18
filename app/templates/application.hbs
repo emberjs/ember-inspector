@@ -48,7 +48,8 @@
             <div class="split-panel-hd split-panel-hd-row">
               <div id="toolbar"></div>
               {{#unless this.layout.inspectorExpanded}}
-                <ObjectInspector::Toggle class="end" />
+                <span class="spacer">{{!--  Spacer to shift the toggle to the end of the header --}}</span>
+                <ObjectInspector::Toggle />
               {{/unless}}
             </div>
 
@@ -66,8 +67,8 @@
           @width={{this.inspectorWidth}}
         >
           <div class="split-panel-hd split-panel-hd-row">
-            <ObjectInspector::Toggle class="end" />
-            {{!-- TODO: Create a target to place additional buttons here --}}
+            <span class="spacer"></span>
+            <ObjectInspector::Toggle />
           </div>
           <ObjectInspector
             @popMixinDetails={{this.popMixinDetails}}

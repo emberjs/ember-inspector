@@ -90,10 +90,7 @@
   overflow-y: auto;
 }
 
-.split-panel-hd-row .end {
-  margin-inline-start: auto;
-}
-
-.split-panel-hd-row:has(:only-child.end) {
-  justify-content: end;
+/* There is better ways to do this, but they create more complicated CSS */
+.split-panel-hd-row .spacer {
+  flex: 1 1 100%;
 }
