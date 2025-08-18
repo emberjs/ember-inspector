@@ -13,7 +13,7 @@ export default class ApplicationController extends Controller {
    * Service used to broadcast changes to the application's layout
    * such as toggling of the object inspector.
    */
-  @service('layout') layoutService;
+  @service layout;
   @service port;
 
   // Indicates that the extension window is focused,
@@ -21,7 +21,6 @@ export default class ApplicationController extends Controller {
   @tracked isDragging = false;
   @tracked contentHeight = null;
   @tracked deprecationCount = 0;
-  @tracked inspectorExpanded = false;
   @tracked inspectorWidth = 360;
   /**
    * Indicates if the inspector has detected an ember app.
@@ -75,39 +74,6 @@ export default class ApplicationController extends Controller {
   }
 
   @action
-  showInspector() {
-    if (this.inspectorExpanded === false) {
-      this.inspectorExpanded = true;
-      // Broadcast that tables have been resized (used by `x-list`).
-      // eslint-disable-next-line ember/no-runloop
-      schedule('afterRender', () => {
-        this.layoutService.trigger('resize', { source: 'object-inspector' });
-      });
-    }
-  }
-
-  @action
-  hideInspector() {
-    if (this.inspectorExpanded === true) {
-      this.inspectorExpanded = false;
-      // Broadcast that tables have been resized (used by `x-list`).
-      // eslint-disable-next-line ember/no-runloop
-      schedule('afterRender', () => {
-        this.layoutService.trigger('resize', { source: 'object-inspector' });
-      });
-    }
-  }
-
-  @action
-  toggleInspector() {
-    if (this.inspectorExpanded) {
-      this.hideInspector();
-    } else {
-      this.showInspector();
-    }
-  }
-
-  @action
   setActive(bool) {
     // eslint-disable-next-line ember/no-runloop
     schedule('afterRender', () => {
@@ -118,7 +84,7 @@ export default class ApplicationController extends Controller {
   @action
   setupContentElement(element) {
     this.contentElement = element;
-    this.layoutService.updateContentHeight(this.contentElement.clientHeight);
+    this.layout.updateContentHeight(this.contentElement.clientHeight);
   }
 
   @action
@@ -126,14 +92,12 @@ export default class ApplicationController extends Controller {
     // eslint-disable-next-line ember/no-runloop
     schedule('afterRender', () => {
       if (!this.isDestroyed && !this.isDestroying) {
-        this.layoutService.trigger('resize', {
+        this.layout.trigger('resize', {
           source: 'application-controller',
         });
 
         if (this.contentElement) {
-          this.layoutService.updateContentHeight(
-            this.contentElement.clientHeight,
-          );
+          this.layout.updateContentHeight(this.contentElement.clientHeight);
         }
       }
     });
@@ -150,7 +114,7 @@ export default class ApplicationController extends Controller {
     this.navIsCollapsed = !this.navIsCollapsed;
     // eslint-disable-next-line ember/no-runloop
     schedule('afterRender', () => {
-      this.layoutService.trigger('resize', { source: 'navigation' });
+      this.layout.trigger('resize', { source: 'navigation' });
     });
   }
 

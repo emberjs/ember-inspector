@@ -1,0 +1,9 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path class="svg-stroke" d="M14.5 1.5H1.5C0.947715 1.5 0.5 1.94772 0.5 2.5V13.5C0.5 14.0523 0.947715 14.5 1.5 14.5H14.5C15.0523 14.5 15.5 14.0523 15.5 13.5V2.5C15.5 1.94772 15.0523 1.5 14.5 1.5Z" />
+  <g transform="matrix(-1,0,0,1,16,0)">
+    <path class="svg-stroke" d="M6.5 2V14" />
+    <path class="svg-stroke" d="M5 4L2 4" />
+    <path class="svg-stroke" d="M5 6L2 6" />
+    <path class="svg-stroke" d="M5 8L2 8" />
+  </g>
+</svg>

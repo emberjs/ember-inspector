@@ -9,6 +9,7 @@ export default class ApplicationRoute extends Route {
   @service adapter;
   @service port;
   @service router;
+  @service layout;
 
   setupController(controller) {
     controller.set('mixinStack', []);
@@ -64,7 +65,7 @@ export default class ApplicationRoute extends Route {
       controller.activateMixinDetails(name, objectId, details, errors);
     }
 
-    this.controller.showInspector();
+    this.layout.showInspector();
   }
 
   setDeprecationCount(message) {

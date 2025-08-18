@@ -69,6 +69,10 @@
 
 /* Custom panels */
 
+.split-panel-hd-row {
+  flex-flow: row;
+}
+
 .split-panel-sidebar-1 .split-panel-bd {
   background: var(--base01);
 }
@@ -84,4 +88,9 @@
 
 .split-main > .split-panel-sidebar-1 > .split-panel-bd {
   overflow-y: auto;
+}
+
+/* There is better ways to do this, but they create more complicated CSS */
+.split-panel-hd-row .spacer {
+  flex: 1 1 100%;
 }
