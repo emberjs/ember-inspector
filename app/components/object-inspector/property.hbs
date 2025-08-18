@@ -30,36 +30,34 @@
     <span class="mixin-property-icon mixin-property-icon-{{this.iconInfo.type}} inline-block rounded font-mono text-md text-white text-center select-none"></span>
   </span>
 
-  {{!-- Property Name --}}
-  <span
-    class="mixin-property-name text-base14 truncate"
-    data-test-object-property-name
-  >
-    {{#if this.isService}}
-      <span
-        title="service"
-        class="mixin-property--group"
-        data-test-property-name-service
-      >
-        {{@model.name}}
-      </span>
-    {{else if this.isOwner}}
-      {{!-- empty --}}
-    {{else}}
-      {{#if this.hasDependentKeys}}
+  {{#unless this.isOwner}}
+    {{!-- Property Name --}}
+    <span
+      class="mixin-property-name text-base14 truncate"
+      data-test-object-property-name
+    >
+      {{#if this.isService}}
         <span
-          title="computed"
+          title="service"
           class="mixin-property--group"
+          data-test-property-name-service
         >
           {{@model.name}}
         </span>
       {{else}}
-        {{@model.name}}
+        {{#if this.hasDependentKeys}}
+          <span
+            title="computed"
+            class="mixin-property--group"
+          >
+            {{@model.name}}
+          </span>
+        {{else}}
+          {{@model.name}}
+        {{/if}}
       {{/if}}
-    {{/if}}
-  </span>
+    </span>
 
-  {{#unless this.isOwner}}
     <span class="mr-1">: </span>
   {{/unless}}
 
