@@ -52,7 +52,8 @@ let ArrayProxy,
   computed,
   EmberObject,
   captureRenderTree,
-  getEnv;
+  getEnv,
+  getOwner;
 
 let Debug = emberSafeRequire('@ember/debug');
 let InternalsMetal = emberSafeRequire('@ember/-internals/metal');
@@ -72,6 +73,8 @@ let GlimmerReference = emberSafeRequire('@glimmer/reference');
 let GlimmerRuntime = emberSafeRequire('@glimmer/runtime');
 let GlimmerUtil = emberSafeRequire('@glimmer/util');
 let GlimmerValidator = emberSafeRequire('@glimmer/validator');
+let EmberOwner = emberSafeRequire('@ember/owner');
+let EmberApplication = emberSafeRequire('@ember/application');
 
 let inspect = Debug?.inspect || InternalsUtils?.inspect;
 let subscribe = Instrumentation?.subscribe;
@@ -142,6 +145,12 @@ if (Ember) {
   get = emberSafeRequire('@ember/object')?.get;
 }
 
+if (EmberOwner) {
+  getOwner = EmberOwner.getOwner;
+} else {
+  getOwner = EmberApplication.getOwner;
+}
+
 export {
   Runloop,
   Debug,
@@ -188,4 +197,5 @@ export {
   GlimmerRuntime,
   GlimmerUtil,
   GlimmerValidator,
+  getOwner,
 };

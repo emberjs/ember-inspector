@@ -120,3 +120,11 @@
     content: "T";
   }
 }
+
+.mixin-property-icon-owner {
+  background-color: var(--spec02);
+
+  &::before {
+    content: "O";
+  }
+}
