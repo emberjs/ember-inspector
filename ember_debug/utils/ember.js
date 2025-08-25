@@ -140,6 +140,7 @@ GlimmerReference = GlimmerReference ?? emberSafeRequire('@glimmer/reference');
 GlimmerRuntime = GlimmerRuntime ?? emberSafeRequire('@glimmer/runtime');
 GlimmerUtil = GlimmerUtil ?? emberSafeRequire('@glimmer/util');
 GlimmerValidator = GlimmerValidator ?? emberSafeRequire('@glimmer/validator');
+Owner = Owner ?? emberSafeRequire('@ember/owner');
 
 let inspect = Debug?.inspect || InternalsUtils?.inspect;
 let subscribe = Instrumentation?.subscribe;
@@ -214,7 +215,6 @@ if (Ember) {
   meta = meta ?? emberSafeRequire('@ember/-internals/meta')?.meta;
   set = set ?? emberSafeRequire('@ember/object')?.set;
   get = get ?? emberSafeRequire('@ember/object')?.get;
-  Owner = Owner ?? emberSafeRequire('@ember/owner')?.default;
 }
 
 if (Owner) {
