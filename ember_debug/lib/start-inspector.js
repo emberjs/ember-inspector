@@ -7,8 +7,7 @@ import getApplications from './get-applications';
 import bootEmberInspector from './boot-ember-inspector';
 import setupInstanceInitializer from './setup-instance-initializer';
 import sendVersionMiss from './send-version-miss';
-
-let Ember;
+import { guidFor, Application } from '../utils/ember';
 
 function onReady(callback) {
   if (
@@ -36,27 +35,6 @@ export function onEmberReady(callback) {
       return;
     }
 
-    if (!Ember) {
-      try {
-        Ember = requireModule('ember/barrel')['default'];
-      } catch {
-        // noop
-      }
-      try {
-        Ember = Ember || requireModule('ember')['default'];
-      } catch {
-        Ember = window.Ember;
-      }
-    }
-
-    if (!Ember) {
-      return;
-    }
-    // `Ember.Application` load hook triggers before all of Ember is ready.
-    // In this case we ignore and wait for the `Ember` load hook.
-    if (!Ember.RSVP) {
-      return;
-    }
     triggered = true;
     callback();
   };
@@ -74,21 +52,17 @@ export function startInspector(adapter) {
   // to determine when the application starts
   // but this definitely works
   function onApplicationStart(callback) {
-    if (typeof Ember === 'undefined') {
-      return;
-    }
-
     const adapterInstance = new adapter();
 
     adapterInstance.onMessageReceived(function (message) {
       if (message.type === 'app-picker-loaded') {
-        sendApps(adapterInstance, getApplications(Ember));
+        sendApps(adapterInstance, getApplications());
       }
 
       if (message.type === 'app-selected') {
         let current = window.EmberInspector._application;
-        let selected = getApplications(Ember).find(
-          (app) => Ember.guidFor(app) === message.applicationId,
+        let selected = getApplications().find(
+          (app) => guidFor(app) === message.applicationId,
         );
 
         if (
@@ -101,7 +75,7 @@ export function startInspector(adapter) {
       }
     });
 
-    var apps = getApplications(Ember);
+    var apps = getApplications();
 
     sendApps(adapterInstance, apps);
 
@@ -112,7 +86,7 @@ export function startInspector(adapter) {
       let instance = app.__deprecatedInstance__ || applicationInstances[0];
       if (instance) {
         // App started
-        setupInstanceInitializer(Ember, app, callback);
+        setupInstanceInitializer(app, callback);
         callback(instance);
         return true;
       }
@@ -143,7 +117,7 @@ export function startInspector(adapter) {
         },
       });
     }
-    Ember.Application.initializer({
+    Application.initializer({
       name: 'ember-inspector-booted',
       initialize: function (app) {
         setupInstanceInitializer(app, callback);
@@ -157,14 +131,29 @@ export function startInspector(adapter) {
       return;
     }
 
-    // If Ember doesn't exist, we should stop here to avoid issues with accessing `Ember.VERSION`
-    if (!Ember) {
+    /**
+     * If we don't have a way to know the Ember version at this point
+     * because the Ember app has not loaded and provided it somehow,
+     * we can't continue (we need the version to know what version of
+     * the Inspector to load).
+     */
+    if (!globalThis.Ember && !globalThis.emberInspectorApps) {
       return;
     }
 
-    if (!versionTest(Ember.VERSION, EMBER_VERSIONS_SUPPORTED)) {
+    /**
+     * This is used to redirect to an old snapshot of the Inspector if the
+     * inspected app uses an older Ember version than supported versions.
+     * The code fits the Inspector supporting Ember back to 3.16: any version
+     * before 3.16 is necessarily a classic Ember app with Ember defined.
+     */
+    if (
+      globalThis.Ember &&
+      globalThis.Ember.VERSION &&
+      !versionTest(globalThis.Ember.VERSION, EMBER_VERSIONS_SUPPORTED)
+    ) {
       // Wrong inspector version. Redirect to the correct version.
-      sendVersionMiss(Ember);
+      sendVersionMiss(globalThis.Ember);
       return;
     }
 
