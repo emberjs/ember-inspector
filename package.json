@@ -197,5 +197,10 @@
     "npm": {
       "publish": false
     }
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "ember-cli-inject-live-reload": "patches/ember-cli-inject-live-reload.patch"
+    }
   }
 }

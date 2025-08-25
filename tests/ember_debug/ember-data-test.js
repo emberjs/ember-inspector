@@ -1,7 +1,9 @@
 import { module, test } from 'qunit';
-import EmberDebug from 'ember-debug/main';
 import { setupApplicationTest } from 'ember-qunit';
 import EmberObject from '@ember/object';
+
+import EmberDebugImport from 'ember-debug/main';
+let EmberDebug = EmberDebugImport;
 
 class Adapter extends EmberObject {
   watchModelTypes() {}
@@ -9,6 +11,10 @@ class Adapter extends EmberObject {
 
 module('Ember Debug - Data', function (hooks) {
   setupApplicationTest(hooks);
+
+  hooks.before(async function () {
+    EmberDebug = (await EmberDebug).default;
+  });
 
   hooks.beforeEach(function () {
     this.owner.register('data-adapter:main', Adapter);

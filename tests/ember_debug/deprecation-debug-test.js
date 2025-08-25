@@ -4,10 +4,16 @@ import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
-import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 
+import EmberDebugImport from 'ember-debug/main';
+let EmberDebug;
+
 module('Ember Debug - Deprecation', function (hooks) {
+  hooks.before(async function () {
+    EmberDebug = (await EmberDebugImport).default;
+  });
+
   setupEmberDebugTest(hooks);
 
   hooks.beforeEach(async function () {
