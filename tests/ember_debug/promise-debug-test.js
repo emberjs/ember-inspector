@@ -8,9 +8,7 @@ import { settled } from '@ember/test-helpers';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 
 import EmberDebugImport from 'ember-debug/main';
-import PortImport from 'ember-debug/port';
 
-let Port;
 let EmberDebug;
 
 // RSVP instrumentation is out of band (50 ms delay)
@@ -23,7 +21,6 @@ module('Ember Debug - Promise Debug', function (hooks) {
   let name, message;
 
   hooks.before(async function () {
-    Port = (await PortImport).default;
     EmberDebug = (await EmberDebugImport).default;
   });
 

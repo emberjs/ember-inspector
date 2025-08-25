@@ -1,5 +1,4 @@
-/* eslint-disable ember/new-module-imports, ember/no-test-import-export */
-
+/* eslint-disable ember/no-test-import-export */
 import versionTest from './version-test';
 import { EMBER_VERSIONS_SUPPORTED } from './versions';
 import sendApps from './send-apps';
