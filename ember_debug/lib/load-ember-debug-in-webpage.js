@@ -24,6 +24,8 @@ export default function loadEmberDebugInWebpage(callback) {
      */
     if (window.Ember) return resolve();
 
+    if (globalThis.emberInspectorApps) return resolve();
+
     window.addEventListener('Ember', resolve, { once: true });
   });
   waitForEmberLoad.then(callback);
