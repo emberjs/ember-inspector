@@ -92,7 +92,7 @@ export default class ScrollContainerComponent extends Component {
 
     if (needsScroll(element, scrollTarget)) {
       scrollTarget.scrollIntoView({
-        behavior: 'auto',
+        behavior: 'smooth',
         block: 'nearest',
         inline: 'nearest',
       });
