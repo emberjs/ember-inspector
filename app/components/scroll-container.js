@@ -27,13 +27,13 @@ export default class ScrollContainerComponent extends Component {
   }
 
   get scrollTargetStyle() {
-    let { index, itemHeight, currentItem } = this;
+    let { index, itemHeight, currentItem, previewing } = this;
 
     if (index === -1) {
       return htmlSafe('display: none;');
     } else {
       const level = currentItem?.level ?? 0;
-      const left = indentItem(level) + 10;
+      const left = indentItem(level);
       const height = itemHeight ?? 0;
 
       return htmlSafe(`
@@ -43,7 +43,7 @@ export default class ScrollContainerComponent extends Component {
         margin: 0px;
         padding: 0px;
         top: ${index * height}px;
-        left: ${left}px;
+        ${previewing ? '' : `left: ${left}px;`}
         z-index: -9999;
         pointer-events: none;
       `);
@@ -120,6 +120,6 @@ function needsScroll(container, target) {
   return (
     targetTop < containerTop ||
     targetBottom > containerBottom ||
-    targetLeft > containerLeft
+    targetLeft != containerLeft
   );
 }
