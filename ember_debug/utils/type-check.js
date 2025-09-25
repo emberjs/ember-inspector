@@ -101,7 +101,7 @@ export function inspect(value) {
     let broken = false;
 
     for (let key in value) {
-      if (!('hasOwnProperty' in value) || value.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(value, key)) {
         if (count++ > 1) {
           broken = true;
           break;
