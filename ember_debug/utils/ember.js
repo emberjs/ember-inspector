@@ -119,7 +119,8 @@ if (globalThis.emberInspectorApps) {
   GlimmerRuntime = internalEmberModules.GlimmerRuntime;
   GlimmerUtil = internalEmberModules.GlimmerUtil;
   GlimmerValidator = internalEmberModules.GlimmerValidator;
-  Owner = internalEmberModules.Owner.default;
+  // owner was not available in all versions of ember that we support
+  Owner = internalEmberModules.Owner?.default;
 }
 
 Debug = Debug ?? emberSafeRequire('@ember/debug');
