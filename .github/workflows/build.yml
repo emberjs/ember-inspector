@@ -275,10 +275,12 @@ jobs:
           if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
             echo "EXTENSION_ID=ibdbkmdgflhglikhjdbogjjflkialpfi" >> $GITHUB_ENV
             echo "CLIENT_ID=${{ secrets.GOOGLE_NIGHTLY_CLIENT_ID }}" >> $GITHUB_ENV
+            echo "CLIENT_SECRET=${{ secrets.GOOGLE_NIGHTLY_CLIENT_SECRET }}" >> $GITHUB_ENV
             echo "REFRESH_TOKEN=${{ secrets.GOOGLE_NIGHTLY_REFRESH_TOKEN }}" >> $GITHUB_ENV
           else
             echo "EXTENSION_ID=bmdblncegkenkacieihfhpjfppoconhi" >> $GITHUB_ENV
             echo "CLIENT_ID=${{ secrets.GOOGLE_NIGHTLY_CLIENT_ID }}" >> $GITHUB_ENV
+            echo "CLIENT_SECRET=${{ secrets.GOOGLE_NIGHTLY_CLIENT_SECRET }}" >> $GITHUB_ENV
             echo "REFRESH_TOKEN=${{ secrets.GOOGLE_NIGHTLY_REFRESH_TOKEN }}" >> $GITHUB_ENV
           fi
       - name: Upload to Chrome Web Store
