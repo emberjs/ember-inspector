@@ -1,24 +1,27 @@
 import EmberObject from '@ember/object';
 import { module, test } from 'qunit';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
-import EmberDebug from 'ember-debug/main';
-import Port from 'ember-debug/port';
 import { settled } from '@ember/test-helpers';
+
+import EmberDebugImport from 'ember-debug/main';
+let EmberDebug;
 
 module('Ember Debug', function (hooks) {
   let name, adapter;
 
-  setupEmberDebugTest(hooks, {
-    Port: class extends Port {
-      init() {}
-      send(n) {
-        name = n;
-      }
-    },
+  hooks.before(async function () {
+    EmberDebug = (await EmberDebugImport).default;
   });
+
+  setupEmberDebugTest(hooks);
 
   hooks.beforeEach(async function () {
     adapter = EmberDebug.port.adapter;
+    EmberDebug.port.reopen({
+      send(n) {
+        name = n;
+      },
+    });
   });
 
   function cantSend(obj, assert) {

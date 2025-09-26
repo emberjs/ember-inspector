@@ -14,14 +14,20 @@ import Route from '@ember/routing/route';
 import Controller from '@ember/controller';
 import BasicAdapter from 'ember-inspector/services/adapters/basic';
 import config from 'ember-inspector/config/environment';
-import EmberDebug from 'ember-debug/main';
 import { hbs } from 'ember-cli-htmlbars';
-import Port from 'ember-debug/port';
+
+import EmberDebugImport from 'ember-debug/main';
+import PortImport from 'ember-debug/port';
+
+let Port;
+let EmberDebug;
 
 export default function setupEmberDebugTest(hooks, options = {}) {
   let app, originalApp, originalPort, originalIgnoreDeprecations;
 
   hooks.beforeEach(async function () {
+    Port = (await PortImport).default;
+    EmberDebug = (await EmberDebugImport).default;
     originalPort = EmberDebug.Port;
     originalApp = getApplication();
     originalIgnoreDeprecations = EmberDebug.IGNORE_DEPRECATIONS;
