@@ -19,8 +19,7 @@ jobs:
     env:
       CI: 'true'
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       # Code Climate expects these variables to be set
       - name: Set up commit metadata
         if: github.event_name == 'push'
@@ -38,10 +37,12 @@ jobs:
         run: |
           echo "GIT_COMMIT_SHA=${GIT_COMMIT_SHA}" >> $GITHUB_ENV
           echo "GIT_BRANCH=${GIT_BRANCH}" >> $GITHUB_ENV
-      - name: setup pnpm & node
-        uses: wyvox/action-setup-pnpm@v3
-      - name: Install dependencies (pnpm)
-        run: pnpm install
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install
       - name: Lint (hbs)
         run: pnpm lint:hbs
       - name: Lint (js)
@@ -99,12 +100,13 @@ jobs:
           - ember-default-no-prototype-extensions
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: setup pnpm & node
-        uses: wyvox/action-setup-pnpm@v3
-      - name: Install dependencies (pnpm)
-        run: pnpm install
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install
       - name: Set NO_EXTEND_PROTOTYPES
         if: matrix.scenario == 'ember-default-no-prototype-extensions'
         run: echo "NO_EXTEND_PROTOTYPES==true" >> .GITHUB_ENV
@@ -123,12 +125,13 @@ jobs:
     env:
       CI: 'true'
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: setup pnpm & node
-        uses: wyvox/action-setup-pnpm@v3
-      - name: Install dependencies (pnpm)
-        run: pnpm install
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install
       - name: Download panes
         run: node scripts/download-panes.js
         env:
