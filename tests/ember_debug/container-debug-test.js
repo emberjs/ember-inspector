@@ -5,16 +5,9 @@ import { A as emberA } from '@ember/array';
 import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 
-// import PortImport from 'ember-debug/port';
-// let Port = PortImport;
-
 // TODO: Figure out why these tests are flaky and enable them again
 module('Ember Debug - Container', function (hooks) {
   let name, message;
-
-  // hooks.before(async () => {
-  //   Port = (await PortImport).default;
-  // });
 
   setupEmberDebugTest(hooks);
 
