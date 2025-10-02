@@ -30,6 +30,7 @@ export function emberSafeRequire(id) {
 }
 
 let Application,
+  ApplicationModule,
   Namespace,
   ActionHandler,
   ControllerMixin,
@@ -82,6 +83,7 @@ if (globalThis.emberInspectorApps) {
   const internalEmberModules = await appLoader.loadCompatInspector();
 
   Application = internalEmberModules.Application.default;
+  ApplicationModule = internalEmberModules.Application;
   Namespace = internalEmberModules.ApplicationNamespace.default;
   NativeArray = internalEmberModules.Array.NativeArray;
   MutableArray = internalEmberModules.ArrayMutable.default;
@@ -142,6 +144,7 @@ GlimmerRuntime = GlimmerRuntime ?? emberSafeRequire('@glimmer/runtime');
 GlimmerUtil = GlimmerUtil ?? emberSafeRequire('@glimmer/util');
 GlimmerValidator = GlimmerValidator ?? emberSafeRequire('@glimmer/validator');
 Owner = Owner ?? emberSafeRequire('@ember/owner');
+ApplicationModule = ApplicationModule ?? emberSafeRequire('@ember/application');
 
 let inspect = Debug?.inspect || InternalsUtils?.inspect;
 let subscribe = Instrumentation?.subscribe;
@@ -221,7 +224,7 @@ if (Ember) {
 if (Owner) {
   getOwner = Owner.getOwner;
 } else {
-  getOwner = Application.getOwner;
+  getOwner = ApplicationModule.getOwner;
 }
 
 export {
