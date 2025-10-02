@@ -19,8 +19,7 @@ jobs:
     env:
       CI: 'true'
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       # Code Climate expects these variables to be set
       - name: Set up commit metadata
         if: github.event_name == 'push'
@@ -38,10 +37,12 @@ jobs:
         run: |
           echo "GIT_COMMIT_SHA=${GIT_COMMIT_SHA}" >> $GITHUB_ENV
           echo "GIT_BRANCH=${GIT_BRANCH}" >> $GITHUB_ENV
-      - name: setup pnpm & node
-        uses: wyvox/action-setup-pnpm@v3
-      - name: Install dependencies (pnpm)
-        run: pnpm install
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install
       - name: Lint (hbs)
         run: pnpm lint:hbs
       - name: Lint (js)
@@ -99,12 +100,13 @@ jobs:
           - ember-default-no-prototype-extensions
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: setup pnpm & node
-        uses: wyvox/action-setup-pnpm@v3
-      - name: Install dependencies (pnpm)
-        run: pnpm install
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install
       - name: Set NO_EXTEND_PROTOTYPES
         if: matrix.scenario == 'ember-default-no-prototype-extensions'
         run: echo "NO_EXTEND_PROTOTYPES==true" >> .GITHUB_ENV
@@ -123,12 +125,13 @@ jobs:
     env:
       CI: 'true'
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: setup pnpm & node
-        uses: wyvox/action-setup-pnpm@v3
-      - name: Install dependencies (pnpm)
-        run: pnpm install
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install
       - name: Download panes
         run: node scripts/download-panes.js
         env:
@@ -228,31 +231,6 @@ jobs:
           name: npm
           path: dist/npm
 
-  publish-bookmarklet:
-    name: Publish bookmarklet
-    needs:
-      - test
-      - ember-try
-      - build
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifacts (bookmarklet)
-        uses: actions/download-artifact@v4
-        with:
-          name: bookmarklet
-          path: bookmarklet
-      - name: Upload to S3
-        uses: jakejarvis/s3-sync-action@v0.5.1
-        with:
-          args: --acl public-read --cache-control "max-age=86400000,public"
-        env:
-          AWS_S3_BUCKET: ember-extension
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          SOURCE_DIR: bookmarklet
-          DEST_DIR: dist_bookmarklet
-
   publish-chrome:
     name: Publish Chrome extension
     needs:
@@ -272,76 +250,11 @@ jobs:
           path: chrome
       - name: Set Environment Variables
         run: |
-          if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
-            echo "EXTENSION_ID=ibdbkmdgflhglikhjdbogjjflkialpfi" >> $GITHUB_ENV
-            echo "CLIENT_ID=${{ secrets.GOOGLE_NIGHTLY_CLIENT_ID }}" >> $GITHUB_ENV
-            echo "CLIENT_SECRET=${{ secrets.GOOGLE_NIGHTLY_CLIENT_SECRET }}" >> $GITHUB_ENV
-            echo "REFRESH_TOKEN=${{ secrets.GOOGLE_NIGHTLY_REFRESH_TOKEN }}" >> $GITHUB_ENV
-          else
-            echo "EXTENSION_ID=bmdblncegkenkacieihfhpjfppoconhi" >> $GITHUB_ENV
-            echo "CLIENT_ID=${{ secrets.GOOGLE_NIGHTLY_CLIENT_ID }}" >> $GITHUB_ENV
-            echo "CLIENT_SECRET=${{ secrets.GOOGLE_NIGHTLY_CLIENT_SECRET }}" >> $GITHUB_ENV
-            echo "REFRESH_TOKEN=${{ secrets.GOOGLE_NIGHTLY_REFRESH_TOKEN }}" >> $GITHUB_ENV
-          fi
+          echo "EXTENSION_ID=ibdbkmdgflhglikhjdbogjjflkialpfi" >> $GITHUB_ENV
+          echo "CLIENT_ID=${{ secrets.GOOGLE_NIGHTLY_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "CLIENT_SECRET=${{ secrets.GOOGLE_NIGHTLY_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "REFRESH_TOKEN=${{ secrets.GOOGLE_NIGHTLY_REFRESH_TOKEN }}" >> $GITHUB_ENV
       - name: Upload to Chrome Web Store
         if: >-
-          github.event_name == 'schedule' ||
-          (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+          github.event_name == 'schedule'
         run: chrome-webstore-upload upload --source chrome --auto-publish
-
-  publish-firefox:
-    name: Publish Firefox extension
-    needs:
-      - test
-      - ember-try
-      - build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up nod
-        uses: actions/setup-node@v4
-      - name: Install dependencies (web-ext)
-        run: |
-          npm install -g web-ext
-          # https://github.com/mozilla/web-ext/issues/804
-          npm install -g web-ext-submit
-      - name: Download artifacts (Firefox)
-        uses: actions/download-artifact@v4
-        with:
-          name: firefox
-          path: firefox
-      - name: Upload to AMO
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-        working-directory: firefox
-        run: web-ext-submit --channel=listed
-        env:
-          WEB_EXT_API_KEY: ${{ secrets.FIREFOX_API_KEY }}
-          WEB_EXT_API_SECRET: ${{ secrets.FIREFOX_API_SECRET }}
-
-  publish-npm:
-    name: Publish npm package
-    needs:
-      - test
-      - ember-try
-      - build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up node
-        uses: actions/setup-node@v4
-      - name: Download artifacts (npm)
-        uses: actions/download-artifact@v4
-        with:
-          name: npm
-          path: npm
-      - name: Publish to npm
-        if: >-
-          github.event_name == 'schedule' ||
-          (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
-        env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        working-directory: npm
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}"> ~/.npmrc
-          npm whoami
-          if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
-            npm publish --tag alpha
-          fi
