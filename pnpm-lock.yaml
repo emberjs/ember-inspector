@@ -327,8 +327,8 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0(release-it@15.11.0(encoding@0.1.13))
       release-plan:
-        specifier: ^0.16.0
-        version: 0.16.0
+        specifier: ^0.17.0
+        version: 0.17.2
       sass:
         specifier: ^1.79.4
         version: 1.79.4
@@ -5218,8 +5218,8 @@ packages:
   git-url-parse@13.1.0:
     resolution: {integrity: sha512-5FvPJP/70WkIprlUZ33bm4UAaFdjcLkJLpWft1BeZKqwR0uhhNGoKwlUaPtVb4LxCSQ++erHapRak9kWGj+FCA==}
 
-  github-changelog@2.0.0:
-    resolution: {integrity: sha512-JdAwddNCvHkZY/pTMqpoaLEfksaWiTc+beDjBkPEnr7iVlKfu8SeyCT8Sef+KsonRgIj6pl3SiWDPSefWmeicw==}
+  github-changelog@2.1.2:
+    resolution: {integrity: sha512-psDEGxwD5fWDLOW+BOORg1JgZOnbCuMhNLevsD/nP7QVXEVExUGnXBP6MmrFm0hAao9LgBLSBKfcNzGuwecRDA==}
     engines: {node: 18.* || 20.* || >= 22}
     hasBin: true
 
@@ -7867,8 +7867,8 @@ packages:
     engines: {node: '>=14.9'}
     hasBin: true
 
-  release-plan@0.16.0:
-    resolution: {integrity: sha512-S2hrXACiy39LenrdvPAhSY7PcitS4A4fAxlzoPgYyCiS2OU6Ed+cUKvN4h9/uRyZ/B3AMGywZUIPtIhCUIjTng==}
+  release-plan@0.17.2:
+    resolution: {integrity: sha512-LgE/3CU8sFZt28uJR886xvWdw/CL0g5g5YSFTAJUvUy5qdERZdcc1pu317nKpYFs/yEDjiUasLj3rxnXBJf1zA==}
     hasBin: true
 
   remote-git-tags@3.0.0:
@@ -12449,7 +12449,7 @@ snapshots:
     dependencies:
       ansi-align: 3.0.1
       camelcase: 7.0.1
-      chalk: 5.3.0
+      chalk: 5.4.1
       cli-boxes: 3.0.0
       string-width: 5.1.2
       type-fest: 2.19.0
@@ -16014,7 +16014,7 @@ snapshots:
     dependencies:
       git-up: 7.0.0
 
-  github-changelog@2.0.0:
+  github-changelog@2.1.2:
     dependencies:
       '@manypkg/get-packages': 2.2.2
       chalk: 4.1.2
@@ -17340,7 +17340,7 @@ snapshots:
 
   log-symbols@5.1.0:
     dependencies:
-      chalk: 5.3.0
+      chalk: 5.4.1
       is-unicode-supported: 1.3.0
 
   longest@1.0.1: {}
@@ -18913,7 +18913,7 @@ snapshots:
       - encoding
       - supports-color
 
-  release-plan@0.16.0:
+  release-plan@0.17.2:
     dependencies:
       '@manypkg/get-packages': 2.2.2
       '@npmcli/package-json': 6.2.0
@@ -18923,7 +18923,7 @@ snapshots:
       cli-highlight: 2.1.11
       execa: 9.6.0
       fs-extra: 11.2.0
-      github-changelog: 2.0.0
+      github-changelog: 2.1.2
       js-yaml: 4.1.0
       latest-version: 9.0.0
       parse-github-repo-url: 1.4.1
