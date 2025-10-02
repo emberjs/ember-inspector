@@ -162,65 +162,6 @@ class ChromeApi {
   }
 }
 
-let loaderInstance = {};
-function getLoader(def, req) {
-  let { define, requireModule } = loaderInstance;
-  if (typeof define !== 'function' || typeof requireModule !== 'function') {
-    (function () {
-      let registry = {},
-        seen = {};
-
-      define = function (name, deps, callback) {
-        if (arguments.length < 3) {
-          callback = deps;
-          deps = [];
-        }
-        registry[name] = { deps, callback };
-      };
-
-      requireModule = function (name) {
-        if (!name.startsWith('ember-debug')) {
-          return req(name);
-        }
-        if (seen[name]) {
-          return seen[name];
-        }
-
-        let mod = registry[name];
-        if (!mod) {
-          throw new Error(`Module: '${name}' not found.`);
-        }
-
-        seen[name] = {};
-
-        let deps = mod.deps;
-        let callback = mod.callback;
-        let reified = [];
-        let exports;
-
-        for (let i = 0, l = deps.length; i < l; i++) {
-          if (deps[i] === 'exports') {
-            reified.push((exports = {}));
-          } else {
-            reified.push(requireModule(deps[i]));
-          }
-        }
-
-        let value = callback.apply(this, reified);
-        seen[name] = exports || value;
-        return seen[name];
-      };
-
-      requireModule.has = req.has;
-
-      define.registry = registry;
-      define.seen = seen;
-    })();
-  }
-  loaderInstance = { define, requireModule };
-  return loaderInstance;
-}
-
 module('Integration | Injection', function (hooks) {
   setupApplicationTest(hooks);
 
@@ -250,14 +191,6 @@ module('Integration | Injection', function (hooks) {
 
     let windowMessages = 0;
 
-    // setup global loader for ember-debug, will be reset after test
-
-    const { define, requireModule } = getLoader(
-      window.define,
-      window.requireModule,
-    );
-    window.define = define;
-    window.requireModule = requireModule;
     {
       // eslint-disable-next-line no-unused-vars
       const chrome = contentChromeApi;

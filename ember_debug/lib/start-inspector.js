@@ -6,7 +6,7 @@ import getApplications from './get-applications';
 import bootEmberInspector from './boot-ember-inspector';
 import setupInstanceInitializer from './setup-instance-initializer';
 import sendVersionMiss from './send-version-miss';
-import { guidFor, Application } from '../utils/ember';
+import { guidFor, Application, VERSION } from '../utils/ember';
 
 function onReady(callback) {
   if (
@@ -136,7 +136,7 @@ export function startInspector(adapter) {
      * we can't continue (we need the version to know what version of
      * the Inspector to load).
      */
-    if (!globalThis.Ember && !globalThis.emberInspectorApps) {
+    if (!VERSION) {
       return;
     }
 
@@ -146,13 +146,9 @@ export function startInspector(adapter) {
      * The code fits the Inspector supporting Ember back to 3.16: any version
      * before 3.16 is necessarily a classic Ember app with Ember defined.
      */
-    if (
-      globalThis.Ember &&
-      globalThis.Ember.VERSION &&
-      !versionTest(globalThis.Ember.VERSION, EMBER_VERSIONS_SUPPORTED)
-    ) {
+    if ((VERSION, !versionTest(VERSION, EMBER_VERSIONS_SUPPORTED))) {
       // Wrong inspector version. Redirect to the correct version.
-      sendVersionMiss(globalThis.Ember);
+      sendVersionMiss(VERSION);
       return;
     }
 

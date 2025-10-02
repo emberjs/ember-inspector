@@ -1,4 +1,3 @@
-/* eslint-disable ember/new-module-imports */
 let channel = new MessageChannel();
 let port = channel.port1;
 window.postMessage('debugger-client', '*', [channel.port2]);
@@ -12,7 +11,7 @@ let registeredMiss = false;
  * It sends a message to the inspector app to redirect
  * to an inspector version that supports this Ember version.
  */
-export default function sendVersionMiss(Ember) {
+export default function sendVersionMiss(VERSION) {
   if (registeredMiss) {
     return;
   }
@@ -32,7 +31,7 @@ export default function sendVersionMiss(Ember) {
   function sendVersionMismatch() {
     port.postMessage({
       name: 'version-mismatch',
-      version: Ember.VERSION,
+      version: VERSION,
       from: 'inspectedWindow',
     });
   }
