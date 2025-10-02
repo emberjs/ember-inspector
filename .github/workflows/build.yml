@@ -319,32 +319,3 @@ jobs:
         env:
           WEB_EXT_API_KEY: ${{ secrets.FIREFOX_API_KEY }}
           WEB_EXT_API_SECRET: ${{ secrets.FIREFOX_API_SECRET }}
-
-  publish-npm:
-    name: Publish npm package
-    needs:
-      - test
-      - ember-try
-      - build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up node
-        uses: actions/setup-node@v4
-      - name: Download artifacts (npm)
-        uses: actions/download-artifact@v4
-        with:
-          name: npm
-          path: npm
-      - name: Publish to npm
-        if: >-
-          github.event_name == 'schedule' ||
-          (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
-        env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        working-directory: npm
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}"> ~/.npmrc
-          npm whoami
-          if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
-            npm publish --tag alpha
-          fi
