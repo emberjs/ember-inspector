@@ -231,31 +231,6 @@ jobs:
           name: npm
           path: dist/npm
 
-  publish-bookmarklet:
-    name: Publish bookmarklet
-    needs:
-      - test
-      - ember-try
-      - build
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifacts (bookmarklet)
-        uses: actions/download-artifact@v4
-        with:
-          name: bookmarklet
-          path: bookmarklet
-      - name: Upload to S3
-        uses: jakejarvis/s3-sync-action@v0.5.1
-        with:
-          args: --acl public-read --cache-control "max-age=86400000,public"
-        env:
-          AWS_S3_BUCKET: ember-extension
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          SOURCE_DIR: bookmarklet
-          DEST_DIR: dist_bookmarklet
-
   publish-chrome:
     name: Publish Chrome extension
     needs:
@@ -275,47 +250,11 @@ jobs:
           path: chrome
       - name: Set Environment Variables
         run: |
-          if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
-            echo "EXTENSION_ID=ibdbkmdgflhglikhjdbogjjflkialpfi" >> $GITHUB_ENV
-            echo "CLIENT_ID=${{ secrets.GOOGLE_NIGHTLY_CLIENT_ID }}" >> $GITHUB_ENV
-            echo "CLIENT_SECRET=${{ secrets.GOOGLE_NIGHTLY_CLIENT_SECRET }}" >> $GITHUB_ENV
-            echo "REFRESH_TOKEN=${{ secrets.GOOGLE_NIGHTLY_REFRESH_TOKEN }}" >> $GITHUB_ENV
-          else
-            echo "EXTENSION_ID=bmdblncegkenkacieihfhpjfppoconhi" >> $GITHUB_ENV
-            echo "CLIENT_ID=${{ secrets.GOOGLE_NIGHTLY_CLIENT_ID }}" >> $GITHUB_ENV
-            echo "CLIENT_SECRET=${{ secrets.GOOGLE_NIGHTLY_CLIENT_SECRET }}" >> $GITHUB_ENV
-            echo "REFRESH_TOKEN=${{ secrets.GOOGLE_NIGHTLY_REFRESH_TOKEN }}" >> $GITHUB_ENV
-          fi
+          echo "EXTENSION_ID=ibdbkmdgflhglikhjdbogjjflkialpfi" >> $GITHUB_ENV
+          echo "CLIENT_ID=${{ secrets.GOOGLE_NIGHTLY_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "CLIENT_SECRET=${{ secrets.GOOGLE_NIGHTLY_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "REFRESH_TOKEN=${{ secrets.GOOGLE_NIGHTLY_REFRESH_TOKEN }}" >> $GITHUB_ENV
       - name: Upload to Chrome Web Store
         if: >-
-          github.event_name == 'schedule' ||
-          (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+          github.event_name == 'schedule'
         run: chrome-webstore-upload upload --source chrome --auto-publish
-
-  publish-firefox:
-    name: Publish Firefox extension
-    needs:
-      - test
-      - ember-try
-      - build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up nod
-        uses: actions/setup-node@v4
-      - name: Install dependencies (web-ext)
-        run: |
-          npm install -g web-ext
-          # https://github.com/mozilla/web-ext/issues/804
-          npm install -g web-ext-submit
-      - name: Download artifacts (Firefox)
-        uses: actions/download-artifact@v4
-        with:
-          name: firefox
-          path: firefox
-      - name: Upload to AMO
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-        working-directory: firefox
-        run: web-ext-submit --channel=listed
-        env:
-          WEB_EXT_API_KEY: ${{ secrets.FIREFOX_API_KEY }}
-          WEB_EXT_API_SECRET: ${{ secrets.FIREFOX_API_SECRET }}
