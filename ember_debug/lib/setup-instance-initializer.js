@@ -1,5 +1,6 @@
-/* eslint-disable ember/new-module-imports */
-export default function setupInstanceInitializer(Ember, app, callback) {
+import { guidFor } from '../utils/ember';
+
+export default function setupInstanceInitializer(app, callback) {
   if (!app.__inspector__setup) {
     app.__inspector__setup = true;
 
@@ -7,7 +8,7 @@ export default function setupInstanceInitializer(Ember, app, callback) {
     // registering an instance initializer with the same name, even if on a different app,
     // triggers an error because instance initializers seem to be global instead of per app.
     app.instanceInitializer({
-      name: 'ember-inspector-app-instance-booted-' + Ember.guidFor(app),
+      name: 'ember-inspector-app-instance-booted-' + guidFor(app),
       initialize: function (instance) {
         callback(instance);
       },

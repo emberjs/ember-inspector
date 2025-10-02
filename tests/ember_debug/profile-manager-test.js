@@ -7,14 +7,18 @@ import EmberRoute from '@ember/routing/route';
 import Controller from '@ember/controller';
 import { module, test } from 'qunit';
 import { hbs } from 'ember-cli-htmlbars';
-import EmberDebug from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import { run } from '@ember/runloop';
-import { VERSION } from 'ember-debug/ember';
+
+import EmberDebugImport from 'ember-debug/main';
+import EmberImport from 'ember-debug/ember';
+
 import { compareVersion } from 'ember-debug/version';
 import { setComponentTemplate } from '@ember/component';
 
-const isComponentHighlightSupported = compareVersion(VERSION, '3.20.0') !== -1;
+let EmberDebug;
+
+let isComponentHighlightSupported;
 
 const getRounded = (value) => {
   let data = value;
@@ -384,6 +388,12 @@ async function highlightsPromise(testedRoute, isGlimmerComponent) {
 }
 
 module('Ember Debug - profile manager component highlight', function (hooks) {
+  hooks.before(async function () {
+    EmberDebug = (await EmberDebugImport).default;
+    let VERSION = (await EmberImport).VERSION;
+    isComponentHighlightSupported = compareVersion(VERSION, '3.20.0') !== -1;
+  });
+
   setupEmberDebugTest(hooks, {
     routes() {
       this.route('home');

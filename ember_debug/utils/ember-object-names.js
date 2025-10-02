@@ -27,11 +27,14 @@ const emberNames = new Map([
   [NativeArray, 'NativeArray Mixin'],
   [Observable, 'Observable Mixin'],
   [ControllerMixin, 'Controller Mixin'],
-  [ActionHandler, 'ActionHandler Mixin'],
   [CoreObject, 'CoreObject'],
   [EmberObject, 'EmberObject'],
   [Component, 'Component'],
 ]);
+
+if (ActionHandler) {
+  emberNames.set(ActionHandler, 'ActionHandler Mixin');
+}
 
 if (compareVersion(VERSION, '3.27.0') === -1) {
   const TargetActionSupport = InternalsRuntime?.TargetActionSupport;

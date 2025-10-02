@@ -36,7 +36,10 @@ const OWNER_SYMBOL = '__owner__'; // can't use actual symbol because it can't be
 
 // Try to use the most recent library (GlimmerValidator), else
 // fallback on the previous implementation (GlimmerReference).
-if (GlimmerValidator) {
+// The global checks if the inspected app is Vite, in that case
+// we can't execute that block because the properties it tries to
+// assign are readonly.
+if (GlimmerValidator && !globalThis.emberInspectorApps) {
   tagValue = GlimmerValidator.value || GlimmerValidator.valueForTag;
   tagValidate = GlimmerValidator.validate || GlimmerValidator.validateTag;
   track = GlimmerValidator.track;

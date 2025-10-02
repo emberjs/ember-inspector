@@ -1,9 +1,16 @@
 import { settled, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
-import EmberDebug from 'ember-debug/main';
+
+import EmberDebugImport from 'ember-debug/main';
+
+let EmberDebug;
 
 module('Ember Debug - Render Debug', function (hooks) {
+  hooks.before(async function () {
+    EmberDebug = (await EmberDebugImport).default;
+  });
+
   setupEmberDebugTest(hooks, {
     routes: function () {
       this.route('simple');

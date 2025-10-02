@@ -2,7 +2,8 @@ import { run } from '@ember/runloop';
 import Evented from '@ember/object/evented';
 import EmberObject from '@ember/object';
 import { module, test } from 'qunit';
-import PromiseAssembler from 'ember-debug/promise-assembler';
+import PromiseAssemblerImport from 'ember-debug/promise-assembler';
+let PromiseAssembler;
 
 let assembler;
 
@@ -21,6 +22,10 @@ function startAssembler() {
 }
 
 module('Ember Debug - PromiseAssembler', function (hooks) {
+  hooks.before(async () => {
+    PromiseAssembler = (await PromiseAssemblerImport).default;
+  });
+
   hooks.beforeEach(() => {
     stubRSVP();
     // eslint-disable-next-line ember/no-runloop
