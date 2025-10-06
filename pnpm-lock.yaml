@@ -454,7 +454,7 @@ importers:
         version: 6.3.0
       ember-cli-inject-live-reload:
         specifier: ^2.1.0
-        version: 2.1.0
+        version: 2.1.0(patch_hash=enhtbujp77hfcye7o4pfeqcdua)
       ember-cli-sri:
         specifier: ^2.1.1
         version: 2.1.1
