@@ -2,6 +2,11 @@ import Service, { inject as service } from '@ember/service';
 import { LOCAL_STORAGE_SUPPORTED } from './storage/local';
 import type LocalStorageService from './storage/local';
 import type MemoryStorageService from './storage/memory';
+import { tracked } from '@glimmer/tracking';
+
+function consumeTracked(value: number): number {
+  return value;
+}
 
 /**
  * Service that wraps either the LocalStorageService or
@@ -12,6 +17,7 @@ import type MemoryStorageService from './storage/memory';
 export default class StorageService extends Service {
   @service(LOCAL_STORAGE_SUPPORTED ? 'storage/local' : 'storage/memory')
   declare backend: LocalStorageService | MemoryStorageService;
+  @tracked changed = 1;
 
   /**
    * Reads a stored object for a give key, if any.
@@ -19,6 +25,7 @@ export default class StorageService extends Service {
    * @return {Option<String>} The value, if found
    */
   getItem(key: keyof object) {
+    consumeTracked(this.changed);
     const serialized = this.backend.getItem(key);
 
     if (serialized === null) {
@@ -33,6 +40,7 @@ export default class StorageService extends Service {
    * Store a string for a given key.
    */
   setItem(key: keyof object, value: string) {
+    this.changed += 1;
     if (value === undefined) {
       this.removeItem(key);
     } else {
@@ -45,6 +53,7 @@ export default class StorageService extends Service {
    * Deletes the stored string for a given key.
    */
   removeItem(key: keyof object) {
+    this.changed += 1;
     this.backend.removeItem(key);
   }
 
@@ -54,6 +63,7 @@ export default class StorageService extends Service {
    * @return {Array<String>} The array of keys
    */
   keys() {
+    consumeTracked(this.changed);
     return this.backend.keys();
   }
 }
