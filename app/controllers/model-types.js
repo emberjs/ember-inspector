@@ -1,7 +1,6 @@
-/* eslint-disable ember/no-computed-properties-in-native-classes */
 import Controller from '@ember/controller';
-import { action, computed } from '@ember/object';
-import { sort } from '@ember/object/computed';
+import { action } from '@ember/object';
+import { compare } from '@ember/utils';
 import { inject as service } from '@ember/service';
 
 const HIDE_EMPTY_MODELS_KEY = 'are-model-types-hidden';
@@ -16,8 +15,6 @@ export default class ModelTypesController extends Controller {
 
   constructor() {
     super(...arguments);
-    this.sortByNameProp = ['name'];
-    this.sortByDescCountProp = ['count:desc'];
   }
 
   get hideEmptyModelTypes() {
@@ -36,13 +33,14 @@ export default class ModelTypesController extends Controller {
     handleSettingProperty(this.storage, ORDER_MODELS_BY_COUNT_KEY, value);
   }
 
-  @sort('filtered', 'sortByNameProp')
-  sortByName;
+  get sortByName() {
+    return this.filtered.toSorted((a, b) => compare(a.name, b.name));
+  }
 
-  @sort('filtered', 'sortByDescCountProp')
-  sortByDescCount;
+  get sortByDescCount() {
+    return this.filtered.toSorted((a, b) => compare(b.count, a.count));
+  }
 
-  @computed('model.@each.count', 'hideEmptyModelTypes')
   get filtered() {
     return this.model.filter((item) => {
       let hideEmptyModels = this.hideEmptyModelTypes;
