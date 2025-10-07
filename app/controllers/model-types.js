@@ -33,7 +33,7 @@ export default class ModelTypesController extends Controller {
   }
 
   get sortByName() {
-    return this.filtered.toSorted((a, b) => a.name.localeCompare(b.name)));
+    return this.filtered.toSorted((a, b) => a.name.localeCompare(b.name));
   }
 
   get sortByDescCount() {
