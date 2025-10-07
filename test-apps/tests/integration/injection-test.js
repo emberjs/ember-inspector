@@ -135,7 +135,7 @@ class ChromeApi {
         if (url.startsWith('/')) {
           url = url.slice(1);
         }
-        return '/testing/' + url;
+        return '/' + url;
       },
       connect() {
         const other = self.connectToOther;

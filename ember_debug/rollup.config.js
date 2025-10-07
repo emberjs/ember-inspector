@@ -11,6 +11,7 @@ export default {
     'utils/type-check.js',
     'port.js',
     'utils/ember.js',
+    'utils/type-check',
     'models/profile-node.js',
     'libs/promise-assembler.js',
     'lib/versions.js',
@@ -20,5 +21,11 @@ export default {
     dir: 'dist',
   },
 
-  plugins: [babel(), nodeResolve(), commonjs(), del({ targets: 'dist' })],
+  plugins: [
+    babel(),
+    nodeResolve(),
+    commonjs(),
+    // eslint-disable-next-line no-undef
+    process.env.NO_DEL_DIST && del({ targets: 'dist' }),
+  ].filter(Boolean),
 };
