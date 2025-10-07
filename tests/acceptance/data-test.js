@@ -91,10 +91,15 @@ module('Data Tab', function (outer) {
     test('Model types are successfully listed and bound', async function (assert) {
       respondWith('data:getModelTypes', {
         type: 'data:modelTypesAdded',
-        modelTypes: getModelTypes(),
+        modelTypes: [],
       });
 
       await visit('/data/model-types');
+
+      await sendMessage({
+        type: 'data:modelTypesAdded',
+        modelTypes: getModelTypes(),
+      });
 
       assert.dom('.js-model-type').exists({ count: 2 });
 
