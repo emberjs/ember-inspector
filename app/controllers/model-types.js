@@ -1,6 +1,5 @@
 import Controller from '@ember/controller';
 import { action } from '@ember/object';
-import { compare } from '@ember/utils';
 import { inject as service } from '@ember/service';
 
 const HIDE_EMPTY_MODELS_KEY = 'are-model-types-hidden';
@@ -34,11 +33,11 @@ export default class ModelTypesController extends Controller {
   }
 
   get sortByName() {
-    return this.filtered.toSorted((a, b) => compare(a.name, b.name));
+    return this.filtered.toSorted((a, b) => a.name.localeCompare(b.name)));
   }
 
   get sortByDescCount() {
-    return this.filtered.toSorted((a, b) => compare(b.count, a.count));
+    return this.filtered.toSorted((a, b) => b.count - a.count);
   }
 
   get filtered() {
