@@ -238,8 +238,7 @@ module('Integration | Injection', function (hooks) {
     // check that we do not have any errors
     await new Promise((resolve, reject) => {
       window.addEventListener('error', reject);
-      // eslint-disable-next-line no-undef
-      chrome.runtime.onMessage.addListener((message) => {
+      contentChromeApi.runtime.onMessage.addListener((message) => {
         if (message?.type === 'inject-ember-debug') {
           setTimeout(resolve, 200);
         }
