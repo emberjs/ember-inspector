@@ -203,6 +203,8 @@ if (Ember) {
     ControllerMixin ?? emberSafeRequire('@ember/controller')?.ControllerMixin;
   CoreObject = CoreObject ?? emberSafeRequire('@ember/object/core')?.default;
   Application = Application ?? emberSafeRequire('@ember/application')?.default;
+  ApplicationModule =
+    ApplicationModule ?? emberSafeRequire('@ember/application');
   Component = Component ?? emberSafeRequire('@ember/component')?.default;
   Observable =
     Observable ?? emberSafeRequire('@ember/object/observable')?.default;
@@ -224,7 +226,7 @@ if (Ember) {
 if (Owner) {
   getOwner = Owner.getOwner;
 } else {
-  getOwner = ApplicationModule.getOwner;
+  getOwner = ApplicationModule?.getOwner || Ember.getOwner;
 }
 
 export {
