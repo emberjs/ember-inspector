@@ -1,6 +1,10 @@
 import loadEmberDebugInWebpage from '../lib/load-ember-debug-in-webpage';
-import { onEmberReady, startInspector } from '../lib/start-inspector';
 
-import adapter from '../adapters/websocket';
+loadEmberDebugInWebpage(async () => {
+  const { onEmberReady, startInspector } = await import(
+    '../lib/start-inspector'
+  );
 
-loadEmberDebugInWebpage(() => onEmberReady(startInspector(adapter)));
+  const adapter = (await import('../adapters/websocket.js')).default;
+  onEmberReady(startInspector(adapter));
+});
