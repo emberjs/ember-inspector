@@ -12,10 +12,6 @@ export default class ModelTypesController extends Controller {
 
   navWidth = 180;
 
-  constructor() {
-    super(...arguments);
-  }
-
   get hideEmptyModelTypes() {
     return getStoredPropertyValue(this.storage, HIDE_EMPTY_MODELS_KEY);
   }
