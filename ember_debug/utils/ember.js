@@ -224,7 +224,7 @@ if (Ember) {
 if (Owner) {
   getOwner = Owner.getOwner;
 } else {
-  getOwner = ApplicationModule.getOwner;
+  getOwner = ApplicationModule?.getOwner;
 }
 
 export {
