@@ -1,5 +1,19 @@
 # Changelog
 
+## Release (2025-10-28)
+
+* ember-inspector 4.14.1 (patch)
+
+#### :bug: Bug Fix
+* `ember-inspector`
+  * [#2700](https://github.com/emberjs/ember-inspector/pull/2700) add a optional chaining operator for accessing getOwner on application ([@mansona](https://github.com/mansona))
+  * [#2702](https://github.com/emberjs/ember-inspector/pull/2702) add back iframe (without src) support ([@patricklx](https://github.com/patricklx))
+  * [#2692](https://github.com/emberjs/ember-inspector/pull/2692) fix whats new ([@patricklx](https://github.com/patricklx))
+
+#### Committers: 2
+- Chris Manson ([@mansona](https://github.com/mansona))
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
 ## Release (2025-10-02)
 
 * ember-inspector 4.14.0 (minor)
