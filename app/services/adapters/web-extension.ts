@@ -1,10 +1,7 @@
 import { tracked } from '@glimmer/tracking';
-
 import BasicAdapter from './basic';
 import config from 'ember-inspector/config/environment';
 import type { Message } from '../port';
-
-// let emberDebug: string | null = null;
 
 export default class WebExtension extends BasicAdapter {
   @tracked canOpenResource = false;
