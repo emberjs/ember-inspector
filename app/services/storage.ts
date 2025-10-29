@@ -4,7 +4,6 @@ import type LocalStorageService from './storage/local';
 import type MemoryStorageService from './storage/memory';
 import { tracked } from '@glimmer/tracking';
 
-
 /**
  * Service that wraps either the LocalStorageService or
  * MemoryStorageService (depending on availability) and
@@ -51,7 +50,7 @@ export default class StorageService extends Service {
       this.removeItem(key);
     } else {
       const serialized = JSON.stringify(value);
-      this.trackedBackend.set(key, serialized);
+      this.trackedBackend.setItem(key, serialized);
     }
   }
 
