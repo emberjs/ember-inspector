@@ -4,9 +4,6 @@ import type LocalStorageService from './storage/local';
 import type MemoryStorageService from './storage/memory';
 import { tracked } from '@glimmer/tracking';
 
-function consumeTracked(value: number): number {
-  return value;
-}
 
 /**
  * Service that wraps either the LocalStorageService or
@@ -17,7 +14,18 @@ function consumeTracked(value: number): number {
 export default class StorageService extends Service {
   @service(LOCAL_STORAGE_SUPPORTED ? 'storage/local' : 'storage/memory')
   declare backend: LocalStorageService | MemoryStorageService;
-  @tracked changed = 1;
+  @tracked trackedBackend = {
+    setItem: (k: string, v: string) => {
+      this.backend.setItem(k, v);
+      this.trackedBackend = { ...this.trackedBackend };
+    },
+    removeItem: (k: string) => {
+      this.backend.removeItem(k);
+      this.trackedBackend = { ...this.trackedBackend };
+    },
+    getItem: (k: string) => this.backend.getItem(k),
+    keys: () => this.backend.keys(),
+  };
 
   /**
    * Reads a stored object for a give key, if any.
@@ -25,8 +33,7 @@ export default class StorageService extends Service {
    * @return {Option<String>} The value, if found
    */
   getItem(key: keyof object) {
-    consumeTracked(this.changed);
-    const serialized = this.backend.getItem(key);
+    const serialized = this.trackedBackend.getItem(key);
 
     if (serialized === null) {
       // Actual `null` values would have been serialized as `"null"`
@@ -40,12 +47,11 @@ export default class StorageService extends Service {
    * Store a string for a given key.
    */
   setItem(key: keyof object, value: string) {
-    this.changed += 1;
     if (value === undefined) {
       this.removeItem(key);
     } else {
       const serialized = JSON.stringify(value);
-      this.backend.setItem(key, serialized);
+      this.trackedBackend.set(key, serialized);
     }
   }
 
@@ -53,8 +59,7 @@ export default class StorageService extends Service {
    * Deletes the stored string for a given key.
    */
   removeItem(key: keyof object) {
-    this.changed += 1;
-    this.backend.removeItem(key);
+    this.trackedBackend.removeItem(key);
   }
 
   /**
@@ -63,7 +68,6 @@ export default class StorageService extends Service {
    * @return {Array<String>} The array of keys
    */
   keys() {
-    consumeTracked(this.changed);
-    return this.backend.keys();
+    return this.trackedBackend.keys();
   }
 }
