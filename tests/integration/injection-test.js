@@ -171,11 +171,14 @@ module('Integration | Injection', function (hooks) {
   let contentChromeApi, inspectorChromeApi, backgroundChromeApi;
   const olddefine = window.define;
   const olddrequireModule = window.requireModule;
+  const oldEmber = window.Ember;
 
   let injected;
+  let EmberService = Service;
 
   async function inject(owner, assert) {
     if (injected) return;
+
     const backgroundScript = await (await fetch('/background.js')).text();
     {
       const chrome = backgroundChromeApi;
@@ -208,6 +211,14 @@ module('Integration | Injection', function (hooks) {
 
     window.chrome = inspectorChromeApi;
 
+    owner.register('service:port', class extends EmberService {});
+    owner.lookup('service:adapters/web-extension');
+    window.requireModule = null;
+    Object.defineProperty(window, 'Ember', {
+      value: null,
+      writable: true,
+    });
+
     const emberDebugStarted = new Promise((resolve) => {
       inspectorChromeApi.runtime.onMessage.addListener((msg) => {
         if (msg.type === 'general:applicationBooted') {
@@ -223,8 +234,21 @@ module('Integration | Injection', function (hooks) {
         }
       });
     });
-    owner.register('service:port', class extends Service {});
-    owner.lookup('service:adapters/web-extension');
+
+    // check that we do not have any errors
+    await new Promise((resolve, reject) => {
+      window.addEventListener('error', reject);
+      contentChromeApi.runtime.onMessage.addListener((message) => {
+        if (message?.type === 'inject-ember-debug') {
+          setTimeout(resolve, 200);
+        }
+      });
+    });
+
+    window.requireModule = olddrequireModule;
+    window.Ember = oldEmber;
+    window.dispatchEvent(new Event('Ember'));
+
     await p;
     await emberDebugStarted;
     injected = true;
