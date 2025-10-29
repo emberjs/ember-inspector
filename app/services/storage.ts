@@ -14,15 +14,15 @@ export default class StorageService extends Service {
   @service(LOCAL_STORAGE_SUPPORTED ? 'storage/local' : 'storage/memory')
   declare backend: LocalStorageService | MemoryStorageService;
   @tracked trackedBackend = {
-    setItem: (k: string, v: string) => {
+    setItem: (k: keyof object, v: string) => {
       this.backend.setItem(k, v);
       this.trackedBackend = { ...this.trackedBackend };
     },
-    removeItem: (k: string) => {
+    removeItem: (k: keyof object) => {
       this.backend.removeItem(k);
       this.trackedBackend = { ...this.trackedBackend };
     },
-    getItem: (k: string) => this.backend.getItem(k),
+    getItem: (k: keyof object) => this.backend.getItem(k),
     keys: () => this.backend.keys(),
   };
 
