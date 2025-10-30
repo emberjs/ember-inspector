@@ -11,6 +11,7 @@ export default {
     'utils/type-check.js',
     'port.js',
     'utils/ember.js',
+    'utils/type-check',
     'models/profile-node.js',
     'libs/promise-assembler.js',
     'lib/versions.js',
