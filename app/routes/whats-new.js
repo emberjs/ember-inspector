@@ -42,7 +42,9 @@ export default class WhatsNewRoute extends TabRoute {
     let { version } = this.config;
 
     let ref =
-      version.indexOf('alpha') === -1 ? `v${version}-ember-inspector` : 'release-preview';
+      version.indexOf('alpha') === -1
+        ? `v${version}-ember-inspector`
+        : 'release-preview';
     let url = `https://raw.githubusercontent.com/emberjs/ember-inspector/${encodeURIComponent(
       ref,
     )}/CHANGELOG.md`;
