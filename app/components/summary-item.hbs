@@ -1,0 +1,21 @@
+<Ui::Disclosure as |disclosure|>
+<tr  style={{this.nodeStyle}} class="list-row js-render-profile-item">
+
+  <@list.cell class="list-cell-main js-render-main-cell js-render-profile-name"  style={{this.nameStyle}}>
+   {{@model.name}}
+  </@list.cell>
+
+<@list.cell class="list-cell-main js-render-main-cell list-cell-value_numeric  js-render-profile-duration">
+  {{@model.initial-render}}
+   </@list.cell>
+
+<@list.cell class="list-cell-main js-render-main-cell list-cell-value_numeric  js-render-profile-duration">
+  {{@model.avg-re-render}}
+   </@list.cell>
+
+    <@list.cell class="list-cell-main js-render-main-cell list-cell-value_numeric js-render-profile-timestamp">
+    {{@model.render-count}}
+    </@list.cell>
+</tr>
+
+</Ui::Disclosure>
