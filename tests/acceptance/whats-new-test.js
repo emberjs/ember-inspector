@@ -7,7 +7,7 @@ import { setupTestAdapter } from '../test-adapter';
 function urlFor(ref) {
   return `https://raw.githubusercontent.com/emberjs/ember-inspector/${encodeURIComponent(
     ref,
-  )}-ember-inspector/CHANGELOG.md`;
+  )}/CHANGELOG.md`;
 }
 
 function generateContent(main = false) {
@@ -76,7 +76,7 @@ module('Whats New', function (outer) {
 
     test('Changelog is parsed and displayed', async function (assert) {
       this.server = new Pretender(function () {
-        this.get(urlFor('v4.5.3'), () => [
+        this.get(urlFor('v4.5.3-ember-inspector'), () => [
           200,
           { 'Content-Type': 'text/plain' },
           generateContent(),
@@ -98,7 +98,7 @@ module('Whats New', function (outer) {
 
     test('Error message is displayed on request failure', async function (assert) {
       this.server = new Pretender(function () {
-        this.get(urlFor('v4.5.3'), () => [404, {}, '']);
+        this.get(urlFor('v4.5.3-ember-inspector'), () => [404, {}, '']);
       });
 
       await visit('/info/whats-new');
