@@ -5,3 +5,11 @@
 
 
 *Cannot plan release until the above changes are labeled*.
+# Unlabeled Changes
+
+* `ember-inspector`
+  * [#2705](https://github.com/emberjs/ember-inspector/pull/2705) fix whats new for nightly ([@patricklx](https://github.com/patricklx))
+  * [#2689](https://github.com/emberjs/ember-inspector/pull/2689) fix loading race condition ([@patricklx](https://github.com/patricklx))
+
+
+*Cannot plan release until the above changes are labeled*.
