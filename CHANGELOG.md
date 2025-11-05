@@ -1,5 +1,27 @@
 # Changelog
 
+## Release (2025-11-05)
+
+* ember-inspector 4.14.2 (patch)
+
+#### :bug: Bug Fix
+* `ember-inspector`
+  * [#2705](https://github.com/emberjs/ember-inspector/pull/2705) fix whats new for nightly ([@patricklx](https://github.com/patricklx))
+  * [#2689](https://github.com/emberjs/ember-inspector/pull/2689) fix loading race condition ([@patricklx](https://github.com/patricklx))
+  * [#2700](https://github.com/emberjs/ember-inspector/pull/2700) add a optional chaining operator for accessing getOwner on application ([@mansona](https://github.com/mansona))
+  * [#2702](https://github.com/emberjs/ember-inspector/pull/2702) add back iframe (without src) support ([@patricklx](https://github.com/patricklx))
+  * [#2692](https://github.com/emberjs/ember-inspector/pull/2692) fix whats new ([@patricklx](https://github.com/patricklx))
+
+#### :house: Internal
+* `ember-inspector`
+  * [#2704](https://github.com/emberjs/ember-inspector/pull/2704) Prepare Release ([@github-actions[bot]](https://github.com/apps/github-actions))
+  * [#2698](https://github.com/emberjs/ember-inspector/pull/2698) Prepare Release v4.14.1 ([@github-actions[bot]](https://github.com/apps/github-actions))
+
+#### Committers: 3
+- Chris Manson ([@mansona](https://github.com/mansona))
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+- [@github-actions[bot]](https://github.com/apps/github-actions)
+
 ## Release (2025-10-28)
 
 * ember-inspector 4.14.1 (patch)
