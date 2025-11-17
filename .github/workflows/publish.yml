@@ -145,8 +145,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GH_PAT }}
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
