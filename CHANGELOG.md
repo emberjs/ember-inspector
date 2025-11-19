@@ -1,5 +1,31 @@
 # Changelog
 
+## Release (2025-11-19)
+
+* ember-inspector 4.15.0 (minor)
+
+#### :rocket: Enhancement
+* `ember-inspector`
+  * [#2694](https://github.com/emberjs/ember-inspector/pull/2694) link to legacy inspector support docs ([@patricklx](https://github.com/patricklx))
+
+#### :bug: Bug Fix
+* `ember-inspector`
+  * [#2691](https://github.com/emberjs/ember-inspector/pull/2691) fix data tab not showing models ([@patricklx](https://github.com/patricklx))
+  * [#2703](https://github.com/emberjs/ember-inspector/pull/2703) regression: fix _backburner access ([@patricklx](https://github.com/patricklx))
+  * [#2705](https://github.com/emberjs/ember-inspector/pull/2705) fix whats new for nightly ([@patricklx](https://github.com/patricklx))
+  * [#2689](https://github.com/emberjs/ember-inspector/pull/2689) fix loading race condition ([@patricklx](https://github.com/patricklx))
+  * [#2700](https://github.com/emberjs/ember-inspector/pull/2700) add a optional chaining operator for accessing getOwner on application ([@mansona](https://github.com/mansona))
+  * [#2702](https://github.com/emberjs/ember-inspector/pull/2702) add back iframe (without src) support ([@patricklx](https://github.com/patricklx))
+  * [#2692](https://github.com/emberjs/ember-inspector/pull/2692) fix whats new ([@patricklx](https://github.com/patricklx))
+
+#### :house: Internal
+* `ember-inspector`
+  * [#2708](https://github.com/emberjs/ember-inspector/pull/2708) update release-plan workflows to new format ([@mansona](https://github.com/mansona))
+
+#### Committers: 2
+- Chris Manson ([@mansona](https://github.com/mansona))
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+
 ## Release (2025-11-05)
 
 * ember-inspector 4.14.2 (patch)
