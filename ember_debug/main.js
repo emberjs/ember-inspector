@@ -37,10 +37,7 @@ class EmberDebug extends BaseObject {
    * @type {String}
    */
   get applicationId() {
-    if (!this.isTesting) {
-      return guidFor(this._application, 'ember');
-    }
-    return guidFor(this.owner, 'ember');
+    return guidFor(this._application, 'ember');
   }
 
   // Using object shorthand syntax here is somehow having strange side effects.
@@ -53,7 +50,7 @@ class EmberDebug extends BaseObject {
       this.reset($keepAdapter);
       return;
     }
-    if (!this._application && !this.isTesting) {
+    if (!this._application) {
       this._application = getApplication();
     }
     this.started = true;
@@ -101,9 +98,7 @@ class EmberDebug extends BaseObject {
 
   reset($keepAdapter) {
     setGuidPrefix(Math.random().toString());
-    if (!this.isTesting && !this.owner) {
-      this.owner = getOwner(this._application);
-    }
+    this.owner = this._application && getOwner(this._application);
     this.destroyContainer();
     run(() => {
       // Adapters don't have state depending on the application itself.
