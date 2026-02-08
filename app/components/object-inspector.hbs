@@ -26,6 +26,18 @@
       >
         {{svg-jar "send-with-text" width="20px" height="10px"}}
       </button>
+
+      {{#if this.canShowRenderNode}}
+        <button
+          data-test-object-inspector-show-render-node
+          class="toolbar-icon-button show-render-node"
+          title="Send Render Node to Console"
+          type="button"
+          {{on "click" this.showRenderNode}}
+        >
+          {{svg-jar "send-with-text" width="20px" height="10px"}}
+        </button>
+      {{/if}}
       {{#if this.isClass}}
         <button
           data-test-goto-class-source-btn

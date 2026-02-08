@@ -64,11 +64,25 @@ export default class ApplicationRoute extends Route {
     details.forEach(arrayize);
 
     let controller = this.controller;
+    let renderNodeId = resolveRenderNodeId(controller, options);
 
     if (options.parentObject) {
-      controller.pushMixinDetails(name, property, objectId, details, errors);
+      controller.pushMixinDetails(
+        name,
+        property,
+        objectId,
+        details,
+        errors,
+        renderNodeId,
+      );
     } else {
-      controller.activateMixinDetails(name, objectId, details, errors);
+      controller.activateMixinDetails(
+        name,
+        objectId,
+        details,
+        errors,
+        renderNodeId,
+      );
     }
 
     this.layout.showInspector();
@@ -114,5 +128,24 @@ export default class ApplicationRoute extends Route {
 
 function arrayize(mixin) {
   NativeArray.apply(mixin.properties);
+}
+
+function resolveRenderNodeId(controller, options) {
+  if (options.parentObject) {
+    let parent = controller.mixinStack?.find(
+      (item) => item.objectId === options.parentObject,
+    );
+    if (parent?.renderNodeId) {
+      return parent.renderNodeId;
+    }
+  }
+
+  let currentItem = controller.componentTreeController?.currentItem;
+
+  if (currentItem?.instance && currentItem.instance === options.objectId) {
+    return currentItem.id;
+  }
+
+  return null;
 }
 

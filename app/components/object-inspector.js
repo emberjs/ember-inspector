@@ -21,6 +21,14 @@ export default class ObjectInspector extends Component {
   get current() {
     return this.args.model[this.args.model.length - 1];
   }
+
+  get renderNodeId() {
+    return this.current?.renderNodeId || null;
+  }
+
+  get canShowRenderNode() {
+    return Boolean(this.renderNodeId);
+  }
   get trail() {
     let nested = this.args.model.slice(1);
     if (nested.length === 0) {
@@ -78,6 +86,16 @@ export default class ObjectInspector extends Component {
   @action traceErrors(objectId) {
     this.port.send('objectInspector:traceErrors', {
       objectId,
+    });
+  }
+
+  @action showRenderNode() {
+    if (!this.renderNodeId) {
+      return;
+    }
+
+    this.port.send('objectInspector:showRenderTreeNode', {
+      id: this.renderNodeId,
     });
   }
 }
