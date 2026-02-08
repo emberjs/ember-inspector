@@ -131,7 +131,14 @@ export default class ApplicationController extends Controller {
     });
 
     this.mixinStack = new TrackedArray([]);
-    this.pushMixinDetails(name, undefined, objectId, details, errors, renderNodeId);
+    this.pushMixinDetails(
+      name,
+      undefined,
+      objectId,
+      details,
+      errors,
+      renderNodeId,
+    );
   }
 
   @action

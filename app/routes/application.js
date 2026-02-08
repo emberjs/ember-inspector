@@ -148,4 +148,3 @@ function resolveRenderNodeId(controller, options) {
 
   return null;
 }
-
