@@ -22,6 +22,7 @@ export default class ApplicationRoute extends Route {
     port.on('deprecation:count', this, this.setDeprecationCount);
     port.on('view:inspectComponent', this, this.inspectComponent);
     port.on('view:previewComponent', this, this.previewComponent);
+    port.on('view:renderTree', this, this.updateComponentTree);
   }
 
   deactivate() {
@@ -33,6 +34,7 @@ export default class ApplicationRoute extends Route {
     port.off('deprecation:count', this, this.setDeprecationCount);
     port.off('view:inspectComponent', this, this.inspectComponent);
     port.off('view:previewComponent', this, this.previewComponent);
+    port.off('view:renderTree', this, this.updateComponentTree);
   }
 
   inspectComponent({ id }) {
@@ -49,6 +51,10 @@ export default class ApplicationRoute extends Route {
         previewing: id,
       },
     });
+  }
+
+  updateComponentTree({ tree }) {
+    this.controller.componentTreeController.renderTree = tree;
   }
 
   updateObject(options) {
@@ -109,3 +115,4 @@ export default class ApplicationRoute extends Route {
 function arrayize(mixin) {
   NativeArray.apply(mixin.properties);
 }
+
