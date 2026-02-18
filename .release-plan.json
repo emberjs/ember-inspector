@@ -1,26 +1,18 @@
 {
   "solution": {
     "ember-inspector": {
-      "impact": "minor",
-      "oldVersion": "4.14.2",
-      "newVersion": "4.15.0",
+      "impact": "patch",
+      "oldVersion": "4.15.0",
+      "newVersion": "4.15.1",
       "tagName": "latest",
       "constraints": [
         {
-          "impact": "minor",
-          "reason": "Appears in changelog section :rocket: Enhancement"
-        },
-        {
           "impact": "patch",
           "reason": "Appears in changelog section :bug: Bug Fix"
-        },
-        {
-          "impact": "patch",
-          "reason": "Appears in changelog section :house: Internal"
         }
       ],
       "pkgJSONPath": "./package.json"
     }
   },
-  "description": "## Release (2025-11-19)\n\n* ember-inspector 4.15.0 (minor)\n\n#### :rocket: Enhancement\n* `ember-inspector`\n  * [#2694](https://github.com/emberjs/ember-inspector/pull/2694) link to legacy inspector support docs ([@patricklx](https://github.com/patricklx))\n\n#### :bug: Bug Fix\n* `ember-inspector`\n  * [#2691](https://github.com/emberjs/ember-inspector/pull/2691) fix data tab not showing models ([@patricklx](https://github.com/patricklx))\n  * [#2703](https://github.com/emberjs/ember-inspector/pull/2703) regression: fix _backburner access ([@patricklx](https://github.com/patricklx))\n  * [#2705](https://github.com/emberjs/ember-inspector/pull/2705) fix whats new for nightly ([@patricklx](https://github.com/patricklx))\n  * [#2689](https://github.com/emberjs/ember-inspector/pull/2689) fix loading race condition ([@patricklx](https://github.com/patricklx))\n  * [#2700](https://github.com/emberjs/ember-inspector/pull/2700) add a optional chaining operator for accessing getOwner on application ([@mansona](https://github.com/mansona))\n  * [#2702](https://github.com/emberjs/ember-inspector/pull/2702) add back iframe (without src) support ([@patricklx](https://github.com/patricklx))\n  * [#2692](https://github.com/emberjs/ember-inspector/pull/2692) fix whats new ([@patricklx](https://github.com/patricklx))\n\n#### :house: Internal\n* `ember-inspector`\n  * [#2708](https://github.com/emberjs/ember-inspector/pull/2708) update release-plan workflows to new format ([@mansona](https://github.com/mansona))\n\n#### Committers: 2\n- Chris Manson ([@mansona](https://github.com/mansona))\n- Patrick Pircher ([@patricklx](https://github.com/patricklx))\n"
+  "description": "## Release (2026-02-18)\n\n* ember-inspector 4.15.1 (patch)\n\n#### :bug: Bug Fix\n* `ember-inspector`\n  * [#2710](https://github.com/emberjs/ember-inspector/pull/2710) Remove vestigial options.html page ([@trek](https://github.com/trek))\n\n#### Committers: 1\n- Trek Glowacki ([@trek](https://github.com/trek))\n"
 }

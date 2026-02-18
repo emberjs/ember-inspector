@@ -1,5 +1,16 @@
 # Changelog
 
+## Release (2026-02-18)
+
+* ember-inspector 4.15.1 (patch)
+
+#### :bug: Bug Fix
+* `ember-inspector`
+  * [#2710](https://github.com/emberjs/ember-inspector/pull/2710) Remove vestigial options.html page ([@trek](https://github.com/trek))
+
+#### Committers: 1
+- Trek Glowacki ([@trek](https://github.com/trek))
+
 ## Release (2025-11-19)
 
 * ember-inspector 4.15.0 (minor)
