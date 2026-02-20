@@ -24,23 +24,34 @@
   }
 
   /**
-   * Save the updated options to storage.
+   * Accepts a new set of options, merges them with existing options already
+   * stored in `chrome.storage` and saves the union of both to storage.
    */
-  function storeOptions() {
-    var showTomster = this.checked;
+  function storeOptions(newOptions) {
+    chrome.storage.sync.get('options', function (data) {
+      var options = data.options || {};
+      Object.assign(options, newOptions);
 
-    chrome.storage.sync.set(
-      {
-        options: { showTomster: showTomster },
-      },
-      function optionsSaved() {
-        console.log('saved!');
-      },
-    );
+      chrome.storage.sync.set(
+        {
+          options: options,
+        },
+        function optionsSaved() {
+          console.log('saved!', newOptions);
+        },
+      );
+    });
+  }
+
+  /**
+   * Save the updated Tomster setting to storage.
+   */
+  function saveTomsterSetting() {
+    storeOptions({ showTomster: this.checked });
   }
 
   document.addEventListener('DOMContentLoaded', loadOptions);
   document
     .querySelector('[data-settings=tomster]')
-    .addEventListener('click', storeOptions);
+    .addEventListener('click', saveTomsterSetting);
 })();
