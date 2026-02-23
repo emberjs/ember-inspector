@@ -40,7 +40,7 @@
   "dependencies": {
     "got": "^11.8.6",
     "rimraf": "^5.0.10",
-    "yauzl": "^2.10.0"
+    "yauzl": "^3.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
