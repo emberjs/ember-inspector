@@ -163,6 +163,9 @@
     storeOptions({ showTomster: this.checked });
   }
 
+    /**
+   * Save the updated preferred text editor integration selection to storage.
+   */
   function saveEditorSelection() {
     var selectedInput = document.querySelector(
       'input[name="text-editor-selection"]:checked',
