@@ -1,10 +1,7 @@
 import { tracked } from '@glimmer/tracking';
-
 import BasicAdapter from './basic';
 import config from 'ember-inspector/config/environment';
 import type { Message } from '../port';
-
-let emberDebug: string | null = null;
 
 export default class WebExtension extends BasicAdapter {
   @tracked canOpenResource = false;
@@ -145,27 +142,11 @@ export default class WebExtension extends BasicAdapter {
 
 function loadEmberDebug() {
   const minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
-  let xhr: XMLHttpRequest;
 
   return new Promise((resolve) => {
-    if (!emberDebug) {
-      xhr = new XMLHttpRequest();
-      xhr.open(
-        'GET',
-        chrome.runtime.getURL(`/panes-${minimumVersion}/ember_debug.js`),
-      );
-      xhr.onload = function () {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            emberDebug = xhr.responseText;
-            resolve(emberDebug);
-          }
-        }
-      };
-
-      xhr.send();
-    } else {
-      resolve(emberDebug);
-    }
+    const url = chrome.runtime.getURL(
+      `/panes-${minimumVersion}/ember_debug.js`,
+    );
+    resolve(`import('${url}')`);
   });
 }
