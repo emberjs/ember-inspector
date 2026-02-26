@@ -9,81 +9,34 @@ import {
 } from './utils/type-check';
 import { compareVersion } from './utils/version';
 import {
-  EmberObject,
   meta as emberMeta,
   VERSION,
-  CoreObject,
-  ObjectProxy,
-  ArrayProxy,
-  Service,
-  InternalsMetal,
-  Component,
-  GlimmerComponent,
-  GlimmerReference,
-  GlimmerValidator,
   getOwner,
+  cacheFor,
+  guidFor,
+  join,
+  getBackburner,
+  // Type checking functions (replaces instanceof checks)
+  isEmberObject,
+  isCoreObject,
+  isObjectProxy,
+  isArrayProxy,
+  isService,
+  isComponent,
+  isGlimmerComponent,
+  // Tracking API (simplified)
+  createPropertyTracker,
+  hasPropertyChanged,
+  getPropertyDependencies,
+  getChangedDependencies,
+  isTrackedProperty,
 } from './utils/ember';
-import { cacheFor, guidFor } from './utils/ember/object/internals';
-import { _backburner, join } from './utils/ember/runloop';
 import emberNames from './utils/ember-object-names.js';
 import getObjectName from './utils/get-object-name.js';
 
-let tagValue, tagValidate, track, tagForProperty;
-
-const GlimmerDebugComponent = (() => GlimmerComponent?.default)();
+const _backburner = getBackburner();
 
 const OWNER_SYMBOL = '__owner__'; // can't use actual symbol because it can't be cloned
-
-// Try to use the most recent library (GlimmerValidator), else
-// fallback on the previous implementation (GlimmerReference).
-// The global checks if the inspected app is Vite, in that case
-// we can't execute that block because the properties it tries to
-// assign are readonly.
-if (GlimmerValidator && !globalThis.emberInspectorApps) {
-  tagValue = GlimmerValidator.value || GlimmerValidator.valueForTag;
-  tagValidate = GlimmerValidator.validate || GlimmerValidator.validateTag;
-  track = GlimmerValidator.track;
-
-  // patch tagFor to add debug info, older versions already have _propertyKey
-  const tagFor = GlimmerValidator.tagFor;
-  GlimmerValidator.tagFor = function (...args) {
-    const tag = tagFor.call(this, ...args);
-    const [obj, key] = args;
-    if (
-      (!tag._propertyKey || !tag._object) &&
-      typeof obj === 'object' &&
-      typeof key === 'string'
-    ) {
-      tag._propertyKey = key;
-      tag._object = obj;
-    }
-    return tag;
-  };
-  const trackedData = GlimmerValidator.trackedData;
-  GlimmerValidator.trackedData = function (...args) {
-    const r = trackedData.call(this, ...args);
-    if (r.getter && args.length === 2) {
-      const [key] = args;
-      const getter = r.getter;
-      r.getter = function (self) {
-        GlimmerValidator.tagFor(self, key);
-        return getter.call(this, self);
-      };
-    }
-    return r;
-  };
-} else if (GlimmerReference) {
-  tagValue = GlimmerReference.value;
-  tagValidate = GlimmerReference.validate;
-}
-
-if (InternalsMetal) {
-  tagForProperty = InternalsMetal.tagForProperty;
-  // If track was not already loaded, use metal's version (the previous version)
-  track = track || InternalsMetal.track;
-}
-
-const HAS_GLIMMER_TRACKING = tagValue && tagValidate && track && tagForProperty;
 
 const keys = Object.keys;
 
@@ -113,7 +66,7 @@ function inspectValue(object, key, computedValue) {
     return { type: `type-${typeOf(value)}`, inspect: inspect(value) };
   }
 
-  if (value instanceof EmberObject) {
+  if (isEmberObject(value)) {
     return { type: 'type-ember-object', inspect: value.toString() };
   } else if (isComputed(object, key)) {
     string = '<computed>';
@@ -139,96 +92,10 @@ function isMandatorySetter(descriptor) {
   return false;
 }
 
-function getTagTrackedTags(tag, ownTag, level = 0) {
-  const props = [];
-  // do not include tracked properties from dependencies
-  if (!tag || level > 1) {
-    return props;
-  }
-  const subtags = tag.subtags || (Array.isArray(tag.subtag) ? tag.subtag : []);
-  if (tag.subtag && !Array.isArray(tag.subtag)) {
-    if (tag.subtag._propertyKey) props.push(tag.subtag);
-
-    props.push(...getTagTrackedTags(tag.subtag, ownTag, level + 1));
-  }
-  if (subtags) {
-    subtags.forEach((t) => {
-      if (t === ownTag) return;
-      if (t._propertyKey) props.push(t);
-      props.push(...getTagTrackedTags(t, ownTag, level + 1));
-    });
-  }
-  return props;
-}
-
-function getTrackedDependencies(object, property, tagInfo) {
-  const tag = tagInfo.tag;
-  const proto = Object.getPrototypeOf(object);
-  if (!proto) return [];
-  const cpDesc = emberMeta(object).peekDescriptors(property);
-  const dependentKeys = [];
-  if (cpDesc) {
-    dependentKeys.push(
-      ...(cpDesc._dependentKeys || []).map((k) => ({ name: k })),
-    );
-  }
-  if (HAS_GLIMMER_TRACKING) {
-    const ownTag = tagForProperty(object, property);
-    const tags = getTagTrackedTags(tag, ownTag);
-    const mapping = {};
-    let maxRevision = tagValue(tag);
-    tags.forEach((t) => {
-      const p =
-        (t._object ? getObjectName(t._object) + '.' : '') + t._propertyKey;
-      const [objName, prop] = p.split('.');
-      mapping[objName] = mapping[objName] || new Set();
-      const value = tagValue(t);
-      if (prop) {
-        mapping[objName].add([prop, value]);
-      }
-    });
-
-    const hasChange =
-      (tagInfo.revision && maxRevision !== tagInfo.revision) || false;
-
-    const names = new Set();
-
-    Object.entries(mapping).forEach(([objName, props]) => {
-      if (names.has(objName)) {
-        return;
-      }
-      names.add(objName);
-      if (props.size > 1) {
-        dependentKeys.push({ name: objName });
-        props.forEach((p) => {
-          const changed = hasChange && p[1] > tagInfo.revision;
-          const obj = {
-            child: p[0],
-          };
-          if (changed) {
-            obj.changed = true;
-          }
-          dependentKeys.push(obj);
-        });
-      }
-      if (props.size === 1) {
-        const p = [...props][0];
-        const changed = hasChange && p[1] > tagInfo.revision;
-        const obj = {
-          name: objName + '.' + p[0],
-        };
-        if (changed) {
-          obj.changed = true;
-        }
-        dependentKeys.push(obj);
-      }
-      if (props.size === 0) {
-        dependentKeys.push({ name: objName });
-      }
-    });
-  }
-
-  return [...dependentKeys];
+function getTrackedDependencies(object, property, tracker) {
+  // Use the new simplified API to get dependencies with change information
+  // Import at top: getChangedDependencies
+  return getChangedDependencies(object, property, tracker);
 }
 
 export default class extends DebugPort {
@@ -244,7 +111,7 @@ export default class extends DebugPort {
 
   updateCurrentObject() {
     Object.values(this.sentObjects).forEach((obj) => {
-      if (obj instanceof CoreObject && obj.isDestroyed) {
+      if (isCoreObject(obj) && obj.isDestroyed) {
         this.dropObject(guidFor(obj));
       }
     });
@@ -270,20 +137,16 @@ export default class extends DebugPort {
             const desc = Object.getOwnPropertyDescriptor(object, item.name);
             const isSetter = desc && isMandatorySetter(desc);
 
-            if (HAS_GLIMMER_TRACKING && item.canTrack && !isSetter) {
-              let tagInfo = tracked[item.name] || {
-                tag: tagForProperty(object, item.name),
-                revision: 0,
-              };
-              if (!tagInfo.tag) return;
-
-              changed = !tagValidate(tagInfo.tag, tagInfo.revision);
-              if (changed) {
-                tagInfo.tag = track(() => {
-                  value = object.get?.(item.name) || object[item.name];
-                });
+            if (item.canTrack && !isSetter) {
+              // Use new simplified tracking API
+              if (!tracked[item.name]) {
+                tracked[item.name] = createPropertyTracker(object, item.name);
               }
-              tracked[item.name] = tagInfo;
+              
+              changed = hasPropertyChanged(tracked[item.name]);
+              if (changed) {
+                value = object.get?.(item.name) || object[item.name];
+              }
             } else {
               value = calculateCP(object, item, {});
               if (values[item.name] !== value) {
@@ -302,7 +165,6 @@ export default class extends DebugPort {
                   item.name,
                   tracked[item.name],
                 );
-                tracked[item.name].revision = tagValue(tracked[item.name].tag);
               }
               this.sendMessage('updateProperty', {
                 objectId,
@@ -453,7 +315,7 @@ export default class extends DebugPort {
   canSend(val) {
     return (
       val &&
-      (val instanceof EmberObject ||
+      (isEmberObject(val) ||
         val instanceof Object ||
         typeOf(val) === 'object' ||
         typeOf(val) === 'array')
@@ -512,7 +374,7 @@ export default class extends DebugPort {
       value = value.stack;
     }
     let args = [value];
-    if (value instanceof EmberObject) {
+    if (isEmberObject(value)) {
       args.unshift(inspect(value));
     }
     this.adapter.log('Ember Inspector ($E): ', ...args);
@@ -691,7 +553,7 @@ export default class extends DebugPort {
 
   mixinsForObject(object) {
     if (
-      object instanceof ObjectProxy &&
+      isObjectProxy(object) &&
       object.content &&
       !object._showProxyDetails
     ) {
@@ -699,7 +561,7 @@ export default class extends DebugPort {
     }
 
     if (
-      object instanceof ArrayProxy &&
+      isArrayProxy(object) &&
       object.content &&
       !object._showProxyDetails
     ) {
@@ -929,7 +791,7 @@ function addProperties(properties, hash) {
     let options = { isMandatorySetter: isMandatorySetter(desc) };
 
     if (typeof hash[prop] === 'object' && hash[prop] !== null) {
-      options.isService = desc.value instanceof Service;
+      options.isService = isService(desc.value);
     }
     if (options.isService) {
       replaceProperty(properties, prop, inspectValue(hash, prop), options);
@@ -1103,24 +965,21 @@ function calculateCPs(
         item.isExpensive = expensiveProperties.indexOf(item.name) >= 0;
         if (cache !== undefined || !item.isExpensive) {
           let value;
-          if (item.canTrack && HAS_GLIMMER_TRACKING) {
-            tracked[item.name] = tracked[item.name] || {};
-            const tagInfo = tracked[item.name];
-            tagInfo.tag = track(() => {
-              value = calculateCP(object, item, errorsForObject);
-            });
-            if (tagInfo.tag === tagForProperty(object, item.name)) {
+          if (item.canTrack) {
+            // Use new simplified tracking API
+            if (!tracked[item.name]) {
+              tracked[item.name] = createPropertyTracker(object, item.name);
+            }
+            
+            value = calculateCP(object, item, errorsForObject);
+            
+            if (isTrackedProperty(object, item.name)) {
               if (!item.isComputed && !item.isService) {
                 item.code = '';
                 item.isTracked = true;
               }
             }
-            item.dependentKeys = getTrackedDependencies(
-              object,
-              item.name,
-              tagInfo,
-            );
-            tagInfo.revision = tagValue(tagInfo.tag);
+            item.dependentKeys = getPropertyDependencies(object, item.name);
           } else {
             value = calculateCP(object, item, errorsForObject);
           }
@@ -1131,7 +990,7 @@ function calculateCPs(
               item.code = '';
             }
           }
-          if (value instanceof Service) {
+          if (isService(value)) {
             item.isService = true;
           }
         }
@@ -1276,7 +1135,7 @@ function getDebugInfo(object) {
   skipProperties.push('isDestroyed', 'isDestroying', 'container');
   // 'currentState' and 'state' are un-observable private properties.
   // The rest are skipped to reduce noise in the inspector.
-  if (Component && object instanceof Component) {
+  if (isComponent(object)) {
     skipProperties.push(
       'currentState',
       'state',
@@ -1292,7 +1151,7 @@ function getDebugInfo(object) {
       'element',
       'targetObject',
     );
-  } else if (GlimmerDebugComponent && object instanceof GlimmerDebugComponent) {
+  } else if (isGlimmerComponent(object)) {
     // These properties don't really exist on Glimmer Components, but
     // reading their values trigger a development mode assertion. The
     // more correct long term fix is to make getters lazy (shows "..."
@@ -1311,7 +1170,7 @@ function calculateCP(object, item, errorsForObject) {
   const property = item.name;
   delete errorsForObject[property];
   try {
-    if (object instanceof ArrayProxy && property == parseInt(property)) {
+    if (isArrayProxy(object) && property == parseInt(property)) {
       return object.at(property);
     }
 

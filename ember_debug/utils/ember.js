@@ -50,6 +50,13 @@ export const VERSION = environment.VERSION;
 
 export const subscribe = instrumentation.subscribe;
 
+// Glimmer internals (for render-tree.js compatibility)
+export const GlimmerRuntime = instrumentation?.GlimmerRuntime;
+export const GlimmerManager = instrumentation?.GlimmerManager;
+export const GlimmerReference = instrumentation?.GlimmerReference;
+export const GlimmerUtil = instrumentation?.GlimmerUtil;
+export const EmberDestroyable = instrumentation?.EmberDestroyable;
+
 export const cacheFor = objectInternals.cacheFor;
 export const guidFor = objectInternals.guidFor;
 export const meta = objectInternals.meta;
@@ -57,6 +64,11 @@ export const get = objectInternals.get;
 export const set = objectInternals.set;
 
 export const getOwner = owner.getOwner;
+
+// Libraries (RSVP, Application, Namespace, etc.)
+export const RSVP = libraries?.RSVP;
+export const Application = libraries?.Application;
+export const Namespace = libraries?.Namespace;
 
 // Type checking functions (replaces instanceof checks)
 export const isEmberObject = typeChecking.isEmberObject;
