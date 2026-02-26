@@ -1,6 +1,7 @@
 /* eslint-disable ember/no-private-routing-service */
 import DebugPort from './debug-port.js';
 import bound from './utils/bound-method';
+import { emberInspectorAPI } from './utils/ember-inspector-api.js';
 import {
   isComputed,
   getDescriptorFor,
@@ -249,16 +250,18 @@ export default class extends DebugPort {
         this.gotoSource(message.objectId, message.property);
       },
       sendControllerToConsole(message) {
-        const container = this.namespace?.owner;
-        this.sendValueToConsole(container.lookup(`controller:${message.name}`));
+        const owner = this.namespace?.owner;
+        const controller = emberInspectorAPI.owner.lookup(owner, `controller:${message.name}`);
+        this.sendValueToConsole(controller);
       },
       sendRouteHandlerToConsole(message) {
-        const container = this.namespace?.owner;
-        this.sendValueToConsole(container.lookup(`route:${message.name}`));
+        const owner = this.namespace?.owner;
+        const route = emberInspectorAPI.owner.lookup(owner, `route:${message.name}`);
+        this.sendValueToConsole(route);
       },
       sendContainerToConsole() {
-        const container = this.namespace?.owner;
-        this.sendValueToConsole(container);
+        const owner = this.namespace?.owner;
+        this.sendValueToConsole(owner);
       },
       /**
        * Lookup the router instance, and find the route with the given name
@@ -266,23 +269,14 @@ export default class extends DebugPort {
        * @param {string} messsage.name The name of the route to lookup
        */
       inspectRoute(message) {
-        const container = this.namespace?.owner;
-        const router = container.lookup('router:main');
-        const routerLib = router._routerMicrolib || router.router;
-        // 3.9.0 removed intimate APIs from router
-        // https://github.com/emberjs/ember.js/pull/17843
-        // https://deprecations.emberjs.com/v3.x/#toc_remove-handler-infos
-        if (compareVersion(VERSION, '3.9.0') !== -1) {
-          // Ember >= 3.9.0
-          this.sendObject(routerLib.getRoute(message.name));
-        } else {
-          // Ember < 3.9.0
-          this.sendObject(routerLib.getHandler(message.name));
-        }
+        const owner = this.namespace?.owner;
+        const routeHandler = emberInspectorAPI.router.getRouteHandler(owner, message.name);
+        this.sendObject(routeHandler);
       },
       inspectController(message) {
-        const container = this.namespace?.owner;
-        this.sendObject(container.lookup(`controller:${message.name}`));
+        const owner = this.namespace?.owner;
+        const controller = emberInspectorAPI.owner.lookup(owner, `controller:${message.name}`);
+        this.sendObject(controller);
       },
       inspectById(message) {
         const obj = this.sentObjects[message.objectId];
@@ -291,8 +285,9 @@ export default class extends DebugPort {
         }
       },
       inspectByContainerLookup(message) {
-        const container = this.namespace?.owner;
-        this.sendObject(container.lookup(message.name));
+        const owner = this.namespace?.owner;
+        const instance = emberInspectorAPI.owner.lookup(owner, message.name);
+        this.sendObject(instance);
       },
       traceErrors(message) {
         let errors = this._errorsFor[message.objectId];

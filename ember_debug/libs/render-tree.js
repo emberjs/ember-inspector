@@ -1,6 +1,7 @@
 import captureRenderTree from './capture-render-tree.js';
 import { guidFor } from '../utils/ember/object/internals';
 import { inspect } from '../utils/type-check';
+import { emberInspectorAPI } from '../utils/ember-inspector-api.js';
 import { isInVersionSpecifier } from '../utils/version';
 import {
   VERSION,
@@ -28,8 +29,8 @@ class InElementSupportProvider {
     this.registerDestructor = EmberDestroyable?.registerDestructor;
 
     this.debugRenderTree =
-      owner.lookup('renderer:-dom')?.debugRenderTree ||
-      owner.lookup('service:-glimmer-environment')._debugRenderTree;
+      emberInspectorAPI.owner.lookup(owner, 'renderer:-dom')?.debugRenderTree ||
+      emberInspectorAPI.owner.lookup(owner, 'service:-glimmer-environment')._debugRenderTree;
     this.NewElementBuilder =
       this.runtime.NewElementBuilder || this.runtime.NewTreeBuilder;
 
