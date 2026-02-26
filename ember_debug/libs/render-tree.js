@@ -605,8 +605,9 @@ export default class RenderTree {
       // EmberWormhole component from ember-wormhole was used to provide
       // rendering into a given DOM element prior to built-in in-element.
       if (
-        node.template ===
-        'ember-wormhole/templates/components/ember-wormhole.hbs'
+        node.template
+          ?.replace(/\\/g, '/')
+          .includes('ember-wormhole/templates/components/ember-wormhole.hbs')
       ) {
         this.inElementSupport?.remoteRoots.push(node);
         const bounds = node.bounds;
