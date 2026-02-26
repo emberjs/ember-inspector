@@ -142,7 +142,7 @@ export default class extends DebugPort {
               if (!tracked[item.name]) {
                 tracked[item.name] = createPropertyTracker(object, item.name);
               }
-              
+
               changed = hasPropertyChanged(tracked[item.name]);
               if (changed) {
                 value = object.get?.(item.name) || object[item.name];
@@ -552,19 +552,11 @@ export default class extends DebugPort {
   }
 
   mixinsForObject(object) {
-    if (
-      isObjectProxy(object) &&
-      object.content &&
-      !object._showProxyDetails
-    ) {
+    if (isObjectProxy(object) && object.content && !object._showProxyDetails) {
       object = object.content;
     }
 
-    if (
-      isArrayProxy(object) &&
-      object.content &&
-      !object._showProxyDetails
-    ) {
+    if (isArrayProxy(object) && object.content && !object._showProxyDetails) {
       object = object.slice(0, 101);
     }
 
@@ -970,9 +962,9 @@ function calculateCPs(
             if (!tracked[item.name]) {
               tracked[item.name] = createPropertyTracker(object, item.name);
             }
-            
+
             value = calculateCP(object, item, errorsForObject);
-            
+
             if (isTrackedProperty(object, item.name)) {
               if (!item.isComputed && !item.isService) {
                 item.code = '';
@@ -1122,7 +1114,7 @@ function getDebugInfo(object) {
   let debugInfo = null;
   let objectDebugInfo = object._debugInfo;
   if (objectDebugInfo && typeof objectDebugInfo === 'function') {
-    if (object instanceof ObjectProxy && object.content) {
+    if (isObjectProxy(object) && object.content) {
       object = object.content;
     }
     debugInfo = objectDebugInfo.call(object);

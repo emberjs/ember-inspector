@@ -1,11 +1,9 @@
-/* eslint-disable ember/new-module-imports */
-
 /**
  * Ember Inspector API Adapter
- * 
+ *
  * This module provides access to Ember's internal APIs through the new
  * public inspector API provided by appLoader.loadCompatInspector().
- * 
+ *
  * The new API structure eliminates the need to import internal modules
  * and provides a stable, version-independent interface.
  */
@@ -21,7 +19,7 @@ if (globalThis.emberInspectorApps) {
 if (!emberInspectorAPI) {
   throw new Error(
     'Ember Inspector API not available. This version of ember-inspector requires ' +
-    'ember-source to provide the inspector API via appLoader.loadCompatInspector().'
+      'ember-source to provide the inspector API via appLoader.loadCompatInspector().',
   );
 }
 
@@ -100,7 +98,8 @@ export const isTrackedProperty = tracking.isTrackedProperty;
 
 // Computed property utilities
 export const isComputed = computed.isComputed;
-export const getComputedPropertyDescriptor = computed.getComputedPropertyDescriptor;
+export const getComputedPropertyDescriptor =
+  computed.getComputedPropertyDescriptor;
 export const getDependentKeys = computed.getDependentKeys;
 
 // Runloop
@@ -120,6 +119,6 @@ export const Runloop = { join, debounce, cancel, getBackburner };
 // - Application, Namespace, Component, Service, etc. (classes)
 // - InternalsMetal, InternalsRuntime, InternalsUtils, InternalsViews (internal modules)
 // - GlimmerComponent, GlimmerValidator, etc. (Glimmer internals)
-// 
+//
 // Code that previously used `instanceof` checks should now use the type checking functions.
 // Code that previously accessed class names should now use `getClassName()`.

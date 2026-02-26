@@ -1,6 +1,6 @@
 /**
  * Type checking utilities for the Ember Inspector
- * 
+ *
  * Updated to use the new Ember Inspector API instead of direct class imports.
  */
 
@@ -8,7 +8,6 @@ import {
   inspect as emberInspect,
   isComputed as emberIsComputed,
   getComputedPropertyDescriptor,
-  meta as emberMeta,
   isEmberObject,
 } from '../utils/ember';
 
