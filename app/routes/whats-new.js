@@ -14,8 +14,7 @@ function checkStatus(response) {
 }
 
 function getLatestEntry(doc) {
-  const regex =
-    /^#{2} (?:v(\d{1,2}(?:\.\d{1,2})?(?:\.\d{1,2})?)|(?:\[v?(.+)]))/gm;
+  const regex = /^## Release /gm;
   const latest = regex.exec(doc);
   const previous = regex.exec(doc);
 
@@ -42,10 +41,13 @@ export default class WhatsNewRoute extends TabRoute {
   model() {
     let { version } = this.config;
 
-    let ref = version.indexOf('alpha') === -1 ? `v${version}` : 'main';
+    let ref =
+      version.indexOf('alpha') === -1
+        ? `v${version}-ember-inspector`
+        : 'release-preview';
     let url = `https://raw.githubusercontent.com/emberjs/ember-inspector/${encodeURIComponent(
       ref,
-    )}-ember-inspector/CHANGELOG.md`;
+    )}/CHANGELOG.md`;
 
     return fetch(url)
       .then(checkStatus)

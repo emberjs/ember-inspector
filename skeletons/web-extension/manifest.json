@@ -26,6 +26,7 @@
       "world": "MAIN",
       "run_at": "document_start",
       "match_about_blank": true,
+      "match_origin_as_fallback": true,
       "all_frames": true
     },
     {
@@ -33,6 +34,7 @@
       "js": ["content-script.js"],
       "run_at": "document_end",
       "match_about_blank": true,
+      "match_origin_as_fallback": true,
       "all_frames": true
     }
   ],

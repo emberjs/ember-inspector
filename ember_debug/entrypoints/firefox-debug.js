@@ -1,6 +1,10 @@
 import loadEmberDebugInWebpage from '../lib/load-ember-debug-in-webpage';
-import { onEmberReady, startInspector } from '../lib/start-inspector';
 
-import adapter from '../adapters/firefox';
+loadEmberDebugInWebpage(async () => {
+  const { onEmberReady, startInspector } = await import(
+    '../lib/start-inspector'
+  );
 
-loadEmberDebugInWebpage(() => onEmberReady(startInspector(adapter)));
+  const adapter = (await import('../adapters/firefox.js')).default;
+  onEmberReady(startInspector(adapter));
+});

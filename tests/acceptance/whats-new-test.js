@@ -7,7 +7,7 @@ import { setupTestAdapter } from '../test-adapter';
 function urlFor(ref) {
   return `https://raw.githubusercontent.com/emberjs/ember-inspector/${encodeURIComponent(
     ref,
-  )}-ember-inspector/CHANGELOG.md`;
+  )}/CHANGELOG.md`;
 }
 
 function generateContent(main = false) {
@@ -17,7 +17,7 @@ function generateContent(main = false) {
 
   if (main) {
     content.push(`
-## [Unreleased](https://github.com/emberjs/ember-inspector/tree/HEAD)
+## Release [Unreleased](https://github.com/emberjs/ember-inspector/tree/HEAD)
 
 **Merged pull requests:**
 
@@ -25,7 +25,7 @@ function generateContent(main = false) {
   }
 
   content.push(`
-## v4.5.3 (2021-11-18)
+## Release (2021-11-18)
 
 [Full Changelog](https://emberjs.com)
 
@@ -33,7 +33,7 @@ function generateContent(main = false) {
 
 - Stuff
 
-## v4.5.2 (2021-11-17)
+## Release (2021-11-17)
 
 [Full Changelog](https://emberjs.com)
 
@@ -76,7 +76,7 @@ module('Whats New', function (outer) {
 
     test('Changelog is parsed and displayed', async function (assert) {
       this.server = new Pretender(function () {
-        this.get(urlFor('v4.5.3'), () => [
+        this.get(urlFor('v4.5.3-ember-inspector'), () => [
           200,
           { 'Content-Type': 'text/plain' },
           generateContent(),
@@ -91,14 +91,14 @@ module('Whats New', function (outer) {
 
       assert.strictEqual(
         find('.whats-new h2').textContent,
-        'v4.5.3 (2021-11-18)',
+        'Release (2021-11-18)',
         'correct section of markdown is rendered',
       );
     });
 
     test('Error message is displayed on request failure', async function (assert) {
       this.server = new Pretender(function () {
-        this.get(urlFor('v4.5.3'), () => [404, {}, '']);
+        this.get(urlFor('v4.5.3-ember-inspector'), () => [404, {}, '']);
       });
 
       await visit('/info/whats-new');
@@ -116,7 +116,7 @@ module('Whats New', function (outer) {
 
     test('Changelog is parsed and displayed', async function (assert) {
       this.server = new Pretender(function () {
-        this.get(urlFor('main'), () => [
+        this.get(urlFor('release-preview'), () => [
           200,
           { 'Content-Type': 'text/plain' },
           generateContent(true),
@@ -138,7 +138,7 @@ module('Whats New', function (outer) {
 
     test('Error message is displayed on request failure', async function (assert) {
       this.server = new Pretender(function () {
-        this.get(urlFor('main'), () => [404, {}, '']);
+        this.get(urlFor('release-preview'), () => [404, {}, '']);
       });
 
       await visit('/info/whats-new');
