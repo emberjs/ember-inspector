@@ -3,7 +3,7 @@ import { emberInspectorAPI } from './utils/ember-inspector-api.js';
 
 /**
  * Container Debug - Refactored to use new Ember Inspector API
- * 
+ *
  * Key improvements:
  * - No direct access to owner.__container__
  * - No version-specific logic (InheritingDict handling)
@@ -49,7 +49,10 @@ export default class extends DebugPort {
       },
       sendInstanceToConsole(message) {
         // Use new API for lookup
-        const instance = emberInspectorAPI.owner.lookup(this.owner, message.name);
+        const instance = emberInspectorAPI.owner.lookup(
+          this.owner,
+          message.name,
+        );
         this.objectInspector.sendValueToConsole(instance);
       },
     };
@@ -65,13 +68,13 @@ export default class extends DebugPort {
 
   /**
    * Get all container instances grouped by type.
-   * 
+   *
    * BEFORE (30+ lines):
    * - Direct cache access: owner.__container__.cache
    * - Version detection: InheritingDict vs plain object
    * - Manual iteration and filtering
    * - Manual grouping by type
-   * 
+   *
    * AFTER (1 line):
    * - Single API call with filtering options
    * - All complexity handled by Ember
@@ -95,11 +98,11 @@ export default class extends DebugPort {
   getInstances(type) {
     const instancesByType = this.instancesByType();
     const instances = instancesByType[type];
-    
+
     if (!instances) {
       return null;
     }
-    
+
     return instances.map((item) => ({
       name: this.nameFromKey(item.fullName),
       fullName: item.fullName,

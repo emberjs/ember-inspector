@@ -1,4 +1,3 @@
-/* eslint-disable ember/no-private-routing-service */
 import DebugPort from './debug-port.js';
 import bound from './utils/bound-method';
 import { emberInspectorAPI } from './utils/ember-inspector-api.js';
@@ -8,10 +7,8 @@ import {
   typeOf,
   inspect,
 } from './utils/type-check';
-import { compareVersion } from './utils/version';
 import {
   meta as emberMeta,
-  VERSION,
   getOwner,
   cacheFor,
   guidFor,
@@ -244,12 +241,18 @@ export default class extends DebugPort {
       },
       sendControllerToConsole(message) {
         const owner = this.namespace?.owner;
-        const controller = emberInspectorAPI.owner.lookup(owner, `controller:${message.name}`);
+        const controller = emberInspectorAPI.owner.lookup(
+          owner,
+          `controller:${message.name}`,
+        );
         this.sendValueToConsole(controller);
       },
       sendRouteHandlerToConsole(message) {
         const owner = this.namespace?.owner;
-        const route = emberInspectorAPI.owner.lookup(owner, `route:${message.name}`);
+        const route = emberInspectorAPI.owner.lookup(
+          owner,
+          `route:${message.name}`,
+        );
         this.sendValueToConsole(route);
       },
       sendContainerToConsole() {
@@ -263,12 +266,18 @@ export default class extends DebugPort {
        */
       inspectRoute(message) {
         const owner = this.namespace?.owner;
-        const routeHandler = emberInspectorAPI.router.getRouteHandler(owner, message.name);
+        const routeHandler = emberInspectorAPI.router.getRouteHandler(
+          owner,
+          message.name,
+        );
         this.sendObject(routeHandler);
       },
       inspectController(message) {
         const owner = this.namespace?.owner;
-        const controller = emberInspectorAPI.owner.lookup(owner, `controller:${message.name}`);
+        const controller = emberInspectorAPI.owner.lookup(
+          owner,
+          `controller:${message.name}`,
+        );
         this.sendObject(controller);
       },
       inspectById(message) {
@@ -780,11 +789,13 @@ function addProperties(properties, hash) {
 
     if (isComputed(hash, prop)) {
       options.isComputed = true;
-      
+
       // Use the new API to get computed metadata instead of accessing private properties
       const metadata = emberInspectorAPI.computed.getComputedMetadata(desc);
       if (metadata) {
-        options.dependentKeys = metadata.dependentKeys.map((key) => key.toString());
+        options.dependentKeys = metadata.dependentKeys.map((key) =>
+          key.toString(),
+        );
         options.code = metadata.code || '';
         options.isCalculated = !!metadata.getter;
         options.readOnly = metadata.readOnly;
@@ -792,7 +803,9 @@ function addProperties(properties, hash) {
         options.canTrack = options.code !== '';
       } else {
         // Fallback for when metadata is not available
-        options.dependentKeys = (desc._dependentKeys || []).map((key) => key.toString());
+        options.dependentKeys = (desc._dependentKeys || []).map((key) =>
+          key.toString(),
+        );
         options.code = '';
         options.readOnly = false;
         options.auto = false;

@@ -47,8 +47,10 @@ export default class RouteDebug extends DebugPort {
   }
 
   get router() {
-    if (emberInspectorAPI.owner.isDestroyed(this.owner) ||
-        emberInspectorAPI.owner.isDestroying(this.owner)) {
+    if (
+      emberInspectorAPI.owner.isDestroyed(this.owner) ||
+      emberInspectorAPI.owner.isDestroying(this.owner)
+    ) {
       return null;
     }
     return emberInspectorAPI.owner.lookup(this.owner, 'router:main');
@@ -102,14 +104,18 @@ export default class RouteDebug extends DebugPort {
    * - Consistent structure across versions
    */
   get routeTree() {
-    if (emberInspectorAPI.owner.isDestroyed(this.owner) ||
-        emberInspectorAPI.owner.isDestroying(this.owner)) {
+    if (
+      emberInspectorAPI.owner.isDestroyed(this.owner) ||
+      emberInspectorAPI.owner.isDestroying(this.owner)
+    ) {
       return null;
     }
 
     if (!this._cachedRouteTree && this.router) {
       // Use new high-level API - replaces 150+ lines of complex logic
-      this._cachedRouteTree = emberInspectorAPI.router.buildRouteTree(this.owner);
+      this._cachedRouteTree = emberInspectorAPI.router.buildRouteTree(
+        this.owner,
+      );
     }
 
     return this._cachedRouteTree;

@@ -1,20 +1,22 @@
+/* eslint-disable no-undef */
+/* eslint-disable ember/no-private-routing-service */
 /**
  * Ember Inspector API - Stub Implementation
- * 
+ *
  * This file demonstrates what the proposed public API from ember-source
  * would look like when accessed via appLoader.loadCompatInspector()
- * 
+ *
  * In production, this would be provided by ember-source, not the inspector.
  * The inspector would access it via:
- * 
+ *
  *   const api = globalThis.emberInspectorApps[0].loadCompatInspector();
- * 
+ *
  * This stub shows the interface that ember-source should implement.
  */
 
 /**
  * STUB: This would be provided by ember-source
- * 
+ *
  * For now, this falls back to the old implementation to maintain compatibility.
  * Once ember-source implements the API, this file can be removed.
  */
@@ -44,7 +46,9 @@ export const emberInspectorAPI = {
      */
     factoryFor(owner, fullName) {
       // STUB: Would be implemented by ember-source
-      return owner.factoryFor ? owner.factoryFor(fullName) : owner._lookupFactory(fullName);
+      return owner.factoryFor
+        ? owner.factoryFor(fullName)
+        : owner._lookupFactory(fullName);
     },
 
     /**
@@ -81,10 +85,10 @@ export const emberInspectorAPI = {
 
     /**
      * HIGH-LEVEL API: Get all instantiated objects grouped by type
-     * 
+     *
      * This replaces direct access to owner.__container__.cache
      * and handles all version differences internally.
-     * 
+     *
      * @param {Owner} owner - The owner instance
      * @param {Object} options - Filtering options
      * @param {Array<string>} options.excludeTypes - Types to exclude
@@ -94,42 +98,45 @@ export const emberInspectorAPI = {
     getContainerInstances(owner, options = {}) {
       // STUB: Would be implemented by ember-source
       // This is what ember-source would implement to replace the complex logic
-      
+
       const { excludeTypes = [], includePrivate = false } = options;
       const instancesByType = {};
-      
+
       // Access container cache (this would be internal to ember-source)
       let cache = owner.__container__.cache;
-      
+
       // Handle InheritingDict (Ember < 1.8) - ember-source knows its own version
-      if (typeof cache.dict !== 'undefined' && typeof cache.eachLocal !== 'undefined') {
+      if (
+        typeof cache.dict !== 'undefined' &&
+        typeof cache.eachLocal !== 'undefined'
+      ) {
         cache = cache.dict;
       }
-      
+
       // Iterate and group by type
       for (let key in cache) {
         const type = key.split(':').shift();
-        
+
         // Filter private types
         if (!includePrivate && type[0] === '-') {
           continue;
         }
-        
+
         // Filter excluded types
         if (excludeTypes.indexOf(type) !== -1) {
           continue;
         }
-        
+
         if (!instancesByType[type]) {
           instancesByType[type] = [];
         }
-        
+
         instancesByType[type].push({
           fullName: key,
           instance: cache[key],
         });
       }
-      
+
       return instancesByType;
     },
   },
@@ -138,7 +145,7 @@ export const emberInspectorAPI = {
   router: {
     /**
      * HIGH-LEVEL API: Build complete route tree with all metadata
-     * 
+     *
      * This replaces 150+ lines of complex logic that:
      * - Accesses router internals
      * - Handles version differences
@@ -147,21 +154,22 @@ export const emberInspectorAPI = {
      * - Parses URL segments
      * - Handles unresolved promises
      * - Builds hierarchical structure
-     * 
+     *
      * @param {Owner} owner - The owner instance
      * @returns {Object} Complete route tree with hierarchy and metadata
      */
+    // eslint-disable-next-line no-unused-vars
     buildRouteTree(owner) {
       // STUB: Would be implemented by ember-source
       // This is a complex implementation that ember-source would provide
-      
+
       // For now, fall back to existing implementation
       // In production, ember-source would implement this properly
       throw new Error(
         'buildRouteTree API not yet implemented by ember-source. ' +
-        'This is a stub showing what the API would look like.'
+          'This is a stub showing what the API would look like.',
       );
-      
+
       // The actual implementation would:
       // 1. Access router._routerMicrolib.recognizer.names
       // 2. Iterate all routes and build tree structure
@@ -170,7 +178,7 @@ export const emberInspectorAPI = {
       // 5. Parse URL segments and format URLs
       // 6. Handle unresolved promises
       // 7. Return structured tree
-      
+
       // Example return value:
       // {
       //   children: [
@@ -195,7 +203,7 @@ export const emberInspectorAPI = {
       // STUB: Would be implemented by ember-source
       const router = owner.lookup('router:main');
       const routerLib = router._routerMicrolib || router.router;
-      
+
       // Handle version differences internally
       if (routerLib.getRoute) {
         return routerLib.getRoute(routeName);
@@ -239,19 +247,20 @@ export const emberInspectorAPI = {
       // STUB: Would be implemented by ember-source
       const resolver = owner.application?.__registry__?.resolver;
       if (!resolver) return null;
-      
+
       if (resolver.lookupDescription) {
         return resolver.lookupDescription(fullName);
       } else if (resolver.describe) {
         return resolver.describe(fullName);
       }
-      
+
       return null;
     },
 
     /**
      * Get Ember CLI configuration
      */
+    // eslint-disable-next-line no-unused-vars
     getEmberCliConfig(owner) {
       // STUB: Would be implemented by ember-source
       // This would be provided by ember-source based on the app's configuration
@@ -271,7 +280,6 @@ export const emberInspectorAPI = {
       return null;
     },
   },
-};
 
   // Computed property utilities
   computed: {
@@ -280,6 +288,7 @@ export const emberInspectorAPI = {
      */
     isComputed(obj, key) {
       // STUB: Would be implemented by ember-source
+
       const { isComputed } = require('./type-check');
       return isComputed(obj, key);
     },
@@ -305,7 +314,7 @@ export const emberInspectorAPI = {
     /**
      * Get computed property metadata without accessing private properties.
      * This replaces direct access to desc._getter, desc._readOnly, desc._auto, etc.
-     * 
+     *
      * @param {Object} descriptor - The computed property descriptor
      * @returns {Object} Public metadata object
      */
@@ -313,7 +322,7 @@ export const emberInspectorAPI = {
       // STUB: Would be implemented by ember-source
       // For now, fall back to accessing private properties
       // In production, ember-source would provide this as a public API
-      
+
       if (!descriptor) {
         return null;
       }
@@ -324,16 +333,18 @@ export const emberInspectorAPI = {
         readOnly: descriptor._readOnly || false,
         auto: descriptor._auto || false,
         dependentKeys: descriptor._dependentKeys || [],
-        code: descriptor._getter 
+        code: descriptor._getter
           ? Function.prototype.toString.call(descriptor._getter)
-          : (descriptor.get ? Function.prototype.toString.call(descriptor.get) : ''),
+          : descriptor.get
+            ? Function.prototype.toString.call(descriptor.get)
+            : '',
       };
     },
 
     /**
      * Check if a descriptor is Ember's mandatory setter.
      * This replaces checking for "You attempted to update" string in setter code.
-     * 
+     *
      * @param {Object} descriptor - The property descriptor
      * @returns {boolean} True if this is a mandatory setter
      */
@@ -341,7 +352,7 @@ export const emberInspectorAPI = {
       // STUB: Would be implemented by ember-source
       // For now, fall back to string checking
       // In production, ember-source would provide this as a public API
-      
+
       if (!descriptor?.set) {
         return false;
       }
@@ -355,7 +366,7 @@ export const emberInspectorAPI = {
     /**
      * Check if a property uses the @cached decorator from @glimmer/tracking.
      * The @cached decorator memoizes getter results and invalidates when dependencies change.
-     * 
+     *
      * @param {Object} obj - The object
      * @param {string} key - The property name
      * @returns {boolean} True if the property uses @cached decorator
@@ -364,7 +375,7 @@ export const emberInspectorAPI = {
       // STUB: Would be implemented by ember-source
       // For now, try to detect @cached by checking for specific patterns
       // In production, ember-source would provide this as a public API
-      
+
       const descriptor = Object.getOwnPropertyDescriptor(obj, key);
       if (!descriptor?.get) {
         return false;
@@ -374,6 +385,7 @@ export const emberInspectorAPI = {
       // Ember would know internally if a property is cached
       // For now, we can check if it has a getter and is tracked
       // but not a computed property (computed properties have _getter)
+
       const isComputed = require('./type-check').isComputed;
       if (isComputed(obj, key)) {
         return false;
@@ -397,7 +409,7 @@ export const emberInspectorAPI = {
     /**
      * Get the debug render tree instance for component inspection.
      * This replaces direct access to renderer._debugRenderTree or service._debugRenderTree.
-     * 
+     *
      * @param {Owner} owner - The owner instance
      * @returns {Object|null} The debug render tree instance or null
      */
@@ -405,25 +417,25 @@ export const emberInspectorAPI = {
       // STUB: Would be implemented by ember-source
       // For now, fall back to accessing private properties
       // In production, ember-source would provide this as a public API
-      
+
       const renderer = owner.lookup('renderer:-dom');
       if (renderer?.debugRenderTree) {
         return renderer.debugRenderTree;
       }
-      
+
       const glimmerEnv = owner.lookup('service:-glimmer-environment');
       if (glimmerEnv?._debugRenderTree) {
         return glimmerEnv._debugRenderTree;
       }
-      
+
       return null;
     },
   },
-
+};
 
 /**
  * USAGE NOTES:
- * 
+ *
  * 1. This stub file demonstrates the API interface
  * 2. In production, ember-source would provide this via loadCompatInspector()
  * 3. The inspector would access it as:

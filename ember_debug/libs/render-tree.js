@@ -29,7 +29,8 @@ class InElementSupportProvider {
     this.registerDestructor = EmberDestroyable?.registerDestructor;
 
     // Use the new API to get debug render tree instead of accessing private properties
-    this.debugRenderTree = emberInspectorAPI.renderTree.getDebugRenderTree(owner);
+    this.debugRenderTree =
+      emberInspectorAPI.renderTree.getDebugRenderTree(owner);
     this.NewElementBuilder =
       this.runtime.NewElementBuilder || this.runtime.NewTreeBuilder;
 
