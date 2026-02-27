@@ -279,6 +279,20 @@ export const emberInspectorAPI = {
       }
       return null;
     },
+
+    /**
+     * Find the Ember Application instance from registered namespaces
+     */
+    getApplication({ Application, Namespace }) {
+      let application;
+      Namespace.NAMESPACES.forEach((namespace) => {
+        if (namespace instanceof Application) {
+          application = namespace;
+          return false;
+        }
+      });
+      return application;
+    },
   },
 
   // Computed property utilities

@@ -15,6 +15,7 @@ import { Application, Namespace } from './utils/ember';
 import { guidFor, setGuidPrefix } from './utils/ember/object/internals';
 import { run } from './utils/ember/runloop';
 import BaseObject from './utils/base-object';
+import { emberInspectorAPI } from './utils/ember-inspector-api.js';
 
 class EmberDebug extends BaseObject {
   /**
@@ -54,7 +55,10 @@ class EmberDebug extends BaseObject {
       return;
     }
     if (!this._application && !this.isTesting) {
-      this._application = getApplication();
+      this._application = emberInspectorAPI.owner.getApplication({
+        Application,
+        Namespace,
+      });
     }
     this.started = true;
 
@@ -102,7 +106,9 @@ class EmberDebug extends BaseObject {
   reset($keepAdapter) {
     setGuidPrefix(Math.random().toString());
     if (!this.isTesting && !this.owner) {
-      this.owner = getOwner(this._application);
+      this.owner = emberInspectorAPI.owner.getOwnerFromApplication(
+        this._application,
+      );
     }
     this.destroyContainer();
     run(() => {
@@ -142,27 +148,6 @@ class EmberDebug extends BaseObject {
       _application: null,
       owner: null,
     });
-  }
-}
-
-function getApplication() {
-  let namespaces = Namespace.NAMESPACES;
-  let application;
-
-  namespaces.forEach((namespace) => {
-    if (namespace instanceof Application) {
-      application = namespace;
-      return false;
-    }
-  });
-  return application;
-}
-
-function getOwner(application) {
-  if (application.autoboot) {
-    return application.__deprecatedInstance__;
-  } else if (application._applicationInstances /* Ember 3.1+ */) {
-    return [...application._applicationInstances][0];
   }
 }
 
