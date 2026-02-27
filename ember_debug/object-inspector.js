@@ -398,6 +398,13 @@ export default class extends DebugPort {
         const container = this.namespace?.owner;
         this.sendValueToConsole(container);
       },
+      showRenderTreeNode(message) {
+        let node = this.namespace?.viewDebug?.renderTree?.getNode(message.id);
+
+        if (node) {
+          this.sendValueToConsole(node);
+        }
+      },
       /**
        * Lookup the router instance, and find the route with the given name
        * @param message The message sent

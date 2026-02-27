@@ -96,7 +96,7 @@ async function inspectById(objectId) {
 
 async function getRenderTree() {
   let message = await captureMessage('view:renderTree', async () => {
-    EmberDebug.port.trigger('view:getTree', {});
+    EmberDebug.port.trigger('view:getTree', { immediate: true });
   });
 
   if (message) {
