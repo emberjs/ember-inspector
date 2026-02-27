@@ -306,6 +306,16 @@ interface EmberInspectorAPI {
      * @returns true if this is a mandatory setter
      */
     isMandatorySetter: (descriptor: any) => boolean;
+    
+    /**
+     * Check if a property uses the @cached decorator from @glimmer/tracking.
+     * The @cached decorator memoizes getter results and invalidates when dependencies change.
+     * 
+     * @param obj - The object
+     * @param key - The property name
+     * @returns true if the property uses @cached decorator
+     */
+    isCached: (obj: object, key: string) => boolean;
   };
   
   // Render tree debugging

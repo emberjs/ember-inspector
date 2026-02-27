@@ -351,6 +351,45 @@ export const emberInspectorAPI = {
         .call(descriptor.set)
         .includes('You attempted to update');
     },
+
+    /**
+     * Check if a property uses the @cached decorator from @glimmer/tracking.
+     * The @cached decorator memoizes getter results and invalidates when dependencies change.
+     * 
+     * @param {Object} obj - The object
+     * @param {string} key - The property name
+     * @returns {boolean} True if the property uses @cached decorator
+     */
+    isCached(obj, key) {
+      // STUB: Would be implemented by ember-source
+      // For now, try to detect @cached by checking for specific patterns
+      // In production, ember-source would provide this as a public API
+      
+      const descriptor = Object.getOwnPropertyDescriptor(obj, key);
+      if (!descriptor?.get) {
+        return false;
+      }
+
+      // @cached creates a native getter with a special tag
+      // Ember would know internally if a property is cached
+      // For now, we can check if it has a getter and is tracked
+      // but not a computed property (computed properties have _getter)
+      const isComputed = require('./type-check').isComputed;
+      if (isComputed(obj, key)) {
+        return false;
+      }
+
+      // Check if the getter has tracking metadata
+      // This is a heuristic - ember-source would have definitive knowledge
+      try {
+        const { tagForProperty } = require('../utils/ember');
+        const tag = tagForProperty(obj, key);
+        // If it has a tag but isn't computed, it's likely @cached or @tracked
+        return !!tag;
+      } catch {
+        return false;
+      }
+    },
   },
 
   // Render tree debugging
