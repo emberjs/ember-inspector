@@ -787,24 +787,24 @@ function addProperties(properties, hash) {
 
     if (isComputed(hash, prop)) {
       options.isComputed = true;
-      options.dependentKeys = (desc._dependentKeys || []).map((key) =>
-        key.toString(),
-      );
-
-      if (typeof desc.get === 'function') {
-        options.code = Function.prototype.toString.call(desc.get);
-      }
-      if (typeof desc._getter === 'function') {
-        options.isCalculated = true;
-        options.code = Function.prototype.toString.call(desc._getter);
-      }
-      if (!options.code) {
+      
+      // Use the new API to get computed metadata instead of accessing private properties
+      const metadata = emberInspectorAPI.computed.getComputedMetadata(desc);
+      if (metadata) {
+        options.dependentKeys = metadata.dependentKeys.map((key) => key.toString());
+        options.code = metadata.code || '';
+        options.isCalculated = !!metadata.getter;
+        options.readOnly = metadata.readOnly;
+        options.auto = metadata.auto;
+        options.canTrack = options.code !== '';
+      } else {
+        // Fallback for when metadata is not available
+        options.dependentKeys = (desc._dependentKeys || []).map((key) => key.toString());
         options.code = '';
+        options.readOnly = false;
+        options.auto = false;
+        options.canTrack = false;
       }
-
-      options.readOnly = desc._readOnly;
-      options.auto = desc._auto;
-      options.canTrack = options.code !== '';
     }
 
     if (desc.get) {

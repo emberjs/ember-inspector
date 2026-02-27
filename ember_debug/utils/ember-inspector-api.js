@@ -273,6 +273,93 @@ export const emberInspectorAPI = {
   },
 };
 
+  // Computed property utilities
+  computed: {
+    /**
+     * Check if a property is computed
+     */
+    isComputed(obj, key) {
+      // STUB: Would be implemented by ember-source
+      const { isComputed } = require('./type-check');
+      return isComputed(obj, key);
+    },
+
+    /**
+     * Get computed property descriptor
+     */
+    getComputedPropertyDescriptor(obj, key) {
+      // STUB: Would be implemented by ember-source
+      const { getDescriptorFor } = require('./type-check');
+      return getDescriptorFor(obj, key);
+    },
+
+    /**
+     * Get dependent keys for a computed property
+     */
+    getDependentKeys(obj, key) {
+      // STUB: Would be implemented by ember-source
+      const desc = this.getComputedPropertyDescriptor(obj, key);
+      return desc?._dependentKeys || [];
+    },
+
+    /**
+     * Get computed property metadata without accessing private properties.
+     * This replaces direct access to desc._getter, desc._readOnly, desc._auto, etc.
+     * 
+     * @param {Object} descriptor - The computed property descriptor
+     * @returns {Object} Public metadata object
+     */
+    getComputedMetadata(descriptor) {
+      // STUB: Would be implemented by ember-source
+      // For now, fall back to accessing private properties
+      // In production, ember-source would provide this as a public API
+      
+      if (!descriptor) {
+        return null;
+      }
+
+      return {
+        getter: descriptor._getter || descriptor.get,
+        setter: descriptor.set,
+        readOnly: descriptor._readOnly || false,
+        auto: descriptor._auto || false,
+        dependentKeys: descriptor._dependentKeys || [],
+        code: descriptor._getter 
+          ? Function.prototype.toString.call(descriptor._getter)
+          : (descriptor.get ? Function.prototype.toString.call(descriptor.get) : ''),
+      };
+    },
+  },
+
+  // Render tree debugging
+  renderTree: {
+    /**
+     * Get the debug render tree instance for component inspection.
+     * This replaces direct access to renderer._debugRenderTree or service._debugRenderTree.
+     * 
+     * @param {Owner} owner - The owner instance
+     * @returns {Object|null} The debug render tree instance or null
+     */
+    getDebugRenderTree(owner) {
+      // STUB: Would be implemented by ember-source
+      // For now, fall back to accessing private properties
+      // In production, ember-source would provide this as a public API
+      
+      const renderer = owner.lookup('renderer:-dom');
+      if (renderer?.debugRenderTree) {
+        return renderer.debugRenderTree;
+      }
+      
+      const glimmerEnv = owner.lookup('service:-glimmer-environment');
+      if (glimmerEnv?._debugRenderTree) {
+        return glimmerEnv._debugRenderTree;
+      }
+      
+      return null;
+    },
+  },
+
+
 /**
  * USAGE NOTES:
  * 

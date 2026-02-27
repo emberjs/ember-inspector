@@ -28,9 +28,8 @@ class InElementSupportProvider {
     this.DESTROY = GlimmerUtil?.DESTROY;
     this.registerDestructor = EmberDestroyable?.registerDestructor;
 
-    this.debugRenderTree =
-      emberInspectorAPI.owner.lookup(owner, 'renderer:-dom')?.debugRenderTree ||
-      emberInspectorAPI.owner.lookup(owner, 'service:-glimmer-environment')._debugRenderTree;
+    // Use the new API to get debug render tree instead of accessing private properties
+    this.debugRenderTree = emberInspectorAPI.renderTree.getDebugRenderTree(owner);
     this.NewElementBuilder =
       this.runtime.NewElementBuilder || this.runtime.NewTreeBuilder;
 

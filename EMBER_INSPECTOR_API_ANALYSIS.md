@@ -288,6 +288,27 @@ interface EmberInspectorAPI {
     isComputed: (obj: object, key: string) => boolean;
     getComputedPropertyDescriptor: (obj: object, key: string) => ComputedPropertyDescriptor | null;
     getDependentKeys: (obj: object, key: string) => Array<string>;
+    
+    /**
+     * Get computed property metadata including getter, setter, and flags.
+     * This replaces direct access to descriptor internals like _getter, _readOnly, _auto.
+     * 
+     * @param descriptor - The computed property descriptor
+     * @returns Metadata object with public properties
+     */
+    getComputedMetadata: (descriptor: any) => ComputedMetadata;
+  };
+  
+  // Render tree debugging
+  renderTree: {
+    /**
+     * Get the debug render tree instance for inspecting component hierarchy.
+     * This replaces direct access to renderer._debugRenderTree or service._debugRenderTree.
+     * 
+     * @param owner - The owner instance
+     * @returns The debug render tree instance or null if not available
+     */
+    getDebugRenderTree: (owner: Owner) => DebugRenderTree | null;
   };
   
   // Runloop access
@@ -359,6 +380,40 @@ interface ComputedPropertyDescriptor {
   get?: Function;
   set?: Function;
   _getter?: Function;
+}
+
+/**
+ * Public metadata for computed properties.
+ * Replaces direct access to private descriptor properties.
+ */
+interface ComputedMetadata {
+  // The getter function (if available)
+  getter?: Function;
+  
+  // The setter function (if available)
+  setter?: Function;
+  
+  // Whether the computed property is read-only
+  readOnly: boolean;
+  
+  // Whether the computed property uses auto-tracking
+  auto: boolean;
+  
+  // Array of dependent keys
+  dependentKeys: Array<string>;
+  
+  // Source code of the getter (for display purposes)
+  code?: string;
+}
+
+/**
+ * Debug render tree interface for component inspection.
+ * Replaces direct access to _debugRenderTree.
+ */
+interface DebugRenderTree {
+  // Methods for traversing and inspecting the render tree
+  // (Actual interface would be defined by Ember's implementation)
+  [key: string]: any;
 }
 
 interface DeprecationHandler {
