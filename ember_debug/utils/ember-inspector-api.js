@@ -18,4 +18,5 @@
  * For now, this falls back to the old implementation to maintain compatibility.
  * Once ember-source implements the API, this file can be removed.
  */
-export const emberInspectorAPI = await globalThis.emberInspectorApps[0].loadCompatInspector();
+export const emberInspectorAPI =
+  await globalThis.emberInspectorApps[0].loadCompatInspector();
