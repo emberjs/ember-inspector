@@ -10,6 +10,7 @@ import {
   teardownContext,
 } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
+import { setupInspectorSupport } from '@ember/inspector-support';
 import config from 'test-app/config/environment';
 import { hbs } from 'ember-cli-htmlbars';
 
@@ -35,6 +36,7 @@ export default function setupEmberDebugTest(hooks, options = {}) {
       Resolver,
     });
     setApplication(app);
+    setupInspectorSupport();
 
     await setupContext(this);
     await setupApplicationContext(this);
@@ -88,5 +90,7 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     setApplication(originalApp);
 
     run(app, 'destroy');
+
+    globalThis.emberInspectorApps = [];
   });
 }

@@ -412,13 +412,13 @@ importers:
         version: 2.2.0
       '@ember/render-modifiers':
         specifier: ^3.0.0
-        version: 3.0.0(@glint/template@1.5.1)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1))
+        version: 3.0.0(@glint/template@1.5.1)(ember-source@test-apps+classic+patricklx+ember.js+de8f0605)
       '@ember/string':
         specifier: ^4.0.0
         version: 4.0.0
       '@ember/test-helpers':
         specifier: ^4.0.4
-        version: 4.0.4(@babel/core@7.26.0)(@glint/template@1.5.1)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1))
+        version: 4.0.4(@babel/core@7.26.0)(@glint/template@1.5.1)(ember-source@test-apps+classic+patricklx+ember.js+de8f0605)
       '@eslint/js':
         specifier: ^9.17.0
         version: 9.18.0
@@ -472,25 +472,25 @@ importers:
         version: 1.0.1
       ember-load-initializers:
         specifier: ^3.0.1
-        version: 3.0.1(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1))
+        version: 3.0.1(ember-source@test-apps+classic+patricklx+ember.js+de8f0605)
       ember-modifier:
         specifier: ^4.2.0
-        version: 4.2.0(@babel/core@7.26.0)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1))
+        version: 4.2.0(@babel/core@7.26.0)(ember-source@test-apps+classic+patricklx+ember.js+de8f0605)
       ember-page-title:
         specifier: ^8.2.3
-        version: 8.2.4(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1))
+        version: 8.2.4(ember-source@test-apps+classic+patricklx+ember.js+de8f0605)
       ember-qunit:
         specifier: ^8.1.1
-        version: 8.1.1(@ember/test-helpers@4.0.4(@babel/core@7.26.0)(@glint/template@1.5.1)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1)))(@glint/template@1.5.1)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1))(qunit@2.24.1)
+        version: 8.1.1(@ember/test-helpers@4.0.4(@babel/core@7.26.0)(@glint/template@1.5.1)(ember-source@test-apps+classic+patricklx+ember.js+de8f0605))(@glint/template@1.5.1)(ember-source@test-apps+classic+patricklx+ember.js+de8f0605)(qunit@2.24.1)
       ember-resolver:
         specifier: ^13.1.0
         version: 13.2.0
       ember-sinon-qunit:
         specifier: ^7.5.0
-        version: 7.5.0(@babel/core@7.26.0)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1))(qunit@2.24.1)(sinon@15.2.0)
+        version: 7.5.0(@babel/core@7.26.0)(ember-source@test-apps+classic+patricklx+ember.js+de8f0605)(qunit@2.24.1)(sinon@15.2.0)
       ember-source:
-        specifier: ^5.0.0
-        version: 5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1)
+        specifier: patricklx/ember.js:de8f0605
+        version: link:patricklx/ember.js:de8f0605
       ember-template-lint:
         specifier: ^6.0.0
         version: 6.0.0
@@ -10702,13 +10702,13 @@ snapshots:
       - '@babel/core'
       - supports-color
 
-  '@ember/render-modifiers@3.0.0(@glint/template@1.5.1)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1))':
+  '@ember/render-modifiers@3.0.0(@glint/template@1.5.1)(ember-source@test-apps+classic+patricklx+ember.js+de8f0605)':
     dependencies:
       '@babel/core': 7.26.0
       '@embroider/macros': 1.16.9(@glint/template@1.5.1)
       ember-cli-babel: 8.2.0(@babel/core@7.26.0)
       ember-modifier-manager-polyfill: 1.2.0(@babel/core@7.26.0)
-      ember-source: 5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1)
+      ember-source: link:test-apps/classic/patricklx/ember.js:de8f0605
     optionalDependencies:
       '@glint/template': 1.5.1
     transitivePeerDependencies:
@@ -10731,6 +10731,20 @@ snapshots:
       decorator-transforms: 2.2.2(@babel/core@7.26.0)
       dom-element-descriptors: 0.5.1
       ember-source: 5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1)
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@glint/template'
+      - supports-color
+
+  '@ember/test-helpers@4.0.4(@babel/core@7.26.0)(@glint/template@1.5.1)(ember-source@test-apps+classic+patricklx+ember.js+de8f0605)':
+    dependencies:
+      '@ember/test-waiters': 3.1.0
+      '@embroider/addon-shim': 1.8.9
+      '@embroider/macros': 1.16.9(@glint/template@1.5.1)
+      '@simple-dom/interface': 1.4.0
+      decorator-transforms: 2.2.2(@babel/core@7.26.0)
+      dom-element-descriptors: 0.5.1
+      ember-source: link:test-apps/classic/patricklx/ember.js:de8f0605
     transitivePeerDependencies:
       - '@babel/core'
       - '@glint/template'
@@ -14788,6 +14802,10 @@ snapshots:
     dependencies:
       ember-source: 5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1)
 
+  ember-load-initializers@3.0.1(ember-source@test-apps+classic+patricklx+ember.js+de8f0605):
+    dependencies:
+      ember-source: link:test-apps/classic/patricklx/ember.js:de8f0605
+
   ember-math-helpers@4.0.0(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1)):
     dependencies:
       '@embroider/addon-shim': 1.8.9
@@ -14827,6 +14845,18 @@ snapshots:
       - '@babel/core'
       - supports-color
 
+  ember-modifier@4.2.0(@babel/core@7.26.0)(ember-source@test-apps+classic+patricklx+ember.js+de8f0605):
+    dependencies:
+      '@embroider/addon-shim': 1.8.9
+      decorator-transforms: 2.2.2(@babel/core@7.26.0)
+      ember-cli-normalize-entity-name: 1.0.0
+      ember-cli-string-utils: 1.1.0
+    optionalDependencies:
+      ember-source: link:test-apps/classic/patricklx/ember.js:de8f0605
+    transitivePeerDependencies:
+      - '@babel/core'
+      - supports-color
+
   ember-on-resize-modifier@1.1.0(@babel/core@7.26.0):
     dependencies:
       ember-cli-babel: 7.26.11
@@ -14837,11 +14867,11 @@ snapshots:
       - '@babel/core'
       - supports-color
 
-  ember-page-title@8.2.4(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1)):
+  ember-page-title@8.2.4(ember-source@test-apps+classic+patricklx+ember.js+de8f0605):
     dependencies:
       '@embroider/addon-shim': 1.8.9
       '@simple-dom/document': 1.4.0
-      ember-source: 5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1)
+      ember-source: link:test-apps/classic/patricklx/ember.js:de8f0605
     transitivePeerDependencies:
       - supports-color
 
@@ -14858,13 +14888,13 @@ snapshots:
       - '@glint/template'
       - supports-color
 
-  ember-qunit@8.1.1(@ember/test-helpers@4.0.4(@babel/core@7.26.0)(@glint/template@1.5.1)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1)))(@glint/template@1.5.1)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1))(qunit@2.24.1):
+  ember-qunit@8.1.1(@ember/test-helpers@4.0.4(@babel/core@7.26.0)(@glint/template@1.5.1)(ember-source@test-apps+classic+patricklx+ember.js+de8f0605))(@glint/template@1.5.1)(ember-source@test-apps+classic+patricklx+ember.js+de8f0605)(qunit@2.24.1):
     dependencies:
-      '@ember/test-helpers': 4.0.4(@babel/core@7.26.0)(@glint/template@1.5.1)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1))
+      '@ember/test-helpers': 4.0.4(@babel/core@7.26.0)(@glint/template@1.5.1)(ember-source@test-apps+classic+patricklx+ember.js+de8f0605)
       '@embroider/addon-shim': 1.8.9
       '@embroider/macros': 1.16.9(@glint/template@1.5.1)
       ember-cli-test-loader: 3.1.0
-      ember-source: 5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1)
+      ember-source: link:test-apps/classic/patricklx/ember.js:de8f0605
       qunit: 2.24.1
       qunit-theme-ember: 1.0.0
     transitivePeerDependencies:
@@ -14890,8 +14920,8 @@ snapshots:
 
   ember-router-generator@2.0.0:
     dependencies:
-      '@babel/parser': 7.26.5
-      '@babel/traverse': 7.26.5
+      '@babel/parser': 7.27.3
+      '@babel/traverse': 7.27.3
       recast: 0.18.10
     transitivePeerDependencies:
       - supports-color
@@ -14930,12 +14960,12 @@ snapshots:
       - '@babel/core'
       - supports-color
 
-  ember-sinon-qunit@7.5.0(@babel/core@7.26.0)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1))(qunit@2.24.1)(sinon@15.2.0):
+  ember-sinon-qunit@7.5.0(@babel/core@7.26.0)(ember-source@test-apps+classic+patricklx+ember.js+de8f0605)(qunit@2.24.1)(sinon@15.2.0):
     dependencies:
       '@embroider/addon-shim': 1.8.9
       '@types/sinon': 17.0.3
       decorator-transforms: 2.2.2(@babel/core@7.26.0)
-      ember-source: 5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.97.1)
+      ember-source: link:test-apps/classic/patricklx/ember.js:de8f0605
       qunit: 2.24.1
       sinon: 15.2.0
     transitivePeerDependencies:

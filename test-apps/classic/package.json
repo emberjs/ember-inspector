@@ -48,7 +48,7 @@
     "qunit-dom": "^3.4.0",
     "ember-sinon-qunit": "^7.5.0",
     "ember-resolver": "^13.1.0",
-    "ember-source": "^5.0.0",
+    "ember-source": "patricklx/ember.js:de8f0605",
     "ember-template-lint": "^6.0.0",
     "ember-welcome-page": "^7.0.2",
     "ember-wormhole": "^0.6.0",
