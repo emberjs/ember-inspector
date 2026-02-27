@@ -82,15 +82,8 @@ function inspectValue(object, key, computedValue) {
 }
 
 function isMandatorySetter(descriptor) {
-  if (
-    descriptor.set &&
-    Function.prototype.toString
-      .call(descriptor.set)
-      .includes('You attempted to update')
-  ) {
-    return true;
-  }
-  return false;
+  // Use the new API to check for mandatory setter
+  return emberInspectorAPI.computed.isMandatorySetter(descriptor);
 }
 
 function getTrackedDependencies(object, property, tracker) {

@@ -297,6 +297,15 @@ interface EmberInspectorAPI {
      * @returns Metadata object with public properties
      */
     getComputedMetadata: (descriptor: any) => ComputedMetadata;
+    
+    /**
+     * Check if a descriptor is Ember's mandatory setter.
+     * This replaces checking for "You attempted to update" string in setter code.
+     * 
+     * @param descriptor - The property descriptor
+     * @returns true if this is a mandatory setter
+     */
+    isMandatorySetter: (descriptor: any) => boolean;
   };
   
   // Render tree debugging

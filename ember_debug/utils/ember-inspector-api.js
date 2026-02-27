@@ -329,6 +329,28 @@ export const emberInspectorAPI = {
           : (descriptor.get ? Function.prototype.toString.call(descriptor.get) : ''),
       };
     },
+
+    /**
+     * Check if a descriptor is Ember's mandatory setter.
+     * This replaces checking for "You attempted to update" string in setter code.
+     * 
+     * @param {Object} descriptor - The property descriptor
+     * @returns {boolean} True if this is a mandatory setter
+     */
+    isMandatorySetter(descriptor) {
+      // STUB: Would be implemented by ember-source
+      // For now, fall back to string checking
+      // In production, ember-source would provide this as a public API
+      
+      if (!descriptor?.set) {
+        return false;
+      }
+
+      // Check for Ember's mandatory setter error message
+      return Function.prototype.toString
+        .call(descriptor.set)
+        .includes('You attempted to update');
+    },
   },
 
   // Render tree debugging
