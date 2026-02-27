@@ -11,7 +11,6 @@ import ContainerDebug from './container-debug';
 import DeprecationDebug from './deprecation-debug';
 import Session from './services/session';
 
-import { Application, Namespace } from './utils/ember';
 import { guidFor, setGuidPrefix } from './utils/ember/object/internals';
 import { run } from './utils/ember/runloop';
 import BaseObject from './utils/base-object';
@@ -55,10 +54,7 @@ class EmberDebug extends BaseObject {
       return;
     }
     if (!this._application && !this.isTesting) {
-      this._application = emberInspectorAPI.owner.getApplication({
-        Application,
-        Namespace,
-      });
+      this._application = emberInspectorAPI.owner.getApplication();
     }
     this.started = true;
 

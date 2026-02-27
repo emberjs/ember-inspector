@@ -283,7 +283,9 @@ export const emberInspectorAPI = {
     /**
      * Find the Ember Application instance from registered namespaces
      */
-    getApplication({ Application, Namespace }) {
+    getApplication() {
+      // STUB: Would be implemented by ember-source
+      const { Application, Namespace } = require('../utils/ember');
       let application;
       Namespace.NAMESPACES.forEach((namespace) => {
         if (namespace instanceof Application) {
