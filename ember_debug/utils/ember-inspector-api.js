@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-/* eslint-disable ember/no-private-routing-service */
 /**
  * Ember Inspector API - Stub Implementation
  *
