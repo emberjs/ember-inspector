@@ -6,7 +6,8 @@ import getApplications from './get-applications';
 import bootEmberInspector from './boot-ember-inspector';
 import setupInstanceInitializer from './setup-instance-initializer';
 import sendVersionMiss from './send-version-miss';
-import { guidFor, Application, VERSION } from '../utils/ember';
+import { guidFor, VERSION } from '../utils/ember';
+import { emberInspectorAPI } from '../utils/ember-inspector-api';
 
 function onReady(callback) {
   if (
@@ -64,12 +65,11 @@ export function startInspector(adapter) {
           (app) => guidFor(app) === message.applicationId,
         );
 
-        if (
-          selected &&
-          current !== selected &&
-          selected.__deprecatedInstance__
-        ) {
-          bootEmberInspector(selected.__deprecatedInstance__);
+        if (selected && current !== selected) {
+          let instance = emberInspectorAPI.owner.getOwnerFromApplication(selected);
+          if (instance) {
+            bootEmberInspector(instance);
+          }
         }
       }
     });
@@ -79,10 +79,7 @@ export function startInspector(adapter) {
     sendApps(adapterInstance, apps);
 
     function loadInstance(app) {
-      const applicationInstances = app._applicationInstances && [
-        ...app._applicationInstances,
-      ];
-      let instance = app.__deprecatedInstance__ || applicationInstances[0];
+      let instance = emberInspectorAPI.owner.getOwnerFromApplication(app);
       if (instance) {
         // App started
         setupInstanceInitializer(app, callback);
@@ -116,7 +113,7 @@ export function startInspector(adapter) {
         },
       });
     }
-    Application.initializer({
+    emberInspectorAPI.owner.registerInitializer({
       name: 'ember-inspector-booted',
       initialize: function (app) {
         setupInstanceInitializer(app, callback);

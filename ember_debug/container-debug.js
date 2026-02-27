@@ -1,12 +1,22 @@
 import DebugPort from './debug-port.js';
+import { emberInspectorAPI } from './utils/ember-inspector-api.js';
 
+/**
+ * Container Debug - Refactored to use new Ember Inspector API
+ *
+ * Key improvements:
+ * - No direct access to owner.__container__
+ * - No version-specific logic (InheritingDict handling)
+ * - Simpler, more maintainable code
+ * - All filtering logic encapsulated in the API
+ */
 export default class extends DebugPort {
   get objectInspector() {
     return this.namespace?.objectInspector;
   }
 
-  get container() {
-    return this.namespace?.owner?.__container__;
+  get owner() {
+    return this.namespace?.owner;
   }
 
   TYPES_TO_SKIP = [
@@ -38,8 +48,12 @@ export default class extends DebugPort {
         }
       },
       sendInstanceToConsole(message) {
-        const instance = this.container.lookup(message.name);
-        this.objectToConsole.sendValueToConsole(instance);
+        // Use new API for lookup
+        const instance = emberInspectorAPI.owner.lookup(
+          this.owner,
+          message.name,
+        );
+        this.objectInspector.sendValueToConsole(instance);
       },
     };
   }
@@ -52,52 +66,43 @@ export default class extends DebugPort {
     return key.split(':').pop();
   }
 
-  shouldHide(type) {
-    return type[0] === '-' || this.TYPES_TO_SKIP.indexOf(type) !== -1;
-  }
-
+  /**
+   * Get all container instances grouped by type.
+   *
+   * BEFORE (30+ lines):
+   * - Direct cache access: owner.__container__.cache
+   * - Version detection: InheritingDict vs plain object
+   * - Manual iteration and filtering
+   * - Manual grouping by type
+   *
+   * AFTER (1 line):
+   * - Single API call with filtering options
+   * - All complexity handled by Ember
+   */
   instancesByType() {
-    let key;
-    let instancesByType = {};
-    let cache = this.container.cache;
-    // Detect if InheritingDict (from Ember < 1.8)
-    if (
-      typeof cache.dict !== 'undefined' &&
-      typeof cache.eachLocal !== 'undefined'
-    ) {
-      cache = cache.dict;
-    }
-    for (key in cache) {
-      const type = this.typeFromKey(key);
-      if (this.shouldHide(type)) {
-        continue;
-      }
-      if (instancesByType[type] === undefined) {
-        instancesByType[type] = [];
-      }
-      instancesByType[type].push({
-        fullName: key,
-        instance: cache[key],
-      });
-    }
-    return instancesByType;
+    // Use new high-level API - replaces all the complex logic
+    return emberInspectorAPI.owner.getContainerInstances(this.owner, {
+      excludeTypes: this.TYPES_TO_SKIP,
+      includePrivate: false,
+    });
   }
 
   getTypes() {
-    let key;
-    let types = [];
     const instancesByType = this.instancesByType();
-    for (key in instancesByType) {
-      types.push({ name: key, count: instancesByType[key].length });
-    }
-    return types;
+    return Object.keys(instancesByType).map((type) => ({
+      name: type,
+      count: instancesByType[type].length,
+    }));
   }
 
   getInstances(type) {
-    const instances = this.instancesByType()[type];
+    const instancesByType = this.instancesByType();
+    const instances = instancesByType[type];
+
     if (!instances) {
       return null;
     }
+
     return instances.map((item) => ({
       name: this.nameFromKey(item.fullName),
       fullName: item.fullName,
