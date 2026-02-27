@@ -63,10 +63,8 @@ export const set = objectInternals.set;
 
 export const getOwner = owner.getOwner;
 
-// Libraries (RSVP, Application, Namespace, etc.)
+// Libraries (RSVP, etc.)
 export const RSVP = libraries?.RSVP;
-export const Application = libraries?.Application;
-export const Namespace = libraries?.Namespace;
 
 // Type checking functions (replaces instanceof checks)
 export const isEmberObject = typeChecking.isEmberObject;
