@@ -10,10 +10,8 @@ import {
   teardownContext,
 } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
-import Route from '@ember/routing/route';
-import Controller from '@ember/controller';
-import BasicAdapter from 'ember-inspector/services/adapters/basic';
-import config from 'ember-inspector/config/environment';
+import { setupInspectorSupport } from '@ember/inspector-support';
+import config from 'test-app/config/environment';
 import { hbs } from 'ember-cli-htmlbars';
 
 import EmberDebugImport from 'ember-debug/main';
@@ -38,6 +36,7 @@ export default function setupEmberDebugTest(hooks, options = {}) {
       Resolver,
     });
     setApplication(app);
+    setupInspectorSupport();
 
     await setupContext(this);
     await setupApplicationContext(this);
@@ -58,17 +57,6 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     }
 
     this.owner.register('router:main', Router);
-    this.owner.register('service:adapter', BasicAdapter);
-    /**
-     * preferably, ember debug tests should use their own test app
-     * but currently its mangled with the inspector ui app, which is not compatible with all ember versions being tested.
-     * we do filter the tests to only run the ember_debug tests, but that does not prevent the app merging.
-     * The application route/controller/template of inspector ui was being indirectly used in ember_debug tests,
-     * which is not required and broke older lts tests
-     */
-    this.owner.register('route:application', class extends Route {});
-    this.owner.register('controller:application', class extends Controller {});
-    this.owner.register('template:application', hbs('{{outlet}}'));
 
     run(() => {
       EmberDebug.isTesting = true;
@@ -102,5 +90,7 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     setApplication(originalApp);
 
     run(app, 'destroy');
+
+    globalThis.emberInspectorApps = [];
   });
 }
