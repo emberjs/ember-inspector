@@ -1,0 +1,7 @@
+# Unlabeled Changes
+
+* `ember-inspector`
+  * [#2712](https://github.com/emberjs/ember-inspector/pull/2712) Split event handling and chrome.storage saving in extensions options … ([@trek](https://github.com/trek))
+
+
+*Cannot plan release until the above changes are labeled*.
