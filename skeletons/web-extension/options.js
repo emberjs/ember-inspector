@@ -15,11 +15,6 @@
   var TomsterSelector = '[data-settings=tomster]';
   var Editors = [
     {
-      id: 'no-selection',
-      name: 'Do not open in editor',
-      pattern: '{{file}}',
-    },
-    {
       id: 'vscode',
       name: 'VS Code',
       pattern: 'vscode://file/{{file}}',
@@ -58,71 +53,116 @@
       id: 'zed',
       name: 'Zed',
       pattern: 'zed://file/{{file}}',
-    },
-    {
-      id: 'custom',
-      name: 'Custom URL',
-      pattern: '{{file}}',
-    },
+    }
   ];
+
+  var CustomEditorPatternId = '_custom_';
+  var NoSelectionId = 'no-selection';
+  var EditorRadioGroupName = 'text-editor-selection';
 
   function setTomsterIconSetting(showTomster) {
     document.querySelector(TomsterSelector).checked = showTomster;
   }
 
-  function loadTextEditorSetting(selectedEdtor, savedPattern) {
-    selectedEdtor = selectedEdtor || 'no-selection';
+  function EditorPickerComponent(options) {
+    var container = document.createElement('div');
+    var label = document.createElement('label');
+    var input = document.createElement('input');
 
+    input.type = 'radio';
+    input.name = EditorRadioGroupName;
+    input.checked = options.isChecked;
+
+    input.addEventListener('change', options.onChange);
+
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(' ' + options.label));
+    container.appendChild(label);
+
+    return container;
+  }
+
+  function EditorPickerNoSelectionComponent(options) {
+    return EditorPickerComponent({
+      isChecked: options.selectedEditor === undefined || options.selectedEditor === NoSelectionId,
+      label: 'Do not open in an editor',
+      onChange: function () {
+        storeOptions({ editor: NoSelectionId, editorPattern: null });
+      },
+    });
+  }
+
+  function renderCustomPatternOption(options) {
+    var customStringTemplate = document.createElement('input');
+    customStringTemplate.type = 'text';
+    customStringTemplate.setAttribute('placeholder', 'editor://open?url={{file}}');
+
+    if (options.isChecked && options.pattern) {
+      customStringTemplate.value = options.pattern;
+    }
+
+    function saveCustom() {
+      storeOptions({
+        editor: CustomEditorPatternId,
+        editorPattern: customStringTemplate.value || null,
+      });
+    }
+
+    var container = EditorPickerComponent({
+      isChecked: options.isChecked,
+      label: 'Custom',
+      onChange: saveCustom,
+    });
+
+    customStringTemplate.addEventListener('input', function () {
+      if (container.querySelector('input[type=radio]').checked) {
+        saveCustom();
+      }
+    });
+
+    container.querySelector('label').appendChild(customStringTemplate);
+
+    return container;
+  }
+
+  /*
+    @options
+      @selectedEditor: string
+      @savedPattern: string template
+  */
+  function renderPreferredEditorIntegrationSettings(options) {
+    var selectedEditor = options.selectedEditor;
+    var savedPattern = options.savedPattern;
     var editorSelectionsContainer =
       document.querySelector('#editor-selections');
+
     for (var editor of Editors) {
       var { id, name, pattern } = editor;
-
-      var container = document.createElement('div');
-      var label = document.createElement('label');
-      var input = document.createElement('input');
-
-      input.type = 'radio';
-      input.name = 'text-editor-selection';
-      input.setAttribute('data-settings-editor', id);
-
-      if (id === selectedEdtor) {
-        input.checked = true;
-      }
-
-      // Add event listener to save editor selection when changed
-      input.addEventListener('change', function () {
-        saveEditorSelection();
-      });
-
-      label.appendChild(input);
-      label.appendChild(document.createTextNode(' ' + name));
-      container.appendChild(label);
-
-      if (id === 'custom') {
-        var customStringTemplate = document.createElement('input');
-        customStringTemplate.setAttribute('placeholder', pattern);
-        customStringTemplate.setAttribute('data-custom-pattern', '');
-
-        // Restore saved custom pattern if custom editor was selected
-        if (
-          selectedEdtor === 'custom' &&
-          savedPattern &&
-          savedPattern !== pattern
-        ) {
-          customStringTemplate.value = savedPattern;
-        }
-
-        label.appendChild(customStringTemplate);
-
-        // Save custom pattern on input
-        customStringTemplate.addEventListener('input', function () {
-          saveEditorSelection();
-        });
-      }
-
-      editorSelectionsContainer.appendChild(container);
+      editorSelectionsContainer.appendChild(
+        EditorPickerComponent({
+          editorId: id,
+          isChecked: id === selectedEditor,
+          label: name,
+          onChange: function () {
+            storeOptions({ editor: id, editorPattern: pattern });
+          },
+        })
+      );
     }
+
+    editorSelectionsContainer.appendChild(
+      renderCustomPatternOption({
+        editorId: CustomEditorPatternId,
+        isChecked: selectedEditor === CustomEditorPatternId,
+        pattern: savedPattern,
+      })
+    );
+
+    editorSelectionsContainer.appendChild(
+      EditorPickerNoSelectionComponent({
+        selectedEditor: selectedEditor,
+      })
+    );
   }
 
   /**
@@ -132,7 +172,10 @@
     chrome.storage.sync.get('options', function (data) {
       var options = data.options || {};
       setTomsterIconSetting(options.tomster);
-      loadTextEditorSetting(options.editor, options.editorPattern);
+      renderPreferredEditorIntegrationSettings({
+        selectedEditor: options.editor,
+        savedPattern: options.editorPattern,
+      });
     });
   }
 
@@ -161,43 +204,6 @@
    */
   function saveTomsterSetting() {
     storeOptions({ showTomster: this.checked });
-  }
-
-    /**
-   * Save the updated preferred text editor integration selection to storage.
-   */
-  function saveEditorSelection() {
-    var selectedInput = document.querySelector(
-      'input[name="text-editor-selection"]:checked',
-    );
-    if (!selectedInput) return;
-
-    var selectedEditorId = selectedInput.getAttribute('data-settings-editor');
-    var selectedEditor = Editors.find(function (e) {
-      return e.id === selectedEditorId;
-    });
-
-    if (!selectedEditor) return;
-
-    var editorPattern = null;
-
-    // Only save pattern if not 'no-selection'
-    if (selectedEditorId !== 'no-selection') {
-      editorPattern = selectedEditor.pattern;
-
-      // Handle custom pattern
-      if (selectedEditorId === 'custom') {
-        var customInput = document.querySelector('input[data-custom-pattern]');
-        if (customInput && customInput.value) {
-          editorPattern = customInput.value;
-        }
-      }
-    }
-
-    storeOptions({
-      editor: selectedEditorId,
-      editorPattern: editorPattern,
-    });
   }
 
   document.addEventListener('DOMContentLoaded', initialRender);
