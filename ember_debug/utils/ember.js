@@ -6,22 +6,11 @@
  *
  * The new API structure eliminates the need to import internal modules
  * and provides a stable, version-independent interface.
+ *
+ * Falls back to legacy module loading if the new API is not available.
  */
 
-let emberInspectorAPI = null;
-
-// Check if we're running in a Vite/Embroider environment with the new API
-if (globalThis.emberInspectorApps) {
-  const appLoader = globalThis.emberInspectorApps[0];
-  emberInspectorAPI = await appLoader.loadCompatInspector();
-}
-
-if (!emberInspectorAPI) {
-  throw new Error(
-    'Ember Inspector API not available. This version of ember-inspector requires ' +
-      'ember-source to provide the inspector API via appLoader.loadCompatInspector().',
-  );
-}
+import { emberInspectorAPI } from './ember-inspector-api.js';
 
 // Export the API namespaces directly
 export const {

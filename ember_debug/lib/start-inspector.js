@@ -66,7 +66,8 @@ export function startInspector(adapter) {
         );
 
         if (selected && current !== selected) {
-          let instance = emberInspectorAPI.owner.getOwnerFromApplication(selected);
+          let instance =
+            emberInspectorAPI.owner.getOwnerFromApplication(selected);
           if (instance) {
             bootEmberInspector(instance);
           }
