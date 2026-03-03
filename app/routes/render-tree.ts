@@ -10,6 +10,7 @@ import type RenderTreeController from '../controllers/render-tree';
 import TabRoute from './tab';
 
 export interface Profile {
+  time: number;
   children: Array<Profile>;
   name: string;
 }
