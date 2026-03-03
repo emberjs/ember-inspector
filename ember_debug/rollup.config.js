@@ -25,11 +25,10 @@ export default {
     babel(),
     nodeResolve(),
     commonjs(),
-    // eslint-disable-next-line no-undef
     // versions is required for ember-cli-build.js and should be kept between builds
     del({ targets: [
       'dist/*',
       '!dist/versions.js'
     ]}),
-  ].filter(Boolean),
+  ],
 };
