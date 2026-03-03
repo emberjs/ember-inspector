@@ -26,6 +26,6 @@ export default {
     nodeResolve(),
     commonjs(),
     // versions is required for ember-cli-build.js and should be kept between builds
-    del({ targets: ['dist/*', '!dist/versions.js']}),
+    del({ targets: ['dist/*', '!dist/versions.js'] }),
   ],
 };
