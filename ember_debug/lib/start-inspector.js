@@ -93,15 +93,16 @@ export function startInspector(adapter) {
       app = apps[i];
       // We check for the existance of an application instance because
       // in Ember > 3 tests don't destroy the app when they're done but the app has no booted instances.
-      if (app._readinessDeferrals === 0) {
+      if (emberInspectorAPI.owner.isApplicationReady(app)) {
         if (loadInstance(app)) {
           break;
         }
       }
 
-      // app already run initializers, but no instance, use _bootPromise and didBecomeReady
-      if (app._bootPromise) {
-        app._bootPromise.then((app) => {
+      // app already run initializers, but no instance, use waitForApplicationBoot and didBecomeReady
+      const bootPromise = emberInspectorAPI.owner.waitForApplicationBoot(app);
+      if (bootPromise) {
+        bootPromise.then((app) => {
           loadInstance(app);
         });
       }

@@ -183,9 +183,59 @@ interface EmberInspectorAPI {
     set: (obj: object, key: string, value: any) => any;
   };
   
-  // Dependency injection
+  // Dependency injection and application management
   owner: {
     getOwner: (obj: object) => Owner;
+    
+    /**
+     * Get all Ember.Application instances.
+     * Replaces: Namespace.NAMESPACES.filter(ns => ns instanceof Application)
+     * 
+     * @returns Array of application instances
+     */
+    getApplications: () => Array<Application>;
+    
+    /**
+     * Get the owner (application instance) from an application.
+     * Replaces: app.__deprecatedInstance__ || app._applicationInstances[0]
+     * 
+     * @param app - The application
+     * @returns The owner/instance or null if not booted
+     */
+    getOwnerFromApplication: (app: Application) => Owner | null;
+    
+    /**
+     * Get the application from an owner/instance.
+     * 
+     * @returns The application
+     */
+    getApplication: () => Application;
+    
+    /**
+     * Register an application initializer.
+     * Replaces: Application.initializer(config)
+     * 
+     * @param config - Initializer configuration
+     */
+    registerInitializer: (config: InitializerConfig) => void;
+    
+    /**
+     * Check if an application is ready (all initializers have run).
+     * Replaces: app._readinessDeferrals === 0
+     * 
+     * @param app - The application
+     * @returns true if the application is ready
+     */
+    isApplicationReady: (app: Application) => boolean;
+    
+    /**
+     * Wait for an application to boot and return a promise.
+     * Replaces: app._bootPromise
+     * 
+     * @param app - The application
+     * @returns Promise that resolves when the app is booted, or null if already booted
+     */
+    waitForApplicationBoot: (app: Application) => Promise<Application> | null;
   };
   
   // Library registry
