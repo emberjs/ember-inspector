@@ -85,13 +85,6 @@ export default class extends BasicAdapter {
       // think we most likely can. In the limited cases (if any) where the
       // runloop is needed, the callback code should just do the wrapping
       // themselves.
-      // Handle messages from both content-script and devtools
-      if (message.from === 'content-script' || message.from === 'devtools') {
-        if (message.type && message.type.startsWith('view:')) {
-          this._messageReceived(message);
-          return;
-        }
-      }
       if (message.type.startsWith('view:')) {
         this._messageReceived(message);
       } else {

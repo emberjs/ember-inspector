@@ -229,7 +229,6 @@ export default class ViewInspection {
   constructor({
     renderTree,
     objectInspector,
-    editorUrlPattern,
     didShow,
     didHide,
     didStartInspecting,
@@ -237,7 +236,6 @@ export default class ViewInspection {
   }) {
     this.renderTree = renderTree;
     this.objectInspector = objectInspector;
-    this.editorUrlPattern = editorUrlPattern || null;
 
     this.didShow = didShow;
     this.didHide = didHide;
