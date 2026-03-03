@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 /**
  * Ember Inspector API - Stub Implementation
  *
@@ -12,6 +11,9 @@
  *
  * This stub shows the interface that ember-source should implement.
  */
+
+// Import the legacy implementation
+import * as legacyEmber from './ember-legacy';
 
 /**
  * Get or create the Ember Inspector API
@@ -33,12 +35,6 @@ async function getEmberInspectorAPI() {
       }
     }
   }
-
-
-  // Import the legacy implementation
-  // Use dynamic require to avoid circular dependencies
-  const legacyEmber = require('./ember-legacy');
-
   // Create a compatibility API structure from the legacy exports
   return {
     debug: {
@@ -67,39 +63,266 @@ async function getEmberInspectorAPI() {
     },
     owner: {
       getOwner: legacyEmber.getOwner,
+
+      lookup: (owner, fullName) => {
+        return owner?.lookup(fullName);
+      },
+
+      isDestroyed: (owner) => {
+        return owner?.isDestroyed || false;
+      },
+
+      isDestroying: (owner) => {
+        return owner?.isDestroying || false;
+      },
+
+      getApplications: () => {
+        // Get all Application instances from Namespace.NAMESPACES
+        if (!legacyEmber.Namespace || !legacyEmber.Application) {
+          return [];
+        }
+        return legacyEmber.Namespace.NAMESPACES.filter(
+          (ns) => ns instanceof legacyEmber.Application,
+        );
+      },
+
+      getOwnerFromApplication: (app) => {
+        // Get the owner/instance from an application
+        if (!app) return null;
+        return (
+          app.__deprecatedInstance__ || app._applicationInstances?.[0] || null
+        );
+      },
+
+      getApplication: () => {
+        // Get the first application
+        if (!legacyEmber.Namespace || !legacyEmber.Application) {
+          return null;
+        }
+        const apps = legacyEmber.Namespace.NAMESPACES.filter(
+          (ns) => ns instanceof legacyEmber.Application,
+        );
+        return apps[0] || null;
+      },
+
+      registerInitializer: (config) => {
+        // Register an application initializer
+        if (legacyEmber.Application) {
+          legacyEmber.Application.initializer(config);
+        }
+      },
+
+      isApplicationReady: (app) => {
+        // Check if application is ready (all initializers have run)
+        if (!app) return false;
+        return app._readinessDeferrals === 0;
+      },
+
+      waitForApplicationBoot: (app) => {
+        // Wait for application to boot
+        if (!app) return null;
+        return app._bootPromise || null;
+      },
+
+      resolveRegistration: (owner, fullName) => {
+        // Resolve a registration from the container
+        if (!owner) return null;
+
+        // Try modern API first
+        if (owner.resolveRegistration) {
+          return owner.resolveRegistration(fullName);
+        }
+
+        // Fallback to factoryFor
+        const factory = owner.factoryFor?.(fullName);
+        return factory?.class || null;
+      },
+    },
+    router: {
+      getCurrentPath: (owner) => {
+        // eslint-disable-next-line ember/no-private-routing-service
+        const router = owner?.lookup('router:main');
+        return router?.currentPath || router?.currentRouteName || null;
+      },
+      getCurrentURL: (owner) => {
+        // eslint-disable-next-line ember/no-private-routing-service
+        const router = owner?.lookup('router:main');
+        return router?.currentURL || router?.get?.('currentURL') || null;
+      },
+      buildRouteTree: (owner) => {
+        // Simplified implementation - builds route tree from router internals
+        // eslint-disable-next-line ember/no-private-routing-service
+        const router = owner?.lookup('router:main');
+        if (!router) return { children: [] };
+
+        // eslint-disable-next-line ember/no-private-routing-service
+        const routerLib = router._routerMicrolib || router.router;
+        if (!routerLib?.recognizer?.names) return { children: [] };
+
+        const routeNames = routerLib.recognizer.names;
+        const routeTree = {};
+
+        for (let routeName in routeNames) {
+          if (!Object.prototype.hasOwnProperty.call(routeNames, routeName)) {
+            continue;
+          }
+          const route = routeNames[routeName];
+          buildSubTree(owner, routeTree, route);
+        }
+
+        return arrayizeChildren({ children: routeTree });
+      },
+      getRouteHandler: (owner, routeName) => {
+        if (!owner || !routeName) return null;
+        return owner.lookup(`route:${routeName}`);
+      },
+    },
+    renderTree: {
+      getDebugRenderTree: (owner) => {
+        // Try to get debug render tree from renderer or render service
+        const renderer = owner?.lookup('renderer:-dom');
+        if (renderer?._debugRenderTree) {
+          return renderer._debugRenderTree;
+        }
+
+        const renderService = owner?.lookup('service:-render');
+        if (renderService?._debugRenderTree) {
+          return renderService._debugRenderTree;
+        }
+
+        return null;
+      },
     },
     libraries: {
       RSVP: legacyEmber.RSVP,
     },
     typeChecking: {
-      // These would need to be implemented in the legacy module
-      // For now, provide basic implementations
+      // Use instanceof checks with the actual class references
       isEmberObject: (obj) =>
-        obj &&
-        typeof obj === 'object' &&
-        obj.constructor?.name?.includes('Ember'),
-      isComponent: (obj) => obj && obj.constructor?.name === 'Component',
+        legacyEmber.EmberObject &&
+        typeof legacyEmber.EmberObject === 'function' &&
+        obj instanceof legacyEmber.EmberObject,
+      isComponent: (obj) =>
+        legacyEmber.Component &&
+        typeof legacyEmber.Component === 'function' &&
+        obj instanceof legacyEmber.Component,
       isGlimmerComponent: (obj) =>
-        obj && obj.constructor?.name === 'GlimmerComponent',
-      isService: (obj) => obj && obj.constructor?.name === 'Service',
-      isObjectProxy: (obj) => obj && obj.constructor?.name === 'ObjectProxy',
-      isArrayProxy: (obj) => obj && obj.constructor?.name === 'ArrayProxy',
-      isCoreObject: (obj) => obj && obj.constructor?.name === 'CoreObject',
-      isApplication: (obj) => obj && obj.constructor?.name === 'Application',
-      isNamespace: (obj) => obj && obj.constructor?.name === 'Namespace',
-      hasObservable: (obj) => obj && typeof obj.addObserver === 'function',
-      hasEvented: (obj) => obj && typeof obj.on === 'function',
+        legacyEmber.GlimmerComponent &&
+        typeof legacyEmber.GlimmerComponent === 'function' &&
+        obj instanceof legacyEmber.GlimmerComponent,
+      isService: (obj) =>
+        legacyEmber.Service &&
+        typeof legacyEmber.Service === 'function' &&
+        obj instanceof legacyEmber.Service,
+      isObjectProxy: (obj) =>
+        legacyEmber.ObjectProxy &&
+        typeof legacyEmber.ObjectProxy === 'function' &&
+        obj instanceof legacyEmber.ObjectProxy,
+      isArrayProxy: (obj) =>
+        legacyEmber.ArrayProxy &&
+        typeof legacyEmber.ArrayProxy === 'function' &&
+        obj instanceof legacyEmber.ArrayProxy,
+      isCoreObject: (obj) =>
+        legacyEmber.CoreObject &&
+        typeof legacyEmber.CoreObject === 'function' &&
+        obj instanceof legacyEmber.CoreObject,
+      isApplication: (obj) =>
+        legacyEmber.Application &&
+        typeof legacyEmber.Application === 'function' &&
+        obj instanceof legacyEmber.Application,
+      isNamespace: (obj) =>
+        legacyEmber.Namespace &&
+        typeof legacyEmber.Namespace === 'function' &&
+        obj instanceof legacyEmber.Namespace,
+      // Mixin checks - use duck typing since mixins can't use instanceof
+      hasObservable: (obj) =>
+        legacyEmber.Observable &&
+        ((typeof legacyEmber.Observable === 'function' &&
+          obj instanceof legacyEmber.Observable) ||
+          (obj && typeof obj.addObserver === 'function')),
+      hasEvented: (obj) =>
+        legacyEmber.Evented &&
+        ((typeof legacyEmber.Evented === 'function' &&
+          obj instanceof legacyEmber.Evented) ||
+          (obj && typeof obj.on === 'function')),
       hasPromiseProxyMixin: (obj) =>
-        obj && typeof obj.then === 'function' && obj.content !== undefined,
+        legacyEmber.PromiseProxyMixin &&
+        ((typeof legacyEmber.PromiseProxyMixin === 'function' &&
+          obj instanceof legacyEmber.PromiseProxyMixin) ||
+          (obj && typeof obj.then === 'function' && obj.content !== undefined)),
       hasControllerMixin: (obj) =>
-        obj && obj.target !== undefined && obj.model !== undefined,
+        legacyEmber.ControllerMixin &&
+        ((typeof legacyEmber.ControllerMixin === 'function' &&
+          obj instanceof legacyEmber.ControllerMixin) ||
+          (obj && obj.target !== undefined && obj.model !== undefined)),
       isMutableArray: (obj) =>
-        Array.isArray(obj) || (obj && typeof obj.pushObject === 'function'),
-      isMutableEnumerable: (obj) => obj && typeof obj.forEach === 'function',
-      isNativeArray: (obj) => Array.isArray(obj),
+        legacyEmber.MutableArray &&
+        ((typeof legacyEmber.MutableArray === 'function' &&
+          obj instanceof legacyEmber.MutableArray) ||
+          Array.isArray(obj) ||
+          (obj && typeof obj.pushObject === 'function')),
+      isMutableEnumerable: (obj) =>
+        legacyEmber.MutableEnumerable &&
+        ((typeof legacyEmber.MutableEnumerable === 'function' &&
+          obj instanceof legacyEmber.MutableEnumerable) ||
+          (obj && typeof obj.forEach === 'function')),
+      isNativeArray: (obj) =>
+        legacyEmber.NativeArray &&
+        ((typeof legacyEmber.NativeArray === 'function' &&
+          obj instanceof legacyEmber.NativeArray) ||
+          Array.isArray(obj)),
     },
     naming: {
-      getClassName: (obj) => obj?.constructor?.name || null,
+      getClassName: (classOrMixin) => {
+        // Return Ember-style names for known classes and mixins
+        if (!classOrMixin) return null;
+
+        // Check against known Ember classes and mixins
+        if (classOrMixin === legacyEmber.Evented) return 'Evented Mixin';
+        if (classOrMixin === legacyEmber.PromiseProxyMixin)
+          return 'PromiseProxy Mixin';
+        if (classOrMixin === legacyEmber.MutableArray)
+          return 'MutableArray Mixin';
+        if (classOrMixin === legacyEmber.MutableEnumerable)
+          return 'MutableEnumerable Mixin';
+        if (classOrMixin === legacyEmber.NativeArray)
+          return 'NativeArray Mixin';
+        if (classOrMixin === legacyEmber.Observable) return 'Observable Mixin';
+        if (classOrMixin === legacyEmber.ControllerMixin)
+          return 'Controller Mixin';
+        if (classOrMixin === legacyEmber.CoreObject) return 'CoreObject';
+        if (classOrMixin === legacyEmber.EmberObject) return 'EmberObject';
+        if (classOrMixin === legacyEmber.Component) return 'Component';
+        if (classOrMixin === legacyEmber.ActionHandler)
+          return 'ActionHandler Mixin';
+
+        // Check InternalsViews if available
+        if (legacyEmber.InternalsViews) {
+          const Views = legacyEmber.InternalsViews;
+          if (classOrMixin === Views.ViewStateSupport)
+            return 'ViewStateSupport Mixin';
+          if (classOrMixin === Views.ViewMixin) return 'View Mixin';
+          if (classOrMixin === Views.ActionSupport)
+            return 'ActionSupport Mixin';
+          if (classOrMixin === Views.ClassNamesSupport)
+            return 'ClassNamesSupport Mixin';
+          if (classOrMixin === Views.ChildViewsSupport)
+            return 'ChildViewsSupport Mixin';
+          if (classOrMixin === Views.CoreView) return 'CoreView';
+        }
+
+        // Check InternalsRuntime for TargetActionSupport (pre-3.27.0)
+        if (legacyEmber.InternalsRuntime?.TargetActionSupport) {
+          if (
+            classOrMixin === legacyEmber.InternalsRuntime.TargetActionSupport
+          ) {
+            return 'TargetActionSupport Mixin';
+          }
+        }
+
+        // Fallback to constructor name
+        return classOrMixin?.constructor?.name || classOrMixin?.name || null;
+      },
     },
     tracking: {
       createPropertyTracker: () => ({}),
@@ -109,17 +332,104 @@ async function getEmberInspectorAPI() {
       isTrackedProperty: () => false,
     },
     computed: {
-      isComputed: legacyEmber.Debug?.isComputed || (() => false),
+      isComputed: (obj, key) => {
+        // Check if the property descriptor is a computed property
+        const descriptor = obj?.[key];
+        if (!descriptor) return false;
+
+        // Check for isDescriptor flag (Ember computed properties)
+        if (descriptor.isDescriptor) return true;
+
+        // Check if it's an instance of ComputedProperty
+        if (
+          legacyEmber.ComputedProperty &&
+          descriptor instanceof legacyEmber.ComputedProperty
+        ) {
+          return true;
+        }
+
+        return false;
+      },
       getComputedPropertyDescriptor: (obj, key) => obj?.[key],
       getDependentKeys: () => [],
+      isMandatorySetter: (descriptor) => {
+        // Check if a descriptor is Ember's mandatory setter
+        // Mandatory setters have a specific error message in their setter
+        if (!descriptor?.set) return false;
+        const setterCode = descriptor.set.toString();
+        return setterCode.includes('You attempted to update');
+      },
+      getComputedMetadata: (descriptor) => {
+        // Get metadata for a computed property
+        if (!descriptor) return null;
+
+        return {
+          getter: descriptor._getter || descriptor.get,
+          setter: descriptor.set,
+          readOnly: descriptor._readOnly || false,
+          auto: descriptor._auto || false,
+          dependentKeys: descriptor._dependentKeys || [],
+          code: descriptor._getter?.toString() || descriptor.get?.toString(),
+        };
+      },
     },
     runloop: {
-      getBackburner: legacyEmber.Runloop?.getBackburner,
+      getBackburner: () => {
+        // Try to get _backburner from Ember.run or @ember/runloop
+        if (legacyEmber.Runloop?._backburner) {
+          return legacyEmber.Runloop._backburner;
+        }
+        if (legacyEmber.Runloop?.backburner) {
+          return legacyEmber.Runloop.backburner;
+        }
+        return null;
+      },
       join: legacyEmber.Runloop?.join,
       debounce: legacyEmber.Runloop?.debounce,
       cancel: legacyEmber.Runloop?.cancel,
     },
   };
+}
+
+// Helper functions for buildRouteTree
+function buildSubTree(owner, routeTree, route) {
+  const handlers = route.handlers;
+  let subTree = routeTree;
+
+  for (let i = 0; i < handlers.length; i++) {
+    const handler = handlers[i];
+    const name = handler.handler;
+
+    if (!subTree[name]) {
+      subTree[name] = {
+        value: {
+          name,
+          type: 'route',
+          // Don't include routeHandler - it's not serializable
+          // The route can be looked up later if needed
+        },
+        children: {},
+      };
+    }
+    subTree = subTree[name].children;
+  }
+}
+
+function arrayizeChildren(routeTree) {
+  const tree = { ...routeTree };
+
+  if (tree.children) {
+    const childrenArray = [];
+    for (const key in tree.children) {
+      if (Object.prototype.hasOwnProperty.call(tree.children, key)) {
+        const child = tree.children[key];
+        childrenArray.push(arrayizeChildren(child));
+      }
+    }
+    tree.children = childrenArray;
+  }
+
+  return tree;
 }
 
 // Export the API as a singleton

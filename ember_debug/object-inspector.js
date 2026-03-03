@@ -270,7 +270,15 @@ export default class extends DebugPort {
           owner,
           message.name,
         );
-        this.sendObject(routeHandler);
+        if (routeHandler) {
+          this.sendObject(routeHandler);
+        } else {
+          // Route handler not found, send error
+          this.sendMessage('updateObject', {
+            objectId: null,
+            error: `Route handler not found for route: ${message.name}`,
+          });
+        }
       },
       inspectController(message) {
         const owner = this.namespace?.owner;

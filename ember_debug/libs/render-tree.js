@@ -34,7 +34,10 @@ class InElementSupportProvider {
     this.NewElementBuilder =
       this.runtime.NewElementBuilder || this.runtime.NewTreeBuilder;
 
-    this.patch();
+    // Only patch if debugRenderTree is available
+    if (this.debugRenderTree) {
+      this.patch();
+    }
   }
 
   reset() {
