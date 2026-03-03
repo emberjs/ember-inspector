@@ -22,6 +22,7 @@ export default class ApplicationRoute extends Route {
     port.on('deprecation:count', this, this.setDeprecationCount);
     port.on('view:inspectComponent', this, this.inspectComponent);
     port.on('view:previewComponent', this, this.previewComponent);
+    port.on('view:renderTree', this, this.updateComponentTree);
   }
 
   deactivate() {
@@ -33,6 +34,7 @@ export default class ApplicationRoute extends Route {
     port.off('deprecation:count', this, this.setDeprecationCount);
     port.off('view:inspectComponent', this, this.inspectComponent);
     port.off('view:previewComponent', this, this.previewComponent);
+    port.off('view:renderTree', this, this.updateComponentTree);
   }
 
   inspectComponent({ id }) {
@@ -51,6 +53,10 @@ export default class ApplicationRoute extends Route {
     });
   }
 
+  updateComponentTree({ tree }) {
+    this.controller.componentTreeController.renderTree = tree;
+  }
+
   updateObject(options) {
     let { details, errors, name, objectId, property } = options;
 
@@ -58,11 +64,25 @@ export default class ApplicationRoute extends Route {
     details.forEach(arrayize);
 
     let controller = this.controller;
+    let renderNodeId = resolveRenderNodeId(controller, options);
 
     if (options.parentObject) {
-      controller.pushMixinDetails(name, property, objectId, details, errors);
+      controller.pushMixinDetails(
+        name,
+        property,
+        objectId,
+        details,
+        errors,
+        renderNodeId,
+      );
     } else {
-      controller.activateMixinDetails(name, objectId, details, errors);
+      controller.activateMixinDetails(
+        name,
+        objectId,
+        details,
+        errors,
+        renderNodeId,
+      );
     }
 
     this.layout.showInspector();
@@ -108,4 +128,23 @@ export default class ApplicationRoute extends Route {
 
 function arrayize(mixin) {
   NativeArray.apply(mixin.properties);
+}
+
+function resolveRenderNodeId(controller, options) {
+  if (options.parentObject) {
+    let parent = controller.mixinStack?.find(
+      (item) => item.objectId === options.parentObject,
+    );
+    if (parent?.renderNodeId) {
+      return parent.renderNodeId;
+    }
+  }
+
+  let currentItem = controller.componentTreeController?.currentItem;
+
+  if (currentItem?.instance && currentItem.instance === options.objectId) {
+    return currentItem.id;
+  }
+
+  return null;
 }
