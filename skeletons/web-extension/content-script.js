@@ -63,6 +63,17 @@
         });
       }
     });
+
+    chrome.storage.onChanged.addListener(function (changes) {
+      if (changes.options) {
+        var editorPattern = changes.options.newValue && changes.options.newValue.editorPattern;
+        emberDebugPort.postMessage({
+          type: 'view:editorUrlPatternReceived',
+          from: 'content-script',
+          value: editorPattern
+        });
+      }
+    });
   }
 
   // document.documentElement.dataset is not present for SVG elements

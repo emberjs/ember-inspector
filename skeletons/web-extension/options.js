@@ -26,7 +26,7 @@
     },
     {
       id: 'jetbrains',
-      name: 'JetBrains IDEs (IntelliJ IDEA / WebStorm / PyCharm)',
+      name: 'JetBrains IDEs',
       pattern: 'idea://open?file={{file}}',
     },
     {
@@ -76,20 +76,26 @@
     input.addEventListener('change', options.onChange);
 
     label.appendChild(input);
-    label.appendChild(document.createTextNode(' ' + options.label));
+    label.appendChild(document.createTextNode(options.label));
     container.appendChild(label);
 
     return container;
   }
 
-  function EditorPickerNoSelectionComponent(options) {
-    return EditorPickerComponent({
-      isChecked: options.selectedEditor === undefined || options.selectedEditor === NoSelectionId,
-      label: 'Do not open in an editor',
-      onChange: function () {
-        storeOptions({ editor: NoSelectionId, editorPattern: null });
-      },
-    });
+  function OpenInEditorToggleComponent(options) {
+    var checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = options.isChecked;
+    checkbox.id = 'open-in-editor-toggle';
+
+    checkbox.addEventListener('change', options.onChange);
+
+    var label = document.createElement('label');
+    label.setAttribute('for', 'open-in-editor-toggle');
+    label.appendChild(checkbox);
+    label.appendChild(document.createTextNode('Open files from the inspector in your preferred editor'));
+
+    return label;
   }
 
   function renderCustomPatternOption(options) {
@@ -133,12 +139,34 @@
   function renderPreferredEditorIntegrationSettings(options) {
     var selectedEditor = options.selectedEditor;
     var savedPattern = options.savedPattern;
-    var editorSelectionsContainer =
-      document.querySelector('#editor-selections');
+    var editorSelectionsContainer = document.querySelector('#editor-selections');
 
-    for (var editor of Editors) {
-      var { id, name, pattern } = editor;
-      editorSelectionsContainer.appendChild(
+    var isEnabled = selectedEditor !== undefined && selectedEditor !== NoSelectionId;
+
+    var editorList = document.createElement('div');
+    editorList.className = 'editor-list';
+    editorList.style.display = isEnabled ? '' : 'none';
+
+    var editorGrid = document.createElement('div');
+    editorGrid.className = 'editor-grid';
+
+    var checkboxLabel = OpenInEditorToggleComponent({
+      isChecked: isEnabled,
+      onChange: function (event) {
+        if (event.target.checked) {
+          editorList.style.display = '';
+        } else {
+          editorList.style.display = 'none';
+          storeOptions({ editor: NoSelectionId, editorPattern: null });
+        }
+      },
+    });
+
+    Editors.forEach(function (editor) {
+      var id = editor.id;
+      var name = editor.name;
+      var pattern = editor.pattern;
+      editorGrid.appendChild(
         EditorPickerComponent({
           editorId: id,
           isChecked: id === selectedEditor,
@@ -148,21 +176,22 @@
           },
         })
       );
-    }
+    });
 
-    editorSelectionsContainer.appendChild(
-      renderCustomPatternOption({
-        editorId: CustomEditorPatternId,
-        isChecked: selectedEditor === CustomEditorPatternId,
-        pattern: savedPattern,
-      })
-    );
+    var customOption = renderCustomPatternOption({
+      editorId: CustomEditorPatternId,
+      isChecked: selectedEditor === CustomEditorPatternId,
+      pattern: savedPattern,
+    });
+    customOption.className = (customOption.className ? customOption.className + ' ' : '') + 'editor-custom';
 
-    editorSelectionsContainer.appendChild(
-      EditorPickerNoSelectionComponent({
-        selectedEditor: selectedEditor,
-      })
-    );
+    editorList.appendChild(editorGrid);
+    editorList.appendChild(customOption);
+
+    var fragment = document.createDocumentFragment();
+    fragment.appendChild(checkboxLabel);
+    fragment.appendChild(editorList);
+    editorSelectionsContainer.appendChild(fragment);
   }
 
   /**
@@ -184,6 +213,7 @@
    * stored in `chrome.storage` and saves the union of both to storage.
    */
   function storeOptions(newOptions) {
+    console.log('change Options:', newOptions);
     chrome.storage.sync.get('options', function (data) {
       var options = data.options || {};
       Object.assign(options, newOptions);
