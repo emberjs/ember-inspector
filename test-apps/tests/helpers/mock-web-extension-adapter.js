@@ -171,7 +171,6 @@ function loadEmberDebug() {
   });
 }
 
-
 // Singleton instance
 let instance = null;
 
