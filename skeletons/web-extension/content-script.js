@@ -53,6 +53,10 @@
 
     emberDebugPort.start();
 
+    /**
+     * On initial load of the extension pull from storage and pass
+     * via postMessage the user's stored preferred text editor pattern
+     */
     chrome.storage.sync.get('options', function (data) {
       var editorPattern = data.options && data.options.editorPattern;
       if (editorPattern) {
@@ -64,6 +68,9 @@
       }
     });
 
+    /**
+     * Pass along any new user editor selection value to any running instances
+     */
     chrome.storage.onChanged.addListener(function (changes) {
       if (changes.options) {
         var editorPattern = changes.options.newValue && changes.options.newValue.editorPattern;
