@@ -167,14 +167,56 @@ async function getEmberInspectorAPI() {
             continue;
           }
           const route = routeNames[routeName];
-          buildSubTree(owner, routeTree, route);
+          buildSubTree(owner, routeTree, route, router);
         }
 
         return arrayizeChildren({ children: routeTree });
       },
       getRouteHandler: (owner, routeName) => {
-        if (!owner || !routeName) return null;
-        return owner.lookup(`route:${routeName}`);
+        console.log('[getRouteHandler] Called with:', { owner, routeName });
+
+        if (!owner || !routeName) {
+          console.log('[getRouteHandler] Missing owner or routeName');
+          return null;
+        }
+
+        // eslint-disable-next-line ember/no-private-routing-service
+        const router = owner.lookup('router:main');
+        console.log('[getRouteHandler] Router:', router);
+        if (!router) {
+          console.log('[getRouteHandler] No router found');
+          return null;
+        }
+
+        // eslint-disable-next-line ember/no-private-routing-service
+        const routerLib = router._routerMicrolib || router.router;
+        console.log('[getRouteHandler] RouterLib:', routerLib);
+        console.log('[getRouteHandler] Has getRoute:', !!routerLib?.getRoute);
+        console.log(
+          '[getRouteHandler] Has getHandler:',
+          !!routerLib?.getHandler,
+        );
+
+        if (!routerLib) {
+          console.log('[getRouteHandler] No routerLib found');
+          return null;
+        }
+
+        // Use router's internal methods to get the route handler
+        // getRoute is available in Ember >= 3.9.0
+        // getHandler is for Ember < 3.9.0
+        // Note: These can return promises for unresolved routes
+        let result;
+        if (routerLib.getRoute) {
+          result = routerLib.getRoute(routeName);
+          console.log('[getRouteHandler] getRoute result:', result);
+        } else if (routerLib.getHandler) {
+          result = routerLib.getHandler(routeName);
+          console.log('[getRouteHandler] getHandler result:', result);
+        }
+
+        console.log('[getRouteHandler] Final result:', result);
+        return result || null;
       },
     },
     renderTree: {
@@ -392,26 +434,108 @@ async function getEmberInspectorAPI() {
 }
 
 // Helper functions for buildRouteTree
-function buildSubTree(owner, routeTree, route) {
+function routeHasBeenDefined(owner, routeName) {
+  const factory = owner.factoryFor
+    ? owner.factoryFor(`route:${routeName}`)
+    : owner._lookupFactory?.(`route:${routeName}`);
+  return !!factory;
+}
+
+function getClassName(owner, name) {
+  // Simplified - just return the name
+  // Full implementation would need resolver and module prefix logic
+  return name.replace(/\./g, '/');
+}
+
+function buildSubTree(owner, routeTree, route, router) {
   const handlers = route.handlers;
   let subTree = routeTree;
 
   for (let i = 0; i < handlers.length; i++) {
-    const handler = handlers[i];
-    const name = handler.handler;
+    const item = handlers[i];
+    const handler = item.handler;
 
-    if (!subTree[name]) {
-      subTree[name] = {
-        value: {
-          name,
-          type: 'route',
-          // Don't include routeHandler - it's not serializable
-          // The route can be looked up later if needed
-        },
-        children: {},
-      };
+    // Skip loading/error routes that haven't been defined
+    if (handler.match(/(loading|error)$/)) {
+      if (!routeHasBeenDefined(owner, handler)) {
+        continue;
+      }
     }
-    subTree = subTree[name].children;
+
+    if (subTree[handler] === undefined) {
+      const routeClassName = getClassName(owner, handler);
+
+      // eslint-disable-next-line ember/no-private-routing-service
+      const routerLib = router._routerMicrolib || router.router;
+      let routeHandler;
+      if (routerLib.getRoute) {
+        routeHandler = routerLib.getRoute(handler);
+      } else if (routerLib.getHandler) {
+        routeHandler = routerLib.getHandler(handler);
+      }
+
+      let controllerName;
+      let controllerClassName;
+      let templateName;
+      let controllerFactory;
+
+      // Skip when route is an unresolved promise
+      if (typeof routeHandler?.then === 'function') {
+        controllerName = '(unresolved)';
+        controllerClassName = '(unresolved)';
+        templateName = '(unresolved)';
+      } else {
+        const get =
+          routeHandler?.get ||
+          function (prop) {
+            return this?.[prop];
+          };
+        controllerName =
+          get.call(routeHandler, 'controllerName') ||
+          routeHandler?.routeName ||
+          handler;
+        controllerFactory = owner.factoryFor
+          ? owner.factoryFor(`controller:${controllerName}`)
+          : owner._lookupFactory?.(`controller:${controllerName}`);
+        controllerClassName = getClassName(owner, controllerName);
+        templateName = getClassName(owner, handler);
+      }
+
+      subTree[handler] = {
+        value: {
+          name: handler,
+          routeHandler: {
+            className: routeClassName,
+            name: handler,
+          },
+          controller: {
+            className: controllerClassName,
+            name: controllerName,
+            exists: !!controllerFactory,
+          },
+          template: {
+            name: templateName,
+          },
+        },
+      };
+
+      // Add URL for leaf routes
+      if (i === handlers.length - 1) {
+        subTree[handler].value.url = {
+          path: route.segments
+            ?.map((segment) => {
+              if (segment.type === 0) {
+                return segment.value;
+              }
+              return `:${segment.value}`;
+            })
+            .join('/'),
+        };
+      }
+
+      subTree[handler].children = {};
+    }
+    subTree = subTree[handler].children;
   }
 }
 

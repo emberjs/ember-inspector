@@ -264,21 +264,20 @@ export default class extends DebugPort {
        * @param message The message sent
        * @param {string} messsage.name The name of the route to lookup
        */
-      inspectRoute(message) {
+      inspectRoute(options) {
+        console.log('[inspectRoute] Full options object:', options);
+        console.log('[inspectRoute] options.name:', options.name);
+        console.log('[inspectRoute] options keys:', Object.keys(options));
         const owner = this.namespace?.owner;
+        // Extract name from options - it might be in different places
+        const routeName = options.name || options.routeName;
+        console.log('[inspectRoute] Extracted routeName:', routeName);
         const routeHandler = emberInspectorAPI.router.getRouteHandler(
           owner,
-          message.name,
+          routeName,
         );
-        if (routeHandler) {
-          this.sendObject(routeHandler);
-        } else {
-          // Route handler not found, send error
-          this.sendMessage('updateObject', {
-            objectId: null,
-            error: `Route handler not found for route: ${message.name}`,
-          });
-        }
+        console.log('[inspectRoute] routeHandler:', routeHandler);
+        this.sendObject(routeHandler);
       },
       inspectController(message) {
         const owner = this.namespace?.owner;
@@ -1164,6 +1163,7 @@ function getDebugInfo(object) {
 }
 
 function toArray(errors) {
+  if (!errors) return [];
   return keys(errors).map((key) => errors[key]);
 }
 
