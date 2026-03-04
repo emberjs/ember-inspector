@@ -49,7 +49,7 @@ export default class extends DebugPort {
       },
       sendInstanceToConsole(message) {
         // Use new API for lookup
-        const instance = emberInspectorAPI.owner.lookup(
+        const instance = emberInspectorAPI.owner.getInstance(
           this.owner,
           message.name,
         );

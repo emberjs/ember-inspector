@@ -53,7 +53,7 @@ export default class RouteDebug extends DebugPort {
     ) {
       return null;
     }
-    return emberInspectorAPI.owner.lookup(this.owner, 'router:main');
+    return emberInspectorAPI.owner.getRouter(this.owner);
   }
 
   get currentPath() {

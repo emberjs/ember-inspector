@@ -17,9 +17,7 @@ export default class extends DebugPort {
     const owner = this.namespace?.owner;
 
     // dataAdapter:main is deprecated
-    let adapter =
-      this._resolve('data-adapter:main') &&
-      emberInspectorAPI.owner.lookup(owner, 'data-adapter:main');
+    let adapter = emberInspectorAPI.owner.getDataAdapter(owner);
     // column limit is now supported at the inspector level
     if (adapter) {
       adapter.attributeLimit = 100;
@@ -27,12 +25,6 @@ export default class extends DebugPort {
     }
 
     return null;
-  }
-
-  _resolve(name) {
-    const owner = this.namespace?.owner;
-
-    return emberInspectorAPI.owner.resolveRegistration(owner, name);
   }
 
   get port() {

@@ -137,6 +137,55 @@ async function getEmberInspectorAPI() {
         const factory = owner.factoryFor?.(fullName);
         return factory?.class || null;
       },
+
+      // Higher-level API methods that wrap lookup/resolveRegistration
+      hasRegistration: (owner, fullName) => {
+        if (!owner) return false;
+        
+        // Try factoryFor first (modern API)
+        if (owner.factoryFor) {
+          return !!owner.factoryFor(fullName);
+        }
+        
+        // Fallback to resolveRegistration
+        if (owner.resolveRegistration) {
+          return !!owner.resolveRegistration(fullName);
+        }
+        
+        return false;
+      },
+
+      getDataAdapter: (owner) => {
+        if (!owner) return null;
+        
+        // Check if data adapter is registered before attempting lookup
+        const hasAdapter = owner.factoryFor?.('data-adapter:main') || 
+                          owner.resolveRegistration?.('data-adapter:main');
+        
+        if (!hasAdapter) return null;
+        
+        return owner.lookup('data-adapter:main');
+      },
+
+      getRouter: (owner) => {
+        if (!owner) return null;
+        return owner.lookup('router:main');
+      },
+
+      getController: (owner, name) => {
+        if (!owner || !name) return null;
+        return owner.lookup(`controller:${name}`);
+      },
+
+      getRoute: (owner, name) => {
+        if (!owner || !name) return null;
+        return owner.lookup(`route:${name}`);
+      },
+
+      getInstance: (owner, fullName) => {
+        if (!owner || !fullName) return null;
+        return owner.lookup(fullName);
+      },
     },
     router: {
       getCurrentPath: (owner) => {

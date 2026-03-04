@@ -241,17 +241,17 @@ export default class extends DebugPort {
       },
       sendControllerToConsole(message) {
         const owner = this.namespace?.owner;
-        const controller = emberInspectorAPI.owner.lookup(
+        const controller = emberInspectorAPI.owner.getController(
           owner,
-          `controller:${message.name}`,
+          message.name,
         );
         this.sendValueToConsole(controller);
       },
       sendRouteHandlerToConsole(message) {
         const owner = this.namespace?.owner;
-        const route = emberInspectorAPI.owner.lookup(
+        const route = emberInspectorAPI.owner.getRoute(
           owner,
-          `route:${message.name}`,
+          message.name,
         );
         this.sendValueToConsole(route);
       },
@@ -281,9 +281,9 @@ export default class extends DebugPort {
       },
       inspectController(message) {
         const owner = this.namespace?.owner;
-        const controller = emberInspectorAPI.owner.lookup(
+        const controller = emberInspectorAPI.owner.getController(
           owner,
-          `controller:${message.name}`,
+          message.name,
         );
         this.sendObject(controller);
       },
@@ -295,7 +295,7 @@ export default class extends DebugPort {
       },
       inspectByContainerLookup(message) {
         const owner = this.namespace?.owner;
-        const instance = emberInspectorAPI.owner.lookup(owner, message.name);
+        const instance = emberInspectorAPI.owner.getInstance(owner, message.name);
         this.sendObject(instance);
       },
       traceErrors(message) {
