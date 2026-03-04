@@ -152,7 +152,6 @@ function compare(val, number) {
   }
 }
 
-
 // Singleton instance
 let instance = null;
 
