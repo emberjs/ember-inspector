@@ -1,13 +1,22 @@
+/**
+ * Mock implementation of the WebExtension adapter for testing.
+ * This mock does not extend Service and provides a minimal implementation
+ * for testing purposes.
+ *
+ * Usage:
+ *   import { getMockWebExtensionAdapter } from './helpers/mock-web-extension-adapter';
+ *   const adapter = getMockWebExtensionAdapter();
+ */
 import { tracked } from '@glimmer/tracking';
 
-import BasicAdapter from './basic';
+import BasicAdapter from './mock-basic-adapter';
 
 let emberDebug = null;
 let config = {
   emberVersionsSupported: ['3.16.0'],
 };
 
-export default class WebExtension extends BasicAdapter {
+export class MockWebExtensionAdapter extends BasicAdapter {
   @tracked canOpenResource = false;
   name = 'web-extension';
 
@@ -123,9 +132,9 @@ export default class WebExtension extends BasicAdapter {
   }
 
   /**
-    We handle the reload here so we can inject
-    scripts as soon as possible into the new page.
-  */
+   We handle the reload here so we can inject
+   scripts as soon as possible into the new page.
+   */
   reloadTab() {
     void loadEmberDebug().then((emberDebug) => {
       chrome.devtools.inspectedWindow.reload({
@@ -161,3 +170,35 @@ function loadEmberDebug() {
     }
   });
 }
+
+
+// Singleton instance
+let instance = null;
+
+/**
+ * Get or create the singleton instance of MockWebExtensionAdapter
+ * @returns {MockWebExtensionAdapter}
+ */
+export function getMockWebExtensionAdapter() {
+  if (!instance) {
+    instance = new MockWebExtensionAdapter();
+  }
+  return instance;
+}
+
+/**
+ * Reset the singleton instance (useful for test cleanup)
+ */
+export function resetMockWebExtensionAdapter() {
+  instance = null;
+}
+
+/**
+ * Factory function for registering with Ember's owner
+ * Usage: owner.register('service:adapters/web-extension', createMockWebExtensionAdapter);
+ */
+export function createMockWebExtensionAdapter() {
+  return getMockWebExtensionAdapter();
+}
+
+export default MockWebExtensionAdapter;

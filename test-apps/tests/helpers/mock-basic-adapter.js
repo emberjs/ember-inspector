@@ -17,7 +17,7 @@ import { tracked } from '@glimmer/tracking';
 
 const config = {};
 
-export default class Basic extends Service {
+export class MockBasicAdapter {
   _messageCallbacks;
   name = 'basic';
 
@@ -28,8 +28,6 @@ export default class Basic extends Service {
    * the inspector app boots).
    */
   constructor() {
-    super(...arguments);
-
     this._messageCallbacks = [];
     this._checkVersion();
   }
@@ -77,16 +75,16 @@ export default class Basic extends Service {
   onVersionMismatch() {}
 
   /**
-    Used to send messages to EmberDebug
+   Used to send messages to EmberDebug
 
-    @param _message the message to send
-  **/
+   @param _message the message to send
+   **/
   sendMessage() {}
 
   /**
-    Register functions to be called
-    when a message from EmberDebug is received
-  **/
+   Register functions to be called
+   when a message from EmberDebug is received
+   **/
   onMessageReceived(callback) {
     this._messageCallbacks.push(callback);
   }
@@ -154,3 +152,27 @@ function compare(val, number) {
     return 1;
   }
 }
+
+
+// Singleton instance
+let instance = null;
+
+/**
+ * Get or create the singleton instance of MockBasicAdapter
+ * @returns {MockBasicAdapter}
+ */
+export function getMockBasicAdapter() {
+  if (!instance) {
+    instance = new MockBasicAdapter();
+  }
+  return instance;
+}
+
+/**
+ * Reset the singleton instance (useful for test cleanup)
+ */
+export function resetMockBasicAdapter() {
+  instance = null;
+}
+
+export default MockBasicAdapter;

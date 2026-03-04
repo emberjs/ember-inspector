@@ -1,6 +1,6 @@
 import QUnit from 'qunit';
 import { next } from '@ember/runloop';
-import BasicAdapter from 'test-app/services/adapters/basic';
+import MockBasicAdapter from './helpers/mock-basic-adapter';
 import { settled } from '@ember/test-helpers';
 
 let adapter = null;
@@ -224,7 +224,7 @@ export function disableDefaultResponseFor(type) {
   );
 }
 
-export default class TestAdapter extends BasicAdapter {
+export default class TestAdapter extends MockBasicAdapter {
   constructor() {
     super(...arguments);
     adapter = this;
