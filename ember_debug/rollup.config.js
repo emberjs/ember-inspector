@@ -11,6 +11,7 @@ export default {
     'utils/type-check.js',
     'port.js',
     'utils/ember.js',
+    'utils/type-check',
     'models/profile-node.js',
     'libs/promise-assembler.js',
     'lib/versions.js',
@@ -20,5 +21,11 @@ export default {
     dir: 'dist',
   },
 
-  plugins: [babel(), nodeResolve(), commonjs(), del({ targets: 'dist' })],
+  plugins: [
+    babel(),
+    nodeResolve(),
+    commonjs(),
+    // versions is required for ember-cli-build.js and should be kept between builds
+    del({ targets: ['dist/*', '!dist/versions.js'] }),
+  ],
 };

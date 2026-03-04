@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import Service from '@ember/service';
+import { getMockWebExtensionAdapter } from '../helpers/mock-web-extension-adapter';
 
 class ChromePort {
   constructor(self, other) {
@@ -135,7 +136,7 @@ class ChromeApi {
         if (url.startsWith('/')) {
           url = url.slice(1);
         }
-        return '/testing/' + url;
+        return '/' + url;
       },
       connect() {
         const other = self.connectToOther;
@@ -212,7 +213,7 @@ module('Integration | Injection', function (hooks) {
     window.chrome = inspectorChromeApi;
 
     owner.register('service:port', class extends EmberService {});
-    owner.lookup('service:adapters/web-extension');
+    getMockWebExtensionAdapter();
     window.requireModule = null;
     Object.defineProperty(window, 'Ember', {
       value: null,
