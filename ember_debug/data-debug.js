@@ -1,5 +1,6 @@
 import DebugPort from './debug-port.js';
 import { guidFor } from './utils/ember/object/internals';
+import { emberInspectorAPI } from './utils/ember-inspector-api.js';
 
 export default class extends DebugPort {
   // eslint-disable-next-line ember/classic-decorator-hooks
@@ -16,8 +17,7 @@ export default class extends DebugPort {
     const owner = this.namespace?.owner;
 
     // dataAdapter:main is deprecated
-    let adapter =
-      this._resolve('data-adapter:main') && owner.lookup('data-adapter:main');
+    let adapter = emberInspectorAPI.owner.getDataAdapter(owner);
     // column limit is now supported at the inspector level
     if (adapter) {
       adapter.attributeLimit = 100;
@@ -25,12 +25,6 @@ export default class extends DebugPort {
     }
 
     return null;
-  }
-
-  _resolve(name) {
-    const owner = this.namespace?.owner;
-
-    return owner.resolveRegistration(name);
   }
 
   get port() {

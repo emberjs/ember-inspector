@@ -1,16 +1,13 @@
-import { Application, Namespace, guidFor } from '../utils/ember';
+import { emberInspectorAPI } from '../utils/ember-inspector-api';
+import { guidFor } from '../utils/ember';
 
 /**
- * Get all the Ember.Application instances from Ember.Namespace.NAMESPACES
+ * Get all the Ember.Application instances via the inspector API
  * and add our own applicationId and applicationName to them
  * @return {*}
  */
 export default function getApplications() {
-  var namespaces = Namespace.NAMESPACES;
-
-  var apps = namespaces.filter(function (namespace) {
-    return namespace instanceof Application;
-  });
+  var apps = emberInspectorAPI.owner.getApplications();
 
   return apps.map(function (app) {
     // Add applicationId and applicationName to the app
