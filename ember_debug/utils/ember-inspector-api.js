@@ -178,29 +178,29 @@ async function getEmberInspectorAPI() {
       // Higher-level API methods that wrap lookup/resolveRegistration
       hasRegistration: (owner, fullName) => {
         if (!owner) return false;
-        
+
         // Try factoryFor first (modern API)
         if (owner.factoryFor) {
           return !!owner.factoryFor(fullName);
         }
-        
+
         // Fallback to resolveRegistration
         if (owner.resolveRegistration) {
           return !!owner.resolveRegistration(fullName);
         }
-        
+
         return false;
       },
 
       getDataAdapter: (owner) => {
         if (!owner) return null;
-        
+
         // Check if data adapter is registered before attempting lookup
-        const hasAdapter = owner.factoryFor?.('data-adapter:main') || 
+        const hasAdapter = owner.factoryFor?.('data-adapter:main') ||
                           owner.resolveRegistration?.('data-adapter:main');
-        
+
         if (!hasAdapter) return null;
-        
+
         return owner.lookup('data-adapter:main');
       },
 
@@ -234,6 +234,59 @@ async function getEmberInspectorAPI() {
         // eslint-disable-next-line ember/no-private-routing-service
         const router = owner?.lookup('router:main');
         return router?.currentURL || router?.get?.('currentURL') || null;
+      },
+      /**
+       * Get all container instances grouped by type
+       * Replaces direct access to owner.__container__.cache
+       * @param {Object} owner - The owner/container
+       * @param {Object} options - Filtering options
+       * @param {Array<string>} options.excludeTypes - Types to exclude
+       * @param {boolean} options.includePrivate - Whether to include private types (starting with -)
+       * @returns {Object} Instances grouped by type: { type: [{ fullName, instance }] }
+       */
+      getContainerInstances: (owner, options = {}) => {
+        if (!owner || !owner.__container__) return {};
+
+        const { excludeTypes = [], includePrivate = false } = options;
+        const instancesByType = {};
+        let cache = owner.__container__.cache;
+
+        // Detect if InheritingDict (from Ember < 1.8)
+        if (
+          typeof cache.dict !== 'undefined' &&
+          typeof cache.eachLocal !== 'undefined'
+        ) {
+          cache = cache.dict;
+        }
+
+        for (const key in cache) {
+          if (!Object.prototype.hasOwnProperty.call(cache, key)) {
+            continue;
+          }
+
+          const type = key.split(':').shift();
+
+          // Filter out private types (starting with -)
+          if (!includePrivate && type[0] === '-') {
+            continue;
+          }
+
+          // Filter out excluded types
+          if (excludeTypes.includes(type)) {
+            continue;
+          }
+
+          if (!instancesByType[type]) {
+            instancesByType[type] = [];
+          }
+
+          instancesByType[type].push({
+            fullName: key,
+            instance: cache[key],
+          });
+        }
+
+        return instancesByType;
       },
       buildRouteTree: (owner) => {
         // Simplified implementation - builds route tree from router internals
