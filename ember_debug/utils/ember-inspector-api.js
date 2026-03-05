@@ -62,6 +62,43 @@ async function getEmberInspectorAPI() {
       set: legacyEmber.set,
     },
     owner: {
+
+      /**
+       * Get own mixins for an object
+       * Filters out anonymous mixins that are directly in a `class.extend`
+       * @param {Object} object - The object to get mixins for
+       * @returns {Set} Set of own mixins
+       */
+      ownMixins: (object) => {
+        // TODO: We need to expose an API for getting _just_ the own mixins directly
+        const meta = legacyEmber.meta(object);
+        const parentMeta = meta.parent;
+        const mixins = new Set();
+
+        // Filter out anonymous mixins that are directly in a `class.extend`
+        const baseMixins =
+          object.constructor &&
+          object.constructor.PrototypeMixin &&
+          object.constructor.PrototypeMixin.mixins;
+
+        meta.forEachMixins((m) => {
+          // Find mixins that:
+          // - Are not in the parent classes
+          // - Are not primitive (has mixins, doesn't have properties)
+          // - Don't include any of the base mixins from a class extend
+          if (
+            (!parentMeta || !parentMeta.hasMixin(m)) &&
+            !m.properties &&
+            m.mixins &&
+            (!baseMixins || !m.mixins.some((m) => baseMixins.includes(m)))
+          ) {
+            mixins.add(m);
+          }
+        });
+
+        return mixins;
+      },
+
       getOwner: legacyEmber.getOwner,
 
       lookup: (owner, fullName) => {
