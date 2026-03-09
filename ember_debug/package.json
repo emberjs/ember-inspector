@@ -16,7 +16,7 @@
     "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "backburner.js": "^2.8.0",
-    "glob": "^11.0.2",
+    "glob": "^13.0.6",
     "rollup": "^4.39.0",
     "rollup-plugin-delete": "^3.0.1",
     "source-map-js": "^1.2.1"
