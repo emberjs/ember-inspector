@@ -20,40 +20,20 @@
       pattern: 'vscode://file/{{file}}',
     },
     {
-      id: 'sublime',
-      name: 'Sublime Text',
-      pattern: 'subl://open?url=file://{{file}}',
-    },
-    {
-      id: 'jetbrains',
-      name: 'JetBrains IDEs',
-      pattern: 'idea://open?file={{file}}',
-    },
-    {
-      id: 'atom',
-      name: 'Atom',
-      pattern: 'atom://core/open/file?filename={{file}}',
-    },
-    {
-      id: 'vim',
-      name: 'Vim',
-      pattern: 'vim://open?url=file://{{file}}',
-    },
-    {
-      id: 'neovim',
-      name: 'Neovim',
-      pattern: 'nvim://open?url=file://{{file}}',
-    },
-    {
-      id: 'textmate',
-      name: 'TextMate',
-      pattern: 'txmt://open?url=file://{{file}}',
+      id: 'cursor',
+      name: 'Cursor',
+      pattern: 'cursor://file/{{file}}',
     },
     {
       id: 'zed',
       name: 'Zed',
       pattern: 'zed://file/{{file}}',
-    }
+    },
+    {
+      id: 'sublime',
+      name: 'Sublime Text',
+      pattern: 'subl://open?url=file://{{file}}',
+    },
   ];
 
   var CustomEditorPatternId = '_custom_';

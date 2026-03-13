@@ -101,13 +101,13 @@ module('Integration | Options Page', function (hooks) {
 
     assert.strictEqual(
       storedOptions.editor,
-      'sublime',
+      'cursor',
       'editor id updated to sublime',
     );
     assert.strictEqual(
       storedOptions.editorPattern,
-      'subl://open?url=file://{{file}}',
-      'editor pattern updated to sublime pattern',
+      'cursor://file/{{file}}',
+      'editor pattern updated to cursor pattern',
     );
   });
 
@@ -134,8 +134,8 @@ module('Integration | Options Page', function (hooks) {
 
   test('previously selected editor is checked on load', async function (assert) {
     const chrome = createChromeMock({
-      editor: 'jetbrains',
-      editorPattern: 'idea://open?file={{file}}',
+      editor: 'cursor',
+      editorPattern: 'cursor://file/{{file}}',
     });
     window.chrome = chrome;
     await loadOptionsPage(chrome);
@@ -147,8 +147,8 @@ module('Integration | Options Page', function (hooks) {
     assert.ok(checkedRadio, 'a radio is checked');
     assert.strictEqual(
       checkedRadio.closest('label').textContent,
-      'JetBrains IDEs',
-      'JetBrains radio is the checked one',
+      'Cursor',
+      'Cursor radio is the checked one',
     );
   });
 
