@@ -52,6 +52,35 @@
     });
 
     emberDebugPort.start();
+
+    /**
+     * On initial load of the extension pull from storage and pass
+     * via postMessage the user's stored preferred text editor pattern
+     */
+    chrome.storage.sync.get('options', function (data) {
+      var editorPattern = data.options && data.options.editorPattern;
+      if (editorPattern) {
+        emberDebugPort.postMessage({
+          type: 'view:editorUrlPatternReceived',
+          from: 'content-script',
+          value: editorPattern
+        });
+      }
+    });
+
+    /**
+     * Pass along any new user editor selection value to any running instances
+     */
+    chrome.storage.onChanged.addListener(function (changes) {
+      if (changes.options) {
+        var editorPattern = changes.options.newValue && changes.options.newValue.editorPattern;
+        emberDebugPort.postMessage({
+          type: 'view:editorUrlPatternReceived',
+          from: 'content-script',
+          value: editorPattern
+        });
+      }
+    });
   }
 
   // document.documentElement.dataset is not present for SVG elements
