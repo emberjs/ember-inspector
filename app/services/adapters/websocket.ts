@@ -4,8 +4,6 @@ import BasicAdapter from './basic';
 import type { Message } from '../port';
 
 export default class Websocket extends BasicAdapter {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  socket: any;
 
   constructor() {
     // @ts-expect-error Using ...arguments is fine.
@@ -13,8 +11,11 @@ export default class Websocket extends BasicAdapter {
     super(...arguments);
     // @ts-expect-error TODO: figure out how to type this stuff
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    this.socket = window.EMBER_INSPECTOR_CONFIG.remoteDebugSocket;
     this._connect();
+  }
+
+  get socket() {
+    return window.EMBER_INSPECTOR_CONFIG.remoteDebugSocket;
   }
 
   sendMessage(message?: Partial<Message>) {
