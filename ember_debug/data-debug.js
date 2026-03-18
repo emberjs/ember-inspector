@@ -1,6 +1,7 @@
 import DebugPort from './debug-port.js';
-import { guidFor } from './utils/ember/object/internals';
 import { emberInspectorAPI } from './utils/ember-inspector-api.js';
+
+const { guidFor } = emberInspectorAPI.objectInternals;
 
 export default class extends DebugPort {
   // eslint-disable-next-line ember/classic-decorator-hooks

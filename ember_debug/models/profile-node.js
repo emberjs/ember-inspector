@@ -3,7 +3,9 @@
 
   @class ProfileNode
 **/
-import { guidFor } from '../utils/ember/object/internals';
+import { emberInspectorAPI } from '../utils/ember-inspector-api.js';
+
+const { guidFor } = emberInspectorAPI.objectInternals;
 
 function get(obj, key) {
   return obj.get ? obj.get(key) : obj[key];

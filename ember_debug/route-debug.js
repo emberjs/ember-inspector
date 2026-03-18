@@ -1,7 +1,9 @@
 import DebugPort from './debug-port.js';
-import { _backburner, later } from './utils/ember/runloop';
 import { emberInspectorAPI } from './utils/ember-inspector-api.js';
 import bound from './utils/bound-method';
+
+const _backburner = emberInspectorAPI.runloop.getBackburner();
+const { later } = emberInspectorAPI.runloop;
 
 /**
  * Route Debug - Refactored to use new Ember Inspector API

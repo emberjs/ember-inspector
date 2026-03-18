@@ -6,8 +6,10 @@ import getApplications from './get-applications';
 import bootEmberInspector from './boot-ember-inspector';
 import setupInstanceInitializer from './setup-instance-initializer';
 import sendVersionMiss from './send-version-miss';
-import { guidFor, VERSION } from '../utils/ember';
 import { emberInspectorAPI } from '../utils/ember-inspector-api';
+
+const { guidFor } = emberInspectorAPI.objectInternals;
+const { VERSION } = emberInspectorAPI.environment;
 
 function onReady(callback) {
   if (

@@ -7,14 +7,13 @@ import {
   typeOf,
   inspect,
 } from './utils/type-check';
-import {
-  meta as emberMeta,
-  getOwner,
-  cacheFor,
-  guidFor,
-  join,
-  getBackburner,
-  // Type checking functions (replaces instanceof checks)
+import emberNames from './utils/ember-object-names.js';
+import getObjectName from './utils/get-object-name.js';
+
+// Extract all needed functions from emberInspectorAPI
+const { meta: emberMeta, getOwner, cacheFor, guidFor } = emberInspectorAPI.objectInternals;
+const { join, getBackburner } = emberInspectorAPI.runloop;
+const {
   isEmberObject,
   isCoreObject,
   isObjectProxy,
@@ -22,15 +21,14 @@ import {
   isService,
   isComponent,
   isGlimmerComponent,
-  // Tracking API (simplified)
+} = emberInspectorAPI.typeChecking;
+const {
   createPropertyTracker,
   hasPropertyChanged,
   getPropertyDependencies,
   getChangedDependencies,
   isTrackedProperty,
-} from './utils/ember';
-import emberNames from './utils/ember-object-names.js';
-import getObjectName from './utils/get-object-name.js';
+} = emberInspectorAPI.tracking;
 
 const _backburner = getBackburner();
 

@@ -1,8 +1,9 @@
 import ProfileNode from './profile-node.js';
-import { VERSION } from '../utils/ember';
+import { emberInspectorAPI } from '../utils/ember-inspector-api.js';
 import { compareVersion } from '../utils/version';
 
-import { later, scheduleOnce, cancel } from '../utils/ember/runloop';
+const { VERSION } = emberInspectorAPI.environment;
+const { later, scheduleOnce, cancel } = emberInspectorAPI.runloop;
 
 function getEdges(first, last, closest) {
   let start = null;

@@ -94,6 +94,9 @@ export const getBackburner = runloop.getBackburner;
 export const join = runloop.join;
 export const debounce = runloop.debounce;
 export const cancel = runloop.cancel;
+export const later = runloop.later;
+export const scheduleOnce = runloop.scheduleOnce;
+export const run = runloop.run;
 
 // Legacy exports for compatibility (these are now just references to the API)
 // These are kept to minimize changes in other files

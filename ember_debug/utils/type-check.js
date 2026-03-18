@@ -4,12 +4,11 @@
  * Updated to use the new Ember Inspector API instead of direct class imports.
  */
 
-import {
-  inspect as emberInspect,
-  isComputed as emberIsComputed,
-  getComputedPropertyDescriptor,
-  isEmberObject,
-} from '../utils/ember';
+import { emberInspectorAPI } from './ember-inspector-api.js';
+
+const { inspect: emberInspect } = emberInspectorAPI.debug;
+const { isComputed: emberIsComputed, getComputedPropertyDescriptor } = emberInspectorAPI.computed;
+const { isEmberObject } = emberInspectorAPI.typeChecking;
 
 /**
  * Check if given key on the passed object is a computed property

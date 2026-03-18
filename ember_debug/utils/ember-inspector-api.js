@@ -376,6 +376,8 @@ async function getEmberInspectorAPI() {
     },
     libraries: {
       RSVP: legacyEmber.RSVP,
+      // Expose the full libraries registry for general-debug
+      getRegistry: () => legacyEmber.libraries?._registry || legacyEmber.libraries,
     },
     typeChecking: {
       // Use instanceof checks with the actual class references
@@ -568,6 +570,9 @@ async function getEmberInspectorAPI() {
       join: legacyEmber.Runloop?.join,
       debounce: legacyEmber.Runloop?.debounce,
       cancel: legacyEmber.Runloop?.cancel,
+      later: legacyEmber.Runloop?.later,
+      scheduleOnce: legacyEmber.Runloop?.scheduleOnce,
+      run: legacyEmber.Runloop,
     },
   };
 }

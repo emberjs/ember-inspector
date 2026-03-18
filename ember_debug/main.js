@@ -11,10 +11,11 @@ import ContainerDebug from './container-debug';
 import DeprecationDebug from './deprecation-debug';
 import Session from './services/session';
 
-import { guidFor, setGuidPrefix } from './utils/ember/object/internals';
-import { run } from './utils/ember/runloop';
 import BaseObject from './utils/base-object';
 import { emberInspectorAPI } from './utils/ember-inspector-api.js';
+import { guidFor, setGuidPrefix } from './utils/guid-for-with-prefix.js';
+
+const { run } = emberInspectorAPI.runloop;
 
 class EmberDebug extends BaseObject {
   /**

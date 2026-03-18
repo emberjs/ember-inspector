@@ -1,6 +1,8 @@
 import BasicAdapter from './basic';
 import { onReady } from '../utils/on-ready';
-import { run } from '../utils/ember/runloop';
+import { emberInspectorAPI } from '../utils/ember-inspector-api.js';
+
+const { run } = emberInspectorAPI.runloop;
 
 export default class extends BasicAdapter {
   sendMessage(options = {}) {
