@@ -14,7 +14,8 @@ export default class Websocket extends BasicAdapter {
   }
 
   get socket() {
-    return window.EMBER_INSPECTOR_CONFIG.remoteDebugSocket;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return window.EMBER_INSPECTOR_CONFIG.remoteDebugSocket as any;
   }
 
   sendMessage(message?: Partial<Message>) {
