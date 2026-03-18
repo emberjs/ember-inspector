@@ -1,4 +1,4 @@
-import { guidFor } from '../utils/ember';
+import { emberInspectorAPI } from '../utils/ember-inspector-api';
 
 export default function setupInstanceInitializer(app, callback) {
   if (!app.__inspector__setup) {
@@ -8,7 +8,7 @@ export default function setupInstanceInitializer(app, callback) {
     // registering an instance initializer with the same name, even if on a different app,
     // triggers an error because instance initializers seem to be global instead of per app.
     app.instanceInitializer({
-      name: 'ember-inspector-app-instance-booted-' + guidFor(app),
+      name: 'ember-inspector-app-instance-booted-' + emberInspectorAPI.objectInternals.guidFor(app),
       initialize: function (instance) {
         callback(instance);
       },

@@ -6,7 +6,10 @@ import getApplications from './get-applications';
 import bootEmberInspector from './boot-ember-inspector';
 import setupInstanceInitializer from './setup-instance-initializer';
 import sendVersionMiss from './send-version-miss';
-import { guidFor, Application, VERSION } from '../utils/ember';
+import { emberInspectorAPI } from '../utils/ember-inspector-api';
+
+const { guidFor } = emberInspectorAPI.objectInternals;
+const { VERSION } = emberInspectorAPI.environment;
 
 function onReady(callback) {
   if (
@@ -64,12 +67,12 @@ export function startInspector(adapter) {
           (app) => guidFor(app) === message.applicationId,
         );
 
-        if (
-          selected &&
-          current !== selected &&
-          selected.__deprecatedInstance__
-        ) {
-          bootEmberInspector(selected.__deprecatedInstance__);
+        if (selected && current !== selected) {
+          let instance =
+            emberInspectorAPI.owner.getOwnerFromApplication(selected);
+          if (instance) {
+            bootEmberInspector(instance);
+          }
         }
       }
     });
@@ -79,10 +82,7 @@ export function startInspector(adapter) {
     sendApps(adapterInstance, apps);
 
     function loadInstance(app) {
-      const applicationInstances = app._applicationInstances && [
-        ...app._applicationInstances,
-      ];
-      let instance = app.__deprecatedInstance__ || applicationInstances[0];
+      let instance = emberInspectorAPI.owner.getOwnerFromApplication(app);
       if (instance) {
         // App started
         setupInstanceInitializer(app, callback);
@@ -96,15 +96,16 @@ export function startInspector(adapter) {
       app = apps[i];
       // We check for the existance of an application instance because
       // in Ember > 3 tests don't destroy the app when they're done but the app has no booted instances.
-      if (app._readinessDeferrals === 0) {
+      if (emberInspectorAPI.owner.isApplicationReady(app)) {
         if (loadInstance(app)) {
           break;
         }
       }
 
-      // app already run initializers, but no instance, use _bootPromise and didBecomeReady
-      if (app._bootPromise) {
-        app._bootPromise.then((app) => {
+      // app already run initializers, but no instance, use waitForApplicationBoot and didBecomeReady
+      const bootPromise = emberInspectorAPI.owner.waitForApplicationBoot(app);
+      if (bootPromise) {
+        bootPromise.then((app) => {
           loadInstance(app);
         });
       }
@@ -116,7 +117,7 @@ export function startInspector(adapter) {
         },
       });
     }
-    Application.initializer({
+    emberInspectorAPI.owner.registerInitializer({
       name: 'ember-inspector-booted',
       initialize: function (app) {
         setupInstanceInitializer(app, callback);

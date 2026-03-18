@@ -1,7 +1,9 @@
-import { guidFor } from './utils/ember/object/internals';
-import { run } from './utils/ember/runloop';
+import { emberInspectorAPI } from './utils/ember-inspector-api.js';
 import BaseObject from './utils/base-object';
 import Evented from './utils/evented';
+
+const { guidFor } = emberInspectorAPI.objectInternals;
+const { run } = emberInspectorAPI.runloop;
 
 export default class extends BaseObject {
   constructor(data) {
