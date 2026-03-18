@@ -8,13 +8,11 @@ export default class Websocket extends BasicAdapter {
     // @ts-expect-error Using ...arguments is fine.
     // eslint-disable-next-line prefer-rest-params
     super(...arguments);
-    // @ts-expect-error TODO: figure out how to type this stuff
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this._connect();
   }
 
   get socket() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any @typescript-eslint/no-unsafe-return
     return window.EMBER_INSPECTOR_CONFIG.remoteDebugSocket as any;
   }
 
