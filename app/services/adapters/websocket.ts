@@ -12,7 +12,7 @@ export default class Websocket extends BasicAdapter {
   }
 
   get socket() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any @typescript-eslint/no-unsafe-return
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
     return window.EMBER_INSPECTOR_CONFIG.remoteDebugSocket as any;
   }
 
