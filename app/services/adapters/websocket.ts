@@ -4,7 +4,6 @@ import BasicAdapter from './basic';
 import type { Message } from '../port';
 
 export default class Websocket extends BasicAdapter {
-
   constructor() {
     // @ts-expect-error Using ...arguments is fine.
     // eslint-disable-next-line prefer-rest-params
