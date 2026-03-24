@@ -29,7 +29,7 @@
     }
   }
 
-  onReady(function () {
+  onReady(async function () {
     let Ember;
     try {
       Ember = requireModule('ember')['default'];
@@ -37,6 +37,13 @@
       Ember = window.Ember;
     }
     var libraries = Ember && Ember.libraries;
+    if (globalThis.emberInspectorApps) {
+      globalThis.emberInspectorApps[0];
+      const appLoader = globalThis.emberInspectorApps[0];
+      const internalEmberModules = await appLoader.loadCompatInspector();
+      const InternalsMetal = internalEmberModules.InternalsMetal;
+      libraries = InternalsMetal?.libraries;
+    }
     if (libraries) {
       // Ember has changed where the array of libraries is located.
       // In older versions, `Ember.libraries` was the array itself,
