@@ -133,7 +133,7 @@
     "eslint-plugin-qunit": "^8.1.2",
     "fstream": "^1.0.12",
     "globals": "^15.14.0",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.1",
     "gulp-zip": "^5.1.0",
     "loader.js": "^4.7.0",
     "normalize.css": "8.0.1",
