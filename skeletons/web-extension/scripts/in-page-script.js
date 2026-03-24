@@ -38,7 +38,6 @@
     }
     var libraries = Ember && Ember.libraries;
     if (globalThis.emberInspectorApps) {
-      globalThis.emberInspectorApps[0];
       const appLoader = globalThis.emberInspectorApps[0];
       const internalEmberModules = await appLoader.loadCompatInspector();
       const InternalsMetal = internalEmberModules.InternalsMetal;
