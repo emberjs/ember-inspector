@@ -21,7 +21,7 @@ importers:
         version: 5.0.10
       yauzl:
         specifier: ^3.2.0
-        version: 3.2.0
+        version: 3.2.1
     devDependencies:
       '@babel/core':
         specifier: ^7.26.0
@@ -9691,8 +9691,8 @@ packages:
   yargs@7.1.2:
     resolution: {integrity: sha512-ZEjj/dQYQy0Zx0lgLMLR8QuaqTihnxirir7EwUHp1Axq4e3+k8jXU5K0VLbNvedv1f4EWtBonDIZm0NUr+jCcA==}
 
-  yauzl@3.2.0:
-    resolution: {integrity: sha512-Ow9nuGZE+qp1u4JIPvg+uCiUr7xGQWdff7JQSk5VGYTAZMDe2q8lxJ10ygv10qmSj031Ty/6FNJpLO4o1Sgc+w==}
+  yauzl@3.2.1:
+    resolution: {integrity: sha512-k1isifdbpNSFEHFJ1ZY4YDewv0IH9FR61lDetaRMD3j2ae3bIXGV+7c+LHCqtQGofSd8PIyV4X6+dHMAnSr60A==}
     engines: {node: '>=12'}
 
   yazl@2.5.1:
@@ -21319,7 +21319,7 @@ snapshots:
       y18n: 3.2.2
       yargs-parser: 5.0.1
 
-  yauzl@3.2.0:
+  yauzl@3.2.1:
     dependencies:
       buffer-crc32: 0.2.13
       pend: 1.2.0
