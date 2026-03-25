@@ -1,0 +1,7 @@
+# Unlabeled Changes
+
+* `ember-inspector`
+  * [#2736](https://github.com/emberjs/ember-inspector/pull/2736) fix tab action icon detection of newer ember apps ([@patricklx](https://github.com/patricklx))
+
+
+*Cannot plan release until the above changes are labeled*.
