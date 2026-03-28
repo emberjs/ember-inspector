@@ -13,6 +13,8 @@ interface RenderItemArgs {
   target: { level: number };
 }
 
+export const indentItem = (level: number) => +level * 20 + 5;
+
 export default class RenderItem extends Component<RenderItemArgs> {
   get hasChildren() {
     return Number(this.args.model?.children?.length) > 0;
@@ -25,7 +27,7 @@ export default class RenderItem extends Component<RenderItemArgs> {
   }
 
   get nameStyle() {
-    return htmlSafe(`padding-left: ${+this.level * 20 + 5}px;`);
+    return htmlSafe(`padding-left: ${indentItem(this.level)}px;`);
   }
 
   get nodeStyle() {
