@@ -1,7 +1,6 @@
 /* eslint no-empty:0 */
 import DebugPort from './debug-port.js';
-
-import { libraries } from './utils/ember';
+import { emberInspectorAPI } from './utils/ember-inspector-api.js';
 
 /**
  * Class that handles gathering general information of the inspected app.
@@ -88,7 +87,7 @@ export default class extends DebugPort {
        */
       getLibraries() {
         this.sendMessage('libraries', {
-          libraries: libraries?._registry,
+          libraries: emberInspectorAPI.libraries.getRegistry(),
         });
       },
 

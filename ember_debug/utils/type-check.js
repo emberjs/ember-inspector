@@ -1,36 +1,29 @@
-import { Debug, inspect as emberInspect } from '../utils/ember';
-import {
-  ComputedProperty,
-  EmberObject,
-  meta as emberMeta,
-  InternalsMetal,
-} from '../utils/ember';
+/**
+ * Type checking utilities for the Ember Inspector
+ *
+ * Updated to use the new Ember Inspector API instead of direct class imports.
+ */
+
+import { emberInspectorAPI } from './ember-inspector-api.js';
+
+const { inspect: emberInspect } = emberInspectorAPI.debug;
+const { isComputed: emberIsComputed, getComputedPropertyDescriptor } = emberInspectorAPI.computed;
+const { isEmberObject } = emberInspectorAPI.typeChecking;
 
 /**
  * Check if given key on the passed object is a computed property
  * @param object
  * @param key
- * @return {boolean|*}
+ * @return {boolean}
  */
 export function isComputed(object, key) {
-  // Ember > 3.10
-  if (Debug.isComputed && Debug.isComputed(object, key)) {
-    return true;
-  }
-
-  if (emberMeta(object) && emberMeta(object).peekDescriptors(key)) {
-    return !!emberMeta(object).peekDescriptors(key)._getter;
-  }
-
-  if (getDescriptorFor(object, key) instanceof ComputedProperty) {
-    return true;
-  }
+  // Use the new API's isComputed function
+  return emberIsComputed(object, key);
 }
 
 /**
- * This allows us to pass in a COMPUTED_DECORATOR function and get the descriptor for it.
- * It should be implemented Ember side eventually.
- * @param {EmberObject} object The object we are inspecting
+ * Get the descriptor for a property
+ * @param {Object} object The object we are inspecting
  * @param {String} key The key for the property on the object
  */
 export function getDescriptorFor(object, key) {
@@ -38,17 +31,8 @@ export function getDescriptorFor(object, key) {
     return object[key];
   }
 
-  // exists longer than ember 3.10
-  if (Debug.isComputed) {
-    const { descriptorForDecorator, descriptorForProperty } =
-      InternalsMetal || {};
-    return (
-      descriptorForDecorator?.(object[key]) ||
-      descriptorForProperty?.(object, key)
-    );
-  }
-
-  return object[key];
+  // Use the new API's getComputedPropertyDescriptor
+  return getComputedPropertyDescriptor(object, key);
 }
 
 export function typeOf(obj) {
@@ -61,7 +45,8 @@ export function typeOf(obj) {
 export function inspect(value) {
   if (typeof value === 'function') {
     return `${value.name || 'function'}() { ... }`;
-  } else if (value instanceof EmberObject) {
+  } else if (isEmberObject(value)) {
+    // Use type checking function instead of instanceof
     return value.toString();
   } else if (value instanceof HTMLElement) {
     return `<${value.tagName.toLowerCase()}>`;

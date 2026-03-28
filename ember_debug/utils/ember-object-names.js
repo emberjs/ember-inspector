@@ -1,58 +1,31 @@
-import { compareVersion } from '../utils/version';
-import {
-  VERSION,
-  ActionHandler,
-  ControllerMixin,
-  CoreObject,
-  MutableEnumerable,
-  NativeArray,
-  MutableArray,
-  Component,
-  Evented,
-  InternalsRuntime,
-  InternalsViews,
-  PromiseProxyMixin,
-  EmberObject,
-  Observable,
-} from '../utils/ember';
+/**
+ * Ember Object Names
+ *
+ * This module previously maintained a map of Ember class/mixin references to their names.
+ * With the new API, Ember provides name resolution directly via naming.getClassName().
+ *
+ * This module now exports a compatibility wrapper that uses the new API.
+ */
+
+import { getClassName } from './ember.js';
 
 /**
- * Add Known Ember Mixins and Classes so we can label them correctly in the inspector
+ * Compatibility wrapper that mimics the old Map interface
+ * but delegates to the new naming API.
  */
-const emberNames = new Map([
-  [Evented, 'Evented Mixin'],
-  [PromiseProxyMixin, 'PromiseProxy Mixin'],
-  [MutableArray, 'MutableArray Mixin'],
-  [MutableEnumerable, 'MutableEnumerable Mixin'],
-  [NativeArray, 'NativeArray Mixin'],
-  [Observable, 'Observable Mixin'],
-  [ControllerMixin, 'Controller Mixin'],
-  [CoreObject, 'CoreObject'],
-  [EmberObject, 'EmberObject'],
-  [Component, 'Component'],
-]);
+const emberNames = {
+  get(classOrMixin) {
+    return getClassName(classOrMixin);
+  },
 
-if (ActionHandler) {
-  emberNames.set(ActionHandler, 'ActionHandler Mixin');
-}
+  // These methods are no longer needed but kept for compatibility
+  set() {
+    // No-op: Ember manages its own class names now
+  },
 
-if (compareVersion(VERSION, '3.27.0') === -1) {
-  const TargetActionSupport = InternalsRuntime?.TargetActionSupport;
-  emberNames.set(TargetActionSupport, 'TargetActionSupport Mixin');
-}
-
-try {
-  const Views = InternalsViews || {};
-  emberNames.set(Views.ViewStateSupport, 'ViewStateSupport Mixin');
-  emberNames.set(Views.ViewMixin, 'View Mixin');
-  emberNames.set(Views.ActionSupport, 'ActionSupport Mixin');
-  emberNames.set(Views.ClassNamesSupport, 'ClassNamesSupport Mixin');
-  emberNames.set(Views.ChildViewsSupport, 'ChildViewsSupport Mixin');
-  emberNames.set(Views.ViewStateSupport, 'ViewStateSupport  Mixin');
-  // this one is not a Mixin, but an .extend({}), which results in a class
-  emberNames.set(Views.CoreView, 'CoreView');
-} catch {
-  // do nothing
-}
+  has(classOrMixin) {
+    return getClassName(classOrMixin) !== null;
+  },
+};
 
 export default emberNames;

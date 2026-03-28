@@ -12,6 +12,7 @@ import {
 import { run } from '@ember/runloop';
 import Route from '@ember/routing/route';
 import Controller from '@ember/controller';
+import { setupInspectorSupport } from '@ember/inspector-support';
 import BasicAdapter from 'ember-inspector/services/adapters/basic';
 import config from 'ember-inspector/config/environment';
 import { hbs } from 'ember-cli-htmlbars';
@@ -38,6 +39,7 @@ export default function setupEmberDebugTest(hooks, options = {}) {
       Resolver,
     });
     setApplication(app);
+    setupInspectorSupport();
 
     await setupContext(this);
     await setupApplicationContext(this);
@@ -102,5 +104,7 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     setApplication(originalApp);
 
     run(app, 'destroy');
+
+    globalThis.emberInspectorApps = [];
   });
 }
