@@ -1,5 +1,26 @@
 # Changelog
 
+## Release (2026-04-10)
+
+* ember-inspector 4.16.0 (minor)
+
+#### :rocket: Enhancement
+* `ember-inspector`
+  * [#2730](https://github.com/emberjs/ember-inspector/pull/2730) Enable Opening of Components in Preferred Text Editor ([@trek](https://github.com/trek))
+
+#### :bug: Bug Fix
+* `ember-inspector`
+  * [#2736](https://github.com/emberjs/ember-inspector/pull/2736) fix tab action icon detection of newer ember apps ([@patricklx](https://github.com/patricklx))
+  * [#2734](https://github.com/emberjs/ember-inspector/pull/2734) fix websocket adapter ([@patricklx](https://github.com/patricklx))
+
+#### :house: Internal
+* `ember-inspector`
+  * [#2712](https://github.com/emberjs/ember-inspector/pull/2712) Split event handling and chrome.storage saving in extensions options … ([@trek](https://github.com/trek))
+
+#### Committers: 2
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+- Trek Glowacki ([@trek](https://github.com/trek))
+
 ## Release (2026-02-18)
 
 * ember-inspector 4.15.1 (patch)
