@@ -65,6 +65,9 @@ class ChromeApi {
       sync: {
         get() {},
       },
+      onChanged: {
+        addListener() {},
+      },
     };
 
     const contextMenuListeners = [];

@@ -49,6 +49,10 @@ export default class extends DebugPort {
         this.lastRightClicked = null;
         this.inspectNearest(lastRightClicked);
       },
+
+      editorUrlPatternReceived(message) {
+        this.setEditorPattern(message.value);
+      },
     };
   }
 
@@ -197,5 +201,9 @@ export default class extends DebugPort {
 
   getOwner() {
     return this.namespace?.owner;
+  }
+
+  setEditorPattern(pattern) {
+    this.viewInspection.editorUrlPattern = pattern;
   }
 }

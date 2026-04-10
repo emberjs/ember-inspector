@@ -557,7 +557,21 @@ export default class ViewInspection {
     if (Array.isArray(value)) {
       this._renderTokens(td, value);
     } else {
-      td.innerText = value.replace(/\//g, '\u200B/\u200B');
+      if (key === 'Template') {
+        if (this.editorUrlPattern && value.startsWith('/')) {
+          const editorUrl = this.editorUrlPattern.replace('{{file}}', value);
+          const anchor = document.createElement('a');
+          anchor.setAttribute('href', editorUrl);
+          anchor.setAttribute('target', '_blank');
+          anchor.setAttribute('rel', 'noopener noreferrer');
+          anchor.innerText = value.replace(/\//g, '\u200B/\u200B');
+          td.appendChild(anchor);
+        } else {
+          td.innerText = value.replace(/\//g, '\u200B/\u200B');
+        }
+      } else {
+        td.innerText = value.replace(/\//g, '\u200B/\u200B');
+      }
     }
 
     tr.appendChild(th);
