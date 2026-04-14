@@ -368,6 +368,16 @@ export default class RenderTree {
   }
 
   /**
+   * Return the raw render node by id (unserialized).
+   *
+   * @param {string} id A render node id.
+   * @return {Option<Object>} A render node with the given id, if any.
+   */
+  getNode(id) {
+    return this.nodes[id] || null;
+  }
+
+  /**
    * Find the deepest enclosing render node for a given DOM node.
    *
    * @method findNearest
