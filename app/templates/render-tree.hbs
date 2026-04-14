@@ -38,7 +38,10 @@
     </button>
   </Ui::EmptyMessage>
 {{else}}
-  <List
+<!--TODO: Tab routing -->
+<SummaryRenderTable @profiles={{this.model.profiles}}  @searchValue={{this.searchValue}} />
+
+  {{!-- <List
     class="js-render-tree list-css-striping"
     @headerHeight={{this.headerHeight}}
     @schema={{schema-for "render-tree"}} as |list|
@@ -48,5 +51,5 @@
         <RenderItem @model={{item}} @search={{this.search}} @list={{list}} />
       {{/each}}
     </tbody>
-  </List>
+  </List>--}}
 {{/if}}
