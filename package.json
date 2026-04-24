@@ -31,11 +31,11 @@
     "test": "concurrently \"pnpm:lint\" \"pnpm:test:*\" --names \"lint,test:\" --prefixColors auto",
     "test:ember": "pnpm build:ember-debug && COVERAGE=true ember test",
     "watch": "pnpm '/watch:/'",
+    "watch:ember-debug": "pnpm --filter ember-debug watch",
+    "watch:inspector-ui": "ember build --watch",
     "watch-test": "pnpm '/watch-test:/'",
     "watch-test:ember-debug": "pnpm --filter ember-debug watch",
-    "watch-test:inspector-ui": "ember test --serv",
-    "watch:ember-debug": "pnpm --filter ember-debug watch",
-    "watch:inspector-ui": "ember build --watch"
+    "watch-test:inspector-ui": "ember test --serv"
   },
   "dependencies": {
     "got": "^11.8.6",
@@ -144,7 +144,7 @@
     "qunit-dom": "^3.4.0",
     "release-it": "^15.11.0",
     "release-it-lerna-changelog": "^5.0.0",
-    "release-plan": "^0.17.0",
+    "release-plan": "^0.18.0",
     "sass": "^1.79.4",
     "source-map-js": "^1.2.1",
     "stylelint": "^16.13.2",
