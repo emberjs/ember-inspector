@@ -1,5 +1,30 @@
 # Changelog
 
+## Release (2026-04-24)
+
+* ember-inspector 4.17.0 (minor)
+
+#### :rocket: Enhancement
+* `ember-inspector`
+  * [#2730](https://github.com/emberjs/ember-inspector/pull/2730) Enable Opening of Components in Preferred Text Editor ([@trek](https://github.com/trek))
+
+#### :bug: Bug Fix
+* `ember-inspector`
+  * [#2736](https://github.com/emberjs/ember-inspector/pull/2736) fix tab action icon detection of newer ember apps ([@patricklx](https://github.com/patricklx))
+  * [#2734](https://github.com/emberjs/ember-inspector/pull/2734) fix websocket adapter ([@patricklx](https://github.com/patricklx))
+
+#### :house: Internal
+* `ember-inspector`
+  * [#2739](https://github.com/emberjs/ember-inspector/pull/2739) update release-plan ([@mansona](https://github.com/mansona))
+  * [#2713](https://github.com/emberjs/ember-inspector/pull/2713) Prepare Release v4.16.0 ([@github-actions[bot]](https://github.com/apps/github-actions))
+  * [#2712](https://github.com/emberjs/ember-inspector/pull/2712) Split event handling and chrome.storage saving in extensions options … ([@trek](https://github.com/trek))
+
+#### Committers: 4
+- Chris Manson ([@mansona](https://github.com/mansona))
+- GitHub Actions [Bot] ([@github-actions](https://github.com/apps/github-actions))
+- Patrick Pircher ([@patricklx](https://github.com/patricklx))
+- Trek Glowacki ([@trek](https://github.com/trek))
+
 ## Release (2026-04-10)
 
 * ember-inspector 4.16.0 (minor)
