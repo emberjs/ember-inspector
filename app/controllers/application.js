@@ -51,13 +51,14 @@ export default class ApplicationController extends Controller {
    * from within the ObjectInspector
    */
   @action
-  pushMixinDetails(name, property, objectId, details, errors) {
+  pushMixinDetails(name, property, objectId, details, errors, renderNodeId) {
     details = {
       name,
       property,
       objectId,
       mixins: details,
       errors,
+      renderNodeId,
     };
 
     this.mixinStack.push(details);
@@ -122,7 +123,7 @@ export default class ApplicationController extends Controller {
    * Called when inspecting an object from outside of the ObjectInspector
    */
   @action
-  activateMixinDetails(name, objectId, details, errors) {
+  activateMixinDetails(name, objectId, details, errors, renderNodeId) {
     this.mixinStack.forEach((item) => {
       this.port.send('objectInspector:releaseObject', {
         objectId: item.objectId,
@@ -130,7 +131,14 @@ export default class ApplicationController extends Controller {
     });
 
     this.mixinStack = new TrackedArray([]);
-    this.pushMixinDetails(name, undefined, objectId, details, errors);
+    this.pushMixinDetails(
+      name,
+      undefined,
+      objectId,
+      details,
+      errors,
+      renderNodeId,
+    );
   }
 
   @action
