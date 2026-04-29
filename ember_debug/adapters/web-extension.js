@@ -1,8 +1,9 @@
 import BasicAdapter from './basic';
 import { typeOf } from '../utils/type-check';
+import { emberInspectorAPI } from '../utils/ember-inspector-api.js';
 
-import { getEnv } from '../utils/ember';
-import { run } from '../utils/ember/runloop';
+const { getEnv } = emberInspectorAPI.environment;
+const { run } = emberInspectorAPI.runloop;
 
 const { isArray } = Array;
 const { keys } = Object;

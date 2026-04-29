@@ -1,9 +1,10 @@
 import DebugPort from './debug-port.js';
 import SourceMap from './libs/source-map';
+import { emberInspectorAPI } from './utils/ember-inspector-api.js';
 
-import { Debug } from './utils/ember';
-import { guidFor } from './utils/ember/object/internals';
-import { cancel, debounce } from './utils/ember/runloop';
+const { registerDeprecationHandler } = emberInspectorAPI.debug;
+const { guidFor } = emberInspectorAPI.objectInternals;
+const { cancel, debounce } = emberInspectorAPI.runloop;
 
 export default class extends DebugPort {
   static {
@@ -194,7 +195,7 @@ export default class extends DebugPort {
   }
 
   handleDeprecations() {
-    Debug.registerDeprecationHandler((message, options, next) => {
+    registerDeprecationHandler((message, options, next) => {
       if (!this.adapter) {
         next(message, options);
         return;

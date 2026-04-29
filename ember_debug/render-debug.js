@@ -1,9 +1,10 @@
 import DebugPort from './debug-port.js';
 import ProfileManager from './models/profile-manager.js';
-
-import { subscribe } from './utils/ember';
-import { _backburner } from './utils/ember/runloop';
+import { emberInspectorAPI } from './utils/ember-inspector-api.js';
 import bound from './utils/bound-method';
+
+const { subscribe } = emberInspectorAPI.instrumentation;
+const _backburner = emberInspectorAPI.runloop.getBackburner();
 
 // Initial setup, that has to occur before the EmberObject init for some reason
 let profileManager = new ProfileManager();

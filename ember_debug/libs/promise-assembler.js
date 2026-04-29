@@ -6,9 +6,11 @@
  */
 
 import Promise from '../models/promise';
-import { RSVP } from '../utils/ember';
+import { emberInspectorAPI } from '../utils/ember-inspector-api.js';
 import BaseObject from '../utils/base-object';
 import Evented from '../utils/evented';
+
+const { RSVP } = emberInspectorAPI.libraries;
 
 class PromiseAssembler extends BaseObject {
   // RSVP lib to debug

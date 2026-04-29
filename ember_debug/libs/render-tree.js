@@ -1,15 +1,17 @@
 import captureRenderTree from './capture-render-tree.js';
-import { guidFor } from '../utils/ember/object/internals';
 import { inspect } from '../utils/type-check';
+import { emberInspectorAPI } from '../utils/ember-inspector-api.js';
 import { isInVersionSpecifier } from '../utils/version';
-import {
-  VERSION,
+
+const { guidFor } = emberInspectorAPI.objectInternals;
+const { VERSION } = emberInspectorAPI.environment;
+const {
   EmberDestroyable,
   GlimmerManager,
   GlimmerReference,
   GlimmerRuntime,
   GlimmerUtil,
-} from '../utils/ember';
+} = emberInspectorAPI.instrumentation;
 
 class InElementSupportProvider {
   constructor(owner) {
@@ -27,13 +29,16 @@ class InElementSupportProvider {
     this.DESTROY = GlimmerUtil?.DESTROY;
     this.registerDestructor = EmberDestroyable?.registerDestructor;
 
+    // Use the new API to get debug render tree instead of accessing private properties
     this.debugRenderTree =
-      owner.lookup('renderer:-dom')?.debugRenderTree ||
-      owner.lookup('service:-glimmer-environment')._debugRenderTree;
+      emberInspectorAPI.renderTree.getDebugRenderTree(owner);
     this.NewElementBuilder =
       this.runtime.NewElementBuilder || this.runtime.NewTreeBuilder;
 
-    this.patch();
+    // Only patch if debugRenderTree is available
+    if (this.debugRenderTree) {
+      this.patch();
+    }
   }
 
   reset() {
