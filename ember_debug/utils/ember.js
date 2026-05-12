@@ -1,77 +1,49 @@
 /* eslint-disable ember/new-module-imports */
-let Ember;
+import { Ember, emberSafeRequire } from './ember/global.js';
 
-try {
-  Ember = requireModule('ember/barrel').default;
-} catch {
-  // pass through
-}
-
-try {
-  Ember = Ember || requireModule('ember').default;
-} catch {
-  Ember = window.Ember;
-}
-
-const wrappedRequire = function (id) {
-  try {
-    return Ember.__loader.require(id);
-  } catch {
-    return requireModule(id);
-  }
-};
-
-export function emberSafeRequire(id) {
-  try {
-    return wrappedRequire(id);
-  } catch {
-    return undefined;
-  }
-}
-
-let Application,
+let ActionHandler,
+  Application,
   ApplicationModule,
-  Namespace,
-  ActionHandler,
+  ArrayProxy,
+  Component,
+  ComputedProperty,
   ControllerMixin,
   CoreObject,
   Debug,
-  MutableEnumerable,
-  NativeArray,
-  ArrayProxy,
-  MutableArray,
-  Component,
-  Observable,
-  Evented,
-  PromiseProxyMixin,
-  Service,
-  ObjectProxy,
-  InternalsMetal,
-  InternalsRuntime,
-  InternalsUtils,
-  InternalsViews,
   EmberDestroyable,
-  ObjectInternals,
-  Instrumentation,
-  Runloop,
+  EmberObject,
+  Evented,
   GlimmerComponent,
   GlimmerManager,
   GlimmerReference,
   GlimmerRuntime,
   GlimmerUtil,
   GlimmerValidator,
-  RSVP,
-  VERSION,
-  ComputedProperty,
-  meta,
-  get,
-  set,
-  computed,
-  EmberObject,
+  Instrumentation,
+  InternalsMetal,
+  InternalsRuntime,
+  InternalsUtils,
+  InternalsViews,
+  MutableArray,
+  MutableEnumerable,
+  Namespace,
+  NativeArray,
+  ObjectInternals,
+  ObjectProxy,
+  Observable,
   Owner,
+  PromiseProxyMixin,
+  RSVP,
+  Runloop,
+  Service,
+  VERSION,
   captureRenderTree,
+  computed,
+  get,
   getEnv,
-  getOwner;
+  getOwner,
+  meta,
+  set;
 
 // This global is defined in Embroider to bring Vite support to the Inspector.
 // Having it defined is enough to assert the inspected app runs with Vite.
@@ -80,71 +52,69 @@ if (globalThis.emberInspectorApps) {
   // apps in the future. So far, the inspector has supported only one app, so
   // we rely on the first item in the array to keep the current behavior.
   const appLoader = globalThis.emberInspectorApps[0];
-  const internalEmberModules = await appLoader.loadCompatInspector();
+  const modules = await appLoader.loadCompatInspector();
 
-  Application = internalEmberModules.Application.default;
-  ApplicationModule = internalEmberModules.Application;
-  Namespace = internalEmberModules.ApplicationNamespace.default;
-  NativeArray = internalEmberModules.Array.NativeArray;
-  MutableArray = internalEmberModules.ArrayMutable.default;
-  ArrayProxy = internalEmberModules.ArrayProxy.default;
-  Component = internalEmberModules.Component.default;
-  ControllerMixin = internalEmberModules.Controller.ControllerMixin;
-  Debug = internalEmberModules.Debug;
-  CoreObject = internalEmberModules.ObjectCore.default;
-  MutableEnumerable = internalEmberModules.EnumerableMutable.default;
-  getEnv = internalEmberModules.InternalsEnvironment?.getENV;
-  meta = internalEmberModules.InternalsMeta?.meta;
-  InternalsMetal = internalEmberModules.InternalsMetal;
-  ComputedProperty = InternalsMetal?.ComputedProperty;
-  InternalsRuntime = internalEmberModules.InternalsRuntime;
-  InternalsUtils = internalEmberModules.InternalsUtils;
-  InternalsViews = internalEmberModules.InternalsViews;
-  ObjectInternals = internalEmberModules.ObjectInternals;
-  Instrumentation = internalEmberModules.Instrumentation;
-  captureRenderTree = internalEmberModules.Debug.captureRenderTree;
-  ObjectProxy = internalEmberModules.ObjectProxy.default;
-  Observable = internalEmberModules.ObjectObservable.default;
-  Evented = internalEmberModules.ObjectEvented.default;
-  PromiseProxyMixin = internalEmberModules.ObjectPromiseProxyMixin.default;
-  Runloop = internalEmberModules.Runloop;
-  Service = internalEmberModules.Service.default;
-  EmberDestroyable = internalEmberModules.EmberDestroyable;
-  EmberObject = internalEmberModules.Object.default;
-  VERSION = internalEmberModules.VERSION.default;
-  set = internalEmberModules.Object.set;
-  get = internalEmberModules.Object.get;
-  RSVP = internalEmberModules.RSVP;
-  GlimmerComponent = internalEmberModules.GlimmerComponent;
-  GlimmerManager = internalEmberModules.GlimmerManager;
-  GlimmerReference = internalEmberModules.GlimmerReference;
-  GlimmerRuntime = internalEmberModules.GlimmerRuntime;
-  GlimmerUtil = internalEmberModules.GlimmerUtil;
-  GlimmerValidator = internalEmberModules.GlimmerValidator;
+  Application = modules.Application.default;
+  ApplicationModule = modules.Application;
+  ArrayProxy = modules.ArrayProxy.default;
+  Component = modules.Component.default;
+  ComputedProperty = modules.InternalsMetal?.ComputedProperty;
+  ControllerMixin = modules.Controller.ControllerMixin;
+  CoreObject = modules.ObjectCore.default;
+  Debug = modules.Debug;
+  EmberDestroyable = modules.EmberDestroyable;
+  EmberObject = modules.Object.default;
+  Evented = modules.ObjectEvented.default;
+  GlimmerComponent = modules.GlimmerComponent;
+  GlimmerManager = modules.GlimmerManager;
+  GlimmerReference = modules.GlimmerReference;
+  GlimmerRuntime = modules.GlimmerRuntime;
+  GlimmerUtil = modules.GlimmerUtil;
+  GlimmerValidator = modules.GlimmerValidator;
+  Instrumentation = modules.Instrumentation;
+  InternalsMetal = modules.InternalsMetal;
+  InternalsRuntime = modules.InternalsRuntime;
+  InternalsUtils = modules.InternalsUtils;
+  InternalsViews = modules.InternalsViews;
+  MutableArray = modules.ArrayMutable.default;
+  MutableEnumerable = modules.EnumerableMutable.default;
+  Namespace = modules.ApplicationNamespace.default;
+  NativeArray = modules.Array.NativeArray;
+  ObjectInternals = modules.ObjectInternals;
+  ObjectProxy = modules.ObjectProxy.default;
+  Observable = modules.ObjectObservable.default;
+  PromiseProxyMixin = modules.ObjectPromiseProxyMixin.default;
+  RSVP = modules.RSVP;
+  Runloop = modules.Runloop;
+  Service = modules.Service.default;
+  VERSION = modules.VERSION.default;
+  captureRenderTree = modules.Debug.captureRenderTree;
+  get = modules.Object.get;
+  getEnv = modules.InternalsEnvironment?.getENV;
+  meta = modules.InternalsMeta?.meta;
+  set = modules.Object.set;
   // owner was not available in all versions of ember that we support
-  Owner = internalEmberModules.Owner;
+  Owner = modules.Owner;
 }
 
-Debug = Debug ?? emberSafeRequire('@ember/debug');
-InternalsMetal = InternalsMetal ?? emberSafeRequire('@ember/-internals/metal');
-InternalsRuntime =
-  InternalsRuntime ?? emberSafeRequire('@ember/-internals/runtime');
-InternalsUtils = InternalsUtils ?? emberSafeRequire('@ember/-internals/utils');
-InternalsViews = InternalsViews ?? emberSafeRequire('@ember/-internals/views');
-EmberDestroyable = EmberDestroyable ?? emberSafeRequire('@ember/destroyable');
-ObjectInternals =
-  ObjectInternals ?? emberSafeRequire('@ember/object/internals');
-Instrumentation = Instrumentation ?? emberSafeRequire('@ember/instrumentation');
-Runloop = Runloop ?? emberSafeRequire('@ember/runloop');
-RSVP = RSVP ?? emberSafeRequire('rsvp');
-GlimmerComponent = GlimmerComponent ?? emberSafeRequire('@glimmer/component');
-GlimmerManager = GlimmerManager ?? emberSafeRequire('@glimmer/manager');
-GlimmerReference = GlimmerReference ?? emberSafeRequire('@glimmer/reference');
-GlimmerRuntime = GlimmerRuntime ?? emberSafeRequire('@glimmer/runtime');
-GlimmerUtil = GlimmerUtil ?? emberSafeRequire('@glimmer/util');
-GlimmerValidator = GlimmerValidator ?? emberSafeRequire('@glimmer/validator');
-Owner = Owner ?? emberSafeRequire('@ember/owner');
-ApplicationModule = ApplicationModule ?? emberSafeRequire('@ember/application');
+ApplicationModule ??= emberSafeRequire('@ember/application');
+Debug ??= emberSafeRequire('@ember/debug');
+EmberDestroyable ??= emberSafeRequire('@ember/destroyable');
+GlimmerComponent ??= emberSafeRequire('@glimmer/component');
+GlimmerManager ??= emberSafeRequire('@glimmer/manager');
+GlimmerReference ??= emberSafeRequire('@glimmer/reference');
+GlimmerRuntime ??= emberSafeRequire('@glimmer/runtime');
+GlimmerUtil ??= emberSafeRequire('@glimmer/util');
+GlimmerValidator ??= emberSafeRequire('@glimmer/validator');
+Instrumentation ??= emberSafeRequire('@ember/instrumentation');
+InternalsMetal ??= emberSafeRequire('@ember/-internals/metal');
+InternalsRuntime ??= emberSafeRequire('@ember/-internals/runtime');
+InternalsUtils ??= emberSafeRequire('@ember/-internals/utils');
+InternalsViews ??= emberSafeRequire('@ember/-internals/views');
+ObjectInternals ??= emberSafeRequire('@ember/object/internals');
+Owner ??= emberSafeRequire('@ember/owner');
+RSVP ??= emberSafeRequire('rsvp');
+Runloop ??= emberSafeRequire('@ember/runloop');
 
 let inspect = Debug?.inspect || InternalsUtils?.inspect;
 let subscribe = Instrumentation?.subscribe;
@@ -153,125 +123,115 @@ let guidFor = ObjectInternals?.guidFor;
 let libraries = InternalsMetal?.libraries;
 
 if (Ember) {
+  ActionHandler = Ember.ActionHandler;
   Application = Ember.Application;
-  Namespace = Ember.Namespace;
   ArrayProxy = Ember.ArrayProxy;
-  MutableArray = Ember.MutableArray;
-  MutableEnumerable = Ember.MutableEnumerable;
-  NativeArray = Ember.NativeArray;
+  Component = Ember.Component;
+  ComputedProperty = Ember.ComputedProperty;
   ControllerMixin = Ember.ControllerMixin;
   CoreObject = Ember.CoreObject;
-  Component = Ember.Component;
-  Observable = Ember.Observable;
-  Evented = Ember.Evented;
-  PromiseProxyMixin = Ember.PromiseProxyMixin;
-  Service = Ember.Service;
-  ObjectProxy = Ember.ObjectProxy;
-  VERSION = Ember.VERSION;
-  ComputedProperty = Ember.ComputedProperty;
-  meta = Ember.meta;
-  get = Ember.get;
-  set = Ember.set;
-  computed = Ember.computed;
+  Debug ??= Ember.Debug;
   EmberObject = Ember.Object;
+  Evented = Ember.Evented;
+  Instrumentation ??= Ember.Instrumentation;
+  MutableArray = Ember.MutableArray;
+  MutableEnumerable = Ember.MutableEnumerable;
+  Namespace = Ember.Namespace;
+  NativeArray = Ember.NativeArray;
+  ObjectProxy = Ember.ObjectProxy;
+  Observable = Ember.Observable;
+  PromiseProxyMixin = Ember.PromiseProxyMixin;
+  RSVP ??= Ember.RSVP;
+  Runloop ??= Ember.run;
+  Service = Ember.Service;
+  VERSION = Ember.VERSION;
+  cacheFor ??= Ember.cacheFor;
   captureRenderTree = Ember._captureRenderTree;
+  computed = Ember.computed;
+  get = Ember.get;
   getEnv = () => Ember.ENV;
-  ActionHandler = Ember.ActionHandler;
-  Debug = Debug ?? Ember.Debug;
-  inspect = inspect ?? Ember.inspect;
-  Instrumentation = Instrumentation ?? Ember.Instrumentation;
-  subscribe = subscribe ?? Ember.subscribe;
-  RSVP = RSVP ?? Ember.RSVP;
-  Runloop = Runloop ?? Ember.run;
-  cacheFor = cacheFor ?? Ember.cacheFor;
-  guidFor = guidFor ?? Ember.guidFor;
-  libraries = libraries ?? Ember.libraries;
+  guidFor ??= Ember.guidFor;
+  inspect ??= Ember.inspect;
+  libraries ??= Ember.libraries;
+  meta = Ember.meta;
+  set = Ember.set;
+  subscribe ??= Ember.subscribe;
 } else {
-  captureRenderTree =
-    captureRenderTree ?? emberSafeRequire('@ember/debug')?.captureRenderTree;
-  getEnv = getEnv ?? emberSafeRequire('@ember/-internals/environment')?.getENV;
-  ArrayProxy = ArrayProxy ?? emberSafeRequire('@ember/array/proxy')?.default;
-  ObjectProxy = ObjectProxy ?? emberSafeRequire('@ember/object/proxy')?.default;
-  MutableArray =
-    MutableArray ?? emberSafeRequire('@ember/array/mutable')?.default;
-  Namespace =
-    Namespace ?? emberSafeRequire('@ember/application/namespace')?.default;
-  MutableEnumerable =
-    MutableEnumerable ?? emberSafeRequire('@ember/enumerable/mutable')?.default;
-  NativeArray = NativeArray ?? emberSafeRequire('@ember/array')?.NativeArray;
-  ControllerMixin =
-    ControllerMixin ?? emberSafeRequire('@ember/controller')?.ControllerMixin;
-  CoreObject = CoreObject ?? emberSafeRequire('@ember/object/core')?.default;
-  Application = Application ?? emberSafeRequire('@ember/application')?.default;
-  Component = Component ?? emberSafeRequire('@ember/component')?.default;
-  Observable =
-    Observable ?? emberSafeRequire('@ember/object/observable')?.default;
-  Evented = Evented ?? emberSafeRequire('@ember/object/evented')?.default;
-  PromiseProxyMixin =
-    PromiseProxyMixin ??
-    emberSafeRequire('@ember/object/promise-proxy-mixin')?.default;
-  Service = Service ?? emberSafeRequire('@ember/service')?.default;
-  EmberObject = EmberObject ?? emberSafeRequire('@ember/object')?.default;
-  VERSION = VERSION ?? emberSafeRequire('ember/version')?.default;
-  ComputedProperty =
-    ComputedProperty ??
-    emberSafeRequire('@ember/-internals/metal')?.ComputedProperty;
-  meta = meta ?? emberSafeRequire('@ember/-internals/meta')?.meta;
-  set = set ?? emberSafeRequire('@ember/object')?.set;
-  get = get ?? emberSafeRequire('@ember/object')?.get;
+  Application ??= emberSafeRequire('@ember/application')?.default;
+  ArrayProxy ??= emberSafeRequire('@ember/array/proxy')?.default;
+  Component ??= emberSafeRequire('@ember/component')?.default;
+  ComputedProperty ??= emberSafeRequire(
+    '@ember/-internals/metal',
+  )?.ComputedProperty;
+  ControllerMixin ??= emberSafeRequire('@ember/controller')?.ControllerMixin;
+  CoreObject ??= emberSafeRequire('@ember/object/core')?.default;
+  EmberObject ??= emberSafeRequire('@ember/object')?.default;
+  Evented ??= emberSafeRequire('@ember/object/evented')?.default;
+  MutableArray ??= emberSafeRequire('@ember/array/mutable')?.default;
+  MutableEnumerable ??= emberSafeRequire('@ember/enumerable/mutable')?.default;
+  Namespace ??= emberSafeRequire('@ember/application/namespace')?.default;
+  NativeArray ??= emberSafeRequire('@ember/array')?.NativeArray;
+  ObjectProxy ??= emberSafeRequire('@ember/object/proxy')?.default;
+  Observable ??= emberSafeRequire('@ember/object/observable')?.default;
+  PromiseProxyMixin ??= emberSafeRequire(
+    '@ember/object/promise-proxy-mixin',
+  )?.default;
+  Service ??= emberSafeRequire('@ember/service')?.default;
+  VERSION ??= emberSafeRequire('ember/version')?.default;
+  captureRenderTree ??= emberSafeRequire('@ember/debug')?.captureRenderTree;
+  get ??= emberSafeRequire('@ember/object')?.get;
+  getEnv ??= emberSafeRequire('@ember/-internals/environment')?.getENV;
+  meta ??= emberSafeRequire('@ember/-internals/meta')?.meta;
+  set ??= emberSafeRequire('@ember/object')?.set;
 }
 
-if (Owner) {
-  getOwner = Owner.getOwner;
-} else {
-  getOwner = ApplicationModule?.getOwner;
-}
+getOwner = Owner ? Owner.getOwner : ApplicationModule?.getOwner;
 
 export {
-  Runloop,
-  Debug,
-  InternalsMetal,
-  InternalsRuntime,
-  InternalsUtils,
-  InternalsViews,
-  ObjectInternals,
-  Instrumentation,
-  RSVP,
-  ArrayProxy,
-  Namespace,
   ActionHandler,
   Application,
-  ControllerMixin,
-  MutableArray,
-  MutableEnumerable,
-  NativeArray,
-  CoreObject,
-  ObjectProxy,
+  ArrayProxy,
   Component,
-  Observable,
-  Evented,
-  Service,
-  PromiseProxyMixin,
+  ComputedProperty,
+  ControllerMixin,
+  CoreObject,
+  Debug,
   EmberDestroyable,
   EmberObject,
-  VERSION,
-  ComputedProperty,
-  meta,
-  computed,
-  get,
-  set,
-  captureRenderTree,
-  getEnv,
-  inspect,
-  subscribe,
-  cacheFor,
-  guidFor,
-  libraries,
+  Evented,
   GlimmerComponent,
   GlimmerManager,
   GlimmerReference,
   GlimmerRuntime,
   GlimmerUtil,
   GlimmerValidator,
+  Instrumentation,
+  InternalsMetal,
+  InternalsRuntime,
+  InternalsUtils,
+  InternalsViews,
+  MutableArray,
+  MutableEnumerable,
+  Namespace,
+  NativeArray,
+  ObjectInternals,
+  ObjectProxy,
+  Observable,
+  PromiseProxyMixin,
+  RSVP,
+  Runloop,
+  Service,
+  VERSION,
+  cacheFor,
+  captureRenderTree,
+  computed,
+  get,
+  getEnv,
   getOwner,
+  guidFor,
+  inspect,
+  libraries,
+  meta,
+  set,
+  subscribe,
 };
