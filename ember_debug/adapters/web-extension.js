@@ -7,7 +7,7 @@ import { run } from '../utils/ember/runloop';
 const { isArray } = Array;
 const { keys } = Object;
 
-export default class extends BasicAdapter {
+export default class WebExtension extends BasicAdapter {
   // eslint-disable-next-line ember/classic-decorator-hooks
   init() {
     this._channel = new MessageChannel();

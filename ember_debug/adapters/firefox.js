@@ -1,7 +1,7 @@
 /* eslint-disable no-empty */
 import WebExtension from './web-extension';
 
-export default class extends WebExtension {
+export default class FirefoxWebExtension extends WebExtension {
   debug() {
     // WORKAROUND: temporarily workaround issues with firebug console object:
     // - https://github.com/tildeio/ember-extension/issues/94
