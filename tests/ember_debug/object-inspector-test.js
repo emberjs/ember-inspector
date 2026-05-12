@@ -25,7 +25,7 @@ import Controller from '@ember/controller';
 import { setOwner } from '@ember/application';
 
 import EmberDebugImport from 'ember-debug/main';
-let EmberDebug = EmberDebugImport;
+let EmberDebug;
 
 const GlimmerComponent = (function () {
   try {
@@ -80,7 +80,7 @@ async function inspectObject(object) {
 
 module('Ember Debug - Object Inspector', function (hooks) {
   hooks.before(async function () {
-    EmberDebug = (await EmberDebugImport).default;
+    EmberDebug = (await EmberDebugImport).default();
   });
 
   setupEmberDebugTest(hooks, {

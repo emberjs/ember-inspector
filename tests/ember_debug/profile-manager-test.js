@@ -389,7 +389,7 @@ async function highlightsPromise(testedRoute, isGlimmerComponent) {
 
 module('Ember Debug - profile manager component highlight', function (hooks) {
   hooks.before(async function () {
-    EmberDebug = (await EmberDebugImport).default;
+    EmberDebug = (await EmberDebugImport).default();
     let VERSION = (await EmberImport).VERSION;
     isComponentHighlightSupported = compareVersion(VERSION, '3.20.0') !== -1;
   });

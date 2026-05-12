@@ -10,7 +10,7 @@ module('Ember Debug', function (hooks) {
   let name, adapter;
 
   hooks.before(async function () {
-    EmberDebug = (await EmberDebugImport).default;
+    EmberDebug = (await EmberDebugImport).default();
   });
 
   setupEmberDebugTest(hooks);

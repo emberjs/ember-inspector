@@ -5,6 +5,7 @@ import bootEmberInspector from './boot-ember-inspector.js';
 import setupInstanceInitializer from './setup-instance-initializer.js';
 import sendVersionMiss from './send-version-miss.js';
 import { guidFor, Application, VERSION } from './ember.js';
+import getEmberDebug from '../main';
 
 function onReady(callback) {
   if (
@@ -152,11 +153,7 @@ export function startInspector(adapter) {
 
     // prevent from injecting twice
     if (!window.EmberInspector) {
-      let emberDebugMainModule = (await import('../main.js')).default;
-      if (!emberDebugMainModule) {
-        return;
-      }
-      window.EmberInspector = emberDebugMainModule;
+      window.EmberInspector = getEmberDebug();
       window.EmberInspector.Adapter = adapter;
 
       onApplicationStart(function appStarted(instance) {

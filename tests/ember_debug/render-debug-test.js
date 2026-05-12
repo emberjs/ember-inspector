@@ -8,7 +8,7 @@ let EmberDebug;
 
 module('Ember Debug - Render Debug', function (hooks) {
   hooks.before(async function () {
-    EmberDebug = (await EmberDebugImport).default;
+    EmberDebug = (await EmberDebugImport).default();
   });
 
   setupEmberDebugTest(hooks, {

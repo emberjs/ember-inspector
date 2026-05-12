@@ -16,7 +16,7 @@ import { guidFor, setGuidPrefix } from './lib/ember/object/internals.js';
 import { run } from './lib/ember/runloop.js';
 import BaseObject from './utils/base-object.js';
 
-class EmberDebug extends BaseObject {
+export class EmberDebug extends BaseObject {
   /**
    * Set to true during testing.
    *
@@ -166,4 +166,12 @@ function getOwner(application) {
   }
 }
 
-export default new EmberDebug();
+let instance;
+
+export default () => {
+  instance ??= new EmberDebug();
+
+  return instance;
+};
+
+// export default new EmberDebug();

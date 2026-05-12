@@ -11,7 +11,7 @@ let EmberDebug;
 
 module('Ember Debug - Deprecation', function (hooks) {
   hooks.before(async function () {
-    EmberDebug = (await EmberDebugImport).default;
+    EmberDebug = (await EmberDebugImport).default();
   });
 
   setupEmberDebugTest(hooks);
