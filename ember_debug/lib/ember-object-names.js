@@ -1,4 +1,4 @@
-import { compareVersion } from '../utils/version';
+import { compareVersion } from '../utils/version.js';
 import {
   VERSION,
   ActionHandler,

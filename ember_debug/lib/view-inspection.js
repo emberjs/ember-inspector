@@ -1,5 +1,5 @@
-import classify from '../utils/classify';
-import bound from '../utils/bound-method';
+import classify from '../utils/classify.js';
+import bound from '../utils/bound-method.js';
 import getObjectName from './get-object-name.js';
 
 function makeHighlight(id) {

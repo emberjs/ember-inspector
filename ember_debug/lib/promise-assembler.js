@@ -5,10 +5,10 @@
  and Yapp Labs (@yapplabs).
  */
 
-import Promise from '../models/promise';
-import { RSVP } from './ember';
-import BaseObject from '../utils/base-object';
-import Evented from '../utils/evented';
+import Promise from '../models/promise.js';
+import { RSVP } from './ember.js';
+import BaseObject from '../utils/base-object.js';
+import Evented from '../utils/evented.js';
 
 class PromiseAssembler extends BaseObject {
   // RSVP lib to debug

@@ -1,5 +1,6 @@
-import { Debug, inspect as emberInspect } from './ember.js';
 import {
+  Debug,
+  inspect as emberInspect,
   ComputedProperty,
   EmberObject,
   meta as emberMeta,

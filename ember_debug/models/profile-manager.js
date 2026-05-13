@@ -1,6 +1,6 @@
 import ProfileNode from './profile-node.js';
 import { VERSION } from '../lib/ember.js';
-import { compareVersion } from '../utils/version';
+import { compareVersion } from '../utils/version.js';
 
 import { later, scheduleOnce, cancel } from '../lib/ember/runloop.js';
 

@@ -1,5 +1,5 @@
 /* eslint-disable no-empty */
-import WebExtension from './web-extension';
+import WebExtension from './web-extension.js';
 
 export default class FirefoxWebExtension extends WebExtension {
   debug() {

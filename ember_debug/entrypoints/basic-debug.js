@@ -1,10 +1,10 @@
-import loadEmberDebugInWebpage from '../lib/load-ember-debug-in-webpage';
+import loadEmberDebugInWebpage from '../lib/load-ember-debug-in-webpage.js';
 
 loadEmberDebugInWebpage(async () => {
   const { onEmberReady, startInspector } = await import(
-    '../lib/start-inspector'
+    '../lib/start-inspector.js'
   );
 
-  const adapter = (await import('../adapters/basic')).default;
+  const adapter = (await import('../adapters/basic.js')).default;
   onEmberReady(startInspector(adapter));
 });

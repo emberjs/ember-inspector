@@ -152,7 +152,7 @@ export function startInspector(adapter) {
 
     // prevent from injecting twice
     if (!window.EmberInspector) {
-      let emberDebugMainModule = (await import('../main')).default;
+      let emberDebugMainModule = (await import('../main.js')).default;
       if (!emberDebugMainModule) {
         return;
       }

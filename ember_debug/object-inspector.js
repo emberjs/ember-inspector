@@ -1,6 +1,6 @@
 /* eslint-disable ember/no-private-routing-service */
 import DebugPort from './debug-port.js';
-import bound from './utils/bound-method';
+import bound from './utils/bound-method.js';
 import {
   isComputed,
   getDescriptorFor,

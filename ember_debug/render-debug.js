@@ -3,7 +3,7 @@ import ProfileManager from './models/profile-manager.js';
 
 import { subscribe } from './lib/ember.js';
 import { _backburner } from './lib/ember/runloop.js';
-import bound from './utils/bound-method';
+import bound from './utils/bound-method.js';
 
 // Initial setup, that has to occur before the EmberObject init for some reason
 let profileManager = new ProfileManager();
