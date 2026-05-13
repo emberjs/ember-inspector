@@ -12,7 +12,7 @@ export default {
     'port.js',
     'utils/ember.js',
     'models/profile-node.js',
-    'libs/promise-assembler.js',
+    'lib/promise-assembler.js',
     'lib/versions.js',
     ...globSync('entrypoints/*.js'),
   ],

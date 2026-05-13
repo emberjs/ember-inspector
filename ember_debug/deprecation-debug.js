@@ -1,5 +1,5 @@
 import DebugPort from './debug-port.js';
-import SourceMap from './libs/source-map';
+import SourceMap from './lib/source-map.js';
 
 import { Debug } from './utils/ember';
 import { guidFor } from './utils/ember/object/internals';

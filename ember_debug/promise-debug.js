@@ -1,5 +1,5 @@
 import DebugPort from './debug-port.js';
-import PromiseAssembler from './libs/promise-assembler';
+import PromiseAssembler from './lib/promise-assembler.js';
 import { debounce } from './utils/ember/runloop';
 import { RSVP } from './utils/ember';
 
