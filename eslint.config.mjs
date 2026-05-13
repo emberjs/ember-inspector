@@ -22,6 +22,7 @@ import ember from 'eslint-plugin-ember/recommended';
 import prettier from 'eslint-plugin-prettier/recommended';
 import qunit from 'eslint-plugin-qunit';
 import n from 'eslint-plugin-n';
+import importPlugin from 'eslint-plugin-import';
 
 import babelParser from '@babel/eslint-parser';
 
@@ -93,6 +94,7 @@ export default ts.config(
         ...globals.browser,
         basicContext: false,
         requireModule: false,
+        globalThis: true,
       },
     },
   },
@@ -168,6 +170,17 @@ export default ts.config(
         basicContext: false,
         requireModule: false,
       },
+    },
+  },
+  {
+    files: ['ember_debug/**/*.js'],
+    ignores: ['ember_debug/**/rollup.config.js'],
+    plugins: {
+      importPlugin,
+    },
+    extends: [importPlugin.flatConfigs.recommended],
+    rules: {
+      'import/extensions': ['error', 'always'],
     },
   },
 );
