@@ -25,7 +25,7 @@ function onReady(callback) {
   }
 }
 
-export function onEmberReady(callback) {
+function onEmberReady(callback) {
   var triggered = false;
   var triggerOnce = function () {
     if (triggered) {
@@ -191,3 +191,5 @@ export function startInspector(adapter) {
     }
   };
 }
+
+export default (adapter) => onEmberReady(startInspector(adapter));

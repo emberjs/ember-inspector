@@ -1,14 +1,13 @@
-export default function loadEmberDebugInWebpage(callback) {
-  const waitForEmberLoad = new Promise((resolve) => {
+export default async function hasEmber() {
+  return new Promise((resolve) => {
     if (window.requireModule) {
       const has =
         window.requireModule.has ||
-        function has(id) {
-          return !!(
+        ((id) =>
+          !!(
             window.requireModule.entries[id] ||
             window.requireModule.entries[id + '/index']
-          );
-        };
+          ));
       if (has('ember')) {
         return resolve();
       }
@@ -22,11 +21,14 @@ export default function loadEmberDebugInWebpage(callback) {
      *
      *       this will throw an exception in the consuming project
      */
-    if (window.Ember) return resolve();
+    if (window.Ember) {
+      return resolve();
+    }
 
-    if (globalThis.emberInspectorApps) return resolve();
+    if (globalThis.emberInspectorApps) {
+      return resolve();
+    }
 
     window.addEventListener('Ember', resolve, { once: true });
   });
-  waitForEmberLoad.then(callback);
 }
