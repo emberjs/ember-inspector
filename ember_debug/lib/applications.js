@@ -41,3 +41,13 @@ export function sendApplications(adapter, apps) {
     from: 'inspectedWindow',
   });
 }
+
+export function getApplicationInstance(app) {
+  if (app._applicationInstances) {
+    return [...app._applicationInstances][0];
+  } else if (app.__deprecatedInstance__) {
+    return app.__deprecatedInstance__;
+  }
+
+  return undefined;
+}

@@ -11,6 +11,7 @@ import ContainerDebug from './container-debug.js';
 import DeprecationDebug from './deprecation-debug.js';
 import Session from './services/session.js';
 
+import { getApplicationInstance } from './lib/applications.js';
 import { Application, Namespace } from './lib/ember.js';
 import { guidFor, setGuidPrefix } from './lib/ember/object/internals.js';
 import { run } from './lib/ember/runloop.js';
@@ -101,10 +102,13 @@ export class EmberDebug extends BaseObject {
 
   reset($keepAdapter) {
     setGuidPrefix(Math.random().toString());
+
     if (!this.isTesting && !this.owner) {
-      this.owner = getOwner(this._application);
+      this.owner = getApplicationInstance(this._application);
     }
+
     this.destroyContainer();
+
     run(() => {
       // Adapters don't have state depending on the application itself.
       // They also maintain connections with the inspector which we will
@@ -112,6 +116,7 @@ export class EmberDebug extends BaseObject {
       if (!this.adapter || !$keepAdapter) {
         this.startModule('adapter', this.Adapter);
       }
+
       if (!this.port || !$keepAdapter) {
         this.startModule('port', this.Port);
       }
@@ -158,20 +163,10 @@ function getApplication() {
   return application;
 }
 
-function getOwner(application) {
-  if (application.autoboot) {
-    return application.__deprecatedInstance__;
-  } else if (application._applicationInstances /* Ember 3.1+ */) {
-    return [...application._applicationInstances][0];
-  }
-}
-
-let instance;
+let emberDebug;
 
 export default () => {
-  instance ??= new EmberDebug();
+  emberDebug ??= new EmberDebug();
 
-  return instance;
+  return emberDebug;
 };
-
-// export default new EmberDebug();
