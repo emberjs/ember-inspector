@@ -1,11 +1,10 @@
-/* eslint-disable ember/no-test-import-export */
-import versionTest from './version-test';
-import { EMBER_VERSIONS_SUPPORTED } from './versions';
+import versionTest from '../utils/version-test.js';
+import { EMBER_VERSIONS_SUPPORTED } from '../utils/versions.js';
 import { getApplications, sendApplications } from './applications.js';
-import bootEmberInspector from './boot-ember-inspector';
-import setupInstanceInitializer from './setup-instance-initializer';
-import sendVersionMiss from './send-version-miss';
-import { guidFor, Application, VERSION } from '../utils/ember';
+import bootEmberInspector from './boot-ember-inspector.js';
+import setupInstanceInitializer from './setup-instance-initializer.js';
+import sendVersionMiss from './send-version-miss.js';
+import { guidFor, Application, VERSION } from './ember.js';
 
 function onReady(callback) {
   if (

@@ -6,7 +6,7 @@
  */
 
 import Promise from '../models/promise';
-import { RSVP } from '../utils/ember';
+import { RSVP } from './ember';
 import BaseObject from '../utils/base-object';
 import Evented from '../utils/evented';
 

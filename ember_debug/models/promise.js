@@ -1,5 +1,5 @@
-import { typeOf } from '../utils/type-check';
-import BaseObject from '../utils/base-object';
+import { typeOf } from '../lib/type-check.js';
+import BaseObject from '../utils/base-object.js';
 
 const dateComputed = function () {
   return function (target, propertyKey) {

@@ -1,7 +1,7 @@
 import DebugPort from './debug-port.js';
 import PromiseAssembler from './lib/promise-assembler.js';
-import { debounce } from './utils/ember/runloop';
-import { RSVP } from './utils/ember';
+import { debounce } from './lib/ember/runloop.js';
+import { RSVP } from './lib/ember.js';
 
 export default class extends DebugPort {
   get objectInspector() {

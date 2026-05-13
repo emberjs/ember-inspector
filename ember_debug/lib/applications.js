@@ -1,4 +1,4 @@
-import { Application, Namespace, guidFor } from '../utils/ember';
+import { Application, Namespace, guidFor } from './ember.js';
 
 /**
  * Get all the Ember.Application instances from Ember.Namespace.NAMESPACES

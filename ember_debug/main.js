@@ -11,9 +11,9 @@ import ContainerDebug from './container-debug';
 import DeprecationDebug from './deprecation-debug';
 import Session from './services/session';
 
-import { Application, Namespace } from './utils/ember';
-import { guidFor, setGuidPrefix } from './utils/ember/object/internals';
-import { run } from './utils/ember/runloop';
+import { Application, Namespace } from './lib/ember.js';
+import { guidFor, setGuidPrefix } from './lib/ember/object/internals';
+import { run } from './lib/ember/runloop';
 import BaseObject from './utils/base-object';
 
 class EmberDebug extends BaseObject {

@@ -1,6 +1,6 @@
 import classify from '../utils/classify';
 import bound from '../utils/bound-method';
-import getObjectName from '../utils/get-object-name.js';
+import getObjectName from './get-object-name.js';
 
 function makeHighlight(id) {
   return `<div id="ember-inspector-highlight-${id}" role="presentation"></div>`;

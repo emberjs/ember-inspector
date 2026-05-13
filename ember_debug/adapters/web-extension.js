@@ -1,8 +1,8 @@
 import BasicAdapter from './basic';
-import { typeOf } from '../utils/type-check';
+import { typeOf } from '../lib/type-check';
 
-import { getEnv } from '../utils/ember';
-import { run } from '../utils/ember/runloop';
+import { getEnv } from '../lib/ember.js';
+import { run } from '../lib/ember/runloop';
 
 const { isArray } = Array;
 const { keys } = Object;
