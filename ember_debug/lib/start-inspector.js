@@ -1,8 +1,7 @@
 /* eslint-disable ember/no-test-import-export */
 import versionTest from './version-test';
 import { EMBER_VERSIONS_SUPPORTED } from './versions';
-import sendApps from './send-apps';
-import getApplications from './get-applications';
+import { getApplications, sendApplications } from './applications.js';
 import bootEmberInspector from './boot-ember-inspector';
 import setupInstanceInitializer from './setup-instance-initializer';
 import sendVersionMiss from './send-version-miss';
@@ -55,7 +54,7 @@ export function startInspector(adapter) {
 
     adapterInstance.onMessageReceived(function (message) {
       if (message.type === 'app-picker-loaded') {
-        sendApps(adapterInstance, getApplications());
+        sendApplications(adapterInstance, getApplications());
       }
 
       if (message.type === 'app-selected') {
@@ -76,7 +75,7 @@ export function startInspector(adapter) {
 
     var apps = getApplications();
 
-    sendApps(adapterInstance, apps);
+    sendApplications(adapterInstance, apps);
 
     function loadInstance(app) {
       const applicationInstances = app._applicationInstances && [
