@@ -1,4 +1,4 @@
-import { compareVersion } from '../utils/version';
+import { compareVersion } from '../utils/version.js';
 import {
   VERSION,
   ActionHandler,
@@ -14,7 +14,7 @@ import {
   PromiseProxyMixin,
   EmberObject,
   Observable,
-} from '../utils/ember';
+} from '../lib/ember.js';
 
 /**
  * Add Known Ember Mixins and Classes so we can label them correctly in the inspector

@@ -1,10 +1,11 @@
-import { Debug, inspect as emberInspect } from '../utils/ember';
 import {
+  Debug,
+  inspect as emberInspect,
   ComputedProperty,
   EmberObject,
   meta as emberMeta,
   InternalsMetal,
-} from '../utils/ember';
+} from './ember.js';
 
 /**
  * Check if given key on the passed object is a computed property

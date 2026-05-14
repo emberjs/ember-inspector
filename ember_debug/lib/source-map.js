@@ -1,4 +1,4 @@
-import BaseObject from '../utils/base-object';
+import BaseObject from '../utils/base-object.js';
 import * as SourceMap from 'source-map-js';
 const notFoundError = new Error('Source map url not found');
 

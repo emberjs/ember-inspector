@@ -1,6 +1,6 @@
-import BasicAdapter from './basic';
+import BasicAdapter from './basic.js';
 
-export default class extends BasicAdapter {
+export default class Bookmarklet extends BasicAdapter {
   // eslint-disable-next-line ember/classic-decorator-hooks
   init() {
     super.init();

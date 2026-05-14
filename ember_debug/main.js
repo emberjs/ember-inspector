@@ -1,20 +1,20 @@
-import BasicAdapter from './adapters/basic';
-import Port from './port';
-import ObjectInspector from './object-inspector';
-import GeneralDebug from './general-debug';
-import RenderDebug from './render-debug';
-import ViewDebug from './view-debug';
-import RouteDebug from './route-debug';
-import DataDebug from './data-debug';
-import PromiseDebug from './promise-debug';
-import ContainerDebug from './container-debug';
-import DeprecationDebug from './deprecation-debug';
-import Session from './services/session';
+import BasicAdapter from './adapters/basic.js';
+import Port from './port.js';
+import ObjectInspector from './object-inspector.js';
+import GeneralDebug from './general-debug.js';
+import RenderDebug from './render-debug.js';
+import ViewDebug from './view-debug.js';
+import RouteDebug from './route-debug.js';
+import DataDebug from './data-debug.js';
+import PromiseDebug from './promise-debug.js';
+import ContainerDebug from './container-debug.js';
+import DeprecationDebug from './deprecation-debug.js';
+import Session from './services/session.js';
 
-import { Application, Namespace } from './utils/ember';
-import { guidFor, setGuidPrefix } from './utils/ember/object/internals';
-import { run } from './utils/ember/runloop';
-import BaseObject from './utils/base-object';
+import { Application, Namespace } from './lib/ember.js';
+import { guidFor, setGuidPrefix } from './lib/ember/object/internals.js';
+import { run } from './lib/ember/runloop.js';
+import BaseObject from './utils/base-object.js';
 
 class EmberDebug extends BaseObject {
   /**

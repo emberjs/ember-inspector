@@ -1,7 +1,7 @@
-import { guidFor } from './utils/ember/object/internals';
-import { run } from './utils/ember/runloop';
-import BaseObject from './utils/base-object';
-import Evented from './utils/evented';
+import { guidFor } from './lib/ember/object/internals.js';
+import { run } from './lib/ember/runloop.js';
+import BaseObject from './utils/base-object.js';
+import Evented from './utils/evented.js';
 
 export default class extends BaseObject {
   constructor(data) {

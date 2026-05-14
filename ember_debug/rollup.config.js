@@ -7,13 +7,13 @@ import del from 'rollup-plugin-delete';
 export default {
   input: [
     'main.js',
-    'utils/version.js',
-    'utils/type-check.js',
-    'port.js',
-    'utils/ember.js',
+    'lib/ember.js',
+    'lib/promise-assembler.js',
+    'lib/type-check.js',
     'models/profile-node.js',
-    'libs/promise-assembler.js',
-    'lib/versions.js',
+    'port.js',
+    'utils/version.js',
+    'utils/versions.js',
     ...globSync('entrypoints/*.js'),
   ],
   output: {

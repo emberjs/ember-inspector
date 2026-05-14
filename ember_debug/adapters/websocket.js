@@ -1,8 +1,8 @@
-import BasicAdapter from './basic';
-import { onReady } from '../utils/on-ready';
-import { run } from '../utils/ember/runloop';
+import BasicAdapter from './basic.js';
+import { onReady } from '../utils/on-ready.js';
+import { run } from '../lib/ember/runloop.js';
 
-export default class extends BasicAdapter {
+export default class Websocket extends BasicAdapter {
   sendMessage(options = {}) {
     this.socket.emit('emberInspectorMessage', options);
   }

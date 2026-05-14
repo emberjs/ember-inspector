@@ -1,12 +1,10 @@
-/* eslint-disable ember/no-test-import-export */
-import versionTest from './version-test';
-import { EMBER_VERSIONS_SUPPORTED } from './versions';
-import sendApps from './send-apps';
-import getApplications from './get-applications';
-import bootEmberInspector from './boot-ember-inspector';
-import setupInstanceInitializer from './setup-instance-initializer';
-import sendVersionMiss from './send-version-miss';
-import { guidFor, Application, VERSION } from '../utils/ember';
+import versionTest from '../utils/version-test.js';
+import { EMBER_VERSIONS_SUPPORTED } from '../utils/versions.js';
+import { getApplications, sendApplications } from './applications.js';
+import bootEmberInspector from './boot-ember-inspector.js';
+import setupInstanceInitializer from './setup-instance-initializer.js';
+import sendVersionMiss from './send-version-miss.js';
+import { guidFor, Application, VERSION } from './ember.js';
 
 function onReady(callback) {
   if (
@@ -55,7 +53,7 @@ export function startInspector(adapter) {
 
     adapterInstance.onMessageReceived(function (message) {
       if (message.type === 'app-picker-loaded') {
-        sendApps(adapterInstance, getApplications());
+        sendApplications(adapterInstance, getApplications());
       }
 
       if (message.type === 'app-selected') {
@@ -76,7 +74,7 @@ export function startInspector(adapter) {
 
     var apps = getApplications();
 
-    sendApps(adapterInstance, apps);
+    sendApplications(adapterInstance, apps);
 
     function loadInstance(app) {
       const applicationInstances = app._applicationInstances && [
@@ -154,7 +152,7 @@ export function startInspector(adapter) {
 
     // prevent from injecting twice
     if (!window.EmberInspector) {
-      let emberDebugMainModule = (await import('../main')).default;
+      let emberDebugMainModule = (await import('../main.js')).default;
       if (!emberDebugMainModule) {
         return;
       }

@@ -1,13 +1,13 @@
-import BasicAdapter from './basic';
-import { typeOf } from '../utils/type-check';
+import BasicAdapter from './basic.js';
+import { typeOf } from '../lib/type-check.js';
 
-import { getEnv } from '../utils/ember';
-import { run } from '../utils/ember/runloop';
+import { getEnv } from '../lib/ember.js';
+import { run } from '../lib/ember/runloop.js';
 
 const { isArray } = Array;
 const { keys } = Object;
 
-export default class extends BasicAdapter {
+export default class WebExtension extends BasicAdapter {
   // eslint-disable-next-line ember/classic-decorator-hooks
   init() {
     this._channel = new MessageChannel();

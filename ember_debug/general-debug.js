@@ -1,7 +1,7 @@
 /* eslint no-empty:0 */
 import DebugPort from './debug-port.js';
 
-import { libraries } from './utils/ember';
+import { libraries } from './lib/ember.js';
 
 /**
  * Class that handles gathering general information of the inspected app.

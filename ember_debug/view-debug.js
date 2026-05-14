@@ -1,8 +1,8 @@
 /* eslint no-cond-assign:0 */
 import DebugPort from './debug-port.js';
-import RenderTree from './libs/render-tree';
-import ViewInspection from './libs/view-inspection';
-import bound from './utils/bound-method';
+import RenderTree from './lib/render-tree.js';
+import ViewInspection from './lib/view-inspection.js';
+import bound from './utils/bound-method.js';
 
 export default class extends DebugPort {
   get adapter() {

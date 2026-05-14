@@ -1,4 +1,4 @@
-import { guidFor } from '../utils/ember';
+import { guidFor } from './ember.js';
 
 export default function setupInstanceInitializer(app, callback) {
   if (!app.__inspector__setup) {

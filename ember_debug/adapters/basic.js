@@ -1,5 +1,5 @@
 /* eslint no-console: 0 */
-import { onReady } from '../utils/on-ready';
+import { onReady } from '../utils/on-ready.js';
 import BaseObject from '../utils/base-object.js';
 
 export default class BasicAdapter extends BaseObject {

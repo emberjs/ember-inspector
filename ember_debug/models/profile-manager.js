@@ -1,8 +1,8 @@
 import ProfileNode from './profile-node.js';
-import { VERSION } from '../utils/ember';
-import { compareVersion } from '../utils/version';
+import { VERSION } from '../lib/ember.js';
+import { compareVersion } from '../utils/version.js';
 
-import { later, scheduleOnce, cancel } from '../utils/ember/runloop';
+import { later, scheduleOnce, cancel } from '../lib/ember/runloop.js';
 
 function getEdges(first, last, closest) {
   let start = null;

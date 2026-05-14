@@ -1,7 +1,7 @@
 import captureRenderTree from './capture-render-tree.js';
-import { guidFor } from '../utils/ember/object/internals';
-import { inspect } from '../utils/type-check';
-import { isInVersionSpecifier } from '../utils/version';
+import { guidFor } from './ember/object/internals.js';
+import { inspect } from './type-check.js';
+import { isInVersionSpecifier } from '../utils/version.js';
 import {
   VERSION,
   EmberDestroyable,
@@ -9,7 +9,7 @@ import {
   GlimmerReference,
   GlimmerRuntime,
   GlimmerUtil,
-} from '../utils/ember';
+} from './ember.js';
 
 class InElementSupportProvider {
   constructor(owner) {

@@ -1,11 +1,11 @@
-import { Application, Namespace, guidFor } from '../utils/ember';
+import { Application, Namespace, guidFor } from './ember.js';
 
 /**
  * Get all the Ember.Application instances from Ember.Namespace.NAMESPACES
  * and add our own applicationId and applicationName to them
  * @return {*}
  */
-export default function getApplications() {
+export function getApplications() {
   var namespaces = Namespace.NAMESPACES;
 
   var apps = namespaces.filter(function (namespace) {
@@ -24,5 +24,20 @@ export default function getApplications() {
     });
 
     return app;
+  });
+}
+
+export function sendApplications(adapter, apps) {
+  const serializedApps = apps.map((app) => {
+    return {
+      applicationName: app.applicationName,
+      applicationId: app.applicationId,
+    };
+  });
+
+  adapter.sendMessage({
+    type: 'apps-loaded',
+    apps: serializedApps,
+    from: 'inspectedWindow',
   });
 }

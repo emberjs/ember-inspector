@@ -1,4 +1,4 @@
-import BaseObject from '../utils/base-object';
+import BaseObject from '../utils/base-object.js';
 
 class Session extends BaseObject {
   setItem(/*key, val*/) {}
