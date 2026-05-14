@@ -1,7 +1,7 @@
 import versionTest from '../utils/version-test.js';
 import { EMBER_VERSIONS_SUPPORTED } from '../utils/versions.js';
 import {
-  getApplications,
+  getApplicationWithDescriptors,
   sendApplications,
   getApplicationInstance,
 } from './applications.js';
@@ -86,12 +86,12 @@ async function startInspector(Adapter) {
   // but this definitely works
   adapterInstance.onMessageReceived(function (message) {
     if (message.type === 'app-picker-loaded') {
-      sendApplications(adapterInstance, getApplications());
+      sendApplications(adapterInstance, getApplicationWithDescriptors());
     }
 
     if (message.type === 'app-selected') {
       const current = window.EmberInspector._application;
-      const selected = getApplications().find(
+      const selected = getApplicationWithDescriptors().find(
         (app) => guidFor(app) === message.applicationId,
       );
 
@@ -105,7 +105,7 @@ async function startInspector(Adapter) {
     }
   });
 
-  const apps = getApplications();
+  const apps = getApplicationWithDescriptors();
 
   sendApplications(adapterInstance, apps);
 

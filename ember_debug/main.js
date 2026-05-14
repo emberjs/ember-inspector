@@ -11,8 +11,7 @@ import ContainerDebug from './container-debug.js';
 import DeprecationDebug from './deprecation-debug.js';
 import Session from './services/session.js';
 
-import { getApplicationInstance } from './lib/applications.js';
-import { Application, Namespace } from './lib/ember.js';
+import { getApplications, getApplicationInstance } from './lib/applications.js';
 import { guidFor, setGuidPrefix } from './lib/ember/object/internals.js';
 import { run } from './lib/ember/runloop.js';
 import BaseObject from './utils/base-object.js';
@@ -55,7 +54,7 @@ export class EmberDebug extends BaseObject {
       return;
     }
     if (!this._application && !this.isTesting) {
-      this._application = getApplication();
+      this._application = getApplications()[0];
     }
     this.started = true;
 
@@ -148,19 +147,6 @@ export class EmberDebug extends BaseObject {
       owner: null,
     });
   }
-}
-
-function getApplication() {
-  let namespaces = Namespace.NAMESPACES;
-  let application;
-
-  namespaces.forEach((namespace) => {
-    if (namespace instanceof Application) {
-      application = namespace;
-      return false;
-    }
-  });
-  return application;
 }
 
 let emberDebug;
