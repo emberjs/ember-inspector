@@ -1,0 +1,10 @@
+<List
+    class="js-render-tree "
+    @schema={{this.schema}} as |list|
+  >
+    <tbody>
+      {{#each this.rows as |row|}}
+        <SummaryItem @model={{row}} @list={{list}} @search={{this.search}} @list={{list}}/>
+      {{/each}}
+    </tbody>
+  </List>
