@@ -2,6 +2,7 @@
   <button
     class="{{if @isInspecting "active"}} toolbar-icon-button"
     type="button"
+    title="Select element"
     {{on "click" @toggleInspect}}
   >
     {{svg-jar "inspect" width="16px" height="17px"}}
