@@ -15,8 +15,6 @@
 import globals from 'globals';
 import js from '@eslint/js';
 
-import ts from 'typescript-eslint';
-
 import ember from 'eslint-plugin-ember/recommended';
 
 import prettier from 'eslint-plugin-prettier/recommended';
@@ -41,18 +39,13 @@ const parserOptions = {
         ],
       },
     },
-    ts: {
-      projectService: true,
-      tsconfigRootDir: import.meta.dirname,
-    },
   },
 };
 
-export default ts.config(
+export default [
   js.configs.recommended,
   ember.configs.base,
   ember.configs.gjs,
-  ember.configs.gts,
   prettier,
   /**
    * Ignores must be in their own object
@@ -79,7 +72,13 @@ export default ts.config(
       reportUnusedDisableDirectives: 'error',
     },
   },
-  { rules: { 'no-prototype-builtins': 'off', 'no-useless-escape': 'off' } },
+  {
+    rules: {
+      'no-prototype-builtins': 'off',
+      'no-useless-escape': 'off',
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    },
+  },
   {
     files: ['**/*.js'],
     languageOptions: {
@@ -95,27 +94,12 @@ export default ts.config(
         basicContext: false,
         requireModule: false,
         globalThis: true,
+        chrome: 'readonly',
       },
     },
   },
   {
-    files: ['**/*.{ts,gts}'],
-    languageOptions: {
-      parser: ember.parser,
-      parserOptions: parserOptions.esm.ts,
-    },
-    extends: [...ts.configs.recommendedTypeChecked, ember.configs.gts],
-    rules: {
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        {
-          argsIgnorePattern: '^_',
-        },
-      ],
-    },
-  },
-  {
-    files: ['tests/**/*-test.{js,gjs,ts,gts}'],
+    files: ['tests/**/*-test.{js,gjs}'],
     plugins: {
       qunit,
     },
@@ -176,11 +160,11 @@ export default ts.config(
     files: ['ember_debug/**/*.js'],
     ignores: ['ember_debug/**/rollup.config.js'],
     plugins: {
-      importPlugin,
+      ...importPlugin.flatConfigs.recommended.plugins,
     },
-    extends: [importPlugin.flatConfigs.recommended],
     rules: {
+      ...importPlugin.flatConfigs.recommended.rules,
       'import/extensions': ['error', 'always'],
     },
   },
-);
+];
