@@ -13,7 +13,7 @@
     "@babel/plugin-transform-class-properties": "^7.25.9",
     "@babel/plugin-transform-class-static-block": "^7.26.0",
     "@rollup/plugin-babel": "^6.0.4",
-    "@rollup/plugin-commonjs": "^28.0.3",
+    "@rollup/plugin-commonjs": "^29.0.2",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "backburner.js": "^2.8.0",
     "glob": "^13.0.6",
