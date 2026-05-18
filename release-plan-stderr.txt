@@ -1,0 +1,7 @@
+# Unlabeled Changes
+
+* `ember-inspector`
+  * [#2743](https://github.com/emberjs/ember-inspector/pull/2743) Refactor: Prefer top-level await over callbacks in entries ([@pichfl](https://github.com/pichfl))
+
+
+*Cannot plan release until the above changes are labeled*.
