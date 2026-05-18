@@ -27,7 +27,7 @@ export default function setupEmberDebugTest(hooks, options = {}) {
 
   hooks.beforeEach(async function () {
     Port = (await PortImport).default;
-    EmberDebug = (await EmberDebugImport).default;
+    EmberDebug = (await EmberDebugImport).default();
     originalPort = EmberDebug.Port;
     originalApp = getApplication();
     originalIgnoreDeprecations = EmberDebug.IGNORE_DEPRECATIONS;

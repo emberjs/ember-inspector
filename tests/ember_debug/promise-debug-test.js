@@ -21,7 +21,7 @@ module('Ember Debug - Promise Debug', function (hooks) {
   let name, message;
 
   hooks.before(async function () {
-    EmberDebug = (await EmberDebugImport).default;
+    EmberDebug = (await EmberDebugImport).default();
   });
 
   setupEmberDebugTest(hooks);

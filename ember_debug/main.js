@@ -11,12 +11,12 @@ import ContainerDebug from './container-debug.js';
 import DeprecationDebug from './deprecation-debug.js';
 import Session from './services/session.js';
 
-import { Application, Namespace } from './lib/ember.js';
+import { getApplications, getApplicationInstance } from './lib/applications.js';
 import { guidFor, setGuidPrefix } from './lib/ember/object/internals.js';
 import { run } from './lib/ember/runloop.js';
 import BaseObject from './utils/base-object.js';
 
-class EmberDebug extends BaseObject {
+export class EmberDebug extends BaseObject {
   /**
    * Set to true during testing.
    *
@@ -54,7 +54,7 @@ class EmberDebug extends BaseObject {
       return;
     }
     if (!this._application && !this.isTesting) {
-      this._application = getApplication();
+      this._application = getApplications()[0];
     }
     this.started = true;
 
@@ -101,10 +101,13 @@ class EmberDebug extends BaseObject {
 
   reset($keepAdapter) {
     setGuidPrefix(Math.random().toString());
+
     if (!this.isTesting && !this.owner) {
-      this.owner = getOwner(this._application);
+      this.owner = getApplicationInstance(this._application);
     }
+
     this.destroyContainer();
+
     run(() => {
       // Adapters don't have state depending on the application itself.
       // They also maintain connections with the inspector which we will
@@ -112,6 +115,7 @@ class EmberDebug extends BaseObject {
       if (!this.adapter || !$keepAdapter) {
         this.startModule('adapter', this.Adapter);
       }
+
       if (!this.port || !$keepAdapter) {
         this.startModule('port', this.Port);
       }
@@ -145,25 +149,10 @@ class EmberDebug extends BaseObject {
   }
 }
 
-function getApplication() {
-  let namespaces = Namespace.NAMESPACES;
-  let application;
+let emberDebug;
 
-  namespaces.forEach((namespace) => {
-    if (namespace instanceof Application) {
-      application = namespace;
-      return false;
-    }
-  });
-  return application;
-}
+export default () => {
+  emberDebug ??= new EmberDebug();
 
-function getOwner(application) {
-  if (application.autoboot) {
-    return application.__deprecatedInstance__;
-  } else if (application._applicationInstances /* Ember 3.1+ */) {
-    return [...application._applicationInstances][0];
-  }
-}
-
-export default new EmberDebug();
+  return emberDebug;
+};

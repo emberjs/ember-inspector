@@ -3,7 +3,7 @@ import { setupApplicationTest } from 'ember-qunit';
 import EmberObject from '@ember/object';
 
 import EmberDebugImport from 'ember-debug/main';
-let EmberDebug = EmberDebugImport;
+let EmberDebug;
 
 class Adapter extends EmberObject {
   watchModelTypes() {}
@@ -13,7 +13,7 @@ module('Ember Debug - Data', function (hooks) {
   setupApplicationTest(hooks);
 
   hooks.before(async function () {
-    EmberDebug = (await EmberDebug).default;
+    EmberDebug = (await EmberDebugImport).default();
   });
 
   hooks.beforeEach(function () {

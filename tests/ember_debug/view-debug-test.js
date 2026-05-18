@@ -373,7 +373,7 @@ function findInspectorElement(kind) {
 
 module('Ember Debug - View', function (hooks) {
   hooks.before(async function () {
-    EmberDebug = (await EmberDebugImport).default;
+    EmberDebug = (await EmberDebugImport).default();
     VERSION = (await EmberImport).VERSION;
   });
 

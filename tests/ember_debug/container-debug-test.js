@@ -2,14 +2,20 @@ import { module, skip } from 'qunit';
 import { settled, visit, waitUntil } from '@ember/test-helpers';
 import { A as emberA } from '@ember/array';
 
-import EmberDebug from 'ember-debug/main';
+import EmberDebugImport from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
+
+let EmberDebug;
 
 // TODO: Figure out why these tests are flaky and enable them again
 module('Ember Debug - Container', function (hooks) {
   let name, message;
 
   setupEmberDebugTest(hooks);
+
+  hooks.before(async function () {
+    EmberDebug = (await EmberDebugImport).default();
+  });
 
   skip('#getTypes', async function t(assert) {
     await visit('/simple');
