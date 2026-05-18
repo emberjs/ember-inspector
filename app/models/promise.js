@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { observes } from '@ember-decorators/object';
 import { once } from '@ember/runloop';
 import { typeOf } from '@ember/utils';
