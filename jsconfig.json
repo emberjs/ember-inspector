@@ -10,13 +10,9 @@
       "ember-debug/deps/*": ["node_modules/*"],
       "ember-debug/*": ["ember_debug/*"],
       "ember-inspector/tests/*": ["tests/*"],
-      "ember-inspector/*": ["app/*", "lib/ui/app/*"],
-      "ui": ["lib/ui/addon"],
-      "ui/*": ["lib/ui/addon/*"],
-      "ui/test-support": ["lib/ui/addon-test-support"],
-      "ui/test-support/*": ["lib/ui/addon-test-support/*"],
+      "ember-inspector/*": ["app/*"],
       "*": ["types/*"]
     }
   },
-  "include": ["app/**/*", "tests/**/*", "types/**/*", "lib/ui/**/*", "ember_debug/**/*"]
+  "include": ["app/**/*", "tests/**/*", "types/**/*", "ember_debug/**/*"]
 }
