@@ -147,22 +147,24 @@ jobs:
           EMBER_ENV: production
       - name: Update manifest.json (nightly)
         if: github.event_name == 'schedule'
+        working-directory: packages/ember-inspector
         run: |
           DATE="$(date +"%Y.%-m.%-d")"
           SHA="${GITHUB_SHA:0:7}"
-          VERSION="$(jq -r '.version' packages/ember-inspector/package.json)"
+          VERSION="$(jq -r '.version' package.json)"
           CONTENT="$(cat "$FILE")"
 
           echo "$CONTENT" | jq --arg date "$DATE" --arg sha "$SHA" --arg version "$VERSION" "$FILTER" > $FILE
           cat "$FILE"
         env:
-          FILE: packages/ember-inspector/skeletons/web-extension/manifest.json
+          FILE: skeletons/web-extension/manifest.json
           FILTER: >-
             .name += " (Nightly)" |
             .version = $date |
             .version_name = "\($version) (nightly build \($date) / \($sha))"
       - name: Update manifest.json (pull request)
         if: github.event_name == 'pull_request'
+        working-directory: packages/ember-inspector
         run: |
           SHA="${SHA:0:7}"
           CONTENT="$(cat "$FILE")"
@@ -170,7 +172,7 @@ jobs:
           echo "$CONTENT" | jq --arg pr "$PR" --arg sha "$SHA" "$FILTER" > $FILE
           cat "$FILE"
         env:
-          FILE: packages/ember-inspector/skeletons/web-extension/manifest.json
+          FILE: skeletons/web-extension/manifest.json
           FILTER: >-
             .name += " (PR #\($pr))" |
             .version = $pr |
@@ -179,6 +181,7 @@ jobs:
           SHA: ${{ github.event.pull_request.head.sha }}
       - name: Update package.json (nightly)
         if: github.event_name == 'schedule'
+        working-directory: packages/ember-inspector
         run: |
           DATE="$(date +"%Y.%-m.%-d")"
           SHA="${GITHUB_SHA:0:7}"
@@ -187,10 +190,11 @@ jobs:
           echo "$CONTENT" | jq --arg date "$DATE" --arg sha "$SHA" "$FILTER" > $FILE
           cat "$FILE"
         env:
-          FILE: packages/ember-inspector/package.json
+          FILE: package.json
           FILTER: .version += "-alpha.\($date)+\($sha)"
       - name: Update package.json (pull request)
         if: github.event_name == 'pull_request'
+        working-directory: packages/ember-inspector
         run: |
           SHA="${SHA:0:7}"
           CONTENT="$(cat "$FILE")"
@@ -198,7 +202,7 @@ jobs:
           echo "$CONTENT" | jq --arg pr "$PR" --arg sha "$SHA" "$FILTER" > $FILE
           cat "$FILE"
         env:
-          FILE: packages/ember-inspector/package.json
+          FILE: package.json
           FILTER: .version += "-alpha.0.\($pr)+\($sha)"
           PR: ${{ github.event.pull_request.number }}
           SHA: ${{ github.event.pull_request.head.sha }}
