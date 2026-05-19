@@ -13,6 +13,19 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm lint
+
   test:
     name: Test
     runs-on: ubuntu-latest
@@ -43,14 +56,6 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install
-      - name: Lint ember-inspector (hbs)
-        run: pnpm --filter ember-inspector lint:hbs
-      - name: Lint ember-inspector (js)
-        run: pnpm --filter ember-inspector lint:js
-      - name: Lint ember-inspector (css)
-        run: pnpm --filter ember-inspector lint:css
-      - name: Lint ember-debug
-        run: pnpm --filter ember-debug lint
       - name: Run tests
         run: pnpm test:ember
         env:
