@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "watch": "pnpm build --watch",
     "build": "rollup --config",
+    "watch": "pnpm build --watch",
+    "prepare": "pnpm build",
     "lint": "eslint . && prettier --check .",
     "lint:fix": "eslint . --fix && prettier --write ."
   },

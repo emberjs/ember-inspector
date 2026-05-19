@@ -26,7 +26,6 @@
     "lint:js:fix": "eslint . --fix",
     "lint:ember-debug:fix": "pnpm --filter ember-debug lint:fix",
     "lock-version": "pnpm build:production && pnpm compress:panes",
-    "prepare": "pnpm --filter ember-debug build",
     "prepublishOnly": "node -e 'process.exit(!require(\"fs\").existsSync(\"./dist\"))' || pnpm build:production",
     "serve:bookmarklet": "ember serve --port 9191",
     "start": "ember serve",
