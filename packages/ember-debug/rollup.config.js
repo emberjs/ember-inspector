@@ -6,10 +6,10 @@ import del from 'rollup-plugin-delete';
 
 export default {
   input: [
-    'main.js',
     'lib/ember.js',
     'lib/promise-assembler.js',
     'lib/type-check.js',
+    'main.js',
     'models/profile-node.js',
     'port.js',
     'utils/version.js',

@@ -4,11 +4,22 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "watch": "pnpm build --watch",
     "build": "rollup --config",
-    "prepare": "pnpm build"
+    "watch": "pnpm build --watch",
+    "prepare": "pnpm build",
+    "lint": "eslint . && prettier --check .",
+    "lint:fix": "eslint . --fix && prettier --write ."
   },
   "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/eslint-parser": "^7.25.9",
+    "@eslint/js": "^9.17.0",
+    "eslint": "^9.17.0",
+    "eslint-plugin-ember": "^12.3.3",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
     "@babel/plugin-proposal-decorators": "^7.25.9",
     "@babel/plugin-transform-class-properties": "^7.25.9",
     "@babel/plugin-transform-class-static-block": "^7.26.0",
@@ -22,6 +33,7 @@
     "source-map-js": "^1.2.1"
   },
   "exports": {
+    "./package.json": "./package.json",
     "./*": "./dist/*.js"
   }
 }

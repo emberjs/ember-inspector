@@ -2,17 +2,19 @@
 /dist/
 /tmp/
 /dist_prev
+/packages/*/dist
 
 .DS_Store
 /declarations/
 
 # dependencies
 /node_modules/
+/packages/*/node_modules
 
 # misc
 /.env*
 /.pnp*
-/.eslintcache
+.eslintcache
 /coverage/
 /npm-debug.log*
 /testem.log
