@@ -11,7 +11,11 @@ patchedDependencies:
 
 importers:
 
-  .: {}
+  .:
+    devDependencies:
+      release-plan:
+        specifier: ^0.18.0
+        version: 0.18.0
 
   packages/ember-debug:
     devDependencies:
@@ -331,9 +335,6 @@ importers:
       qunit-dom:
         specifier: ^3.4.0
         version: 3.4.0
-      release-plan:
-        specifier: ^0.18.0
-        version: 0.18.0
       sass:
         specifier: ^1.79.4
         version: 1.97.3
