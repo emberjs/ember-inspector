@@ -2,6 +2,10 @@
   "name": "ember-inspector-workspace",
   "version": "0.0.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:emberjs/ember-inspector.git"
+  },
   "scripts": {
     "build": "pnpm --filter ember-debug build && pnpm --filter ember-inspector build",
     "build:ember-debug": "pnpm --filter ember-debug build",
@@ -9,6 +13,7 @@
     "build:production": "pnpm --filter ember-debug build && pnpm --filter ember-inspector build:production",
     "lint": "pnpm --parallel -r --aggregate-output lint",
     "lint:fix": "pnpm --parallel -r --aggregate-output lint:fix",
+    "serve:bookmarklet": "pnpm --filter ember-inspector serve:bookmarklet",
     "start": "pnpm --filter ember-inspector start",
     "test": "pnpm lint && pnpm \"/^test:/\"",
     "test:ember": "pnpm --filter ember-debug build && pnpm --filter ember-inspector test",
@@ -17,8 +22,10 @@
     "watch:inspector-ui": "pnpm --filter ember-inspector watch",
     "watch-test": "pnpm \"/watch-test:/\"",
     "watch-test:ember-debug": "pnpm --filter ember-debug watch",
-    "watch-test:inspector-ui": "pnpm --filter ember-inspector watch-test",
-    "serve:bookmarklet": "pnpm --filter ember-inspector serve:bookmarklet"
+    "watch-test:inspector-ui": "pnpm --filter ember-inspector watch-test"
+  },
+  "devDependencies": {
+    "release-plan": "^0.18.0"
   },
   "packageManager": "pnpm@9.12.1",
   "engines": {
