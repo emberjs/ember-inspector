@@ -54,14 +54,14 @@ export default [
   {
     ignores: [
       'dist/',
-      'ember_debug/dist/',
+      'packages/ember-debug/dist/',
       'node_modules/',
       'coverage/',
       '!**/.*',
       'vendor/',
       'dist_prev/',
       'skeletons/',
-      'ember_debug/vendor/startup-wrapper.js',
+      'packages/ember-debug/vendor/startup-wrapper.js',
     ],
   },
   /**
@@ -157,8 +157,8 @@ export default [
     },
   },
   {
-    files: ['ember_debug/**/*.js'],
-    ignores: ['ember_debug/**/rollup.config.js'],
+    files: ['packages/ember-debug/**/*.js'],
+    ignores: ['packages/ember-debug/**/rollup.config.js'],
     plugins: {
       ...importPlugin.flatConfigs.recommended.plugins,
     },

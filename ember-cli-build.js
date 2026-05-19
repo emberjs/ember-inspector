@@ -98,7 +98,7 @@ module.exports = function (defaults) {
 
   ['basic', 'chrome', 'firefox', 'bookmarklet', 'websocket'].forEach(
     function (dist) {
-      let emberDebug = 'ember_debug/dist';
+      let emberDebug = 'packages/ember-debug/dist';
 
       let entryPoint = concatFiles(
         new Funnel(emberDebug, {
