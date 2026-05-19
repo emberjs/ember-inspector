@@ -24,7 +24,6 @@ export function end() {
   _backburner.end();
 }
 export function schedule(...args) {
-  // @ts-expect-error TS doesn't like the rest args here
   return _backburner.schedule(...args);
 }
 // Used by global test teardown
@@ -39,11 +38,9 @@ export function later(...args) {
   return _backburner.later(...args);
 }
 export function once(...args) {
-  // @ts-expect-error TS doesn't like the rest args here
   return _backburner.scheduleOnce('actions', ...args);
 }
 export function scheduleOnce(...args) {
-  // @ts-expect-error TS doesn't like the rest args here
   return _backburner.scheduleOnce(...args);
 }
 export function next(...args) {
@@ -53,10 +50,8 @@ export function cancel(timer) {
   return _backburner.cancel(timer);
 }
 export function debounce(...args) {
-  // @ts-expect-error TS doesn't like the rest args here
   return _backburner.debounce(...args);
 }
 export function throttle(...args) {
-  // @ts-expect-error TS doesn't like the rest args here
   return _backburner.throttle(...args);
 }

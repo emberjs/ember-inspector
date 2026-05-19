@@ -13,8 +13,7 @@
           "options": [
             "--pnpm",
             "--no-welcome",
-            "--ci-provider=github",
-            "--typescript"
+            "--ci-provider=github"
           ]
         }
       ]
