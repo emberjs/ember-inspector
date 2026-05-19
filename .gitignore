@@ -15,6 +15,7 @@
 /.env*
 /.pnp*
 .eslintcache
+/packages/*/.eslintcache
 /coverage/
 /npm-debug.log*
 /testem.log

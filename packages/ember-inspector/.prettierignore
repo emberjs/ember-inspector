@@ -12,3 +12,8 @@
 
 # ember-try
 /.node_modules.ember-try/
+
+# vendor
+/vendor/
+
+/skeletons

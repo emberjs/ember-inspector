@@ -18,12 +18,14 @@
     "panes:download": "EMBER_ENV=production node scripts/download-panes.js",
     "panes:compress": "gulp compress:chrome-pane && gulp compress:firefox-pane && gulp compress:bookmarklet-pane",
     "extensions:compress": "gulp compress:chrome && gulp compress:firefox && gulp clean-tmp",
-    "lint": "concurrently \"pnpm:lint:*(!fix)\" --names \"lint:\" --prefixColors auto",
+    "lint": "pnpm \"/^lint:(?!fix$)[^:]+$/\"",
     "lint:css": "stylelint \"**/*.scss\"",
     "lint:css:fix": "stylelint \"**/*.scss\" --fix",
-    "lint:fix": "concurrently \"pnpm:lint:*:fix\" --names \"fix:\" --prefixColors auto",
+    "lint:fix": "pnpm \"/^lint:[^:]+:fix$/\" && pnpm format",
     "lint:hbs": "ember-template-lint .",
     "lint:hbs:fix": "ember-template-lint . --fix",
+    "lint:format": "prettier --cache --check \"**/*.{js,cjs,mjs}\"",
+    "format": "prettier --cache --write \"**/*.{js,cjs,mjs}\"",
     "lint:js": "eslint . --cache",
     "lint:js:fix": "eslint . --fix",
     "lock-version": "pnpm build:production && pnpm panes:compress",
@@ -69,7 +71,6 @@
     "broccoli-string-replace": "^0.1.2",
     "codeclimate-test-reporter": "^0.5.1",
     "compare-versions": "^4.1.4",
-    "concurrently": "^9.1.0",
     "del": "^6.1.1",
     "ember-auto-import": "^2.10.0",
     "ember-cli": "~6.1.0",
@@ -115,7 +116,6 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-ember": "^12.3.3",
     "eslint-plugin-n": "^17.15.1",
-    "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-qunit": "^8.1.2",
     "fstream": "^1.0.12",
     "globals": "^15.14.0",
@@ -146,8 +146,15 @@
   "ember": {
     "edition": "octane"
   },
-  "emberVersionsSupported": ["3.16.0", ""],
-  "previousEmberVersionsSupported": ["0.0.0", "2.7.0", "3.4.0"],
+  "emberVersionsSupported": [
+    "3.16.0",
+    ""
+  ],
+  "previousEmberVersionsSupported": [
+    "0.0.0",
+    "2.7.0",
+    "3.4.0"
+  ],
   "release-it": {
     "plugins": {
       "release-it-lerna-changelog": {

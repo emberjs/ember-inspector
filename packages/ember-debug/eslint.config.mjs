@@ -3,12 +3,12 @@ import ember from 'eslint-plugin-ember/recommended';
 import globals from 'globals';
 import importPlugin from 'eslint-plugin-import';
 import js from '@eslint/js';
-import prettier from 'eslint-plugin-prettier/recommended';
+import prettierConfig from 'eslint-config-prettier';
 
 export default [
   js.configs.recommended,
   ember.configs.base,
-  prettier,
+  prettierConfig,
   {
     ignores: ['dist/', 'vendor/startup-wrapper.js'],
   },
