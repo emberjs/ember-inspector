@@ -74,6 +74,7 @@ jobs:
       #     COVERAGE: 'true'
       - name: Report coverage
         if: github.event_name != 'schedule'
+        working-directory: packages/ember-inspector
         run: pnpm codeclimate-test-reporter < coverage/lcov.info
         env:
           CODECLIMATE_REPO_TOKEN: 59edcfd1ffc778791af49ca594b503e7179f6bbe1991b2cc0c0a6987d103253d
