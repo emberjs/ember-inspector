@@ -10,7 +10,7 @@
     "lint": "pnpm --parallel -r --aggregate-output lint",
     "lint:fix": "pnpm --parallel -r --aggregate-output lint:fix",
     "start": "pnpm --filter ember-inspector start",
-    "test": "pnpm lint && pnpm pnpm \"/^test:/\"",
+    "test": "pnpm lint && pnpm \"/^test:/\"",
     "test:ember": "pnpm --filter ember-debug build && pnpm --filter ember-inspector test",
     "watch": "pnpm \"/watch:/\"",
     "watch:ember-debug": "pnpm --filter ember-debug watch",
