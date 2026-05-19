@@ -7,8 +7,12 @@
     "build": "rollup --config",
     "watch": "pnpm build --watch",
     "prepare": "pnpm build",
-    "lint": "eslint . && prettier --check .",
-    "lint:fix": "eslint . --fix && prettier --write ."
+    "lint": "pnpm \"/^lint:(?!fix$)[^:]+$/\"",
+    "lint:fix": "pnpm \"/^lint:[^:]+:fix$/\" && pnpm format",
+    "lint:js": "eslint . --cache",
+    "lint:js:fix": "eslint . --fix",
+    "lint:format": "prettier --cache --check \"**/*.{js,cjs,mjs}\"",
+    "format": "prettier --cache --write \"**/*.{js,cjs,mjs}\""
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
@@ -17,7 +21,7 @@
     "eslint": "^9.17.0",
     "eslint-plugin-ember": "^12.3.3",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-config-prettier": "^9.1.0",
     "globals": "^15.14.0",
     "prettier": "^3.4.2",
     "@babel/plugin-proposal-decorators": "^7.25.9",

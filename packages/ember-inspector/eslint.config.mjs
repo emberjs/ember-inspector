@@ -17,7 +17,7 @@ import js from '@eslint/js';
 
 import ember from 'eslint-plugin-ember/recommended';
 
-import prettier from 'eslint-plugin-prettier/recommended';
+import prettierConfig from 'eslint-config-prettier';
 import qunit from 'eslint-plugin-qunit';
 import n from 'eslint-plugin-n';
 
@@ -45,7 +45,7 @@ export default [
   js.configs.recommended,
   ember.configs.base,
   ember.configs.gjs,
-  prettier,
+  prettierConfig,
   /**
    * Ignores must be in their own object
    * https://eslint.org/docs/latest/use/configure/ignore
