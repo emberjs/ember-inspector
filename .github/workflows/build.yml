@@ -43,14 +43,16 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install
-      - name: Lint (hbs)
-        run: pnpm lint:hbs
-      - name: Lint (js)
-        run: pnpm lint:js
-      - name: Lint (ember-debug)
-        run: pnpm lint:ember-debug
-      - name: Run test
-        run: pnpm test
+      - name: Lint ember-inspector (hbs)
+        run: pnpm --filter ember-inspector lint:hbs
+      - name: Lint ember-inspector (js)
+        run: pnpm --filter ember-inspector lint:js
+      - name: Lint ember-inspector (css)
+        run: pnpm --filter ember-inspector lint:css
+      - name: Lint ember-debug
+        run: pnpm --filter ember-debug lint
+      - name: Run tests
+        run: pnpm test:ember
         env:
           COVERAGE: 'true'
       # Ideally, we would split up the test task into separate build and run
@@ -113,13 +115,16 @@ jobs:
         if: matrix.scenario == 'ember-default-no-prototype-extensions'
         run: echo "NO_EXTEND_PROTOTYPES==true" >> .GITHUB_ENV
       - name: Setup ember-try scenario
-        run: pnpm ember try:one ${{ matrix.scenario }} --skip-cleanup --- cat package.json
+        working-directory: packages/ember-inspector
+        run: pnpm exec ember try:one ${{ matrix.scenario }} --skip-cleanup --- cat package.json
       - name: Build
-        run: pnpm ember build --environment test
+        working-directory: packages/ember-inspector
+        run: pnpm exec ember build --environment test
       - name: Run test
         # Due to a bug in ember-cli, running `ember test` with `--path` doesn't set `EMBER_ENV=test`
         # See https://github.com/ember-cli/ember-cli/issues/8922
-        run: EMBER_ENV=test pnpm ember test --path dist --filter="Ember Debug"
+        working-directory: packages/ember-inspector
+        run: EMBER_ENV=test pnpm exec ember test --path dist --filter="Ember Debug"
 
   build:
     name: Build extensions
@@ -135,6 +140,7 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - name: Download panes
+        working-directory: packages/ember-inspector
         run: node scripts/download-panes.js
         env:
           EMBER_ENV: production
@@ -143,13 +149,13 @@ jobs:
         run: |
           DATE="$(date +"%Y.%-m.%-d")"
           SHA="${GITHUB_SHA:0:7}"
-          VERSION="$(jq -r '.version' package.json)"
+          VERSION="$(jq -r '.version' packages/ember-inspector/package.json)"
           CONTENT="$(cat "$FILE")"
 
           echo "$CONTENT" | jq --arg date "$DATE" --arg sha "$SHA" --arg version "$VERSION" "$FILTER" > $FILE
           cat "$FILE"
         env:
-          FILE: skeletons/web-extension/manifest.json
+          FILE: packages/ember-inspector/skeletons/web-extension/manifest.json
           FILTER: >-
             .name += " (Nightly)" |
             .version = $date |
@@ -163,7 +169,7 @@ jobs:
           echo "$CONTENT" | jq --arg pr "$PR" --arg sha "$SHA" "$FILTER" > $FILE
           cat "$FILE"
         env:
-          FILE: skeletons/web-extension/manifest.json
+          FILE: packages/ember-inspector/skeletons/web-extension/manifest.json
           FILTER: >-
             .name += " (PR #\($pr))" |
             .version = $pr |
@@ -180,7 +186,7 @@ jobs:
           echo "$CONTENT" | jq --arg date "$DATE" --arg sha "$SHA" "$FILTER" > $FILE
           cat "$FILE"
         env:
-          FILE: package.json
+          FILE: packages/ember-inspector/package.json
           FILTER: .version += "-alpha.\($date)+\($sha)"
       - name: Update package.json (pull request)
         if: github.event_name == 'pull_request'
@@ -191,7 +197,7 @@ jobs:
           echo "$CONTENT" | jq --arg pr "$PR" --arg sha "$SHA" "$FILTER" > $FILE
           cat "$FILE"
         env:
-          FILE: package.json
+          FILE: packages/ember-inspector/package.json
           FILTER: .version += "-alpha.0.\($pr)+\($sha)"
           PR: ${{ github.event.pull_request.number }}
           SHA: ${{ github.event.pull_request.head.sha }}
@@ -206,6 +212,7 @@ jobs:
       - name: Build
         run: pnpm build:production
       - name: Pack
+        working-directory: packages/ember-inspector
         run: |
           VERSION="$(jq -r '.version' package.json)"
 
@@ -216,22 +223,22 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bookmarklet
-          path: dist/bookmarklet
+          path: packages/ember-inspector/dist/bookmarklet
       - name: Upload artifacts (Chrome)
         uses: actions/upload-artifact@v4
         with:
           name: chrome
-          path: dist/chrome
+          path: packages/ember-inspector/dist/chrome
       - name: Upload artifacts (Firefox)
         uses: actions/upload-artifact@v4
         with:
           name: firefox
-          path: dist/firefox
+          path: packages/ember-inspector/dist/firefox
       - name: Upload artifacts (npm)
         uses: actions/upload-artifact@v4
         with:
           name: npm
-          path: dist/npm
+          path: packages/ember-inspector/dist/npm
 
   publish-chrome:
     name: Publish Chrome extension

@@ -53,7 +53,6 @@ export default [
   {
     ignores: [
       'dist/',
-      'packages/',
       'node_modules/',
       'coverage/',
       '!**/.*',

@@ -30,12 +30,14 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - name: Download panes
+        working-directory: packages/ember-inspector
         run: node scripts/download-panes.js
         env:
           EMBER_ENV: production
       - name: Build
         run: pnpm build:production
       - name: Pack
+        working-directory: packages/ember-inspector
         run: |
           VERSION="$(jq -r '.version' package.json)"
 
@@ -46,22 +48,22 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bookmarklet
-          path: dist/bookmarklet
+          path: packages/ember-inspector/dist/bookmarklet
       - name: Upload artifacts (Chrome)
         uses: actions/upload-artifact@v4
         with:
           name: chrome
-          path: dist/chrome
+          path: packages/ember-inspector/dist/chrome
       - name: Upload artifacts (Firefox)
         uses: actions/upload-artifact@v4
         with:
           name: firefox
-          path: dist/firefox
+          path: packages/ember-inspector/dist/firefox
       - name: Upload artifacts (npm)
         uses: actions/upload-artifact@v4
         with:
           name: npm
-          path: dist/npm
+          path: packages/ember-inspector/dist/npm
 
   publish-bookmarklet:
     name: Publish bookmarklet
