@@ -47,6 +47,8 @@ jobs:
         run: pnpm lint:hbs
       - name: Lint (js)
         run: pnpm lint:js
+      - name: Lint (ember-debug)
+        run: pnpm lint:ember-debug
       - name: Run test
         run: pnpm test
         env:
