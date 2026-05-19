@@ -20,7 +20,6 @@ import ember from 'eslint-plugin-ember/recommended';
 import prettier from 'eslint-plugin-prettier/recommended';
 import qunit from 'eslint-plugin-qunit';
 import n from 'eslint-plugin-n';
-import importPlugin from 'eslint-plugin-import';
 
 import babelParser from '@babel/eslint-parser';
 
@@ -54,14 +53,13 @@ export default [
   {
     ignores: [
       'dist/',
-      'packages/ember-debug/dist/',
+      'packages/',
       'node_modules/',
       'coverage/',
       '!**/.*',
       'vendor/',
       'dist_prev/',
       'skeletons/',
-      'packages/ember-debug/vendor/startup-wrapper.js',
     ],
   },
   /**
@@ -154,17 +152,6 @@ export default [
         basicContext: false,
         requireModule: false,
       },
-    },
-  },
-  {
-    files: ['packages/ember-debug/**/*.js'],
-    ignores: ['packages/ember-debug/**/rollup.config.js'],
-    plugins: {
-      ...importPlugin.flatConfigs.recommended.plugins,
-    },
-    rules: {
-      ...importPlugin.flatConfigs.recommended.rules,
-      'import/extensions': ['error', 'always'],
     },
   },
 ];
