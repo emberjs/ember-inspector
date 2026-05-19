@@ -10,6 +10,7 @@ const replace = require('broccoli-string-replace');
 const Funnel = require('broccoli-funnel');
 const packageJson = require('./package.json');
 const { mv } = stew;
+const { dirname, join } = require('path');
 
 const {
   EMBER_VERSIONS_SUPPORTED,
@@ -95,11 +96,13 @@ module.exports = function (defaults) {
   const emberVersionsSupportedString = JSON.stringify(EMBER_VERSIONS_SUPPORTED);
 
   const emberDebugs = [];
+  const emberDebug = join(
+    dirname(require.resolve('ember-debug/package.json')),
+    'dist',
+  );
 
   ['basic', 'chrome', 'firefox', 'bookmarklet', 'websocket'].forEach(
     function (dist) {
-      let emberDebug = 'packages/ember-debug/dist';
-
       let entryPoint = concatFiles(
         new Funnel(emberDebug, {
           destDir: 'ember-debug',
