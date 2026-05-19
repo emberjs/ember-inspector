@@ -1,6 +1,6 @@
 ## Building and Testing:
 
-Run `pnpm install && pnpm add -g ember-cli` to install the required modules.
+Run `pnpm install` to install the required modules.
 
 - `pnpm build` to build the files in the `dist` directory
 - `pnpm watch` To watch the files and re-build in `dist` when anything changes (useful during development).

@@ -13,7 +13,6 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `pnpm add -g ember-cli`
 - run `pnpm install`
 - run `pnpm build` to build the `dist` directory
 - Visit `chrome://extensions` in Chrome
@@ -30,7 +29,6 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `pnpm add -g ember-cli`
 - run `pnpm install`
 - run `pnpm build` to build the `dist` directory
 - Visit `about:debugging#/runtime/this-firefox` in Firefox
@@ -41,7 +39,6 @@ OR:
 
 - Clone the repository
 - cd into the repo directory
-- run `pnpm add -g ember-cli`
 - run `pnpm install`
 - run `pnpm build` to build the `dist` directory
 - Visit `chrome://extensions` in Opera
