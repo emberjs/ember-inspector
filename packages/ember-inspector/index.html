@@ -16,6 +16,25 @@
   <body class="theme-light">
     {{content-for "body"}}
 
+    <style>
+      .half-and-half > * {
+        position: relative;
+      }
+
+      .half-and-half {
+        display: grid;
+        grid-template-rows: 1fr 2fr;
+        height: 100vh;
+      }
+    </style>
+
+    <div class="half-and-half">
+      <div id="test-ember-app">
+        hi
+      </div>
+      <div id="ember-inspector"></div>
+    </div>
+
     <script src="/@embroider/virtual/vendor.js"></script>
     <script type="module">
       import Application from './app/app';
