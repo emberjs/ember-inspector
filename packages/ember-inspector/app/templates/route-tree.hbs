@@ -26,7 +26,7 @@
       }} as |r|
     >
       <r.cell as |route|>
-        {{#let
+        {{!-- {{#let
           (component (concat "route-cell-" r.columnValue.valuePath)) as |Cell|
         }}
           <Cell
@@ -39,7 +39,7 @@
             @sendControllerToConsole={{this.sendControllerToConsole}}
             @sendRouteHandlerToConsole={{this.sendRouteHandlerToConsole}}
           />
-        {{/let}}
+        {{/let}} --}}
       </r.cell>
     </b.row>
   </t.body>
