@@ -30,7 +30,7 @@
 
     <div class="half-and-half">
       <div id="test-ember-app">
-        hi
+
       </div>
       <div id="ember-inspector"></div>
     </div>
@@ -41,6 +41,12 @@
       import environment from './app/config/environment';
 
       Application.create(environment.APP);
+
+      import TestApplication from 'vite-test-app/app.js';
+
+      TestApplication.create({
+      rootElement: "#test-ember-app"
+    })
     </script>
 
     {{content-for "body-footer"}}
