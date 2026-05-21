@@ -12,41 +12,43 @@
     <link integrity="" rel="stylesheet" href="/@embroider/virtual/app.css">
 
     {{content-for "head-footer"}}
-  </head>
-  <body class="theme-light">
-    {{content-for "body"}}
 
     <style>
-      .half-and-half > * {
-        position: relative;
-      }
-
       .half-and-half {
         display: grid;
         grid-template-rows: 1fr 2fr;
         height: 100vh;
       }
+
+      .half-and-half > * {
+        position: relative;
+      }
+
+      .half-and-half > * + * {
+        border-top: 1px solid #ccc;
+      }
     </style>
+  </head>
+  <body class="theme-light">
+    {{content-for "body"}}
 
     <div class="half-and-half">
-      <div id="test-ember-app">
-
-      </div>
+      <div id="test-ember-app"></div>
       <div id="ember-inspector"></div>
     </div>
 
     <script src="/@embroider/virtual/vendor.js"></script>
     <script type="module">
+      import TestApplication from 'vite-test-app/app.js';
+
+      TestApplication.create({
+        rootElement: "#test-ember-app"
+      });
+
       import Application from './app/app';
       import environment from './app/config/environment';
 
       Application.create(environment.APP);
-
-      import TestApplication from 'vite-test-app/app.js';
-
-      TestApplication.create({
-      rootElement: "#test-ember-app"
-    })
     </script>
 
     {{content-for "body-footer"}}

@@ -4,9 +4,7 @@ import { WelcomePage } from 'ember-welcome-page';
 <template>
   {{pageTitle "ViteTestApp"}}
 
-  {{outlet}}
+  <h2>Welcome to Ember</h2>
 
-  {{! The following component displays Ember's default welcome message. }}
-  <WelcomePage @extension="gjs" />
-  {{! Feel free to remove this! }}
+  {{outlet}}
 </template>

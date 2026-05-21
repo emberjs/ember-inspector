@@ -1,11 +1,23 @@
 import config from 'ember-inspector/config/environment';
+import { macroCondition, isTesting, isDevelopingApp } from '@embroider/macros';
+
+// {{EMBER_DIST}} is replaced by the build process (basic, chrome, etc)
+const ADAPTER = `{{EMBER_DIST}}`;
+let isDev = false;
+
+if (macroCondition(isTesting())) {
+  isDev = true;
+}
+
+if (macroCondition(isDevelopingApp())) {
+  isDev = true;
+}
 
 export default {
   name: 'setup',
   initialize(instance) {
-    // {{EMBER_DIST}} is replaced by the build process (basic, chrome, etc)
     let Adapter = instance.resolveRegistration(
-      `service:adapters/basic`,
+      `service:adapters/${isDev ? 'debug' : ADAPTER}`,
     );
 
     // register the adapter service
