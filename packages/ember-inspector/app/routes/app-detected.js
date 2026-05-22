@@ -1,6 +1,5 @@
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
-import { Promise } from 'rsvp';
 import { getOwner } from '@ember/application';
 
 /**
@@ -15,9 +14,11 @@ export default class AppDetectedRoute extends Route {
    *
    * @return {Promise}
    */
-  model() {
-    return new Promise((resolve) => {
+  async model() {
+    const model = new Promise((resolve) => {
+      console.log('Model Promise')
       this.applicationBooted = ({ booted }) => {
+        console.log('applicationBooted', booted);
         if (booted) {
           this.port.off('general:applicationBooted', this.applicationBooted);
           this.applicationBooted = null;
@@ -27,6 +28,10 @@ export default class AppDetectedRoute extends Route {
       this.port.on('general:applicationBooted', this.applicationBooted);
       this.port.send('general:applicationBooted');
     });
+
+    console.log('Route:app-detected:model', model);
+
+    return model;
   }
 
   afterModel() {

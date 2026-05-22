@@ -7,14 +7,14 @@ export default class DebugAdapter extends BasicAdapter {
   }
 
   sendMessage(message) {
-    console.debug('DebugAdapter:sendMessage', message);
+    console.debug('\x1B[1;35mAdapter:send', message);
     window.postMessage(message);
   }
 
   _listen() {
     window.addEventListener('message', ({ data }) => {
       if (data.from === 'devtools') {
-        console.debug('DebugAdapter:messageReceived', data);
+        console.debug('\x1B[1;35mAdapter:received', data);
         this._messageReceived(data);
       }
     });

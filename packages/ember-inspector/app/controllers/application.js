@@ -15,6 +15,7 @@ export default class ApplicationController extends Controller {
    */
   @service layout;
   @service port;
+  @service router;
 
   // Indicates that the extension window is focused,
   @tracked active = true;

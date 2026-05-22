@@ -23,7 +23,7 @@ import { isInVersionSpecifier } from 'ember-debug/version';
 import GlimmerComponent from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 
-import EmberImport from 'ember-debug/ember';
+import * as EmberImport from 'ember-debug/ember';
 import EmberDebugImport from 'ember-debug/main';
 
 let EmberDebug;

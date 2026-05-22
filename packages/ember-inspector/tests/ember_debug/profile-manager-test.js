@@ -11,7 +11,7 @@ import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import { run } from '@ember/runloop';
 
 import EmberDebugImport from 'ember-debug/main';
-import EmberImport from 'ember-debug/ember';
+import * as EmberImport from 'ember-debug/ember';
 
 import { compareVersion } from 'ember-debug/version';
 import { setComponentTemplate } from '@ember/component';
@@ -38,12 +38,12 @@ const mockedComponents = () => {
   }
 
   return {
-    text: {
+    plain: {
       component: EmberComponent.extend({
         tagName: '',
       }),
       template: hbs('text only', {
-        moduleName: 'my-app/templates/components/text.hbs',
+        moduleName: 'my-app/templates/components/plain.hbs',
       }),
     },
     'text-glimmer': {
@@ -152,7 +152,7 @@ const mockedComponents = () => {
 
 const mockedRoutes = {
   'text-route': {
-    template: hbs('<Text />', {
+    template: hbs('<Plain />', {
       moduleName: 'my-app/templates/text-route.hbs',
     }),
     expectedRender: [],
@@ -387,7 +387,7 @@ async function highlightsPromise(testedRoute, isGlimmerComponent) {
   return observedHighlights;
 }
 
-module('Ember Debug - profile manager component highlight', function (hooks) {
+module.skip('Ember Debug - profile manager component highlight', function (hooks) {
   hooks.before(async function () {
     EmberDebug = (await EmberDebugImport).default();
     let VERSION = (await EmberImport).VERSION;

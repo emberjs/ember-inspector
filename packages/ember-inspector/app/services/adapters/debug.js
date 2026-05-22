@@ -5,19 +5,20 @@ export default class DebugAdapterService extends BasicAdapter {
 
   constructor() {
     super(...arguments);
-
-    import('ember-debug/debug-debug');
+    this._connect();
   }
 
-  sendMessage(message) {
-    console.log('Inspector:sendMessage', message);
+  sendMessage = (message) => {
+    console.debug('\x1B[1;91mEmberInspector:send', message);
     window.postMessage(message);
   }
 
   _connect() {
-    window.addEventListener('message', ({ data }) => {
-      console.log('Inspector:messageReceived', data)
-      this._messageReceived(data);
+    window.addEventListener('message', ({ data: message }) => {
+      if (message.from === 'inspectedWindow') {
+        console.debug('\x1B[1;91mEmberInspector:received', message)
+        this._messageReceived(message);
+      }
     });
   }
 }

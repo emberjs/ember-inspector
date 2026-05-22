@@ -18,6 +18,7 @@ export default class extends BaseObject {
   }
 
   sendMessage(name, message) {
+    console.log('\x1B[1;35mAdapter:DebugPort.send', this.messageName(name), message);
     if (this.isDestroyed) return;
     this.port.send(this.messageName(name), message);
   }

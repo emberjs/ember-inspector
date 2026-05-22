@@ -12,4 +12,7 @@ export default defineConfig({
       extensions,
     }),
   ],
+  server: {
+    cors: true,
+  }
 });

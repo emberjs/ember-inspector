@@ -42,8 +42,10 @@
       import TestApplication from 'vite-test-app/app.js';
 
       TestApplication.create({
-        rootElement: "#test-ember-app"
+        rootElement: "#test-ember-app",
       });
+
+      await import('ember-debug/debug-debug');
 
       import Application from './app/app';
       import environment from './app/config/environment';

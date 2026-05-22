@@ -54,6 +54,8 @@ export default class PortService extends Service {
   }
 
   selectApplication(applicationId) {
+    console.log('EmberInspector:DebugPort.selectApplication', applicationId);
+
     if (
       applicationId in this.detectedApplications &&
       applicationId !== this.applicationId
@@ -83,6 +85,8 @@ export default class PortService extends Service {
 
   @action
   on(eventName, targetOrMethod, method) {
+    console.log('EmberInspector:DebugPort.on', eventName);
+
     if (typeof targetOrMethod === 'function') {
       // If we did not pass a target, default to `this`
       addListener(this, eventName, this, targetOrMethod);
