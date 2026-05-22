@@ -164,6 +164,7 @@
     }
   },
   "exports": {
+    "./package.json": "./package.json",
     "./tests/*": "./tests/*",
     "./*": "./app/*"
   }

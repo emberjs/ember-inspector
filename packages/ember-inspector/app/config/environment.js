@@ -1,7 +1,53 @@
 import loadConfigFromMeta from '@embroider/config-meta-loader';
 import { assert } from '@ember/debug';
 
-const config = loadConfigFromMeta('ember-inspector');
+// const config = loadConfigFromMeta('ember-inspector');
+
+// // todo make this dynamic
+// const packageJson = {
+//   "version": "4.17.0",
+//   "emberVersionsSupported": [
+//     "3.16.0",
+//     ""
+//   ],
+//   "previousEmberVersionsSupported": [
+//     "0.0.0",
+//     "2.7.0",
+//     "3.4.0"
+//   ],
+// }
+
+// const config = {
+//   modulePrefix: 'ember-inspector',
+//   locationType: 'hash',
+//   rootURL: '',
+//   version: packageJson.version,
+//   emberVersionsSupported: packageJson.emberVersionsSupported,
+//   previousEmberVersionsSupported: packageJson.previousEmberVersionsSupported,
+//   APP: {
+//     audoBoot: true
+//   }
+// };
+
+const config = {
+  modulePrefix: 'ember-inspector',
+  environment: 'development',
+  rootURL: '',
+  locationType: 'hash',
+  version: '4.17.0',
+  emberVersionsSupported: ['3.16.0', ''],
+  previousEmberVersionsSupported: ['0.0.0', '2.7.0', '3.4.0'],
+  EmberENV: {
+    EXTEND_PROTOTYPES: false,
+    FEATURES: {},
+    _APPLICATION_TEMPLATE_WRAPPER: false,
+    _DEFAULT_ASYNC_OBSERVERS: true,
+    _JQUERY_INTEGRATION: false,
+    _NO_IMPLICIT_ROUTE_MODEL: true,
+    _TEMPLATE_ONLY_GLIMMER_COMPONENTS: true,
+  },
+  APP: { rootElement: '#ember-inspector' },
+};
 
 assert(
   'config is not an object',
