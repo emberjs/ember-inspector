@@ -37,14 +37,15 @@
     </div>
 
     <script src="/@embroider/virtual/vendor.js"></script>
+
+    <script type="module" src="./ember_debug_debug.mjs"></script>
+
     <script type="module">
       import TestApplication from 'vite-test-app/app.js';
 
       TestApplication.create({
         rootElement: "#test-ember-app",
       });
-
-      await import('ember-debug/debug-debug');
 
       import Application from './app/app';
       import environment from './app/config/environment';
