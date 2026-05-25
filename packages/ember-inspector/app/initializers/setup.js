@@ -19,7 +19,8 @@ export default {
     let Adapter = instance.resolveRegistration(
       // TODO make this not hardcoded... somehow 🙈
       // `service:adapters/${isDev ? 'debug' : ADAPTER}`,
-      `service:adapters/bookmarklet`
+      `service:adapters/debug`,
+      // `service:adapters/bookmarklet`
     );
 
     // register the adapter service
