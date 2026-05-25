@@ -56,7 +56,10 @@
       import Application from './app/app';
       import environment from './app/config/environment';
 
-      Application.create(environment.APP);
+      Application.create({
+        ...environment.APP,
+        rootElement: '#ember-inspector'
+      });
     </script>
 
     {{content-for "body-footer"}}
