@@ -29,6 +29,8 @@ import { assert } from '@ember/debug';
 //   }
 // };
 
+import pkg from '../../package.json';
+
 const config = {
   modulePrefix: 'ember-inspector',
   environment: 'development',
@@ -46,7 +48,10 @@ const config = {
     _NO_IMPLICIT_ROUTE_MODEL: true,
     _TEMPLATE_ONLY_GLIMMER_COMPONENTS: true,
   },
-  APP: { rootElement: '#ember-inspector' },
+  APP: {
+    // rootElement: '#ember-inspector'
+  },
+  VERSION: pkg.version,
 };
 
 assert(
