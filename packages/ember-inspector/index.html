@@ -10,6 +10,12 @@
     <link integrity="" rel="stylesheet" href="/@embroider/virtual/vendor.css">
     <link integrity="" rel="stylesheet" href="/@embroider/virtual/app.css">
 
+    <script>
+      // THIS is needed because of deep and painful sadness
+      // we are glad that we figured this out, but many brain cells were lost on the way
+      window.EmberENV = { _DEBUG_RENDER_TREE: true };
+    </script>
+
     {{content-for "head-footer"}}
 
     <style>
