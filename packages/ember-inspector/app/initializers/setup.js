@@ -17,6 +17,7 @@ export default {
   name: 'setup',
   initialize(instance) {
     let Adapter = instance.resolveRegistration(
+      // TODO make this not hardcoded... somehow 🙈
       // `service:adapters/${isDev ? 'debug' : ADAPTER}`,
       `service:adapters/bookmarklet`
     );
