@@ -5,6 +5,7 @@ import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
 const { Promise } = RSVP;
 import { LOCAL_STORAGE_SUPPORTED } from 'ember-inspector/services/storage/local';
+import compareVersions from 'compare-versions';
 
 const chromeStoreSupported = !!window.chrome && !!window.chrome.storage;
 const storageSupported = chromeStoreSupported || LOCAL_STORAGE_SUPPORTED;
@@ -25,7 +26,7 @@ export default class LaunchRoute extends Route {
       this.setLastVersionOpened(currentVersion);
       if (
         storageSupported &&
-        window.compareVersions(currentVersion, lastVersion) > 0
+        compareVersions(currentVersion, lastVersion) > 0
       ) {
         targetRoute = 'whats-new';
       }
