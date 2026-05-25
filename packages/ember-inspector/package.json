@@ -123,6 +123,7 @@
     "qunit": "^2.23.1",
     "qunit-dom": "^3.4.0",
     "sass": "^1.79.4",
+    "showdown": "^2.1.0",
     "stylelint": "^16.13.2",
     "stylelint-config-standard-scss": "^14.0.0",
     "stylelint-prettier": "^5.0.2",
