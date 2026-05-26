@@ -1,7 +1,6 @@
 import TabRoute from 'ember-inspector/routes/tab';
 import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
-import fetch from 'fetch';
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
