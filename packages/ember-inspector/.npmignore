@@ -1,23 +1,8 @@
-node_modules/
-tmp/
-.DS_Store
-*.swp
-
-dist/**/*.zip
-dist/testing
-
-dist_prev
-
-*.xpi
-
-.mozilla-addon-sdk
-
-aws.json
-config/secrets.json
-
-# ember-try
-.node_modules.ember-try/
-bower.json.ember-try
-package.json.ember-try
-
-.idea/
+# Development tooling — not needed in the published package
+babel.config.js
+ember-cli-build.js
+eslint.config.mjs
+gulpfile.js
+testem.js
+scripts/
+tests/

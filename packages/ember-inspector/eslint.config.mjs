@@ -14,53 +14,33 @@
  */
 import globals from 'globals';
 import js from '@eslint/js';
+import { defineConfig, globalIgnores } from 'eslint/config';
 
 import ember from 'eslint-plugin-ember/recommended';
-
-import prettierConfig from 'eslint-config-prettier';
+import eslintConfigPrettier from 'eslint-config-prettier';
 import qunit from 'eslint-plugin-qunit';
 import n from 'eslint-plugin-n';
 
-import babelParser from '@babel/eslint-parser';
+import babelParser from '@babel/eslint-parser/experimental-worker';
 
-const parserOptions = {
-  esm: {
-    js: {
-      ecmaFeatures: { modules: true },
-      ecmaVersion: 'latest',
-      requireConfigFile: false,
-      babelOptions: {
-        plugins: [
-          [
-            '@babel/plugin-proposal-decorators',
-            { decoratorsBeforeExport: true },
-          ],
-        ],
-      },
-    },
-  },
+const esmParserOptions = {
+  ecmaFeatures: { modules: true },
+  ecmaVersion: 'latest',
 };
 
-export default [
+export default defineConfig([
+  globalIgnores([
+    'dist/',
+    'dist_prev/',
+    'vendor/',
+    'coverage/',
+    'skeletons/',
+    '!**/.*',
+  ]),
   js.configs.recommended,
+  eslintConfigPrettier,
   ember.configs.base,
   ember.configs.gjs,
-  prettierConfig,
-  /**
-   * Ignores must be in their own object
-   * https://eslint.org/docs/latest/use/configure/ignore
-   */
-  {
-    ignores: [
-      'dist/',
-      'node_modules/',
-      'coverage/',
-      '!**/.*',
-      'vendor/',
-      'dist_prev/',
-      'skeletons/',
-    ],
-  },
   /**
    * https://eslint.org/docs/latest/use/configure/configuration-files#configuring-linter-options
    */
@@ -70,32 +50,25 @@ export default [
     },
   },
   {
-    rules: {
-      'no-prototype-builtins': 'off',
-      'no-useless-escape': 'off',
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-    },
-  },
-  {
     files: ['**/*.js'],
     languageOptions: {
       parser: babelParser,
+    },
+    rules: {
+      'no-useless-escape': 'off',
     },
   },
   {
     files: ['**/*.{js,gjs}'],
     languageOptions: {
-      parserOptions: parserOptions.esm.js,
+      parserOptions: esmParserOptions,
       globals: {
         ...globals.browser,
-        basicContext: false,
-        requireModule: false,
-        globalThis: true,
-        chrome: 'readonly',
       },
     },
   },
   {
+    ...qunit.configs.recommended,
     files: ['tests/**/*-test.{js,gjs}'],
     plugins: {
       qunit,
@@ -105,19 +78,16 @@ export default [
    * CJS node files
    */
   {
+    ...n.configs['flat/recommended-script'],
     files: [
       '**/*.cjs',
-      'config/**/*.js',
-      'lib/*/index.js',
-      'scripts/**/*.js',
-      'testem.js',
-      'testem*.js',
       '.prettierrc.js',
       '.stylelintrc.js',
       '.template-lintrc.js',
       'babel.config.js',
-      'ember-cli-build.js',
-      'gulpfile.js',
+      'config/**/*.js',
+      'scripts/download-panes.js',
+      'testem.js',
     ],
     plugins: {
       n,
@@ -128,8 +98,6 @@ export default [
       ecmaVersion: 'latest',
       globals: {
         ...globals.node,
-        basicContext: false,
-        requireModule: false,
       },
     },
   },
@@ -137,6 +105,7 @@ export default [
    * ESM node files
    */
   {
+    ...n.configs['flat/recommended-module'],
     files: ['**/*.mjs'],
     plugins: {
       n,
@@ -145,12 +114,22 @@ export default [
     languageOptions: {
       sourceType: 'module',
       ecmaVersion: 'latest',
-      parserOptions: parserOptions.esm.js,
+      parserOptions: esmParserOptions,
       globals: {
         ...globals.node,
-        basicContext: false,
-        requireModule: false,
       },
     },
   },
-];
+  /**
+   * Gulp files
+   */
+  {
+    files: ['gulpfile.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        gulp: 'readonly',
+      },
+    },
+  },
+]);

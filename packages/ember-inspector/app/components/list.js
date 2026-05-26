@@ -1,3 +1,5 @@
+/* global basicContext */
+
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { localCopy } from 'tracked-toolbox';
@@ -199,11 +201,10 @@ export default class ListComponent extends Component {
    * @property debounceColumnWidths
    * @type {Object} Ember Concurrency task
    */
-  // @task({restartable: true})
-  debounceColumnWidths = task({restartable: true} , async () => {
+  debounceColumnWidths = task({ restartable: true }, async () => {
     await timeout(100);
     this.resizableColumns.setTableWidth(this.getTableWidth());
-  })
+  });
 
   /**
    * Hook called when the component element will be destroyed.
