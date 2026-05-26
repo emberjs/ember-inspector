@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0.0",
+  "packages": [
+    {
+      "name": "@ember/app-blueprint",
+      "version": "7.0.0",
+      "blueprints": [
+        {
+          "name": "@ember/app-blueprint",
+          "isBaseBlueprint": true,
+          "options": [
+            "--ci-provider=github"
+          ]
+        }
+      ]
+    }
+  ]
+}
