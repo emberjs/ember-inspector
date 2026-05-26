@@ -1,4 +1,4 @@
-/* eslint-disable ember/no-classic-classes */
+/* eslint-disable ember/no-classic-classes, qunit/require-expect, qunit/no-early-return */
 import {
   click,
   find,
