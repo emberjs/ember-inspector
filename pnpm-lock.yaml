@@ -251,9 +251,6 @@ importers:
       ember-resolver:
         specifier: ^13.1.0
         version: 13.2.0
-      ember-router-service-refresh-polyfill:
-        specifier: ^1.1.0
-        version: 1.1.0(@babel/core@7.26.0)(@glint/template@1.5.1)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.105.4))
       ember-showdown:
         specifier: 1.0.0-beta.1
         version: 1.0.0-beta.1
@@ -4891,12 +4888,6 @@ packages:
   ember-router-generator@2.0.0:
     resolution: {integrity: sha512-89oVHVJwmLDvGvAUWgS87KpBoRhy3aZ6U0Ql6HOmU4TrPkyaa8pM0W81wj9cIwjYprcQtN9EwzZMHnq46+oUyw==}
     engines: {node: 8.* || 10.* || >= 12}
-
-  ember-router-service-refresh-polyfill@1.1.0:
-    resolution: {integrity: sha512-MhrJnpyTTie+Uo9PWiEX4f0t5y70vBjjgcS56aLOvwlSwfInNCtOEgQ/zH89J2dnYUVidebm/1FTubQ2meSjbw==}
-    engines: {node: 12.* || 14.* || >= 16}
-    peerDependencies:
-      ember-source: ^3.4 || 4
 
   ember-showdown@1.0.0-beta.1:
     resolution: {integrity: sha512-iIKjf7qZ4v3/tL2N11oCWAb6rwHZOnByzg12DbiXBigKytGcGbE/QRlmChhny467/iMGoa8LKzeebxibIIutyw==}
@@ -17237,16 +17228,6 @@ snapshots:
       '@babel/traverse': 7.27.3
       recast: 0.18.10
     transitivePeerDependencies:
-      - supports-color
-
-  ember-router-service-refresh-polyfill@1.1.0(@babel/core@7.26.0)(@glint/template@1.5.1)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.105.4)):
-    dependencies:
-      '@embroider/macros': 1.20.2(@babel/core@7.26.0)(@glint/template@1.5.1)
-      ember-cli-babel: 7.26.11
-      ember-source: 5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.105.4)
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
       - supports-color
 
   ember-showdown@1.0.0-beta.1:
