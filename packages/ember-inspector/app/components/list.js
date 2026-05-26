@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { localCopy } from 'tracked-toolbox';
 import { bind, scheduleOnce } from '@ember/runloop';
-import { restartableTask, timeout } from 'ember-concurrency';
+import { task, timeout } from 'ember-concurrency';
 import ResizableColumns from 'ember-inspector/libs/resizable-columns';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
@@ -199,11 +199,11 @@ export default class ListComponent extends Component {
    * @property debounceColumnWidths
    * @type {Object} Ember Concurrency task
    */
-  @restartableTask
-  *debounceColumnWidths() {
-    yield timeout(100);
+  // @task({restartable: true})
+  debounceColumnWidths = task({restartable: true} , async () => {
+    await timeout(100);
     this.resizableColumns.setTableWidth(this.getTableWidth());
-  }
+  })
 
   /**
    * Hook called when the component element will be destroyed.

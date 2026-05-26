@@ -26,9 +26,7 @@
       }} as |r|
     >
       <r.cell as |route|>
-        {{#let
-          (component (concat "route-cell-" r.columnValue.valuePath)) as |Cell|
-        }}
+        {{#let (get this.routeCells r.columnValue.valuePath) as |Cell|}}
           <Cell
             @route={{route}}
             @currentRoute={{this.currentRoute}}
