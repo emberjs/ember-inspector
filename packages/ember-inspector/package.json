@@ -65,7 +65,7 @@
     "broccoli-stew": "^3.0.0",
     "broccoli-string-replace": "^0.1.2",
     "codeclimate-test-reporter": "^0.5.1",
-    "compare-versions": "^4.1.4",
+    "compare-versions": "^6.1.1",
     "del": "^6.1.1",
     "ember-auto-import": "^2.10.0",
     "ember-cli": "~6.1.0",
