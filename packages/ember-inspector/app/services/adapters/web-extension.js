@@ -1,3 +1,4 @@
+/* global chrome */
 import { tracked } from '@glimmer/tracking';
 
 import BasicAdapter from './basic';

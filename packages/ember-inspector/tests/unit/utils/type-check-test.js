@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import TypeCheckImport from 'ember-debug/type-check';
+import * as TypeCheckImport from 'ember-debug/type-check';
 let inspect;
 
 module('Unit | Utility | type-check', function (hooks) {

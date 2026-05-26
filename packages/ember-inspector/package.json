@@ -10,7 +10,7 @@
     "test": "tests"
   },
   "scripts": {
-    "build": "pnpm build:ember",
+    "build": "vite build",
     "build:ember": "ember build",
     "build:ember:production": "ember build --environment production",
     "build:production": "pnpm panes:download && pnpm build:ember:production && pnpm extensions:compress",
@@ -30,10 +30,11 @@
     "lock-version": "pnpm build:production && pnpm panes:compress",
     "prepublishOnly": "node -e 'process.exit(!require(\"fs\").existsSync(\"./dist\"))' || pnpm build:production",
     "serve:bookmarklet": "ember serve --port 9191",
-    "start": "ember serve",
+    "start": "vite",
     "test": "COVERAGE=true ember test",
     "watch": "ember build --watch",
-    "watch-test": "ember test --serve"
+    "watch-test": "ember test --serve",
+    "test:ember": "vite build --mode development && ember test --path dist"
   },
   "dependencies": {
     "got": "^11.8.6",
@@ -41,22 +42,29 @@
     "yauzl": "^3.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.26.0",
-    "@babel/eslint-parser": "^7.25.9",
-    "@babel/plugin-proposal-decorators": "^7.25.9",
+    "@babel/core": "^7.29.0",
+    "@babel/eslint-parser": "^7.28.6",
+    "@babel/plugin-transform-runtime": "^7.29.0",
+    "@babel/runtime": "^7.29.2",
     "@ember/edition-utils": "^1.2.0",
-    "@ember/legacy-built-in-components": "^0.4.2",
+    "@ember/legacy-built-in-components": "^0.5.0",
     "@ember/optional-features": "^2.2.0",
     "@ember/render-modifiers": "^2.1.0",
-    "@ember/string": "^4.0.0",
-    "@ember/test-helpers": "^4.0.4",
+    "@ember/string": "^4.0.1",
+    "@ember/test-helpers": "^5.4.1",
+    "@embroider/compat": "^4.1.17",
+    "@embroider/config-meta-loader": "^1.0.0",
+    "@embroider/core": "^4.4.7",
+    "@embroider/legacy-inspector-support": "^0.1.3",
+    "@embroider/vite": "^1.7.2",
     "@eslint/js": "^9.39.4",
     "@glimmer/component": "^1.1.2",
     "@glimmer/tracking": "^1.1.2",
     "@html-next/vertical-collection": "^4.0.2",
+    "@rollup/plugin-babel": "^7.0.0",
+    "babel-plugin-ember-template-compilation": "^3.1.0",
     "backburner.js": "^2.8.0",
     "basiccontext": "^3.5.1",
-    "broccoli-asset-rev": "^3.0.0",
     "broccoli-babel-transpiler": "^8.0.2",
     "broccoli-concat": "^4.2.5",
     "broccoli-file-creator": "^2.1.1",
@@ -66,23 +74,18 @@
     "broccoli-string-replace": "^0.1.2",
     "codeclimate-test-reporter": "^0.5.1",
     "compare-versions": "^6.1.1",
+    "decorator-transforms": "^2.3.1",
     "del": "^6.1.1",
     "ember-auto-import": "^2.10.0",
     "ember-cli": "~6.1.0",
-    "ember-cli-app-version": "^7.0.0",
     "ember-cli-babel": "^8.2.0",
-    "ember-cli-clean-css": "^3.0.0",
     "ember-cli-code-coverage": "^1.0.3",
-    "ember-cli-cors": "^0.0.2",
-    "ember-cli-dependency-checker": "^3.3.3",
-    "ember-cli-deprecation-workflow": "^2.2.0",
+    "ember-cli-deprecation-workflow": "^4.0.1",
     "ember-cli-htmlbars": "^6.3.0",
-    "ember-cli-inject-live-reload": "^2.1.0",
     "ember-cli-sass": "^11.0.1",
-    "ember-cli-terser": "^4.0.2",
     "ember-cli-showdown": "^9.0.2",
     "ember-cli-version-checker": "^5.1.2",
-    "ember-concurrency": "^3.1.1",
+    "ember-concurrency": "^5.2.0",
     "ember-debug": "workspace:*",
     "ember-decorators": "^6.1.1",
     "ember-event-helpers": "^0.1.1",
@@ -92,13 +95,13 @@
     "ember-math-helpers": "^4.0.0",
     "ember-modifier": "^4.2.0",
     "ember-on-resize-modifier": "^1.1.0",
-    "ember-qunit": "^8.1.1",
+    "ember-qunit": "^9.0.4",
     "ember-resolver": "^13.1.0",
     "ember-sinon-qunit": "^7.5.0",
     "ember-source": "^5.0.0",
     "ember-source-channel-url": "^3.0.0",
     "ember-svg-jar": "^2.6.0",
-    "ember-table": "^5.0.6",
+    "ember-table": "^6.0.0-11",
     "ember-template-lint": "^6.0.0",
     "ember-test-selectors": "^6.0.0",
     "ember-truth-helpers": "^3.1.1",
@@ -113,7 +116,6 @@
     "globals": "^15.14.0",
     "gulp": "^4.0.2",
     "gulp-zip": "^5.1.0",
-    "loader.js": "^4.7.0",
     "normalize.css": "8.0.1",
     "pretender": "^3.4.7",
     "prettier": "^3.4.2",
@@ -127,7 +129,8 @@
     "stylelint-prettier": "^5.0.2",
     "tracked-built-ins": "^3.4.0",
     "tracked-toolbox": "^2.0.0",
-    "webpack": "^5.97.1"
+    "vite": "^8.0.10",
+    "vite-test-app": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
@@ -161,5 +164,10 @@
     "npm": {
       "publish": false
     }
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    "./tests/*": "./tests/*",
+    "./*": "./app/*"
   }
 }

@@ -11,7 +11,7 @@ import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import { run } from '@ember/runloop';
 
 import EmberDebugImport from 'ember-debug/main';
-import EmberImport from 'ember-debug/ember';
+import * as EmberImport from 'ember-debug/ember';
 
 import { compareVersion } from 'ember-debug/version';
 import { setComponentTemplate } from '@ember/component';

@@ -13,7 +13,7 @@ export default class DebugAdapterService extends BasicAdapter {
       ...message,
       from: 'devtools',
     });
-  }
+  };
 
   _connect() {
     window.addEventListener('message', ({ data: message }) => {

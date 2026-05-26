@@ -35,10 +35,5 @@
   "volta": {
     "node": "22.17.1",
     "pnpm": "9.12.1"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "ember-cli-inject-live-reload": "patches/ember-cli-inject-live-reload.patch"
-    }
   }
 }
