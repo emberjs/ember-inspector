@@ -101,23 +101,21 @@ module.exports = function (defaults) {
     'dist',
   );
 
-  ['basic', 'chrome', 'firefox', 'bookmarklet', 'websocket'].forEach(
-    function (dist) {
-      let entryPoint = concatFiles(
-        new Funnel(emberDebug, {
-          destDir: 'ember-debug',
-          include: [`${dist}-debug.js`],
-        }),
-        {
-          inputFiles: ['**/*.js'],
-          outputFile: '/ember_debug.js',
-          sourceMapConfig: { enabled: false },
-        },
-      );
+  for (const dist of ['basic', 'chrome', 'firefox', 'bookmarklet']) {
+    const entryPoint = concatFiles(
+      new Funnel(emberDebug, {
+        destDir: 'ember-debug',
+        include: [`${dist}-debug.js`],
+      }),
+      {
+        inputFiles: ['**/*.js'],
+        outputFile: '/ember_debug.js',
+        sourceMapConfig: { enabled: false },
+      },
+    );
 
-      emberDebugs[dist] = mergeTrees([emberDebug, entryPoint]);
-    },
-  );
+    emberDebugs[dist] = mergeTrees([emberDebug, entryPoint]);
+  }
 
   let tree = app.toTree();
 
@@ -243,7 +241,6 @@ module.exports = function (defaults) {
     chrome,
     firefox,
     bookmarklet,
-    websocket: mergeTrees([tree, emberDebugs.websocket]),
     basic: mergeTrees([tree, emberDebugs.basic]),
   };
   Object.keys(dists).forEach(function (key) {
@@ -258,20 +255,6 @@ module.exports = function (defaults) {
     });
   });
 
-  // Add {{ remote-port }} to the head
-  // so that the websocket addon can replace it.
-  dists.websocket = replace(dists.websocket, {
-    files: ['index.html'],
-    patterns: [
-      {
-        match: /<head>/,
-        replacement: '<head>\n{{ remote-port }}\n',
-      },
-    ],
-  });
-
-  let output;
-
   if (env === 'test') {
     // `ember test` expects the index.html file to be in the
     // output directory.
@@ -285,18 +268,16 @@ module.exports = function (defaults) {
         },
       ],
     });
-    output = mergeTrees([dists.basic, dists.chrome]);
-  } else {
-    dists.testing = mergeTrees([dists.basic, dists.chrome]);
 
-    output = mergeTrees([
-      mv(dists.bookmarklet, 'bookmarklet'),
-      mv(dists.firefox, 'firefox'),
-      mv(dists.chrome, 'chrome'),
-      mv(dists.websocket, 'websocket'),
-      mv(dists.testing, 'testing'),
-    ]);
+    return mergeTrees([dists.basic, dists.chrome]);
   }
 
-  return output;
+  dists.testing = mergeTrees([dists.basic, dists.chrome]);
+
+  return mergeTrees([
+    mv(dists.bookmarklet, 'bookmarklet'),
+    mv(dists.firefox, 'firefox'),
+    mv(dists.chrome, 'chrome'),
+    mv(dists.testing, 'testing'),
+  ]);
 };
