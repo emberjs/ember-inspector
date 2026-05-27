@@ -1,5 +1,6 @@
-'use strict';
+/* eslint-disable no-undef */
 
+'use strict';
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 const VersionChecker = require('ember-cli-version-checker');
 const mergeTrees = require('broccoli-merge-trees');

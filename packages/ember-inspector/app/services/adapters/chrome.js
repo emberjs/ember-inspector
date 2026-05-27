@@ -1,3 +1,5 @@
+/* global chrome */
+
 import WebExtension from './web-extension';
 import { tracked } from '@glimmer/tracking';
 

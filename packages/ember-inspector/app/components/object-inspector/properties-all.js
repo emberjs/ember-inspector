@@ -28,7 +28,10 @@ export default class PropertiesAll extends PropertiesBase {
           ? p.name.toLowerCase().indexOf(this.args.customFilter.toLowerCase()) >
             -1
           : true;
-        return !p.hasOwnProperty('overridden') && shouldApplyCustomFilter;
+        return (
+          !Object.prototype.hasOwnProperty.call(p, 'overridden') &&
+          shouldApplyCustomFilter
+        );
       }, this);
     }, this);
 

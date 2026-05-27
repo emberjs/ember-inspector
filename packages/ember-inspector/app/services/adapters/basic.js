@@ -74,14 +74,14 @@ export default class Basic extends Service {
    *
    * @param _neededVersion (The version to go to)
    */
-  onVersionMismatch(_neededVersion) {}
+  onVersionMismatch(/* _neededVersion */) {}
 
   /**
     Used to send messages to EmberDebug
 
     @param _message the message to send
   **/
-  sendMessage(_message) {}
+  sendMessage(/* _message */) {}
 
   /**
     Register functions to be called
@@ -99,7 +99,8 @@ export default class Basic extends Service {
 
   // Called when the "Reload" is clicked by the user
   willReload() {}
-  openResource(_file, _line) {}
+
+  openResource(/* _file, _line */) {}
 
   @action
   refreshPage() {

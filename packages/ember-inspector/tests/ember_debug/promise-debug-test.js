@@ -1,5 +1,4 @@
-/* eslint-disable ember/no-runloop */
-/* eslint-disable ember/avoid-leaking-state-in-ember-objects */
+/* eslint-disable ember/no-runloop, ember/avoid-leaking-state-in-ember-objects, qunit/no-conditional-assertions */
 import { run, later } from '@ember/runloop';
 import { A as emberA } from '@ember/array';
 import RSVP from 'rsvp';

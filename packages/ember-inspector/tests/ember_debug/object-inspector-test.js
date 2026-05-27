@@ -1,4 +1,4 @@
-/* eslint-disable ember/avoid-leaking-state-in-ember-objects, ember/no-classic-classes, ember/no-new-mixins, ember/no-runloop */
+/* eslint-disable ember/avoid-leaking-state-in-ember-objects, ember/no-classic-classes, ember/no-new-mixins, ember/no-runloop, qunit/no-conditional-assertions */
 import { find, visit } from '@ember/test-helpers';
 import Mixin from '@ember/object/mixin';
 // eslint-disable-next-line ember/no-classic-components

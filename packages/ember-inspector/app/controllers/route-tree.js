@@ -7,6 +7,9 @@ import { inject as service } from '@ember/service';
 import checkCurrentRoute from 'ember-inspector/utils/check-current-route';
 import searchMatch from 'ember-inspector/utils/search-match';
 import isRouteSubstate from 'ember-inspector/utils/is-route-substate';
+import RouteCellName from 'ember-inspector/components/route-cell-name';
+import RouteCellObjects from 'ember-inspector/components/route-cell-objects';
+import RouteCellUrl from 'ember-inspector/components/route-cell-url';
 
 export default class RouteTreeController extends Controller {
   @controller application;
@@ -17,6 +20,12 @@ export default class RouteTreeController extends Controller {
   currentRoute = null;
 
   searchValue = '';
+
+  routeCells = {
+    name: RouteCellName,
+    objects: RouteCellObjects,
+    url: RouteCellUrl,
+  };
 
   @alias('options.hideRoutes') hideRoutes;
 
