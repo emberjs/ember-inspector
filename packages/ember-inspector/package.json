@@ -53,7 +53,7 @@
     "@eslint/js": "^9.39.4",
     "@glimmer/component": "^1.1.2",
     "@glimmer/tracking": "^1.1.2",
-    "@html-next/vertical-collection": "^4.0.2",
+    "@html-next/vertical-collection": "^5.0.5",
     "backburner.js": "^2.8.0",
     "basiccontext": "^3.5.1",
     "broccoli-asset-rev": "^3.0.0",
