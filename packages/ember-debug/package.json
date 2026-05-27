@@ -21,7 +21,7 @@
     "eslint": "^9.17.0",
     "eslint-plugin-ember": "^12.3.3",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-prettier": "^10.1.8",
     "globals": "^15.14.0",
     "prettier": "^3.4.2",
     "@babel/plugin-proposal-decorators": "^7.25.9",

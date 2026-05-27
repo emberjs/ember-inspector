@@ -53,8 +53,8 @@ importers:
         specifier: ^9.17.0
         version: 9.18.0
       eslint-config-prettier:
-        specifier: ^9.1.0
-        version: 9.1.0(eslint@9.18.0)
+        specifier: ^10.1.8
+        version: 10.1.8(eslint@9.18.0)
       eslint-plugin-ember:
         specifier: ^12.3.3
         version: 12.3.3(@babel/core@7.26.0)(@typescript-eslint/parser@8.21.0(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0)
@@ -5098,12 +5098,6 @@ packages:
     peerDependencies:
       eslint: '>=7.0.0'
 
-  eslint-config-prettier@9.1.0:
-    resolution: {integrity: sha512-NSWl5BFQWEPi1j4TjVNItzYV7dZXZ+wP6I6ZhrBGpChQhZRUaElihE9uRRkcbRnNb76UMKDF3r+WTmNcGPKsqw==}
-    hasBin: true
-    peerDependencies:
-      eslint: '>=7.0.0'
-
   eslint-formatter-kakoune@1.0.0:
     resolution: {integrity: sha512-Uk/TVLt6Nf6Xoz7C1iYuZjOSdJxe5aaauGRke8JhKeJwD66Y61/pY2FjtLP04Ooq9PwV34bzrkKkU2UZ5FtDRA==}
 
@@ -8908,6 +8902,11 @@ packages:
 
   semver@7.8.0:
     resolution: {integrity: sha512-AcM7dV/5ul4EekoQ29Agm5vri8JNqRyj39o0qpX6vDF2GZrtutZl5RwgD1XnZjiTAfncsJhMI48QQH3sN87YNA==}
+    engines: {node: '>=10'}
+    hasBin: true
+
+  semver@7.8.1:
+    resolution: {integrity: sha512-rkVq3IXh+4FDGch+KwzX3aV9W3kO54GyEgpvBzSyctDA6Xtd7RJQV1xmXbeQp5v7+VzLOfVqiutSE6GICgPFvg==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -13685,7 +13684,7 @@ snapshots:
       fast-glob: 3.3.3
       is-glob: 4.0.3
       minimatch: 9.0.9
-      semver: 7.8.0
+      semver: 7.8.1
       ts-api-utils: 2.5.0(typescript@5.7.3)
       typescript: 5.7.3
     transitivePeerDependencies:
@@ -17599,13 +17598,13 @@ snapshots:
       eslint: 9.39.4
       semver: 7.8.0
 
+  eslint-config-prettier@10.1.8(eslint@9.18.0):
+    dependencies:
+      eslint: 9.18.0
+
   eslint-config-prettier@10.1.8(eslint@9.39.4):
     dependencies:
       eslint: 9.39.4
-
-  eslint-config-prettier@9.1.0(eslint@9.18.0):
-    dependencies:
-      eslint: 9.18.0
 
   eslint-formatter-kakoune@1.0.0: {}
 
@@ -21976,6 +21975,9 @@ snapshots:
   semver@7.6.3: {}
 
   semver@7.8.0: {}
+
+  semver@7.8.1:
+    optional: true
 
   send@0.19.0:
     dependencies:
