@@ -8,17 +8,17 @@
  * package.
  */
 
-const got = require('got');
-const fs = require('fs');
-const { promisify } = require('util');
-const stream = require('stream');
-const packageJson = require('../package.json');
-const yauzl = require('yauzl');
-const path = require('path');
+import got from 'got';
+import fs from 'fs';
+import { promisify } from 'util';
+import stream from 'stream';
+import yauzl from 'yauzl';
+import path from 'path';
+import { rimraf } from 'rimraf';
+import packageJson from 'ember-inspector/package.json' with { type: 'json' };
 
 const yauzlFromBuffer = promisify(yauzl.fromBuffer);
 const pipeline = promisify(stream.pipeline);
-const { rimraf } = require('rimraf');
 
 async function main() {
   await rimraf('dist_prev');
@@ -34,7 +34,7 @@ async function main() {
 }
 
 async function downloadPane(paneFolder, dist) {
-  console.log(`Downloading ${paneFolder}`);
+  console.log(`Downloading ${dist} ${paneFolder}`);
 
   let response = await got(
     `https://github.com/emberjs/ember-inspector/blob/panes/${paneFolder}/${dist}.zip?raw=true`,

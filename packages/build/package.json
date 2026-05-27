@@ -1,0 +1,87 @@
+{
+  "name": "build",
+  "version": "0.0.0",
+  "description": "Builds extensions and bookmarklet",
+  "repository": "https://github.com/emberjs/ember-inspector",
+  "license": "MIT",
+  "directories": {
+    "doc": "doc",
+    "test": "tests"
+  },
+  "exports": {
+    ".": "./",
+    "./load_inspector": "./skeletons/bookmarklet/load_inspector.js",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "gulp cleanDist && ember build",
+    "build:production": "pnpm panes:download && ember build -e production && pnpm extensions:compress",
+    "panes:download": "node scripts/download-panes.mjs",
+    "panes:compress": "gulp compressPanes",
+    "extensions:compress": "gulp compressExtensions",
+    "lint": "pnpm \"/^lint:(?!fix$)[^:]+$/\"",
+    "lint:fix": "pnpm \"/^lint:[^:]+:fix$/\" && pnpm format",
+    "lint:format": "prettier --cache --check \"**/*.{js,cjs,mjs}\"",
+    "format": "prettier --cache --write \"**/*.{js,cjs,mjs}\"",
+    "lint:js": "eslint . --cache",
+    "lint:js:fix": "eslint . --fix",
+    "lock-version": "pnpm build:production && pnpm panes:compress",
+    "prepublishOnly": "node -e 'process.exit(!require(\"fs\").existsSync(\"./dist\"))' || pnpm build:production"
+  },
+  "dependencies": {
+    "del": "^8.0.1",
+    "ember-inspector": "workspace:*",
+    "got": "^11.8.6",
+    "gulp": "^5.0.1",
+    "gulp-zip": "^5.1.0",
+    "rimraf": "^5.0.10",
+    "yauzl": "^3.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/eslint-parser": "^7.25.9",
+    "@babel/plugin-proposal-decorators": "^7.25.9",
+    "@ember/optional-features": "^2.2.0",
+    "@eslint/js": "^9.39.4",
+    "@glimmer/component": "^1.1.2",
+    "broccoli-concat": "^4.2.5",
+    "broccoli-file-creator": "^2.1.1",
+    "broccoli-funnel": "^3.0.8",
+    "broccoli-merge-trees": "^4.2.0",
+    "broccoli-stew": "^3.0.0",
+    "broccoli-string-replace": "^0.1.2",
+    "ember-cli": "~6.1.0",
+    "ember-cli-babel": "^8.2.0",
+    "ember-debug": "workspace:*",
+    "ember-source": "^5.0.0",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-ember": "^12.7.5",
+    "eslint-plugin-n": "^17.24.0",
+    "eslint-plugin-qunit": "^8.2.6",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "webpack": "^5.97.1"
+  },
+  "ember": {
+    "edition": "octane"
+  },
+  "release-it": {
+    "plugins": {
+      "release-it-lerna-changelog": {
+        "infile": "CHANGELOG.md",
+        "launchEditor": true
+      }
+    },
+    "git": {
+      "tagName": "v${version}"
+    },
+    "github": {
+      "release": false,
+      "tokenRef": "GITHUB_AUTH"
+    },
+    "npm": {
+      "publish": false
+    }
+  }
+}

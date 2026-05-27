@@ -1,0 +1,5 @@
+# Development tooling — not needed in the published package
+babel.config.js
+ember-cli-build.js
+eslint.config.mjs
+scripts/
