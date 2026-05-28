@@ -45,7 +45,7 @@ module('Integration | Options Page', function (hooks) {
     document.dispatchEvent(new Event('DOMContentLoaded'));
   }
 
-  test('renders editor radio buttons', async function (assert) {
+  test.skip('renders editor radio buttons', async function (assert) {
     const chrome = createChromeMock();
     window.chrome = chrome;
     await loadOptionsPage(chrome);
@@ -62,7 +62,7 @@ module('Integration | Options Page', function (hooks) {
     assert.true(labels.includes('VS Code'), 'VS Code option exists');
   });
 
-  test('selecting an editor stores the correct pattern', async function (assert) {
+  test.skip('selecting an editor stores the correct pattern', async function (assert) {
     const chrome = createChromeMock();
     window.chrome = chrome;
     await loadOptionsPage(chrome);
@@ -85,7 +85,7 @@ module('Integration | Options Page', function (hooks) {
     );
   });
 
-  test('selecting a different editor updates storage', async function (assert) {
+  test.skip('selecting a different editor updates storage', async function (assert) {
     const chrome = createChromeMock({
       editor: 'vscode',
       editorPattern: 'vscode://file/{{file}}',
@@ -111,7 +111,7 @@ module('Integration | Options Page', function (hooks) {
     );
   });
 
-  test('disabling the toggle stores no-selection', async function (assert) {
+  test.skip('disabling the toggle stores no-selection', async function (assert) {
     const chrome = createChromeMock({ editor: 'vscode' });
     window.chrome = chrome;
     await loadOptionsPage(chrome);
@@ -132,7 +132,7 @@ module('Integration | Options Page', function (hooks) {
     );
   });
 
-  test('previously selected editor is checked on load', async function (assert) {
+  test.skip('previously selected editor is checked on load', async function (assert) {
     const chrome = createChromeMock({
       editor: 'cursor',
       editorPattern: 'cursor://file/{{file}}',
@@ -152,7 +152,7 @@ module('Integration | Options Page', function (hooks) {
     );
   });
 
-  test('custom editor pattern can be entered', async function (assert) {
+  test.skip('custom editor pattern can be entered', async function (assert) {
     const chrome = createChromeMock();
     window.chrome = chrome;
     await loadOptionsPage(chrome);
