@@ -32,7 +32,9 @@ export default class DeprecationItemSource extends Component {
   }
 
   @action
-  handleRedirect() {
+  handleRedirect(event) {
+    // FIXME: this should be attached to a <button> not an <a>
+    event.preventDefault();
     this.args.openResource?.(this.args.itemModel?.map);
   }
 }
