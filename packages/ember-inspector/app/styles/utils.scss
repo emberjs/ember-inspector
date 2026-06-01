@@ -1,5 +1,3 @@
-$units: 0, 1, 2, 3, 4, 5, 6;
-
 .box-border {
   box-sizing: border-box;
 }
@@ -168,10 +166,11 @@ $units: 0, 1, 2, 3, 4, 5, 6;
   border-width: 0;
 }
 
-@each $key in $units {
+@each $key in (0, 1, 2, 3, 4, 5, 6) {
   .w-#{$key} {
     width: var(--unit#{$key});
   }
+
   .h-#{$key} {
     height: var(--unit#{$key});
   }
@@ -179,15 +178,19 @@ $units: 0, 1, 2, 3, 4, 5, 6;
   .p-#{$key} {
     padding: var(--unit#{$key});
   }
+
   .pt-#{$key} {
     padding-top: var(--unit#{$key});
   }
+
   .pr-#{$key} {
     padding-right: var(--unit#{$key});
   }
+
   .pb-#{$key} {
     padding-bottom: var(--unit#{$key});
   }
+
   .pl-#{$key} {
     padding-left: var(--unit#{$key});
   }
@@ -205,15 +208,19 @@ $units: 0, 1, 2, 3, 4, 5, 6;
   .m-#{$key} {
     margin: var(--unit#{$key});
   }
+
   .mt-#{$key} {
     margin-top: var(--unit#{$key});
   }
+
   .mr-#{$key} {
     margin-right: var(--unit#{$key});
   }
+
   .mb-#{$key} {
     margin-bottom: var(--unit#{$key});
   }
+
   .ml-#{$key} {
     margin-left: var(--unit#{$key});
   }
