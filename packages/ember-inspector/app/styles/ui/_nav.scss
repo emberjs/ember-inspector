@@ -1,5 +1,3 @@
-$nav-main-item-height: 38px;
-
 .nav-title {
   color: var(--base09);
   cursor: default;
@@ -87,8 +85,8 @@ $nav-main-item-height: 38px;
 /* Custom navs */
 
 .nav-main .nav-item {
-  height: $nav-main-item-height;
-  line-height: $nav-main-item-height;
+  height: var(--nav-main-item-height);
+  line-height: var(--nav-main-item-height);
   padding-left: 12px;
 }
 
@@ -127,16 +125,16 @@ $nav-main-item-height: 38px;
 // when nav is expaned, layout horizontally
 .nav-footer.nav-expanded {
   display: grid;
-  grid-template: "left center right" $nav-main-item-height / auto 1fr auto;
-  height: $nav-main-item-height;
+  grid-template: "left center right" var(--nav-main-item-height) / auto 1fr auto;
+  height: var(--nav-main-item-height);
 }
 
 // when nav is collapsed, layout vertically
 .nav-footer.nav-collapsed {
   display: grid;
   grid-template:
-    "left" $nav-main-item-height - 6px
-    "right" $nav-main-item-height - 6px;
+    "left" calc(var(--nav-main-item-height) - 6px)
+    "right" var(--nav-main-item-height) - 6px;
   height: auto;
 }
 
@@ -150,5 +148,5 @@ $nav-main-item-height: 38px;
 
 // force select to cover clickable area
 .nav-overflow select {
-  height: $nav-main-item-height;
+  height: var(--nav-main-item-height);
 }

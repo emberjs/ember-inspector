@@ -6,11 +6,9 @@
  or a mixin the object extends
 */
 
-$mixin-left-padding: 22px;
-
 .mixin-name {
   border-bottom: 1px solid var(--base03);
-  padding: 4px 2px 4px $mixin-left-padding;
+  padding: 4px 2px 4px var(--mixin-left-padding);
   z-index: 1;
 
   &:active {
@@ -57,7 +55,7 @@ $mixin-left-padding: 22px;
 
   .pad {
     flex-shrink: 0;
-    width: $mixin-left-padding;
+    width: var(--mixin-left-padding);
   }
 
   .mixin-calc-btn svg {
@@ -74,7 +72,7 @@ $mixin-left-padding: 22px;
 
   .mixin-cp-toggle {
     outline: none;
-    width: $mixin-left-padding;
+    width: var(--mixin-left-padding);
 
     svg {
       transform: rotate(-90deg) translateY(1px);
