@@ -1,4 +1,4 @@
-import BaseObject from './utils/base-object.js';
+import BaseObject from '../utils/base-object.js';
 
 export default class extends BaseObject {
   port = null;
