@@ -8,7 +8,7 @@ import {
 import bootEmberInspector from './boot-ember-inspector.js';
 import setupInstanceInitializer from './setup-instance-initializer.js';
 import sendVersionMiss from './send-version-miss.js';
-import getEmberDebug from '../main.js';
+import getEmberDebug from '../src/main.js';
 import { guidFor, Application, VERSION } from './ember.js';
 import { onEmberReady } from '../utils/on-ready.js';
 
