@@ -4,13 +4,12 @@
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 const VersionChecker = require('ember-cli-version-checker');
 const mergeTrees = require('broccoli-merge-trees');
-const concatFiles = require('broccoli-concat');
 const stew = require('broccoli-stew');
 const writeFile = require('broccoli-file-creator');
 const replace = require('broccoli-string-replace');
 const Funnel = require('broccoli-funnel');
 const packageJson = require('./package.json');
-const { mv } = stew;
+const { mv, rename, rm } = stew;
 const { dirname, join } = require('path');
 
 const {
@@ -90,35 +89,6 @@ module.exports = function (defaults) {
   app.import('node_modules/basiccontext/dist/basicContext.min.js');
   app.import('node_modules/normalize.css/normalize.css');
 
-  const previousEmberVersionsSupportedString = JSON.stringify(
-    PREVIOUS_EMBER_VERSIONS_SUPPORTED,
-  );
-  const emberVersionsSupportedString = JSON.stringify(EMBER_VERSIONS_SUPPORTED);
-
-  const emberDebugs = [];
-  const emberDebug = join(
-    dirname(require.resolve('ember-debug/package.json')),
-    'dist',
-  );
-
-  ['basic', 'chrome', 'firefox', 'bookmarklet', 'websocket'].forEach(
-    function (dist) {
-      let entryPoint = concatFiles(
-        new Funnel(emberDebug, {
-          destDir: 'ember-debug',
-          include: [`${dist}-debug.js`],
-        }),
-        {
-          inputFiles: ['**/*.js'],
-          outputFile: '/ember_debug.js',
-          sourceMapConfig: { enabled: false },
-        },
-      );
-
-      emberDebugs[dist] = mergeTrees([emberDebug, entryPoint]);
-    },
-  );
-
   let tree = app.toTree();
 
   const emberInspectorVersionPattern = [
@@ -134,8 +104,6 @@ module.exports = function (defaults) {
   });
 
   const minimumVersion = EMBER_VERSIONS_SUPPORTED[0].replace(/\./g, '-');
-  const webExtensionRoot = `panes-${minimumVersion}`;
-
   let tabLabel;
 
   if (process.env.EMBER_INSPECTOR_TAB) {
@@ -157,11 +125,11 @@ module.exports = function (defaults) {
     },
     {
       match: /{{PREVIOUS_EMBER_VERSIONS_SUPPORTED}}/g,
-      replacement: previousEmberVersionsSupportedString,
+      replacement: JSON.stringify(PREVIOUS_EMBER_VERSIONS_SUPPORTED),
     },
     {
       match: /{{EMBER_VERSIONS_SUPPORTED}}/g,
-      replacement: emberVersionsSupportedString,
+      replacement: JSON.stringify(EMBER_VERSIONS_SUPPORTED),
     },
   ];
 
@@ -189,37 +157,39 @@ module.exports = function (defaults) {
     patterns: replacementPattern,
   });
 
+  const webExtensionRoot = `panes-${minimumVersion}`;
+
+  let chrome = mergeTrees([mv(tree, webExtensionRoot), skeletonWebExtension]);
+
   let firefox = mergeTrees([
-    mv(mergeTrees([tree, emberDebugs.firefox]), webExtensionRoot),
+    mv(tree, webExtensionRoot),
     skeletonFirefoxWebExtension,
   ]);
 
-  let chrome = mergeTrees([
-    mv(mergeTrees([tree, emberDebugs.chrome]), webExtensionRoot),
-    skeletonWebExtension,
-  ]);
-
   let bookmarklet = mergeTrees([
-    mv(mergeTrees([tree, emberDebugs.bookmarklet]), webExtensionRoot),
+    mv(tree, webExtensionRoot),
     skeletonBookmarklet,
   ]);
 
   PREVIOUS_EMBER_VERSIONS_SUPPORTED.forEach(function (version) {
     version = version.replace(/\./g, '-');
+
     if (env === 'production') {
       const prevDist = `dist_prev/${env}`;
 
-      bookmarklet = mergeTrees([
-        mv(`${prevDist}/bookmarklet/panes-${version}`, `panes-${version}`),
-        bookmarklet,
+      chrome = mergeTrees([
+        mv(`${prevDist}/chrome/panes-${version}`, `panes-${version}`),
+        chrome,
       ]);
+
       firefox = mergeTrees([
         mv(`${prevDist}/firefox/panes-${version}`, `panes-${version}`),
         firefox,
       ]);
-      chrome = mergeTrees([
-        mv(`${prevDist}/chrome/panes-${version}`, `panes-${version}`),
-        chrome,
+
+      bookmarklet = mergeTrees([
+        mv(`${prevDist}/bookmarklet/panes-${version}`, `panes-${version}`),
+        bookmarklet,
       ]);
     } else {
       const file = writeFile(
@@ -227,8 +197,11 @@ module.exports = function (defaults) {
         'This Ember version is not supported in development environment.',
       );
       const emberDebugFile = writeFile('ember_debug.js', 'void(0);');
+
       chrome = mergeTrees([mv(file, `panes-${version}`), chrome]);
+
       firefox = mergeTrees([mv(file, `panes-${version}`), firefox]);
+
       bookmarklet = mergeTrees([
         mv(file, `panes-${version}`),
         mv(emberDebugFile, `panes-${version}`),
@@ -237,15 +210,28 @@ module.exports = function (defaults) {
     }
   });
 
+  const emberDebug = new Funnel(
+    join(dirname(require.resolve('ember-debug/package.json')), 'dist'),
+  );
+
   // Pass the current dist to the Ember Inspector app.
   // EMBER DIST
   const dists = {
     chrome,
     firefox,
     bookmarklet,
-    websocket: mergeTrees([tree, emberDebugs.websocket]),
-    basic: mergeTrees([tree, emberDebugs.basic]),
+    websocket: tree,
+    basic: tree,
   };
+
+  const debugRoot = {
+    chrome: webExtensionRoot,
+    firefox: webExtensionRoot,
+    bookmarklet: webExtensionRoot,
+    websocket: '.',
+    basic: '.',
+  };
+
   Object.keys(dists).forEach(function (key) {
     dists[key] = replace(dists[key], {
       files: ['**/*.js'],
@@ -256,21 +242,28 @@ module.exports = function (defaults) {
         },
       ],
     });
-  });
 
-  // Add {{ remote-port }} to the head
-  // so that the websocket addon can replace it.
-  dists.websocket = replace(dists.websocket, {
-    files: ['index.html'],
-    patterns: [
-      {
-        match: /<head>/,
-        replacement: '<head>\n{{ remote-port }}\n',
-      },
-    ],
-  });
+    /**
+     * Add ember-debug
+     * 1. rename dist specific entrypoint to ember_debug.js
+     * 2. remove other unused entrypoints
+     */
+    const debug = mv(
+      rm(
+        rename(emberDebug, (relativePath) => {
+          if (relativePath === `${key}-debug.js`) {
+            return `ember_debug.js`;
+          }
 
-  let output;
+          return relativePath;
+        }),
+        '*-debug.js',
+      ),
+      debugRoot[key],
+    );
+
+    dists[key] = mergeTrees([dists[key], debug]);
+  });
 
   if (env === 'test') {
     // `ember test` expects the index.html file to be in the
@@ -285,18 +278,17 @@ module.exports = function (defaults) {
         },
       ],
     });
-    output = mergeTrees([dists.basic, dists.chrome]);
-  } else {
-    dists.testing = mergeTrees([dists.basic, dists.chrome]);
 
-    output = mergeTrees([
-      mv(dists.bookmarklet, 'bookmarklet'),
-      mv(dists.firefox, 'firefox'),
-      mv(dists.chrome, 'chrome'),
-      mv(dists.websocket, 'websocket'),
-      mv(dists.testing, 'testing'),
-    ]);
+    return dists.basic;
   }
 
-  return output;
+  dists.testing = mergeTrees([dists.basic, dists.chrome]);
+
+  return mergeTrees([
+    mv(dists.chrome, 'chrome'),
+    mv(dists.firefox, 'firefox'),
+    mv(dists.bookmarklet, 'bookmarklet'),
+    mv(dists.websocket, 'websocket'),
+    mv(dists.testing, 'testing'),
+  ]);
 };
