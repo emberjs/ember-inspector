@@ -6,3 +6,4 @@ gulpfile.js
 testem.js
 scripts/
 tests/
+server/
