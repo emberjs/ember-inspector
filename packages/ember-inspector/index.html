@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Ember Inspector</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {{content-for "head"}}
+
+    <link integrity="" rel="stylesheet" href="/@embroider/virtual/vendor.css">
+    <link integrity="" rel="stylesheet" href="/@embroider/virtual/app.css">
+
+    <script>
+      // We need to set _DEBUG_RENDER_TREE before Ember source is loaded.
+      // This is normally done by the extension and without this flag
+      // the debug render tree is not populated at all.
+      // Changes to the flag after Embers initial load are not supported.
+      window.EmberENV ??= {};
+      window.EmberENV._DEBUG_RENDER_TREE = true;
+    </script>
+
+    <style>
+      .panels {
+        display: grid;
+        grid-template-rows: 1fr 3fr;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .panel {
+        position: relative;
+        overflow: hidden;
+      }
+
+      * + .panel {
+        border-top: 1px solid #ccc;
+        overflow: auto;
+      }
+    </style>
+
+    {{content-for "head-footer"}}
+  </head>
+  <body class="theme-light">
+    {{content-for "body"}}
+
+    <div class="panels">
+      <div class="panel" id="test-ember-app"></div>
+      <div class="panel" id="ember-inspector"></div>
+    </div>
+
+    <script src="/@embroider/virtual/vendor.js"></script>
+    <script type="module">
+      import EmberInspector from './app/app';
+      import environment from './app/config/environment';
+      import TestApplication from 'vite-test-app/app.js';
+
+      const isBookmarklet = window.opener && window.name === 'ember-inspector';
+      const isDevelopment = environment.environment === 'development';
+
+      if (!isDevelopment) {
+        document.querySelector('.panels').remove();
+      } else if (!isBookmarklet) {
+        TestApplication.create({
+          rootElement: "#test-ember-app",
+          location: 'none',
+        });
+
+        await import('ember-debug/debug-debug');
+      }
+
+      // {{EMBER_DIST}} is replaced by the build process (basic, chrome, etc)
+      const emberInspectorConfig = { ...environment.APP, debugAdapter: '{{EMBER_DIST}}' };
+
+      if (isDevelopment) {
+        if (isBookmarklet) {
+          emberInspectorConfig.debugAdapter = 'bookmarklet';
+        } else {
+          emberInspectorConfig.locationType = 'none';
+          emberInspectorConfig.rootElement = '#ember-inspector';
+          emberInspectorConfig.debugAdapter = 'debug';
+        }
+      }
+
+      EmberInspector.create(emberInspectorConfig);
+    </script>
+
+    {{content-for "body-footer"}}
+  </body>
+</html>

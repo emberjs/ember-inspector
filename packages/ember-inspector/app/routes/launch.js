@@ -16,7 +16,7 @@ export default class LaunchRoute extends Route {
   @service storage;
   @service router;
 
-  @readOnly('config.VERSION') version;
+  @readOnly('config.version') version;
 
   beforeModel() {
     let targetRoute = 'component-tree';

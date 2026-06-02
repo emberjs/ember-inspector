@@ -8,7 +8,7 @@ export default class LibrariesRoute extends TabRoute {
   @service config;
   @service port;
 
-  @readOnly('config.VERSION') version;
+  @readOnly('config.version') version;
 
   model() {
     const version = this.version;

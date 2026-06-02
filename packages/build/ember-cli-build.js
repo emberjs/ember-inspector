@@ -157,7 +157,7 @@ module.exports = function () {
 
   Object.keys(dists).forEach(function (key) {
     dists[key] = replace(dists[key], {
-      files: ['**/*.js'],
+      files: ['**/*.html'],
       patterns: [
         {
           match: /{{EMBER_DIST}}/g,

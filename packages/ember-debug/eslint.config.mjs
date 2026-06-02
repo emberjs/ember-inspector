@@ -54,7 +54,7 @@ export default [
     },
     rules: {
       ...importPlugin.flatConfigs.recommended.rules,
-      'import/extensions': ['error', 'always'],
+      'import/extensions': ['error', 'ignorePackages'],
     },
   },
   {

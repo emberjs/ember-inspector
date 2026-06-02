@@ -6,27 +6,41 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="../" />
+
+    <script>
+      // We need to set _DEBUG_RENDER_TREE before Ember source is loaded.
+      // This is normally done by the extension and without this flag
+      // the debug render tree is not populated at all.
+      // Changes to the flag after Embers initial load are not supported.
+      window.EmberENV ??= {};
+      window.EmberENV._DEBUG_RENDER_TREE = true;
+    </script>
+
     <style>
-      /* Smoke and mirrors requires the container
-      to be visible all the time since rendering
-      deprends on visibility */
-      #ember-testing-container {
-        height: 400px;
-        width: 1000px;
-        zoom: 50%;
-        position: fixed !important;
-        right: 0;
-        top: 200px;
-        background: white;
+      .panels {
+        display: grid;
+        grid-template-rows: 1fr 3fr;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .panel {
+        position: relative;
+        overflow: hidden;
+      }
+
+      * + .panel {
+        border-top: 1px solid #ccc;
+        overflow: auto;
       }
     </style>
 
     {{content-for "head"}}
     {{content-for "test-head"}}
 
-    <link rel="stylesheet" href="{{rootURL}}assets/vendor.css">
-    <link rel="stylesheet" href="{{rootURL}}assets/ember-inspector.css">
-    <link rel="stylesheet" href="{{rootURL}}assets/test-support.css">
+    <link rel="stylesheet" href="/@embroider/virtual/vendor.css">
+    <link rel="stylesheet" href="/@embroider/virtual/app.css">
+    <link rel="stylesheet" href="/@embroider/virtual/test-support.css">
 
     {{content-for "head-footer"}}
     {{content-for "test-head-footer"}}
@@ -37,19 +51,36 @@
     {{content-for "test-body"}}
 
     <div id="qunit"></div>
+
     <div id="qunit-fixture">
-      <div id="ember-testing-container">
-        <div id="ember-testing"></div>
+      <div id="ember-testing-container" class="panels">
+        <div class="panel" id="test-ember-app"></div>
+        <div class="panel" id="ember-testing"></div>
       </div>
     </div>
 
     <script src="/testem.js" integrity="" data-embroider-ignore></script>
-    <script src="{{rootURL}}assets/vendor.js"></script>
-    <script src="{{rootURL}}assets/test-support.js"></script>
-    <script src="{{rootURL}}assets/ember-inspector.js"></script>
-    <script src="{{rootURL}}assets/tests.js"></script>
+    <script src="/@embroider/virtual/vendor.js"></script>
+    <script src="/@embroider/virtual/test-support.js"></script>
+
+    <script type="module">
+      import TestApplication from 'vite-test-app/app.js';
+
+      TestApplication.create({
+        rootElement: "#test-ember-app",
+        location: 'none',
+      });
+
+      await import('ember-debug/debug-debug');
+    </script>
+
+    <script type="module">import "ember-testing";</script>
+    <script type="module">
+      import { start } from './test-helper';
+      import.meta.glob("./**/*.{js,ts,gjs,gts}", { eager: true });
+      start();
+    </script>
 
     {{content-for "body-footer"}}
-    {{content-for "test-body-footer"}}
   </body>
 </html>

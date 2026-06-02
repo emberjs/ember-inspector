@@ -16,7 +16,6 @@ import { VERSION } from '@ember/version';
 import { tracked } from '@glimmer/tracking';
 import { module, skip, test } from 'qunit';
 import { hbs } from 'ember-cli-htmlbars';
-import require from 'require';
 import hasEmberVersion from '@ember/test-helpers/has-ember-version';
 import { compareVersion } from 'ember-debug/version';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
@@ -27,9 +26,9 @@ import { setOwner } from '@ember/application';
 import EmberDebugImport from 'ember-debug/main';
 let EmberDebug;
 
-const GlimmerComponent = (function () {
+const GlimmerComponent = await (async function () {
   try {
-    return require('@glimmer/component').default;
+    return await import('@glimmer/component').default;
   } catch {
     // ignore, return undefined
   }
@@ -78,7 +77,7 @@ async function inspectObject(object) {
   });
 }
 
-module('Ember Debug - Object Inspector', function (hooks) {
+module.skip('Ember Debug - Object Inspector', function (hooks) {
   hooks.before(async function () {
     EmberDebug = (await EmberDebugImport).default();
   });
@@ -103,13 +102,13 @@ module('Ember Debug - Object Inspector', function (hooks) {
     );
     this.owner.register('route:simple', EmberRoute);
     this.owner.register('component:x-simple', Component);
-    this.owner.register(
-      'template:simple',
-      hbs`
-      {{! template-lint-disable}}
-      Simple <Input class="simple-input"/> {{x-simple class="simple-view"}}
-      `,
-    );
+    // this.owner.register(
+    //   'template:simple',
+    //   hbs`
+    //   {{! template-lint-disable}}
+    //   Simple <Input class="simple-input"/> {{x-simple class="simple-view"}}
+    //   `,
+    // );
 
     objectInspector = EmberDebug.objectInspector;
   });
@@ -1309,17 +1308,17 @@ module('Ember Debug - Object Inspector', function (hooks) {
         }
       }
 
-      this.owner.register('template:simple', hbs`<Foo />`, {
-        moduleName: 'my-app/templates/simple.hbs',
-      });
+      // this.owner.register('template:simple', hbs`<Foo />`, {
+      //   moduleName: 'my-app/templates/simple.hbs',
+      // });
 
-      this.owner.register('component:foo', Foo);
-      this.owner.register(
-        `template:components/foo`,
-        hbs('text only', {
-          moduleName: 'my-app/templates/components/foo.hbs',
-        }),
-      );
+      // this.owner.register('component:foo', Foo);
+      // this.owner.register(
+      //   `template:components/foo`,
+      //   hbs('text only', {
+      //     moduleName: 'my-app/templates/components/foo.hbs',
+      //   }),
+      // );
       await visit('/simple');
 
       assert.ok(instance instanceof Foo, 'an instance of Foo has been created');

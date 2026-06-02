@@ -1,13 +1,9 @@
 'use strict';
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
-const replace = require('broccoli-string-replace');
-const packageJson = require('./package.json');
+const { compatBuild } = require('@embroider/compat');
 
 const options = {
-  autoImport: {
-    forbidEval: true,
-  },
   fingerprint: {
     enabled: false,
   },
@@ -26,60 +22,10 @@ const options = {
   },
 };
 
-module.exports = function (defaults) {
-  if (process.env.EMBER_ENV !== 'test') {
-    // https://github.com/ef4/ember-auto-import/issues/540
-    options.autoImport.publicAssetURL = 'assets/';
-  }
+module.exports = async function (defaults) {
+  const { buildOnce } = await import('@embroider/vite');
 
   const app = new EmberApp(defaults, options);
 
-  app.import('vendor/babel-polyfill.js', { prepend: true });
-  app.import('node_modules/basiccontext/dist/basicContext.min.css');
-  app.import('node_modules/basiccontext/dist/themes/default.min.css');
-  app.import('node_modules/basiccontext/dist/basicContext.min.js');
-
-  let tree = app.toTree();
-
-  tree = replace(tree, {
-    files: ['**/*.js'],
-    patterns: [
-      {
-        match: /{{EMBER_INSPECTOR_VERSION}}/g,
-        replacement: packageJson.version,
-      },
-    ],
-  });
-
-  if (process.env.EMBER_ENV === 'test') {
-    // `ember test` expects the index.html file to be in the output directory.
-    return replace(tree, {
-      files: ['tests/index.html'],
-      patterns: [
-        // Change base tag for running tests in development env.
-        {
-          match: /<base.*\/>/,
-          replacement: '',
-        },
-      ],
-    });
-  }
-
-  if (
-    process.env.EMBER_ENV === 'test' ||
-    process.env.EMBER_ENV === 'development'
-  ) {
-    tree = replace(tree, {
-      files: ['**/*.js'],
-      patterns: [
-        {
-          match: /{{EMBER_DIST}}/g,
-          replacement:
-            process.env.EMBER_ENV === 'test' ? 'basic' : 'bookmarklet',
-        },
-      ],
-    });
-  }
-
-  return tree;
+  return compatBuild(app, buildOnce);
 };

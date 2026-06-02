@@ -3,9 +3,8 @@ import config from 'ember-inspector/config/environment';
 export default {
   name: 'setup',
   initialize(instance) {
-    // {{EMBER_DIST}} is replaced by the build process (basic, chrome, etc)
     let Adapter = instance.resolveRegistration(
-      `service:adapters/{{EMBER_DIST}}`,
+      `service:adapters/${instance.debugAdapter}`,
     );
 
     // register the adapter service

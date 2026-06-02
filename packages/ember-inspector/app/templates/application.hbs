@@ -3,7 +3,7 @@
   tabindex="1"
   {{on "focusin" (fn this.setActive true)}}
   {{on "focusout" (fn this.setActive false)}}
-  {{on-resize this.windowDidResize}}
+  {{!-- {{on-resize this.w indowDidResize}} --}}
 >
   {{#if this.isEmberApplication}}
     <div class="split">
