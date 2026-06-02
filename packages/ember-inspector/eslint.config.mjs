@@ -85,9 +85,11 @@ export default defineConfig([
       '.stylelintrc.js',
       '.template-lintrc.js',
       'babel.config.js',
+      'ember-cli-build.js',
       'config/**/*.js',
       'scripts/download-panes.js',
       'testem.js',
+      'server/**/*.js',
     ],
     plugins: {
       n,
