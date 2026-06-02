@@ -2,7 +2,7 @@ import Controller, { inject as controller } from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { debounce, schedule } from '@ember/runloop';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 
 import { TrackedArray, TrackedObject } from 'tracked-built-ins';
 

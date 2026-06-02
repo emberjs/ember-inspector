@@ -3,7 +3,7 @@ import { alias } from '@ember/object/computed';
 // eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { action, computed, set } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import checkCurrentRoute from 'ember-inspector/utils/check-current-route';
 import searchMatch from 'ember-inspector/utils/search-match';
 import isRouteSubstate from 'ember-inspector/utils/is-route-substate';

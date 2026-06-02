@@ -1,7 +1,7 @@
 import { action, set, setProperties } from '@ember/object';
 import { addListener, removeListener, sendEvent } from '@ember/object/events';
 import { hasListeners } from '@ember/-internals/metal';
-import Service, { inject as service } from '@ember/service';
+import Service, { service } from '@ember/service';
 
 export default class PortService extends Service {
   @service adapter;
