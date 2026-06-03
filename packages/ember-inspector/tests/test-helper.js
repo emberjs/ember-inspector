@@ -4,7 +4,7 @@ import * as QUnit from 'qunit';
 import { setApplication } from '@ember/test-helpers';
 import { setup } from 'qunit-dom';
 import { start as qunitStart, setupEmberOnerrorValidation } from 'ember-qunit';
-import TestAdapter from './test-adapter';
+import { NewTestAdapter } from './test-adapter';
 import setupSinon from 'ember-sinon-qunit';
 import registerWaiter from 'ember-raf-scheduler/test-support/register-waiter';
 
@@ -19,7 +19,7 @@ export function start() {
   Application.initializer({
     name: `setup-2-override-adapter`,
     initialize(app) {
-      app.register('service:adapter', TestAdapter);
+      app.register('service:adapter', NewTestAdapter);
     },
   });
 

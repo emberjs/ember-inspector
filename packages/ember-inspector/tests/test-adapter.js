@@ -1,6 +1,7 @@
 import QUnit from 'qunit';
 import { next } from '@ember/runloop';
 import BasicAdapter from 'ember-inspector/services/adapters/basic';
+import DebugAdapter from 'ember-inspector/services/adapters/debug';
 import { settled } from '@ember/test-helpers';
 
 let adapter = null;
@@ -9,6 +10,7 @@ let resources = [];
 let responders = [];
 
 export function setupTestAdapter(hooks) {
+  /*
   // Some default responders that are part of the normal application boot cycle
   hooks.beforeEach(function () {
     respondWith('check-version', false, { isDefault: true });
@@ -85,6 +87,7 @@ export function setupTestAdapter(hooks) {
     resources.length = 0;
     responders.length = 0;
   });
+  */
 }
 
 /**
@@ -223,6 +226,24 @@ export function disableDefaultResponseFor(type) {
     `Cannot remove default responder for ${type}: no such responder!`,
   );
 }
+
+export class NewTestAdapter extends DebugAdapter {
+  openResource(file, line) {
+    QUnit.assert.step(`openResource:${file}:${line}`);
+  }
+
+  sendMessage(message) {
+    console.log('TestAdapter.sendMessage', message);
+
+    return super.sendMessage(message);
+  }
+
+  _messageReceived(message) {
+    console.log('TestAdapter._messageReceived', message);
+    return super._messageReceived(message);
+  }
+}
+
 
 export default class TestAdapter extends BasicAdapter {
   constructor() {
