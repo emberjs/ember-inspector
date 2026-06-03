@@ -3,13 +3,11 @@ import { onReady } from '../utils/on-ready.js';
 import BaseObject from '../utils/base-object.js';
 
 export default class BasicAdapter extends BaseObject {
-  // eslint-disable-next-line ember/classic-decorator-hooks
-  init() {
-    Promise.resolve(this.connect()).then(() => {
-      this.onConnectionReady();
-    }, null);
+  constructor() {
+    super(...arguments);
 
     this._messageCallbacks = [];
+    this.connect().then(() => this.onConnectionReady());
   }
 
   debug() {
@@ -96,12 +94,13 @@ export default class BasicAdapter extends BaseObject {
 
     @return {Promise}
   */
-  connect() {
+  async connect() {
     return new Promise((resolve, reject) => {
       onReady(() => {
         if (this.isDestroyed) {
           reject();
         }
+
         this.interval = setInterval(() => {
           if (document.documentElement.dataset.emberExtension) {
             clearInterval(this.interval);

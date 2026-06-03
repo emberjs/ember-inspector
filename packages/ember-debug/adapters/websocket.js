@@ -38,7 +38,7 @@ export default class Websocket extends BasicAdapter {
     this.socket.removeAllListeners('emberInspectorMessage');
   }
 
-  connect() {
+  async connect() {
     return new Promise((resolve, reject) => {
       onReady(() => {
         if (this.isDestroyed) {

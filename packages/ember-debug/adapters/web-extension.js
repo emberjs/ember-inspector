@@ -8,11 +8,10 @@ const { isArray } = Array;
 const { keys } = Object;
 
 export default class WebExtension extends BasicAdapter {
-  // eslint-disable-next-line ember/classic-decorator-hooks
-  init() {
+  constructor() {
+    super(...arguments);
     this._channel = new MessageChannel();
     this._chromePort = this._channel?.port1;
-    super.init();
   }
 
   connect() {
