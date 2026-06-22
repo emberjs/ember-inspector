@@ -33,23 +33,6 @@ jobs:
       CI: 'true'
     steps:
       - uses: actions/checkout@v4
-      # Code Climate expects these variables to be set
-      - name: Set up commit metadata
-        if: github.event_name == 'push'
-        env:
-          GIT_COMMIT_SHA: ${{ github.sha }}
-          GIT_BRANCH: ${{ github.ref }}
-        run: |
-          echo "GIT_COMMIT_SHA=${GIT_COMMIT_SHA}" >> $GITHUB_ENV
-          echo "GIT_BRANCH=${GIT_BRANCH/refs\/heads\//}" >> $GITHUB_ENV
-      - name: Set up commit metadata
-        if: github.event_name == 'pull_request'
-        env:
-          GIT_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          GIT_BRANCH: ${{ github.event.pull_request.head.ref }}
-        run: |
-          echo "GIT_COMMIT_SHA=${GIT_COMMIT_SHA}" >> $GITHUB_ENV
-          echo "GIT_BRANCH=${GIT_BRANCH}" >> $GITHUB_ENV
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
@@ -58,31 +41,6 @@ jobs:
       - run: pnpm install
       - name: Run tests
         run: pnpm test:ember
-        env:
-          COVERAGE: 'true'
-      # Ideally, we would split up the test task into separate build and run
-      # steps to get better CI log output (folding and timing information).
-      # However, this is not currently possible with ember-cli-code-coverage.
-      #
-      # See https://github.com/kategengler/ember-cli-code-coverage/issues/210
-      #
-      # - name: Build
-      #   run: pnpm ember build --environment test
-      #   env:
-      #     COVERAGE: 'true'
-      # - name: Run test
-      #   run: COVERAGE pnpm ember test --path dist
-      #   env:
-      #     # Due to a bug in ember-cli, running `ember test` with `--path` doesn't set `EMBER_ENV=test`
-      #     # See https://github.com/ember-cli/ember-cli/issues/8922
-      #     EMBER_ENV: test
-      #     COVERAGE: 'true'
-      - name: Report coverage
-        if: github.event_name != 'schedule'
-        working-directory: packages/ember-inspector
-        run: pnpm codeclimate-test-reporter < coverage/lcov.info
-        env:
-          CODECLIMATE_REPO_TOKEN: 59edcfd1ffc778791af49ca594b503e7179f6bbe1991b2cc0c0a6987d103253d
 
   ember-try:
     name: ember-try (${{ matrix.scenario }})
