@@ -13,9 +13,24 @@ import { helper } from '@ember/component/helper';
 import { htmlSafe } from '@ember/template';
 const { keys } = Object;
 
+function sanitizeStyleValue(value) {
+  if (typeof value !== 'string' && typeof value !== 'number') {
+    return '';
+  }
+  const str = String(value);
+  // Block dangerous CSS patterns that could lead to XSS
+  if (/[<>{]|javascript:|expression\(|@import/i.test(str)) {
+    return '';
+  }
+  return str;
+}
+
 export function buildStyle(_, options) {
   return htmlSafe(
-    keys(options).reduce((style, key) => `${style}${key}:${options[key]};`, ''),
+    keys(options).reduce((style, key) => {
+      const value = sanitizeStyleValue(options[key]);
+      return value ? `${style}${key}:${value};` : style;
+    }, ''),
   );
 }
 
