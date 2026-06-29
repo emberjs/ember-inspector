@@ -17,7 +17,9 @@ export default class Bookmarklet extends BasicAdapter {
   }
 
   get inspectedWindowURL() {
-    return loadPageVar('inspectedWindowURL');
+    return new URLSearchParams(window.location.search).get(
+      'inspectedWindowURL',
+    );
   }
 
   sendMessage(message) {
@@ -50,19 +52,4 @@ export default class Bookmarklet extends BasicAdapter {
       }
     });
   }
-}
-
-function loadPageVar(sVar) {
-  return decodeURI(
-    window.location.search.replace(
-      new RegExp(
-        `^(?:.*[&\\?]${encodeURI(sVar).replace(
-          /[\.\+\*]/g,
-          '\\$&',
-        )}(?:\\=([^&]*))?)?.*$`,
-        'i',
-      ),
-      '$1',
-    ),
-  );
 }
