@@ -1,7 +1,20 @@
+function safeAssign(target, source) {
+  if (!source) {
+    return target;
+  }
+  for (let key of Object.keys(source)) {
+    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+      continue;
+    }
+    target[key] = source[key];
+  }
+  return target;
+}
+
 export default class BaseObject {
   isDestroyed = false;
   constructor(data) {
-    Object.assign(this, data || {});
+    safeAssign(this, data);
     this.init();
   }
 
@@ -16,6 +29,6 @@ export default class BaseObject {
   }
 
   reopen(data) {
-    Object.assign(this, data);
+    safeAssign(this, data);
   }
 }
