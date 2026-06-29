@@ -1,3 +1,5 @@
+@use "sass:meta";
+
 :root {
   --toolbar-height: 28px;
 }
@@ -23,8 +25,8 @@
   margin-right: 5px;
 }
 
-@import "checkbox";
-@import "divider";
-@import "icon-button";
-@import "radio";
-@import "search";
+@include meta.load-css("toolbar/checkbox");
+@include meta.load-css("toolbar/divider");
+@include meta.load-css("toolbar/icon-button");
+@include meta.load-css("toolbar/radio");
+@include meta.load-css("toolbar/search");
