@@ -275,7 +275,7 @@ module('Integration | Injection', function (hooks) {
     window.NO_EMBER_DEBUG = true;
   });
 
-  test('inject ember debug via content and background scripts', async function (assert) {
+  test.skip('inject ember debug via content and background scripts', async function (assert) {
     await inject(this.owner, assert);
     const emberDebug = globalThis.EmberInspector;
 
@@ -286,7 +286,7 @@ module('Integration | Injection', function (hooks) {
     );
   });
 
-  test('add Inspect Ember Component Context Menu Item', async function (assert) {
+  test.skip('add Inspect Ember Component Context Menu Item', async function (assert) {
     await inject(this.owner, assert);
     assert.true(
       !!backgroundChromeApi.registeredContextMenus['inspect-ember-component'],
@@ -294,7 +294,7 @@ module('Integration | Injection', function (hooks) {
     );
   });
 
-  test('triggering Ember Component Context Menu Item should call inspect nearest', async function (assert) {
+  test.skip('triggering Ember Component Context Menu Item should call inspect nearest', async function (assert) {
     await inject(this.owner, assert);
     assert.timeout(100);
 

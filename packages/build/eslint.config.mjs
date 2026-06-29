@@ -85,11 +85,8 @@ export default defineConfig([
       '.stylelintrc.js',
       '.template-lintrc.js',
       'babel.config.js',
-      'ember-cli-build.js',
       'config/**/*.js',
-      'scripts/download-panes.js',
       'testem.js',
-      'server/**/*.js',
     ],
     plugins: {
       n,
@@ -126,7 +123,7 @@ export default defineConfig([
    * Gulp files
    */
   {
-    files: ['gulpfile.js'],
+    files: ['gulpfile.mjs'],
     languageOptions: {
       globals: {
         ...globals.node,

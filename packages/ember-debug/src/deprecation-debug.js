@@ -1,9 +1,9 @@
 import DebugPort from './debug-port.js';
-import SourceMap from './lib/source-map.js';
+import SourceMap from '../lib/source-map.js';
 
-import { Debug } from './lib/ember.js';
-import { guidFor } from './lib/ember/object/internals.js';
-import { cancel, debounce } from './lib/ember/runloop.js';
+import { Debug } from '../lib/ember.js';
+import { guidFor } from '../lib/ember/object/internals.js';
+import { cancel, debounce } from '../lib/ember/runloop.js';
 
 export default class extends DebugPort {
   static {
