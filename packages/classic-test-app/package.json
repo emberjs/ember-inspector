@@ -25,7 +25,7 @@
     "start": "ember serve"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.0",
+    "@babel/core": "^7.29.6",
     "@babel/eslint-parser": "^7.28.6",
     "@babel/plugin-proposal-decorators": "^7.29.0",
     "@ember/optional-features": "^2.3.0",
