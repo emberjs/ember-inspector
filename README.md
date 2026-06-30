@@ -14,7 +14,7 @@ OR:
 - Clone the repository
 - cd into the repo directory
 - run `pnpm install`
-- run `pnpm build` to build the `packages/build/dist` directory
+- run `pnpm build:production` to build the `packages/build/dist` directory
 - Visit `chrome://extensions` in Chrome
 - Make sure `Developer mode` is checked
 - Click on 'Load unpacked extension...'
@@ -30,7 +30,7 @@ OR:
 - Clone the repository
 - cd into the repo directory
 - run `pnpm install`
-- run `pnpm build` to build the `packages/build/dist` directory
+- run `pnpm build:production` to build the `packages/build/dist` directory
 - Visit `about:debugging#/runtime/this-firefox` in Firefox
 - Click on 'Load Temporary Add-on…'
 - Choose the `packages/build/dist/firefox/manifest.json` file in the cloned repo
@@ -40,7 +40,7 @@ OR:
 - Clone the repository
 - cd into the repo directory
 - run `pnpm install`
-- run `pnpm build` to build the `packages/build/dist` directory
+- run `pnpm build:production` to build the `packages/build/dist` directory
 - Visit `chrome://extensions` in Opera
 - Make sure `Developer mode` is checked
 - Click on 'Load unpacked extension...'

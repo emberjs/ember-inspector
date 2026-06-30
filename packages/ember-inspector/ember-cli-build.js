@@ -52,20 +52,6 @@ module.exports = function (defaults) {
     ],
   });
 
-  if (process.env.EMBER_ENV === 'test') {
-    // `ember test` expects the index.html file to be in the output directory.
-    return replace(tree, {
-      files: ['tests/index.html'],
-      patterns: [
-        // Change base tag for running tests in development env.
-        {
-          match: /<base.*\/>/,
-          replacement: '',
-        },
-      ],
-    });
-  }
-
   if (
     process.env.EMBER_ENV === 'test' ||
     process.env.EMBER_ENV === 'development'
