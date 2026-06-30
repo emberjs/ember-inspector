@@ -1,4 +1,4 @@
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import TabRoute from 'ember-inspector/routes/tab';
 
 export default class AppConfigRoute extends TabRoute {

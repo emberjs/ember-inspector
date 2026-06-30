@@ -1,4 +1,4 @@
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { Promise } from 'rsvp';
 import { setProperties } from '@ember/object';
 import TabRoute from 'ember-inspector/routes/tab';
