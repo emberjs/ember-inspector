@@ -2,8 +2,4 @@
 babel.config.js
 ember-cli-build.js
 eslint.config.mjs
-gulpfile.js
-testem.js
 scripts/
-tests/
-server/

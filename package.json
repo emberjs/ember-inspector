@@ -7,10 +7,10 @@
     "url": "git@github.com:emberjs/ember-inspector.git"
   },
   "scripts": {
-    "build": "pnpm --filter ember-debug build && pnpm --filter ember-inspector build",
+    "build": "pnpm --filter ember-debug build && pnpm --filter ember-inspector build && pnpm --filter build build",
     "build:ember-debug": "pnpm --filter ember-debug build",
     "build:ember-inspector": "pnpm --filter ember-inspector build",
-    "build:production": "pnpm --filter ember-debug build && pnpm --filter ember-inspector build:production",
+    "build:production": "pnpm --filter ember-debug build && pnpm --filter ember-inspector build:production && pnpm --filter build build:production",
     "lint": "pnpm --parallel -r --aggregate-output lint",
     "lint:fix": "pnpm --parallel -r --aggregate-output lint:fix",
     "serve:bookmarklet": "pnpm --filter ember-inspector serve:bookmarklet",

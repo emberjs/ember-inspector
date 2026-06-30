@@ -104,13 +104,13 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - name: Download panes
-        working-directory: packages/ember-inspector
-        run: node scripts/download-panes.js
+        working-directory: packages/build
+        run: pnpm panes:download
         env:
           EMBER_ENV: production
       - name: Update manifest.json (nightly)
         if: github.event_name == 'schedule'
-        working-directory: packages/ember-inspector
+        working-directory: packages/build
         run: |
           DATE="$(date +"%Y.%-m.%-d")"
           SHA="${GITHUB_SHA:0:7}"
@@ -127,7 +127,7 @@ jobs:
             .version_name = "\($version) (nightly build \($date) / \($sha))"
       - name: Update manifest.json (pull request)
         if: github.event_name == 'pull_request'
-        working-directory: packages/ember-inspector
+        working-directory: packages/build
         run: |
           SHA="${SHA:0:7}"
           CONTENT="$(cat "$FILE")"
@@ -144,7 +144,7 @@ jobs:
           SHA: ${{ github.event.pull_request.head.sha }}
       - name: Update package.json (nightly)
         if: github.event_name == 'schedule'
-        working-directory: packages/ember-inspector
+        working-directory: packages/build
         run: |
           DATE="$(date +"%Y.%-m.%-d")"
           SHA="${GITHUB_SHA:0:7}"
@@ -157,7 +157,7 @@ jobs:
           FILTER: .version += "-alpha.\($date)+\($sha)"
       - name: Update package.json (pull request)
         if: github.event_name == 'pull_request'
-        working-directory: packages/ember-inspector
+        working-directory: packages/build
         run: |
           SHA="${SHA:0:7}"
           CONTENT="$(cat "$FILE")"
@@ -191,22 +191,22 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bookmarklet
-          path: packages/ember-inspector/dist/bookmarklet
+          path: packages/build/dist/bookmarklet
       - name: Upload artifacts (Chrome)
         uses: actions/upload-artifact@v4
         with:
           name: chrome
-          path: packages/ember-inspector/dist/chrome
+          path: packages/build/dist/chrome
       - name: Upload artifacts (Firefox)
         uses: actions/upload-artifact@v4
         with:
           name: firefox
-          path: packages/ember-inspector/dist/firefox
+          path: packages/build/dist/firefox
       - name: Upload artifacts (npm)
         uses: actions/upload-artifact@v4
         with:
           name: npm
-          path: packages/ember-inspector/dist/npm
+          path: packages/build/dist/npm
 
   publish-chrome:
     name: Publish Chrome extension

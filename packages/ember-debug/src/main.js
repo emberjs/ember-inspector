@@ -1,4 +1,4 @@
-import BasicAdapter from './adapters/basic.js';
+import BasicAdapter from '../adapters/basic.js';
 import Port from './port.js';
 import ObjectInspector from './object-inspector.js';
 import GeneralDebug from './general-debug.js';
@@ -9,12 +9,15 @@ import DataDebug from './data-debug.js';
 import PromiseDebug from './promise-debug.js';
 import ContainerDebug from './container-debug.js';
 import DeprecationDebug from './deprecation-debug.js';
-import Session from './services/session.js';
+import Session from '../services/session.js';
 
-import { getApplications, getApplicationInstance } from './lib/applications.js';
-import { guidFor, setGuidPrefix } from './lib/ember/object/internals.js';
-import { run } from './lib/ember/runloop.js';
-import BaseObject from './utils/base-object.js';
+import {
+  getApplications,
+  getApplicationInstance,
+} from '../lib/applications.js';
+import { guidFor, setGuidPrefix } from '../lib/ember/object/internals.js';
+import { run } from '../lib/ember/runloop.js';
+import BaseObject from '../utils/base-object.js';
 
 export class EmberDebug extends BaseObject {
   /**
