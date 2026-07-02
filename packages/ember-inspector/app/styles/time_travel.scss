@@ -1,0 +1,53 @@
+.time-travel {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.time-travel__scrubber {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.time-travel__slider {
+  accent-color: var(--focus);
+  width: 100%;
+}
+
+.time-travel__info {
+  color: var(--base09);
+  display: flex;
+  font-size: 12px;
+  justify-content: space-between;
+
+  code {
+    color: var(--base15);
+  }
+}
+
+.time-travel__recording-indicator {
+  color: #e04f4f;
+
+  &::before {
+    animation: time-travel-blink 1.2s ease-in-out infinite;
+    content: "●";
+    margin-right: 4px;
+  }
+}
+
+@keyframes time-travel-blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.record-button {
+  .record-icon-circle {
+    fill: var(--base09);
+  }
+
+  &.record-button--active .record-icon-circle {
+    fill: #e04f4f;
+  }
+}

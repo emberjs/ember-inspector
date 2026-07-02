@@ -1,0 +1,16 @@
+<div class="toolbar">
+  <button
+    title={{if @recording "Stop recording" "Start recording"}}
+    class="toolbar-icon-button record-button
+      {{if @recording 'record-button--active'}}"
+    data-test-time-travel-record
+    type="button"
+    {{on "click" @toggleRecording}}
+  >
+    {{svg-jar "record" width="13px" height="13px"}}
+  </button>
+
+  <Ui::ToolbarDivider />
+
+  <Ui::ToolbarClearButton @action={{@clear}} data-test-time-travel-clear />
+</div>
