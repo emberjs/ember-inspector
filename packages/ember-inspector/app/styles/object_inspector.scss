@@ -54,9 +54,10 @@
   }
 }
 
-.mixin-property-dependency-name.subkey {
-  left: -11px;
-  position: relative;
+// Nested dependencies (e.g. the properties behind an object-level
+// dependency) render like top-level ones, just indented one level deeper.
+.mixin-property-dependency-item-nested {
+  margin-left: 75px;
 }
 
 .mixin-property-dependency-item:first-child::before {
