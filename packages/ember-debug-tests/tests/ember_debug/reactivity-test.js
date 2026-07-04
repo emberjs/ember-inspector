@@ -57,16 +57,6 @@ async function getRenderTree() {
   }
 }
 
-async function getReactivity(id) {
-  let message = await captureMessage('view:reactivity', async () => {
-    EmberDebug.port.trigger('view:getReactivity', { id });
-  });
-
-  QUnit.assert.strictEqual(message.id, id, 'reactivity reply echoes the id');
-
-  return message.reactivity;
-}
-
 function findNode(nodes, predicate) {
   for (let node of nodes) {
     if (predicate(node)) {
@@ -83,7 +73,7 @@ function findNode(nodes, predicate) {
   return null;
 }
 
-async function getCounterReactivity() {
+async function inspectCounterNode() {
   let tree = await getRenderTree();
   let node = findNode(
     tree,
@@ -92,7 +82,27 @@ async function getCounterReactivity() {
 
   QUnit.assert.ok(node, 'the reactive-counter render node was found');
 
-  return getReactivity(node.id);
+  let message = await captureMessage(
+    'objectInspector:updateObject',
+    async () => {
+      EmberDebug.port.trigger('objectInspector:inspectById', {
+        objectId: node.instance.id,
+        renderNodeId: node.id,
+      });
+    },
+  );
+
+  return message;
+}
+
+function findProperty(details, name) {
+  for (let mixin of details) {
+    let property = mixin.properties.find((p) => p.name === name);
+    if (property) {
+      return property;
+    }
+  }
+  return null;
 }
 
 let counterInstance = null;
@@ -149,96 +159,115 @@ module('Ember Debug - Reactivity', function (hooks) {
     counterInstance = null;
   });
 
-  test('it reports args, consumed tracked properties, and what changed', async function (assert) {
+  test('inspecting a render node augments properties with reactivity info', async function (assert) {
     await visit('/reactive');
 
-    let reactivity = await getCounterReactivity();
+    let message = await inspectCounterNode();
 
-    assert.ok(reactivity, 'a reactivity report is available');
+    assert.ok(message.reactivity, 'updateObject includes a reactivity summary');
     assert.strictEqual(
-      reactivity.updateCount,
+      message.reactivity.updateCount,
       0,
       'no re-renders after the initial render',
     );
-
-    let title = reactivity.args.named.find((arg) => arg.name === 'title');
-    assert.ok(title, 'the @title arg is reported');
-    assert.notOk(title.changed, '@title has not changed');
-    assert.ok(
-      Array.isArray(title.dependencies),
-      '@title has a (possibly empty) dependency list',
+    assert.deepEqual(
+      message.reactivity.causes,
+      [],
+      'nothing caused a re-render yet',
     );
-    assert.strictEqual(title.inspect, '"first title"', '@title value shown');
 
-    let count = reactivity.tracked.find((prop) => prop.name === 'count');
-    assert.ok(count, 'the consumed tracked property is reported');
-    assert.notOk(count.changed, 'count has not changed');
+    let args = findProperty(message.details, 'args');
+    assert.ok(args, 'the args property is present');
+    assert.ok(
+      args.dependentKeys?.some((dep) => dep.name === '@title'),
+      'the args property lists @title as a dependent key',
+    );
+
+    let count = findProperty(message.details, 'count');
+    assert.ok(count, 'the count property is present');
+    assert.ok(count.reactivity, 'count is augmented with reactivity info');
+    assert.notOk(count.reactivity.changed, 'count has not changed yet');
+  });
+
+  test('re-renders push updated reactivity info for the inspected node', async function (assert) {
+    await visit('/reactive');
+
+    await inspectCounterNode();
 
     // Change internal tracked state
-    counterInstance.count++;
-    await rerender();
-
-    reactivity = await getCounterReactivity();
+    let message = await captureMessage(
+      'objectInspector:updateReactivity',
+      async () => {
+        counterInstance.count++;
+        await rerender();
+      },
+    );
 
     assert.strictEqual(
-      reactivity.updateCount,
+      message.reactivity.updateCount,
       1,
       're-rendered once after count changed',
     );
-    assert.ok(reactivity.lastRender, 'last render info is available');
-    assert.notOk(
-      reactivity.lastRender.initial,
-      'last render is no longer the initial one',
+    assert.deepEqual(
+      message.reactivity.causes,
+      ['this.count'],
+      'count is reported as the cause of the re-render',
     );
 
-    count = reactivity.tracked.find((prop) => prop.name === 'count');
-    assert.ok(
-      count.changed,
-      'count is flagged as the cause of the re-render',
-    );
+    let count = message.properties.find((p) => p.name === 'count');
+    assert.ok(count.changed, 'the count property is flagged as changed');
 
-    title = reactivity.args.named.find((arg) => arg.name === 'title');
+    let title = message.args.find((a) => a.name === '@title');
     assert.notOk(title.changed, '@title did not cause the re-render');
 
     // Change the arg
-    this.owner.lookup('controller:reactive').title = 'second title';
-    await rerender();
-
-    reactivity = await getCounterReactivity();
+    message = await captureMessage(
+      'objectInspector:updateReactivity',
+      async () => {
+        this.owner.lookup('controller:reactive').title = 'second title';
+        await rerender();
+      },
+    );
 
     assert.strictEqual(
-      reactivity.updateCount,
+      message.reactivity.updateCount,
       2,
       're-rendered again after the arg changed',
     );
-
-    title = reactivity.args.named.find((arg) => arg.name === 'title');
     assert.ok(
-      title.changed,
-      '@title is flagged as the cause of the re-render',
-    );
-    assert.strictEqual(
-      title.inspect,
-      '"second title"',
-      '@title shows the new value',
+      message.reactivity.causes.includes('@title'),
+      '@title is reported as a cause of the re-render',
     );
 
-    count = reactivity.tracked.find((prop) => prop.name === 'count');
-    assert.notOk(count.changed, 'count did not cause the re-render');
+    title = message.args.find((a) => a.name === '@title');
+    assert.ok(title.changed, '@title is flagged as changed');
+
+    count = message.properties.find((p) => p.name === 'count');
+    assert.notOk(count.changed, 'count did not cause this re-render');
   });
 
-  test('it returns null for unknown render node ids', async function (assert) {
+  test('inspecting without a render node id keeps the old behavior', async function (assert) {
     await visit('/reactive');
 
-    // Populate the captured node map
-    await getRenderTree();
+    let tree = await getRenderTree();
+    let node = findNode(
+      tree,
+      (n) => n.type === 'component' && n.name === 'reactive-counter',
+    );
 
-    let reactivity = await getReactivity('render-node:does-not-exist');
+    let message = await captureMessage(
+      'objectInspector:updateObject',
+      async () => {
+        EmberDebug.port.trigger('objectInspector:inspectById', {
+          objectId: node.instance.id,
+        });
+      },
+    );
 
     assert.strictEqual(
-      reactivity,
+      message.reactivity,
       null,
-      'no reactivity report for unknown nodes',
+      'no reactivity summary without a render node id',
     );
   });
 });

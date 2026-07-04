@@ -17,6 +17,7 @@ export default class ApplicationRoute extends Route {
     let port = this.port;
     port.on('objectInspector:updateObject', this, this.updateObject);
     port.on('objectInspector:updateProperty', this, this.updateProperty);
+    port.on('objectInspector:updateReactivity', this, this.updateReactivity);
     port.on('objectInspector:updateErrors', this, this.updateErrors);
     port.on('objectInspector:droppedObject', this, this.droppedObject);
     port.on('deprecation:count', this, this.setDeprecationCount);
@@ -28,6 +29,7 @@ export default class ApplicationRoute extends Route {
     let port = this.port;
     port.off('objectInspector:updateObject', this, this.updateObject);
     port.off('objectInspector:updateProperty', this, this.updateProperty);
+    port.off('objectInspector:updateReactivity', this, this.updateReactivity);
     port.off('objectInspector:updateErrors', this, this.updateErrors);
     port.off('objectInspector:droppedObject', this, this.droppedObject);
     port.off('deprecation:count', this, this.setDeprecationCount);
@@ -63,9 +65,50 @@ export default class ApplicationRoute extends Route {
       controller.pushMixinDetails(name, property, objectId, details, errors);
     } else {
       controller.activateMixinDetails(name, objectId, details, errors);
+      set(controller.mixinDetails, 'reactivity', options.reactivity || null);
     }
 
     this.layout.showInspector();
+  }
+
+  /**
+   * The inspected object is a render tree node that just re-rendered:
+   * update the reactivity summary and refresh the changed markers on the
+   * matching property rows and on the `args` dependent keys.
+   */
+  updateReactivity(options) {
+    const mixinDetails = this.controller.mixinDetails;
+
+    if (!mixinDetails || mixinDetails.objectId !== options.objectId) {
+      return;
+    }
+
+    set(mixinDetails, 'reactivity', options.reactivity);
+
+    const byName = {};
+    options.properties.forEach((prop) => {
+      byName[prop.name] = prop;
+    });
+
+    mixinDetails.mixins.forEach((mixin) => {
+      mixin.properties.forEach((property) => {
+        const prop = byName[property.name];
+        if (prop) {
+          set(property, 'reactivity', {
+            revision: prop.revision,
+            changed: prop.changed,
+          });
+        }
+        if (property.name === 'args' && options.args?.length) {
+          const deps = property.dependentKeys;
+          const holdsArgEntries =
+            !deps?.length || deps[0]?.name?.startsWith('@');
+          if (holdsArgEntries) {
+            set(property, 'dependentKeys', options.args);
+          }
+        }
+      });
+    });
   }
 
   setDeprecationCount(message) {

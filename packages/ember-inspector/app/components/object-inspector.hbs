@@ -95,6 +95,27 @@
       </div>
     </div>
 
+    {{#if @mixinDetails.reactivity}}
+      <div
+        class="object-inspector-reactivity mx-2 my-1 text-sm font-mono text-base12 truncate"
+        data-test-object-reactivity
+      >
+        re-renders:
+        <span data-test-object-reactivity-count>
+          {{@mixinDetails.reactivity.updateCount}}
+        </span>
+        {{#if @mixinDetails.reactivity.causes.length}}
+          · last change:
+          {{#each @mixinDetails.reactivity.causes as |cause|}}
+            <span
+              class="text-spec01"
+              data-test-object-reactivity-cause
+            >{{cause}}</span>
+          {{/each}}
+        {{/if}}
+      </div>
+    {{/if}}
+
     {{#if @mixinDetails.errors.length}}
       <ObjectInspector::Errors
         @errors={{@mixinDetails.errors}}
@@ -111,7 +132,6 @@
       <ObjectInspector::PropertiesGrouped @model={{@mixinDetails}} />
     {{/if}}
     <Ui::ToolbarDivider />
-    <ObjectInspector::Reactivity @item={{@item}} />
     <ObjectInspector::ComponentParents @select={{@selectComponent}} @item={{@item}}/>
   </div>
 {{else}}
