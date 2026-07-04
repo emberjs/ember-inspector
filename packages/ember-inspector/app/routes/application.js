@@ -107,6 +107,20 @@ export default class ApplicationRoute extends Route {
             set(property, 'dependentKeys', options.args);
           }
         }
+        // Rows synthesized from the render node's args (e.g. modifiers)
+        if (property.isRenderNodeArg) {
+          const entry = options.args?.find((a) => a.name === property.name);
+          if (entry) {
+            set(property, 'reactivity', { changed: entry.changed });
+            if (entry.inspect !== undefined) {
+              set(property, 'value', {
+                type: entry.type || property.value.type,
+                inspect: entry.inspect,
+                isCalculated: true,
+              });
+            }
+          }
+        }
       });
     });
   }

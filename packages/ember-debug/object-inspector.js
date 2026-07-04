@@ -184,7 +184,12 @@ function isMandatorySetter(descriptor) {
 function reactivityArgEntries(report) {
   const entries = [];
   report.args.named.forEach((arg) => {
-    entries.push({ name: `@${arg.name}`, changed: arg.changed || false });
+    entries.push({
+      name: `@${arg.name}`,
+      changed: arg.changed || false,
+      inspect: arg.inspect,
+      type: arg.type,
+    });
     (arg.dependencies || []).forEach((dep) => {
       const child = { child: dep.name };
       if (dep.changed) {
@@ -194,9 +199,45 @@ function reactivityArgEntries(report) {
     });
   });
   report.args.positional.forEach((arg) => {
-    entries.push({ name: `@${arg.name}`, changed: arg.changed || false });
+    entries.push({
+      name: `@${arg.name}`,
+      changed: arg.changed || false,
+      inspect: arg.inspect,
+      type: arg.type,
+    });
   });
   return entries;
+}
+
+/**
+ * Build a read-only property item for a render node arg, so args show up
+ * as regular rows on nodes whose instance has no `args` property (e.g.
+ * modifiers).
+ */
+function argPropertyItem(arg) {
+  return {
+    name: `@${arg.name}`,
+    // keep updateCurrentObject from recomputing this from the instance
+    isRenderNodeArg: true,
+    isProperty: true,
+    readOnly: true,
+    value: {
+      type: arg.type || 'type-object',
+      inspect: arg.inspect,
+      isCalculated: true,
+    },
+    dependentKeys: (arg.dependencies || []).map((dep) => {
+      const entry = { name: dep.name };
+      if (dep.changed) {
+        entry.changed = true;
+      }
+      return entry;
+    }),
+    reactivity: {
+      revision: arg.revision,
+      changed: arg.changed || false,
+    },
+  };
 }
 
 function reactivitySummary(report) {
@@ -232,6 +273,7 @@ function applyReactivityToProperties(mixins, report) {
   });
 
   const argEntries = reactivityArgEntries(report);
+  let hasArgsProperty = false;
 
   mixins.forEach((mixin) => {
     mixin.properties.forEach((item) => {
@@ -243,15 +285,24 @@ function applyReactivityToProperties(mixins, report) {
       // Surface the render node's args on the `args` property using the
       // same dependent-keys UI computed properties use, unless something
       // (e.g. a computed property) already claimed it.
-      if (
-        item.name === 'args' &&
-        argEntries.length &&
-        !item.dependentKeys?.length
-      ) {
-        item.dependentKeys = argEntries;
+      if (item.name === 'args') {
+        hasArgsProperty = true;
+        if (argEntries.length && !item.dependentKeys?.length) {
+          item.dependentKeys = argEntries;
+        }
       }
     });
   });
+
+  // Nodes whose instance has no `args` property (e.g. modifiers) get the
+  // node's args as read-only rows instead.
+  if (!hasArgsProperty && mixins.length) {
+    const items = [
+      ...report.args.named.map((arg) => argPropertyItem(arg)),
+      ...report.args.positional.map((arg) => argPropertyItem(arg)),
+    ];
+    mixins[0].properties.unshift(...items);
+  }
 }
 
 function getTrackedDependencies(object, property, tagInfo) {
@@ -359,6 +410,11 @@ export default class extends DebugPort {
       mixinDetails.forEach((mixin, mixinIndex) => {
         mixin.properties.forEach((item) => {
           if (item.overridden) {
+            return true;
+          }
+          if (item.isRenderNodeArg) {
+            // synthesized from the render node's args, not readable off
+            // the instance; refreshed through updateReactivity instead
             return true;
           }
           try {

@@ -1,6 +1,6 @@
 import { GlimmerReference, GlimmerValidator } from './ember.js';
 import getObjectName from './get-object-name.js';
-import { inspect } from './type-check.js';
+import { inspect, typeOf } from './type-check.js';
 import { getTagTrackedTags } from './tracked-tags.js';
 
 // Read-only accessors into @glimmer/validator and @glimmer/reference.
@@ -247,6 +247,7 @@ export default class RenderTreeReactivity {
     if (!isRef(ref)) {
       // in-element/html-element nodes store plain values in their args
       entry.inspect = inspect(ref);
+      entry.type = `type-${typeOf(ref)}`;
       return entry;
     }
 
@@ -255,7 +256,9 @@ export default class RenderTreeReactivity {
       entry.debugLabel = ref.debugLabel;
     }
 
-    entry.inspect = inspect(this._safeValueForRef(ref));
+    const value = this._safeValueForRef(ref);
+    entry.inspect = inspect(value);
+    entry.type = `type-${typeOf(value)}`;
 
     const tag = ref.tag;
     if (tag) {

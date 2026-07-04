@@ -1,5 +1,6 @@
 import { rerender, visit } from '@ember/test-helpers';
-import { setComponentTemplate } from '@ember/component';
+// eslint-disable-next-line ember/no-classic-components
+import EmberComponent, { setComponentTemplate } from '@ember/component';
 import Controller from '@ember/controller';
 import QUnit, { module, test } from 'qunit';
 import { hbs } from 'ember-cli-htmlbars';
@@ -133,7 +134,7 @@ module('Ember Debug - Reactivity', function (hooks) {
       'component:reactive-counter',
       setComponentTemplate(
         hbs(
-          '<div class="reactive-counter">{{@title}}: {{this.count}}</div>',
+          '<div class="reactive-counter" {{on "click" this.increment}}>{{@title}}: {{this.count}}</div>',
           { moduleName: 'my-app/components/reactive-counter.hbs' },
         ),
         class ReactiveCounter extends GlimmerComponent {
@@ -142,6 +143,10 @@ module('Ember Debug - Reactivity', function (hooks) {
           get label() {
             return `${this.args.title}: ${this.count}`;
           }
+
+          increment = () => {
+            this.count++;
+          };
 
           constructor(...args) {
             super(...args);
@@ -152,10 +157,24 @@ module('Ember Debug - Reactivity', function (hooks) {
     );
 
     this.owner.register(
+      'component:classic-badge',
+      setComponentTemplate(
+        hbs('<span>{{@label}}</span>', {
+          moduleName: 'my-app/components/classic-badge.hbs',
+        }),
+        // eslint-disable-next-line ember/no-classic-classes
+        EmberComponent.extend({}),
+      ),
+    );
+
+    this.owner.register(
       'template:reactive',
-      hbs('<ReactiveCounter @title={{this.title}} />', {
-        moduleName: 'my-app/templates/reactive.hbs',
-      }),
+      hbs(
+        '<ReactiveCounter @title={{this.title}} /><ClassicBadge @label={{this.title}} />',
+        {
+          moduleName: 'my-app/templates/reactive.hbs',
+        },
+      ),
     );
   });
 
@@ -288,6 +307,66 @@ module('Ember Debug - Reactivity', function (hooks) {
 
     count = message.properties.find((p) => p.name === 'count');
     assert.notOk(count.changed, 'count did not cause this re-render');
+  });
+
+  test('modifier args are exposed in the object inspector', async function (assert) {
+    await visit('/reactive');
+
+    let tree = await getRenderTree();
+    let node = findNode(tree, (n) => n.type === 'modifier' && n.name === 'on');
+
+    assert.ok(node, 'the {{on}} modifier render node was found');
+
+    let message = await captureMessage(
+      'objectInspector:updateObject',
+      async () => {
+        EmberDebug.port.trigger('objectInspector:inspectById', {
+          objectId: node.instance.id,
+          renderNodeId: node.id,
+        });
+      },
+    );
+
+    assert.ok(message.reactivity, 'the modifier has a reactivity summary');
+
+    // The {{on}} modifier's debug instance carries a real `args` property
+    // here, so its args list as dependent keys of that row. (Instances
+    // without an `args` property get synthesized rows instead — covered
+    // by the next test.)
+    let argsRow = findProperty(message.details, 'args');
+    assert.ok(argsRow, 'the args are visible in the property list');
+    assert.ok(
+      argsRow.dependentKeys?.some((dep) => dep.name === '@0'),
+      'the positional arg shows under the args property',
+    );
+  });
+
+  test('render nodes without an args property get synthesized arg rows', async function (assert) {
+    await visit('/reactive');
+
+    let tree = await getRenderTree();
+    let node = findNode(
+      tree,
+      (n) => n.type === 'component' && n.name === 'classic-badge',
+    );
+
+    assert.ok(node, 'the classic component render node was found');
+
+    let message = await captureMessage(
+      'objectInspector:updateObject',
+      async () => {
+        EmberDebug.port.trigger('objectInspector:inspectById', {
+          objectId: node.instance.id,
+          renderNodeId: node.id,
+        });
+      },
+    );
+
+    let label = findProperty(message.details, '@label');
+    assert.ok(label, 'the @label arg is exposed as a row');
+    assert.strictEqual(label.value.inspect, '"first title"', 'with its value');
+    assert.true(label.readOnly, 'and is read-only');
+    assert.ok(label.reactivity, 'and carries reactivity info');
   });
 
   test('inspecting without a render node id keeps the old behavior', async function (assert) {
