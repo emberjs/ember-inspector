@@ -2,6 +2,7 @@ import captureRenderTree from './capture-render-tree.js';
 import { guidFor } from './ember/object/internals.js';
 import { inspect } from './type-check.js';
 import { isInVersionSpecifier } from '../utils/version.js';
+import RenderTreeReactivity from './render-tree-reactivity.js';
 import {
   VERSION,
   EmberDestroyable,
@@ -10,6 +11,13 @@ import {
   GlimmerRuntime,
   GlimmerUtil,
 } from './ember.js';
+
+function lookupDebugRenderTree(owner) {
+  return (
+    owner.lookup('renderer:-dom')?.debugRenderTree ||
+    owner.lookup('service:-glimmer-environment')._debugRenderTree
+  );
+}
 
 class InElementSupportProvider {
   constructor(owner) {
@@ -27,9 +35,7 @@ class InElementSupportProvider {
     this.DESTROY = GlimmerUtil?.DESTROY;
     this.registerDestructor = EmberDestroyable?.registerDestructor;
 
-    this.debugRenderTree =
-      owner.lookup('renderer:-dom')?.debugRenderTree ||
-      owner.lookup('service:-glimmer-environment')._debugRenderTree;
+    this.debugRenderTree = lookupDebugRenderTree(owner);
     this.NewElementBuilder =
       this.runtime.NewElementBuilder || this.runtime.NewTreeBuilder;
 
@@ -310,6 +316,13 @@ export default class RenderTree {
       // not supported
     }
 
+    try {
+      this.reactivity = new RenderTreeReactivity(lookupDebugRenderTree(owner));
+    } catch {
+      // not supported (very old Ember versions, or no glimmer validator)
+      this.reactivity = null;
+    }
+
     // need to have different ids per application / iframe
     // to distinguish the render nodes it in the inspector
     // between apps
@@ -343,6 +356,7 @@ export default class RenderTree {
   build() {
     this._reset();
 
+    this.reactivity?.beginCapture();
     this.tree = captureRenderTree(this.owner);
     let serialized = this._serializeRenderNodes(this.tree);
 
@@ -526,6 +540,37 @@ export default class RenderTree {
     this._reset();
     this._releaseStaleObjects();
     this.inElementSupport?.teardown();
+    this.reactivity?.teardown();
+  }
+
+  /**
+   * Get the reactivity report for a given render node id: what the node
+   * depends on (args and consumed instance properties) and which of those
+   * dependencies changed since its previous render — i.e. what caused it
+   * to change most recently.
+   *
+   * @method getReactivity
+   * @param {string} id A render node id.
+   * @return {Option<Object>} The report, or null when not available.
+   */
+  getReactivity(id) {
+    if (!this.reactivity) {
+      return null;
+    }
+
+    // The captured ids are prefixed per application (see
+    // _serializeRenderNode); the debug render tree only knows the raw ids.
+    let rawId = id;
+    const prefix = `${this.renderNodeIdPrefix}-`;
+    if (rawId.startsWith(prefix)) {
+      rawId = rawId.slice(prefix.length);
+    }
+
+    const report = this.reactivity.getReport(rawId);
+    if (report) {
+      report.id = id;
+    }
+    return report;
   }
 
   _reset() {
