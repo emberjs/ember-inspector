@@ -26,6 +26,7 @@ import { _backburner, join } from './lib/ember/runloop.js';
 import emberNames from './lib/ember-object-names.js';
 import getObjectName from './lib/get-object-name.js';
 import getRoute from './lib/get-route.js';
+import { getTagTrackedTags } from './lib/tracked-tags.js';
 
 let tagValue, tagValidate, track, tagForProperty;
 
@@ -137,28 +138,6 @@ function isMandatorySetter(descriptor) {
     return true;
   }
   return false;
-}
-
-function getTagTrackedTags(tag, ownTag, level = 0) {
-  const props = [];
-  // do not include tracked properties from dependencies
-  if (!tag || level > 1) {
-    return props;
-  }
-  const subtags = tag.subtags || (Array.isArray(tag.subtag) ? tag.subtag : []);
-  if (tag.subtag && !Array.isArray(tag.subtag)) {
-    if (tag.subtag._propertyKey) props.push(tag.subtag);
-
-    props.push(...getTagTrackedTags(tag.subtag, ownTag, level + 1));
-  }
-  if (subtags) {
-    subtags.forEach((t) => {
-      if (t === ownTag) return;
-      if (t._propertyKey) props.push(t);
-      props.push(...getTagTrackedTags(t, ownTag, level + 1));
-    });
-  }
-  return props;
 }
 
 function getTrackedDependencies(object, property, tagInfo) {

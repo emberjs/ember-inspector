@@ -20,6 +20,13 @@ export default class extends DebugPort {
         this.sendTree(immediate);
       },
 
+      getReactivity({ id }) {
+        this.sendMessage('reactivity', {
+          id,
+          reactivity: this.renderTree.getReactivity(id),
+        });
+      },
+
       showInspection({ id, pin }) {
         this.viewInspection.show(id, pin);
       },
