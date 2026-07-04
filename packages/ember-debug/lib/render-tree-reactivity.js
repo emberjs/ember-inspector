@@ -108,7 +108,21 @@ export default class RenderTreeReactivity {
     const captureNode = debugRenderTree.captureNode;
     debugRenderTree.captureNode = function (id, state) {
       try {
-        self.capturedNodes[id] = this.nodeFor(state);
+        const node = this.nodeFor(state);
+        self.capturedNodes[id] = node;
+        // Nodes rendered before we were attached (e.g. the inspector was
+        // opened on an already-running app) have no create-time info yet;
+        // baseline them at first capture so their first re-render can
+        // still report what changed.
+        if (!self.updates.has(node)) {
+          self.updates.set(node, {
+            updateCount: 0,
+            revision: currentRevision(),
+            previousRevision: null,
+            timestamp: null,
+            initialRender: true,
+          });
+        }
       } catch {
         // never break capturing
       }
