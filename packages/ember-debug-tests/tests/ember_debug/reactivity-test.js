@@ -12,7 +12,7 @@ import EmberDebugImport from 'ember-debug/main';
 let EmberDebug;
 
 // TODO switch to an adapter architecture, similar to the acceptance tests
-async function captureMessage(type, callback) {
+async function captureMessage(type, callback, match = () => true) {
   if (!EmberDebug.port) {
     throw new Error('Cannot call captureMessage without a port');
   }
@@ -25,7 +25,7 @@ async function captureMessage(type, callback) {
     const receivedPromise = new Promise((resolve) => {
       setTimeout(resolve, 500);
       EmberDebug.port.send = (name, message) => {
-        if (!captured && name === type) {
+        if (!captured && name === type && match(message)) {
           resolve();
           captured = JSON.parse(JSON.stringify(message));
         } else {
@@ -139,6 +139,10 @@ module('Ember Debug - Reactivity', function (hooks) {
         class ReactiveCounter extends GlimmerComponent {
           @tracked count = 0;
 
+          get label() {
+            return `${this.args.title}: ${this.count}`;
+          }
+
           constructor(...args) {
             super(...args);
             counterInstance = this;
@@ -187,6 +191,46 @@ module('Ember Debug - Reactivity', function (hooks) {
     assert.ok(count, 'the count property is present');
     assert.ok(count.reactivity, 'count is augmented with reactivity info');
     assert.notOk(count.reactivity.changed, 'count has not changed yet');
+  });
+
+  test('getter dependencies are named and flag what changed', async function (assert) {
+    await visit('/reactive');
+
+    let message = await inspectCounterNode();
+
+    let label = findProperty(message.details, 'label');
+    assert.ok(label, 'the label getter is present');
+
+    let depNames = (label.dependentKeys ?? []).map((d) => d.name ?? d.child);
+    assert.ok(
+      depNames.includes('args.title'),
+      `label depends on args.title (got: ${depNames.join(', ')})`,
+    );
+    assert.ok(
+      depNames.includes('this.count'),
+      `label depends on this.count (got: ${depNames.join(', ')})`,
+    );
+
+    // Change one of the dependencies: the pushed update for the getter
+    // flags the changed dependency, the other one is not flagged.
+    let update = await captureMessage(
+      'objectInspector:updateProperty',
+      async () => {
+        counterInstance.count++;
+        await rerender();
+      },
+      (m) => m.property === 'label',
+    );
+
+    let countDep = update.dependentKeys.find(
+      (d) => (d.name ?? d.child) === 'this.count',
+    );
+    assert.ok(countDep.changed, 'the changed dependency is flagged');
+
+    let titleDep = update.dependentKeys.find(
+      (d) => (d.name ?? d.child) === 'args.title',
+    );
+    assert.notOk(titleDep.changed, 'the unchanged dependency is not flagged');
   });
 
   test('re-renders push updated reactivity info for the inspected node', async function (assert) {

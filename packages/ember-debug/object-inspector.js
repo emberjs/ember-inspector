@@ -26,7 +26,7 @@ import { _backburner, join } from './lib/ember/runloop.js';
 import emberNames from './lib/ember-object-names.js';
 import getObjectName from './lib/get-object-name.js';
 import getRoute from './lib/get-route.js';
-import { getTagTrackedTags } from './lib/tracked-tags.js';
+import { getTagSubtags } from './lib/tracked-tags.js';
 
 let tagValue, tagValidate, track, tagForProperty;
 
@@ -85,6 +85,47 @@ if (InternalsMetal) {
 }
 
 const HAS_GLIMMER_TRACKING = tagValue && tagValidate && track && tagForProperty;
+
+// Reading exports is safe in every build type (unlike the patches above).
+const tagMetaFor = GlimmerValidator?.tagMetaFor;
+
+/**
+ * Build a tag -> human-readable-name map for the dependencies an object's
+ * getters can consume, without relying on the `_propertyKey` annotations
+ * (which the patched `tagFor` can't provide when the app's modules are
+ * inlined at build time, as in recent ember-source):
+ *
+ * - the validator's tag meta names every consumed own property (`this.x`)
+ * - the args proxy's custom tags name named args (`args.x`)
+ */
+function localTagNames(object) {
+  const names = new Map();
+
+  if (tagMetaFor) {
+    try {
+      tagMetaFor(object).forEach((t, key) => {
+        if (typeof key === 'string') {
+          names.set(t, `this.${key}`);
+        }
+      });
+    } catch {
+      // ignore
+    }
+  }
+
+  const args = object.args;
+  if (args && typeof args === 'object' && tagForProperty) {
+    try {
+      Object.keys(args).forEach((key) => {
+        names.set(tagForProperty(args, key), `args.${key}`);
+      });
+    } catch {
+      // ignore
+    }
+  }
+
+  return names;
+}
 
 const keys = Object.keys;
 
@@ -226,16 +267,25 @@ function getTrackedDependencies(object, property, tagInfo) {
   }
   if (HAS_GLIMMER_TRACKING) {
     const ownTag = tagForProperty(object, property);
-    const tags = getTagTrackedTags(tag, ownTag);
+    const tagNames = localTagNames(object);
+    const tags = getTagSubtags(tag, ownTag);
+    // A getter that consumed a single value gets that value's tag itself
+    // instead of a combinator, so the subtag walk misses it.
+    if (tag !== ownTag && !tags.includes(tag)) {
+      tags.push(tag);
+    }
     const mapping = {};
     let maxRevision = tagValue(tag);
     tags.forEach((t) => {
-      // A tag has no property name when tagFor is not patched.
-      if (!t._propertyKey) {
+      let p;
+      if (t._propertyKey) {
+        p = (t._object ? getObjectName(t._object) + '.' : '') + t._propertyKey;
+      } else {
+        p = tagNames.get(t);
+      }
+      if (!p) {
         return;
       }
-      const p =
-        (t._object ? getObjectName(t._object) + '.' : '') + t._propertyKey;
       const [objName, prop] = p.split('.');
       mapping[objName] = mapping[objName] || new Set();
       const value = tagValue(t);
