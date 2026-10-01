@@ -114,6 +114,16 @@ jobs:
         run: pnpm test
         env:
           RAISE_ON_DEPRECATION: 'true'
+      - name: Notify Discord
+        uses: sarisia/actions-status-discord@eb045afee445dc055c18d3d90bd0f244fd062708 # v1.16.0
+        if: ${{ failure() && github.event_name == 'schedule' }}
+        with:
+          webhook: ${{ secrets.CORE_META_WEBHOOK }}
+          status: 'Failure'
+          title: 'Ember Inspector with ember-source main'
+          color: 0xcc0000
+          url: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          username: GitHub Actions
 
   build:
     name: Build extensions
