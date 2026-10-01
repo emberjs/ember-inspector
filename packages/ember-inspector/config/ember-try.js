@@ -4,6 +4,29 @@
 
 const getChannelURL = require('ember-source-channel-url');
 
+// The dependencies that the app needs for Ember 7 and later.
+// A `null` removes an addon that has no release for Ember 7.
+const ember7 = {
+  '@ember/legacy-built-in-components': null,
+  '@ember/test-helpers': '^5.4.2',
+  '@glimmer/component': '^2.1.1',
+  '@html-next/vertical-collection': '^5.0.5',
+  'ember-cli': '~7.0.0',
+  'ember-cli-deprecation-workflow': '^4.0.1',
+  'ember-cli-htmlbars': '^7.0.1',
+  'ember-concurrency': '^5.3.0',
+  'ember-flatpickr': '^9.0.2',
+  'ember-in-element-polyfill': null,
+  'ember-on-resize-modifier': null,
+  'ember-qunit': '^9.0.4',
+  // tests/test-helper.js imports the waiter of this version.
+  'ember-raf-scheduler': '^0.3.0',
+  'ember-svg-jar': '^3.0.0',
+  'ember-table': null,
+  'ember-wormhole': null,
+  'tracked-built-ins': '^4.1.2',
+};
+
 module.exports = async function () {
   return {
     usePnpm: true,
@@ -105,6 +128,7 @@ module.exports = async function () {
         name: 'ember-release',
         npm: {
           devDependencies: {
+            ...ember7,
             'ember-source': await getChannelURL('release'),
           },
         },
@@ -113,6 +137,7 @@ module.exports = async function () {
         name: 'ember-beta',
         npm: {
           devDependencies: {
+            ...ember7,
             'ember-source': await getChannelURL('beta'),
           },
         },
@@ -121,6 +146,7 @@ module.exports = async function () {
         name: 'ember-canary',
         npm: {
           devDependencies: {
+            ...ember7,
             'ember-source': await getChannelURL('canary'),
           },
         },

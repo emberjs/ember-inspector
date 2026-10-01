@@ -1,5 +1,5 @@
 import { action } from '@ember/object';
-import { inject as service } from '@ember/service';
+import { service } from 'ember-inspector/utils/service';
 import PropertiesBase from 'ember-inspector/components/object-inspector/properties-base';
 
 export default class PropertiesGrouped extends PropertiesBase {

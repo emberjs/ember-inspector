@@ -11,7 +11,8 @@
  * });
  * ```
  */
-import Service, { inject as service } from '@ember/service';
+import Service from '@ember/service';
+import { service } from 'ember-inspector/utils/service';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import config from 'ember-inspector/config/environment';

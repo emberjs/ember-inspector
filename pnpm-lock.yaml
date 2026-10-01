@@ -281,6 +281,9 @@ importers:
       '@ember/test-helpers':
         specifier: ^4.0.4
         version: 4.0.5(@babel/core@7.26.0)(@glint/template@1.5.1)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.105.4))
+      '@embroider/macros':
+        specifier: ^1.20.2
+        version: 1.20.2(@babel/core@7.26.0)(@glint/template@1.5.1)
       '@eslint/js':
         specifier: ^9.39.4
         version: 9.39.4

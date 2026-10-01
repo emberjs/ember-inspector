@@ -1,7 +1,6 @@
 /* eslint-disable ember/no-private-routing-service */
 import DebugPort from './debug-port.js';
-import { compareVersion } from './utils/version.js';
-import { VERSION } from './lib/ember.js';
+import getRoute from './lib/get-route.js';
 import classify from './utils/classify.js';
 import dasherize from './utils/dasherize.js';
 import { _backburner, later } from './lib/ember/runloop.js';
@@ -197,18 +196,7 @@ function buildSubTree(routeTree, route) {
     if (subTree[handler] === undefined) {
       routeClassName = this.getClassName(handler, 'route');
 
-      const router = this.router;
-      const routerLib = router._routerMicrolib || router.router;
-      // 3.9.0 removed intimate APIs from router
-      // https://github.com/emberjs/ember.js/pull/17843
-      // https://deprecations.emberjs.com/v3.x/#toc_remove-handler-infos
-      if (compareVersion(VERSION, '3.9.0') !== -1) {
-        // Ember >= 3.9.0
-        routeHandler = routerLib.getRoute(handler);
-      } else {
-        // Ember < 3.9.0
-        routeHandler = routerLib.getHandler(handler);
-      }
+      routeHandler = getRoute(this.router, handler);
 
       // Skip when route is an unresolved promise
       if (typeof routeHandler?.then === 'function') {
