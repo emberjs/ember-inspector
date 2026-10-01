@@ -1,5 +1,5 @@
 import { Promise } from 'rsvp';
-import { inject as service } from '@ember/service';
+import { service } from 'ember-inspector/utils/service';
 import TabRoute from 'ember-inspector/routes/tab';
 
 export default class ComponentTreeRoute extends TabRoute {

@@ -11,7 +11,8 @@ import EmberObject, { computed } from '@ember/object';
 import MutableArray from '@ember/array/mutable';
 import ArrayProxy from '@ember/array/proxy';
 import ObjectProxy from '@ember/object/proxy';
-import Service, { inject } from '@ember/service';
+import Service from '@ember/service';
+import { service } from 'ember-inspector/utils/service';
 import { VERSION } from '@ember/version';
 import { tracked } from '@glimmer/tracking';
 import { module, skip, test } from 'qunit';
@@ -34,11 +35,6 @@ const GlimmerComponent = (function () {
     // ignore, return undefined
   }
 })();
-
-// `inject` throws since Ember 7. `service` does not exist before Ember 4.1.
-const service = hasEmberVersion(4, 1)
-  ? require('@ember/service').service
-  : inject;
 
 let objectInspector;
 
