@@ -94,6 +94,7 @@
     "ember-resolver": "^13.1.0",
     "ember-sinon-qunit": "^7.5.0",
     "ember-source": "^5.0.0",
+    "ember-source-channel-url": "^3.0.0",
     "ember-svg-jar": "^2.6.0",
     "ember-table": "^5.0.6",
     "ember-template-lint": "^6.0.0",

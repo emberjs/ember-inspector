@@ -31,9 +31,6 @@ importers:
       '@ember/optional-features':
         specifier: ^2.3.0
         version: 2.3.0
-      '@ember/render-modifiers':
-        specifier: ^4.0.0
-        version: 4.0.0
       '@ember/test-helpers':
         specifier: ^5.4.2
         version: 5.4.2(@babel/core@7.29.0)(@glint/template@1.5.1)
@@ -67,12 +64,6 @@ importers:
       broccoli-asset-rev:
         specifier: ^3.0.0
         version: 3.0.0
-      broccoli-funnel:
-        specifier: ^3.0.8
-        version: 3.0.8
-      broccoli-merge-trees:
-        specifier: ^4.2.0
-        version: 4.2.0
       concurrently:
         specifier: ^9.2.1
         version: 9.2.1
@@ -422,6 +413,9 @@ importers:
       ember-source:
         specifier: ^5.0.0
         version: 5.12.0(@glimmer/component@1.1.2(@babel/core@7.26.0))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.105.4)
+      ember-source-channel-url:
+        specifier: ^3.0.0
+        version: 3.0.0(encoding@0.1.13)
       ember-svg-jar:
         specifier: ^2.6.0
         version: 2.6.0(@babel/core@7.26.0)(@glint/template@1.5.1)
@@ -439,7 +433,7 @@ importers:
         version: 3.1.1
       ember-try:
         specifier: ^3.0.0
-        version: 3.0.0
+        version: 3.0.0(encoding@0.1.13)
       ember-wormhole:
         specifier: ^0.6.0
         version: 0.6.0
@@ -1710,9 +1704,6 @@ packages:
     peerDependenciesMeta:
       '@glint/template':
         optional: true
-
-  '@ember/render-modifiers@4.0.0':
-    resolution: {integrity: sha512-QWo6rBJ9EwCLWbAzdppco2/Lh86Op3ad5UAn34yE9QaRgoMSf08XkMoE+5ftPiYOo08SG/QsNBDcxbpe3OgqWA==}
 
   '@ember/string@3.1.1':
     resolution: {integrity: sha512-UbXJ+k3QOrYN4SRPHgXCqYIJ+yWWUg1+vr0H4DhdQPTy8LJfyqwZ2tc5uqpSSnEXE+/1KopHBE5J8GDagAg5cg==}
@@ -12808,12 +12799,6 @@ snapshots:
       - '@babel/core'
       - supports-color
 
-  '@ember/render-modifiers@4.0.0':
-    dependencies:
-      '@embroider/addon-shim': 1.10.2
-    transitivePeerDependencies:
-      - supports-color
-
   '@ember/string@3.1.1':
     dependencies:
       ember-cli-babel: 7.26.11
@@ -18318,7 +18303,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  ember-try-config@4.0.0:
+  ember-try-config@4.0.0(encoding@0.1.13):
     dependencies:
       ember-source-channel-url: 3.0.0(encoding@0.1.13)
       lodash: 4.17.21
@@ -18328,13 +18313,13 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  ember-try@3.0.0:
+  ember-try@3.0.0(encoding@0.1.13):
     dependencies:
       chalk: 4.1.2
       cli-table3: 0.6.5
       core-object: 3.1.5
       debug: 4.4.3
-      ember-try-config: 4.0.0
+      ember-try-config: 4.0.0(encoding@0.1.13)
       execa: 4.1.0
       fs-extra: 6.0.1
       resolve: 1.22.11

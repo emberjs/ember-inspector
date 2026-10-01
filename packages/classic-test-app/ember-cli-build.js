@@ -2,19 +2,10 @@
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 const { setConfig } = require('@warp-drive/core/build-config');
-const Funnel = require('broccoli-funnel');
-const mergeTrees = require('broccoli-merge-trees');
 
 module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
-    trees: {
-      tests: mergeTrees([
-        'tests',
-        new Funnel('../ember-inspector/tests', {
-          include: ['ember_debug/**', 'helpers/setup-ember-debug-test.js'],
-        }),
-      ]),
-    },
+    // Add options here
   });
 
   setConfig(app, __dirname, {
