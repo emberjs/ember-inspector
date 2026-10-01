@@ -50,6 +50,7 @@
     "@ember/render-modifiers": "^2.1.0",
     "@ember/string": "^4.0.0",
     "@ember/test-helpers": "^4.0.4",
+    "@embroider/macros": "^1.20.2",
     "@eslint/js": "^9.39.4",
     "@glimmer/component": "^1.1.2",
     "@glimmer/tracking": "^1.1.2",
