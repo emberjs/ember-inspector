@@ -67,6 +67,18 @@ module.exports = function (defaults) {
     };
   }
 
+  // Ember 7 removed `inject` from `@ember/service`, and Ember before
+  // 4.1 has no `service`. The app must load on both in ember-try, so
+  // it keeps `inject`, and the build renames it for Ember 7.
+  if (emberChecker.gte('7.0.0')) {
+    options.trees = {
+      app: replace('app', {
+        files: ['**/*.js'],
+        patterns: [{ match: /inject as service/g, replacement: 'service' }],
+      }),
+    };
+  }
+
   let app = new EmberApp(defaults, options);
 
   // Use `app.import` to add additional libraries to the generated
