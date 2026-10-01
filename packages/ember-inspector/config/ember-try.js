@@ -1,8 +1,4 @@
-/* eslint-disable n/no-unpublished-require */
-
 'use strict';
-
-const getChannelURL = require('ember-source-channel-url');
 
 module.exports = async function () {
   return {
@@ -98,30 +94,6 @@ module.exports = async function () {
         npm: {
           devDependencies: {
             'ember-source': '~5.12.0',
-          },
-        },
-      },
-      {
-        name: 'ember-release',
-        npm: {
-          devDependencies: {
-            'ember-source': await getChannelURL('release'),
-          },
-        },
-      },
-      {
-        name: 'ember-beta',
-        npm: {
-          devDependencies: {
-            'ember-source': await getChannelURL('beta'),
-          },
-        },
-      },
-      {
-        name: 'ember-canary',
-        npm: {
-          devDependencies: {
-            'ember-source': await getChannelURL('canary'),
           },
         },
       },

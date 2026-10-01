@@ -12,8 +12,6 @@ import {
 import { run } from '@ember/runloop';
 import Route from '@ember/routing/route';
 import Controller from '@ember/controller';
-import BasicAdapter from 'ember-inspector/services/adapters/basic';
-import config from 'ember-inspector/config/environment';
 import { hbs } from 'ember-cli-htmlbars';
 
 import EmberDebugImport from 'ember-debug/main';
@@ -33,8 +31,9 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     originalIgnoreDeprecations = EmberDebug.IGNORE_DEPRECATIONS;
 
     app = Application.create({
-      ...config.APP,
-      modulePrefix: config.modulePrefix,
+      autoboot: false,
+      rootElement: originalApp.rootElement,
+      modulePrefix: originalApp.modulePrefix,
       Resolver,
     });
     setApplication(app);
@@ -58,7 +57,6 @@ export default function setupEmberDebugTest(hooks, options = {}) {
     }
 
     this.owner.register('router:main', Router);
-    this.owner.register('service:adapter', BasicAdapter);
     /**
      * preferably, ember debug tests should use their own test app
      * but currently its mangled with the inspector ui app, which is not compatible with all ember versions being tested.

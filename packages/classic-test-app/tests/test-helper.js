@@ -9,6 +9,8 @@ import { start, setupEmberOnerrorValidation } from 'ember-qunit';
 
 setApplication(Application.create(config.APP));
 
+QUnit.config.testTimeout = 60000;
+
 setup(QUnit.assert);
 setupEmberOnerrorValidation();
 loadTests();

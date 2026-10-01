@@ -62,9 +62,6 @@ jobs:
           - ember-lts-5.4
           - ember-lts-5.8
           - ember-lts-5.12
-          - ember-release
-          - ember-beta
-          - ember-canary
           - ember-default-no-prototype-extensions
 
     steps:
@@ -90,10 +87,17 @@ jobs:
         working-directory: packages/ember-inspector
         run: EMBER_ENV=test pnpm exec ember test --path dist --filter="Ember Debug"
 
-  ember-main:
-    name: ember-source main (throw on deprecations)
+  ember-channel:
+    name: ember-source ${{ matrix.channel }} (throw on deprecations)
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        channel:
+          - release
+          - beta
+          - canary
     env:
       CI: 'true'
     steps:
@@ -104,11 +108,13 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install
-      - name: Install ember-source from main
+      - name: Install ember-source from the channel
         working-directory: packages/classic-test-app
         run: |
-          pnpm exec ember-source-channel-url canary --write
+          pnpm exec ember-source-channel-url "$CHANNEL" --write
           pnpm install --no-frozen-lockfile
+        env:
+          CHANNEL: ${{ matrix.channel }}
       - name: Run tests
         working-directory: packages/classic-test-app
         run: pnpm test
@@ -120,7 +126,7 @@ jobs:
         with:
           webhook: ${{ secrets.CORE_META_WEBHOOK }}
           status: 'Failure'
-          title: 'Ember Inspector with ember-source main'
+          title: 'Ember Inspector with ember-source ${{ matrix.channel }}'
           color: 0xcc0000
           url: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
           username: GitHub Actions
