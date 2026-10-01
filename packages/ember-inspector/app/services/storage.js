@@ -1,4 +1,4 @@
-import Service, { inject as service } from '@ember/service';
+import Service, { service } from '@ember/service';
 import { LOCAL_STORAGE_SUPPORTED } from './storage/local';
 import { tracked } from '@glimmer/tracking';
 

@@ -6,7 +6,7 @@ import { localCopy } from 'tracked-toolbox';
 import { bind, scheduleOnce } from '@ember/runloop';
 import { task, timeout } from 'ember-concurrency';
 import ResizableColumns from 'ember-inspector/libs/resizable-columns';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { action } from '@ember/object';
 
 const CHECK_HTML = '&#10003;';

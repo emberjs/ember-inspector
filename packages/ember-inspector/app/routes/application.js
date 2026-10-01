@@ -1,5 +1,5 @@
 /* eslint-disable ember/no-controller-access-in-routes */
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { action, set } from '@ember/object';
 import Route from '@ember/routing/route';
 import Ember from 'ember';

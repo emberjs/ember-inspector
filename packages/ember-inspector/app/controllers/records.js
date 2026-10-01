@@ -1,7 +1,7 @@
 import { isEmpty } from '@ember/utils';
 import { action, get, set } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
 import escapeRegExp from '../utils/escape-reg-exp';
