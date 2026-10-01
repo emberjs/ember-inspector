@@ -34,6 +34,9 @@ importers:
       '@ember/test-helpers':
         specifier: ^5.4.2
         version: 5.4.2(@babel/core@7.29.0)(@glint/template@1.5.1)
+      '@embroider/legacy-inspector-support':
+        specifier: ^0.1.3
+        version: 0.1.3
       '@embroider/macros':
         specifier: ^1.20.2
         version: 1.20.2(@babel/core@7.29.0)(@glint/template@1.5.1)
@@ -100,6 +103,9 @@ importers:
       ember-data:
         specifier: ~5.8.2
         version: 5.8.2(@babel/core@7.29.0)(@ember/test-helpers@5.4.2(@babel/core@7.29.0)(@glint/template@1.5.1))(@ember/test-waiters@4.1.1(@babel/core@7.29.0)(@glint/template@1.5.1))(@glint/template@1.5.1)(qunit@2.26.0)
+      ember-debug:
+        specifier: workspace:*
+        version: link:../ember-debug
       ember-load-initializers:
         specifier: ^3.0.1
         version: 3.0.1(ember-source@7.0.0(@glimmer/component@2.1.1))
@@ -118,6 +124,9 @@ importers:
       ember-source:
         specifier: ~7.0.0
         version: 7.0.0(@glimmer/component@2.1.1)
+      ember-source-channel-url:
+        specifier: ^3.0.0
+        version: 3.0.0(encoding@0.1.13)
       ember-template-imports:
         specifier: ^4.4.0
         version: 4.4.0
