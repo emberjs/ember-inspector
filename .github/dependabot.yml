@@ -4,6 +4,8 @@ updates:
   directory: "/"
   schedule:
     interval: weekly
+  cooldown:
+    default-days: 7
   open-pull-requests-limit: 10
   labels:
   - dependencies
@@ -12,3 +14,13 @@ updates:
   - dependency-name: ember-cli
     versions:
     - ">= 0"
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: weekly
+  cooldown:
+    default-days: 7
+  open-pull-requests-limit: 10
+  labels:
+  - dependencies
+  - internal
