@@ -90,6 +90,31 @@ jobs:
         working-directory: packages/ember-inspector
         run: EMBER_ENV=test pnpm exec ember test --path dist --filter="Ember Debug"
 
+  ember-main:
+    name: ember-source main (throw on deprecations)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install
+      - name: Install ember-source from main
+        working-directory: packages/classic-test-app
+        run: |
+          pnpm exec ember-source-channel-url canary --write
+          pnpm install --no-frozen-lockfile
+      - name: Run tests
+        working-directory: packages/classic-test-app
+        run: pnpm test
+        env:
+          RAISE_ON_DEPRECATION: 'true'
+
   build:
     name: Build extensions
     runs-on: ubuntu-latest

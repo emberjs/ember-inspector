@@ -22,7 +22,8 @@
     "lint:hbs:fix": "ember-template-lint . --fix",
     "lint:js": "eslint . --cache",
     "lint:js:fix": "eslint . --fix",
-    "start": "ember serve"
+    "start": "ember serve",
+    "test": "ember test"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
@@ -30,6 +31,7 @@
     "@babel/plugin-proposal-decorators": "^7.29.0",
     "@ember/optional-features": "^2.3.0",
     "@ember/test-helpers": "^5.4.2",
+    "@embroider/legacy-inspector-support": "^0.1.3",
     "@embroider/macros": "^1.20.2",
     "@eslint/js": "^9.39.4",
     "@glimmer/component": "^2.1.1",
@@ -52,12 +54,14 @@
     "ember-cli-sri": "^2.1.1",
     "ember-cli-terser": "^4.0.2",
     "ember-data": "~5.8.2",
+    "ember-debug": "workspace:*",
     "ember-load-initializers": "^3.0.1",
     "ember-modifier": "^4.3.0",
     "ember-page-title": "^9.0.3",
     "ember-qunit": "^9.0.4",
     "ember-resolver": "^13.2.0",
     "ember-source": "~7.0.0",
+    "ember-source-channel-url": "^3.0.0",
     "ember-template-imports": "^4.4.0",
     "ember-template-lint": "^6.1.0",
     "eslint": "^9.39.4",

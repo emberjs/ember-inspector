@@ -8,6 +8,7 @@ module.exports = function (environment) {
     locationType: 'history',
     EmberENV: {
       EXTEND_PROTOTYPES: false,
+      RAISE_ON_DEPRECATION: process.env.RAISE_ON_DEPRECATION === 'true',
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
         // e.g. EMBER_NATIVE_DECORATOR_SUPPORT: true
