@@ -1,0 +1,11 @@
+# Unlabeled Changes
+
+* Other
+  * [#2782](https://github.com/emberjs/ember-inspector/pull/2782) Pin CI actions to the latest hashes and add a zizmor lint ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2781](https://github.com/emberjs/ember-inspector/pull/2781) Add a nightly CI job for ember-source main with throw on deprecations ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+* `ember-inspector`
+  * [#2783](https://github.com/emberjs/ember-inspector/pull/2783) Fix CI: make the Ember 7 scenarios pass ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2771](https://github.com/emberjs/ember-inspector/pull/2771) Add classic-test-app  ([@BobrImperator](https://github.com/BobrImperator))
+
+
+*Cannot plan release until the above changes are labeled*.
