@@ -41,7 +41,7 @@
     "@warp-drive/legacy": "~5.8.2",
     "@warp-drive/utilities": "~5.8.2",
     "broccoli-asset-rev": "^3.0.0",
-    "concurrently": "^9.2.1",
+    "concurrently": "^10.0.5",
     "ember-auto-import": "^2.13.1",
     "ember-cli": "~7.0.0",
     "ember-cli-app-version": "^7.0.0",
