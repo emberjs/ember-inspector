@@ -1,5 +1,5 @@
 import Controller, { inject as controller } from '@ember/controller';
-import { inject as service } from '@ember/service';
+import { service } from 'ember-inspector/utils/service';
 // eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { action, computed, set } from '@ember/object';
 import debounceComputed from 'ember-inspector/computed/debounce';

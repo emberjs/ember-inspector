@@ -7,11 +7,9 @@ import {
   typeOf,
   inspect,
 } from './lib/type-check.js';
-import { compareVersion } from './utils/version.js';
 import {
   EmberObject,
   meta as emberMeta,
-  VERSION,
   CoreObject,
   ObjectProxy,
   ArrayProxy,
@@ -27,6 +25,7 @@ import { cacheFor, guidFor } from './lib/ember/object/internals.js';
 import { _backburner, join } from './lib/ember/runloop.js';
 import emberNames from './lib/ember-object-names.js';
 import getObjectName from './lib/get-object-name.js';
+import getRoute from './lib/get-route.js';
 
 let tagValue, tagValidate, track, tagForProperty;
 
@@ -36,42 +35,43 @@ const OWNER_SYMBOL = '__owner__'; // can't use actual symbol because it can't be
 
 // Try to use the most recent library (GlimmerValidator), else
 // fallback on the previous implementation (GlimmerReference).
-// The global checks if the inspected app is Vite, in that case
-// we can't execute that block because the properties it tries to
-// assign are readonly.
-if (GlimmerValidator && !globalThis.emberInspectorApps) {
+if (GlimmerValidator) {
   tagValue = GlimmerValidator.value || GlimmerValidator.valueForTag;
   tagValidate = GlimmerValidator.validate || GlimmerValidator.validateTag;
   track = GlimmerValidator.track;
 
-  // patch tagFor to add debug info, older versions already have _propertyKey
-  const tagFor = GlimmerValidator.tagFor;
-  GlimmerValidator.tagFor = function (...args) {
-    const tag = tagFor.call(this, ...args);
-    const [obj, key] = args;
-    if (
-      (!tag._propertyKey || !tag._object) &&
-      typeof obj === 'object' &&
-      typeof key === 'string'
-    ) {
-      tag._propertyKey = key;
-      tag._object = obj;
-    }
-    return tag;
-  };
-  const trackedData = GlimmerValidator.trackedData;
-  GlimmerValidator.trackedData = function (...args) {
-    const r = trackedData.call(this, ...args);
-    if (r.getter && args.length === 2) {
-      const [key] = args;
-      const getter = r.getter;
-      r.getter = function (self) {
-        GlimmerValidator.tagFor(self, key);
-        return getter.call(this, self);
-      };
-    }
-    return r;
-  };
+  try {
+    // patch tagFor to add debug info, older versions already have _propertyKey
+    const tagFor = GlimmerValidator.tagFor;
+    GlimmerValidator.tagFor = function (...args) {
+      const tag = tagFor.call(this, ...args);
+      const [obj, key] = args;
+      if (
+        (!tag._propertyKey || !tag._object) &&
+        typeof obj === 'object' &&
+        typeof key === 'string'
+      ) {
+        tag._propertyKey = key;
+        tag._object = obj;
+      }
+      return tag;
+    };
+    const trackedData = GlimmerValidator.trackedData;
+    GlimmerValidator.trackedData = function (...args) {
+      const r = trackedData.call(this, ...args);
+      if (r.getter && args.length === 2) {
+        const [key] = args;
+        const getter = r.getter;
+        r.getter = function (self) {
+          GlimmerValidator.tagFor(self, key);
+          return getter.call(this, self);
+        };
+      }
+      return r;
+    };
+  } catch {
+    // The module object is read-only when Ember loads as ES modules.
+  }
 } else if (GlimmerReference) {
   tagValue = GlimmerReference.value;
   tagValidate = GlimmerReference.validate;
@@ -178,6 +178,10 @@ function getTrackedDependencies(object, property, tagInfo) {
     const mapping = {};
     let maxRevision = tagValue(tag);
     tags.forEach((t) => {
+      // A tag has no property name when tagFor is not patched.
+      if (!t._propertyKey) {
+        return;
+      }
       const p =
         (t._object ? getObjectName(t._object) + '.' : '') + t._propertyKey;
       const [objName, prop] = p.split('.');
@@ -406,17 +410,8 @@ export default class extends DebugPort {
       inspectRoute(message) {
         const container = this.namespace?.owner;
         const router = container.lookup('router:main');
-        const routerLib = router._routerMicrolib || router.router;
-        // 3.9.0 removed intimate APIs from router
-        // https://github.com/emberjs/ember.js/pull/17843
-        // https://deprecations.emberjs.com/v3.x/#toc_remove-handler-infos
-        if (compareVersion(VERSION, '3.9.0') !== -1) {
-          // Ember >= 3.9.0
-          this.sendObject(routerLib.getRoute(message.name));
-        } else {
-          // Ember < 3.9.0
-          this.sendObject(routerLib.getHandler(message.name));
-        }
+
+        this.sendObject(getRoute(router, message.name));
       },
       inspectController(message) {
         const container = this.namespace?.owner;
