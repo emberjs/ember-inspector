@@ -20,8 +20,43 @@ export default class WebExtension extends BasicAdapter {
     this._connect();
     this._handleReload();
     this._setThemeColors();
+    this._trackPanelVisibility();
 
     void Promise.resolve().then(() => this._sendEmberDebug());
+  }
+
+  /**
+   * The devtools page (devtools.js) calls this hook when the Ember panel is
+   * shown or hidden. We forward the visibility to ember_debug so it can
+   * pause expensive work (streaming the render tree) while the user is on
+   * another DevTools panel — otherwise big apps can freeze the entire
+   * DevTools renderer, taking down the other panels with it.
+   */
+  _trackPanelVisibility() {
+    // The pane only loads once its panel has been shown, so it starts visible.
+    this._panelVisible = true;
+
+    window.__emberInspectorSetPanelVisibility = (visible) => {
+      this._panelVisible = visible;
+      this._sendPanelVisibility();
+    };
+
+    // If the inspected app (re)boots while the panel is hidden — e.g. the
+    // user reloads the page from the Elements panel — let the fresh
+    // ember_debug instance know it should stay paused.
+    this.onMessageReceived((message) => {
+      if (message?.type === 'general:applicationBooted' && !this._panelVisible) {
+        this._sendPanelVisibility();
+      }
+    });
+  }
+
+  _sendPanelVisibility() {
+    this.sendMessage({
+      from: 'devtools',
+      type: 'view:setVisibility',
+      visible: this._panelVisible,
+    });
   }
 
   sendMessage(message) {
