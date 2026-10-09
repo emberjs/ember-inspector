@@ -1,0 +1,62 @@
+{{#if this.toolbarContainer}}
+  {{#in-element this.toolbarContainer}}
+    <TimeTravelToolbar
+      @clear={{this.clear}}
+      @recording={{this.recording}}
+      @toggleRecording={{this.toggleRecording}}
+    />
+  {{/in-element}}
+{{/if}}
+
+{{#if this.hasSnapshots}}
+  <div class="time-travel js-time-travel">
+    <div class="time-travel__scrubber">
+      <input
+        aria-label="Snapshot timeline"
+        class="time-travel__slider js-time-travel-slider"
+        max={{this.maxIndex}}
+        min="0"
+        type="range"
+        value={{this.currentIndex}}
+        {{on "input" this.travel}}
+      />
+      <div class="time-travel__info js-time-travel-info">
+        <span>
+          Snapshot
+          {{this.displayIndex}}
+          of
+          {{this.snapshots.length}}
+          &mdash;
+          {{this.selectedTime}}
+          {{#if this.selectedSnapshot.url}}
+            at
+            <code>{{this.selectedSnapshot.url}}</code>
+          {{/if}}
+        </span>
+        {{#if this.recording}}
+          <span class="time-travel__recording-indicator">Recording</span>
+        {{else if this.isAtLatest}}
+          <span>Latest</span>
+        {{else}}
+          <span>Time traveling &mdash; drag to the end to return to the most
+            recent state</span>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+{{else}}
+  <Ui::EmptyMessage>
+    <p>
+      No snapshots have been recorded yet. Press the record button in the
+      toolbar, then interact with your application. A snapshot of the tracked
+      state of your services and controllers is captured after every run loop,
+      and the slider lets you move the application back and forth through those
+      states.
+    </p>
+    <p>
+      Note: only serializable state (strings, numbers, booleans, dates, plain
+      arrays and objects) is recorded. Ember Data records, the router URL, and
+      component-local state are not restored.
+    </p>
+  </Ui::EmptyMessage>
+{{/if}}

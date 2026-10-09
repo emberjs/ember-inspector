@@ -39,5 +39,6 @@ Router.map(function () {
     });
 
     this.route('deprecations', { resetNamespace: true });
+    this.route('time-travel', { resetNamespace: true });
   });
 });
