@@ -64,7 +64,7 @@
 }
 
 .mixin-property-icon-container {
-  width: $mixin-left-padding;
+  width: var(--mixin-left-padding);
 }
 
 .mixin-property-icon {

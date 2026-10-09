@@ -1,7 +1,3 @@
-$blue: #174fff;
-$green: #009900;
-$red: #ff2717;
-
 .ember-table {
   background: var(--base00);
 
@@ -51,15 +47,15 @@ $red: #ff2717;
   }
 
   .blue {
-    color: $blue;
+    color: #174fff;
   }
 
   .green {
-    color: $green;
+    color: #009900;
   }
 
   .red {
-    color: $red;
+    color: #ff2717;
   }
 
   th.is-sortable:hover {
