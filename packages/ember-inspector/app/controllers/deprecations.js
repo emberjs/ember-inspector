@@ -1,5 +1,5 @@
 import { action } from '@ember/object';
-import { service } from 'ember-inspector/utils/service';
+import { service } from '@ember/service';
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 

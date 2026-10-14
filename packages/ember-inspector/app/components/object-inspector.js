@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import { service } from 'ember-inspector/utils/service';
+import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
 export default class ObjectInspector extends Component {

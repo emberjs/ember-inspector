@@ -1,4 +1,4 @@
-import { service } from 'ember-inspector/utils/service';
+import { service } from '@ember/service';
 import { Promise } from 'rsvp';
 import { action } from '@ember/object';
 import TabRoute from 'ember-inspector/routes/tab';

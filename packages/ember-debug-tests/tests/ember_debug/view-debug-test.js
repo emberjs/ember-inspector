@@ -16,7 +16,7 @@ import EmberObject from '@ember/object';
 import Controller from '@ember/controller';
 // eslint-disable-next-line ember/no-at-ember-render-modifiers
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
-import QUnit, { module, skip, test } from 'qunit';
+import QUnit, { module, test } from 'qunit';
 import require from 'require';
 import { hbs } from 'ember-cli-htmlbars';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
@@ -414,7 +414,6 @@ module('Ember Debug - View', function (hooks) {
       this.route('simple');
       this.route('test-in-element-in-component');
       this.route('test-component-in-in-element');
-      this.route('wormhole');
       this.route('inputs');
       this.route('component-in-shadow-dom');
       this.route('comments', { resetNamespace: true }, function () {});
@@ -471,19 +470,6 @@ module('Ember Debug - View', function (hooks) {
           return EmberObject.create({
             toString() {
               return 'Simple Model';
-            },
-          });
-        },
-      }),
-    );
-
-    this.owner.register(
-      'route:wormhole',
-      EmberRoute.extend({
-        model() {
-          return EmberObject.create({
-            toString() {
-              return 'Wormhole Model';
             },
           });
         },
@@ -690,15 +676,6 @@ module('Ember Debug - View', function (hooks) {
       }),
     );
 
-    this.owner.register(
-      'template:wormhole',
-      hbs(
-        '<EmberWormhole @to="target"><div class="in-wormhole">Wormhole</div></EmberWormhole>',
-        {
-          moduleName: 'my-app/templates/wormhole.hbs',
-        },
-      ),
-    );
     this.owner.register(
       'template:inputs',
       hbs('Simple <Input @value="987" />', {
@@ -1228,41 +1205,6 @@ module('Ember Debug - View', function (hooks) {
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
         .hasText('App.TestComponentInElement');
-    });
-
-    const hasWormhole = require.has('ember-wormhole/components/ember-wormhole');
-
-    (hasWormhole ? test : skip)('wormhole', async function (assert) {
-      await visit('wormhole');
-      await rerender();
-      await getRenderTree();
-
-      inElement = find('.in-wormhole');
-
-      await click('.in-wormhole');
-
-      assert
-        .dom('.ember-inspector-tooltip-header', tooltip)
-        .hasText('<EmberWormhole>');
-
-      let actual = highlight.getBoundingClientRect();
-      let expected = inElement.getBoundingClientRect();
-
-      assert.ok(isVisible(tooltip), 'tooltip is visible');
-      assert.ok(isVisible(highlight), 'highlight is visible');
-
-      assert.deepEqual(actual.x, expected.x, 'same x as component');
-      assert.deepEqual(actual.y, expected.y, 'same y as component');
-      assert.deepEqual(actual.width, expected.width, 'same width as component');
-      assert.deepEqual(
-        actual.height,
-        expected.height,
-        'same height as component',
-      );
-
-      assert
-        .dom('.ember-inspector-tooltip-detail-instance', tooltip)
-        .hasText(/ember-wormhole/);
     });
 
     test('component inside shadow dom', async function (assert) {

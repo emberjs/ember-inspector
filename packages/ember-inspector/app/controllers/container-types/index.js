@@ -1,6 +1,6 @@
 import Controller from '@ember/controller';
 import { action } from '@ember/object';
-import { service } from 'ember-inspector/utils/service';
+import { service } from '@ember/service';
 
 export default class ContainerTypesIndexController extends Controller {
   @service port;

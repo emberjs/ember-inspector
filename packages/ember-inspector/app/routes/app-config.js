@@ -1,4 +1,4 @@
-import { service } from 'ember-inspector/utils/service';
+import { service } from '@ember/service';
 import TabRoute from 'ember-inspector/routes/tab';
 
 export default class AppConfigRoute extends TabRoute {

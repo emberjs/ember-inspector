@@ -1,4 +1,4 @@
-import { service } from 'ember-inspector/utils/service';
+import { service } from '@ember/service';
 import Route from '@ember/routing/route';
 
 export default class InfoIndexRoute extends Route {

@@ -12,7 +12,7 @@ import MutableArray from '@ember/array/mutable';
 import ArrayProxy from '@ember/array/proxy';
 import ObjectProxy from '@ember/object/proxy';
 import Service from '@ember/service';
-import { service } from 'ember-inspector/utils/service';
+import { service } from '../helpers/service';
 import { VERSION } from '@ember/version';
 import { tracked } from '@glimmer/tracking';
 import { module, skip, test } from 'qunit';
