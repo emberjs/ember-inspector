@@ -87,6 +87,13 @@ export default class SideNav extends Component {
         title: 'Render Performance',
         pillCount: '',
       },
+      {
+        route: 'time-travel',
+        icon: 'nav-time-travel',
+        label: 'Time Travel',
+        title: 'Time Travel',
+        pillCount: '',
+      },
     ];
   }
 

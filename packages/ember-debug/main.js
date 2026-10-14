@@ -9,6 +9,7 @@ import DataDebug from './data-debug.js';
 import PromiseDebug from './promise-debug.js';
 import ContainerDebug from './container-debug.js';
 import DeprecationDebug from './deprecation-debug.js';
+import TimeTravelDebug from './time-travel-debug.js';
 import Session from './services/session.js';
 
 import { getApplications, getApplicationInstance } from './lib/applications.js';
@@ -79,6 +80,7 @@ export class EmberDebug extends BaseObject {
       'promiseDebug',
       'containerDebug',
       'deprecationDebug',
+      'timeTravelDebug',
       'objectInspector',
       'session',
     ].forEach((prop) => {
@@ -130,6 +132,7 @@ export class EmberDebug extends BaseObject {
       this.startModule('promiseDebug', PromiseDebug);
       this.startModule('containerDebug', ContainerDebug);
       this.startModule('deprecationDebug', DeprecationDebug);
+      this.startModule('timeTravelDebug', TimeTravelDebug);
 
       this.generalDebug.sendBooted();
     });
