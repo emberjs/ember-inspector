@@ -1,4 +1,4 @@
-import { service } from 'ember-inspector/utils/service';
+import { service } from '@ember/service';
 import { set } from '@ember/object';
 
 import { TrackedArray } from 'tracked-built-ins';

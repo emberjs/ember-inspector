@@ -2,7 +2,7 @@
 import { action, computed } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import Controller from '@ember/controller';
-import { service } from 'ember-inspector/utils/service';
+import { service } from '@ember/service';
 
 import escapeRegExp from '../utils/escape-reg-exp';
 import debounceComputed from '../computed/debounce';

@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { service } from 'ember-inspector/utils/service';
+import { service } from '@ember/service';
 import { action } from '@ember/object';
 
 export default class PropertiesBase extends Component {

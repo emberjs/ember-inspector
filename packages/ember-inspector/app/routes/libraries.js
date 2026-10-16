@@ -1,4 +1,4 @@
-import { service } from 'ember-inspector/utils/service';
+import { service } from '@ember/service';
 // eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { readOnly } from '@ember/object/computed';
 import { Promise } from 'rsvp';

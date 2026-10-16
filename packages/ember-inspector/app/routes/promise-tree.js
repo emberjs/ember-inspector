@@ -1,4 +1,4 @@
-import { service } from 'ember-inspector/utils/service';
+import { service } from '@ember/service';
 import { Promise } from 'rsvp';
 
 import PromiseAssembler from '../libs/promise-assembler';

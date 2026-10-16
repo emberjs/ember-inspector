@@ -1,6 +1,6 @@
 import { action } from '@ember/object';
 import Controller from '@ember/controller';
-import { service } from 'ember-inspector/utils/service';
+import { service } from '@ember/service';
 import { debounce, once } from '@ember/runloop';
 import { tracked } from '@glimmer/tracking';
 

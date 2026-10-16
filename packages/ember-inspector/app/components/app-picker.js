@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import { service } from 'ember-inspector/utils/service';
+import { service } from '@ember/service';
 
 export default class AppPickerComponent extends Component {
   @service port;
