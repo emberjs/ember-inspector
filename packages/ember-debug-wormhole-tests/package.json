@@ -44,7 +44,7 @@
     "globals": "^15.14.0",
     "loader.js": "^4.7.0",
     "prettier": "^3.4.2",
-    "qunit": "^2.23.1",
+    "qunit": "^3.0.0",
     "qunit-dom": "^3.4.0",
     "webpack": "^5.97.1"
   },
