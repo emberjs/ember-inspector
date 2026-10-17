@@ -206,8 +206,8 @@ importers:
         specifier: ^29.0.3
         version: 29.0.3(rollup@4.41.1)
       '@rollup/plugin-node-resolve':
-        specifier: ^16.0.1
-        version: 16.0.1(rollup@4.41.1)
+        specifier: ^16.0.3
+        version: 16.0.3(rollup@4.41.1)
       backburner.js:
         specifier: ^2.8.0
         version: 2.8.0
@@ -3030,8 +3030,8 @@ packages:
       rollup:
         optional: true
 
-  '@rollup/plugin-node-resolve@16.0.1':
-    resolution: {integrity: sha512-tk5YCxJWIG81umIvNkSod2qK5KyQW19qcBF/B78n1bjtOON6gzKoVeSzAE8yHCZEDmqkHKkxplExA8KzdJLJpA==}
+  '@rollup/plugin-node-resolve@16.0.3':
+    resolution: {integrity: sha512-lUYM3UBGuM93CnMPG1YocWu7X802BrNF3jW2zny5gQyLQgRFJhV1Sq0Zi74+dh/6NBx1DxFC4b4GXg9wUCG5Qg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^2.78.0||^3.0.0||^4.0.0
@@ -3041,6 +3041,15 @@ packages:
 
   '@rollup/pluginutils@5.1.4':
     resolution: {integrity: sha512-USm05zrsFxYLPdWWq+K3STlWiT/3ELn3RcV5hJMghpeAIhxfsUIg6mt12CBJBInWMV4VneoV7SfGv8xIwo2qNQ==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+
+  '@rollup/pluginutils@5.4.0':
+    resolution: {integrity: sha512-MfPp06CjRLfXQ3wY0R8vJDYBy/MvVcc9OulEfR0B8Iv9ko+GCNaRZ+EpJYFl27LhKsZK0o420sYCRHCjfCgeUg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
@@ -11560,7 +11569,7 @@ snapshots:
       '@babel/helper-plugin-utils': 7.27.1
       debug: 4.3.7
       lodash.debounce: 4.0.8
-      resolve: 1.22.8
+      resolve: 1.22.13
     transitivePeerDependencies:
       - supports-color
 
@@ -14358,13 +14367,13 @@ snapshots:
     optionalDependencies:
       rollup: 4.41.1
 
-  '@rollup/plugin-node-resolve@16.0.1(rollup@4.41.1)':
+  '@rollup/plugin-node-resolve@16.0.3(rollup@4.41.1)':
     dependencies:
-      '@rollup/pluginutils': 5.1.4(rollup@4.41.1)
+      '@rollup/pluginutils': 5.4.0(rollup@4.41.1)
       '@types/resolve': 1.20.2
       deepmerge: 4.3.1
       is-module: 1.0.0
-      resolve: 1.22.8
+      resolve: 1.22.13
     optionalDependencies:
       rollup: 4.41.1
 
@@ -14373,6 +14382,14 @@ snapshots:
       '@types/estree': 1.0.7
       estree-walker: 2.0.2
       picomatch: 4.0.2
+    optionalDependencies:
+      rollup: 4.41.1
+
+  '@rollup/pluginutils@5.4.0(rollup@4.41.1)':
+    dependencies:
+      '@types/estree': 1.0.9
+      estree-walker: 2.0.2
+      picomatch: 4.0.7
     optionalDependencies:
       rollup: 4.41.1
 
@@ -15305,7 +15322,7 @@ snapshots:
       regenerator: 0.8.40
       regexpu: 1.3.0
       repeating: 1.1.3
-      resolve: 1.22.8
+      resolve: 1.22.13
       shebang-regex: 1.0.0
       slash: 1.0.0
       source-map: 0.5.7
@@ -15408,7 +15425,7 @@ snapshots:
       glob: 7.2.3
       pkg-up: 2.0.0
       reselect: 3.0.1
-      resolve: 1.22.8
+      resolve: 1.22.13
 
   babel-plugin-module-resolver@5.0.2:
     dependencies:
@@ -17338,7 +17355,7 @@ snapshots:
       broccoli-funnel: 1.2.0
       clone: 2.1.2
       ember-cli-version-checker: 1.3.1
-      resolve: 1.22.8
+      resolve: 1.22.13
     transitivePeerDependencies:
       - supports-color
 
@@ -17551,7 +17568,7 @@ snapshots:
       broccoli-source: 1.1.0
       debug: 2.6.9
       lodash: 4.17.21
-      resolve: 1.22.8
+      resolve: 1.22.13
     transitivePeerDependencies:
       - supports-color
 
@@ -17637,7 +17654,7 @@ snapshots:
       ember-cli-babel-plugin-helpers: 1.1.1
       execa: 2.1.0
       fs-extra: 8.1.0
-      resolve: 1.22.8
+      resolve: 1.22.13
       rsvp: 4.8.5
       semver: 6.3.1
       stagehand: 1.0.1
@@ -17653,7 +17670,7 @@ snapshots:
       debug: 4.3.7
       execa: 4.1.0
       fs-extra: 9.1.0
-      resolve: 1.22.8
+      resolve: 1.22.13
       rsvp: 4.8.5
       semver: 7.6.3
       stagehand: 1.0.1
@@ -17668,7 +17685,7 @@ snapshots:
       debug: 4.3.7
       execa: 4.1.0
       fs-extra: 9.1.0
-      resolve: 1.22.8
+      resolve: 1.22.13
       rsvp: 4.8.5
       semver: 7.6.3
       stagehand: 1.0.1
@@ -17682,7 +17699,7 @@ snapshots:
 
   ember-cli-version-checker@2.2.0:
     dependencies:
-      resolve: 1.22.8
+      resolve: 1.22.13
       semver: 5.7.2
 
   ember-cli-version-checker@3.1.3:
@@ -20365,7 +20382,7 @@ snapshots:
       heimdalljs: 0.2.6
       heimdalljs-logger: 0.1.10
       path-root: 0.1.1
-      resolve: 1.22.8
+      resolve: 1.22.13
       resolve-package-path: 1.2.7
     transitivePeerDependencies:
       - supports-color
@@ -21274,7 +21291,7 @@ snapshots:
       is-plain-object: 2.0.4
       object.map: 1.0.1
       rechoir: 0.6.2
-      resolve: 1.22.8
+      resolve: 1.22.13
     transitivePeerDependencies:
       - supports-color
 
@@ -21550,7 +21567,7 @@ snapshots:
     dependencies:
       findup-sync: 2.0.0
       micromatch: 3.1.10
-      resolve: 1.22.8
+      resolve: 1.22.13
       stack-trace: 0.0.10
     transitivePeerDependencies:
       - supports-color
@@ -21934,7 +21951,7 @@ snapshots:
   normalize-package-data@2.5.0:
     dependencies:
       hosted-git-info: 2.8.9
-      resolve: 1.22.8
+      resolve: 1.22.13
       semver: 5.7.2
       validate-npm-package-license: 3.0.4
 
@@ -22796,7 +22813,7 @@ snapshots:
 
   rechoir@0.6.2:
     dependencies:
-      resolve: 1.22.8
+      resolve: 1.22.13
 
   redeyed@1.0.1:
     dependencies:
@@ -23011,17 +23028,17 @@ snapshots:
   resolve-package-path@1.2.7:
     dependencies:
       path-root: 0.1.1
-      resolve: 1.22.8
+      resolve: 1.22.13
 
   resolve-package-path@2.0.0:
     dependencies:
       path-root: 0.1.1
-      resolve: 1.22.8
+      resolve: 1.22.13
 
   resolve-package-path@3.1.0:
     dependencies:
       path-root: 0.1.1
-      resolve: 1.22.8
+      resolve: 1.22.13
 
   resolve-package-path@4.0.3:
     dependencies:
