@@ -64,7 +64,7 @@ jobs:
       - run: pnpm install --ignore-scripts
       - run: pnpm build:ember-debug
       - name: Upload artifacts (ember-debug)
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ember-debug
           path: packages/ember-debug/dist
@@ -282,22 +282,22 @@ jobs:
           mkdir -p dist/npm
           tar xvzf "ember-inspector-$VERSION.tgz" -C dist/npm --strip-components 1
       - name: Upload artifacts (bookmarklet)
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: bookmarklet
           path: packages/ember-inspector/dist/bookmarklet
       - name: Upload artifacts (Chrome)
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: chrome
           path: packages/ember-inspector/dist/chrome
       - name: Upload artifacts (Firefox)
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: firefox
           path: packages/ember-inspector/dist/firefox
       - name: Upload artifacts (npm)
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: npm
           path: packages/ember-inspector/dist/npm
