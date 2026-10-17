@@ -612,8 +612,8 @@ importers:
         specifier: ^6.0.0
         version: 6.1.0
       ember-test-selectors:
-        specifier: ^6.0.0
-        version: 6.0.0
+        specifier: ^7.1.0
+        version: 7.1.0
       ember-truth-helpers:
         specifier: ^3.1.1
         version: 3.1.1
@@ -5934,6 +5934,10 @@ packages:
     resolution: {integrity: sha512-PgYcI9PeNvtKaF0QncxfbS68olMYM1idwuI8v/WxsjOGqUx5bmsu6V17vy/d9hX4mwmjgsBhEghrVasGSuaIgw==}
     engines: {node: 12.* || 14.* || >= 16.*}
 
+  ember-test-selectors@7.1.0:
+    resolution: {integrity: sha512-mIgjzv5PE+z64p1+o8eYkLHqkJY1g4BD93vgfE+ZTAvarIsJxGO8WmmZ7xCkmCM0xB4Idf0duR7IhLRsTg/81w==}
+    engines: {node: 18.* || 20.* || >= 22.*}
+
   ember-tracked-storage-polyfill@1.0.0:
     resolution: {integrity: sha512-eL7lZat68E6P/D7b9UoTB5bB5Oh/0aju0Z7PCMi3aTwhaydRaxloE7TGrTRYU+NdJuyNVZXeGyxFxn2frvd3TA==}
     engines: {node: 12.* || >= 14}
@@ -10402,6 +10406,9 @@ packages:
   strip-json-comments@3.1.1:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
+
+  strip-test-selectors@0.1.0:
+    resolution: {integrity: sha512-wkVYph30L7wYkMf5EypfTqhY4qZwmQ0hpFOTksaXne49YbUr2jenJl5w5yj9IWx3ojtoH9BGAQ7cShnYEzbs5g==}
 
   stubborn-fs@2.0.0:
     resolution: {integrity: sha512-Y0AvSwDw8y+nlSNFXMm2g6L51rBGdAQT20J3YSOqxC53Lo3bjWRtr2BKcfYoAf352WYpsZSTURrA0tqhfgudPA==}
@@ -18655,6 +18662,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  ember-test-selectors@7.1.0:
+    dependencies:
+      calculate-cache-key-for-tree: 2.0.0
+      ember-cli-babel: 7.26.11
+      ember-cli-version-checker: 5.1.2
+      strip-test-selectors: 0.1.0
+    transitivePeerDependencies:
+      - supports-color
+
   ember-tracked-storage-polyfill@1.0.0:
     dependencies:
       ember-cli-babel: 7.26.11
@@ -23865,6 +23881,8 @@ snapshots:
   strip-json-comments@2.0.1: {}
 
   strip-json-comments@3.1.1: {}
+
+  strip-test-selectors@0.1.0: {}
 
   stubborn-fs@2.0.0:
     dependencies:
