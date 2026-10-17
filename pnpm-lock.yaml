@@ -459,8 +459,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0
       '@ember/legacy-built-in-components':
-        specifier: ^0.4.2
-        version: 0.4.2(@babel/core@7.29.7)(@glint/template@1.5.1)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.29.7))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.111.1(postcss@8.5.30)))
+        specifier: ^0.5.0
+        version: 0.5.0(@babel/core@7.29.7)(@glint/template@1.5.1)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.29.7))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.111.1(postcss@8.5.30)))
       '@ember/optional-features':
         specifier: ^2.2.0
         version: 2.3.0
@@ -2113,11 +2113,11 @@ packages:
   '@ember/edition-utils@1.2.0':
     resolution: {integrity: sha512-VmVq/8saCaPdesQmftPqbFtxJWrzxNGSQ+e8x8LLe3Hjm36pJ04Q8LeORGZkAeOhldoUX9seLGmSaHeXkIqoog==}
 
-  '@ember/legacy-built-in-components@0.4.2':
-    resolution: {integrity: sha512-rJulbyVQIVe1zEDQDqAQHechHy44DsS2qxO24+NmU/AYxwPFSzWC/OZNCDFSfLU+Y5BVd/00qjxF0pu7Nk+TNA==}
-    engines: {node: 12.* || 14.* || >= 16}
+  '@ember/legacy-built-in-components@0.5.0':
+    resolution: {integrity: sha512-hbUCt5rii6CT1L4mheH+aqCDeF1dzp/UjS2g7KFIKYGd9zMqyKU4OEnQGk2/O5tATXkEGPf4Zpj671BddBOrbQ==}
+    engines: {node: '>= 16'}
     peerDependencies:
-      ember-source: '*'
+      ember-source: '>= 4.8'
 
   '@ember/optional-features@2.3.0':
     resolution: {integrity: sha512-+M8CkPledQEaDbfIlwlq6Phgpm5jdT3a6WVDJk7b/zadw5xAJkuQKVK7DgR0SFgHGiWlyn6a8AU5p2mCA706RA==}
@@ -11558,9 +11558,9 @@ snapshots:
       '@babel/core': 7.29.7
       '@babel/helper-compilation-targets': 7.26.5
       '@babel/helper-plugin-utils': 7.27.1
-      debug: 4.3.7
+      debug: 4.4.3
       lodash.debounce: 4.0.8
-      resolve: 1.22.8
+      resolve: 1.22.13
     transitivePeerDependencies:
       - supports-color
 
@@ -13178,7 +13178,7 @@ snapshots:
 
   '@ember/edition-utils@1.2.0': {}
 
-  '@ember/legacy-built-in-components@0.4.2(@babel/core@7.29.7)(@glint/template@1.5.1)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.29.7))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.111.1(postcss@8.5.30)))':
+  '@ember/legacy-built-in-components@0.5.0(@babel/core@7.29.7)(@glint/template@1.5.1)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.29.7))(@glint/template@1.5.1)(rsvp@4.8.5)(webpack@5.111.1(postcss@8.5.30)))':
     dependencies:
       '@embroider/macros': 1.21.3(@babel/core@7.29.7)(@glint/template@1.5.1)
       ember-cli-babel: 7.26.11
@@ -14071,7 +14071,7 @@ snapshots:
   '@npmcli/fs@1.1.1':
     dependencies:
       '@gar/promisify': 1.1.3
-      semver: 7.6.3
+      semver: 7.8.5
 
   '@npmcli/git@6.0.3':
     dependencies:
@@ -14081,7 +14081,7 @@ snapshots:
       npm-pick-manifest: 10.0.0
       proc-log: 5.0.0
       promise-retry: 2.0.1
-      semver: 7.6.3
+      semver: 7.8.5
       which: 5.0.0
 
   '@npmcli/move-file@1.1.2':
@@ -14892,13 +14892,13 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.3.7
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
   agent-base@7.1.1:
     dependencies:
-      debug: 4.3.7
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -15305,7 +15305,7 @@ snapshots:
       regenerator: 0.8.40
       regexpu: 1.3.0
       repeating: 1.1.3
-      resolve: 1.22.8
+      resolve: 1.22.13
       shebang-regex: 1.0.0
       slash: 1.0.0
       source-map: 0.5.7
@@ -17650,12 +17650,12 @@ snapshots:
     dependencies:
       ansi-to-html: 0.6.15
       broccoli-stew: 3.0.0
-      debug: 4.3.7
+      debug: 4.4.3
       execa: 4.1.0
       fs-extra: 9.1.0
-      resolve: 1.22.8
+      resolve: 1.22.13
       rsvp: 4.8.5
-      semver: 7.6.3
+      semver: 7.8.5
       stagehand: 1.0.1
       walk-sync: 2.2.0
     transitivePeerDependencies:
@@ -20490,14 +20490,14 @@ snapshots:
     dependencies:
       '@tootallnate/once': 1.1.2
       agent-base: 6.0.2
-      debug: 4.3.7
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
   http-proxy-agent@7.0.2:
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.7
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -20517,21 +20517,21 @@ snapshots:
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.7
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@7.0.5:
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.7
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@7.0.6:
     dependencies:
       agent-base: 7.1.4
-      debug: 4.3.7
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -21274,7 +21274,7 @@ snapshots:
       is-plain-object: 2.0.4
       object.map: 1.0.1
       rechoir: 0.6.2
-      resolve: 1.22.8
+      resolve: 1.22.13
     transitivePeerDependencies:
       - supports-color
 
@@ -21550,7 +21550,7 @@ snapshots:
     dependencies:
       findup-sync: 2.0.0
       micromatch: 3.1.10
-      resolve: 1.22.8
+      resolve: 1.22.13
       stack-trace: 0.0.10
     transitivePeerDependencies:
       - supports-color
@@ -21934,7 +21934,7 @@ snapshots:
   normalize-package-data@2.5.0:
     dependencies:
       hosted-git-info: 2.8.9
-      resolve: 1.22.8
+      resolve: 1.22.13
       semver: 5.7.2
       validate-npm-package-license: 3.0.4
 
@@ -21956,7 +21956,7 @@ snapshots:
 
   npm-install-checks@7.1.1:
     dependencies:
-      semver: 7.6.3
+      semver: 7.8.5
 
   npm-normalize-package-bin@4.0.0: {}
 
@@ -21979,7 +21979,7 @@ snapshots:
       npm-install-checks: 7.1.1
       npm-normalize-package-bin: 4.0.0
       npm-package-arg: 12.0.1
-      semver: 7.6.3
+      semver: 7.8.5
 
   npm-run-path@2.0.2:
     dependencies:
@@ -22302,7 +22302,7 @@ snapshots:
       ky: 1.8.1
       registry-auth-token: 5.0.2
       registry-url: 6.0.1
-      semver: 7.6.3
+      semver: 7.8.5
 
   package-json@6.5.0:
     dependencies:
@@ -22796,7 +22796,7 @@ snapshots:
 
   rechoir@0.6.2:
     dependencies:
-      resolve: 1.22.8
+      resolve: 1.22.13
 
   redeyed@1.0.1:
     dependencies:
@@ -23016,7 +23016,7 @@ snapshots:
   resolve-package-path@2.0.0:
     dependencies:
       path-root: 0.1.1
-      resolve: 1.22.8
+      resolve: 1.22.13
 
   resolve-package-path@3.1.0:
     dependencies:
@@ -23592,7 +23592,7 @@ snapshots:
   socks-proxy-agent@6.2.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.7
+      debug: 4.4.3
       socks: 2.8.3
     transitivePeerDependencies:
       - supports-color
