@@ -28,7 +28,7 @@
   "devDependencies": {
     "@babel/core": "^7.29.0",
     "@babel/eslint-parser": "^7.28.6",
-    "@babel/plugin-proposal-decorators": "^7.29.0",
+    "@babel/plugin-proposal-decorators": "^8.0.2",
     "@ember/optional-features": "^2.3.0",
     "@ember/test-helpers": "^5.4.2",
     "@embroider/legacy-inspector-support": "^0.1.3",
