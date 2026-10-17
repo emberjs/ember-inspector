@@ -25,7 +25,7 @@
     "watch-test:inspector-ui": "pnpm --filter ember-inspector watch-test"
   },
   "devDependencies": {
-    "release-plan": "^0.18.0"
+    "release-plan": "^0.20.1"
   },
   "packageManager": "pnpm@9.12.1",
   "engines": {
