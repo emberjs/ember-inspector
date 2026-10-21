@@ -3,7 +3,7 @@ module.exports = {
     [
       require('@babel/plugin-proposal-decorators').default,
       {
-        legacy: true,
+        version: 'legacy',
       },
     ],
   ],
