@@ -16,7 +16,7 @@ export default class RecordsController extends Controller {
   @tracked filters = [];
   @tracked modelType;
   @tracked searchValue = '';
-  @tracked sorts = undefined;
+  @tracked sorts = [];
 
   recordToString(record) {
     return (record.searchKeywords || []).join(' ').toLowerCase();
@@ -72,7 +72,7 @@ export default class RecordsController extends Controller {
   }
 
   @action
-  inspectModel([record]) {
+  inspectModel(record) {
     set(this, 'selection', record);
     this.port.send('data:inspectModel', { objectId: record.objectId });
   }
