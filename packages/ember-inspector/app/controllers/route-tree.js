@@ -1,7 +1,6 @@
-// eslint-disable-next-line ember/no-computed-properties-in-native-classes
-import { alias } from '@ember/object/computed';
-// eslint-disable-next-line ember/no-computed-properties-in-native-classes
-import { action, computed, set } from '@ember/object';
+import { action } from '@ember/object';
+import { dependentKeyCompat } from '@ember/object/compat';
+import { tracked } from '@glimmer/tracking';
 import Controller, { inject as controller } from '@ember/controller';
 import { service } from '@ember/service';
 import checkCurrentRoute from 'ember-inspector/utils/check-current-route';
@@ -11,15 +10,21 @@ import RouteCellName from 'ember-inspector/components/route-cell-name';
 import RouteCellObjects from 'ember-inspector/components/route-cell-objects';
 import RouteCellUrl from 'ember-inspector/components/route-cell-url';
 
+class RouteTreeOptions {
+  @tracked hideRoutes = false;
+  @tracked hideSubstates = false;
+}
+
 export default class RouteTreeController extends Controller {
   @controller application;
   @service port;
 
   queryParams = ['hideRoutes'];
 
-  currentRoute = null;
+  options = new RouteTreeOptions();
 
-  searchValue = '';
+  @tracked currentRoute = null;
+  @tracked searchValue = '';
 
   routeCells = {
     name: RouteCellName,
@@ -27,14 +32,19 @@ export default class RouteTreeController extends Controller {
     url: RouteCellUrl,
   };
 
-  @alias('options.hideRoutes') hideRoutes;
+  /**
+   * The `hideRoutes` query param.
+   * The query param system observes it, so it needs `@dependentKeyCompat`.
+   */
+  @dependentKeyCompat
+  get hideRoutes() {
+    return this.options.hideRoutes;
+  }
 
-  @computed(
-    'model.[]',
-    'options.{hideRoutes,hideSubstates}',
-    'currentRoute.{name,url}',
-    'searchValue',
-  )
+  set hideRoutes(value) {
+    this.options.hideRoutes = value;
+  }
+
   get filtered() {
     if (!Array.isArray(this.model)) {
       return [];
@@ -60,7 +70,6 @@ export default class RouteTreeController extends Controller {
     });
   }
 
-  @computed('filtered.[]')
   get rows() {
     return this.filtered.map(function (route) {
       return {
@@ -73,12 +82,7 @@ export default class RouteTreeController extends Controller {
 
   constructor() {
     super(...arguments);
-
-    set(this, 'model', []);
-    set(this, 'options', {
-      hideRoutes: false,
-      hideSubstates: false,
-    });
+    this.model = [];
   }
 
   @action

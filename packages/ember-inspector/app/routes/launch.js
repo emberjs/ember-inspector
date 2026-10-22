@@ -1,6 +1,4 @@
 import { service } from '@ember/service';
-// eslint-disable-next-line ember/no-computed-properties-in-native-classes
-import { readOnly } from '@ember/object/computed';
 import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
 const { Promise } = RSVP;
@@ -16,7 +14,9 @@ export default class LaunchRoute extends Route {
   @service storage;
   @service router;
 
-  @readOnly('config.VERSION') version;
+  get version() {
+    return this.config.VERSION;
+  }
 
   beforeModel() {
     let targetRoute = 'component-tree';

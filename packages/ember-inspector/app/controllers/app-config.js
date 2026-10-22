@@ -1,5 +1,3 @@
-// eslint-disable-next-line ember/no-computed-properties-in-native-classes
-import { computed } from '@ember/object';
 import Controller from '@ember/controller';
 
 export default class AppConfigController extends Controller {
@@ -10,7 +8,6 @@ export default class AppConfigController extends Controller {
     ];
   }
 
-  @computed('model')
   get rows() {
     return Object.entries(this.model).map(([key, value]) => {
       const obj = { key, value };

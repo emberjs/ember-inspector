@@ -1,11 +1,10 @@
-/* eslint-disable ember/no-computed-properties-in-native-classes */
-import { action, computed } from '@ember/object';
+import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import Controller from '@ember/controller';
 import { service } from '@ember/service';
 
 import escapeRegExp from '../utils/escape-reg-exp';
-import debounceComputed from '../computed/debounce';
+import debounced from '../utils/debounced';
 import { isNullish } from '../utils/nullish';
 
 export default class RenderTreeController extends Controller {
@@ -55,15 +54,12 @@ export default class RenderTreeController extends Controller {
 
   // bound to the input field, updates the `search` property
   // 300ms after changing
-  @debounceComputed('search', 300)
-  searchValue;
+  @debounced('search', 300) searchValue;
 
-  @computed('model.isHighlightSupported')
   get isHighlightEnabled() {
     return this.model.isHighlightSupported;
   }
 
-  @computed('escapedSearch', 'model.profiles.@each.name', 'search')
   get filtered() {
     if (isNullish(this.escapedSearch)) {
       return this.model.profiles;

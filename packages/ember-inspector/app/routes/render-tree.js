@@ -1,10 +1,20 @@
-import EmberObject, { set } from '@ember/object';
 import { service } from '@ember/service';
+import { tracked } from '@glimmer/tracking';
 import { Promise } from 'rsvp';
 
 import { TrackedArray } from 'tracked-built-ins';
 
 import TabRoute from './tab';
+
+class RenderTreeModel {
+  @tracked profiles;
+  @tracked isHighlightSupported;
+
+  constructor(profiles, isHighlightSupported) {
+    this.profiles = new TrackedArray(profiles);
+    this.isHighlightSupported = isHighlightSupported;
+  }
+}
 
 export default class RenderTreeRoute extends TabRoute {
   @service port;
@@ -14,12 +24,7 @@ export default class RenderTreeRoute extends TabRoute {
       this.port.one(
         'render:profilesAdded',
         function ({ profiles, isHighlightSupported }) {
-          resolve(
-            EmberObject.create({
-              profiles: new TrackedArray(profiles),
-              isHighlightSupported,
-            }),
-          );
+          resolve(new RenderTreeModel(profiles, isHighlightSupported));
         },
       );
       this.port.send('render:watchProfiles');
@@ -46,7 +51,7 @@ export default class RenderTreeRoute extends TabRoute {
   }
 
   profilesUpdated = (message) => {
-    set(this.controller.model, 'profiles', message.profiles);
+    this.controller.model.profiles = new TrackedArray(message.profiles);
   };
 
   profilesAdded = (message) => {
@@ -57,16 +62,14 @@ export default class RenderTreeRoute extends TabRoute {
       message.isHighlightSupported !==
         this.controller.model.isHighlightSupported
     ) {
-      set(
-        this.controller.model,
-        'isHighlightSupported',
-        message.isHighlightSupported,
-      );
+      this.controller.model.isHighlightSupported = message.isHighlightSupported;
     }
 
     currentProfiles.push(profiles);
     if (currentProfiles.length > 100) {
-      set(this.controller.model, 'profiles', currentProfiles.slice(0, 100));
+      this.controller.model.profiles = new TrackedArray(
+        currentProfiles.slice(0, 100),
+      );
     }
   };
 }

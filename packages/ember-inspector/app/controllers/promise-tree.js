@@ -1,11 +1,9 @@
 import { action } from '@ember/object';
 import Controller from '@ember/controller';
 import { service } from '@ember/service';
-import { debounce, once } from '@ember/runloop';
 import { tracked } from '@glimmer/tracking';
 
-import { observes } from '@ember-decorators/object';
-
+import debounced from 'ember-inspector/utils/debounced';
 import { isNullish } from 'ember-inspector/utils/nullish';
 
 export default class PromiseTreeController extends Controller {
@@ -20,7 +18,8 @@ export default class PromiseTreeController extends Controller {
   // Keep track of promise stack traces.
   // It is opt-in due to performance reasons.
   @tracked instrumentWithStack = false;
-  @tracked searchValue = null;
+
+  @debounced('effectiveSearch', 500) searchValue;
 
   // below used to show the "refresh" message
   get isEmpty() {
@@ -76,17 +75,6 @@ export default class PromiseTreeController extends Controller {
     });
   }
 
-  // eslint-disable-next-line ember/no-observers
-  @observes('searchValue')
-  searchChanged() {
-    // eslint-disable-next-line ember/no-runloop
-    debounce(this, this.updateEffectiveSearch, 500);
-  }
-
-  updateEffectiveSearch = () => {
-    this.effectiveSearch = this.searchValue;
-  };
-
   @action
   toggleExpand(promise) {
     const isExpanded = !promise.isExpanded;
@@ -135,7 +123,6 @@ export default class PromiseTreeController extends Controller {
   @action
   clear() {
     this.createdAfter = new Date();
-    // eslint-disable-next-line ember/no-runloop
-    once(this, this.updateEffectiveSearch);
+    this.effectiveSearch = this.searchValue;
   }
 }

@@ -25,7 +25,7 @@ export default class ContainerTypeRoute extends TabRoute {
   setupController(controller) {
     controller.setProperties({
       search: '',
-      searchVal: '',
+      searchValue: '',
     });
     super.setupController(...arguments);
   }

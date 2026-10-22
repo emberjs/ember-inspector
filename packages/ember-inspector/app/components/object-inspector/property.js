@@ -1,9 +1,6 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-// eslint-disable-next-line ember/no-computed-properties-in-native-classes
-import { action, computed } from '@ember/object';
-// eslint-disable-next-line ember/no-computed-properties-in-native-classes
-import { alias, equal } from '@ember/object/computed';
+import { action } from '@ember/object';
 import { next } from '@ember/runloop';
 import parseText from 'ember-inspector/utils/parse-text';
 
@@ -14,22 +11,29 @@ export default class ObjectInspectorProperty extends Component {
   // Bound to editing textbox
   @tracked txtValue = null;
 
-  @alias('args.model.value.isCalculated') isCalculated;
+  get isCalculated() {
+    return this.args.model?.value?.isCalculated;
+  }
 
-  @equal('args.model.value.type', 'type-array')
-  isArray;
+  get isArray() {
+    return this.args.model?.value?.type === 'type-array';
+  }
 
-  @equal('args.model.value.type', 'type-date')
-  isDate;
+  get isDate() {
+    return this.args.model?.value?.type === 'type-date';
+  }
 
-  @equal('args.model.value.type', 'type-ember-object')
-  isEmberObject;
+  get isEmberObject() {
+    return this.args.model?.value?.type === 'type-ember-object';
+  }
 
-  @equal('args.model.value.type', 'type-object')
-  isObject;
+  get isObject() {
+    return this.args.model?.value?.type === 'type-object';
+  }
 
-  @equal('args.model.value.type', 'type-string')
-  isString;
+  get isString() {
+    return this.args.model?.value?.type === 'type-string';
+  }
 
   get isOwner() {
     return this.args.model?.value?.type === 'type-owner';
@@ -58,7 +62,6 @@ export default class ObjectInspectorProperty extends Component {
     );
   }
 
-  @computed('args.model.dependentKeys.[]', 'isCalculated')
   get hasDependentKeys() {
     return this.args.model?.dependentKeys?.length && this.isCalculated;
   }

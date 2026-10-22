@@ -1,8 +1,8 @@
 import Controller, { inject as controller } from '@ember/controller';
 import { service } from '@ember/service';
-// eslint-disable-next-line ember/no-computed-properties-in-native-classes
-import { action, computed, set } from '@ember/object';
-import debounceComputed from 'ember-inspector/computed/debounce';
+import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
+import debounced from 'ember-inspector/utils/debounced';
 import searchMatch from 'ember-inspector/utils/search-match';
 
 export default class ContainerTypeContoller extends Controller {
@@ -10,12 +10,11 @@ export default class ContainerTypeContoller extends Controller {
   @service port;
   @service router;
 
-  @debounceComputed('search', 300)
-  searchValue;
+  @tracked search = null;
+  @tracked sorts;
 
-  search = null;
+  @debounced('search', 300) searchValue;
 
-  @computed('model.@each.name', 'search')
   get rows() {
     return this.model.filter((instance) =>
       searchMatch(instance.name, this.search),
@@ -80,6 +79,6 @@ export default class ContainerTypeContoller extends Controller {
         },
       ];
     }
-    set(this, 'sorts', sorts);
+    this.sorts = sorts;
   }
 }

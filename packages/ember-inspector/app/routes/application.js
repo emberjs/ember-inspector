@@ -2,8 +2,22 @@
 import { service } from '@ember/service';
 import { action, set } from '@ember/object';
 import Route from '@ember/routing/route';
+import { tracked } from '@glimmer/tracking';
 import Ember from 'ember';
 const { NativeArray } = Ember;
+
+/**
+ * One property row of the object inspector.
+ * `objectInspector:updateProperty` replaces `value` and `dependentKeys`.
+ */
+class PropertyRecord {
+  @tracked value;
+  @tracked dependentKeys;
+
+  constructor(data) {
+    Object.assign(this, data);
+  }
+}
 
 export default class ApplicationRoute extends Route {
   @service adapter;
@@ -77,9 +91,9 @@ export default class ApplicationRoute extends Route {
       const detail = this.controller.mixinDetails.mixins.at(options.mixinIndex);
       let property = detail.properties.find((x) => x.name === options.property);
       if (!property) return;
-      set(property, 'value', options.value);
+      property.value = options.value;
       if (options.dependentKeys) {
-        set(property, 'dependentKeys', options.dependentKeys);
+        property.dependentKeys = options.dependentKeys;
       }
     }
   }
@@ -107,5 +121,8 @@ export default class ApplicationRoute extends Route {
 }
 
 function arrayize(mixin) {
+  mixin.properties = mixin.properties.map(
+    (property) => new PropertyRecord(property),
+  );
   NativeArray.apply(mixin.properties);
 }
