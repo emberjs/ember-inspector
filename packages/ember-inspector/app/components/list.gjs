@@ -214,7 +214,7 @@ export default class ListComponent extends Component {
     this.onResize = () => {
       this.debounceColumnWidths.perform();
     };
-    this.layoutService.on('content-height-update', this.onResize);
+    this.layoutService.on('resize', this.onResize);
   }
 
   /**
@@ -298,7 +298,7 @@ export default class ListComponent extends Component {
     if (listHeader) {
       listHeader.removeEventListener('contextmenu', this.showBasicContext);
     }
-    this.layoutService.off('content-height-update', this.onResize);
+    this.layoutService.off('resize', this.onResize);
     return super.willDestroy(...arguments);
   }
 

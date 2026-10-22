@@ -4,8 +4,7 @@
  *
  * Uses local storage to cache a user's preferred settings.
  */
-import { set } from '@ember/object';
-
+import { tracked } from '@glimmer/tracking';
 import { isNone } from '@ember/utils';
 import compareArrays from 'ember-inspector/utils/compare-arrays';
 
@@ -14,6 +13,11 @@ const { keys } = Object;
 const THIRTY_DAYS_FROM_NOW = 1000 * 60 * 60 * 24 * 30;
 
 export default class {
+  /**
+   * The visible state of each column: width, left offset and max width.
+   */
+  @tracked columns = [];
+
   /**
    * Set up everything when new instance is created.
    *
@@ -300,7 +304,7 @@ export default class {
     });
     this.saveVisibility();
     this.saveWidths();
-    set(this, 'columns', columns);
+    this.columns = columns;
   }
 
   /**

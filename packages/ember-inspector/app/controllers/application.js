@@ -42,6 +42,16 @@ export default class ApplicationController extends Controller {
     this._navWidthExpanded = value;
   }
 
+  @action
+  setNavWidth(width) {
+    this.navWidth = width;
+  }
+
+  @action
+  setInspectorWidth(width) {
+    this.inspectorWidth = width;
+  }
+
   get isChrome() {
     return this.port?.adapter?.name === 'chrome';
   }

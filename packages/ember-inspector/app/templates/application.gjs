@@ -28,6 +28,7 @@ export default RouteTemplate(
                 @classes="split-panel split-panel-sidebar-1"
                 @side="left"
                 @width={{@controller.navWidth}}
+                @onResize={{@controller.setNavWidth}}
               >
                 <div class="split-panel-hd">
                   <AppPicker @collapsed={{@controller.navIsCollapsed}} />
@@ -97,6 +98,7 @@ export default RouteTemplate(
               @classes="split-panel"
               @side="right"
               @width={{@controller.inspectorWidth}}
+              @onResize={{@controller.setInspectorWidth}}
             >
               <div class="split-panel-hd split-panel-hd-row">
                 <span class="spacer"></span>
