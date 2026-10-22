@@ -6,6 +6,11 @@ import { equal, gt, notEmpty } from '@ember/object/computed';
 import Component from '@glimmer/component';
 import { htmlSafe } from '@ember/template';
 import { isEmpty } from '@ember/utils';
+import { concat, fn } from '@ember/helper';
+import { on } from '@ember/modifier';
+import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import SendToConsole from 'ember-inspector/components/ui/send-to-console';
+import msToTime from 'ember-inspector/helpers/ms-to-time';
 
 const COLOR_MAP = {
   red: '#ff2717',
@@ -14,6 +19,86 @@ const COLOR_MAP = {
 };
 
 export default class PromiseItem extends Component {
+  <template>
+    <@list.cell
+      class={{concat "list-cell-main " this.expandedClass}}
+      style={{this.labelStyle}}
+      @on-click={{fn @toggleExpand @model}}
+    >
+      <div class="list-cell-partial list-cell-partial-size-medium">
+        <span title={{this.label}} class="js-promise-label">
+          <span class="list-cell-arrow"></span>
+          {{this.label}}
+        </span>
+      </div>
+      <div class="list-cell-helper">
+        {{#if @model.hasStack}}
+          <button
+            class="send-to-console send-to-console-chevron-only js-trace-promise-btn"
+            title="Trace promise in console"
+            {{on "click" (fn @tracePromise @model)}}
+            type="button"
+          >
+            {{svgJar "send-with-chevron" width="6px" height="9px"}}
+            Trace
+          </button>
+        {{/if}}
+      </div>
+    </@list.cell>
+
+    <@list.cell>
+      <div
+        class="pill pill-text font-bold js-promise-state"
+        style={{this.style}}
+      >
+        {{this.state}}
+      </div>
+    </@list.cell>
+
+    <@list.cell class="js-promise-value">
+      {{#if this.hasValue}}
+        <div
+          class="list-cell-partial list-cell-partial-size-medium"
+          title={{this.settledValue.inspect}}
+        >
+          {{#if this.isValueInspectable}}
+            <span
+              class="list-link js-promise-object-value"
+              role="button"
+              {{on "click" (fn @inspectObject this.settledValue.objectId)}}
+            >
+              {{this.settledValue.inspect}}
+            </span>
+          {{else}}
+            {{this.settledValue.inspect}}
+          {{/if}}
+        </div>
+
+        <div class="list-cell-helper">
+          {{#if this.isError}}
+            <button
+              data-test-send-to-console-btn
+              class="send-to-console send-to-console-chevron-only"
+              title="Send stack trace to the console"
+              type="button"
+              {{on "click" (fn @sendValueToConsole @model)}}
+            >
+              {{svgJar "send-with-chevron" width="6px" height="9px"}}
+              Stack Trace
+            </button>
+          {{else}}
+            <SendToConsole @action={{@sendValueToConsole}} @param={{@model}} />
+          {{/if}}
+        </div>
+      {{else}}
+        --
+      {{/if}}
+    </@list.cell>
+
+    <@list.cell class="list-cell list-cell-value_numeric js-promise-time">
+      {{msToTime this.timeToSettle}}
+    </@list.cell>
+  </template>
   @equal('args.model.reason.type', 'type-error')
   isError;
 
@@ -146,84 +231,3 @@ export default class PromiseItem extends Component {
     return remaining;
   }
 }
-
-<@list.cell
-  class={{concat "list-cell-main " this.expandedClass}}
-  style={{this.labelStyle}}
-  @on-click={{fn @toggleExpand @model}}
->
-  <div class="list-cell-partial list-cell-partial-size-medium">
-    <span
-      title={{this.label}}
-      class="js-promise-label"
-    >
-      <span class="list-cell-arrow"></span> {{this.label}}
-    </span>
-  </div>
-  <div class="list-cell-helper">
-    {{#if @model.hasStack}}
-      <button
-        class="send-to-console send-to-console-chevron-only js-trace-promise-btn"
-        title="Trace promise in console"
-        {{on "click" (fn @tracePromise @model)}}
-        type="button"
-      >
-        {{svg-jar "send-with-chevron" width="6px" height="9px"}}
-        Trace
-      </button>
-    {{/if}}
-  </div>
-</@list.cell>
-
-<@list.cell>
-  <div
-    class="pill pill-text font-bold js-promise-state"
-    style={{this.style}}
-  >
-    {{this.state}}
-  </div>
-</@list.cell>
-
-<@list.cell class="js-promise-value">
-  {{#if this.hasValue}}
-    <div
-      class="list-cell-partial list-cell-partial-size-medium"
-      title={{this.settledValue.inspect}}
-    >
-      {{#if this.isValueInspectable}}
-        <span
-          class="list-link js-promise-object-value"
-          role="button"
-          {{on "click" (fn @inspectObject this.settledValue.objectId)}}
-        >
-          {{this.settledValue.inspect}}
-        </span>
-      {{else}}
-        {{this.settledValue.inspect}}
-      {{/if}}
-    </div>
-
-    <div class="list-cell-helper">
-      {{#if this.isError}}
-        <button
-          data-test-send-to-console-btn
-          class="send-to-console send-to-console-chevron-only"
-          title="Send stack trace to the console"
-          type="button"
-          {{on "click" (fn @sendValueToConsole @model)}}
-        >
-          {{svg-jar "send-with-chevron" width="6px" height="9px"}}
-          Stack Trace
-        </button>
-      {{else}}
-        <Ui::SendToConsole @action={{@sendValueToConsole}} @param={{@model}} />
-      {{/if}}
-    </div>
-  {{else}}
-    --
-  {{/if}}
-</@list.cell>
-
-<@list.cell class="list-cell list-cell-value_numeric js-promise-time">
-  {{ms-to-time this.timeToSettle}}
-</@list.cell>

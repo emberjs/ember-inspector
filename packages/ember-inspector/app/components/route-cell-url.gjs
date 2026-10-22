@@ -1,3 +1,5 @@
-<code class="js-route-url" title={{@route.value.url}}>
-  {{@route.value.url}}
-</code>
+<template>
+  <code class="js-route-url" title={{@route.value.url}}>
+    {{@route.value.url}}
+  </code>
+</template>

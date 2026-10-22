@@ -1,21 +1,32 @@
-{{#if this.toolbarContainer}}
-  {{#in-element this.toolbarContainer}}
-    <ModelTypesToolbar
-      @getStore={{this.getStore}}
-      @hideEmptyModelTypes={{this.hideEmptyModelTypes}}
-      @orderByRecordCount={{this.orderByRecordCount}}
-      @reload={{this.refresh}}
-    />
-  {{/in-element}}
-{{/if}}
+import RouteTemplate from 'ember-route-template';
+import ModelTypesToolbar from 'ember-inspector/components/model-types-toolbar';
+import ItemTypes from 'ember-inspector/components/item-types';
+export default RouteTemplate(
+  <template>
+    {{#if @controller.toolbarContainer}}
+      {{#in-element @controller.toolbarContainer}}
+        <ModelTypesToolbar
+          @getStore={{@controller.getStore}}
+          @hideEmptyModelTypes={{@controller.hideEmptyModelTypes}}
+          @orderByRecordCount={{@controller.orderByRecordCount}}
+          @reload={{@controller.refresh}}
+        />
+      {{/in-element}}
+    {{/if}}
 
-<ItemTypes
-  @header="Model Types"
-  @sorted={{
-    readonly (if this.orderByRecordCount this.sortByDescCount this.sortByName)
-  }}
-  @type="model"
-  @width={{this.navWidth}}
->
-  {{outlet}}
-</ItemTypes>
+    <ItemTypes
+      @header="Model Types"
+      @sorted={{readonly
+        (if
+          @controller.orderByRecordCount
+          @controller.sortByDescCount
+          @controller.sortByName
+        )
+      }}
+      @type="model"
+      @width={{@controller.navWidth}}
+    >
+      {{outlet}}
+    </ItemTypes>
+  </template>,
+);

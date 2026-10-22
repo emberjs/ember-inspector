@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { compare } from '@ember/utils';
 
 export default class SortProperties extends Component {
+  <template>{{yield this.sortedProperties}}</template>
   get isArray() {
     const props = this.args.properties || [];
     return (
@@ -95,5 +96,3 @@ function sortBy(items, keys) {
     return 0;
   });
 }
-
-{{yield this.sortedProperties}}

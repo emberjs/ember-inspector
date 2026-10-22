@@ -8,10 +8,91 @@ import { task, timeout } from 'ember-concurrency';
 import ResizableColumns from 'ember-inspector/libs/resizable-columns';
 import { service } from '@ember/service';
 import { action } from '@ember/object';
+import didInsert from '@ember/render-modifiers/modifiers/did-insert';
+import didUpdate from '@ember/render-modifiers/modifiers/did-update';
+import buildStyle from 'ember-inspector/helpers/build-style';
+import { concat, hash, get, fn } from '@ember/helper';
+import ListCell from 'ember-inspector/components/list-cell';
+import ListContent from 'ember-inspector/components/list-content';
+import VerticalCollection from '@html-next/vertical-collection/components/vertical-collection/component';
+import and from 'ember-truth-helpers/helpers/and';
+import notEq from 'ember-truth-helpers/helpers/not-eq';
+import sub_ from 'ember-math-helpers/helpers/sub';
+import DragHandle from 'ember-inspector/components/ui/drag-handle';
+import oneWay from 'ember-inspector/helpers/one-way';
 
 const CHECK_HTML = '&#10003;';
 
 export default class ListComponent extends Component {
+  <template>
+    <div
+      class="list"
+      ...attributes
+      {{didInsert this.elementInserted}}
+      {{didUpdate this.schemaUpdated this.schema}}
+    >
+      {{#if this.schema.columns.length}}
+        <div class="list-header">
+          <div class="list-table-container">
+            <table>
+              <colgroup>
+                {{#each this.columns key="id" as |column|}}
+                  <col style={{buildStyle width=(concat column.width "px")}} />
+                {{/each}}
+              </colgroup>
+              <tbody>
+                <tr class="list-row">
+                  {{#each this.columns key="id" as |column|}}
+                    <ListCell class="js-header-column" @tagName="th">
+                      {{column.name}}
+                    </ListCell>
+                  {{/each}}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      {{/if}}
+
+      <ListContent
+        @columns={{this.columns}}
+        @headerHeight={{this.headerHeight}}
+        as |content|
+      >
+        {{yield
+          (hash
+            cell=(component ListCell tagName="td")
+            rowEvents=content.rowEvents
+            vertical-collection=(component
+              VerticalCollection
+              estimateHeight=30
+              containerSelector=".js-list-content"
+              tagName="tbody"
+            )
+          )
+        }}
+      </ListContent>
+
+      {{#each this.columns key="id" as |column|}}
+        {{#if
+          (and
+            column.visible
+            (notEq column (get this.columns (sub_ this.columns.length 1)))
+          )
+        }}
+          <DragHandle
+            @faded={{true}}
+            @left={{column.left}}
+            @minWidth={{this.minWidth}}
+            @maxWidth={{column.maxWidth}}
+            @on-drag={{fn this.didResize column.id}}
+            @position={{oneWay column.width}}
+            @side="left"
+          />
+        {{/if}}
+      {{/each}}
+    </div>
+  </template>
   /**
    * Layout service used to listen to changes to the application
    * layout such as resizing of the main nav or object inspector.
@@ -266,70 +347,3 @@ export default class ListComponent extends Component {
     this.resizableColumns.updateColumnWidth(id, width);
   }
 }
-
-<div
-  class="list"
-  ...attributes
-  {{did-insert this.elementInserted}}
-  {{did-update this.schemaUpdated this.schema}}
->
-  {{#if this.schema.columns.length}}
-    <div class="list-header">
-      <div class="list-table-container">
-        <table>
-          <colgroup>
-            {{#each this.columns key="id" as |column|}}
-              <col style={{build-style width=(concat column.width "px")}} />
-            {{/each}}
-          </colgroup>
-          <tbody>
-            <tr class="list-row">
-              {{#each this.columns key="id" as |column|}}
-                <ListCell class="js-header-column" @tagName="th">
-                  {{column.name}}
-                </ListCell>
-              {{/each}}
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  {{/if}}
-
-  <ListContent
-    @columns={{this.columns}}
-    @headerHeight={{this.headerHeight}} as |content|
-  >
-    {{yield
-      (hash
-        cell=(component "list-cell" tagName="td")
-        rowEvents=content.rowEvents
-        vertical-collection=(component
-          "vertical-collection"
-          estimateHeight=30
-          containerSelector=".js-list-content"
-          tagName="tbody"
-        )
-      )
-    }}
-  </ListContent>
-
-  {{#each this.columns key="id" as |column|}}
-    {{#if
-      (and
-        column.visible
-        (not-eq column (get this.columns (sub this.columns.length 1)))
-      )
-    }}
-      <Ui::DragHandle
-        @faded={{true}}
-        @left={{column.left}}
-        @minWidth={{this.minWidth}}
-        @maxWidth={{column.maxWidth}}
-        @on-drag={{fn this.didResize column.id}}
-        @position={{one-way column.width}}
-        @side="left"
-      />
-    {{/if}}
-  {{/each}}
-</div>

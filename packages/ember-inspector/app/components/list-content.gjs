@@ -8,7 +8,29 @@ import { tracked } from '@glimmer/tracking';
 /**
  * Base list view config
  */
+import didInsert from '@ember/render-modifiers/modifiers/did-insert';
+import buildStyle from 'ember-inspector/helpers/build-style';
+import { concat, hash } from '@ember/helper';
 export default class ListContent extends Component {
+  <template>
+    <div
+      class="list-content js-list-content"
+      style={{this.style}}
+      {{didInsert this.elementInserted}}
+      ...attributes
+    >
+      <div class="list-table-container">
+        <table>
+          <colgroup>
+            {{#each @columns as |column|}}
+              <col style={{buildStyle width=(concat column.width "px")}} />
+            {{/each}}
+          </colgroup>
+          {{yield (hash rowEvents=this.rowEvents)}}
+        </table>
+      </div>
+    </div>
+  </template>
   /**
    * The layout service. Used to observe the app's content height.
    */
@@ -73,21 +95,3 @@ export default class ListContent extends Component {
     this.contentHeight = height;
   };
 }
-
-<div
-  class="list-content js-list-content"
-  style={{this.style}}
-  {{did-insert this.elementInserted}}
-  ...attributes
->
-  <div class="list-table-container">
-    <table>
-      <colgroup>
-        {{#each @columns as |column|}}
-          <col style={{build-style width=(concat column.width "px")}} />
-        {{/each}}
-      </colgroup>
-      {{yield (hash rowEvents=this.rowEvents)}}
-    </table>
-  </div>
-</div>

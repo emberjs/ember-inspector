@@ -1,32 +1,45 @@
-{{#if this.toolbarContainer}}
-  {{#in-element this.toolbarContainer}}
-    <ComponentTreeToolbar
-      @collapseAll={{this.collapseAll}}
-      @expandAll={{this.expandAll}}
-      @isInspecting={{this.isInspecting}}
-      @query={{this.query}}
-      @pinned={{this.pinned}}
-      @toggleParentsOnly={{this.toggleParentsOnly}}
-      @showParentsOnly={{this.showParentsOnly}}
-      @toggleInspect={{this.toggleInspect}}
-    />
-  {{/in-element}}
-{{/if}}
+import RouteTemplate from 'ember-route-template';
+import ComponentTreeToolbar from 'ember-inspector/components/component-tree-toolbar';
+import ScrollContainer from 'ember-inspector/components/scroll-container';
+import didInsert from '@ember/render-modifiers/modifiers/did-insert';
+import willDestroy from '@ember/render-modifiers/modifiers/will-destroy';
+import VerticalCollection from '@html-next/vertical-collection/components/vertical-collection/component';
+import ComponentTreeItem from 'ember-inspector/components/component-tree-item';
+export default RouteTemplate(
+  <template>
+    {{#if @controller.toolbarContainer}}
+      {{#in-element @controller.toolbarContainer}}
+        <ComponentTreeToolbar
+          @collapseAll={{@controller.collapseAll}}
+          @expandAll={{@controller.expandAll}}
+          @isInspecting={{@controller.isInspecting}}
+          @query={{@controller.query}}
+          @pinned={{@controller.pinned}}
+          @toggleParentsOnly={{@controller.toggleParentsOnly}}
+          @showParentsOnly={{@controller.showParentsOnly}}
+          @toggleInspect={{@controller.toggleInspect}}
+        />
+      {{/in-element}}
+    {{/if}}
 
-<ScrollContainer
-  @collection={{this.visibleItems}}
-  @currentItem={{this.currentItem}}
-  @previewing={{this.currentPreviewItem}}
-  @itemHeight={{this.itemHeight}}
-  class="list-content"
-  tabindex="-1"
-  {{did-insert this.arrowKeysSetup}}
-  {{will-destroy this.arrowKeysTeardown}}
->
-  <VerticalCollection
-    @estimateHeight={{this.itemHeight}}
-    @items={{this.visibleItems}}
-    @key="id" as |item|>
-    <ComponentTreeItem @item={{item}} />
-  </VerticalCollection>
-</ScrollContainer>
+    <ScrollContainer
+      @collection={{@controller.visibleItems}}
+      @currentItem={{@controller.currentItem}}
+      @previewing={{@controller.currentPreviewItem}}
+      @itemHeight={{@controller.itemHeight}}
+      class="list-content"
+      tabindex="-1"
+      {{didInsert @controller.arrowKeysSetup}}
+      {{willDestroy @controller.arrowKeysTeardown}}
+    >
+      <VerticalCollection
+        @estimateHeight={{@controller.itemHeight}}
+        @items={{@controller.visibleItems}}
+        @key="id"
+        as |item|
+      >
+        <ComponentTreeItem @item={{item}} />
+      </VerticalCollection>
+    </ScrollContainer>
+  </template>,
+);

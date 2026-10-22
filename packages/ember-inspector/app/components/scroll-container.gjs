@@ -5,8 +5,21 @@ import { action } from '@ember/object';
 import { debounce } from '@ember/runloop';
 import { htmlSafe } from '@ember/template';
 import { tracked } from '@glimmer/tracking';
+import didInsert from '@ember/render-modifiers/modifiers/did-insert';
+import didUpdate from '@ember/render-modifiers/modifiers/did-update';
 
 export default class ScrollContainerComponent extends Component {
+  <template>
+    <div
+      class="scroll-target"
+      style={{this.scrollTargetStyle}}
+      role="presentation"
+      {{didInsert this.elementInserted}}
+      {{didUpdate this.scrollPreviewIntoViewIfNeeded this.previewing}}
+      {{didUpdate this.scrollIntoViewIfNeeded this.currentItem}}
+    ></div>
+    {{yield}}
+  </template>
   attributeBindings = ['style'];
 
   @tracked collection;
@@ -103,13 +116,3 @@ function needsScroll(container, target) {
   let { top: targetTop, bottom: targetBottom } = target.getBoundingClientRect();
   return targetTop < containerTop || targetBottom > containerBottom;
 }
-
-<div
-  class="scroll-target"
-  style={{this.scrollTargetStyle}}
-  role="presentation"
-  {{did-insert this.elementInserted}}
-  {{did-update this.scrollPreviewIntoViewIfNeeded this.previewing}}
-  {{did-update this.scrollIntoViewIfNeeded this.currentItem}}
-></div>
-{{yield}}

@@ -1,8 +1,39 @@
 import { action } from '@ember/object';
 import { service } from '@ember/service';
-
 import Component from '@glimmer/component';
+import { on } from '@ember/modifier';
+import svgJar from 'ember-svg-jar/helpers/svg-jar';
 export default class DeprecationItemSource extends Component {
+  <template>
+    <div class="deprecation-source pb-2" data-test-deprecation-source>
+      <button
+        class="send-to-console send-to-console-chevron-only mr-3"
+        title="Trace deprecations in console"
+        data-test-trace-deprecations-btn
+        {{on "click" this.handleClick}}
+        type="button"
+      >
+        {{svgJar "send-with-chevron" width="6px" height="9px"}}
+        Trace in the Console
+      </button>
+      <span class="source">
+        {{#if this.isClickable}}
+          <a
+            class="font-mono"
+            href="#"
+            data-test-deprecation-source-link
+            {{on "click" this.handleRedirect}}
+          >
+            {{this.url}}
+          </a>
+        {{else}}
+          <span class="font-mono" data-test-deprecation-source-text>
+            {{this.url}}
+          </span>
+        {{/if}}
+      </span>
+    </div>
+  </template>
   @service port;
 
   get url() {
@@ -36,32 +67,3 @@ export default class DeprecationItemSource extends Component {
     this.args.openResource?.(this.args.itemModel?.map);
   }
 }
-
-<div class="deprecation-source pb-2" data-test-deprecation-source>
-  <button
-    class="send-to-console send-to-console-chevron-only mr-3"
-    title="Trace deprecations in console"
-    data-test-trace-deprecations-btn
-    {{on "click" this.handleClick}}
-    type="button"
-  >
-    {{svg-jar "send-with-chevron" width="6px" height="9px"}}
-    Trace in the Console
-  </button>
-  <span class="source">
-    {{#if this.isClickable}}
-      <a
-        class="font-mono"
-        href="#"
-        data-test-deprecation-source-link
-        {{on "click" this.handleRedirect}}
-      >
-        {{this.url}}
-      </a>
-    {{else}}
-      <span class="font-mono" data-test-deprecation-source-text>
-        {{this.url}}
-      </span>
-    {{/if}}
-  </span>
-</div>

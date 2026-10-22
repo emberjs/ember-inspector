@@ -1,32 +1,36 @@
-<div class="route-cell-objects">
-  <span
-    class="is-link inline-block"
-    role="button"
-    title={{@route.value.routeHandler.className}}
-    {{on "click" @inspectRoute}}
-    data-test-route-handler
-  >
-    Route
-  </span>
-
-  <Ui::SendToConsole
-    @action={{@sendRouteHandlerToConsole}}
-    @param={{@route.value.routeHandler.name}}
-  />
-
-  {{#if @route.value.controller.exists}}
+import { on } from '@ember/modifier';
+import SendToConsole from 'ember-inspector/components/ui/send-to-console';
+<template>
+  <div class="route-cell-objects">
     <span
-      class="is-link js-route-controller"
+      class="is-link inline-block"
       role="button"
-      title={{@route.value.controller.className}}
-      {{on "click" @inspectController}}
+      title={{@route.value.routeHandler.className}}
+      {{on "click" @inspectRoute}}
+      data-test-route-handler
     >
-      Controller
+      Route
     </span>
 
-    <Ui::SendToConsole
-      @action={{@sendControllerToConsole}}
-      @param={{@route.value.controller.name}}
+    <SendToConsole
+      @action={{@sendRouteHandlerToConsole}}
+      @param={{@route.value.routeHandler.name}}
     />
-  {{/if}}
-</div>
+
+    {{#if @route.value.controller.exists}}
+      <span
+        class="is-link js-route-controller"
+        role="button"
+        title={{@route.value.controller.className}}
+        {{on "click" @inspectController}}
+      >
+        Controller
+      </span>
+
+      <SendToConsole
+        @action={{@sendControllerToConsole}}
+        @param={{@route.value.controller.name}}
+      />
+    {{/if}}
+  </div>
+</template>

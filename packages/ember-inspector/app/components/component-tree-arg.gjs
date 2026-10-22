@@ -2,8 +2,25 @@ import Component from '@glimmer/component';
 import truncate from 'ember-inspector/utils/truncate';
 import { action } from '@ember/object';
 import { service } from '@ember/service';
+import { on } from '@ember/modifier';
 
 export default class ComponentTreeArg extends Component {
+  <template>
+    {{#if this.isObject}}
+      <button
+        class="value-token arg-value-token rounded"
+        type="button"
+        {{on "click" this.inspect}}
+        data-test-arg-object
+      >
+        {{this.displayValue}}
+      </button>
+    {{else}}
+      <span data-test-arg-string class="value-token">
+        {{this.displayValue}}
+      </span>
+    {{/if}}
+  </template>
   @service port;
 
   get isObject() {
@@ -37,18 +54,3 @@ export default class ComponentTreeArg extends Component {
     });
   }
 }
-
-{{#if this.isObject}}
-  <button
-    class="value-token arg-value-token rounded"
-    type="button"
-    {{on "click" this.inspect}}
-    data-test-arg-object
-  >
-    {{this.displayValue}}
-  </button>
-{{else}}
-  <span data-test-arg-string class="value-token">
-    {{this.displayValue}}
-  </span>
-{{/if}}

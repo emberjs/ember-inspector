@@ -1,15 +1,22 @@
-<div class="toolbar">
-  <Ui::ToolbarReloadButton @action={{@reload}} data-test-reload-container-btn />
+import ToolbarReloadButton from 'ember-inspector/components/ui/toolbar-reload-button';
+import ToolbarDivider from 'ember-inspector/components/ui/toolbar-divider';
+import SendToConsole from 'ember-inspector/components/ui/send-to-console';
+import ToolbarSearchField from 'ember-inspector/components/ui/toolbar-search-field';
+import { fn } from '@ember/helper';
+<template>
+  <div class="toolbar">
+    <ToolbarReloadButton @action={{@reload}} data-test-reload-container-btn />
 
-  <Ui::ToolbarDivider />
+    <ToolbarDivider />
 
-  <Ui::SendToConsole @action={{@sendContainerToConsole}} />
+    <SendToConsole @action={{@sendContainerToConsole}} />
 
-  <Ui::ToolbarDivider />
+    <ToolbarDivider />
 
-  <Ui::ToolbarSearchField
-    @clear={{fn (mut @searchValue)}}
-    @value={{@searchValue}}
-    data-test-container-instance-search
-  />
-</div>
+    <ToolbarSearchField
+      @clear={{fn (mut @searchValue)}}
+      @value={{@searchValue}}
+      data-test-container-instance-search
+    />
+  </div>
+</template>

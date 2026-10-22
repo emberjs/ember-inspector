@@ -17,8 +17,23 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { htmlSafe } from '@ember/template';
+import { on } from '@ember/modifier';
 
 export default class ListCell extends Component {
+  <template>
+    <td
+      class="list-cell
+        {{if this.clickable 'list-cell-clickable'}}
+        {{if this.highlight 'list-cell-highlight'}}"
+      role="button"
+      style={{this.safeStyle}}
+      title={{this.title}}
+      {{on "click" this.click}}
+      ...attributes
+    >
+      {{yield}}
+    </td>
+  </template>
   /**
    * Avoid unsafe style warning. This property does not
    * depend on user input so this is safe.
@@ -88,16 +103,3 @@ export default class ListCell extends Component {
     this.args['on-click']?.();
   }
 }
-
-<td
-  class="list-cell
-    {{if this.clickable 'list-cell-clickable'}}
-    {{if this.highlight 'list-cell-highlight'}}"
-  role="button"
-  style={{this.safeStyle}}
-  title={{this.title}}
-  {{on "click" this.click}}
-  ...attributes
->
-  {{yield}}
-</td>

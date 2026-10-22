@@ -2,8 +2,78 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
+import didInsert from '@ember/render-modifiers/modifiers/did-insert';
+import willDestroy from '@ember/render-modifiers/modifiers/will-destroy';
+import { LinkTo } from '@ember/routing';
+import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import and from 'ember-truth-helpers/helpers/and';
+import { on } from '@ember/modifier';
+import match from 'ember-inspector/helpers/match';
 
 export default class SideNav extends Component {
+  <template>
+    <div
+      ...attributes
+      {{didInsert this.setupListeners}}
+      {{willDestroy this.destroyListeners}}
+    >
+      <nav
+        class="absolute inset-0 nav nav-main
+          {{if @collapsed 'nav-collapsed overflow-hidden'}}"
+      >
+        <ul>
+          {{#each this.itemsToDisplay as |item|}}
+            <li>
+              <LinkTo
+                @route={{item.route}}
+                class="nav-item"
+                title={{item.title}}
+              >
+                {{svgJar
+                  item.icon
+                  width="20px"
+                  height="20px"
+                  class="nav-item-icon"
+                }}
+                <span class="nav-item-label">{{item.label}}</span>
+                {{#if item.pillCount}}
+                  <span class="pill">{{item.pillCount}}</span>
+                {{/if}}
+              </LinkTo>
+            </li>
+          {{/each}}
+          {{#if (and @collapsed this.overflowItems.length)}}
+            <li
+              class="{{if this.overflowItemIsActive 'nav-overflow-active'}}
+                nav-overflow relative flex items-center justify-center cursor-pointer"
+              title="More options"
+            >
+              <select
+                aria-label="More options"
+                class="w-full border-0 bg-transparent py-2 appearance-none opacity-0"
+                {{on "change" this.handleOverflowSelect}}
+              >
+                <option value>More options…</option>
+                {{#each this.overflowItems as |item|}}
+                  <option
+                    value={{item.route}}
+                    selected={{match this.currentRouteName item.route}}
+                  >
+                    {{item.label}}
+                  </option>
+                {{/each}}
+              </select>
+              <div
+                class="absolute inset-0 flex items-center justify-center pointer-events-none"
+              >
+                {{svgJar "ellipsis" width="22px" height="22px"}}
+              </div>
+            </li>
+          {{/if}}
+        </ul>
+      </nav>
+    </div>
+  </template>
   @service layout;
   @service router;
 
@@ -117,47 +187,3 @@ export default class SideNav extends Component {
     }
   }
 }
-
-<div
-  ...attributes
-  {{did-insert this.setupListeners}}
-  {{will-destroy this.destroyListeners}}
->
-  <nav class="absolute inset-0 nav nav-main {{if @collapsed "nav-collapsed overflow-hidden"}}">
-    <ul>
-      {{#each this.itemsToDisplay as |item|}}
-        <li>
-          <LinkTo @route={{item.route}} class="nav-item" title={{item.title}}>
-            {{svg-jar item.icon width="20px" height="20px" class="nav-item-icon"}}
-            <span class="nav-item-label">{{item.label}}</span>
-            {{#if item.pillCount}}
-              <span class="pill">{{item.pillCount}}</span>
-            {{/if}}
-          </LinkTo>
-        </li>
-      {{/each}}
-      {{#if (and @collapsed this.overflowItems.length)}}
-        <li
-          class="{{if this.overflowItemIsActive "nav-overflow-active"}} nav-overflow relative flex items-center justify-center cursor-pointer"
-          title="More options"
-        >
-          <select
-            aria-label="More options"
-            class="w-full border-0 bg-transparent py-2 appearance-none opacity-0"
-            {{on "change" this.handleOverflowSelect}}
-          >
-            <option value="">More options…</option>
-            {{#each this.overflowItems as |item|}}
-              <option value={{item.route}} selected={{match this.currentRouteName item.route}}>
-                {{item.label}}
-              </option>
-            {{/each}}
-          </select>
-          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-            {{svg-jar "ellipsis" width="22px" height="22px"}}
-          </div>
-        </li>
-      {{/if}}
-    </ul>
-  </nav>
-</div>

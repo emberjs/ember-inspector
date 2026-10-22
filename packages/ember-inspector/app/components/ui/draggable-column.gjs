@@ -2,8 +2,22 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
+import ResizableColumn from 'ember-inspector/components/ui/resizable-column';
+import DragHandle from 'ember-inspector/components/ui/drag-handle';
 
 export default class DraggableColumnComponent extends Component {
+  <template>
+    <ResizableColumn class={{@classes}} @width={{@width}}>
+      {{yield}}
+    </ResizableColumn>
+
+    <DragHandle
+      @minWidth={{this.minWidth}}
+      @on-drag={{this.triggerResize}}
+      @position={{@width}}
+      @side={{@side}}
+    />
+  </template>
   /**
    * Injected `layout` service. Used to broadcast
    * changes the layout of the app.
@@ -27,17 +41,3 @@ export default class DraggableColumnComponent extends Component {
     this.layoutService.trigger('resize', { source: 'draggable-column' });
   }
 }
-
-<Ui::ResizableColumn
-  class={{@classes}}
-  @width={{@width}}
->
-  {{yield}}
-</Ui::ResizableColumn>
-
-<Ui::DragHandle
-  @minWidth={{this.minWidth}}
-  @on-drag={{this.triggerResize}}
-  @position={{@width}}
-  @side={{@side}}
-/>
