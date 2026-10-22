@@ -68,6 +68,15 @@ export default defineConfig([
     },
   },
   {
+    files: ['**/*.gjs'],
+    rules: {
+      /**
+       * Same as `no-at-ember-render-modifiers` in .template-lintrc.js
+       */
+      'ember/no-at-ember-render-modifiers': 'off',
+    },
+  },
+  {
     ...qunit.configs.recommended,
     files: ['tests/**/*-test.{js,gjs}'],
     plugins: {
