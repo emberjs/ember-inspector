@@ -2,14 +2,24 @@ version: 2
 updates:
 - package-ecosystem: npm
   directory: "/"
+  # All PRs open the night before the week starts, so they do not interrupt work days.
   schedule:
     interval: weekly
+    day: sunday
+    time: "21:00"
+  # npm packages can be unpublished in the first 72 hours. zizmor requires at least 7 days.
   cooldown:
     default-days: 7
+  # Keep in-range updates to the lockfile, and change package.json only when the new version is out of range.
+  versioning-strategy: increase-if-necessary
   open-pull-requests-limit: 10
   labels:
   - dependencies
   - internal
+  # devDependencies are usually easy to upgrade, so one PR for all of them reduces noise.
+  groups:
+    devDependencies:
+      dependency-type: development
   ignore:
   - dependency-name: ember-cli
     versions:
@@ -18,9 +28,15 @@ updates:
   directory: "/"
   schedule:
     interval: weekly
+    day: sunday
+    time: "21:00"
   cooldown:
     default-days: 7
   open-pull-requests-limit: 10
   labels:
   - dependencies
   - internal
+  groups:
+    github-actions:
+      patterns:
+      - "*"
