@@ -1,3 +1,11 @@
+import Component from '@glimmer/component';
+
+export default class ItemTypesComponent extends Component {
+  get typeClass() {
+    return `js-${this.args.type}-type`;
+  }
+}
+
 <div class="split">
   <Ui::DraggableColumn
     @classes="split-panel split-panel-sidebar-2 nav"
