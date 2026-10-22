@@ -1,3 +1,4 @@
+import { concat } from '@ember/helper';
 import { on } from '@ember/modifier';
 import DisclosureTriangle from 'ember-inspector/components/ui/disclosure-triangle';
 import or from 'ember-truth-helpers/helpers/or';
@@ -95,8 +96,7 @@ import svgJar from 'ember-svg-jar/helpers/svg-jar';
         {{else if @item.isEngine}}
           \{{mount "{{@item.name}}"}}
         {{else if @item.isRouteTemplate}}
-          {{@item.name}}
-          route
+          {{concat @item.name " route"}}
         {{else if @item.isHtmlTag}}
           <span class="component-name">
             {{@item.name}}
