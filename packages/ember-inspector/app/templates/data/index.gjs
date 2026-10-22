@@ -1,18 +1,15 @@
-import RouteTemplate from 'ember-route-template';
 import ErrorPage from 'ember-inspector/components/ui/error-page';
-export default RouteTemplate(
-  <template>
-    <ErrorPage @description="Data adapter not detected!">
-      <ul>
-        <li>You are using an old version of Ember (&lt; rc7).</li>
-        <li>You are using an old version of Ember Data (&lt; 0.14).</li>
-        <li>
-          You are using another persistence library, in which case:
-          <ul>
-            <li>Make sure the library has a data adapter.</li>
-          </ul>
-        </li>
-      </ul>
-    </ErrorPage>
-  </template>,
-);
+<template>
+  <ErrorPage @description="Data adapter not detected!">
+    <ul>
+      <li>You are using an old version of Ember (&lt; rc7).</li>
+      <li>You are using an old version of Ember Data (&lt; 0.14).</li>
+      <li>
+        You are using another persistence library, in which case:
+        <ul>
+          <li>Make sure the library has a data adapter.</li>
+        </ul>
+      </li>
+    </ul>
+  </ErrorPage>
+</template>

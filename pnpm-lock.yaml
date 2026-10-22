@@ -596,9 +596,6 @@ importers:
       ember-resolver:
         specifier: ^13.1.0
         version: 13.2.0
-      ember-route-template:
-        specifier: ^1.0.3
-        version: 1.0.3
       ember-sinon-qunit:
         specifier: ^7.5.0
         version: 7.5.0(@babel/core@7.29.7)(ember-source@6.12.1(@glimmer/component@1.1.2(@babel/core@7.29.7))(rsvp@4.8.5))(qunit@2.26.0)(sinon@15.2.0)
@@ -5804,9 +5801,6 @@ packages:
 
   ember-rfc176-data@0.3.18:
     resolution: {integrity: sha512-JtuLoYGSjay1W3MQAxt3eINWXNYYQliK90tLwtb8aeCuQK8zKGCRbBodVIrkcTqshULMnRuTOS6t1P7oQk3g6Q==}
-
-  ember-route-template@1.0.3:
-    resolution: {integrity: sha512-p//Nk4g4Wu9F8cZdjB69rKxTRi6RRW32a8K5sYsi5cofTcJtPBXRWUXWpQEjJX6qcucgxooQwEm9+7MOy4lwNw==}
 
   ember-router-generator@2.0.0:
     resolution: {integrity: sha512-89oVHVJwmLDvGvAUWgS87KpBoRhy3aZ6U0Ql6HOmU4TrPkyaa8pM0W81wj9cIwjYprcQtN9EwzZMHnq46+oUyw==}
@@ -18209,12 +18203,6 @@ snapshots:
       - supports-color
 
   ember-rfc176-data@0.3.18: {}
-
-  ember-route-template@1.0.3:
-    dependencies:
-      '@embroider/addon-shim': 1.10.3
-    transitivePeerDependencies:
-      - supports-color
 
   ember-router-generator@2.0.0:
     dependencies:
