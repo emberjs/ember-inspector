@@ -10,6 +10,7 @@ import {
 import { dirname, join } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
+import { stripVTControlCharacters } from 'node:util';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
@@ -50,8 +51,11 @@ function stopWatch(watch) {
   }
 }
 
-function count(text, pattern) {
-  return text.split(pattern).length - 1;
+/**
+ * Rollup prints colors on CI, for example `created \x1b[1mdist`.
+ */
+function count(watch, pattern) {
+  return stripVTControlCharacters(watch.output).split(pattern).length - 1;
 }
 
 async function waitFor(watch, description, condition) {
@@ -98,11 +102,13 @@ test(
     await waitFor(
       watch,
       'the first UI build',
-      () => count(watch.output, 'Build successful') >= 1,
+      () => count(watch, 'Build successful') >= 1,
     );
 
-    await waitFor(watch, 'rollup is watching', () =>
-      watch.output.includes('waiting for changes'),
+    await waitFor(
+      watch,
+      'rollup is watching',
+      () => count(watch, 'waiting for changes') >= 1,
     );
 
     assert.ok(
@@ -115,36 +121,25 @@ test(
       'the chrome build has a copy of ember-debug',
     );
 
-    let rollupBuilds = count(watch.output, 'created dist');
-    let uiBuilds = count(watch.output, 'Build successful');
+    let rollupBuilds = count(watch, 'created dist');
+    let uiBuilds = count(watch, 'Build successful');
 
-    let writes = 0;
-    let lastWrite = 0;
+    writeFileSync(
+      versionsSource,
+      `${originalVersions}\nexport const WATCH_TEST_MARKER = '${marker}';\n`,
+    );
 
-    /**
-     * Rollup prints "waiting for changes" before its file watcher is ready,
-     * so an early change can be missed. Write again until rollup rebuilds.
-     */
-    await waitFor(watch, 'rollup rebuilds ember-debug', () => {
-      if (count(watch.output, 'created dist') > rollupBuilds) return true;
-
-      if (Date.now() - lastWrite > 2000) {
-        writes++;
-        lastWrite = Date.now();
-        writeFileSync(
-          versionsSource,
-          `${originalVersions}\nexport const WATCH_TEST_MARKER = '${marker}'; // write ${writes}\n`,
-        );
-      }
-
-      return false;
-    });
+    await waitFor(
+      watch,
+      'rollup rebuilds ember-debug',
+      () => count(watch, 'created dist') > rollupBuilds,
+    );
 
     await waitFor(
       watch,
       'the UI copies the new ember-debug build',
       () =>
-        count(watch.output, 'Build successful') > uiBuilds &&
+        count(watch, 'Build successful') > uiBuilds &&
         inspectorVersionsFiles().some((file) =>
           readFileSync(file, 'utf8').includes(marker),
         ),
