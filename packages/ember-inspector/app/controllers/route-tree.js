@@ -1,5 +1,4 @@
 import { action } from '@ember/object';
-import { dependentKeyCompat } from '@ember/object/compat';
 import { tracked } from '@glimmer/tracking';
 import Controller, { inject as controller } from '@ember/controller';
 import { service } from '@ember/service';
@@ -32,11 +31,6 @@ export default class RouteTreeController extends Controller {
     url: RouteCellUrl,
   };
 
-  /**
-   * The `hideRoutes` query param.
-   * The query param system observes it, so it needs `@dependentKeyCompat`.
-   */
-  @dependentKeyCompat
   get hideRoutes() {
     return this.options.hideRoutes;
   }
