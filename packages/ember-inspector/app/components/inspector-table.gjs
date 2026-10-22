@@ -1,28 +1,17 @@
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { get } from '@ember/object';
+import { htmlSafe } from '@ember/template';
 import { compare } from '@ember/utils';
-import { headlessTable } from '@universal-ember/table';
-import { meta } from '@universal-ember/table/plugins';
-import {
-  ColumnReordering,
-  orderedColumnsFor,
-} from '@universal-ember/table/plugins/column-reordering';
-import {
-  ColumnResizing,
-  hasResizeHandle,
-  resizeHandle,
-} from '@universal-ember/table/plugins/column-resizing';
-import {
-  DataSorting,
-  isAscending,
-  isSortable,
-  isUnsorted,
-  sort,
-} from '@universal-ember/table/plugins/data-sorting';
 import { on } from '@ember/modifier';
 import { fn } from '@ember/helper';
 import VerticalCollection from '@html-next/vertical-collection/components/vertical-collection/component';
 import InspectorTableRow from 'ember-inspector/components/inspector-table/row';
+
+/**
+ * A resize does not make a column narrower than this.
+ */
+const MIN_WIDTH = 128;
 
 /**
  * A table with sticky headers, resizable columns and virtual scrolling.
@@ -43,24 +32,25 @@ export default class InspectorTable extends Component {
     {{! A drag starts after pointer down, so pointer up is too late to see the resize handle. }}
     {{! template-lint-disable no-invalid-interactive no-pointer-down-event-binding }}
     <div class="inspector-table" ...attributes>
-      <div class="inspector-table-overflow" {{this.table.modifiers.container}}>
+      <div class="inspector-table-overflow">
         <table>
           <thead>
             <tr>
-              {{#each this.columns as |column|}}
+              {{#each this.columns as |column index|}}
                 <th
-                  class="{{if (this.isSortable column) 'is-sortable'}}
+                  class="{{if this.isSortable 'is-sortable'}}
                     {{if @reorderable 'is-reorderable'}}"
+                  style={{this.widthStyle column}}
+                  aria-sort={{if this.isSortable (this.sortDirection column)}}
                   draggable={{if @reorderable "true"}}
                   data-test-table-header-column
-                  {{this.table.modifiers.columnHeader column}}
                   {{on "pointerdown" this.onPointerDown capture=true}}
                   {{on "dragstart" (fn this.onDragStart column)}}
                   {{on "dragover" this.onDragOver}}
                   {{on "drop" (fn this.onDrop column)}}
                   {{on "dragend" this.onDragEnd}}
                 >
-                  {{#if (this.isSortable column)}}
+                  {{#if this.isSortable}}
                     <button
                       type="button"
                       class="sort-toggle"
@@ -85,12 +75,15 @@ export default class InspectorTable extends Component {
                     {{column.name}}
                   {{/if}}
 
-                  {{#if (this.hasResizeHandle column)}}
+                  {{#if (this.hasResizeHandle index)}}
                     <button
                       type="button"
                       aria-label="Resize {{column.name}}"
                       class="resize-handle"
-                      {{this.resizeHandle column}}
+                      {{on "pointerdown" (fn this.startResize index)}}
+                      {{on "pointermove" this.resize}}
+                      {{on "pointerup" this.stopResize}}
+                      {{on "pointercancel" this.stopResize}}
                     ></button>
                   {{/if}}
                 </th>
@@ -99,20 +92,20 @@ export default class InspectorTable extends Component {
           </thead>
           <tbody>
             <VerticalCollection
-              @items={{this.rows}}
+              @items={{this.sortedRows}}
               @containerSelector=".inspector-table-overflow"
               @estimateHeight={{37}}
               @staticHeight={{true}}
               @bufferSize={{10}}
-              as |row index|
+              as |data index|
             >
               {{yield
                 (component
                   InspectorTableRow
-                  data=row.data
+                  data=data
                   columns=this.columns
                   isSelectable=(if @onSelect true false)
-                  isSelected=(this.isSelected row.data)
+                  isSelected=(this.isSelected data)
                   onSelect=this.select
                 )
                 index
@@ -123,35 +116,54 @@ export default class InspectorTable extends Component {
       </div>
     </div>
   </template>
-  table = headlessTable(this, {
-    columns: () =>
-      this.args.columns.map(({ valuePath, name }) => ({
-        key: valuePath,
-        name,
-      })),
-    data: () => this.sortedRows,
-    plugins: [
-      ColumnResizing.with(() => ({ handlePosition: 'right' })),
-      ColumnReordering,
-      DataSorting.with(() =>
-        this.args.onUpdateSorts
-          ? { sorts: this.args.sorts ?? [], onSort: this.args.onUpdateSorts }
-          : {},
-      ),
-    ],
-  });
+
+  /**
+   * The column keys in display order, after a header drop.
+   * Until the first drop, the order of `@columns` is used.
+   */
+  @tracked order;
+
+  /**
+   * Column widths in px, by key.
+   * Until the first resize, the browser shares the width between the columns.
+   */
+  @tracked widths;
 
   get columns() {
-    return orderedColumnsFor(this.table);
+    let columns = this.args.columns.map(({ valuePath, name }) => ({
+      key: valuePath,
+      name,
+    }));
+
+    if (!this.order) return columns;
+
+    let byKey = new Map(columns.map((column) => [column.key, column]));
+    let ordered = [];
+
+    for (let key of this.order) {
+      let column = byKey.get(key);
+
+      if (column) {
+        ordered.push(column);
+        byKey.delete(key);
+      }
+    }
+
+    /**
+     * A column that `@columns` adds after a drop goes at the end.
+     */
+    for (let column of byKey.values()) ordered.push(column);
+
+    return ordered;
   }
 
-  get rows() {
-    return this.table.rows.values();
+  get isSortable() {
+    return Boolean(this.args.onUpdateSorts);
   }
 
   get sortedRows() {
     let rows = this.args.rows ?? [];
-    let sorts = this.args.onUpdateSorts ? (this.args.sorts ?? []) : [];
+    let sorts = this.isSortable ? (this.args.sorts ?? []) : [];
 
     if (sorts.length === 0) return rows;
 
@@ -166,17 +178,104 @@ export default class InspectorTable extends Component {
     });
   }
 
-  hasResizeHandle = hasResizeHandle;
-  isAscending = isAscending;
-  isSortable = isSortable;
-  isUnsorted = isUnsorted;
-  resizeHandle = resizeHandle;
-  sort = sort;
+  sortDirection = (column) =>
+    (this.args.sorts ?? []).find((sort) => sort.property === column.key)
+      ?.direction ?? 'none';
+
+  isAscending = (column) => this.sortDirection(column) === 'ascending';
+
+  isUnsorted = (column) => this.sortDirection(column) === 'none';
+
+  /**
+   * Each click moves the column to the next state:
+   * none, then descending, then ascending, then none again.
+   */
+  sort = (column) => {
+    let direction = this.sortDirection(column);
+
+    if (direction === 'ascending') {
+      this.args.onUpdateSorts([]);
+    } else {
+      this.args.onUpdateSorts([
+        {
+          property: column.key,
+          direction: direction === 'descending' ? 'ascending' : 'descending',
+        },
+      ]);
+    }
+  };
 
   isSelected = (data) =>
     this.args.selection !== undefined && this.args.selection === data;
 
   select = (data) => this.args.onSelect?.(data);
+
+  widthStyle = (column) => {
+    let width = this.widths?.[column.key];
+
+    return width === undefined ? undefined : htmlSafe(`width: ${width}px;`);
+  };
+
+  /**
+   * The handle sits on the right edge of a column, and moves the border
+   * between that column and the next one. So the last column has no handle.
+   */
+  hasResizeHandle = (index) => index < this.columns.length - 1;
+
+  /**
+   * Set while a resize handle has the pointer.
+   */
+  resizing;
+
+  startResize = (index, event) => {
+    event.preventDefault();
+    event.target.setPointerCapture(event.pointerId);
+
+    let headers = event.target.closest('tr').children;
+    let columns = this.columns;
+    let widths = {};
+
+    for (let i = 0; i < columns.length; i++) {
+      widths[columns[i].key] = headers[i].getBoundingClientRect().width;
+    }
+
+    this.widths = widths;
+    this.resizing = {
+      left: columns[index].key,
+      right: columns[index + 1].key,
+      startX: event.clientX,
+      startLeft: widths[columns[index].key],
+      startRight: widths[columns[index + 1].key],
+    };
+  };
+
+  /**
+   * One column grows by the amount that the other one shrinks,
+   * so the table keeps its width.
+   */
+  resize = (event) => {
+    let resizing = this.resizing;
+
+    if (!resizing) return;
+
+    let delta = event.clientX - resizing.startX;
+    let min = MIN_WIDTH - resizing.startLeft;
+    let max = resizing.startRight - MIN_WIDTH;
+
+    delta = Math.max(Math.min(delta, max), min);
+
+    this.widths = Object.assign({}, this.widths, {
+      [resizing.left]: resizing.startLeft + delta,
+      [resizing.right]: resizing.startRight - delta,
+    });
+  };
+
+  stopResize = (event) => {
+    if (!this.resizing) return;
+
+    event.target.releasePointerCapture(event.pointerId);
+    this.resizing = undefined;
+  };
 
   /**
    * Drag and drop of the headers.
@@ -214,15 +313,18 @@ export default class InspectorTable extends Component {
 
     this.dragging = undefined;
 
-    if (!column || column === target) return;
+    if (!column || column.key === target.key) return;
 
     event.preventDefault();
 
-    let dragged = meta.forColumn(column, ColumnReordering);
-    let to = meta.forColumn(target, ColumnReordering).position;
+    let keys = this.columns.map((column) => column.key);
+    let from = keys.indexOf(column.key);
+    let to = keys.indexOf(target.key);
 
-    while (dragged.position > to) dragged.moveLeft();
-    while (dragged.position < to) dragged.moveRight();
+    keys.splice(from, 1);
+    keys.splice(to, 0, column.key);
+
+    this.order = keys;
   };
 
   onDragEnd = () => {
