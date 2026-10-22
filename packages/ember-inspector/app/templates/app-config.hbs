@@ -1,15 +1,8 @@
-<EmberTable as |t|>
-  <t.head @columns={{this.columns}} @enableReorder={{false}} />
-
-  <t.body @rows={{this.rows}} as |b|>
-    <b.row
-      class={{
-        concat "js-config-row" (if (mod b.rowMeta.index 2) " striped")
-      }} as |r|
-    >
-      <r.cell class={{concat "js-config-" r.columnValue.valuePath}} as |value|>
-        {{value}}
-      </r.cell>
-    </b.row>
-  </t.body>
-</EmberTable>
+<InspectorTable @columns={{this.columns}} @rows={{this.rows}} as |Row index|>
+  <Row
+    class={{concat "js-config-row" (if (mod index 2) " striped")}}
+    as |Cell column|
+  >
+    <Cell class={{concat "js-config-" column.key}} />
+  </Row>
+</InspectorTable>

@@ -4,18 +4,15 @@
   {{/in-element}}
 {{/if}}
 
-<EmberTable as |t|>
-  <t.head @columns={{schema-for "info-list"}} @enableReorder={{false}} />
-
-  <t.body @rows={{this.rows}} as |b|>
-    <b.row
-      class={{
-        concat "js-library-row" (if (mod b.rowMeta.index 2) " striped")
-      }} as |r|
-    >
-      <r.cell class={{concat "js-lib-" r.columnValue.valuePath}} as |value|>
-        {{value}}
-      </r.cell>
-    </b.row>
-  </t.body>
-</EmberTable>
+<InspectorTable
+  @columns={{schema-for "info-list"}}
+  @rows={{this.rows}}
+  as |Row index|
+>
+  <Row
+    class={{concat "js-library-row" (if (mod index 2) " striped")}}
+    as |Cell column|
+  >
+    <Cell class={{concat "js-lib-" column.key}} />
+  </Row>
+</InspectorTable>

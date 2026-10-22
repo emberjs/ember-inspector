@@ -9,31 +9,25 @@
   {{/in-element}}
 {{/if}}
 
-<EmberTable as |t|>
-  <t.head
-    @columns={{this.columns}}
-    @sorts={{this.sorts}}
-    @onUpdateSorts={{this.updateSorts}} as |h|
+<InspectorTable
+  @columns={{this.columns}}
+  @rows={{this.filteredRecords}}
+  @sorts={{this.sorts}}
+  @onUpdateSorts={{this.updateSorts}}
+  @reorderable={{true}}
+  @selection={{this.selection}}
+  @onSelect={{this.inspectModel}}
+  as |Row index|
+>
+  <Row
+    class={{if (mod index 2) "striped"}}
+    data-test-table-row
+    as |Cell|
   >
-    <h.row as |r|>
-      <r.cell data-test-table-header-column />
-    </h.row>
-  </t.head>
-  <t.body
-    @rows={{this.filteredRecords}}
-    @checkboxSelectionMode="none"
-    @selection={{this.selection}}
-    @onSelect={{this.inspectModel}} as |b|
-  >
-    <b.row
-      class={{if (mod b.rowMeta.index 2) "striped"}}
-      data-test-table-row as |r|
-    >
-      <r.cell data-test-table-cell as |value column row|>
-        <span class={{row.color}}>
-          {{value}}
-        </span>
-      </r.cell>
-    </b.row>
-  </t.body>
-</EmberTable>
+    <Cell data-test-table-cell as |value row|>
+      <span class={{row.color}}>
+        {{value}}
+      </span>
+    </Cell>
+  </Row>
+</InspectorTable>
