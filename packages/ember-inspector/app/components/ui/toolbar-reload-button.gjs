@@ -1,0 +1,13 @@
+import { on } from '@ember/modifier';
+import svgJar from 'ember-svg-jar/helpers/svg-jar';
+<template>
+  <button
+    title="Reload"
+    class="toolbar-icon-button"
+    ...attributes
+    {{on "click" @action}}
+    type="button"
+  >
+    {{svgJar "reload" width="13px" height="13px"}}
+  </button>
+</template>
