@@ -92,7 +92,6 @@
     "ember-on-resize-modifier": "^1.1.0",
     "ember-qunit": "^8.1.1",
     "ember-resolver": "^13.1.0",
-    "ember-route-template": "^1.0.3",
     "ember-sinon-qunit": "^7.5.0",
     "ember-source": "^6.12.1",
     "ember-svg-jar": "^2.6.0",
