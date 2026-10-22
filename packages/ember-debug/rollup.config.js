@@ -1,14 +1,38 @@
+import { readdirSync, rmSync } from 'node:fs';
+import { join, relative, sep } from 'node:path';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import { babel } from '@rollup/plugin-babel';
 import { globSync } from 'glob';
-import del from 'rollup-plugin-delete';
 
 /**
- * The inspector UI build reads ember-debug/dist when it starts.
- * In watch mode, do not delete dist, so both watchers can run together.
+ * The inspector UI build reads dist while this build runs,
+ * so dist must never be empty.
+ *
+ * Old chunks are removed only after the new ones are written.
  */
-const isWatching = Boolean(process.env.ROLLUP_WATCH);
+function removeStaleFiles() {
+  return {
+    name: 'remove-stale-files',
+    writeBundle(options, bundle) {
+      let entries = readdirSync(options.dir, {
+        recursive: true,
+        withFileTypes: true,
+      });
+
+      for (let entry of entries) {
+        if (!entry.isFile()) continue;
+
+        let path = join(entry.parentPath, entry.name);
+        let fileName = relative(options.dir, path).split(sep).join('/');
+
+        if (!(fileName in bundle)) {
+          rmSync(path);
+        }
+      }
+    },
+  };
+}
 
 export default {
   input: [
@@ -26,10 +50,5 @@ export default {
     dir: 'dist',
   },
 
-  plugins: [
-    babel(),
-    nodeResolve(),
-    commonjs(),
-    !isWatching && del({ targets: 'dist' }),
-  ],
+  plugins: [babel(), nodeResolve(), commonjs(), removeStaleFiles()],
 };
