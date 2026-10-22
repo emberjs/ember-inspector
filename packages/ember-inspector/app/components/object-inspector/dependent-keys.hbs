@@ -3,17 +3,9 @@
   <ul class="m-0 p-0 list-none">
     {{#each @keys as |dep|}}
       <li
-        class="mixin-property-dependency-item relative text-base12 text-sm {{if dep.changed 'text-spec01'}}"
+        class="mixin-property-dependency-item relative text-base12 text-sm {{if dep.changed 'text-spec01'}} {{if dep.child 'mixin-property-dependency-item-nested'}}"
         title={{if dep.changed 'this property changed'}}
       >
-      {{#if dep.child}}
-        <span
-          class="mixin-property-dependency-name subkey"
-          data-label="object-property-name"
-        >
-          • -- {{dep.child}}
-        </span>
-      {{else}}
         {{svg-jar
           "dependent-key-bullet"
           width="9px"
@@ -23,9 +15,8 @@
           class="mixin-property-dependency-name"
           data-label="object-property-name"
         >
-          {{dep.name}}
+          {{if dep.child dep.child dep.name}}
         </span>
-      {{/if}}
       {{#if dep.changed}}🔸{{/if}}
       </li>
     {{/each}}

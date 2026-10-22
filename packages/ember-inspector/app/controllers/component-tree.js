@@ -144,6 +144,7 @@ export default class ComponentTreeController extends Controller {
       if (item.hasInstance) {
         this.port.send('objectInspector:inspectById', {
           objectId: item.instance,
+          renderNodeId: item.renderNode.id,
         });
       } else {
         this.layout.hideInspector();
