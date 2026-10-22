@@ -1,12 +1,11 @@
-// eslint-disable-next-line ember/no-computed-properties-in-native-classes
-import { sort } from '@ember/object/computed';
 import { service } from '@ember/service';
 import Controller from '@ember/controller';
+import { compare } from '@ember/utils';
 
 export default class ContainerTypesController extends Controller {
   @service router;
 
-  sortProperties = ['name'];
-
-  @sort('model', 'sortProperties') sorted;
+  get sorted() {
+    return this.model.slice().sort((a, b) => compare(a.name, b.name));
+  }
 }

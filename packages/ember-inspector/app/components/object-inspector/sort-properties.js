@@ -1,14 +1,9 @@
-// eslint-disable-next-line ember/no-computed-properties-in-native-classes
-import { map, sort } from '@ember/object/computed';
 import Component from '@glimmer/component';
-// eslint-disable-next-line ember/no-computed-properties-in-native-classes
-import { set, computed } from '@ember/object';
-import { A } from '@ember/array';
+import { compare } from '@ember/utils';
 
 export default class SortProperties extends Component {
-  @computed('args.properties')
   get isArray() {
-    const props = A(this.args.properties || []);
+    const props = this.args.properties || [];
     return (
       props.find((x) => x.name === 'length') &&
       props.find((x) => x.name === '0')
@@ -21,56 +16,47 @@ export default class SortProperties extends Component {
    * @property sortedProperties
    * @type {Array<Object>}
    */
-  @computed('isArray', 'sorted.length')
   get sortedProperties() {
+    const isArray = this.isArray;
+    const sorted = sortBy(this.props, this.sortProperties(isArray));
+
     // limit arrays
-    let props = A(this.sorted);
-    if (this.isArray) {
-      const item = props.find((x) => x.name === 'length');
-      const index = props.indexOf(item);
-      if (index !== -1) {
-        props.splice(index, 1);
-      }
-      props.splice(0, 0, item);
+    if (!isArray) {
+      return sorted;
     }
-    if (this.isArray && this.sorted.length > 100) {
+    const item = sorted.find((x) => x.name === 'length');
+    const index = sorted.indexOf(item);
+    if (index !== -1) {
+      sorted.splice(index, 1);
+    }
+    sorted.splice(0, 0, item);
+    if (sorted.length > 100) {
       const indicator = {
         name: '...',
         value: {
           inspect: 'there are more items, send to console to see all',
         },
       };
-      props = props.slice(0, 100);
-      props.push(indicator);
-      return props;
+      const limited = sorted.slice(0, 100);
+      limited.push(indicator);
+      return limited;
     }
-    return this.sorted;
+    return sorted;
   }
 
-  @sort('props', 'sortProperties')
-  sorted;
+  get props() {
+    return (this.args.properties || []).map((p) => {
+      p.isFunction =
+        p.value.type === 'type-function' ||
+        p.value.type === 'type-asyncfunction';
+      if (p.name == parseInt(p.name)) {
+        p.name = parseInt(p.name);
+      }
+      return p;
+    });
+  }
 
-  @map('args.properties', function (p) {
-    set(
-      p,
-      'isFunction',
-      p.value.type === 'type-function' || p.value.type === 'type-asyncfunction',
-    );
-    if (p.name == parseInt(p.name)) {
-      set(p, 'name', parseInt(p.name));
-    }
-    return p;
-  })
-  props;
-
-  /**
-   * Used by the `sort` computed macro.
-   *
-   * @property sortProperties
-   * @type {Array<String>}
-   */
-  @computed('isArray')
-  get sortProperties() {
+  sortProperties(isArray) {
     const order = [
       'isFunction',
       'isService:desc',
@@ -81,11 +67,31 @@ export default class SortProperties extends Component {
       'name',
     ];
     // change order for arrays, if the array doesnt have items, then the order does not need to be changed
-    if (this.isArray) {
+    if (isArray) {
       const i = order.indexOf('isProperty:desc');
       order.splice(i, 1);
       order.splice(order.length - 1, 0, 'isProperty:desc');
     }
     return order;
   }
+}
+
+/**
+ * Sorts by each key in turn. A `:desc` suffix reverses that key.
+ */
+function sortBy(items, keys) {
+  const sortKeys = keys.map((entry) => {
+    const [key, direction] = entry.split(':');
+    return { key, factor: direction === 'desc' ? -1 : 1 };
+  });
+
+  return items.slice().sort((a, b) => {
+    for (const { key, factor } of sortKeys) {
+      const result = compare(a[key], b[key]);
+      if (result !== 0) {
+        return result * factor;
+      }
+    }
+    return 0;
+  });
 }

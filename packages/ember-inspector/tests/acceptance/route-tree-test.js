@@ -1,5 +1,6 @@
 import {
   click,
+  currentURL,
   fillIn,
   find,
   findAll,
@@ -244,6 +245,23 @@ module('Route Tree Tab', function (outer) {
 
       routeNodes = findAll('.js-route-tree-item');
       assert.strictEqual(routeNodes.length, 3);
+    });
+
+    test('Hiding non current route updates the URL', async function (assert) {
+      await visit('route-tree');
+
+      let checkbox = find('.js-filter-hide-routes input');
+      checkbox.checked = true;
+      await triggerEvent(checkbox, 'change');
+
+      assert.true(currentURL().includes('hideRoutes=true'));
+    });
+
+    test('Hiding non current route from the URL', async function (assert) {
+      await visit('route-tree?hideRoutes=true');
+
+      assert.dom('.js-filter-hide-routes input').isChecked();
+      assert.strictEqual(findAll('.js-route-tree-item').length, 3);
     });
 
     test('Hiding substates', async function (assert) {

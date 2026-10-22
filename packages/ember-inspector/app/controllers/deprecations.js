@@ -5,7 +5,7 @@ import { tracked } from '@glimmer/tracking';
 
 import { TrackedArray } from 'tracked-built-ins';
 
-import debounceComputed from 'ember-inspector/computed/debounce';
+import debounced from 'ember-inspector/utils/debounced';
 import searchMatch from 'ember-inspector/utils/search-match';
 
 export default class DeprecationsController extends Controller {
@@ -16,7 +16,7 @@ export default class DeprecationsController extends Controller {
   @tracked search = null;
   @tracked toggleDeprecationWorkflow = false;
 
-  @debounceComputed('search', 300) searchValue;
+  @debounced('search', 300) searchValue;
 
   @action
   changeDeprecationWorkflow(e) {
