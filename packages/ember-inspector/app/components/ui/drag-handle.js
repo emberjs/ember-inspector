@@ -1,94 +1,82 @@
-import { equal } from '@ember/object/computed';
-// eslint-disable-next-line ember/no-classic-components
-import Component from '@ember/component';
-import { action, computed } from '@ember/object';
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
 import { htmlSafe } from '@ember/template';
+import { localCopy } from 'tracked-toolbox';
 
-// eslint-disable-next-line ember/no-classic-classes
-export default Component.extend({
-  tagName: '',
-  position: 0,
-  side: '',
-  isRight: equal('side', 'right'),
-  isLeft: equal('side', 'left'),
-  minWidth: 60,
-
-  /**
-   * Reference to drag-handle on mousedown
-   *
-   * @property el
-   * @type {DOMNode|null}
-   * @default null
-   */
-  el: null,
+/**
+ * A handle that the user drags to resize a column.
+ *
+ * - `@side`: `left` or `right`
+ * - `@position`: the start position, the drag changes a local copy
+ * - `@left`: the left offset to add to the position
+ * - `@minWidth` and `@maxWidth`: the range of the position
+ * - `@faded`: fade the handle
+ * - `@on-drag`: called with each new position
+ */
+export default class DragHandle extends Component {
+  @localCopy('args.position', 0) position;
 
   /**
-   * The maximum width this handle can be dragged to.
-   *
-   * @property maxWidth
-   * @type {Number}
-   * @default Infinity
+   * Reference to the drag handle on mousedown
    */
-  maxWidth: Infinity,
+  el = null;
 
-  /**
-   * The left offset to add to the initial position.
-   *
-   * @property left
-   * @type {Number}
-   * @default 0
-   */
-  left: 0,
+  get side() {
+    return this.args.side ?? '';
+  }
 
-  /**
-   * Modifier added to the class to fade the drag handle.
-   *
-   * @property faded
-   * @type {Boolean}
-   * @default false
-   */
-  faded: false,
+  get isLeft() {
+    return this.side === 'left';
+  }
 
-  /**
-   * Action to trigger whenever the drag handle is moved.
-   * Pass this action through the template.
-   *
-   * @property on-drag
-   * @type {Function}
-   */
-  'on-drag'() {},
+  get isRight() {
+    return this.side === 'right';
+  }
 
-  startDragging() {
-    this._mouseMoveHandler = this.mouseMoveHandler.bind(this);
-    this._stopDragging = this.stopDragging.bind(this);
-    document.body.addEventListener(`mousemove`, this._mouseMoveHandler);
-    document.body.addEventListener(`mouseup`, this._stopDragging);
-    document.body.addEventListener(`mouseleave`, this._stopDragging);
-  },
+  get left() {
+    return this.args.left ?? 0;
+  }
 
-  stopDragging() {
-    document.body.removeEventListener(`mousemove`, this._mouseMoveHandler);
-    document.body.removeEventListener(`mouseup`, this._stopDragging);
-    document.body.removeEventListener(`mouseleave`, this._stopDragging);
-  },
+  get minWidth() {
+    return this.args.minWidth ?? 60;
+  }
 
-  willDestroy() {
-    this._super();
-    this.stopDragging();
-  },
+  get maxWidth() {
+    return this.args.maxWidth ?? Infinity;
+  }
 
-  mouseDownHandler: action(function (e) {
-    e.preventDefault();
-    this.el = e.target;
-    this.startDragging();
-  }),
-
-  style: computed('side', 'position', 'left', function () {
+  get style() {
     return htmlSafe(
       this.side ? `${this.side}: ${this.position + this.left}px;` : '',
     );
-  }),
+  }
 
+  startDragging() {
+    document.body.addEventListener(`mousemove`, this.mouseMoveHandler);
+    document.body.addEventListener(`mouseup`, this.stopDragging);
+    document.body.addEventListener(`mouseleave`, this.stopDragging);
+  }
+
+  @action
+  stopDragging() {
+    document.body.removeEventListener(`mousemove`, this.mouseMoveHandler);
+    document.body.removeEventListener(`mouseup`, this.stopDragging);
+    document.body.removeEventListener(`mouseleave`, this.stopDragging);
+  }
+
+  willDestroy() {
+    super.willDestroy(...arguments);
+    this.stopDragging();
+  }
+
+  @action
+  mouseDownHandler(e) {
+    e.preventDefault();
+    this.el = e.target;
+    this.startDragging();
+  }
+
+  @action
   mouseMoveHandler(e) {
     let container = this.el.parentNode;
     let containerOffsetLeft = getOffsetLeft(container);
@@ -100,11 +88,11 @@ export default Component.extend({
 
     position -= this.left;
     if (position >= this.minWidth && position <= this.maxWidth) {
-      this.set('position', position);
-      this['on-drag'](position);
+      this.position = position;
+      this.args['on-drag']?.(position);
     }
-  },
-});
+  }
+}
 
 function getOffsetLeft(elem) {
   let offsetLeft = 0;
