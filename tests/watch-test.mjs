@@ -118,16 +118,27 @@ test(
     let rollupBuilds = count(watch.output, 'created dist');
     let uiBuilds = count(watch.output, 'Build successful');
 
-    writeFileSync(
-      versionsSource,
-      `${originalVersions}\nexport const WATCH_TEST_MARKER = '${marker}';\n`,
-    );
+    let writes = 0;
+    let lastWrite = 0;
 
-    await waitFor(
-      watch,
-      'rollup rebuilds ember-debug',
-      () => count(watch.output, 'created dist') > rollupBuilds,
-    );
+    /**
+     * Rollup prints "waiting for changes" before its file watcher is ready,
+     * so an early change can be missed. Write again until rollup rebuilds.
+     */
+    await waitFor(watch, 'rollup rebuilds ember-debug', () => {
+      if (count(watch.output, 'created dist') > rollupBuilds) return true;
+
+      if (Date.now() - lastWrite > 2000) {
+        writes++;
+        lastWrite = Date.now();
+        writeFileSync(
+          versionsSource,
+          `${originalVersions}\nexport const WATCH_TEST_MARKER = '${marker}'; // write ${writes}\n`,
+        );
+      }
+
+      return false;
+    });
 
     await waitFor(
       watch,
