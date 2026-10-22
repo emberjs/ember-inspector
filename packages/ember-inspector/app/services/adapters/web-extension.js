@@ -45,7 +45,10 @@ export default class WebExtension extends BasicAdapter {
     // user reloads the page from the Elements panel — let the fresh
     // ember_debug instance know it should stay paused.
     this.onMessageReceived((message) => {
-      if (message?.type === 'general:applicationBooted' && !this._panelVisible) {
+      if (
+        message?.type === 'general:applicationBooted' &&
+        !this._panelVisible
+      ) {
         this._sendPanelVisibility();
       }
     });
