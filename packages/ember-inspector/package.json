@@ -36,7 +36,7 @@
     "watch-test": "ember test --serve"
   },
   "dependencies": {
-    "got": "^11.8.6",
+    "got": "^16.1.0",
     "rimraf": "^6.1.3",
     "yauzl": "^3.2.0"
   },
