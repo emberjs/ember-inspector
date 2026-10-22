@@ -1,3 +1,11 @@
+import Component from '@glimmer/component';
+
+export default class InspectorTableRow extends Component {
+  select = () => {
+    if (this.args.isSelectable) this.args.onSelect(this.args.data);
+  };
+}
+
 {{!-- template-lint-disable no-invalid-interactive --}}
 <tr
   class="{{if @isSelectable 'is-selectable'}} {{if @isSelected 'is-selected'}}"
