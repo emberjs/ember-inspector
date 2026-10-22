@@ -16,18 +16,23 @@ concurrency:
   group: publish-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
 
   build:
     name: Build extensions
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22
-          cache: pnpm
+          package-manager-cache: false
       - run: pnpm install
       - name: Download panes
         working-directory: packages/ember-inspector
@@ -45,22 +50,22 @@ jobs:
           mkdir -p dist/npm
           tar xvzf "ember-inspector-$VERSION.tgz" -C dist/npm --strip-components 1
       - name: Upload artifacts (bookmarklet)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: bookmarklet
           path: packages/ember-inspector/dist/bookmarklet
       - name: Upload artifacts (Chrome)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: chrome
           path: packages/ember-inspector/dist/chrome
       - name: Upload artifacts (Firefox)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: firefox
           path: packages/ember-inspector/dist/firefox
       - name: Upload artifacts (npm)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: npm
           path: packages/ember-inspector/dist/npm
@@ -72,12 +77,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts (bookmarklet)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: bookmarklet
           path: bookmarklet
-      - name: Upload to S3
-        uses: jakejarvis/s3-sync-action@v0.5.1
+      - name: Upload to S3 # zizmor: ignore[archived-uses] the action is archived, the hash pins its content
+        uses: jakejarvis/s3-sync-action@be0c4ab89158cac4278689ebedd8407dd5f35a83 # v0.5.1
         with:
           args: --acl public-read --cache-control "max-age=86400000,public"
         env:
@@ -94,11 +99,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          package-manager-cache: false
       - name: Install dependencies (chrome-webstore-upload-cli)
-        run: npm install -g chrome-webstore-upload-cli
+        run: npm install -g chrome-webstore-upload-cli # zizmor: ignore[adhoc-packages] this job has no checkout and no lockfile
       - name: Download artifacts (Chrome)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: chrome
           path: chrome
@@ -118,14 +125,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up nod
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          package-manager-cache: false
       - name: Install dependencies (web-ext)
-        run: |
+        run: | # zizmor: ignore[adhoc-packages] this job has no checkout and no lockfile
           npm install -g web-ext
           # https://github.com/mozilla/web-ext/issues/804
           npm install -g web-ext-submit
       - name: Download artifacts (Firefox)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: firefox
           path: firefox
@@ -145,13 +154,15 @@ jobs:
       attestations: write
 
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v5
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
           registry-url: 'https://registry.npmjs.org'
-          cache: pnpm
+          package-manager-cache: false
       - run: pnpm install --frozen-lockfile
       - name: Publish to NPM
         run: NPM_CONFIG_PROVENANCE=true pnpm release-plan publish

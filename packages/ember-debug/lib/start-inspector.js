@@ -1,4 +1,4 @@
-import versionTest from '../utils/version-test.js';
+import { isVersionInRange } from '../utils/version.js';
 import { EMBER_VERSIONS_SUPPORTED } from '../utils/versions.js';
 import {
   getApplicationWithDescriptors,
@@ -65,7 +65,7 @@ async function startInspector(Adapter) {
    * The code fits the Inspector supporting Ember back to 3.16: any version
    * before 3.16 is necessarily a classic Ember app with Ember defined.
    */
-  if ((VERSION, !versionTest(VERSION, EMBER_VERSIONS_SUPPORTED))) {
+  if (!isVersionInRange(VERSION, EMBER_VERSIONS_SUPPORTED)) {
     // Wrong inspector version. Redirect to the correct version.
     sendVersionMiss(VERSION);
     return;

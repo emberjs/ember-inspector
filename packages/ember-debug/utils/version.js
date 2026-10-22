@@ -61,6 +61,21 @@ export function isInVersionSpecifier(specifier, version) {
 }
 
 /**
+ * Checks if a version is in the range `[from, to)`.
+ * An empty `to` means that the range has no upper bound.
+ *
+ * @param {String} version
+ * @param {Array<String>} range `[from, to]`
+ * @return {Boolean}
+ */
+export function isVersionInRange(version, [from, to]) {
+  if (compareVersion(version, from) === -1) {
+    return false;
+  }
+  return !to || compareVersion(version, to) === -1;
+}
+
+/**
  * Remove -alpha, -beta, etc from versions
  *
  * @param {String} version

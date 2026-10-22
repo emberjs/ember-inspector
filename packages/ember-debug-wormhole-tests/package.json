@@ -1,0 +1,57 @@
+{
+  "name": "ember-debug-wormhole-tests",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Runs the ember-debug tests that need the ember-wormhole addon",
+  "license": "MIT",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "lint": "pnpm \"/^lint:(?!fix$)[^:]+$/\"",
+    "lint:fix": "pnpm \"/^lint:[^:]+:fix$/\" && pnpm format",
+    "lint:format": "prettier --cache --check \"**/*.{js,cjs,mjs}\"",
+    "format": "prettier --cache --write \"**/*.{js,cjs,mjs}\"",
+    "lint:js": "eslint . --cache",
+    "lint:js:fix": "eslint . --fix",
+    "start": "ember serve",
+    "test": "ember test"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/eslint-parser": "^7.25.9",
+    "@babel/plugin-proposal-decorators": "^7.25.9",
+    "@ember/optional-features": "^2.2.0",
+    "@ember/test-helpers": "^4.0.4",
+    "@eslint/js": "^9.39.4",
+    "@glimmer/component": "^1.1.2",
+    "@glimmer/tracking": "^1.1.2",
+    "ember-auto-import": "^2.10.0",
+    "ember-cli": "~6.1.0",
+    "ember-cli-babel": "^8.2.0",
+    "ember-cli-htmlbars": "^6.3.0",
+    "ember-debug": "workspace:*",
+    "ember-load-initializers": "^3.0.1",
+    "ember-qunit": "^8.1.1",
+    "ember-resolver": "^13.1.0",
+    "ember-source": "~5.12.0",
+    "ember-wormhole": "^0.6.0",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-ember": "^12.7.5",
+    "eslint-plugin-n": "^17.24.0",
+    "eslint-plugin-qunit": "^8.2.6",
+    "globals": "^15.14.0",
+    "loader.js": "^4.7.0",
+    "prettier": "^3.4.2",
+    "qunit": "^2.23.1",
+    "qunit-dom": "^3.4.0",
+    "webpack": "^5.97.1"
+  },
+  "engines": {
+    "node": ">= 22"
+  },
+  "ember": {
+    "edition": "octane"
+  }
+}

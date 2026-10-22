@@ -1,6 +1,6 @@
 import Controller from '@ember/controller';
 import { action } from '@ember/object';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 
 const HIDE_EMPTY_MODELS_KEY = 'are-model-types-hidden';
 const ORDER_MODELS_BY_COUNT_KEY = 'are-models-ordered-by-record-count';

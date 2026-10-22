@@ -32,7 +32,7 @@ Make use of the many generators for code, try `ember help generate` for more det
 ### Running Tests
 
 - `pnpm test`
-- `pnpm test:ember --server`
+- `RAISE_ON_DEPRECATION=true pnpm test` to throw on each deprecation
 
 ### Linting
 

@@ -11,10 +11,11 @@
  * });
  * ```
  */
-import Service, { inject as service } from '@ember/service';
+import Service, { service } from '@ember/service';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import config from 'ember-inspector/config/environment';
+import { compareVersion } from 'ember-debug/version';
 
 export default class Basic extends Service {
   @service port;
@@ -114,42 +115,5 @@ export default class Basic extends Service {
       this.port.send('general:refresh');
       this.willReload();
     }
-  }
-}
-
-/**
- * Compares two Ember versions.
- *
- * Returns:
- * `-1` if version < version
- * 0 if version1 == version2
- * 1 if version1 > version2
- *
- * @return result of the comparison
- */
-function compareVersion(version1, version2) {
-  const v1 = cleanupVersion(version1).split('.');
-  const v2 = cleanupVersion(version2).split('.');
-  for (let i = 0; i < 3; i++) {
-    const compared = compare(+v1[i], +v2[i]);
-    if (compared !== 0) {
-      return compared;
-    }
-  }
-  return 0;
-}
-
-/* Remove -alpha, -beta, etc from versions */
-function cleanupVersion(version) {
-  return version.replace(/-.*/g, '');
-}
-
-function compare(val, number) {
-  if (val === number) {
-    return 0;
-  } else if (val < number) {
-    return -1;
-  } else if (val > number) {
-    return 1;
   }
 }

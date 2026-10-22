@@ -1,5 +1,5 @@
 import EmberObject, { set } from '@ember/object';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { Promise } from 'rsvp';
 
 import { TrackedArray } from 'tracked-built-ins';

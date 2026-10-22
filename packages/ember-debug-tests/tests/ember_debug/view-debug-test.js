@@ -17,6 +17,7 @@ import Controller from '@ember/controller';
 // eslint-disable-next-line ember/no-at-ember-render-modifiers
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
 import QUnit, { module, test } from 'qunit';
+import require from 'require';
 import { hbs } from 'ember-cli-htmlbars';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 import { isInVersionSpecifier } from 'ember-debug/version';
@@ -36,8 +37,12 @@ try {
   // eslint-disable-next-line no-empty
 } catch {}
 try {
-  // eslint-disable-next-line no-undef
   templateOnlyComponent = require('ember').default._templateOnlyComponent;
+  // eslint-disable-next-line no-empty
+} catch {}
+try {
+  // Ember 7 has no `ember` module.
+  templateOnlyComponent = require('@ember/component/template-only').default;
   // eslint-disable-next-line no-empty
 } catch {}
 
@@ -230,6 +235,24 @@ function Args({ names = [], positionals = 0 } = {}) {
   };
 }
 
+// Ember 7.1 removed the template field from its render nodes.
+function hasTemplate(type) {
+  return type === 'html-element' || !hasEmberVersion(7, 1);
+}
+
+function matchTooltipTemplate(assert, tooltip, template) {
+  const detail = assert.dom(
+    '.ember-inspector-tooltip-detail-template',
+    tooltip,
+  );
+
+  if (hasTemplate('component')) {
+    detail.hasText(template.replace(/\//g, '\u200B/\u200B'));
+  } else {
+    detail.doesNotExist();
+  }
+}
+
 function RenderNode(
   {
     id = RenderNodeID(),
@@ -254,7 +277,7 @@ function RenderNode(
     );
     match(
       actual.template,
-      template,
+      hasTemplate(type) ? template : undefined,
       `${name} ${type} should have correct template`,
     );
     match(actual.bounds, bounds, `${name} ${type} should have correct bounds`);
@@ -320,6 +343,10 @@ function HtmlElement(
 }
 
 function RouteArgs() {
+  if (hasEmberVersion(7, 5)) {
+    // Related to route managers
+    return Args({ names: ['model', 'controller', 'outlet'] });
+  }
   if (hasEmberVersion(6, 4)) {
     // Related to routable components
     return Args({ names: ['controller', 'model'] });
@@ -349,7 +376,12 @@ function Route(
   );
 }
 
-function TopLevel(...children) {
+function TopLevel(application) {
+  // Ember 7.5 has no template above the application route.
+  if (hasEmberVersion(7, 5)) {
+    return application;
+  }
+
   return Route(
     {
       name: '-top-level',
@@ -357,7 +389,7 @@ function TopLevel(...children) {
       instance: Undefined(),
       template: /^packages\/.+\/templates\/outlet\.hbs$/,
     },
-    ...children,
+    application,
   );
 }
 
@@ -382,7 +414,6 @@ module('Ember Debug - View', function (hooks) {
       this.route('simple');
       this.route('test-in-element-in-component');
       this.route('test-component-in-in-element');
-      this.route('wormhole');
       this.route('inputs');
       this.route('component-in-shadow-dom');
       this.route('comments', { resetNamespace: true }, function () {});
@@ -439,19 +470,6 @@ module('Ember Debug - View', function (hooks) {
           return EmberObject.create({
             toString() {
               return 'Simple Model';
-            },
-          });
-        },
-      }),
-    );
-
-    this.owner.register(
-      'route:wormhole',
-      EmberRoute.extend({
-        model() {
-          return EmberObject.create({
-            toString() {
-              return 'Wormhole Model';
             },
           });
         },
@@ -658,15 +676,6 @@ module('Ember Debug - View', function (hooks) {
       }),
     );
 
-    this.owner.register(
-      'template:wormhole',
-      hbs(
-        '<EmberWormhole @to="target"><div class="in-wormhole">Wormhole</div></EmberWormhole>',
-        {
-          moduleName: 'my-app/templates/wormhole.hbs',
-        },
-      ),
-    );
     this.owner.register(
       'template:inputs',
       hbs('Simple <Input @value="987" />', {
@@ -1021,11 +1030,7 @@ module('Ember Debug - View', function (hooks) {
       assert
         .dom('.ember-inspector-tooltip-header', tooltip)
         .hasText('<TestFoo>');
-      assert
-        .dom('.ember-inspector-tooltip-detail-template', tooltip)
-        .hasText(
-          'my-app/components/test-foo.hbs'.replace(/\//g, '\u200B/\u200B'),
-        );
+      matchTooltipTemplate(assert, tooltip, 'my-app/components/test-foo.hbs');
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
         .hasText('App.TestFooComponent');
@@ -1053,11 +1058,7 @@ module('Ember Debug - View', function (hooks) {
       assert
         .dom('.ember-inspector-tooltip-header', tooltip)
         .hasText('<TestBar>');
-      assert
-        .dom('.ember-inspector-tooltip-detail-template', tooltip)
-        .hasText(
-          'my-app/components/test-bar.hbs'.replace(/\//g, '\u200B/\u200B'),
-        );
+      matchTooltipTemplate(assert, tooltip, 'my-app/components/test-bar.hbs');
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
         .hasText(
@@ -1096,11 +1097,7 @@ module('Ember Debug - View', function (hooks) {
       assert
         .dom('.ember-inspector-tooltip-header', tooltip)
         .hasText('<TestFoo>');
-      assert
-        .dom('.ember-inspector-tooltip-detail-template', tooltip)
-        .hasText(
-          'my-app/components/test-foo.hbs'.replace(/\//g, '\u200B/\u200B'),
-        );
+      matchTooltipTemplate(assert, tooltip, 'my-app/components/test-foo.hbs');
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
         .hasText('App.TestFooComponent');
@@ -1122,11 +1119,7 @@ module('Ember Debug - View', function (hooks) {
       assert
         .dom('.ember-inspector-tooltip-header', tooltip)
         .hasText('<TestFoo>');
-      assert
-        .dom('.ember-inspector-tooltip-detail-template', tooltip)
-        .hasText(
-          'my-app/components/test-foo.hbs'.replace(/\//g, '\u200B/\u200B'),
-        );
+      matchTooltipTemplate(assert, tooltip, 'my-app/components/test-foo.hbs');
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
         .hasText('App.TestFooComponent');
@@ -1212,39 +1205,6 @@ module('Ember Debug - View', function (hooks) {
       assert
         .dom('.ember-inspector-tooltip-detail-instance', tooltip)
         .hasText('App.TestComponentInElement');
-    });
-
-    test('wormhole', async function (assert) {
-      await visit('wormhole');
-      await rerender();
-      await getRenderTree();
-
-      inElement = find('.in-wormhole');
-
-      await click('.in-wormhole');
-
-      assert
-        .dom('.ember-inspector-tooltip-header', tooltip)
-        .hasText('<EmberWormhole>');
-
-      let actual = highlight.getBoundingClientRect();
-      let expected = inElement.getBoundingClientRect();
-
-      assert.ok(isVisible(tooltip), 'tooltip is visible');
-      assert.ok(isVisible(highlight), 'highlight is visible');
-
-      assert.deepEqual(actual.x, expected.x, 'same x as component');
-      assert.deepEqual(actual.y, expected.y, 'same y as component');
-      assert.deepEqual(actual.width, expected.width, 'same width as component');
-      assert.deepEqual(
-        actual.height,
-        expected.height,
-        'same height as component',
-      );
-
-      assert
-        .dom('.ember-inspector-tooltip-detail-instance', tooltip)
-        .hasText(/ember-wormhole/);
     });
 
     test('component inside shadow dom', async function (assert) {

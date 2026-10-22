@@ -1,5 +1,5 @@
 import TabRoute from 'ember-inspector/routes/tab';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
 function checkStatus(response) {
