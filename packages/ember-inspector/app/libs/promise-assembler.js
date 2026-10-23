@@ -3,7 +3,7 @@ import { later } from '@ember/runloop';
 import EmberObject, { action, setProperties } from '@ember/object';
 import { addListener, removeListener, sendEvent } from '@ember/object/events';
 
-import { TrackedArray, TrackedObject } from 'tracked-built-ins';
+import { trackedArray, trackedObject } from '@ember/reactive/collections';
 import { tracked } from '@glimmer/tracking';
 
 import PromiseModel from '../models/promise';
@@ -14,10 +14,10 @@ export default class PromiseAssembler extends EmberObject {
   // Mainly helps in triggering 'firstMessageReceived' event
   @tracked firstMessageReceived = false;
 
-  all = new TrackedArray([]);
-  promiseIndex = new TrackedObject({});
-  topSort = new TrackedArray([]);
-  topSortMeta = new TrackedObject({});
+  all = trackedArray([]);
+  promiseIndex = trackedObject({});
+  topSort = trackedArray([]);
+  topSortMeta = trackedObject({});
 
   start() {
     this.port.on('promise:promisesUpdated', this, this.addOrUpdatePromises);
@@ -31,8 +31,8 @@ export default class PromiseAssembler extends EmberObject {
   }
 
   reset() {
-    this.topSortMeta = new TrackedObject({});
-    this.promiseIndex = new TrackedObject({});
+    this.topSortMeta = trackedObject({});
+    this.promiseIndex = trackedObject({});
     this.topSort.splice(0, this.topSort.length);
 
     this.firstMessageReceived = false;
@@ -48,7 +48,7 @@ export default class PromiseAssembler extends EmberObject {
       },
       500,
     );
-    this.all = new TrackedArray([]);
+    this.all = trackedArray([]);
   }
 
   destroyPromises(promises) {

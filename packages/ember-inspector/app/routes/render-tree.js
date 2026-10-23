@@ -2,7 +2,7 @@ import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { Promise } from 'rsvp';
 
-import { TrackedArray } from 'tracked-built-ins';
+import { trackedArray } from '@ember/reactive/collections';
 
 import TabRoute from './tab';
 
@@ -11,7 +11,7 @@ class RenderTreeModel {
   @tracked isHighlightSupported;
 
   constructor(profiles, isHighlightSupported) {
-    this.profiles = new TrackedArray(profiles);
+    this.profiles = trackedArray(profiles);
     this.isHighlightSupported = isHighlightSupported;
   }
 }
@@ -51,7 +51,7 @@ export default class RenderTreeRoute extends TabRoute {
   }
 
   profilesUpdated = (message) => {
-    this.controller.model.profiles = new TrackedArray(message.profiles);
+    this.controller.model.profiles = trackedArray(message.profiles);
   };
 
   profilesAdded = (message) => {
@@ -67,7 +67,7 @@ export default class RenderTreeRoute extends TabRoute {
 
     currentProfiles.push(profiles);
     if (currentProfiles.length > 100) {
-      this.controller.model.profiles = new TrackedArray(
+      this.controller.model.profiles = trackedArray(
         currentProfiles.slice(0, 100),
       );
     }

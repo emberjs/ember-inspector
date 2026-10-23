@@ -665,9 +665,6 @@ importers:
       stylelint-prettier:
         specifier: ^5.0.2
         version: 5.0.2(prettier@3.9.10)(stylelint@16.26.1(typescript@5.7.3))
-      tracked-built-ins:
-        specifier: ^4.1.2
-        version: 4.1.2(@babel/core@7.29.7)
       tracked-toolbox:
         specifier: ^2.0.0
         version: 2.0.0(@babel/core@7.29.7)(ember-source@7.3.1(@glimmer/component@2.2.1))

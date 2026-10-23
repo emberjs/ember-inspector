@@ -1,7 +1,7 @@
 import { service } from '@ember/service';
 import { set } from '@ember/object';
 
-import { TrackedArray } from 'tracked-built-ins';
+import { trackedArray } from '@ember/reactive/collections';
 
 import TabRoute from '../routes/tab';
 
@@ -9,7 +9,7 @@ export default class RecordsRoute extends TabRoute {
   @service port;
 
   model() {
-    return new TrackedArray([]);
+    return trackedArray([]);
   }
 
   setupController(controller, model, transition) {
@@ -23,7 +23,7 @@ export default class RecordsRoute extends TabRoute {
     this.port.on('data:recordsUpdated', this, this.updateRecords);
     this.port.on('data:recordsRemoved', this, this.removeRecords);
     this.port.one('data:filters', this, (message) => {
-      this.controller.filters = new TrackedArray(message.filters);
+      this.controller.filters = trackedArray(message.filters);
     });
     this.port.send('data:getFilters');
     this.port.send('data:getRecords', { objectId: type.objectId });
