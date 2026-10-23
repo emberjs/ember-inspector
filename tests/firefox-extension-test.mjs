@@ -46,21 +46,74 @@ const SELECT_EMBER_PANEL = `
   })();
 `;
 
-const PANE_URL = `
-  const done = arguments[arguments.length - 1];
+const FIND_PANE = `
   ${DEVTOOLS}
   const toolbox = gDevTools.getToolboxForTab(gBrowser.selectedTab);
-  let url = null;
+  let pane = null;
   const visit = (doc) => {
     for (const frame of doc.querySelectorAll('browser, iframe')) {
       const src = frame.currentURI?.spec ?? frame.src;
-      if (src?.includes('/panes-')) url = src;
+      if (src?.includes('/panes-')) pane = frame;
       if (frame.contentDocument) visit(frame.contentDocument);
     }
   };
   visit(toolbox.doc);
-  done(url);
 `;
+
+const PANE_URL = `
+  const done = arguments[arguments.length - 1];
+  ${FIND_PANE}
+  done(pane?.currentURI?.spec ?? pane?.src ?? null);
+`;
+
+/**
+ * Moves the Ember panel to the tab in `arguments[0]`, for example `#/route-tree`.
+ */
+const SHOW_PANE = `
+  const done = arguments[arguments.length - 1];
+  ${FIND_PANE}
+  const url = new URL(pane.currentURI?.spec ?? pane.src);
+  url.hash = arguments[0];
+  pane.browsingContext.loadURI(Services.io.newURI(url.href), {
+    triggeringPrincipal: Services.scriptSecurityManager.getSystemPrincipal(),
+  });
+  done(true);
+`;
+
+/**
+ * Every style sheet of the page,
+ * and every computed property of the html and body elements.
+ */
+const PAGE_STYLES = `
+  const computed = (element) => {
+    const style = getComputedStyle(element);
+    return Array.from(style, (name) => \`\${name}: \${style.getPropertyValue(name)}\`);
+  };
+  return {
+    sheets: Array.from(document.styleSheets, (sheet) =>
+      sheet.href ?? sheet.ownerNode.outerHTML.slice(0, 200),
+    ),
+    html: computed(document.documentElement),
+    body: computed(document.body),
+  };
+`;
+
+/**
+ * Each tab of the inspector, and a detail page.
+ */
+const PANES = [
+  '#/component-tree',
+  '#/route-tree',
+  '#/data/model-types',
+  '#/promise-tree',
+  '#/info/libraries',
+  '#/info/app-config',
+  '#/info/changelog',
+  '#/render-tree',
+  '#/container-types',
+  '#/container-types/route',
+  '#/deprecations',
+];
 
 const EXTENSION_ERRORS = `
   const done = arguments[arguments.length - 1];
@@ -104,6 +157,15 @@ before(async () => {
 });
 
 after(() => server?.close());
+
+async function pageStyles(client) {
+  let { value } = await client.send('WebDriver:ExecuteScript', {
+    script: PAGE_STYLES,
+    args: [],
+  });
+
+  return value;
+}
 
 async function waitFor(check, message) {
   for (let attempt = 0; attempt < 120; attempt++) {
@@ -175,6 +237,51 @@ test(
         [],
         errors.join('\n'),
       );
+    } finally {
+      await firefox.stop();
+    }
+  },
+);
+
+test(
+  'viewing each pane of the Ember panel leaves the page styles alone',
+  { timeout: TIMEOUT * 2 },
+  async () => {
+    let firefox = await startFirefox();
+    let { client } = firefox;
+
+    try {
+      await client.send('Addon:Install', { path: extension, temporary: true });
+      await client.send('WebDriver:Navigate', { url: appUrl });
+
+      assert.equal(await client.inChrome(OPEN_DEVTOOLS), true);
+      assert.equal(await client.inChrome(SELECT_EMBER_PANEL), true);
+      await waitFor(async () => {
+        let url = await client.inChrome(PANE_URL);
+        return url?.includes('#/info/');
+      }, 'the Ember panel did not detect the app');
+
+      let before = await pageStyles(client);
+
+      for (let pane of PANES) {
+        await client.inChrome(SHOW_PANE, [pane]);
+        await waitFor(async () => {
+          let url = await client.inChrome(PANE_URL);
+          return url?.endsWith(pane);
+        }, `the Ember panel did not show ${pane}`);
+
+        /**
+         * The pane asks ember-debug for its data after it renders.
+         * Nothing reports when the app is done with the request.
+         */
+        await sleep(2000);
+
+        assert.deepEqual(
+          await pageStyles(client),
+          before,
+          `the page styles changed after ${pane}`,
+        );
+      }
     } finally {
       await firefox.stop();
     }

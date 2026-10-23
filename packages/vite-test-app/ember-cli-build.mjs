@@ -8,5 +8,11 @@ export default async function (defaults) {
     // Add options here
   });
 
-  return compatBuild(app, buildOnce);
+  return compatBuild(app, buildOnce, {
+    /**
+     * The inspector must not load a split route,
+     * because its CSS would change the page.
+     */
+    splitAtRoutes: ['lazy'],
+  });
 }
