@@ -27,7 +27,7 @@ function generateContent(main = false) {
   content.push(`
 ## Release (2021-11-18)
 
-[Full Changelog](https://emberjs.com)
+* ember-inspector 4.5.4 (patch)
 
 **Implemented enhancements:**
 
@@ -35,7 +35,7 @@ function generateContent(main = false) {
 
 ## Release (2021-11-17)
 
-[Full Changelog](https://emberjs.com)
+* ember-inspector 4.5.3 (patch)
 
 **Implemented enhancements:**
 
@@ -76,7 +76,7 @@ module('Whats New', function (outer) {
 
     test('Changelog is parsed and displayed', async function (assert) {
       this.server = new Pretender(function () {
-        this.get(urlFor('v4.5.3-ember-inspector'), () => [
+        this.get(urlFor('main'), () => [
           200,
           { 'Content-Type': 'text/plain' },
           generateContent(),
@@ -91,14 +91,31 @@ module('Whats New', function (outer) {
 
       assert.strictEqual(
         find('.whats-new h2').textContent,
-        'Release (2021-11-18)',
-        'correct section of markdown is rendered',
+        'Release (2021-11-17)',
+        'the section of this version is rendered, not the latest one',
       );
+    });
+
+    test('Error message is displayed when the version has no entry', async function (assert) {
+      this.config.version = '4.5.5';
+      this.server = new Pretender(function () {
+        this.get(urlFor('main'), () => [
+          200,
+          { 'Content-Type': 'text/plain' },
+          generateContent(),
+        ]);
+      });
+
+      await visit('/info/whats-new');
+
+      assert
+        .dom('.whats-new p')
+        .exists({ count: 1 }, 'Changelog could not be loaded');
     });
 
     test('Error message is displayed on request failure', async function (assert) {
       this.server = new Pretender(function () {
-        this.get(urlFor('v4.5.3-ember-inspector'), () => [404, {}, '']);
+        this.get(urlFor('main'), () => [404, {}, '']);
       });
 
       await visit('/info/whats-new');

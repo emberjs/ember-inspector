@@ -24,6 +24,30 @@ function getLatestEntry(doc) {
   return '';
 }
 
+/**
+ * release-plan lists the released packages under each `## Release` heading,
+ * for example `* ember-inspector 4.17.0 (minor)`.
+ */
+function getEntryFor(version) {
+  const escaped = version.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const releaseLine = new RegExp(`^(\\* )?ember-inspector ${escaped} \\(`, 'm');
+
+  return (doc) => {
+    const entry = doc
+      .split(/^(?=## )/m)
+      .find(
+        (section) =>
+          section.startsWith('## Release') && releaseLine.test(section),
+      );
+
+    if (!entry) {
+      throw new Error(`No changelog entry for ${version}`);
+    }
+
+    return entry.trim();
+  };
+}
+
 function patchLernaIcons(text) {
   return text
     .replace(':breaking:', '💥')
@@ -39,19 +63,19 @@ export default class WhatsNewRoute extends TabRoute {
 
   model() {
     let { version } = this.config;
+    let isPrerelease = version.includes('alpha');
 
-    let ref =
-      version.indexOf('alpha') === -1
-        ? `v${version}-ember-inspector`
-        : 'release-preview';
-    let url = `https://raw.githubusercontent.com/emberjs/ember-inspector/${encodeURIComponent(
-      ref,
-    )}/CHANGELOG.md`;
+    /**
+     * Released versions read the changelog on main, because the release tags
+     * do not have one name format, and some releases have no tag.
+     */
+    let ref = isPrerelease ? 'release-preview' : 'main';
+    let url = `https://raw.githubusercontent.com/emberjs/ember-inspector/${ref}/CHANGELOG.md`;
 
     return fetch(url)
       .then(checkStatus)
       .then((response) => response.text())
-      .then(getLatestEntry)
+      .then(isPrerelease ? getLatestEntry : getEntryFor(version))
       .then(patchLernaIcons)
       .catch((error) => {
         this.error = error;
