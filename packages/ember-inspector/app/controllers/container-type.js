@@ -34,8 +34,8 @@ export default class ContainerTypeContoller extends Controller {
     // By default, sort alphabetically
     this.sorts = [
       {
-        valuePath: 'name',
-        isAscending: true,
+        property: 'name',
+        direction: 'ascending',
       },
     ];
   }
@@ -72,10 +72,12 @@ export default class ContainerTypeContoller extends Controller {
     //   or descending
     let isDefaultSort = !sorts.length;
     if (isDefaultSort) {
+      let [{ property, direction }] = this.sorts;
+
       sorts = [
         {
-          valuePath: this.sorts[0].valuePath,
-          isAscending: !this.sorts[0].isAscending,
+          property,
+          direction: direction === 'ascending' ? 'descending' : 'ascending',
         },
       ];
     }

@@ -121,7 +121,7 @@ module('Data Tab', function (outer) {
         ],
       });
 
-      // ember-table doesn't render synchronously, await
+      // vertical-collection doesn't render synchronously, await
       await settled();
 
       assert.dom(findAll('.js-model-type-name')[0]).hasText('App.Comment');
@@ -173,7 +173,7 @@ module('Data Tab', function (outer) {
         ],
       });
 
-      // ember-table doesn't render synchronously, await
+      // vertical-collection doesn't render synchronously, await
       await settled();
 
       assert
@@ -358,7 +358,7 @@ module('Data Tab', function (outer) {
         ],
       });
 
-      // ember-table doesn't render synchronously, await
+      // vertical-collection doesn't render synchronously, await
       await settled();
 
       recordRows = findAll('[data-test-table-row]');
@@ -394,7 +394,7 @@ module('Data Tab', function (outer) {
         ],
       });
 
-      // ember-table doesn't render synchronously, await
+      // vertical-collection doesn't render synchronously, await
       await settled();
 
       recordRows = findAll('[data-test-table-row]');
@@ -435,7 +435,7 @@ module('Data Tab', function (outer) {
         count: 1,
       });
 
-      // ember-table doesn't render synchronously, await
+      // vertical-collection doesn't render synchronously, await
       await settled();
 
       recordRows = findAll('[data-test-table-row]');
