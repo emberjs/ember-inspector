@@ -1004,9 +1004,13 @@ module('Ember Debug - View', function (hooks) {
     };
 
     /**
-     * Updates wait 250 ms in a plain timeout, which `settled` does not track.
+     * Updates wait in a plain timeout, which `settled` does not track.
+     * The delay grows with the time that a tree build takes.
      */
-    let afterUpdates = () => new Promise((resolve) => setTimeout(resolve, 400));
+    let afterUpdates = () => {
+      let delay = EmberDebug.viewDebug.sendTreeDelay ?? 250;
+      return new Promise((resolve) => setTimeout(resolve, delay + 150));
+    };
 
     try {
       await visit('/simple');
@@ -1016,13 +1020,15 @@ module('Ember Debug - View', function (hooks) {
       EmberDebug.port.trigger('view:getTree', { immediate: true });
       assert.verifySteps(['view:renderTree'], 'the requested tree');
 
-      await visit('/inputs');
-      await afterUpdates();
-      assert.verifySteps(['view:renderTree'], 'an update after a render');
-
       /**
-       * The end of every run loop schedules an update.
+       * The end of every run loop schedules an update. A visit can take
+       * longer than the debounce, so it can send more than one update.
        */
+      // eslint-disable-next-line ember/no-runloop
+      run(() => {});
+      await afterUpdates();
+      assert.verifySteps(['view:renderTree'], 'an update after a run loop');
+
       // eslint-disable-next-line ember/no-runloop
       run(() => {});
       EmberDebug.port.trigger('view:releaseTree');
