@@ -32,11 +32,11 @@
   },
   "packageManager": "pnpm@9.12.1",
   "engines": {
-    "node": ">= 22",
+    "node": ">= 26",
     "pnpm": "^9.0.0"
   },
   "volta": {
-    "node": "22.17.1",
+    "node": "26.12.1",
     "pnpm": "9.12.1"
   },
   "pnpm": {
