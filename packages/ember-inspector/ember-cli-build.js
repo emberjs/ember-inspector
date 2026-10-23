@@ -91,7 +91,10 @@ module.exports = function (defaults) {
     },
   );
 
-  let tree = app.toTree();
+  let tree = mergeTrees([
+    app.toTree(),
+    new Funnel(join(__dirname, '../..'), { files: ['CHANGELOG.md'] }),
+  ]);
 
   const emberInspectorVersionPattern = [
     {

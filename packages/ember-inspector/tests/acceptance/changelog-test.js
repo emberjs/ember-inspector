@@ -2,10 +2,10 @@ import { visit, findAll } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import Pretender from 'pretender';
+import config from 'ember-inspector/config/environment';
 import { setupTestAdapter } from '../test-adapter';
 
-const CHANGELOG_URL =
-  'https://raw.githubusercontent.com/emberjs/ember-inspector/main/CHANGELOG.md';
+const CHANGELOG_URL = `${config.rootURL}CHANGELOG.md`;
 
 const CHANGELOG = `# Changelog
 
@@ -36,7 +36,15 @@ module('Changelog', function (hooks) {
   setupApplicationTest(hooks);
 
   hooks.afterEach(function () {
-    this.server.shutdown();
+    this.server?.shutdown();
+  });
+
+  test('the build copies CHANGELOG.md into the dist', async function (assert) {
+    await visit('/info/changelog');
+
+    assert.dom('.changelog h1').hasText('Changelog');
+    assert.dom('.changelog h2').exists();
+    assert.dom('.changelog').doesNotIncludeText('could not be loaded');
   });
 
   test('the whole changelog is displayed', async function (assert) {

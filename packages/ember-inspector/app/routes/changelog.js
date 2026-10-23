@@ -1,8 +1,11 @@
 import TabRoute from 'ember-inspector/routes/tab';
 import { tracked } from '@glimmer/tracking';
+import config from 'ember-inspector/config/environment';
 
-const CHANGELOG_URL =
-  'https://raw.githubusercontent.com/emberjs/ember-inspector/main/CHANGELOG.md';
+/**
+ * ember-cli-build.js copies CHANGELOG.md next to index.html.
+ */
+const CHANGELOG_URL = `${config.rootURL}CHANGELOG.md`;
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
