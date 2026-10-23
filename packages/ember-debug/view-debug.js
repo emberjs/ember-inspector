@@ -36,6 +36,24 @@ export default class extends DebugPort {
         }
       },
 
+      // Sent by the devtools extension when the Ember panel is shown or
+      // hidden. While the panel is hidden we stop capturing and streaming
+      // the render tree: on large apps that work is expensive enough to
+      // freeze the DevTools renderer (which also hosts the other panels,
+      // like Elements) as well as slow down the inspected app itself.
+      setVisibility({ visible }) {
+        this.panelVisible = visible;
+
+        if (visible) {
+          // Send a fresh tree so the panel catches up on whatever was
+          // missed while it was hidden.
+          this.sendTree(true);
+        } else if (this.scheduledSendTree) {
+          window.clearTimeout(this.scheduledSendTree);
+          this.scheduledSendTree = null;
+        }
+      },
+
       scrollIntoView({ id }) {
         this.renderTree.scrollIntoView(id);
       },
@@ -151,6 +169,12 @@ export default class extends DebugPort {
       return;
     }
 
+    // Skip passive updates entirely while the Ember panel is hidden.
+    // `undefined` (adapters that never report visibility) counts as visible.
+    if (this.panelVisible === false) {
+      return;
+    }
+
     if (this.scheduledSendTree) {
       return;
     }
@@ -158,17 +182,30 @@ export default class extends DebugPort {
     this.scheduledSendTree = window.setTimeout(() => {
       this.send();
       this.scheduledSendTree = null;
-    }, 250);
+    }, this.sendTreeDelay ?? 250);
   }
 
-  send() {
+  send(force = false) {
     if (this.isDestroying || this.isDestroyed) {
       return;
     }
 
+    if (!force && this.panelVisible === false) {
+      return;
+    }
+
+    // Building and posting the tree is O(number of render nodes) on both
+    // sides of the message port. Adapt the debounce delay to how long it
+    // actually takes, so that on large apps a passive stream of updates
+    // can never saturate the app's or the DevTools' main thread.
+    let start = performance.now();
+
     this.sendMessage('renderTree', {
       tree: this.renderTree.build(),
     });
+
+    let duration = performance.now() - start;
+    this.sendTreeDelay = Math.min(Math.max(250, duration * 10), 5000);
   }
 
   startInspecting() {
