@@ -1,4 +1,4 @@
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import svgJar from 'ember-inspector/helpers/svg-jar';
 <template>
   <button
     data-test-send-to-console-btn

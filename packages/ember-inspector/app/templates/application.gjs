@@ -2,7 +2,7 @@ import { onResize } from 'ember-primitives/on-resize';
 import DraggableColumn from 'ember-inspector/components/ui/draggable-column';
 import AppPicker from 'ember-inspector/components/app-picker';
 import SideNav from 'ember-inspector/components/side-nav';
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import svgJar from 'ember-inspector/helpers/svg-jar';
 import Toggle from 'ember-inspector/components/object-inspector/toggle';
 import ObjectInspector from 'ember-inspector/components/object-inspector';
 import ErrorPage from 'ember-inspector/components/ui/error-page';

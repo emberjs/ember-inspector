@@ -14,3 +14,6 @@
 /vendor/
 
 /skeletons
+
+# build staging
+/tmp/

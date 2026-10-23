@@ -1,5 +1,5 @@
 import Disclosure from 'ember-inspector/components/ui/disclosure';
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import svgJar from 'ember-inspector/helpers/svg-jar';
 import DeprecationItemSource from 'ember-inspector/components/deprecation-item-source';
 <template>
   {{! template-lint-disable require-presentational-children }}

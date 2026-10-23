@@ -1,16 +1,24 @@
 import Application from '@ember/application';
-import Resolver from 'ember-resolver';
-import loadInitializers from 'ember-load-initializers';
-import config from 'ember-inspector/config/environment';
+import setupInspector from '@embroider/legacy-inspector-support/ember-source-4.12';
+import setup from './initializers/setup';
 
-const version = '{{EMBER_INSPECTOR_VERSION}}';
+import 'normalize.css';
+import 'basiccontext/dist/basicContext.min.css';
+import 'basiccontext/dist/themes/default.min.css';
+import 'flatpickr/dist/flatpickr.css';
+import './styles/app.scss';
 
 export default class App extends Application {
-  modulePrefix = config.modulePrefix;
-  podModulePrefix = config.podModulePrefix;
-  Resolver = Resolver;
+  modules = {
+    ...import.meta.glob('./router.js', { eager: true }),
+    ...import.meta.glob('./routes/**/*.js', { eager: true }),
+    ...import.meta.glob('./controllers/**/*.js', { eager: true }),
+    ...import.meta.glob('./templates/**/*.gjs', { eager: true }),
+    ...import.meta.glob('./services/**/*.js', { eager: true }),
+    ...import.meta.glob('./schemas/**/*.js', { eager: true }),
+  };
+
+  inspector = setupInspector(this);
 }
 
-config.VERSION = version;
-
-loadInitializers(App, config.modulePrefix);
+App.initializer(setup);

@@ -1,4 +1,4 @@
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import svgJar from 'ember-inspector/helpers/svg-jar';
 <template>
   <div
     class="empty-message flex flex-col items-center justify-center h-full text-center text-base11 text-4xl"

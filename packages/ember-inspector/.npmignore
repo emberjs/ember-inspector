@@ -1,8 +1,10 @@
 # Development tooling — not needed in the published package
-babel.config.js
-ember-cli-build.js
+babel.config.mjs
+config/
 eslint.config.mjs
 gulpfile.js
-testem.js
+testem.cjs
 scripts/
 tests/
+tmp/
+vite.config.mjs

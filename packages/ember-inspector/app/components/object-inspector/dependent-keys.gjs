@@ -1,4 +1,4 @@
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import svgJar from 'ember-inspector/helpers/svg-jar';
 <template>
   <li class="mixin-property-dependency-list relative">
     {{svgJar "dependent-key-connection" width="20px" height="10px"}}

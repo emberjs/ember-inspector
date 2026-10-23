@@ -3,18 +3,16 @@ import config from 'ember-inspector/config/environment';
 import * as QUnit from 'qunit';
 import { setApplication } from '@ember/test-helpers';
 import { setup } from 'qunit-dom';
-import { start } from 'ember-qunit';
-import { loadTests } from 'ember-qunit/test-loader';
+import { setupEmberOnerrorValidation, start as qunitStart } from 'ember-qunit';
+import { setTesting } from '@embroider/macros';
 import TestAdapter from './test-adapter';
-import setupSinon from 'ember-sinon-qunit';
 
 /**
- * we need to override the adapter that is set up in initializers/setup.js
- * for that we suffix the name of setup initializer with `-2` so that
- * this initializer comes right after it
+ * Replaces the adapter that `initializers/setup.js` registers.
  */
 Application.initializer({
-  name: `setup-2-override-adapter`,
+  name: 'setup-override-adapter',
+  after: 'setup',
   initialize(app) {
     app.register('service:adapter', TestAdapter);
   },
@@ -29,15 +27,18 @@ Application.instanceInitializer({
   },
 });
 
-setApplication(Application.create(config.APP));
+export function start() {
+  config.locationType = 'none';
+  config.APP.rootElement = '#ember-testing';
+  config.APP.autoboot = false;
 
-setupSinon();
+  setTesting(true);
+  setApplication(Application.create(config.APP));
 
-window.NO_EMBER_DEBUG = true;
-QUnit.config.testTimeout = 60000;
+  window.NO_EMBER_DEBUG = true;
+  QUnit.config.testTimeout = 60000;
 
-setup(QUnit.assert);
-
-// ember-qunit 9 does not load the tests in `start`.
-loadTests();
-start({ loadTests: false });
+  setup(QUnit.assert);
+  setupEmberOnerrorValidation();
+  qunitStart();
+}

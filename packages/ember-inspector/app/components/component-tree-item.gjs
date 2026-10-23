@@ -3,7 +3,7 @@ import DisclosureTriangle from 'ember-inspector/components/ui/disclosure-triangl
 import isString from 'ember-inspector/helpers/is-string';
 import ComponentTreeArg from 'ember-inspector/components/component-tree-arg';
 import classify from 'ember-inspector/helpers/classify';
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import svgJar from 'ember-inspector/helpers/svg-jar';
 <template>
   {{! template-lint-disable no-invalid-interactive }}
   <div

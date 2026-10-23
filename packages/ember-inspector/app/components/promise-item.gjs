@@ -7,7 +7,7 @@ import Component from '@glimmer/component';
 import { trustHTML } from '@ember/template';
 import { isEmpty } from '@ember/utils';
 import { concat } from '@ember/helper';
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import svgJar from 'ember-inspector/helpers/svg-jar';
 import SendToConsole from 'ember-inspector/components/ui/send-to-console';
 import msToTime from 'ember-inspector/helpers/ms-to-time';
 

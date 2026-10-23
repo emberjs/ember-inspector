@@ -4,7 +4,7 @@ import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { onResize } from 'ember-primitives/on-resize';
 import { LinkTo } from '@ember/routing';
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import svgJar from 'ember-inspector/helpers/svg-jar';
 import match from 'ember-inspector/helpers/match';
 
 export default class SideNav extends Component {
