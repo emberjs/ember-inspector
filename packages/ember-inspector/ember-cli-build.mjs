@@ -5,9 +5,7 @@ export default async function (defaults) {
   const { buildOnce } = await import('@embroider/vite');
 
   const app = new EmberApp(defaults, {
-    svgJar: {
-      sourceDirs: ['public/assets/svg'],
-    },
+    // Add options here
   });
 
   return compatBuild(app, buildOnce);

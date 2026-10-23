@@ -1,4 +1,4 @@
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import DisclosureTriangleIcon from 'ember-inspector/svg/disclosure-triangle.svg?unsafe-inline';
 <template>
   {{#if @toggle}}
     <button
@@ -9,14 +9,14 @@ import svgJar from 'ember-svg-jar/helpers/svg-jar';
       ...attributes
       type="button"
     >
-      {{svgJar "disclosure-triangle" width="9px" height="9px"}}
+      <DisclosureTriangleIcon width="9px" height="9px" />
     </button>
   {{else}}
     <span
       class="disclosure-triangle {{if @expanded 'expanded' 'collapsed'}}"
       ...attributes
     >
-      {{svgJar "disclosure-triangle" width="9px" height="9px"}}
+      <DisclosureTriangleIcon width="9px" height="9px" />
     </span>
   {{/if}}
 </template>
