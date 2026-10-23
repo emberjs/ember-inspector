@@ -20,8 +20,8 @@ import { LinkTo } from '@ember/routing';
             </LinkTo>
           </li>
           <li>
-            <LinkTo @route="whats-new" class="nav-item">
-              <span class="nav-item-label">What's New</span>
+            <LinkTo @route="changelog" class="nav-item">
+              <span class="nav-item-label">Changelog</span>
             </LinkTo>
           </li>
         </ul>
