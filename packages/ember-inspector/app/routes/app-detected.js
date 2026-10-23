@@ -17,10 +17,14 @@ export default class AppDetectedRoute extends Route {
    */
   model() {
     return new Promise((resolve) => {
+      /**
+       * ember-debug also sends this once when it starts,
+       * in case it missed the request below.
+       * So a second reply can come after the first one.
+       * The listener stays until `deactivate` and ignores it.
+       */
       this.applicationBooted = ({ booted }) => {
         if (booted) {
-          this.port.off('general:applicationBooted', this.applicationBooted);
-          this.applicationBooted = null;
           resolve();
         }
       };
@@ -57,6 +61,7 @@ export default class AppDetectedRoute extends Route {
     // We wrapped this in an if because deactivate is being called before this.applicationBooted is defined in the model hook
     if (this.applicationBooted) {
       this.port.off('general:applicationBooted', this.applicationBooted);
+      this.applicationBooted = null;
     }
 
     this.port.off('general:reset', this, this.reset);
