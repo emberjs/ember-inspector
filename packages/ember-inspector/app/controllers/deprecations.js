@@ -3,7 +3,7 @@ import { service } from '@ember/service';
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 
-import { TrackedArray } from 'tracked-built-ins';
+import { trackedArray } from '@ember/reactive/collections';
 
 import debounced from 'ember-inspector/utils/debounced';
 import searchMatch from 'ember-inspector/utils/search-match';
@@ -12,7 +12,7 @@ export default class DeprecationsController extends Controller {
   @service adapter;
   @service port;
 
-  deprecations = new TrackedArray([]);
+  deprecations = trackedArray([]);
   @tracked search = null;
   @tracked toggleDeprecationWorkflow = false;
 

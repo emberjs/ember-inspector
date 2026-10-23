@@ -4,7 +4,7 @@ import { action } from '@ember/object';
 import { debounce, schedule } from '@ember/runloop';
 import { service } from '@ember/service';
 
-import { TrackedArray, TrackedObject } from 'tracked-built-ins';
+import { trackedArray, trackedObject } from '@ember/reactive/collections';
 
 export default class ApplicationController extends Controller {
   @controller('component-tree') componentTreeController;
@@ -29,8 +29,8 @@ export default class ApplicationController extends Controller {
   @tracked _navWidthExpanded = 180;
   @tracked _navWidthCollapsed = 48;
   @tracked navIsCollapsed = false;
-  @tracked mixinDetails = new TrackedObject({});
-  @tracked mixinStack = new TrackedArray([]);
+  @tracked mixinDetails = trackedObject({});
+  @tracked mixinStack = trackedArray([]);
 
   get navWidth() {
     return this.navIsCollapsed
@@ -139,7 +139,7 @@ export default class ApplicationController extends Controller {
       });
     });
 
-    this.mixinStack = new TrackedArray([]);
+    this.mixinStack = trackedArray([]);
     this.pushMixinDetails(name, undefined, objectId, details, errors);
   }
 
@@ -148,7 +148,7 @@ export default class ApplicationController extends Controller {
     let obj = this.mixinStack.find((mixin) => mixin.objectId === objectId);
     if (obj) {
       let index = this.mixinStack.indexOf(obj);
-      let objectsToRemove = new TrackedArray([]);
+      let objectsToRemove = trackedArray([]);
       for (let i = index; i >= 0; i--) {
         objectsToRemove.push(this.mixinStack.at(i));
       }
