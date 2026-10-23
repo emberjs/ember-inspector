@@ -15,7 +15,7 @@ export default class LaunchRoute extends Route {
   @service router;
 
   get version() {
-    return this.config.VERSION;
+    return this.config.version;
   }
 
   beforeModel() {

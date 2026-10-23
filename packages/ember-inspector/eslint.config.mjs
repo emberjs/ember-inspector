@@ -32,7 +32,7 @@ export default defineConfig([
   globalIgnores([
     'dist/',
     'dist_prev/',
-    'vendor/',
+    'tmp/',
     'coverage/',
     'skeletons/',
     '!**/.*',
@@ -93,10 +93,8 @@ export default defineConfig([
       '.prettierrc.js',
       '.stylelintrc.js',
       '.template-lintrc.js',
-      'babel.config.js',
       'config/**/*.js',
       'scripts/download-panes.js',
-      'testem.js',
     ],
     plugins: {
       n,
@@ -118,6 +116,12 @@ export default defineConfig([
     files: ['**/*.mjs'],
     plugins: {
       n,
+    },
+    settings: {
+      /**
+       * The build runs on the Node version in the root .npmrc.
+       */
+      node: { version: '>=26.12.1' },
     },
 
     languageOptions: {
