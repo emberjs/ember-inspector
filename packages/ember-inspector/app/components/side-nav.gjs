@@ -4,7 +4,15 @@ import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { onResize } from 'ember-primitives/on-resize';
 import { LinkTo } from '@ember/routing';
-import svgJar from 'ember-inspector/helpers/svg-jar';
+import NavComponentsIcon from 'ember-inspector/svg/nav-components.svg?unsafe-inline';
+import NavRouteTreeIcon from 'ember-inspector/svg/nav-route-tree.svg?unsafe-inline';
+import NavDataIcon from 'ember-inspector/svg/nav-data.svg?unsafe-inline';
+import NavDeprecationsIcon from 'ember-inspector/svg/nav-deprecations.svg?unsafe-inline';
+import NavInfoIcon from 'ember-inspector/svg/nav-info.svg?unsafe-inline';
+import NavPromisesIcon from 'ember-inspector/svg/nav-promises.svg?unsafe-inline';
+import NavContainerIcon from 'ember-inspector/svg/nav-container.svg?unsafe-inline';
+import NavRenderPerformanceIcon from 'ember-inspector/svg/nav-render-performance.svg?unsafe-inline';
+import EllipsisIcon from 'ember-inspector/svg/ellipsis.svg?unsafe-inline';
 import match from 'ember-inspector/helpers/match';
 
 export default class SideNav extends Component {
@@ -22,12 +30,12 @@ export default class SideNav extends Component {
                 class="nav-item"
                 title={{item.title}}
               >
-                {{svgJar
-                  item.icon
+                <item.icon
                   width="20px"
                   height="20px"
                   class="nav-item-icon"
-                }}
+                  aria-hidden="true"
+                />
                 <span class="nav-item-label">{{item.label}}</span>
                 {{#if item.pillCount}}
                   <span class="pill">{{item.pillCount}}</span>
@@ -59,7 +67,7 @@ export default class SideNav extends Component {
               <div
                 class="absolute inset-0 flex items-center justify-center pointer-events-none"
               >
-                {{svgJar "ellipsis" width="22px" height="22px"}}
+                <EllipsisIcon width="22px" height="22px" aria-hidden="true" />
               </div>
             </li>
           {{/if}}
@@ -108,56 +116,56 @@ export default class SideNav extends Component {
     return [
       {
         route: 'component-tree',
-        icon: 'nav-components',
+        icon: NavComponentsIcon,
         label: 'Components',
         title: 'Components',
         pillCount: '',
       },
       {
         route: 'route-tree',
-        icon: 'nav-route-tree',
+        icon: NavRouteTreeIcon,
         label: 'Routes',
         title: 'Routes',
         pillCount: '',
       },
       {
         route: 'data',
-        icon: 'nav-data',
+        icon: NavDataIcon,
         label: 'Data',
         title: 'Data',
         pillCount: '',
       },
       {
         route: 'deprecations',
-        icon: 'nav-deprecations',
+        icon: NavDeprecationsIcon,
         label: 'Deprecations',
         title: `${this.args.deprecationCount} Deprecations`,
         pillCount: `${this.args.deprecationCount}`,
       },
       {
         route: 'info',
-        icon: 'nav-info',
+        icon: NavInfoIcon,
         label: 'Info',
         title: 'Info',
         pillCount: '',
       },
       {
         route: 'promise-tree',
-        icon: 'nav-promises',
+        icon: NavPromisesIcon,
         label: 'Promises',
         title: 'Promises',
         pillCount: '',
       },
       {
         route: 'container-types',
-        icon: 'nav-container',
+        icon: NavContainerIcon,
         label: 'Container',
         title: 'Container',
         pillCount: '',
       },
       {
         route: 'render-tree',
-        icon: 'nav-render-performance',
+        icon: NavRenderPerformanceIcon,
         label: 'Render Performance',
         title: 'Render Performance',
         pillCount: '',

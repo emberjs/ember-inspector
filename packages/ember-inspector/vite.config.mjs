@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import { ember } from '@nullvoxpopuli/ember-vite';
+import svgJar from '@svg-jar/plugin/vite';
 import { inspectorDists } from './config/inspector-dists.mjs';
 
 const packageJson = JSON.parse(
@@ -49,6 +50,7 @@ export default defineConfig({
   },
   plugins: [
     ember({ babel: { configFile: './babel.config.mjs' } }),
+    svgJar({ target: 'ember' }),
     inspectorDists(),
   ],
 });

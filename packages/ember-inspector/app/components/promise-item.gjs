@@ -7,7 +7,7 @@ import Component from '@glimmer/component';
 import { trustHTML } from '@ember/template';
 import { isEmpty } from '@ember/utils';
 import { concat } from '@ember/helper';
-import svgJar from 'ember-inspector/helpers/svg-jar';
+import SendWithChevronIcon from 'ember-inspector/svg/send-with-chevron.svg?unsafe-inline';
 import SendToConsole from 'ember-inspector/components/ui/send-to-console';
 import msToTime from 'ember-inspector/helpers/ms-to-time';
 
@@ -38,7 +38,7 @@ export default class PromiseItem extends Component {
             {{on "click" (fn @tracePromise @model)}}
             type="button"
           >
-            {{svgJar "send-with-chevron" width="6px" height="9px"}}
+            <SendWithChevronIcon width="6px" height="9px" />
             Trace
           </button>
         {{/if}}
@@ -82,7 +82,7 @@ export default class PromiseItem extends Component {
               type="button"
               {{on "click" (fn @sendValueToConsole @model)}}
             >
-              {{svgJar "send-with-chevron" width="6px" height="9px"}}
+              <SendWithChevronIcon width="6px" height="9px" />
               Stack Trace
             </button>
           {{else}}

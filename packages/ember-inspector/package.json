@@ -55,6 +55,7 @@
     "@glimmer/component": "^2.2.0",
     "@html-next/vertical-collection": "^5.0.5",
     "@nullvoxpopuli/ember-vite": "^1.3.0",
+    "@svg-jar/plugin": "^0.2.2",
     "babel-plugin-debug-macros": "^2.0.0",
     "babel-plugin-ember-template-compilation": "^4.0.1",
     "basiccontext": "^3.5.1",

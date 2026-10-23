@@ -1,7 +1,8 @@
-import svgJar from 'ember-inspector/helpers/svg-jar';
+import DependentKeyConnectionIcon from 'ember-inspector/svg/dependent-key-connection.svg?unsafe-inline';
+import DependentKeyBulletIcon from 'ember-inspector/svg/dependent-key-bullet.svg?unsafe-inline';
 <template>
   <li class="mixin-property-dependency-list relative">
-    {{svgJar "dependent-key-connection" width="20px" height="10px"}}
+    <DependentKeyConnectionIcon width="20px" height="10px" aria-hidden="true" />
     <ul class="m-0 p-0 list-none">
       {{#each @keys as |dep|}}
         <li
@@ -18,7 +19,11 @@ import svgJar from 'ember-inspector/helpers/svg-jar';
               {{dep.child}}
             </span>
           {{else}}
-            {{svgJar "dependent-key-bullet" width="9px" height="9px"}}
+            <DependentKeyBulletIcon
+              width="9px"
+              height="9px"
+              aria-hidden="true"
+            />
             <span
               class="mixin-property-dependency-name"
               data-label="object-property-name"

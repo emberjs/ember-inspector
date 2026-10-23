@@ -2,7 +2,8 @@ import { onResize } from 'ember-primitives/on-resize';
 import DraggableColumn from 'ember-inspector/components/ui/draggable-column';
 import AppPicker from 'ember-inspector/components/app-picker';
 import SideNav from 'ember-inspector/components/side-nav';
-import svgJar from 'ember-inspector/helpers/svg-jar';
+import NavBugIcon from 'ember-inspector/svg/nav-bug.svg?unsafe-inline';
+import SidebarToggleIcon from 'ember-inspector/svg/sidebar-toggle.svg?unsafe-inline';
 import Toggle from 'ember-inspector/components/object-inspector/toggle';
 import ObjectInspector from 'ember-inspector/components/object-inspector';
 import ErrorPage from 'ember-inspector/components/ui/error-page';
@@ -49,7 +50,7 @@ import ErrorPage from 'ember-inspector/components/ui/error-page';
                   href="https://github.com/emberjs/ember-inspector/issues"
                   rel="noopener noreferrer"
                 >
-                  {{svgJar "nav-bug" width="18" height="18"}}
+                  <NavBugIcon width="18" height="18" aria-hidden="true" />
                 </a>
                 <button
                   {{on "click" @controller.toggleNavCollapsed}}
@@ -61,7 +62,7 @@ import ErrorPage from 'ember-inspector/components/ui/error-page';
                   type="button"
                   class="navigation-toggle flex items-center bg-transparent border-0 outline-none appearance-none px-3"
                 >
-                  {{svgJar "sidebar-toggle" width="16" height="16"}}
+                  <SidebarToggleIcon width="16" height="16" />
                 </button>
               </div>
             </DraggableColumn>

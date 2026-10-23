@@ -1,4 +1,4 @@
-import svgJar from 'ember-inspector/helpers/svg-jar';
+import Clear2Icon from 'ember-inspector/svg/clear-2.svg?unsafe-inline';
 <template>
   <button
     title="clear"
@@ -7,6 +7,6 @@ import svgJar from 'ember-inspector/helpers/svg-jar';
     {{on "click" @action}}
     type="button"
   >
-    {{svgJar "clear-2" width="13px" height="13px"}}
+    <Clear2Icon width="13px" height="13px" />
   </button>
 </template>

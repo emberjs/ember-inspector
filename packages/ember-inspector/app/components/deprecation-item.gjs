@@ -1,5 +1,6 @@
 import Disclosure from 'ember-inspector/components/ui/disclosure';
-import svgJar from 'ember-inspector/helpers/svg-jar';
+import SendWithChevronIcon from 'ember-inspector/svg/send-with-chevron.svg?unsafe-inline';
+import ExternalLinkIcon from 'ember-inspector/svg/external-link.svg?unsafe-inline';
 import DeprecationItemSource from 'ember-inspector/components/deprecation-item-source';
 <template>
   {{! template-lint-disable require-presentational-children }}
@@ -36,7 +37,7 @@ import DeprecationItemSource from 'ember-inspector/components/deprecation-item-s
             type="button"
             {{on "click" (fn @traceDeprecations @model)}}
           >
-            {{svgJar "send-with-chevron" width="6px" height="9px"}}
+            <SendWithChevronIcon width="6px" height="9px" />
             Trace in the Console
           </button>
         {{/if}}
@@ -49,12 +50,11 @@ import DeprecationItemSource from 'ember-inspector/components/deprecation-item-s
             rel="noopener noreferrer"
           >
             Transition Plan
-            {{svgJar
-              "external-link"
+            <ExternalLinkIcon
               width="16px"
               height="16px"
               class="ml-1 external-link"
-            }}
+            />
           </a>
         {{/if}}
       </div>

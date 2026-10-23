@@ -1,4 +1,4 @@
-import svgJar from 'ember-inspector/helpers/svg-jar';
+import SendWithTextIcon from 'ember-inspector/svg/send-with-text.svg?unsafe-inline';
 <template>
   <button
     data-test-send-to-console-btn
@@ -7,6 +7,6 @@ import svgJar from 'ember-inspector/helpers/svg-jar';
     type="button"
     {{on "click" (fn @action @param)}}
   >
-    {{svgJar "send-with-text" width="20px" height="10px"}}
+    <SendWithTextIcon width="20px" height="10px" />
   </button>
 </template>
