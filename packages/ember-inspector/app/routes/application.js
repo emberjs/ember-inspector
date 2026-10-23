@@ -3,8 +3,6 @@ import { service } from '@ember/service';
 import { action, set } from '@ember/object';
 import Route from '@ember/routing/route';
 import { tracked } from '@glimmer/tracking';
-import Ember from 'ember';
-const { NativeArray } = Ember;
 
 /**
  * One property row of the object inspector.
@@ -68,7 +66,6 @@ export default class ApplicationRoute extends Route {
   updateObject(options) {
     let { details, errors, name, objectId, property } = options;
 
-    NativeArray.apply(details);
     details.forEach(arrayize);
 
     let controller = this.controller;
@@ -124,5 +121,4 @@ function arrayize(mixin) {
   mixin.properties = mixin.properties.map(
     (property) => new PropertyRecord(property),
   );
-  NativeArray.apply(mixin.properties);
 }

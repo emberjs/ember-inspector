@@ -94,9 +94,10 @@ export default class ObjectInspectorProperty extends Component {
           <PropertyField
             class="mixin-property-value-txt flex-1 text-base14 text-base bg-base01 outline-none"
             @value={{this.txtValue}}
-            @insert-newline={{this.save}}
-            @escape-press={{this.finishedEditing}}
-            @focus-out={{this.finishedEditing}}
+            @onInput={{this.setTxtValue}}
+            @onEnter={{this.save}}
+            @onEscape={{this.finishedEditing}}
+            @onFocusOut={{this.finishedEditing}}
             data-test-object-property-value-txt
           />
         {{/if}}
@@ -322,6 +323,11 @@ export default class ObjectInspectorProperty extends Component {
     this.dateValue = new Date(this.args.model?.value?.inspect);
 
     this.isEdit = true;
+  }
+
+  @action
+  setTxtValue(value) {
+    this.txtValue = value;
   }
 
   @action

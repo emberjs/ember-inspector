@@ -2,7 +2,7 @@ import ComponentTreeToolbar from 'ember-inspector/components/component-tree-tool
 import ScrollContainer from 'ember-inspector/components/scroll-container';
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
 import willDestroy from '@ember/render-modifiers/modifiers/will-destroy';
-import VerticalCollection from '@html-next/vertical-collection/components/vertical-collection/component';
+import { VerticalCollection } from '@html-next/vertical-collection';
 import ComponentTreeItem from 'ember-inspector/components/component-tree-item';
 <template>
   {{#if @controller.toolbarContainer}}
