@@ -6,7 +6,6 @@ import AppPicker from 'ember-inspector/components/app-picker';
 import SideNav from 'ember-inspector/components/side-nav';
 import svgJar from 'ember-svg-jar/helpers/svg-jar';
 import Toggle from 'ember-inspector/components/object-inspector/toggle';
-import didInsert from '@ember/render-modifiers/modifiers/did-insert';
 import ObjectInspector from 'ember-inspector/components/object-inspector';
 import ErrorPage from 'ember-inspector/components/ui/error-page';
 <template>
@@ -16,7 +15,6 @@ import ErrorPage from 'ember-inspector/components/ui/error-page';
     tabindex="1"
     {{on "focusin" (fn @controller.setActive true)}}
     {{on "focusout" (fn @controller.setActive false)}}
-    {{onResize @controller.windowDidResize}}
   >
     {{#if @controller.isEmberApplication}}
       <div class="split">
@@ -83,7 +81,7 @@ import ErrorPage from 'ember-inspector/components/ui/error-page';
 
               <div
                 class="split-panel-bd"
-                {{didInsert @controller.setupContentElement}}
+                {{onResize @controller.contentDidResize}}
               >
                 {{outlet}}
               </div>

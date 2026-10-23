@@ -38,8 +38,14 @@ export default class {
     this.key = key;
     this.storage = storage;
     this.columnSchema = columnSchema;
-    this.setupCache();
   }
+
+  /**
+   * The constructor only stores its options, so a list can create this
+   * object while it renders. Reading and saving the cache waits for the
+   * first `build`, which runs from an event, such as a resize.
+   */
+  isCacheSetUp = false;
 
   /**
    * This method is called on initialization before everything.
@@ -151,6 +157,11 @@ export default class {
    * @method build
    */
   build() {
+    if (!this.isCacheSetUp) {
+      this.setupCache();
+      this.isCacheSetUp = true;
+    }
+
     this.buildColumns();
     this.processColumns();
   }

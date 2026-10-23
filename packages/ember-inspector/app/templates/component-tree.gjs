@@ -1,7 +1,6 @@
 import ComponentTreeToolbar from 'ember-inspector/components/component-tree-toolbar';
 import ScrollContainer from 'ember-inspector/components/scroll-container';
-import didInsert from '@ember/render-modifiers/modifiers/did-insert';
-import willDestroy from '@ember/render-modifiers/modifiers/will-destroy';
+import onDocument from 'ember-inspector/modifiers/on-document';
 import { VerticalCollection } from '@html-next/vertical-collection';
 import ComponentTreeItem from 'ember-inspector/components/component-tree-item';
 <template>
@@ -27,8 +26,7 @@ import ComponentTreeItem from 'ember-inspector/components/component-tree-item';
     @itemHeight={{@controller.itemHeight}}
     class="list-content"
     tabindex="-1"
-    {{didInsert @controller.arrowKeysSetup}}
-    {{willDestroy @controller.arrowKeysTeardown}}
+    {{onDocument "keydown" @controller.handleKeyDown}}
   >
     <VerticalCollection
       @estimateHeight={{@controller.itemHeight}}

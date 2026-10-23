@@ -27,9 +27,6 @@ const options = {
   svgJar: {
     sourceDirs: ['public/assets/svg'],
   },
-  babel: {
-    plugins: [require.resolve('ember-concurrency/async-arrow-task-transform')],
-  },
 };
 
 // Firefox requires non-minified assets for review :(

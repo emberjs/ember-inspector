@@ -2,8 +2,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
-import didInsert from '@ember/render-modifiers/modifiers/did-insert';
-import willDestroy from '@ember/render-modifiers/modifiers/will-destroy';
+import { onResize } from 'ember-primitives/on-resize';
 import { LinkTo } from '@ember/routing';
 import svgJar from 'ember-svg-jar/helpers/svg-jar';
 import and from 'ember-truth-helpers/helpers/and';
@@ -12,11 +11,7 @@ import match from 'ember-inspector/helpers/match';
 
 export default class SideNav extends Component {
   <template>
-    <div
-      ...attributes
-      {{didInsert this.setupListeners}}
-      {{willDestroy this.destroyListeners}}
-    >
+    <div ...attributes {{onResize this.containerDidResize}}>
       <nav
         class="absolute inset-0 nav nav-main
           {{if @collapsed 'nav-collapsed overflow-hidden'}}"
@@ -74,10 +69,22 @@ export default class SideNav extends Component {
       </nav>
     </div>
   </template>
-  @service layout;
   @service router;
 
-  @tracked displayCount = 100;
+  @tracked containerHeight = null;
+  @tracked itemHeight = null;
+
+  /**
+   * How many items fit in the collapsed nav. The rest go in the overflow menu.
+   * Until the nav reports its size, every item shows.
+   */
+  get displayCount() {
+    if (!this.containerHeight || !this.itemHeight) {
+      return this.items.length;
+    }
+
+    return Math.floor(this.containerHeight / this.itemHeight) - 1;
+  }
 
   get itemsToDisplay() {
     return this.args.collapsed
@@ -160,24 +167,12 @@ export default class SideNav extends Component {
     ];
   }
 
-  handleResize() {
-    const containerHeight = this.element.clientHeight;
-    const item = this.element.querySelector('.nav-item');
-    const itemHeight = item.clientHeight;
-
-    this.displayCount = Math.floor(containerHeight / itemHeight) - 1;
-  }
-
   @action
-  setupListeners(element) {
-    this.element = element;
-    this.layout.on('resize', this, this.handleResize);
-    this.handleResize();
-  }
+  containerDidResize(entry) {
+    let element = entry.target;
 
-  @action
-  destroyListeners() {
-    this.layout.off('resize', this, this.handleResize);
+    this.containerHeight = element.clientHeight;
+    this.itemHeight = element.querySelector('.nav-item')?.clientHeight;
   }
 
   @action

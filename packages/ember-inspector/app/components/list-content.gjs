@@ -1,14 +1,10 @@
-import { action } from '@ember/object';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { htmlSafe } from '@ember/template';
-import { schedule } from '@ember/runloop';
-import { tracked } from '@glimmer/tracking';
 
 /**
  * Base list view config
  */
-import didInsert from '@ember/render-modifiers/modifiers/did-insert';
 import buildStyle from 'ember-inspector/helpers/build-style';
 import { concat, hash } from '@ember/helper';
 export default class ListContent extends Component {
@@ -16,7 +12,6 @@ export default class ListContent extends Component {
     <div
       class="list-content js-list-content"
       style={{this.style}}
-      {{didInsert this.elementInserted}}
       ...attributes
     >
       <div class="list-table-container">
@@ -36,62 +31,20 @@ export default class ListContent extends Component {
    */
   @service('layout') layoutService;
 
-  @tracked contentHeight = null;
-
-  /**
-   * Hook called before destruction. Clean up events listeners.
-   */
-  willDestroy() {
-    this.layoutService.off(
-      'content-height-update',
-      this,
-      this.updateContentHeight,
-    );
-    return super.willDestroy();
-  }
-
   get height() {
-    // In testing list-view is created before `contentHeight` is set
-    // which will trigger an exception
-    if (!this.contentHeight) {
+    let { contentHeight } = this.layoutService;
+
+    /**
+     * The content area reports its height after it renders.
+     */
+    if (!contentHeight) {
       return 1;
     }
-    return this.contentHeight - this.args.headerHeight;
+
+    return contentHeight - this.args.headerHeight;
   }
 
   get style() {
     return htmlSafe(`height:${this.height}px`);
   }
-
-  /**
-   * Hook called when content element is inserted.
-   */
-  @action
-  elementInserted() {
-    // eslint-disable-next-line ember/no-runloop
-    schedule('afterRender', this, this.setupHeight);
-  }
-
-  /**
-   * Set up the content height and listen to any updates to that property.
-   */
-  setupHeight = () => {
-    this.contentHeight = this.layoutService.contentHeight;
-    this.layoutService.on(
-      'content-height-update',
-      this,
-      this.updateContentHeight,
-    );
-  };
-
-  /**
-   * Triggered whenever the app's content height changes. This usually happens
-   * when the window is resized. Once we detect a change we update this
-   * component's `contentHeight` property and consequently its `height` style.
-   *
-   * @param height The app's new content height
-   */
-  updateContentHeight = (height) => {
-    this.contentHeight = height;
-  };
 }

@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { localCopy } from 'tracked-toolbox';
 import ResizableColumn from 'ember-inspector/components/ui/resizable-column';
@@ -26,23 +25,12 @@ export default class DraggableColumnComponent extends Component {
       @side={{@side}}
     />
   </template>
-  /**
-   * Injected `layout` service. Used to broadcast
-   * changes the layout of the app.
-   *
-   * @property layoutService
-   * @type {Service}
-   */
-  @service('layout') layoutService;
-
   @tracked minWidth = 60;
 
   @localCopy('args.width') width;
 
   /**
-   * Trigger that the application dimensions have changed due to
-   * something being dragged/resized such as the main nav or the
-   * object inspector.
+   * Called while the handle is dragged.
    *
    * @method triggerResize
    */
@@ -50,6 +38,5 @@ export default class DraggableColumnComponent extends Component {
   triggerResize(width) {
     this.width = width;
     this.args.onResize?.(width);
-    this.layoutService.trigger('resize', { source: 'draggable-column' });
   }
 }

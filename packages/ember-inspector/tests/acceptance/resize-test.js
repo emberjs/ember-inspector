@@ -178,6 +178,64 @@ module('Resizing panels', function (outer) {
       assert.true(columnsFitTable(), 'the last column takes the difference');
     });
 
+    test('a collapsed navigation moves the items that do not fit into a menu', async function (assert) {
+      await visit('/promise-tree');
+      let total = findAll('.nav-main .nav-item').length;
+
+      try {
+        find('.app').style.height = '200px';
+        await click('[title="collapse navigation"]');
+        await waitUntil(() => find('.nav-overflow'), { timeout: 1000 });
+
+        let nav = find('.nav-main');
+        let itemHeight = find('.nav-main .nav-item').clientHeight;
+        let shown = Math.floor(nav.parentElement.clientHeight / itemHeight) - 1;
+
+        assert.dom('.nav-main .nav-item').exists({ count: shown });
+        assert
+          .dom('.nav-overflow option')
+          .exists({ count: total - shown + 1 }, 'the rest, after a prompt');
+
+        await click('[title="expand navigation"]');
+        assert.dom('.nav-main .nav-item').exists({ count: total });
+        assert.dom('.nav-overflow').doesNotExist();
+      } finally {
+        find('.app').style.height = '';
+      }
+    });
+
+    /* global basicContext */
+    test('the header menu hides and shows a column', async function (assert) {
+      await visit('/promise-tree');
+
+      let columnCount = findAll('.list-header col').length;
+
+      /**
+       * basicContext renders the menu in `document.body`, outside the app,
+       * and handles clicks on the cell of each item.
+       */
+      let firstMenuItem = () =>
+        document.querySelector('.basicContext__item td[data-num]');
+
+      try {
+        await triggerEvent('.list-header', 'contextmenu');
+        assert
+          .dom('.basicContext__item', document.body)
+          .exists({ count: columnCount }, 'one menu item per column');
+
+        await click(firstMenuItem());
+        assert.strictEqual(firstColumnWidth(), 0, 'the first column is hidden');
+        assert.true(columnsFitTable(), 'the other columns fill the table');
+
+        await triggerEvent('.list-header', 'contextmenu');
+        await click(firstMenuItem());
+        assert.true(firstColumnWidth() > 0, 'the first column shows again');
+        assert.true(columnsFitTable(), 'the columns fill the table');
+      } finally {
+        basicContext.close();
+      }
+    });
+
     test('list columns fit the table after the object inspector opens', async function (assert) {
       await visit('/promise-tree');
 

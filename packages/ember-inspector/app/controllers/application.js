@@ -1,7 +1,7 @@
 import Controller, { inject as controller } from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { debounce, schedule } from '@ember/runloop';
+import { schedule } from '@ember/runloop';
 import { service } from '@ember/service';
 
 import { TrackedArray, TrackedObject } from 'tracked-built-ins';
@@ -19,7 +19,6 @@ export default class ApplicationController extends Controller {
   // Indicates that the extension window is focused,
   @tracked active = true;
   @tracked isDragging = false;
-  @tracked contentHeight = null;
   @tracked deprecationCount = 0;
   @tracked inspectorWidth = 360;
   /**
@@ -91,41 +90,17 @@ export default class ApplicationController extends Controller {
     });
   }
 
+  /**
+   * Lists size themselves to the height of the content area.
+   */
   @action
-  setupContentElement(element) {
-    this.contentElement = element;
-    this.layout.updateContentHeight(this.contentElement.clientHeight);
-  }
-
-  @action
-  _windowDidResize() {
-    // eslint-disable-next-line ember/no-runloop
-    schedule('afterRender', () => {
-      if (!this.isDestroyed && !this.isDestroying) {
-        this.layout.trigger('resize', {
-          source: 'application-controller',
-        });
-
-        if (this.contentElement) {
-          this.layout.updateContentHeight(this.contentElement.clientHeight);
-        }
-      }
-    });
-  }
-
-  @action
-  windowDidResize() {
-    // eslint-disable-next-line ember/no-runloop
-    debounce(this, this._windowDidResize, 250);
+  contentDidResize(entry) {
+    this.layout.contentHeight = entry.target.clientHeight;
   }
 
   @action
   toggleNavCollapsed() {
     this.navIsCollapsed = !this.navIsCollapsed;
-    // eslint-disable-next-line ember/no-runloop
-    schedule('afterRender', () => {
-      this.layout.trigger('resize', { source: 'navigation' });
-    });
   }
 
   /*
