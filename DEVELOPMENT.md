@@ -5,7 +5,7 @@ Run `pnpm install` to install the required modules.
 - `pnpm build` to build the files in the `dist` directory
 - `pnpm watch` To watch the files and re-build in `dist` when anything changes (useful during development).
 - `pnpm test` To run the tests in the terminal
-- `pnpm start` To start the test server at `localhost:4200/testing/tests`
+- `pnpm start` To start the UI on a Vite dev server at `localhost:5173`, with the tests at `localhost:5173/tests/`
 
 ### End-to-end tests
 
