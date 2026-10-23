@@ -101,8 +101,23 @@ class ChromeApi {
           self.onRemovedListeners.push(l);
         },
       },
+      /**
+       * Like the browsers, this rejects when the tab has no listener,
+       * for example a tab without a content script.
+       */
       sendMessage(tabId, msg) {
-        self.contentScript.subscribers.forEach((sub) => sub(msg, self.sender));
+        let receivers = self.contentScript?.subscribers ?? [];
+
+        if (receivers.length === 0) {
+          return Promise.reject(
+            new Error(
+              'Could not establish connection. Receiving end does not exist.',
+            ),
+          );
+        }
+
+        receivers.forEach((sub) => sub(msg, self.sender));
+        return Promise.resolve();
       },
     };
     this.devtools = {
@@ -273,6 +288,40 @@ module('Integration | Injection', function (hooks) {
     window.define = olddefine;
     window.requireModule = olddrequireModule;
     window.NO_EMBER_DEBUG = true;
+  });
+
+  test('a panel message to a tab without a content script is ignored', async function (assert) {
+    const background = new ChromeApi('background');
+    const inspector = new ChromeApi('inspector');
+    background.contentScript = new ChromeApi('content');
+    inspector.backgroundScript = background;
+
+    const backgroundScript = await (await fetch('/background.js')).text();
+    {
+      // eslint-disable-next-line no-unused-vars
+      const chrome = background;
+      eval(backgroundScript);
+    }
+
+    const sendMessage = background.tabs.sendMessage;
+    background.tabs.sendMessage = (...args) => {
+      assert.step('tabs.sendMessage');
+      return sendMessage(...args);
+    };
+
+    const onUnhandled = (event) => assert.step(event.reason.message);
+    window.addEventListener('unhandledrejection', onUnhandled);
+
+    try {
+      const port = inspector.runtime.connect();
+      port.postMessage({ appId: 1 });
+      port.postMessage({ from: 'devtools', type: 'view:getTree', tabId: 1 });
+
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      assert.verifySteps(['tabs.sendMessage']);
+    } finally {
+      window.removeEventListener('unhandledrejection', onUnhandled);
+    }
   });
 
   test('inject ember debug via content and background scripts', async function (assert) {

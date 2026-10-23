@@ -18,6 +18,7 @@
     "test": "pnpm lint && pnpm test:ember && pnpm test:watch",
     "test:ember": "pnpm --filter ember-debug build && pnpm --filter ember-inspector test",
     "test:watch": "node --test tests/watch-test.mjs",
+    "test:firefox": "node --test tests/firefox-extension-test.mjs",
     "watch": "pnpm build:ember-debug && pnpm \"/watch:/\"",
     "watch:ember-debug": "pnpm --filter ember-debug watch",
     "watch:inspector-ui": "pnpm --filter ember-inspector watch",
