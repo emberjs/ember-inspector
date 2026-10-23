@@ -8,7 +8,7 @@ import { libraries } from './lib/ember.js';
  * ex:
  *  - Determines if the app was booted
  *  - Gathers the libraries. Found in the info tab of the inspector.
- *  - Gathers ember-cli configuration information from the meta tags.
+ *  - Gathers ember-cli configuration information from the meta tags or the config module.
  *
  * @module ember-debug/general-debug
  */
@@ -24,6 +24,19 @@ export default class extends DebugPort {
         return JSON.parse(unescape(found.getAttribute('content')));
       } catch {}
     }
+
+    /**
+     * Apps built with Vite have no config meta tag.
+     * Their resolver finds the config module instead.
+     * The JSON copy drops values that the message port cannot send.
+     */
+    try {
+      let config =
+        this.namespace?.owner?.resolveRegistration('config:environment');
+      if (config) {
+        return JSON.parse(JSON.stringify(config));
+      }
+    } catch {}
   }
 
   /**

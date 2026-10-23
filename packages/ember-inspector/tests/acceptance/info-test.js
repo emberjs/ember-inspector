@@ -69,4 +69,16 @@ module('Info Tab', function (hooks) {
       .dom(configs[1].querySelector('.js-config-value'))
       .hasText('production');
   });
+
+  test('A missing app config shows a message', async function (assert) {
+    respondWith('general:getEmberCliConfig', {
+      type: 'general:emberCliConfig',
+      emberCliConfig: undefined,
+    });
+
+    await visit('/info/app-config');
+
+    assert.dom('.js-config-row').doesNotExist();
+    assert.dom('.js-app-config-missing').exists();
+  });
 });
