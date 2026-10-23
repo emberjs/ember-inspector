@@ -22,3 +22,17 @@ export default function getRoute(router, name) {
   // Ember 7.5 returns the route manager and its state, not the route.
   return route?.bucket?.route ?? route;
 }
+
+/**
+ * @embroider/router loads the bundle of a lazy route when `getRoute` asks for it.
+ * The route tree must not do that, because a bundle can bring CSS into the page.
+ *
+ * @param {*} router The `router:main` instance
+ * @param {string} name The name of the route
+ * @return {boolean} If the route is lazy and its bundle has not loaded
+ */
+export function isUnloadedLazyRoute(router, name) {
+  let bundle = router.lazyRoute?.(name) ?? router.lazyEngine?.(name);
+
+  return Boolean(bundle) && !router.registeredBundles?.get(bundle)?.loaded;
+}

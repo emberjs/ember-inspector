@@ -1,6 +1,6 @@
 /* eslint-disable ember/no-private-routing-service */
 import DebugPort from './debug-port.js';
-import getRoute from './lib/get-route.js';
+import getRoute, { isUnloadedLazyRoute } from './lib/get-route.js';
 import classify from './utils/classify.js';
 import dasherize from './utils/dasherize.js';
 import { _backburner, later } from './lib/ember/runloop.js';
@@ -87,6 +87,7 @@ export default class RouteDebug extends DebugPort {
       const routerLib = router._routerMicrolib || router.router;
       let routeNames = routerLib.recognizer.names;
       let routeTree = {};
+      this._hasUnloadedRoutes = false;
       for (let routeName in routeNames) {
         if (!hasOwnProperty.call(routeNames, routeName)) {
           continue;
@@ -94,7 +95,16 @@ export default class RouteDebug extends DebugPort {
         let route = routeNames[routeName];
         buildSubTree.call(this, routeTree, route);
       }
-      this._cachedRouteTree = arrayizeChildren({ children: routeTree });
+      let tree = arrayizeChildren({ children: routeTree });
+
+      /**
+       * A lazy route shows its controller after it loads.
+       */
+      if (this._hasUnloadedRoutes) {
+        return tree;
+      }
+
+      this._cachedRouteTree = tree;
     }
     return this._cachedRouteTree;
   }
@@ -196,12 +206,17 @@ function buildSubTree(routeTree, route) {
     if (subTree[handler] === undefined) {
       routeClassName = this.getClassName(handler, 'route');
 
-      routeHandler = getRoute(this.router, handler);
+      let isUnloaded = isUnloadedLazyRoute(this.router, handler);
+      routeHandler = isUnloaded ? undefined : getRoute(this.router, handler);
+
+      if (isUnloaded) {
+        this._hasUnloadedRoutes = true;
+      }
 
       // Skip when route is an unresolved promise
-      if (typeof routeHandler?.then === 'function') {
+      if (isUnloaded || typeof routeHandler?.then === 'function') {
         // ensure we rebuild the route tree when this route is resolved
-        routeHandler.then(() => (this._cachedRouteTree = null));
+        routeHandler?.then(() => (this._cachedRouteTree = null));
         controllerName = '(unresolved)';
         controllerClassName = '(unresolved)';
         templateName = '(unresolved)';
