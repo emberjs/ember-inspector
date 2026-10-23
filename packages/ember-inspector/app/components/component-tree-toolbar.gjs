@@ -1,4 +1,7 @@
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import InspectIcon from 'ember-inspector/svg/inspect.svg?unsafe-inline';
+import ChevronDownIcon from 'ember-inspector/svg/chevron-down.svg?unsafe-inline';
+import ChevronRightIcon from 'ember-inspector/svg/chevron-right.svg?unsafe-inline';
+import FocusPointRoundIcon from 'ember-inspector/svg/focus-point-round.svg?unsafe-inline';
 import ToolbarDivider from 'ember-inspector/components/ui/toolbar-divider';
 import ToolbarSearchField from 'ember-inspector/components/ui/toolbar-search-field';
 <template>
@@ -8,7 +11,7 @@ import ToolbarSearchField from 'ember-inspector/components/ui/toolbar-search-fie
       type="button"
       {{on "click" @toggleInspect}}
     >
-      {{svgJar "inspect" width="16px" height="17px"}}
+      <InspectIcon width="16px" height="17px" />
     </button>
 
     <ToolbarDivider />
@@ -19,7 +22,7 @@ import ToolbarSearchField from 'ember-inspector/components/ui/toolbar-search-fie
       type="button"
       {{on "click" @expandAll}}
     >
-      {{svgJar "chevron-down" width="16px" height="16px"}}
+      <ChevronDownIcon width="16px" height="16px" />
     </button>
 
     <button
@@ -28,7 +31,7 @@ import ToolbarSearchField from 'ember-inspector/components/ui/toolbar-search-fie
       type="button"
       {{on "click" @collapseAll}}
     >
-      {{svgJar "chevron-right" width="16px" height="16px"}}
+      <ChevronRightIcon width="16px" height="16px" />
     </button>
 
     <ToolbarDivider />
@@ -49,7 +52,7 @@ import ToolbarSearchField from 'ember-inspector/components/ui/toolbar-search-fie
         data-test-toggle-focus
         {{on "click" @toggleParentsOnly}}
       >
-        {{svgJar "focus-point-round" width="16px" height="16px"}}
+        <FocusPointRoundIcon width="16px" height="16px" />
       </button>
     {{/if}}
   </div>

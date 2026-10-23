@@ -1,7 +1,7 @@
 import { action } from '@ember/object';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import SendWithChevronIcon from 'ember-inspector/svg/send-with-chevron.svg?unsafe-inline';
 export default class DeprecationItemSource extends Component {
   <template>
     <div class="deprecation-source pb-2" data-test-deprecation-source>
@@ -12,7 +12,7 @@ export default class DeprecationItemSource extends Component {
         {{on "click" this.handleClick}}
         type="button"
       >
-        {{svgJar "send-with-chevron" width="6px" height="9px"}}
+        <SendWithChevronIcon width="6px" height="9px" />
         Trace in the Console
       </button>
       <span class="source">

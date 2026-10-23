@@ -1,14 +1,13 @@
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import WarningIcon from 'ember-inspector/svg/warning.svg?unsafe-inline';
 <template>
   <div
     class="warning flex flex-row items-center justify-start py-1 px-2 text-base bg-spec00"
   >
-    {{svgJar
-      "warning"
+    <WarningIcon
       width="18px"
       height="18px"
       class="inline-block flex-shrink-0 mr-1 fill-current"
-    }}
+    />
 
     <p class="flex-grow m-0 p-0">
       {{yield}}

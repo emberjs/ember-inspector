@@ -1,7 +1,8 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { service } from '@ember/service';
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import ELogoIcon from 'ember-inspector/svg/e-logo.svg?unsafe-inline';
+import DropdownArrowIcon from 'ember-inspector/svg/dropdown-arrow.svg?unsafe-inline';
 
 export default class AppPickerComponent extends Component {
   <template>
@@ -21,18 +22,16 @@ export default class AppPickerComponent extends Component {
         </select>
 
         {{#if @collapsed}}
-          {{svgJar
-            "e-logo"
+          <ELogoIcon
             width="15"
             height="13"
             class="dropdown-collapsed-icon fill-current absolute pointer-events-none"
-          }}
+          />
         {{/if}}
 
-        {{svgJar
-          "dropdown-arrow"
+        <DropdownArrowIcon
           class="dropdown-arrow fill-current absolute opacity-75 pointer-events-none"
-        }}
+        />
       </div>
     </div>
   </template>

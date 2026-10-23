@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import { extensions, classicEmberSupport, ember } from '@embroider/vite';
 import { babel } from '@rollup/plugin-babel';
+import svgJar from '@svg-jar/plugin/vite';
 import { inspectorDists } from './config/inspector-dists.mjs';
 
 export default defineConfig({
@@ -19,6 +20,7 @@ export default defineConfig({
   plugins: [
     classicEmberSupport(),
     ember(),
+    svgJar({ target: 'ember' }),
     babel({
       babelHelpers: 'runtime',
       extensions,

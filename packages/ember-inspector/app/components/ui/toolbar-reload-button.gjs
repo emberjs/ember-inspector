@@ -1,4 +1,4 @@
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import ReloadIcon from 'ember-inspector/svg/reload.svg?unsafe-inline';
 <template>
   <button
     title="Reload"
@@ -7,6 +7,6 @@ import svgJar from 'ember-svg-jar/helpers/svg-jar';
     {{on "click" @action}}
     type="button"
   >
-    {{svgJar "reload" width="13px" height="13px"}}
+    <ReloadIcon width="13px" height="13px" />
   </button>
 </template>
