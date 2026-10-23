@@ -23,8 +23,7 @@ export default class extends DebugPort {
     this.promiseAssembler = new PromiseAssembler();
     this.updatedPromises = [];
     this.releaseMethods = [];
-    this.setInstrumentWithStack();
-    this.sendInstrumentWithStack();
+    RSVP.configure('instrument-with-stack', this.instrumentWithStack);
     this.promiseAssembler.start();
   }
 

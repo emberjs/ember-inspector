@@ -146,6 +146,10 @@ module('Component Tab', function (hooks) {
   setupTestAdapter(hooks);
   setupApplicationTest(hooks);
 
+  hooks.afterEach(function () {
+    respondWith('view:releaseTree', false);
+  });
+
   hooks.beforeEach(function () {
     GUID = 1;
 

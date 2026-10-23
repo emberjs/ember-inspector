@@ -994,6 +994,55 @@ module('Ember Debug - View', function (hooks) {
     ]);
   });
 
+  test('Sends render tree updates only while the inspector asks for them', async function (assert) {
+    let send = EmberDebug.port.send;
+    EmberDebug.port.send = (name, message) => {
+      if (name === 'view:renderTree') {
+        assert.step('view:renderTree');
+      }
+      send.call(EmberDebug.port, name, message);
+    };
+
+    /**
+     * Updates wait in a plain timeout, which `settled` does not track.
+     * The delay grows with the time that a tree build takes.
+     */
+    let afterUpdates = () => {
+      let delay = EmberDebug.viewDebug.sendTreeDelay ?? 250;
+      return new Promise((resolve) => setTimeout(resolve, delay + 150));
+    };
+
+    try {
+      await visit('/simple');
+      await afterUpdates();
+      assert.verifySteps([], 'no tree before the inspector asks');
+
+      EmberDebug.port.trigger('view:getTree', { immediate: true });
+      assert.verifySteps(['view:renderTree'], 'the requested tree');
+
+      /**
+       * The end of every run loop schedules an update. A visit can take
+       * longer than the debounce, so it can send more than one update.
+       */
+      // eslint-disable-next-line ember/no-runloop
+      run(() => {});
+      await afterUpdates();
+      assert.verifySteps(['view:renderTree'], 'an update after a run loop');
+
+      // eslint-disable-next-line ember/no-runloop
+      run(() => {});
+      EmberDebug.port.trigger('view:releaseTree');
+      await afterUpdates();
+      assert.verifySteps([], 'a scheduled update is dropped on release');
+
+      await visit('/inputs');
+      await afterUpdates();
+      assert.verifySteps([], 'no update after the inspector releases the tree');
+    } finally {
+      EmberDebug.port.send = send;
+    }
+  });
+
   module('Highlighting Views on hover', function (hooks) {
     let foo;
     let bar;
