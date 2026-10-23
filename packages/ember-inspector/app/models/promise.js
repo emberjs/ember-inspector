@@ -6,7 +6,7 @@ import { typeOf } from '@ember/utils';
 import EmberObject, { computed } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
-import { TrackedArray } from 'tracked-built-ins';
+import { trackedArray } from '@ember/reactive/collections';
 
 import escapeRegExp from '../utils/escape-reg-exp';
 import { isNullish } from '../utils/nullish';
@@ -28,7 +28,7 @@ const dateComputed = function () {
 };
 
 export default class PromiseModel extends EmberObject {
-  children = new TrackedArray([]);
+  children = trackedArray([]);
 
   @dateComputed() createdAt;
   @dateComputed() settledAt;

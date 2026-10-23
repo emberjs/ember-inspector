@@ -1,7 +1,7 @@
 import { service } from '@ember/service';
 import { set } from '@ember/object';
 
-import { TrackedArray } from 'tracked-built-ins';
+import { trackedArray } from '@ember/reactive/collections';
 
 import TabRoute from '../routes/tab';
 
@@ -11,7 +11,7 @@ export default class ModelTypesRoute extends TabRoute {
   model() {
     return new Promise((resolve) => {
       this.port.one('data:modelTypesAdded', function (message) {
-        resolve(new TrackedArray(message.modelTypes));
+        resolve(trackedArray(message.modelTypes));
       });
       this.port.send('data:getModelTypes');
     });
