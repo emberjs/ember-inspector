@@ -23,6 +23,11 @@ export default class extends DebugPort {
 
       releaseTree() {
         this.isTreeRequested = false;
+
+        if (this.scheduledSendTree) {
+          window.clearTimeout(this.scheduledSendTree);
+          this.scheduledSendTree = null;
+        }
       },
 
       showInspection({ id, pin }) {

@@ -1020,8 +1020,16 @@ module('Ember Debug - View', function (hooks) {
       await afterUpdates();
       assert.verifySteps(['view:renderTree'], 'an update after a render');
 
+      /**
+       * The end of every run loop schedules an update.
+       */
+      // eslint-disable-next-line ember/no-runloop
+      run(() => {});
       EmberDebug.port.trigger('view:releaseTree');
-      await visit('/simple');
+      await afterUpdates();
+      assert.verifySteps([], 'a scheduled update is dropped on release');
+
+      await visit('/inputs');
       await afterUpdates();
       assert.verifySteps([], 'no update after the inspector releases the tree');
     } finally {
