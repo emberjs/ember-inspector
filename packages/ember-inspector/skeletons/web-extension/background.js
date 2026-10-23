@@ -21,6 +21,18 @@
     emberInspectorChromePorts = {};
 
   /**
+   * A tab has no content script on `about:` pages, on browser pages,
+   * and in tabs that were open before the extension loaded.
+   * A message to such a tab has nobody to receive it, which is expected.
+   * Other errors still surface.
+   */
+  function ignoreMissingReceiver(error) {
+    if (!/Receiving end does not exist/.test(error?.message)) {
+      throw error;
+    }
+  }
+
+  /**
    * Creates the tooltip string to show the version of libraries used in the ClientApp
    * @param  {Array} versions - array of library objects
    * @return {String} - string of library names and versions
@@ -86,10 +98,12 @@
 
   function genericOnClick(info) {
     if (info.menuItemId !== 'inspect-ember-component') return;
-    void chrome.tabs.sendMessage(activeTabId, {
-      from: 'devtools',
-      type: 'view:contextMenu',
-    });
+    chrome.tabs
+      .sendMessage(activeTabId, {
+        from: 'devtools',
+        type: 'view:contextMenu',
+      })
+      .catch(ignoreMissingReceiver);
   }
 
   chrome.contextMenus.onClicked.addListener(genericOnClick);
@@ -155,9 +169,11 @@
       } else if (message.from === 'devtools') {
         // all other messages from EmberInspector are forwarded to the content-script
         // https://developer.chrome.com/extensions/tabs#method-sendMessage
-        chrome.tabs.sendMessage(message.tabId || appId, message, {
-          frameId: message.frameId,
-        });
+        chrome.tabs
+          .sendMessage(message.tabId || appId, message, {
+            frameId: message.frameId,
+          })
+          .catch(ignoreMissingReceiver);
       }
     });
   });
