@@ -28,7 +28,7 @@ export default class LaunchRoute extends Route {
         storageSupported &&
         compareVersions(currentVersion, lastVersion) > 0
       ) {
-        targetRoute = 'whats-new';
+        targetRoute = 'changelog';
       }
 
       this.router.transitionTo(targetRoute);

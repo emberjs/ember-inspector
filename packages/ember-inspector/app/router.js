@@ -30,7 +30,7 @@ Router.map(function () {
       this.route('info-index', { path: '/', resetNamespace: true });
       this.route('libraries', { resetNamespace: true });
       this.route('app-config', { resetNamespace: true });
-      this.route('whats-new', { resetNamespace: true });
+      this.route('changelog', { resetNamespace: true });
     });
 
     this.route('render-tree', { resetNamespace: true });
