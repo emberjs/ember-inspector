@@ -17,7 +17,12 @@ export default class extends DebugPort {
 
     this.prototype.messages = {
       getTree({ immediate }) {
+        this.isTreeRequested = true;
         this.sendTree(immediate);
+      },
+
+      releaseTree() {
+        this.isTreeRequested = false;
       },
 
       showInspection({ id, pin }) {
@@ -163,7 +168,17 @@ export default class extends DebugPort {
     this.adapter.inspectValue(node);
   }
 
+  /**
+   * Building the tree costs time in the app on every render,
+   * so it only happens while the inspector shows the component tree.
+   */
+  isTreeRequested = false;
+
   sendTree(immediate = false) {
+    if (!this.isTreeRequested) {
+      return;
+    }
+
     if (immediate) {
       this.send(true);
       return;

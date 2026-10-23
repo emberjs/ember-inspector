@@ -73,6 +73,11 @@ module('App Picker', function (hooks) {
       tree: [],
     });
 
+    /**
+     * Each app switch leaves the component tree.
+     */
+    respondWith('view:releaseTree', false, { count: 2 });
+
     await visit('/component-tree');
 
     assert.dom('.app-picker').exists('App Picker is shown');

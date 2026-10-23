@@ -994,6 +994,41 @@ module('Ember Debug - View', function (hooks) {
     ]);
   });
 
+  test('Sends render tree updates only while the inspector asks for them', async function (assert) {
+    let send = EmberDebug.port.send;
+    EmberDebug.port.send = (name, message) => {
+      if (name === 'view:renderTree') {
+        assert.step('view:renderTree');
+      }
+      send.call(EmberDebug.port, name, message);
+    };
+
+    /**
+     * Updates wait 250 ms in a plain timeout, which `settled` does not track.
+     */
+    let afterUpdates = () => new Promise((resolve) => setTimeout(resolve, 400));
+
+    try {
+      await visit('/simple');
+      await afterUpdates();
+      assert.verifySteps([], 'no tree before the inspector asks');
+
+      EmberDebug.port.trigger('view:getTree', { immediate: true });
+      assert.verifySteps(['view:renderTree'], 'the requested tree');
+
+      await visit('/inputs');
+      await afterUpdates();
+      assert.verifySteps(['view:renderTree'], 'an update after a render');
+
+      EmberDebug.port.trigger('view:releaseTree');
+      await visit('/simple');
+      await afterUpdates();
+      assert.verifySteps([], 'no update after the inspector releases the tree');
+    } finally {
+      EmberDebug.port.send = send;
+    }
+  });
+
   module('Highlighting Views on hover', function (hooks) {
     let foo;
     let bar;

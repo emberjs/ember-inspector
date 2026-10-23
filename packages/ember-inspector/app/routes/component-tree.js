@@ -36,6 +36,7 @@ export default class ComponentTreeRoute extends TabRoute {
   deactivate() {
     super.deactivate(...arguments);
 
+    this.port.send('view:releaseTree');
     this.port.off('view:renderTree', this, this.setRenderTree);
     this.port.off('view:cancelSelection', this, this.cancelSelection);
     this.port.off('view:startInspecting', this, this.startInspecting);

@@ -7,6 +7,7 @@ import { settled } from '@ember/test-helpers';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
 
 import EmberDebugImport from 'ember-debug/main';
+import PortImport from 'ember-debug/port';
 
 let EmberDebug;
 
@@ -151,5 +152,38 @@ module('Ember Debug - Promise Debug', function (hooks) {
     EmberDebug.port.trigger('promise:getAndObservePromises');
     assert.strictEqual(name, 'promise:promisesUpdated');
     assert.strictEqual(message.promises.length, 0);
+  });
+});
+
+module('Ember Debug - Promise Debug startup', function (hooks) {
+  let currentAssert;
+  let options = {};
+
+  hooks.before(async function () {
+    EmberDebug = (await EmberDebugImport).default();
+    let Port = (await PortImport).default;
+
+    options.Port = class extends Port {
+      init() {}
+      send(name) {
+        if (name.startsWith('promise:')) {
+          currentAssert.step(name);
+        }
+      }
+    };
+  });
+
+  hooks.beforeEach(function (assert) {
+    currentAssert = assert;
+  });
+
+  setupEmberDebugTest(hooks, options);
+
+  test('Sends nothing until the inspector asks', async function (assert) {
+    await settled();
+    assert.verifySteps([]);
+
+    EmberDebug.port.trigger('promise:getInstrumentWithStack');
+    assert.verifySteps(['promise:instrumentWithStack']);
   });
 });
