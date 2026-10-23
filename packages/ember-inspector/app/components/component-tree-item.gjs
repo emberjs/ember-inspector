@@ -1,7 +1,5 @@
 import { concat } from '@ember/helper';
-import { on } from '@ember/modifier';
 import DisclosureTriangle from 'ember-inspector/components/ui/disclosure-triangle';
-import or from 'ember-truth-helpers/helpers/or';
 import isString from 'ember-inspector/helpers/is-string';
 import ComponentTreeArg from 'ember-inspector/components/component-tree-arg';
 import classify from 'ember-inspector/helpers/classify';

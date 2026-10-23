@@ -6,7 +6,7 @@ import { htmlSafe } from '@ember/template';
  * Base list view config
  */
 import buildStyle from 'ember-inspector/helpers/build-style';
-import { concat, hash } from '@ember/helper';
+import { concat } from '@ember/helper';
 export default class ListContent extends Component {
   <template>
     <div

@@ -1,6 +1,5 @@
 import PromiseTreeToolbar from 'ember-inspector/components/promise-tree-toolbar';
 import EmptyMessage from 'ember-inspector/components/ui/empty-message';
-import { on } from '@ember/modifier';
 import List from 'ember-inspector/components/list';
 import schemaFor from 'ember-inspector/helpers/schema-for';
 import mod from 'ember-math-helpers/helpers/mod';

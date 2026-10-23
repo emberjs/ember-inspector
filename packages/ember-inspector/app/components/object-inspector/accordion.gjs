@@ -1,7 +1,6 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
-import { hash } from '@ember/helper';
 
 export default class AccordionComponent extends Component {
   <template>

@@ -2,9 +2,7 @@ import ToolbarClearButton from 'ember-inspector/components/ui/toolbar-clear-butt
 import ToolbarDivider from 'ember-inspector/components/ui/toolbar-divider';
 import ToolbarReloadButton from 'ember-inspector/components/ui/toolbar-reload-button';
 import ToolbarSearchField from 'ember-inspector/components/ui/toolbar-search-field';
-import { fn } from '@ember/helper';
 import { Input } from '@ember/component';
-import { on } from '@ember/modifier';
 <template>
   <div class="toolbar">
     <ToolbarClearButton @action={{@clearProfiles}} />

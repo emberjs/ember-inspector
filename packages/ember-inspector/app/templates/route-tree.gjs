@@ -1,7 +1,7 @@
 import RouteTreeToolbar from 'ember-inspector/components/route-tree-toolbar';
 import InspectorTable from 'ember-inspector/components/inspector-table';
 import schemaFor from 'ember-inspector/helpers/schema-for';
-import { concat, get, fn } from '@ember/helper';
+import { concat, get } from '@ember/helper';
 import mod from 'ember-math-helpers/helpers/mod';
 <template>
   {{#if @controller.toolbarContainer}}

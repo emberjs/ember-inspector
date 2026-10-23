@@ -1,5 +1,4 @@
 import svgJar from 'ember-svg-jar/helpers/svg-jar';
-import { on } from '@ember/modifier';
 <template>
   <div
     class="warning flex flex-row items-center justify-start py-1 px-2 text-base bg-spec00"

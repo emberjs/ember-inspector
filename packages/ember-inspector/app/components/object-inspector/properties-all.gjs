@@ -3,7 +3,6 @@ import { service } from '@ember/service';
 import PropertiesBase from 'ember-inspector/components/object-inspector/properties-base';
 import SortProperties from 'ember-inspector/components/object-inspector/sort-properties';
 import Property from 'ember-inspector/components/object-inspector/property';
-import { fn } from '@ember/helper';
 import EmptyMessage from 'ember-inspector/components/ui/empty-message';
 
 const findMixin = function (mixins, property) {

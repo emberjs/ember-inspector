@@ -1,7 +1,6 @@
 import Component from '@glimmer/component';
 import DraggableColumn from 'ember-inspector/components/ui/draggable-column';
 import { LinkTo } from '@ember/routing';
-import eq from 'ember-truth-helpers/helpers/eq';
 import escapeUrl from 'ember-inspector/helpers/escape-url';
 import { concat } from '@ember/helper';
 

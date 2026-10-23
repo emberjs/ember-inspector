@@ -2,7 +2,6 @@ import Component from '@glimmer/component';
 import truncate from 'ember-inspector/utils/truncate';
 import { action } from '@ember/object';
 import { service } from '@ember/service';
-import { on } from '@ember/modifier';
 
 export default class ComponentTreeArg extends Component {
   <template>

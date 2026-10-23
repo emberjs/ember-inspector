@@ -1,8 +1,6 @@
 import ContainerTypeToolbar from 'ember-inspector/components/container-type-toolbar';
 import InspectorTable from 'ember-inspector/components/inspector-table';
 import mod from 'ember-math-helpers/helpers/mod';
-import { on } from '@ember/modifier';
-import { fn } from '@ember/helper';
 <template>
   {{#if @controller.toolbarContainer}}
     {{#in-element @controller.toolbarContainer}}

@@ -3,7 +3,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { next } from '@ember/runloop';
 import parseText from 'ember-inspector/utils/parse-text';
-import { on } from '@ember/modifier';
 import svgJar from 'ember-svg-jar/helpers/svg-jar';
 import DatePropertyField from 'ember-inspector/components/date-property-field';
 import PropertyField from 'ember-inspector/components/object-inspector/property-field';

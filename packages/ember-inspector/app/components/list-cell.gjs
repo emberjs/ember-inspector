@@ -17,7 +17,6 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { htmlSafe } from '@ember/template';
-import { on } from '@ember/modifier';
 
 export default class ListCell extends Component {
   <template>

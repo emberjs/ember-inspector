@@ -13,7 +13,6 @@ import { localCopy } from 'tracked-toolbox';
  * - `@faded`: fade the handle
  * - `@on-drag`: called with each new position
  */
-import { on } from '@ember/modifier';
 export default class DragHandle extends Component {
   <template>
     {{! template-lint-disable no-pointer-down-event-binding }}

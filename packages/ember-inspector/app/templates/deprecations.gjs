@@ -2,7 +2,6 @@ import DeprecationsToolbar from 'ember-inspector/components/deprecations-toolbar
 import { VerticalCollection } from '@html-next/vertical-collection';
 import DeprecationItem from 'ember-inspector/components/deprecation-item';
 import EmptyMessage from 'ember-inspector/components/ui/empty-message';
-import { on } from '@ember/modifier';
 <template>
   {{#if @controller.toolbarContainer}}
     {{#in-element @controller.toolbarContainer}}

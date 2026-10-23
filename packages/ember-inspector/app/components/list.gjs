@@ -7,15 +7,12 @@ import { bind } from '@ember/runloop';
 import ResizableColumns from 'ember-inspector/libs/resizable-columns';
 import { service } from '@ember/service';
 import { action } from '@ember/object';
-import { on } from '@ember/modifier';
 import { onResize } from 'ember-primitives/on-resize';
 import buildStyle from 'ember-inspector/helpers/build-style';
-import { concat, hash, get, fn } from '@ember/helper';
+import { concat, get } from '@ember/helper';
 import ListCell from 'ember-inspector/components/list-cell';
 import ListContent from 'ember-inspector/components/list-content';
 import { VerticalCollection } from '@html-next/vertical-collection';
-import and from 'ember-truth-helpers/helpers/and';
-import notEq from 'ember-truth-helpers/helpers/not-eq';
 import sub_ from 'ember-math-helpers/helpers/sub';
 import DragHandle from 'ember-inspector/components/ui/drag-handle';
 import oneWay from 'ember-inspector/helpers/one-way';
@@ -74,7 +71,7 @@ export default class ListComponent extends Component {
         {{#if
           (and
             column.visible
-            (notEq column (get this.columns (sub_ this.columns.length 1)))
+            (neq column (get this.columns (sub_ this.columns.length 1)))
           )
         }}
           <DragHandle

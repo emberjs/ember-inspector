@@ -1,7 +1,6 @@
 import Component from '@glimmer/component';
 import { RenderItem } from 'ember-inspector/controllers/component-tree';
 import Accordion from 'ember-inspector/components/object-inspector/accordion';
-import { on } from '@ember/modifier';
 import ComponentTreeItem from 'ember-inspector/components/component-tree-item';
 
 class RenderItemNoParent extends RenderItem {

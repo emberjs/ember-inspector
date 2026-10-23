@@ -1,4 +1,3 @@
-import { on } from '@ember/modifier';
 import SendToConsole from 'ember-inspector/components/ui/send-to-console';
 <template>
   <div class="route-cell-objects">

@@ -1,7 +1,6 @@
 import RenderTreeToolbar from 'ember-inspector/components/render-tree-toolbar';
 import WarningMessage from 'ember-inspector/components/ui/warning-message';
 import EmptyMessage from 'ember-inspector/components/ui/empty-message';
-import { on } from '@ember/modifier';
 import List from 'ember-inspector/components/list';
 import schemaFor from 'ember-inspector/helpers/schema-for';
 import RenderItem from 'ember-inspector/components/render-item';

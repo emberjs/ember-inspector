@@ -2,11 +2,7 @@ import ToolbarClearButton from 'ember-inspector/components/ui/toolbar-clear-butt
 import ToolbarDivider from 'ember-inspector/components/ui/toolbar-divider';
 import ToolbarReloadButton from 'ember-inspector/components/ui/toolbar-reload-button';
 import ToolbarSearchField from 'ember-inspector/components/ui/toolbar-search-field';
-import { fn } from '@ember/helper';
-import eq from 'ember-truth-helpers/helpers/eq';
-import { on } from '@ember/modifier';
 import { Input } from '@ember/component';
-import not from 'ember-truth-helpers/helpers/not';
 <template>
   <div class="toolbar">
     <ToolbarClearButton @action={{@clear}} class="js-clear-promises-btn" />

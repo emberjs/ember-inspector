@@ -1,5 +1,3 @@
-import { on } from '@ember/modifier';
-import { fn } from '@ember/helper';
 import { onResize } from 'ember-primitives/on-resize';
 import DraggableColumn from 'ember-inspector/components/ui/draggable-column';
 import AppPicker from 'ember-inspector/components/app-picker';

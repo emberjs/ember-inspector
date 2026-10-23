@@ -1,7 +1,6 @@
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
 import { Input } from '@ember/component';
-import { on } from '@ember/modifier';
 import svgJar from 'ember-svg-jar/helpers/svg-jar';
 
 let uuid = 0;
