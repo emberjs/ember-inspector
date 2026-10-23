@@ -27,6 +27,9 @@ const options = {
   svgJar: {
     sourceDirs: ['public/assets/svg'],
   },
+  babel: {
+    plugins: [require.resolve('ember-concurrency/async-arrow-task-transform')],
+  },
 };
 
 // Firefox requires non-minified assets for review :(
@@ -58,6 +61,7 @@ module.exports = function (defaults) {
 
   app.import('vendor/babel-polyfill.js', { prepend: true });
   app.import('node_modules/basiccontext/dist/basicContext.min.css');
+  app.import('node_modules/flatpickr/dist/flatpickr.css');
   app.import('node_modules/basiccontext/dist/themes/default.min.css');
   app.import('node_modules/basiccontext/dist/basicContext.min.js');
   app.import('node_modules/normalize.css/normalize.css');

@@ -7,9 +7,6 @@ import { start } from 'ember-qunit';
 import { loadTests } from 'ember-qunit/test-loader';
 import TestAdapter from './test-adapter';
 import setupSinon from 'ember-sinon-qunit';
-import registerWaiter from 'ember-raf-scheduler/test-support/register-waiter';
-
-registerWaiter();
 
 /**
  * we need to override the adapter that is set up in initializers/setup.js

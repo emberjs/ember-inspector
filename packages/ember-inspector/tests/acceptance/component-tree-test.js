@@ -1,4 +1,3 @@
-import registerWaiter from 'ember-raf-scheduler/test-support/register-waiter';
 import {
   click,
   currentURL,
@@ -17,8 +16,6 @@ import { setupTestAdapter, respondWith, sendMessage } from '../test-adapter';
 function textFor(selector, context) {
   return context.querySelector(selector).textContent.trim();
 }
-
-registerWaiter();
 
 let GUID = 1;
 

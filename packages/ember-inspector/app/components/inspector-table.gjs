@@ -5,7 +5,7 @@ import { htmlSafe } from '@ember/template';
 import { compare } from '@ember/utils';
 import { on } from '@ember/modifier';
 import { fn } from '@ember/helper';
-import VerticalCollection from '@html-next/vertical-collection/components/vertical-collection/component';
+import { VerticalCollection } from '@html-next/vertical-collection';
 import InspectorTableRow from 'ember-inspector/components/inspector-table/row';
 
 /**

@@ -14,7 +14,7 @@ import buildStyle from 'ember-inspector/helpers/build-style';
 import { concat, hash, get, fn } from '@ember/helper';
 import ListCell from 'ember-inspector/components/list-cell';
 import ListContent from 'ember-inspector/components/list-content';
-import VerticalCollection from '@html-next/vertical-collection/components/vertical-collection/component';
+import { VerticalCollection } from '@html-next/vertical-collection';
 import and from 'ember-truth-helpers/helpers/and';
 import notEq from 'ember-truth-helpers/helpers/not-eq';
 import sub_ from 'ember-math-helpers/helpers/sub';
