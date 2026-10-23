@@ -263,14 +263,6 @@ export default class ComponentTreeController extends Controller {
     this.renderItems.forEach((item) => item.collapse());
   }
 
-  @action arrowKeysSetup() {
-    document.addEventListener('keydown', this.handleKeyDown);
-  }
-
-  @action arrowKeysTeardown() {
-    document.removeEventListener('keydown', this.handleKeyDown);
-  }
-
   @action toggleParentsOnly() {
     this.showParentsOnly = !this.showParentsOnly;
   }

@@ -1,12 +1,10 @@
 /* eslint-disable ember/require-tagless-components */
 // eslint-disable-next-line ember/no-classic-components
 import Component from '@ember/component';
-import { action } from '@ember/object';
 import { debounce } from '@ember/runloop';
 import { htmlSafe } from '@ember/template';
 import { tracked } from '@glimmer/tracking';
-import didInsert from '@ember/render-modifiers/modifiers/did-insert';
-import didUpdate from '@ember/render-modifiers/modifiers/did-update';
+import { modifier } from 'ember-modifier';
 
 export default class ScrollContainerComponent extends Component {
   <template>
@@ -14,9 +12,7 @@ export default class ScrollContainerComponent extends Component {
       class="scroll-target"
       style={{this.scrollTargetStyle}}
       role="presentation"
-      {{didInsert this.elementInserted}}
-      {{didUpdate this.scrollPreviewIntoViewIfNeeded this.previewing}}
-      {{didUpdate this.scrollIntoViewIfNeeded this.currentItem}}
+      {{this.scrollIntoView this.currentItem this.previewing}}
     ></div>
     {{yield}}
   </template>
@@ -27,9 +23,6 @@ export default class ScrollContainerComponent extends Component {
   @tracked previewing;
   @tracked itemHeight;
   lastCurrentItem;
-
-  lastIndex = -1;
-  lastItem = undefined;
 
   get style() {
     return htmlSafe(`
@@ -66,27 +59,22 @@ export default class ScrollContainerComponent extends Component {
     return this.element?.querySelector('.scroll-target');
   }
 
-  @action
-  elementInserted() {
-    let { index, lastIndex, currentItem, lastItem } = this;
-
-    if (index !== lastIndex || currentItem !== lastItem) {
-      this.lastIndex = index;
-      this.lastItem = currentItem;
-
+  /**
+   * Scrolls the target into view when the current or previewed item changes.
+   * On the first run, the list has not rendered its rows yet, so it waits.
+   */
+  scrollIntoView = modifier((target, [currentItem, previewing]) => {
+    if (!this.hasScrolled) {
+      this.hasScrolled = true;
       // eslint-disable-next-line ember/no-runloop
       debounce(this, this.scrollIntoViewIfNeeded, 50);
-    }
-  }
-
-  @action
-  scrollPreviewIntoViewIfNeeded() {
-    if (this.previewing) {
+    } else if (previewing || currentItem) {
       this.scrollIntoViewIfNeeded();
     }
-  }
+  });
 
-  @action
+  hasScrolled = false;
+
   scrollIntoViewIfNeeded() {
     let { element, scrollTarget } = this;
 
