@@ -486,8 +486,8 @@ importers:
         specifier: ^1.21.1
         version: 1.21.3(@babel/core@7.29.7)(@glint/template@1.5.1)
       '@embroider/vite':
-        specifier: ^1.7.13
-        version: 1.7.15(@babel/core@7.29.7)(@embroider/core@4.6.9(@glint/template@1.5.1))(@glint/template@1.5.1)(vite@8.3.4(sass@1.79.4)(terser@5.51.2)(yaml@2.9.1))
+        specifier: ^1.8.0
+        version: 1.8.0(@babel/core@7.29.7)(@embroider/core@4.6.9)(vite@8.3.4(sass@1.79.4)(terser@5.51.2)(yaml@2.9.1))
       '@eslint/js':
         specifier: ^9.39.4
         version: 9.39.5
@@ -2065,6 +2065,15 @@ packages:
       '@glint/template':
         optional: true
 
+  '@embroider/macros@1.21.4':
+    resolution: {integrity: sha512-5fPpOtQyQCK9RsMdtXZliUPKWAkdzJ8jCWIQotq9ZaeLMsvT4OkMBaSiZz5uED8GwDRmOXsJt2Ub3Zq6WtKqcw==}
+    engines: {node: 12.* || 14.* || >= 16}
+    peerDependencies:
+      '@glint/template': ^1.0.0
+    peerDependenciesMeta:
+      '@glint/template':
+        optional: true
+
   '@embroider/reverse-exports@0.2.0':
     resolution: {integrity: sha512-WFsw8nQpHZiWGEDYpa/A79KEFfTisqteXbY+jg9eZiww1r1G+LZvsmdszDp86TkotUSCqrMbK/ewn0jR1CJmqg==}
     engines: {node: 12.* || 14.* || >= 16}
@@ -2085,11 +2094,25 @@ packages:
     resolution: {integrity: sha512-TzLZnwfhhrNkdTVGGyysovvciFCwyxEgMbzF9AZMzNbFlXirhocQSpGjy9V4AQArklu4wDFRYqqe5GMKULGIkw==}
     engines: {node: 12.* || 14.* || >= 16}
 
+  '@embroider/shared-internals@3.2.1':
+    resolution: {integrity: sha512-ZHTVF1Md6HiPPdpi5ESU5JlG2m4HRXIVebCka6BoMIfzyPlSjgYmpflv6Cmiq9UUyhe+/3LTMdx53vAV7O9g2Q==}
+    engines: {node: 12.* || 14.* || >= 16}
+
   '@embroider/vite@1.7.15':
     resolution: {integrity: sha512-lxVYXiwsuhGmvXUcy42EAHes2gL7O7Kg/Cd661vuzfRd/WMMLDsjYgi15ueb16UXrw5lfi3MJMPTypOo1MZELQ==}
     peerDependencies:
       '@babel/core': ^7.22.9 || ^8.0.0
       '@embroider/core': ^4.6.9
+      vite: '>= 5.2.0'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+
+  '@embroider/vite@1.8.0':
+    resolution: {integrity: sha512-+g32mPMqLhrDaXks64dx1tt5jnI5Nbl6EojhJptSNBq3M+HHDS1dj+1kVjNmmpQwl0nId7ToGQZOr+Ykm19kNA==}
+    peerDependencies:
+      '@babel/core': ^7.22.9 || ^8.0.0
+      '@embroider/core': ^4.6.10
       vite: '>= 5.2.0'
     peerDependenciesMeta:
       '@babel/core':
@@ -12845,6 +12868,20 @@ snapshots:
       - '@babel/core'
       - supports-color
 
+  '@embroider/macros@1.21.4(@babel/core@7.29.7)':
+    dependencies:
+      '@embroider/shared-internals': 3.2.1
+      assert-never: 1.3.0
+      babel-import-util: 3.0.1
+      ember-cli-babel: 8.3.2(@babel/core@7.29.7)
+      find-up: 5.0.0
+      lodash: 4.18.1
+      resolve: 1.22.13
+      semver: 7.8.5
+    transitivePeerDependencies:
+      - '@babel/core'
+      - supports-color
+
   '@embroider/reverse-exports@0.2.0':
     dependencies:
       mem: 8.1.1
@@ -12894,6 +12931,24 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@embroider/shared-internals@3.2.1':
+    dependencies:
+      babel-import-util: 3.0.1
+      debug: 4.4.3
+      ember-rfc176-data: 0.3.18
+      fs-extra: 9.1.0
+      is-subdir: 1.2.0
+      js-string-escape: 1.0.1
+      lodash: 4.18.1
+      minimatch: 3.1.5
+      pkg-entry-points: 1.1.2
+      resolve-package-path: 4.0.3
+      resolve.exports: 2.0.4
+      semver: 7.8.5
+      typescript-memoize: 1.1.1
+    transitivePeerDependencies:
+      - supports-color
+
   '@embroider/vite@1.7.15(@babel/core@7.29.7)(@embroider/core@4.6.9(@glint/template@1.5.1))(@glint/template@1.5.1)(vite@8.3.4(sass@1.79.4)(terser@5.51.2)(yaml@2.9.1))':
     dependencies:
       '@embroider/core': 4.6.9(@glint/template@1.5.1)
@@ -12911,6 +12966,32 @@ snapshots:
       send: 1.2.1
       source-map-url: 0.4.1
       terser: 5.34.1
+      vite: 8.3.4(sass@1.79.4)(terser@5.51.2)(yaml@2.9.1)
+    optionalDependencies:
+      '@babel/core': 7.29.7
+    transitivePeerDependencies:
+      - '@glint/template'
+      - bufferutil
+      - canvas
+      - supports-color
+      - utf-8-validate
+
+  '@embroider/vite@1.8.0(@babel/core@7.29.7)(@embroider/core@4.6.9)(vite@8.3.4(sass@1.79.4)(terser@5.51.2)(yaml@2.9.1))':
+    dependencies:
+      '@embroider/core': 4.6.9(@glint/template@1.5.1)
+      '@embroider/macros': 1.21.4(@babel/core@7.29.7)
+      '@embroider/reverse-exports': 0.2.0
+      assert-never: 1.3.0
+      browserslist: 4.29.3
+      browserslist-to-esbuild: 2.1.1(browserslist@4.29.3)
+      chalk: 5.6.2
+      content-tag: 4.2.1
+      debug: 4.4.3
+      fast-glob: 3.3.3
+      fs-extra: 10.1.0
+      jsdom: 25.0.1
+      send: 1.2.1
+      terser: 5.51.2
       vite: 8.3.4(sass@1.79.4)(terser@5.51.2)(yaml@2.9.1)
     optionalDependencies:
       '@babel/core': 7.29.7
@@ -13435,8 +13516,8 @@ snapshots:
 
   '@jridgewell/source-map@0.3.6':
     dependencies:
-      '@jridgewell/gen-mapping': 0.3.5
-      '@jridgewell/trace-mapping': 0.3.25
+      '@jridgewell/gen-mapping': 0.3.13
+      '@jridgewell/trace-mapping': 0.3.31
 
   '@jridgewell/sourcemap-codec@1.5.0': {}
 
@@ -15487,6 +15568,11 @@ snapshots:
   browserslist-to-esbuild@2.1.1(browserslist@4.24.0):
     dependencies:
       browserslist: 4.24.0
+      meow: 13.2.0
+
+  browserslist-to-esbuild@2.1.1(browserslist@4.29.3):
+    dependencies:
+      browserslist: 4.29.3
       meow: 13.2.0
 
   browserslist@4.24.0:
