@@ -6,7 +6,6 @@ import parseText from 'ember-inspector/utils/parse-text';
 import svgJar from 'ember-svg-jar/helpers/svg-jar';
 import DatePropertyField from 'ember-inspector/components/date-property-field';
 import PropertyField from 'ember-inspector/components/object-inspector/property-field';
-import stopPropagation from 'ember-event-helpers/helpers/stop-propagation';
 import DependentKeys from 'ember-inspector/components/object-inspector/dependent-keys';
 
 export default class ObjectInspectorProperty extends Component {
@@ -107,7 +106,7 @@ export default class ObjectInspectorProperty extends Component {
             class="mixin-calc-btn"
             title="compute property"
             type="button"
-            {{on "click" (stopPropagation @calculate)}}
+            {{on "click" this.calculate}}
           >
             {{svgJar "calculate" width="16px" height="16px"}}
           </button>
@@ -287,6 +286,12 @@ export default class ObjectInspectorProperty extends Component {
     return !['type-string', 'type-number', 'type-boolean'].includes(
       this.args.model?.value?.type,
     );
+  }
+
+  @action
+  calculate(event) {
+    event.stopPropagation();
+    this.args.calculate(event);
   }
 
   @action
