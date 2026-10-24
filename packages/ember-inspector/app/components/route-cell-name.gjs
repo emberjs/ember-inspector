@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { htmlSafe } from '@ember/template';
+import { trustHTML } from '@ember/template';
 import checkCurrentRoute from 'ember-inspector/utils/check-current-route';
 import { concat } from '@ember/helper';
 
@@ -18,7 +18,7 @@ export default class RouteCellName extends Component {
     </div>
   </template>
   get labelStyle() {
-    return htmlSafe(
+    return trustHTML(
       `padding-left: ${+this.args.route?.parentCount * 20 + 5}px;`,
     );
   }

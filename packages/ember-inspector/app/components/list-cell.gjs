@@ -16,7 +16,7 @@
  */
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import { htmlSafe } from '@ember/template';
+import { trustHTML } from '@ember/template';
 
 export default class ListCell extends Component {
   <template>
@@ -41,7 +41,7 @@ export default class ListCell extends Component {
    * @type {SafeString}
    */
   get safeStyle() {
-    return htmlSafe(this.style);
+    return trustHTML(this.style);
   }
 
   /**

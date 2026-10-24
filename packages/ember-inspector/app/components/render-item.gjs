@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { isEmpty } from '@ember/utils';
-import { htmlSafe } from '@ember/template';
+import { trustHTML } from '@ember/template';
 import escapeRegExp from 'ember-inspector/utils/escape-reg-exp';
 import Disclosure from 'ember-inspector/components/ui/disclosure';
 import msToTime from 'ember-inspector/helpers/ms-to-time';
@@ -58,7 +58,7 @@ export default class RenderItem extends Component {
   }
 
   get nameStyle() {
-    return htmlSafe(`padding-left: ${+this.level * 20 + 5}px;`);
+    return trustHTML(`padding-left: ${+this.level * 20 + 5}px;`);
   }
 
   get nodeStyle() {
@@ -66,7 +66,7 @@ export default class RenderItem extends Component {
     if (!this.searchMatch) {
       style = 'opacity: 0.5;';
     }
-    return htmlSafe(style);
+    return trustHTML(style);
   }
 
   get readableTime() {

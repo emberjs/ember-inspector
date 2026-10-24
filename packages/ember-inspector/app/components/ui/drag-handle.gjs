@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import { htmlSafe } from '@ember/template';
+import { trustHTML } from '@ember/template';
 import { localCopy } from 'tracked-toolbox';
 
 /**
@@ -60,7 +60,7 @@ export default class DragHandle extends Component {
   }
 
   get style() {
-    return htmlSafe(
+    return trustHTML(
       this.side ? `${this.side}: ${this.position + this.left}px;` : '',
     );
   }

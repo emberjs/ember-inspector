@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { get } from '@ember/object';
-import { htmlSafe } from '@ember/template';
+import { trustHTML } from '@ember/template';
 import { compare } from '@ember/utils';
 import { VerticalCollection } from '@html-next/vertical-collection';
 import InspectorTableRow from 'ember-inspector/components/inspector-table/row';
@@ -211,7 +211,7 @@ export default class InspectorTable extends Component {
   widthStyle = (column) => {
     let width = this.widths?.[column.key];
 
-    return width === undefined ? undefined : htmlSafe(`width: ${width}px;`);
+    return width === undefined ? undefined : trustHTML(`width: ${width}px;`);
   };
 
   /**

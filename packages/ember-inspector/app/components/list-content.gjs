@@ -1,6 +1,6 @@
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import { htmlSafe } from '@ember/template';
+import { trustHTML } from '@ember/template';
 
 /**
  * Base list view config
@@ -45,6 +45,6 @@ export default class ListContent extends Component {
   }
 
   get style() {
-    return htmlSafe(`height:${this.height}px`);
+    return trustHTML(`height:${this.height}px`);
   }
 }
