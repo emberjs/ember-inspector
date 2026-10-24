@@ -15,8 +15,9 @@
     "lint:fix": "pnpm --parallel -r --aggregate-output lint:fix",
     "serve:bookmarklet": "pnpm --filter ember-inspector serve:bookmarklet",
     "start": "pnpm --filter ember-inspector start",
-    "test": "pnpm lint && pnpm test:ember && pnpm test:watch",
+    "test": "pnpm lint && pnpm test:ember && pnpm test:watch && pnpm test:dists",
     "test:ember": "pnpm --filter ember-debug build && pnpm --filter ember-inspector test",
+    "test:dists": "node --test tests/dists-test.mjs",
     "test:watch": "node --test tests/watch-test.mjs",
     "test:firefox": "node --test tests/firefox-extension-test.mjs",
     "watch": "pnpm build:ember-debug && pnpm \"/watch:/\"",
@@ -31,11 +32,11 @@
   },
   "packageManager": "pnpm@9.12.1",
   "engines": {
-    "node": ">= 22",
+    "node": ">= 26",
     "pnpm": "^9.0.0"
   },
   "volta": {
-    "node": "22.17.1",
+    "node": "26.12.1",
     "pnpm": "9.12.1"
   },
   "pnpm": {
