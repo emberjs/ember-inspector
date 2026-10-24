@@ -1,0 +1,30 @@
+# Unlabeled Changes
+
+* `ember-inspector`
+  * [#2832](https://github.com/emberjs/ember-inspector/pull/2832) Make ScrollContainer a Glimmer component ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2831](https://github.com/emberjs/ember-inspector/pull/2831) Render markdown with showdown, not ember-cli-showdown ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2830](https://github.com/emberjs/ember-inspector/pull/2830) Use trustHTML, not its alias htmlSafe ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2829](https://github.com/emberjs/ember-inspector/pull/2829) Use the built-in template keywords of Ember 7 ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2825](https://github.com/emberjs/ember-inspector/pull/2825) Derive layout state instead of using render modifiers ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2824](https://github.com/emberjs/ember-inspector/pull/2824) Use @ember/reactive collections, not tracked-built-ins ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2823](https://github.com/emberjs/ember-inspector/pull/2823) Upgrade the inspector UI to ember-source 7.3 ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2820](https://github.com/emberjs/ember-inspector/pull/2820) Send the render tree and promise settings only when asked ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2822](https://github.com/emberjs/ember-inspector/pull/2822) Ignore panel messages to tabs without a content script ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2819](https://github.com/emberjs/ember-inspector/pull/2819) Replace What's New with a Changelog page that shows the whole changelog ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2778](https://github.com/emberjs/ember-inspector/pull/2778) Pause render tree streaming while the Ember panel is hidden; adapt throttle to tree size ([@emunal](https://github.com/emunal))
+  * [#2817](https://github.com/emberjs/ember-inspector/pull/2817) Replace ember-table with InspectorTable code, no table library (alternative to #2806) ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2816](https://github.com/emberjs/ember-inspector/pull/2816) Fix panel and column resizing ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2808](https://github.com/emberjs/ember-inspector/pull/2808) Convert the inspector UI components and route templates to .gjs ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2809](https://github.com/emberjs/ember-inspector/pull/2809) Remove computed and observers from the inspector UI controllers ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2790](https://github.com/emberjs/ember-inspector/pull/2790) Run the ember-debug tests in their own app, not in the inspector UI ([@NullVoxPopuli](https://github.com/NullVoxPopuli))
+  * [#2783](https://github.com/emberjs/ember-inspector/pull/2783) Fix CI: make the Ember 7 scenarios pass ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2771](https://github.com/emberjs/ember-inspector/pull/2771) Add classic-test-app  ([@BobrImperator](https://github.com/BobrImperator))
+* Other
+  * [#2828](https://github.com/emberjs/ember-inspector/pull/2828) Test the dist layout, and use Node 26 ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2811](https://github.com/emberjs/ember-inspector/pull/2811) Test pnpm watch, and keep ember-debug/dist full during rebuilds ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2810](https://github.com/emberjs/ember-inspector/pull/2810) Fix pnpm watch: keep ember-debug/dist in rollup watch mode ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2782](https://github.com/emberjs/ember-inspector/pull/2782) Pin CI actions to the latest hashes and add a zizmor lint ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#2781](https://github.com/emberjs/ember-inspector/pull/2781) Add a nightly CI job for ember-source main with throw on deprecations ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+
+
+*Cannot plan release until the above changes are labeled*.
