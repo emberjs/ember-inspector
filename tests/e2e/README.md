@@ -9,6 +9,8 @@ E2E_BROWSER=chrome pnpm test:e2e
 
 `E2E_BROWSER` is `chrome`, `firefox`, or `safari`. CI runs one job for each browser. The Safari job runs on macOS.
 
+If a check fails, the test saves a screenshot of the page and of the inspector in `tests/e2e/screenshots/<browser>/<app>/<check>/`. In CI, the failed job uploads that folder as the `e2e-screenshots-<browser>` artifact.
+
 ## Files
 
 The test files are at the top of this folder. Everything else is in `helpers/`.
@@ -22,6 +24,8 @@ The test files are at the top of this folder. Everything else is in `helpers/`.
 | `helpers/marionette.mjs`, `helpers/webdriver.mjs` | Clients for the Firefox and WebDriver protocols. |
 | `helpers/find.mjs` | Functions that run in the browser to find elements. |
 | `helpers/paths.mjs`, `helpers/serve.mjs` | The build paths, the test apps, and a static server for them. |
+
+A driver also gives the test a `screenshots()` function for the failure screenshots.
 
 A driver gives the checks the same three functions for the page and for the inspector: `evaluate(fn, ...args)`, `click(selector, text)`, and `hover(selector, text)`. A new check goes in `helpers/checks.mjs`. It must not know which browser it runs in.
 

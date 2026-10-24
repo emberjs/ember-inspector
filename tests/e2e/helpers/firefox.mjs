@@ -117,11 +117,32 @@ export async function openInspector(appUrl) {
     return {
       page: pageDriver(client),
       inspector,
+      screenshots: () => screenshots(client),
       close: () => firefox.stop(),
     };
   } catch (error) {
     await firefox.stop();
     throw error;
+  }
+}
+
+/**
+ * In the chrome context, the screenshot shows the whole browser window,
+ * with the DevTools panel.
+ */
+async function screenshots(client) {
+  let page = await client.send('WebDriver:TakeScreenshot', {});
+
+  await client.setContext('chrome');
+  try {
+    let window = await client.send('WebDriver:TakeScreenshot', {});
+
+    return {
+      page: Buffer.from(page.value, 'base64'),
+      inspector: Buffer.from(window.value, 'base64'),
+    };
+  } finally {
+    await client.setContext('content');
   }
 }
 

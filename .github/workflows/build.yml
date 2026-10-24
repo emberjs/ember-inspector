@@ -125,6 +125,13 @@ jobs:
           defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically -bool true
       - run: pnpm test:e2e:build
       - run: pnpm test:e2e
+      - name: Upload screenshots of failed checks
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: e2e-screenshots-${{ matrix.browser }}
+          path: tests/e2e/screenshots
+          if-no-files-found: ignore
 
   build-ember-debug:
     name: Build ember-debug

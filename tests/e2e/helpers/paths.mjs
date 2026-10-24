@@ -4,6 +4,11 @@ import { fileURLToPath } from 'node:url';
 
 export const root = join(dirname(fileURLToPath(import.meta.url)), '../../..');
 
+/**
+ * A check that fails saves screenshots of the page and the inspector here.
+ */
+export const screenshotsDir = join(root, 'tests/e2e/screenshots');
+
 const inspectorDist = join(root, 'packages/ember-inspector/dist');
 
 export const dists = {

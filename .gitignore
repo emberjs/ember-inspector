@@ -17,6 +17,7 @@
 .eslintcache
 /packages/*/.eslintcache
 /coverage/
+/tests/e2e/screenshots/
 /npm-debug.log*
 /testem.log
 /yarn-error.log

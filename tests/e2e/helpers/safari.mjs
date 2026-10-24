@@ -45,6 +45,10 @@ export async function openInspector(appUrl) {
     return {
       page: session.driver(pageWindow),
       inspector,
+      screenshots: async () => ({
+        page: await session.screenshot(pageWindow),
+        inspector: await session.screenshot(inspectorWindow),
+      }),
       async close() {
         await session.close();
         await inspectorServer.close();

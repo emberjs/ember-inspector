@@ -39,6 +39,10 @@ export async function openInspector(appUrl) {
     return {
       page: frameDriver(page.mainFrame()),
       inspector: frameDriver(pane),
+      screenshots: async () => ({
+        page: await page.screenshot(),
+        inspector: await devtools.screenshot(),
+      }),
       close: () => browser.close(),
     };
   } catch (error) {

@@ -52,6 +52,11 @@ class Session {
     this.currentWindow = handle;
   }
 
+  async screenshot(handle) {
+    await this.switchTo(handle);
+    return Buffer.from(await this.send('GET', '/screenshot'), 'base64');
+  }
+
   /**
    * Drives one window of the session.
    * Each call switches to that window first.
