@@ -3,14 +3,12 @@
 
 # compiled output
 /dist/
+/tmp/
 /ember_debug/dist/
 
 # misc
 /coverage/
 !.*
 .*/
-
-# vendor
-/vendor/
 
 /skeletons

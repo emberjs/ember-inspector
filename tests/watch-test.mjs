@@ -22,8 +22,13 @@ const versionsSource = join(root, 'packages/ember-debug/utils/versions.js');
 const TIMEOUT = 180_000;
 
 /**
+ * `vite build --watch` prints this after each UI build.
+ */
+const UI_BUILT = 'built in ';
+
+/**
  * Runs `pnpm watch` in its own process group,
- * so that the test can stop rollup and ember-cli together.
+ * so that the test can stop rollup and vite together.
  */
 function startWatch() {
   let child = spawn('pnpm', ['watch'], {
@@ -102,7 +107,7 @@ test(
     await waitFor(
       watch,
       'the first UI build',
-      () => count(watch, 'Build successful') >= 1,
+      () => count(watch, UI_BUILT) >= 1,
     );
 
     await waitFor(
@@ -122,7 +127,7 @@ test(
     );
 
     let rollupBuilds = count(watch, 'created dist');
-    let uiBuilds = count(watch, 'Build successful');
+    let uiBuilds = count(watch, UI_BUILT);
 
     writeFileSync(
       versionsSource,
@@ -139,7 +144,7 @@ test(
       watch,
       'the UI copies the new ember-debug build',
       () =>
-        count(watch, 'Build successful') > uiBuilds &&
+        count(watch, UI_BUILT) > uiBuilds &&
         inspectorVersionsFiles().some((file) =>
           readFileSync(file, 'utf8').includes(marker),
         ),

@@ -3,7 +3,8 @@ import DisclosureTriangle from 'ember-inspector/components/ui/disclosure-triangl
 import isString from 'ember-inspector/helpers/is-string';
 import ComponentTreeArg from 'ember-inspector/components/component-tree-arg';
 import classify from 'ember-inspector/helpers/classify';
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import EyeIcon from 'ember-inspector/svg/eye.svg?unsafe-inline';
+import CodeLineIcon from 'ember-inspector/svg/code-line.svg?unsafe-inline';
 <template>
   {{! template-lint-disable no-invalid-interactive }}
   <div
@@ -124,7 +125,7 @@ import svgJar from 'ember-svg-jar/helpers/svg-jar';
           {{on "click" @item.scrollIntoView}}
           type="button"
         >
-          {{svgJar "eye" width="20px" height="20px"}}
+          <EyeIcon width="20px" height="20px" />
         </button>
 
         <button
@@ -134,7 +135,7 @@ import svgJar from 'ember-svg-jar/helpers/svg-jar';
           {{on "click" @item.inspectElement}}
           type="button"
         >
-          {{svgJar "code-line" width="20px" height="20px"}}
+          <CodeLineIcon width="20px" height="20px" />
         </button>
       </div>
     {{/if}}

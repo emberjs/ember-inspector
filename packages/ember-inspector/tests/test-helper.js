@@ -3,8 +3,7 @@ import config from 'ember-inspector/config/environment';
 import * as QUnit from 'qunit';
 import { setApplication } from '@ember/test-helpers';
 import { setup } from 'qunit-dom';
-import { start } from 'ember-qunit';
-import { loadTests } from 'ember-qunit/test-loader';
+import { start as qunitStart, setupEmberOnerrorValidation } from 'ember-qunit';
 import TestAdapter from './test-adapter';
 import setupSinon from 'ember-sinon-qunit';
 
@@ -29,15 +28,16 @@ Application.instanceInitializer({
   },
 });
 
-setApplication(Application.create(config.APP));
+export function start() {
+  setApplication(Application.create(config.APP));
 
-setupSinon();
+  setupSinon();
 
-window.NO_EMBER_DEBUG = true;
-QUnit.config.testTimeout = 60000;
+  window.NO_EMBER_DEBUG = true;
+  QUnit.config.testTimeout = 60000;
 
-setup(QUnit.assert);
+  setup(QUnit.assert);
+  setupEmberOnerrorValidation();
 
-// ember-qunit 9 does not load the tests in `start`.
-loadTests();
-start({ loadTests: false });
+  qunitStart();
+}

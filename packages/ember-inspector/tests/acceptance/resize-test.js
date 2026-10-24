@@ -7,6 +7,7 @@ import {
   waitUntil,
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
+import basicContext from 'basiccontext';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupTestAdapter, respondWith } from '../test-adapter';
 
@@ -204,7 +205,6 @@ module('Resizing panels', function (outer) {
       }
     });
 
-    /* global basicContext */
     test('the header menu hides and shows a column', async function (assert) {
       await visit('/promise-tree');
 
