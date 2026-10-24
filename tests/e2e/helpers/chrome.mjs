@@ -56,10 +56,7 @@ export async function openInspector(appUrl) {
  * then selects the Ember panel.
  */
 async function selectEmberPanel(devtools) {
-  await devtools.evaluate(async () => {
-    let { DockController } = await import('./ui/legacy/legacy.js');
-    DockController.DockController.instance().setDockSide('bottom');
-  });
+  await dockAtBottom(devtools);
 
   for (let attempt = 0; attempt < 80; attempt++) {
     let selected = await devtools.evaluate(async () => {
@@ -80,6 +77,25 @@ async function selectEmberPanel(devtools) {
   }
 
   throw new Error('Chrome DevTools has no Ember panel');
+}
+
+/**
+ * DevTools throws until it has loaded its locale data,
+ * for example "No locale data registered for 'en-US'".
+ */
+async function dockAtBottom(devtools) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await devtools.evaluate(async () => {
+        let { DockController } = await import('./ui/legacy/legacy.js');
+        DockController.DockController.instance().setDockSide('bottom');
+      });
+    } catch (error) {
+      if (attempt === 80) throw error;
+    }
+
+    await sleep(250);
+  }
 }
 
 async function waitForPane(devtools) {
