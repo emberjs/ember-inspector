@@ -4,7 +4,7 @@ import { computed, get } from '@ember/object';
 // eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { equal, gt, notEmpty } from '@ember/object/computed';
 import Component from '@glimmer/component';
-import { htmlSafe } from '@ember/template';
+import { trustHTML } from '@ember/template';
 import { isEmpty } from '@ember/utils';
 import { concat } from '@ember/helper';
 import svgJar from 'ember-svg-jar/helpers/svg-jar';
@@ -111,7 +111,7 @@ export default class PromiseItem extends Component {
     } else {
       color = 'blue';
     }
-    return htmlSafe(`background-color: ${COLOR_MAP[color]}; color: white;`);
+    return trustHTML(`background-color: ${COLOR_MAP[color]}; color: white;`);
   }
 
   @computed(
@@ -145,7 +145,7 @@ export default class PromiseItem extends Component {
 
   @computed('args.model.level', 'nodeStyle')
   get labelStyle() {
-    return htmlSafe(
+    return trustHTML(
       `padding-left: ${+get(this, 'args.model.level') * 20 + 5}px;${
         this.nodeStyle
       }`,

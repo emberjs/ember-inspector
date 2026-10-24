@@ -10,11 +10,11 @@
  */
 import { helper } from '@ember/component/helper';
 
-import { htmlSafe } from '@ember/template';
+import { trustHTML } from '@ember/template';
 const { keys } = Object;
 
 export function buildStyle(_, options) {
-  return htmlSafe(
+  return trustHTML(
     keys(options).reduce((style, key) => `${style}${key}:${options[key]};`, ''),
   );
 }

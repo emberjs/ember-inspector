@@ -2,7 +2,7 @@
 // eslint-disable-next-line ember/no-classic-components
 import Component from '@ember/component';
 import { debounce } from '@ember/runloop';
-import { htmlSafe } from '@ember/template';
+import { trustHTML } from '@ember/template';
 import { tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
 
@@ -25,7 +25,7 @@ export default class ScrollContainerComponent extends Component {
   lastCurrentItem;
 
   get style() {
-    return htmlSafe(`
+    return trustHTML(`
       position: relative;
       height: 100%;
     `);
@@ -35,9 +35,9 @@ export default class ScrollContainerComponent extends Component {
     let { index, itemHeight } = this;
 
     if (index === -1) {
-      return htmlSafe('display: none;');
+      return trustHTML('display: none;');
     } else {
-      return htmlSafe(`
+      return trustHTML(`
         position: absolute;
         width: 100%;
         height: ${itemHeight || 0}px;

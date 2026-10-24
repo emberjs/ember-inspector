@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { htmlSafe } from '@ember/template';
+import { trustHTML } from '@ember/template';
 
 export default class ResizableColumn extends Component {
   <template>
@@ -8,7 +8,7 @@ export default class ResizableColumn extends Component {
     </div>
   </template>
   get style() {
-    return htmlSafe(
+    return trustHTML(
       `-webkit-flex: none; flex: none; width: ${this.args.width}px;`,
     );
   }
