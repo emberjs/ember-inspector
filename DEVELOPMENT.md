@@ -9,18 +9,10 @@ Run `pnpm install` to install the required modules.
 
 ### End-to-end tests
 
-The end-to-end tests install the built inspector in a real browser and inspect the test apps in `packages/vite-test-app` and `packages/classic-test-app`.
+- `pnpm test:e2e:build` to build the inspector and the test apps
+- `E2E_BROWSER=chrome pnpm test:e2e` to test the inspector in a real browser (`chrome`, `firefox`, or `safari`)
 
-| Browser | How the test opens the inspector |
-| --- | --- |
-| `chrome` | Puppeteer loads `dist/chrome` as an unpacked extension and opens the Ember panel in DevTools. |
-| `firefox` | Marionette installs `dist/firefox` as a temporary add-on and opens the Ember panel in DevTools. |
-| `safari` | `safaridriver` runs the bookmarklet from `dist/bookmarklet`. Safari must allow popups. |
-
-1. Build the inspector and the test apps: `pnpm test:e2e:build`
-2. Run the tests in one browser: `E2E_BROWSER=firefox pnpm test:e2e`
-
-The happy paths are in `tests/e2e/checks.mjs`. Each browser runs all of them against each test app.
+[tests/e2e/README.md](./tests/e2e/README.md) tells how each browser opens the inspector, and why.
 
 ## Deploy new version:
 
