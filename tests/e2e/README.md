@@ -77,5 +77,5 @@ pnpm test:e2e
 
 A check with `knownIssue` runs as a `todo`. It reports its result, but it does not fail the job.
 
-- With the Chrome or Firefox extension, Render Performance can stop getting new renders. In `vite-test-app` this happens every time: the tab lists the renders from before it opened, but no new ones. The page has a second ember-debug instance, and `window.EmberInspector` is not the instance that talks to the inspector. The classic app shows it sometimes.
+- Render Performance can stop getting new renders: the tab lists the renders from before it opened, but no new ones. This happens every time in Safari, and in `vite-test-app` with the Chrome or Firefox extension. With the extensions, the classic app shows it sometimes. In `vite-test-app`, the page has a second ember-debug instance, and `window.EmberInspector` is not the instance that talks to the inspector.
 - After the Reload button, the inspector sometimes loses the page: the component tree stays empty. This is probably the same second instance.

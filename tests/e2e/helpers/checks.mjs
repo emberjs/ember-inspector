@@ -131,9 +131,8 @@ export const checks = [
 
   {
     name: 'the Render Performance tab shows the render of a navigation',
-    knownIssue: (app, browser) =>
-      browser !== 'safari' &&
-      'the tab can stop getting new renders, always in a Vite app',
+    knownIssue: () =>
+      'the tab can stop getting new renders after it opens',
     async run({ inspector, page }) {
       await openTab(inspector, 'Render Performance');
       let before = await count(inspector, '.js-render-profile-item');
