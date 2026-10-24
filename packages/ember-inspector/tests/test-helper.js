@@ -6,7 +6,6 @@ import { setup } from 'qunit-dom';
 import { start } from 'ember-qunit';
 import { loadTests } from 'ember-qunit/test-loader';
 import TestAdapter from './test-adapter';
-import setupSinon from 'ember-sinon-qunit';
 
 /**
  * we need to override the adapter that is set up in initializers/setup.js
@@ -30,8 +29,6 @@ Application.instanceInitializer({
 });
 
 setApplication(Application.create(config.APP));
-
-setupSinon();
 
 window.NO_EMBER_DEBUG = true;
 QUnit.config.testTimeout = 60000;

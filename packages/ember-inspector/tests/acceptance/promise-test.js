@@ -364,6 +364,62 @@ module('Promise Tab', function (outer) {
       await click(row.querySelector('.js-promise-object-value'));
     });
 
+    test('A child that rejects later expands its parent', async function (assert) {
+      respondWith('promise:getAndObservePromises', {
+        type: 'promise:promisesUpdated',
+        promises: [
+          generatePromise({ guid: 2, parent: 1, label: 'Child' }),
+          generatePromise({ guid: 1, children: [2], label: 'Parent' }),
+        ],
+      });
+
+      await visit('/promise-tree');
+
+      assert.dom('.js-promise-tree-item').exists({ count: 1 }, 'collapsed');
+
+      await sendMessage({
+        type: 'promise:promisesUpdated',
+        promises: [
+          generatePromise({
+            guid: 2,
+            parent: 1,
+            label: 'Child',
+            state: 'rejected',
+            reason: { inspect: 'reason', type: 'type-string' },
+          }),
+        ],
+      });
+
+      let rows = findAll('.js-promise-tree-item');
+      assert.strictEqual(rows.length, 2, 'the parent expands');
+      assert
+        .dom(rows[1].querySelector('.js-promise-state'))
+        .hasText('Rejected');
+    });
+
+    test('A new child label makes the search find the parent', async function (assert) {
+      respondWith('promise:getAndObservePromises', {
+        type: 'promise:promisesUpdated',
+        promises: [
+          generatePromise({ guid: 2, parent: 1, label: 'Child' }),
+          generatePromise({ guid: 1, children: [2], label: 'Parent' }),
+        ],
+      });
+
+      await visit('/promise-tree');
+      await fillIn('.js-promise-search input', 'renamed');
+
+      assert.dom('.js-promise-tree-item').doesNotExist();
+
+      await sendMessage({
+        type: 'promise:promisesUpdated',
+        promises: [generatePromise({ guid: 2, parent: 1, label: 'Renamed' })],
+      });
+
+      assert.dom('.js-promise-tree-item').exists({ count: 1 });
+      assert.dom('.js-promise-label').hasText('Parent');
+    });
+
     test('It should clear the search filter when the clear button is clicked', async function (assert) {
       respondWith('promise:getAndObservePromises', {
         type: 'promise:promisesUpdated',
