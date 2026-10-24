@@ -1,11 +1,18 @@
 import config from 'ember-inspector/config/environment';
 
+/**
+ * The build writes one copy of the app for each dist
+ * (basic, chrome, firefox, bookmarklet, websocket).
+ *
+ * It replaces this placeholder with the dist name in each copy.
+ */
+const EMBER_DIST = '{{EMBER_DIST}}';
+
 export default {
   name: 'setup',
   initialize(instance) {
-    // {{EMBER_DIST}} is replaced by the build process (basic, chrome, etc)
     let Adapter = instance.resolveRegistration(
-      `service:adapters/{{EMBER_DIST}}`,
+      `service:adapters/${EMBER_DIST}`,
     );
 
     // register the adapter service
