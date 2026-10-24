@@ -545,9 +545,6 @@ importers:
       ember-cli-sass:
         specifier: ^11.0.1
         version: 11.0.1
-      ember-cli-showdown:
-        specifier: ^10.0.0
-        version: 10.0.0(@babel/core@7.29.7)
       ember-cli-terser:
         specifier: ^4.0.2
         version: 4.0.2
@@ -5593,10 +5590,6 @@ packages:
   ember-cli-sass@11.0.1:
     resolution: {integrity: sha512-RMlFPMK4kaB+67seF/IIoY3EC4rRd+L58q+lyElrxB3FcQTgph/qmGwtqf9Up7m3SDbPiA7cccCOSmgReMgCXA==}
     engines: {node: '>= 10.*'}
-
-  ember-cli-showdown@10.0.0:
-    resolution: {integrity: sha512-NMEHVXC/eURvekkt1rIQY6frFxpgPsolnHVVcZWeztkXx83RLBzxMkFnx0GWk28QQTMCAXZ3ppaezg1RTdoNJQ==}
-    engines: {node: '>= 18'}
 
   ember-cli-sri@2.1.1:
     resolution: {integrity: sha512-YG/lojDxkur9Bnskt7xB6gUOtJ6aPl/+JyGYm9HNDk3GECVHB3SMN3rlGhDKHa1ndS5NK2W2TSLb9bzRbGlMdg==}
@@ -17485,15 +17478,6 @@ snapshots:
       broccoli-sass-source-maps: 4.3.0
       ember-cli-version-checker: 2.2.0
     transitivePeerDependencies:
-      - supports-color
-
-  ember-cli-showdown@10.0.0(@babel/core@7.29.7):
-    dependencies:
-      '@embroider/addon-shim': 1.8.9
-      decorator-transforms: 2.4.0(@babel/core@7.29.7)
-      showdown: 2.1.0
-    transitivePeerDependencies:
-      - '@babel/core'
       - supports-color
 
   ember-cli-sri@2.1.1:

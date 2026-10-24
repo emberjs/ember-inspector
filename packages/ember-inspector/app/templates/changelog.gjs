@@ -1,5 +1,5 @@
 import OpenLinksInNewWindow from 'ember-inspector/components/ui/open-links-in-new-window';
-import MarkdownToHtml from 'ember-cli-showdown/components/markdown-to-html';
+import MarkdownToHtml from 'ember-inspector/components/markdown-to-html';
 <template>
   <div class="changelog">
     {{#if @controller.error}}

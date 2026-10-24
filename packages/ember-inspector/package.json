@@ -75,7 +75,6 @@
     "ember-cli-htmlbars": "^7.0.1",
     "ember-cli-inject-live-reload": "^2.1.0",
     "ember-cli-sass": "^11.0.1",
-    "ember-cli-showdown": "^10.0.0",
     "ember-cli-terser": "^4.0.2",
     "ember-debug": "workspace:*",
     "ember-decorators": "^6.1.1",
