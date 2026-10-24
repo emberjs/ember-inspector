@@ -1,66 +1,11 @@
-import { existsSync, readFileSync } from 'node:fs';
-import { createServer } from 'node:http';
-import { dirname, extname, join } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { fileURLToPath } from 'node:url';
-import { after, before, test } from 'node:test';
+import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { startFirefox } from './firefox.mjs';
-
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const extension = join(root, 'packages/ember-inspector/dist/firefox');
-const testApp = join(root, 'packages/vite-test-app/dist');
+import { OPEN_DEVTOOLS, PANE_URL, SELECT_EMBER_PANEL } from './firefox.mjs';
+import { startFirefox } from './marionette.mjs';
+import { assertBuilt, dists } from './paths.mjs';
 
 const TIMEOUT = 120_000;
-
-const DEVTOOLS = `
-  const { require } = ChromeUtils.importESModule(
-    'resource://devtools/shared/loader/Loader.sys.mjs',
-  );
-  const { gDevTools } = require('devtools/client/framework/devtools');
-`;
-
-const OPEN_DEVTOOLS = `
-  const done = arguments[arguments.length - 1];
-  ${DEVTOOLS}
-  gDevTools.showToolboxForTab(gBrowser.selectedTab).then(
-    () => done(true),
-    (error) => done(String(error)),
-  );
-`;
-
-const SELECT_EMBER_PANEL = `
-  const done = arguments[arguments.length - 1];
-  ${DEVTOOLS}
-  const toolbox = gDevTools.getToolboxForTab(gBrowser.selectedTab);
-  (async () => {
-    for (let attempt = 0; attempt < 80; attempt++) {
-      const [ember] = toolbox.additionalToolDefinitions.keys();
-      if (ember) {
-        await toolbox.selectTool(ember);
-        return done(true);
-      }
-      await new Promise((resolve) => setTimeout(resolve, 250));
-    }
-    done(false);
-  })();
-`;
-
-const PANE_URL = `
-  const done = arguments[arguments.length - 1];
-  ${DEVTOOLS}
-  const toolbox = gDevTools.getToolboxForTab(gBrowser.selectedTab);
-  let url = null;
-  const visit = (doc) => {
-    for (const frame of doc.querySelectorAll('browser, iframe')) {
-      const src = frame.currentURI?.spec ?? frame.src;
-      if (src?.includes('/panes-')) url = src;
-      if (frame.contentDocument) visit(frame.contentDocument);
-    }
-  };
-  visit(toolbox.doc);
-  done(url);
-`;
 
 const EXTENSION_ERRORS = `
   const done = arguments[arguments.length - 1];
@@ -78,33 +23,6 @@ const EXTENSION_ERRORS = `
   done(errors);
 `;
 
-let server;
-let appUrl;
-
-before(async () => {
-  for (let dist of [extension, testApp]) {
-    if (!existsSync(dist)) {
-      throw new Error(`${dist} is missing. Run \`pnpm build\` first.`);
-    }
-  }
-
-  server = createServer((request, response) => {
-    let path = join(testApp, new URL(request.url, 'http://x').pathname);
-    if (!existsSync(path) || !extname(path)) {
-      path = join(testApp, 'index.html');
-    }
-
-    let types = { '.js': 'text/javascript', '.css': 'text/css' };
-    response.setHeader('Content-Type', types[extname(path)] ?? 'text/html');
-    response.end(readFileSync(path));
-  });
-
-  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
-  appUrl = `http://127.0.0.1:${server.address().port}/`;
-});
-
-after(() => server?.close());
-
 async function waitFor(check, message) {
   for (let attempt = 0; attempt < 120; attempt++) {
     let value = await check();
@@ -115,34 +33,15 @@ async function waitFor(check, message) {
   throw new Error(message);
 }
 
-test('the Ember panel detects the app', { timeout: TIMEOUT }, async () => {
-  let firefox = await startFirefox();
-  let { client } = firefox;
-
-  try {
-    await client.send('Addon:Install', { path: extension, temporary: true });
-    await client.send('WebDriver:Navigate', { url: appUrl });
-
-    assert.equal(await client.inChrome(OPEN_DEVTOOLS), true);
-    assert.equal(await client.inChrome(SELECT_EMBER_PANEL), true);
-
-    /**
-     * The panel leaves its start page for the Info tab
-     * only after ember-debug reports the app.
-     */
-    await waitFor(async () => {
-      let url = await client.inChrome(PANE_URL);
-      return url?.includes('#/info/');
-    }, 'the Ember panel did not detect the app');
-  } finally {
-    await firefox.stop();
-  }
-});
-
 test(
   'a panel on a page without a content script logs no errors',
-  { timeout: TIMEOUT },
+  {
+    timeout: TIMEOUT,
+    skip: process.env.E2E_BROWSER !== 'firefox' && 'needs E2E_BROWSER=firefox',
+  },
   async () => {
+    assertBuilt(dists.firefox);
+
     let firefox = await startFirefox();
     let { client } = firefox;
 
@@ -155,7 +54,10 @@ test(
         url: 'about:debugging#/runtime/this-firefox',
       });
       assert.equal(await client.inChrome(OPEN_DEVTOOLS), true);
-      await client.send('Addon:Install', { path: extension, temporary: true });
+      await client.send('Addon:Install', {
+        path: dists.firefox,
+        temporary: true,
+      });
       assert.equal(await client.inChrome(SELECT_EMBER_PANEL), true);
 
       await waitFor(

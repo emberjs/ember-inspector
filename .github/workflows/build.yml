@@ -85,12 +85,23 @@ jobs:
       - run: pnpm install
       - run: pnpm test:dists
 
-  test-firefox:
-    name: Test the Firefox extension
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
+  test-e2e:
+    name: End-to-end tests (${{ matrix.browser }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - browser: chrome
+            os: ubuntu-latest
+          - browser: firefox
+            os: ubuntu-latest
+          - browser: safari
+            os: macos-latest
     env:
       CI: 'true'
+      E2E_BROWSER: ${{ matrix.browser }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -101,10 +112,19 @@ jobs:
           node-version: 26
           package-manager-cache: false
       - run: pnpm install
-      - run: pnpm build
-      - run: pnpm --filter vite-test-app build
-      - run: firefox --version
-      - run: pnpm test:firefox
+      # Ubuntu blocks the user namespaces that the Chrome sandbox needs.
+      - if: matrix.browser == 'chrome'
+        run: echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
+      - if: matrix.browser == 'firefox'
+        run: firefox --version
+      # The bookmarklet opens the inspector in a popup.
+      - if: matrix.browser == 'safari'
+        run: |
+          sudo safaridriver --enable
+          defaults write com.apple.Safari WebKitJavaScriptCanOpenWindowsAutomatically -bool true
+          defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically -bool true
+      - run: pnpm test:e2e:build
+      - run: pnpm test:e2e
 
   build-ember-debug:
     name: Build ember-debug

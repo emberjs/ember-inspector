@@ -59,31 +59,31 @@ export async function startFirefox() {
 class MarionetteClient {
   nextId = 1;
   pending = new Map();
-  buffer = '';
+  buffer = Buffer.alloc(0);
 
   constructor(socket) {
     this.socket = socket;
     this.greeting = new Promise((resolve) => (this.onGreeting = resolve));
-    socket.setEncoding('utf8');
     socket.on('data', (chunk) => this.receive(chunk));
   }
 
   /**
-   * Marionette frames each message as `<length>:<json>`.
+   * Marionette frames each message as `<length>:<json>`,
+   * where the length counts bytes, not characters.
    */
   receive(chunk) {
-    this.buffer += chunk;
+    this.buffer = Buffer.concat([this.buffer, chunk]);
 
     for (;;) {
       let colon = this.buffer.indexOf(':');
       if (colon === -1) return;
 
-      let length = Number(this.buffer.slice(0, colon));
+      let length = Number(this.buffer.subarray(0, colon).toString());
       let end = colon + 1 + length;
       if (this.buffer.length < end) return;
 
-      let message = JSON.parse(this.buffer.slice(colon + 1, end));
-      this.buffer = this.buffer.slice(end);
+      let message = JSON.parse(this.buffer.subarray(colon + 1, end).toString());
+      this.buffer = this.buffer.subarray(end);
 
       if (!Array.isArray(message)) {
         this.onGreeting(message);
