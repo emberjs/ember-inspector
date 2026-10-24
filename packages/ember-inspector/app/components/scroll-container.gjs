@@ -1,38 +1,31 @@
-/* eslint-disable ember/require-tagless-components */
-// eslint-disable-next-line ember/no-classic-components
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import { debounce } from '@ember/runloop';
 import { trustHTML } from '@ember/template';
-import { tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
 
 export default class ScrollContainerComponent extends Component {
   <template>
-    <div
-      class="scroll-target"
-      style={{this.scrollTargetStyle}}
-      role="presentation"
-      {{this.scrollIntoView this.currentItem this.previewing}}
-    ></div>
-    {{yield}}
+    <div class="relative h-full" {{this.captureElement}} ...attributes>
+      <div
+        class="scroll-target"
+        style={{this.scrollTargetStyle}}
+        role="presentation"
+        {{this.scrollIntoView @currentItem @previewing}}
+      ></div>
+      {{yield}}
+    </div>
   </template>
-  attributeBindings = ['style'];
 
-  @tracked collection;
-  @tracked currentItem;
-  @tracked previewing;
-  @tracked itemHeight;
+  element;
   lastCurrentItem;
 
-  get style() {
-    return trustHTML(`
-      position: relative;
-      height: 100%;
-    `);
-  }
+  captureElement = modifier((element) => {
+    this.element = element;
+  });
 
   get scrollTargetStyle() {
-    let { index, itemHeight } = this;
+    let { index } = this;
+    let { itemHeight } = this.args;
 
     if (index === -1) {
       return trustHTML('display: none;');
@@ -52,7 +45,9 @@ export default class ScrollContainerComponent extends Component {
   }
 
   get index() {
-    return this.collection.indexOf(this.previewing || this.currentItem);
+    return this.args.collection.indexOf(
+      this.args.previewing || this.args.currentItem,
+    );
   }
 
   get scrollTarget() {
@@ -77,13 +72,14 @@ export default class ScrollContainerComponent extends Component {
 
   scrollIntoViewIfNeeded() {
     let { element, scrollTarget } = this;
+    let { currentItem, previewing } = this.args;
 
-    if (this.lastCurrentItem?.id === this.currentItem?.id && !this.previewing) {
+    if (this.lastCurrentItem?.id === currentItem?.id && !previewing) {
       return;
     }
 
-    if (!this.previewing) {
-      this.lastCurrentItem = this.currentItem;
+    if (!previewing) {
+      this.lastCurrentItem = currentItem;
     }
 
     if (needsScroll(element, scrollTarget)) {
