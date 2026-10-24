@@ -96,7 +96,7 @@
     "ensure-posix-path": "^1.1.1",
     "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-ember": "^12.7.5",
+    "eslint-plugin-ember": "^13.8.0",
     "eslint-plugin-n": "^17.24.0",
     "eslint-plugin-qunit": "^8.2.6",
     "flatpickr": "^4.6.13",

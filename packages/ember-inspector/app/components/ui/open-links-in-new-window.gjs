@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { on } from '@ember/modifier';
 
 export default class OpenLinksInNewWindow extends Component {
   <template>

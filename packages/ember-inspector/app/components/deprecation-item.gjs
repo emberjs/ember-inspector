@@ -1,9 +1,5 @@
 import Disclosure from 'ember-inspector/components/ui/disclosure';
-import { on } from '@ember/modifier';
-import not from 'ember-truth-helpers/helpers/not';
-import { fn } from '@ember/helper';
 import svgJar from 'ember-svg-jar/helpers/svg-jar';
-import and from 'ember-truth-helpers/helpers/and';
 import DeprecationItemSource from 'ember-inspector/components/deprecation-item-source';
 <template>
   {{! template-lint-disable require-presentational-children }}

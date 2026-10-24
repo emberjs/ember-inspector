@@ -1,9 +1,7 @@
 import ToolbarClearButton from 'ember-inspector/components/ui/toolbar-clear-button';
 import ToolbarDivider from 'ember-inspector/components/ui/toolbar-divider';
 import { Input } from '@ember/component';
-import { on } from '@ember/modifier';
 import ToolbarSearchField from 'ember-inspector/components/ui/toolbar-search-field';
-import { fn } from '@ember/helper';
 <template>
   <div class="toolbar">
     <ToolbarClearButton @action={{@clear}} data-test-deprecations-clear />

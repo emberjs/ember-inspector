@@ -2,10 +2,8 @@ import { action } from '@ember/object';
 import { service } from '@ember/service';
 import PropertiesBase from 'ember-inspector/components/object-inspector/properties-base';
 import Accordion from 'ember-inspector/components/object-inspector/accordion';
-import { on } from '@ember/modifier';
 import SortProperties from 'ember-inspector/components/object-inspector/sort-properties';
 import Property from 'ember-inspector/components/object-inspector/property';
-import { fn } from '@ember/helper';
 
 export default class PropertiesGrouped extends PropertiesBase {
   <template>

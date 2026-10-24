@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { on } from '@ember/modifier';
 import InspectorTableCell from 'ember-inspector/components/inspector-table/cell';
 
 export default class InspectorTableRow extends Component {

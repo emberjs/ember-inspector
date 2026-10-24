@@ -1,5 +1,3 @@
-import { on } from '@ember/modifier';
-import { fn } from '@ember/helper';
 import svgJar from 'ember-svg-jar/helpers/svg-jar';
 <template>
   <button

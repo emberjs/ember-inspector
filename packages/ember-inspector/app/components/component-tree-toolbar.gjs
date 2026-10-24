@@ -1,8 +1,6 @@
-import { on } from '@ember/modifier';
 import svgJar from 'ember-svg-jar/helpers/svg-jar';
 import ToolbarDivider from 'ember-inspector/components/ui/toolbar-divider';
 import ToolbarSearchField from 'ember-inspector/components/ui/toolbar-search-field';
-import { fn } from '@ember/helper';
 <template>
   <div class="toolbar">
     <button

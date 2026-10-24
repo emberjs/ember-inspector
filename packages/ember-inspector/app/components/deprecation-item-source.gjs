@@ -1,7 +1,6 @@
 import { action } from '@ember/object';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import { on } from '@ember/modifier';
 import svgJar from 'ember-svg-jar/helpers/svg-jar';
 export default class DeprecationItemSource extends Component {
   <template>

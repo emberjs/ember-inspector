@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { on } from '@ember/modifier';
 import { modifier } from 'ember-modifier';
 
 const selectText = modifier((element) => element.select());

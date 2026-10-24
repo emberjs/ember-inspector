@@ -1,8 +1,6 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { service } from '@ember/service';
-import { on } from '@ember/modifier';
-import eq from 'ember-truth-helpers/helpers/eq';
 import svgJar from 'ember-svg-jar/helpers/svg-jar';
 
 export default class AppPickerComponent extends Component {

@@ -1,7 +1,6 @@
 import ToolbarReloadButton from 'ember-inspector/components/ui/toolbar-reload-button';
 import ToolbarDivider from 'ember-inspector/components/ui/toolbar-divider';
 import { Input } from '@ember/component';
-import { on } from '@ember/modifier';
 <template>
   <div class="toolbar">
     <ToolbarReloadButton @action={{@reload}} data-test-reload-container-btn />
