@@ -30,7 +30,7 @@ for (let app of apps) {
     });
 
     for (let check of checks) {
-      let skip = check.appliesTo?.(app) === false;
+      let skip = check.appliesTo?.(app, browser) === false;
       let todo = check.knownIssue?.(app, browser) || false;
 
       test(check.name, { skip, todo, timeout: TIMEOUT }, () =>

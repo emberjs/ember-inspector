@@ -70,10 +70,12 @@ pnpm test:e2e
 - If you select a component, the inspector pins a highlight and a tooltip on the page. The next click on the page outside the tooltip only removes the pin. Real users get this behavior too.
 - Puppeteer keeps the pointer of the inspector over the last element that it clicked. A real pointer leaves the panel before it clicks the page. If you do not move it away, the inspector keeps a highlight over the component.
 - Render Performance hides renders that take less than 1 ms. The `about` route of each test app takes 5 ms, so that a render always shows.
+- The Reload buttons reload the page. Nothing runs the bookmarklet again after that, so the Reload check does not run in Safari, and it runs last.
 - WebDriver sends an `undefined` argument as `null`.
 
 ## Known issues
 
 A check with `knownIssue` runs as a `todo`. It reports its result, but it does not fail the job.
 
-- In `vite-test-app`, the Chrome and Firefox extensions record no renders in Render Performance. The bookmarklet records them. The classic app records them in all browsers.
+- With the Chrome or Firefox extension, Render Performance can stop getting new renders. In `vite-test-app` this happens every time: the tab lists the renders from before it opened, but no new ones. The page has a second ember-debug instance, and `window.EmberInspector` is not the instance that talks to the inspector. The classic app shows it sometimes.
+- After the Reload button, the inspector sometimes loses the page: the component tree stays empty. This is probably the same second instance.

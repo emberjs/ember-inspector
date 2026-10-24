@@ -15,6 +15,7 @@ import { setTimeout as sleep } from 'node:timers/promises';
  *
  * The checks run in order on one session.
  * The check that reloads the page comes last.
+ * `appliesTo(app, browser)` and `knownIssue(app, browser)` are optional.
  */
 export const checks = [
   {
@@ -129,21 +130,46 @@ export const checks = [
   },
 
   {
-    name: 'the Render Performance tab shows renders after a reload',
+    name: 'the Render Performance tab shows the render of a navigation',
     knownIssue: (app, browser) =>
-      app.name === 'vite-test-app' &&
       browser !== 'safari' &&
-      'the extensions record no renders in a Vite app, the bookmarklet does',
+      'the tab can stop getting new renders, always in a Vite app',
     async run({ inspector, page }) {
       await openTab(inspector, 'Render Performance');
+      let before = await count(inspector, '.js-render-profile-item');
+
+      await page.click('a', 'About');
+      await waitForText(page, 'h2', 'About');
+      await waitForCount(inspector, '.js-render-profile-item', before + 1);
+
+      await page.click('a', 'Home');
+    },
+  },
+
+  {
+    name: 'the inspector shows the new page after its Reload button',
+    /**
+     * Nothing runs the bookmarklet again after a reload,
+     * so the bookmarklet window loses the page.
+     */
+    appliesTo: (app, browser) => browser !== 'safari',
+    knownIssue: () => 'the inspector can lose the page after a reload',
+    async run({ inspector, page }) {
+      await openTab(inspector, 'Promises');
       await reloadFrom(
         inspector,
         page,
         '.js-page-refresh-btn, .js-toolbar-page-refresh-btn',
       );
 
-      await page.click('a', 'About');
-      await waitForText(inspector, '.js-render-profile-item', 'ms');
+      /**
+       * An earlier check clicked the counter.
+       * The reloaded page starts again at zero.
+       */
+      await openTab(inspector, 'Components');
+      await waitForText(inspector, '.component-tree-item', 'Counter');
+      await inspector.click('.component-tree-item', 'Counter');
+      await waitForText(inspector, '[data-test-object-property]', 'added:0');
     },
   },
 ];
@@ -154,7 +180,16 @@ export const checks = [
  */
 async function reloadFrom(inspector, page, selector) {
   await page.evaluate(() => (window.beforeE2EReload = true));
-  await inspector.click(selector);
+
+  try {
+    await inspector.click(selector);
+  } catch (error) {
+    /**
+     * The inspector can reload with the page
+     * before the click returns.
+     */
+    if (!/destroyed|detached/.test(error.message)) throw error;
+  }
 
   for (let start = Date.now(); Date.now() - start < 15_000; ) {
     try {
@@ -172,6 +207,31 @@ async function reloadFrom(inspector, page, selector) {
   }
 
   throw new Error('the page did not reload');
+}
+
+function count(driver, selector) {
+  return driver.evaluate((s) => document.querySelectorAll(s).length, selector);
+}
+
+async function waitForCount(driver, selector, expected, timeout = 15_000) {
+  let actual = 0;
+
+  for (let start = Date.now(); Date.now() - start < timeout; ) {
+    try {
+      actual = await count(driver, selector);
+      if (actual >= expected) return;
+    } catch {
+      /**
+       * The document can be between pages.
+       */
+    }
+
+    await sleep(250);
+  }
+
+  throw new Error(
+    `expected ${expected} ${selector} after ${timeout}ms, found ${actual}`,
+  );
 }
 
 async function openTab(inspector, label) {
