@@ -1,9 +1,9 @@
 import { setTimeout as sleep } from 'node:timers/promises';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { OPEN_DEVTOOLS, PANE_URL, SELECT_EMBER_PANEL } from './firefox.mjs';
-import { startFirefox } from './marionette.mjs';
-import { assertBuilt, dists } from './paths.mjs';
+import { OPEN_DEVTOOLS, PANE_URL, SELECT_EMBER_PANEL } from './helpers/firefox.mjs';
+import { startFirefox } from './helpers/marionette.mjs';
+import { assertBuilt, dists } from './helpers/paths.mjs';
 
 const TIMEOUT = 120_000;
 

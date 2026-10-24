@@ -1,14 +1,14 @@
 import { after, before, describe, test } from 'node:test';
-import { checks } from './checks.mjs';
-import { apps, assertBuilt } from './paths.mjs';
-import { serve } from './serve.mjs';
+import { checks } from './helpers/checks.mjs';
+import { apps, assertBuilt } from './helpers/paths.mjs';
+import { serve } from './helpers/serve.mjs';
 
 /**
  * `E2E_BROWSER` picks the browser: chrome, firefox, or safari.
  * Each browser runs as its own CI job.
  */
 const browser = process.env.E2E_BROWSER ?? 'chrome';
-const { openInspector, requiredDists } = await import(`./${browser}.mjs`);
+const { openInspector, requiredDists } = await import(`./helpers/${browser}.mjs`);
 
 const TIMEOUT = 60_000;
 

@@ -11,15 +11,19 @@ E2E_BROWSER=chrome pnpm test:e2e
 
 ## Files
 
+The test files are at the top of this folder. Everything else is in `helpers/`.
+
 | File | What it does |
 | --- | --- |
-| `checks.mjs` | The happy paths. Every browser runs all of them against every test app. |
 | `inspector-test.mjs` | Runs the checks for the browser in `E2E_BROWSER`. |
-| `chrome.mjs`, `firefox.mjs`, `safari.mjs` | One driver for each browser. Each one opens the inspector and gives the checks a `page` and an `inspector`. |
 | `firefox-test.mjs` | Tests that only apply to Firefox. |
-| `marionette.mjs`, `webdriver.mjs` | Clients for the Firefox and WebDriver protocols. |
+| `helpers/checks.mjs` | The happy paths. Every browser runs all of them against every test app. |
+| `helpers/chrome.mjs`, `helpers/firefox.mjs`, `helpers/safari.mjs` | One driver for each browser. Each one opens the inspector and gives the checks a `page` and an `inspector`. |
+| `helpers/marionette.mjs`, `helpers/webdriver.mjs` | Clients for the Firefox and WebDriver protocols. |
+| `helpers/find.mjs` | Functions that run in the browser to find elements. |
+| `helpers/paths.mjs`, `helpers/serve.mjs` | The build paths, the test apps, and a static server for them. |
 
-A driver gives the checks the same three functions for the page and for the inspector: `evaluate(fn, ...args)`, `click(selector, text)`, and `hover(selector, text)`. A new check goes in `checks.mjs`. It must not know which browser it runs in.
+A driver gives the checks the same three functions for the page and for the inspector: `evaluate(fn, ...args)`, `click(selector, text)`, and `hover(selector, text)`. A new check goes in `helpers/checks.mjs`. It must not know which browser it runs in.
 
 ## Why each browser uses a different tool
 
