@@ -422,6 +422,49 @@ module('Object Inspector', function (hooks) {
     assert.dom('[data-test-object-property-value]').hasText('Computed value');
   });
 
+  test('The calculate click stays inside the property', async function (assert) {
+    await visit('/');
+
+    await sendMessage({
+      type: 'objectInspector:updateObject',
+      name: 'My Object',
+      objectId: 'myObject',
+      details: [
+        {
+          name: 'Detail',
+          properties: [
+            {
+              name: 'computedProp',
+              isComputed: true,
+              value: {
+                inspect: '<computed>',
+                type: 'type-descriptor',
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    await click('[data-test-object-detail-name]');
+
+    let onClick = () => assert.step('the click reached the document');
+    document.addEventListener('click', onClick);
+
+    respondWith('objectInspector:calculate', () => {
+      assert.step('calculate');
+      return false;
+    });
+
+    try {
+      await click('[data-test-calculate]');
+    } finally {
+      document.removeEventListener('click', onClick);
+    }
+
+    assert.verifySteps(['calculate']);
+  });
+
   test('Service highlight', async function (assert) {
     await visit('/');
 
