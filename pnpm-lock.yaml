@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@embroider/addon-shim': 1.11.0
+
 patchedDependencies:
   ember-cli-inject-live-reload:
     hash: enhtbujp77hfcye7o4pfeqcdua

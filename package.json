@@ -40,6 +40,9 @@
     "pnpm": "9.12.1"
   },
   "pnpm": {
+    "overrides": {
+      "@embroider/addon-shim": "1.11.0"
+    },
     "patchedDependencies": {
       "ember-cli-inject-live-reload": "patches/ember-cli-inject-live-reload.patch"
     }
