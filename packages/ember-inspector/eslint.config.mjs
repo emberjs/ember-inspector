@@ -32,6 +32,7 @@ export default defineConfig([
   globalIgnores([
     'dist/',
     'dist_prev/',
+    'tmp/',
     'vendor/',
     'coverage/',
     'skeletons/',
@@ -93,10 +94,7 @@ export default defineConfig([
       '.prettierrc.js',
       '.stylelintrc.js',
       '.template-lintrc.js',
-      'babel.config.js',
-      'config/**/*.js',
       'scripts/download-panes.js',
-      'testem.js',
     ],
     plugins: {
       n,
@@ -118,6 +116,12 @@ export default defineConfig([
     files: ['**/*.mjs'],
     plugins: {
       n,
+    },
+    rules: {
+      /**
+       * The build config files use the dev dependencies.
+       */
+      'n/no-unpublished-import': 'off',
     },
 
     languageOptions: {

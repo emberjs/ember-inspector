@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import SidebarToggleTrailingIcon from 'ember-inspector/svg/sidebar-toggle-trailing.svg?unsafe-inline';
 
 export default class PropertiesGrouped extends Component {
   <template>
@@ -15,7 +15,7 @@ export default class PropertiesGrouped extends Component {
       ...attributes
       {{on "click" this.layout.toggleInspector}}
     >
-      {{svgJar "sidebar-toggle-trailing" width="16" height="16"}}
+      <SidebarToggleTrailingIcon width="16" height="16" />
     </button>
   </template>
   @service layout;

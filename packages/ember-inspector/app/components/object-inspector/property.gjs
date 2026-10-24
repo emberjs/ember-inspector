@@ -3,10 +3,12 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { next } from '@ember/runloop';
 import parseText from 'ember-inspector/utils/parse-text';
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import DisclosureTriangleIcon from 'ember-inspector/svg/disclosure-triangle.svg?unsafe-inline';
+import CalculateIcon from 'ember-inspector/svg/calculate.svg?unsafe-inline';
+import SendWithTextIcon from 'ember-inspector/svg/send-with-text.svg?unsafe-inline';
+import CodeSourceIcon from 'ember-inspector/svg/code-source.svg?unsafe-inline';
 import DatePropertyField from 'ember-inspector/components/date-property-field';
 import PropertyField from 'ember-inspector/components/object-inspector/property-field';
-import stopPropagation from 'ember-event-helpers/helpers/stop-propagation';
 import DependentKeys from 'ember-inspector/components/object-inspector/dependent-keys';
 
 export default class ObjectInspectorProperty extends Component {
@@ -27,12 +29,11 @@ export default class ObjectInspectorProperty extends Component {
           {{on "click" this.toggleDeps}}
           type="button"
         >
-          {{svgJar
-            "disclosure-triangle"
+          <DisclosureTriangleIcon
             title="Toggle dependent keys"
             width="9px"
             height="9px"
-          }}
+          />
         </button>
       {{else}}
         <span class="pad"></span>
@@ -107,9 +108,9 @@ export default class ObjectInspectorProperty extends Component {
             class="mixin-calc-btn"
             title="compute property"
             type="button"
-            {{on "click" (stopPropagation @calculate)}}
+            {{on "click" this.calculate}}
           >
-            {{svgJar "calculate" width="16px" height="16px"}}
+            <CalculateIcon width="16px" height="16px" />
           </button>
         {{/if}}
         {{#if this.isDate}}
@@ -149,7 +150,7 @@ export default class ObjectInspectorProperty extends Component {
         type="button"
         {{on "click" @sendToConsole}}
       >
-        {{svgJar "send-with-text" width="20px" height="10px"}}
+        <SendWithTextIcon width="20px" height="10px" />
       </button>
       {{#if this.isFunction}}
         <button
@@ -159,7 +160,7 @@ export default class ObjectInspectorProperty extends Component {
           type="button"
           {{on "click" @gotoSource}}
         >
-          {{svgJar "code-source" width="20px" height="10px"}}
+          <CodeSourceIcon width="20px" height="10px" />
         </button>
       {{/if}}
     </li>
@@ -287,6 +288,12 @@ export default class ObjectInspectorProperty extends Component {
     return !['type-string', 'type-number', 'type-boolean'].includes(
       this.args.model?.value?.type,
     );
+  }
+
+  @action
+  calculate(event) {
+    event.stopPropagation();
+    this.args.calculate(event);
   }
 
   @action

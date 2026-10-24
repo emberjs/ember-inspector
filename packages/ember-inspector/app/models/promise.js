@@ -1,4 +1,4 @@
-import { observes } from '@ember-decorators/object';
+import { observes } from '../utils/observes';
 import { once } from '@ember/runloop';
 import { typeOf } from '@ember/utils';
 
@@ -88,7 +88,6 @@ export default class PromiseModel extends EmberObject {
 
   // Need this observer because CP dependent keys do not support nested arrays
   // TODO: This can be so much better
-  // eslint-disable-next-line ember/no-observers
   @observes('pendingBranch', 'fulfilledBranch', 'rejectedBranch')
   stateChanged() {
     if (!this.parent) {
@@ -105,7 +104,6 @@ export default class PromiseModel extends EmberObject {
     }
   }
 
-  // eslint-disable-next-line ember/no-observers
   @observes('label', 'parent')
   updateParentLabel() {
     this.addBranchLabel(this.label, true);
@@ -141,7 +139,6 @@ export default class PromiseModel extends EmberObject {
 
   // EXPANDED / COLLAPSED PROMISES
 
-  // eslint-disable-next-line ember/no-observers
   @observes('isPending', 'isFulfilled', 'isRejected', 'parent')
   stateOrParentChanged() {
     const parent = this.parent;

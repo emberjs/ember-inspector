@@ -3,7 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import config from 'ember-inspector/config/environment';
 
 /**
- * ember-cli-build.js copies CHANGELOG.md next to index.html.
+ * The build copies CHANGELOG.md next to index.html.
  */
 const CHANGELOG_URL = `${config.rootURL}CHANGELOG.md`;
 

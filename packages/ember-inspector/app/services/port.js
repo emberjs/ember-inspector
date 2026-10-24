@@ -1,6 +1,5 @@
 import { action, set, setProperties } from '@ember/object';
 import { addListener, removeListener, sendEvent } from '@ember/object/events';
-import { hasListeners } from '@ember/-internals/metal';
 import Service, { service } from '@ember/service';
 
 export default class PortService extends Service {
@@ -41,10 +40,9 @@ export default class PortService extends Service {
       }
 
       if (this.applicationId === applicationId) {
-        if (!hasListeners(this, message.type)) {
+        if (!this.trigger(message.type, message, applicationId)) {
           throw new Error('unknown message type ' + message.type);
         }
-        this.trigger(message.type, message, applicationId);
       }
     });
 
@@ -115,8 +113,11 @@ export default class PortService extends Service {
     }
   }
 
+  /**
+   * Returns false when nothing listens to `eventName`.
+   */
   @action
   trigger(eventName, ...args) {
-    sendEvent(this, eventName, args);
+    return sendEvent(this, eventName, args);
   }
 }
