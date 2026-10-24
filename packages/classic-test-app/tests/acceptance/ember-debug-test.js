@@ -109,7 +109,7 @@ module('Acceptance | ember-debug', function (hooks) {
 
     assert.true(
       responses['objectInspector:updateObject'].name.includes(
-        'route:application',
+        'ApplicationRoute',
       ),
     );
   });
@@ -119,7 +119,13 @@ module('Acceptance | ember-debug', function (hooks) {
     request('data:getModelTypes');
 
     assert.true(responses['data:hasAdapter'].hasAdapter);
-    assert.deepEqual(responses['data:modelTypesAdded'].modelTypes, []);
+    assert.deepEqual(
+      responses['data:modelTypesAdded'].modelTypes.map(({ name, count }) => ({
+        name,
+        count,
+      })),
+      [{ name: 'post', count: 2 }],
+    );
   });
 
   test('Deprecations tab', async function (assert) {
