@@ -102,6 +102,8 @@ jobs:
     env:
       CI: 'true'
       E2E_BROWSER: ${{ matrix.browser }}
+      # The test log is not a terminal, so Node turns colors off without this.
+      FORCE_COLOR: '1'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

@@ -24,6 +24,7 @@ The test files are at the top of this folder. Everything else is in `helpers/`.
 | `helpers/marionette.mjs`, `helpers/webdriver.mjs` | Clients for the Firefox and WebDriver protocols. |
 | `helpers/find.mjs` | Functions that run in the browser to find elements. |
 | `helpers/paths.mjs`, `helpers/serve.mjs` | The build paths, the test apps, and a static server for them. |
+| `helpers/reporter.mjs` | Prints each result as a colored word: `PASS`, `FAIL`, `SKIP`, or `TODO`. A `TODO` line tells if the known issue still fails. |
 
 A driver also gives the test a `screenshots()` function for the failure screenshots.
 
