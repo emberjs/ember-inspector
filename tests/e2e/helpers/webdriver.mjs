@@ -67,36 +67,50 @@ class Session {
       });
     }
 
-    async function find(selector, text) {
-      let element = await evaluate(findElement, selector, text);
+    /**
+     * Retries when the inspector re-renders the element
+     * between finding it and acting on it.
+     */
+    async function withElement(selector, text, action) {
+      for (let attempt = 1; ; attempt++) {
+        let element = await evaluate(findElement, selector, text);
 
-      if (!element) {
-        throw new Error(`no element matches ${selector} "${text ?? ''}"`);
+        if (!element) {
+          throw new Error(`no element matches ${selector} "${text ?? ''}"`);
+        }
+
+        try {
+          return await action(element);
+        } catch (error) {
+          if (attempt === 5 || !/stale element/.test(error.message)) {
+            throw error;
+          }
+        }
+
+        await sleep(100);
       }
-
-      return element;
     }
 
     return {
       evaluate,
 
-      async click(selector, text) {
-        let element = await find(selector, text);
-        await session.send('POST', `/element/${element[ELEMENT]}/click`, {});
-      },
+      click: (selector, text) =>
+        withElement(selector, text, (element) =>
+          session.send('POST', `/element/${element[ELEMENT]}/click`, {}),
+        ),
 
-      async hover(selector, text) {
-        let element = await find(selector, text);
-        await session.send('POST', '/actions', {
-          actions: [
-            {
-              type: 'pointer',
-              id: 'mouse',
-              actions: [{ type: 'pointerMove', origin: element, x: 0, y: 0 }],
-            },
-          ],
-        });
-      },
+      hover: (selector, text) =>
+        withElement(selector, text, (element) =>
+          session.send('POST', '/actions', {
+            actions: [
+              {
+                type: 'pointer',
+                id: 'mouse',
+                actions: [{ type: 'pointerMove', origin: element, x: 0, y: 0 }],
+              },
+            ],
+          }),
+        ),
     };
   }
 
