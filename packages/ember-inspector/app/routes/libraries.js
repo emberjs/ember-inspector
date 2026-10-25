@@ -3,11 +3,10 @@ import { Promise } from 'rsvp';
 import TabRoute from 'ember-inspector/routes/tab';
 
 export default class LibrariesRoute extends TabRoute {
-  @service config;
   @service port;
 
   get version() {
-    return this.config.version;
+    return import.meta.env.EMBER_INSPECTOR_VERSION;
   }
 
   model() {

@@ -1,11 +1,6 @@
 import TabRoute from 'ember-inspector/routes/tab';
 import { tracked } from '@glimmer/tracking';
-import config from 'ember-inspector/config/environment';
-
-/**
- * ember-cli-build.js copies CHANGELOG.md next to index.html.
- */
-const CHANGELOG_URL = `${config.rootURL}CHANGELOG.md`;
+import { service } from '@ember/service';
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
@@ -27,10 +22,15 @@ function patchLernaIcons(text) {
 }
 
 export default class ChangelogRoute extends TabRoute {
+  @service router;
+
   @tracked error = false;
 
+  /**
+   * The build copies CHANGELOG.md next to index.html.
+   */
   model() {
-    return fetch(CHANGELOG_URL)
+    return fetch(`${this.router.rootURL}CHANGELOG.md`)
       .then(checkStatus)
       .then((response) => response.text())
       .then(patchLernaIcons)

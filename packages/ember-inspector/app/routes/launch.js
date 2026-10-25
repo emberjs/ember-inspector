@@ -10,12 +10,11 @@ const storageSupported = chromeStoreSupported || LOCAL_STORAGE_SUPPORTED;
 const STORE_KEY = 'last-version-opened';
 
 export default class LaunchRoute extends Route {
-  @service config;
   @service storage;
   @service router;
 
   get version() {
-    return this.config.version;
+    return import.meta.env.EMBER_INSPECTOR_VERSION;
   }
 
   beforeModel() {

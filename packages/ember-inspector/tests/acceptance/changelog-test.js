@@ -2,10 +2,9 @@ import { visit, findAll } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import Pretender from 'pretender';
-import config from 'ember-inspector/config/environment';
 import { setupTestAdapter } from '../test-adapter';
 
-const CHANGELOG_URL = `${config.rootURL}CHANGELOG.md`;
+const CHANGELOG_URL = '/CHANGELOG.md';
 
 const CHANGELOG = `# Changelog
 
