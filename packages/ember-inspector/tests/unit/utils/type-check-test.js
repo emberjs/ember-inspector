@@ -1,10 +1,13 @@
 import { module, test } from 'qunit';
-import TypeCheckImport from 'ember-debug/type-check';
 let inspect;
 
 module('Unit | Utility | type-check', function (hooks) {
+  /**
+   * ember-debug finds Ember through the app that the test helper boots,
+   * so it must load after the app.
+   */
   hooks.before(async function () {
-    inspect = (await TypeCheckImport).inspect;
+    ({ inspect } = await import('ember-debug/type-check'));
   });
 
   test('inspect | An POJO with Symbols is correctly transformed into preview', async function (assert) {

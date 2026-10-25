@@ -2,18 +2,17 @@
   "schemaVersion": "1.0.0",
   "packages": [
     {
-      "name": "ember-cli",
-      "version": "6.1.0",
+      "name": "@ember/app-blueprint",
+      "version": "7.3.1",
       "blueprints": [
         {
-          "name": "app",
-          "outputRepo": "https://github.com/ember-cli/ember-new-output",
-          "codemodsSource": "ember-app-codemods-manifest@1",
+          "name": "@ember/app-blueprint",
           "isBaseBlueprint": true,
           "options": [
-            "--pnpm",
             "--no-welcome",
-            "--ci-provider=github"
+            "--pnpm",
+            "--ci-provider=github",
+            "--no-warp-drive"
           ]
         }
       ]

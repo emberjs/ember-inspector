@@ -1,4 +1,4 @@
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import SendWithChevronIcon from 'ember-inspector/svg/send-with-chevron.svg?unsafe-inline';
 <template>
   <div class="mixin mixin-props-no" data-test-object-inspector-errors>
     <h2 class="mixin-name mixin-name--errors bg-base00">
@@ -9,7 +9,7 @@ import svgJar from 'ember-svg-jar/helpers/svg-jar';
         type="button"
         {{on "click" @traceErrors}}
       >
-        {{svgJar "send-with-chevron" width="6px" height="9px"}}
+        <SendWithChevronIcon width="6px" height="9px" />
         Trace in the Console
       </button>
     </h2>

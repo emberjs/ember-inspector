@@ -10,7 +10,7 @@
 /node_modules/
 
 # misc
-/.env*
+*.local
 /.pnp*
 /.eslintcache
 /coverage/

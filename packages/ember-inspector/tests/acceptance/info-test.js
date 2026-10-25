@@ -30,7 +30,7 @@ module('Info Tab', function (hooks) {
       .hasText('Ember Inspector', 'Ember Inspector is added automatically');
     assert
       .dom(libraries[0].querySelector('.js-lib-version'))
-      .hasText(config.VERSION);
+      .hasText(config.version);
     assert.dom(libraries[1].querySelector('.js-lib-library')).hasText('Ember');
     assert.dom(libraries[1].querySelector('.js-lib-version')).hasText('1.0');
     assert

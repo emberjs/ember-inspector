@@ -1,7 +1,7 @@
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
 import { Input } from '@ember/component';
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
+import ClearIcon from 'ember-inspector/svg/clear.svg?unsafe-inline';
 
 let uuid = 0;
 
@@ -24,7 +24,7 @@ export default class ToolbarSearchFieldComponent extends Component {
           {{on "click" this.clear}}
           type="button"
         >
-          {{svgJar "clear" width="14px" height="14px"}}
+          <ClearIcon width="14px" height="14px" />
         </button>
       {{/if}}
     </div>

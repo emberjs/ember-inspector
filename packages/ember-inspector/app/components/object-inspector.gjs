@@ -2,8 +2,11 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
-import svgJar from 'ember-svg-jar/helpers/svg-jar';
 import { get } from '@ember/helper';
+import ArrowBackIcon from 'ember-inspector/svg/arrow-back.svg?unsafe-inline';
+import SendWithTextIcon from 'ember-inspector/svg/send-with-text.svg?unsafe-inline';
+import CodeSourceIcon from 'ember-inspector/svg/code-source.svg?unsafe-inline';
+import ClearIcon from 'ember-inspector/svg/clear.svg?unsafe-inline';
 import ToolbarDivider from 'ember-inspector/components/ui/toolbar-divider';
 import { Input } from '@ember/component';
 import Errors from 'ember-inspector/components/object-inspector/errors';
@@ -24,7 +27,7 @@ export default class ObjectInspector extends Component {
             type="button"
             {{on "click" this.popStack}}
           >
-            {{svgJar "arrow-back" width="21px" height="21px"}}
+            <ArrowBackIcon width="21px" height="21px" />
           </button>
 
           <code class="flex-auto truncate font-bold" data-test-object-name>
@@ -38,7 +41,7 @@ export default class ObjectInspector extends Component {
             type="button"
             {{on "click" (fn this.sendObjectToConsole this.current)}}
           >
-            {{svgJar "send-with-text" width="20px" height="10px"}}
+            <SendWithTextIcon width="20px" height="10px" />
           </button>
           {{#if this.isClass}}
             <button
@@ -48,7 +51,7 @@ export default class ObjectInspector extends Component {
               type="button"
               {{on "click" (fn this.gotoSource this.current)}}
             >
-              {{svgJar "code-source" width="20px" height="10px"}}
+              <CodeSourceIcon width="20px" height="10px" />
             </button>
           {{/if}}
         </div>
@@ -100,7 +103,7 @@ export default class ObjectInspector extends Component {
                 type="button"
                 {{on "click" this.clearCustomFilter}}
               >
-                {{svgJar "clear" width="14px" height="14px"}}
+                <ClearIcon width="14px" height="14px" />
               </button>
             {{/if}}
           </div>

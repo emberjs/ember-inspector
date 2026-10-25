@@ -1,6 +1,5 @@
-/* global basicContext */
-
 import Component from '@glimmer/component';
+import basicContext from 'basiccontext';
 import { cached } from '@glimmer/tracking';
 import { localCopy } from 'tracked-toolbox';
 import { bind } from '@ember/runloop';
