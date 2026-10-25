@@ -1,7 +1,6 @@
 import { visit, findAll } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import config from 'ember-inspector/config/environment';
 import { setupTestAdapter, respondWith } from '../test-adapter';
 
 module('Info Tab', function (hooks) {
@@ -30,7 +29,7 @@ module('Info Tab', function (hooks) {
       .hasText('Ember Inspector', 'Ember Inspector is added automatically');
     assert
       .dom(libraries[0].querySelector('.js-lib-version'))
-      .hasText(config.version);
+      .hasText(import.meta.env.EMBER_INSPECTOR_VERSION);
     assert.dom(libraries[1].querySelector('.js-lib-library')).hasText('Ember');
     assert.dom(libraries[1].querySelector('.js-lib-version')).hasText('1.0');
     assert

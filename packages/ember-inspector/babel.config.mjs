@@ -1,21 +1,15 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import {
-  babelCompatSupport,
-  templateCompatSupport,
-} from '@embroider/compat/babel';
+import { buildMacros } from '@embroider/macros/babel';
+
+const macros = buildMacros();
 
 export default {
   plugins: [
     [
       'babel-plugin-ember-template-compilation',
       {
-        enableLegacyModules: [
-          'ember-cli-htmlbars',
-          'ember-cli-htmlbars-inline-precompile',
-          'htmlbars-inline-precompile',
-        ],
-        transforms: [...templateCompatSupport()],
+        transforms: macros.templateMacros,
       },
     ],
     [
@@ -36,7 +30,7 @@ export default {
         regenerator: false,
       },
     ],
-    ...babelCompatSupport(),
+    ...macros.babelMacros,
   ],
 
   generatorOpts: {

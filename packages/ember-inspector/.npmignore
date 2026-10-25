@@ -1,7 +1,6 @@
 # Development tooling — not needed in the published package
 babel.config.mjs
 config/
-ember-cli-build.mjs
 eslint.config.mjs
 gulpfile.js
 index.html

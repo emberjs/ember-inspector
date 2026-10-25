@@ -1,9 +1,17 @@
 import EmberRouter from '@ember/routing/router';
-import config from 'ember-inspector/config/environment';
+import { isTesting } from '@embroider/macros';
 
+/**
+ * In the extensions, the UI loads from its pane folder,
+ * so URLs are relative to that folder.
+ *
+ * In tests, the URL of the test page must not change,
+ * and the test server serves the build from its root.
+ * Production builds compile `isTesting()` to `false`.
+ */
 export default class Router extends EmberRouter {
-  location = config.locationType;
-  rootURL = config.rootURL;
+  location = isTesting() ? 'none' : 'hash';
+  rootURL = isTesting() ? '/' : '';
 }
 
 Router.map(function () {
