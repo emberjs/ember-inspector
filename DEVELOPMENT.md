@@ -7,6 +7,13 @@ Run `pnpm install` to install the required modules.
 - `pnpm test` To run the tests in the terminal
 - `pnpm start` To start the test server at `localhost:4200/testing/tests`
 
+### End-to-end tests
+
+- `pnpm test:e2e:build` to build the inspector and the test apps
+- `E2E_BROWSER=chrome pnpm test:e2e` to test the inspector in a real browser (`chrome`, `firefox`, or `safari`)
+
+[tests/e2e/README.md](./tests/e2e/README.md) tells how each browser opens the inspector, and why.
+
 ## Deploy new version:
 
 See [RELEASE.md](./RELEASE.md)

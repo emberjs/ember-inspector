@@ -19,7 +19,8 @@
     "test:ember": "pnpm --filter ember-debug build && pnpm --filter ember-inspector test",
     "test:dists": "node --test tests/dists-test.mjs",
     "test:watch": "node --test tests/watch-test.mjs",
-    "test:firefox": "node --test tests/firefox-extension-test.mjs",
+    "test:e2e": "node --test --test-reporter=./tests/e2e/helpers/reporter.mjs \"tests/e2e/*-test.mjs\"",
+    "test:e2e:build": "pnpm build && pnpm --filter vite-test-app exec vite build --mode development && pnpm --filter classic-test-app exec ember build",
     "watch": "pnpm build:ember-debug && pnpm \"/watch:/\"",
     "watch:ember-debug": "pnpm --filter ember-debug watch",
     "watch:inspector-ui": "pnpm --filter ember-inspector watch",
@@ -28,6 +29,7 @@
     "watch-test:inspector-ui": "pnpm --filter ember-inspector watch-test"
   },
   "devDependencies": {
+    "puppeteer": "^25.16.0",
     "release-plan": "^0.18.0"
   },
   "packageManager": "pnpm@9.12.1",

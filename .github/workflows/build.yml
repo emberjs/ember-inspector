@@ -85,12 +85,25 @@ jobs:
       - run: pnpm install
       - run: pnpm test:dists
 
-  test-firefox:
-    name: Test the Firefox extension
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
+  test-e2e:
+    name: End-to-end tests (${{ matrix.browser }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - browser: chrome
+            os: ubuntu-latest
+          - browser: firefox
+            os: ubuntu-latest
+          - browser: safari
+            os: macos-latest
     env:
       CI: 'true'
+      E2E_BROWSER: ${{ matrix.browser }}
+      # The test log is not a terminal, so Node turns colors off without this.
+      FORCE_COLOR: '1'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -101,10 +114,26 @@ jobs:
           node-version: 26
           package-manager-cache: false
       - run: pnpm install
-      - run: pnpm build
-      - run: pnpm --filter vite-test-app build
-      - run: firefox --version
-      - run: pnpm test:firefox
+      # Ubuntu blocks the user namespaces that the Chrome sandbox needs.
+      - if: matrix.browser == 'chrome'
+        run: echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
+      - if: matrix.browser == 'firefox'
+        run: firefox --version
+      # The bookmarklet opens the inspector in a popup.
+      - if: matrix.browser == 'safari'
+        run: |
+          sudo safaridriver --enable
+          defaults write com.apple.Safari WebKitJavaScriptCanOpenWindowsAutomatically -bool true
+          defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically -bool true
+      - run: pnpm test:e2e:build
+      - run: pnpm test:e2e
+      - name: Upload screenshots of failed checks
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: e2e-screenshots-${{ matrix.browser }}
+          path: tests/e2e/screenshots
+          if-no-files-found: ignore
 
   build-ember-debug:
     name: Build ember-debug
