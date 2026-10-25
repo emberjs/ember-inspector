@@ -3,7 +3,6 @@
 import { tracked } from '@glimmer/tracking';
 
 import BasicAdapter from './basic';
-import config from 'ember-inspector/config/environment';
 
 let emberDebug = null;
 
@@ -70,7 +69,10 @@ export default class WebExtension extends BasicAdapter {
   }
 
   _sendEmberDebug() {
-    const minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
+    const minimumVersion = import.meta.env.EMBER_VERSIONS_SUPPORTED[0].replace(
+      /\./g,
+      '-',
+    );
     const url = chrome.runtime.getURL(
       `/panes-${minimumVersion}/ember_debug.js`,
     );
@@ -177,7 +179,10 @@ export default class WebExtension extends BasicAdapter {
 }
 
 function loadEmberDebug() {
-  const minimumVersion = config.emberVersionsSupported[0].replace(/\./g, '-');
+  const minimumVersion = import.meta.env.EMBER_VERSIONS_SUPPORTED[0].replace(
+    /\./g,
+    '-',
+  );
   let xhr;
 
   return new Promise((resolve) => {

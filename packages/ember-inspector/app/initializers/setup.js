@@ -1,5 +1,3 @@
-import config from 'ember-inspector/config/environment';
-
 /**
  * The build writes one copy of the app for each dist
  * (basic, chrome, firefox, bookmarklet, websocket).
@@ -17,9 +15,6 @@ export default {
 
     // register the adapter service
     register(instance, 'service:adapter', Adapter);
-
-    // register the config service
-    register(instance, 'service:config', config, { instantiate: false });
   },
 };
 
