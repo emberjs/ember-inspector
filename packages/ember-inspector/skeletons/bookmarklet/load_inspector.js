@@ -1,21 +1,24 @@
 (function () {
   'use strict';
 
-  const baseUrl = document.currentScript.src.replace(/\/load_inspector.js$/, '');
+  /**
+   * The panes and ember_debug.js sit next to this script,
+   * at the site root or in a subfolder.
+   */
+  const scriptUrl = document.currentScript.src;
 
   const inject = (fileName) => {
     const script = document.createElement('script');
 
     script.type = 'module';
-    script.src = `${baseUrl}/${fileName}`;
+    script.src = new URL(fileName, scriptUrl);
 
     document.body.appendChild(script);
-  }
+  };
 
-  const remoteUrl = new URL(baseUrl);
+  const remoteUrl = new URL('{{PANE_ROOT}}/index.html', scriptUrl);
 
-  remoteUrl.pathname += '/{{PANE_ROOT}}/index.html';
-  remoteUrl.searchParams.set('inspectedWindowURL', window.location.origin.toString());
+  remoteUrl.searchParams.set('inspectedWindowURL', window.location.origin);
 
   window.emberInspector = {
     w: window.open(remoteUrl, 'ember-inspector'),
@@ -23,7 +26,9 @@
   };
 
   if (!window.emberInspector.w) {
-    alert('Unable to open the inspector in a popup. Please enable popups and retry.');
+    alert(
+      'Unable to open the inspector in a popup. Please enable popups and retry.',
+    );
 
     return;
   }
