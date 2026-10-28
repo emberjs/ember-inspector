@@ -1,6 +1,5 @@
 import { module, skip } from 'qunit';
 import { settled, visit, waitUntil } from '@ember/test-helpers';
-import { A as emberA } from '@ember/array';
 
 import EmberDebugImport from 'ember-debug/main';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
@@ -31,7 +30,7 @@ module('Ember Debug - Container', function (hooks) {
     );
 
     assert.strictEqual(name, 'container:types');
-    let types = emberA(message.types);
+    let types = message.types;
     assert.ok(types.find((x) => x.name === 'controller'));
     assert.ok(types.find((x) => x.name === 'route'));
   });
@@ -45,7 +44,7 @@ module('Ember Debug - Container', function (hooks) {
     await settled();
 
     assert.strictEqual(name, 'container:instances');
-    let instances = emberA(message.instances);
+    let instances = message.instances;
     assert.ok(instances.find((x) => x.name === 'simple'));
   });
 

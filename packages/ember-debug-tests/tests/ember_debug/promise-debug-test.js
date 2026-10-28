@@ -1,6 +1,5 @@
 /* eslint-disable ember/no-runloop, ember/avoid-leaking-state-in-ember-objects, qunit/no-conditional-assertions */
 import { run, later } from '@ember/runloop';
-import { A as emberA } from '@ember/array';
 import RSVP from 'rsvp';
 import { module, skip, test } from 'qunit';
 import { settled } from '@ember/test-helpers';
@@ -60,7 +59,7 @@ module('Ember Debug - Promise Debug', function (hooks) {
 
     assert.strictEqual(name, 'promise:promisesUpdated');
 
-    let promises = emberA(message.promises);
+    let promises = message.promises;
 
     promise1 = promises.find((x) => x.label === 'Promise1');
     child1 = promises.find((x) => x.label === 'Child1');
@@ -91,7 +90,7 @@ module('Ember Debug - Promise Debug', function (hooks) {
     let done = assert.async();
     later(function () {
       assert.strictEqual(name, 'promise:promisesUpdated');
-      let promises = emberA(message.promises);
+      let promises = message.promises;
       let promise = promises.find((x) => x.label === 'Promise1');
       assert.ok(!!promise);
       if (promise) {
