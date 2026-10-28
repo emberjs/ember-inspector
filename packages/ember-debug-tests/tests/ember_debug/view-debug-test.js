@@ -7,7 +7,6 @@ import {
   visit,
 } from '@ember/test-helpers';
 import hasEmberVersion from '@ember/test-helpers/has-ember-version';
-import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 // eslint-disable-next-line ember/no-classic-components
 import EmberComponent, { setComponentTemplate } from '@ember/component';
@@ -493,7 +492,7 @@ module('Ember Debug - View', function (hooks) {
       'route:comments.index',
       EmberRoute.extend({
         model() {
-          return A(['first comment', 'second comment', 'third comment']);
+          return ['first comment', 'second comment', 'third comment'];
         },
       }),
     );
