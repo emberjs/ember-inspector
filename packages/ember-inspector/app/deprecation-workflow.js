@@ -1,9 +1,10 @@
 import setupDeprecationWorkflow from 'ember-cli-deprecation-workflow';
 
+/**
+ * A deprecation throws in development and test builds,
+ * so the tests catch it before it ships.
+ */
 setupDeprecationWorkflow({
-  workflow: [
-    { handler: 'silence', matchId: 'ember.built-in-components.import' },
-    { handler: 'silence', matchId: 'implicit-injections' },
-    { handler: 'silence', matchId: 'manager-capabilities.modifiers-3-13' },
-  ],
+  throwOnUnhandled: true,
+  workflow: [],
 });
