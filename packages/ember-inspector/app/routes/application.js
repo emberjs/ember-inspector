@@ -29,6 +29,7 @@ export default class ApplicationRoute extends Route {
     let port = this.port;
     port.on('objectInspector:updateObject', this, this.updateObject);
     port.on('objectInspector:updateProperty', this, this.updateProperty);
+    port.on('objectInspector:updateReactivity', this, this.updateReactivity);
     port.on('objectInspector:updateErrors', this, this.updateErrors);
     port.on('objectInspector:droppedObject', this, this.droppedObject);
     port.on('deprecation:count', this, this.setDeprecationCount);
@@ -40,6 +41,7 @@ export default class ApplicationRoute extends Route {
     let port = this.port;
     port.off('objectInspector:updateObject', this, this.updateObject);
     port.off('objectInspector:updateProperty', this, this.updateProperty);
+    port.off('objectInspector:updateReactivity', this, this.updateReactivity);
     port.off('objectInspector:updateErrors', this, this.updateErrors);
     port.off('objectInspector:droppedObject', this, this.droppedObject);
     port.off('deprecation:count', this, this.setDeprecationCount);
@@ -74,9 +76,46 @@ export default class ApplicationRoute extends Route {
       controller.pushMixinDetails(name, property, objectId, details, errors);
     } else {
       controller.activateMixinDetails(name, objectId, details, errors);
+      set(controller.mixinDetails, 'reactivity', options.reactivity || null);
     }
 
     this.layout.showInspector();
+  }
+
+  /**
+   * The inspected render tree node re-rendered.
+   *
+   * ember-debug sends the changed rows, and each row field replaces
+   * the field of the property row with the same name.
+   */
+  updateReactivity(options) {
+    const mixinDetails = this.controller.mixinDetails;
+
+    if (!mixinDetails || mixinDetails.objectId !== options.objectId) {
+      return;
+    }
+
+    set(mixinDetails, 'reactivity', options.reactivity);
+
+    const byName = new Map();
+    options.rows.forEach((row) => {
+      byName.set(row.name, row);
+    });
+
+    mixinDetails.mixins.forEach((mixin) => {
+      mixin.properties.forEach((property) => {
+        const row = byName.get(property.name);
+        if (!row) {
+          return;
+        }
+        byName.delete(property.name);
+        Object.keys(row).forEach((key) => {
+          if (key !== 'name') {
+            set(property, key, row[key]);
+          }
+        });
+      });
+    });
   }
 
   setDeprecationCount(message) {
