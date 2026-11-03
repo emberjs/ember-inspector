@@ -1,9 +1,9 @@
 import Application from 'ember-inspector/app';
-import config from 'ember-inspector/config/environment';
 import * as QUnit from 'qunit';
 import { setApplication } from '@ember/test-helpers';
 import { setup } from 'qunit-dom';
 import { start as qunitStart, setupEmberOnerrorValidation } from 'ember-qunit';
+import { setTesting } from '@embroider/macros';
 import TestAdapter from './test-adapter';
 
 /**
@@ -28,7 +28,14 @@ Application.instanceInitializer({
 });
 
 export function start() {
-  setApplication(Application.create(config.APP));
+  /**
+   * The router reads `isTesting()` when the app creates it.
+   */
+  setTesting(true);
+
+  setApplication(
+    Application.create({ rootElement: '#ember-testing', autoboot: false }),
+  );
 
   window.NO_EMBER_DEBUG = true;
   QUnit.config.testTimeout = 60000;

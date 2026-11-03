@@ -14,7 +14,6 @@
 import Service, { service } from '@ember/service';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
-import config from 'ember-inspector/config/environment';
 import { compareVersion } from 'ember-debug/version';
 
 export default class Basic extends Service {
@@ -48,8 +47,10 @@ export default class Basic extends Service {
     this.onMessageReceived((message) => {
       const { name, version } = message;
       if (name === 'version-mismatch') {
-        const previousVersions = config.previousEmberVersionsSupported;
-        const [fromVersion, tillVersion] = config.emberVersionsSupported;
+        const previousVersions = import.meta.env
+          .PREVIOUS_EMBER_VERSIONS_SUPPORTED;
+        const [fromVersion, tillVersion] = import.meta.env
+          .EMBER_VERSIONS_SUPPORTED;
         let neededVersion;
 
         if (compareVersion(version, fromVersion) === -1) {
