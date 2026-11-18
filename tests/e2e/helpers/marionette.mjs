@@ -35,7 +35,15 @@ export async function startFirefox() {
       '--profile',
       profile,
     ],
-    { stdio: 'ignore' },
+    {
+      /**
+       * Newer Firefox versions (160 at least) also need this variable,
+       * not just the flag, for chrome context commands
+       * and for navigating to about: pages.
+       */
+      env: { ...process.env, MOZ_REMOTE_ALLOW_SYSTEM_ACCESS: '1' },
+      stdio: 'ignore',
+    },
   );
 
   let socket = await connectWhenReady(port);
