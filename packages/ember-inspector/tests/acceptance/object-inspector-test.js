@@ -1290,4 +1290,64 @@ module('Object Inspector', function (hooks) {
       .dom('[data-test-object-inspector-custom-search-clear]')
       .doesNotExist();
   });
+
+  test('A render node shows what caused its re-render', async function (assert) {
+    await visit('/');
+
+    await sendMessage({
+      type: 'objectInspector:updateObject',
+      name: 'ReactiveCounter',
+      objectId: 'counter',
+      reactivity: { updateCount: 0, lastRender: null, causes: [] },
+      details: [
+        {
+          name: 'Own Properties',
+          expand: true,
+          properties: [
+            {
+              name: '@title',
+              isRenderNodeArg: true,
+              isProperty: true,
+              readOnly: true,
+              value: { inspect: '"first"', type: 'type-string' },
+              dependentKeys: [],
+              reactivity: { revision: 10, changed: false },
+            },
+            {
+              name: 'count',
+              value: { inspect: '0', type: 'type-number' },
+              reactivity: { revision: 10, changed: false },
+            },
+          ],
+        },
+      ],
+    });
+
+    assert.dom('[data-test-object-reactivity-count]').hasText('0');
+    assert.dom('[data-test-object-reactivity-cause]').doesNotExist();
+    assert.dom('[data-test-object-property-changed]').doesNotExist();
+
+    await sendMessage({
+      type: 'objectInspector:updateReactivity',
+      objectId: 'counter',
+      reactivity: { updateCount: 1, lastRender: null, causes: ['@title'] },
+      rows: [
+        { name: 'count', reactivity: { revision: 10, changed: false } },
+        {
+          name: '@title',
+          value: { inspect: '"second"', type: 'type-string' },
+          dependentKeys: [],
+          reactivity: { revision: 12, changed: true },
+        },
+      ],
+    });
+
+    assert.dom('[data-test-object-reactivity-count]').hasText('1');
+    assert.dom('[data-test-object-reactivity-cause]').hasText('@title');
+
+    let [title, count] = findAll('[data-test-object-property]');
+    assert.dom('[data-test-object-property-value]', title).hasText('"second"');
+    assert.dom('[data-test-object-property-changed]', title).exists();
+    assert.dom('[data-test-object-property-changed]', count).doesNotExist();
+  });
 });

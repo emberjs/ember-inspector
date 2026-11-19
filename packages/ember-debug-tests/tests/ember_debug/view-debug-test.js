@@ -19,6 +19,7 @@ import QUnit, { module, test } from 'qunit';
 import require from 'require';
 import { hbs } from 'ember-cli-htmlbars';
 import setupEmberDebugTest from '../helpers/setup-ember-debug-test';
+import { captureMessage, getRenderTree } from '../helpers/capture-message';
 import { isInVersionSpecifier } from 'ember-debug/version';
 import GlimmerComponent from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
@@ -45,67 +46,29 @@ try {
   // eslint-disable-next-line no-empty
 } catch {}
 
-// TODO switch to an adapter architecture, similar to the acceptance tests
-async function captureMessage(type, callback) {
-  if (!EmberDebug.port) {
-    throw new Error('Cannot call captureMessage without a port');
-  }
-
-  let send = EmberDebug.port.send;
-
-  try {
-    let captured;
-
-    const receivedPromise = new Promise((resolve) => {
-      setTimeout(resolve, 500);
-      EmberDebug.port.send = (name, message) => {
-        if (!captured && name === type) {
-          resolve();
-          captured = JSON.parse(JSON.stringify(message));
-        } else {
-          send.call(EmberDebug.port, name, message);
-        }
-      };
-    });
-
-    await callback();
-    await receivedPromise;
-
-    if (captured) {
-      return captured;
-    } else {
-      throw new Error(`Did not send a message of type ${type}`);
-    }
-  } finally {
-    EmberDebug.port.send = send;
-  }
-}
-
 async function digDeeper(objectId, property) {
-  return await captureMessage('objectInspector:updateObject', async () => {
-    EmberDebug.port.trigger('objectInspector:digDeeper', {
-      objectId,
-      property,
-    });
-  });
+  return await captureMessage(
+    EmberDebug,
+    'objectInspector:updateObject',
+    async () => {
+      EmberDebug.port.trigger('objectInspector:digDeeper', {
+        objectId,
+        property,
+      });
+    },
+  );
 }
 
 async function inspectById(objectId) {
-  return await captureMessage('objectInspector:updateObject', async () => {
-    EmberDebug.port.trigger('objectInspector:inspectById', {
-      objectId,
-    });
-  });
-}
-
-async function getRenderTree() {
-  let message = await captureMessage('view:renderTree', async () => {
-    EmberDebug.port.trigger('view:getTree', {});
-  });
-
-  if (message) {
-    return message.tree;
-  }
+  return await captureMessage(
+    EmberDebug,
+    'objectInspector:updateObject',
+    async () => {
+      EmberDebug.port.trigger('objectInspector:inspectById', {
+        objectId,
+      });
+    },
+  );
 }
 
 function isVisible(element) {
@@ -706,7 +669,7 @@ module('Ember Debug - View', function (hooks) {
   test('Simple Inputs Tree', async function () {
     await visit('/inputs');
 
-    let tree = await getRenderTree();
+    let tree = await getRenderTree(EmberDebug);
 
     const inputChildren = [];
     // https://github.com/emberjs/ember.js/commit/e6cf1766f8e02ddb24bf67833c148e7d7c93182f
@@ -792,7 +755,7 @@ module('Ember Debug - View', function (hooks) {
   test('Simple View Tree', async function () {
     await visit('/simple');
 
-    let tree = await getRenderTree();
+    let tree = await getRenderTree(EmberDebug);
 
     let argsTestPromise;
 
@@ -898,7 +861,7 @@ module('Ember Debug - View', function (hooks) {
         'The rootElement no longer has the .ember-application CSS class',
       );
 
-    let tree = await getRenderTree();
+    let tree = await getRenderTree(EmberDebug);
 
     const root = [];
 
@@ -978,7 +941,7 @@ module('Ember Debug - View', function (hooks) {
 
     await visit('/posts');
 
-    let tree = await getRenderTree();
+    let tree = await getRenderTree(EmberDebug);
 
     matchTree(tree, [
       TopLevel(
@@ -1051,7 +1014,7 @@ module('Ember Debug - View', function (hooks) {
 
     hooks.beforeEach(async function (assert) {
       await visit('/simple');
-      await getRenderTree();
+      await getRenderTree(EmberDebug);
 
       foo = find('.simple-component');
       bar = find('.another-component');
@@ -1192,7 +1155,7 @@ module('Ember Debug - View', function (hooks) {
     test('in-element inside component', async function (assert) {
       await visit('test-in-element-in-component');
       await rerender();
-      await getRenderTree();
+      await getRenderTree(EmberDebug);
 
       inElement = find('.test-in-element-in-component');
 
@@ -1225,7 +1188,7 @@ module('Ember Debug - View', function (hooks) {
     test('component inside in-element', async function (assert) {
       await visit('test-component-in-in-element');
       await rerender();
-      await getRenderTree();
+      await getRenderTree(EmberDebug);
 
       inElement = find('.test-component-in-in-element');
 
@@ -1262,7 +1225,7 @@ module('Ember Debug - View', function (hooks) {
       }
       await visit('component-in-shadow-dom');
       await rerender();
-      await getRenderTree();
+      await getRenderTree(EmberDebug);
 
       const inShadow = window.testShadow.querySelector('.simple-component');
 
