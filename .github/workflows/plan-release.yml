@@ -24,7 +24,7 @@ jobs:
     outputs:
       should-prepare: ${{ steps.should-prepare.outputs.should-prepare }}
     steps:
-      - uses: release-plan/actions/should-prepare-release@ed561973c19bde2b2715c2f69c0d764724ad4616 # v1.1.1
+      - uses: release-plan/actions/should-prepare-release@v1.1.1
         with:
           ref: 'main'
         id: should-prepare
@@ -40,7 +40,7 @@ jobs:
       pull-requests: write
     if: needs.should-run-release-plan-prepare.outputs.should-prepare == 'true'
     steps:
-      - uses: release-plan/actions/prepare@ed561973c19bde2b2715c2f69c0d764724ad4616 # v1.1.1
+      - uses: release-plan/actions/prepare@v1.1.1
         name: Run release-plan prepare
         with:
           ref: 'main'
@@ -48,7 +48,7 @@ jobs:
           GITHUB_AUTH: ${{ secrets.GITHUB_TOKEN }}
         id: explanation
 
-      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - uses: peter-evans/create-pull-request@v8.1.1
         name: Create Prepare Release PR
         with:
           commit-message: "Prepare Release ${{ steps.explanation.outputs.new-version}} using 'release-plan'"
