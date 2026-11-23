@@ -45,15 +45,18 @@ let ActionHandler,
   meta,
   set;
 
-// This global is defined in Embroider to bring Vite support to the Inspector.
-// Having it defined is enough to assert the inspected app runs with Vite.
-if (globalThis.emberInspectorApps) {
+// This global is defined by @embroider/legacy-inspector-support. It is used by
+// apps built with Vite, but classic apps can use it too.
+const hasInspectorSupport = Boolean(globalThis.emberInspectorApps);
+
+if (hasInspectorSupport) {
   // emberInspectorApps has been implemented as an array to support multiple
   // apps in the future. So far, the inspector has supported only one app, so
   // we rely on the first item in the array to keep the current behavior.
   const appLoader = globalThis.emberInspectorApps[0];
   const modules = await appLoader.loadCompatInspector();
 
+  ActionHandler = modules.InternalsRuntime?.ActionHandler;
   Application = modules.Application.default;
   ApplicationModule = modules.Application;
   ArrayProxy = modules.ArrayProxy.default;
@@ -89,6 +92,7 @@ if (globalThis.emberInspectorApps) {
   Service = modules.Service.default;
   VERSION = modules.VERSION.default;
   captureRenderTree = modules.Debug.captureRenderTree;
+  computed = modules.Object.computed;
   get = modules.Object.get;
   getEnv = modules.InternalsEnvironment?.getENV;
   meta = modules.InternalsMeta?.meta;
@@ -122,7 +126,11 @@ let cacheFor = ObjectInternals?.cacheFor;
 let guidFor = ObjectInternals?.guidFor;
 let libraries = InternalsMetal?.libraries;
 
-if (Ember) {
+if (hasInspectorSupport) {
+  // Everything has been taken from the modules provided by
+  // @embroider/legacy-inspector-support. Reading from the Ember barrel here
+  // would trigger the `deprecate-import-*-from-ember` deprecations.
+} else if (Ember) {
   ActionHandler = Ember.ActionHandler;
   Application = Ember.Application;
   ArrayProxy = Ember.ArrayProxy;
