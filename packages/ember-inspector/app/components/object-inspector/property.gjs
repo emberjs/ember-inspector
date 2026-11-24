@@ -76,6 +76,13 @@ export default class ObjectInspectorProperty extends Component {
             {{/if}}
           {{/if}}
         </span>
+        {{#if @model.reactivity.changed}}
+          <span
+            class="mixin-property-changed flex-shrink-0"
+            title="Changed in the most recent re-render (revision {{@model.reactivity.revision}})"
+            data-test-object-property-changed
+          ></span>
+        {{/if}}
 
         <span class="mr-1">: </span>
       {{/unless}}

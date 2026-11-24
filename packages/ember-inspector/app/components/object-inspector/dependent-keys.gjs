@@ -7,30 +7,17 @@ import DependentKeyBulletIcon from 'ember-inspector/svg/dependent-key-bullet.svg
       {{#each @keys as |dep|}}
         <li
           class="mixin-property-dependency-item relative text-base12 text-sm
-            {{if dep.changed 'text-spec01'}}"
+            {{if dep.changed 'text-spec01'}}
+            {{if dep.child 'mixin-property-dependency-item-nested'}}"
           title={{if dep.changed "this property changed"}}
         >
-          {{#if dep.child}}
-            <span
-              class="mixin-property-dependency-name subkey"
-              data-label="object-property-name"
-            >
-              • --
-              {{dep.child}}
-            </span>
-          {{else}}
-            <DependentKeyBulletIcon
-              width="9px"
-              height="9px"
-              aria-hidden="true"
-            />
-            <span
-              class="mixin-property-dependency-name"
-              data-label="object-property-name"
-            >
-              {{dep.name}}
-            </span>
-          {{/if}}
+          <DependentKeyBulletIcon width="9px" height="9px" aria-hidden="true" />
+          <span
+            class="mixin-property-dependency-name"
+            data-label="object-property-name"
+          >
+            {{if dep.child dep.child dep.name}}
+          </span>
           {{#if dep.changed}}🔸{{/if}}
         </li>
       {{/each}}

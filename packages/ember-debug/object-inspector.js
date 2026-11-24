@@ -26,6 +26,8 @@ import { _backburner, join } from './lib/ember/runloop.js';
 import emberNames from './lib/ember-object-names.js';
 import getObjectName from './lib/get-object-name.js';
 import getRoute from './lib/get-route.js';
+import { getDependencyTags } from './lib/tracked-tags.js';
+import { createTagNamer, labelForTagName } from './lib/tag-names.js';
 
 let tagValue, tagValidate, track, tagForProperty;
 
@@ -139,26 +141,133 @@ function isMandatorySetter(descriptor) {
   return false;
 }
 
-function getTagTrackedTags(tag, ownTag, level = 0) {
-  const props = [];
-  // do not include tracked properties from dependencies
-  if (!tag || level > 1) {
-    return props;
-  }
-  const subtags = tag.subtags || (Array.isArray(tag.subtag) ? tag.subtag : []);
-  if (tag.subtag && !Array.isArray(tag.subtag)) {
-    if (tag.subtag._propertyKey) props.push(tag.subtag);
+/**
+ * A read-only property row for one arg of a render node.
+ *
+ * The row is not readable off the instance,
+ * so updateReactivity refreshes it, not updateCurrentObject.
+ */
+function argPropertyItem(arg) {
+  return {
+    name: `@${arg.name}`,
+    isRenderNodeArg: true,
+    isProperty: true,
+    readOnly: true,
+    value: {
+      type: arg.type || 'type-object',
+      inspect: arg.inspect,
+      isCalculated: true,
+    },
+    dependentKeys: (arg.dependencies || []).map((dep) => {
+      const entry = { name: dep.name };
+      if (dep.changed) {
+        entry.changed = true;
+      }
+      return entry;
+    }),
+    reactivity: {
+      revision: arg.revision,
+      changed: arg.changed || false,
+    },
+  };
+}
 
-    props.push(...getTagTrackedTags(tag.subtag, ownTag, level + 1));
+function reactivitySummary(report) {
+  const seen = new Set();
+  const causes = [];
+  function addCause(cause) {
+    if (!seen.has(cause)) {
+      seen.add(cause);
+      causes.push(cause);
+    }
   }
-  if (subtags) {
-    subtags.forEach((t) => {
-      if (t === ownTag) return;
-      if (t._propertyKey) props.push(t);
-      props.push(...getTagTrackedTags(t, ownTag, level + 1));
+
+  function addArgCauses(arg) {
+    if (arg.changed) {
+      addCause(`@${arg.name}`);
+    }
+    (arg.dependencies || []).forEach((dep) => {
+      if (dep.changed) {
+        addCause(dep.name);
+      }
     });
   }
-  return props;
+  report.args.named.forEach(addArgCauses);
+  report.args.positional.forEach(addArgCauses);
+  report.tracked.forEach((prop) => {
+    if (prop.changed) {
+      addCause(labelForTagName({ group: 'this', key: prop.name }));
+    }
+  });
+
+  return {
+    updateCount: report.updateCount,
+    lastRender: report.lastRender,
+    causes,
+  };
+}
+
+/**
+ * The property rows that a reactivity report changes.
+ *
+ * - each consumed instance property gets its revision and changed flag
+ * - each arg is a row of its own
+ *
+ * The first send and every update use the same rows.
+ */
+function reactivityRows(report) {
+  const rows = [];
+  report.tracked.forEach((prop) => {
+    rows.push({
+      name: prop.name,
+      reactivity: { revision: prop.revision, changed: prop.changed },
+    });
+  });
+  report.args.named.forEach((arg) => rows.push(argPropertyItem(arg)));
+  report.args.positional.forEach((arg) => rows.push(argPropertyItem(arg)));
+  return rows;
+}
+
+/**
+ * Merge reactivity rows into the property rows of the first send.
+ *
+ * Arg rows do not exist yet, so they go first in the first mixin.
+ * They replace the `args` row, which holds the same values.
+ */
+function applyReactivityRows(mixins, rows) {
+  if (!mixins.length) {
+    return;
+  }
+
+  const byName = new Map();
+  mixins.forEach((mixin) => {
+    mixin.properties.forEach((item) => {
+      if (!byName.has(item.name)) {
+        byName.set(item.name, item);
+      }
+    });
+  });
+
+  const argRows = [];
+  rows.forEach((row) => {
+    const item = byName.get(row.name);
+    if (item) {
+      Object.assign(item, row);
+    } else if (row.isRenderNodeArg) {
+      argRows.push(row);
+    }
+  });
+
+  if (argRows.length) {
+    mixins.forEach((mixin) => {
+      const index = mixin.properties.findIndex((item) => item.name === 'args');
+      if (index !== -1) {
+        mixin.properties.splice(index, 1);
+      }
+    });
+  }
+
+  mixins[0].properties = argRows.concat(mixins[0].properties);
 }
 
 function getTrackedDependencies(object, property, tagInfo) {
@@ -174,65 +283,52 @@ function getTrackedDependencies(object, property, tagInfo) {
   }
   if (HAS_GLIMMER_TRACKING) {
     const ownTag = tagForProperty(object, property);
-    const tags = getTagTrackedTags(tag, ownTag);
-    const mapping = {};
-    let maxRevision = tagValue(tag);
+    const nameForTag = createTagNamer(object);
+    const tags = getDependencyTags(tag, ownTag);
+    const hasChange =
+      (tagInfo.revision && tagValue(tag) !== tagInfo.revision) || false;
+
+    /** group → (key → revision) */
+    const groups = new Map();
     tags.forEach((t) => {
-      // A tag has no property name when tagFor is not patched.
-      if (!t._propertyKey) {
+      const name = nameForTag(t);
+      if (!name) {
         return;
       }
-      const p =
-        (t._object ? getObjectName(t._object) + '.' : '') + t._propertyKey;
-      const [objName, prop] = p.split('.');
-      mapping[objName] = mapping[objName] || new Set();
-      const value = tagValue(t);
-      if (prop) {
-        mapping[objName].add([prop, value]);
+      let revisions = groups.get(name.group);
+      if (!revisions) {
+        revisions = new Map();
+        groups.set(name.group, revisions);
+      }
+      const revision = tagValue(t);
+      if (!(revisions.get(name.key) >= revision)) {
+        revisions.set(name.key, revision);
       }
     });
 
-    const hasChange =
-      (tagInfo.revision && maxRevision !== tagInfo.revision) || false;
-
-    const names = new Set();
-
-    Object.entries(mapping).forEach(([objName, props]) => {
-      if (names.has(objName)) {
-        return;
+    /**
+     * A group with several keys shows as a heading with children.
+     *
+     * Args and single keys show as one line each.
+     */
+    groups.forEach((revisions, group) => {
+      const nested = revisions.size > 1 && group !== '@' && group !== '';
+      if (nested) {
+        dependentKeys.push({ name: group });
       }
-      names.add(objName);
-      if (props.size > 1) {
-        dependentKeys.push({ name: objName });
-        props.forEach((p) => {
-          const changed = hasChange && p[1] > tagInfo.revision;
-          const obj = {
-            child: p[0],
-          };
-          if (changed) {
-            obj.changed = true;
-          }
-          dependentKeys.push(obj);
-        });
-      }
-      if (props.size === 1) {
-        const p = [...props][0];
-        const changed = hasChange && p[1] > tagInfo.revision;
-        const obj = {
-          name: objName + '.' + p[0],
-        };
-        if (changed) {
-          obj.changed = true;
+      revisions.forEach((revision, key) => {
+        const entry = nested
+          ? { child: key }
+          : { name: labelForTagName({ group, key }) };
+        if (hasChange && revision > tagInfo.revision) {
+          entry.changed = true;
         }
-        dependentKeys.push(obj);
-      }
-      if (props.size === 0) {
-        dependentKeys.push({ name: objName });
-      }
+        dependentKeys.push(entry);
+      });
     });
   }
 
-  return [...dependentKeys];
+  return dependentKeys;
 }
 
 export default class extends DebugPort {
@@ -257,6 +353,10 @@ export default class extends DebugPort {
       mixinDetails.forEach((mixin, mixinIndex) => {
         mixin.properties.forEach((item) => {
           if (item.overridden) {
+            return true;
+          }
+          if (item.isRenderNodeArg) {
+            /** Arg rows are not on the instance, updateReactivity sends them. */
             return true;
           }
           try {
@@ -324,7 +424,35 @@ export default class extends DebugPort {
           }
         });
       });
+
+      this.updateCurrentReactivity();
     }
+  }
+
+  /**
+   * Each re-render of the inspected render node
+   * sends the summary and the reactivity rows again.
+   */
+  updateCurrentReactivity() {
+    const { renderNodeId, objectId, lastUpdateCount } = this.currentObject;
+
+    if (!renderNodeId) {
+      return;
+    }
+
+    const report = this.getReactivityReport(renderNodeId);
+
+    if (!report || report.updateCount === lastUpdateCount) {
+      return;
+    }
+
+    this.currentObject.lastUpdateCount = report.updateCount;
+
+    this.sendMessage('updateReactivity', {
+      objectId,
+      reactivity: reactivitySummary(report),
+      rows: reactivityRows(report),
+    });
   }
 
   // eslint-disable-next-line ember/classic-decorator-hooks
@@ -420,7 +548,7 @@ export default class extends DebugPort {
       inspectById(message) {
         const obj = this.sentObjects[message.objectId];
         if (obj) {
-          this.sendObject(obj);
+          this.sendObject(obj, message.renderNodeId);
         }
       },
       inspectByContainerLookup(message) {
@@ -532,19 +660,48 @@ export default class extends DebugPort {
     }
   }
 
-  sendObject(object) {
+  sendObject(object, renderNodeId = null) {
     if (!this.canSend(object)) {
       throw new Error(
         `Can't inspect ${object}. Only Ember objects and arrays are supported.`,
       );
     }
     let details = this.mixinsForObject(object);
+    let reactivity = null;
+
+    /**
+     * An object inspected as a render tree node (pinned in the component
+     * tree) gets the reactivity rows of that node in its property list.
+     */
+    const report = this.getReactivityReport(renderNodeId);
+    if (report) {
+      this.currentObject.renderNodeId = renderNodeId;
+      this.currentObject.lastUpdateCount = report.updateCount;
+      applyReactivityRows(details.mixins, reactivityRows(report));
+      reactivity = reactivitySummary(report);
+    }
+
     this.sendMessage('updateObject', {
       objectId: details.objectId,
       name: getObjectName(object),
       details: details.mixins,
       errors: details.errors,
+      reactivity,
     });
+  }
+
+  getReactivityReport(renderNodeId) {
+    if (!renderNodeId) {
+      return null;
+    }
+    try {
+      return (
+        this.namespace?.viewDebug?.renderTree?.getReactivity(renderNodeId) ??
+        null
+      );
+    } catch {
+      return null;
+    }
   }
 
   retainObject(object) {
