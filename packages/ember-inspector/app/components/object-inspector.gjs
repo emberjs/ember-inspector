@@ -30,7 +30,7 @@ export default class ObjectInspector extends Component {
             <ArrowBackIcon width="21px" height="21px" />
           </button>
 
-          <code class="flex-auto truncate font-bold" data-test-object-name>
+          <code class="object-name truncate font-bold" data-test-object-name>
             {{get @model "0.name"}}
           </code>
 

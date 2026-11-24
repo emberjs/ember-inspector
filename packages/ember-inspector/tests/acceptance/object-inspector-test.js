@@ -808,6 +808,26 @@ module('Object Inspector', function (hooks) {
     await click('[data-test-send-object-to-console-btn]');
   });
 
+  test('Send to console stays visible when the object name is truncated', async function (assert) {
+    await visit('/');
+
+    await sendMessage({
+      type: 'objectInspector:updateObject',
+      ...objectFactory({
+        name: `<my-app@component:${'very-long-component-name/'.repeat(10)}::ember123>`,
+      }),
+    });
+
+    let header = find('[data-test-object-name]').parentElement;
+    let button = find('[data-test-send-object-to-console-btn]');
+
+    assert.true(
+      button.getBoundingClientRect().right <=
+        header.getBoundingClientRect().right,
+      'the send to console button is not pushed out of the header',
+    );
+  });
+
   test('Goto Source', async function (assert) {
     await visit('/');
 
