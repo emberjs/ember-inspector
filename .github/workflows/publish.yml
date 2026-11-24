@@ -103,7 +103,7 @@ jobs:
         with:
           package-manager-cache: false
       - name: Install dependencies (chrome-webstore-upload-cli)
-        run: npm install -g chrome-webstore-upload-cli # zizmor: ignore[adhoc-packages] this job has no checkout and no lockfile
+        run: npm install -g chrome-webstore-upload-cli@4 # zizmor: ignore[adhoc-packages] this job has no checkout and no lockfile
       - name: Download artifacts (Chrome)
         uses: actions/download-artifact@v8.0.2
         with:
@@ -115,8 +115,9 @@ jobs:
           echo "CLIENT_ID=${{ secrets.GOOGLE_NIGHTLY_CLIENT_ID }}" >> $GITHUB_ENV
           echo "CLIENT_SECRET=${{ secrets.GOOGLE_NIGHTLY_CLIENT_SECRET }}" >> $GITHUB_ENV
           echo "REFRESH_TOKEN=${{ secrets.GOOGLE_NIGHTLY_REFRESH_TOKEN }}" >> $GITHUB_ENV
+          echo "PUBLISHER_ID=${{ secrets.GOOGLE_PUBLISHER_ID }}" >> $GITHUB_ENV
       - name: Upload to Chrome Web Store
-        run: chrome-webstore-upload upload --source chrome --auto-publish
+        run: chrome-webstore-upload --source chrome
 
   publish-firefox:
     name: Publish Firefox extension
