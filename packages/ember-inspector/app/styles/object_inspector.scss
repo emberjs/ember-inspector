@@ -1,3 +1,11 @@
+// `.toolbar > *` sets `flex: none`, so the name has to opt back in to
+// shrinking. Otherwise a long name pushes the buttons after it out of
+// a narrow pane instead of being truncated.
+.toolbar > .object-name {
+  flex: auto;
+  min-width: 0;
+}
+
 .object-trail {
   margin-left: 34px;
 }
